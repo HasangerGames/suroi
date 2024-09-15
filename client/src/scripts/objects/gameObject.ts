@@ -1,5 +1,5 @@
 import { Container, Graphics } from "pixi.js";
-import { type ObjectCategory } from "../../../../common/src/constants";
+import { Layer, type ObjectCategory } from "../../../../common/src/constants";
 import { Angle, Numeric } from "../../../../common/src/utils/math";
 import { type Timeout } from "../../../../common/src/utils/misc";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
@@ -8,15 +8,18 @@ import { type Game } from "../game";
 import { type GameSound, type SoundOptions } from "../managers/soundManager";
 import { HITBOX_DEBUG_MODE } from "../utils/constants";
 import { toPixiCoords } from "../utils/pixi";
+import { makeGameObjectTemplate } from "../../../../common/src/utils/gameObject";
+import { FloorTypes } from "../../../../common/src/utils/terrain";
 
-export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
+export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> extends makeGameObjectTemplate() {
     id: number;
-    abstract readonly type: Cat;
 
     readonly game: Game;
 
     damageable = false;
     destroyed = false;
+
+    layer: Layer = Layer.Ground;
 
     debugGraphics!: Graphics;
 
@@ -94,7 +97,9 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
         return timeout;
     }
 
-    protected constructor(game: Game, id: number) {
+    constructor(game: Game, id: number) {
+        super();
+
         this.game = game;
         this.id = id;
 
@@ -123,9 +128,21 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
     playSound(name: string, options?: Partial<Omit<SoundOptions, "position">>): GameSound {
         return this.game.soundManager.play(name, {
             position: this.position,
+            layer: this.layer,
             ...options
         });
     }
 
+    doOverlay(): boolean {
+        return FloorTypes[this.game.map.terrain.getFloor(this.position, this.layer)]?.overlay ?? false;
+    }
+
     abstract updateFromData(data: ObjectsNetData[Cat], isNew: boolean): void;
+
+    abstract updateZIndex(): void;
+
+    /**
+     * subclasses are free to override this method to draw debug graphics if they wish
+     */
+    updateDebugGraphics(): void { /* no-op */ }
 }

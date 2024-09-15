@@ -5,15 +5,9 @@ import { type FullData } from "@common/utils/objectsSerializations";
 import { type Vector } from "@common/utils/vector";
 
 import { type Airdrop, type Game } from "../game";
-import { Events } from "../pluginManager";
-import { Building } from "./building";
 import { BaseGameObject } from "./gameObject";
-import { Loot } from "./loot";
-import { Obstacle } from "./obstacle";
-import { Player } from "./player";
 
-export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
-    override readonly type = ObjectCategory.Parachute;
+export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
     override readonly fullAllocBytes = 8;
     override readonly partialAllocBytes = 4;
 
@@ -39,7 +33,9 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
 
             const crate = this.game.map.generateObstacle(this._airdrop.type, this.position);
 
-            this.game.pluginManager.emit(Events.Airdrop_Landed, this._airdrop);
+            if (!crate) return;
+
+            this.game.pluginManager.emit("airdrop_landed", this._airdrop);
 
             // Spawn smoke
             this.game.addSyncedParticles({
@@ -53,27 +49,27 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
                     }
                 },
                 spawnRadius: 10
-            }, crate.position);
+            }, crate.position, crate.layer);
 
             // Crush damage
             for (const object of this.game.grid.intersectsHitbox(crate.hitbox)) {
                 if (object.hitbox?.collidesWith(crate.hitbox)) {
                     switch (true) {
-                        case object instanceof Player: {
+                        case object.isPlayer: {
                             object.piercingDamage({
                                 amount: GameConstants.airdrop.damage,
                                 source: KillfeedEventType.Airdrop
                             });
                             break;
                         }
-                        case object instanceof Obstacle: {
+                        case object.isObstacle: {
                             object.damage({
                                 amount: Infinity,
                                 source: crate
                             });
                             break;
                         }
-                        case object instanceof Building && object.scopeHitbox?.collidesWith(crate.hitbox): {
+                        case object.isBuilding && object.scopeHitbox?.collidesWith(crate.hitbox): {
                             object.damageCeiling(Infinity);
                             break;
                         }
@@ -83,7 +79,7 @@ export class Parachute extends BaseGameObject<ObjectCategory.Parachute> {
 
             // loop again to make sure loot added by destroyed obstacles is checked
             for (const loot of this.game.grid.intersectsHitbox(this.hitbox)) {
-                if (loot instanceof Loot && this.hitbox.collidesWith(loot.hitbox)) {
+                if (loot.isLoot && this.hitbox.collidesWith(loot.hitbox)) {
                     if (loot.hitbox.collidesWith(crate.hitbox)) {
                         loot.hitbox.resolveCollision(crate.hitbox);
                     }

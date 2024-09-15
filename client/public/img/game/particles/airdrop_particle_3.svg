@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="37.951069"
+   height="157.94852"
+   version="1.1"
+   viewBox="0 0 10.04122 41.790544"
+   id="svg30"
+   sodipodi:docname="airdrop_particle_3.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs34">
+    <pattern
+       inkscape:collect="always"
+       xlink:href="#pattern188-1-7"
+       preserveAspectRatio="xMidYMid"
+       id="pattern189-9-0"
+       patternTransform="matrix(1.4142136,1.4142136,-1.4142136,1.4142136,141.71931,19.376422)"
+       x="0.25"
+       y="0" />
+    <pattern
+       inkscape:collect="always"
+       patternUnits="userSpaceOnUse"
+       width="2"
+       height="10"
+       patternTransform="translate(0,0) scale(2,2)"
+       preserveAspectRatio="xMidYMid"
+       id="pattern188-1-7"
+       style="fill:#d9d9d9"
+       inkscape:stockid="Stripes 01 (1:1)"
+       inkscape:isstock="true"
+       inkscape:label="Stripes 01 (1:1)">
+      <rect
+   style="stroke:none"
+   x="0"
+   y="-0.5"
+   width="1"
+   height="11"
+   id="rect187-0-9" />
+
+    </pattern>
+  </defs>
+  <sodipodi:namedview
+     id="namedview32"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="4.7080999"
+     inkscape:cx="-81.561566"
+     inkscape:cy="88.676963"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg30"
+     units="px"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1" />
+  <g
+     id="g4"
+     transform="translate(109.4058,149.96553)">
+    <g
+       id="g194-4"
+       transform="translate(-88.036719,-27.574353)">
+      <path
+         style="fill:#727679;fill-opacity:1;stroke:#333333;stroke-width:1.96162;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m -12.308674,-121.41051 -8.0796,8.0796 v 23.670003 l 8.0796,8.0796 z"
+         id="path884-4" />
+    </g>
+    <rect
+       style="fill:url(#pattern189-9-0);fill-opacity:1;stroke:none;stroke-width:1.57991;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+       id="rect183-3-8"
+       width="22.213911"
+       height="1.9410477"
+       x="117.9633"
+       y="-105.35572"
+       transform="rotate(-90)" />
+  </g>
+</svg>

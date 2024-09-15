@@ -1,13 +1,13 @@
 import $ from "jquery";
 import { Graphics } from "pixi.js";
-import { GasState, ZIndexes } from "../../../../common/src/constants";
+import { GasState } from "../../../../common/src/constants";
 import type { UpdatePacketDataOut } from "../../../../common/src/packets/updatePacket";
 import { Numeric } from "../../../../common/src/utils/math";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
 import { COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate } from "../utils/misc";
-import { getTranslatedString } from "../../translations";
 
 export class Gas {
     state = GasState.Inactive;
@@ -142,7 +142,7 @@ export class GasRender {
 
         this._graphics = new Graphics();
 
-        this._graphics.zIndex = ZIndexes.Gas;
+        this._graphics.zIndex = 996;
 
         // Generate a giant planar mesh with a tiny circular hole in
         // the center to act as the gas overlay

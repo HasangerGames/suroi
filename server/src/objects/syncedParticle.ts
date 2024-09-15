@@ -44,8 +44,7 @@ interface InternalAnimation<T> {
     readonly easing: (typeof EaseFunctions)[keyof typeof EaseFunctions]
 }
 
-export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle> {
-    override readonly type = ObjectCategory.SyncedParticle;
+export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedParticle) {
     override readonly fullAllocBytes = 16;
     override readonly partialAllocBytes = 8;
 
@@ -79,10 +78,12 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
         readonly duration: number
     };
 
-    constructor(game: Game, definition: SyncedParticleDefinition, position: Vector) {
+    constructor(game: Game, definition: SyncedParticleDefinition, position: Vector, layer?: number) {
         super(game, position);
         this._creationDate = game.now;
         this.definition = definition;
+
+        this.layer = layer ?? 0;
 
         this._lifetime = resolveNumericSpecifier(definition.lifetime);
 
@@ -232,6 +233,7 @@ export class SyncedParticle extends BaseGameObject<ObjectCategory.SyncedParticle
         const data: SDeepMutable<FullData<ObjectCategory.SyncedParticle>> = {
             position: this.position,
             rotation: this.rotation,
+            layer: this.layer,
             full: {
                 definition: this.definition
             }

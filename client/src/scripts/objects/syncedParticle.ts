@@ -1,15 +1,14 @@
 import { ObjectCategory } from "../../../../common/src/constants";
 import { type SyncedParticleDefinition } from "../../../../common/src/definitions/syncedParticles";
+import { getEffectiveZIndex } from "../../../../common/src/utils/layer";
 import { Numeric } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { type Game } from "../game";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
+import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
 
-export class SyncedParticle extends GameObject<ObjectCategory.SyncedParticle> {
-    readonly type = ObjectCategory.SyncedParticle;
-
+export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParticle) {
     readonly image = new SuroiSprite();
 
     private _alpha = 1;
@@ -59,10 +58,11 @@ export class SyncedParticle extends GameObject<ObjectCategory.SyncedParticle> {
             const { variant, definition } = full;
 
             this._definition = definition;
+            this.layer = data.layer;
 
             this.image.setFrame(`${definition.frame}${variant !== undefined ? `_${variant}` : ""}`);
             if (definition.tint) this.image.tint = definition.tint;
-            this.container.zIndex = definition.zIndex;
+            this.updateZIndex();
         }
 
         this.position = data.position;
@@ -76,15 +76,24 @@ export class SyncedParticle extends GameObject<ObjectCategory.SyncedParticle> {
             this.container.scale.set(this._scale);
         }
 
-        if (HITBOX_DEBUG_MODE && this.definition.hitbox) {
-            this.debugGraphics.clear();
+        this.updateDebugGraphics();
+    }
 
-            drawHitbox(
-                this.definition.hitbox.transform(this.position, this._scale),
-                HITBOX_COLORS.obstacleNoCollision,
-                this.debugGraphics
-            );
-        }
+    override updateZIndex(): void {
+        this.container.zIndex = getEffectiveZIndex(this.definition.zIndex, this.layer, this.game.layer);
+    }
+
+    override updateDebugGraphics(): void {
+        if (!HITBOX_DEBUG_MODE || !this.definition.hitbox) return;
+
+        this.debugGraphics.clear();
+
+        drawHitbox(
+            this.definition.hitbox.transform(this.position, this._scale),
+            HITBOX_COLORS.obstacleNoCollision,
+            this.debugGraphics,
+            this.layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY
+        );
     }
 
     override destroy(): void {

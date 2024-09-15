@@ -145,6 +145,7 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "Открыть груз",
     "interact_control_panel": "Активировать панель",
+    "interact_headquarters_security_desk": "Активировать панель",
     "interact_generator": "Включить генератор",
     "interact_button": "Нажать кнопку",
 

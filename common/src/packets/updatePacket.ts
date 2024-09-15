@@ -1,5 +1,5 @@
 import { type BitStream } from "@damienvesper/bit-buffer";
-import { DEFAULT_INVENTORY, GameConstants, type GasState, type ObjectCategory } from "../constants";
+import { DEFAULT_INVENTORY, GameConstants, Layer, type GasState, type ObjectCategory } from "../constants";
 import { Badges, type BadgeDefinition } from "../definitions/badges";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
@@ -71,6 +71,11 @@ const [serializePlayerData, deserializePlayerData] = (() => {
 
     const zoom = generateReadWritePair<PlayerData["zoom"]>(
         (zoom, stream) => stream.writeUint8(zoom),
+        stream => stream.readUint8()
+    );
+
+    const layer = generateReadWritePair<PlayerData["layer"]>(
+        (layer, stream) => stream.writeUint8(layer),
         stream => stream.readUint8()
     );
 
@@ -194,6 +199,7 @@ const [serializePlayerData, deserializePlayerData] = (() => {
             health.write(stream, data.health);
             adrenaline.write(stream, data.adrenaline);
             zoom.write(stream, data.zoom);
+            layer.write(stream, data.layer);
             id.write(stream, data.id);
             teammates.write(stream, data.teammates);
             inventory.write(stream, data.inventory);
@@ -208,6 +214,7 @@ const [serializePlayerData, deserializePlayerData] = (() => {
                 health: health.read(stream),
                 adrenaline: adrenaline.read(stream),
                 zoom: zoom.read(stream),
+                layer: layer.read(stream),
                 id: id.read(stream),
                 teammates: teammates.read(stream),
                 inventory: inventory.read(stream),
@@ -254,6 +261,7 @@ export type PingSerialization = MapPingSerialization | PlayerPingSerialization;
 export type ExplosionSerialization = {
     readonly definition: ExplosionDefinition
     readonly position: Vector
+    readonly layer: Layer
 };
 
 export type EmoteSerialization = {
@@ -270,6 +278,7 @@ export type PlayerData = {
     readonly health?: number
     readonly adrenaline?: number
     readonly zoom?: number
+    readonly layer?: number
     readonly id?: {
         readonly id: number
         readonly spectating: boolean
@@ -410,6 +419,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
             stream.writeArray(data.explosions, 8, explosion => {
                 Explosions.writeToStream(stream, explosion.definition);
                 stream.writePosition(explosion.position);
+                stream.writeInt8(explosion.layer);
             });
             flags |= UpdateFlags.Explosions;
         }
@@ -550,7 +560,8 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
         if (flags & UpdateFlags.Explosions) {
             data.explosions = stream.readAndCreateArray(8, () => ({
                 definition: Explosions.readFromStream(stream),
-                position: stream.readPosition()
+                position: stream.readPosition(),
+                layer: stream.readInt8()
             }));
         }
 

@@ -1,14 +1,17 @@
+import { Layer } from "../../../../common/src/constants";
 import { Reskins } from "../../../../common/src/definitions/modes";
+// import { equalLayer, isGroundLayer } from "../../../../common/src/utils/layer";
 import { Numeric } from "../../../../common/src/utils/math";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { MODE } from "../utils/constants";
+import { MODE/* , SOUND_FILTER_FOR_LAYERS */ } from "../utils/constants";
 // add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
 import * as PixiSound from "@pixi/sound";
 
 export interface SoundOptions {
     position?: Vector
     falloff: number
+    layer: Layer | number
     maxRange: number
     loop: boolean
     /**
@@ -28,12 +31,14 @@ export class GameSound {
     position?: Vector;
     fallOff: number;
     maxRange: number;
+    layer: Layer | number;
     onEnd?: () => void;
 
     readonly dynamic: boolean;
 
     instance?: PixiSound.IMediaInstance;
     readonly stereoFilter: PixiSound.filters.StereoFilter;
+    // readonly reverbFilter: PixiSound.filters.ReverbFilter;
 
     ended = false;
 
@@ -43,20 +48,37 @@ export class GameSound {
         this.position = options.position;
         this.fallOff = options.falloff;
         this.maxRange = options.maxRange;
+        this.layer = options.layer;
         this.dynamic = options.dynamic;
         this.onEnd = options.onEnd;
         this.stereoFilter = new PixiSound.filters.StereoFilter(0);
+        // this.reverbFilter = new PixiSound.filters.ReverbFilter(1, 20);
 
         if (!PixiSound.sound.exists(name)) {
             console.warn(`Unknown sound with name ${name}`);
             return;
         }
 
+        const filter: PixiSound.Filter = this.stereoFilter;
+
+        // We want reverb inside bunkers (basement layer) or if we are on a different layer with visible objects (layer floor1)
+        /* if (SOUND_FILTER_FOR_LAYERS && this.manager.game.layer) {
+            switch (this.manager.game.layer) {
+                case Layer.Floor1:
+                    filter = !equalLayer(this.layer, this.manager.game.layer ?? Layer.Ground) && isGroundLayer(this.layer) ? this.reverbFilter : this.stereoFilter;
+                    break;
+
+                case Layer.Basement1:
+                    filter = this.reverbFilter;
+                    break;
+            }
+        } */
+
         const instanceOrPromise = PixiSound.sound.play(name, {
             loaded: (_err, _sound, instance) => {
                 if (instance) this.init(instance);
             },
-            filters: [this.stereoFilter],
+            filters: [filter],
             loop: options.loop,
             volume: this.manager.volume
         });
@@ -84,11 +106,11 @@ export class GameSound {
             const diff = Vec.sub(this.manager.position, this.position);
 
             this.instance.volume = (1
-            - Numeric.clamp(
-                Math.abs(Vec.length(diff) / this.maxRange),
-                0,
-                1
-            )) ** (1 + this.fallOff * 2) * this.manager.volume;
+                - Numeric.clamp(
+                    Math.abs(Vec.length(diff) / this.maxRange),
+                    0,
+                    1
+                )) ** (1 + this.fallOff * 2) * this.manager.volume;
 
             this.stereoFilter.pan = Numeric.clamp(diff.x / this.maxRange * -1, -1, 1);
         }
@@ -125,6 +147,7 @@ export class SoundManager {
             falloff: 1,
             maxRange: 256,
             dynamic: false,
+            layer: this.game.layer ?? Layer.Ground,
             loop: false,
             ...options
         }, this);

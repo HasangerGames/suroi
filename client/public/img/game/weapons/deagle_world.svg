@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 68.55 18.49">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #cc8e0a;
+      }
+
+      .cls-2 {
+        fill: none;
+        stroke: #171207;
+      }
+
+      .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7, .cls-8, .cls-9 {
+        stroke-linecap: round;
+      }
+
+      .cls-2, .cls-3, .cls-6, .cls-9 {
+        stroke-width: 3px;
+      }
+
+      .cls-2, .cls-4, .cls-6, .cls-8, .cls-9 {
+        stroke-miterlimit: 269.93;
+      }
+
+      .cls-10 {
+        fill: #171614;
+      }
+
+      .cls-3, .cls-5 {
+        stroke-miterlimit: 18.9;
+      }
+
+      .cls-3, .cls-8 {
+        fill: #f3ac14;
+        stroke: #171208;
+      }
+
+      .cls-11 {
+        fill: #614e21;
+      }
+
+      .cls-4 {
+        stroke: #171613;
+      }
+
+      .cls-4, .cls-5, .cls-7 {
+        fill: #4d4a44;
+      }
+
+      .cls-4, .cls-5, .cls-8 {
+        stroke-width: 1.5px;
+      }
+
+      .cls-12 {
+        fill: #c48f1c;
+      }
+
+      .cls-13 {
+        fill: #191815;
+      }
+
+      .cls-5, .cls-6, .cls-7 {
+        stroke: #171614;
+      }
+
+      .cls-6 {
+        fill: #2b2926;
+      }
+
+      .cls-14 {
+        fill: #181716;
+      }
+
+      .cls-7 {
+        fill-rule: evenodd;
+        stroke-miterlimit: 215.95;
+        stroke-width: 2px;
+      }
+
+      .cls-9 {
+        stroke: #171103;
+      }
+
+      .cls-9, .cls-15 {
+        fill: #e0a420;
+      }
+    </style>
+  </defs>
+  <g id="Layer_3">
+    <path class="cls-3" d="M10.14,8.93h0v5.37h-1.89c-.71-.16,1.66-.31,1.07-.47-7.58,0-7.82.75-7.82-4.9h0c0-5.65.24-4.52,7.82-4.52.59-.16-1.78-.31-1.07-.47h1.89v4.99Z"/>
+    <g id="g2">
+      <path id="path4" class="cls-9" d="M28.64,3.85h36.57c2.46,1.8,2.46,8.11,0,10.36H28.64V3.85Z"/>
+      <path id="path2" class="cls-15" d="M19.3,2.94v12.16h13.23V2.49l-13.23.45Z"/>
+      <path id="rect4" class="cls-1" d="M19.64,3.4h4.31c2.46,0,3.69,2.38,3.69,5.53v.32c0,3.15-1.85,5.4-3.69,5.4h-4.31c-2.46,0-3.69-2.25-3.69-5.4v-.32c-.62-2.7,1.23-5.53,3.69-5.53Z"/>
+      <path id="rect6-2" class="cls-13" d="M18.52,15.1h4.46c.56,0,1.11.57,1.11,1.13v1.13c0,.57-.56,1.13-1.11,1.13h-4.46c-.56,0-1.11-.57-1.11-1.13v-1.13c0-.57.56-1.13,1.11-1.13Z"/>
+      <path id="rect7" class="cls-2" d="M32.53,2.94c.38,0,.76.45.76.9v10.36c0,.45-.38.9-.76.9H12.5c-.38,0-.76-.45-.76-.9V3.85c0-.45,0-.9.76-.9h20.03Z"/>
+      <path id="rect8" class="cls-12" d="M42.16,6.55h19.36c.92,0,1.84,1.03,1.84,2.38h0c0,1.35-.92,2.13-1.84,2.13h-19.36c-.92,0-1.84-.77-1.84-2.13h0c0-1.35.61-2.38,1.84-2.38Z"/>
+      <rect class="cls-11" x="54.03" y="5.34" width="1.57" height="7.35"/>
+      <rect class="cls-11" x="58.22" y="5.34" width="1.57" height="7.35"/>
+      <rect class="cls-11" x="45.65" y="5.34" width="1.57" height="7.35"/>
+      <rect class="cls-11" x="49.84" y="5.34" width="1.57" height="7.35"/>
+      <path id="rect10" class="cls-14" d="M63.67,8.35h3.07v1.35h-3.07v-1.35c-.31,0,0,0,0,0Z"/>
+      <path id="path11" class="cls-8" d="M9.85,3.4h2.27v11.71h-2.27c-1.89-3.6-1.89-8.11,0-11.71"/>
+      <path id="path12" class="cls-6" d="M13.79,4.3c-3.37,3.15-3.37,6.31,0,9.01h7.21V4.3h-7.21Z"/>
+      <rect class="cls-4" x="4.56" y="7.39" width="5.5" height="3.26" rx=".56" ry=".56"/>
+      <path id="rect1" class="cls-7" d="M65.82,5.65c.61,0,.92.45.92,1.35v4.5c0,.9-.31,1.35-.92,1.35h-3.07v-7.21h3.07Z"/>
+    </g>
+    <rect class="cls-10" x="62.75" y="8.28" width="3.29" height="1.79"/>
+    <rect class="cls-10" x="4.34" y="8.16" width="1" height="1.91"/>
+    <rect class="cls-10" x="5.94" y="7.79" width="1" height="2.26"/>
+    <rect class="cls-10" x="9.24" y="8.04" width="1" height="1.91"/>
+    <rect class="cls-10" x="7.64" y="7.93" width="1" height="2.26"/>
+    <path id="path13" class="cls-5" d="M12.1,10.93c.13,1.31.51,1.91,1.4,3.1h4.45v-1.07c-1.26-.28-2.4-1.17-2.77-2.03,0,0-3.08,0-3.08,0Z"/>
+    <path id="path13-2" class="cls-5" d="M15.43,6.49c.36-.86,1.51-1.75,2.77-2.03v-1.07h-4.45c-.89,1.19-1.27,1.79-1.4,3.1,0,0,3.08,0,3.08,0Z"/>
+    <path id="rect6-2-2" class="cls-13" d="M17.41,2.26v-1.13c0-.57.56-1.13,1.11-1.13h4.46c.56,0,1.11.57,1.11,1.13v1.13c0,.57-.56,1.13-1.11,1.13h-4.46c-.56,0-1.11-.57-1.11-1.13Z"/>
+  </g>
+</svg>

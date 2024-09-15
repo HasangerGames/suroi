@@ -1,9 +1,9 @@
 import { type LootDefinition } from "@common/definitions/loots";
-import { type ReferenceTo } from "@common/utils/objectDefinitions";
+import { NullString, type ReferenceTo } from "@common/utils/objectDefinitions";
 
 export type WeightedItem =
     (
-        { readonly item: ReferenceTo<LootDefinition> | null } |
+        { readonly item: ReferenceTo<LootDefinition> | typeof NullString } |
         { readonly tier: string }
     ) &
     {
@@ -102,9 +102,19 @@ export const LootTables: Record<string, LootTable> = {
         max: 5,
         loot: [
             { tier: "special_guns", weight: 1 },
-            { tier: "special_healing_items", weight: 0.15 },
             { tier: "special_equipment", weight: 0.65 },
-            { tier: "special_scopes", weight: 0.3 }
+            { tier: "special_scopes", weight: 0.3 },
+            { tier: "special_healing_items", weight: 0.15 }
+        ]
+    },
+    dumpster: {
+        min: 1,
+        max: 2,
+        loot: [
+            { tier: "guns", weight: 0.8 },
+            { tier: "healing_items", weight: 0.6 },
+            { tier: "scopes", weight: 0.4 },
+            { tier: "equipment", weight: 0.3 }
         ]
     },
     flint_crate: {
@@ -198,10 +208,7 @@ export const LootTables: Record<string, LootTable> = {
         loot: [
             [{ item: "crowbar", weight: 1 }],
             [{ item: "sr25", weight: 1 }],
-            [
-                { item: "frag_grenade", weight: 1, count: 3 },
-                { item: "smoke_grenade", weight: 1, count: 3 }
-            ],
+            [{ item: "c4", weight: 1, count: 3 }],
             [
                 { tier: "equipment", weight: 1 },
                 { tier: "scopes", weight: 1 },
@@ -264,6 +271,34 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "guns", weight: 0.3 }
         ]
     },
+    hq_desk_left: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "ammo", weight: 1 },
+            { tier: "healing_items", weight: 0.8 },
+            { tier: "guns", weight: 0.3 }
+        ]
+    },
+    hq_desk_right: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "ammo", weight: 1 },
+            { tier: "healing_items", weight: 0.8 },
+            { tier: "guns", weight: 0.3 }
+        ]
+    },
+    metal_small_drawer: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "ammo", weight: 1 },
+            { tier: "equipment", weight: 0.85 },
+            { tier: "healing_items", weight: 0.4 },
+            { tier: "guns", weight: 0.3 }
+        ]
+    },
     small_table: {
         min: 1,
         max: 1,
@@ -283,6 +318,22 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "scopes", weight: 0.3 }
         ]
     },
+    small_desk: {
+        min: 1,
+        max: 1,
+        loot: [
+            [
+                { tier: "healing_items", weight: 0.8 },
+                { tier: "equipment", weight: 1 },
+                { tier: "guns", weight: 1 },
+                { tier: "scopes", weight: 0.4 }
+            ],
+            [
+                { tier: "healing_items", weight: 1 },
+                { tier: "scopes", weight: 1 }
+            ]
+        ]
+    },
     bookshelf: {
         min: 1,
         max: 2,
@@ -293,11 +344,36 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "healing_items", weight: 0.6 }
         ]
     },
+    trash_can: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "ammo", weight: 1 },
+            { item: "cola", weight: 0.1 }
+        ]
+    },
+    trash_bag: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "ammo", weight: 1 },
+            { item: "cola", weight: 0.1 }
+        ]
+    },
     fridge: {
         min: 2,
         max: 3,
         loot: [
             { item: "cola", weight: 1 }
+        ]
+    },
+    vending_machine: {
+        min: 2,
+        max: 3,
+        loot: [
+            { item: "cola", weight: 1 },
+            { item: "medikit", weight: 0.25 },
+            { item: "tablets", weight: 0.1 }
         ]
     },
     cooler: {
@@ -372,6 +448,13 @@ export const LootTables: Record<string, LootTable> = {
             { item: "stoner_63", weight: 1 }
         ]
     },
+    gun_mount_mini_14: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "mini14", weight: 1 }
+        ]
+    },
     gun_mount_maul: {
         min: 1,
         max: 1,
@@ -420,7 +503,7 @@ export const LootTables: Record<string, LootTable> = {
             ],
             [
                 { item: "frag_grenade", count: 3, weight: 2 },
-                { item: null, weight: 1 }
+                { item: NullString, weight: 1 }
             ]
         ]
     },
@@ -450,7 +533,8 @@ export const LootTables: Record<string, LootTable> = {
                 { tier: "gold_airdrop_guns", weight: 1 }
             ],
             [
-                { item: "frag_grenade", count: 3, weight: 1 }
+                { item: "frag_grenade",
+                    count: 3, weight: 1 }
             ]
         ]
     },
@@ -480,12 +564,37 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "special_guns", weight: 1 }
         ]
     },
+    gun_locker: {
+        min: 1,
+        max: 2,
+        loot: [
+            { item: "ak47", weight: 1 },
+            { item: "aug", weight: 1 },
+            { item: "model_37", weight: 1 },
+            { item: "mp40", weight: 1 },
+            { item: "m3k", weight: 0.6 },
+            { item: "flues", weight: 0.6 },
+            { item: "m16a4", weight: 0.4 },
+            { item: "cz600", weight: 0.4 },
+            { item: "mcx_spear", weight: 0.1 },
+            { item: "mg36", weight: 0.1 },
+            { item: "vss", weight: 0.1 },
+            { item: "mosin_nagant", weight: 0.1 },
+            { item: "sr25", weight: 0.05 },
+            { item: "mini14", weight: 0.05 },
+            { item: "vepr12", weight: 0.05 },
+            { item: "stoner_63", weight: 0.05 },
+            { item: "vector", weight: 0.05 },
+            { item: "tango_51", weight: 0.05 }
+        ]
+    },
     ammo_crate: {
         min: 1,
         max: 1,
         loot: [
             { tier: "ammo", weight: 1 },
-            { item: "127mm", count: 10, weight: 0.1 },
+            { item: "50cal", count: 20, weight: 0.3 },
+            { item: "338lap", count: 6, weight: 0.1 },
             { item: "curadell", weight: 0.1 }
         ]
     },
@@ -496,6 +605,31 @@ export const LootTables: Record<string, LootTable> = {
             { item: "firework_rocket", count: 10, weight: 2 },
             { tier: "ammo", weight: 1 },
             { item: "curadell", weight: 0.02 }
+        ]
+    },
+    falchion_case: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "falchion", weight: 1 }
+        ]
+    },
+    aegis_golden_case: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "deagle", weight: 1 },
+            { item: "rsh12", weight: 0.5 },
+            { item: "dual_deagle", weight: 0.05 },
+            { item: "dual_rsh12", weight: 0.025 },
+            { item: "g19", weight: 0.0005 }
+        ]
+    },
+    fire_hatchet_case: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "fire_hatchet", weight: 1 }
         ]
     },
     confetti_grenade_box: {
@@ -529,7 +663,7 @@ export const LootTables: Record<string, LootTable> = {
             { item: "g19", weight: 0.05 }
         ]
     },
-    mobile_home_sink: {
+    sink: {
         min: 1,
         max: 1,
         loot: [
@@ -630,12 +764,13 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "12g", count: 10, weight: 0.75 },
         { item: "556mm", count: 60, weight: 1 },
         { item: "762mm", count: 60, weight: 1 },
-        { item: "9mm", count: 60, weight: 1 }
+        { item: "9mm", count: 60, weight: 1 },
+        { item: "50cal", count: 20, weight: 0.05 }
     ],
     throwables: [
         { item: "frag_grenade", count: 2, weight: 1 },
         { item: "smoke_grenade", count: 2, weight: 1 },
-        { item: "c4", count: 2, weight: 1 }
+        { item: "c4", count: 2, weight: 0.2 }
     ],
     special_guns: [
         { item: "micro_uzi", weight: 1.25 },
@@ -715,7 +850,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "tablets", weight: 1 }
     ],
     airdrop_skins: [
-        { item: null, weight: 1 },
+        { item: NullString, weight: 1 },
         { item: "stardust", weight: 0.5 },
         { item: "aurora", weight: 0.5 },
         { item: "nebula", weight: 0.4 },
@@ -723,7 +858,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "basic_outfit", weight: 0.001 }
     ],
     airdrop_melee: [
-        { item: null, weight: 1 },
+        { item: NullString, weight: 1 },
         { item: "crowbar", weight: 0.1 },
         { item: "hatchet", weight: 0.1 },
         { item: "sickle", weight: 0.1 },
@@ -735,6 +870,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "vss", weight: 1 },
         { item: "vector", weight: 1 },
         { item: "vepr12", weight: 1 },
+        { item: "deagle", weight: 1 },
         { item: "cz600", weight: 1 },
         { item: "mcx_spear", weight: 0.95 },
         { item: "mosin_nagant", weight: 0.95 },
@@ -748,8 +884,9 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "pp19", weight: 1 },
         { item: "negev", weight: 1 },
         { item: "mg5", weight: 1 },
-        { item: "barrett_m95", weight: 0.5 },
+        { item: "l115a1", weight: 0.5 },
         { item: "model_89", weight: 0.5 },
+        { item: "dual_rsh12", weight: 0.5 },
         { item: "g19", weight: 0.0005 }
     ],
     winter_skins: [

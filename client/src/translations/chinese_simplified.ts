@@ -144,6 +144,7 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "解锁空投",
     "interact_control_panel": "激活控制台",
+    "interact_headquarters_security_desk": "激活控制台",
     "interact_generator": "启动发电机",
     "interact_button": "按下按钮",
 

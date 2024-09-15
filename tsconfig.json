@@ -4,6 +4,9 @@
     "./common/tsconfig.json",
     "./server/tsconfig.json"
   ],
+  "include": [
+    "package.json"
+  ],
   "compilerOptions": {
     "paths": {
       "@common/*": ["./common/src/*"]

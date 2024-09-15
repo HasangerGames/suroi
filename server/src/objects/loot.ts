@@ -3,22 +3,19 @@ import { ArmorType } from "@common/definitions/armors";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { PickupPacket } from "@common/packets/pickupPacket";
 import { CircleHitbox } from "@common/utils/hitbox";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Collision, Geometry, Numeric } from "@common/utils/math";
 import { ItemType, LootRadius, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { randomRotation } from "@common/utils/random";
+import { FloorNames } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
-
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
-import { Events } from "../pluginManager";
-import { dragConst } from "../utils/misc";
 import { BaseGameObject } from "./gameObject";
-import { Obstacle } from "./obstacle";
 import { type Player } from "./player";
 
-export class Loot extends BaseGameObject<ObjectCategory.Loot> {
-    override readonly type = ObjectCategory.Loot;
+export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
     override readonly fullAllocBytes = 8;
     override readonly partialAllocBytes = 4;
 
@@ -37,23 +34,25 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
 
     private _oldPosition = Vec.create(0, 0);
 
-    /**
-     * Ensures that the drag experienced is not dependent on tickrate
-     *
-     * This particular exponent results in a 10% loss every 28.55ms (or a 50% loss every 187.8ms)
-     */
-    private static readonly _dragConstant = dragConst(3.69);
-
-    constructor(game: Game, definition: ReifiableDef<LootDefinition>, position: Vector, count?: number, pushVel = 0.003) {
+    constructor(
+        game: Game,
+        definition: ReifiableDef<LootDefinition>,
+        position: Vector,
+        layer: number,
+        count?: number,
+        pushVel = 0.003
+    ) {
         super(game, position);
 
         this.definition = Loots.reify(definition);
         this.hitbox = new CircleHitbox(LootRadius[this.definition.itemType], Vec.clone(position));
+        this.layer = layer;
 
         if ((this._count = count ?? 1) <= 0) {
             throw new RangeError("Loot 'count' cannot be less than or equal to 0");
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         pushVel && this.push(randomRotation(), pushVel);
 
         this.game.addTimeout(() => {
@@ -72,7 +71,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
         this._oldPosition = Vec.clone(this.position);
 
         const { terrain } = this.game.map;
-        if (terrain.getFloor(this.position) === "water" && terrain.groundRect.isPointInside(this.position)) {
+        if (terrain.getFloor(this.position, this.layer) === FloorNames.Water && terrain.groundRect.isPointInside(this.position)) {
             for (const river of terrain.getRiversInPosition(this.position)) {
                 if (river.waterHitbox.isPointInside(this.position)) {
                     const tangent = river.getTangent(
@@ -98,7 +97,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
         };
 
         this.position = Vec.add(this.position, calculateSafeDisplacement());
-        this.velocity = Vec.scale(this.velocity, Loot._dragConstant);
+        this.velocity = Vec.scale(this.velocity, 1 / (1 + this.game.dt * 0.003));
 
         this.position = Vec.add(this.position, calculateSafeDisplacement());
         this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
@@ -107,14 +106,22 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
         const objects = this.game.grid.intersectsHitbox(this.hitbox);
         for (const object of objects) {
             if (
-                object instanceof Obstacle
+                (object.isObstacle || object.isBuilding)
                 && object.collidable
-                && object.hitbox.collidesWith(this.hitbox)
+                && object.hitbox?.collidesWith(this.hitbox)
             ) {
-                this.hitbox.resolveCollision(object.hitbox);
+                if (object.isObstacle && object.definition.isStair) {
+                    object.handleStairInteraction(this);
+                } else if (adjacentOrEqualLayer(object.layer, this.layer)) {
+                    this.hitbox.resolveCollision(object.hitbox);
+                }
             }
 
-            if (object instanceof Loot && object !== this && object.hitbox.collidesWith(this.hitbox)) {
+            if (
+                object.isLoot
+                && object !== this
+                && object.hitbox.collidesWith(this.hitbox)
+            ) {
                 const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, object.position, object.hitbox.radius);
                 if (collision) {
                     this.velocity = Vec.sub(this.velocity, Vec.scale(collision.dir, 0.0005));
@@ -208,7 +215,15 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
     }
 
     interact(player: Player, noPickup = false): void {
-        if (this.dead) return;
+        if (
+            this.dead
+            || this.game.pluginManager.emit("loot_will_interact", {
+                loot: this,
+                noPickup,
+                player
+            })
+        ) return;
+
         const createNewItem = (
             { type, count }: {
                 readonly type: LootDefinition
@@ -216,8 +231,8 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
             } = { type: this.definition, count: this._count }
         ): void => {
             this.game
-                .addLoot(type, this.position, { count, jitterSpawn: false })
-                .push(player.rotation + Math.PI, 0.0007);
+                .addLoot(type, this.position, this.layer, { count, pushVel: 0, jitterSpawn: false })
+                ?.push(player.rotation + Math.PI, 0.009);
         };
 
         if (noPickup) {
@@ -341,6 +356,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
                     modifyItemCollections();
 
                     inventory.useItem(idString);
+
                     // hope that `throwableItemMap` is sync'd
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
@@ -407,13 +423,13 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
             })
         );
 
-        this.game.pluginManager.emit(Events.Loot_Interact, {
+        // If the item wasn't deleted, create a new loot item pushed slightly away from the player
+        if (this._count > 0) createNewItem();
+
+        this.game.pluginManager.emit("loot_did_interact", {
             loot: this,
             player
         });
-
-        // If the item wasn't deleted, create a new loot item pushed slightly away from the player
-        if (this._count > 0) createNewItem();
 
         // Reload active gun if the player picks up the correct ammo
         const activeWeapon = player.inventory.activeWeapon;
@@ -429,6 +445,7 @@ export class Loot extends BaseGameObject<ObjectCategory.Loot> {
     override get data(): FullData<ObjectCategory.Loot> {
         return {
             position: this.position,
+            layer: this.layer,
             full: {
                 definition: this.definition,
                 count: this._count,

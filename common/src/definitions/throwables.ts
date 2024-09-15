@@ -22,7 +22,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
      * Whether cooking the grenade will run down the fuse
      */
     readonly cookable: boolean
-    readonly c4?: boolean
+    readonly c4: boolean
     readonly health?: number
     readonly cookSpeedMultiplier: number
     readonly maxThrowDistance: number
@@ -42,7 +42,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly animation: {
         readonly pinImage?: string
         readonly liveImage: string
-        readonly leverImage: string
+        readonly leverImage?: string
         readonly activatedImage?: string
         readonly cook: {
             readonly cookingImage?: string
@@ -72,6 +72,7 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             cookable: false,
             fuseTime: 4000,
             cookTime: 150,
+            c4: false,
             throwTime: 150,
             noDrop: false,
             cookSpeedMultiplier: 0.7,
@@ -81,7 +82,7 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             image: {
                 zIndex: 5
             },
-            maxThrowDistance: 96,
+            maxThrowDistance: 128,
             fireDelay: 250,
             speedCap: Infinity
         })
@@ -92,8 +93,6 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             idString: "frag_grenade",
             name: "Frag Grenade",
             fuseTime: 4000,
-            cookTime: 150,
-            throwTime: 150,
             impactDamage: 1,
             obstacleMultiplier: 20,
             cookable: true,
@@ -101,7 +100,6 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
                 position: Vec.create(60, 43),
                 angle: 60
             },
-            speedCap: 0.15,
             detonation: {
                 explosion: "frag_grenade_explosion"
             },
@@ -131,7 +129,6 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
                 position: Vec.create(60, 43),
                 angle: 60
             },
-            speedCap: 0.15,
             detonation: {
                 explosion: "smoke_grenade_explosion",
                 particles: {
@@ -175,7 +172,6 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
                 position: Vec.create(60, 43),
                 angle: 60
             },
-            speedCap: 0.15,
             detonation: {
                 explosion: "confetti_grenade_explosion"
             },
@@ -202,7 +198,6 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
                 position: Vec.create(60, 43),
                 angle: 60
             },
-            speedCap: 0.15,
             detonation: {
                 explosion: "c4_explosion",
                 particles: {
@@ -213,7 +208,6 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             },
             animation: {
                 liveImage: "proj_c4",
-                leverImage: "proj_frag_lever",
                 activatedImage: "proj_c4_activated",
                 cook: {
                     leftFist: Vec.create(2, -1),

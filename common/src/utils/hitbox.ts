@@ -38,7 +38,7 @@ export type HitboxJSON = HitboxJSONMapping[HitboxType];
 export interface HitboxMapping {
     [HitboxType.Circle]: CircleHitbox
     [HitboxType.Rect]: RectangleHitbox
-    [HitboxType.Group]: HitboxGroup
+    [HitboxType.Group]: GroupHitbox
     [HitboxType.Polygon]: PolygonHitbox
 }
 
@@ -57,7 +57,7 @@ export abstract class BaseHitbox<T extends HitboxType = HitboxType> implements D
             case HitboxType.Rect:
                 return new RectangleHitbox(data.min, data.max);
             case HitboxType.Group:
-                return new HitboxGroup(
+                return new GroupHitbox(
                     ...data.hitboxes.map(d => BaseHitbox.fromJSON<HitboxType.Circle | HitboxType.Rect>(d))
                 );
             case HitboxType.Polygon:
@@ -409,19 +409,19 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
     }
 }
 
-export class HitboxGroup extends BaseHitbox<HitboxType.Group> {
+export class GroupHitbox<GroupType extends ReadonlyArray<RectangleHitbox | CircleHitbox> = ReadonlyArray<RectangleHitbox | CircleHitbox>> extends BaseHitbox<HitboxType.Group> {
     override readonly type = HitboxType.Group;
     position = Vec.create(0, 0);
-    hitboxes: ReadonlyArray<RectangleHitbox | CircleHitbox>;
+    hitboxes: GroupType;
 
-    static simple(...hitboxes: ReadonlyArray<RectangleHitbox | CircleHitbox>): HitboxJSONMapping[HitboxType.Group] {
+    static simple<ChildType extends ReadonlyArray<RectangleHitbox | CircleHitbox> = ReadonlyArray<RectangleHitbox | CircleHitbox>>(...hitboxes: ChildType): HitboxJSONMapping[HitboxType.Group] {
         return {
             type: HitboxType.Group,
             hitboxes: hitboxes.map(h => h.toJSON())
         };
     }
 
-    constructor(...hitboxes: ReadonlyArray<RectangleHitbox | CircleHitbox>) {
+    constructor(...hitboxes: GroupType) {
         super();
         // yes? no? maybe?
         // if (hitboxes.length === 0) throw new class StupidityError extends Error {} ("you're stupid");
@@ -483,8 +483,8 @@ export class HitboxGroup extends BaseHitbox<HitboxType.Group> {
         return record!;
     }
 
-    override clone(deep = true): HitboxGroup {
-        return new HitboxGroup(
+    override clone(deep = true): GroupHitbox {
+        return new GroupHitbox(
             ...(
                 deep
                     ? this.hitboxes.map(hitbox => hitbox.clone(true))
@@ -493,10 +493,10 @@ export class HitboxGroup extends BaseHitbox<HitboxType.Group> {
         );
     }
 
-    override transform(position: Vector, scale?: number | undefined, orientation?: Orientation | undefined): HitboxGroup {
+    override transform(position: Vector, scale?: number, orientation?: Orientation): GroupHitbox {
         this.position = position;
 
-        return new HitboxGroup(
+        return new GroupHitbox(
             ...this.hitboxes.map(hitbox => hitbox.transform(position, scale, orientation))
         );
     }

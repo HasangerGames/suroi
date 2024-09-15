@@ -1,4 +1,5 @@
-import { GameConstants, ZIndexes } from "../../../../common/src/constants";
+import { GameConstants, Layer } from "../../../../common/src/constants";
+import { adjacentOrEqualLayer } from "../../../../common/src/utils/layer";
 import { Geometry } from "../../../../common/src/utils/math";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -29,7 +30,7 @@ export class Plane {
         );
 
         this.image = new SuroiSprite("airdrop_plane")
-            .setZIndex(ZIndexes.Gas + 1)
+            .setZIndex(Number.MAX_SAFE_INTEGER - 2) // todo: better logic for this lol
             .setRotation(direction)
             .setScale(4);
 
@@ -58,6 +59,11 @@ export class Plane {
         if (Geometry.distanceSquared(position, this.startPosition) > Plane.maxDistanceSquared) {
             this.destroy();
             this.game.planes.delete(this);
+        }
+
+        if (this.game.layer && this.game.layer !== Layer.Floor1) {
+            this.image.visible = adjacentOrEqualLayer(Layer.Ground, this.game.layer);
+            this.sound.maxRange = adjacentOrEqualLayer(Layer.Ground, this.game.layer) ? 256 : 0;
         }
     }
 

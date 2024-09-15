@@ -1,21 +1,27 @@
-import { ZIndexes } from "../../../../common/src/constants";
+import { Layer, ZIndexes } from "../../../../common/src/constants";
 import { type ExplosionDefinition } from "../../../../common/src/definitions/explosions";
+import { adjacentOrEqualLayer, equalLayer, getEffectiveZIndex, isGroundLayer } from "../../../../common/src/utils/layer";
 import { EaseFunctions } from "../../../../common/src/utils/math";
 import { randomFloat, randomPointInsideCircle } from "../../../../common/src/utils/random";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { SHOCKWAVE_EXPLOSION_MULTIPLIERS } from "../utils/constants";
+import { SHOCKWAVE_EXPLOSION_MULTIPLIERS, SOUND_FILTER_FOR_LAYERS } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
-export function explosion(game: Game, definition: ExplosionDefinition, position: Vector): void {
+export function explosion(game: Game, definition: ExplosionDefinition, position: Vector, layer: Layer): void {
     const pixiPos = toPixiCoords(position);
 
     const image = new SuroiSprite("explosion_1");
 
+    const isOnSameLayer = adjacentOrEqualLayer(layer, game.layer ?? Layer.Ground);
+
     image.scale.set(0);
     image.tint = definition.animation.tint;
     image.setVPos(pixiPos);
+
+    image.zIndex = getEffectiveZIndex(ZIndexes.Explosions, layer, game.layer);
+    image.setVisible(isOnSameLayer);
 
     game.camera.addObject(image);
 
@@ -36,7 +42,7 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
         }
     });
 
-    if (FloorTypes[game.map.terrain.getFloor(position)].particles) {
+    if (FloorTypes[game.map.terrain.getFloor(position, (game.layer as number))].particles) {
         game.particleManager.spawnParticles(4, () => ({
             frames: "ripple_particle",
             zIndex: ZIndexes.Ground,
@@ -54,8 +60,8 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
         }));
     }
 
-    game.camera.shake(definition.cameraShake.duration, definition.cameraShake.intensity);
-    if (game.console.getBuiltInCVar("cv_cooler_graphics")) {
+    game.camera.shake(definition.cameraShake.duration, !isOnSameLayer ? (definition.cameraShake.intensity / 2) : definition.cameraShake.intensity);
+    if (game.console.getBuiltInCVar("cv_cooler_graphics") && isOnSameLayer) {
         game.camera.shockwave(
             definition.cameraShake.duration * SHOCKWAVE_EXPLOSION_MULTIPLIERS.time,
             pixiPos,
@@ -70,7 +76,8 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
             definition.sound,
             {
                 position,
-                falloff: 0.4
+                falloff: 0.4,
+                applyFilter: SOUND_FILTER_FOR_LAYERS && !equalLayer(layer, game.layer ?? Layer.Ground) && isGroundLayer(layer)
             }
         );
     }

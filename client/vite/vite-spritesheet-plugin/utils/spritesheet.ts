@@ -60,7 +60,10 @@ export type MultiResAtlasList = Record<string, {
  * @param paths List of paths to the images.
  * @param options Options passed to the packer.
  */
-export async function createSpritesheets(paths: readonly string[], options: CompilerOptions): Promise<{ readonly low: AtlasList, readonly high: AtlasList }> {
+export async function createSpritesheets(
+    paths: readonly string[],
+    options: CompilerOptions
+): Promise<{ readonly low: AtlasList, readonly high: AtlasList }> {
     if (paths.length === 0) throw new Error("No file given.");
 
     if (!supportedFormats.includes(options.outputFormat)) {
@@ -72,16 +75,40 @@ export async function createSpritesheets(paths: readonly string[], options: Comp
         readonly path: string
     }
 
-    const images: readonly PackerRectData[] = await Promise.all(
+    const length = paths.length;
+    let resolved = 0;
+    let prevLength = 0;
+    const max = (a: number, b: number): number => a > b ? a : b;
+    const digits = Math.ceil(Math.log10(length));
+
+    const writeFromStart = (str: string): boolean => process.stdout.write(`\r${str}`);
+
+    process.stdout.write(`Loading images: ${"0".padStart(digits, " ")} / ${length}`);
+    const results = (await Promise.allSettled(
         paths.map(
-            async path => ({
-                image: await loadImage(path),
-                path
-            })
+            async path => {
+                const str = `Loading images: ${(++resolved).toString().padStart(digits, " ")} / ${length} ('${path}')`;
+                writeFromStart(str.padEnd(max(str.length, prevLength), " "));
+                prevLength = str.length;
+
+                return {
+                    image: await loadImage(path),
+                    path
+                };
+            }
         )
-    );
+    ));
+    writeFromStart(`Loaded ${length} images`.padEnd(prevLength, " "));
+    console.log();
+
+    const images: readonly PackerRectData[] = results.filter(x => x.status === "fulfilled").map(({ value }) => value);
+    const errors = results.filter(x => x.status === "rejected").map(({ reason }) => reason as unknown);
+    if (errors.length) {
+        throw new AggregateError(errors);
+    }
 
     function createSheet(resolution: number): AtlasList {
+        console.log(`Building spritesheet ${options.name} (${resolution}x)`);
         const packer = new MaxRectsPacker(
             options.maximumSize * resolution,
             options.maximumSize * resolution,
@@ -92,6 +119,7 @@ export async function createSpritesheets(paths: readonly string[], options: Comp
             }
         );
 
+        console.log(`Adding ${length} images to packer`);
         for (const image of images) {
             packer.add(
                 image.image.width * resolution,
@@ -102,6 +130,9 @@ export async function createSpritesheets(paths: readonly string[], options: Comp
 
         const atlases: AtlasList = [];
 
+        const binCount = packer.bins.length;
+        console.log(`Parsing ${binCount} bins...`);
+        let bins = 0;
         for (const bin of packer.bins) {
             const canvas = createCanvas(bin.width, bin.height);
 
@@ -119,13 +150,20 @@ export async function createSpritesheets(paths: readonly string[], options: Comp
                 frames: {}
             };
 
+            const rects = bin.rects.length;
+            const digits = Math.ceil(Math.log10(rects));
+            let parsed = 0;
+            writeFromStart(`Parsing ${rects} rects`);
             for (const rect of bin.rects) {
                 const data = rect.data as PackerRectData;
 
                 ctx.drawImage(data.image, rect.x, rect.y, rect.width, rect.height);
 
                 const sourceParts = data.path.split(platform() === "win32" ? "\\" : "/");
-                // there is _probably_ a file name
+
+                /**
+                 * there is _probably_ a file name
+                 */
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 let name = sourceParts.at(-1)!;
 
@@ -145,8 +183,13 @@ export async function createSpritesheets(paths: readonly string[], options: Comp
                         h: rect.height
                     }
                 };
+
+                const str = `Parsed ${(++parsed).toString().padStart(digits, " ")} / ${rects} rects`;
+                writeFromStart(str.padEnd(max(str.length, prevLength), " "));
+                prevLength = str.length;
             }
 
+            writeFromStart("Creating buffer & hash".padEnd(prevLength, " "));
             const buffer = canvas.toBuffer(`image/${options.outputFormat}` as "image/png");
 
             const hash = createHash("sha1");
@@ -160,7 +203,11 @@ export async function createSpritesheets(paths: readonly string[], options: Comp
                 json,
                 image: buffer
             });
+            writeFromStart(`${++bins} / ${binCount} bins done`.padEnd(prevLength = max(prevLength, 22), " "));
+            console.log();
         }
+
+        console.log(`Built spritesheet ${options.name} (${resolution}x)\n`);
 
         return atlases;
     }

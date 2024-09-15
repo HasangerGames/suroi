@@ -2,17 +2,21 @@ import { type WebSocket } from "uWebSockets.js";
 
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Loots } from "@common/definitions/loots";
-import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { type Variation } from "@common/typings";
+import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { Orientation, type Variation } from "@common/typings";
 import { Collision } from "@common/utils/math";
-import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
-import { random } from "@common/utils/random";
+import { ItemType, MapObjectSpawnMode, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { random, randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 
 import { type GunItem } from "../inventory/gunItem";
-import { type GameMap } from "../map";
+import { GameMap } from "../map";
 import { Player, type PlayerContainer } from "../objects/player";
-import { type LootTables } from "./lootTables";
+import { LootTables } from "./lootTables";
+import { Layer } from "@common/constants";
+import { Guns } from "@common/definitions";
+import { CircleHitbox } from "@common/utils/hitbox";
+import { getLootTableLoot } from "../utils/misc";
 
 export interface MapDefinition {
     readonly width: number
@@ -42,8 +46,7 @@ export interface MapDefinition {
         readonly position: Vector
     }>
 
-    // Custom callback to generate stuff
-    readonly genCallback?: (map: GameMap) => void
+    readonly onGenerate?: (map: GameMap, params: string[]) => void
 }
 
 export type ObstacleClump = {
@@ -81,7 +84,7 @@ const maps = {
             minWideWidth: 25,
             maxWideWidth: 30
         },
-        majorBuildings: ["armory", "port_complex", "refinery"],
+        majorBuildings: ["armory", "port_complex", "refinery", "headquarters"],
         buildings: {
             large_bridge: 2,
             small_bridge: Infinity,
@@ -90,11 +93,15 @@ const maps = {
             tugboat_red: 1,
             tugboat_white: 5,
             armory: 1,
+            headquarters: 1,
+            small_bunker: 1,
             refinery: 1,
             warehouse: 5,
             // firework_warehouse: 1, // birthday mode
             green_house: 2,
-            red_house: 6,
+            blue_house: 2,
+            red_house: 3,
+            red_house_v2: 3,
             construction_site: 1,
             mobile_home: 9,
             porta_potty: 12,
@@ -108,13 +115,16 @@ const maps = {
             container_10: 2
         },
         quadBuildingLimit: {
-            red_house: 2,
+            red_house: 1,
+            red_house_v2: 1,
             warehouse: 2,
             green_house: 1,
+            blue_house: 1,
             mobile_home: 3,
             porta_potty: 3,
             construction_site: 1,
             armory: 1,
+            headquarters: 1,
             port_complex: 1,
             refinery: 1
         },
@@ -193,7 +203,7 @@ const maps = {
         height: 1620,
         oceanSize: 128,
         beachSize: 32,
-        genCallback: map => {
+        onGenerate(map) {
             // Generate all buildings
 
             const buildingPos = Vec.create(200, map.height - 600);
@@ -216,7 +226,7 @@ const maps = {
             for (const obstacle of Obstacles.definitions) {
                 if (obstacle.invisible) continue;
                 for (let i = 0; i < (obstacle.variations ?? 1); i++) {
-                    map.generateObstacle(obstacle.idString, obstaclePos, 0, 1, i as Variation);
+                    map.generateObstacle(obstacle.idString, obstaclePos, { variation: i as Variation });
 
                     obstaclePos.x += 20;
                     if (obstaclePos.x > map.width / 2 - 20) {
@@ -229,7 +239,7 @@ const maps = {
             // Generate all Loots
             const itemPos = Vec.create(map.width / 2, map.height / 2);
             for (const item of Loots.definitions) {
-                map.game.addLoot(item, itemPos, { count: Infinity, pushVel: 0, jitterSpawn: false });
+                map.game.addLoot(item, itemPos, 0, { count: Infinity, pushVel: 0, jitterSpawn: false });
 
                 itemPos.x += 10;
                 if (itemPos.x > map.width / 2 + 100) {
@@ -309,10 +319,10 @@ const maps = {
         height: 512,
         beachSize: 16,
         oceanSize: 40,
-        genCallback: map => {
+        onGenerate(map) {
             // Function to generate all game loot items
-            const genLoots = (pos: Vector, yOff: number, xOff: number): void => {
-                const width = 70;
+            const genLoots = (pos: Vector, ySpacing: number, xSpacing: number): void => {
+                const width = 73;
 
                 const startPos = Vec.clone(pos);
                 startPos.x -= width / 2;
@@ -339,15 +349,15 @@ const maps = {
                         || item.itemType === ItemType.Skin
                     ) continue;
 
-                    game.addLoot(item, itemPos, { count: countMap[item.itemType] ?? 1, pushVel: 0, jitterSpawn: false });
+                    game.addLoot(item, itemPos, 0, { count: countMap[item.itemType] ?? 1, pushVel: 0, jitterSpawn: false });
 
-                    itemPos.x += xOff;
+                    itemPos.x += xSpacing;
                     if (
-                        (xOff > 0 && itemPos.x > startPos.x + width)
-                        || (xOff < 0 && itemPos.x < startPos.x - width)
+                        (xSpacing > 0 && itemPos.x > startPos.x + width)
+                        || (xSpacing < 0 && itemPos.x < startPos.x - width)
                     ) {
                         itemPos.x = startPos.x;
-                        itemPos.y -= yOff;
+                        itemPos.y -= ySpacing;
                     }
                 }
             };
@@ -372,16 +382,16 @@ const maps = {
                 const { id, pos } = obstacle;
                 const { x: posX, y: posY } = pos;
 
-                map.generateObstacle(id, Vec.add(center, pos), 0, 1, 1);
-                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, posY)), 0, 1);
-                map.generateObstacle(id, Vec.add(center, Vec.create(posX, -posY)), 0, 1);
-                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, -posY)), 0, 1);
+                map.generateObstacle(id, Vec.add(center, pos));
+                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, posY)));
+                map.generateObstacle(id, Vec.add(center, Vec.create(posX, -posY)));
+                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, -posY)));
             }
 
-            genLoots(Vec.add(center, Vec.create(-67, 90)), 8, 8);
-            genLoots(Vec.add(center, Vec.create(67, 90)), 8, 8);
-            genLoots(Vec.add(center, Vec.create(-67, -90)), -8, 8);
-            genLoots(Vec.add(center, Vec.create(67, -90)), -8, 8);
+            genLoots(Vec.add(center, Vec.create(-70, 90)), 8, 8);
+            genLoots(Vec.add(center, Vec.create(70, 90)), 8, 8);
+            genLoots(Vec.add(center, Vec.create(-70, -90)), -8, 8);
+            genLoots(Vec.add(center, Vec.create(70, -90)), -8, 8);
 
             // Generate random obstacles around the center
             const randomObstacles: MapDefinition["obstacles"] = {
@@ -407,7 +417,7 @@ const maps = {
 
                     if (!pos) continue;
 
-                    map.generateObstacle(definition, pos, 0, 1);
+                    map.generateObstacle(definition, pos);
                 }
             }
         },
@@ -420,9 +430,12 @@ const maps = {
         height: 1024,
         beachSize: 32,
         oceanSize: 64,
-        genCallback(map) {
+        onGenerate(map, [building]) {
             // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
-            map.generateBuilding("mobile_home", Vec.create(this.width / 2, this.height / 2), 0);
+            /* for (let i = 0; i < 10; i++) {
+                map.generateBuilding(`container_${i + 1}`, Vec.create((this.width / 2) + 15 * i, this.height / 2 - 15), 0);
+            } */
+            map.generateBuilding(building, Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
@@ -430,8 +443,8 @@ const maps = {
         height: 256,
         beachSize: 8,
         oceanSize: 8,
-        genCallback(map) {
-            map.generateObstacle("sandbags", Vec.create(this.width / 2, this.height / 2), 0);
+        onGenerate(map, [obstacle]) {
+            map.generateObstacle(obstacle, Vec.create(this.width / 2, this.height / 2), { layer: 0 });
         }
     },
     singleGun: {
@@ -439,9 +452,9 @@ const maps = {
         height: 256,
         beachSize: 8,
         oceanSize: 8,
-        genCallback(map) {
-            map.game.addLoot("radio", Vec.create(this.width / 2, this.height / 2 - 10));
-            map.game.addLoot("curadell", Vec.create(this.width / 2, this.height / 2 - 10), { count: Infinity });
+        onGenerate(map, [gun]) {
+            map.game.addLoot(gun, Vec.create(this.width / 2, this.height / 2 - 10), 0);
+            map.game.addLoot(Guns.fromString(gun).ammoType, Vec.create(this.width / 2, this.height / 2 - 10), 0, { count: Infinity });
         }
     },
     gunsTest: (() => {
@@ -452,7 +465,7 @@ const maps = {
             height: 48 + (16 * Guns.length),
             beachSize: 8,
             oceanSize: 8,
-            genCallback(map) {
+            onGenerate(map) {
                 for (let i = 0, l = Guns.length; i < l; i++) {
                     const player = new Player(
                         map.game,
@@ -466,8 +479,8 @@ const maps = {
                     player.inventory.items.setItem(gun.ammoType, Infinity);
                     player.disableInvulnerability();
                     // setInterval(() => player.activeItem.useItem(), 30);
-                    map.game.addLoot(gun.idString, Vec.create(16, 32 + (16 * i)));
-                    map.game.addLoot(gun.ammoType, Vec.create(16, 32 + (16 * i)), { count: Infinity });
+                    map.game.addLoot(gun.idString, Vec.create(16, 32 + (16 * i)), 0);
+                    map.game.addLoot(gun.ammoType, Vec.create(16, 32 + (16 * i)), 0, { count: Infinity });
                     map.game.grid.addObject(player);
                 }
             }
@@ -478,11 +491,11 @@ const maps = {
         height: 48 + (32 * Obstacles.definitions.length),
         beachSize: 4,
         oceanSize: 4,
-        genCallback(map) {
+        onGenerate(map) {
             for (let i = 0; i < Obstacles.definitions.length; i++) {
                 const obstacle = Obstacles.definitions[i];
                 // setInterval(() => player.activeItem.useItem(), 30);
-                map.generateObstacle(obstacle.idString, Vec.create(map.width / 2, 40 * i), 0, 1, i as Variation);
+                map.generateObstacle(obstacle.idString, Vec.create(map.width / 2, 40 * i), { variation: i as Variation });
             }
         }
     },
@@ -491,7 +504,7 @@ const maps = {
         height: 128,
         beachSize: 0,
         oceanSize: 0,
-        genCallback(map) {
+        onGenerate(map) {
             for (let x = 0; x <= 128; x += 16) {
                 for (let y = 0; y <= 128; y += 16) {
                     map.generateObstacle("flint_crate", Vec.create(x, y));
@@ -504,7 +517,7 @@ const maps = {
         height: 256,
         beachSize: 16,
         oceanSize: 16,
-        genCallback(map) {
+        onGenerate(map) {
             for (let x = 0; x < 256; x += 16) {
                 for (let y = 0; y < 256; y += 16) {
                     /* const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, Vec.create(x, y));
@@ -563,7 +576,164 @@ const maps = {
             rock: 30,
             barrel: 15
         }
+    },
+    gallery: {
+        width: 1024,
+        height: 1024,
+        beachSize: 64,
+        oceanSize: 64,
+        onGenerate(map) {
+            const targetBuildingIdString = "headquarters";
+            map.generateBuilding(targetBuildingIdString, Vec.create(this.width / 2, this.height / 2), 0);
+
+            const buildings = {
+                red_house: ~~Math.random(),
+                blue_house: ~~Math.random(),
+                green_house: ~~Math.random(),
+                red_house_v2: ~~Math.random(),
+                mobile_home: ~~(Math.random() * 5) + 3,
+                porta_potty: ~~(Math.random() * 5) + 3,
+                warehouse: 1,
+                container_3: 1,
+                container_4: 1,
+                container_5: 1,
+                container_6: 1,
+                container_7: 1,
+                container_8: 1,
+                container_9: 1,
+                container_10: 1,
+                small_bunker: 1
+            };
+
+            const obstacles = {
+                oil_tank: 5,
+                oak_tree: 40,
+                birch_tree: 40,
+                box: 50,
+                pine_tree: 30,
+                regular_crate: 75,
+                fridge: 40,
+                flint_crate: 12,
+                aegis_crate: 12,
+                grenade_crate: 30,
+                rock: 45,
+                bush: 25,
+                blueberry_bush: 25,
+                barrel: 40,
+                gun_case: 15,
+                super_barrel: 15,
+                briefcase: 4,
+                melee_crate: 4,
+                gold_rock: 1,
+                loot_tree: 1,
+                loot_barrel: 1,
+
+                viking_chest: Math.random() > 0.9 ? 1 : 0,
+                river_chest: Math.random() > 0.9 ? 1 : 0,
+                tango_crate: Math.random() > 0.8 ? 1 : 0,
+                lux_crate: Math.random() > 0.8 ? 1 : 0
+            };
+
+            const loots = {
+                ground_loot: 40,
+                regular_crate: 40
+            };
+
+            Object.entries(buildings).forEach(([building, count]) => {
+                const definition = Buildings.reify(building);
+
+                const { rotationMode } = definition;
+                let attempts = 0;
+
+                for (let i = 0; i < count; i++) {
+                    let validPositionFound = false;
+
+                    while (!validPositionFound && attempts < 100) {
+                        let orientation = GameMap.getRandomBuildingOrientation(rotationMode);
+
+                        const position = map.getRandomPosition(definition.spawnHitbox, {
+                            orientation,
+                            spawnMode: definition.spawnMode,
+                            orientationConsumer: (newOrientation: Orientation) => {
+                                orientation = newOrientation;
+                            },
+                            maxAttempts: 400
+                        });
+
+                        if (!position) {
+                            attempts++;
+                            continue;
+                        }
+
+                        map.generateBuilding(definition, position, orientation);
+                        validPositionFound = true;
+                    }
+
+                    attempts = 0; // Reset attempts counter for the next building
+                }
+            });
+
+            Object.entries(obstacles).forEach(([obstacle, count]) => {
+                const def = Obstacles.reify(obstacle);
+
+                const { scale = { spawnMin: 1, spawnMax: 1 }, variations, rotationMode } = def;
+                const { spawnMin, spawnMax } = scale;
+                const effSpawnHitbox = def.spawnHitbox ?? def.hitbox;
+
+                for (let i = 0; i < count; i++) {
+                    const scale = randomFloat(spawnMin ?? 1, spawnMax ?? 1);
+                    const variation = (variations !== undefined ? random(0, variations - 1) : 0) as Variation;
+                    const rotation = GameMap.getRandomRotation(rotationMode);
+
+                    let orientation: Orientation = 0;
+
+                    if (rotationMode === RotationMode.Limited) {
+                        orientation = rotation as Orientation;
+                    }
+
+                    const position = map.getRandomPosition(effSpawnHitbox, {
+                        scale,
+                        orientation,
+                        spawnMode: def.spawnMode
+                    });
+
+                    if (!position) {
+                        continue;
+                    }
+
+                    map.generateObstacle(def, position, { layer: Layer.Ground, scale, variation });
+                }
+            });
+
+            Object.entries(loots ?? {}).forEach(([loot_, count]) => {
+                for (let i = 0; i < count; i++) {
+                    const loot = getLootTableLoot(LootTables[loot_].loot.flat());
+
+                    const position = map.getRandomPosition(
+                        new CircleHitbox(5),
+                        { spawnMode: MapObjectSpawnMode.GrassAndSand }
+                    );
+
+                    if (!position) {
+                        continue;
+                    }
+
+                    for (const item of loot) {
+                        map.game.addLoot(
+                            item.idString,
+                            position,
+                            Layer.Ground,
+                            { count: item.count, jitterSpawn: false }
+                        );
+                    }
+                }
+            });
+        },
+        places: [
+            { name: "pap's lonely place", position: Vec.create(0.5, 0.5) }
+        ]
     }
 } satisfies Record<string, MapDefinition>;
 
-export const Maps: Record<keyof typeof maps, MapDefinition> = maps;
+export type MapName = keyof typeof maps;
+export const Maps: Record<MapName, MapDefinition> = maps;

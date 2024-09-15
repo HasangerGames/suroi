@@ -1,9 +1,9 @@
 import { type TemplatedApp, type WebSocket } from "uWebSockets.js";
 import { isMainThread, parentPort, workerData } from "worker_threads";
 
-import { GameConstants, KillfeedMessageType, ObjectCategory, TeamSize } from "@common/constants";
+import { GameConstants, KillfeedMessageType, Layer, ObjectCategory, TeamSize } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
-import { type LootDefinition } from "@common/definitions/loots";
+import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "@common/definitions/syncedParticles";
@@ -18,7 +18,7 @@ import { PingPacket } from "@common/packets/pingPacket";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { type PingSerialization } from "@common/packets/updatePacket";
 import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { EaseFunctions, Geometry, Numeric } from "@common/utils/math";
+import { EaseFunctions, Geometry, Numeric, Statistics } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
 import { ItemType, MapObjectSpawnMode, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "@common/utils/random";
@@ -26,13 +26,12 @@ import { OBJECT_ID_BITS, SuroiBitStream } from "@common/utils/suroiBitStream";
 import { Vec, type Vector } from "@common/utils/vector";
 
 import { Config, SpawnMode } from "./config";
-import { Maps } from "./data/maps";
+import { MapName, Maps } from "./data/maps";
 import { WorkerMessages, type GameData, type WorkerInitData, type WorkerMessage } from "./gameManager";
 import { Gas } from "./gas";
 import { type GunItem } from "./inventory/gunItem";
 import { type ThrowableItem } from "./inventory/throwableItem";
 import { GameMap } from "./map";
-import { Building } from "./objects/building";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
 import { type Emote } from "./objects/emote";
 import { Explosion } from "./objects/explosion";
@@ -43,7 +42,7 @@ import { Parachute } from "./objects/parachute";
 import { Player, type PlayerContainer } from "./objects/player";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { ThrowableProjectile } from "./objects/throwableProj";
-import { Events, PluginManager } from "./pluginManager";
+import { PluginManager } from "./pluginManager";
 import { Team } from "./team";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
@@ -164,6 +163,8 @@ export class Game implements GameData {
         readonly direction: number
     }> = [];
 
+    readonly detectors: Obstacle[] = [];
+
     /**
      * All map pings this tick
      */
@@ -201,10 +202,12 @@ export class Game implements GameData {
     private _now = Date.now();
     get now(): number { return this._now; }
 
+    private readonly idealDt = 1000 / Config.tps;
+
     /**
      * Game Tick delta time
      */
-    private _dt = Config.tps / 1000;
+    private _dt = this.idealDt;
     get dt(): number { return this._dt; }
 
     private readonly _tickTimes: number[] = [];
@@ -352,7 +355,10 @@ export class Game implements GameData {
              */
             open(socket: WebSocket<PlayerContainer>) {
                 const data = socket.getUserData();
-                data.player = This.addPlayer(socket);
+                if ((data.player = This.addPlayer(socket)) === undefined) {
+                    socket.close();
+                }
+
                 // data.player.sendGameOverPacket(false); // uncomment to test game over screen
             },
 
@@ -378,9 +384,9 @@ export class Game implements GameData {
              */
             close(socket: WebSocket<PlayerContainer>) {
                 const data = socket.getUserData();
-                // FIXME someone explain why this is safe
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                if (Config.protection) This.simultaneousConnections[data.ip!]--;
+
+                // this should never be null-ish, but will leave it here for any potential race conditions (i.e. TFO? (verification required))
+                if (Config.protection && data.ip !== undefined) This.simultaneousConnections[data.ip]--;
 
                 const { player } = data;
                 if (!player) return;
@@ -398,15 +404,16 @@ export class Game implements GameData {
             }, Config.protection.maxJoinAttempts.duration);
         }
 
-        const map = Maps[Config.mapName];
-        this.grid = new Grid(this, map.width, map.height);
-        this.map = new GameMap(this, Config.mapName);
+        const { width, height } = Maps[Config.map.split(":")[0] as MapName];
+        this.grid = new Grid(this, width, height);
+
+        this.map = new GameMap(this, Config.map);
 
         this.gas = new Gas(this);
 
         this.setGameData({ allowJoin: true });
 
-        this.pluginManager.emit(Events.Game_Created, this);
+        this.pluginManager.emit("game_created", this);
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
         // Start the tick loop
@@ -446,7 +453,7 @@ export class Game implements GameData {
         }
     }
 
-    tick(): void {
+    readonly tick = (): void => {
         const now = Date.now();
         this._dt = now - this._now;
         this._now = now;
@@ -488,7 +495,7 @@ export class Game implements GameData {
             if (bullet.dead) {
                 const onHitExplosion = bullet.definition.onHitExplosion;
                 if (onHitExplosion && !bullet.reflected) {
-                    this.addExplosion(onHitExplosion, bullet.position, bullet.shooter);
+                    this.addExplosion(onHitExplosion, bullet.position, bullet.shooter, bullet.layer);
                 }
                 this.bullets.delete(bullet);
             }
@@ -516,6 +523,11 @@ export class Game implements GameData {
         // Handle explosions
         for (const explosion of this.explosions) {
             explosion.explode();
+        }
+
+        // Update detectors
+        for (const detector of this.detectors) {
+            detector.updateDetector();
         }
 
         // Update gas
@@ -581,10 +593,10 @@ export class Game implements GameData {
                 player.attacking = false;
                 player.sendEmote(player.loadout.emotes[4]);
                 player.sendGameOverPacket(true);
-                this.pluginManager.emit(Events.Player_Win, player);
+                this.pluginManager.emit("player_did_win", player);
             }
 
-            this.pluginManager.emit(Events.Game_End, this);
+            this.pluginManager.emit("game_end", this);
 
             this.setGameData({ allowJoin: false, over: true });
 
@@ -602,17 +614,18 @@ export class Game implements GameData {
         this._tickTimes.push(tickTime);
 
         if (this._tickTimes.length >= 200) {
-            const mspt = this._tickTimes.reduce((a, b) => a + b) / this._tickTimes.length;
-            Logger.log(`Game ${this.id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / (1000 / Config.tps)) * 100).toFixed(1)}%`);
+            const mspt = Statistics.average(this._tickTimes);
+            const stddev = Statistics.stddev(this._tickTimes);
+            Logger.log(`Game ${this.id} | ms/tick: ${mspt.toFixed(2)} ± ${stddev.toFixed(2)} | Load: ${((mspt / this.idealDt) * 100).toFixed(1)}%`);
             this._tickTimes.length = 0;
         }
 
-        this.pluginManager.emit(Events.Game_Tick, this);
+        this.pluginManager.emit("game_tick", this);
 
         if (!this.stopped) {
-            setTimeout(this.tick.bind(this), 1000 / Config.tps);
+            setTimeout(this.tick, this.idealDt);
         }
-    }
+    };
 
     setGameData(data: Partial<Omit<GameData, "aliveCount">>): void {
         for (const [key, value] of Object.entries(data)) {
@@ -664,8 +677,8 @@ export class Game implements GameData {
                 newKillLeader = player;
             }
         }
-        this._killLeader = newKillLeader;
-        if (this._killLeader != undefined) {
+
+        if ((this._killLeader = newKillLeader) !== undefined) {
             this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
         }
     }
@@ -691,8 +704,13 @@ export class Game implements GameData {
         );
     }
 
-    addPlayer(socket: WebSocket<PlayerContainer>): Player {
+    addPlayer(socket: WebSocket<PlayerContainer>): Player | undefined {
+        if (this.pluginManager.emit("player_will_connect")) {
+            return undefined;
+        }
+
         let spawnPosition = Vec.create(this.map.width / 2, this.map.height / 2);
+        let spawnLayer;
 
         let team: Team | undefined;
         if (this.teamMode) {
@@ -758,7 +776,7 @@ export class Game implements GameData {
                     const radiusHitbox = new CircleHitbox(60, spawnPosition);
                     for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
                         if (
-                            object instanceof Player
+                            object.isPlayer
                             // teamMode should guarantee the `team` object's existence
                             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                             && (!this.teamMode || !team!.players.includes(object))
@@ -781,19 +799,29 @@ export class Game implements GameData {
             }
             case SpawnMode.Fixed: {
                 spawnPosition = Config.spawn.position;
+                spawnLayer = Config.spawn.layer;
                 break;
             }
-            // No case for SpawnMode.Center because that's the default
+            case SpawnMode.Center: {
+                // no-op; this is the default
+                break;
+            }
         }
 
         // Player is added to the players array when a JoinPacket is received from the client
-        const player = new Player(this, socket, spawnPosition, team);
-        this.pluginManager.emit(Events.Player_Connect, player);
+        const player = new Player(this, socket, spawnPosition, spawnLayer, team);
+        this.pluginManager.emit("player_did_connect", player);
         return player;
     }
 
     // Called when a JoinPacket is sent by the client
     activatePlayer(player: Player, packet: JoinPacketData): void {
+        const rejectedBy = this.pluginManager.emit("player_will_join", { player, joinPacket: packet });
+        if (rejectedBy) {
+            player.disconnect(`Connection rejected by server plugin '${rejectedBy.constructor.name}'`);
+            return;
+        }
+
         if (packet.protocolVersion !== GameConstants.protocolVersion) {
             player.disconnect(`Invalid game version (expected ${GameConstants.protocolVersion}, was ${packet.protocolVersion})`);
             return;
@@ -857,12 +885,12 @@ export class Game implements GameData {
                     parentPort?.postMessage({ type: WorkerMessages.CreateNewGame });
                     Logger.log(`Game ${this.id} | Preventing new players from joining`);
                     this.setGameData({ allowJoin: false });
-                }, Config.preventJoinAfter);
+                }, Config.gameJoinTime * 1000);
             }, 3000);
         }
 
         Logger.log(`Game ${this.id} | "${player.name}" joined`);
-        this.pluginManager.emit(Events.Player_Join, player);
+        this.pluginManager.emit("player_did_join", { player, joinPacket: packet });
     }
 
     removePlayer(player: Player): void {
@@ -882,13 +910,13 @@ export class Game implements GameData {
             this.updateGameData({ aliveCount: this.aliveCount });
 
             if (this.teamMode) {
-                player.teamWipe();
                 const team = player.team;
                 if (team) {
                     team.removePlayer(player);
 
                     if (!team.players.length) this.teams.delete(team);
                 }
+                player.teamWipe();
                 player.beingRevivedBy?.action?.cancel();
             }
         } else {
@@ -913,8 +941,12 @@ export class Game implements GameData {
 
         try {
             player.socket.close();
-        } catch (e) { /* not a really big deal if we can't close the socket */ }
-        this.pluginManager.emit(Events.Player_Disconnect, player);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (_) {
+            /* not a really big deal if we can't close the socket */
+            // when does this ever fail?
+        }
+        this.pluginManager.emit("player_disconnect", player);
     }
 
     /**
@@ -928,6 +960,7 @@ export class Game implements GameData {
     addLoot(
         definition: ReifiableDef<LootDefinition>,
         position: Vector,
+        layer: Layer,
         { count, pushVel, jitterSpawn = true }: {
             readonly count?: number
             readonly pushVel?: number
@@ -936,7 +969,25 @@ export class Game implements GameData {
              */
             readonly jitterSpawn?: boolean
         } = {}
-    ): Loot {
+    ): Loot | undefined {
+        const args = {
+            position,
+            layer,
+            count,
+            pushVel,
+            jitterSpawn
+        };
+
+        if (
+            this.pluginManager.emit(
+                "loot_will_generate",
+                {
+                    definition: definition = Loots.reify(definition),
+                    ...args
+                }
+            )
+        ) return;
+
         const loot = new Loot(
             this,
             definition,
@@ -946,11 +997,17 @@ export class Game implements GameData {
                     randomPointInsideCircle(Vec.create(0, 0), GameConstants.lootSpawnDistance)
                 )
                 : position,
+            layer,
             count,
             pushVel
         );
         this.grid.addObject(loot);
-        this.pluginManager.emit(Events.Loot_Generated, loot);
+
+        this.pluginManager.emit(
+            "loot_did_generate",
+            { loot, ...args }
+        );
+
         return loot;
     }
 
@@ -973,14 +1030,14 @@ export class Game implements GameData {
         return bullet;
     }
 
-    addExplosion(type: ReifiableDef<ExplosionDefinition>, position: Vector, source: GameObject): Explosion {
-        const explosion = new Explosion(this, type, position, source);
+    addExplosion(type: ReifiableDef<ExplosionDefinition>, position: Vector, source: GameObject, layer: Layer): Explosion {
+        const explosion = new Explosion(this, type, position, source, layer);
         this.explosions.push(explosion);
         return explosion;
     }
 
-    addProjectile(definition: ThrowableDefinition, position: Vector, source: ThrowableItem): ThrowableProjectile {
-        const projectile = new ThrowableProjectile(this, position, definition, source);
+    addProjectile(definition: ThrowableDefinition, position: Vector, layer: Layer, source: ThrowableItem): ThrowableProjectile {
+        const projectile = new ThrowableProjectile(this, position, layer, definition, source);
         this.grid.addObject(projectile);
         return projectile;
     }
@@ -990,8 +1047,8 @@ export class Game implements GameData {
         projectile.dead = true;
     }
 
-    addSyncedParticle(definition: SyncedParticleDefinition, position: Vector): SyncedParticle {
-        const syncedParticle = new SyncedParticle(this, definition, position);
+    addSyncedParticle(definition: SyncedParticleDefinition, position: Vector, layer: Layer | number): SyncedParticle {
+        const syncedParticle = new SyncedParticle(this, definition, position, layer);
         this.grid.addObject(syncedParticle);
         return syncedParticle;
     }
@@ -1001,7 +1058,7 @@ export class Game implements GameData {
         syncedParticle.dead = true;
     }
 
-    addSyncedParticles(particles: SyncedParticleSpawnerDefinition, position: Vector): void {
+    addSyncedParticles(particles: SyncedParticleSpawnerDefinition, position: Vector, layer: Layer | number): void {
         const particleDef = SyncedParticles.fromString(particles.type);
         const { spawnRadius, count, deployAnimation } = particles;
 
@@ -1021,7 +1078,8 @@ export class Game implements GameData {
                 setParticleTarget(
                     this.addSyncedParticle(
                         particleDef,
-                        position
+                        position,
+                        layer
                     ),
                     Vec.add(
                         Vec.fromPolar(
@@ -1063,6 +1121,8 @@ export class Game implements GameData {
     }
 
     summonAirdrop(position: Vector): void {
+        if (this.pluginManager.emit("airdrop_will_summon", { position })) return;
+
         const paddingFactor = 1.25;
 
         const crateDef = Obstacles.fromString("airdrop_crate_locked");
@@ -1160,7 +1220,7 @@ export class Game implements GameData {
                 for (const object of this.grid.intersectsHitbox(padded)) {
                     let hitbox: Hitbox;
                     if (
-                        object instanceof Obstacle
+                        object.isObstacle
                         && !object.dead
                         && object.definition.indestructible
                         && ((hitbox = object.spawnHitbox.clone()).scale(paddingFactor), hitbox.collidesWith(thisHitbox))
@@ -1181,7 +1241,7 @@ export class Game implements GameData {
                 // second loop, buildings
                 for (const object of this.grid.intersectsHitbox(thisHitbox)) {
                     if (
-                        object instanceof Building
+                        object.isBuilding
                         && object.scopeHitbox
                         && object.definition.wallsToDestroy === Infinity
                     ) {
@@ -1214,8 +1274,6 @@ export class Game implements GameData {
 
         const airdrop = { position, type: crateDef };
 
-        this.pluginManager.emit(Events.Airdrop_Summoned, airdrop);
-
         this.airdrops.push(airdrop);
 
         this.planes.push({ position: planePos, direction });
@@ -1228,6 +1286,8 @@ export class Game implements GameData {
                 position
             });
         }, GameConstants.airdrop.flyTime);
+
+        this.pluginManager.emit("airdrop_did_summon", { airdrop, position });
     }
 }
 

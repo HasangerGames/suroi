@@ -105,12 +105,15 @@ export class Gas {
     }
 
     advanceGasStage(): void {
-        if (Config.gas.mode === GasMode.Disabled) return;
+        const { gas } = Config;
+        if (gas.mode === GasMode.Disabled) return;
+
         const currentStage = GasStages[this.stage + 1];
         if (currentStage === undefined) return;
 
-        const duration = Config.gas.mode === GasMode.Debug && Config.gas.overrideDuration !== undefined && currentStage.duration !== 0
-            ? Config.gas.overrideDuration
+        const isDebug = gas.mode === GasMode.Debug;
+        const duration = isDebug && gas.overrideDuration !== undefined && currentStage.duration !== 0
+            ? gas.overrideDuration
             : currentStage.duration;
 
         this.stage++;
@@ -123,7 +126,7 @@ export class Gas {
             this.oldPosition = Vec.clone(this.newPosition);
             if (currentStage.newRadius !== 0) {
                 const { width, height } = this.game.map;
-                if (Config.gas.mode === GasMode.Debug && Config.gas.overridePosition) {
+                if (isDebug && gas.overridePosition) {
                     this.newPosition = Vec.create(width / 2, height / 2);
                 } else {
                     const maxDistance = (currentStage.oldRadius - currentStage.newRadius) * this.mapSize;

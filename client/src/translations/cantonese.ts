@@ -142,6 +142,7 @@ export const CANTONESE_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "解開空投",
     "interact_control_panel": "着個控制台",
+    "interact_headquarters_security_desk": "着個控制台",
     "interact_generator": "着個發電機",
     "interact_button": "暗掣",
 

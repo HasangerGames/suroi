@@ -1,8 +1,6 @@
 <script lang="ts">
-    import { Circle } from "pixi.js";
     import {
-    CircleHitbox,
-        HitboxGroup,
+        GroupHitbox,
         HitboxType,
         RectangleHitbox
     } from "../../../common/src/utils/hitbox";
@@ -11,33 +9,13 @@
     import Hitbox from "./lib/hitbox.svelte";
 
     let hitboxes = [
-        ...new HitboxGroup(
-                // Right walls
-                // Above window
-                RectangleHitbox.fromRect(2, 10.5, Vec.create(-31, 21.3)),
-                // First below window
-                RectangleHitbox.fromRect(2, 8.5, Vec.create(-31, 1.9)),
-                // Second below window
-                RectangleHitbox.fromRect(2, 14, Vec.create(-31, -20)),
-
-                // Top walls
-                // Left of window
-                RectangleHitbox.fromRect(20, 2, Vec.create(37, 27.3)),
-                // Right of window
-                RectangleHitbox.fromRect(48.7, 2, Vec.create(-7.5, 27.3)),
-
-                // Left Wall
-                // Whole side of building
-                RectangleHitbox.fromRect(2, 55.2, Vec.create(46.5, 0)),
-
-                // Bottom Walls
-                // Left of back door
-                RectangleHitbox.fromRect(9, 2, Vec.create(43, -26.5)),
-                // Right of back door
-                RectangleHitbox.fromRect(39.6, 2, Vec.create(8, -26.5)),
-                // Right of window
-                RectangleHitbox.fromRect(10.2, 2, Vec.create(-26.7, -26.5))
-            ).transform(Vec.create(0, 0), 1.076, 3).toJSON().hitboxes
+        ...new GroupHitbox(
+                RectangleHitbox.fromRect(2, 14.8, Vec.create(8.4, 14)),
+                RectangleHitbox.fromRect(2, 15.5, Vec.create(32.4, 12)),
+                RectangleHitbox.fromRect(25, 2, Vec.create(21, 20.4)),
+                RectangleHitbox.fromRect(2, 4, Vec.create(20.5, 6.5)),
+                RectangleHitbox.fromRect(11, 2, Vec.create(14.5, 7.5))
+            ).transform(Vec.create(14.1, -20.5), 1, 3).toJSON().hitboxes
     ];
 
     let selected = hitboxes[0];
@@ -84,7 +62,7 @@
     }
 
     function mouseWheel(e: WheelEvent) {
-        scale = Numeric.clamp(scale - e.deltaY / 1000, 0.1, 5);
+        scale = Numeric.clamp(scale - e.deltaY / 1000, 0.1, 10);
     }
 
     function updateSelected() {
@@ -99,9 +77,9 @@
         convertHitboxes();
     }
 
-    async function loadImage(src: string): Promise<{ width: number, height: number}> {
-        const img = new Image()
-        img.src = src
+    async function loadImage(src: string): Promise<{ width: number, height: number, src: string }> {
+        const img = new Image();
+        img.src = src;
 
         return new Promise((resolve) => {
             img.onload = () => {
@@ -112,7 +90,7 @@
 
     let hitboxesStr = "";
     function convertHitboxes() {
-        hitboxesStr = "new HitboxGroup(\n";
+        hitboxesStr = "new GroupHitbox(\n";
         hitboxesStr += hitboxes.map((hitbox) => {
             const round = (n: number) => Math.round(n * 100) / 100;
             if (hitbox.type === HitboxType.Rect) {
@@ -128,7 +106,7 @@
     }
     convertHitboxes();
 
-    const bgImage = loadImage("/img/game/buildings/green_house_floor.svg");
+    const bgImage = loadImage("/img/game/buildings/container_floor_open1.svg");
 
 </script>
 
@@ -213,6 +191,7 @@
     >
         <svg>
             <g transform="translate({x} {y}) scale({scale})">
+                <!-- svelte-ignore empty-block -->
                 {#await bgImage}
                 {:then img}
                     <image x="{-(img.width / 2)}" y="{-(img.height / 2)}" href="{img.src}" onmousedown="return false"></image>

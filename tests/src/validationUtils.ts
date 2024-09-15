@@ -3,13 +3,15 @@ import { Loots } from "../../common/src/definitions/loots";
 import { SyncedParticles, type Animated, type NumericSpecifier, type SyncedParticleSpawnerDefinition, type ValueSpecifier } from "../../common/src/definitions/syncedParticles";
 import { HitboxType, type Hitbox } from "../../common/src/utils/hitbox";
 import { type EaseFunctions } from "../../common/src/utils/math";
-import { type BaseBulletDefinition, type InventoryItemDefinition, type ObjectDefinitions, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
+import { NullString, type BaseBulletDefinition, type InventoryItemDefinition, type ObjectDefinitions, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../common/src/utils/vector";
 import { LootTiers, type WeightedItem } from "../../server/src/data/lootTables";
 
-export function findDupes(collection: readonly string[]): { readonly foundDupes: boolean, readonly dupes: Record<string, number> } {
-    const dupes: Record<string, number> = {};
-    const set = new Set<string>();
+export function findDupes<
+    K extends string | number | symbol
+>(collection: readonly K[]): { readonly foundDupes: boolean, readonly dupes: Record<K, number> } {
+    const dupes = {} as Record<K, number>;
+    const set = new Set<K>();
     let foundDupes = false;
 
     for (const item of collection) {
@@ -34,6 +36,7 @@ export function safeString(value: unknown): string {
             case !Number.isFinite(value) || Number.isNaN(value): return `${value as number}`;
             default: return JSON.stringify(value);
         }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_) {
         return String(value);
     }
@@ -795,8 +798,28 @@ export const validators = Object.freeze({
             }
             case HitboxType.Group: {
                 logger.indent("Validating hitbox group", () => {
+                    const hitboxes = hitbox.hitboxes;
+                    switch (hitboxes.length) {
+                        case 0: {
+                            tester.assert(
+                                false,
+                                "Received hitbox group with no hitboxes",
+                                baseErrorPath
+                            );
+                            break;
+                        }
+                        case 1: {
+                            tester.assertWarn(
+                                false,
+                                "Received hitbox group with only 1 hitbox",
+                                baseErrorPath
+                            );
+                            break;
+                        }
+                    }
+
                     tester.runTestOnArray(
-                        hitbox.hitboxes,
+                        hitboxes,
                         (hitbox, errorPath) => this.hitbox(errorPath, hitbox),
                         baseErrorPath
                     );
@@ -805,8 +828,36 @@ export const validators = Object.freeze({
             }
             case HitboxType.Polygon: {
                 logger.indent("Validating polygonal hitbox", () => {
+                    const points = hitbox.points;
+                    switch (points.length) {
+                        case 0: {
+                            tester.assert(
+                                false,
+                                "Received polygonal hitbox with no points",
+                                baseErrorPath
+                            );
+                            break;
+                        }
+                        case 1: {
+                            tester.assertWarn(
+                                false,
+                                "Received polygonal hitbox with only 1 point",
+                                baseErrorPath
+                            );
+                            break;
+                        }
+                        case 2: {
+                            tester.assertWarn(
+                                false,
+                                "Received polygonal hitbox with only 2 points",
+                                baseErrorPath
+                            );
+                            break;
+                        }
+                    }
+
                     tester.runTestOnArray(
-                        hitbox.points,
+                        points,
                         (point, errorPath) => this.vector(errorPath, point),
                         baseErrorPath
                     );
@@ -854,7 +905,7 @@ export const validators = Object.freeze({
 
         if ("item" in weightedItem) {
             switch (weightedItem.item) {
-                case null: {
+                case NullString: {
                     tester.assertWarn(
                         weightedItem.count !== undefined,
                         "Specifying a count for a no-item drop is pointless",

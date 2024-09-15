@@ -144,6 +144,7 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "Airdrop kinyitása",
     "interact_control_panel": "Kontroll Panel aktiválása",
+    "interact_headquarters_security_desk": "Kontroll Panel aktiválása",
     "interact_generator": "Generátor aktiválása",
     "interact_button": "Gomb megnyomása",
 

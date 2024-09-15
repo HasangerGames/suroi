@@ -12,6 +12,14 @@ export enum TeamSize {
     Squad = 4
 }
 
+export const enum Layer {
+    Basement1 = -2,
+    ToBasement1 = -1,
+    Ground = 0,
+    ToFloor1 = 1,
+    Floor1 = 2
+}
+
 export enum ObjectCategory {
     Player,
     Obstacle,
@@ -131,13 +139,14 @@ export const GameConstants = freezeDeep({
     maxPosition: 1632,
     player: {
         radius: 2.25,
-        nameMaxLength: 16,
-        defaultName: "Player",
-        defaultSkin: "hazel_jumpsuit",
+        baseSpeed: 0.02655,
         defaultHealth: 100,
         maxAdrenaline: 100,
         inventorySlotTypings,
         maxWeapons: inventorySlotTypings.length,
+        nameMaxLength: 16,
+        defaultName: "Player",
+        defaultSkin: "hazel_jumpsuit",
         killLeaderMinKills: 3,
         maxMouseDist: 128,
         reviveTime: 8,
@@ -168,6 +177,8 @@ export enum ZIndexes {
     Decals,
     DeadObstacles,
     DeathMarkers,
+    Explosions,
+    TeammateName,
     /**
      * This is the default layer for obstacles
      */

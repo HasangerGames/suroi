@@ -1,6 +1,6 @@
 // noinspection JSConstantReassignment
 import { Rectangle, RendererType, Sprite, VERSION } from "pixi.js";
-import { GameConstants, InputActions, SpectateActions } from "../../../../../common/src/constants";
+import { GameConstants, InputActions, SpectateActions, TeamSize } from "../../../../../common/src/constants";
 import { HealingItems, type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
 import { Loots } from "../../../../../common/src/definitions/loots";
 import { Scopes, type ScopeDefinition } from "../../../../../common/src/definitions/scopes";
@@ -11,7 +11,7 @@ import { Numeric } from "../../../../../common/src/utils/math";
 import { handleResult, type Result } from "../../../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions";
 import { Vec } from "../../../../../common/src/utils/vector";
-import { Config } from "../../config";
+import { Config, type ServerInfo } from "../../config";
 import { type Game } from "../../game";
 import { type CompiledAction, type CompiledTuple, type InputManager } from "../../managers/inputManager";
 import { COLORS } from "../constants";
@@ -401,20 +401,12 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "interact",
         function() {
-            // in the absence of a "loot" bind, the "interact"
-            // command performs the "loot" action as well
-            if (!this.inputManager.binds.getInputsBoundToAction("loot").length) {
-                this.inputManager.addAction(InputActions.Loot);
-            }
-
             this.inputManager.addAction(InputActions.Interact);
         },
         game,
         {
             short: "Interacts with an object, if there is one",
-            long:
-                "When invoked, the player will attempt to interact with the closest interactable object that is in range. "
-                + "If no input has explicitly been bound to <code>loot</code>, invoking this command will also invoke <code>loot</code>",
+            long: "When invoked, the player will attempt to interact with the closest interactable object that is in range.",
             allowOnlyWhenGameStarted: true,
             signatures: [{ args: [], noexcept: true }]
         }
@@ -512,7 +504,7 @@ export function setUpCommands(game: Game): void {
         game,
         {
             short: "Loots closest object",
-            long: "Loots closest object, this command is also invoked with interact if there is no key bound to loot",
+            long: "When invoked, the player will attempt to pick up the closest loot that is in range.",
             allowOnlyWhenGameStarted: true,
             signatures: [{ args: [], noexcept: true }]
         }
@@ -737,15 +729,15 @@ export function setUpCommands(game: Game): void {
     );
 
     Command.createCommand(
-        "explodeC4",
+        "explode_c4",
         function() {
             game.inputManager.addAction(InputActions.ExplodeC4);
             this.uiManager.ui.c4Button.hide();
         },
         game,
         {
-            short: "Explodes all of your c4s",
-            long: "When invoked, the game will attempt to explode all the c4s the player owns",
+            short: "Explodes all deployed pieces of C4 belonging to this player",
+            long: "When invoked, the game will attempt to detonate all pieces of C4 this player has deployed.",
             allowOnlyWhenGameStarted: true,
             signatures: [{ args: [], noexcept: true }]
         }
@@ -1390,19 +1382,19 @@ export function setUpCommands(game: Game): void {
         {
             short: "Prints out the values of CVars",
             long: "When invoked, will print out every at-the-time registered CVar and its value. The value's color corresponds to its type:"
-            + `<ul>${(
-                [
-                    [null, "null"],
-                    [undefined, "undefined"],
-                    ["abcd", "string"],
-                    [1234, "number"],
-                    [false, "boolean"],
-                    [5678n, "bigint"],
-                    [Symbol.for("efgh"), "symbol"],
-                    [function sin(x: number): void { /* lol ok */ }, "function"],
-                    [{}, "object"]
-                ] as Array<[unknown, string]>
-            ).map(([val, type]) => `<li><b>${type}</b>: <code class="cvar-value-${type}">${stringify(val)}</code></li>`).join("")}</ul>`,
+                + `<ul>${(
+                    [
+                        [null, "null"],
+                        [undefined, "undefined"],
+                        ["abcd", "string"],
+                        [1234, "number"],
+                        [false, "boolean"],
+                        [5678n, "bigint"],
+                        [Symbol.for("efgh"), "symbol"],
+                        [function sin(x: number): void { /* lol ok */ }, "function"],
+                        [{}, "object"]
+                    ] as Array<[unknown, string]>
+                ).map(([val, type]) => `<li><b>${type}</b>: <code class="cvar-value-${type}">${stringify(val)}</code></li>`).join("")}</ul>`,
             signatures: [{ args: [], noexcept: true }]
         }
     );
@@ -1821,7 +1813,7 @@ export function setUpCommands(game: Game): void {
                     language: navigator.language,
                     online: navigator.onLine
                 },
-                regions: Config.regions,
+                regions: Config.regions as unknown as Record<string, ServerInfo>,
                 mode: Config.mode,
                 default_region: Config.defaultRegion
             };
@@ -1838,14 +1830,28 @@ export function setUpCommands(game: Game): void {
 
                         for (const [key, value] of Object.entries(obj)) {
                             retVal += `<li><b>${key}</b>: ${
-                                typeof value === "object" && value !== null
+                                typeof value === "object" && value !== null && !(value instanceof Date)
                                     ? construct(value as Record<string, unknown>)
                                     : String(value)
                             }</li>`;
                         }
 
                         return `${retVal}</ul>`;
-                    })(data)
+                    })({
+                        ...data,
+                        regions: Object.fromEntries(
+                            Object.entries(data.regions).map(
+                                ([k, v]) => [
+                                    k,
+                                    {
+                                        ...v,
+                                        ...(typeof v.nextSwitchTime === "number" ? { nextSwitchTime: new Date(v.nextSwitchTime) } : {}),
+                                        ...(typeof v.maxTeamSize === "number" ? { maxTeamSize: TeamSize[v.maxTeamSize] } : {})
+                                    }
+                                ]
+                            )
+                        )
+                    })
                 );
             }
         },
@@ -1853,7 +1859,7 @@ export function setUpCommands(game: Game): void {
         {
             short: "Gives info about the client",
             long: "Dumps a variety of information about the current client. For debugging purposes. If <code>raw</code> is set to true, "
-            + "the data is outputted as raw JSON; otherwise, it is displayed in a list (default option).",
+                + "the data is outputted as raw JSON; otherwise, it is displayed in a list (default option).",
             signatures: [
                 {
                     args: [

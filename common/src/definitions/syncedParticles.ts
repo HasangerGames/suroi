@@ -4,7 +4,7 @@ import { CircleHitbox } from "../utils/hitbox";
 import { type EaseFunctions } from "../utils/math";
 import { ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
-import type { ScopeDefinition } from "./scopes";
+import { type ScopeDefinition } from "./scopes";
 
 export interface MinMax<T> {
     readonly min: T
@@ -52,6 +52,7 @@ export type SyncedParticleDefinition = ObjectDefinition & {
      * @default {undefined}
      */
     readonly variations?: Variation
+    readonly variationBits?: number // TODO Auto generate this property if synced particles w/ variations are added
     /**
      * @default {ZIndexes.ObstaclesLayer1}
      */
@@ -151,7 +152,7 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                     deviation: 1000
                 },
                 frame: "smoke_grenade_particle",
-                zIndex: ZIndexes.ObstaclesLayer5 - 1,
+                zIndex: ZIndexes.BuildingsCeiling - 1,
                 scopeOutPreMs: 3200
             })
         },
@@ -160,17 +161,17 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
             applier: () => ({
                 scale: {
                     start: {
-                        min: 1.5,
-                        max: 2
+                        min: 0.5,
+                        max: 1
                     },
                     end: {
-                        min: 1.75,
-                        max: 2.25
+                        min: 0.1,
+                        max: 0.7
                     }
                 },
                 angularVelocity: {
-                    min: -0.0005,
-                    max: 0.0005
+                    min: -0.001,
+                    max: 0.001
                 },
                 velocity: {
                     min: {
@@ -183,10 +184,11 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                     }
                 },
                 lifetime: {
-                    mean: 500,
+                    mean: 1000,
                     deviation: 0
                 },
-                frame: "metal_particle",
+                frame: "metal_particle_1",
+                tint: 0x5f5f5f,
                 zIndex: ZIndexes.ObstaclesLayer1
             })
         }
@@ -232,9 +234,7 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                     mean: 2000,
                     deviation: 500
                 },
-                hitbox: new CircleHitbox(5),
-                snapScopeTo: "1x_scope",
-                scopeOutPreMs: 500
+                hitbox: new CircleHitbox(5)
             },
             [],
             ["airdrop_smoke_particle"]

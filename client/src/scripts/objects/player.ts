@@ -1,6 +1,6 @@
 import $ from "jquery";
 import { Container, Text, TilingSprite } from "pixi.js";
-import { AnimationType, GameConstants, InputActions, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
+import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { Backpacks, type BackpackDefinition } from "../../../../common/src/definitions/backpacks";
@@ -12,26 +12,25 @@ import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "../../../../common/s
 import { Skins, type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
+import { adjacentOrEqualLayer, getEffectiveZIndex } from "../../../../common/src/utils/layer";
 import { Angle, EaseFunctions, Geometry } from "../../../../common/src/utils/math";
 import { type Timeout } from "../../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "../../../../common/src/utils/random";
-import { FloorTypes } from "../../../../common/src/utils/terrain";
+import { FloorNames, FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { COLORS, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { COLORS, DIFF_LAYER_HITBOX_OPACITY, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
-import { getTranslatedString } from "../../translations";
 
-export class Player extends GameObject<ObjectCategory.Player> {
-    override readonly type = ObjectCategory.Player;
-
+export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
 
     activeItem: WeaponDefinition = Loots.fromString("fists");
@@ -125,9 +124,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
     vestLevel = NaN;
     backpackLevel = NaN;
 
-    hitbox = new CircleHitbox(GameConstants.player.radius);
+    readonly hitbox = new CircleHitbox(GameConstants.player.radius);
 
-    floorType: keyof typeof FloorTypes = "grass";
+    floorType: FloorNames = FloorNames.Grass;
 
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Player]) {
         super(game, id);
@@ -165,7 +164,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.blood
         );
 
-        this.images.blood.zIndex = 4;
+        // this.images.blood.zIndex = getEffectiveZIndex(4, this.game.layer, this.game.layer);
 
         if (game.teamMode) {
             // teamMode guarantees these images' presence
@@ -185,9 +184,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
             container: new Container()
         };
 
-        this.game.camera.addObject(emote.container);
+        game.camera.addObject(emote.container);
         emote.container.addChild(emote.background, emote.image);
-        emote.container.zIndex = ZIndexes.Emotes;
+        emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer, this.game.layer);
         emote.container.visible = false;
 
         this.updateFistsPosition(false);
@@ -207,6 +206,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     position: this.hitbox.randomPoint(),
                     lifetime: 1000,
                     zIndex: ZIndexes.Players,
+                    get layer(): Layer { return game.layer ?? Layer.Ground; },
                     rotation: 0,
                     alpha: {
                         start: 1,
@@ -239,7 +239,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
         super.updateContainerPosition();
         if (!this.destroyed) {
             this.emote.container.position = Vec.addComponent(this.container.position, 0, -175);
-            if (this.teammateName) this.teammateName.container.position = Vec.addComponent(this.container.position, 0, 95);
+            if (this.teammateName) {
+                this.teammateName.container.position = Vec.addComponent(this.container.position, 0, 95);
+                this.teammateName.container.zIndex = getEffectiveZIndex(ZIndexes.TeammateName, this.layer, this.game.layer);
+            }
         }
     }
 
@@ -285,6 +288,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             zIndex: ZIndexes.Players,
                             position: Vec.add(this.position, Vec.rotate(position, this.rotation)),
                             lifetime: 400,
+                            layer: this.layer,
                             scale: {
                                 start: 0.8,
                                 end: 0.4
@@ -331,6 +335,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     override updateFromData(data: ObjectsNetData[ObjectCategory.Player], isNew = false): void {
         const { uiManager } = this.game;
 
+        const previousLayer: Layer = this.layer;
+
         // Position and rotation
         const oldPosition = Vec.clone(this.position);
         this.position = data.position;
@@ -342,21 +348,29 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         if (noMovementSmoothing || isNew) this.container.rotation = this.rotation;
 
+        const layerChange = this.layer !== data.layer || isNew;
+        this.layer = data.layer;
+
         if (this.isActivePlayer) {
+            if (layerChange) this.game.changeLayer(this.layer);
+
             this.game.soundManager.position = this.position;
             this.game.map.setPosition(this.position);
 
             if (noMovementSmoothing) this.game.camera.position = toPixiCoords(this.position);
 
             if (this.game.console.getBuiltInCVar("pf_show_pos")) {
-                uiManager.debugReadouts.pos.text(`X: ${this.position.x.toFixed(2)} Y: ${this.position.y.toFixed(2)}`);
+                uiManager.debugReadouts.pos.text(
+                    `X: ${this.position.x.toFixed(2)} Y: ${this.position.y.toFixed(2)} Z: ${this.layer}`
+                );
             }
         }
 
-        const floorType = this.game.map.terrain.getFloor(this.position);
+        const floorType = this.game.map.terrain.getFloor(this.position, this.layer);
 
         const doOverlay = FloorTypes[floorType].overlay;
-        let updateContainerZIndex = isNew || FloorTypes[this.floorType].overlay !== doOverlay;
+        const layerChanged = previousLayer !== this.layer || this.game.activePlayer?.layer !== this.layer || isNew;
+        let updateContainerZIndex = isNew || FloorTypes[this.floorType].overlay !== doOverlay || layerChanged;
 
         if (floorType !== this.floorType) {
             if (doOverlay) this.images.waterOverlay.setVisible(true);
@@ -400,12 +414,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                 this.distSinceLastFootstep = 0;
 
-                if (FloorTypes[floorType].particles) {
+                if (FloorTypes[floorType].particles && this.layer >= Layer.Ground) {
                     const options = {
                         frames: "ripple_particle",
                         zIndex: ZIndexes.Ground,
                         position: this.hitbox.randomPoint(),
                         lifetime: 1000,
+                        layer: this.layer,
                         speed: Vec.create(0, 0)
                     };
 
@@ -452,7 +467,35 @@ export class Player extends GameObject<ObjectCategory.Player> {
             const full = data.full;
 
             this.container.visible = !full.dead;
+
+            // Blood particles on death (cooler graphics only)
+            if (
+                this.game.console.getBuiltInCVar("cv_cooler_graphics")
+                && !isNew
+                && this.dead !== full.dead
+                && full.dead
+            ) {
+                this.game.particleManager.spawnParticles(random(15, 30), () => ({
+                    frames: "blood_particle",
+                    lifetime: random(1000, 3000),
+                    position: this.position,
+                    layer: this.layer,
+                    alpha: {
+                        start: 1,
+                        end: 0
+                    },
+                    scale: {
+                        start: randomFloat(0.8, 1.6),
+                        end: 0
+                    },
+                    speed: randomPointInsideCircle(Vec.create(0, 0), 4),
+                    zIndex: ZIndexes.Players + 1
+                }));
+            }
+
             this.dead = full.dead;
+
+            this.layer = data.layer;
 
             this.teamID = data.full.teamID;
             if (
@@ -497,7 +540,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     container.addChild(badge);
                 }
 
-                container.zIndex = ZIndexes.DeathMarkers;
+                container.zIndex = getEffectiveZIndex(ZIndexes.DeathMarkers, this.game.layer, this.game.layer);
                 this.game.camera.addObject(container);
             }
 
@@ -536,26 +579,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.bleedEffectInterval = undefined;
             }
 
-            if (this.dead) {
-                if (this.teammateName) this.teammateName.container.visible = false;
-
-                if (this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
-                    this.game.particleManager.spawnParticles(random(15, 30), () => ({
-                        frames: "blood_particle",
-                        lifetime: random(1000, 3000),
-                        position: this.position,
-                        alpha: {
-                            start: 1,
-                            end: 0
-                        },
-                        scale: {
-                            start: randomFloat(0.8, 1.6),
-                            end: 0
-                        },
-                        speed: randomPointInsideCircle(Vec.create(0, 0), 4),
-                        zIndex: ZIndexes.Players + 1
-                    }));
-                }
+            if (this.dead && this.teammateName) {
+                this.teammateName.container.visible = false;
             }
 
             this._oldItem = this.activeItem;
@@ -617,16 +642,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }
 
-        if (updateContainerZIndex) {
-            // i love ternary spam
-            this.container.zIndex = doOverlay
-                ? this.downed
-                    ? ZIndexes.UnderwaterDownedPlayers
-                    : ZIndexes.UnderwaterPlayers
-                : this.downed
-                    ? ZIndexes.DownedPlayers
-                    : ZIndexes.Players;
-        }
+        if (updateContainerZIndex) this.updateZIndex();
 
         if (data.action !== undefined) {
             const action = data.action;
@@ -696,43 +712,58 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.action = action;
         }
 
-        if (HITBOX_DEBUG_MODE) {
-            const ctx = this.debugGraphics;
-            ctx.clear();
+        if (this.isActivePlayer && layerChanged && HITBOX_DEBUG_MODE) {
+            this.game.addTimeout(() => {
+                for (const object of this.game.objects) {
+                    object.updateDebugGraphics();
+                }
+            }, 0);
+        }
 
-            drawHitbox(this.hitbox, HITBOX_COLORS.player, ctx);
+        this.updateDebugGraphics();
+    }
 
-            if (this.downed) {
-                drawHitbox(new CircleHitbox(5, this.position), HITBOX_COLORS.obstacleNoCollision, ctx);
-                // revival range
+    override updateDebugGraphics(): void {
+        if (!HITBOX_DEBUG_MODE) return;
+
+        const ctx = this.debugGraphics;
+        ctx.clear();
+        const alpha = this.layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY;
+
+        drawHitbox(this.hitbox, HITBOX_COLORS.player, ctx, alpha);
+
+        if (this.downed) {
+            drawHitbox(new CircleHitbox(5, this.position), HITBOX_COLORS.obstacleNoCollision, ctx, alpha);
+            // revival range
+        }
+
+        switch (this.activeItem.itemType) {
+            case ItemType.Gun: {
+                ctx.setStrokeStyle({
+                    color: HITBOX_COLORS.playerWeapon,
+                    width: 4,
+                    alpha
+                });
+                ctx.moveTo(this.container.position.x, this.container.position.y);
+                const lineEnd = toPixiCoords(Vec.add(this.position, Vec.rotate(Vec.create(this.activeItem.length, 0), this.rotation)));
+                ctx.lineTo(lineEnd.x, lineEnd.y);
+                ctx.stroke();
+                break;
             }
-
-            switch (this.activeItem.itemType) {
-                case ItemType.Gun: {
-                    ctx.setStrokeStyle({
-                        color: HITBOX_COLORS.playerWeapon,
-                        width: 4
-                    });
-                    ctx.moveTo(this.container.position.x, this.container.position.y);
-                    const lineEnd = toPixiCoords(Vec.add(this.position, Vec.rotate(Vec.create(this.activeItem.length, 0), this.rotation)));
-                    ctx.lineTo(lineEnd.x, lineEnd.y);
-                    ctx.stroke();
-                    break;
-                }
-                case ItemType.Melee: {
-                    drawHitbox(
-                        new CircleHitbox(
-                            this.activeItem.radius,
-                            Vec.add(
-                                this.position,
-                                Vec.rotate(this.activeItem.offset, this.rotation)
-                            )
-                        ),
-                        HITBOX_COLORS.playerWeapon,
-                        ctx
-                    );
-                    break;
-                }
+            case ItemType.Melee: {
+                drawHitbox(
+                    new CircleHitbox(
+                        this.activeItem.radius,
+                        Vec.add(
+                            this.position,
+                            Vec.rotate(this.activeItem.offset, this.rotation)
+                        )
+                    ),
+                    HITBOX_COLORS.playerWeapon,
+                    ctx,
+                    alpha
+                );
+                break;
             }
         }
     }
@@ -897,6 +928,20 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
     }
 
+    override updateZIndex(): void {
+        // i love ternary spam
+        const zIndex = FloorTypes[this.floorType].overlay
+            ? this.downed
+                ? ZIndexes.UnderwaterDownedPlayers
+                : ZIndexes.UnderwaterPlayers
+            : this.downed
+                ? ZIndexes.DownedPlayers
+                : ZIndexes.Players;
+
+        this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, this.game.layer);
+        this.emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer, this.game.layer);
+    }
+
     updateEquipmentWorldImage(type: "helmet" | "vest" | "backpack", def?: ArmorDefinition | BackpackDefinition): void {
         const image = this.images[type];
         if (
@@ -905,7 +950,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
             && !this.hideEquipment
             && (type !== "backpack" || !this.downed)
         ) {
-            image.setFrame(`${def.idString}_world`).setVisible(true);
+            if (type !== "vest") {
+                image.setFrame(`${def.idString}_world`).setVisible(true);
+            } else if ("color" in def && def.color) { // tint stuff for vests
+                image.setFrame("vest_world").setVisible(true);
+                image.setTint(def.color);
+            }
 
             if (type === "helmet") {
                 image.setPos(
@@ -1101,20 +1151,24 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         const target of (
                             [...this.game.objects].filter(
                                 object => !object.dead
-                                && object !== this
-                                && object.damageable
-                                && (object instanceof Obstacle || object instanceof Player)
-                                && object.hitbox.collidesWith(hitbox)
+                                    && object !== this
+                                    && (
+                                        (
+                                            object.damageable
+                                            && (object.isObstacle || object.isPlayer || object.isBuilding)
+                                        ) || (object.isThrowableProjectile && object.definition.c4)
+                                    )
+                                    && object.hitbox?.collidesWith(hitbox)
+                                    && adjacentOrEqualLayer(object.layer, this.layer)
+                                    && (!object.isObstacle || (!object.definition.isStair))
+                                    && (!object.isObstacle || (!object.definition.noMeleeCollision))
                             ) as Array<Player | Obstacle>
-                        ).sort(
-                            (a, b) => {
-                                if (a instanceof Obstacle && a.definition.noMeleeCollision) return Infinity;
-                                if (b instanceof Obstacle && b.definition.noMeleeCollision) return -Infinity;
+                        ).sort((a, b) => {
+                            if (a.isObstacle && a.definition.noMeleeCollision) return Infinity;
+                            if (b.isObstacle && b.definition.noMeleeCollision) return -Infinity;
 
-                                return a.hitbox.distanceTo(selfHitbox).distance - b.hitbox.distanceTo(selfHitbox).distance;
-                            }
-                        )
-                            .slice(0, weaponDef.maxTargets)
+                            return a.hitbox.distanceTo(selfHitbox).distance - b.hitbox.distanceTo(selfHitbox).distance;
+                        }).slice(0, weaponDef.maxTargets)
                     ) target.hitEffect(position, angleToPos);
                 }, 50);
 
@@ -1227,6 +1281,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                     this.game.particleManager.spawnParticles(gas.amount, () => ({
                         frames: "small_gas",
+                        layer: this.layer,
                         lifetime: random(gas.minLife, gas.maxSize),
                         scale: {
                             start: 0, end: randomFloat(gas.minSize, gas.maxSize)
@@ -1373,11 +1428,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     }
                 });
 
-                if (def.cookable) {
+                if (def.cookable && def.animation.leverImage !== undefined) {
                     this.game.particleManager.spawnParticle({
                         frames: def.animation.leverImage,
                         lifetime: 600,
                         position: this.position,
+                        layer: this.layer,
                         zIndex: ZIndexes.Players + 1,
                         speed: Vec.rotate(Vec.create(8, 8), this.rotation),
                         rotation: this.rotation,
@@ -1442,10 +1498,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 projImage.visible = false;
                 projImage.setFrame(def.idString);
 
-                if (!def.cookable) {
+                if (!def.cookable && def.animation.leverImage !== undefined) {
                     this.game.particleManager.spawnParticle({
                         frames: def.animation.leverImage,
                         lifetime: 600,
+                        layer: this.layer,
                         position: this.position,
                         zIndex: ZIndexes.Players + 1,
                         speed: Vec.rotate(Vec.create(8, 8), this.rotation),
@@ -1523,12 +1580,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
             {
                 position,
                 falloff: 0.2,
-                maxRange: 96
+                maxRange: 96,
+                layer: this.layer
             });
 
         this.game.particleManager.spawnParticle({
             frames: "blood_particle",
             zIndex: ZIndexes.Players + 0.5,
+            layer: this.layer,
             position,
             lifetime: 1000,
             scale: {
@@ -1543,20 +1602,22 @@ export class Player extends GameObject<ObjectCategory.Player> {
         });
 
         if (this.game.console.getBuiltInCVar("cv_cooler_graphics") && !this.downed) {
+            const isOnWater = this.floorType === FloorNames.Water;
             this._bloodDecals.add(
                 this.game.particleManager.spawnParticle({
                     frames: "blood_particle",
                     zIndex: ZIndexes.Decals,
+                    layer: this.layer,
                     position: randomPointInsideCircle(position, 2.5),
-                    lifetime: 60000 * (this.floorType === "water" ? 0.1 : 1),
+                    lifetime: 60000 * (isOnWater ? 0.1 : 1),
                     scale: randomFloat(0.8, 1.6),
                     alpha: {
-                        start: this.floorType !== "water" ? 1 : 0.5,
+                        start: isOnWater ? 0.5 : 1,
                         end: 0,
                         ease: EaseFunctions.expoIn
                     },
                     speed: Vec.create(0, 0),
-                    tint: this.floorType !== "water" ? 0xeeeeee : 0xaaffff,
+                    tint: isOnWater ? 0xaaffff : 0xeeeeee,
                     onDeath: self => {
                         this._bloodDecals.delete(self);
                     }
@@ -1573,6 +1634,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             this.images.blood.addChild(bodyBlood);
 
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             setTimeout(() => { bodyBlood.destroyed || bodyBlood.destroy(); }, 30000);
         }
     }

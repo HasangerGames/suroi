@@ -77,27 +77,27 @@ export const Ammos = ObjectDefinitions.create<AmmoDefinition>()(
             defaultCasingFrame: "casing_9x19mm"
         },
         {
-            idString: "127mm",
-            name: "12.7mm",
-            maxStackSize: 10,
+            idString: "50cal",
+            name: ".50 Cal",
+            maxStackSize: 9,
             characteristicColor: {
-                hue: 75,
-                saturation: 100,
-                lightness: 75
+                hue: 0,
+                saturation: 0,
+                lightness: 0
             },
             defaultCasingFrame: "casing_50bmg",
             hideUnlessPresent: true
         },
         {
-            idString: "firework_rocket",
-            name: "Firework Rocket",
-            maxStackSize: 5,
+            idString: "338lap",
+            name: ".338 Lapua Magnum",
+            maxStackSize: 9,
             characteristicColor: {
-                hue: 0,
-                saturation: 55,
-                lightness: 85
+                hue: 75,
+                saturation: 100,
+                lightness: 75
             },
-            defaultCasingFrame: "casing_firework_rocket",
+            defaultCasingFrame: "casing_338lap",
             hideUnlessPresent: true
         },
         {
@@ -112,12 +112,18 @@ export const Ammos = ObjectDefinitions.create<AmmoDefinition>()(
             defaultCasingFrame: "casing_curadell",
             hideUnlessPresent: true
         },
-        /*
         {
-            idString: "50ae",
-            name: ".50 AE",
-            itemType: ItemType.Ammo
-        }, */
+            idString: "firework_rocket",
+            name: "Firework Rocket",
+            maxStackSize: 5,
+            characteristicColor: {
+                hue: 0,
+                saturation: 55,
+                lightness: 85
+            },
+            defaultCasingFrame: "casing_firework_rocket",
+            hideUnlessPresent: true
+        },
 
         // Ephemeral ammo types below
 

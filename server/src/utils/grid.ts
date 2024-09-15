@@ -1,4 +1,4 @@
-import { ObjectCategory } from "@common/constants";
+import { Layer, ObjectCategory } from "@common/constants";
 import { type Hitbox } from "@common/utils/hitbox";
 import { Numeric } from "@common/utils/math";
 import { ObjectPool } from "@common/utils/objectPool";
@@ -7,6 +7,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { type GameObject, type ObjectMapping } from "../objects/gameObject";
 import { Logger } from "./misc";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
 
 /**
  * A Grid to filter collision detection of game objects
@@ -56,15 +57,20 @@ export class Grid {
         this._removeFromGrid(object);
         const cells: Vector[] = [];
 
-        if (object.hitbox === undefined) {
+        const hasSpawnHitbox = "spawnHitbox" in object;
+        const hitbox = object.hitbox;
+
+        if (hitbox === undefined && !hasSpawnHitbox) {
             const pos = this._roundToCells(object.position);
             (this._grid[pos.x][pos.y] ??= new Map()).set(object.id, object);
             cells.push(pos);
         } else {
             const rect = (
-                "spawnHitbox" in object
+                hasSpawnHitbox
                     ? object.spawnHitbox
-                    : object.hitbox
+                    // can't be undefined cuz then hasSpawnHitbox would be true, meaning we'd pick the ternary's other branch
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    : hitbox!
             ).toRectangle();
 
             // Get the bounds of the hitbox
@@ -117,15 +123,17 @@ export class Grid {
      * and gets all objects intersecting it after rounding it to grid cells
      *
      * @param hitbox The hitbox
+     * @param layer An optional layer to filter by; if omitted, all objects intersecting the hitbox—regardless of their layer—are returned
      * @return A set with the objects near this hitbox
      */
-    intersectsHitbox(hitbox: Hitbox): Set<GameObject> {
+    intersectsHitbox(hitbox: Hitbox, layer?: Layer): Set<GameObject> {
         const rect = hitbox.toRectangle();
 
         const min = this._roundToCells(rect.min);
         const max = this._roundToCells(rect.max);
 
         const objects = new Set<GameObject>();
+        const includeAll = layer === undefined;
 
         for (
             let x = min.x, maxX = max.x;
@@ -142,7 +150,10 @@ export class Grid {
                 if (!objectsMap) continue;
 
                 for (const object of objectsMap.values()) {
-                    objects.add(object);
+                    // Only filter intersecting objects by their layer if a layer was specified.
+                    if (includeAll || (object.layer !== undefined && adjacentOrEqualLayer(object.layer, layer))) {
+                        objects.add(object);
+                    }
                 }
             }
         }

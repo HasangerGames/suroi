@@ -1,7 +1,7 @@
 import { BitStream, type BitView } from "@damienvesper/bit-buffer";
-import { GameConstants, ObjectCategory } from "../constants";
+import { GameConstants, Layer, ObjectCategory } from "../constants";
 import { RotationMode } from "../definitions/obstacles";
-import { type Orientation, type Variation } from "../typings";
+import { type Orientation } from "../typings";
 import { Angle, Numeric } from "./math";
 import { Vec, type Vector } from "./vector";
 
@@ -9,7 +9,6 @@ export const calculateEnumPacketBits = (enumeration: Record<string | number, str
 
 export const OBJECT_CATEGORY_BITS = calculateEnumPacketBits(ObjectCategory);
 export const OBJECT_ID_BITS = 13;
-export const VARIATION_BITS = 3;
 export const MIN_OBJECT_SCALE = 0.25;
 export const MAX_OBJECT_SCALE = 3;
 
@@ -227,19 +226,19 @@ export class SuroiBitStream extends BitStream {
     }
 
     /**
-     * Write a game object variation to the stream
-     * @param value The variation value to write
+     * Write a game object layer to the stream
+     * @param value The layer value to write
      */
-    writeVariation(value: Variation): void {
-        this.writeBits(value, VARIATION_BITS);
+    writeLayer(value: Layer): void {
+        this.writeBits(value + 2, 3);
     }
 
     /**
-     * Read a game object variation from the stream
-     * @return The object variation
+     * Read a game object layer from the stream
+     * @return The object layer
      */
-    readVariation(): Variation {
-        return this.readBits(VARIATION_BITS) as Variation;
+    readLayer(): Layer {
+        return this.readBits(3) - 2;
     }
 
     /**

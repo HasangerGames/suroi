@@ -1,4 +1,4 @@
-import { TeamSize } from "@common/constants";
+import { Layer, TeamSize } from "@common/constants";
 import { type Vector } from "@common/utils/vector";
 
 import { type Maps } from "./data/maps";
@@ -21,25 +21,21 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    mapName: "main",
+    map: "main",
+
+    spawn: { mode: SpawnMode.Normal },
+
+    maxTeamSize: TeamSize.Solo,
+
+    maxPlayersPerGame: 80,
+    maxGames: 4,
+    gameJoinTime: 60,
+
+    gas: { mode: GasMode.Normal },
 
     tps: 40,
 
     plugins: [],
-
-    spawn: { mode: SpawnMode.Normal },
-
-    maxPlayersPerGame: 80,
-    maxGames: 4,
-    preventJoinAfter: 60000,
-
-    gas: { mode: GasMode.Normal },
-
-    movementSpeed: 0.02655,
-
-    censorUsernames: true,
-
-    maxTeamSize: TeamSize.Solo,
 
     roles: {
         "developr": { password: "developr", isDev: true },
@@ -93,19 +89,10 @@ export interface ConfigType {
 
     /**
      * The map name. Must be a valid value from the server maps definitions (`maps.ts`).
-     * Example: `"main"` for the main map or `"debug"` for the debug map
+     * Example: `"main"` for the main map or `"debug"` for the debug map.
+     * Parameters can also be specified for certain maps, separated by colons (e.g. `singleObstacle:rock`)
      */
-    readonly mapName: keyof typeof Maps
-
-    /**
-     * Server Ticks Per Second
-     */
-    readonly tps: number
-
-    /**
-     * List of plugin classes to load
-     */
-    readonly plugins: Array<new (game: Game) => GamePlugin>
+    readonly map: `${keyof typeof Maps}${string}`
 
     /**
      * There are 4 spawn modes: `Normal`, `Radius`, `Fixed`, and `Center`.
@@ -115,27 +102,24 @@ export interface ConfigType {
      * - `SpawnMode.Center` always spawns the player in the center of the map.
      */
     readonly spawn:
-        {
-            readonly mode: SpawnMode.Normal
-        } |
-        {
+        | { readonly mode: SpawnMode.Normal }
+        | {
             readonly mode: SpawnMode.Radius
             readonly position: Vector
             readonly radius: number
-        } |
-        {
+        }
+        | {
             readonly mode: SpawnMode.Fixed
             readonly position: Vector
-        } |
-        {
-            readonly mode: SpawnMode.Center
+            readonly layer?: Layer
         }
+        | { readonly mode: SpawnMode.Center }
 
     /**
      * The maximum number of players allowed to join a team.
      *
      * Specifying a {@link TeamSize} causes the team size to
-     * simply remains at that value indefinitely; alternatively,
+     * simply remain at that value indefinitely; alternatively,
      * specifying a cron pattern and an array of team sizes
      * allows for team sizes to change periodically
      */
@@ -161,9 +145,9 @@ export interface ConfigType {
     readonly maxGames: number
 
     /**
-     * The number of milliseconds after which players are prevented from joining a game.
+     * The number of seconds after which players are prevented from joining a game.
      */
-    readonly preventJoinAfter: number
+    readonly gameJoinTime: number
 
     /**
      * There are 3 gas modes: GasMode.Normal, GasMode.Debug, and GasMode.Disabled.
@@ -171,22 +155,35 @@ export interface ConfigType {
      * GasMode.Debug: The duration of each stage is always the duration specified by overrideDuration.
      * GasMode.Disabled: Gas is disabled.
      */
-    readonly gas: {
-        readonly mode: GasMode.Disabled
-    } | {
-        readonly mode: GasMode.Normal
-    } | {
-        readonly mode: GasMode.Debug
-        readonly overridePosition?: boolean
-        readonly overrideDuration?: number
-    }
-
-    readonly movementSpeed: number
+    readonly gas:
+        | { readonly mode: GasMode.Disabled }
+        | { readonly mode: GasMode.Normal }
+        | {
+            readonly mode: GasMode.Debug
+            readonly overridePosition?: boolean
+            readonly overrideDuration?: number
+        }
 
     /**
-     * A basic filter that censors only the most extreme swearing.
+     * The number of game ticks that occur per second.
      */
-    readonly censorUsernames: boolean
+    readonly tps: number
+
+    /**
+     * List of plugin classes to load.
+     */
+    readonly plugins: Array<new (game: Game) => GamePlugin>
+
+    /**
+     * Allows scopes and radios to work in buildings.
+     */
+    readonly disableBuildingCheck?: boolean
+
+    /**
+     * Disables the username filter.
+     * The filter is very basic, censoring only the most extreme slurs and the like.
+     */
+    readonly disableUsernameFilter?: boolean
 
     /**
      * If this option is present, various options to mitigate bots and cheaters are enabled.

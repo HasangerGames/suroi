@@ -1,3 +1,5 @@
+import { HitboxType, RectangleHitbox } from "@common/utils/hitbox";
+import { isStairLayer } from "@common/utils/layer";
 import { Config as ClientConfig } from "../../client/src/scripts/config";
 import { FireMode, GameConstants } from "../../common/src/constants";
 import { Ammos } from "../../common/src/definitions/ammos";
@@ -21,13 +23,13 @@ import { Skins } from "../../common/src/definitions/skins";
 import { SyncedParticles } from "../../common/src/definitions/syncedParticles";
 import { Throwables, type ThrowableDefinition } from "../../common/src/definitions/throwables";
 import { ColorStyles, FontStyles, styleText } from "../../common/src/utils/ansiColoring";
-import { ItemType, ObstacleSpecialRoles, type ObjectDefinition } from "../../common/src/utils/objectDefinitions";
+import { ItemType, NullString, ObstacleSpecialRoles, type ObjectDefinition } from "../../common/src/utils/objectDefinitions";
 import { FloorTypes } from "../../common/src/utils/terrain";
 import { type Vector } from "../../common/src/utils/vector";
 import { Config, GasMode, Config as ServerConfig, SpawnMode } from "../../server/src/config";
 import { GasStages } from "../../server/src/data/gasStages";
 import { LootTables, LootTiers } from "../../server/src/data/lootTables";
-import { Maps } from "../../server/src/data/maps";
+import { Maps, type MapName } from "../../server/src/data/maps";
 import { findDupes, logger, safeString, tester, validators } from "./validationUtils";
 
 const testStart = Date.now();
@@ -732,7 +734,7 @@ logger.indent("Validating building definitions", () => {
                 tester.runTestOnIdStringArray(
                     buildingObstacles,
                     (obstacle, errorPath) => {
-                        const obstacles = typeof obstacle.idString === "string"
+                        const obstacles: Array<string | typeof NullString> = typeof obstacle.idString === "string"
                             ? [obstacle.idString]
                             : Object.keys(obstacle.idString);
 
@@ -754,6 +756,7 @@ logger.indent("Validating building definitions", () => {
                         );
 
                         for (const idString of obstacles) {
+                            if (idString === NullString) continue;
                             logger.indent(`Validating '${idString}'`, () => {
                                 const errorPath2 = tester.createPath(errorPath, `obstacle '${idString}'`);
 
@@ -823,7 +826,23 @@ logger.indent("Validating building definitions", () => {
                                                 break;
                                             }
                                         }
+
+                                        if (reference.isStair) {
+                                            tester.assert(
+                                                isStairLayer(obstacle.layer ?? 0),
+                                                `Obstacle with role "Stair" must be placed on a stair layer (given layer is ${obstacle.layer})`,
+                                                errorPath
+                                            );
+                                        }
                                     }
+                                }
+
+                                if (obstacle.layer !== undefined) {
+                                    tester.assertInt({
+                                        obj: obstacle,
+                                        field: "layer",
+                                        baseErrorPath: errorPath2
+                                    });
                                 }
 
                                 if (obstacle.variation !== undefined) {
@@ -842,6 +861,8 @@ logger.indent("Validating building definitions", () => {
                                                 field: "variation",
                                                 min: 0,
                                                 max: def.variations - 1,
+                                                includeMin: true,
+                                                includeMax: true,
                                                 baseErrorPath: errorPath
                                             });
                                         }
@@ -907,7 +928,7 @@ logger.indent("Validating building definitions", () => {
                 tester.runTestOnIdStringArray(
                     buildingSubBuildings,
                     (subBuilding, errorPath) => {
-                        const subBuildings = typeof subBuilding.idString === "string"
+                        const subBuildings: Array<string | typeof NullString> = typeof subBuilding.idString === "string"
                             ? [subBuilding.idString]
                             : Object.keys(subBuilding.idString);
 
@@ -929,6 +950,7 @@ logger.indent("Validating building definitions", () => {
                         );
 
                         for (const idString of subBuildings) {
+                            if (idString === NullString) continue;
                             logger.indent(`Validating '${idString}'`, () => {
                                 tester.assertReferenceExists({
                                     value: idString,
@@ -945,47 +967,6 @@ logger.indent("Validating building definitions", () => {
                             obj: subBuilding,
                             field: "orientation",
                             defaultValue: 0,
-                            baseErrorPath: errorPath
-                        });
-                    },
-                    errorPath2
-                );
-            });
-
-            const buildingDecals = building.decals;
-            logger.indent("Validating decals", () => {
-                const errorPath2 = tester.createPath(errorPath, "decals");
-
-                tester.runTestOnIdStringArray(
-                    buildingDecals,
-                    (decal, errorPath) => {
-                        tester.assertReferenceExists({
-                            obj: decal,
-                            field: "idString",
-                            collection: Decals,
-                            collectionName: "Decals",
-                            baseErrorPath: errorPath
-                        });
-
-                        validators.vector(tester.createPath(errorPath, "position"), decal.position);
-
-                        tester.assertNoPointlessValue({
-                            obj: decal,
-                            field: "orientation",
-                            defaultValue: 0,
-                            baseErrorPath: errorPath
-                        });
-
-                        tester.assertValidOrNPV({
-                            obj: decal,
-                            field: "scale",
-                            defaultValue: 1,
-                            validatorIfPresent: scale => {
-                                tester.assertIsFiniteRealNumber({
-                                    value: scale,
-                                    errorPath: tester.createPath(errorPath, "field 'scale'")
-                                });
-                            },
                             baseErrorPath: errorPath
                         });
                     },
@@ -1016,7 +997,7 @@ logger.indent("Validating building definitions", () => {
 
                     tester.assertReferenceExists({
                         obj: puzzle,
-                        field: "triggerInteractOn",
+                        field: "triggerOnSolve",
                         collection: Obstacles,
                         collectionName: "Obstacles",
                         baseErrorPath: errorPath2
@@ -1027,27 +1008,27 @@ logger.indent("Validating building definitions", () => {
                     const puzzleTargetAlwaysExists = hasObstacles && building.obstacles.some(o => {
                         switch (typeof o.idString) {
                             case "string": {
-                                return o.idString === puzzle.triggerInteractOn;
+                                return o.idString === puzzle.triggerOnSolve;
                             }
                             case "object": {
-                                return Object.keys(o.idString).length === 1 && puzzle.triggerInteractOn in o.idString;
+                                return Object.keys(o.idString).length === 1 && puzzle.triggerOnSolve in o.idString;
                             }
                         }
                     });
 
                     if (!puzzleTargetAlwaysExists) {
-                        const targetMightExist = hasObstacles && building.obstacles.some(o => typeof o.idString === "object" && puzzle.triggerInteractOn in o.idString);
+                        const targetMightExist = hasObstacles && building.obstacles.some(o => typeof o.idString === "object" && puzzle.triggerOnSolve in o.idString);
 
                         if (targetMightExist) {
                             tester.assertWarn(
                                 true,
-                                `This puzzle specified a target of '${puzzle.triggerInteractOn}', but this obstacle is not guaranteed to spawn`,
+                                `This puzzle specified a target of '${puzzle.triggerOnSolve}', but this obstacle is not guaranteed to spawn`,
                                 errorPath2
                             );
                         } else {
                             tester.assert(
                                 false,
-                                `This puzzle specified a target of '${puzzle.triggerInteractOn}', but no instances of this obstacle exist in the building`,
+                                `This puzzle specified a target of '${puzzle.triggerOnSolve}', but no instances of this obstacle exist in the building`,
                                 errorPath2
                             );
                         }
@@ -1055,7 +1036,7 @@ logger.indent("Validating building definitions", () => {
 
                     tester.assertIsPositiveFiniteReal({
                         obj: puzzle,
-                        field: "interactDelay",
+                        field: "delay",
                         baseErrorPath: errorPath2
                     });
 
@@ -1194,14 +1175,14 @@ logger.indent("Validating building definitions", () => {
                     ({ idString: other }) => typeof self === "string"
                         ? self === other
                         : Object.keys(self).length === 1 && other in self
-                )?.role === ObstacleSpecialRoles.Wall
+                )?.isWall
             ).length ?? Infinity;
 
             const maxPossibleMatches = (
                 building.obstacles?.filter(
                     ({ idString: self }) => Obstacles.definitions.find(
                         ({ idString: other }) => typeof self === "object" && Object.keys(self).length > 1 && Object.keys(self).includes(other)
-                    )?.role === ObstacleSpecialRoles.Wall
+                    )?.isWall
                 ).length ?? Infinity
             ) + definiteMatches;
 
@@ -2166,14 +2147,39 @@ logger.indent("Validating obstacles", () => {
             if (obstacle.role !== undefined) {
                 const role = obstacle.role;
                 logger.indent("Validating role-specific fields", () => {
+                    const roleName = ObstacleSpecialRoles[role] as keyof typeof ObstacleSpecialRoles;
+
                     tester.assert(
                         obstacle.rotationMode !== RotationMode.Full,
-                        `An obstacle whose role is '${ObstacleSpecialRoles[role]}' cannot specify a rotation mode of 'Full'`,
+                        `An obstacle whose role is '${roleName}' cannot specify a rotation mode of 'Full'`,
+                        errorPath
+                    );
+
+                    tester.runTestOnArray(
+                        Object.keys(ObstacleSpecialRoles)
+                            // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+                            .filter(k => Number.isNaN(+k)) as ReadonlyArray<keyof typeof ObstacleSpecialRoles & string>,
+                        (key, errorPath) => {
+                            const prop = `is${key}` as const;
+                            const expected = role === ObstacleSpecialRoles[key];
+
+                            tester.assert(
+                                obstacle[prop] === expected || obstacle[prop] === undefined,
+                                `An obstacle whose role is '${roleName}' should have property '${prop}' set to ${expected ? "true" : "false, or absent (undefined"}`,
+                                errorPath
+                            );
+                        },
                         errorPath
                     );
 
                     switch (role) {
                         case ObstacleSpecialRoles.Door: {
+                            tester.assert(
+                                obstacle.isDoor,
+                                "An obstacle whose role is 'Door' must also have isDoor set to true",
+                                errorPath
+                            );
+
                             if (obstacle.operationStyle !== "slide") {
                                 validators.vector(tester.createPath(errorPath, "hinge offset"), obstacle.hingeOffset);
                             } else {
@@ -2260,7 +2266,7 @@ logger.indent("Validating obstacles", () => {
                                 logger.indent("Validating replacement", () => {
                                     const errorPath2 = tester.createPath(errorPath, "replacement");
 
-                                    const obstacles = typeof replacement.idString === "string"
+                                    const obstacles: Array<string | typeof NullString> = typeof replacement.idString === "string"
                                         ? [replacement.idString]
                                         : Object.keys(replacement.idString);
 
@@ -2282,6 +2288,7 @@ logger.indent("Validating obstacles", () => {
                                     );
 
                                     for (const idString of obstacles) {
+                                        if (idString === NullString) continue;
                                         logger.indent(`Validating '${idString}'`, () => {
                                             tester.assertReferenceExists({
                                                 value: idString,
@@ -2299,6 +2306,23 @@ logger.indent("Validating obstacles", () => {
                                     });
                                 });
                             }
+                            break;
+                        }
+                        case ObstacleSpecialRoles.Stair: {
+                            tester.assert(
+                                obstacle.activeEdges.high !== obstacle.activeEdges.low,
+                                "Stair obstacle specified both high and low edge at the same spot",
+                                errorPath
+                            );
+
+                            // invalid hitboxes shouldn't type-check, but this is more of a sanity check thing
+                            const hitbox = obstacle.hitbox;
+                            tester.assert(
+                                hitbox.type === HitboxType.Rect || hitbox instanceof RectangleHitbox,
+                                `Stair obstacle must have a rectangular hitbox (received hitbox of type ${HitboxType[hitbox.type] ?? hitbox.constructor?.name})`,
+                                errorPath
+                            );
+                            break;
                         }
                     }
                 });
@@ -2602,11 +2626,9 @@ logger.indent("Validating throwables", () => {
                 });
             });
 
-            tester.assertInBounds({
+            tester.assertIsPositiveReal({
                 obj: throwable,
                 field: "speedCap",
-                min: 0,
-                max: Infinity,
                 baseErrorPath: errorPath
             });
 
@@ -2726,23 +2748,15 @@ logger.indent("Validating configurations", () => {
             baseErrorPath: errorPath
         });
 
+        const [name] = ServerConfig.map.split(":") as [MapName, string[]];
         tester.assertReferenceExistsObject({
-            obj: ServerConfig,
-            field: "mapName",
+            value: name,
             collection: Maps,
             collectionName: "maps",
-            baseErrorPath: errorPath
+            errorPath
         });
 
         switch (ServerConfig.spawn.mode) {
-            case SpawnMode.Normal: {
-                // nothing to do
-                break;
-            }
-            case SpawnMode.Center: {
-                // nothing to do
-                break;
-            }
             case SpawnMode.Radius: {
                 tester.assertIsPositiveFiniteReal({
                     obj: ServerConfig.spawn,
@@ -2750,7 +2764,7 @@ logger.indent("Validating configurations", () => {
                     baseErrorPath: errorPath
                 });
 
-                const map = Maps[ServerConfig.mapName];
+                const map = Maps[name];
                 if (map !== undefined) {
                     validators.vector(
                         tester.createPath(errorPath, "spawn position"),
@@ -2772,7 +2786,7 @@ logger.indent("Validating configurations", () => {
                 break;
             }
             case SpawnMode.Fixed: {
-                const map = Maps[ServerConfig.mapName];
+                const map = Maps[name];
                 if (map !== undefined) {
                     validators.vector(
                         tester.createPath(errorPath, "spawn position"),
@@ -2793,6 +2807,10 @@ logger.indent("Validating configurations", () => {
                 }
                 break;
             }
+            case SpawnMode.Normal:
+            case SpawnMode.Center:
+            default:
+                break;
         }
 
         tester.assertIsNaturalNumber({
@@ -2807,37 +2825,20 @@ logger.indent("Validating configurations", () => {
             baseErrorPath: errorPath
         });
 
-        switch (ServerConfig.gas.mode) {
-            case GasMode.Normal: {
-                // nothing to do
-                break;
-            }
-            case GasMode.Debug: {
-                tester.assertNoPointlessValue({
-                    obj: ServerConfig.gas,
-                    field: "overridePosition",
-                    defaultValue: false,
-                    baseErrorPath: errorPath
-                });
+        if (ServerConfig.gas.mode === GasMode.Debug) {
+            tester.assertNoPointlessValue({
+                obj: ServerConfig.gas,
+                field: "overridePosition",
+                defaultValue: false,
+                baseErrorPath: errorPath
+            });
 
-                tester.assertIsPositiveReal({
-                    obj: ServerConfig.gas,
-                    field: "overrideDuration",
-                    baseErrorPath: errorPath
-                });
-                break;
-            }
-            case GasMode.Disabled: {
-                // nothing to do
-                break;
-            }
+            tester.assertIsPositiveReal({
+                obj: ServerConfig.gas,
+                field: "overrideDuration",
+                baseErrorPath: errorPath
+            });
         }
-
-        tester.assertIsPositiveFiniteReal({
-            obj: ServerConfig,
-            field: "movementSpeed",
-            baseErrorPath: errorPath
-        });
 
         if (ServerConfig.protection) {
             const protection = ServerConfig.protection;

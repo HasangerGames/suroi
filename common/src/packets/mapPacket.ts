@@ -1,22 +1,16 @@
 import { ObjectCategory } from "../constants";
-import { Buildings, type BuildingDefinition } from "../definitions/buildings";
-import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions/obstacles";
+import { Buildings } from "../definitions/buildings";
+import { Obstacles, RotationMode } from "../definitions/obstacles";
 import { type Variation } from "../typings";
+import type { CommonGameObject } from "../utils/gameObject";
+import { Angle } from "../utils/math";
 import { type Vector } from "../utils/vector";
 import { createPacket } from "./packet";
 
 export type MapObject = {
-    readonly position: Vector
-    readonly rotation: number
     readonly scale?: number
     readonly variation?: Variation
-} & ({
-    readonly type: ObjectCategory.Obstacle
-    readonly definition: ObstacleDefinition
-} | {
-    readonly type: ObjectCategory.Building
-    readonly definition: BuildingDefinition
-});
+} & CommonGameObject;
 
 export type MapPacketData = {
     readonly seed: number
@@ -54,13 +48,16 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
                     Obstacles.writeToStream(stream, object.definition);
                     stream.writeObstacleRotation(object.rotation, object.definition.rotationMode);
                     if (object.definition.variations !== undefined && object.variation !== undefined) {
-                        stream.writeVariation(object.variation);
+                        // if the unserialized form is present, the unserialized form should also be present
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        stream.writeBits(object.variation, object.definition.variationBits!);
                     }
                     break;
                 }
                 case ObjectCategory.Building:
                     Buildings.writeToStream(stream, object.definition);
-                    stream.writeObstacleRotation(object.rotation, RotationMode.Limited);
+                    stream.writeObstacleRotation(object.orientation, RotationMode.Limited);
+                    stream.writeLayer(object.layer);
                     break;
             }
         });
@@ -93,27 +90,36 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
 
                         let variation: Variation | undefined;
                         if (definition.variations !== undefined) {
-                            variation = stream.readVariation();
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            variation = stream.readBits(definition.variationBits!) as Variation;
                         }
+
                         return {
                             position,
                             type,
+                            dead: false,
                             definition,
                             scale,
                             rotation,
-                            variation
+                            variation,
+                            isObstacle: true
                         };
                     }
                     case ObjectCategory.Building: {
                         const definition = Buildings.readFromStream(stream);
                         const { orientation } = stream.readObstacleRotation(RotationMode.Limited);
+                        const layer = stream.readLayer();
 
                         return {
                             position,
                             type,
+                            dead: false,
                             definition,
-                            rotation: orientation,
-                            scale: 1
+                            rotation: Angle.orientationToRotation(orientation),
+                            orientation,
+                            scale: 1,
+                            layer,
+                            isBuilding: true
                         };
                     }
                 }

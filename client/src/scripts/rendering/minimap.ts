@@ -1,19 +1,19 @@
 import $ from "jquery";
 import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
-import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { GameConstants, GasState, Layer, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type MapPingDefinition } from "../../../../common/src/definitions/mapPings";
 import { type MapPacketData } from "../../../../common/src/packets/mapPacket";
 import { type PingSerialization, type PlayerPingSerialization } from "../../../../common/src/packets/updatePacket";
-import { type Orientation } from "../../../../common/src/typings";
-import { HitboxType, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
-import { Angle, Numeric } from "../../../../common/src/utils/math";
+import { RectangleHitbox } from "../../../../common/src/utils/hitbox";
+import { Numeric } from "../../../../common/src/utils/math";
 import { FloorTypes, River, Terrain } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
-import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { COLORS, DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
+import { SuroiSprite, drawGroundGraphics, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GasRender } from "./gas";
+import { getEffectiveZIndex } from "../../../../common/src/utils/layer";
 
 export class Minimap {
     private _expanded = false;
@@ -86,7 +86,7 @@ export class Minimap {
     readonly pingsContainer = new Container();
     readonly pingGraphics = new Graphics();
 
-    private readonly _terrainGraphics = new Graphics();
+    readonly terrainGraphics = new Graphics();
 
     private _objects: MapPacketData["objects"] = [];
     private _places: MapPacketData["places"] = [];
@@ -214,45 +214,12 @@ export class Minimap {
         ctx.stroke();
 
         for (const building of this._objects) {
-            if (building.type !== ObjectCategory.Building) continue;
+            if (!building.isBuilding) continue;
 
             const definition = building.definition;
-            const drawGroundGraphics = (hitbox: Hitbox): void => {
-                switch (hitbox.type) {
-                    case HitboxType.Rect: {
-                        ctx.rect(
-                            hitbox.min.x * scale,
-                            hitbox.min.y * scale,
-                            (hitbox.max.x - hitbox.min.x) * scale,
-                            (hitbox.max.y - hitbox.min.y) * scale
-                        );
-                        break;
-                    }
-                    case HitboxType.Circle:
-                        ctx.arc(
-                            hitbox.position.x * scale,
-                            hitbox.position.y * scale,
-                            hitbox.radius * scale,
-                            0,
-                            Math.PI * 2
-                        );
-                        break;
-                    case HitboxType.Polygon:
-                        ctx.poly(
-                            hitbox.points.map(v => Vec.scale(v, scale))
-                        );
-                        break;
-                    case HitboxType.Group:
-                        for (const hitBox of hitbox.hitboxes) {
-                            drawGroundGraphics(hitBox);
-                        }
-                        break;
-                }
-            };
-
             for (const ground of definition.groundGraphics) {
                 ctx.beginPath();
-                drawGroundGraphics(ground.hitbox.transform(building.position, 1, building.rotation as Orientation));
+                drawGroundGraphics(ground.hitbox.transform(building.position, 1, building.orientation), ctx, scale);
                 ctx.closePath();
                 ctx.fill(ground.color);
             }
@@ -261,7 +228,7 @@ export class Minimap {
 
     renderMap(): void {
         // Draw the terrain graphics
-        const terrainGraphics = this._terrainGraphics;
+        const terrainGraphics = this.terrainGraphics;
         terrainGraphics.clear();
         const mapGraphics = new Graphics();
 
@@ -310,12 +277,13 @@ export class Minimap {
                 }
 
                 case ObjectCategory.Building: {
+                    if (mapObject.layer !== Layer.Ground) continue;
                     const definition = mapObject.definition;
-                    const rotation = Angle.orientationToRotation(mapObject.rotation);
+                    const rotation = mapObject.rotation;
 
                     for (const image of definition.floorImages) {
                         const sprite = new SuroiSprite(image.key)
-                            .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.rotation as Orientation))
+                            .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.orientation))
                             .setRotation(rotation + (image.rotation ?? 0))
                             .setZIndex(ZIndexes.BuildingsFloor);
 
@@ -326,8 +294,8 @@ export class Minimap {
 
                     for (const image of definition.ceilingImages) {
                         const sprite = new SuroiSprite(image.key)
-                            .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.rotation as Orientation))
-                            .setRotation(rotation)
+                            .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.orientation))
+                            .setRotation(rotation + (image.rotation ?? 0))
                             .setZIndex(definition.ceilingZIndex);
 
                         sprite.scale.set(1 / PIXI_SCALE);
@@ -335,6 +303,18 @@ export class Minimap {
                         sprite.scale.y *= image.scale?.y ?? 1;
                         if (image.tint !== undefined) sprite.setTint(image.tint);
                         mapRender.addChild(sprite);
+                    }
+
+                    if (definition.graphics.length) {
+                        const ctx = new Graphics();
+                        ctx.zIndex = definition.graphicsZIndex;
+                        for (const graphics of definition.graphics) {
+                            ctx.beginPath();
+                            drawGroundGraphics(graphics.hitbox.transform(mapObject.position, 1, mapObject.orientation), ctx, 1);
+                            ctx.closePath();
+                            ctx.fill(graphics.color);
+                        }
+                        mapRender.addChild(ctx);
                     }
                     break;
                 }
@@ -398,9 +378,10 @@ export class Minimap {
     renderMapDebug(): void {
         const debugGraphics = this.debugGraphics;
         debugGraphics.clear();
-        debugGraphics.zIndex = 99;
-        for (const [hitbox, type] of this._terrain.floors) {
-            drawHitbox(hitbox, FloorTypes[type].debugColor, debugGraphics);
+        debugGraphics.zIndex = 999;
+        for (const [hitbox, { floorType, layer }] of this._terrain.floors) {
+            drawHitbox(hitbox, (FloorTypes[floorType].debugColor * (2 ** 8) + 0x80).toString(16), debugGraphics, layer as Layer === FOOTSTEP_HITBOX_LAYER ? 1 : DIFF_LAYER_HITBOX_OPACITY);
+            //                                                      ^^^^^^ using << 8 can cause 32-bit overflow lol
         }
 
         drawHitbox(this._terrain.beachHitbox, FloorTypes.sand.debugColor, debugGraphics);
@@ -462,10 +443,10 @@ export class Minimap {
         );
 
         for (const object of this._objects) {
-            if (object.type === ObjectCategory.Building) {
+            if (object.isBuilding) {
                 for (const floor of object.definition.floors) {
-                    const hitbox = floor.hitbox.transform(object.position, 1, object.rotation as Orientation);
-                    this._terrain.addFloor(floor.type, hitbox);
+                    const hitbox = floor.hitbox.transform(object.position, 1, object.orientation);
+                    this._terrain.addFloor(floor.type, hitbox, floor.layer ?? object.layer ?? 0);
                 }
             }
         }
@@ -783,7 +764,7 @@ export class MapPing {
             this.inGameImage = new SuroiSprite(definition.idString)
                 .setVPos(toPixiCoords(position))
                 .setTint(this.color)
-                .setZIndex(ZIndexes.Gas + 1);
+                .setZIndex(getEffectiveZIndex(ZIndexes.Gas + 1, Layer.Floor1, game.layer)); // todo: better logic for this
         }
     }
 

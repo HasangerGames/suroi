@@ -1,3 +1,4 @@
+import { Layer } from "../constants";
 import { PolygonHitbox, RectangleHitbox, type Hitbox } from "./hitbox";
 import { Collision, Numeric } from "./math";
 import { SeededRandom } from "./random";
@@ -10,7 +11,18 @@ export interface FloorDefinition {
     readonly particles?: boolean
 }
 
-export const FloorTypes: Record<string, FloorDefinition> = {
+export const enum FloorNames {
+    Grass = "grass",
+    Stone = "stone",
+    Wood = "wood",
+    Sand = "sand",
+    Metal = "metal",
+    Carpet = "carpet",
+    Water = "water",
+    Void = "void"
+}
+
+export const FloorTypes: Record<FloorNames, FloorDefinition> = {
     grass: {
         debugColor: 0x005500
     },
@@ -26,11 +38,17 @@ export const FloorTypes: Record<string, FloorDefinition> = {
     metal: {
         debugColor: 0x808080
     },
+    carpet: {
+        debugColor: 0x32a868
+    },
     water: {
         debugColor: 0x00ddff,
         speedMultiplier: 0.7,
         overlay: true,
         particles: true
+    },
+    void: {
+        debugColor: 0x77390d
     }
 };
 
@@ -39,7 +57,7 @@ export class Terrain {
     readonly height: number;
     readonly cellSize = 64;
 
-    readonly floors = new Map<Hitbox, string>();
+    readonly floors = new Map<Hitbox, { readonly floorType: FloorNames, readonly layer: Layer | number }>();
 
     readonly rivers: readonly River[];
 
@@ -51,7 +69,7 @@ export class Terrain {
     private readonly _grid: Array<
         Array<{
             readonly rivers: River[]
-            readonly floors: Array<{ readonly type: string, readonly hitbox: Hitbox }>
+            readonly floors: Array<{ readonly type: FloorNames, readonly hitbox: Hitbox, readonly layer: number }>
         }>
     > = [];
 
@@ -122,8 +140,8 @@ export class Terrain {
         }
     }
 
-    addFloor(type: string, hitbox: Hitbox): void {
-        this.floors.set(hitbox, type);
+    addFloor(type: FloorNames, hitbox: Hitbox, layer: number): void {
+        this.floors.set(hitbox, { floorType: type, layer });
         // get the bounds of the hitbox
         const rect = hitbox.toRectangle();
         // round it to the grid cells
@@ -133,21 +151,29 @@ export class Terrain {
         // add it to all grid cells that it intersects
         for (let x = min.x; x <= max.x; x++) {
             for (let y = min.y; y <= max.y; y++) {
-                this._grid[x][y].floors.push({ type, hitbox });
+                this._grid[x][y].floors.push({ type, hitbox, layer });
             }
         }
     }
 
-    getFloor(position: Vector): string {
+    getFloor(position: Vector, layer: number): FloorNames {
         const pos = this._roundToCells(position);
-        let floor = "water";
+        let floor: FloorNames = FloorNames.Water;
 
         const isInsideMap = this.beachHitbox.isPointInside(position);
         if (isInsideMap) {
-            floor = "sand";
+            if (layer) { // Keeping this commented out until a solution is found
+                /*
+                    grass and sand only exist on layer 0; on other
+                    layers, it's the void
+                */
+                floor = FloorNames.Void;
+            } else {
+                floor = FloorNames.Sand;
 
-            if (this.grassHitbox.isPointInside(position)) {
-                floor = "grass";
+                if (this.grassHitbox.isPointInside(position)) {
+                    floor = FloorNames.Grass;
+                }
             }
         }
 
@@ -157,24 +183,27 @@ export class Terrain {
         if (isInsideMap) {
             for (const river of cell.rivers) {
                 if (river.bankHitbox.isPointInside(position)) {
-                    floor = "sand";
+                    floor = FloorNames.Sand;
                 }
 
                 if (river.waterHitbox.isPointInside(position)) {
-                    floor = "water";
+                    floor = FloorNames.Water;
                     break;
                 }
             }
         }
 
         for (const floor of cell.floors) {
-            if (floor.hitbox.isPointInside(position)) {
+            if (floor.hitbox.isPointInside(position) && floor.layer === layer) {
                 return floor.type;
             }
         }
 
-        // assume if no floor was found at this position, it's in the ocean
-        return floor;
+        /*
+            if no floor was found at this position, then it's either the ocean (layer 0)
+            or the void (all other floors)
+        */
+        return layer ? FloorNames.Void : floor;
     }
 
     /**

@@ -1,9 +1,9 @@
-import { KillfeedEventType, type ObjectCategory } from "@common/constants";
+import { KillfeedEventType, Layer, ObjectCategory } from "@common/constants";
+import { makeGameObjectTemplate } from "@common/utils/gameObject";
 import { type Hitbox } from "@common/utils/hitbox";
 import { ObjectSerializations, type FullData } from "@common/utils/objectsSerializations";
 import { SuroiBitStream } from "@common/utils/suroiBitStream";
 import { type Vector } from "@common/utils/vector";
-
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { MeleeItem } from "../inventory/meleeItem";
@@ -42,10 +42,12 @@ export interface DamageParams {
 export type CollidableGameObject<
     Cat extends ObjectCategory = ObjectCategory,
     HitboxType extends Hitbox = Hitbox
-> = BaseGameObject<Cat> & { readonly hitbox: HitboxType };
+> = ObjectMapping[Cat] & { readonly hitbox: HitboxType };
 
-export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory> {
-    abstract readonly type: Cat;
+export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory> extends makeGameObjectTemplate() {
+    declare readonly abstract type: Cat;
+    // doesn't get forwarded from makeGameObjectTemplate for some reason
+
     readonly abstract fullAllocBytes: number;
     readonly abstract partialAllocBytes: number;
 
@@ -62,6 +64,11 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
 
     damageable = false;
     dead = false;
+
+    private _layer: Layer = Layer.Ground;
+    get layer(): Layer { return this._layer; }
+    set layer(value: Layer) { this._layer = value; }
+
     hitbox?: Hitbox;
 
     private _fullStream?: SuroiBitStream | undefined;
@@ -70,7 +77,9 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
     private _partialStream?: SuroiBitStream | undefined;
     get partialStream(): SuroiBitStream { return this._partialStream ??= SuroiBitStream.alloc(this.partialAllocBytes * 8); }
 
-    protected constructor(game: Game, position: Vector) {
+    constructor(game: Game, position: Vector) {
+        super();
+
         this.id = game.nextObjectID;
         this.game = game;
         this._position = position;

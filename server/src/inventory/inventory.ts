@@ -392,9 +392,9 @@ export class Inventory {
 
     private _dropItem(
         toDrop: ReifiableDef<LootDefinition>,
-        options?: Parameters<Game["addLoot"]>[2] & { readonly position?: Vector }
+        options?: Parameters<Game["addLoot"]>[3] & { readonly position?: Vector }
     ): void {
-        this.owner.game.addLoot(toDrop, options?.position ?? this.owner.position, { jitterSpawn: false, ...options });
+        this.owner.game.addLoot(toDrop, options?.position ?? this.owner.position, this.owner.layer, { jitterSpawn: false, ...options });
     }
 
     removeThrowable(type: ReifiableDef<ThrowableDefinition>, drop = true, removalCount?: number): void {
@@ -625,7 +625,7 @@ export class Inventory {
 
         if (gun.definition.isDual || gun.definition.dualVariant === undefined) return false;
 
-        const dualGun = this._reifyItem(gun.definition.dualVariant) as GunItem;
+        const dualGun = this._reifyItem<GunDefinition>(gun.definition.dualVariant);
         this._setWeapon(slot, dualGun);
         dualGun.ammo = gun.ammo;
 

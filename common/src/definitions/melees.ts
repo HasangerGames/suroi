@@ -1,7 +1,7 @@
 import { FireMode } from "../constants";
 import { ItemType, ObjectDefinitions, type InventoryItemDefinition } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
-import { type Materials } from "./obstacles";
+import { Materials } from "./obstacles";
 
 export interface MeleeDefinition extends InventoryItemDefinition {
     readonly itemType: ItemType.Melee
@@ -104,7 +104,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             damage: 25,
             obstacleMultiplier: 2.5,
             piercingMultiplier: 1.5,
-            canPierceMaterials: ["cardboard"], // because ammo crate has "cardboard" material
+            canPierceMaterials: ["cardboard", "crate", "iron"], // because ammo crate has "cardboard" material
             radius: 2,
             swingSound: "heavy_swing",
             offset: Vec.create(5.4, -0.5),
@@ -125,13 +125,39 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             }
         },
         {
+            idString: "fire_hatchet",
+            name: "Fire Hatchet",
+            damage: 38,
+            obstacleMultiplier: 2.7,
+            piercingMultiplier: 2,
+            canPierceMaterials: ["cardboard", "crate", "iron"],
+            radius: 2.05,
+            swingSound: "heavy_swing",
+            offset: Vec.create(5.4, -0.5),
+            cooldown: 410,
+            fists: {
+                animationDuration: 150,
+                left: Vec.create(40, -25),
+                right: Vec.create(40, 15),
+                useLeft: Vec.create(35, -35),
+                useRight: Vec.create(75, -20)
+            },
+            image: {
+                position: Vec.create(42, 20),
+                usePosition: Vec.create(80, -25),
+                angle: 135,
+                useAngle: 65,
+                lootScale: 0.7
+            }
+        },
+        {
             idString: "crowbar",
             name: "Crowbar",
             swingSound: "heavy_swing",
             damage: 40,
             obstacleMultiplier: 2.2,
             piercingMultiplier: 2,
-            canPierceMaterials: ["cardboard"], // ammo crate moment
+            canPierceMaterials: ["cardboard", "crate", "iron"], // ammo crate moment
             radius: 2.58,
             offset: Vec.create(5.9, 1.7),
             cooldown: 560,
@@ -196,7 +222,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
                 usePosition: Vec.create(99, -5),
                 angle: 120,
                 useAngle: 5,
-                lootScale: 0.78
+                lootScale: 0.85
             }
         },
         {
@@ -206,7 +232,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             swingSound: "heavy_swing",
             obstacleMultiplier: 2,
             piercingMultiplier: 1,
-            canPierceMaterials: ["cardboard", "stone"],
+            canPierceMaterials: ["cardboard", "crate", "iron", "stone"],
             radius: 2.7,
             offset: Vec.create(5.4, -0.5),
             cooldown: 450,
@@ -232,7 +258,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             noDrop: true,
             obstacleMultiplier: 1,
             piercingMultiplier: 1,
-            canPierceMaterials: ["cardboard", "stone"],
+            canPierceMaterials: ["cardboard", "crate", "iron", "stone"],
             radius: 2.7,
             offset: Vec.create(3.1, 0.9),
             cooldown: 200,
@@ -285,7 +311,7 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
             damage: 75,
             obstacleMultiplier: 2.5,
             piercingMultiplier: 1,
-            canPierceMaterials: ["cardboard", "stone"],
+            canPierceMaterials: Materials,
             killstreak: true,
             radius: 4,
             offset: Vec.create(5, 0),
@@ -353,6 +379,33 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
                 angle: 35,
                 useAngle: 0,
                 lootScale: 0.7
+            }
+        },
+        {
+            idString: "falchion",
+            name: "Falchion",
+            damage: 41,
+            swingSound: "soft_swing",
+            obstacleMultiplier: 1.1,
+            radius: 4.1,
+            // maxTargets: Infinity, - TODO: It must hit multiple targets at once, however enabling this causes melee through wall bug to appear
+            offset: Vec.create(7.2, 0.5),
+            canPierceMaterials: ["cardboard", "crate", "iron"],
+            piercingMultiplier: 0.95,
+            cooldown: 450,
+            fists: {
+                animationDuration: 200,
+                left: Vec.create(38, -35),
+                right: Vec.create(38.5, 41),
+                useLeft: Vec.create(38, -35),
+                useRight: Vec.create(80, 20)
+            },
+            image: {
+                position: Vec.create(40, 102),
+                usePosition: Vec.create(150, 11),
+                angle: 130,
+                useAngle: 25,
+                lootScale: 0.6
             }
         }
     ]

@@ -1,4 +1,6 @@
+import { Layer } from "../../../../common/src/constants";
 import { TintedParticles } from "../../../../common/src/definitions/obstacles";
+import { adjacentOrEqualLayer, getEffectiveZIndex } from "../../../../common/src/utils/layer";
 import { Numeric } from "../../../../common/src/utils/math";
 import { random, randomRotation } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
@@ -19,7 +21,7 @@ export class ParticleManager {
 
     update(delta: number): void {
         for (const particle of this.particles) {
-            particle.update(delta);
+            particle.update(delta, this.game.layer ?? Layer.Ground);
 
             if (particle.dead) {
                 this.particles.delete(particle);
@@ -76,6 +78,7 @@ export interface ParticleOptions {
     readonly speed: Vector
     readonly lifetime: number
     readonly zIndex: number
+    readonly layer?: Layer
     readonly scale?: ParticleProperty
     readonly alpha?: ParticleProperty
     readonly rotation?: ParticleProperty
@@ -85,6 +88,7 @@ export interface ParticleOptions {
 
 export class Particle {
     position: Vector;
+    layer: Layer;
     readonly image: SuroiSprite;
 
     private readonly _spawnTime = Date.now();
@@ -105,12 +109,13 @@ export class Particle {
     constructor(readonly manager: ParticleManager, options: ParticleOptions) {
         this._deathTime = this._spawnTime + options.lifetime;
         this.position = options.position;
+        this.layer = options.layer ?? Layer.Ground;
         const frames = options.frames;
         const frame = typeof frames === "string" ? frames : frames[random(0, frames.length - 1)];
         const tintedParticle = TintedParticles[frame];
         this.image = new SuroiSprite(tintedParticle?.base ?? frame);
         this.image.tint = options.tint ?? tintedParticle?.tint ?? 0xffffff;
-        this.image.setZIndex(options.zIndex);
+        this.image.setZIndex(getEffectiveZIndex(options.zIndex, this.layer, this.manager.game.layer));
 
         this.scale = typeof options.scale === "number" ? options.scale : 1;
         this.alpha = typeof options.alpha === "number" ? options.alpha : 1;
@@ -119,7 +124,7 @@ export class Particle {
         this.options = options;
     }
 
-    update(delta: number): void {
+    update(delta: number, visibleLayer: Layer): void {
         this.position = Vec.add(this.position, Vec.scale(Vec.scale(this.options.speed, delta), 1e-3));
         const options = this.options;
 
@@ -144,9 +149,12 @@ export class Particle {
             this.rotation = Numeric.lerp(options.rotation.start, options.rotation.end, (options.rotation.ease ?? (t => t))(interpFactor));
         }
 
+        this.image.setZIndex(getEffectiveZIndex(options.zIndex, this.layer, this.manager.game.layer));
+
         this.image.position.copyFrom(toPixiCoords(this.position));
         this.image.scale.set(this.scale);
         this.image.setRotation(this.rotation).setAlpha(this.alpha);
+        this.image.setVisible(adjacentOrEqualLayer((this.layer > Layer.Ground ? visibleLayer : this.layer), this.layer));
     }
 
     kill(): void {

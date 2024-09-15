@@ -31,6 +31,11 @@ export const Badges = ObjectDefinitions.create<BadgeDefinition>()(
         simple("badge_factory", "Froog"),
         simple("badge_factory", "AEGIS Logo"),
         simple("badge_factory", "Flint Logo"),
-        simple("badge_factory", "Duel")
+        simple("badge_factory", "Duel"),
+
+        simple("badge_factory", "Suroi Logo"),
+        simple("badge_factory", "Fire"),
+        simple("badge_factory", "Colon Three"),
+        simple("badge_factory", "Suroi General Chat")
     ]
 );

@@ -22,6 +22,10 @@ const config: UserConfig = {
 
     plugins: [
         svelte(),
+        /**
+         * This is a bad idea, but configuration for this is unnecessary until frontend overhaul is done
+         */
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
         splitVendorChunkPlugin(),
         ViteImageOptimizer({
             test: /\.(svg)$/i,

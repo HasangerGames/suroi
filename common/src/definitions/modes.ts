@@ -1,4 +1,4 @@
-export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "gas";
+export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "gas" | "void";
 
 export interface ModeDefinition {
     readonly idString: string
@@ -22,7 +22,8 @@ export const Modes: ModeDefinition[] = [
             border: "hsl(211, 63%, 30%)",
             beach: "hsl(40, 39%, 55%)",
             riverBank: "hsl(33, 50%, 30%)",
-            gas: "hsla(17, 100%, 50%, 0.55)"
+            gas: "hsla(17, 100%, 50%, 0.55)",
+            void: "hsl(25, 80%, 6%)"
         }
     },
     {
@@ -33,7 +34,8 @@ export const Modes: ModeDefinition[] = [
             border: "hsl(4, 90%, 12%)",
             beach: "hsl(33, 77%, 21%)",
             riverBank: "hsl(33, 50%, 30%)",
-            gas: "hsla(17, 100%, 50%, 0.55)"
+            gas: "hsla(17, 100%, 50%, 0.55)",
+            void: "hsl(25, 80%, 6%)"
         },
         specialMenuMusic: true,
         reskin: "fall"
@@ -46,7 +48,8 @@ export const Modes: ModeDefinition[] = [
             border: "hsl(211, 63%, 30%)",
             beach: "hsl(40, 39%, 55%)",
             riverBank: "hsl(33, 50%, 30%)",
-            gas: "hsla(17, 100%, 50%, 0.55)"
+            gas: "hsla(17, 100%, 50%, 0.55)",
+            void: "hsl(25, 80%, 6%)"
         },
         reskin: "fall"
     },
@@ -58,7 +61,8 @@ export const Modes: ModeDefinition[] = [
             border: "hsl(208, 94%, 45%)",
             beach: "hsl(210, 18%, 75%)",
             riverBank: "hsl(210, 18%, 70%)",
-            gas: "hsla(17, 100%, 50%, 0.55)"
+            gas: "hsla(17, 100%, 50%, 0.55)",
+            void: "hsl(25, 80%, 6%)"
         },
         specialMenuMusic: true,
         reskin: "winter",

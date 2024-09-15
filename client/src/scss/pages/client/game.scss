@@ -94,6 +94,16 @@
                 display: none;
             }
         }
+
+        @media screen and (max-height: 720px) {
+            position: absolute;
+            top: -30%;
+            width: auto;
+
+            #detonate-key {
+                display: none;
+            }
+        }
     }
 }
 
@@ -384,6 +394,19 @@
     position: absolute;
     top: 10px;
     right: 10px;
+
+    #kill-counter {
+        position: relative;
+        bottom: 81.5px;
+        right: 110px;
+        margin: 5px;
+    
+        @media screen and (max-width: $screen_large)  {
+            bottom: 0;
+            right: 0;
+            margin: 0;
+        }
+    }
 
     @media screen and (max-width: $screen_large) {
         top: 5px;

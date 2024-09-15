@@ -3,9 +3,8 @@ import eslint from "@eslint/js";
 import stylistic from "@stylistic/eslint-plugin";
 import tseslint from "typescript-eslint";
 
-/**
- * TODO Add eslint-plugin-import-x, when it has support for Flat configuration.
- */
+import { platform } from "os";
+
 export default tseslint.config(
     eslint.configs.recommended,
     ...tseslint.configs.strictTypeChecked,
@@ -33,12 +32,13 @@ export default tseslint.config(
             ["prefer-arrow-callback"]: "warn",
             ["prefer-template"]: "warn",
             yoda: ["error", "never", { onlyEquality: true }],
+            eqeqeq: "error",
 
             // Stylistic
             ["@stylistic/arrow-parens"]: ["warn", "as-needed"],
             ["@stylistic/brace-style"]: ["warn", "1tbs", { allowSingleLine: true }],
             ["@stylistic/indent"]: ["warn", 4, { SwitchCase: 1 }],
-            ["@stylistic/linebreak-style"]: ["warn", "unix"],
+            ["@stylistic/linebreak-style"]: platform() === "win32" ? ["off"] : ["warn", "unix"],
             ["@stylistic/member-delimiter-style"]: ["warn", { singleline: { delimiter: "comma" }, multiline: { delimiter: "none" } }],
             ["@stylistic/quotes"]: ["warn", "double", { avoidEscape: true }],
             ["@stylistic/space-before-function-paren"]: ["warn", "never"],
@@ -136,7 +136,17 @@ export default tseslint.config(
              *  Furthermore, seemingly unnecessary conditions are sometimes nevertheless written, either as
              *  sanity checks, to provide a fallback, or to detect an abnormal and exceptional circumstance
              */
-            ["@typescript-eslint/no-unnecessary-condition"]: "off"
+            ["@typescript-eslint/no-unnecessary-condition"]: "off",
+
+            /**
+             * ESLint doesn't understand how generic types work.
+             */
+            ["@typescript-eslint/no-unnecessary-type-parameters"]: "off",
+
+            /**
+             * These two methods do NOT have the same behavior, unlike what ESLint claims.
+             */
+            ["@typescript-eslint/prefer-regexp-exec"]: "off"
 
             // #endregion
         }

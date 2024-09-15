@@ -139,6 +139,7 @@ export const CHINESE_TRADITIONAL_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "解鎖空投",
     "interact_control_panel": "激活控制台",
+    "interact_headquarters_security_desk": "激活控制台",
     "interact_generator": "啟動發電機",
     "interact_button": "按下按鈕",
 

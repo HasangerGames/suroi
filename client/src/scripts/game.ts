@@ -1,7 +1,7 @@
 import { sound, type Sound } from "@pixi/sound";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
-import { InputActions, ObjectCategory, TeamSize } from "../../../common/src/constants";
+import { InputActions, Layer, ObjectCategory, TeamSize } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
@@ -21,14 +21,15 @@ import { PingPacket } from "../../../common/src/packets/pingPacket";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { UpdatePacket, type UpdatePacketDataOut } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { Geometry } from "../../../common/src/utils/math";
+import { adjacentOrEqualLayer } from "../../../common/src/utils/layer";
+import { EaseFunctions, Geometry } from "../../../common/src/utils/math";
 import { Timeout } from "../../../common/src/utils/misc";
 import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { getTranslatedString, initTranslation } from "../translations";
 import { InputManager } from "./managers/inputManager";
-import { SoundManager } from "./managers/soundManager";
+import { /* GameSound, */ SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
 import { Building } from "./objects/building";
 import { Bullet } from "./objects/bullet";
@@ -47,11 +48,11 @@ import { ThrowableProjectile } from "./objects/throwableProj";
 import { Camera } from "./rendering/camera";
 import { Gas, GasRender } from "./rendering/gas";
 import { Minimap } from "./rendering/minimap";
-import { resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, autoPickup } from "./ui";
+import { autoPickup, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons } from "./ui";
 import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
-import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
+import { COLORS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { loadTextures } from "./utils/pixi";
 import { Tween } from "./utils/tween";
 
@@ -94,6 +95,8 @@ export class Game {
     readonly bullets = new Set<Bullet>();
     readonly planes = new Set<Plane>();
 
+   // windAmbientSound!: GameSound;
+
     readonly playerNames = new Map<number, {
         readonly name: string
         readonly hasColor: boolean
@@ -105,6 +108,13 @@ export class Game {
     teamID = -1;
 
     teamMode = false;
+
+    /**
+     * proxy for `activePlayer`'s layer
+     */
+    get layer(): Layer | undefined {
+        return this.activePlayer?.layer;
+    }
 
     get activePlayer(): Player | undefined {
         return this.objects.get(this.activePlayerID) as Player;
@@ -419,12 +429,14 @@ export class Game {
         // game started if page is out of focus.
         if (!document.hasFocus()) this.soundManager.play("join_notification");
 
+       // this.windAmbientSound = this.soundManager.play("wind_ambience", { loop: true });
+
         this.uiManager.emotes = packet.emotes;
         this.uiManager.updateEmoteWheel();
 
         const ui = this.uiManager.ui;
 
-        if (this.teamMode = packet.maxTeamSize != TeamSize.Solo) {
+        if (this.teamMode = packet.maxTeamSize !== TeamSize.Solo) {
             this.teamID = packet.teamID;
         }
 
@@ -446,9 +458,9 @@ export class Game {
 
             this.soundManager.stopAll();
 
-            void this.music.play();
-
             ui.splashUi.fadeIn(400, () => {
+                void this.music.play();
+
                 ui.teamContainer.html("");
                 ui.actionContainer.hide();
                 ui.gameMenu.hide();
@@ -604,11 +616,33 @@ export class Game {
             if (object === undefined || object.destroyed) {
                 type K = typeof type;
 
-                this.objects.add(
-                    new (
-                        ObjectClassMapping[type] as new (game: Game, id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
-                    )(this, id, data)
-                );
+                const _object = new (
+                    ObjectClassMapping[type] as new (game: Game, id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
+                )(this, id, data);
+                this.objects.add(_object);
+
+                // Layer Transition: We pray that this works lmao
+                if (_object.layer !== (this.layer ?? Layer.Ground)) {
+                    _object.container.alpha = 0;
+
+                    // Yes, we need to do this specifically for building ceilings as well.
+                    if (_object.isBuilding) {
+                        _object.ceilingContainer.alpha = 0;
+                        this.addTween({
+                            target: _object.ceilingContainer,
+                            to: { alpha: 1 },
+                            duration: LAYER_TRANSITION_DELAY,
+                            ease: EaseFunctions.sineIn
+                        });
+                    }
+
+                    this.addTween({
+                        target: _object.container,
+                        to: { alpha: 1 },
+                        duration: LAYER_TRANSITION_DELAY,
+                        ease: EaseFunctions.sineIn
+                    });
+                }
             } else {
                 object.updateFromData(data, false);
             }
@@ -631,8 +665,35 @@ export class Game {
                 continue;
             }
 
-            object.destroy();
-            this.objects.delete(object);
+            // Layer Transition: We pray that this works lmao
+            if (object.layer !== (this.layer ?? Layer.Ground)) {
+                object.container.alpha = 1;
+
+                // Yes, we need to do this specifically for building ceilings as well.
+                if (object.isBuilding) {
+                    object.ceilingContainer.alpha = 1;
+                    this.addTween({
+                        target: object.ceilingContainer,
+                        to: { alpha: 0 },
+                        duration: LAYER_TRANSITION_DELAY,
+                        ease: EaseFunctions.sineOut
+                    });
+                }
+
+                this.addTween({
+                    target: object.container,
+                    to: { alpha: 0 },
+                    duration: LAYER_TRANSITION_DELAY,
+                    ease: EaseFunctions.sineOut,
+                    onComplete: () => {
+                        object.destroy();
+                        this.objects.delete(object);
+                    }
+                });
+            } else {
+                object.destroy();
+                this.objects.delete(object);
+            }
         }
 
         for (const bullet of updateData.deserializedBullets ?? []) {
@@ -640,13 +701,13 @@ export class Game {
         }
 
         for (const explosionData of updateData.explosions ?? []) {
-            explosion(this, explosionData.definition, explosionData.position);
+            explosion(this, explosionData.definition, explosionData.position, explosionData.layer);
         }
 
         for (const emote of updateData.emotes ?? []) {
             if (this.console.getBuiltInCVar("cv_hide_emotes")) break;
             const player = this.objects.get(emote.playerID);
-            if (player instanceof Player) {
+            if (player?.isPlayer) {
                 player.sendEmote(emote.definition);
             } else {
                 console.warn(`Tried to emote on behalf of ${player === undefined ? "a non-existant player" : `a/an ${ObjectCategory[player.type]}`}`);
@@ -684,6 +745,30 @@ export class Game {
         this.tweens.delete(tween);
     }
 
+    backgroundTween?: Tween<unknown>;
+
+    changeLayer(layer: Layer): void {
+        for (const object of this.objects) {
+            object.updateZIndex();
+        }
+
+        const basement = layer === Layer.Basement1;
+        this.map.terrainGraphics.visible = !basement;
+        const { red, green, blue } = this.pixi.renderer.background.color;
+        const color = { r: red * 255, g: green * 255, b: blue * 255 };
+        const targetColor = basement ? COLORS.void : COLORS.grass;
+
+        this.backgroundTween?.kill();
+        this.backgroundTween = this.addTween({
+            target: color,
+            to: { r: targetColor.red * 255, g: targetColor.green * 255, b: targetColor.blue * 255 },
+            onUpdate: () => {
+                this.pixi.renderer.background.color = new Color(color);
+            },
+            duration: LAYER_TRANSITION_DELAY
+        });
+    }
+
     // yes this might seem evil. but the two local variables really only need to
     // exist so this method can use them: therefore, making them attributes on the
     // enclosing instance is pointless and might induce people into thinking they
@@ -716,6 +801,11 @@ export class Game {
          */
         let bindChangeAcknowledged = false;
 
+        // same idea as above
+        const funnyDetonateButtonCache: {
+            bind?: string
+        } = {};
+
         return () => {
             if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
             this.inputManager.update();
@@ -723,10 +813,6 @@ export class Game {
 
             const player = this.activePlayer;
             if (!player) return;
-
-            for (const building of this.objects.getCategory(ObjectCategory.Building)) {
-                building.toggleCeiling();
-            }
 
             const isAction = this.uiManager.action.active;
             const showCancel = isAction && !this.uiManager.action.fake;
@@ -738,37 +824,45 @@ export class Game {
 
             interface CloseObject {
                 object?: Loot | Obstacle | Player
-                minDist: number
+                dist: number
             }
 
             const interactable: CloseObject = {
                 object: undefined,
-                minDist: Number.MAX_VALUE
+                dist: Number.MAX_VALUE
             };
             const uninteractable: CloseObject = {
                 object: undefined,
-                minDist: Number.MAX_VALUE
+                dist: Number.MAX_VALUE
             };
             const detectionHitbox = new CircleHitbox(3, player.position);
 
             for (const object of this.objects) {
+                const { isLoot, isObstacle, isPlayer, isBuilding } = object;
+                const isInteractable = (isLoot || isObstacle || isPlayer) && object.canInteract(player);
+
                 if (
-                    (object instanceof Loot || ((object instanceof Obstacle || object instanceof Player) && object.canInteract(player)))
+                    (isLoot || isInteractable)
                     && object.hitbox.collidesWith(detectionHitbox)
+                    && adjacentOrEqualLayer(object.layer, player.layer)
                 ) {
                     const dist = Geometry.distanceSquared(object.position, player.position);
-                    if ((object.canInteract(player) || object instanceof Obstacle || object instanceof Player) && dist < interactable.minDist) {
-                        interactable.minDist = dist;
-                        interactable.object = object;
-                    } else if (object instanceof Loot && dist < uninteractable.minDist) {
-                        uninteractable.minDist = dist;
+                    if (isInteractable) {
+                        if (dist < interactable.dist) {
+                            interactable.dist = dist;
+                            interactable.object = object;
+                        }
+                    } else if (isLoot && dist < uninteractable.dist) {
+                        uninteractable.dist = dist;
                         uninteractable.object = object;
                     }
+                } else if (isBuilding) {
+                    object.toggleCeiling();
                 }
             }
 
             const object = interactable.object ?? uninteractable.object;
-            const offset = object instanceof Obstacle ? object.door?.offset : undefined;
+            const offset = object?.isObstacle ? object.door?.offset : undefined;
             canInteract = interactable.object !== undefined;
 
             const bind: string | undefined = this.inputManager.binds.getInputsBoundToAction(object === undefined ? "cancel_action" : "interact")[0];
@@ -802,7 +896,7 @@ export class Game {
                     interactMsg,
                     interactText
                 } = this.uiManager.ui;
-                const type = object instanceof Loot ? object.definition.itemType : undefined;
+                const type = object?.isLoot ? object.definition.itemType : undefined;
 
                 // Update interact message
                 if (object !== undefined || (isAction && showCancel)) {
@@ -810,7 +904,7 @@ export class Game {
                     if (differences.object || differences.offset || differences.isAction) {
                         let text;
                         switch (true) {
-                            case object instanceof Obstacle: {
+                            case object?.isObstacle: {
                                 switch (object.definition.role) {
                                     case ObstacleSpecialRoles.Door:
                                         text = object.door?.offset === 0 ? getTranslatedString("action_open_door") : getTranslatedString("action_close_door");
@@ -821,13 +915,13 @@ export class Game {
                                 }
                                 break;
                             }
-                            case object instanceof Loot: {
+                            case object?.isLoot: {
                                 text = `${object.definition.idString.startsWith("dual_")
                                     ? getTranslatedString("dual_template", { gun: getTranslatedString(object.definition.idString.slice("dual_".length)) })
                                     : getTranslatedString(object.definition.idString)}${object.count > 1 ? ` (${object.count})` : ""}`;
                                 break;
                             }
-                            case object instanceof Player: {
+                            case object?.isPlayer: {
                                 text = getTranslatedString("action_revive", { player: this.uiManager.getRawPlayerName(object.id) });
                                 break;
                             }
@@ -862,7 +956,7 @@ export class Game {
                             .hide();
                     }
 
-                    interactMsg.show();
+                    if (!(object?.isObstacle && object.definition.noInteractMessage)) interactMsg.show();
                 } else {
                     interactMsg.hide();
                 }
@@ -874,7 +968,7 @@ export class Game {
                     // Auto pickup (top 10 conditionals)
                     if (
                         this.console.getBuiltInCVar("cv_autopickup")
-                        && object instanceof Loot
+                        && object?.isLoot
                         && autoPickup
                         && (
                             (
@@ -895,7 +989,7 @@ export class Game {
                                 )
                             ) || (
                                 type === ItemType.Gun
-                                    && weapons?.some(
+                                && weapons?.some(
                                         weapon => {
                                             const definition = weapon?.definition;
 
@@ -921,14 +1015,37 @@ export class Game {
                     ) {
                         this.inputManager.addAction(InputActions.Loot);
                     } else if ( // Auto open doors
-                        object instanceof Obstacle
+                        object?.isObstacle
                         && object.canInteract(player)
-                        && object.definition.role === ObstacleSpecialRoles.Door
+                        && object.definition.isDoor
                         && object.door?.offset === 0
                     ) {
                         this.inputManager.addAction(InputActions.Interact);
                     }
                 }
+            }
+
+            // funny detonate button stuff
+            if (!this.inputManager.isMobile) {
+                const boomBind: string | undefined = this.inputManager.binds.getInputsBoundToAction("explode_c4")[0];
+
+                if (funnyDetonateButtonCache.bind !== boomBind) {
+                    funnyDetonateButtonCache.bind = bind;
+
+                    if (boomBind !== undefined) {
+                        const bindImg = InputManager.getIconFromInputName(boomBind);
+
+                        if (bindImg === undefined) {
+                            this.uiManager.ui.detonateKey.show().text(boomBind ?? "");
+                        } else {
+                            this.uiManager.ui.detonateKey.show().html(`<img src="${bindImg}" alt="${boomBind}"/>`);
+                        }
+                    } else {
+                        this.uiManager.ui.detonateKey.hide();
+                    }
+                }
+            } else {
+                this.uiManager.ui.detonateKey.hide();
             }
         };
     })();

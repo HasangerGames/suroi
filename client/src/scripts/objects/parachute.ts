@@ -2,7 +2,7 @@ import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { Numeric } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomFloat, randomPointInsideCircle } from "../../../../common/src/utils/random";
-import { FloorTypes } from "../../../../common/src/utils/terrain";
+import { FloorNames, FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
@@ -10,9 +10,7 @@ import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 
-export class Parachute extends GameObject<ObjectCategory.Parachute> {
-    override readonly type = ObjectCategory.Parachute;
-
+export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
     private readonly image = new SuroiSprite("airdrop_parachute");
 
     private scaleAnim?: Tween<Vector>;
@@ -23,7 +21,7 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
         super(game, id);
 
         this.container.addChild(this.image);
-        this.container.zIndex = ZIndexes.ObstaclesLayer5;
+        this.updateZIndex();
 
         this.updateFromData(data, true);
     }
@@ -61,9 +59,9 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
         }
 
         if (data.height === 0) {
-            this.playSound(this.game.map.terrain.getFloor(this.position) === "water" ? "airdrop_land_water" : "airdrop_land");
+            const floor = this.game.map.terrain.getFloor(this.position, 0);
 
-            const floor = this.game.map.terrain.getFloor(this.position);
+            this.playSound(floor === FloorNames.Water ? "airdrop_land_water" : "airdrop_land");
 
             if (FloorTypes[floor].particles) {
                 this.game.particleManager.spawnParticles(6, () => ({
@@ -83,6 +81,10 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
                 }));
             }
         }
+    }
+
+    override updateZIndex(): void {
+        this.container.zIndex = Number.MAX_SAFE_INTEGER - 3;
     }
 
     destroy(): void {

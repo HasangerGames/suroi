@@ -2,16 +2,14 @@ import { Text, type Container } from "pixi.js";
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BadgeDefinition } from "../../../../common/src/definitions/badges";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
+import { getEffectiveZIndex } from "../../../../common/src/utils/layer";
 
-export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
-    override readonly type = ObjectCategory.DeathMarker;
-
+export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
     playerName!: string;
     nameColor = 0xdcdcdc;
     playerBadge!: BadgeDefinition;
@@ -49,12 +47,11 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
     override updateFromData(data: ObjectsNetData[ObjectCategory.DeathMarker], isNew = false): void {
         this.position = data.position;
 
+        this.layer = data.layer;
+
         this.container.position.copyFrom(toPixiCoords(this.position));
 
-        this.container.zIndex = ZIndexes.DeathMarkers;
-        if (FloorTypes[this.game.map.terrain.getFloor(this.position)].overlay) {
-            this.container.zIndex = ZIndexes.UnderWaterDeadObstacles;
-        }
+        this.updateZIndex();
 
         const player = this.game.playerNames.get(data.playerID);
 
@@ -107,6 +104,10 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
                 }
             });
         }
+    }
+
+    override updateZIndex(): void {
+        this.container.zIndex = getEffectiveZIndex(this.doOverlay() ? ZIndexes.UnderWaterDeadObstacles : ZIndexes.DeathMarkers, this.layer, this.game.layer);
     }
 
     override destroy(): void {

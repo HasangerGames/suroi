@@ -1,10 +1,11 @@
+import { Layer } from "@common/constants";
 import { Explosions, type ExplosionDefinition } from "@common/definitions/explosions";
 import { CircleHitbox } from "@common/utils/hitbox";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Angle, Geometry } from "@common/utils/math";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
 import { randomRotation } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-
 import { type Game } from "../game";
 import { Decal } from "./decal";
 import { type GameObject } from "./gameObject";
@@ -12,18 +13,21 @@ import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 import { ThrowableProjectile } from "./throwableProj";
+import { Building } from "./building";
 
 export class Explosion {
     readonly game: Game;
     readonly definition: ExplosionDefinition;
     readonly position: Vector;
     readonly source: GameObject;
+    readonly layer: Layer;
 
-    constructor(game: Game, definition: ReifiableDef<ExplosionDefinition>, position: Vector, source: GameObject) {
+    constructor(game: Game, definition: ReifiableDef<ExplosionDefinition>, position: Vector, source: GameObject, layer: Layer) {
         this.game = game;
         this.definition = Explosions.reify(definition);
         this.position = position;
         this.source = source;
+        this.layer = layer;
     }
 
     explode(): void {
@@ -46,6 +50,7 @@ export class Explosion {
                     object.dead
                     || !object.hitbox
                     || ![
+                        Building,
                         Obstacle,
                         Player,
                         Loot,
@@ -70,27 +75,27 @@ export class Explosion {
             const { min, max } = this.definition.radius;
             for (const collision of lineCollisions) {
                 const object = collision.object;
+                const { isPlayer, isObstacle, isBuilding, isLoot, isThrowableProjectile } = object;
 
                 if (!damagedObjects.has(object.id)) {
                     damagedObjects.add(object.id);
                     const dist = Math.sqrt(collision.squareDistance);
 
-                    if (object instanceof Player || object instanceof Obstacle) {
+                    if ((isPlayer || isObstacle || isBuilding) && adjacentOrEqualLayer(object.layer, this.layer)) {
                         object.damage({
                             amount: this.definition.damage
-                            * (object instanceof Obstacle ? this.definition.obstacleMultiplier : 1)
-                            * ((dist > min) ? (max - dist) / (max - min) : 1),
+                                * (isObstacle ? this.definition.obstacleMultiplier : 1)
+                                * ((dist > min) ? (max - dist) / (max - min) : 1),
 
                             source: this.source,
                             weaponUsed: this
-                        }
-                        );
+                        });
                     }
 
-                    if (object instanceof Loot || object instanceof ThrowableProjectile) {
-                        if (object instanceof ThrowableProjectile && object.definition.health) object.damageC4(this.definition.damage);
+                    if ((isLoot || isThrowableProjectile) && adjacentOrEqualLayer(object.layer, this.layer)) {
+                        if (isThrowableProjectile && object.definition.health) object.damageC4(this.definition.damage);
                         else {
-                            object.push(
+                            (object as Loot).push(
                                 Angle.betweenPoints(object.position, this.position),
                                 (max - dist) * 0.01
                             );
@@ -98,7 +103,21 @@ export class Explosion {
                     }
                 }
 
-                if (object instanceof Obstacle && !object.definition.noCollisions) break;
+                if (
+                    (isObstacle
+                        && !object.definition.noCollisions
+                        && !object.definition.isStair)
+                        || (isBuilding && !object.definition.noCollisions)
+                ) {
+                    /*
+                        an Obstacle with collisions will "eat" an explosion, protecting
+                        the objects further from the explosion than itself ("behind" it;
+                        this is what the break statement achieves); however, this is not
+                        the case for stairs. stairs have collisions, but do not protect
+                        those within them. and so for stairs, the show must go on
+                    */
+                    break;
+                }
             }
         }
 
@@ -108,7 +127,8 @@ export class Explosion {
                 this.source,
                 {
                     position: this.position,
-                    rotation: randomRotation()
+                    rotation: randomRotation(),
+                    layer: this.layer
                 }
             );
         }
@@ -118,7 +138,9 @@ export class Explosion {
                 new Decal(
                     this.game,
                     this.definition.decal,
-                    this.position
+                    this.position,
+                    randomRotation(),
+                    this.layer
                 )
             );
 

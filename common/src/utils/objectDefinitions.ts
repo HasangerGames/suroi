@@ -635,6 +635,11 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
     }
 }
 
+/**
+ * Used to communicate that no idString matches or is applicable, can be used as a key and value
+ */
+export const NullString = Symbol("null idString");
+
 export interface ObjectDefinition {
     readonly idString: string
     readonly name: string
@@ -644,6 +649,11 @@ export interface ObjectDefinition {
  * Semantically equivalent to `string`, this type is more to convey an intent
  */
 export type ReferenceTo<T extends ObjectDefinition = ObjectDefinition> = T["idString"];
+
+/**
+ * Either a normal reference or an object whose keys are random options and whose values are corresponding weights
+ */
+export type ReferenceOrRandom<T extends ObjectDefinition> = Record<ReferenceTo<T> | typeof NullString, number> | ReferenceTo<T>;
 
 export type ReifiableDef<T extends ObjectDefinition> = ReferenceTo<T> | T;
 
@@ -664,6 +674,7 @@ export enum ObstacleSpecialRoles {
     Door,
     Wall,
     Window,
+    Stair,
     Activatable
 }
 
@@ -833,11 +844,3 @@ export interface InventoryItemDefinition extends ItemDefinition {
         }
     }
 }
-
-export const ContainerTints = {
-    White: 0xc0c0c0,
-    Red: 0xa32900,
-    Green: 0x00a30e,
-    Blue: 0x005fa3,
-    Yellow: 0xcccc00
-};

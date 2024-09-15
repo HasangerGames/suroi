@@ -1,9 +1,8 @@
 import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { ColorStyles, styleText } from "@common/utils/ansiColoring";
-import { type ObjectDefinition, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { NullString, type ObjectDefinition, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { weightedRandom } from "@common/utils/random";
 
-import { Config } from "../config";
 import { LootTiers, type WeightedItem } from "../data/lootTables";
 
 export const Logger = {
@@ -24,11 +23,6 @@ function internalLog(...message: string[]): void {
     );
 }
 
-export const dragConst = (aggressiveness: number, base?: number): number => Math.pow(
-    base ?? Math.E,
-    -(aggressiveness + 1 / (1.78734 * Config.tps ** 2.32999)) / Config.tps
-);
-
 export class LootItem {
     constructor(
         public readonly idString: ReferenceTo<LootDefinition>,
@@ -44,7 +38,10 @@ export function getLootTableLoot(loots: readonly WeightedItem[]): LootItem[] {
     for (const item of loots) {
         items.push(
             item.spawnSeparately && (item.count ?? 1) > 1
-                // a null-ish value would fail the conditional this branch is contingent on
+                /**
+                 * @author ei-pi
+                 * A null-ish value would fail the conditional that this branch is contingent on.
+                 */
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 ? new Array<WeightedItem>(item.count!).fill(item)
                 : item
@@ -61,7 +58,7 @@ export function getLootTableLoot(loots: readonly WeightedItem[]): LootItem[] {
         }
 
         const item = selection.item;
-        if (item === null) continue;
+        if (item === NullString) continue;
         loot.push(new LootItem(item, selection.spawnSeparately ? 1 : (selection.count ?? 1)));
 
         const definition = Loots.fromStringSafe(item);
@@ -87,14 +84,17 @@ export function getLootTableLoot(loots: readonly WeightedItem[]): LootItem[] {
     return loot;
 }
 
-export function getRandomIDString<T extends ObjectDefinition>(table: Record<ReferenceTo<T>, number> | ReferenceTo<T>): ReferenceTo<T> {
-    if (typeof table === "string") return table;
+export function getRandomIDString<
+    T extends ObjectDefinition,
+    Ref extends ReferenceTo<T> | typeof NullString
+>(table: Record<Ref, number> | Ref): Ref {
+    if (typeof table !== "object") return table;
 
-    const items: Array<ReferenceTo<T>> = [];
+    const items: Ref[] = [];
     const weights: number[] = [];
     for (const item in table) {
         items.push(item);
-        weights.push(table[item as ReferenceTo<T>]);
+        weights.push(table[item]);
     }
     return weightedRandom(items, weights);
 }

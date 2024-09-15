@@ -1,9 +1,10 @@
-import { Assets, RendererType, Sprite, Spritesheet, type ColorSource, type Graphics, type Renderer, type SpritesheetData, type Texture, type WebGLRenderer } from "pixi.js";
-import { HitboxType, type Hitbox } from "../../../../common/src/utils/hitbox";
+import { Assets, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
+import { HitboxType, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
-import { MODE, PIXI_SCALE } from "./constants";
+import { MODE, PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
 import $ from "jquery";
 import { getTranslatedString } from "../../translations";
+import { Obstacles } from "../../../../common/src/definitions/obstacles";
 
 const textures: Record<string, Texture> = {};
 
@@ -37,10 +38,13 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
     const count = spritesheets.length;
     const loader = loadSpritesheet(renderer);
 
-    await Promise.all(
-        spritesheets.map(
+    await Promise.all([
+        ...spritesheets.map(
             spritesheet => {
-                // FIXME I have no idea why this nna is sound, someone please explain here why it is
+                /**
+                 * this is defined via vite-spritesheet-plugin, so it is never nullish
+                 * @link `client/vite/vite-spritesheet-plugin/utils/spritesheet.ts:197`
+                 */
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 const image = spritesheet.meta.image!;
 
@@ -63,8 +67,43 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
                         .finally(resolve);
                 });
             }
-        )
-    );
+        ),
+        ...Obstacles.definitions
+            .filter(obj => obj.wall)
+            .map(def => new Promise<void>(resolve => {
+                if (def.wall) {
+                    const { color, borderColor, rounded } = def.wall;
+                    const dimensions = (def.hitbox as RectangleHitbox).clone();
+                    dimensions.scale(PIXI_SCALE);
+                    const { x, y } = dimensions.min;
+                    const [w, h] = [dimensions.max.x - x, dimensions.max.y - y];
+                    const s = WALL_STROKE_WIDTH;
+
+                    const wallTexture = RenderTexture.create({ width: w, height: h, antialias: true });
+                    renderer.render({
+                        target: wallTexture,
+                        container: new Graphics()
+                            .rect(0, 0, w, h)
+                            .fill({ color: borderColor })[rounded ? "roundRect" : "rect"](s, s, w - s * 2, h - s * 2, s)
+                            .fill({ color })
+                    });
+
+                    textures[def.idString] = wallTexture;
+                }
+                resolve();
+            })),
+        new Promise<void>(resolve => {
+            const vestTexture = RenderTexture.create({ width: 102, height: 102, antialias: true });
+            renderer.render({
+                target: vestTexture,
+                container: new Graphics()
+                    .arc(51, 51, 51, 0, Math.PI * 2)
+                    .fill({ color: 0xffffff })
+            });
+            textures.vest_world = vestTexture;
+            resolve();
+        })
+    ]);
 }
 
 const loadSpritesheet = (renderer: Renderer) => async(data: SpritesheetData, path: string): Promise<void> => {
@@ -160,10 +199,46 @@ export function toPixiCoords(pos: Vector): Vector {
     return Vec.scale(pos, PIXI_SCALE);
 }
 
-export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSource, graphics: T): T {
+export function drawGroundGraphics(hitbox: Hitbox, graphics: Graphics, scale = PIXI_SCALE): void {
+    switch (hitbox.type) {
+        case HitboxType.Rect: {
+            graphics.rect(
+                hitbox.min.x * scale,
+                hitbox.min.y * scale,
+                (hitbox.max.x - hitbox.min.x) * scale,
+                (hitbox.max.y - hitbox.min.y) * scale
+            );
+            break;
+        }
+        case HitboxType.Circle:
+            graphics.arc(
+                hitbox.position.x * scale,
+                hitbox.position.y * scale,
+                hitbox.radius * scale,
+                0,
+                Math.PI * 2
+            );
+            break;
+        case HitboxType.Polygon:
+            graphics.poly(
+                hitbox.points.map(v => Vec.scale(v, scale))
+            );
+            break;
+        case HitboxType.Group:
+            for (const hitBox of hitbox.hitboxes) {
+                drawGroundGraphics(hitBox, graphics);
+            }
+            break;
+    }
+};
+
+export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSource, graphics: T, alpha = 1): T {
+    if (alpha === 0) return graphics;
+
     graphics.setStrokeStyle({
         color,
-        width: 2
+        width: 2,
+        alpha
     });
     graphics.beginPath();
 
@@ -185,7 +260,7 @@ export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSourc
             break;
         }
         case HitboxType.Group:
-            for (const h of hitbox.hitboxes) drawHitbox(h, color, graphics);
+            for (const h of hitbox.hitboxes) drawHitbox(h, color, graphics, alpha);
             break;
         case HitboxType.Polygon:
             graphics.poly(hitbox.points.map(point => toPixiCoords(point)));

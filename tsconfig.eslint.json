@@ -1,4 +1,5 @@
 {
+  "extends": ["./tsconfig.json"],
   "compilerOptions": {
     "target": "ES2022",
     "module": "CommonJS",
@@ -23,7 +24,6 @@
     "client/svelte.config.js",
     "server/src/**/*.ts",
     "tests/src/**/*.ts",
-    "eslint.config.mjs",
-    "jest.config.mjs"
+    "eslint.config.mjs"
   ]
 }

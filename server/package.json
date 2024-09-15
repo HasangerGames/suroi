@@ -14,19 +14,19 @@
   "keywords": [],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@types/node": "^20.14.10",
-    "@types/sanitize-html": "^2.11.0",
-    "@types/ws": "^8.5.11",
+    "@types/node": "^22.5.2",
+    "@types/sanitize-html": "^2.13.0",
+    "@types/ws": "^8.5.12",
     "tsc-alias": "^1.8.10",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.5.4"
   },
   "dependencies": {
     "@damienvesper/bit-buffer": "^1.0.1",
-    "croner": "^8.1.0",
+    "croner": "^8.1.1",
     "dotenv": "^16.4.5",
     "ts-node": "^10.9.2",
-    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.43.0",
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.48.0",
     "ws": "^8.18.0"
   }
 }

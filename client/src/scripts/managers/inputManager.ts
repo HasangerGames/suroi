@@ -13,7 +13,7 @@ import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
 import { defaultBinds } from "../utils/console/defaultClientCVars";
 import { type GameSettings, type PossibleError } from "../utils/console/gameConsole";
-import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "../utils/constants";
+import { PIXI_SCALE } from "../utils/constants";
 import { html } from "../utils/misc";
 
 export class InputManager {
@@ -216,6 +216,12 @@ export class InputManager {
             this.pingWheelMinimap = false;
             $("#emote-wheel").hide();
         });
+
+        const FIRST_EMOTE_ANGLE = Math.atan2(-1, -1);
+        const SECOND_EMOTE_ANGLE = Math.atan2(1, 1);
+        const THIRD_EMOTE_ANGLE = Math.atan2(-1, 1);
+        const FOURTH_EMOTE_ANGLE = Math.atan2(1, -1);
+
         gameContainer.addEventListener("pointermove", (e: MouseEvent) => {
             if (this.isMobile) return;
             this.mouseX = e.clientX;
@@ -770,6 +776,7 @@ class InputMapper {
         if (actions === undefined) return false;
 
         actions.delete(action);
+
         // safe because the backward map has already been checked
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this._actionToInput.get(action)!.delete(input);

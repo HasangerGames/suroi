@@ -144,6 +144,7 @@ export const GREEK_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "Άνοιγμα Airdrop",
     "interact_control_panel": "Ενεργοποίηση Πίνακα Ελέγχου",
+    "interact_headquarters_security_desk": "Ενεργοποίηση Πίνακα Ελέγχου",
     "interact_generator": "Ενεργοποίηση Γεννήτριας",
     "interact_button": "Πάτημα Κουμπιού",
 

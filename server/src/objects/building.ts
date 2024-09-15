@@ -7,14 +7,13 @@ import { type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { type Vector } from "@common/utils/vector";
 
+import { Angle } from "@common/utils/math";
 import { type Game } from "../game";
-import { Events } from "../pluginManager";
 import { Logger } from "../utils/misc";
 import { BaseGameObject } from "./gameObject";
 import { type Obstacle } from "./obstacle";
 
-export class Building extends BaseGameObject<ObjectCategory.Building> {
-    override readonly type = ObjectCategory.Building;
+export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
     override readonly fullAllocBytes = 8;
     override readonly partialAllocBytes = 4;
 
@@ -22,14 +21,15 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
 
     readonly scopeHitbox?: Hitbox;
     readonly spawnHitbox: Hitbox;
-    readonly hitbox: Hitbox;
+    readonly hitbox?: Hitbox;
+
+    readonly collidable: boolean;
 
     private _wallsToDestroy: number;
 
     interactableObstacles = new Set<Obstacle>();
 
-    // @ts-expect-error it makes the typings work :3
-    declare rotation: Orientation;
+    orientation: Orientation;
 
     private readonly _puzzle?: {
         inputOrder: string[]
@@ -49,15 +49,18 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
 
     readonly puzzlePieces: Obstacle[] = [];
 
-    constructor(game: Game, definition: ReifiableDef<BuildingDefinition>, position: Vector, orientation: Orientation) {
+    constructor(game: Game, definition: ReifiableDef<BuildingDefinition>, position: Vector, orientation: Orientation, layer: number) {
         super(game, position);
 
         this.definition = Buildings.reify(definition);
 
-        this.rotation = orientation;
+        this.layer = layer;
+
+        this.rotation = Angle.orientationToRotation(this.orientation = orientation);
         this._wallsToDestroy = this.definition.wallsToDestroy;
         this.spawnHitbox = this.definition.spawnHitbox.transform(this.position, 1, orientation);
-        this.hitbox = this.spawnHitbox;
+        this.hitbox = this.definition.hitbox?.transform(this.position, 1, orientation);
+        this.collidable = this.damageable = !!this.definition.hitbox;
 
         if (this.definition.scopeHitbox !== undefined) {
             this.scopeHitbox = this.definition.scopeHitbox.transform(this.position, 1, orientation);
@@ -74,19 +77,26 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
     }
 
     damageCeiling(damage = 1): void {
-        if (this._wallsToDestroy === Infinity || this.dead) return;
+        if (
+            this._wallsToDestroy === Infinity
+            || this.dead
+            || this.game.pluginManager.emit("building_will_damage_ceiling", {
+                building: this,
+                damage
+            })
+        ) return;
 
-        this.game.pluginManager.emit(Events.Building_CeilingDamage, {
+        this._wallsToDestroy -= damage;
+
+        this.game.pluginManager.emit("building_did_damage_ceiling", {
             building: this,
             damage
         });
 
-        this._wallsToDestroy -= damage;
-
         if (this._wallsToDestroy <= 0) {
             this.dead = true;
             this.setPartialDirty();
-            this.game.pluginManager.emit(Events.Building_CeilingDestroy, this);
+            this.game.pluginManager.emit("building_did_destroy_ceiling", this);
         }
     }
 
@@ -96,10 +106,11 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
         return {
             dead: this.dead,
             puzzle: this.puzzle,
+            layer: this.layer,
             full: {
                 definition: this.definition,
                 position: this.position,
-                rotation: this.rotation
+                orientation: this.orientation
             }
         };
     }
@@ -159,15 +170,18 @@ export class Building extends BaseGameObject<ObjectCategory.Building> {
         this.game.addTimeout(() => {
             puzzle.solved = true;
             this.setPartialDirty();
-        }, puzzleDef.setSolvedImmediately ? 0 : puzzleDef.interactDelay);
+        }, puzzleDef.setSolvedImmediately ? 0 : puzzleDef.delay);
 
         this.game.addTimeout(() => {
             for (const obstacle of this.interactableObstacles) {
-                if (obstacle.definition.idString === puzzleDef.triggerInteractOn) {
-                    obstacle.interact();
+                if (obstacle.definition.idString === puzzleDef.triggerOnSolve) {
+                    if (obstacle.door) obstacle.door.locked = false;
+
+                    if (!puzzleDef.unlockOnly) obstacle.interact();
+                    else obstacle.setDirty();
                 }
             }
-        }, puzzleDef.interactDelay);
+        }, puzzleDef.delay);
     }
 
     resetPuzzle(): void {

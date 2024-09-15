@@ -1,13 +1,14 @@
-import { ObjectCategory } from "@common/constants";
+import { type Layer } from "@common/constants";
 import { Bullets } from "@common/definitions/bullets";
 import { type SingleGunNarrowing } from "@common/definitions/guns";
 import { Loots } from "@common/definitions/loots";
+import type { ObstacleDefinition } from "@common/definitions/obstacles";
 import { BaseBullet } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";
+import { adjacentOrEqualLayer, equalLayer } from "@common/utils/layer";
 import { Angle } from "@common/utils/math";
 import { randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { type Explosion } from "./explosion";
@@ -28,6 +29,7 @@ export interface DamageRecord {
 export interface ServerBulletOptions {
     readonly position: Vector
     readonly rotation: number
+    readonly layer: number
     readonly reflectionCount?: number
     readonly variance?: number
     readonly rangeOverride?: number
@@ -40,9 +42,20 @@ export class Bullet extends BaseBullet {
     readonly shooter: GameObject;
 
     readonly clipDistance: number;
+
     reflected = false;
 
     readonly finalPosition: Vector;
+
+    readonly originalLayer: number;
+
+    // getter must be forwarded because there's a setter
+    override get layer(): Layer { return this._layer; }
+    set layer(layer: Layer) {
+        if (layer === this._layer) return;
+
+        this._layer = layer;
+    }
 
     constructor(
         game: Game,
@@ -50,7 +63,9 @@ export class Bullet extends BaseBullet {
         shooter: GameObject,
         options: ServerBulletOptions
     ) {
-        const reference = source instanceof GunItem && source.definition.isDual ? Loots.fromString<SingleGunNarrowing>(source.definition.singleVariant) : source.definition;
+        const reference = source instanceof GunItem && source.definition.isDual
+            ? Loots.fromString<SingleGunNarrowing>(source.definition.singleVariant)
+            : source.definition;
         const definition = Bullets.fromString(`${reference.idString}_bullet`);
         const variance = definition.rangeVariance;
 
@@ -66,6 +81,9 @@ export class Bullet extends BaseBullet {
         this.game = game;
         this.sourceGun = source;
         this.shooter = shooter;
+        this.originalLayer = shooter.layer;
+
+        this._layer = options.layer ?? shooter.layer;
 
         this.finalPosition = Vec.add(this.position, Vec.scale(this.direction, this.maxDistance));
     }
@@ -74,8 +92,7 @@ export class Bullet extends BaseBullet {
         const lineRect = RectangleHitbox.fromLine(this.position, Vec.add(this.position, Vec.scale(this.velocity, this.game.dt)));
         const { grid, dt, map: { width: mapWidth, height: mapHeight } } = this.game;
 
-        const objects = grid.intersectsHitbox(lineRect);
-        const collisions = this.updateAndGetCollisions(dt, objects);
+        const collisions = this.updateAndGetCollisions(dt, grid.intersectsHitbox(lineRect));
 
         // Bullets from dead players should not deal damage so delete them
         // Also delete bullets out of map bounds
@@ -94,7 +111,10 @@ export class Bullet extends BaseBullet {
         for (const collision of collisions) {
             const object = collision.object;
 
-            if (object.type === ObjectCategory.Player) {
+            if (
+                object.isPlayer
+                && equalLayer(this._layer, object.layer)
+            ) {
                 this.position = collision.intersection.point;
                 this.damagedIDs.add(object.id);
                 records.push({
@@ -110,51 +130,64 @@ export class Bullet extends BaseBullet {
                 break;
             }
 
-            if (object.type === ObjectCategory.Obstacle) {
-                this.damagedIDs.add(object.id);
+            if (object.isObstacle || object.isBuilding) {
+                const def = object.definition;
 
-                records.push({
-                    object: object as Obstacle,
-                    damage: definition.damage / (this.reflectionCount + 1) * definition.obstacleMultiplier,
-                    weapon: this.sourceGun,
-                    source: this.shooter,
-                    position: collision.intersection.point
-                });
+                const objectIsStair = object.isObstacle && (def as ObstacleDefinition).isStair;
+                /*
+                    for stairs, honor any collision that's on an equal or adjacent layer (to allow layer transitions);
+                    for everyone else, only honor collisions on the same layer
+                */
+                if ((objectIsStair || def.spanAdjacentLayers ? adjacentOrEqualLayer : equalLayer)(this._layer, object.layer)) {
+                    if (objectIsStair) {
+                        (object as Obstacle).handleStairInteraction(this);
+                    } else {
+                        this.damagedIDs.add(object.id);
 
-                if (definition.penetration.obstacles) continue;
-
-                // skip killing the bullet for obstacles with noCollisions like bushes
-                if (!object.definition.noCollisions) {
-                    const { point, normal } = collision.intersection;
-                    this.position = point;
-
-                    if (object.definition.reflectBullets && this.reflectionCount < 3) {
-                        /*
-                            no matter what, nudge the bullet
-
-                            if the bullet reflects, we do this to ensure that it doesn't re-collide
-                            with the same obstacle instantly
-
-                            if it doesn't, then we do this to avoid having the obstacle eat the
-                            explosion, thereby shielding others from its effects
-                        */
-                        const rotation = 2 * Math.atan2(normal.y, normal.x) - this.rotation;
-                        this.position = Vec.add(this.position, Vec.create(Math.sin(rotation), -Math.cos(rotation)));
-
-                        if (definition.onHitExplosion === undefined || !definition.explodeOnImpact) {
-                            this.reflect(rotation);
-                            this.reflected = true;
-                        }
+                        records.push({
+                            object: object as Obstacle,
+                            damage: definition.damage / (this.reflectionCount + 1) * definition.obstacleMultiplier,
+                            weapon: this.sourceGun,
+                            source: this.shooter,
+                            position: collision.intersection.point
+                        });
                     }
 
-                    this.dead = true;
-                    break;
+                    if (definition.penetration.obstacles) continue;
+
+                    if (!def.noCollisions && !objectIsStair) {
+                        const { point, normal } = collision.intersection;
+                        this.position = point;
+
+                        if (def.reflectBullets && this.reflectionCount < 3) {
+                            /*
+                                no matter what, nudge the bullet
+
+                                if the bullet reflects, we do this to ensure that it doesn't re-collide
+                                with the same obstacle instantly
+
+                                if it doesn't, then we do this to avoid having the obstacle eat the
+                                explosion, thereby shielding others from its effects
+                            */
+                            const rotation = 2 * Math.atan2(normal.y, normal.x) - this.rotation;
+                            this.position = Vec.add(this.position, Vec.create(Math.sin(rotation), -Math.cos(rotation)));
+
+                            if (definition.onHitExplosion === undefined || !definition.explodeOnImpact) {
+                                this.reflect(rotation);
+                                this.reflected = true;
+                            }
+                        }
+
+                        this.dead = true;
+                        break;
+                    }
                 }
             }
         }
 
         for (const object of grid.intersectsHitbox(lineRect)) {
-            if (object.type === ObjectCategory.ThrowableProjectile
+            if (
+                object.isThrowableProjectile
                 && object.definition.health
                 && lineRect.collidesWith(object.hitbox)
             ) {
@@ -172,6 +205,7 @@ export class Bullet extends BaseBullet {
             {
                 position: Vec.clone(this.position),
                 rotation: direction,
+                layer: this._layer,
                 reflectionCount: this.reflectionCount + 1,
                 variance: this.rangeVariance,
                 rangeOverride: this.clipDistance

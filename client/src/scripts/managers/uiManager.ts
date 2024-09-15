@@ -3,7 +3,7 @@ import { type Color } from "pixi.js";
 import { DEFAULT_INVENTORY, GameConstants, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type BadgeDefinition } from "../../../../common/src/definitions/badges";
-import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
+import { emoteIdStrings, type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { MapPings, type PlayerPing } from "../../../../common/src/definitions/mapPings";
@@ -260,7 +260,8 @@ export class UIManager {
         createTeamPlayers: $<HTMLDivElement>("#create-team-players"),
         closeCreateTeam: $<HTMLButtonElement>("#close-create-team"),
 
-        c4Button: $<HTMLButtonElement>("#c4-detonate-btn")
+        c4Button: $<HTMLButtonElement>("#c4-detonate-btn"),
+        detonateKey: $<HTMLButtonElement>("#detonate-key")
     });
 
     private readonly _weaponSlotCache = new ExtendedMap<
@@ -397,7 +398,7 @@ export class UIManager {
         const playerName = this.getPlayerName(packet.playerID);
         const playerBadge = this.getPlayerBadge(packet.playerID);
         const playerBadgeText = playerBadge
-            ? html`<img class="badge-icon" src="./img/game/badges/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
+            ? html`<img class="badge-icon" src="./img/game/${emoteIdStrings.includes(playerBadge.idString) ? "emotes" : "badges"}/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
             : "";
 
         gameOverText.html(
@@ -462,8 +463,7 @@ export class UIManager {
         this._teammateDataCache.clear();
     }
 
-    private _lastHealthBarAnimTime = 0;
-    private _oldHealth = 0;
+    private _oldHealthPercent = 100;
 
     updateUI(data: PlayerData): void {
         const {
@@ -487,7 +487,7 @@ export class UIManager {
 
             if (spectating) {
                 const badge = this.getPlayerBadge(id.id);
-                const badgeText = badge ? html`<img class="badge-icon" src="./img/game/badges/${badge.idString}.svg" alt="${badge.name} badge">` : "";
+                const badgeText = badge ? html`<img class="badge-icon" src="./img/game/${emoteIdStrings.includes(badge.idString) ? "emotes" : "badges"}/${badge.idString}.svg" alt="${badge.name} badge">` : "";
 
                 this.ui.gameOverOverlay.fadeOut();
                 this.ui.spectatingMsgPlayer.html(this.getPlayerName(id.id) + badgeText);
@@ -507,30 +507,26 @@ export class UIManager {
             this.health = Numeric.remap(health, 0, 1, 0, this.maxHealth);
 
             const normalizedHealth = this.health / this.maxHealth;
-            const realPercentage = 100 * normalizedHealth;
-            const percentage = safeRound(realPercentage);
+            const healthPercent = 100 * normalizedHealth;
 
             this.ui.healthBar
-                .width(`${realPercentage}%`)
+                .width(`${healthPercent}%`)
                 .css("background-color", UIManager.getHealthColor(normalizedHealth, this.game.activePlayer?.downed))
-                .toggleClass("flashing", percentage <= 25);
+                .toggleClass("flashing", healthPercent <= 25);
 
-            if (realPercentage === 0) {
+            this.ui.healthAnim.stop();
+            if (this._oldHealthPercent - healthPercent >= 1) { // only animate larger changes in health
                 this.ui.healthAnim
-                    .stop()
-                    .width(0);
-            } else if (Date.now() - this._lastHealthBarAnimTime > 500) {
-                this.ui.healthAnim
-                    .stop()
-                    .width(`${this._oldHealth}%`)
-                    .animate({ width: `${realPercentage}%` }, 500);
-                this._oldHealth = realPercentage;
-                this._lastHealthBarAnimTime = Date.now();
+                    .width(`${this._oldHealthPercent}%`)
+                    .animate({ width: `${healthPercent}%` }, 500);
+            } else {
+                this.ui.healthAnim.width(`${healthPercent}%`);
             }
+            this._oldHealthPercent = healthPercent;
 
             this.ui.healthBarAmount
                 .text(safeRound(this.health))
-                .css("color", percentage <= 40 || this.game.activePlayer?.downed ? "#ffffff" : "#000000");
+                .css("color", healthPercent <= 40 || this.game.activePlayer?.downed ? "#ffffff" : "#000000");
         }
 
         if (teammates && this.game.teamMode) {
@@ -619,9 +615,9 @@ export class UIManager {
 
         if (adrenaline !== undefined) {
             this.adrenaline = Numeric.remap(adrenaline, 0, 1, this.minAdrenaline, this.maxAdrenaline);
-            const percentage = 100 * this.adrenaline / this.maxAdrenaline;
+            const percent = 100 * this.adrenaline / this.maxAdrenaline;
 
-            this.ui.adrenalineBar.width(`${percentage}%`);
+            this.ui.adrenalineBar.width(`${percent}%`);
 
             this.ui.adrenalineBarAmount
                 .text(safeRound(this.adrenaline))
@@ -648,7 +644,7 @@ export class UIManager {
             this.updateWeapons();
         }
 
-        activeC4s ? this.ui.c4Button.show() : this.ui.c4Button.hide();
+        this.ui.c4Button.toggle(activeC4s);
         if (activeC4s !== undefined) this.hasC4s = activeC4s;
     }
 
@@ -818,6 +814,7 @@ export class UIManager {
 
     private _playSlotAnimation(element: JQuery): void {
         element.toggleClass("active");
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         element[0].offsetWidth; // causes browser reflow
         element.toggleClass("active");
     }
@@ -1114,7 +1111,7 @@ export class UIManager {
             return {
                 name: hasId ? this.getPlayerName(id) : "",
                 badgeText: badge
-                    ? html`<img class="badge-icon" src="./img/game/badges/${badge.idString}.svg" alt="${badge.name} badge">`
+                    ? html`<img class="badge-icon" src="./img/game/${emoteIdStrings.includes(badge.idString) ? "emotes" : "badges"}/${badge.idString}.svg" alt="${badge.name} badge">`
                     : ""
             };
         };
@@ -1361,8 +1358,8 @@ export class UIManager {
                         && (
                             (
                                 (target = this.game.objects.get(id))
-                                && target instanceof Player
-                                && target.teamID === this.game.teamID
+                                && target.isPlayer
+                                && (target as Player).teamID === this.game.teamID
                             ) || (
                                 this._teammateDataCache.has(id)
                             )
@@ -1764,7 +1761,7 @@ class PlayerHealthUI {
             const teammate = this.game.playerNames.get(id);
 
             if (teammate?.badge) {
-                const src = `./img/game/badges/${teammate.badge.idString}.svg`;
+                const src = `./img/game/${emoteIdStrings.includes(teammate.badge.idString) ? "emotes" : "badges"}/${teammate.badge.idString}.svg`;
 
                 if (this.badgeImage.attr("src") !== src) {
                     this.badgeImage

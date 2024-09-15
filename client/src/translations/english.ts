@@ -144,8 +144,10 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "Open Airdrop",
     "interact_control_panel": "Activate Control Panel",
+    "interact_headquarters_security_desk": "Activate Control Panel",
     "interact_generator": "Activate Generator",
     "interact_button": "Press Button",
+    "interact_speaker": "Play Speaker",
 
     "loading_spritesheets": "Loading Spritesheets <progress>",
     "loading_connecting": "Connecting",
@@ -173,7 +175,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "bindings_+attack": "Use Weapon",
     "bindings_drop": "Drop Active Weapon",
     "bindings_reload": "Reload",
-    "bindings_explodeC4": "Detonate C4",
+    "bindings_explode_c4": "Detonate C4",
     "bindings_cycle_scopes -1": "Previous Scope",
     "bindings_cycle_scopes 1": "Next Scope",
     "bindings_use_consumable gauze": "Use Gauze",

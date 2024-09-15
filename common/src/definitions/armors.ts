@@ -5,6 +5,7 @@ export interface ArmorDefinition extends ItemDefinition {
     readonly armorType: ArmorType
     readonly level: number
     readonly damageReduction: number
+    readonly color?: number
 }
 
 export enum ArmorType {
@@ -21,7 +22,8 @@ export const Armors = ObjectDefinitions.create<ArmorDefinition>()(
         vest_factory: (name: string) => ({
             idString: `${name.toLowerCase()}_vest`,
             name: `${name} Vest`,
-            armorType: ArmorType.Vest
+            armorType: ArmorType.Vest,
+            color: 0x000000
         }),
         helmet_factory: (name: string) => ({
             idString: `${name.toLowerCase()}_helmet`,
@@ -66,7 +68,8 @@ export const Armors = ObjectDefinitions.create<ArmorDefinition>()(
             "vest_factory",
             {
                 level: 1,
-                damageReduction: 0.2
+                damageReduction: 0.2,
+                color: 0xc8c8c6
             },
             "Basic"
         ),
@@ -74,7 +77,8 @@ export const Armors = ObjectDefinitions.create<ArmorDefinition>()(
             "vest_factory",
             {
                 level: 2,
-                damageReduction: 0.35
+                damageReduction: 0.35,
+                color: 0x404d2e
             },
             "Regular"
         ),
@@ -82,9 +86,20 @@ export const Armors = ObjectDefinitions.create<ArmorDefinition>()(
             "vest_factory",
             {
                 level: 3,
-                damageReduction: 0.45
+                damageReduction: 0.45,
+                color: 0x0d0d0d // mfw 0x000000 tint no work
             },
             "Tactical"
+        ),
+        apply(
+            "vest_factory",
+            {
+                level: 99,
+                damageReduction: 0.72,
+                color: 0x2f0000,
+                noDrop: true
+            },
+            "Developr"
         )
     ]
 );

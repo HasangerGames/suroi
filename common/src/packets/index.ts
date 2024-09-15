@@ -1,17 +1,17 @@
 import { type DisconnectData, DisconnectPacket } from "./disconnectPacket";
-import { GameOverData, GameOverPacket } from "./gameOverPacket";
-import { SimpleInputActions, InputAction, PlayerInputData, PlayerInputPacket, NoMobile } from "./inputPacket";
-import { JoinedPacketData, JoinedPacket } from "./joinedPacket";
-import { JoinPacketData, JoinPacket } from "./joinPacket";
-import { KillFeedPacketData, KillFeedPacket, ForEventType } from "./killFeedPacket";
-import { MapPacketData, MapPacket } from "./mapPacket";
-import { PacketTemplate, Packet, InputPacket, OutputPacket } from "./packet";
+import { type GameOverData, GameOverPacket } from "./gameOverPacket";
+import { type InputAction, type NoMobile, type PlayerInputData, type SimpleInputActions, PlayerInputPacket } from "./inputPacket";
+import { type JoinedPacketData, JoinedPacket } from "./joinedPacket";
+import { type JoinPacketData, JoinPacket } from "./joinPacket";
+import { type ForEventType, type KillFeedPacketData, KillFeedPacket } from "./killFeedPacket";
+import { type MapPacketData, MapPacket } from "./mapPacket";
+import { type InputPacket, type OutputPacket, type Packet, type PacketTemplate } from "./packet";
 import { PacketStream } from "./packetStream";
-import { PickupPacketData, PickupPacket } from "./pickupPacket";
+import { type PickupPacketData, PickupPacket } from "./pickupPacket";
 import { PingPacket } from "./pingPacket";
-import { ReportPacketData, ReportPacket } from "./reportPacket";
-import { SpectatePacketData, SpectatePacket } from "./spectatePacket";
-import { PlayerData, UpdatePacket, UpdatePacketDataCommon, UpdatePacketDataIn } from "./updatePacket";
+import { type ReportPacketData, ReportPacket } from "./reportPacket";
+import { type SpectatePacketData, SpectatePacket } from "./spectatePacket";
+import { type PlayerData, type UpdatePacketDataCommon, type UpdatePacketDataIn, UpdatePacket } from "./updatePacket";
 
 export {
     DisconnectData, DisconnectPacket,
@@ -28,5 +28,4 @@ export {
     ReportPacketData, ReportPacket,
     SpectatePacketData, SpectatePacket,
     UpdatePacket, UpdatePacketDataIn, UpdatePacketDataCommon, PlayerData
-
 };

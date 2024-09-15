@@ -1,26 +1,29 @@
 import { Container, Graphics } from "pixi.js";
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
+import { MaterialSounds } from "../../../../common/src/definitions/obstacles";
 import { type Orientation } from "../../../../common/src/typings";
-import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
-import { Angle, Collision, EaseFunctions, type CollisionResponse } from "../../../../common/src/utils/math";
-import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
+import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
+import { adjacentOrEqualLayer, equalLayer, getEffectiveZIndex, isGroundLayer } from "../../../../common/src/utils/layer";
+import { Angle, Collision, EaseFunctions, Numeric, type CollisionResponse } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
-import { Vec } from "../../../../common/src/utils/vector";
+import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
+import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
+import { drawGroundGraphics, drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 
-export class Building extends GameObject<ObjectCategory.Building> {
-    override readonly type = ObjectCategory.Building;
-
+export class Building extends GameObject.derive(ObjectCategory.Building) {
     readonly ceilingContainer: Container;
 
     definition!: BuildingDefinition;
+
+    hitbox?: Hitbox;
+
+    graphics?: Graphics;
 
     ceilingHitbox?: Hitbox;
     ceilingTween?: Tween<Container>;
@@ -33,32 +36,39 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
     sound?: GameSound;
 
+    particleFrames!: string[];
+
+    hitSound?: GameSound;
+
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Building]) {
         super(game, id);
 
-        this.container.zIndex = ZIndexes.BuildingsFloor;
-
         this.ceilingContainer = new Container();
         this.game.camera.addObject(this.ceilingContainer);
+
+        this.layer = data.layer;
 
         this.updateFromData(data, true);
     }
 
     toggleCeiling(): void {
-        if (this.ceilingHitbox === undefined || this.dead) return;
+        if (this.ceilingHitbox === undefined || this.ceilingTween || this.dead) return;
         const player = this.game.activePlayer;
         if (player === undefined) return;
 
         let visible = false;
 
+        let duration = 150;
+
         if (this.ceilingHitbox.collidesWith(player.hitbox)) {
             visible = true;
+            duration = !isGroundLayer(player.layer) ? 0 : 150; // We do not want a ceiling tween during the layer change.
         } else {
             const visionSize = 14;
 
             const playerHitbox = new CircleHitbox(visionSize, player.position);
 
-            const hitboxes = this.ceilingHitbox instanceof HitboxGroup ? this.ceilingHitbox.hitboxes : [this.ceilingHitbox];
+            const hitboxes = this.ceilingHitbox instanceof GroupHitbox ? this.ceilingHitbox.hitboxes : [this.ceilingHitbox];
 
             let graphics: Graphics | undefined;
             if (HITBOX_DEBUG_MODE) {
@@ -99,12 +109,12 @@ export class Building extends GameObject<ObjectCategory.Building> {
                 const direction = collision?.dir;
                 if (direction) {
                     /* if (HITBOX_DEBUG_MODE) {
-                        graphics?.lineStyle({
+                        graphics?.setStrokeStyle({
                             color: 0xff0000,
                             width: 0.1
                         });
 
-                        graphics?.beginFill();
+                        graphics?.fill();
                         graphics?.scale.set(PIXI_SCALE);
 
                         this.addTimeout(() => {
@@ -144,17 +154,17 @@ export class Building extends GameObject<ObjectCategory.Building> {
                         }
 
                         if (!(
-                            collided ||= [...this.game.objects.getCategory(ObjectCategory.Obstacle)]
-                                .some(
-                                    ({
-                                        damageable,
-                                        dead,
-                                        definition: { role },
-                                        hitbox
-                                    }) => damageable
-                                    && !dead
-                                    && role !== ObstacleSpecialRoles.Window
-                                    && hitbox?.intersectsLine(player.position, end)
+                            collided
+                                ||= [
+                                    ...this.game.objects.getCategory(ObjectCategory.Obstacle),
+                                    ...this.game.objects.getCategory(ObjectCategory.Building)
+                                ].some(
+                                    ({ damageable, dead, definition, hitbox, layer }) =>
+                                        damageable
+                                        && !dead
+                                        && (!("role" in definition) || !definition.isWindow)
+                                        && (definition.spanAdjacentLayers ? adjacentOrEqualLayer : equalLayer)(layer, player.layer)
+                                        && hitbox?.intersectsLine(player.position, end)
                                 )
                         )) break;
                     }
@@ -171,11 +181,10 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
         this.ceilingVisible = visible;
 
-        this.ceilingTween?.kill();
         this.ceilingTween = this.game.addTween({
             target: this.ceilingContainer,
             to: { alpha: visible ? 0 : 1 },
-            duration: visible ? 150 : 300,
+            duration: visible ? duration : 300,
             ease: EaseFunctions.sineOut,
             onComplete: () => {
                 this.ceilingTween = undefined;
@@ -184,31 +193,64 @@ export class Building extends GameObject<ObjectCategory.Building> {
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Building], isNew = false): void {
+        this.updateZIndex();
+
         if (data.full) {
             const full = data.full;
-            this.definition = full.definition;
+            const definition = this.definition = full.definition;
             this.position = full.position;
 
-            for (const image of this.definition.floorImages) {
+            // If there are multiple particle variations, generate a list of variation image names
+            const particleImage = definition.particle ?? `${definition.idString}_particle`;
+
+            this.particleFrames = definition.particleVariations !== undefined
+                ? Array.from({ length: definition.particleVariations }, (_, i) => `${particleImage}_${i + 1}`)
+                : [particleImage];
+
+            for (const image of definition.floorImages) {
                 const sprite = new SuroiSprite(image.key);
                 sprite.setVPos(toPixiCoords(image.position));
                 if (image.tint !== undefined) sprite.setTint(image.tint);
                 if (image.rotation) sprite.setRotation(image.rotation);
                 if (image.scale) sprite.scale = image.scale;
+                if (image.zIndex !== undefined) sprite.setZIndex(image.zIndex);
                 this.container.addChild(sprite);
             }
 
+            this.layer = data.layer;
             const pos = toPixiCoords(this.position);
             this.container.position.copyFrom(pos);
             this.ceilingContainer.position.copyFrom(pos);
-            this.ceilingContainer.zIndex = this.definition.ceilingZIndex;
 
-            this.orientation = full.rotation;
+            this.ceilingContainer.zIndex = getEffectiveZIndex(
+                definition.ceilingZIndex,
+                this.layer + Numeric.clamp(Math.max( // make sure the ceiling appears over everything else
+                    ...this.definition.obstacles.map(({ layer }) => layer ?? 0),
+                    ...this.definition.subBuildings.map(({ layer }) => layer ?? 0)
+                ), 0, Infinity),
+                this.game.layer
+            );
+
+            this.orientation = full.orientation;
             this.rotation = Angle.orientationToRotation(this.orientation);
             this.container.rotation = this.rotation;
             this.ceilingContainer.rotation = this.rotation;
 
-            this.ceilingHitbox = (this.definition.scopeHitbox ?? this.definition.ceilingHitbox)?.transform(this.position, 1, this.orientation);
+            if (definition.graphics.length) {
+                this.graphics = new Graphics();
+                this.graphics.zIndex = getEffectiveZIndex(definition.graphicsZIndex, this.layer, this.game.layer);
+                for (const graphics of definition.graphics) {
+                    this.graphics.beginPath();
+                    drawGroundGraphics(graphics.hitbox.transform(this.position, 1, this.orientation), this.graphics);
+                    this.graphics.closePath();
+                    this.graphics.fill(graphics.color);
+                }
+                this.game.camera.container.addChild(this.graphics);
+            }
+
+            this.hitbox = definition.hitbox?.transform(this.position, 1, this.orientation);
+            this.damageable = !!definition.hitbox;
+            this.ceilingHitbox = (definition.scopeHitbox ?? definition.ceilingHitbox)?.transform(this.position, 1, this.orientation);
         }
 
         const definition = this.definition;
@@ -249,9 +291,10 @@ export class Building extends GameObject<ObjectCategory.Building> {
         if (data.dead) {
             if (!this.dead && !isNew) {
                 this.game.particleManager.spawnParticles(10, () => ({
-                    frames: `${this.definition.idString}_particle`,
+                    frames: `${definition.idString}_particle`,
                     position: this.ceilingHitbox?.randomPoint() ?? { x: 0, y: 0 },
-                    zIndex: 10,
+                    zIndex: Math.max(ZIndexes.Players + 1, 4),
+                    layer: this.layer,
                     lifetime: 2000,
                     rotation: {
                         start: randomRotation(),
@@ -275,7 +318,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                 );
             }
             this.ceilingTween?.kill();
-            this.ceilingContainer.zIndex = ZIndexes.DeadObstacles;
+            this.ceilingContainer.zIndex = getEffectiveZIndex(ZIndexes.DeadObstacles, this.layer, this.game.layer);
             this.ceilingContainer.alpha = 1;
 
             this.ceilingContainer.addChild(new SuroiSprite(`${definition.idString}_residue`));
@@ -298,6 +341,9 @@ export class Building extends GameObject<ObjectCategory.Building> {
             let key = image.key;
             if (this.dead && image.residue) key = image.residue;
             const sprite = new SuroiSprite(key);
+
+            if (this.dead && key !== image.residue) sprite.setVisible(false);
+
             sprite.setVPos(toPixiCoords(image.position));
             if (image.rotation) sprite.setRotation(image.rotation);
             if (image.scale) sprite.scale = image.scale;
@@ -305,36 +351,93 @@ export class Building extends GameObject<ObjectCategory.Building> {
             this.ceilingContainer.addChild(sprite);
         }
 
-        if (HITBOX_DEBUG_MODE) {
-            this.debugGraphics.clear();
+        this.updateDebugGraphics();
+    }
 
-            if (this.ceilingHitbox !== undefined) {
-                drawHitbox(
-                    this.ceilingHitbox,
-                    HITBOX_COLORS.buildingScopeCeiling,
-                    this.debugGraphics
-                );
-            }
+    override updateZIndex(): void {
+        this.container.zIndex = getEffectiveZIndex(ZIndexes.BuildingsFloor, this.layer, this.game.layer);
+    }
 
+    override updateDebugGraphics(): void {
+        if (!HITBOX_DEBUG_MODE) return;
+
+        const definition = this.definition;
+        const alpha = this.layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY;
+        this.debugGraphics.clear();
+
+        if (this.hitbox) {
             drawHitbox(
-                definition.spawnHitbox.transform(this.position, 1, this.orientation),
-                HITBOX_COLORS.spawnHitbox,
+                this.hitbox,
+                HITBOX_COLORS.obstacle,
+                this.debugGraphics,
+                this.game.activePlayer !== undefined && (definition.spanAdjacentLayers ? adjacentOrEqualLayer : equalLayer)(this.layer, this.game.activePlayer.layer) ? 1 : DIFF_LAYER_HITBOX_OPACITY
+            );
+        }
+
+        if (this.ceilingHitbox) {
+            drawHitbox(
+                this.ceilingHitbox,
+                HITBOX_COLORS.buildingScopeCeiling,
+                this.debugGraphics,
+                this.layer
+            );
+        }
+
+        drawHitbox(
+            definition.spawnHitbox.transform(this.position, 1, this.orientation),
+            HITBOX_COLORS.spawnHitbox,
+            this.debugGraphics,
+            alpha
+        );
+
+        if (definition.scopeHitbox) {
+            drawHitbox(
+                definition.scopeHitbox.transform(this.position, 1, this.orientation),
+                HITBOX_COLORS.buildingZoomCeiling,
                 this.debugGraphics
             );
-
-            if (definition.scopeHitbox !== undefined) {
-                drawHitbox(
-                    definition.scopeHitbox.transform(this.position, 1, this.orientation),
-                    HITBOX_COLORS.buildingZoomCeiling,
-                    this.debugGraphics
-                );
-            }
         }
+
+        for (const { collider, layer } of definition.visibilityOverrides ?? []) {
+            drawHitbox(
+                collider.transform(this.position, 1, this.orientation),
+                HITBOX_COLORS.buildingVisOverride,
+                this.debugGraphics,
+                layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY
+            );
+        }
+    }
+
+    hitEffect(position: Vector, angle: number): void {
+        this.game.particleManager.spawnParticle({
+            frames: this.particleFrames,
+            position,
+            zIndex: ZIndexes.Players + 1,
+            layer: this.layer,
+            lifetime: 600,
+            scale: { start: 0.9, end: 0.2 },
+            alpha: { start: 1, end: 0.65 },
+            speed: Vec.fromPolar((angle + randomFloat(-0.3, 0.3)), randomFloat(2.5, 4.5))
+        });
+
+        this.hitSound?.stop();
+        const { material } = this.definition;
+        if (!material) return;
+        this.hitSound = this.game.soundManager.play(
+            `${MaterialSounds[material]?.hit ?? material}_hit_${randomBoolean() ? "1" : "2"}`,
+            {
+                position,
+                falloff: 0.2,
+                maxRange: 96,
+                layer: this.layer
+            }
+        );
     }
 
     override destroy(): void {
         super.destroy();
 
+        this.graphics?.destroy();
         this.ceilingTween?.kill();
         this.ceilingContainer.destroy();
         this.sound?.stop();

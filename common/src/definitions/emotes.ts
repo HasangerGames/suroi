@@ -95,7 +95,8 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
             "Muller",
             "Suroi General Chat",
             "Fire",
-            "RIP"
+            "RIP",
+            "Leosmug"
         ].map(name => simple("emote_factory", name, EmoteCategory.Memes)),
         ...[
             "Question Mark",
@@ -114,7 +115,8 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
             "Carrot",
             "Tomato",
             "Egg",
-            "Squid"
+            "Squid",
+            "Penguin"
         ].map(name => simple("emote_factory", name, EmoteCategory.Misc)),
         ...[
             ...Ammos.definitions.filter(a => !a.ephemeral),
@@ -122,3 +124,5 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
         ].map(({ idString }) => simple("team_emote", idString))
     ]
 );
+
+export const emoteIdStrings = Emotes.definitions.map(emote => emote.idString);

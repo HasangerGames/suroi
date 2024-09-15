@@ -8,19 +8,19 @@ import { type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { BaseGameObject } from "./gameObject";
 
-export class Decal extends BaseGameObject<ObjectCategory.Decal> {
-    override readonly type = ObjectCategory.Decal;
+export class Decal extends BaseGameObject.derive(ObjectCategory.Decal) {
     override readonly fullAllocBytes = 4;
     override readonly partialAllocBytes = 4;
 
     readonly definition: DecalDefinition;
 
-    constructor(game: Game, definition: ReifiableDef<DecalDefinition>, position: Vector, rotation?: number) {
+    constructor(game: Game, definition: ReifiableDef<DecalDefinition>, position: Vector, rotation?: number, layer?: number) {
         super(game, position);
 
         this.definition = Decals.reify(definition);
 
         this.rotation = rotation ?? randomRotation();
+        this.layer = layer ?? 0;
     }
 
     override get data(): FullData<ObjectCategory.Decal> {

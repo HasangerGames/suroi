@@ -1,19 +1,22 @@
 import { BloomFilter } from "pixi-filters";
 import { Color } from "pixi.js";
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { ZIndexes } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
-import { Geometry } from "../../../../common/src/utils/math";
+import type { RectangleHitbox } from "../../../../common/src/utils/hitbox";
+import { adjacentOrEqualLayer, equalLayer, getEffectiveZIndex, isVisibleFromLayer } from "../../../../common/src/utils/layer";
+import { Geometry, resolveStairInteraction } from "../../../../common/src/utils/math";
 import { random, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import type { Building } from "./building";
 import { type Obstacle } from "./obstacle";
 import { type Player } from "./player";
 
 export class Bullet extends BaseBullet {
     readonly game: Game;
-    readonly image: SuroiSprite;
+    private readonly _image: SuroiSprite;
     readonly maxLength: number;
     readonly tracerLength: number;
 
@@ -29,21 +32,21 @@ export class Bullet extends BaseBullet {
 
         const tracerStats = this.definition.tracer;
 
-        this.image = new SuroiSprite(tracerStats.image)
+        this._image = new SuroiSprite(tracerStats.image)
             .setRotation(this.rotation - Math.PI / 2)
             .setVPos(toPixiCoords(this.position));
 
         this.tracerLength = tracerStats.length;
-        this.maxLength = this.image.width * this.tracerLength;
-        this.image.scale.y = tracerStats.width;
-        this.image.alpha = tracerStats.opacity / (this.reflectionCount + 1);
+        this.maxLength = this._image.width * this.tracerLength;
+        this._image.scale.y = tracerStats.width;
+        this._image.alpha = tracerStats.opacity / (this.reflectionCount + 1);
         if (this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
-            this.image.filters = new BloomFilter({
+            this._image.filters = new BloomFilter({
                 strength: 5
             });
         }
 
-        if (!tracerStats.particle) this.image.anchor.set(1, 0.5);
+        if (!tracerStats.particle) this._image.anchor.set(1, 0.5);
 
         const white = 0xFFFFFF;
         const color = new Color(
@@ -53,32 +56,68 @@ export class Bullet extends BaseBullet {
         );
         if (MODE.bulletTrailAdjust) color.multiply(MODE.bulletTrailAdjust);
 
-        this.image.tint = color;
-        this.image.zIndex = tracerStats.zIndex;
+        this._image.tint = new Color(color);
+        this._image.zIndex = tracerStats.zIndex;
+        this.setLayer(this._layer);
 
-        this.game.camera.addObject(this.image);
+        this.game.camera.addObject(this._image);
     }
 
     update(delta: number): void {
+        const oldLayer = this._layer;
         if (!this.dead) {
             const collisions = this.updateAndGetCollisions(delta, this.game.objects);
 
             for (const collision of collisions) {
                 const object = collision.object;
 
-                const isObstacle = object.type === ObjectCategory.Obstacle;
-                const isPlayer = object.type === ObjectCategory.Player;
-                if (isObstacle || isPlayer) {
-                    (object as Obstacle | Player).hitEffect(collision.intersection.point, Math.atan2(collision.intersection.normal.y, collision.intersection.normal.x));
+                const { isObstacle, isPlayer, isBuilding } = object;
+
+                if (
+                    (
+                        isPlayer || (isObstacle && !object.definition.isStair) || isBuilding
+                    ) && equalLayer(object.layer, this._layer)
+                ) {
+                    (object as Obstacle | Player | Building).hitEffect(
+                        collision.intersection.point,
+                        Math.atan2(collision.intersection.normal.y, collision.intersection.normal.x)
+                    );
                 }
 
-                this.damagedIDs.add(object.id);
-
-                if (isObstacle) {
-                    if (this.definition.penetration.obstacles && !object.definition.impenetrable) continue;
-                    if (object.definition.noBulletCollision || object.definition.noCollisions) continue;
+                if (!object.isObstacle || !object.definition.isStair) {
+                    this.damagedIDs.add(object.id);
                 }
-                if (this.definition.penetration.players && isPlayer) continue;
+
+                if (object.isObstacle) {
+                    const definition = object.definition;
+                    if (
+                        (this.definition.penetration.obstacles && !definition.impenetrable)
+                        || definition.noBulletCollision
+                        || definition.noCollisions
+                        || !(definition.spanAdjacentLayers || definition.isStair ? adjacentOrEqualLayer : equalLayer)(object.layer, this._layer)
+                    ) continue;
+
+                    if (definition.isStair) {
+                        this.setLayer(
+                            resolveStairInteraction(
+                                definition,
+                                (object as Obstacle).orientation,
+                                object.hitbox as RectangleHitbox,
+                                object.layer,
+                                this.position
+                            )
+                        );
+                        continue;
+                    }
+                } else if (
+                    (isPlayer && this.definition.penetration.players)
+                    || (
+                        isBuilding && (
+                            object.definition.noBulletCollision
+                            || !(object.definition.spanAdjacentLayers ? adjacentOrEqualLayer : equalLayer)(object.layer, this._layer)
+                        )
+                    )
+                ) continue;
 
                 this.dead = true;
                 this.position = collision.intersection.point;
@@ -95,10 +134,10 @@ export class Bullet extends BaseBullet {
         const traveledDistance = Geometry.distance(this.initialPosition, this.position);
 
         if (this.definition.tracer.particle) {
-            this.image.scale.set(1 + (traveledDistance / this.maxDistance));
-            this.image.alpha = 2 * this.definition.speed * this._trailTicks / this.maxDistance;
+            this._image.scale.set(1 + (traveledDistance / this.maxDistance));
+            this._image.alpha = 2 * this.definition.speed * this._trailTicks / this.maxDistance;
 
-            this._trailReachedMaxLength ||= this.image.alpha >= 1;
+            this._trailReachedMaxLength ||= this._image.alpha >= 1;
         } else {
             const length = Math.min(
                 Math.min(
@@ -107,17 +146,19 @@ export class Bullet extends BaseBullet {
                 ) * PIXI_SCALE,
                 this.maxLength
             );
-            this.image.width = length;
+            this._image.width = length;
 
             this._trailReachedMaxLength ||= length >= this.maxLength;
         }
 
-        this.image.setVPos(toPixiCoords(this.position));
+        this._image.setVPos(toPixiCoords(this.position));
 
         this.particleTrail();
 
         if (this._trailTicks <= 0 && this.dead) {
             this.destroy();
+        } else if (this._layer === oldLayer) {
+            this.updateVisibility();
         }
     }
 
@@ -137,12 +178,13 @@ export class Bullet extends BaseBullet {
                 ),
                 position: this.position,
                 lifetime: random(trail.lifetime.min, trail.lifetime.max),
-                zIndex: ZIndexes.Bullets - 1,
+                zIndex: getEffectiveZIndex(ZIndexes.Bullets - 1, this._layer, this.game.layer),
                 scale: randomFloat(trail.scale.min, trail.scale.max),
                 alpha: {
                     start: randomFloat(trail.alpha.min, trail.alpha.max),
                     end: 0
                 },
+                layer: this._layer,
                 tint: trail.tint === -1
                     ? new Color({ h: random(0, 6) * 60, s: 60, l: 70 }).toNumber()
                     : trail.tint
@@ -152,8 +194,25 @@ export class Bullet extends BaseBullet {
         this._lastParticleTrail = Date.now();
     }
 
+    private setLayer(layer: number): void {
+        this._layer = layer;
+        this.updateVisibility();
+        this._image.zIndex = getEffectiveZIndex(this.definition.tracer.zIndex, this._layer, this.game.layer);
+    }
+
+    private updateVisibility(): void {
+        if (!this.game.activePlayer) return;
+
+        this._image.visible = isVisibleFromLayer(
+            this.game.activePlayer.layer,
+            this,
+            [...this.game.objects],
+            hitbox => hitbox.intersectsLine(this._oldPosition, this.position) !== null
+        );
+    }
+
     destroy(): void {
-        this.image.destroy();
+        this._image.destroy();
         this.game.bullets.delete(this);
     }
 }

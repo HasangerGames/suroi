@@ -1,25 +1,22 @@
-import { Graphics } from "pixi.js";
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
+import { MaterialSounds, type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
+import { adjacentOrEqualLayer, equalLayer, getEffectiveZIndex } from "../../../../common/src/utils/layer";
 import { Angle, EaseFunctions, Numeric, calculateDoorHitboxes } from "../../../../common/src/utils/math";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
-import { FloorTypes } from "../../../../common/src/utils/terrain";
+import { random, randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, WALL_STROKE_WIDTH } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
 import { type ParticleEmitter, type ParticleOptions } from "./particles";
 import { type Player } from "./player";
 
-export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
-    override readonly type = ObjectCategory.Obstacle;
-
+export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     override readonly damageable = true;
 
     readonly image: SuroiSprite;
@@ -59,6 +56,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
     hitSound?: GameSound;
 
+    notOnCoolDown = true;
+
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Obstacle]) {
         super(game, id);
 
@@ -78,7 +77,20 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             this.position = full.position;
             this.rotation = full.rotation.rotation;
             this.orientation = full.rotation.orientation;
+            this.layer = full.layer;
             this.variation = full.variation;
+
+            if (this.definition.detector && full.detectedMetal && this.notOnCoolDown) {
+                this.game.soundManager.play("detection", {
+                    falloff: 0.25,
+                    position: Vec.create(this.position.x + 20, this.position.y - 20),
+                    maxRange: 200
+                });
+                this.notOnCoolDown = false;
+                setTimeout(() => {
+                    this.notOnCoolDown = true;
+                }, 1000);
+            }
 
             if (definition.invisible) this.container.visible = false;
 
@@ -96,6 +108,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                     spawnOptions: () => ({
                         frames: "smoke_particle",
                         position: this.position,
+                        layer: this.layer,
                         zIndex: Math.max((definition.zIndex ?? ZIndexes.ObstaclesLayer1) + 1, ZIndexes.Players),
                         lifetime: 3500,
                         scale: { start: 0, end: randomFloat(4, 5) },
@@ -114,7 +127,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 this.activated = full.activated;
 
                 if (!isNew && !this.destroyed) {
-                    if (definition.role === ObstacleSpecialRoles.Activatable && definition.sound) {
+                    if (definition.isActivatable && definition.sound) {
                         if ("names" in definition.sound) definition.sound.names.forEach(name => this.playSound(name, definition.sound));
                         else this.playSound(definition.sound.name, definition.sound);
                     }
@@ -149,8 +162,13 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                         texture = "airdrop_crate_unlocking";
 
                         this.addTimeout(() => {
-                            this.game.particleManager.spawnParticles(4, () => ({
+                            this.game.particleManager.spawnParticles(2, () => ({
                                 frames: "airdrop_particle_2",
+                                position: this.hitbox.randomPoint(),
+                                ...options(4, 9)
+                            } as ParticleOptions));
+                            this.game.particleManager.spawnParticles(2, () => ({
+                                frames: "airdrop_particle_3",
                                 position: this.hitbox.randomPoint(),
                                 ...options(4, 9)
                             } as ParticleOptions));
@@ -190,7 +208,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                         maxRange: 96
                     });
                 };
-                playSound(`${definition.material}_destroyed`);
+                playSound(`${MaterialSounds[definition.material]?.destroyed ?? definition.material}_destroyed`);
                 for (const sound of definition.additionalDestroySounds) playSound(sound);
 
                 if (definition.noResidue) {
@@ -210,6 +228,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 this.game.particleManager.spawnParticles(10, () => ({
                     frames: this.particleFrames,
                     position: this.hitbox.randomPoint(),
+                    layer: this.layer,
                     zIndex: (definition.zIndex ?? ZIndexes.ObstaclesLayer1) + 1,
                     lifetime: 1500,
                     rotation: {
@@ -230,11 +249,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 }));
             }
         }
-        this.container.zIndex = this.dead ? ZIndexes.DeadObstacles : definition.zIndex ?? ZIndexes.ObstaclesLayer1;
 
-        if (this.dead && FloorTypes[this.game.map.terrain.getFloor(this.position)].overlay) {
-            this.container.zIndex = ZIndexes.UnderWaterDeadObstacles;
-        }
+        this.updateZIndex();
 
         if (this._door === undefined) {
             this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
@@ -251,65 +267,175 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 : definition.frames.base ?? definition.idString
             : definition.frames.residue ?? `${definition.idString}_residue`;
 
-        if (this.variation !== undefined && !this.dead) texture += `_${this.variation + 1}`;
-
-        if (!definition.invisible && !definition.wall && !(this.dead && definition.noResidue)) this.image.setFrame(texture);
-
-        if (definition.tint !== undefined) this.image.setTint(definition.tint);
-
-        if (definition.wall && !this.dead && definition.hitbox instanceof RectangleHitbox) {
-            this.container.removeChildren();
-
-            const dimensions = definition.hitbox.clone();
-            dimensions.scale(PIXI_SCALE);
-
-            const wallGraphics = new Graphics();
-
-            const x = dimensions.min.x;
-            const y = dimensions.min.y;
-            const w = dimensions.max.x - dimensions.min.x;
-            const h = dimensions.max.y - dimensions.min.y;
-
-            wallGraphics
-                .rect(x, y, w, h)
-                .fill({ color: definition.wall.borderColor })
-                .roundRect(x + WALL_STROKE_WIDTH, y + WALL_STROKE_WIDTH, w - WALL_STROKE_WIDTH * 2, h - WALL_STROKE_WIDTH * 2, WALL_STROKE_WIDTH)
-                .fill({ color: definition.wall.color });
-
-            this.container.addChild(wallGraphics);
+        if (this.variation !== undefined && !this.dead) {
+            texture += `_${this.variation + 1}`;
         }
-        if (definition.wall && this.dead) {
-            this.container.removeChildren();
-            if (!definition.noResidue) this.container.addChild(this.image);
+
+        if (!definition.invisible && !(this.dead && definition.noResidue)) {
+            this.image.setFrame(texture);
+        }
+
+        if (definition.tint !== undefined) {
+            this.image.setTint(definition.tint);
         }
 
         this.container.rotation = this.rotation;
 
-        if (HITBOX_DEBUG_MODE) {
-            this.debugGraphics.clear();
+        this.updateDebugGraphics();
+    }
+
+    override updateZIndex(): void {
+        const zIndex = this.dead
+            ? this.doOverlay()
+                ? ZIndexes.UnderWaterDeadObstacles
+                : ZIndexes.DeadObstacles
+            : this.definition.zIndex ?? ZIndexes.ObstaclesLayer1;
+        this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, this.game.layer);
+    }
+
+    override updateDebugGraphics(): void {
+        if (!HITBOX_DEBUG_MODE) return;
+
+        const definition = this.definition;
+        this.debugGraphics.clear();
+        const alpha = this.game.activePlayer !== undefined && (definition.spanAdjacentLayers ? adjacentOrEqualLayer : equalLayer)(this.layer, this.game.activePlayer.layer) ? 1 : DIFF_LAYER_HITBOX_OPACITY;
+
+        if (definition.isStair) {
+            const hitbox = this.hitbox as RectangleHitbox;
+
+            const min = toPixiCoords(hitbox.min);
+            const max = toPixiCoords(hitbox.max);
+            const gphx = this.debugGraphics;
+
+            // using the same numbering system as server-side, but with array indexes
+            const drawSide = [
+                () => {
+                    gphx.moveTo(min.x, min.y)
+                        .lineTo(max.x, min.y);
+                },
+                () => {
+                    gphx.moveTo(max.x, min.y)
+                        .lineTo(max.x, max.y);
+                },
+                () => {
+                    gphx.moveTo(max.x, max.y)
+                        .lineTo(min.x, max.y);
+                },
+                () => {
+                    gphx.moveTo(min.x, max.y)
+                        .lineTo(min.x, min.y);
+                }
+            ];
+
+            const { high: highDef, low: lowDef } = definition.activeEdges;
+            const [high, low] = [
+                Numeric.absMod(highDef - this.orientation, 4),
+                Numeric.absMod(lowDef - this.orientation, 4)
+            ];
+
+            if (Math.abs(high - low) === 1) {
+                for (let i = 0; i < 4; i++) {
+                    let color: 0xff0000 | 0x00ff00 = 0xff0000;
+                    let width = 4;
+                    switch (true) {
+                        case i === high: { // active edge
+                            color = 0xff0000;
+                            break;
+                        }
+                        case i === low: { // active edge
+                            color = 0x00ff00;
+                            break;
+                        }
+                        case Math.abs(i - low) === 2: { // opposite of low edge -> high edge
+                            color = 0xff0000;
+                            width = 2;
+                            break;
+                        }
+                        case Math.abs(i - high) === 2: { // opposite of high edge -> low edge
+                            color = 0x00ff00;
+                            width = 2;
+                            break;
+                        }
+                    }
+
+                    gphx.setStrokeStyle({ color, width, alpha })
+                        .beginPath();
+                    drawSide[i]();
+                    gphx.closePath()
+                        .stroke();
+                }
+
+                // determine the line's endpoints
+                const [vertexA, vertexB] = high + low === 3
+                    ? [min, max]
+                    : [
+                        { x: max.x, y: min.y },
+                        { x: min.x, y: max.y }
+                    ];
+                const ratio = (vertexB.y - vertexA.y) / (vertexB.x - vertexA.x);
+                const protrusion = Math.min(50, 50 / ratio);
+
+                gphx.setStrokeStyle({ color: 0xffff00, width: 2, alpha })
+                    .beginPath()
+                    .moveTo(vertexA.x - protrusion, vertexA.y - protrusion * ratio)
+                    .lineTo(vertexA.x, vertexA.y)
+                    .moveTo(vertexB.x, vertexB.y)
+                    .lineTo(vertexB.x + protrusion, vertexB.y + protrusion * ratio)
+                    .stroke()
+                    .setStrokeStyle({ color: 0xffff00, alpha: 0.25 * alpha, width: 2 })
+                    .beginPath()
+                    .moveTo(vertexA.x, vertexA.y)
+                    .lineTo(vertexB.x, vertexB.y)
+                    .closePath()
+                    .stroke();
+            } else {
+                drawHitbox(
+                    hitbox,
+                    definition.noCollisions || this.dead
+                        ? HITBOX_COLORS.obstacleNoCollision
+                        : HITBOX_COLORS.stair,
+                    this.debugGraphics,
+                    alpha
+                );
+
+                gphx.setStrokeStyle({ color: 0xff0000, width: 4 })
+                    .beginPath();
+                drawSide[high]();
+                gphx.closePath()
+                    .stroke()
+                    .setStrokeStyle({ color: 0x00ff00, width: 4 })
+                    .beginPath();
+                drawSide[low]();
+                gphx.closePath()
+                    .stroke();
+            }
+        } else {
             drawHitbox(
                 this.hitbox,
                 definition.noCollisions || this.dead
                     ? HITBOX_COLORS.obstacleNoCollision
                     : HITBOX_COLORS.obstacle,
-                this.debugGraphics
+                this.debugGraphics,
+                alpha
             );
+        }
 
-            if (definition.role === ObstacleSpecialRoles.Door && definition.operationStyle !== "slide") {
-                drawHitbox(
-                    new CircleHitbox(0.2, Vec.addAdjust(this.position, definition.hingeOffset, this.orientation)),
-                    HITBOX_COLORS.obstacleNoCollision,
-                    this.debugGraphics
-                );
-            }
+        if (definition.isDoor && definition.operationStyle !== "slide") {
+            drawHitbox(
+                new CircleHitbox(0.2, Vec.addAdjust(this.position, definition.hingeOffset, this.orientation)),
+                HITBOX_COLORS.obstacleNoCollision,
+                this.debugGraphics,
+                alpha
+            );
+        }
 
-            if (definition.spawnHitbox) {
-                drawHitbox(
-                    definition.spawnHitbox.transform(this.position, 1, this.orientation),
-                    HITBOX_COLORS.spawnHitbox,
-                    this.debugGraphics
-                );
-            }
+        if (definition.spawnHitbox) {
+            drawHitbox(
+                definition.spawnHitbox.transform(this.position, 1, this.orientation),
+                HITBOX_COLORS.spawnHitbox,
+                this.debugGraphics,
+                alpha
+            );
         }
     }
 
@@ -326,7 +452,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         this._door.openHitbox = hitboxes.openHitbox;
         if ("openAltHitbox" in hitboxes) this._door.openAltHitbox = hitboxes.openAltHitbox;
 
-        this._door.locked = definition.locked;
+        this._door.locked = data.door.locked;
 
         let backupHitbox = (definition.hitbox as RectangleHitbox).transform(this.position, this.scale, this.orientation);
 
@@ -410,10 +536,15 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     }
 
     canInteract(player: Player): boolean {
+        type DoorDef = { openOnce?: boolean, automatic?: boolean };
         return !this.dead && (
-            (this._door !== undefined && !this._door.locked)
-            || (
-                this.definition.role === ObstacleSpecialRoles.Activatable
+            (
+                this._door !== undefined
+                && !this._door.locked
+                && !(this.definition as DoorDef).openOnce
+                && !(this.definition as DoorDef).automatic
+            ) || (
+                this.definition.isActivatable === true
                 && (player.activeItem.idString === this.definition.requiredItem || !this.definition.requiredItem)
                 && !this.activated
             )
@@ -422,12 +553,15 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
     hitEffect(position: Vector, angle: number): void {
         this.hitSound?.stop();
+
+        const { material } = this.definition;
         this.hitSound = this.game.soundManager.play(
-            `${this.definition.material}_hit_${randomBoolean() ? "1" : "2"}`,
+            `${MaterialSounds[material]?.hit ?? material}_hit_${this.definition.hitSoundVariations ? random(1, this.definition.hitSoundVariations) : randomBoolean() ? "1" : "2"}`,
             {
                 position,
                 falloff: 0.2,
-                maxRange: 96
+                maxRange: 96,
+                layer: this.layer
             }
         );
 
@@ -436,6 +570,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             position,
             zIndex: Math.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
             lifetime: 600,
+            layer: this.layer,
             scale: { start: 0.9, end: 0.2 },
             alpha: { start: 1, end: 0.65 },
             speed: Vec.fromPolar((angle + randomFloat(-0.3, 0.3)), randomFloat(2.5, 4.5))

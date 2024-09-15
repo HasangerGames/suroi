@@ -174,6 +174,28 @@ export const Geometry = Object.freeze({
     }
 });
 
+export const Statistics = Object.freeze({
+    average(values: readonly number[]): number {
+        return values.reduce((acc, cur) => acc + cur, 0) / values.length;
+    },
+    geomAvg(values: readonly number[]): number {
+        return values.reduce((acc, cur) => acc * cur, 1) ** (1 / values.length);
+    },
+    stddev(values: readonly number[]): number {
+        const avg = Statistics.average(values);
+        return Math.sqrt(Statistics.average(values.map(v => (v - avg) ** 2)));
+    },
+    median(values: readonly number[]): number {
+        if (values.length % 2) {
+            return [...values].sort((a, b) => a - b)[values.length >> 1];
+        }
+        const sorted = [...values].sort((a, b) => a - b); // mfw no toSorted cuz lib < es2023
+
+        const halfLength = values.length / 2;
+        return (sorted[halfLength] + sorted[halfLength - 1]) / 2;
+    }
+});
+
 export const Collision = Object.freeze({
     /**
      * Check if two circles are colliding
@@ -298,6 +320,98 @@ export const Collision = Object.freeze({
             }
         }
 
+        return null;
+    },
+    /**
+     * Determines the Vector describing the point in which two line segments, each described by a pair of Vector points,
+     * intersect, if at all.
+     *
+     * This method uses the parametric definition of lines to quickly find a point of intersection.
+     *
+     * @param segmentAStart - A Vector describing the point at which the first line segment begins.
+     * @param segmentAEnd - A Vector describing the point at which the first line segment ends.
+     * @param segmentBStart - A Vector describing the point at which the second line segment begins.
+     * @param segmentBEnd - A Vector describing the point at which the second line segment ends.
+     *
+     * @returns The point of intersection between the two line segments, if it exists. `null` if an intersection does
+     * not exist.
+     */
+    lineSegmentIntersection(segmentAStart: Vector, segmentAEnd: Vector, segmentBStart: Vector, segmentBEnd: Vector): Vector | null {
+        // Calculate the vectors representing the two line segments.
+        // These vectors describe the direction and length of travel to go from the start to the end of the respective
+        // line segments.
+        const Sa: Vector = Vec.sub(segmentAEnd, segmentAStart);
+        const Sb: Vector = Vec.sub(segmentBEnd, segmentBStart);
+
+        // Calculate the determinate of these two vectors.
+        // This value provides information about how the two line segment vectors relate to one another.
+        //
+        // | S_a.x  S_b.x |
+        // | S_a.y  S_b.y | = (S_a.x * S_b.y) - (S_b.x * S_a.y)
+        //
+        const lineSegmentDeterminant = (Sa.x * Sb.y) - (Sb.x * Sa.y);
+
+        // When the determinant is 0, it means that the lines are either parallel or collinear, and so we would not
+        // consider them intersecting lines. An argument can be made that collinear lines constitute an infinite number
+        // of intersecting points, but this method only deals with a single discrete point of intersection.
+        if (lineSegmentDeterminant === 0) {
+            return null;
+        }
+
+        // These line segments can be described by the parametric equation
+        // P(t) = p_start + t * (p_end - p_start)
+        // Where `p_start` is the point where the line segment starts.
+        // Where `p_end` is the point where the line segment ends.
+        // Where `t` is a scalar value in the interval [0, 1].
+        // This equation is saying that the line segment is described by the starting position and some progression
+        // along the segment until the ending position.
+
+        // If there is a point of intersection between the two lines segments, then it must hold that...
+        //   S_a_start + t_a * (S_a_end - S_a_start) = S_b_start + t_b * (S_b_end - S_b_start)
+        // ...for some values of `t_a` and `t_b`.
+        // Rearrange this to isolate in terms of `t_a` and `t_b`
+        // S_a_start + t_a * (S_a_end - S_a_start) = S_b_start + t_b * (S_b_end - S_b_start)
+        // t_a * (S_a_end - S_a_start) - t_b * (S_b_end - S_b_start) = S_b_start - S_a_start
+        // This can be represented by in vector definitions...
+        // t_a * S_a→ - t_b * S_b→ = R→
+        // Where R→ is the vector S_a_start to S_b_start.
+
+        // dedl0x: This should be the other way around but it doesn't work when it is. Everything works when it's like
+        // this. Still don't know why.
+        const R = Vec.sub(segmentAStart, segmentBStart);
+
+        // The above equation is a system of linear equations...
+        //       [ S_a_x ]         [ S_b_x ]   [ R_x ]
+        // t_a * [ S_a_y ] - t_b * [ S_b_y ] = [ R_y ]
+        // or in matrix form...
+        // [ S_a_x  -S_b_x ] [ t_a ]   [ R_x ]
+        // [ S_a_y  -S_b_y ] [ t_b ] = [ R_y ]
+        // Cramer's rule states that for a system Ax→ = b→, where A is a matrix and x→ and b→ are vectors, the solution
+        // is given by...
+        // x_i = det(A_i) / det(A)
+        // Where A_i is the matrix formed by replacing the i'th column of A with b→.
+        // So to solve for `t_a` and `t_b`, we only need to calculate the determinants.
+        const determinantForTa = (R.x * (-1 * Sb.y)) - ((-1 * Sb.x) * R.y);
+        const determinantForTb = (Sa.x * R.y) - (R.x * Sa.y);
+
+        // t_a = det(A_t_a) / det(A)
+        const ta = determinantForTa / lineSegmentDeterminant;
+        // t_b = det(A_t_b) / det(A)
+        const tb = determinantForTb / lineSegmentDeterminant;
+
+        // It's important to note that the parametric representation of the line segments, as detailed above, states
+        // that the value of `t` should be in the interval [0, 1] for points that exist within the line segment. Values
+        // outside of this interval describe extrapolated points. We performed a check earlier against the determinant
+        // to rule out the segments being parallel or collinear, and so these lines must intersect at some point. Our
+        // concern is whether or not they intersect within the boundaries of the line segment ([0, 1]).
+        if ((0 <= ta && ta <= 1) && (0 <= tb && tb <= 1)) {
+            return Vec.create(
+                segmentAStart.x + (ta * Sa.x),
+                segmentAStart.y + (ta * Sa.y)
+            );
+        }
+
+        // An intersection between the two line segments was not found.
         return null;
     },
     /**
@@ -489,7 +603,7 @@ export const Collision = Object.freeze({
             return xp > yp
                 ? {
                     dir: Vec.create(
-                        p.x > 0 ? 1 : -1,
+                        p.x > 0 ? -1 : 1,
                         0
                     ),
                     pen: -xp
@@ -497,7 +611,7 @@ export const Collision = Object.freeze({
                 : {
                     dir: Vec.create(
                         0,
-                        p.y > 0 ? 1 : -1
+                        p.y > 0 ? -1 : 1
                     ),
                     pen: -yp
                 };
@@ -682,6 +796,170 @@ export function calculateDoorHitboxes<
             } as Return;
         }
     }
+}
+
+/**
+* Resolves the interaction between a given game object or bullet and this stair by determining what layer the object should move to
+* Two things are assumed and are prerequisite:
+* - This `Obstacle` instance is indeed one corresponding to a stair (such that `this.definition.isStair`)
+* - The given game object or bullet's hitbox overlaps this obstacle's (such that `gameObject.hitbox.collidesWith(this.hitbox)`)
+*
+* @returns the layer on which te game object should be placed after the interaction has been resolved
+*/
+export function resolveStairInteraction(
+    definition: ObstacleDefinition,
+    obstacleOrientation: Orientation,
+    obstacleHitbox: RectangleHitbox,
+    obstacleLayer: number,
+    targetPosition: Vector
+): number {
+    if (!definition.isStair) {
+        console.error("Tried to handle a stair interaction as a non-stair obstacle");
+        return obstacleLayer;
+    }
+
+    const { activeEdges: { high: highDef, low: lowDef } } = definition;
+    const [high, low] = [
+        Numeric.absMod(highDef - obstacleOrientation, 4),
+        Numeric.absMod(lowDef - obstacleOrientation, 4)
+    ];
+
+    /*
+       reminder for the numbering system used:
+            0
+         ┌─────┐
+       3 │     │ 1
+         └─────┘
+            2
+
+       checking to see if high and low are opposites is thus
+       as simple as checking to see if the absolute difference
+       between them is 2 (and checking for adjacency requires
+       a check for an absolute difference of 1)
+
+       having them be opposite is really cool cuz it's the most
+       intuitive case.
+
+       if they're opposite, then we can basically project the
+       object's position onto an axis that runs between the two
+       sides, and do a bounds check. for example, let's say that
+       low = 3 and high = 1; we therefore have a staircase going
+       from, let's say, layer 0 on the left up to layer 2 on the
+       right.
+
+       to know what layer to place an object on, we just consider
+       where it is in relation to sides 3 and 1; if it's left of
+       3, we put it on layer 0; right of 1 and it's on layer 2;
+       in between is on layer 1.
+
+       layer 0│  1  │layer 2
+       ←──────│←───→│──────→
+              ┌─────┐
+              │     │
+              └─────┘
+   */
+
+    const { min, max } = obstacleHitbox;
+
+    let newLayer = obstacleLayer;
+
+    if (Math.abs(high - low) === 2) {
+        // the odd-numbered sides lie on the horizontal
+        const prop = high % 2 !== 0 ? "x" : "y";
+        // where the "low" side is
+        const minIsLow = low === 0 || low === 3;
+        const objComponent = targetPosition[prop];
+
+        if (objComponent <= min[prop]) {
+            newLayer += minIsLow ? -1 : 1;
+        } else if (objComponent >= max[prop]) {
+            newLayer += minIsLow ? 1 : -1;
+        }
+
+        return newLayer;
+    }
+
+    /*
+        Otherwise, they're adjacent, which is slightly harder to
+        reason about. We'll divide the world into a few sections,
+        and assign a layer consequently, as visualized below.
+        For the diagram, assume that low = 0 and that high = 1.
+
+                        ╱
+                    ╱
+        layer 0       ╱
+            ┌─────┐
+            │  1  │
+            └─────┘   layer 2
+            ╱
+            ╱
+            ╱
+
+        in theory, only two sides of the stair would be accessible,
+        and the other two would be clipped off with walls, but it's
+        not too much expensive to extend our diagram and computations,
+        so we do it.
+    */
+
+    const objIsLeft = targetPosition.x <= min.x;
+    const objIsRight = targetPosition.x >= max.x;
+    const objIsAbove = targetPosition.y <= min.y;
+    const objIsBelow = targetPosition.y >= max.y;
+
+    const intersectX = !objIsLeft && !objIsRight;
+    const intersectY = !objIsAbove && !objIsBelow;
+
+    if (intersectX && intersectY) {
+        // if it's inside the stair, then the high/low isn't relevant: we match the stair's layer
+        return obstacleLayer;
+    }
+
+    // otherwise we gotta figure out a) which way the line cuts b) what region the game object is in
+
+    /*
+        bl/tr
+        high === 0 && low === 1
+        high === 1 && low === 0
+        high === 2 && low === 3
+        high === 3 && low === 2
+
+        br/tl
+        high === 0 && low === 3
+        high === 1 && low === 2
+        high === 2 && low === 1
+        high === 3 && low === 0
+
+        as can be seen here, all the pairs that yield a bottom-right/top-left
+        diagonal have the sum of high and low equal to 3.
+    */
+    const isBottomRightToTopLeft = high + low === 3;
+    const ratio = (max.y - min.y) / (max.x - min.x);
+
+    if (isBottomRightToTopLeft) {
+        const topRightIsHigh = high < 2;
+        if (
+            objIsRight // trivial rhs check
+            || (objIsAbove && !objIsLeft) // above the box (and neither to its left nor its right)
+            || ratio * (targetPosition.x - max.x) > (targetPosition.y - max.y) // on the right of the diagonal
+        ) {
+            newLayer += topRightIsHigh ? 1 : -1;
+        } else {
+            newLayer += topRightIsHigh ? -1 : 1;
+        }
+    } else {
+        const topLeftIsHigh = high === 0 || high === 3;
+        if (
+            objIsLeft // trivial lhs check
+            || (objIsAbove && !objIsRight) // above the box (and neither to its left nor its right)
+            || ratio * (targetPosition.x - max.x) > (targetPosition.y - min.y) // on the left of the diagonal
+        ) {
+            newLayer += topLeftIsHigh ? 1 : -1;
+        } else {
+            newLayer += topLeftIsHigh ? -1 : 1;
+        }
+    }
+
+    return newLayer;
 }
 
 type NameGenerator<T extends string> = `${T}In` | `${T}Out` | `${T}InOut`;

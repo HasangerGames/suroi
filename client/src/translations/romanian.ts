@@ -140,6 +140,7 @@ export const ROMANIAN_TRANSLATIONS: TranslationMap = {
 
     "interact_airdrop_crate_locked": "Deschide Airdrop-ul",
     "interact_control_panel": "Activează Panoul De Control",
+    "interact_headquarters_security_desk": "Activează Panoul De Control",
     "interact_generator": "Activează Generatorul",
     "interact_button": "Apasă Butonul",
 
@@ -273,7 +274,7 @@ export const ROMANIAN_TRANSLATIONS: TranslationMap = {
     "crowbar": "Rangă",
     "sickle": "Seceră",
 
-    "mosin": "Mosin-Nagant",
+    "mosin_nagant": "Mosin-Nagant",
     "radio": "Radio",
     "lewis_gun": "Pușcă Mitralieră Lewis",
     "deathray": "Rază De Moarte",

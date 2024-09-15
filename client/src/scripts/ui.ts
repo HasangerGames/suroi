@@ -3,8 +3,9 @@ import $ from "jquery";
 import { Color, isMobile, isWebGPUSupported } from "pixi.js";
 import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "../../../common/src/constants";
 import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos";
+import type { ArmorDefinition } from "../../../common/src/definitions/armors";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
-import { EmoteCategory, Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
+import { EmoteCategory, Emotes, emoteIdStrings, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
 import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { Skins, type SkinDefinition } from "../../../common/src/definitions/skins";
@@ -15,7 +16,7 @@ import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefi
 import { pickRandomInArray } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { TRANSLATIONS, getTranslatedString } from "../translations";
-import { Config } from "./config";
+import { Config, type ServerInfo } from "./config";
 import { type Game } from "./game";
 import { news } from "./news/newsPosts";
 import { body, createDropdown } from "./uiHelpers";
@@ -23,8 +24,6 @@ import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaul
 import { PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
-import type { ArmorDefinition } from "../../../common/src/definitions/armors";
-import { InputManager } from "./managers/inputManager";
 
 /*
     eslint-disable
@@ -49,6 +48,9 @@ interface RegionInfo {
 let selectedRegion: RegionInfo | undefined;
 
 const regionInfo: Record<string, RegionInfo> = Config.regions;
+
+const ammoIdStrings = Ammos.definitions.map(ammo => ammo.idString);
+const healingItemsIdStrings = HealingItems.definitions.map(healingItem => healingItem.idString);
 
 export let teamSocket: WebSocket | undefined;
 let teamID: string | undefined | null;
@@ -245,13 +247,6 @@ export async function setUpUI(game: Game): Promise<void> {
         const pingStartTime = Date.now();
 
         try {
-            interface ServerInfo {
-                readonly protocolVersion: number
-                readonly playerCount: number
-                readonly maxTeamSize: TeamSize
-                readonly nextSwitchTime: number
-            };
-
             const serverInfo = await (
                 await fetch(`${region.mainAddress}/api/serverInfo`, { signal: AbortSignal.timeout(5000) })
             )?.json() as ServerInfo;
@@ -299,6 +294,7 @@ export async function setUpUI(game: Game): Promise<void> {
     selectedRegion = regionInfo[game.console.getBuiltInCVar("cv_region") ?? Config.defaultRegion];
     updateServerSelectors();
 
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     serverList.children("li.server-list-item").on("click", function(this: HTMLLIElement) {
         const region = this.getAttribute("data-region");
 
@@ -494,8 +490,10 @@ export async function setUpUI(game: Game): Promise<void> {
 
         teamSocket = new WebSocket(`${selectedRegion.mainAddress.replace("http", "ws")}/team?${params.toString()}`);
 
-        const getPlayerHTML = (p: CustomTeamPlayerInfo): string =>
-            `
+        const getPlayerHTML = (p: CustomTeamPlayerInfo): string => {
+            let badgeSrc;
+            if (p.badge) badgeSrc = `./img/game/${emoteIdStrings.includes(p.badge) ? "emotes" : "badges"}/${p.badge}.svg`;
+            return `
             <div class="create-team-player-container" data-id="${p.id}">
               <i class="fa-solid fa-crown"${p.isLeader ? "" : ' style="display: none"'}></i>
               <div class="skin">
@@ -505,10 +503,11 @@ export async function setUpUI(game: Game): Promise<void> {
               </div>
               <div class="create-team-player-name-container">
                 <span class="create-team-player-name"${p.nameColor ? ` style="color: ${new Color(p.nameColor).toHex()}"` : ""};>${p.name}</span>
-                ${p.badge ? `<img class="create-team-player-badge" src="./img/game/badges/${p.badge}.svg" />` : ""}
+                ${p.badge ? `<img class="create-team-player-badge" draggable="false" src=${badgeSrc ?? "./img/game/badges/${p.badge}.svg"} />` : ""}
               </div>
             </div>
             `;
+        };
 
         let playerID: number;
 
@@ -841,6 +840,7 @@ export async function setUpUI(game: Game): Promise<void> {
     $("#btn-quit-game, #btn-spectate-menu, #btn-menu").on("click", () => {
         void game.endGame();
     });
+
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     $("#btn-play-again, #btn-spectate-replay").on("click", async() => {
         await game.endGame();
@@ -871,11 +871,7 @@ export async function setUpUI(game: Game): Promise<void> {
     });
 
     ui.btnReport.on("click", () => {
-        if (confirm(`Are you sure you want to report this player?
-Players should only be reported for teaming or hacking.
-Video evidence is required.`)) {
             sendSpectatePacket(SpectateActions.Report);
-        }
     });
     ui.spectateNext.on("click", () => {
         sendSpectatePacket(SpectateActions.SpectateNext);
@@ -1031,9 +1027,10 @@ Video evidence is required.`)) {
             }
 
             // noinspection CssUnknownTarget
+            const emoteIdString = (ammoIdStrings.includes(emote.idString) || healingItemsIdStrings.includes(emote.idString)) ? `./img/game/loot/${emote.idString}.svg` : `./img/game/emotes/${emote.idString}.svg`;
             const emoteItem = $<HTMLDivElement>(
                 `<div id="emote-${emote.idString}" class="emotes-list-item-container">
-                    <div class="emotes-list-item" style="background-image: url('./img/game/emotes/${emote.idString}.svg')"></div>
+                    <div class="emotes-list-item" style="background-image: url(${emoteIdString})"></div>
                     <span class="emote-name">${getTranslatedString(`emote_${emote.idString}`)}</span>
                 </div>`
             );
@@ -1275,11 +1272,12 @@ Video evidence is required.`)) {
         $("#badges-list").append(
             noBadgeItem,
             ...allowedBadges.map(({ idString, name }) => {
+                const location = emoteIdStrings.includes(idString) ? "emotes" : "badges";
                 // noinspection CssUnknownTarget
                 const badgeItem = badgeUiCache[idString] = $<HTMLDivElement>(
                     `<div id="badge-${idString}" class="badges-list-item-container${idString === activeBadge ? " selected" : ""}">\
                         <div class="badges-list-item">\
-                            <div style="background-image: url('./img/game/badges/${idString}.svg')"></div>\
+                            <div style="background-image: url('./img/game/${location}/${idString}.svg')"></div>\
                         </div>\
                         <span class="badge-name">${getTranslatedString(`badge_${idString}`)}</span>\
                     </div>`
@@ -1703,7 +1701,8 @@ Video evidence is required.`)) {
             localStorage.setItem("suroi_config", input);
             alert("Settings loaded successfully.");
             window.location.reload();
-        } catch (e) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (_) {
             error();
         }
     });
@@ -1960,18 +1959,7 @@ Video evidence is required.`)) {
         });
     }
 
-    const interactKey = $<HTMLDivElement>("#detonate-key");
-    const bind: string | undefined = inputManager.binds.getInputsBoundToAction("explodeC4")[0];
-    const bindImg = bind === undefined ? undefined : InputManager.getIconFromInputName(bind);
-
-    if (bindImg === undefined) {
-        interactKey.text(bind ?? "");
-    } else {
-        interactKey.html(`<img src="${bindImg}" alt="${bind}"/>`);
-    }
-
-    const c4Button = $<HTMLDivElement>("#c4-detonate-btn");
-    slotListener(c4Button, button => {
+    slotListener($<HTMLDivElement>("#c4-detonate-btn"), button => {
         const isPrimary = button === 0;
 
         if (isPrimary) {
@@ -2041,12 +2029,7 @@ Video evidence is required.`)) {
     if (inputManager.isMobile) {
         // Interact message
         ui.interactMsg.on("click", () => {
-            if (game.uiManager.action.active) {
-                inputManager.addAction(InputActions.Cancel);
-            } else {
-                inputManager.addAction(InputActions.Interact);
-                inputManager.addAction(InputActions.Loot);
-            }
+            inputManager.addAction(game.uiManager.action.active ? InputActions.Cancel : InputActions.Interact);
         });
         // noinspection HtmlUnknownTarget
         ui.interactKey.html('<img src="./img/misc/tap-icon.svg" alt="Tap">');

@@ -35,8 +35,13 @@ const foldersToWatch = Object.values(atlasesToBuild);
 async function buildSpritesheets(): Promise<MultiResAtlasList> {
     const atlases: MultiResAtlasList = {};
 
-    for (const atlasId in atlasesToBuild) {
+    const ids = Object.keys(atlasesToBuild);
+    let i = 0;
+    for (const atlasId of ids) {
         const files: string[] = readDirectory(atlasesToBuild[atlasId]).filter(x => imagesMatcher.match(x));
+
+        console.log(`Building spritesheet '${atlasId}' (${++i} / ${ids.length}, ${files.length} files in '${atlasId}')`);
+
         atlases[atlasId] = await createSpritesheets(files, {
             ...compilerOpts,
             name: atlasId
@@ -87,7 +92,6 @@ export function spritesheet(): Plugin[] {
             name: `${PLUGIN_NAME}:build`,
             apply: "build",
             async buildStart() {
-                this.info("Building spritesheets");
                 atlases = await buildSpritesheets();
 
                 for (const atlasId in atlases) {
@@ -122,12 +126,10 @@ export function spritesheet(): Plugin[] {
                     clearTimeout(buildTimeout);
 
                     buildTimeout = setTimeout(() => {
-                        config.logger.info("Rebuilding spritesheets");
-
                         buildSheets().then(() => {
-                            const module = server.moduleGraph.getModuleById(highResVirtualModuleId);
+                            const module = server.moduleGraph.getModuleById(highResResolvedVirtualModuleId);
                             if (module !== undefined) void server.reloadModule(module);
-                            const module2 = server.moduleGraph.getModuleById(lowResVirtualModuleId);
+                            const module2 = server.moduleGraph.getModuleById(lowResResolvedVirtualModuleId);
                             if (module2 !== undefined) void server.reloadModule(module2);
                         }).catch(e => console.error(e));
                     }, 500);
