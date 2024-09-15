@@ -910,13 +910,13 @@ export class Game implements GameData {
             this.updateGameData({ aliveCount: this.aliveCount });
 
             if (this.teamMode) {
-                player.teamWipe();
                 const team = player.team;
                 if (team) {
                     team.removePlayer(player);
 
                     if (!team.players.length) this.teams.delete(team);
                 }
+                player.teamWipe();
                 player.beingRevivedBy?.action?.cancel();
             }
         } else {
