@@ -209,30 +209,6 @@ const ContainerWallTints = {
     yellow: 0xb3b300
 };
 
-const portWarehouseHitbox = new GroupHitbox(
-    // Outer corners
-    RectangleHitbox.fromRect(2, 18.4, Vec.create(-29.53, -51.54)),
-    RectangleHitbox.fromRect(2, 18.4, Vec.create(29.53, 51.54)),
-    RectangleHitbox.fromRect(2, 18.4, Vec.create(-29.53, 51.54)),
-    RectangleHitbox.fromRect(2, 18.4, Vec.create(29.53, -51.54)),
-
-    // Top and bottom
-    RectangleHitbox.fromRect(60, 2, Vec.create(0, -59.79)),
-    RectangleHitbox.fromRect(60, 2, Vec.create(0, 59.79)),
-
-    // Sides
-    RectangleHitbox.fromRect(2, 35.55, Vec.create(-29.53, 0)),
-    RectangleHitbox.fromRect(2, 35.55, Vec.create(29.53, 0)),
-
-    // Inner corners
-    RectangleHitbox.fromRect(13, 2, Vec.create(22.34, -16.85)),
-    RectangleHitbox.fromRect(13, 2, Vec.create(-22.34, 16.85)),
-
-    // Doors
-    RectangleHitbox.fromRect(1.74, 24.52, Vec.create(-29.65, -29.82)),
-    RectangleHitbox.fromRect(1.74, 24.52, Vec.create(29.65, 29.82))
-);
-
 export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
     defaultTemplate => ({
         [defaultTemplate]: () => ({
@@ -478,7 +454,29 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             reflectBullets: true,
             material: "metal_heavy",
             particle: "metal_particle",
-            hitbox: portWarehouseHitbox,
+            hitbox: new GroupHitbox(
+                // Outer corners
+                RectangleHitbox.fromRect(2, 18.4, Vec.create(-29.53, -51.54)),
+                RectangleHitbox.fromRect(2, 18.4, Vec.create(29.53, 51.54)),
+                RectangleHitbox.fromRect(2, 18.4, Vec.create(-29.53, 51.54)),
+                RectangleHitbox.fromRect(2, 18.4, Vec.create(29.53, -51.54)),
+
+                // Top and bottom
+                RectangleHitbox.fromRect(60, 2, Vec.create(0, -59.79)),
+                RectangleHitbox.fromRect(60, 2, Vec.create(0, 59.79)),
+
+                // Sides
+                RectangleHitbox.fromRect(2, 35.55, Vec.create(-29.53, 0)),
+                RectangleHitbox.fromRect(2, 35.55, Vec.create(29.53, 0)),
+
+                // Inner corners
+                RectangleHitbox.fromRect(13, 2, Vec.create(22.34, -16.85)),
+                RectangleHitbox.fromRect(13, 2, Vec.create(-22.34, 16.85)),
+
+                // Doors
+                RectangleHitbox.fromRect(1.74, 25, Vec.create(-29.65, -30)),
+                RectangleHitbox.fromRect(1.74, 25, Vec.create(29.65, 30))
+            ),
             spawnHitbox: RectangleHitbox.fromRect(72, 130),
             scopeHitbox: RectangleHitbox.fromRect(58, 118),
             floorImages: [
