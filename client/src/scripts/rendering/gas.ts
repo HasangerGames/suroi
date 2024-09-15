@@ -142,7 +142,7 @@ export class GasRender {
 
         this._graphics = new Graphics();
 
-        this._graphics.zIndex = Number.MAX_SAFE_INTEGER - 3;
+        this._graphics.zIndex = 996;
 
         // Generate a giant planar mesh with a tiny circular hole in
         // the center to act as the gas overlay
