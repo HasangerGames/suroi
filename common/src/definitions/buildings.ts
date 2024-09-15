@@ -901,6 +901,10 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     rotation: 1,
                     lootSpawnOffset: Vec.create(4, 0)
                 },
+                {
+                    idString: "trash_can", position: Vec.create(-44.9, 13.43),
+                    lootSpawnOffset: Vec.create(1, 0)
+                },
                 //
                 // Building obstacles
                 //
@@ -3508,12 +3512,17 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "sandbags", position: Vec.create(0.72, 19.15), rotation: 0 },
                 { idString: "cooler", position: Vec.create(2.28, 8.42), rotation: 1 },
 
-                { idString: "box", position: Vec.create(16.66, 9.9), rotation: 0 },
-                { idString: "box", position: Vec.create(13.45, 16.63), rotation: 0 },
-                { idString: "box", position: Vec.create(19.13, 16.54), rotation: 0 },
+                { idString: "box", position: Vec.create(16.66, 9.9) },
+                { idString: "box", position: Vec.create(13.45, 16.63) },
+                { idString: "box", position: Vec.create(19.13, 16.54) },
+                { idString: "box", position: Vec.create(-20.5, -15.28) },
+                { idString: "box", position: Vec.create(-25.19, -10.4) },
 
                 { idString: "regular_crate", position: Vec.create(-17.34, 6.54) },
                 { idString: "regular_crate", position: Vec.create(-16.5, 17.85) },
+                { idString: "regular_crate", position: Vec.create(-24.02, -23.2) },
+
+                { idString: "roadblock", position: Vec.create(-10.07, -29.04), rotation: 1 },
 
                 { idString: "roadblock", position: Vec.create(-26, 0), rotation: 0 },
                 { idString: "roadblock", position: Vec.create(-27, 15), rotation: 0 },
@@ -3770,6 +3779,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "file_cart", position: Vec.create(17, -42), rotation: 0 },
 
                 // near stairs + near stairs room
+                { idString: { box: 1, trash_can: 1, grenade_box: 0.5 }, position: Vec.create(-66.5, -67) },
                 { idString: "hq_stair", position: Vec.create(-52, -100.1), layer: 1, rotation: 3 },
                 { idString: "headquarters_wall_1", position: Vec.create(-40.9, -62.7), rotation: 0 },
                 { idString: "door", position: Vec.create(-51.15, -62.7), rotation: 0 },
