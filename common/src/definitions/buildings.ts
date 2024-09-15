@@ -1425,6 +1425,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "house_wall_7", position: Vec.create(-38.53, -6.29), rotation: 0 },
 
                 { idString: "toilet", position: Vec.create(-2.75, -24.92), rotation: 0 },
+                { idString: "trash_can", position: Vec.create(-3, -10.5) },
                 { idString: "sink", position: Vec.create(5.91, -25.15), rotation: 0 },
                 { idString: "bed", position: Vec.create(-43.06, -20.98), rotation: 0 },
                 { idString: "small_drawer", position: Vec.create(-33.63, -25.48), rotation: 0 },
@@ -1620,7 +1621,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "door", position: Vec.create(-0.2, 5.6), rotation: 2 },
                 { idString: "house_wall_14", position: Vec.create(-17, 13.15), rotation: 1 },
                 { idString: "bookshelf", position: Vec.create(-20.27, 15), rotation: 1 },
-                { idString: "trash_bag", position: Vec.create(2.2, 17.9) },
+                { idString: "trash_can", position: Vec.create(2.1, 18) },
 
                 // top left
                 { idString: "house_wall_16", position: Vec.create(-10, -13.65), rotation: 1 },
@@ -1780,6 +1781,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     idString: "chair",
                     position: Vec.create(2.2, -5.5),
                     rotation: 0
+                },
+                {
+                    idString: "trash_can",
+                    position: Vec.create(-7, -11.5),
+                    lootSpawnOffset: Vec.create(1, 1)
                 }
             ]
         },
@@ -2876,7 +2882,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "chair", position: Vec.create(10.1, 6), rotation: 0 },
                 { idString: "small_drawer", position: Vec.create(-9.2, 16.8), rotation: 2 },
                 { idString: "gun_mount_maul", position: Vec.create(3, 19.05), rotation: 2 },
-                { idString: "window", position: Vec.create(-13.9, 7.1), rotation: 0 }
+                { idString: "window", position: Vec.create(-13.9, 7.1), rotation: 0 },
+                { idString: "trash_can", position: Vec.create(12, 17.5) }
             ]
         },
         {
@@ -2947,7 +2954,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                         puzzlePiece: ["y", "o", "j", "l"][i]
                     } satisfies BuildingObstacle)
                 ),
-                { idString: "control_panel2", position: Vec.create(30.7, -14), rotation: 1 },
+                { idString: "control_panel2", position: Vec.create(30.7, -14), rotation: 3 },
                 { idString: "ammo_crate", position: Vec.create(-20, -14.8), rotation: 0 },
                 { idString: "regular_crate", position: Vec.create(-29.8, -14.8), rotation: 0 },
                 { idString: "barrel", position: Vec.create(-30.9, 11.3) },

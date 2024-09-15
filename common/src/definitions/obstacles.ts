@@ -295,6 +295,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     gold_aegis_case_particle:     { base: "wood_particle",    tint: 0x1a1a1a },
     hq_tp_wall_particle:          { base: "wood_particle",    tint: 0x74858b },
     white_small_couch_particle:   { base: "wood_particle",    tint: 0xcfc1af },
+    red_small_couch_particle:     { base: "wood_particle",    tint: 0x823323 },
     planted_bushes_particle:      { base: "toilet_particle",  tint: 0xaaaaaa }
 };
 /* eslint-enable @stylistic/key-spacing, @stylistic/no-multi-spaces */
@@ -1671,7 +1672,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             frames: {
                 base: "white_small_couch",
                 residue: "white_small_couch_residue",
-                particle: "furniture_particle"
+                particle: "red_small_couch_particle"
             }
         },
         {
