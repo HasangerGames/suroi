@@ -515,6 +515,7 @@ export interface EventDataMap {
         readonly parentBuilding?: Building
         readonly puzzlePiece?: string | boolean
         readonly locked?: boolean
+        readonly activated?: boolean
     }
     readonly obstacle_did_generate: Obstacle
     readonly obstacle_will_damage: ObstacleDamageEvent

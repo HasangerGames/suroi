@@ -496,7 +496,8 @@ export class GameMap {
                     lootSpawnOffset,
                     parentBuilding: building,
                     puzzlePiece: obstacleData.puzzlePiece,
-                    locked: obstacleData.locked
+                    locked: obstacleData.locked,
+                    activated: obstacleData.activated
                 }
             );
 
@@ -602,7 +603,8 @@ export class GameMap {
             lootSpawnOffset,
             parentBuilding,
             puzzlePiece,
-            locked
+            locked,
+            activated
         }: {
             rotation?: number
             layer?: number
@@ -612,6 +614,7 @@ export class GameMap {
             parentBuilding?: Building
             puzzlePiece?: string | boolean
             locked?: boolean
+            activated?: boolean
         } = {}
     ): Obstacle | undefined {
         const def = Obstacles.reify(definition);
@@ -637,7 +640,8 @@ export class GameMap {
                     lootSpawnOffset,
                     parentBuilding,
                     puzzlePiece,
-                    locked
+                    locked,
+                    activated
                 }
             )
         ) return;
@@ -653,7 +657,8 @@ export class GameMap {
             lootSpawnOffset,
             parentBuilding,
             puzzlePiece,
-            locked
+            locked,
+            activated
         );
 
         if (!def.hideOnMap && !def.invisible && obstacle.layer === Layer.Ground) this._packet.objects.push(obstacle);

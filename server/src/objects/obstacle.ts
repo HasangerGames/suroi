@@ -72,7 +72,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         lootSpawnOffset?: Vector,
         parentBuilding?: Building,
         puzzlePiece?: string | boolean,
-        locked?: boolean
+        locked?: boolean,
+        activated?: boolean
     ) {
         super(game, position);
 
@@ -85,6 +86,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         this.lootSpawnOffset = lootSpawnOffset;
 
         this.parentBuilding = parentBuilding;
+
+        this.activated = activated;
 
         const definition = this.definition = Obstacles.reify(type);
 

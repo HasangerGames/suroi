@@ -19,6 +19,7 @@ interface BuildingObstacle {
     readonly lootSpawnOffset?: Vector
     readonly puzzlePiece?: string | boolean
     readonly locked?: boolean
+    readonly activated?: boolean
 }
 
 interface LootSpawner {
@@ -3313,7 +3314,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "life_preserver", position: Vec.create(-17.63, -2.6), rotation: 2 },
                 { idString: "life_preserver", position: Vec.create(-17.63, 7.05), rotation: 2 },
                 { idString: "small_table", position: Vec.create(13.47, 13.95), rotation: 2, variation: 0 },
-                { idString: "control_panel_activated", position: Vec.create(-5.75, -24.7), rotation: 0 },
+                { idString: "control_panel", position: Vec.create(-5.75, -24.7), rotation: 0, activated: true },
                 { idString: "control_panel_small", position: Vec.create(3.81, -24.7), rotation: 0 },
                 { idString: "control_panel_small", position: Vec.create(-15.34, -24.7), rotation: 0 },
                 { idString: "window2", position: Vec.create(20.57, -4.5), rotation: 0 },
