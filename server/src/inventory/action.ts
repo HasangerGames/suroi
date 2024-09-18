@@ -69,7 +69,9 @@ export class ReloadAction extends Action {
     override get type(): PlayerActions.Reload { return this._type; }
 
     constructor(player: Player, readonly item: GunItem) {
-        super(player, item.definition.reloadTime);
+        const fullReload = item.definition.reloadFullOnEmpty && item.definition.fullReloadTime && item.ammo <= 0;
+        player.fullReloadGun = fullReload as boolean;
+        super(player, fullReload ? item.definition.fullReloadTime : item.definition.reloadTime);
     }
 
     override execute(): void {
@@ -77,16 +79,19 @@ export class ReloadAction extends Action {
 
         const items = this.player.inventory.items;
         const definition = this.item.definition;
+
+        const singleReloadCondition = definition.singleReload && !(definition.reloadFullOnEmpty && definition.fullReloadTime && this.item.ammo <= 0);
+
         const difference = Math.min(
             items.getItem(definition.ammoType),
-            definition.singleReload
+            singleReloadCondition
                 ? (definition.isDual && this.item.ammo !== (this.item.definition.capacity - 1)) ? 2 : 1
                 : this.item.definition.capacity - this.item.ammo
         );
         this.item.ammo += difference;
         items.decrementItem(definition.ammoType, difference);
 
-        if (definition.singleReload) { // this is to chain single reloads together
+        if (singleReloadCondition) { // this is to chain single reloads together
             this.item.reload();
         }
 

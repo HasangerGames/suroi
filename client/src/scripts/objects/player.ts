@@ -37,6 +37,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     private _oldItem = this.activeItem;
 
+    fullReloadGun = false;
+
     equipment: {
         helmet?: ArmorDefinition
         vest?: ArmorDefinition
@@ -353,6 +355,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         if (this.isActivePlayer) {
             if (layerChange) this.game.changeLayer(this.layer);
+
+            this.fullReloadGun = data.fullReloadGun;
 
             this.game.soundManager.position = this.position;
             this.game.map.setPosition(this.position);
@@ -674,9 +678,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                     this.spawnCasingParticles("reload", false);
 
-                    actionSoundName = `${weaponDef.idString}_reload`;
+                    const reloadFullClip = weaponDef.fullReloadTime && this.fullReloadGun;
+
+                    actionSoundName = `${weaponDef.idString}_reload${reloadFullClip ? "_full" : ""}`;
                     if (this.isActivePlayer) {
-                        uiManager.animateAction(getTranslatedString("action_reloading"), weaponDef.reloadTime);
+                        uiManager.animateAction(getTranslatedString("action_reloading"), reloadFullClip ? weaponDef.fullReloadTime : weaponDef.reloadTime);
                     }
 
                     break;

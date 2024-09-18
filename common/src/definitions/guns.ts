@@ -11,6 +11,8 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly ammoSpawnAmount: number
     readonly capacity: number
     readonly reloadTime: number
+    readonly reloadFullOnEmpty?: boolean
+    readonly fullReloadTime?: number
     readonly singleReload: boolean
     readonly infiniteAmmo: boolean
 
@@ -569,6 +571,8 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             capacity: 5,
             reloadTime: 0.85,
             singleReload: true,
+            reloadFullOnEmpty: true,
+            fullReloadTime: 2.9,
             fireDelay: 900,
             switchDelay: 900,
             recoilMultiplier: 0.45,
