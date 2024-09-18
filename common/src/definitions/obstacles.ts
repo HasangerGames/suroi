@@ -2313,33 +2313,11 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             rotationMode: RotationMode.Limited,
             explosion: "control_panel_explosion",
             role: ObstacleSpecialRoles.Activatable,
-            replaceWith: {
-                idString: "control_panel_activated",
-                delay: 0
-            },
             sound: {
                 names: ["button_press", "puzzle_solved"]
             },
             frames: {
-                particle: "metal_particle",
-                residue: "barrel_residue"
-            }
-        },
-        {
-            idString: "control_panel_activated",
-            name: "Control Panel",
-            material: "metal_light",
-            health: 200,
-            reflectBullets: true,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.7
-            },
-            hitbox: RectangleHitbox.fromRect(11, 8),
-            rotationMode: RotationMode.Limited,
-            explosion: "control_panel_explosion",
-            frames: {
+                activated: "control_panel_activated",
                 particle: "metal_particle",
                 residue: "barrel_residue"
             }
