@@ -2937,8 +2937,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hasLoot: true,
             hideOnMap: true,
             frames: {
-                particle: "chest_particle",
-                residue: "chest_residue"
+                particle: "chest_particle"
             },
             spawnMode: MapObjectSpawnMode.River,
             allowFlyover: FlyoverPref.Always
