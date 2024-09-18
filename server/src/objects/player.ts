@@ -365,8 +365,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     // this should probably be on the dirty object
     updatedC4Button = false;
 
-    fullReloadGun = false;
-
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
 
@@ -487,6 +485,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.dirty.weapons = true;
 
         this.updateAndApplyModifiers();
+
+        this.giveGun("mosin_nagant");
     }
 
     giveGun(idString: ReferenceTo<GunDefinition>): void {
@@ -2048,7 +2048,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             position: this.position,
             rotation: this.rotation,
             layer: this.layer,
-            fullReloadGun: this.fullReloadGun,
             full: {
                 dead: this.dead,
                 downed: this.downed,
