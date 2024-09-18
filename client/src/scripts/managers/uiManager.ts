@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { type Color } from "pixi.js";
+import { Color } from "pixi.js";
 import { DEFAULT_INVENTORY, GameConstants, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type BadgeDefinition } from "../../../../common/src/definitions/badges";
@@ -22,6 +22,7 @@ import { Player } from "../objects/player";
 import { GHILLIE_TINT, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
+import { Skins } from "../../../../common/src/definitions";
 
 function safeRound(value: number): number {
     if (0 < value && value <= 1) return 1;
@@ -776,19 +777,20 @@ export class UIManager {
                 const newSrc = `./img/game/weapons/${weapon.definition.idString}.svg`;
                 if (oldSrc !== newSrc) {
                     this._playSlotAnimation(container);
-                    // FIXME broken lol (sets background color of rectangle containing image instead of the svg's background color)
-                    // itemImage.css("background-color", isFists && this.skinID !== undefined && Skins.fromStringSafe(this.skinID)?.grassTint ? GHILLIE_TINT.toHex() : "");
                     itemImage.attr("src", newSrc);
                 }
 
+                const backgroundImage =
+                    isFists
+                        ? this.skinID !== undefined && Skins.fromStringSafe(this.skinID)?.grassTint
+                            ? `url("data:image/svg+xml,${encodeURIComponent(`<svg width="34" height="34" viewBox="0 0 8.996 8.996" xmlns="http://www.w3.org/2000/svg"><circle fill="${GHILLIE_TINT.toHex()}" stroke="${new Color(GHILLIE_TINT).multiply("#111").toHex()}" stroke-width="1.05833" cx="4.498" cy="4.498" r="3.969"/></svg>`)}")`
+                            : `url(./img/game/skins/${this.skinID ?? this.game.console.getBuiltInCVar("cv_loadout_skin")}_fist.svg)`
+                        : "none";
+
                 itemImage
-                    .css("background-image", isFists ? `url(./img/game/skins/${this.skinID ?? this.game.console.getBuiltInCVar("cv_loadout_skin")}_fist.svg)` : "none")
+                    .css("background-image", backgroundImage)
                     .toggleClass("is-fists", isFists)
                     .show();
-
-                if (weapon.definition.idString === "ghillie_suit") {
-                    itemImage.css("background-color", GHILLIE_TINT.toHex());
-                }
 
                 const count = weapon.count;
                 if (ammoDirty && count !== undefined) {
