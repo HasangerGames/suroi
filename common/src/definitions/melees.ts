@@ -101,8 +101,8 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
         {
             idString: "hatchet",
             name: "Hatchet",
-            damage: 25,
-            obstacleMultiplier: 2.5,
+            damage: 45,
+            obstacleMultiplier: 2,
             piercingMultiplier: 1.5,
             canPierceMaterials: ["cardboard", "crate", "iron"], // because ammo crate has "cardboard" material
             radius: 2,
@@ -127,14 +127,14 @@ export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
         {
             idString: "fire_hatchet",
             name: "Fire Hatchet",
-            damage: 38,
-            obstacleMultiplier: 2.7,
+            damage: 50,
+            obstacleMultiplier: 2,
             piercingMultiplier: 2,
             canPierceMaterials: ["cardboard", "crate", "iron"],
             radius: 2.05,
             swingSound: "heavy_swing",
             offset: Vec.create(5.4, -0.5),
-            cooldown: 410,
+            cooldown: 420,
             fists: {
                 animationDuration: 150,
                 left: Vec.create(40, -25),
