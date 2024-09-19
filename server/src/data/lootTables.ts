@@ -476,6 +476,13 @@ export const LootTables: Record<string, LootTable> = {
             { item: "gas_can", weight: 1 }
         ]
     },
+    hq_skin: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "silhouette", weight: 1 }
+        ]
+    },
     airdrop_crate: {
         min: 1,
         max: 1,

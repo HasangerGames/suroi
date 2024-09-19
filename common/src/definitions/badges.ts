@@ -26,7 +26,7 @@ export const Badges = ObjectDefinitions.create<BadgeDefinition>()(
         simple("badge_factory", "Boostr", ["boostr"]),
         simple("badge_factory", "Designr", ["designr"]),
         simple("badge_factory", "Ownr", ["hasanger"]),
-        simple("badge_factory", "Contributr+", ["katie", "leia"]),
+        simple("badge_factory", "Contributr+", ["katie"]),
         simple("badge_factory", "Bleh"),
         simple("badge_factory", "Froog"),
         simple("badge_factory", "AEGIS Logo"),

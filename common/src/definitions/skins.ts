@@ -49,14 +49,12 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
 )(
     ({ apply, simple }) => [
         simple("with_role", ["hasanger"], ["Hasanger",      0x640000]),
-        simple("with_role", ["leia"],     ["Leia",          0x6563d9]),
         simple("with_role", ["limenade"], ["LimeNade",      0xffffff]),
         simple("with_role", ["katie"],    ["Katie",         0x7784f0]),
         simple("with_role", ["eipi"],     ["eipi",          0x8040BF]),
         simple("with_role", ["error"],    ["error",         0x1fc462]),
-        simple("with_role", ["kenos"],    ["Kenos",         0x5f4dbc]),
+        simple("with_role", ["pap"],      ["pap",           0x060647]),
         simple("with_role", ["123op"],    ["123OP",         0x0000ff]),
-        simple("with_role", ["radians"],  ["Radians",       0xffe600]),
         simple("with_role", ["developr"], ["Developr Swag", 0x007a7f]),
         simple("with_role", ["designr"],  ["Designr Swag",  0x67cf00]),
         simple("with_role", ["composr"],  ["Composr Swag",  0xffd101]),
@@ -104,6 +102,7 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
         ...([
             ["Lemon",                 0xebe092],
             ["Flamingo",              0xf1847d],
+            ["Silhouette",            0x000000],
             ["Peachy Breeze",         0xf2a263],
             ["Deep Sea",              0x284553],
             ["Basic Outfit",          0xdd9b0a],
