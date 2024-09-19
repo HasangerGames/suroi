@@ -3569,7 +3569,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ceilingImages: [{
                 key: "secret_room_ceiling",
                 position: Vec.create(0, 0),
-                scale: Vec.create(1.07, 1)
+                scale: Vec.create(1.1, 1.01)
             }]
         },
         {
