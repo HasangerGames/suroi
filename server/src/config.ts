@@ -21,9 +21,9 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "main",
+    map: "singleBuilding:small_bunker",
 
-    spawn: { mode: SpawnMode.Normal },
+    spawn: { mode: SpawnMode.Center },
 
     maxTeamSize: TeamSize.Solo,
 

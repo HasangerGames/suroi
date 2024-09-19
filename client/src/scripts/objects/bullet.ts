@@ -1,6 +1,6 @@
 import { BloomFilter } from "pixi-filters";
-import { Color } from "pixi.js";
-import { ZIndexes } from "../../../../common/src/constants";
+import { Color, Container, Graphics, Rectangle, ScissorMask } from "pixi.js";
+import { Layer, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
 import type { RectangleHitbox } from "../../../../common/src/utils/hitbox";
 import { adjacentOrEqualLayer, equalLayer, getEffectiveZIndex, isVisibleFromLayer } from "../../../../common/src/utils/layer";
@@ -57,7 +57,6 @@ export class Bullet extends BaseBullet {
         if (MODE.bulletTrailAdjust) color.multiply(MODE.bulletTrailAdjust);
 
         this._image.tint = new Color(color);
-        this._image.zIndex = tracerStats.zIndex;
         this.setLayer(this._layer);
 
         this.game.camera.addObject(this._image);
@@ -198,6 +197,31 @@ export class Bullet extends BaseBullet {
         this._layer = layer;
         this.updateVisibility();
         this._image.zIndex = getEffectiveZIndex(this.definition.tracer.zIndex, this._layer, this.game.layer);
+
+        const graphics = new Graphics();
+        let hasMask = false;
+        for (const building of this.game.objects.getCategory(ObjectCategory.Building)) {
+            if (!building.definition.bulletMask) continue;
+            const hitbox = building.definition.bulletMask.transform(building.position, 1, building.orientation);
+            if (!hitbox.isPointInside(this.position)) continue;
+            hasMask = true;
+            const { min, max } = hitbox;
+            graphics
+                .beginPath()
+                .rect(
+                    min.x * PIXI_SCALE,
+                    min.y * PIXI_SCALE,
+                    (max.x - min.x) * PIXI_SCALE,
+                    (max.y - min.y) * PIXI_SCALE
+                )
+                .closePath()
+                .fill(0x000000);
+            graphics.alpha = 0;
+            this.game.camera.container.addChild(graphics);
+        }
+        if (hasMask) {
+            this._image.mask = graphics;
+        }
     }
 
     private updateVisibility(): void {

@@ -1,4 +1,4 @@
-import { ZIndexes } from "../constants";
+import { Layer, ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
@@ -122,6 +122,8 @@ export interface BuildingDefinition extends ObjectDefinition {
         // note: this feature is functional, just remember to uncomment its implementation
         // in server::Player#secondUpdate (find the comment concerning blacklisting)
     }>
+
+    readonly bulletMask?: RectangleHitbox
 
     /**
      * How many walls need to be broken to destroy the ceiling
@@ -4197,11 +4199,12 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec.create(0, 20)),
             scopeHitbox: RectangleHitbox.fromRect(10, 15, Vec.create(0, 20)),
             obstacles: [
-                { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(7.5, 9.8) },
-                { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(10, 23) },
-                { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-10, 16) },
-                { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-5, 37) }
+                // { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(7.5, 9.8) },
+                // { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(10, 23) },
+                // { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-10, 16) },
+                // { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-5, 37) }
             ],
+            bulletMask: RectangleHitbox.fromRect(20, 100, Vec.create(0, 70)),
             subBuildings: [
                 { idString: "small_bunker_main", position: Vec.create(0, -4.6), layer: -2 },
                 { idString: "small_bunker_entrance", position: Vec.create(0, 20) }

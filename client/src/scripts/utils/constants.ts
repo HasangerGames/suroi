@@ -4,7 +4,7 @@ import { Config } from "../config";
 import { Layer } from "../../../../common/src/constants";
 
 export const UI_DEBUG_MODE = false;
-export const HITBOX_DEBUG_MODE = false;
+export const HITBOX_DEBUG_MODE = true;
 export const DIFF_LAYER_HITBOX_OPACITY = 0;
 export const FOOTSTEP_HITBOX_LAYER = Layer.Ground;
 
@@ -19,6 +19,7 @@ export const HITBOX_COLORS = {
     buildingZoomCeiling: new Color("purple"),
     buildingScopeCeiling: new Color("cyan"),
     buildingVisOverride: new Color("teal"),
+    bulletMask: new Color("fuchsia"),
     loot: new Color("magenta"),
     player: new Color("blue"),
     playerWeapon: new Color("lime")
