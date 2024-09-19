@@ -53,7 +53,7 @@ export const Config = {
         "hasanger": { password: "hasanger", isDev: true },
         "katie": { password: "katie", isDev: true },
         "eipi": { password: "eipi", isDev: true },
-        "pap": { password: "pap", isDev: true },
+        // "pap": { password: "pap", isDev: true },
         "error": { password: "error", isDev: true },
         "limenade": { password: "limenade", isDev: true },
         "123op": { password: "123op" }

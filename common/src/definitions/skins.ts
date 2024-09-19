@@ -53,7 +53,7 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
         simple("with_role", ["katie"],    ["Katie",         0x7784f0]),
         simple("with_role", ["eipi"],     ["eipi",          0x8040BF]),
         simple("with_role", ["error"],    ["error",         0x1fc462]),
-        simple("with_role", ["pap"],      ["pap",           0x060647]),
+        //  simple("with_role", ["pap"],      ["pap",           0x060647]),
         simple("with_role", ["123op"],    ["123OP",         0x0000ff]),
         simple("with_role", ["developr"], ["Developr Swag", 0x007a7f]),
         simple("with_role", ["designr"],  ["Designr Swag",  0x67cf00]),
