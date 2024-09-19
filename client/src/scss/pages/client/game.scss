@@ -42,7 +42,7 @@
         font-size: 15px;
         align-items: center;
         padding: 0 8px 0 8px;
-    
+
         &:hover {
             outline: 2px solid $danger !important;
         }
@@ -70,7 +70,7 @@
             margin-right: 3px;
             white-space: nowrap;
         }
-    
+
         .item-image {
             opacity: 1;
             pointer-events: none;
@@ -78,13 +78,13 @@
             width: 60px;
             height: 45px;
             @include drop-shadow;
-    
+
             @media screen and (max-width: $screen_large) {
                 width: 50px;
                 height: 40px;
             }
         }
-    
+
         @media screen and (max-width: $screen_large) {
             position: absolute;
             top: -40%;
@@ -400,7 +400,7 @@
         bottom: 81.5px;
         right: 110px;
         margin: 5px;
-    
+
         @media screen and (max-width: $screen_large)  {
             bottom: 0;
             right: 0;
