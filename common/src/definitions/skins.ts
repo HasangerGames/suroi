@@ -102,7 +102,7 @@ export const Skins = ObjectDefinitions.create<SkinDefinition>()(
         ...([
             ["Lemon",                 0xebe092],
             ["Flamingo",              0xf1847d],
-            ["Silhouette",            0x000000],
+            ["Gold Tie Event",        0x2b2929],
             ["Peachy Breeze",         0xf2a263],
             ["Deep Sea",              0x284553],
             ["Basic Outfit",          0xdd9b0a],
