@@ -40,6 +40,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly noBulletCollision?: boolean
     readonly reflectBullets?: boolean
     readonly spanAdjacentLayers?: boolean
+    readonly spanAllLayers?: boolean
     readonly material?: typeof Materials[number]
     readonly particle?: string
     readonly particleVariations?: number
@@ -4102,6 +4103,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             name: "Small Bunker Entrance",
             reflectBullets: true,
             spanAdjacentLayers: true,
+            spanAllLayers: true,
             material: "metal_heavy",
             particle: "metal_particle",
             hitbox: new GroupHitbox(
@@ -4204,7 +4206,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 // { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-10, 16) },
                 // { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-5, 37) }
             ],
-            bulletMask: RectangleHitbox.fromRect(20, 100, Vec.create(0, 70)),
+            bulletMask: RectangleHitbox.fromRect(11, 30, Vec.create(0, 30)),
             subBuildings: [
                 { idString: "small_bunker_main", position: Vec.create(0, -4.6), layer: -2 },
                 { idString: "small_bunker_entrance", position: Vec.create(0, 20) }

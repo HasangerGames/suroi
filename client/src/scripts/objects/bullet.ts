@@ -113,7 +113,7 @@ export class Bullet extends BaseBullet {
                     || (
                         isBuilding && (
                             object.definition.noBulletCollision
-                            || !(object.definition.spanAdjacentLayers ? adjacentOrEqualLayer : equalLayer)(object.layer, this._layer)
+                            || !(object.definition.spanAllLayers || (object.definition.spanAdjacentLayers ? adjacentOrEqualLayer : equalLayer)(object.layer, this._layer))
                         )
                     )
                 ) continue;
@@ -151,6 +151,29 @@ export class Bullet extends BaseBullet {
         }
 
         this._image.setVPos(toPixiCoords(this.position));
+
+        const graphics = new Graphics();
+        let hasMask = false;
+        for (const building of this.game.objects.getCategory(ObjectCategory.Building)) {
+            if (!building.definition.bulletMask) continue;
+            const hitbox = building.definition.bulletMask.transform(building.position, 1, building.orientation);
+            if (!hitbox.isPointInside(this.position)) continue;
+            hasMask = true;
+            const { min, max } = hitbox;
+            graphics
+                .beginPath()
+                .rect(
+                    min.x * PIXI_SCALE,
+                    min.y * PIXI_SCALE,
+                    (max.x - min.x) * PIXI_SCALE,
+                    (max.y - min.y) * PIXI_SCALE
+                )
+                .closePath()
+                .fill(0xffffff);
+            graphics.alpha = 0;
+            this.game.camera.container.addChild(graphics);
+        }
+        this._image.mask = hasMask ? graphics : null;
 
         this.particleTrail();
 
@@ -197,31 +220,6 @@ export class Bullet extends BaseBullet {
         this._layer = layer;
         this.updateVisibility();
         this._image.zIndex = getEffectiveZIndex(this.definition.tracer.zIndex, this._layer, this.game.layer);
-
-        const graphics = new Graphics();
-        let hasMask = false;
-        for (const building of this.game.objects.getCategory(ObjectCategory.Building)) {
-            if (!building.definition.bulletMask) continue;
-            const hitbox = building.definition.bulletMask.transform(building.position, 1, building.orientation);
-            if (!hitbox.isPointInside(this.position)) continue;
-            hasMask = true;
-            const { min, max } = hitbox;
-            graphics
-                .beginPath()
-                .rect(
-                    min.x * PIXI_SCALE,
-                    min.y * PIXI_SCALE,
-                    (max.x - min.x) * PIXI_SCALE,
-                    (max.y - min.y) * PIXI_SCALE
-                )
-                .closePath()
-                .fill(0x000000);
-            graphics.alpha = 0;
-            this.game.camera.container.addChild(graphics);
-        }
-        if (hasMask) {
-            this._image.mask = graphics;
-        }
     }
 
     private updateVisibility(): void {
