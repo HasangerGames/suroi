@@ -2290,7 +2290,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             subBuildings: [
                 { idString: "oil_tanker_ship_vault", position: Vec.create(-28.1, -94.25), orientation: 1 },
                 { idString: "oil_tanker_tanks", position: Vec.create(39, -5) } // P A I N
-            ]
+            ],
+            lootSpawners: [{
+                position: Vec.create(-93, 23),
+                table: "ship_skin"
+            }]
         },
         {
             idString: "oil_tanker_ship_vault",

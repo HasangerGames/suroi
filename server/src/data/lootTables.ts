@@ -483,6 +483,13 @@ export const LootTables: Record<string, LootTable> = {
             { item: "gold_tie_event", weight: 1 }
         ]
     },
+    ship_skin: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "ship_carrier", weight: 1 }
+        ]
+    },
     airdrop_crate: {
         min: 1,
         max: 1,
