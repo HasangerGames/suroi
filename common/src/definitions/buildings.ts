@@ -4121,7 +4121,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(10, 18, Vec.create(0, 0)) }
             ],
             obstacles: [
-                { idString: "bunker_stair", position: Vec.create(0, 2.6), rotation: 0, layer: -1 }
+                { idString: "bunker_stair", position: Vec.create(0, 2.6), rotation: 0 }
             ],
             lootSpawners: []
         },
@@ -4207,7 +4207,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             bulletMask: RectangleHitbox.fromRect(11, 30, Vec.create(0, 30)),
             subBuildings: [
                 { idString: "small_bunker_main", position: Vec.create(0, -5), layer: -2 },
-                { idString: "small_bunker_entrance", position: Vec.create(0, 20) }
+                { idString: "small_bunker_entrance", position: Vec.create(0, 20), layer: -1 }
             ]
         }
     ]);
