@@ -1,10 +1,9 @@
 import { BloomFilter } from "pixi-filters";
-import { Color, Container, Graphics, Rectangle, ScissorMask } from "pixi.js";
+import { Color, Graphics } from "pixi.js";
 import { Layer, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
-import type { RectangleHitbox } from "../../../../common/src/utils/hitbox";
-import { adjacentOrEqualLayer, equalLayer, getEffectiveZIndex, isVisibleFromLayer } from "../../../../common/src/utils/layer";
-import { Geometry, resolveStairInteraction } from "../../../../common/src/utils/math";
+import { getEffectiveZIndex, isVisibleFromLayer } from "../../../../common/src/utils/layer";
+import { Geometry } from "../../../../common/src/utils/math";
 import { random, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -59,70 +58,30 @@ export class Bullet extends BaseBullet {
         if (MODE.bulletTrailAdjust) color.multiply(MODE.bulletTrailAdjust);
 
         this._image.tint = new Color(color);
-        this._originLayer = this._layer;
-        this.setLayer(this._layer);
+        this._originLayer = this.layer;
+        this.setLayer(this.layer);
 
         this.game.camera.addObject(this._image);
     }
 
     update(delta: number): void {
-        const oldLayer = this._layer;
+        const oldLayer = this.layer;
         if (!this.dead) {
-            const collisions = this.updateAndGetCollisions(delta, this.game.objects);
-
-            for (const collision of collisions) {
+            for (const collision of this.updateAndGetCollisions(delta, this.game.objects)) {
                 const object = collision.object;
 
-                const { isObstacle, isPlayer, isBuilding } = object;
-
-                if (
-                    (
-                        isPlayer || (isObstacle && !object.definition.isStair) || isBuilding
-                    ) && equalLayer(object.layer, this._layer)
-                ) {
-                    (object as Obstacle | Player | Building).hitEffect(
-                        collision.intersection.point,
-                        Math.atan2(collision.intersection.normal.y, collision.intersection.normal.x)
-                    );
+                if (object.isObstacle && object.definition.isStair) {
+                    (object as Obstacle).handleStairInteraction(this);
+                    continue;
                 }
 
-                if (!object.isObstacle || !object.definition.isStair) {
-                    this.damagedIDs.add(object.id);
-                }
+                const { point, normal } = collision.intersection;
 
-                if (object.isObstacle) {
-                    const definition = object.definition;
-                    if (
-                        (this.definition.penetration.obstacles && !definition.impenetrable)
-                        || definition.noBulletCollision
-                        || definition.noCollisions
-                        || !(definition.spanAdjacentLayers || definition.isStair ? adjacentOrEqualLayer : equalLayer)(object.layer, this._layer)
-                    ) continue;
+                (object as Player | Obstacle | Building).hitEffect(point, Math.atan2(normal.y, normal.x));
 
-                    if (definition.isStair) {
-                        this.setLayer(
-                            resolveStairInteraction(
-                                definition,
-                                (object as Obstacle).orientation,
-                                object.hitbox as RectangleHitbox,
-                                object.layer,
-                                this.position
-                            )
-                        );
-                        continue;
-                    }
-                } else if (
-                    (isPlayer && this.definition.penetration.players)
-                    || (
-                        isBuilding && (
-                            object.definition.noBulletCollision
-                            || !(!object.definition.spanAllLayers || (object.definition.spanAdjacentLayers ? adjacentOrEqualLayer : equalLayer)(object.layer, this._layer))
-                        )
-                    )
-                ) continue;
-
+                this.damagedIDs.add(object.id);
+                this.position = point;
                 this.dead = true;
-                this.position = collision.intersection.point;
                 break;
             }
         }
@@ -155,7 +114,7 @@ export class Bullet extends BaseBullet {
 
         this._image.setVPos(toPixiCoords(this.position));
 
-        if (this._originLayer < Layer.Ground && this._layer !== this._originLayer) {
+        if (this._originLayer < Layer.Ground && this.layer !== this._originLayer) {
             this.updateMask();
         }
 
@@ -163,7 +122,7 @@ export class Bullet extends BaseBullet {
 
         if (this._trailTicks <= 0 && this.dead) {
             this.destroy();
-        } else if (this._layer === oldLayer) {
+        } else if (this.layer === oldLayer) {
             this.updateVisibility();
         }
     }
@@ -184,13 +143,13 @@ export class Bullet extends BaseBullet {
                 ),
                 position: this.position,
                 lifetime: random(trail.lifetime.min, trail.lifetime.max),
-                zIndex: getEffectiveZIndex(ZIndexes.Bullets - 1, this._layer, this.game.layer),
+                zIndex: getEffectiveZIndex(ZIndexes.Bullets - 1, this.layer, this.game.layer),
                 scale: randomFloat(trail.scale.min, trail.scale.max),
                 alpha: {
                     start: randomFloat(trail.alpha.min, trail.alpha.max),
                     end: 0
                 },
-                layer: this._layer,
+                layer: this.layer,
                 tint: trail.tint === -1
                     ? new Color({ h: random(0, 6) * 60, s: 60, l: 70 }).toNumber()
                     : trail.tint
@@ -227,9 +186,9 @@ export class Bullet extends BaseBullet {
     }
 
     private setLayer(layer: number): void {
-        this._layer = layer;
+        this.layer = layer;
         this.updateVisibility();
-        this._image.zIndex = getEffectiveZIndex(this.definition.tracer.zIndex, this._layer, this.game.layer);
+        this._image.zIndex = getEffectiveZIndex(this.definition.tracer.zIndex, this.layer, this.game.layer);
     }
 
     private updateVisibility(): void {

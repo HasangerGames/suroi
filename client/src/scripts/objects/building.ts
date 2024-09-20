@@ -1,17 +1,17 @@
-import { Container, Graphics, ScissorMask } from "pixi.js";
+import { Container, Graphics } from "pixi.js";
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { MaterialSounds } from "../../../../common/src/definitions/obstacles";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
-import { adjacentOrEqualLayer, equalLayer, getEffectiveZIndex, isGroundLayer } from "../../../../common/src/utils/layer";
-import { Angle, Collision, EaseFunctions, Numeric, PI, type CollisionResponse } from "../../../../common/src/utils/math";
+import { getEffectiveZIndex, isGroundLayer, equivLayer } from "../../../../common/src/utils/layer";
+import { Angle, Collision, EaseFunctions, Numeric, type CollisionResponse } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { drawGroundGraphics, drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
@@ -163,7 +163,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                                         damageable
                                         && !dead
                                         && (!("role" in definition) || !definition.isWindow)
-                                        && (definition.spanAdjacentLayers ? adjacentOrEqualLayer : equalLayer)(layer, player.layer)
+                                        && equivLayer({ layer, definition }, player)
                                         && hitbox?.intersectsLine(player.position, end)
                                 )
                         )) break;
@@ -370,7 +370,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 this.hitbox,
                 HITBOX_COLORS.obstacle,
                 this.debugGraphics,
-                this.game.activePlayer !== undefined && (definition.spanAdjacentLayers ? adjacentOrEqualLayer : equalLayer)(this.layer, this.game.activePlayer.layer) ? 1 : DIFF_LAYER_HITBOX_OPACITY
+                this.game.activePlayer !== undefined && equivLayer(this, this.game.activePlayer) ? 1 : DIFF_LAYER_HITBOX_OPACITY
             );
         }
 

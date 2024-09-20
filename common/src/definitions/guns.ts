@@ -224,7 +224,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
             name: "AK-47",
             ammoType: "762mm",
             ammoSpawnAmount: 90,
-            capacity: 30,
+            capacity: Infinity,
             reloadTime: 2.5,
             fireDelay: 100,
             switchDelay: 400,
@@ -1925,10 +1925,6 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 obstacleMultiplier: 2,
                 speed: 4,
                 range: 800,
-                penetration: {
-                    players: true,
-                    obstacles: true
-                },
                 tracer: {
                     image: "power_cell_trail",
                     length: 10

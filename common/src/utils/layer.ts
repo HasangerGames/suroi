@@ -1,6 +1,7 @@
-import { Layer, ZIndexes } from "../constants";
+import { Layer, LayerInteraction, ZIndexes } from "../constants";
 import type { CommonGameObject } from "./gameObject";
 import type { Hitbox } from "./hitbox";
+import { ObjectDefinition } from "./objectDefinitions";
 
 /**
  * Returns whether or not the provided layer is a "ground" layer.
@@ -72,6 +73,25 @@ export function adjacentOrEqualLayer(referenceLayer: number, evalLayer: number):
     return (referenceLayer - 1 === evalLayer) || (referenceLayer + 1 === evalLayer) || (referenceLayer === evalLayer);
 }
 
+export function equivLayer(
+    referenceObject: {
+        layer: Layer,
+        definition: {
+            layerInteraction?: LayerInteraction,
+            isStair?: boolean
+        }
+    },
+    evalObject: { layer: Layer }
+): boolean {
+    if (referenceObject.definition.isStair) return adjacentOrEqualLayer(referenceObject.layer, evalObject.layer);
+
+    switch (referenceObject.definition.layerInteraction) {
+        case LayerInteraction.All: return true;
+        case LayerInteraction.Adjacent: return adjacentOrEqualLayer(referenceObject.layer, evalObject.layer);
+        case LayerInteraction.Equal: default: return equalLayer(referenceObject.layer, evalObject.layer);
+    }
+}
+
 /**
  * Determines whether a given object is visible from layer `observerLayer`, whilst taking into account any
  * visibility overrides in any buildings specified in `collisionCandidates`
@@ -85,7 +105,12 @@ export function adjacentOrEqualLayer(referenceLayer: number, evalLayer: number):
  */
 export function isVisibleFromLayer(
     observerLayer: Layer,
-    object: { isBuilding?: boolean, layer: Layer, hitbox?: Hitbox },
+    object: {
+        isBuilding?: boolean,
+        layer: Layer,
+        hitbox?: Hitbox,
+        definition?: ObjectDefinition
+    },
     collisionCandidates?: readonly CommonGameObject[],
     colliderPredicate?: (collider: Hitbox) => boolean
 ): boolean {
@@ -94,6 +119,7 @@ export function isVisibleFromLayer(
 
     return ( // the object is visible if…
         adjacentOrEqualLayer(observerLayer, objectLayer) // the layers are adjacent.
+        || (object.definition && "layerInteraction" in object.definition && object.definition.layerInteraction === LayerInteraction.All) // or it appears on all layers
         || ( // otherwise…
             objectLayer < observerLayer // it must be below us
             && ( // and the ground layer mustn't be between us and it (aka object on -1, us on 1).

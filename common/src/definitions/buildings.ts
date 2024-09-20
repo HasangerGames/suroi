@@ -1,4 +1,4 @@
-import { Layer, ZIndexes } from "../constants";
+import { LayerInteraction, ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
@@ -39,8 +39,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly noCollisions?: boolean
     readonly noBulletCollision?: boolean
     readonly reflectBullets?: boolean
-    readonly spanAdjacentLayers?: boolean
-    readonly spanAllLayers?: boolean
+    readonly layerInteraction?: LayerInteraction
     readonly material?: typeof Materials[number]
     readonly particle?: string
     readonly particleVariations?: number
@@ -3645,7 +3644,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(4.1, 4, Vec.create(57.5, -84)), // R, 5
                 RectangleHitbox.fromRect(4.1, 4, Vec.create(14.6, 4.5)) // CENT, 6
             ),
-            spanAdjacentLayers: true,
+            layerInteraction: LayerInteraction.Adjacent,
             spawnHitbox: RectangleHitbox.fromRect(195, 200, Vec.create(0, -26)),
             scopeHitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 1.5)),
@@ -4102,8 +4101,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "small_bunker_entrance",
             name: "Small Bunker Entrance",
             reflectBullets: true,
-            spanAdjacentLayers: true,
-            spanAllLayers: true,
+            layerInteraction: LayerInteraction.All,
             material: "metal_heavy",
             particle: "metal_particle",
             hitbox: new GroupHitbox(
@@ -4129,7 +4127,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "small_bunker_main",
             name: "Small Bunker",
             reflectBullets: true,
-            spanAdjacentLayers: true,
+            layerInteraction: LayerInteraction.Adjacent,
             material: "metal_heavy",
             particle: "metal_particle",
             hitbox: new GroupHitbox(
@@ -4138,8 +4136,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(1.7, 37.9, Vec.create(-21.5, 0)),
                 RectangleHitbox.fromRect(16, 1.7, Vec.create(-13.1, 18)),
                 RectangleHitbox.fromRect(16, 1.7, Vec.create(13.1, 18)),
-                RectangleHitbox.fromRect(1.7, 15.9, Vec.create(-6, 25)),
-                RectangleHitbox.fromRect(1.7, 15.9, Vec.create(6, 25))
             ),
             spawnHitbox: RectangleHitbox.fromRect(55, 55, Vec.create(0, 5)),
             scopeHitbox: new GroupHitbox(
@@ -4193,7 +4189,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "small_bunker",
             name: "Small Bunker",
             ceilingZIndex: ZIndexes.ObstaclesLayer3,
-            spanAdjacentLayers: false,
             hitbox: RectangleHitbox.fromRect(12, 1, Vec.create(0, 12.3)),
             ceilingImages: [{
                 key: "small_bunker_entrance_ceiling",

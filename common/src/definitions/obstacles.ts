@@ -1,4 +1,4 @@
-import { ZIndexes } from "../constants";
+import { LayerInteraction, ZIndexes } from "../constants";
 import { type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import type { GetEnumMemberName, Mutable } from "../utils/misc";
@@ -87,6 +87,7 @@ type RawObstacleDefinition = ObjectDefinition & {
      * Whether throwables can fly over this obstacle
      */
     readonly allowFlyover: FlyoverPref
+    readonly layerInteraction?: LayerInteraction
     readonly hasLoot: boolean
     readonly spawnWithLoot: boolean
     readonly explosion?: string
@@ -95,7 +96,6 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly noMeleeCollision: boolean
     readonly noBulletCollision: boolean
     readonly reflectBullets: boolean
-    readonly spanAdjacentLayers?: boolean
     readonly hitSoundVariations?: number
 
     readonly frames: {
@@ -1489,7 +1489,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             reflectBullets: true,
             doorSound: "metal_door",
             indestructible: true,
-            spanAdjacentLayers: true,
+            layerInteraction: LayerInteraction.Adjacent,
             health: 500,
             scale: {
                 spawnMin: 1,
