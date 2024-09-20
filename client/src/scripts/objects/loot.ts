@@ -99,6 +99,8 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                     if (definition.itemType === ItemType.Skin) {
                         if (definition.grassTint) {
                             this.images.item.setTint(GHILLIE_TINT);
+                            this.images.skinFistLeft.setTint(GHILLIE_TINT);
+                            this.images.skinFistRight.setTint(GHILLIE_TINT);
                         }
 
                         this.images.item.setAngle(90);
