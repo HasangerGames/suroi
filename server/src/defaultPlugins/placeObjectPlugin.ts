@@ -13,7 +13,7 @@ import { GamePlugin } from "../pluginManager";
  * Plugin to help place objects when developing buildings
  */
 export class PlaceObjectPlugin extends GamePlugin {
-    readonly obstacleToPlace: ReferenceTo<ObstacleDefinition> = "window";
+    readonly obstacleToPlace: ReferenceTo<ObstacleDefinition> = "regular_crate";
     private readonly _playerToObstacle = new class extends ExtendedMap<Player, Obstacle> {
         override ifPresent(key: Player, callback: (obstacle: Obstacle) => void): void {
             const obstacle = super.get(key);
@@ -56,6 +56,7 @@ export class PlaceObjectPlugin extends GamePlugin {
                     Vec.create(Math.cos(player.rotation) * player.distanceToMouse, Math.sin(player.rotation) * player.distanceToMouse)
                 );
                 obstacle.position = position;
+                obstacle.layer = player.layer;
                 this.updateObstacle(obstacle);
                 player.game.grid.updateObject(obstacle);
             });
