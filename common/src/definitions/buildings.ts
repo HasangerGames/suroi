@@ -4107,7 +4107,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             material: "metal_heavy",
             particle: "metal_particle",
             hitbox: new GroupHitbox(
-                RectangleHitbox.fromRect(12, 1, Vec.create(0, -7.5)),
+                //RectangleHitbox.fromRect(12, 1, Vec.create(0, -7.5)),
                 RectangleHitbox.fromRect(1.5, 16.6, Vec.create(6.1, 0.15)),
                 RectangleHitbox.fromRect(1.5, 16.6, Vec.create(-6.1, 0.15))
             ),
@@ -4193,6 +4193,8 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "small_bunker",
             name: "Small Bunker",
             ceilingZIndex: ZIndexes.ObstaclesLayer3,
+            spanAdjacentLayers: false,
+            hitbox: RectangleHitbox.fromRect(12, 1, Vec.create(0, 12.3)),
             ceilingImages: [{
                 key: "small_bunker_entrance_ceiling",
                 position: Vec.create(0, 18),

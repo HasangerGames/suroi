@@ -20,6 +20,8 @@ export class Bullet extends BaseBullet {
     readonly maxLength: number;
     readonly tracerLength: number;
 
+    private _originLayer: Layer;
+
     private _trailReachedMaxLength = false;
     private _trailTicks = 0;
 
@@ -57,6 +59,7 @@ export class Bullet extends BaseBullet {
         if (MODE.bulletTrailAdjust) color.multiply(MODE.bulletTrailAdjust);
 
         this._image.tint = new Color(color);
+        this._originLayer = this._layer;
         this.setLayer(this._layer);
 
         this.game.camera.addObject(this._image);
@@ -113,7 +116,7 @@ export class Bullet extends BaseBullet {
                     || (
                         isBuilding && (
                             object.definition.noBulletCollision
-                            || !(object.definition.spanAllLayers || (object.definition.spanAdjacentLayers ? adjacentOrEqualLayer : equalLayer)(object.layer, this._layer))
+                            || !(!object.definition.spanAllLayers || (object.definition.spanAdjacentLayers ? adjacentOrEqualLayer : equalLayer)(object.layer, this._layer))
                         )
                     )
                 ) continue;
@@ -152,28 +155,9 @@ export class Bullet extends BaseBullet {
 
         this._image.setVPos(toPixiCoords(this.position));
 
-        const graphics = new Graphics();
-        let hasMask = false;
-        for (const building of this.game.objects.getCategory(ObjectCategory.Building)) {
-            if (!building.definition.bulletMask) continue;
-            const hitbox = building.definition.bulletMask.transform(building.position, 1, building.orientation);
-            if (!hitbox.isPointInside(this.position)) continue;
-            hasMask = true;
-            const { min, max } = hitbox;
-            graphics
-                .beginPath()
-                .rect(
-                    min.x * PIXI_SCALE,
-                    min.y * PIXI_SCALE,
-                    (max.x - min.x) * PIXI_SCALE,
-                    (max.y - min.y) * PIXI_SCALE
-                )
-                .closePath()
-                .fill(0xffffff);
-            graphics.alpha = 0;
-            this.game.camera.container.addChild(graphics);
+        if (this._originLayer < Layer.Ground && this._layer !== this._originLayer) {
+            this.updateMask();
         }
-        this._image.mask = hasMask ? graphics : null;
 
         this.particleTrail();
 
@@ -214,6 +198,32 @@ export class Bullet extends BaseBullet {
         );
 
         this._lastParticleTrail = Date.now();
+    }
+
+    // TODO Make this more efficient
+    updateMask(): void {
+        const graphics = new Graphics();
+        let hasMask = false;
+        for (const building of this.game.objects.getCategory(ObjectCategory.Building)) {
+            if (!building.definition.bulletMask) continue;
+            const hitbox = building.definition.bulletMask.transform(building.position, 1, building.orientation);
+            if (!hitbox.isPointInside(this.position)) continue;
+            hasMask = true;
+            const { min, max } = hitbox;
+            graphics
+                .beginPath()
+                .rect(
+                    min.x * PIXI_SCALE,
+                    min.y * PIXI_SCALE,
+                    (max.x - min.x) * PIXI_SCALE,
+                    (max.y - min.y) * PIXI_SCALE
+                )
+                .closePath()
+                .fill(0xffffff);
+            graphics.alpha = 0;
+            this.game.camera.container.addChild(graphics);
+        }
+        this._image.mask = hasMask ? graphics : null;
     }
 
     private setLayer(layer: number): void {
