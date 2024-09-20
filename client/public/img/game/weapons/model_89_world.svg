@@ -34,7 +34,7 @@
      id="defs1">
     <style
        id="style1">
-      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7, .cls-8, .cls-9 {
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7, .cls-8, .cls-9, .cls-13 {
         stroke: #171200;
         stroke-miterlimit: 11.3386;
       }
@@ -84,7 +84,11 @@
         fill: #9a9088;
       }
 
-      .cls-6, .cls-7, .cls-9 {
+      .cls-13 {
+        fill: #817760;
+      }
+
+      .cls-6, .cls-7, .cls-9, .cls-13 {
         stroke-linecap: square;
         stroke-width: 3px;
       }
@@ -121,7 +125,7 @@
          d="m 7.8194,13.3591 h 10.6 c 5.6,-1.9 11.6,-2.1 18,0 h 12.2 v -11.1 h -12 c -6.6,2 -12.5,1.7 -18,0 h -10.9" />
       <path
          id="rect4"
-         class="cls-6"
+         class="cls-13"
          d="m 61.5194,3.9591 h 61.5 c 0.2,0 0.4,0.2 0.4,0.4 v 6.9 c 0,0.2 -0.2,0.4 -0.4,0.4 h -61.5 c -0.2,0 -0.4,-0.2 -0.4,-0.4 v -6.9 c 0,-0.2 0.2,-0.4 0.4,-0.4 z" />
       <path
          id="rect3"
