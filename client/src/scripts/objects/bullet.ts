@@ -3,7 +3,7 @@ import { Color, Graphics } from "pixi.js";
 import { Layer, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
 import { getEffectiveZIndex, isVisibleFromLayer } from "../../../../common/src/utils/layer";
-import { Geometry } from "../../../../common/src/utils/math";
+import { Geometry, resolveStairInteraction } from "../../../../common/src/utils/math";
 import { random, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { Vec } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -12,6 +12,8 @@ import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import type { Building } from "./building";
 import { type Obstacle } from "./obstacle";
 import { type Player } from "./player";
+import type { Orientation } from "../../../../common/src/typings";
+import type { RectangleHitbox } from "../../../../common/src/utils/hitbox";
 
 export class Bullet extends BaseBullet {
     readonly game: Game;
@@ -71,7 +73,13 @@ export class Bullet extends BaseBullet {
                 const object = collision.object;
 
                 if (object.isObstacle && object.definition.isStair) {
-                    (object as Obstacle).handleStairInteraction(this);
+                    this.setLayer(resolveStairInteraction(
+                        object.definition,
+                        object.rotation as Orientation, // stairs cannot have full rotation mode
+                        object.hitbox as RectangleHitbox,
+                        object.layer,
+                        object.position
+                    ));
                     continue;
                 }
 

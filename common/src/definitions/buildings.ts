@@ -1,4 +1,4 @@
-import { LayerInteraction, ZIndexes } from "../constants";
+import { Layers, ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
@@ -39,7 +39,8 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly noCollisions?: boolean
     readonly noBulletCollision?: boolean
     readonly reflectBullets?: boolean
-    readonly layerInteraction?: LayerInteraction
+    readonly collideWithLayers?: Layers
+    readonly visibleFromLayers?: Layers
     readonly material?: typeof Materials[number]
     readonly particle?: string
     readonly particleVariations?: number
@@ -3644,7 +3645,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(4.1, 4, Vec.create(57.5, -84)), // R, 5
                 RectangleHitbox.fromRect(4.1, 4, Vec.create(14.6, 4.5)) // CENT, 6
             ),
-            layerInteraction: LayerInteraction.Adjacent,
+            collideWithLayers: Layers.Adjacent,
             spawnHitbox: RectangleHitbox.fromRect(195, 200, Vec.create(0, -26)),
             scopeHitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 1.5)),
@@ -4101,18 +4102,19 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "small_bunker_entrance",
             name: "Small Bunker Entrance",
             reflectBullets: true,
-            layerInteraction: LayerInteraction.All,
+            collideWithLayers: Layers.All,
+            visibleFromLayers: Layers.All,
             material: "metal_heavy",
             particle: "metal_particle",
             hitbox: new GroupHitbox(
                 //RectangleHitbox.fromRect(12, 1, Vec.create(0, -7.5)),
-                RectangleHitbox.fromRect(1.5, 16.6, Vec.create(6.1, 0.15)),
-                RectangleHitbox.fromRect(1.5, 16.6, Vec.create(-6.1, 0.15))
+                RectangleHitbox.fromRect(1.9, 16.6, Vec.create(6.1, 0.15)),
+                RectangleHitbox.fromRect(1.9, 16.6, Vec.create(-6.1, 0.15))
             ),
             spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
             floorImages: [{
                 key: "small_bunker_entrance_floor",
-                position: Vec.create(-0.025, 0.5),
+                position: Vec.create(0, 0),
                 scale: Vec.create(2.2, 2.2)
             }],
             floors: [
@@ -4127,7 +4129,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             idString: "small_bunker_main",
             name: "Small Bunker",
             reflectBullets: true,
-            layerInteraction: LayerInteraction.Adjacent,
+            collideWithLayers: Layers.Adjacent,
             material: "metal_heavy",
             particle: "metal_particle",
             hitbox: new GroupHitbox(
@@ -4147,11 +4149,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                     key: "small_bunker_floor",
                     position: Vec.create(0, 0),
                     scale: Vec.create(2.2, 2.2)
-                },
-                {
-                    key: "small_bunker_floor_path",
-                    position: Vec.create(-0.025, 26),
-                    scale: Vec.create(2.2, 2.2)
                 }
             ],
             floors: [
@@ -4170,7 +4167,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             ],
             obstacles: [
                 { idString: "small_desk", position: Vec.create(-12.9, 13.9), rotation: 0 },
-                { idString: "metal_door", position: Vec.create(0.25, 18), rotation: 0 },
+                { idString: "metal_door", position: Vec.create(0.25, 18.3), rotation: 0 },
                 { idString: "control_panel2", position: Vec.create(-14.5, -12.6), rotation: 0 },
                 { idString: "box", position: Vec.create(-17, -2), lootSpawnOffset: Vec.create(2, 0) },
                 { idString: "box", position: Vec.create(-15, 3.5), lootSpawnOffset: Vec.create(2, 0) },
@@ -4188,7 +4185,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
         {
             idString: "small_bunker",
             name: "Small Bunker",
+            material: "metal_heavy",
+            particle: "metal_particle",
+            reflectBullets: true,
             ceilingZIndex: ZIndexes.ObstaclesLayer3,
+            visibleFromLayers: Layers.All,
             hitbox: RectangleHitbox.fromRect(12, 1, Vec.create(0, 12.3)),
             ceilingImages: [{
                 key: "small_bunker_entrance_ceiling",
@@ -4198,14 +4199,14 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec.create(0, 20)),
             scopeHitbox: RectangleHitbox.fromRect(10, 15, Vec.create(0, 20)),
             obstacles: [
-                // { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(7.5, 9.8) },
-                // { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(10, 23) },
-                // { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-10, 16) },
-                // { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-5, 37) }
+                { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(7.5, 9.8) },
+                { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(10, 23) },
+                { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-10, 16) },
+                { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-5, 37) }
             ],
             bulletMask: RectangleHitbox.fromRect(11, 30, Vec.create(0, 30)),
             subBuildings: [
-                { idString: "small_bunker_main", position: Vec.create(0, -4.6), layer: -2 },
+                { idString: "small_bunker_main", position: Vec.create(0, -5), layer: -2 },
                 { idString: "small_bunker_entrance", position: Vec.create(0, 20) }
             ]
         }

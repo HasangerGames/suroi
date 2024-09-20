@@ -1,9 +1,9 @@
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { Layers, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { MaterialSounds, type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
-import { getEffectiveZIndex, equivLayer } from "../../../../common/src/utils/layer";
-import { Angle, EaseFunctions, Numeric, calculateDoorHitboxes, resolveStairInteraction } from "../../../../common/src/utils/math";
+import { adjacentOrEqualLayer, equivLayer, getEffectiveZIndex } from "../../../../common/src/utils/layer";
+import { Angle, EaseFunctions, Numeric, calculateDoorHitboxes } from "../../../../common/src/utils/math";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { random, randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
@@ -12,7 +12,6 @@ import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import type { Bullet } from "./bullet";
 import { GameObject } from "./gameObject";
 import { type ParticleEmitter, type ParticleOptions } from "./particles";
 import { type Player } from "./player";
@@ -292,6 +291,11 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 : ZIndexes.DeadObstacles
             : this.definition.zIndex ?? ZIndexes.ObstaclesLayer1;
         this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, this.game.layer);
+
+        // hides bunker doors on ground layer
+        if (this.definition.visibleFromLayers === Layers.All) {
+            this.container.visible = adjacentOrEqualLayer(this.layer, this.game.layer!);
+        }
     }
 
     override updateDebugGraphics(): void {
@@ -534,24 +538,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 });
             }
         }
-    }
-
-    /**
-     * Resolves the interaction between a given game object or bullet and this stair by shifting the object's layer as appropriate.
-     * Two things are assumed and are prerequisite:
-     * - This `Obstacle` instance is indeed one corresponding to a stair (such that `this.definition.isStair`)
-     * - The given game object or bullet's hitbox overlaps this obstacle's (such that `gameObject.hitbox.collidesWith(this.hitbox)`)
-     *
-     * note that setters will be called _even if the new layer and old layer match_.
-     */
-    handleStairInteraction(object: GameObject | Bullet): void {
-        object.layer = resolveStairInteraction(
-            this.definition,
-            this.rotation as Orientation, // stairs cannot have full rotation mode
-            this.hitbox as RectangleHitbox,
-            this.layer,
-            object.position
-        );
     }
 
     canInteract(player: Player): boolean {

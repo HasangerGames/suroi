@@ -7,7 +7,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { type GameObject, type ObjectMapping } from "../objects/gameObject";
 import { Logger } from "./misc";
-import { adjacentOrEqualLayer } from "@common/utils/layer";
+import { adjacentOrEquivLayer } from "@common/utils/layer";
 
 /**
  * A Grid to filter collision detection of game objects
@@ -151,7 +151,7 @@ export class Grid {
 
                 for (const object of objectsMap.values()) {
                     // Only filter intersecting objects by their layer if a layer was specified.
-                    if (includeAll || (object.layer !== undefined && adjacentOrEqualLayer(object.layer, layer))) {
+                    if (includeAll || (object.layer !== undefined && adjacentOrEquivLayer(object, layer))) {
                         objects.add(object);
                     }
                 }

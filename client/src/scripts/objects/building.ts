@@ -1,5 +1,5 @@
 import { Container, Graphics } from "pixi.js";
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { Layer, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { MaterialSounds } from "../../../../common/src/definitions/obstacles";
 import { type Orientation } from "../../../../common/src/typings";
@@ -60,7 +60,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
         let duration = 150;
 
-        if (this.ceilingHitbox.collidesWith(player.hitbox)) {
+        if (this.ceilingHitbox.collidesWith(player.hitbox) || player.layer < Layer.Ground) {
             visible = true;
             duration = !isGroundLayer(player.layer) ? 0 : 150; // We do not want a ceiling tween during the layer change.
         } else {

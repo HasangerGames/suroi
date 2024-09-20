@@ -2,7 +2,7 @@ import { Layer } from "../constants";
 import { Bullets, type BulletDefinition } from "../definitions/bullets";
 import type { CommonGameObject } from "./gameObject";
 import { type Hitbox } from "./hitbox";
-import { equalLayer, equivLayer } from "./layer";
+import { adjacentOrEqualLayer, equivLayer } from "./layer";
 import { Geometry, Numeric } from "./math";
 import { type ReifiableDef } from "./objectDefinitions";
 import { type SuroiBitStream } from "./suroiBitStream";
@@ -117,7 +117,7 @@ export class BaseBullet {
                     || object.definition.noCollisions
                     || !equivLayer(object, this)
                 ))
-                || (isPlayer && !equalLayer(this.layer, object.layer))
+                || (isPlayer && !adjacentOrEqualLayer(this.layer, object.layer))
                 || !object.damageable
                 || object.dead
                 || this.damagedIDs.has(object.id)

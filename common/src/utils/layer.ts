@@ -1,4 +1,4 @@
-import { Layer, LayerInteraction, ZIndexes } from "../constants";
+import { Layer, Layers, ZIndexes } from "../constants";
 import type { CommonGameObject } from "./gameObject";
 import type { Hitbox } from "./hitbox";
 import { ObjectDefinition } from "./objectDefinitions";
@@ -77,7 +77,7 @@ export function equivLayer(
     referenceObject: {
         layer: Layer,
         definition: {
-            layerInteraction?: LayerInteraction,
+            collideWithLayers?: Layers,
             isStair?: boolean
         }
     },
@@ -85,11 +85,26 @@ export function equivLayer(
 ): boolean {
     if (referenceObject.definition.isStair) return adjacentOrEqualLayer(referenceObject.layer, evalObject.layer);
 
-    switch (referenceObject.definition.layerInteraction) {
-        case LayerInteraction.All: return true;
-        case LayerInteraction.Adjacent: return adjacentOrEqualLayer(referenceObject.layer, evalObject.layer);
-        case LayerInteraction.Equal: default: return equalLayer(referenceObject.layer, evalObject.layer);
+    switch (referenceObject.definition.collideWithLayers) {
+        case Layers.All: return true;
+        case Layers.Adjacent: return adjacentOrEqualLayer(referenceObject.layer, evalObject.layer);
+        case Layers.Equal: default: return equalLayer(referenceObject.layer, evalObject.layer);
     }
+}
+
+export function adjacentOrEquivLayer(
+    referenceObject: {
+        isObstacle?: boolean,
+        isBuilding?: boolean,
+        layer: Layer
+    },
+    evalLayer: Layer
+): boolean {
+    return (
+            (referenceObject.isObstacle || referenceObject.isBuilding)
+            && (referenceObject as unknown as { definition: { collideWithLayers?: Layers } }).definition.collideWithLayers === Layers.All
+        )
+        || adjacentOrEqualLayer(referenceObject.layer, evalLayer);
 }
 
 /**
@@ -119,7 +134,7 @@ export function isVisibleFromLayer(
 
     return ( // the object is visible if…
         adjacentOrEqualLayer(observerLayer, objectLayer) // the layers are adjacent.
-        || (object.definition && "layerInteraction" in object.definition && object.definition.layerInteraction === LayerInteraction.All) // or it appears on all layers
+        || (object.definition && (object.definition as { visibleFromLayers?: Layers }).visibleFromLayers === Layers.All) // or it appears on all layers
         || ( // otherwise…
             objectLayer < observerLayer // it must be below us
             && ( // and the ground layer mustn't be between us and it (aka object on -1, us on 1).

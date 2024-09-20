@@ -1,4 +1,4 @@
-import { LayerInteraction, ZIndexes } from "../constants";
+import { Layers, ZIndexes } from "../constants";
 import { type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import type { GetEnumMemberName, Mutable } from "../utils/misc";
@@ -87,7 +87,8 @@ type RawObstacleDefinition = ObjectDefinition & {
      * Whether throwables can fly over this obstacle
      */
     readonly allowFlyover: FlyoverPref
-    readonly layerInteraction?: LayerInteraction
+    readonly collideWithLayers?: Layers
+    readonly visibleFromLayers?: Layers
     readonly hasLoot: boolean
     readonly spawnWithLoot: boolean
     readonly explosion?: string
@@ -757,11 +758,7 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
                 idString: "hazel_crate",
                 name: "Hazel Crate",
                 rotationMode: RotationMode.Binary,
-                health: 1700,
-                frames: {
-                    particle: "hazel_crate_particle",
-                    residue: "hazel_crate_residue"
-                }
+                health: 1700
             }
         ),
         {
@@ -1477,7 +1474,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             automatic: true,
             operationStyle: "slide",
             slideFactor: 0.9,
-            // zIndex: ZIndexes.ObstaclesLayer3,
             frames: {
                 particle: "window_particle"
             }
@@ -1489,7 +1485,8 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             reflectBullets: true,
             doorSound: "metal_door",
             indestructible: true,
-            layerInteraction: LayerInteraction.Adjacent,
+            collideWithLayers: Layers.Adjacent,
+            visibleFromLayers: Layers.All,
             health: 500,
             scale: {
                 spawnMin: 1,
@@ -1502,7 +1499,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             animationDuration: 80,
             role: ObstacleSpecialRoles.Door,
             hingeOffset: Vec.create(-5.5, 0),
-            //   zIndex: ZIndexes.ObstaclesLayer3,
             frames: {
                 particle: "metal_particle"
             }
@@ -2968,9 +2964,6 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             },
             invisible: true,
             hitbox: RectangleHitbox.fromRect(10, 11.5),
-            frames: {
-                particle: "metal_particle"
-            },
             rotationMode: RotationMode.Limited
         },
         /*   {

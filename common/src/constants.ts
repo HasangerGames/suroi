@@ -20,7 +20,7 @@ export const enum Layer {
     Floor1 = 2
 }
 
-export enum LayerInteraction {
+export enum Layers {
     All,      // Collide with objects on all layers
     Adjacent, // Collide with objects on the same or adjacent layers
     Equal     // Only collide with objects on the same layer
