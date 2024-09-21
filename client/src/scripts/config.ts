@@ -29,7 +29,7 @@ export const Config = {
         }
     },
     defaultRegion: "na",
-    mode: "normal"
+    mode: "fall"
 } satisfies ConfigType as ConfigType;
 
 export interface ConfigType {

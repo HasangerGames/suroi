@@ -43,7 +43,7 @@ export const Modes: readonly ModeDefinition[] = [
     {
         idString: "fall",
         colors: {
-            grass: "hsl(113, 42%, 42%)",
+            grass: "hsl(62, 42%, 32%)",
             water: "hsl(211, 63%, 42%)",
             border: "hsl(211, 63%, 30%)",
             beach: "hsl(40, 39%, 55%)",

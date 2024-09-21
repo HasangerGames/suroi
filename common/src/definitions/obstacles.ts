@@ -299,7 +299,9 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     hq_tp_wall_particle:          { base: "wood_particle",    tint: 0x74858b },
     white_small_couch_particle:   { base: "wood_particle",    tint: 0xcfc1af },
     red_small_couch_particle:     { base: "wood_particle",    tint: 0x823323 },
-    planted_bushes_particle:      { base: "toilet_particle",  tint: 0xaaaaaa }
+    planted_bushes_particle:      { base: "toilet_particle",  tint: 0xaaaaaa },
+    barn_wall_particle_1:         { base: "stone_particle_1", tint: 0x690c0c },
+    barn_wall_particle_2:         { base: "stone_particle_2", tint: 0x690c0c }
 };
 /* eslint-enable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 
