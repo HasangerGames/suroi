@@ -543,6 +543,10 @@ export class Minimap {
         this._border.visible = this._expanded;
         const uiScale = this.game.console.getBuiltInCVar("cv_ui_scale");
 
+        if (this.game.spectating) {
+            this.game.uiManager.ui.spectatingContainer.toggle(this.game.uiManager.ui.spectatingOptions.hasClass("fa-eye-slash"));
+        }
+
         if (this._expanded) {
             const screenWidth = window.innerWidth;
             const screenHeight = window.innerHeight;
