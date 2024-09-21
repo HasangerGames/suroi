@@ -75,13 +75,13 @@
             opacity: 1;
             pointer-events: none;
             float: left;
-            width: 60px;
-            height: 45px;
+            width: 50px;
+            height: 35px;
             @include drop-shadow;
 
             @media screen and (max-width: $screen_large) {
-                width: 50px;
-                height: 40px;
+                width: 40px;
+                height: 30px;
             }
         }
 
@@ -97,8 +97,9 @@
 
         @media screen and (max-height: 720px) {
             position: absolute;
-            top: -30%;
             width: auto;
+            height: 30px;
+            width: 50px;
 
             #detonate-key {
                 display: none;
@@ -395,16 +396,23 @@
     top: 10px;
     right: 10px;
 
+    #counter-holder {
+        display: flex;
+        align-items: center;
+
+        @media screen and (max-width: $screen_large) {
+            display: flex;
+        }
+    }
+
     #kill-counter {
-        position: relative;
-        bottom: 81.5px;
-        right: 110px;
-        margin: 5px;
+        margin-right: 5px;
 
         @media screen and (max-width: $screen_large)  {
             bottom: 0;
             right: 0;
             margin: 0;
+            margin-right: 4px;
         }
     }
 
