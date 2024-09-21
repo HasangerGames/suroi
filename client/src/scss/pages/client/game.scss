@@ -882,16 +882,24 @@
 
 #spectating-msg {
     align-items: center;
+    display: inline-flex;
 
     font-weight: bold;
     font-size: 30px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
 
+    spec, span {
+        margin: 4px;
+
+        @media screen and (max-width: $screen_large) {
+            margin: 2px;
+        }
+    }
+
     @media screen and (max-width: $screen_large) {
         font-size: 14px;
 
         #btn-spectate-options {
-            display: inline;
             font-size: 14px;
             padding: 4px 8px 4px 8px;
             height: initial;
@@ -905,6 +913,11 @@
 
     #btn-spectate-options {
         display: inline;
+        margin-left: 4px;
+
+        @media screen and (max-width: $screen_large) {
+            margin-left: 2.5px;
+        }
     }
 
     .badge-icon {
