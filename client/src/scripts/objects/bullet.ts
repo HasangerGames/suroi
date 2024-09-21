@@ -75,7 +75,7 @@ export class Bullet extends BaseBullet {
                 if (object.isObstacle && object.definition.isStair) {
                     this.setLayer(resolveStairInteraction(
                         object.definition,
-                        object.rotation as Orientation, // stairs cannot have full rotation mode
+                        (object as Obstacle).orientation,
                         object.hitbox as RectangleHitbox,
                         object.layer,
                         this.position
