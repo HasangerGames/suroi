@@ -6,34 +6,33 @@ export interface ScopeDefinition extends ItemDefinition {
     readonly giveByDefault: boolean
 }
 
-export const Scopes = ObjectDefinitions.create<ScopeDefinition>()(
-    defaultTemplate => ({
-        [defaultTemplate]: () => ({
-            itemType: ItemType.Scope,
-            noDrop: false,
-            giveByDefault: false
-        }),
-        scope_factory: (magnification: number) => ({
+export const Scopes = ObjectDefinitions.withDefault<ScopeDefinition>()(
+    {
+        itemType: ItemType.Scope,
+        noDrop: false,
+        giveByDefault: false
+    },
+    ([derive]) => {
+        const scope = derive((magnification: number) => ({
             idString: `${magnification}x_scope`,
             name: `${magnification}x Scope`
-        })
-    })
-)(
-    apply => [
-        apply(
-            "scope_factory",
-            {
-                zoomLevel: 70,
-                noDrop: true,
-                giveByDefault: true
-            },
-            1
-        ),
-        apply("scope_factory", { zoomLevel: 100 }, 2),
-        apply("scope_factory", { zoomLevel: 135 }, 4),
-        apply("scope_factory", { zoomLevel: 185 }, 8),
-        apply("scope_factory", { zoomLevel: 255 }, 15)
-    ]
+        }));
+
+        return [
+            scope(
+                [1],
+                {
+                    zoomLevel: 70,
+                    noDrop: true,
+                    giveByDefault: true
+                }
+            ),
+            scope([2], { zoomLevel: 100 }),
+            scope([4], { zoomLevel: 135 }),
+            scope([8], { zoomLevel: 185 }),
+            scope([15], { zoomLevel: 255 })
+        ];
+    }
 );
 
 export const DEFAULT_SCOPE = Scopes.definitions[0];

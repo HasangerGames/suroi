@@ -90,21 +90,21 @@ export interface SyncedParticleSpawnerDefinition {
     readonly spawnRadius: number
 }
 
-export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition>()(
-    defaultTemplate => ({
-        [defaultTemplate]: () => ({
-            scale: 1,
-            alpha: 1,
-            lifetime: Infinity,
-            angularVelocity: 0,
-            velocity: Vec.create(0, 0),
-            zIndex: ZIndexes.ObstaclesLayer1,
-            depletePerMs: {
-                health: 0,
-                adrenaline: 0
-            }
-        }),
-        synced_particle_factory: (idString: string, name?: string) => ({
+export const SyncedParticles = ObjectDefinitions.withDefault<SyncedParticleDefinition>()(
+    {
+        scale: 1,
+        alpha: 1,
+        lifetime: Infinity,
+        angularVelocity: 0,
+        velocity: Vec.create(0, 0),
+        zIndex: ZIndexes.ObstaclesLayer1,
+        depletePerMs: {
+            health: 0,
+            adrenaline: 0
+        }
+    },
+    ([derive, , createTemplate]) => {
+        const syncedParticle = derive((idString: string, name?: string) => ({
             idString,
             name: name ?? (
                 idString
@@ -114,51 +114,88 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                     .join(" ")
             ),
             frame: idString
-        }),
-        smoke_like: {
-            extends: "synced_particle_factory",
-            applier: () => ({
-                scale: {
-                    start: {
-                        min: 1.5,
-                        max: 2
-                    },
-                    end: {
-                        min: 1.75,
-                        max: 2.25
+        }));
+
+        const smokeLike = createTemplate(syncedParticle, {
+            scale: {
+                start: {
+                    min: 1.5,
+                    max: 2
+                },
+                end: {
+                    min: 1.75,
+                    max: 2.25
+                }
+            },
+            alpha: {
+                start: 1,
+                end: 0,
+                easing: "expoIn"
+            },
+            angularVelocity: {
+                min: -0.0005,
+                max: 0.0005
+            },
+            velocity: {
+                min: {
+                    x: -0.0002,
+                    y: -0.0002
+                },
+                max: {
+                    x: 0.0002,
+                    y: 0.0002
+                }
+            },
+            lifetime: {
+                mean: 20000,
+                deviation: 1000
+            },
+            frame: "smoke_grenade_particle",
+            zIndex: ZIndexes.BuildingsCeiling - 1,
+            scopeOutPreMs: 3200
+        });
+
+        return [
+            smokeLike(
+                ["smoke_grenade_particle"],
+                {
+                    hitbox: new CircleHitbox(5),
+                    snapScopeTo: "1x_scope"
+                }
+            ),
+            smokeLike(
+                ["tear_gas_particle"],
+                {
+                    tint: 0xa0e6ff,
+                    hitbox: new CircleHitbox(5),
+                    snapScopeTo: "1x_scope",
+                    depletePerMs: {
+                        adrenaline: 0.0055
                     }
-                },
-                alpha: {
-                    start: 1,
-                    end: 0,
-                    easing: "expoIn"
-                },
-                angularVelocity: {
-                    min: -0.0005,
-                    max: 0.0005
-                },
-                velocity: {
-                    min: {
-                        x: -0.0002,
-                        y: -0.0002
+                }
+            ),
+            smokeLike(
+                ["airdrop_smoke_particle"],
+                {
+                    velocity: {
+                        min: {
+                            x: -0.002,
+                            y: -0.002
+                        },
+                        max: {
+                            x: 0.002,
+                            y: 0.002
+                        }
                     },
-                    max: {
-                        x: 0.0002,
-                        y: 0.0002
-                    }
-                },
-                lifetime: {
-                    mean: 20000,
-                    deviation: 1000
-                },
-                frame: "smoke_grenade_particle",
-                zIndex: ZIndexes.BuildingsCeiling - 1,
-                scopeOutPreMs: 3200
-            })
-        },
-        c4: {
-            extends: "synced_particle_factory",
-            applier: () => ({
+                    lifetime: {
+                        mean: 2000,
+                        deviation: 500
+                    },
+                    hitbox: new CircleHitbox(5)
+                }
+            ),
+            {
+                idString: "c4",
                 scale: {
                     start: {
                         min: 0.5,
@@ -175,75 +212,6 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                 },
                 velocity: {
                     min: {
-                        x: -0.0002,
-                        y: -0.0002
-                    },
-                    max: {
-                        x: 0.0002,
-                        y: 0.0002
-                    }
-                },
-                lifetime: {
-                    mean: 1000,
-                    deviation: 0
-                },
-                frame: "metal_particle_1",
-                tint: 0x5f5f5f,
-                zIndex: ZIndexes.ObstaclesLayer1
-            })
-        }
-    })
-)(
-    apply => [
-        apply(
-            "smoke_like",
-            {
-                hitbox: new CircleHitbox(5),
-                snapScopeTo: "1x_scope"
-            },
-            [],
-            ["smoke_grenade_particle"]
-        ),
-        apply(
-            "smoke_like",
-            {
-                tint: 0xa0e6ff,
-                hitbox: new CircleHitbox(5),
-                snapScopeTo: "1x_scope",
-                depletePerMs: {
-                    adrenaline: 0.0055
-                }
-            },
-            [],
-            ["tear_gas_particle"]
-        ),
-        apply(
-            "smoke_like",
-            {
-                velocity: {
-                    min: {
-                        x: -0.002,
-                        y: -0.002
-                    },
-                    max: {
-                        x: 0.002,
-                        y: 0.002
-                    }
-                },
-                lifetime: {
-                    mean: 2000,
-                    deviation: 500
-                },
-                hitbox: new CircleHitbox(5)
-            },
-            [],
-            ["airdrop_smoke_particle"]
-        ),
-        apply(
-            "c4",
-            {
-                velocity: {
-                    min: {
                         x: -0.002,
                         y: -0.002
                     },
@@ -255,10 +223,11 @@ export const SyncedParticles = ObjectDefinitions.create<SyncedParticleDefinition
                 lifetime: {
                     mean: 500,
                     deviation: 0
-                }
-            },
-            [],
-            ["metal_particle"]
-        )
-    ]
+                },
+                frame: "metal_particle_1",
+                tint: 0x5f5f5f,
+                zIndex: ZIndexes.ObstaclesLayer1
+            }
+        ];
+    }
 );

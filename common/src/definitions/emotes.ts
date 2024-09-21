@@ -1,4 +1,4 @@
-import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
+import { createTemplate, ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
 import { Ammos } from "./ammos";
 import { HealingItems } from "./healingItems";
 
@@ -16,113 +16,110 @@ export interface EmoteDefinition extends ObjectDefinition {
     readonly isTeamEmote?: boolean
 }
 
-export const Emotes = ObjectDefinitions.create<EmoteDefinition>()(
-    () => ({
-        emote_factory: (name: string, category: EmoteCategory) => ({
-            idString: name.toLowerCase().replace(/ /g, "_"),
-            name,
-            category
-        }),
-        team_emote: (idString: string) => ({
-            idString,
-            name: idString,
-            isTeamEmote: true,
-            category: EmoteCategory.TeamEmote
-        })
-    })
-)(
-    ({ simple }) => [
-        ...[
-            "Happy Face",
-            "Sad Face",
-            "Thumbs Up",
-            "Thumbs Down",
-            "Wave",
-            "Disappointed Face",
-            "Sobbing Face",
-            "Angry Face",
-            "Heart Face",
-            "Joyful Face",
-            "Cool Face",
-            "Upside Down Face",
-            "Picasso Face",
-            "Alien",
-            "Headshot",
-            "Dab",
-            "Devil Face",
-            "Bandaged Face",
-            "Cold Face",
-            "Thinking Face",
-            "Nervous Face",
-            "Sweating Face",
-            "Greedy Face",
-            "Creepy Clown",
-            "Lying Face",
-            "Skull",
-            "Melting Face",
-            "Grimacing Face",
-            "Vomiting Face",
-            "Screaming Face",
-            "Pleading Face",
-            "Sad Smiling Face",
-            "Triumphant Face",
-            "Questioning Face",
-            "Smirking Face",
-            "Blushing Face",
-            "Saluting Face",
-            "Neutral Face",
-            "Relieved Face",
-            "Monocle Face",
-            "Partying Face",
-            "Shushing Face",
-            "Zipper Mouth Face",
-            "Sighing Face",
-            "Frustrated Face"
-        ].map(name => simple("emote_factory", name, EmoteCategory.People)),
-        ...[
-            "Suroi Logo",
-            "AEGIS Logo",
-            "Flint Logo",
-            "Duel",
-            "Chicken Dinner"
-        ].map(name => simple("emote_factory", name, EmoteCategory.Icons)),
-        ...[
-            "Troll Face",
-            "Clueless",
-            "Pog",
-            "Froog",
-            "Bleh",
-            "Muller",
-            "Suroi General Chat",
-            "Fire",
-            "RIP",
-            "Leosmug"
-        ].map(name => simple("emote_factory", name, EmoteCategory.Memes)),
-        ...[
-            "Question Mark",
-            "Team = Ban",
-            "Hack = Ban",
-            "gg",
-            "ez",
-            "Hi5",
-            "oof",
-            "real",
-            "fake",
-            "Colon Three"
-        ].map(name => simple("emote_factory", name, EmoteCategory.Text)),
-        ...[
-            "Monkey",
-            "Carrot",
-            "Tomato",
-            "Egg",
-            "Squid",
-            "Penguin"
-        ].map(name => simple("emote_factory", name, EmoteCategory.Misc)),
-        ...[
-            ...Ammos.definitions.filter(a => !a.ephemeral),
-            ...HealingItems.definitions
-        ].map(({ idString }) => simple("team_emote", idString))
-    ]
-);
+const emote = createTemplate<EmoteDefinition>()((name: string, category: EmoteCategory) => ({
+    idString: name.toLowerCase().replace(/ /g, "_"),
+    name,
+    category
+}));
+
+const team_emote = createTemplate<EmoteDefinition>()((idString: string) => ({
+    idString,
+    name: idString,
+    isTeamEmote: true,
+    category: EmoteCategory.TeamEmote
+}));
+
+export const Emotes = new ObjectDefinitions<EmoteDefinition>([
+    ...[
+        "Happy Face",
+        "Sad Face",
+        "Thumbs Up",
+        "Thumbs Down",
+        "Wave",
+        "Disappointed Face",
+        "Sobbing Face",
+        "Angry Face",
+        "Heart Face",
+        "Joyful Face",
+        "Cool Face",
+        "Upside Down Face",
+        "Picasso Face",
+        "Alien",
+        "Headshot",
+        "Dab",
+        "Devil Face",
+        "Bandaged Face",
+        "Cold Face",
+        "Thinking Face",
+        "Nervous Face",
+        "Sweating Face",
+        "Greedy Face",
+        "Creepy Clown",
+        "Lying Face",
+        "Skull",
+        "Melting Face",
+        "Grimacing Face",
+        "Vomiting Face",
+        "Screaming Face",
+        "Pleading Face",
+        "Sad Smiling Face",
+        "Triumphant Face",
+        "Questioning Face",
+        "Smirking Face",
+        "Blushing Face",
+        "Saluting Face",
+        "Neutral Face",
+        "Relieved Face",
+        "Monocle Face",
+        "Partying Face",
+        "Shushing Face",
+        "Zipper Mouth Face",
+        "Sighing Face",
+        "Frustrated Face"
+    ].map(name => emote([name, EmoteCategory.People])),
+    ...[
+        "Suroi Logo",
+        "AEGIS Logo",
+        "Flint Logo",
+        "Duel",
+        "Chicken Dinner"
+    ].map(name => emote([name, EmoteCategory.Icons])),
+    ...[
+        "Troll Face",
+        "Clueless",
+        "Pog",
+        "Froog",
+        "Bleh",
+        "Muller",
+        "Suroi General Chat",
+        "Fire",
+        "RIP",
+        "Leosmug"
+    ].map(name => emote([name, EmoteCategory.Memes])),
+    ...[
+        "Question Mark",
+        "Team = Ban",
+        "Hack = Ban",
+        "gg",
+        "ez",
+        "Hi5",
+        "oof",
+        "real",
+        "fake",
+        "Colon Three"
+    ].map(name => emote([name, EmoteCategory.Text])),
+    ...[
+        "Monkey",
+        "Carrot",
+        "Tomato",
+        "Egg",
+        "Squid",
+        "Penguin"
+    ].map(name => emote([name, EmoteCategory.Misc])),
+    ...[
+        ...Ammos.definitions.filter(a => !a.ephemeral),
+        ...HealingItems.definitions
+    ].map(({ idString }) => team_emote([idString]))
+]);
 
 export const emoteIdStrings = Emotes.definitions.map(emote => emote.idString);

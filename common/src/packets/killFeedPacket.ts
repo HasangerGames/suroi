@@ -17,7 +17,7 @@ export type KillDamageSources = GunDefinition
     | ThrowableDefinition
     | ExplosionDefinition;
 
-const damageSourcesDefinitions = ObjectDefinitions.create<KillDamageSources>([...Guns, ...Melees, ...Throwables, ...Explosions]);
+const damageSourcesDefinitions = new ObjectDefinitions<KillDamageSources>([...Guns, ...Melees, ...Throwables, ...Explosions]);
 
 /**
  * {@link KillfeedEventType}s that allow an attacker to be specified

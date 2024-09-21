@@ -923,10 +923,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     updateEquipment(): void {
         for (const item of ["helmet", "vest", "backpack"] as const) {
-            this.updateEquipmentWorldImage(item, this.equipment[item]);
+            this.updateEquipmentWorldImage(item);
 
             if (this.isActivePlayer) {
-                this.updateEquipmentSlot(item, this.equipment[item]);
+                this.updateEquipmentSlot(item);
             }
         }
     }
@@ -945,8 +945,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer, this.game.layer);
     }
 
-    updateEquipmentWorldImage(type: "helmet" | "vest" | "backpack", def?: ArmorDefinition | BackpackDefinition): void {
+    updateEquipmentWorldImage(type: "helmet" | "vest" | "backpack"): void {
         const image = this.images[type];
+        const def = this.equipment[type];
+
         if (
             def
             && def.level > 0
@@ -955,24 +957,30 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         ) {
             if (type !== "vest") {
                 image.setFrame(`${def.idString}_world`).setVisible(true);
-            } else if ("color" in def && def.color) { // tint stuff for vests
-                image.setFrame("vest_world").setVisible(true);
-                image.setTint(def.color);
-            }
 
-            if (type === "helmet") {
-                image.setPos(
-                    this.downed ? 10 : -8,
-                    0
-                );
+                if (type === "helmet") {
+                    image.setPos(
+                        this.downed ? 10 : -8,
+                        0
+                    );
+                }
+            } else {
+                let color: number | undefined;
+                if ((color = (def as { color?: number }).color) !== undefined) {
+                    image.setFrame("vest_world")
+                        .setVisible(true)
+                        .setTint(color);
+                }
             }
         } else {
             image.setVisible(false);
         }
     }
 
-    updateEquipmentSlot(equipmentType: "helmet" | "vest" | "backpack", def?: ArmorDefinition | BackpackDefinition): void {
+    updateEquipmentSlot(equipmentType: "helmet" | "vest" | "backpack"): void {
         const container = $(`#${equipmentType}-slot`);
+        const def = this.equipment[equipmentType];
+
         if (def && def.level > 0) {
             container.children(".item-name").text(`Lvl. ${def.level}`);
             container.children(".item-image").attr("src", `./img/game/loot/${def.idString}.svg`);

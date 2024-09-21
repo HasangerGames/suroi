@@ -39,22 +39,19 @@ export const DEFAULT_HAND_RIGGING = Object.freeze({
     right: Vec.create(38, 35)
 }) as InventoryItemDefinition["fists"] & object;
 
-export const Melees = ObjectDefinitions.create<MeleeDefinition>()(
-    defaultTemplate => ({
-        [defaultTemplate]: () => ({
-            itemType: ItemType.Melee,
-            noDrop: false,
-            killstreak: false,
-            speedMultiplier: 1,
-            swingSound: "swing",
-            maxTargets: 1,
-            image: {
-                zIndex: 1
-            },
-            fireMode: FireMode.Single
-        })
-    })
-)(
+export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
+    {
+        itemType: ItemType.Melee,
+        noDrop: false,
+        killstreak: false,
+        speedMultiplier: 1,
+        swingSound: "swing",
+        maxTargets: 1,
+        image: {
+            zIndex: 1
+        },
+        fireMode: FireMode.Single
+    },
     () => [
         {
             idString: "fists",

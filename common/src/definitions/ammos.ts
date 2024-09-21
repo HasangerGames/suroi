@@ -20,17 +20,14 @@ export interface AmmoDefinition extends ItemDefinition {
     readonly hideUnlessPresent: boolean
 }
 
-export const Ammos = ObjectDefinitions.create<AmmoDefinition>()(
-    defaultTemplate => ({
-        [defaultTemplate]: () => ({
-            itemType: ItemType.Ammo,
-            noDrop: false,
-            ephemeral: false,
-            defaultCasingFrame: "",
-            hideUnlessPresent: false
-        })
-    })
-)(
+export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
+    {
+        itemType: ItemType.Ammo,
+        noDrop: false,
+        ephemeral: false,
+        defaultCasingFrame: "",
+        hideUnlessPresent: false
+    },
     () => [
         {
             idString: "12g",
