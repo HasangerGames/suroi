@@ -407,6 +407,15 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
             y: this.min.y + ((this.max.y - this.min.y) / 2)
         };
     }
+
+    isFullyWithin(that: RectangleHitbox) {
+        return (
+            that.min.x <= this.min.x
+            && that.min.y <= this.min.y
+            && that.max.x >= this.max.x
+            && that.max.y >= this.max.y
+        );
+    }
 }
 
 export class GroupHitbox<GroupType extends Array<RectangleHitbox | CircleHitbox> = Array<RectangleHitbox | CircleHitbox>> extends BaseHitbox<HitboxType.Group> {

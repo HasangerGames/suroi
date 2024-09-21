@@ -164,7 +164,7 @@ export class BaseBullet {
         const variance = stream.readFloat(0, 1, 4);
         const reflectionCount = stream.readBits(2);
         const sourceID = stream.readObjectID();
-        const clipDistance = source.allowRangeOverride ? stream.readFloat(0, source.range, 16) : undefined;
+        const rangeOverride = source.allowRangeOverride ? stream.readFloat(0, source.range, 16) : undefined;
 
         return {
             source,
@@ -174,7 +174,7 @@ export class BaseBullet {
             variance,
             reflectionCount,
             sourceID,
-            rangeOverride: clipDistance
+            rangeOverride
         };
     }
 }

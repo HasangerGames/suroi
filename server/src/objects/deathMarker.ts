@@ -3,6 +3,7 @@ import { type FullData } from "@common/utils/objectsSerializations";
 
 import { BaseGameObject } from "./gameObject";
 import { type Player } from "./player";
+import { RectangleHitbox } from "@common/utils/hitbox";
 
 export class DeathMarker extends BaseGameObject.derive(ObjectCategory.DeathMarker) {
     override readonly fullAllocBytes = 8;
@@ -14,6 +15,7 @@ export class DeathMarker extends BaseGameObject.derive(ObjectCategory.DeathMarke
         super(player.game, player.position);
         this.player = player;
         this.layer = layer;
+        this.hitbox = RectangleHitbox.fromRect(5, 5, player.position);
 
         this.game.addTimeout(() => {
             this.isNew = false;

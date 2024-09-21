@@ -24,6 +24,7 @@ export const Config = {
     map: "singleBuilding:headquarters",
 
     spawn: { mode: SpawnMode.Fixed, position: Vec.create(447, 411), layer: 1 },
+    // spawn: { mode: SpawnMode.Center },
 
     maxTeamSize: TeamSize.Solo,
 
@@ -31,7 +32,7 @@ export const Config = {
     maxGames: 4,
     gameJoinTime: 60,
 
-    gas: { mode: GasMode.Normal },
+    gas: { mode: GasMode.Disabled },
 
     tps: 40,
 

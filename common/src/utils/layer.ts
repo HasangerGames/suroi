@@ -1,7 +1,8 @@
 import { Layer, Layers, ZIndexes } from "../constants";
 import type { CommonGameObject } from "./gameObject";
-import type { Hitbox } from "./hitbox";
+import { HitboxType, type Hitbox, type RectangleHitbox } from "./hitbox";
 import { ObjectDefinition } from "./objectDefinitions";
+import { Vector } from "./vector";
 
 /**
  * Returns whether or not the provided layer is a "ground" layer.
@@ -124,6 +125,7 @@ export function isVisibleFromLayer(
         isBuilding?: boolean,
         layer: Layer,
         hitbox?: Hitbox,
+        position: Vector,
         definition?: ObjectDefinition
     },
     collisionCandidates?: readonly CommonGameObject[],
@@ -131,6 +133,20 @@ export function isVisibleFromLayer(
 ): boolean {
     const objectLayer = object.layer;
     const objectHitbox = object.hitbox;
+
+    const defaultColliderPredicate = (collider: Hitbox) => {
+        switch (collider.type) {
+            case HitboxType.Group:
+                for (const hitbox of collider.hitboxes) {
+                    if (objectHitbox?.toRectangle().isFullyWithin(hitbox as RectangleHitbox)) return true;
+                }
+                return false;
+            case HitboxType.Rect:
+                return !!objectHitbox?.toRectangle().isFullyWithin(collider);
+            default:
+                return false;
+        }
+    };
 
     return ( // the object is visible if…
         adjacentOrEqualLayer(observerLayer, objectLayer) // the layers are adjacent.
@@ -149,7 +165,7 @@ export function isVisibleFromLayer(
                     && !o.dead // bu is not dead
                     && o.definition.visibilityOverrides?.some( // and bu has some visibility override 'ov' such that
                         override => (override.layer ?? 0) + o.layer === objectLayer as number // ov is on the object's layer
-                            && (colliderPredicate ??= c => !!objectHitbox?.collidesWith(c))(override.collider.transform(o.position, 1, o.orientation)) // ov's collider collides with the object's hitbox
+                            && (colliderPredicate ??= defaultColliderPredicate)(override.collider.transform(o.position, 1, o.orientation)) // ov's collider collides with the object's hitbox
                             && override.allow?.includes(observerLayer) // and the player's layer is whitelisted.
                     )
             )
