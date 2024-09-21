@@ -63,6 +63,9 @@ let buttonsLocked = true;
 export function lockPlayButtons(): void { buttonsLocked = true; }
 export function unlockPlayButtons(): void { buttonsLocked = false; }
 
+let lastDisconnectTime: number | undefined;
+export function updateDisconnectTime(): void { lastDisconnectTime = Date.now(); }
+
 let btnMap: ReadonlyArray<readonly [TeamSize, JQuery<HTMLButtonElement>]>;
 export function resetPlayButtons(): void {
     if (buttonsLocked) return;
@@ -2187,6 +2190,13 @@ export async function setUpUI(game: Game): Promise<void> {
         teamID = window.location.hash.slice(1);
         joinTeam.trigger("click");
     }
+
+    // Makes social buttons unclickable for 1.5 seconds after disconnecting, to prevent accidental clicks
+    $(".btn-social").on("click", e => {
+        if (lastDisconnectTime && Date.now() - lastDisconnectTime < 1500) {
+            e.preventDefault();
+        }
+    });
 }
 
 //  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣠⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣄⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
