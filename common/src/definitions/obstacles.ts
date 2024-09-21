@@ -3014,9 +3014,9 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             role: ObstacleSpecialRoles.Stair,
             activeEdges: {
                 high: 0,
-                low: 2
+                low: 1
             },
-            hitbox: RectangleHitbox.fromRect(11, 12.8),
+            hitbox: RectangleHitbox.fromRect(10.8, 24),
             frames: {
                 particle: "metal_particle"
             },

@@ -1,5 +1,5 @@
 import { Layer, TeamSize } from "@common/constants";
-import { type Vector } from "@common/utils/vector";
+import { Vec, type Vector } from "@common/utils/vector";
 
 import { type Maps } from "./data/maps";
 import { type Game } from "./game";
@@ -23,7 +23,7 @@ export const Config = {
 
     map: "singleBuilding:headquarters",
 
-    spawn: { mode: SpawnMode.Center },
+    spawn: { mode: SpawnMode.Fixed, position: Vec.create(447, 411), layer: 1 },
 
     maxTeamSize: TeamSize.Solo,
 

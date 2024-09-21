@@ -3746,7 +3746,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             }],
             visibilityOverrides: [{
                 collider: new GroupHitbox(
-                    RectangleHitbox.fromRect(11.4, 6.4, Vec.create(-39.95, -102.25)),
+                    RectangleHitbox.fromRect(11.4, 11, Vec.create(-39.95, -100.2)),
                     RectangleHitbox.fromRect(8.5, 16, Vec.create(79.2, -42.75)),
                     RectangleHitbox.fromRect(10, 2, Vec.create(78, -49.5)),
                     RectangleHitbox.fromRect(10, 2, Vec.create(78, -36.5))
@@ -3782,7 +3782,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
 
                 // near stairs + near stairs room
                 { idString: { box: 1, trash_can: 1, grenade_box: 0.5 }, position: Vec.create(-66.5, -67) },
-                { idString: "hq_stair", position: Vec.create(-52, -100.1), layer: 1, rotation: 3 },
+                { idString: "hq_stair", position: Vec.create(-57.7, -100.2), layer: 1, rotation: 3 },
                 { idString: "headquarters_wall_1", position: Vec.create(-40.9, -62.7), rotation: 0 },
                 { idString: "door", position: Vec.create(-51.15, -62.7), rotation: 0 },
                 { idString: "cabinet", position: Vec.create(-42.25, -90.25), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
