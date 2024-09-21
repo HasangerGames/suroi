@@ -2888,7 +2888,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "chair", position: Vec.create(3, 1.7), rotation: 3 },
                 { idString: "chair", position: Vec.create(10.1, 6), rotation: 0 },
                 { idString: "small_drawer", position: Vec.create(-9.2, 16.8), rotation: 2 },
-                { idString: "gun_mount_maul", position: Vec.create(3, 19.05), rotation: 2 },
+                { idString: "gun_mount_maul", position: Vec.create(2, 19.05), rotation: 2 },
                 { idString: "window", position: Vec.create(-13.9, 7.1), rotation: 0 },
                 { idString: "trash_can", position: Vec.create(12, 17.5) }
             ]
@@ -2967,7 +2967,11 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "barrel", position: Vec.create(-30.9, 11.3) },
                 { idString: "briefcase", position: Vec.create(-20.7, 10.85), rotation: 0 },
                 { idString: "vault_door", position: Vec.create(-14.1, -3.22), rotation: 3 }
-            ]
+            ],
+            lootSpawners: [{
+                position: Vec.create(-25.5, -1),
+                table: "armory_skin"
+            }]
         },
         {
             idString: "armory_inner_vault",
