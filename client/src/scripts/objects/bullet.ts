@@ -1,7 +1,9 @@
 import { BloomFilter } from "pixi-filters";
 import { Color, Graphics } from "pixi.js";
 import { Layer, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import type { Orientation } from "../../../../common/src/typings";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
+import type { RectangleHitbox } from "../../../../common/src/utils/hitbox";
 import { getEffectiveZIndex, isVisibleFromLayer } from "../../../../common/src/utils/layer";
 import { Geometry, resolveStairInteraction } from "../../../../common/src/utils/math";
 import { random, randomFloat, randomRotation } from "../../../../common/src/utils/random";
@@ -12,8 +14,6 @@ import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import type { Building } from "./building";
 import { type Obstacle } from "./obstacle";
 import { type Player } from "./player";
-import type { Orientation } from "../../../../common/src/typings";
-import type { RectangleHitbox } from "../../../../common/src/utils/hitbox";
 
 export class Bullet extends BaseBullet {
     readonly game: Game;
@@ -78,7 +78,7 @@ export class Bullet extends BaseBullet {
                         object.rotation as Orientation, // stairs cannot have full rotation mode
                         object.hitbox as RectangleHitbox,
                         object.layer,
-                        object.position
+                        this.position
                     ));
                     continue;
                 }

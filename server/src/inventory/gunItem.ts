@@ -1,7 +1,7 @@
 import { AnimationType, FireMode } from "@common/constants";
 import { type GunDefinition } from "@common/definitions/guns";
 import { RectangleHitbox } from "@common/utils/hitbox";
-import { Angle, Geometry } from "@common/utils/math";
+import { Angle, Geometry, resolveStairInteraction } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { randomFloat, randomPointInsideCircle } from "@common/utils/random";
@@ -10,7 +10,8 @@ import { Vec } from "@common/utils/vector";
 import { type Player } from "../objects/player";
 import { ReloadAction } from "./action";
 import { InventoryItem } from "./inventoryItem";
-import { adjacentOrEqualLayer } from "@common/utils/layer";
+import { adjacentOrEqualLayer, isStairLayer } from "@common/utils/layer";
+import { Orientation } from "@common/typings";
 
 /**
  * A class representing a firearm
@@ -140,20 +141,27 @@ export class GunItem extends InventoryItem<GunDefinition> {
         const projCount = definition.bulletCount;
 
         for (let i = 0; i < projCount; i++) {
+            const finalPosition = jitter ? randomPointInsideCircle(position, jitter) : position;
             owner.game.addBullet(
                 this,
                 owner,
                 {
-                    position: jitter
-                        ? randomPointInsideCircle(position, jitter)
-                        : position,
+                    position: finalPosition,
                     rotation: owner.rotation + Math.PI / 2
                         + (
                             definition.consistentPatterning
                                 ? 8 * (i / (projCount - 1) - 0.5) ** 3
                                 : randomFloat(-1, 1)
                         ) * spread,
-                    layer: owner.layer,
+                    layer: isStairLayer(owner.layer) && owner.activeStair
+                        ? resolveStairInteraction(
+                            owner.activeStair.definition,
+                            owner.activeStair.rotation as Orientation,
+                            owner.activeStair.hitbox as RectangleHitbox,
+                            owner.activeStair.layer,
+                            finalPosition
+                        )
+                        : owner.layer,
                     rangeOverride
                 }
             );

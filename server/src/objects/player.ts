@@ -341,6 +341,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     downed = false;
     beingRevivedBy?: Player;
 
+    activeStair?: Obstacle;
+
     get position(): Vector {
         return this.hitbox.position;
     }
@@ -698,6 +700,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 ) {
                     if (potential.isObstacle && potential.definition.isStair) {
                         potential.handleStairInteraction(this);
+                        this.activeStair = potential;
                     } else {
                         collided = true;
                         this.hitbox.resolveCollision(potential.hitbox);
