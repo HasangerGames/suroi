@@ -41,6 +41,7 @@ export class BaseBullet {
     readonly rotation: number;
 
     layer: Layer;
+    readonly initialLayer: Layer;
 
     readonly velocity: Vector;
     readonly direction: Vector;
@@ -66,7 +67,7 @@ export class BaseBullet {
         this.initialPosition = Vec.clone(options.position);
         this._oldPosition = this.position = options.position;
         this.rotation = options.rotation;
-        this.layer = options.layer;
+        this.layer = this.initialLayer = options.layer;
         this.reflectionCount = options.reflectionCount ?? 0;
         this.sourceID = options.sourceID;
         this.rangeVariance = options.variance ?? 0;

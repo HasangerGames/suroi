@@ -11,7 +11,7 @@ import { randomBoolean, randomFloat, randomRotation } from "../../../../common/s
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { drawGroundGraphics, drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
@@ -39,6 +39,10 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
     particleFrames!: string[];
 
     hitSound?: GameSound;
+
+    maskHitbox?: GroupHitbox<Array<RectangleHitbox>>;
+
+    mask?: Graphics;
 
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Building]) {
         super(game, id);
@@ -248,6 +252,43 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 this.game.camera.container.addChild(this.graphics);
             }
 
+            for (const override of definition.visibilityOverrides ?? []) {
+                this.maskHitbox ??= new GroupHitbox();
+
+                const collider: Hitbox = override.collider.transform(this.position, 1, this.orientation);
+                if (collider instanceof RectangleHitbox) {
+                    this.maskHitbox.hitboxes.push(collider as RectangleHitbox);
+                } else if (collider instanceof GroupHitbox) {
+                    for (const hitbox of (collider as GroupHitbox).hitboxes) {
+                        this.maskHitbox.hitboxes.push(hitbox as RectangleHitbox);
+                    }
+                }
+            }
+
+            if (definition.bulletMask) {
+                (this.maskHitbox ??= new GroupHitbox()).hitboxes.push(definition.bulletMask.transform(this.position, 1, this.orientation));
+            }
+
+            if (this.maskHitbox) {
+                this.mask = new Graphics();
+                this.mask.alpha = 0;
+                this.game.camera.container.addChild(this.mask);
+
+                for (const hitbox of this.maskHitbox.hitboxes) {
+                    const { min, max } = hitbox;
+                    this.mask
+                        .beginPath()
+                        .rect(
+                            min.x * PIXI_SCALE,
+                            min.y * PIXI_SCALE,
+                            (max.x - min.x) * PIXI_SCALE,
+                            (max.y - min.y) * PIXI_SCALE
+                        )
+                        .closePath()
+                        .fill(0xffffff);
+                }
+            }
+
             this.hitbox = definition.hitbox?.transform(this.position, 1, this.orientation);
             this.damageable = !!definition.hitbox;
             this.ceilingHitbox = (definition.scopeHitbox ?? definition.ceilingHitbox)?.transform(this.position, 1, this.orientation);
@@ -446,6 +487,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         super.destroy();
 
         this.graphics?.destroy();
+        this.mask?.destroy();
         this.ceilingTween?.kill();
         this.ceilingContainer.destroy();
         this.sound?.stop();

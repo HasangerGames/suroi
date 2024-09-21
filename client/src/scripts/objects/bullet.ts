@@ -1,9 +1,8 @@
 import { BloomFilter } from "pixi-filters";
-import { Color, Graphics } from "pixi.js";
+import { Color } from "pixi.js";
 import { Layer, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import type { Orientation } from "../../../../common/src/typings";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
-import type { RectangleHitbox } from "../../../../common/src/utils/hitbox";
+import { RectangleHitbox } from "../../../../common/src/utils/hitbox";
 import { getEffectiveZIndex, isVisibleFromLayer } from "../../../../common/src/utils/layer";
 import { Geometry, resolveStairInteraction } from "../../../../common/src/utils/math";
 import { random, randomFloat, randomRotation } from "../../../../common/src/utils/random";
@@ -20,8 +19,6 @@ export class Bullet extends BaseBullet {
     private readonly _image: SuroiSprite;
     readonly maxLength: number;
     readonly tracerLength: number;
-
-    private _originLayer: Layer;
 
     private _trailReachedMaxLength = false;
     private _trailTicks = 0;
@@ -60,7 +57,6 @@ export class Bullet extends BaseBullet {
         if (MODE.bulletTrailAdjust) color.multiply(MODE.bulletTrailAdjust);
 
         this._image.tint = new Color(color);
-        this._originLayer = this.layer;
         this.setLayer(this.layer);
 
         this.game.camera.addObject(this._image);
@@ -122,75 +118,69 @@ export class Bullet extends BaseBullet {
 
         this._image.setVPos(toPixiCoords(this.position));
 
-        if (this._originLayer < Layer.Ground && this.layer !== this._originLayer) {
-            this.updateMask();
+        if (
+            (
+                this.layer === Layer.Floor1
+                && this.game.layer === Layer.Ground
+            )
+            || (
+                this.layer === Layer.Ground
+                && this.game.layer === Layer.Floor1
+            )
+            || (
+                this.initialLayer === Layer.Basement1
+                && this.layer !== this.initialLayer
+                && this.game.layer === Layer.Ground
+            )
+        ) {
+            let hasMask = false;
+            for (const building of this.game.objects.getCategory(ObjectCategory.Building)) {
+                if (!building.maskHitbox?.isPointInside(this.position)) continue;
+
+                hasMask = true;
+                this._image.mask = building.mask!;
+                break;
+            }
+            if (!hasMask) this._image.mask = null;
         }
 
-        this.particleTrail();
+        if (
+            this.definition.trail
+            && this.game.console.getBuiltInCVar("cv_cooler_graphics")
+            && Date.now() - this._lastParticleTrail >= this.definition.trail.interval
+        ) {
+            const trail = this.definition.trail;
+            this.game.particleManager.spawnParticles(
+                trail.amount ?? 1,
+                () => ({
+                    frames: trail.frame,
+                    speed: Vec.fromPolar(
+                        randomRotation(),
+                        randomFloat(trail.spreadSpeed.min, trail.spreadSpeed.max)
+                    ),
+                    position: this.position,
+                    lifetime: random(trail.lifetime.min, trail.lifetime.max),
+                    zIndex: getEffectiveZIndex(ZIndexes.Bullets - 1, this.layer, this.game.layer),
+                    scale: randomFloat(trail.scale.min, trail.scale.max),
+                    alpha: {
+                        start: randomFloat(trail.alpha.min, trail.alpha.max),
+                        end: 0
+                    },
+                    layer: this.layer,
+                    tint: trail.tint === -1
+                        ? new Color({ h: random(0, 6) * 60, s: 60, l: 70 }).toNumber()
+                        : trail.tint
+                })
+            );
+
+            this._lastParticleTrail = Date.now();
+        }
 
         if (this._trailTicks <= 0 && this.dead) {
             this.destroy();
         } else if (this.layer === oldLayer) {
             this.updateVisibility();
         }
-    }
-
-    particleTrail(): void {
-        if (!this.definition.trail) return;
-        if (!this.game.console.getBuiltInCVar("cv_cooler_graphics")) return;
-        if (Date.now() - this._lastParticleTrail < this.definition.trail.interval) return;
-
-        const trail = this.definition.trail;
-        this.game.particleManager.spawnParticles(
-            trail.amount ?? 1,
-            () => ({
-                frames: trail.frame,
-                speed: Vec.fromPolar(
-                    randomRotation(),
-                    randomFloat(trail.spreadSpeed.min, trail.spreadSpeed.max)
-                ),
-                position: this.position,
-                lifetime: random(trail.lifetime.min, trail.lifetime.max),
-                zIndex: getEffectiveZIndex(ZIndexes.Bullets - 1, this.layer, this.game.layer),
-                scale: randomFloat(trail.scale.min, trail.scale.max),
-                alpha: {
-                    start: randomFloat(trail.alpha.min, trail.alpha.max),
-                    end: 0
-                },
-                layer: this.layer,
-                tint: trail.tint === -1
-                    ? new Color({ h: random(0, 6) * 60, s: 60, l: 70 }).toNumber()
-                    : trail.tint
-            })
-        );
-
-        this._lastParticleTrail = Date.now();
-    }
-
-    // TODO Make this more efficient
-    updateMask(): void {
-        const graphics = new Graphics();
-        let hasMask = false;
-        for (const building of this.game.objects.getCategory(ObjectCategory.Building)) {
-            if (!building.definition.bulletMask) continue;
-            const hitbox = building.definition.bulletMask.transform(building.position, 1, building.orientation);
-            if (!hitbox.isPointInside(this.position)) continue;
-            hasMask = true;
-            const { min, max } = hitbox;
-            graphics
-                .beginPath()
-                .rect(
-                    min.x * PIXI_SCALE,
-                    min.y * PIXI_SCALE,
-                    (max.x - min.x) * PIXI_SCALE,
-                    (max.y - min.y) * PIXI_SCALE
-                )
-                .closePath()
-                .fill(0xffffff);
-            graphics.alpha = 0;
-            this.game.camera.container.addChild(graphics);
-        }
-        this._image.mask = hasMask ? graphics : null;
     }
 
     private setLayer(layer: number): void {

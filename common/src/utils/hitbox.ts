@@ -409,7 +409,7 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
     }
 }
 
-export class GroupHitbox<GroupType extends ReadonlyArray<RectangleHitbox | CircleHitbox> = ReadonlyArray<RectangleHitbox | CircleHitbox>> extends BaseHitbox<HitboxType.Group> {
+export class GroupHitbox<GroupType extends Array<RectangleHitbox | CircleHitbox> = Array<RectangleHitbox | CircleHitbox>> extends BaseHitbox<HitboxType.Group> {
     override readonly type = HitboxType.Group;
     position = Vec.create(0, 0);
     hitboxes: GroupType;

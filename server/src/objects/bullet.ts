@@ -45,8 +45,6 @@ export class Bullet extends BaseBullet {
 
     readonly finalPosition: Vector;
 
-    readonly originalLayer: number;
-
     constructor(
         game: Game,
         source: Weapon,
@@ -71,7 +69,6 @@ export class Bullet extends BaseBullet {
         this.game = game;
         this.sourceGun = source;
         this.shooter = shooter;
-        this.originalLayer = shooter.layer;
 
         this.layer = options.layer ?? shooter.layer;
 
