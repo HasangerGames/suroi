@@ -3080,12 +3080,31 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             name: "HQ Second Floor Collider Hack",
             material: "stone",
             hitbox: new GroupHitbox(
-                RectangleHitbox.fromRect(13, 17.7, Vec.create(-52, -85.5))
+                RectangleHitbox.fromRect(84.9, 1.75, Vec.create(-28.9, -105.9)),
+                RectangleHitbox.fromRect(1.75, 40.8, Vec.create(-33.35, -85.5)),
+                RectangleHitbox.fromRect(1.75, 44.5, Vec.create(-70.3, -84.4))
             ),
             health: 1000,
             indestructible: true,
             invisible: true,
+            frames: {
+                particle: "hq_stone_wall_particle"
+            },
+            particleVariations: 2,
+            visibleFromLayers: Layers.All,
+            collideWithLayers: Layers.All,
+            rotationMode: RotationMode.Limited
+        },
+        { // i have fully given up at this point
+            idString: "hq_second_floor_collider_hack_2",
+            name: "HQ Second Floor Collider Hack 2",
+            material: "stone",
+            hitbox: RectangleHitbox.fromRect(13, 17.7, Vec.create(-52, -85.5)),
+            health: 1000,
+            indestructible: true,
+            invisible: true,
             noHitEffect: true,
+            particleVariations: 2,
             visibleFromLayers: Layers.All,
             rotationMode: RotationMode.Limited
         },

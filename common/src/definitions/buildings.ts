@@ -3645,7 +3645,6 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 RectangleHitbox.fromRect(4.1, 4, Vec.create(57.5, -84)), // R, 5
                 RectangleHitbox.fromRect(4.1, 4, Vec.create(14.6, 4.5)) // CENT, 6
             ),
-            collideWithLayers: Layers.Adjacent,
             spawnHitbox: RectangleHitbox.fromRect(195, 200, Vec.create(0, -26)),
             scopeHitbox: new GroupHitbox(
                 RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 1.5)),
@@ -3746,7 +3745,7 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
             }],
             visibilityOverrides: [{
                 collider: new GroupHitbox(
-                    RectangleHitbox.fromRect(11.7, 11, Vec.create(-40.2, -100.2)),
+                    RectangleHitbox.fromRect(16, 11, Vec.create(-42.5, -100.2)),
                     RectangleHitbox.fromRect(8.5, 16, Vec.create(79.2, -42.75)),
                     RectangleHitbox.fromRect(10, 2, Vec.create(78, -49.5)),
                     RectangleHitbox.fromRect(10, 2, Vec.create(78, -36.5))
@@ -3761,7 +3760,9 @@ export const Buildings = ObjectDefinitions.create<BuildingDefinition>()(
                 { idString: "headquarters_sinks", position: Vec.create(1, 1.5), rotation: 0 },
                 { idString: "headquarters_alarm_barriers", position: Vec.create(1, 2), rotation: 0 },
 
+                // i have fully given up at this point
                 { idString: "hq_second_floor_collider_hack", position: Vec.create(0, 0), rotation: 0, layer: 2 },
+                { idString: "hq_second_floor_collider_hack_2", position: Vec.create(0, 0), rotation: 0, layer: 2 },
 
                 // main entrance
                 { idString: "planted_bushes", position: Vec.create(-46, 45.9), rotation: 0 },

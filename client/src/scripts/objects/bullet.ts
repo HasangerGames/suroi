@@ -25,8 +25,6 @@ export class Bullet extends BaseBullet {
 
     private _lastParticleTrail = Date.now();
 
-    private _permanentMask?: boolean;
-
     constructor(game: Game, options: BulletOptions) {
         super(options);
 
@@ -121,20 +119,15 @@ export class Bullet extends BaseBullet {
         this._image.setVPos(toPixiCoords(this.position));
 
         if (
-            ((
+            (
                 this.layer === Layer.Floor1
                 && this.game.layer === Layer.Ground
-            )
-            || (
-                this.layer === Layer.Ground
-                && this.game.layer === Layer.Floor1
             )
             || (
                 this.initialLayer === Layer.Basement1
                 && this.layer !== this.initialLayer
                 && this.game.layer === Layer.Ground
-            ))
-            && !(this._permanentMask && this.layer === Layer.Floor1)
+            )
         ) {
             let hasMask = false;
             for (const building of this.game.objects.getCategory(ObjectCategory.Building)) {
@@ -144,16 +137,7 @@ export class Bullet extends BaseBullet {
                 this._image.mask = building.mask!;
                 break;
             }
-            if (!hasMask) {
-                // If the bullet is on the 2nd floor, was within the mask, and is no longer within it,
-                // this means it's passed through the mask, and should no longer be visible.
-                // Keep the mask applied to hide it.
-                if (this.layer === Layer.Floor1 && this._image.mask) {
-                    this._permanentMask = true;
-                } else {
-                    this._image.mask = null;
-                }
-            }
+            if (!hasMask) this._image.mask = null;
         }
 
         if (
