@@ -3075,6 +3075,25 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 zIndex: ZIndexes.BuildingsFloor
             },
             {
+                idString: "barn_stair",
+                name: "Barn Stair",
+                material: "metal_heavy",
+                health: 1000,
+                indestructible: true,
+                invisible: true,
+                role: ObstacleSpecialRoles.Stair,
+                activeEdges: {
+                    high: 0,
+                    low: 2
+                },
+                hitbox: RectangleHitbox.fromRect(6.5, 7),
+                frames: {
+                    particle: "metal_particle"
+                },
+                rotationMode: RotationMode.Limited,
+                zIndex: ZIndexes.BuildingsFloor
+            },
+            {
                 idString: "hq_large_stair",
                 name: "HQ Large Stair",
                 material: "metal_heavy",

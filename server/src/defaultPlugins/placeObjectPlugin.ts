@@ -13,7 +13,7 @@ import { GamePlugin } from "../pluginManager";
  * Plugin to help place objects when developing buildings
  */
 export class PlaceObjectPlugin extends GamePlugin {
-    readonly obstacleToPlace: ReferenceTo<ObstacleDefinition> = "regular_crate";
+    readonly obstacleToPlace: ReferenceTo<ObstacleDefinition> = "test_wall";
     private readonly _playerToObstacle = new class extends ExtendedMap<Player, Obstacle> {
         override ifPresent(key: Player, callback: (obstacle: Obstacle) => void): void {
             const obstacle = super.get(key);

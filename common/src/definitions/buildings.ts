@@ -4251,16 +4251,69 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             },
 
             {
-                idString: "barn",
-                name: "Barn",
+                idString: "barn_top_floor_shadow",
+                name: "Barn Shadow",
+                spawnHitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(20, 55, Vec.create(-19, 0)),
+                    RectangleHitbox.fromRect(58, 14, Vec.create(0, -21)),
+                ),
+                ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
+                ceilingImages: [
+                    {
+                        key: "barn_top_floor_shadow",
+                        position: Vec.create(0, 0),
+                        scale: Vec.create(4.25, 4.25)
+                    }
+                ]
+            },
+            {
+                idString: "barn_top_floor",
+                name: "Barn Top Floor",
+                material: "stone",
+                particle: "wall_particle",
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(17, 1, Vec.create(18.5, -14.9)),
+                    RectangleHitbox.fromRect(17, 1, Vec.create(-0.5, -14.9)),
+                    RectangleHitbox.fromRect(1, 14, Vec.create(-9.5, -7.5)),
+                    RectangleHitbox.fromRect(1, 26.5, Vec.create(-9.5, 14.5)),
+                    RectangleHitbox.fromRect(1, 21, Vec.create(-20, 5.45)),
+                    RectangleHitbox.fromRect(9.5, 1, Vec.create(-25, -4.55)),
+                    RectangleHitbox.fromRect(1, 3, Vec.create(28.25, -17)),
+                    RectangleHitbox.fromRect(2, 1, Vec.create(29, -18)),
+                ),
+                spawnHitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(20.5, 55.5, Vec.create(-19.5, 0)),
+                    RectangleHitbox.fromRect(60, 14, Vec.create(0, -21)),
+                ),
+                floorImages: [
+                    {
+                        key: "barn_top_floor_2",
+                        position: Vec.create(10, -21.15),
+                        scale: Vec.create(1.07, 1.07)
+                    },
+                    {
+                        key: "barn_top_floor_1",
+                        position: Vec.create(-19.5, 0),
+                        scale: Vec.create(1.07, 1.07)
+                    }
+                ],
+                floors: [
+                    {
+                        type: FloorNames.Stone,
+                        hitbox: new GroupHitbox(
+                            RectangleHitbox.fromRect(60, 14, Vec.create(0, -21)),
+                        )
+                    }
+                ],
+                obstacles: []
+            },
+            {
+                idString: "barn_exterior",
+                name: "Barn Exterior",
                 material: "stone",
                 particleVariations: 2,
-                particle: "barn_wall_particle",
                 spawnHitbox: RectangleHitbox.fromRect(120, 92),
-                scopeHitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(85.5, 56, Vec.create(-11, -11.9)),
-                    RectangleHitbox.fromRect(64, 24, Vec.create(-23, 29.5))
-                ),
+                particle: "barn_wall_particle",
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(90, 1.75, Vec.create(-11, -41)),
                     RectangleHitbox.fromRect(1.75, 58, Vec.create(-55.1, -11.5)),
@@ -4268,6 +4321,15 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(48, 1.75, Vec.create(10, 17)),
                     RectangleHitbox.fromRect(1.75, 16, Vec.create(33.1, 9)),
                     RectangleHitbox.fromRect(1.75, 16, Vec.create(33.1, -32.25))
+                ),
+            },
+            {
+                idString: "barn",
+                name: "Barn",
+                spawnHitbox: RectangleHitbox.fromRect(120, 92),
+                scopeHitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(85.5, 56, Vec.create(-11, -11.9)),
+                    RectangleHitbox.fromRect(64, 24, Vec.create(-23, 29.5))
                 ),
                 floorImages: [
                     {
@@ -4302,10 +4364,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ],
                 obstacles: [
                     // Columns
-                    { idString: "house_column", position: Vec.create(-33.33, -11.6) },
-                    { idString: "house_column", position: Vec.create(-33.36, -26.27) },
-                    { idString: "house_column", position: Vec.create(-15, -26.27) },
-                    { idString: "house_column", position: Vec.create(4.1, -26.27) },
+                    { idString: "house_column", position: Vec.create(-33.5, -11.6) },
+                    { idString: "house_column", position: Vec.create(-33.5, -26.7) },
+                    { idString: "house_column", position: Vec.create(-15, -26.7) },
+                    { idString: "house_column", position: Vec.create(4.1, -26.7) },
                     { idString: "house_column", position: Vec.create(19.39, 3.36) },
                     { idString: "house_column", position: Vec.create(3.6, 3.36) },
                     { idString: "house_column", position: Vec.create(-12.36, 3.36) },
@@ -4314,6 +4376,15 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "house_column", position: Vec.create(8.43, 40.32) },
                     { idString: "house_column", position: Vec.create(-32.29, 40.32) },
                     { idString: "house_column", position: Vec.create(-53.78, 40.32) },
+
+                    { idString: "house_column", position: Vec.create(-33.5, -26.7), layer: 2 },
+                    { idString: "house_column", position: Vec.create(-15, -26.7), layer: 2 },
+                    { idString: "house_column", position: Vec.create(4.1, -26.7), layer: 2 },
+                    { idString: "house_column", position: Vec.create(-33.5, -11.6), layer: 2 },
+
+                    // stairs
+                    { idString: "barn_stair", position: Vec.create(9.47, -35.35), rotation: 1, layer: 1 },
+                    { idString: "barn_stair", position: Vec.create(-49.17, 0.67), rotation: 2, layer: 1 },
 
                     // outside
                     { idString: "barrel", position: Vec.create(-31.04, 22.49) },
@@ -4334,6 +4405,12 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "house_wall_3", position: Vec.create(19.39, 10.31), rotation: 1 },
                     { idString: "house_wall_3", position: Vec.create(3.6, 10.31), rotation: 1 },
                     { idString: "house_wall_3", position: Vec.create(-12.36, 10.31), rotation: 1 }
+                ],
+                subBuildings: [
+                    { idString: "barn_top_floor_shadow", position: Vec.create(-24.5, -11.7) },
+                    { idString: "barn_top_floor", position: Vec.create(-23.9, -11.85), layer: 2 },
+                    { idString: "barn_exterior", position: Vec.create(0, 0) },
+                    { idString: "barn_exterior", position: Vec.create(0, 0), layer: 2 }
                 ]
             }
         ];
