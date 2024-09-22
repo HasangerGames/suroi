@@ -88,7 +88,7 @@
         @media screen and (min-width: $screen_large) and (max-height: 720px) {
             bottom: 370px;
         }
-    
+
         @media screen and (max-width: $screen_large) {
             width: auto;
             height: auto;
@@ -105,11 +105,11 @@
                 padding-left: 1px;
             }
         }
-    
+
         @media screen and (max-width: $screen_medium) {
             bottom: 176px;
         }
-    
+
         @media screen and (max-width: 460px) {
             bottom: 245px;
         }
@@ -1110,7 +1110,7 @@
             align-items: center;
             text-align: center;
             width: 50px;
-            height: 50px;
+            height: 58px;
             padding-bottom: 5px;
             padding-top: 8px;
             padding-left: 10px;
@@ -1125,7 +1125,7 @@
 
             img {
                 padding: 1px;
-                width: 30px;
+                width: 40px;
             }
 
             @media screen and (max-width: $screen_large) {
@@ -1138,7 +1138,7 @@
                     margin: 0;
                     font-size: 9px;
                 }
-    
+
                 img {
                     width: 15px;
                 }
