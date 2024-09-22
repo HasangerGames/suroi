@@ -4140,7 +4140,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(10, 18, Vec.create(0, 0)) }
                 ],
                 obstacles: [
-                    { idString: "bunker_stair", position: Vec.create(0, 2.6), rotation: 0 }
+                    { idString: "bunker_stair", position: Vec.create(0, 2.6), rotation: 0, layer: -1 }
                 ],
                 lootSpawners: []
             },
@@ -4167,6 +4167,11 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     {
                         key: "small_bunker_floor",
                         position: Vec.create(0, 0),
+                        scale: Vec.create(2.2, 2.2)
+                    },
+                    {
+                        key: "small_bunker_floor_path", // this is an illusion that makes sure stairs/entrance render above trees otherwise dv will cry about stair not being on layer 1 or -1
+                        position: Vec.create(-0.025, 26),
                         scale: Vec.create(2.2, 2.2)
                     }
                 ],
@@ -4226,7 +4231,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 bulletMask: RectangleHitbox.fromRect(11, 30, Vec.create(0, 30)),
                 subBuildings: [
                     { idString: "small_bunker_main", position: Vec.create(0, -5), layer: -2 },
-                    { idString: "small_bunker_entrance", position: Vec.create(0, 20), layer: -1 }
+                    { idString: "small_bunker_entrance", position: Vec.create(0, 20) } // we dont want this in -1
                 ]
             }
         ] as readonly Missing[];
