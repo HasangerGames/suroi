@@ -219,7 +219,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             name: "AK-47",
             ammoType: "762mm",
             ammoSpawnAmount: 90,
-            capacity: Infinity,
+            capacity: 30,
             reloadTime: 2.5,
             fireDelay: 100,
             switchDelay: 400,
