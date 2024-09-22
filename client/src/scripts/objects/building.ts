@@ -40,7 +40,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
     hitSound?: GameSound;
 
-    maskHitbox?: GroupHitbox<Array<RectangleHitbox>>;
+    maskHitbox?: GroupHitbox<RectangleHitbox[]>;
 
     mask?: Graphics;
 
@@ -257,9 +257,9 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
                 const collider: Hitbox = override.collider.transform(this.position, 1, this.orientation);
                 if (collider instanceof RectangleHitbox) {
-                    this.maskHitbox.hitboxes.push(collider as RectangleHitbox);
+                    this.maskHitbox.hitboxes.push(collider);
                 } else if (collider instanceof GroupHitbox) {
-                    for (const hitbox of (collider as GroupHitbox).hitboxes) {
+                    for (const hitbox of (collider).hitboxes) {
                         this.maskHitbox.hitboxes.push(hitbox as RectangleHitbox);
                     }
                 }

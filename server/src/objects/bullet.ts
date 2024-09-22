@@ -100,7 +100,7 @@ export class Bullet extends BaseBullet {
             const { isObstacle, isBuilding } = object;
 
             if (isObstacle && object.definition.isStair) {
-                (object as Obstacle).handleStairInteraction(this);
+                (object).handleStairInteraction(this);
                 continue;
             }
 

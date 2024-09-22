@@ -3744,7 +3744,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         type: FloorNames.Metal,
                         hitbox: new GroupHitbox(
                             RectangleHitbox.fromRect(11.55, 25.5, Vec.create(77.6, -63)), // large stair
-                            RectangleHitbox.fromRect(11.55, 16, Vec.create(-52, -100.1))
+                            RectangleHitbox.fromRect(11.5, 11, Vec.create(-64.11, -100.43)),
+                            RectangleHitbox.fromRect(12.5, 16, Vec.create(-52, -100.1))
                         ),
                         layer: 1
                     }
@@ -4120,7 +4121,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 material: "metal_heavy",
                 particle: "metal_particle",
                 hitbox: new GroupHitbox(
-                    //RectangleHitbox.fromRect(12, 1, Vec.create(0, -7.5)),
+                    // RectangleHitbox.fromRect(12, 1, Vec.create(0, -7.5)),
                     RectangleHitbox.fromRect(1.9, 16.6, Vec.create(6.1, 0.15)),
                     RectangleHitbox.fromRect(1.9, 16.6, Vec.create(-6.1, 0.15))
                 ),
@@ -4150,7 +4151,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(1.7, 37.9, Vec.create(21.5, 0)),
                     RectangleHitbox.fromRect(1.7, 37.9, Vec.create(-21.5, 0)),
                     RectangleHitbox.fromRect(16, 1.7, Vec.create(-13.1, 18)),
-                    RectangleHitbox.fromRect(16, 1.7, Vec.create(13.1, 18)),
+                    RectangleHitbox.fromRect(16, 1.7, Vec.create(13.1, 18))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(55, 55, Vec.create(0, 5)),
                 scopeHitbox: new GroupHitbox(

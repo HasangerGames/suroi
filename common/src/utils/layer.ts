@@ -76,9 +76,9 @@ export function adjacentOrEqualLayer(referenceLayer: number, evalLayer: number):
 
 export function equivLayer(
     referenceObject: {
-        layer: Layer,
+        layer: Layer
         definition: {
-            collideWithLayers?: Layers,
+            collideWithLayers?: Layers
             isStair?: boolean
         }
     },
@@ -95,17 +95,17 @@ export function equivLayer(
 
 export function adjacentOrEquivLayer(
     referenceObject: {
-        isObstacle?: boolean,
-        isBuilding?: boolean,
+        isObstacle?: boolean
+        isBuilding?: boolean
         layer: Layer
     },
     evalLayer: Layer
 ): boolean {
     return (
-            (referenceObject.isObstacle || referenceObject.isBuilding)
-            && (referenceObject as unknown as { definition: { collideWithLayers?: Layers } }).definition.collideWithLayers === Layers.All
-        )
-        || adjacentOrEqualLayer(referenceObject.layer, evalLayer);
+        (referenceObject.isObstacle || referenceObject.isBuilding)
+        && (referenceObject as unknown as { definition: { collideWithLayers?: Layers } }).definition.collideWithLayers === Layers.All
+    )
+    || adjacentOrEqualLayer(referenceObject.layer, evalLayer);
 }
 
 /**
@@ -122,10 +122,10 @@ export function adjacentOrEquivLayer(
 export function isVisibleFromLayer(
     observerLayer: Layer,
     object: {
-        isBuilding?: boolean,
-        layer: Layer,
-        hitbox?: Hitbox,
-        position: Vector,
+        isBuilding?: boolean
+        layer: Layer
+        hitbox?: Hitbox
+        position: Vector
         definition?: ObjectDefinition
     },
     collisionCandidates?: readonly CommonGameObject[],
