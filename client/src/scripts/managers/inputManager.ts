@@ -16,6 +16,68 @@ import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, 
 import { getTranslatedString } from "../../translations";
 import { html } from "../utils/misc";
 
+let controllerIndex = null;
+let gamepadA = false; let gamepadB = false; let gamepadX = false; let gamepadY = false;
+let gamepadLB = false; let gamepadRB = false; let gamepadLT = false; let gamepadRT = false;
+let gamepadView = false; let gamepadMenu = false; let gamepadLS = false; let gamepadRS = false;
+let dPadUp = false; let dPadDown = false; let dPadLeft = false; let dPadRight = false;
+let gamepadHome = false;
+
+
+let gamepadLeftStickHorizontal = 0;
+let gamepadLeftStickVertical = 0;
+let gamepadRightStickHorizontal = 0;
+let gamepadRightStickVertical = 0;
+
+
+window.addEventListener('gamepadconnected',(event)=>{
+    controllerIndex = event.gamepad.index;
+    console.log("gamepad connected");
+});
+
+window.addEventListener('gamepaddisconnected',(event)=>{
+    controllerIndex = null;
+    console.log("gamepad disconnected");
+});
+
+function controllerInput(){
+    if(controllerIndex !== null){
+        const gamepad = navigator.getGamepads()[controllerIndex];
+        const buttons = gamepad.buttons;
+        //button mappings below
+        gamepadA = buttons[0].pressed; gamepadB = buttons[1].pressed; gamepadX = buttons[2].pressed; gamepadY = buttons[3].pressed;
+        gamepadLB = buttons[4].pressed; gamepadRB = buttons[5].pressed; gamepadLT = buttons[6].pressed; gamepadRT = buttons[7].pressed;
+        gamepadView = buttons[8].pressed; gamepadMenu = buttons[9].pressed; gamepadLS = buttons[10].pressed; gamepadRS = buttons[11].pressed;
+        dPadUp = buttons[12].pressed; dPadDown = buttons[13].pressed; dPadLeft = buttons[14].pressed; dPadRight = buttons[15].pressed;
+        gamepadHome = buttons[16].pressed;
+
+        gamepadLeftStickHorizontal = gamepad.axes[0];
+        gamepadLeftStickVertical = gamepad.axes[1];
+        //please use left sticks for movement and make the player face where he is moving, like mobile
+        gamepadRightStickHorizontal = gamepad.axes[2];
+        gamepadRightStickVertical = gamepad.axes[3];
+        /*please use right sticks for aim (but not shoot, there's a different button) 
+        and add aim line like mobile right joystick */
+        console.log("A, B, X, Y:", gamepadA, gamepadB, gamepadX, gamepadY);
+        console.log("LB, RB, LT, RT:", gamepadLB, gamepadRB, gamepadLT, gamepadRT);
+        console.log("View, Menu, LS, RS:", gamepadView, gamepadMenu, gamepadLS, gamepadRS);
+        console.log("DPad up, down, left, right: ", dPadUp, dPadDown, dPadLeft, dPadRight);
+        console.log("Home:", gamepadHome);
+        console.log("LS horizontal: ", gamepadLeftStickHorizontal);
+        console.log("LS vertical: ", gamepadLeftStickVertical);
+        console.log("RS horizontal: ", gamepadRightStickHorizontal);
+        console.log("RS vertical: ", gamepadRightStickVertical);
+        /*honestly you could just derive the controls from mobile and add 
+        the physical joysticks as input instead of the virtual joysticks */
+    }
+};
+
+function gameLoop(){
+    controllerInput();
+    requestAnimationFrame(gameLoop);
+};
+gameLoop();
+
 export class InputManager {
     readonly binds = new InputMapper();
 
@@ -139,7 +201,6 @@ export class InputManager {
             ),
             actions: this.actions
         } as PlayerInputData;
-
         this.turning = false;
 
         if (this.resetAttacking) {
@@ -257,7 +318,7 @@ export class InputManager {
 
             this.turning = true;
         });
-
+        
         // Mobile joysticks
         if (this.isMobile) {
             const size = game.console.getBuiltInCVar("mb_joystick_size");
@@ -331,7 +392,7 @@ export class InputManager {
         }
     }
 
-    private handleInputEvent(down: boolean, event: KeyboardEvent | MouseEvent | WheelEvent): void {
+    private handleInputEvent(down: boolean, event: KeyboardEvent | MouseEvent | WheelEvent ): void {
         if (!event.isTrusted) return;
 
         // Disable pointer events on mobile if mobile controls are enabled
@@ -359,7 +420,6 @@ export class InputManager {
             Also we allow shift and alt to be used normally, because keyboard shortcuts usually involve
             the meta or control key
         */
-
         if (event instanceof KeyboardEvent) {
             const { key } = event;
             // This statement cross references and updates focus checks for key presses.
@@ -387,7 +447,7 @@ export class InputManager {
             ) return;
         }
 
-        const input = this.getKeyFromInputEvent(event);
+        let input = this.getKeyFromInputEvent(event);
         let actionsFired = 0;
 
         if (event instanceof WheelEvent) {
@@ -485,7 +545,7 @@ export class InputManager {
 
             return input as Ret;
         }
-
+                     
         if (event instanceof MouseEvent) {
             input = `Mouse${event.button}`;
         }
