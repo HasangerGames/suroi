@@ -19,6 +19,7 @@ export const HITBOX_COLORS = {
     buildingZoomCeiling: new Color("purple"),
     buildingScopeCeiling: new Color("cyan"),
     buildingVisOverride: new Color("teal"),
+    bulletMask: new Color("fuchsia"),
     loot: new Color("magenta"),
     player: new Color("blue"),
     playerWeapon: new Color("lime")

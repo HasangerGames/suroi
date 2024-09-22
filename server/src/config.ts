@@ -1,5 +1,5 @@
 import { Layer, TeamSize } from "@common/constants";
-import { type Vector } from "@common/utils/vector";
+import { Vec, type Vector } from "@common/utils/vector";
 
 import { type Maps } from "./data/maps";
 import { type Game } from "./game";
@@ -31,7 +31,7 @@ export const Config = {
     maxGames: 4,
     gameJoinTime: 60,
 
-    gas: { mode: GasMode.Normal },
+    gas: { mode: GasMode.Disabled },
 
     tps: 40,
 

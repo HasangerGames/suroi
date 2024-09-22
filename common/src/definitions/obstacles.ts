@@ -1,4 +1,4 @@
-import { ZIndexes } from "../constants";
+import { Layers, ZIndexes } from "../constants";
 import { type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import type { GetEnumMemberName, Mutable } from "../utils/misc";
@@ -68,6 +68,7 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly health: number
     readonly indestructible: boolean
     readonly impenetrable: boolean
+    readonly noHitEffect?: boolean
     readonly noResidue: boolean
     readonly invisible: boolean
     readonly hideOnMap: boolean
@@ -88,6 +89,8 @@ type RawObstacleDefinition = ObjectDefinition & {
      * Whether throwables can fly over this obstacle
      */
     readonly allowFlyover: FlyoverPref
+    readonly collideWithLayers?: Layers
+    readonly visibleFromLayers?: Layers
     readonly hasLoot: boolean
     readonly spawnWithLoot: boolean
     readonly explosion?: string
@@ -96,7 +99,6 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly noMeleeCollision: boolean
     readonly noBulletCollision: boolean
     readonly reflectBullets: boolean
-    readonly spanAdjacentLayers?: boolean
     readonly hitSoundVariations?: number
 
     readonly frames: {
@@ -3058,9 +3060,9 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 role: ObstacleSpecialRoles.Stair,
                 activeEdges: {
                     high: 0,
-                    low: 2
+                    low: 1
                 },
-                hitbox: RectangleHitbox.fromRect(11, 12.8),
+                hitbox: RectangleHitbox.fromRect(10.8, 24),
                 frames: {
                     particle: "metal_particle"
                 },
@@ -3139,6 +3141,39 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 rotationMode: RotationMode.Limited,
                 zIndex: ZIndexes.ObstaclesLayer1
+            },
+            {
+                idString: "hq_second_floor_collider_hack",
+                name: "HQ Second Floor Collider Hack",
+                material: "stone",
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(84.9, 1.75, Vec.create(-28.9, -105.9)),
+                    RectangleHitbox.fromRect(1.75, 40.8, Vec.create(-33.35, -85.5)),
+                    RectangleHitbox.fromRect(1.75, 44.5, Vec.create(-70.3, -84.4))
+                ),
+                health: 1000,
+                indestructible: true,
+                invisible: true,
+                frames: {
+                    particle: "hq_stone_wall_particle"
+                },
+                particleVariations: 2,
+                visibleFromLayers: Layers.All,
+                collideWithLayers: Layers.All,
+                rotationMode: RotationMode.Limited
+            },
+            { // i have fully given up at this point
+                idString: "hq_second_floor_collider_hack_2",
+                name: "HQ Second Floor Collider Hack 2",
+                material: "stone",
+                hitbox: RectangleHitbox.fromRect(13, 17.7, Vec.create(-52, -85.5)),
+                health: 1000,
+                indestructible: true,
+                invisible: true,
+                noHitEffect: true,
+                particleVariations: 2,
+                visibleFromLayers: Layers.All,
+                rotationMode: RotationMode.Limited
             },
 
             // --------------------------------------------------------------------------------------------

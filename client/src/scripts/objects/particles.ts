@@ -1,6 +1,6 @@
 import { Layer } from "../../../../common/src/constants";
 import { TintedParticles } from "../../../../common/src/definitions/obstacles";
-import { adjacentOrEqualLayer, getEffectiveZIndex } from "../../../../common/src/utils/layer";
+import { getEffectiveZIndex } from "../../../../common/src/utils/layer";
 import { Numeric } from "../../../../common/src/utils/math";
 import { random, randomRotation } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
@@ -21,7 +21,7 @@ export class ParticleManager {
 
     update(delta: number): void {
         for (const particle of this.particles) {
-            particle.update(delta, this.game.layer ?? Layer.Ground);
+            particle.update(delta);
 
             if (particle.dead) {
                 this.particles.delete(particle);
@@ -124,7 +124,7 @@ export class Particle {
         this.options = options;
     }
 
-    update(delta: number, visibleLayer: Layer): void {
+    update(delta: number): void {
         this.position = Vec.add(this.position, Vec.scale(Vec.scale(this.options.speed, delta), 1e-3));
         const options = this.options;
 
@@ -154,7 +154,6 @@ export class Particle {
         this.image.position.copyFrom(toPixiCoords(this.position));
         this.image.scale.set(this.scale);
         this.image.setRotation(this.rotation).setAlpha(this.alpha);
-        this.image.setVisible(adjacentOrEqualLayer((this.layer > Layer.Ground ? visibleLayer : this.layer), this.layer));
     }
 
     kill(): void {

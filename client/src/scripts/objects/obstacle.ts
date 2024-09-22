@@ -1,8 +1,8 @@
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { Layers, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { MaterialSounds, type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
-import { adjacentOrEqualLayer, equalLayer, getEffectiveZIndex } from "../../../../common/src/utils/layer";
+import { adjacentOrEqualLayer, equivLayer, getEffectiveZIndex } from "../../../../common/src/utils/layer";
 import { Angle, EaseFunctions, Numeric, calculateDoorHitboxes } from "../../../../common/src/utils/math";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
@@ -291,6 +291,11 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 : ZIndexes.DeadObstacles
             : this.definition.zIndex ?? ZIndexes.ObstaclesLayer1;
         this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, this.game.layer);
+
+        // hides bunker doors on ground layer
+        if (this.definition.visibleFromLayers === Layers.All && this.game.activePlayer !== undefined) {
+            this.container.visible = adjacentOrEqualLayer(this.layer, this.game.layer!);
+        }
     }
 
     override updateDebugGraphics(): void {
@@ -298,7 +303,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
         const definition = this.definition;
         this.debugGraphics.clear();
-        const alpha = this.game.activePlayer !== undefined && (definition.spanAdjacentLayers ? adjacentOrEqualLayer : equalLayer)(this.layer, this.game.activePlayer.layer) ? 1 : DIFF_LAYER_HITBOX_OPACITY;
+        const alpha = this.game.activePlayer !== undefined && equivLayer(this, this.game.activePlayer) ? 1 : DIFF_LAYER_HITBOX_OPACITY;
 
         if (definition.isStair) {
             const hitbox = this.hitbox as RectangleHitbox;
@@ -552,6 +557,8 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     }
 
     hitEffect(position: Vector, angle: number): void {
+        if (this.definition.noHitEffect) return;
+
         this.hitSound?.stop();
 
         const { material } = this.definition;

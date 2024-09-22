@@ -2,6 +2,7 @@ import { Layer } from "../constants";
 import { Bullets, type BulletDefinition } from "../definitions/bullets";
 import type { CommonGameObject } from "./gameObject";
 import { type Hitbox } from "./hitbox";
+import { adjacentOrEqualLayer, equivLayer } from "./layer";
 import { Geometry, Numeric } from "./math";
 import { type ReifiableDef } from "./objectDefinitions";
 import { type SuroiBitStream } from "./suroiBitStream";
@@ -39,8 +40,8 @@ export class BaseBullet {
 
     readonly rotation: number;
 
-    protected _layer: Layer;
-    get layer(): Layer { return this._layer; }
+    layer: Layer;
+    readonly initialLayer: Layer;
 
     readonly velocity: Vector;
     readonly direction: Vector;
@@ -66,7 +67,7 @@ export class BaseBullet {
         this.initialPosition = Vec.clone(options.position);
         this._oldPosition = this.position = options.position;
         this.rotation = options.rotation;
-        this._layer = options.layer;
+        this.layer = this.initialLayer = options.layer;
         this.reflectionCount = options.reflectionCount ?? 0;
         this.sourceID = options.sourceID;
         this.rangeVariance = options.variance ?? 0;
@@ -110,22 +111,24 @@ export class BaseBullet {
         const collisions: Collision[] = [];
 
         for (const object of objects) {
-            if ((object.isBuilding || object.isObstacle) && object.definition.noBulletCollision) continue;
-
+            const { isPlayer, isObstacle, isBuilding } = object;
             if (
-                object.damageable
-                && !object.dead
-                && (object.id !== this.sourceID || this.canHitShooter)
-                && !this.damagedIDs.has(object.id)
-            ) {
-                const collision = object.hitbox?.intersectsLine(oldPosition, this.position);
+                ((isObstacle || isBuilding) && (
+                    object.definition.noBulletCollision
+                    || object.definition.noCollisions
+                    || !equivLayer(object, this)
+                ))
+                || (isPlayer && !adjacentOrEqualLayer(this.layer, object.layer))
+                || !object.damageable
+                || object.dead
+                || this.damagedIDs.has(object.id)
+                || (object.id === this.sourceID && !this.canHitShooter)
+            ) continue;
 
-                if (collision) {
-                    collisions.push({
-                        intersection: collision,
-                        object
-                    });
-                }
+            const intersection = object.hitbox?.intersectsLine(oldPosition, this.position);
+
+            if (intersection) {
+                collisions.push({ intersection, object });
             }
         }
 
@@ -143,7 +146,7 @@ export class BaseBullet {
         Bullets.writeToStream(stream, this.definition);
         stream.writePosition(this.initialPosition);
         stream.writeRotation(this.rotation, 16);
-        stream.writeLayer(this._layer);
+        stream.writeLayer(this.layer);
         stream.writeFloat(this.rangeVariance, 0, 1, 4);
         stream.writeBits(this.reflectionCount, 2);
         stream.writeObjectID(this.sourceID);
@@ -161,7 +164,7 @@ export class BaseBullet {
         const variance = stream.readFloat(0, 1, 4);
         const reflectionCount = stream.readBits(2);
         const sourceID = stream.readObjectID();
-        const clipDistance = source.allowRangeOverride ? stream.readFloat(0, source.range, 16) : undefined;
+        const rangeOverride = source.allowRangeOverride ? stream.readFloat(0, source.range, 16) : undefined;
 
         return {
             source,
@@ -171,7 +174,7 @@ export class BaseBullet {
             variance,
             reflectionCount,
             sourceID,
-            rangeOverride: clipDistance
+            rangeOverride
         };
     }
 }

@@ -1,4 +1,4 @@
-import { Assets, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
+import { Assets, Container, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type ContainerChild, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
 import { HitboxType, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { MODE, PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
@@ -191,6 +191,11 @@ export class SuroiSprite extends Sprite {
 
     setAlpha(alpha: number): this {
         this.alpha = alpha;
+        return this;
+    }
+
+    setMask(mask: Container<ContainerChild>): this {
+        this.mask = mask;
         return this;
     }
 }

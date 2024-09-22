@@ -3,7 +3,7 @@ import { Ammos, Armors, ArmorType, Backpacks, DEFAULT_SCOPE, Emotes, Guns, Heali
 import { DisconnectPacket, GameOverPacket, KillFeedPacket, NoMobile, PacketStream, PlayerInputData, ReportPacket, SpectatePacketData, UpdatePacket, type ForEventType, type GameOverData, type InputPacket, type PlayerData, type UpdatePacketDataCommon, type UpdatePacketDataIn } from "@common/packets";
 import { createKillfeedMessage } from "@common/packets/killFeedPacket";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer, equalLayer, isVisibleFromLayer } from "@common/utils/layer";
+import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
 import { Collision, Geometry, Numeric } from "@common/utils/math";
 import { ExtendedMap, type SDeepMutable, type SMutable, type Timeout } from "@common/utils/misc";
 import { ItemType, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
@@ -341,6 +341,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     downed = false;
     beingRevivedBy?: Player;
 
+    activeStair?: Obstacle;
+
     get position(): Vector {
         return this.hitbox.position;
     }
@@ -485,6 +487,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.dirty.weapons = true;
 
         this.updateAndApplyModifiers();
+        this.giveGun("ak47");
+        this.giveGun("hp18");
     }
 
     giveGun(idString: ReferenceTo<GunDefinition>): void {
@@ -694,11 +698,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     (potential.isObstacle || potential.isBuilding)
                     && potential.collidable
                     && potential.hitbox?.collidesWith(this.hitbox)
-                    && adjacentOrEqualLayer(potential.layer, this.layer)
                 ) {
                     if (potential.isObstacle && potential.definition.isStair) {
                         potential.handleStairInteraction(this);
-                    } else if (equalLayer(potential.layer, this.layer) || potential.definition.spanAdjacentLayers) {
+                        this.activeStair = potential;
+                    } else {
                         collided = true;
                         this.hitbox.resolveCollision(potential.hitbox);
                     }

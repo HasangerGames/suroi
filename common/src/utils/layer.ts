@@ -1,6 +1,8 @@
-import { Layer, ZIndexes } from "../constants";
+import { Layer, Layers, ZIndexes } from "../constants";
 import type { CommonGameObject } from "./gameObject";
-import type { Hitbox } from "./hitbox";
+import { HitboxType, type Hitbox, type RectangleHitbox } from "./hitbox";
+import { ObjectDefinition } from "./objectDefinitions";
+import { Vector } from "./vector";
 
 /**
  * Returns whether or not the provided layer is a "ground" layer.
@@ -72,6 +74,40 @@ export function adjacentOrEqualLayer(referenceLayer: number, evalLayer: number):
     return (referenceLayer - 1 === evalLayer) || (referenceLayer + 1 === evalLayer) || (referenceLayer === evalLayer);
 }
 
+export function equivLayer(
+    referenceObject: {
+        layer: Layer,
+        definition: {
+            collideWithLayers?: Layers,
+            isStair?: boolean
+        }
+    },
+    evalObject: { layer: Layer }
+): boolean {
+    if (referenceObject.definition.isStair) return adjacentOrEqualLayer(referenceObject.layer, evalObject.layer);
+
+    switch (referenceObject.definition.collideWithLayers) {
+        case Layers.All: return true;
+        case Layers.Adjacent: return adjacentOrEqualLayer(referenceObject.layer, evalObject.layer);
+        case Layers.Equal: default: return equalLayer(referenceObject.layer, evalObject.layer);
+    }
+}
+
+export function adjacentOrEquivLayer(
+    referenceObject: {
+        isObstacle?: boolean,
+        isBuilding?: boolean,
+        layer: Layer
+    },
+    evalLayer: Layer
+): boolean {
+    return (
+            (referenceObject.isObstacle || referenceObject.isBuilding)
+            && (referenceObject as unknown as { definition: { collideWithLayers?: Layers } }).definition.collideWithLayers === Layers.All
+        )
+        || adjacentOrEqualLayer(referenceObject.layer, evalLayer);
+}
+
 /**
  * Determines whether a given object is visible from layer `observerLayer`, whilst taking into account any
  * visibility overrides in any buildings specified in `collisionCandidates`
@@ -85,15 +121,36 @@ export function adjacentOrEqualLayer(referenceLayer: number, evalLayer: number):
  */
 export function isVisibleFromLayer(
     observerLayer: Layer,
-    object: { isBuilding?: boolean, layer: Layer, hitbox?: Hitbox },
+    object: {
+        isBuilding?: boolean,
+        layer: Layer,
+        hitbox?: Hitbox,
+        position: Vector,
+        definition?: ObjectDefinition
+    },
     collisionCandidates?: readonly CommonGameObject[],
     colliderPredicate?: (collider: Hitbox) => boolean
 ): boolean {
     const objectLayer = object.layer;
     const objectHitbox = object.hitbox;
 
+    const defaultColliderPredicate = (collider: Hitbox) => {
+        switch (collider.type) {
+            case HitboxType.Group:
+                for (const hitbox of collider.hitboxes) {
+                    if (objectHitbox?.toRectangle().isFullyWithin(hitbox as RectangleHitbox)) return true;
+                }
+                return false;
+            case HitboxType.Rect:
+                return !!objectHitbox?.toRectangle().isFullyWithin(collider);
+            default:
+                return false;
+        }
+    };
+
     return ( // the object is visible if…
         adjacentOrEqualLayer(observerLayer, objectLayer) // the layers are adjacent.
+        || (object.definition && (object.definition as { visibleFromLayers?: Layers }).visibleFromLayers === Layers.All) // or it appears on all layers
         || ( // otherwise…
             objectLayer < observerLayer // it must be below us
             && ( // and the ground layer mustn't be between us and it (aka object on -1, us on 1).
@@ -108,7 +165,7 @@ export function isVisibleFromLayer(
                     && !o.dead // bu is not dead
                     && o.definition.visibilityOverrides?.some( // and bu has some visibility override 'ov' such that
                         override => (override.layer ?? 0) + o.layer === objectLayer as number // ov is on the object's layer
-                            && (colliderPredicate ??= c => !!objectHitbox?.collidesWith(c))(override.collider.transform(o.position, 1, o.orientation)) // ov's collider collides with the object's hitbox
+                            && (colliderPredicate ??= defaultColliderPredicate)(override.collider.transform(o.position, 1, o.orientation)) // ov's collider collides with the object's hitbox
                             && override.allow?.includes(observerLayer) // and the player's layer is whitelisted.
                     )
             )
@@ -135,7 +192,7 @@ export function getEffectiveZIndex(orig: ZIndexes, layer = 0, gameLayer = 0): nu
         && !equalLayer(layer, gameLayer)
     ) return orig; // hahaha no stair glitch for u
 
-    if (layer > 0 || (gameLayer < 0 && layer < 0)) {
+    if (layer > Layer.Ground || (gameLayer < Layer.Ground && layer < Layer.Ground)) {
         layer = Layer.Floor1;
     }
 

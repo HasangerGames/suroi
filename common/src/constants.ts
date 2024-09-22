@@ -20,6 +20,12 @@ export const enum Layer {
     Floor1 = 2
 }
 
+export enum Layers {
+    All,      // Collide with objects on all layers
+    Adjacent, // Collide with objects on the same or adjacent layers
+    Equal     // Only collide with objects on the same layer
+}
+
 export enum ObjectCategory {
     Player,
     Obstacle,
@@ -210,10 +216,6 @@ export enum ZIndexes {
 // i'm putting this here because placing it in objectDefinitions.ts or
 // in bullets.ts causes circular imports
 export const defaultBulletTemplate = {
-    penetration: {
-        players: false,
-        obstacles: false
-    },
     tracer: {
         opacity: 1,
         width: 1,
