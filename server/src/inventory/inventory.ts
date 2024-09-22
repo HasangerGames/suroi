@@ -355,7 +355,7 @@ export class Inventory {
         }
 
         // Drop old item into the game world and set the new item
-        this.dropWeapon(slot, -0.01);
+        this.dropWeapon(slot);
         this._setWeapon(slot, this._reifyItem(item));
 
         if (index !== undefined) {
@@ -390,11 +390,10 @@ export class Inventory {
         return -1;
     }
 
-    private _dropItem(
-        toDrop: ReifiableDef<LootDefinition>,
-        options?: Parameters<Game["addLoot"]>[3] & { readonly position?: Vector }
-    ): void {
-        this.owner.game.addLoot(toDrop, options?.position ?? this.owner.position, this.owner.layer, { jitterSpawn: false, ...options });
+    private _dropItem(toDrop: ReifiableDef<LootDefinition>, count?: number): void {
+        this.owner.game
+            .addLoot(toDrop, this.owner.position, this.owner.layer, { jitterSpawn: false, pushVel: 0, count })
+            ?.push(this.owner.rotation + Math.PI, 0.025);
     }
 
     removeThrowable(type: ReifiableDef<ThrowableDefinition>, drop = true, removalCount?: number): void {
@@ -406,7 +405,7 @@ export class Inventory {
         const removalAmount = Math.min(itemAmount, removalCount ?? Math.ceil(itemAmount / 2));
 
         if (drop) {
-            this._dropItem(definition, { count: removalAmount });
+            this._dropItem(definition, removalAmount);
         }
         this.items.decrementItem(definition.idString, removalAmount);
 
@@ -445,10 +444,9 @@ export class Inventory {
     /**
      * Drops a weapon from this inventory
      * @param slot The slot to drop
-     * @param pushVel The velocity to push the loot, defaults to -0.03
      * @returns The item that was dropped, if any
      */
-    dropWeapon(slot: number, pushVel = -0.03): InventoryItem | undefined {
+    dropWeapon(slot: number): InventoryItem | undefined {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to drop item from invalid slot '${slot}'`);
         if (this.isLocked(slot)) return;
 
@@ -461,10 +459,10 @@ export class Inventory {
             this.removeThrowable(definition as ThrowableDefinition, true);
         } else {
             if (item instanceof GunItem && (definition as GunDefinition).isDual) {
-                this._dropItem((definition as DualGunNarrowing).singleVariant, { pushVel });
-                this._dropItem((definition as DualGunNarrowing).singleVariant, { pushVel });
+                this._dropItem((definition as DualGunNarrowing).singleVariant);
+                this._dropItem((definition as DualGunNarrowing).singleVariant);
             } else {
-                this._dropItem(definition, { pushVel });
+                this._dropItem(definition);
             }
 
             this._setWeapon(slot, undefined);
@@ -498,7 +496,7 @@ export class Inventory {
                 if (overAmount > 0) {
                     this.items.decrementItem(ammoType, overAmount);
 
-                    this._dropItem(ammoType, { count: overAmount, pushVel });
+                    this._dropItem(ammoType, overAmount);
                 }
             }
         }
@@ -533,12 +531,12 @@ export class Inventory {
                 const itemAmount = this.items.getItem(idString);
                 const removalAmount = Math.min(itemAmount, Math.ceil(itemAmount / 2));
 
-                this._dropItem(definition, { pushVel, count: removalAmount });
+                this._dropItem(definition, removalAmount);
                 this.items.decrementItem(idString, removalAmount);
                 break;
             }
             case ItemType.Scope: {
-                this._dropItem(definition, { pushVel });
+                this._dropItem(definition);
                 this.items.setItem(idString, 0);
 
                 if (this.scope.idString !== idString) break;
@@ -573,7 +571,7 @@ export class Inventory {
                         break;
                     }
                 }
-                this._dropItem(definition, { pushVel });
+                this._dropItem(definition);
                 break;
             }
             case ItemType.Backpack: {
