@@ -51,24 +51,37 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
             const definition = this.definition = data.full.definition;
             const itemType = definition.itemType;
 
+            this.container.addChild(this.images.background, this.images.item);
+
             if (itemType === ItemType.Skin) {
-                this.images.item.setFrame(`${this.definition.idString}_base`);
-                this.images.item.setScale(0.65);
+                this.images.item
+                    .setFrame(`${this.definition.idString}_base`)
+                    .setPos(0, -3)
+                    .setScale(0.65)
+                    .setAngle(90);
 
                 const skinFist = `${this.definition.idString}_fist`;
-                this.images.skinFistLeft.setFrame(skinFist);
-                this.images.skinFistRight.setFrame(skinFist);
+                this.images.skinFistLeft
+                    .setFrame(skinFist)
+                    .setPos(22, 20)
+                    .setScale(0.65)
+                    .setAngle(90);
+                this.images.skinFistRight
+                    .setFrame(skinFist)
+                    .setPos(-22, 20)
+                    .setScale(0.65)
+                    .setAngle(90);
 
-                this.images.skinFistLeft.setPos(20, 21);
-                this.images.skinFistLeft.setScale(0.65);
+                if (definition.grassTint) {
+                    this.images.item.setTint(GHILLIE_TINT);
+                    this.images.skinFistLeft.setTint(GHILLIE_TINT);
+                    this.images.skinFistRight.setTint(GHILLIE_TINT);
+                }
 
-                this.images.skinFistRight.setPos(-20, 21);
-                this.images.skinFistRight.setScale(0.65);
+                this.container.addChild(this.images.skinFistLeft, this.images.skinFistRight);
             } else {
                 this.images.item.setFrame(definition.idString);
             }
-
-            this.container.addChild(this.images.background, this.images.item);
 
             // Set the loot texture based on the type
             let backgroundTexture: string | undefined;
@@ -96,16 +109,6 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                 case ItemType.Scope:
                 case ItemType.Skin: {
                     backgroundTexture = "loot_background_equipment";
-                    if (definition.itemType === ItemType.Skin) {
-                        if (definition.grassTint) {
-                            this.images.item.setTint(GHILLIE_TINT);
-                            this.images.skinFistLeft.setTint(GHILLIE_TINT);
-                            this.images.skinFistRight.setTint(GHILLIE_TINT);
-                        }
-
-                        this.images.item.setAngle(90);
-                        this.container.addChild(this.images.skinFistRight, this.images.skinFistLeft);
-                    }
                     break;
                 }
                 case ItemType.Throwable: {
