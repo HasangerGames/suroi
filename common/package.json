@@ -10,6 +10,6 @@
     "@damienvesper/bit-buffer": "^1.0.1"
   },
   "devDependencies": {
-    "@types/node": "^22.5.2"
+    "@types/node": "^22.5.5"
   }
 }
