@@ -1591,8 +1591,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             recoilMultiplier: 0.4,
             recoilDuration: 1600,
             fireMode: FireMode.Single,
-            shotSpread: 0.5,
-            moveSpread: 3,
+            shotSpread: 0.2,
+            moveSpread: 0.4,
             length: 10.8,
             casingParticles: [{
                 frame: "casing_338lap",
@@ -1872,7 +1872,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 damage: 60,
                 obstacleMultiplier: 1,
                 speed: 0.3,
-                range: 100,
+                range: 120,
                 tracer: {
                     opacity: 0.8,
                     width: 1.1
