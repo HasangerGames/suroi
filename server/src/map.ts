@@ -34,7 +34,7 @@ export class GameMap {
     readonly oceanSize: number;
     readonly beachSize: number;
 
-    readonly beachHitbox: GroupHitbox<readonly RectangleHitbox[]>;
+    readonly beachHitbox: GroupHitbox<RectangleHitbox[]>;
 
     readonly seed: number;
 

@@ -4140,7 +4140,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(10, 18, Vec.create(0, 0)) }
                 ],
                 obstacles: [
-                    { idString: "bunker_stair", position: Vec.create(0, 2.6), rotation: 0, layer: 0 }
+                    { idString: "bunker_stair", position: Vec.create(0, 2.6), rotation: 0 }
                 ],
                 lootSpawners: []
             },
