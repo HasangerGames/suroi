@@ -408,7 +408,7 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
         };
     }
 
-    isFullyWithin(that: RectangleHitbox) {
+    isFullyWithin(that: RectangleHitbox): boolean {
         return (
             that.min.x <= this.min.x
             && that.min.y <= this.min.y

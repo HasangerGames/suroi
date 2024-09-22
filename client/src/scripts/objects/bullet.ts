@@ -133,9 +133,11 @@ export class Bullet extends BaseBullet {
             for (const building of this.game.objects.getCategory(ObjectCategory.Building)) {
                 if (!building.maskHitbox?.isPointInside(this.position)) continue;
 
-                hasMask = true;
-                this._image.mask = building.mask!;
-                break;
+                if (building.mask) {
+                    hasMask = true;
+                    this._image.mask = building.mask;
+                    break;
+                }
             }
             if (!hasMask) this._image.mask = null;
         }

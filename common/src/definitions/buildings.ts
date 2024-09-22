@@ -44,6 +44,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly material?: typeof Materials[number]
     readonly particle?: string
     readonly particleVariations?: number
+    readonly bulletMask?: RectangleHitbox
 
     readonly hitbox?: Hitbox
     readonly spawnHitbox: Hitbox
@@ -4105,7 +4106,11 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "chair", position: Vec.create(-45.5, 13.4), rotation: 1 }
                     // ---------------------------------------------------------------------------------------------------------------
                 ] as BuildingObstacle[],
-                subBuildings: [{ idString: "headquarters_secret_room", position: Vec.create(7.4, -94.5) }]
+                subBuildings: [{ idString: "headquarters_secret_room", position: Vec.create(7.4, -94.5) }],
+                lootSpawners: [{
+                    position: Vec.create(16, -88),
+                    table: "hq_skin"
+                }]
             },
             // -----------------------------------------------------------------------------------------------
 

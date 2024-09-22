@@ -1,4 +1,4 @@
-import { Layers, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { Layer, Layers, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { MaterialSounds, type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
@@ -294,7 +294,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
         // hides bunker doors on ground layer
         if (this.definition.visibleFromLayers === Layers.All && this.game.activePlayer !== undefined) {
-            this.container.visible = adjacentOrEqualLayer(this.layer, this.game.layer!);
+            this.container.visible = adjacentOrEqualLayer(this.layer, this.game.layer ?? Layer.Ground);
         }
     }
 

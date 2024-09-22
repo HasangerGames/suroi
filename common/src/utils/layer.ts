@@ -134,7 +134,7 @@ export function isVisibleFromLayer(
     const objectLayer = object.layer;
     const objectHitbox = object.hitbox;
 
-    const defaultColliderPredicate = (collider: Hitbox) => {
+    const defaultColliderPredicate = (collider: Hitbox): boolean => {
         switch (collider.type) {
             case HitboxType.Group:
                 for (const hitbox of collider.hitboxes) {
@@ -185,7 +185,7 @@ export function isVisibleFromLayer(
 
 const layerCount = Object.keys(ZIndexes).length / 2; // account for double-indexing
 
-export function getEffectiveZIndex(orig: ZIndexes, layer = 0, gameLayer = 0): number {
+export function getEffectiveZIndex(orig: ZIndexes, layer = Layer.Ground, gameLayer = Layer.Ground): number {
     if (
         !isGroundLayer(layer)
         && !equalLayer(gameLayer, Layer.Basement1)
