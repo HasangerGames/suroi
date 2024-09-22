@@ -36,6 +36,7 @@ export const news: NewsPost[] = [
   </ul>
   <li><strong>New throwable!</strong> Added C4, a new type of explosive which can be remotely detonated.</li>
   <li><strong>Redesigned structures!</strong> Redesigned the cargo ship, the oil tanker ship, and the mobile home.</li>
+  <li><strong>Squads!</strong> Squads have been added to the mode rotation.</li>
   <li>The Mosin's clip can now be fully reloaded when empty.</li>
   <li>Added 3 new building exclusive skins: Gold Tie Event (headquarters only), Ship Carrier (oil tanker ship only), and NSD Uniform (armory only).</li>
   <li>Added 3 new emotes.</li>
@@ -58,6 +59,7 @@ export const news: NewsPost[] = [
   <li>New switch sounds for melee weapons.</li>
   <li>New sounds for indestructible metal objects.</li>
   <li>Added an ambient sound to the port.</li>
+  <li>New airdrop crate texture.</li>
   <li>New gun case texture.</li>
   <li>Tweaked crane texture.</li>
   <li>Tweaked barrel and super barrel textures.</li>
