@@ -192,7 +192,7 @@ export function getEffectiveZIndex(orig: ZIndexes, layer = 0, gameLayer = 0): nu
         && !equalLayer(layer, gameLayer)
     ) return orig; // hahaha no stair glitch for u
 
-    if (layer > 0 || (gameLayer < 0 && layer < 0)) {
+    if (layer > Layer.Ground || (gameLayer < Layer.Ground && layer < Layer.Ground)) {
         layer = Layer.Floor1;
     }
 

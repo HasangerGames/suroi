@@ -23,7 +23,7 @@ export const Config = {
 
     map: "singleBuilding:headquarters",
 
-    spawn: { mode: SpawnMode.Fixed, position: Vec.create(447, 411), layer: 1 },
+    spawn: { mode: SpawnMode.Fixed, position: Vec.create(472, 426), layer: 2 },
     // spawn: { mode: SpawnMode.Center },
 
     maxTeamSize: TeamSize.Solo,

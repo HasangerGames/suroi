@@ -67,6 +67,7 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly health: number
     readonly indestructible: boolean
     readonly impenetrable: boolean
+    readonly noHitEffect?: boolean
     readonly noResidue: boolean
     readonly invisible: boolean
     readonly hideOnMap: boolean
@@ -3073,6 +3074,20 @@ export const Obstacles = ObjectDefinitions.create<ObstacleDefinition>()(
             hitbox: RectangleHitbox.fromRect(0, 0),
             rotationMode: RotationMode.Limited,
             zIndex: ZIndexes.ObstaclesLayer2
+        },
+        {
+            idString: "hq_second_floor_collider_hack",
+            name: "HQ Second Floor Collider Hack",
+            material: "stone",
+            hitbox: new GroupHitbox(
+                RectangleHitbox.fromRect(13, 17.7, Vec.create(-52, -85.5))
+            ),
+            health: 1000,
+            indestructible: true,
+            invisible: true,
+            noHitEffect: true,
+            visibleFromLayers: Layers.All,
+            rotationMode: RotationMode.Limited
         },
         {
             idString: "fire_exit_railing",
