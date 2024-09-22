@@ -26,8 +26,9 @@
     transform-origin: 0 0;
 
     #c4-detonate-btn {
-        right: 0;
-        top: 120%;
+        right: 8.5px;
+        bottom: 370.5px;
+        z-index: 1001;
         position: absolute;
         cursor: pointer !important;
         display: flex;
@@ -36,13 +37,12 @@
         box-sizing: border-box;
         height: 40px;
         width: 100px;
-        z-index: 9999999;
         background: $transparent_bg;
         border-radius: 10px;
         font-size: 15px;
         align-items: center;
         padding: 0 8px 0 8px;
-    
+
         &:hover {
             outline: 2px solid $danger !important;
         }
@@ -70,39 +70,48 @@
             margin-right: 3px;
             white-space: nowrap;
         }
-    
+
         .item-image {
             opacity: 1;
             pointer-events: none;
             float: left;
-            width: 60px;
-            height: 45px;
+            width: 50px;
+            height: 35px;
             @include drop-shadow;
-    
+
             @media screen and (max-width: $screen_large) {
-                width: 50px;
-                height: 40px;
+                width: 40px;
+                height: 30px;
             }
+        }
+
+        @media screen and (min-width: $screen_large) and (max-height: 720px) {
+            bottom: 370px;
         }
     
         @media screen and (max-width: $screen_large) {
-            position: absolute;
-            top: -40%;
             width: auto;
+            height: auto;
+            bottom: 216px;
+            right: 5px;
 
             #detonate-key {
                 display: none;
+                width: 14px;
+                height: 14px;
+                font-size: 10px;
+                text-align: center;
+                padding-right: 1px;
+                padding-left: 1px;
             }
         }
-
-        @media screen and (max-height: 720px) {
-            position: absolute;
-            top: -30%;
-            width: auto;
-
-            #detonate-key {
-                display: none;
-            }
+    
+        @media screen and (max-width: $screen_medium) {
+            bottom: 176px;
+        }
+    
+        @media screen and (max-width: 460px) {
+            bottom: 245px;
         }
     }
 }
@@ -395,16 +404,23 @@
     top: 10px;
     right: 10px;
 
+    #counter-holder {
+        display: flex;
+        align-items: center;
+
+        @media screen and (max-width: $screen_large) {
+            display: flex;
+        }
+    }
+
     #kill-counter {
-        position: relative;
-        bottom: 81.5px;
-        right: 110px;
-        margin: 5px;
-    
+        margin-right: 5px;
+
         @media screen and (max-width: $screen_large)  {
             bottom: 0;
             right: 0;
             margin: 0;
+            margin-right: 4px;
         }
     }
 
@@ -874,16 +890,24 @@
 
 #spectating-msg {
     align-items: center;
+    display: inline-flex;
 
     font-weight: bold;
     font-size: 30px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
 
+    spec, span {
+        margin: 4px;
+
+        @media screen and (max-width: $screen_large) {
+            margin: 2px;
+        }
+    }
+
     @media screen and (max-width: $screen_large) {
         font-size: 14px;
 
         #btn-spectate-options {
-            display: inline;
             font-size: 14px;
             padding: 4px 8px 4px 8px;
             height: initial;
@@ -897,6 +921,11 @@
 
     #btn-spectate-options {
         display: inline;
+        margin-left: 4px;
+
+        @media screen and (max-width: $screen_large) {
+            margin-left: 2.5px;
+        }
     }
 
     .badge-icon {
@@ -1075,6 +1104,45 @@
 
         &.ammo-slot {
             cursor: crosshair !important;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 50px;
+            height: 50px;
+            padding-bottom: 5px;
+            padding-top: 8px;
+            padding-left: 10px;
+            padding-right: 10px;
+
+            span {
+                padding: 1px;
+                float: none;
+                margin: 0;
+                font-size: 17px;
+            }
+
+            img {
+                padding: 1px;
+                width: 30px;
+            }
+
+            @media screen and (max-width: $screen_large) {
+                width: 28px;
+                height: 28px;
+                gap: 0.25px;
+
+                span {
+                    float: none;
+                    margin: 0;
+                    font-size: 9px;
+                }
+    
+                img {
+                    width: 15px;
+                }
+            }
         }
 
         &:hover {
@@ -1381,7 +1449,7 @@
 
 #ammos-container {
     position: absolute;
-    bottom: 450px;
+    bottom: 420px;
     right: 10px;
 
     display: flex;
@@ -1392,16 +1460,18 @@
     }
 
     @media screen and (max-width: $screen_large) {
-        bottom: 220px;
+        bottom: 248px;
         right: 5px;
     }
 
     @media screen and (max-width: $screen_medium) {
-        bottom: 180px;
+        bottom: 208px;
+        right: 0;
+        transform: scale(0.8);
     }
 
     @media screen and (max-width: 460px) {
-        bottom: 245px;
+        bottom: 300px;
     }
 }
 

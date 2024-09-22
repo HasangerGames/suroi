@@ -105,22 +105,24 @@ export function mergeDeep<T extends object>(target: T, ...sources: Array<DeepPar
     type StringKeys = keyof T & string;
     type SymbolKeys = keyof T & symbol;
 
-    for (
-        const key of (
-            Object.keys(source) as Array<StringKeys | SymbolKeys>
-        ).concat(Object.getOwnPropertySymbols(source) as SymbolKeys[])
-    ) {
-        const [sourceProp, targetProp] = [source[key], target[key]];
-        if (isObject(sourceProp)) {
-            if (isObject(targetProp)) {
-                mergeDeep(targetProp, sourceProp as DeepPartial<T[keyof T] & object>);
-            } else {
-                target[key] = cloneDeep(sourceProp) as T[StringKeys] & T[SymbolKeys];
+    if (source) { // fast-track for empty objects
+        for (
+            const key of (
+                Object.keys(source) as Array<StringKeys | SymbolKeys>
+            ).concat(Object.getOwnPropertySymbols(source) as SymbolKeys[])
+        ) {
+            const [sourceProp, targetProp] = [source[key], target[key]];
+            if (isObject(sourceProp)) {
+                if (isObject(targetProp)) {
+                    mergeDeep(targetProp, sourceProp as DeepPartial<T[keyof T] & object>);
+                } else {
+                    target[key] = cloneDeep(sourceProp) as T[StringKeys] & T[SymbolKeys];
+                }
+                continue;
             }
-            continue;
-        }
 
-        target[key] = sourceProp as T[StringKeys] & T[SymbolKeys];
+            target[key] = sourceProp as T[StringKeys] & T[SymbolKeys];
+        }
     }
 
     return mergeDeep(target, ...rest);

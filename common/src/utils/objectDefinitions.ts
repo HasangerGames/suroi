@@ -5,182 +5,330 @@ import { mergeDeep, type DeepPartial } from "./misc";
 import { type SuroiBitStream } from "./suroiBitStream";
 import { type Vector } from "./vector";
 
-/**
- * A file-wide reference to the `symbol` used for inheritance.
- * Exported through {@linkcode ObjectDefinitions.inheritFromSymbol}
- */
-const _inheritFromSymbol: unique symbol = Symbol("inherit from");
+/*
+    eslint-disable
+
+    @typescript-eslint/no-explicit-any,
+    @typescript-eslint/no-unsafe-argument,
+    @stylistic/indent,
+    @stylistic/indent-binary-ops
+*/
+
+/*
+    `@typescript-eslint/no-explicit-any`: Used with array types in function types to avoid issues relating to variance
+    `@typescript-eslint/no-unsafe-argument`: I dunno why eslint is getting s many false-positives for this rule
+    `@stylistic/indent`: ESLint sucks at doing this correctly for ts types -> get disabled
+    `@stylistic/indent-binary-ops`: ESLint sucks at doing this correctly for ts types -> get disabled
+*/
 
 /**
- * A file-wide reference to the `symbol` used for defining a default template
- * from which definitions inherit by default, unless they specify `noDefaultInherit`.
- * Exported through {@linkcode ObjectDefinitions.defaultTemplateSymbol}
- */
-const _defaultTemplateSymbol: unique symbol = Symbol("default template");
-
-/**
- * A file-wide reference to the `symbol` used to declare that a definition
- * should not inherit from that definition type's default template.
- * Exported through {@linkcode ObjectDefinitions.noDefaultInherit}
- */
-const _noDefaultInheritSymbol: unique symbol = Symbol("no default inherit");
-
-/**
- * A function producing a partial version of a given object definition
- * @template Def The definition that will partially be constructed by this function
- */
-// It's a function whose argument types are narrowed if needed, and `unknown` causes false errors
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type TemplateFn<Def extends ObjectDefinition> = (...args: readonly any[]) => DeepPartial<Def>;
-
-/**
- * Represents the types of keys allowed for a template declaration
- */
-type AllowedTemplateKeys = string | typeof _defaultTemplateSymbol;
-
-/**
- * A declaration of a template that extends another template
- * @template Keys The names of the other templates that can be extended
- * @template Def The definition that will be partially constructed by this template
- */
-type TemplateExtension<Keys extends string, Def extends ObjectDefinition> = {
-    /**
-     * The name of the template that this template should extend
-     */
-    readonly extends: Keys
-    /**
-     * @see {@linkcode TemplateFn}
-     */
-    readonly applier: TemplateFn<Def>
-};
-
-/**
- * Either a {@linkcode TemplateFn} or a {@linkcode TemplateExtension}
- * @template Keys The names of the other templates in the collection this declaration belongs to
- * @template Def The definition that will be partially constructed
- */
-type TemplateDecl<
-    Keys extends AllowedTemplateKeys,
-    Def extends ObjectDefinition
-> = TemplateFn<Def> | TemplateExtension<Keys & string, Def>;
-
-/**
- * A record of strings associated with templates. Each template can then be extended to form a complete definition
- * @template Keys The specific keys in this record. Stricter typings works best
- * @template Def The type of definition that the templates are templates of
- */
-type Template<
-    Keys extends AllowedTemplateKeys,
-    Def extends ObjectDefinition
-> = Readonly<
-    Record<Keys & string, TemplateDecl<Keys, Def>> & (
-        { [K in Keys & typeof _defaultTemplateSymbol]?: () => DeepPartial<Omit<Def, "idString">> }
-    )
->;
-
-/**
- * Gets the function type associated with a certain template. If `TemplatesDecl[Key]` is already a function, then it's
- * returned as-is; otherwise, it's inheriting from another template, and the appropriate typing for the overall function
- * is calculated
+ * A reference to the `symbol` used for inheritance.
  *
- * **API note**: Function arguments for inherited templates are somewhat messily assembled; the first argument is
- * the arguments for the extension (aka the template doing the extending), and the second argument is the arguments
- * for the inherited template (aka the template being inherited from). *This schema applies recursively*, somewhat
- * unfortunately.
+ * ### Usage:
+ * ```ts
+ * const parent = {
+ *     idString: "foo",
+ *     bar: "baz",
+ *     qux: "fop"
+ * };
  *
- * For example, take the template A, whose function has parameters `[number, number]`; and the template B, whose
- * parameters are `[string, string]`. If B extends A, then the resulting function returned by this type will
- * have parameters of type `[[string, string], [number, number]]`
- *
- * If template C then extends B, with C having parameters `[boolean, boolean]`, then the function returned by
- * this type will have parameters of type `[[boolean, boolean], [[string, string], [number, number]]]`
- *
- * @template Def The type of definitions the templates construct
- * @template Keys The specific keys in the templates record. Stricter typings work best
- * @template TemplatesDecl The template record to search through when resolving inherited templates
- * @template Key The specific id of the template whose function type is desired
+ * const child = {
+ *     [inheritFrom]: "foo",
+ *     bar: "abc"
+ * }
+ * ```
  */
-type GetPartialDeclFn<
-    Def extends ObjectDefinition,
-    Keys extends AllowedTemplateKeys,
-    TemplatesDecl extends Template<Keys, Def>,
-    Key extends Keys
-> = ((...args: readonly unknown[]) => unknown) & (
-    TemplatesDecl[Key] extends TemplateExtension<Keys & string, Def>
-        /**
-         * @param extensionArgs The arguments to pass to the extended template's (aka the one doing the inheriting) function
-         * @param inheritArgs The arguments to pass to the inherited template's (aka the one being inherited from) function.
-         * See the API note for more information regarding the format these are passed in
-         * @returns The result of combining the inherited definition with the extended definition. (_**WARNING**: This is currently
-         * set to be `Def` because setting it to the more correct type leads to type instantiation considered "excessively deep". See
-         * the comment accompanying this type's definition for more info_)
-         */
-        ? (
-            extensionArgs: Parameters<TemplatesDecl[Key]["applier"]>,
-            inheritArgs: Parameters<GetPartialDeclFn<Def, Keys, TemplatesDecl, TemplatesDecl[Key]["extends"]>>
-        ) => /* ReturnType<ApplierFn> & ReturnType<PDeclFn> */ Def
-        /*
-            ! WARNING !
-            This return type is INTENTIONALLY INCORRECT and was chosen to be too lenient instead of too restrictive.
-            The correct return type has been left as a comment. Using it causes TS2589 ("Type instantiation is excessively deep"),
-            and so for now, it has been simplified.
+export const inheritFrom: unique symbol = Symbol("inherit from");
 
-            This means that the API is technically unsound, however any abusive usage should result in a definition validation failure.
-        */
-        : TemplatesDecl[Key]
+/**
+ * Represents either a fully-fledged definition, or a definition
+ * configured to inherit from another
+ * @template Def The definition
+ */
+export type RawDefinition<Def extends object> = Def | (
+    DeepPartial<Def> & {
+        readonly idString: string
+        readonly [inheritFrom]?: string | readonly string[]
+    }
 );
 
 /**
- * Represents a definition even "raw-er" than {@linkcode RawDefinition}; more specifically, a definition that hasn't yet
- * had the default template applied. It differs from {@linkcode RawDefinition} in that the latter is the typing of a definition
- * which has had the default template applied but has not had any inheritance applied.
- *
- * @template Def The type of definition
- * @template TemplateDecl The template declaration from which to extract the default template
+ * A template which takes arguments. This is referred to as a "function template",
+ * as opposed to an "object template", which is simply a partial object
+ * @template Def The definition this template is for
+ * @template Args This template's parameters
  */
-export type StageZeroDefinition<
-    Def extends ObjectDefinition,
-    DefaultTemplate extends ((...args: readonly unknown[]) => unknown) | undefined
-> = DefaultTemplate extends (...args: readonly unknown[]) => unknown
-    // eslint-disable-next-line @stylistic/indent-binary-ops
-    ? Omit<Def, keyof ReturnType<DefaultTemplate>> & {
-        readonly idString: string
+type FunctionTemplate<
+    Def extends object,
+    Args extends any[] = any[]
+> = (...args: Args) => DeepPartial<Def>;
+
+/**
+ * Given a definition, and a template, this type returns the missing members. In other
+ * words, for some type `D` and base type `B` such that `B`'s members are a subset of
+ * `D`'s members, `GetMissing<D, B>` returns a type assignable to `D - B`
+ * (it includes `B`'s members as optionals)
+ * @template Def The overarching definition at play
+ * @template Base The partial version being used as a template
+ */
+type GetMissing<
+    Def extends object,
+    Base extends DeepPartial<Def> | FunctionTemplate<Def>
+> = Base extends (...args: any[]) => (infer Ret extends DeepPartial<Def>)
+    ? GetMissing<Def, Ret>
+    : [keyof Base] extends [never]
+        ? Def
+        : DeepPartial<{
+            readonly [K in keyof Base & keyof Def]?: Def[K]
+        }> & PreservingOmit<Def, keyof Base>;
+
+type PreservingOmit<T extends object, RejectKeys extends keyof any> = Exclude<keyof T, RejectKeys> extends infer KeyDiff extends keyof T
+    ? {
+        readonly [
+            K in ({
+                readonly [K in KeyDiff]: undefined extends T[K] ? K : never
+            })[KeyDiff]
+        ]?: T[K]
     } & {
-        readonly [K in Extract<keyof Def, keyof ReturnType<DefaultTemplate>>]?: DeepPartial<Def[K]>
-        //                                                                      ^^^^^^^^^^^^^^^^^^^
-        // ! unsafe, but makes the api easier to use + the dv will catch any mistakes
+        readonly [
+            K in ({
+                readonly [K in KeyDiff]: undefined extends T[K] ? never : K
+            })[KeyDiff]
+        ]: T[K]
     }
-    : Def;
+    : never;
 
 /**
- * Either a complete stand-alone definition or a definition configured to inherit
- * from another. Note that here, "inherit" refers not to the set of templates used by
- * {@linkcode Template} *et. al.*, but rather to another definition in the same list
+ * Represents the function used to create an object from a template, whether it be
+ * an object template or a functional
+ * @template Def The type of definition produced by this template
+ * @template Base The partial version being used as a template
+ */
+type TemplateApplier<
+    Def extends object,
+    Base extends DeepPartial<Def> | FunctionTemplate<Def>
+> = <
+    Override extends GetMissing<Def, Base>
+>(...args: DetermineApplierArgs<Def, Base, Override>) => Def;
+
+/**
+ * Helper type used to determine the parameter types for a given template applier
  *
- * **Note**: Mixing this inheritance mechanism with the factory pattern is perfectly
- * fine and works as expected.
- * @template Def The type of definition
+ * If used on a functional template, the parameter list will contain the function's
+ * parameters as a tuple in its first argument (ex: `[[key: string, value: number], <…>]`)
+ *
+ * Overrides always appear last in the argument list. If the override corresponds to
+ * an empty object, then it is optional
+ *
+ * @template Def The definition created by the template this type is being used for
+ * @template Base The partial template used by the template
+ * @template Override The missing members, as if by `GetMissing<Def, Base>`
  */
-export type RawDefinition<Def extends ObjectDefinition> = Def | (
-    Partial<Def> & {
-        /**
-         * @see {@linkcode ObjectDefinition.idString}
-         */
-        readonly idString: string
-        /**
-         * A collection of `idString`s pointing to the definitions which should be
-         * inherited from. If an array is provided, the definitions are applied from
-         * first to last, with fields in later parents overriding those from earlier ones
-         */
-        readonly [_inheritFromSymbol]: ReferenceTo<Def> | Array<ReferenceTo<Def>>
-    }
-);
+type DetermineApplierArgs<
+    Def extends object,
+    Base extends DeepPartial<Def> | FunctionTemplate<Def>,
+    Override extends GetMissing<Def, Base>
+> = Base extends (...args: infer Args) => unknown
+    ? object extends Override
+        ? [args: Args, overrides?: Override]
+        : [args: Args, overrides: Override]
+    : object extends Override
+        ? [overrides?: Override]
+        : [overrides: Override];
 
 /**
- * Error type indicating that something went wrong while creating the templates
- * for an {@linkcode ObjectDefinitions} instance
+ * A helper type used to extract the partial type from a template applier
+ * @template Applier The template applier
  */
-export class DefinitionFactoryInitError extends Error {}
+// respect the _ convention you stupid twat
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type GetTemplateBase<Applier extends TemplateApplier<any, object>> = Applier extends TemplateApplier<infer _Def, infer Base> ? Base : never;
+
+/**
+ * Creates a template which can be reused to more easily create types of objects while reducing repetition. Templates
+ * come in two flavors: "object" templates and "function" templates. Object templates are the simplest, and simply
+ * consist of a partially-constructed object of the target type, which is then supplemented by users of the template
+ * (analogous to an abstract class). A function template takes arguments order to create its partial object, and can
+ * take any number of any type.
+ *
+ * ## Example:
+ * ```ts
+ * // Let's make a definition list of colors
+ * type Color = { // different color modes
+ *     readonly type: "rgb",
+ *     readonly r: number,
+ *     readonly g: number,
+ *     readonly b: number
+ * } | {
+ *     readonly type: "hsl",
+ *     readonly h: number,
+ *     readonly s: number,
+ *     readonly l: number
+ * } | {
+ *     readonly type: "hex",
+ *     readonly code: number
+ * };
+ *
+ * // Object template for an RGB color
+ * // This simply merges { type: "rgb" } with whatever else you give it
+ * const rgb = createTemplate<Color>()({ type: "rgb" });
+ * const red = rgb({ r: 255, g: 0, b: 0 });
+ *
+ * // You could also define it using a function template
+ * const hsl = createTemplate<Color>()(
+ *     (h: number, s: number, l: number) => ({
+ *         type: "hsl",
+ *         h, s, l
+ *     })
+ * );
+ * const green = hsl(
+ *    [120, 100, 50]
+ * );
+ *
+ * // That one just passed the arguments one-to-one; here's a more useful template
+ * const makeGray = createTemplate<Color>()((lightness: number) => ({
+ *    type: "hsl",
+ *    h: 0,
+ *    s: 100,
+ *    l: lightness
+ * }));
+ *
+ * // inheritance
+ * const hexToRgb = createTemplate<Color>()(rgb, (hex: number) => {
+ *     const [r, g, b] = convertHexToRGB(hex);
+ *     return { r, g, b };
+ * });
+ *
+ * const blue = hexToRgb([0x0000FF]);
+ * ```
+ * @template Def The definitions created by this template
+ * @returns A function that will accept the actual partial object and inheritance parent (if any)
+ */
+export const createTemplate = <
+    Def extends object
+>() => <
+    Base extends DeepPartial<Def> | FunctionTemplate<Def>,
+    Parent extends TemplateApplier<Def, object> | undefined = undefined,
+
+    // don't overwrite the types below, they're here to avoid repetition/convenience/clarity
+    ParentBaseType = Parent extends undefined ? unknown : GetTemplateBase<NonNullable<Parent>>,
+
+    ArgsRet extends [any[], unknown] = Base extends (...args: infer Args) => infer Ret ? [Args, Ret] : never,
+    PArgsRet extends [any[], unknown] = Parent extends (...args: infer PArgs) => infer PRet ? [PArgs, PRet] : never,
+
+    BaseArgs extends any[] = ArgsRet[0],
+    BaseRet = ArgsRet[1],
+    ParentArgs extends any[] = PArgsRet[0],
+    ParentRet = PArgsRet[1],
+
+    FnFromFn extends FunctionTemplate<Def, [BaseArgs, ParentArgs]> = (...args: [BaseArgs, ParentArgs[0]]) => BaseRet & ParentRet,
+    FnFromNorm extends FunctionTemplate<Def, BaseArgs> = (...args: BaseArgs) => BaseRet & ParentBaseType,
+    NormFromFn extends FunctionTemplate<Def, ParentArgs> = (...args: ParentArgs) => Base & ParentRet,
+    NormFromNorm = Base & ParentBaseType,
+
+    Aggregate = (
+        // using FnFromFn, FnFromNorm, NormFromFn, or NormFromNorm breaks
+        // stuff and causes assignability errors for some reason
+        Base extends (...args: infer BArgs) => infer BRet
+            ? ParentBaseType extends (...args: infer PArgs) => infer PRet
+                ? (...args: [BArgs, PArgs]) => BRet & PRet
+                : (...args: BArgs) => BRet & ParentBaseType
+            : ParentBaseType extends (...args: infer PArgs) => infer PRet
+                ? (...args: PArgs) => Base & PRet
+                : Base & ParentBaseType
+    )
+>(
+    ...[arg0, arg1]: Parent extends undefined ? [Base] : [Parent, Base]
+): TemplateApplier<Def, Aggregate> => {
+    const [base, parent] = arg1 === undefined ? [arg0 as Base, undefined] : [arg1, arg0 as Parent];
+
+    // attach a hidden tag to function templates
+    type Tagged = typeof fn & { __functionTemplate__: boolean };
+
+    const baseIsFunc = typeof base === "function";
+    const parentIsFunc = (parent as Tagged | undefined)?.__functionTemplate__;
+    const noParent = parent === undefined;
+
+    // @ts-expect-error since the function we're returning will probably be called
+    // often, we take the time to optimize it based on the three booleans above
+    const fn: TemplateApplier<Def, Aggregate> = baseIsFunc
+        ? parentIsFunc
+            ? <
+                Override extends GetMissing<Def, FnFromFn>
+            >(
+                // function template inheriting from other function template
+                ...[[cArgs, pArgs], overrides]: DetermineApplierArgs<Def, FnFromFn, Override>
+            ): Def => mergeDeep(
+                {} as Def,
+                (
+                    parent as TemplateApplier<Def, FunctionTemplate<Def, ParentArgs>>
+                )(pArgs, {} as GetMissing<Def, DeepPartial<Def>>) ?? {},
+                base(...cArgs),
+                overrides ?? {}
+            )
+            : noParent
+                ? <
+                    Override extends GetMissing<Def, FnFromNorm>
+                >(
+                    // function template with no parent
+                    ...[args, overrides]: DetermineApplierArgs<Def, FnFromNorm, Override>
+                ): Def => mergeDeep(
+                    {} as Def,
+                    base(...args),
+                    overrides ?? {}
+                )
+                : <
+                    Override extends GetMissing<Def, FnFromNorm>
+                >(
+                    // function template inheriting from object parent
+                    ...[args, overrides]: DetermineApplierArgs<Def, FnFromNorm, Override>
+                ): Def => mergeDeep(
+                    {} as Def,
+                    parent({} as Def) ?? {},
+                    base(...args),
+                    overrides ?? {}
+                )
+        : parentIsFunc
+            ? <
+                Override extends GetMissing<Def, NormFromFn>
+            >(
+                // object template inheriting from function template
+                ...[args, overrides]: DetermineApplierArgs<Def, NormFromFn, Override>
+            ): Def => mergeDeep(
+                {} as Def,
+                (
+                    parent as TemplateApplier<Def, FunctionTemplate<Def, ParentArgs>>
+                )(args, {} as GetMissing<Def, DeepPartial<Def>>) ?? {},
+                base,
+                overrides as Override ?? {}
+            )
+            : noParent
+                ? <
+                    Override extends GetMissing<Def, NormFromNorm>
+                >(
+                    // object template with no inheritance
+                    ...[overrides/* , non_applicable */]: DetermineApplierArgs<Def, NormFromNorm, Override>
+                ): Def => mergeDeep(
+                    {} as Def,
+                    base,
+                    overrides as Override ?? {}
+                )
+                : <
+                    Override extends GetMissing<Def, NormFromNorm>
+                >(
+                    // object template inheriting from object template
+                    ...[overrides/* , non_applicable */]: DetermineApplierArgs<Def, NormFromNorm, Override>
+                ): Def => mergeDeep(
+                    {} as Def,
+                    (parent({} as Def) ?? {}),
+                    base,
+                    overrides as Override ?? {}
+                );
+
+    (fn as Tagged).__functionTemplate__ = baseIsFunc;
+
+    return fn;
+};
 
 /**
  * Error type indicating that something went wrong while resolving the inherited
@@ -193,361 +341,94 @@ export class DefinitionInheritanceInitError extends Error {}
  * @template Def The specific type of `ObjectDefinition` this class holds
  */
 export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> {
-    /**
-     * A reference to the symbol used for inheritance
-     *
-     * Allows one to assemble a list of {@linkcode RawDefinition}s without having
-     * to call {@linkcode ObjectDefinitions.create()}
-     */
-    static get inheritFromSymbol(): typeof _inheritFromSymbol { return _inheritFromSymbol; }
+    static withDefault<
+        Def extends ObjectDefinition
+    >() {
+        return <
+            const Default extends DeepPartial<Def>,
 
-    /**
-     * A reference to the symbol used for defining a default template
-     * from which definitions inherit by default, unless they specify `noDefaultInherit`
-     */
-    static get defaultTemplateSymbol(): typeof _defaultTemplateSymbol { return _defaultTemplateSymbol; }
+            // helper type, don't overwrite
+            Missing extends DeepPartial<Def> = GetMissing<Def, Default>
+        >(
+            defaultValue: Default,
+            creationCallback: (
+                [
+                    derive,
+                    inherit,
+                    createTemplateForMissing,
+                    __helper_variable_to_get_Missing_type_dont_use_as_value_or_you_will_be_fired__
+                ]: [
+                    <
+                        Base extends DeepPartial<Missing> | FunctionTemplate<Missing>
+                    >(base: Base) => TemplateApplier<
+                        Missing,
+                        Base extends (...args: infer Args) => infer Ret
+                            ? (...args: Args) => Ret & Default
+                            : Base & Default
+                    >,
+                    typeof inheritFrom,
+                    ReturnType<typeof createTemplate<Missing>>,
+                    Missing
+                ]
+            ) => ReadonlyArray<RawDefinition<Missing>>
+        ) => {
+            const defaultTemplate = createTemplate<RawDefinition<Missing>>()(
+                defaultValue
+            ) as unknown as (...args: [RawDefinition<Missing>]) => RawDefinition<Def>;
+            // SAFETY: defaultValue is not a function, thus the signature of the applier is (override: GetMissing<…>) => …
 
-    /**
-     * A reference to the symbol used to declare that a definition
-     * should not inherit from that definition type's default template
-     *
-     * Allows one to assemble a list of {@linkcode RawDefinition}s without having
-     * to call {@linkcode ObjectDefinitions.create()}
-     */
-    static get noDefaultInheritSymbol(): typeof _noDefaultInheritSymbol { return _noDefaultInheritSymbol; }
+            const derive: <
+                Base extends DeepPartial<Missing> | FunctionTemplate<Missing>
+            >(base: Base) => TemplateApplier<
+                Missing,
+                Base extends (...args: infer Args) => infer Ret
+                    ? (...args: Args) => Ret & Default
+                    : Base & Default
+                // @ts-expect-error lol, is this the new ts2589
+            > = createTemplate<Missing>().bind(null, defaultTemplate);
+
+            return new ObjectDefinitions<Def>(
+                creationCallback([derive, inheritFrom, createTemplate<Missing>(), undefined as any])
+                    .map(d => defaultTemplate(d))
+            );
+        };
+    }
 
     /**
      * How many bits are needed to identify a given object belonging to this definition set
      */
     readonly bitCount: number;
+
     /**
      * Internal collection storing the definitions
      */
     readonly definitions: readonly Def[];
+
     /**
      * A private mapping between identification strings and the index in the definition array
      */
     private readonly idStringToNumber: Record<string, number> = {};
 
-    /*
-        idea: a "standard" set of factories that can be used by default? for example a lot of
-        definitions follow the trend of having the `name` and `idString` be the same, except
-        that the name is capitalized and spaced, whereas the `idString` is in lowercase and
-        snake_case (ex: "Some cool item", "some_cool_item"); perhaps a factory could be
-        dedicated to simplifying this common pattern?
-
-        some definitions also spam-repeat `itemType: ItemType.Whatever`, so making that into a
-        factory could be interesting too
-
-        but maybe a more lightweight syntax would be needed for such "builtin" factories
-    */
-
-    /**
-     * Sets up the creation of a new object definition list utilizing template definitions
-     * @template Def The specific type of `ObjectDefinition` that this list will contain
-     * @returns A function accepting a set of templates to be used in the definitions
-     */
-    static create<Def extends ObjectDefinition = ObjectDefinition>(): <
-        const TemplateDecl extends Template<AllowedTemplateKeys, Def>
-    >(
-        templatesSupplier: (defaultTemplate: typeof _defaultTemplateSymbol) => TemplateDecl
-    ) => (
-        definitionsDecl: (
-            /**
-             * A function with two custom properties containing two functions for invoking a factory;
-             * `apply` is the "normal" function and used to both invoke a factory and provide overrides.
-             * If the factory is invoked and no overrides are needed, then the `simple` function can be used.
-             * Note that the `apply` property is identical to the function it is defined on (that is,
-             * `appliers === appliers.apply`)
-             */
-            appliers: {
-                /**
-                 * A function used to create a definition that inherits from a previously-declared template
-                 * definition.
-                 *
-                 * @template Key The specific name of the template to inherit from
-                 * @template Overrides The specific type of the provided overrides
-                 * @param name The name of the template from which this definition should inherit
-                 * @param overrides A set of overrides to apply to the contents of the template
-                 * @param args A collection of arguments to pass to the inherited template's function.
-                 * See {@linkcode GetInheritedDef} for more info
-                 */
-                <
-                    Key extends keyof TemplateDecl & AllowedTemplateKeys,
-                    Overrides extends DeepPartial<Def>
-                >(
-                    name: Key,
-                    overrides: Overrides,
-                    ...args: Parameters<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>>
-                ): ReturnType<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>> & Overrides
-
-                /**
-                 * A function used to create a definition that inherits from a previously-declared template
-                 * definition.
-                 *
-                 * @template Key The specific name of the template to inherit from
-                 * @template Overrides The specific type of the provided overrides
-                 * @param name The name of the template from which this definition should inherit
-                 * @param overrides A set of overrides to apply to the contents of the template
-                 * @param args A collection of arguments to pass to the inherited template's function.
-                 * See {@linkcode GetPartialDeclFn} for more info
-                 */
-                readonly apply: <
-                    Key extends keyof TemplateDecl & AllowedTemplateKeys,
-                    Overrides extends DeepPartial<Def>
-                >(
-                    name: Key,
-                    overrides: Overrides,
-                    ...args: Parameters<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>>
-                ) => ReturnType<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>> & Overrides
-
-                /**
-                 * A function used to create a definition that inherits from a previously-declared template
-                 * definition.
-                 *
-                 * @template Key The specific name of the template to inherit from
-                 * @param name The name of the template from which this definition should inherit
-                 * @param args A collection of arguments to pass to the inherited template's function.
-                 * See {@linkcode GetPartialDeclFn} for more info
-                 */
-                readonly simple: <
-                    Key extends keyof TemplateDecl & AllowedTemplateKeys
-                >(
-                    name: Key,
-                    ...args: Parameters<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>>
-                ) => ReturnType<GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>>
-            },
-            /**
-             * An object used to provide convenient access to both {@linkcode _inheritFromSymbol}
-             * and {@linkcode _noDefaultInheritSymbol}
-             */
-            symbols: {
-                /**
-                 * @see {@linkcode _inheritFromSymbol}
-                 */
-                readonly inheritFrom: typeof _inheritFromSymbol
-                /**
-                 * @see {@linkcode _noDefaultInheritSymbol}
-                 */
-                readonly noDefaultInherit: typeof _noDefaultInheritSymbol
-            }
-        ) => ReadonlyArray<StageZeroDefinition<Def, TemplateDecl[typeof _defaultTemplateSymbol]>>
-    ) => ObjectDefinitions<Def>;
-
-    /**
-     * Creates a new instance of `ObjectDefinitions`. Can be used to bypass the factory system if such
-     * functionalities aren't needed
-     * @param definitions An array of definitions to store within this object
-     */
-    static create<Def extends ObjectDefinition = ObjectDefinition>(definitions: ReadonlyArray<RawDefinition<Def>>): ObjectDefinitions<Def>;
-
-    // you're inane for making me write out the return type once, you're fucking delusional if you think i'm doing it twice
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    static create<Def extends ObjectDefinition = ObjectDefinition>(definitions?: ReadonlyArray<RawDefinition<Def>>) {
-        if (Array.isArray(definitions)) {
-            return new ObjectDefinitions(undefined, definitions);
-        }
-
-        /**
-         * A function to declare the templates to be used in this definition set.
-         *
-         * @template TemplatesDecl The specific subtype of `Templates` used for `templatesDecl`.
-         * @param templatesSupplier A function returning an object whose keys are identifiers for
-         * template definitions and whose values are the templates in question. Receives
-         * {@linkcode ObjectDefinitions.defaultTemplateSymbol} as argument for convenience
-         * @returns Another function to declare the actual definitions used by this definition list. In this function,
-         * the templates created here will be available for use.
-         * @see {@linkcode Template}
-         */
-        return <const TemplateDecl extends Template<AllowedTemplateKeys, Def>>(
-            templatesSupplier: (defaultTemplate: typeof _defaultTemplateSymbol) => TemplateDecl
-        ) => {
-            /**
-             * Helper type, self-explanatory
-             */
-            type Keys = keyof TemplateDecl & AllowedTemplateKeys;
-
-            type PartialDeclFn<
-                Key extends keyof TemplateDecl & AllowedTemplateKeys
-            > = GetPartialDeclFn<Def, keyof TemplateDecl & AllowedTemplateKeys, TemplateDecl, Key>;
-
-            type ApplyFn = <
-                Key extends keyof TemplateDecl & AllowedTemplateKeys,
-                Overrides extends DeepPartial<Def>
-            >(
-                name: Key,
-                overrides: Overrides,
-                ...args: Parameters<PartialDeclFn<Key>>
-            ) => ReturnType<PartialDeclFn<Key>> & Overrides;
-
-            type SimpleApplyFn = <
-                Key extends keyof TemplateDecl & AllowedTemplateKeys
-            >(
-                name: Key,
-                ...args: Parameters<PartialDeclFn<Key>>
-            ) => ReturnType<PartialDeclFn<Key>>;
-
-            /**
-             * A function used to declare the definitions to use inside this definition list.
-             *
-             * @param definitionsDecl A function responsible for providing the list of definitions to be used
-             * inside this list. It receives another function, known as the applier, which is used to invoke
-             * the inheritance mechanism by passing the name of the desired template, followed by any necessary
-             * argument for that template's function.
-             * @param inheritFrom A reference to and shorthand for the unique `symbol` used to indicate that a
-             * definition should inherit from another.
-             */
-            return (
-                definitionsDecl: (
-                    appliers: ApplyFn & {
-                        readonly apply: ApplyFn
-                        readonly simple: SimpleApplyFn
-                    },
-                    symbols: {
-                        readonly inheritFrom: typeof _inheritFromSymbol
-                        readonly noDefaultInherit: typeof _noDefaultInheritSymbol
-                    }
-                ) => ReadonlyArray<StageZeroDefinition<Def, TemplateDecl[typeof _defaultTemplateSymbol]>>
-            ) => {
-                type ObjectEntries = <O extends object>(obj: O) => Array<readonly [keyof O & string, O[keyof O & string]]>;
-
-                const templatesDecl = templatesSupplier(_defaultTemplateSymbol);
-
-                function resolveTemplates<K extends Keys>(key: K, ...trace: readonly Keys[]): TemplateFn<Def> {
-                    const value = templatesDecl[key];
-
-                    const isDefaultTemplate = key === _defaultTemplateSymbol;
-
-                    if (typeof value === "function") {
-                        if (isDefaultTemplate && value.length !== 0) {
-                            // FIXME change this?
-                            // probably not…
-                            throw new DefinitionFactoryInitError("Default template must be a no-parameter factory");
-                        }
-
-                        return value as TemplateFn<Def>;
-                    }
-
-                    if (value === undefined) {
-                        console.warn("Did you really explicitly specify 'undefined' for the default template?");
-                        return () => ({});
-                    }
-
-                    if (isDefaultTemplate) {
-                        throw new DefinitionFactoryInitError("Default template must not inherit from another factory");
-                    }
-
-                    const inheritTargetName = value.extends;
-                    // @ts-expect-error technically impossible, but i'm going to strong-arm this
-                    // in case someone decides to be stupid and bypasses the type system
-                    if (inheritTargetName === _defaultTemplateSymbol) {
-                        throw new DefinitionFactoryInitError("Explicit extension of the default template is forbidden");
-                    }
-
-                    if (!(inheritTargetName in templatesDecl)) {
-                        throw new DefinitionFactoryInitError(`Template '${String(key)}' tried to extend non-existent template '${inheritTargetName}'`);
-                    }
-
-                    if (trace.includes(inheritTargetName)) {
-                        throw new DefinitionFactoryInitError(`Circular dependency found: ${[...trace, inheritTargetName].join(" -> ")}`);
-                    }
-
-                    const inheritTarget = resolveTemplates(inheritTargetName, ...trace, inheritTargetName);
-                    // documentation comment below is p much copied from `GetPartialDeclFn`, with some modifications
-                    /**
-                     * @param extensionArgs The arguments to pass to the extended template's (aka the one doing the inheriting) function
-                     * @param inheritArgs The arguments to pass to the inherited template's (aka the one being inherited from) function.
-                     * See the API note on {@linkcode GetPartialDeclFn} for more information regarding the format these are passed in
-                     * @returns The result of combining the inherited definition with the extended definition. (_**WARNING**: This is currently
-                     * set to be `Def` because setting it to the more correct type leads to type instantiation considered "excessively deep". See
-                     * the comment accompanying {@linkcode GetPartialDeclFn}'s definition for more info_)
-                     */
-                    return (
-                        extensionArgs: Parameters<typeof value.applier>,
-                        inheritArgs: Parameters<typeof inheritTarget>
-                    ) => mergeDeep({} as Def, inheritTarget(...inheritArgs), value.applier(...extensionArgs));
-                }
-
-                const templates = (
-                    <O extends object>(obj: O) => (
-                        (Object.entries as ObjectEntries)(obj) as Array<readonly [string | symbol, O[keyof O]]>
-                    ).concat(
-                        Object.getOwnPropertySymbols(obj).map(
-                            sym => [sym, (obj as Record<symbol, O[keyof O & symbol]>)[sym]] as const
-                        )
-                    ) as Array<readonly [keyof O, O[keyof O]]>
-                )(templatesDecl)
-                    .map(([key]) => [key, resolveTemplates(key as Keys, key as Keys)] as const)
-                    .reduce(
-                        (acc, [key, fn]) => {
-                            acc[key as Keys] = fn;
-                            return acc;
-                        },
-                        {} as Record<Keys, TemplateFn<Def>>
-                    );
-
-                const applier = ((name, overrides, ...args) => {
-                    type GoofySillyHelper = ReturnType<GetPartialDeclFn<Def, Keys, TemplateDecl, typeof name>> & typeof overrides;
-
-                    return mergeDeep<GoofySillyHelper>(
-                        {} as GoofySillyHelper,
-                        templates[name](...args) as DeepPartial<GoofySillyHelper>,
-                        overrides as DeepPartial<GoofySillyHelper>
-                    );
-                }) as Parameters<typeof definitionsDecl>[0];
-
-                // @ts-expect-error init code
-                applier.apply = applier;
-
-                // @ts-expect-error init code
-                applier.simple = (name, ...args: unknown[]) => applier(name, {}, ...args);
-
-                return new ObjectDefinitions<Def>(
-                    templates[_defaultTemplateSymbol]?.() ?? {},
-                    definitionsDecl(
-                        applier,
-                        {
-                            inheritFrom: _inheritFromSymbol,
-                            noDefaultInherit: _noDefaultInheritSymbol
-                        }
-                    )
-                );
-            };
-        };
-    }
-
-    protected constructor(
-        defaultTemplate: DeepPartial<Omit<Def, "idString">> | undefined,
-        definitions: ReadonlyArray<StageZeroDefinition<Def, () => typeof defaultTemplate & object>>
+    constructor(
+        defs: ReadonlyArray<RawDefinition<Def>>
     ) {
-        this.bitCount = Math.ceil(Math.log2(definitions.length));
+        this.bitCount = Math.ceil(Math.log2(defs.length));
 
-        this.definitions = definitions.map(
+        this.definitions = defs.map(
             def => (
                 function withTrace(
-                    def: StageZeroDefinition<Def, () => typeof defaultTemplate & object>,
+                    def: RawDefinition<Def>,
                     ...trace: readonly string[]
                 ): Def {
-                    if (_noDefaultInheritSymbol in def) {
-                        console.warn("noDefaultInherit does nothing right now, and will probably be removed eventually. so don't use it");
-                    }
-
-                    if (!(_inheritFromSymbol in def)) {
-                        return defaultTemplate !== undefined
-                            ? mergeDeep<Def>(
-                                {} as Def,
-                                defaultTemplate as DeepPartial<Def>,
-                                def
-                            )
-                            : def as Def;
+                    if (!(inheritFrom in def)) {
+                        return def as Def;
                     }
 
                     return mergeDeep<Def>(
                         {} as Def,
-                        (defaultTemplate ?? {}) as DeepPartial<Def>,
-                        ...([def[_inheritFromSymbol]].flat() as ReadonlyArray<ReferenceTo<Def>>)
+                        ...([def[inheritFrom]].flat() as ReadonlyArray<ReferenceTo<Def>>)
                             .map(targetName => {
-                                const target = definitions.find(def => def.idString === targetName);
+                                const target = defs.find(def => def.idString === targetName);
                                 if (!target) {
                                     throw new DefinitionInheritanceInitError(
                                         `Definition '${def.idString}' was configured to inherit from inexistent definition '${targetName}'`

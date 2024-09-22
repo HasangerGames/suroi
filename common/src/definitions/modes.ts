@@ -13,7 +13,7 @@ export interface ReskinDefinition {
     readonly sounds?: string[]
 }
 
-export const Modes: ModeDefinition[] = [
+export const Modes: readonly ModeDefinition[] = [
     {
         idString: "normal",
         colors: {

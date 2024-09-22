@@ -107,7 +107,11 @@ export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
     }
 
     override updateZIndex(): void {
-        this.container.zIndex = getEffectiveZIndex(this.doOverlay() ? ZIndexes.UnderWaterDeadObstacles : ZIndexes.DeathMarkers, this.layer, this.game.layer);
+        this.container.zIndex = getEffectiveZIndex(
+            this.doOverlay() ? ZIndexes.UnderWaterDeadObstacles : ZIndexes.DeathMarkers,
+            this.layer,
+            this.game.layer
+        );
     }
 
     override destroy(): void {

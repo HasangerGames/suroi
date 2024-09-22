@@ -1,12 +1,12 @@
 import { Layer, ZIndexes } from "../../../../common/src/constants";
 import { type ExplosionDefinition } from "../../../../common/src/definitions/explosions";
-import { adjacentOrEqualLayer, equalLayer, getEffectiveZIndex, isGroundLayer } from "../../../../common/src/utils/layer";
+import { adjacentOrEqualLayer, getEffectiveZIndex } from "../../../../common/src/utils/layer";
 import { EaseFunctions } from "../../../../common/src/utils/math";
 import { randomFloat, randomPointInsideCircle } from "../../../../common/src/utils/random";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { SHOCKWAVE_EXPLOSION_MULTIPLIERS, SOUND_FILTER_FOR_LAYERS } from "../utils/constants";
+import { SHOCKWAVE_EXPLOSION_MULTIPLIERS } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
 export function explosion(game: Game, definition: ExplosionDefinition, position: Vector, layer: Layer): void {
@@ -76,8 +76,7 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
             definition.sound,
             {
                 position,
-                falloff: 0.4,
-                applyFilter: SOUND_FILTER_FOR_LAYERS && !equalLayer(layer, game.layer ?? Layer.Ground) && isGroundLayer(layer)
+                falloff: 0.4
             }
         );
     }

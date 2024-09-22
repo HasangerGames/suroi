@@ -15,11 +15,8 @@ const bulletColors: Record<string, number> = {
     "shrapnel": 0x1d1d1d
 };
 
-export const Bullets = ObjectDefinitions.create<BulletDefinition>()(
-    defaultTemplate => ({
-        [defaultTemplate]: () => defaultBulletTemplate
-    })
-)(
+export const Bullets = ObjectDefinitions.withDefault<BulletDefinition>()(
+    defaultBulletTemplate,
     () => [
         ...Loots.byType(ItemType.Gun),
         ...Explosions.definitions

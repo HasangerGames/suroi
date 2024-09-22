@@ -12,37 +12,31 @@ export interface DecalDefinition extends ObjectDefinition {
     readonly zIndex?: ZIndexes
 }
 
-export const Decals = ObjectDefinitions.create<DecalDefinition>()(
-    defaultTemplate => ({
-        [defaultTemplate]: () => ({
-            scale: 1,
-            rotationMode: RotationMode.Limited
-        }),
-        decal_factory: (name: string) => {
-            const idString = name.toLowerCase().replace(/ /g, "_");
-            return {
-                idString,
-                name,
-                image: idString
-            };
+export const Decals = ObjectDefinitions.withDefault<DecalDefinition>()(
+    {
+        scale: 1,
+        rotationMode: RotationMode.Limited
+    },
+    () => [
+        {
+            name: "Explosion Decal",
+            rotationMode: RotationMode.Full
+        },
+        {
+            name: "Frag Explosion Decal",
+            rotationMode: RotationMode.Full
+        },
+        {
+            name: "Smoke Explosion Decal",
+            rotationMode: RotationMode.Full
         }
+    ].map(def => {
+        const idString = def.name.toLowerCase().replace(/ /g, "_");
+
+        return {
+            idString,
+            image: idString,
+            ...def
+        };
     })
-)(
-    ({ apply }) => [
-        apply(
-            "decal_factory",
-            { rotationMode: RotationMode.Full },
-            "Explosion Decal"
-        ),
-        apply(
-            "decal_factory",
-            { rotationMode: RotationMode.Full },
-            "Frag Explosion Decal"
-        ),
-        apply(
-            "decal_factory",
-            { rotationMode: RotationMode.Full },
-            "Smoke Explosion Decal"
-        )
-    ]
 );

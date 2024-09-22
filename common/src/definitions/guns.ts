@@ -1,6 +1,6 @@
 import { FireMode, defaultBulletTemplate } from "../constants";
 import { mergeDeep } from "../utils/misc";
-import { ItemType, ObjectDefinitions, type BaseBulletDefinition, type InventoryItemDefinition, type ReferenceTo, type StageZeroDefinition } from "../utils/objectDefinitions";
+import { inheritFrom, ItemType, ObjectDefinitions, type BaseBulletDefinition, type InventoryItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { type AmmoDefinition } from "./ammos";
 
@@ -185,40 +185,35 @@ type RawGunDefinition = BaseGunDefinition & {
     }
 };
 
-const defaultGun = {
-    itemType: ItemType.Gun,
-    noDrop: false,
-    ammoSpawnAmount: 0,
-    speedMultiplier: 0.92,
-    singleReload: false,
-    infiniteAmmo: false,
-    jitterRadius: 0,
-    consistentPatterning: false,
-    noQuickswitch: false,
-    bulletCount: 1,
-    killstreak: false,
-    shootOnRelease: false,
-    summonAirdrop: false,
-    fists: {
-        leftZIndex: 1,
-        rightZIndex: 1
-    },
-    casingParticles: [] as RawGunDefinition["casingParticles"],
-    image: {
-        angle: 0,
-        zIndex: 2
-    },
-    isDual: false,
-    noMuzzleFlash: false,
-    ballistics: defaultBulletTemplate
-} as const;
-
-export const Guns = ObjectDefinitions.create<GunDefinition>()(
-    defaultTemplate => ({
-        [defaultTemplate]: () => defaultGun
-    })
-)((apply, { inheritFrom }) => (
-    [
+export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
+    {
+        itemType: ItemType.Gun,
+        noDrop: false,
+        ammoSpawnAmount: 0,
+        speedMultiplier: 0.92,
+        singleReload: false,
+        infiniteAmmo: false,
+        jitterRadius: 0,
+        consistentPatterning: false,
+        noQuickswitch: false,
+        bulletCount: 1,
+        killstreak: false,
+        shootOnRelease: false,
+        summonAirdrop: false,
+        fists: {
+            leftZIndex: 1,
+            rightZIndex: 1
+        },
+        casingParticles: [] as RawGunDefinition["casingParticles"],
+        image: {
+            angle: 0,
+            zIndex: 2
+        },
+        isDual: false,
+        noMuzzleFlash: false,
+        ballistics: defaultBulletTemplate
+    } as const,
+    () => [
         {
             idString: "ak47",
             name: "AK-47",
@@ -2030,8 +2025,7 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
                 }
             }
         }
-    ] as ReadonlyArray<StageZeroDefinition<RawGunDefinition, () => typeof defaultGun>>)
-    .map(e => {
+    ].map(e => {
         if (e.dual === undefined) {
             return [e];
         }
@@ -2062,6 +2056,5 @@ export const Guns = ObjectDefinitions.create<GunDefinition>()(
         e.dualVariant = dualDef.idString;
 
         return [e, dualDef];
-    })
-    .flat() as readonly GunDefinition[]
+    }).flat() as readonly GunDefinition[]
 );

@@ -5,7 +5,6 @@ export interface HealingItemDefinition extends ItemDefinition {
     readonly healType: HealType
     readonly restoreAmount: number
     readonly useTime: number
-    readonly useText: string
 }
 
 export enum HealType {
@@ -13,65 +12,54 @@ export enum HealType {
     Adrenaline
 }
 
-export const HealingItems = ObjectDefinitions.create<HealingItemDefinition>()(
-    defaultTemplate => ({
-        [defaultTemplate]: () => ({
-            itemType: ItemType.Healing
-        }),
-        healing_item_factory: (name: string) => ({
+export const HealingItems = ObjectDefinitions.withDefault<HealingItemDefinition>()(
+    {
+        itemType: ItemType.Healing,
+        noDrop: false
+    },
+    ([derive, , createTemplate]) => {
+        const consumable = derive((name: string) => ({
             idString: name.toLowerCase().replace(/ /g, "_"),
             name
-        }),
-        health_factory: {
-            extends: "healing_item_factory",
-            applier: () => ({
-                healType: HealType.Health
-            })
-        },
-        adren_factory: {
-            extends: "healing_item_factory",
-            applier: () => ({
-                healType: HealType.Adrenaline
-            })
-        }
-    })
-)(
-    apply => [
-        apply(
-            "health_factory",
-            {
-                restoreAmount: 15,
-                useTime: 3
-            },
-            [],
-            ["Gauze"]
-        ),
-        apply(
-            "health_factory",
-            {
-                restoreAmount: 100,
-                useTime: 6
-            },
-            [],
-            ["Medikit"]
-        ),
-        apply(
-            "adren_factory",
-            {
-                restoreAmount: 25,
-                useTime: 3
-            },
-            [],
-            ["Cola"]
-        ),
-        apply(
-            "adren_factory",
-            {
-                restoreAmount: 50,
-                useTime: 5
-            },
-            [],
-            ["Tablets"]
-        )
-    ]
+        }));
+
+        const healing = createTemplate(consumable, {
+            healType: HealType.Health
+        });
+
+        const adren = createTemplate(consumable, {
+            healType: HealType.Adrenaline
+        });
+
+        return [
+            healing(
+                ["Gauze"],
+                {
+                    restoreAmount: 15,
+                    useTime: 3
+                }
+            ),
+            healing(
+                ["Medikit"],
+                {
+                    restoreAmount: 100,
+                    useTime: 6
+                }
+            ),
+            adren(
+                ["Cola"],
+                {
+                    restoreAmount: 25,
+                    useTime: 3
+                }
+            ),
+            adren(
+                ["Tablets"],
+                {
+                    restoreAmount: 50,
+                    useTime: 5
+                }
+            )
+        ];
+    }
 );

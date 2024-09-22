@@ -1,41 +1,36 @@
-import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
+import { createTemplate, ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
 
 export interface BadgeDefinition extends ObjectDefinition {
     readonly roles?: string[]
 }
 
-export const Badges = ObjectDefinitions.create<BadgeDefinition>()(
-    () => ({
-        badge_factory: (name: string, roles: string[] = []) => ({
-            idString: name.toLowerCase().replace(/ /g, "_"),
-            name,
-            roles
-        })
-    })
-)(
-    ({ simple }) => [
-        simple("badge_factory", "Youtubr", ["youtubr", "123op"]),
-        simple("badge_factory", "Developr", ["developr", "error"]),
-        simple("badge_factory", "Lead Designr", ["lead_designr"]),
-        simple("badge_factory", "VIP Designr", ["vip_designr"]),
-        simple("badge_factory", "Composr", ["composr"]),
-        simple("badge_factory", "Lead Composr", ["lead_composr"]),
-        simple("badge_factory", "Moderatr", ["moderatr"]),
-        simple("badge_factory", "Trial Moderatr", ["trial_moderatr"]),
-        simple("badge_factory", "Studio Managr", ["studio_managr"]),
-        simple("badge_factory", "Boostr", ["boostr"]),
-        simple("badge_factory", "Designr", ["designr"]),
-        simple("badge_factory", "Ownr", ["hasanger"]),
-        simple("badge_factory", "Contributr+", ["katie", "leia"]),
-        simple("badge_factory", "Bleh"),
-        simple("badge_factory", "Froog"),
-        simple("badge_factory", "AEGIS Logo"),
-        simple("badge_factory", "Flint Logo"),
-        simple("badge_factory", "Duel"),
+const badge = createTemplate<BadgeDefinition>()((name: string, roles: string[] = []) => ({
+    idString: name.toLowerCase().replace(/ /g, "_"),
+    name,
+    roles
+}));
 
-        simple("badge_factory", "Suroi Logo"),
-        simple("badge_factory", "Fire"),
-        simple("badge_factory", "Colon Three"),
-        simple("badge_factory", "Suroi General Chat")
-    ]
-);
+export const Badges = new ObjectDefinitions<BadgeDefinition>([
+    badge(["Youtubr", ["youtubr", "123op"]]),
+    badge(["Developr", ["developr", "error"]]),
+    badge(["Lead Designr", ["lead_designr"]]),
+    badge(["VIP Designr", ["vip_designr"]]),
+    badge(["Composr", ["composr"]]),
+    badge(["Lead Composr", ["lead_composr"]]),
+    badge(["Moderatr", ["moderatr"]]),
+    badge(["Trial Moderatr", ["trial_moderatr"]]),
+    badge(["Studio Managr", ["studio_managr"]]),
+    badge(["Boostr", ["boostr"]]),
+    badge(["Designr", ["designr"]]),
+    badge(["Ownr", ["hasanger"]]),
+    badge(["Contributr+", ["katie"]]),
+    badge(["Bleh"]),
+    badge(["Froog"]),
+    badge(["AEGIS Logo"]),
+    badge(["Flint Logo"]),
+    badge(["Duel"]),
+    badge(["Suroi Logo"]),
+    badge(["Fire"]),
+    badge(["Colon Three"]),
+    badge(["Suroi General Chat"])
+]);

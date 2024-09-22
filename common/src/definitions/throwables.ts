@@ -64,30 +64,27 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly impactDamage?: undefined
 });
 
-export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
-    defaultTemplate => ({
-        [defaultTemplate]: () => ({
-            itemType: ItemType.Throwable,
-            speedMultiplier: 0.92,
-            cookable: false,
-            fuseTime: 4000,
-            cookTime: 150,
-            c4: false,
-            throwTime: 150,
-            noDrop: false,
-            cookSpeedMultiplier: 0.7,
-            hitboxRadius: 1,
-            impactDamage: 0,
-            obstacleMultiplier: 20,
-            image: {
-                zIndex: 5
-            },
-            maxThrowDistance: 128,
-            fireDelay: 250,
-            speedCap: Infinity
-        })
-    })
-)(
+export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
+    {
+        itemType: ItemType.Throwable,
+        speedMultiplier: 0.92,
+        cookable: false,
+        fuseTime: 4000,
+        cookTime: 150,
+        c4: false,
+        throwTime: 150,
+        noDrop: false,
+        cookSpeedMultiplier: 0.7,
+        hitboxRadius: 1,
+        impactDamage: 0,
+        obstacleMultiplier: 20,
+        image: {
+            zIndex: 5
+        },
+        maxThrowDistance: 128,
+        fireDelay: 250,
+        speedCap: Infinity
+    },
     () => [
         {
             idString: "frag_grenade",
@@ -201,7 +198,7 @@ export const Throwables = ObjectDefinitions.create<ThrowableDefinition>()(
             detonation: {
                 explosion: "c4_explosion",
                 particles: {
-                    type: "metal_particle",
+                    type: "c4",
                     count: 8,
                     spawnRadius: 2
                 }

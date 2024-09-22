@@ -20,6 +20,8 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
     readonly images: {
         readonly background: SuroiSprite
         readonly item: SuroiSprite
+        readonly skinFistLeft: SuroiSprite
+        readonly skinFistRight: SuroiSprite
     };
 
     private _count = 0;
@@ -34,7 +36,9 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
 
         this.images = {
             background: new SuroiSprite(),
-            item: new SuroiSprite()
+            item: new SuroiSprite(),
+            skinFistLeft: new SuroiSprite(),
+            skinFistRight: new SuroiSprite()
         };
 
         this.layer = data.layer;
@@ -47,7 +51,22 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
             const definition = this.definition = data.full.definition;
             const itemType = definition.itemType;
 
-            this.images.item.setFrame(`${definition.idString}${itemType === ItemType.Skin ? "_base" : ""}`);
+            if (itemType === ItemType.Skin) {
+                this.images.item.setFrame(`${this.definition.idString}_base`);
+                this.images.item.setScale(0.65);
+
+                const skinFist = `${this.definition.idString}_fist`;
+                this.images.skinFistLeft.setFrame(skinFist);
+                this.images.skinFistRight.setFrame(skinFist);
+
+                this.images.skinFistLeft.setPos(20, 21);
+                this.images.skinFistLeft.setScale(0.65);
+
+                this.images.skinFistRight.setPos(-20, 21);
+                this.images.skinFistRight.setScale(0.65);
+            } else {
+                this.images.item.setFrame(definition.idString);
+            }
 
             this.container.addChild(this.images.background, this.images.item);
 
@@ -80,9 +99,12 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                     if (definition.itemType === ItemType.Skin) {
                         if (definition.grassTint) {
                             this.images.item.setTint(GHILLIE_TINT);
+                            this.images.skinFistLeft.setTint(GHILLIE_TINT);
+                            this.images.skinFistRight.setTint(GHILLIE_TINT);
                         }
 
-                        this.images.item.setAngle(90).setScale(0.75);
+                        this.images.item.setAngle(90);
+                        this.container.addChild(this.images.skinFistRight, this.images.skinFistLeft);
                     }
                     break;
                 }

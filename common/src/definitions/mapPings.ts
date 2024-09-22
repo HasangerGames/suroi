@@ -28,12 +28,12 @@ export interface MapPingDefinition extends ObjectDefinition {
 export type PlayerPing = MapPingDefinition & { readonly isPlayerPing: true };
 export type MapPing = MapPingDefinition & { readonly isPlayerPing?: false };
 
-export const MapPings = ObjectDefinitions.create<MapPingDefinition>()(
-    defaultTemplate => ({
-        [defaultTemplate]: () => ({
-            ignoreExpiration: false
-        }),
-        gamePingFactory: (idString: string, color: number) => ({
+export const MapPings = ObjectDefinitions.withDefault<MapPingDefinition>()(
+    {
+        ignoreExpiration: false
+    },
+    ([derive]) => {
+        const gamePingFactory = derive((idString: string, color: number) => ({
             idString,
             color,
             name: idString,
@@ -41,8 +41,9 @@ export const MapPings = ObjectDefinitions.create<MapPingDefinition>()(
             lifetime: 20,
             isPlayerPing: false,
             sound: idString
-        }),
-        playerPingFactory: (idString: string) => ({
+        }));
+
+        const playerPingFactory = derive((idString: string) => ({
             idString,
             name: idString,
             showInGame: true,
@@ -50,14 +51,14 @@ export const MapPings = ObjectDefinitions.create<MapPingDefinition>()(
             isPlayerPing: true,
             color: 0xffffff,
             sound: idString
-        })
-    })
-)(
-    apply => [
-        apply("gamePingFactory", { ignoreExpiration: true }, "airdrop_ping", 0x00ffff),
-        apply("playerPingFactory", {}, "warning_ping"),
-        apply("playerPingFactory", { ignoreExpiration: true }, "arrow_ping"),
-        apply("playerPingFactory", {}, "gift_ping"),
-        apply("playerPingFactory", {}, "heal_ping")
-    ]
+        }));
+
+        return [
+            gamePingFactory(["airdrop_ping", 0x00ffff], { ignoreExpiration: true }),
+            playerPingFactory(["warning_ping"]),
+            playerPingFactory(["arrow_ping"], { ignoreExpiration: true }),
+            playerPingFactory(["gift_ping"]),
+            playerPingFactory(["heal_ping"])
+        ];
+    }
 );
