@@ -31,7 +31,7 @@ export const Config = {
     maxGames: 4,
     gameJoinTime: 60,
 
-    gas: { mode: GasMode.Disabled },
+    gas: { mode: GasMode.Normal },
 
     tps: 40,
 
