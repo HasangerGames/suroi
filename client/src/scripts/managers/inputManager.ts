@@ -17,13 +17,18 @@ import { getTranslatedString } from "../../translations";
 import { html } from "../utils/misc";
 
 let controllerIndex = null;
-
+let gamepadA = false; let gamepadB = false; let gamepadX = false; let gamepadY = false;
+let gamepadLB = false; let gamepadRB = false; let gamepadLT = false; let gamepadRT = false;
+let gamepadView = false; let gamepadMenu = false; let gamepadLS = false; let gamepadRS = false;
+let dPadUp = false; let dPadDown = false; let dPadLeft = false; let dPadRight = false;
+let gamepadHome = false;
 
 
 let gamepadLeftStickHorizontal = 0;
 let gamepadLeftStickVertical = 0;
 let gamepadRightStickHorizontal = 0;
 let gamepadRightStickVertical = 0;
+
 
 window.addEventListener('gamepadconnected',(event)=>{
     controllerIndex = event.gamepad.index;
@@ -35,7 +40,43 @@ window.addEventListener('gamepaddisconnected',(event)=>{
     console.log("gamepad disconnected");
 });
 
+function controllerInput(){
+    if(controllerIndex !== null){
+        const gamepad = navigator.getGamepads()[controllerIndex];
+        const buttons = gamepad.buttons;
+        //button mappings below
+        gamepadA = buttons[0].pressed; gamepadB = buttons[1].pressed; gamepadX = buttons[2].pressed; gamepadY = buttons[3].pressed;
+        gamepadLB = buttons[4].pressed; gamepadRB = buttons[5].pressed; gamepadLT = buttons[6].pressed; gamepadRT = buttons[7].pressed;
+        gamepadView = buttons[8].pressed; gamepadMenu = buttons[9].pressed; gamepadLS = buttons[10].pressed; gamepadRS = buttons[11].pressed;
+        dPadUp = buttons[12].pressed; dPadDown = buttons[13].pressed; dPadLeft = buttons[14].pressed; dPadRight = buttons[15].pressed;
+        gamepadHome = buttons[16].pressed;
 
+        gamepadLeftStickHorizontal = gamepad.axes[0];
+        gamepadLeftStickVertical = gamepad.axes[1];
+        //please use left sticks for movement and make the player face where he is moving, like mobile
+        gamepadRightStickHorizontal = gamepad.axes[2];
+        gamepadRightStickVertical = gamepad.axes[3];
+        /*please use right sticks for aim (but not shoot, there's a different button) 
+        and add aim line like mobile right joystick */
+        console.log("A, B, X, Y:", gamepadA, gamepadB, gamepadX, gamepadY);
+        console.log("LB, RB, LT, RT:", gamepadLB, gamepadRB, gamepadLT, gamepadRT);
+        console.log("View, Menu, LS, RS:", gamepadView, gamepadMenu, gamepadLS, gamepadRS);
+        console.log("DPad up, down, left, right: ", dPadUp, dPadDown, dPadLeft, dPadRight);
+        console.log("Home:", gamepadHome);
+        console.log("LS horizontal: ", gamepadLeftStickHorizontal);
+        console.log("LS vertical: ", gamepadLeftStickVertical);
+        console.log("RS horizontal: ", gamepadRightStickHorizontal);
+        console.log("RS vertical: ", gamepadRightStickVertical);
+        /*honestly you could just derive the controls from mobile and add 
+        the physical joysticks as input instead of the virtual joysticks */
+    }
+};
+
+function gameLoop(){
+    controllerInput();
+    requestAnimationFrame(gameLoop);
+};
+gameLoop();
 
 export class InputManager {
     readonly binds = new InputMapper();
@@ -351,7 +392,7 @@ export class InputManager {
         }
     }
 
-    private handleInputEvent(down: boolean, event: KeyboardEvent | MouseEvent | WheelEvent | GamepadEvent): void {
+    private handleInputEvent(down: boolean, event: KeyboardEvent | MouseEvent | WheelEvent ): void {
         if (!event.isTrusted) return;
 
         // Disable pointer events on mobile if mobile controls are enabled
@@ -379,41 +420,6 @@ export class InputManager {
             Also we allow shift and alt to be used normally, because keyboard shortcuts usually involve
             the meta or control key
         */
-            function controllerInput(){
-                if(controllerIndex !== null){
-                    const gamepad = navigator.getGamepads()[controllerIndex];
-                    const GamepadButtonMap = ["GamepadA", "GamepadB", "GamepadX", "GamepadY", "GamepadLB", "GamepadRB", "GamepadLT", "GamepadRT", "GamepadView", "GamepadMenu", "GamepadLS", "GamepadRS", "GamepadHome",]
-            
-                if (event instanceof GamepadEvent) {
-                input = GamepadButtonMap.find((_, i) => gamepad.buttons[i].pressed) ?? "GamepadUnknown"
-                }
-                    /*please make the above buttons able to be binded in keybinds, 
-                    also set some defaults when a controller is detected.
-                    remember, when controllerIndex !== null, that means a controller is detected. */
-            
-                    gamepadLeftStickHorizontal = gamepad.axes[0];
-                    gamepadLeftStickVertical = gamepad.axes[1];
-                    //please use left sticks for movement and make the player face where he is moving, like mobile
-                    gamepadRightStickHorizontal = gamepad.axes[2];
-                    gamepadRightStickVertical = gamepad.axes[3];
-                    /*please use right sticks for aim (but not shoot, there's a different button) 
-                    and add aim line like mobile right joystick */
-                    console.log(gamepadLeftStickHorizontal);
-                    console.log(gamepadLeftStickVertical);
-                    console.log(gamepadRightStickHorizontal);
-                    console.log(gamepadRightStickVertical);
-                    /*honestly you could just derive the controls from mobile and add 
-                    the physical joysticks as input instead of the virtual joysticks */
-                }
-            };
-
-            function gameLoop(){
-                if(controllerIndex !== null){
-                controllerInput();
-                requestAnimationFrame(gameLoop);
-                }
-            };
-            gameLoop();
         if (event instanceof KeyboardEvent) {
             const { key } = event;
             // This statement cross references and updates focus checks for key presses.
@@ -501,7 +507,7 @@ export class InputManager {
     }
 
     private getKeyFromInputEvent<
-        const Ev extends KeyboardEvent | MouseEvent | WheelEvent | GamepadEvent
+        const Ev extends KeyboardEvent | MouseEvent | WheelEvent
     >(event: Ev): Ev extends KeyboardEvent ? string | string[] : string {
         type Ret = typeof event extends KeyboardEvent ? string[] : string;
 
@@ -539,19 +545,7 @@ export class InputManager {
 
             return input as Ret;
         }
-        if (event instanceof GamepadEvent) {
-            const gamepad = navigator.getGamepads()[controllerIndex];
-            const GamepadButtonMap = ["GamepadA", "GamepadB", "GamepadX", "GamepadY", "GamepadLB", "GamepadRB", "GamepadLT", "GamepadRT", "GamepadView", "GamepadMenu", "GamepadLS", "GamepadRS", "GamepadHome",]
-            for (let i = 0; i < gamepad.buttons.length; i++) {
-                if(event.gamepad.buttons[i].pressed) { input = GamepadButtonMap[i] ?? "GamepadUnknown"; break; }
-            }
-            if (input === "") {
-                console.error("An unrecognized gamepad event was received: ", event);
-            }
-
-            return input as Ret;
-        }
-                
+                     
         if (event instanceof MouseEvent) {
             input = `Mouse${event.button}`;
         }
@@ -898,4 +892,3 @@ class InputMapper {
         );
     }
 }
-
