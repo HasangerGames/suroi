@@ -827,13 +827,14 @@ logger.indent("Validating building definitions", () => {
                                             }
                                         }
 
-                                        if (reference.isStair) {
+                                        // this isn't always accurate because the layer of obstacles is relative to the layer of their parent building
+                                        /*if (reference.isStair) {
                                             tester.assert(
                                                 isStairLayer(obstacle.layer ?? 0),
                                                 `Obstacle with role "Stair" must be placed on a stair layer (given layer is ${obstacle.layer})`,
                                                 errorPath
                                             );
-                                        }
+                                        }*/
                                     }
                                 }
 
