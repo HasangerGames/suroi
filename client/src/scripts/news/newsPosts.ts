@@ -2,7 +2,7 @@ import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
-        date: Date.now(), // TODO
+        date: 1727030995000,
         author: "HAZEL",
         title: "High-Caliber Negotiations",
         bannerImage: "../img/news/v0.19.0.png",
@@ -12,7 +12,78 @@ export const news: NewsPost[] = [
           <br><br>Two new handguns have been added: the <b>Deagle</b> and the <b>RSh-12</b>, both chambered in <b>.50 Cal</b>. The Deagle offers solid damage, high DPS, and a fair magazine size all in a compact package. On the other hand, the RSh-12 brings the term 'assault revolver' to life with <b>powerful First Shot Accurate rounds</b>, though it has low range and magazine capacity.
           <br><br>Due to a supply shortage, the Barrett M95 <b>is no longer available</b>. However, fear not; we've found an even more suitable replacement. The <b>L115A1</b>, chambered in <b>the elusive .338 Lapua Magnum</b>, is sure to turn heads (and pop them just as easily). Like its predecessor, the L115A1 is more than capable of engaging any opponent, regardless of armor.
           <br><br>There's much more to explore, including the <b>Fire Hatchet</b> and <b>Falchion</b> melees, overhauled Cargo Ship and Oil Tanker, brand new <b>Blue House</b>, and a few surprises coming in the near future.
-        `
+        `,
+        longContent: `<h2>Suroi v0.19.0</h2>
+<h3>New features</h3>
+<ul>
+  <li><strong>Multi-story buildings!</strong></li>
+  <ul>
+    <li>Added the AEGIS headquarters, the first building with two floors.</li>
+    <li>Added a small bunker, the first structure with a basement.</li>
+    <li>Added the blue house, a small house similar to the red and green houses.</li>
+    <li>Added a second variant of the red house.</li>
+  </ul>
+  <li><strong>New guns!</strong></li>
+  <ul>
+    <li>Added the DEagle 50, a semi-automatic pistol chambered in .50 Cal, found in the headquarters.</li>
+    <li>Added the RSh-12, a suppressed, first shot accurate revolver also chambered in .50 Cal, also found in the headquarters.</li>
+    <li>Replaced the Barrett M95 with the L115A1, a powerful sniper chambered in .338 Lapua Magnum, found in golden airdrops and the Flint stone.</li>
+  </ul>
+  <li><strong>New melee weapons!</strong></li>
+  <ul>
+    <li>Added the falchion, a one-handed sword found in the headquarters.</li>
+    <li>Added the fire hatchet, a stronger version of the hatchet found on oil tanker ships.</li>
+  </ul>
+  <li><strong>New throwable!</strong> Added C4, a new type of explosive which can be remotely detonated.</li>
+  <li><strong>Redesigned structures!</strong> Redesigned the cargo ship, the oil tanker ship, and the mobile home.</li>
+  <li>The Mosin's clip can now be fully reloaded when empty.</li>
+  <li>Added 3 new building exclusive skins: Gold Tie Event (headquarters only), Ship Carrier (oil tanker ship only), and NSD Uniform (armory only).</li>
+  <li>Added 3 new emotes.</li>
+</ul>
+
+<h3>Changes</h3>
+<ul>
+  <li>Games are now longer.</li>
+  <li>The gas now does more damage the further you are from the center of the safe zone.</li>
+  <li>Nerfed M16A4.</li>
+  <li>Buffed CZ-75A, HP-18, and G19.</li>
+  <li>Grenade physics is now more consistent.</li>
+  <li>Optimized input code to reduce input lag.</li>
+  <li>Various performance improvements.</li>
+  <li>Improved translations.</li>
+  <li>Tweaked ammo UI.</li>
+  <li>Redesigned spectating UI on mobile.</li>
+  <li>Skins in loot form are now rendered with fists.</li>
+  <li>Changed sounds for several guns.</li>
+  <li>New switch sounds for melee weapons.</li>
+  <li>New sounds for indestructible metal objects.</li>
+  <li>Added an ambient sound to the port.</li>
+  <li>New gun case texture.</li>
+  <li>Tweaked crane texture.</li>
+  <li>Tweaked barrel and super barrel textures.</li>
+  <li>Improved residues for river obstacles.</li>
+  <li>Added trash cans to the armory, shed, and green house.</li>
+  <li>Added a dumpster to the port.</li>
+  <li>Added colored particles for containers and the crane.</li>
+  <li>Small tweaks to physics when loot is dropped or can't be picked up.</li>
+  <li>Social links now open in a new tab, and are unclickable for 1.5 seconds after disconnecting from a game, to prevent accidental clicks.</li>
+  <li>Tweaked angry face emote.</li>
+  <li>Tweaked Model 89 textures.</li>
+  <li>Tweaked port and armory fences.</li>
+</ul>
+
+<h3>Bug fixes</h3>
+<ul>
+  <li>Fixed explosions doing damage through walls.</li>
+  <li>Fixed melee doing damage through walls.</li>
+  <li>Fixed issues with spectating.</li>
+  <li>Fixed dropping throwables causing slot switch.</li>
+  <li>Fixed issues with health bar animation.</li>
+  <li>Fixed building ceilings flickering.</li>
+  <li>Fixed control panel health resetting when used.</li>
+  <li>Fixed tinting of ghillie suit fists in the inventory.</li>
+</ul><br>
+Special thanks to pap, Solstice, platonthek, eiπ, and the other devs for their outstanding work on this update!`
     },
     {
         date: 1717870665000,
