@@ -1,5 +1,4 @@
 import { HitboxType, RectangleHitbox } from "@common/utils/hitbox";
-import { isStairLayer } from "@common/utils/layer";
 import { Config as ClientConfig } from "../../client/src/scripts/config";
 import { FireMode, GameConstants } from "../../common/src/constants";
 import { Ammos } from "../../common/src/definitions/ammos";
@@ -828,13 +827,13 @@ logger.indent("Validating building definitions", () => {
                                         }
 
                                         // this isn't always accurate because the layer of obstacles is relative to the layer of their parent building
-                                        /*if (reference.isStair) {
+                                        /* if (reference.isStair) {
                                             tester.assert(
                                                 isStairLayer(obstacle.layer ?? 0),
                                                 `Obstacle with role "Stair" must be placed on a stair layer (given layer is ${obstacle.layer})`,
                                                 errorPath
                                             );
-                                        }*/
+                                        } */
                                     }
                                 }
 
