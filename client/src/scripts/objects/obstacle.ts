@@ -293,7 +293,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, this.game.layer);
 
         // hides bunker doors on ground layer
-        if (this.definition.visibleFromLayers === Layers.All) {
+        if (this.definition.visibleFromLayers === Layers.All && this.game.activePlayer !== undefined) {
             this.container.visible = adjacentOrEqualLayer(this.layer, this.game.layer!);
         }
     }
