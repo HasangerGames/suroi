@@ -21,10 +21,9 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "singleBuilding:headquarters",
+    map: "singleBuilding:small_bunker",
 
-    spawn: { mode: SpawnMode.Fixed, position: Vec.create(472, 426), layer: 2 },
-    // spawn: { mode: SpawnMode.Center },
+    spawn: { mode: SpawnMode.Center },
 
     maxTeamSize: TeamSize.Solo,
 
