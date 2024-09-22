@@ -382,7 +382,7 @@ export class InputManager {
             function controllerInput(){
                 if(controllerIndex !== null){
                     const gamepad = navigator.getGamepads()[controllerIndex];
-                    const GamepadButtonMap = ["GamepadA", "GamepadB", "GamepadX", "GamepadY", "GamepadLB", "GamepadRB", "GamepadLT", "GamepadRT", "GamepadView", "GamepadMenu", "GamepadLS", "GamepadRS", "GamepadHome",] // truncated for demo purposes
+                    const GamepadButtonMap = ["GamepadA", "GamepadB", "GamepadX", "GamepadY", "GamepadLB", "GamepadRB", "GamepadLT", "GamepadRT", "GamepadView", "GamepadMenu", "GamepadLS", "GamepadRS", "GamepadHome",]
             
                 if (event instanceof GamepadEvent) {
                 input = GamepadButtonMap.find((_, i) => gamepad.buttons[i].pressed) ?? "GamepadUnknown"
@@ -408,8 +408,10 @@ export class InputManager {
             };
 
             function gameLoop(){
+                if(controllerIndex !== null){
                 controllerInput();
                 requestAnimationFrame(gameLoop);
+                }
             };
             gameLoop();
         if (event instanceof KeyboardEvent) {
@@ -538,25 +540,10 @@ export class InputManager {
             return input as Ret;
         }
         if (event instanceof GamepadEvent) {
-            gameLoop();
-            switch (true) {
-                case event.gamepad.buttons[0].pressed: { input = "GamepadA"; break; }
-                case event.gamepad.buttons[1].pressed: { input = "GamepadB"; break; }
-                case event.gamepad.buttons[2].pressed: { input = "GamepadX"; break; }
-                case event.gamepad.buttons[3].pressed: { input = "GamepadY"; break; }
-                case event.gamepad.buttons[4].pressed: { input = "GamepadLB"; break; }
-                case event.gamepad.buttons[5].pressed: { input = "GamepadRB"; break; }
-                case event.gamepad.buttons[6].pressed: { input = "GamepadLT"; break; }
-                case event.gamepad.buttons[7].pressed: { input = "GamepadRT"; break; }
-                case event.gamepad.buttons[8].pressed: { input = "GamepadView"; break; }
-                case event.gamepad.buttons[9].pressed: { input = "GamepadMenu"; break; }
-                case event.gamepad.buttons[10].pressed: { input = "GamepadLS"; break; }
-                case event.gamepad.buttons[11].pressed: { input = "GamepadRS"; break; }
-                case event.gamepad.buttons[12].pressed: { input = "dPadLeft"; break; }
-                case event.gamepad.buttons[13].pressed: { input = "dPadRight"; break; }
-                case event.gamepad.buttons[14].pressed: { input = "dPadUp"; break; }
-                case event.gamepad.buttons[15].pressed: { input = "dPadDown"; break; }
-                case event.gamepad.buttons[16].pressed: { input = "GamepadHome"; break; }
+            const gamepad = navigator.getGamepads()[controllerIndex];
+            const GamepadButtonMap = ["GamepadA", "GamepadB", "GamepadX", "GamepadY", "GamepadLB", "GamepadRB", "GamepadLT", "GamepadRT", "GamepadView", "GamepadMenu", "GamepadLS", "GamepadRS", "GamepadHome",]
+            for (let i = 0; i < gamepad.buttons.length; i++) {
+                if(event.gamepad.buttons[i].pressed) { input = GamepadButtonMap[i] ?? "GamepadUnknown"; break; }
             }
             if (input === "") {
                 console.error("An unrecognized gamepad event was received: ", event);
@@ -910,8 +897,5 @@ class InputMapper {
             {}
         );
     }
-}
-function connect(evt: any) {
-    throw new Error("Function not implemented.");
 }
 
