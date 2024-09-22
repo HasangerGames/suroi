@@ -10,9 +10,7 @@ import { Throwables, type ThrowableDefinition } from "@common/definitions/throwa
 import { Numeric } from "@common/utils/math";
 import { ExtendedMap, type Timeout } from "@common/utils/misc";
 import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
-import type { Vector } from "@common/utils/vector";
 
-import { type Game } from "../game";
 import { type Player } from "../objects/player";
 import { HealingAction } from "./action";
 import { GunItem } from "./gunItem";
