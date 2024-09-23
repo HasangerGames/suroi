@@ -1081,7 +1081,11 @@
         justify-content: center;
         align-items: center;
 
-        cursor: pointer !important;
+        cursor: crosshair;
+
+        &.has-item:not(.active) {
+            cursor: pointer;
+        }
 
         &.item-slot {
             padding: 0 8px 0 8px;
@@ -1152,7 +1156,6 @@
 
         &.active {
             outline: 3px solid $orange;
-            cursor: crosshair !important;
 
             @media screen and (max-width: $screen_large) {
                 outline-width: 2px;
@@ -1434,6 +1437,10 @@
     bottom: 50px;
     left: 10px;
 
+    .item-slot.has-item {
+        cursor: pointer;
+    }
+
     @media screen and (max-width: $screen_large) {
         left: 5px;
     }
@@ -1480,6 +1487,13 @@
     justify-content: flex-start;
 }
 
+#ammos-container, #healing-items-container {
+    &.active .item-slot {
+        opacity: 1;
+        cursor: pointer !important;
+    }
+}
+
 #equipment-container {
     position: absolute;
     bottom: 10px;
@@ -1508,6 +1522,8 @@
         height: 78px;
         transition-property: width height;
         transition-duration: 0.25s;
+
+        cursor: crosshair;
 
         &.has-item {
             background: radial-gradient(
@@ -1879,8 +1895,7 @@
 
 #weapons-container,
 #healing-items-container,
-#ammo-container,
-#special-ammo-container,
+#ammos-container,
 #center-top-container,
 #game-menu,
 #mobile-options,
