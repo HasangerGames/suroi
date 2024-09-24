@@ -1399,7 +1399,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: RectangleHitbox.fromRect(12.7, 1.6, Vec.create(0.85, 0)),
                 rotationMode: RotationMode.Limited,
                 noResidue: true,
-                animationDuration: 1100,
+                animationDuration: 600,
                 role: ObstacleSpecialRoles.Door,
                 hingeOffset: Vec.create(-5.5, 0),
                 zIndex: ZIndexes.ObstaclesLayer3,
