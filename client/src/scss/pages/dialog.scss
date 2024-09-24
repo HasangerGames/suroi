@@ -1,3 +1,4 @@
+@use "sass:color";
 @import "../utils/tabs.scss";
 @import "../palette.scss";
 
@@ -714,7 +715,7 @@
                 border: 2px solid gray;
                 border-radius: 10px;
                 padding: 7px;
-                background-color: lighten($transparent_bg, 30%);
+                background-color: color.adjust($transparent_bg, $lightness: 30%);
             }
 
             .modal-item:not(:last-child) {
