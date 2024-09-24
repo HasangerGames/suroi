@@ -4007,8 +4007,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 },
                 sounds: {
                     solved: "speaker",
-                    position: Vec.create(61, -77),
-                    maxRange: 97,
+                    position: Vec.create(29.71, -79.14),
+                    maxRange: 105,
                     falloff: 0.5
                 },
                 obstacles: [
