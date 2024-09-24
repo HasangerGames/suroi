@@ -34,6 +34,14 @@ const config: UserConfig = {
         spritesheet()
     ],
 
+    css: {
+        preprocessorOptions: {
+            scss: {
+                api: "modern-compiler"
+            }
+        }
+    },
+
     define: {
         APP_VERSION: JSON.stringify(pkg.version)
     }
