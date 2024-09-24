@@ -2039,7 +2039,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
         // Active weapon ammo button reloads
         $("#weapon-clip-reload-icon").show();
-        ui.activeAmmo.on("click", () => game.console.handleQuery("reload"));
+        ui.activeAmmo.on("click", () => game.console.handleQuery("reload", "never"));
 
         // Emote button & wheel
         ui.emoteWheel

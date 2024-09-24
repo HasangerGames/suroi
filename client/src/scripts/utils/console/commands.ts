@@ -1881,5 +1881,5 @@ export function setUpCommands(game: Game): void {
         alias toggle_hud "toggle cv_draw_hud";\
         alias toggle_map "toggle cv_map_expanded";\
         alias toggle_console "toggle cv_console_open";
-    `);
+    `, "never");
 }

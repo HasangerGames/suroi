@@ -457,7 +457,7 @@ export class InputManager {
             }
 
             if (typeof query === "string") {
-                const { compiled } = this.game.console.handleQuery(query);
+                const { compiled } = this.game.console.handleQuery(query, "always");
 
                 if (compiled !== undefined) {
                     this.binds.overrideWithCompiled(input, query, compiled);
