@@ -671,6 +671,23 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 zIndex: ZIndexes.ObstaclesLayer3
             },
             {
+                idString: "vibrant_bush",
+                name: "Vibrant Bush",
+                material: "bush",
+                health: 120,
+                scale: {
+                    spawnMin: 0.9,
+                    spawnMax: 1.1,
+                    destroy: 0.8
+                },
+                hitbox: new CircleHitbox(5.4),
+                noCollisions: true,
+                rotationMode: RotationMode.Full,
+                particleVariations: 2,
+                variations: 3,
+                zIndex: ZIndexes.ObstaclesLayer3
+            },
+            {
                 idString: "detector_walls",
                 name: "Detector Walls",
                 material: "iron",

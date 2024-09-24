@@ -211,27 +211,10 @@ const maps = {
             maxWideWidth: 30
         },
         buildings: {
-            large_bridge: 2,
             small_bridge: Infinity,
             sea_traffic_control: 1,
-            tugboat_red: 1,
-            tugboat_white: 5,
             small_bunker: 1,
-            warehouse: 5,
-            green_house: 2,
-            blue_house: 2,
-            red_house: 3,
-            red_house_v2: 3,
-            construction_site: 1,
-            porta_potty: 12,
-            container_3: 2,
-            container_4: 2,
-            container_5: 2,
-            container_6: 2,
-            container_7: 1,
-            container_8: 2,
-            container_9: 1,
-            container_10: 2
+            construction_site: 1
         },
         quadBuildingLimit: {
             red_house: 1,
@@ -254,10 +237,9 @@ const maps = {
             rock: 150,
             river_chest: 1,
             river_rock: 45,
-            bush: 110,
+            vibrant_bush: 160,
             // birthday_cake: 100, // birthday mode
             lily_pad: 20,
-            blueberry_bush: 30,
             barrel: 80,
             viking_chest: 1,
             super_barrel: 30,

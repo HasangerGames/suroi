@@ -10,6 +10,7 @@ export interface ModeDefinition {
 }
 
 export interface ReskinDefinition {
+    readonly textures?: string[]
     readonly sounds?: string[]
 }
 
