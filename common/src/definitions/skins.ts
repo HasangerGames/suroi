@@ -15,7 +15,7 @@ export interface SkinDefinition extends ItemDefinition {
     readonly backpackTint?: number
     readonly hideEquipment: boolean
     readonly roleRequired?: string
-    readonly hideBlood?: boolean
+    readonly hideBlood: boolean
 }
 
 export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(

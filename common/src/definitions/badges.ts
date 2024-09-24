@@ -1,7 +1,7 @@
 import { createTemplate, ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
 
 export interface BadgeDefinition extends ObjectDefinition {
-    readonly roles?: string[]
+    readonly roles?: readonly string[]
 }
 
 const badge = createTemplate<BadgeDefinition>()((name: string, roles: string[] = []) => ({

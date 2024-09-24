@@ -22,7 +22,7 @@ const emote = createTemplate<EmoteDefinition>()((name: string, category: EmoteCa
     category
 }));
 
-const team_emote = createTemplate<EmoteDefinition>()((idString: string) => ({
+const teamEmote = createTemplate<EmoteDefinition>()((idString: string) => ({
     idString,
     name: idString,
     isTeamEmote: true,
@@ -120,7 +120,7 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
     ...[
         ...Ammos.definitions.filter(a => !a.ephemeral),
         ...HealingItems.definitions
-    ].map(({ idString }) => team_emote([idString]))
+    ].map(({ idString }) => teamEmote([idString]))
 ]);
 
 export const emoteIdStrings = Emotes.definitions.map(emote => emote.idString);

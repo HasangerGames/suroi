@@ -307,13 +307,13 @@ export class UIManager {
     readonly action = {
         active: false,
         /*
-        whether this timer corresponds to an actual action being carried
-        out by this player (like reloading), or if it corresponds to some
-        other timed event that just so happens to piggyback off this timer
-        system (getting revived). pretty much only exists for the
-        aforementioned case of being revived, and prevents the "cancel" popup
-        from appearing
-    */
+            whether this timer corresponds to an actual action being carried
+            out by this player (like reloading), or if it corresponds to some
+            other timed event that just so happens to piggyback off this timer
+            system (getting revived). pretty much only exists for the
+            aforementioned case of being revived, and prevents the "cancel" popup
+            from appearing
+        */
         fake: false,
         start: -1,
         time: 0

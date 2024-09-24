@@ -43,9 +43,9 @@ export class GameMap {
     private readonly _packet: Omit<MapPacketData, "objects"> & { readonly objects: Mutable<MapPacketData["objects"]> };
 
     /**
-    * A cached map packet buffer
-    * Since the map is static, there's no reason to serialize a map packet for each player that joins the game
-    */
+     * A cached map packet buffer
+     * Since the map is static, there's no reason to serialize a map packet for each player that joins the game
+     */
     readonly buffer: ArrayBuffer;
 
     private readonly _beachPadding;

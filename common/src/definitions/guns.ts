@@ -11,8 +11,6 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly ammoSpawnAmount: number
     readonly capacity: number
     readonly reloadTime: number
-    readonly reloadFullOnEmpty?: boolean
-    readonly fullReloadTime?: number
     readonly singleReload: boolean
     readonly infiniteAmmo: boolean
 
@@ -82,6 +80,11 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly noMuzzleFlash: boolean
     readonly ballistics: BaseBulletDefinition
 } & ({
+    readonly reloadFullOnEmpty?: false
+} | {
+    readonly reloadFullOnEmpty: true
+    readonly fullReloadTime: number
+}) & ({
     readonly fireMode: FireMode.Auto | FireMode.Single
 } | {
     readonly fireMode: FireMode.Burst
@@ -1595,7 +1598,6 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             moveSpread: 0.4,
             length: 10.8,
             casingParticles: [{
-                frame: "casing_338lap",
                 position: Vec.create(3.5, 0.2),
                 ejectionDelay: 500
             }],

@@ -908,7 +908,9 @@ export class Game {
                             case object?.isObstacle: {
                                 switch (object.definition.role) {
                                     case ObstacleSpecialRoles.Door:
-                                        text = object.door?.offset === 0 ? getTranslatedString("action_open_door") : getTranslatedString("action_close_door");
+                                        text = object.door?.offset === 0
+                                            ? getTranslatedString("action_open_door")
+                                            : getTranslatedString("action_close_door");
                                         break;
                                     case ObstacleSpecialRoles.Activatable:
                                         text = getTranslatedString(`interact_${object.definition.idString}`);
@@ -957,7 +959,11 @@ export class Game {
                             .hide();
                     }
 
-                    if (!(object?.isObstacle && object.definition.noInteractMessage)) interactMsg.show();
+                    if (
+                        !object?.isObstacle
+                        || !object.definition.isActivatable
+                        || !object.definition.noInteractMessage
+                    ) interactMsg.show();
                 } else {
                     interactMsg.hide();
                 }

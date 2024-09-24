@@ -20,7 +20,7 @@ export const enum Layer {
     Floor1 = 2
 }
 
-export enum Layers {
+export const enum Layers {
     All,      // Collide with objects on all layers
     Adjacent, // Collide with objects on the same or adjacent layers
     Equal     // Only collide with objects on the same layer
@@ -58,13 +58,13 @@ export enum KillfeedMessageType {
     KillLeaderUpdated
 }
 
-export enum GasState {
+export const enum GasState {
     Inactive,
     Waiting,
     Advancing
 }
 
-export enum FireMode {
+export const enum FireMode {
     Single,
     Burst,
     Auto

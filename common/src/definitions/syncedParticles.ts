@@ -49,11 +49,6 @@ export type SyncedParticleDefinition = ObjectDefinition & {
      */
     readonly velocity: Animated<Vector> | VectorSpecifier
     /**
-     * @default {undefined}
-     */
-    readonly variations?: Variation
-    readonly variationBits?: number // TODO Auto generate this property if synced particles w/ variations are added
-    /**
      * @default {ZIndexes.ObstaclesLayer1}
      */
     readonly zIndex: ZIndexes
@@ -66,6 +61,18 @@ export type SyncedParticleDefinition = ObjectDefinition & {
         readonly adrenaline: number
     }
 } & ({
+    /**
+     * @default {undefined}
+     */
+    readonly variations?: undefined
+    readonly variationBits?: never
+} | {
+    /**
+     * @default {undefined}
+     */
+    readonly variations: Variation
+    readonly variationBits: number // TODO Auto generate this property if synced particles w/ variations are added
+}) & ({
     readonly hitbox?: undefined
 } | {
     readonly hitbox: CircleHitbox

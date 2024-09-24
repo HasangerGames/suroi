@@ -525,7 +525,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const variant = full.variant;
             stream.writeBoolean(variant !== undefined);
             if (variant !== undefined) {
-                // serialized & unserialized co-defined
+                // serialized & deserialized co-defined
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 stream.writeBits(variant, full.definition.variationBits!);
             }

@@ -675,11 +675,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this.spawnCasingParticles("reload", false);
 
                     const { weapons, activeWeaponIndex } = this.game.uiManager.inventory;
-                    const reloadFullClip = weaponDef.fullReloadTime && weapons[activeWeaponIndex]?.count === 0;
+                    const reloadFullClip = weaponDef.reloadFullOnEmpty && (weapons[activeWeaponIndex]?.count ?? 0) <= 0;
 
                     actionSoundName = `${weaponDef.idString}_reload${reloadFullClip ? "_full" : ""}`;
                     if (this.isActivePlayer) {
-                        uiManager.animateAction(getTranslatedString("action_reloading"), reloadFullClip ? weaponDef.fullReloadTime : weaponDef.reloadTime);
+                        uiManager.animateAction(
+                            getTranslatedString("action_reloading"),
+                            reloadFullClip ? weaponDef.fullReloadTime : weaponDef.reloadTime
+                        );
                     }
 
                     break;
@@ -689,13 +692,19 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     actionSoundName = itemDef.idString;
                     this.healingParticlesEmitter.active = true;
                     if (this.isActivePlayer) {
-                        uiManager.animateAction(getTranslatedString(`action_${itemDef.idString}_use`, { item: getTranslatedString(itemDef.idString) }), itemDef.useTime);
+                        uiManager.animateAction(
+                            getTranslatedString(`action_${itemDef.idString}_use`, { item: getTranslatedString(itemDef.idString) }),
+                            itemDef.useTime
+                        );
                     }
                     break;
                 }
                 case PlayerActions.Revive: {
                     if (this.isActivePlayer) {
-                        uiManager.animateAction(getTranslatedString("action_reviving"), GameConstants.player.reviveTime);
+                        uiManager.animateAction(
+                            getTranslatedString("action_reviving"),
+                            GameConstants.player.reviveTime
+                        );
                     }
                     break;
                 }

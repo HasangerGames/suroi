@@ -638,7 +638,7 @@ export type BaseBulletDefinition = {
     /**
      * When hitting a reflective surface:
      * - `true` causes the explosion to be spawned
-     * - `false` causes the projectile to be reflected
+     * - `false` causes the projectile to be reflected (default)
      */
     readonly explodeOnImpact?: boolean
 });

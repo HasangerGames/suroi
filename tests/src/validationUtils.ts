@@ -614,35 +614,6 @@ export const validators = Object.freeze({
             });
         }
 
-        if (ballistics.rangeVariance !== undefined) {
-            tester.assertInBounds({
-                obj: ballistics,
-                field: "rangeVariance",
-                min: 0,
-                max: 1,
-                includeMax: true,
-                includeMin: true,
-                baseErrorPath
-            });
-        }
-
-        if (ballistics.onHitExplosion !== undefined) {
-            tester.assertReferenceExists({
-                obj: ballistics,
-                field: "onHitExplosion",
-                collection: Explosions,
-                collectionName: "Explosions",
-                baseErrorPath
-            });
-
-            tester.assertNoPointlessValue({
-                obj: ballistics,
-                field: "explodeOnImpact",
-                defaultValue: false,
-                baseErrorPath
-            });
-        }
-
         const trail = ballistics.trail;
         if (trail) {
             logger.indent("Validating trail", () => {
@@ -724,6 +695,35 @@ export const validators = Object.freeze({
                     includeMin: true,
                     includeMax: true
                 });
+            });
+        }
+
+        if (ballistics.rangeVariance !== undefined) {
+            tester.assertInBounds({
+                obj: ballistics,
+                field: "rangeVariance",
+                min: 0,
+                max: 1,
+                includeMax: true,
+                includeMin: true,
+                baseErrorPath
+            });
+        }
+
+        if (ballistics.onHitExplosion !== undefined) {
+            tester.assertReferenceExists({
+                obj: ballistics,
+                field: "onHitExplosion",
+                collection: Explosions,
+                collectionName: "Explosions",
+                baseErrorPath
+            });
+
+            tester.assertNoPointlessValue({
+                obj: ballistics,
+                field: "explodeOnImpact",
+                defaultValue: false,
+                baseErrorPath
             });
         }
     },
@@ -892,7 +892,7 @@ export const validators = Object.freeze({
         });
 
         tester.assertWarn(
-            weightedItem.spawnSeparately === true && weightedItem.count === 1,
+            weightedItem.spawnSeparately === true && (weightedItem.count ?? 1) === 1,
             "Specifying 'spawnSeparately' for a drop declaration with 'count' 1 is pointless",
             baseErrorPath
         );

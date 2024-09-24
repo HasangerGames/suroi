@@ -788,16 +788,16 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
 
                     // Outer walls
                     // Bottom left walls
-                    { key: "concrete_wall_end", position: Vec.create(-15, 83), rotation: 0 },
-                    { key: "concrete_wall_corner", position: Vec.create(-53, 83), rotation: 0 },
+                    { key: "concrete_wall_end", position: Vec.create(-15, 83) },
+                    { key: "concrete_wall_corner", position: Vec.create(-53, 83) },
                     { key: "concrete_wall_end_broken_1", position: Vec.create(-53, 65.5), rotation: Math.PI * 1.5 },
                     // Wall from bottom left to top left
                     { key: "concrete_wall_end_broken_2", position: Vec.create(-53, 44), rotation: Math.PI / 2 },
                     // Top left corner
                     { key: "concrete_wall_corner", position: Vec.create(-53, -40), rotation: Math.PI / 2 },
-                    { key: "concrete_wall_end_broken_1", position: Vec.create(7, -40), rotation: 0 },
+                    { key: "concrete_wall_end_broken_1", position: Vec.create(7, -40) },
                     { key: "concrete_wall_end_broken_2", position: Vec.create(20, -40), rotation: Math.PI },
-                    { key: "concrete_wall_end_broken_2", position: Vec.create(82, -40), rotation: 0 },
+                    { key: "concrete_wall_end_broken_2", position: Vec.create(82, -40) },
                     { key: "concrete_wall_end_broken_1", position: Vec.create(106, -40), rotation: Math.PI },
                     // Top right corner
                     { key: "concrete_wall_corner", position: Vec.create(123, -40), rotation: Math.PI },

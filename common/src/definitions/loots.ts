@@ -32,14 +32,12 @@ export type TypedLootDefinition<Type extends ItemType> = LootDefinition & { read
  * a set of definitions according to their item type
  */
 export class LootDefinitions extends ObjectDefinitions<LootDefinition> {
-    private readonly _byTypeMapping: {
-        [K in ItemType]?: ReadonlyArray<TypedLootDefinition<K>>
-    };
+    private readonly _byTypeMapping: Array<ReadonlyArray<TypedLootDefinition<ItemType>>>;
 
     constructor(definitions: ReadonlyArray<RawDefinition<LootDefinition>>) {
         super(definitions);
 
-        this._byTypeMapping = {};
+        this._byTypeMapping = [];
         for (const def of this.definitions) {
             (
                 (this._byTypeMapping[def.itemType] ??= []) as Array<TypedLootDefinition<typeof def.itemType>>
@@ -52,8 +50,8 @@ export class LootDefinitions extends ObjectDefinitions<LootDefinition> {
      * @param itemType The item type to filter by
      * @returns All definitions whose `itemType` property match the given one
      */
-    byType<Type extends ItemType>(itemType: Type): ReadonlyArray<TypedLootDefinition<Type>> {
-        return [...(this._byTypeMapping[itemType] ?? [])];
+    byType<Type extends ItemType>(itemType: Type): Array<TypedLootDefinition<Type>> {
+        return [...(this._byTypeMapping[itemType] ??= [])] as Array<TypedLootDefinition<Type>>;
     }
 }
 

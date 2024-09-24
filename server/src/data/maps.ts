@@ -84,7 +84,6 @@ const maps = {
             minWideWidth: 25,
             maxWideWidth: 30
         },
-        majorBuildings: ["armory", "port_complex", "refinery", "headquarters"],
         buildings: {
             large_bridge: 2,
             small_bridge: Infinity,

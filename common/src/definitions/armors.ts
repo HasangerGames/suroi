@@ -1,4 +1,4 @@
-import { createTemplate, ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
+import { ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
 
 export type ArmorDefinition = ItemDefinition & {
     readonly itemType: ItemType.Armor
@@ -17,15 +17,6 @@ export enum ArmorType {
     Helmet,
     Vest
 }
-
-interface A {
-    a?: string
-    b: number
-}
-
-const a = createTemplate<A>()({ b: 2 });
-
-a({ });
 
 export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
     {

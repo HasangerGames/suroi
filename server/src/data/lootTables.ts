@@ -159,7 +159,7 @@ export const LootTables: Record<string, LootTable> = {
                 { item: "15x_scope", weight: 0.0025 }
             ],
             [
-                { item: "tango_51", spawnSeparately: true, weight: 60 },
+                { item: "tango_51", weight: 60 },
                 { item: "tango_51", spawnSeparately: true, count: 2, weight: 30 },
                 { item: "tango_51", spawnSeparately: true, count: 3, weight: 3.5 },
                 { item: "tango_51", spawnSeparately: true, count: 4, weight: 0.1 },
