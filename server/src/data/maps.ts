@@ -558,7 +558,7 @@ const maps = {
         beachSize: 8,
         oceanSize: 8,
         onGenerate(map, [obstacle]) {
-            map.generateObstacle(obstacle, Vec.create(this.width / 2, this.height / 2), { layer: 0 });
+            map.generateObstacle(obstacle, Vec.create(this.width / 2, this.height / 2), { layer: 0, rotation: 0 });
         }
     },
     singleGun: {

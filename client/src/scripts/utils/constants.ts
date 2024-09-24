@@ -5,7 +5,7 @@ import { Layer } from "../../../../common/src/constants";
 
 export const FORCE_MOBILE = false;
 export const UI_DEBUG_MODE = false;
-export const HITBOX_DEBUG_MODE = !false;
+export const HITBOX_DEBUG_MODE = false;
 export const DIFF_LAYER_HITBOX_OPACITY = 0;
 export const FOOTSTEP_HITBOX_LAYER = Layer.Ground;
 

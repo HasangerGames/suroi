@@ -1403,6 +1403,28 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 }
             },
             {
+                idString: "barn_door",
+                name: "Barn Door",
+                material: "wood",
+                doorSound: "barn_door",
+                health: 150,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 1
+                },
+                hitbox: RectangleHitbox.fromRect(12.7, 1.6, Vec.create(0.85, 0)),
+                rotationMode: RotationMode.Limited,
+                noResidue: true,
+                animationDuration: 1100,
+                role: ObstacleSpecialRoles.Door,
+                hingeOffset: Vec.create(-5.5, 0),
+                zIndex: ZIndexes.ObstaclesLayer3,
+                frames: {
+                    particle: "furniture_particle"
+                }
+            },
+            {
                 idString: "aegis_golden_case",
                 name: "Golden Aegis Case",
                 material: "wood", // crate or wood?
@@ -3245,6 +3267,68 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 ),
                 rotationMode: RotationMode.Limited,
                 allowFlyover: FlyoverPref.Always,
+                invisible: true,
+                frames: {
+                    particle: "metal_particle"
+                }
+            },
+            {
+                idString: "barn_stair_walls",
+                name: "Barn Stair Walls",
+                material: "metal_heavy",
+                health: 1000,
+                hideOnMap: true,
+                indestructible: true,
+                spanAdjacentLayers: true,
+                reflectBullets: true,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(1, 9, Vec.create(-45, 0.5)),
+                    RectangleHitbox.fromRect(1, 9, Vec.create(-52.8, 0.5)),
+                    RectangleHitbox.fromRect(9, 1, Vec.create(9.1, -31.1)),
+                    RectangleHitbox.fromRect(9, 1, Vec.create(9.1, -39))
+                ),
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Always,
+                invisible: true,
+                frames: {
+                    particle: "metal_particle"
+                }
+            },
+            {
+                idString: "barn_stair_walls_top_floor",
+                name: "Barn Stair Walls",
+                material: "metal_heavy",
+                health: 1000,
+                hideOnMap: true,
+                indestructible: true,
+                reflectBullets: true,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(1, 8, Vec.create(-45, 0)),
+                    RectangleHitbox.fromRect(1, 8, Vec.create(-52.8, 0)),
+                    RectangleHitbox.fromRect(8, 1, Vec.create(9.5, -31.1)),
+                    RectangleHitbox.fromRect(8, 1, Vec.create(9.5, -39))
+                ),
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Always,
+                invisible: true,
+                frames: {
+                    particle: "metal_particle"
+                }
+            },
+            {
+                idString: "barn_stair_walls_2",
+                name: "Barn Stair Walls",
+                material: "metal_heavy",
+                health: 1000,
+                hideOnMap: true,
+                indestructible: true,
+                reflectBullets: true,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(8, 1.5, Vec.create(-48.5, 4.25)),
+                    RectangleHitbox.fromRect(1.5, 8, Vec.create(5.25, -35))
+                ),
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Never, // todo
                 invisible: true,
                 frames: {
                     particle: "metal_particle"
