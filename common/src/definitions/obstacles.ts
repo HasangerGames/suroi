@@ -1124,23 +1124,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hasLoot: true
             },
             {
-                idString: "metal_shelf",
-                name: "Metal Shelf",
-                material: "metal_heavy",
-                health: 1000,
-                indestructible: true,
-                noMeleeCollision: true,
-                hideOnMap: true,
-                hitbox: RectangleHitbox.fromRect(25.5, 6.6),
-                rotationMode: RotationMode.Limited,
-                noResidue: true,
-                frames: {
-                    particle: "metal_particle"
-                },
-                zIndex: ZIndexes.ObstaclesLayer1 - 3,
-                reflectBullets: true
-            },
-            {
                 idString: "hq_large_cart",
                 name: "Large Cart",
                 material: "iron",

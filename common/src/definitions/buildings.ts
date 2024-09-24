@@ -1747,11 +1747,13 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 floorImages: [
                     {
                         key: "shed_floor_1",
-                        position: Vec.create(0, -8.3)
+                        position: Vec.create(0, -8.3),
+                        scale: Vec.create(2, 2)
                     },
                     {
                         key: "shed_floor_2",
-                        position: Vec.create(0, 8.1)
+                        position: Vec.create(0, 8.1),
+                        scale: Vec.create(2, 2)
                     }
                 ],
                 ceilingImages: [
@@ -3295,11 +3297,13 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 floorImages: [
                     {
                         key: "sea_traffic_control_floor_1",
-                        position: Vec.create(0, -15.45)
+                        position: Vec.create(0, -15.45),
+                        scale: Vec.create(2, 2)
                     },
                     {
                         key: "sea_traffic_control_floor_2",
-                        position: Vec.create(0, 15.4)
+                        position: Vec.create(0, 15.4),
+                        scale: Vec.create(2, 2)
                     }
                 ],
                 ceilingImages: [{
@@ -3514,19 +3518,23 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 floorImages: [
                     {
                         key: "construction_site_floor_1_left",
-                        position: Vec.create(-16.5, -16.5)
+                        position: Vec.create(-16.5, -16.5),
+                        scale: Vec.create(2, 2)
                     },
                     {
                         key: "construction_site_floor_1_right",
-                        position: Vec.create(15.5, -16.5)
+                        position: Vec.create(15.5, -16.5),
+                        scale: Vec.create(2, 2)
                     },
                     {
                         key: "construction_site_floor_2_right",
-                        position: Vec.create(-16.5, 16)
+                        position: Vec.create(-16.5, 16),
+                        scale: Vec.create(2, 2)
                     },
                     {
                         key: "construction_site_floor_2_left",
-                        position: Vec.create(16.5, 16)
+                        position: Vec.create(16.5, 16),
+                        scale: Vec.create(2, 2)
                     }
                 ],
                 floors: [
@@ -4343,7 +4351,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     {
                         key: "barn_floor_3",
                         position: Vec.create(44.8, -11.94),
-                        scale: Vec.create(1.07, 1.07)
+                        scale: Vec.create(2.14, 2.14)
                     },
                     {
                         key: "barn_floor_2",
