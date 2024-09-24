@@ -4435,7 +4435,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "box", position: Vec.create(-50.76, -26.18) },
                     { idString: "box", position: Vec.create(8.98, 12.94) },
                     { idString: "box", position: Vec.create(14.16, 10.48) },
-                    { idString: "aegis_crate", position: Vec.create(-48.59, 10.82) },
+                    { idString: "flint_crate", position: Vec.create(-48.59, 10.82) },
                     { idString: "bookshelf", position: Vec.create(12.45, -28.13), rotation: 0 },
                     { idString: "gun_case", position: Vec.create(0.92, -34.24), rotation: 3 },
                     { idString: "box", position: Vec.create(-4.98, -36.84) },
