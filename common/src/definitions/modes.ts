@@ -78,13 +78,13 @@ export const Reskins: Record<string, ReskinDefinition> = {
         ]
     },
     fall: {
-        textures: [
+        textures: [ // why does this exist? its not even used..
             "oak_tree_1",
             "oak_tree_2",
             "oak_tree_3",
             "oak_tree_4",
             "oak_tree_5",
-            "oak_tree_6"
+            "oak_tree_6",
         ]
     }
 
