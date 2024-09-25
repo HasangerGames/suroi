@@ -176,7 +176,7 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
             case HitboxType.Group:
                 return that.collidesWith(this);
             case HitboxType.Polygon:
-                // todo: proper circle to polygon detection
+                // TODO: proper circle to polygon detection
                 return that.collidesWith(this.toRectangle());
         }
     }

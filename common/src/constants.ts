@@ -146,7 +146,7 @@ const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType
 export const GameConstants = freezeDeep({
     // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
     // or a new item is added to a definition list
-    protocolVersion: 26,
+    protocolVersion: 27,
     gridSize: 32,
     bleedOutDPMs: 0.002, // === 2 dps
     maxPosition: 1632,

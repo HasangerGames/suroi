@@ -170,7 +170,12 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
         if (!HITBOX_DEBUG_MODE) return;
 
         this.debugGraphics.clear();
-        drawHitbox(this.hitbox, HITBOX_COLORS.loot, this.debugGraphics, this.layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY);
+        drawHitbox(
+            this.hitbox,
+            HITBOX_COLORS.loot,
+            this.debugGraphics,
+            this.layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY
+        );
     }
 
     destroy(): void {

@@ -1,5 +1,5 @@
 import { Loots, type LootDefinition, type WeaponDefinition } from "@common/definitions/loots";
-import { type ItemType, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
+import { type ItemType, type PlayerModifiers, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 
 import { type Player } from "../objects/player";
 
@@ -21,13 +21,12 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
      */
     readonly owner: Player;
 
-    private readonly _modifiers = {
-        // Multiplicative
+    private readonly _modifiers: PlayerModifiers = {
         maxHealth: 1,
         maxAdrenaline: 1,
         baseSpeed: 1,
+        size: 1,
 
-        // Additive
         minAdrenaline: 0
     };
 
@@ -132,16 +131,18 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
         if (!definition.wearerAttributes) return;
 
         const { active, passive, on } = definition.wearerAttributes;
-        const newModifiers: this["modifiers"] = {
+        const newModifiers: PlayerModifiers = {
             maxHealth: 1,
             maxAdrenaline: 1,
             baseSpeed: 1,
+            size: 1,
             minAdrenaline: 0
         };
         const applyModifiers = (modifiers: WearerAttributes): void => {
             newModifiers.maxHealth *= modifiers.maxHealth ?? 1;
             newModifiers.maxAdrenaline *= modifiers.maxAdrenaline ?? 1;
             newModifiers.baseSpeed *= modifiers.speedBoost ?? 1;
+            newModifiers.size *= modifiers.sizeMod ?? 1;
             newModifiers.minAdrenaline += modifiers.minAdrenaline ?? 0;
         };
 
@@ -171,6 +172,7 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
             maxHealth: this._modifiers.maxHealth !== newModifiers.maxHealth,
             maxAdrenaline: this._modifiers.maxAdrenaline !== newModifiers.maxAdrenaline,
             minAdrenaline: this._modifiers.minAdrenaline !== newModifiers.minAdrenaline,
+            size: this._modifiers.size !== newModifiers.size,
             baseSpeed: this._modifiers.baseSpeed !== newModifiers.baseSpeed
         };
 
@@ -180,6 +182,7 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
             this._modifiers.maxHealth = newModifiers.maxHealth;
             this._modifiers.maxAdrenaline = newModifiers.maxAdrenaline;
             this._modifiers.minAdrenaline = newModifiers.minAdrenaline;
+            this._modifiers.size = newModifiers.size;
             this._modifiers.baseSpeed = newModifiers.baseSpeed;
 
             this.owner.game.pluginManager.emit(

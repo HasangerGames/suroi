@@ -124,9 +124,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     vestLevel = NaN;
     backpackLevel = NaN;
 
-    readonly hitbox = new CircleHitbox(GameConstants.player.radius);
+    private _hitbox = new CircleHitbox(GameConstants.player.radius);
+    get hitbox(): CircleHitbox { return this._hitbox; }
 
     floorType: FloorNames = FloorNames.Grass;
+
+    sizeMod = 1;
 
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Player]) {
         super(game, id);
@@ -203,7 +206,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                 return {
                     frames: `${frame}_particle`,
-                    position: this.hitbox.randomPoint(),
+                    position: this._hitbox.randomPoint(),
                     lifetime: 1000,
                     zIndex: ZIndexes.Players,
                     layer: this.layer,
@@ -255,7 +258,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         if (!casings.length) return;
 
         for (const casingSpec of casings) {
-            const position = Vec.clone(casingSpec.position);
+            const position = Vec.scale(casingSpec.position, this.sizeMod);
             if (weaponDef.isDual) {
                 position.y = (altFire ? -1 : 1) * (position.y + weaponDef.leftRightOffset);
             }
@@ -268,11 +271,13 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     casingSpec.count ?? 1,
                     () => {
                         const spinAmount = randomFloat(Math.PI / 2, Math.PI);
-                        const displacement = randomVector(
-                            casingVelX?.min ?? 2,
-                            casingVelX?.max ?? -5,
-                            casingVelY?.min ?? 10,
-                            casingVelY?.max ?? 15
+                        const displacement = Vec.scale(
+                            randomVector(
+                                casingVelX?.min ?? 2,
+                                casingVelX?.max ?? -5,
+                                casingVelY?.min ?? 10,
+                                casingVelY?.max ?? 15
+                            ), this.sizeMod
                         );
 
                         if (casingVelX?.randomSign) {
@@ -290,8 +295,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             lifetime: 400,
                             layer: this.layer,
                             scale: {
-                                start: 0.8,
-                                end: 0.4
+                                start: 0.8 * this.sizeMod,
+                                end: 0.4 * this.sizeMod
                             },
                             alpha: {
                                 start: 1,
@@ -340,7 +345,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         // Position and rotation
         const oldPosition = Vec.clone(this.position);
         this.position = data.position;
-        this.hitbox.position = this.position;
+        this._hitbox.position = this.position;
 
         this.rotation = data.rotation;
 
@@ -418,7 +423,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     const options = {
                         frames: "ripple_particle",
                         zIndex: ZIndexes.Ground,
-                        position: this.hitbox.randomPoint(),
+                        position: this._hitbox.randomPoint(),
                         lifetime: 1000,
                         layer: this.layer,
                         speed: Vec.create(0, 0)
@@ -614,6 +619,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 ?.setFrame(`${skinID}_fist`)
                 .setTint(tint);
 
+            if (full.sizeMod !== undefined) {
+                this.sizeMod = this.container.scale = full.sizeMod;
+                this._hitbox = new CircleHitbox(GameConstants.player.radius * full.sizeMod, this._hitbox.position);
+            }
+
             const { hideEquipment, helmetLevel, vestLevel, backpackLevel } = this;
 
             this.hideEquipment = skinDef.hideEquipment;
@@ -742,7 +752,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         ctx.clear();
         const alpha = this.layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY;
 
-        drawHitbox(this.hitbox, HITBOX_COLORS.player, ctx, alpha);
+        drawHitbox(this._hitbox, HITBOX_COLORS.player, ctx, alpha);
 
         if (this.downed) {
             drawHitbox(new CircleHitbox(5, this.position), HITBOX_COLORS.obstacleNoCollision, ctx, alpha);
@@ -761,14 +771,20 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 const start = toPixiCoords(
                     Vec.add(
                         this.position,
-                        Vec.rotate(Vec.create(0, offset), this.rotation)
+                        Vec.scale(
+                            Vec.rotate(Vec.create(0, offset), this.rotation),
+                            this.sizeMod
+                        )
                     )
                 );
 
                 const lineEnd = toPixiCoords(
                     Vec.add(
                         this.position,
-                        Vec.rotate(Vec.create(this.activeItem.length, offset), this.rotation)
+                        Vec.scale(
+                            Vec.rotate(Vec.create(this.activeItem.length, offset), this.rotation),
+                            this.sizeMod
+                        )
                     )
                 );
 
@@ -780,10 +796,13 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             case ItemType.Melee: {
                 drawHitbox(
                     new CircleHitbox(
-                        this.activeItem.radius,
+                        this.activeItem.radius * this.sizeMod,
                         Vec.add(
                             this.position,
-                            Vec.rotate(this.activeItem.offset, this.rotation)
+                            Vec.scale(
+                                Vec.rotate(this.activeItem.offset, this.rotation),
+                                this.sizeMod
+                            )
                         )
                     ),
                     HITBOX_COLORS.playerWeapon,
@@ -1474,7 +1493,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this.game.particleManager.spawnParticle({
                         frames: def.animation.leverImage,
                         lifetime: 600,
-                        position: this.position,
+                        position: Vec.add(
+                            this.position,
+                            Vec.scale(def.animation.cook.rightFist, this.sizeMod)
+                        ),
                         layer: this.layer,
                         zIndex: ZIndexes.Players + 1,
                         speed: Vec.rotate(Vec.create(8, 8), this.rotation),
@@ -1484,8 +1506,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             end: 0
                         },
                         scale: {
-                            start: 0.8,
-                            end: 1
+                            start: 0.8 * this.sizeMod,
+                            end: this.sizeMod
                         }
                     });
                 }
@@ -1545,7 +1567,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         frames: def.animation.leverImage,
                         lifetime: 600,
                         layer: this.layer,
-                        position: this.position,
+                        position: Vec.add(
+                            this.position,
+                            Vec.scale(def.animation.cook.rightFist, this.sizeMod)
+                        ),
                         zIndex: ZIndexes.Players + 1,
                         speed: Vec.rotate(Vec.create(8, 8), this.rotation),
                         rotation: this.rotation,
@@ -1554,8 +1579,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             end: 0
                         },
                         scale: {
-                            start: 0.8,
-                            end: 1
+                            start: 0.8 * this.sizeMod,
+                            end: this.sizeMod
                         }
                     });
                 }
@@ -1633,8 +1658,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             position,
             lifetime: 1000,
             scale: {
-                start: 0.5,
-                end: 1
+                start: 0.5 * this.sizeMod,
+                end: this.sizeMod
             },
             alpha: {
                 start: 1,

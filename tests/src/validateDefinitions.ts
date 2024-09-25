@@ -17,7 +17,7 @@ import { MapPings } from "../../common/src/definitions/mapPings";
 import { Melees } from "../../common/src/definitions/melees";
 import { Modes } from "../../common/src/definitions/modes";
 import { Materials, Obstacles, RotationMode } from "../../common/src/definitions/obstacles";
-import { Scopes } from "../../common/src/definitions/scopes";
+import { DEFAULT_SCOPE, Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
 import { SyncedParticles } from "../../common/src/definitions/syncedParticles";
 import { Throwables, type ThrowableDefinition } from "../../common/src/definitions/throwables";
@@ -2668,6 +2668,12 @@ logger.indent("Validating scopes", () => {
             });
         });
     }
+
+    tester.assert(
+        DEFAULT_SCOPE !== undefined,
+        "Default scope is undefined (definitions list is empty)",
+        tester.createPath("scopes")
+    );
 });
 
 logger.indent("Validating skins", () => {

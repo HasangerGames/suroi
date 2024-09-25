@@ -54,9 +54,11 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                 && !owner.downed
                 && !owner.disconnected
             ) {
-                const rotated = Vec.rotate(definition.offset, owner.rotation);
-                const position = Vec.add(owner.position, rotated);
-                const hitbox = new CircleHitbox(definition.radius, position);
+                const position = Vec.add(
+                    owner.position,
+                    Vec.scale(Vec.rotate(definition.offset, owner.rotation), owner.sizeMod)
+                );
+                const hitbox = new CircleHitbox(definition.radius * owner.sizeMod, position);
 
                 // Damage the closest object
                 const damagedObjects: readonly CollidableGameObject[] = (

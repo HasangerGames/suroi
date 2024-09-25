@@ -6,7 +6,7 @@ import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox
 import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
 import { Collision, Geometry, Numeric } from "@common/utils/math";
 import { ExtendedMap, type SDeepMutable, type SMutable, type Timeout } from "@common/utils/misc";
-import { ItemType, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { ItemType, type ExtendedWearerAttributes, type PlayerModifiers, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray } from "@common/utils/random";
 import { SuroiBitStream } from "@common/utils/suroiBitStream";
@@ -41,10 +41,14 @@ export interface PlayerContainer {
 }
 
 export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
+    private static readonly baseHitbox = new CircleHitbox(GameConstants.player.radius);
+
     override readonly fullAllocBytes = 16;
     override readonly partialAllocBytes = 4;
     override readonly damageable = true;
-    readonly hitbox: CircleHitbox;
+
+    private _hitbox: CircleHitbox;
+    override get hitbox(): CircleHitbox { return this._hitbox; }
 
     name: string;
     readonly ip?: string;
@@ -130,21 +134,28 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._normalizedAdrenaline = Numeric.remap(this.adrenaline, this.minAdrenaline, this.maxAdrenaline, 0, 1);
     }
 
-    private _modifiers = {
-        // Multiplicative
+    private _sizeMod = 1;
+    get sizeMod(): number { return this._sizeMod; }
+    set sizeMod(size: number) {
+        this._sizeMod = size;
+        this._hitbox = Player.baseHitbox.transform(this._hitbox.position, size);
+        this.dirty.size = true;
+        this.setDirty();
+    }
+
+    private _modifiers: PlayerModifiers = {
         maxHealth: 1,
         maxAdrenaline: 1,
         baseSpeed: 1,
+        size: 1,
 
-        // Additive
         minAdrenaline: 0
     };
 
     /**
      * Returns a clone
      */
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    get modifiers() { return { ...this._modifiers }; }
+    get modifiers(): PlayerModifiers { return { ...this._modifiers }; }
 
     killedBy?: Player;
     downedBy?: {
@@ -212,6 +223,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         health: true,
         maxMinStats: true,
         adrenaline: true,
+        size: true,
         weapons: true,
         slotLocks: true,
         items: true,
@@ -344,13 +356,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     activeStair?: Obstacle;
 
     get position(): Vector {
-        return this.hitbox.position;
+        return this._hitbox.position;
     }
 
     set position(position: Vector) {
         if (Vec.equals(position, this.position)) return;
 
-        this.hitbox.position = position;
+        this._hitbox.position = position;
         this._team?.setDirty();
     }
 
@@ -403,7 +415,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         this.rotation = 0;
         this.joinTime = game.now;
-        this.hitbox = new CircleHitbox(GameConstants.player.radius, position);
+        this._hitbox = Player.baseHitbox.transform(position);
 
         this.inventory.addOrReplaceWeapon(2, "fists");
 
@@ -679,7 +691,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         // Find and resolve collisions
-        this.nearObjects = this.game.grid.intersectsHitbox(this.hitbox, this.layer);
+        this.nearObjects = this.game.grid.intersectsHitbox(this._hitbox, this.layer);
 
         for (let step = 0; step < 10; step++) {
             let collided = false;
@@ -688,14 +700,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 if (
                     (potential.isObstacle || potential.isBuilding)
                     && potential.collidable
-                    && potential.hitbox?.collidesWith(this.hitbox)
+                    && potential.hitbox?.collidesWith(this._hitbox)
                 ) {
                     if (potential.isObstacle && potential.definition.isStair) {
                         potential.handleStairInteraction(this);
                         this.activeStair = potential;
                     } else {
                         collided = true;
-                        this.hitbox.resolveCollision(potential.hitbox);
+                        this._hitbox.resolveCollision(potential.hitbox);
                     }
                 }
             }
@@ -704,8 +716,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         // World boundaries
-        this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
-        this.position.y = Numeric.clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
+        this.position.x = Numeric.clamp(this.position.x, this._hitbox.radius, this.game.map.width - this._hitbox.radius);
+        this.position.y = Numeric.clamp(this.position.y, this._hitbox.radius, this.game.map.height - this._hitbox.radius);
 
         this.isMoving = !Vec.equals(oldPosition, this.position);
 
@@ -767,7 +779,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 !isInsideBuilding
                 && object?.isBuilding
                 && !object.dead
-                && object.scopeHitbox?.collidesWith(this.hitbox)
+                && object.scopeHitbox?.collidesWith(this._hitbox)
                 && !Config.disableBuildingCheck
             ) {
                 isInsideBuilding = true;
@@ -794,7 +806,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
             if (
                 object.isSyncedParticle
-                && object.hitbox?.collidesWith(this.hitbox)
+                && object.hitbox?.collidesWith(this._hitbox)
                 && adjacentOrEqualLayer(object.layer, this.layer)
             ) {
                 depleters.add(object);
@@ -1451,10 +1463,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     updateAndApplyModifiers(): void {
-        const newModifiers: this["modifiers"] = {
+        const newModifiers: PlayerModifiers = {
             maxHealth: 1,
             maxAdrenaline: 1,
             baseSpeed: 1,
+            size: 1,
             minAdrenaline: 0
         };
 
@@ -1469,13 +1482,15 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             newModifiers.maxAdrenaline *= modifiers.maxAdrenaline;
             newModifiers.maxHealth *= modifiers.maxHealth;
             newModifiers.baseSpeed *= modifiers.baseSpeed;
+            newModifiers.size *= modifiers.size;
             newModifiers.minAdrenaline += modifiers.minAdrenaline;
         }
 
         this._modifiers = newModifiers;
-        this.maxHealth = GameConstants.player.defaultHealth * this._modifiers.maxHealth;
-        this.maxAdrenaline = GameConstants.player.maxAdrenaline * this._modifiers.maxAdrenaline;
-        this.minAdrenaline = this.modifiers.minAdrenaline;
+        this.maxHealth = GameConstants.player.defaultHealth * newModifiers.maxHealth;
+        this.maxAdrenaline = GameConstants.player.maxAdrenaline * newModifiers.maxAdrenaline;
+        this.minAdrenaline = newModifiers.minAdrenaline;
+        this.sizeMod = newModifiers.size;
     }
 
     // dies of death
@@ -1928,7 +1943,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         object: undefined,
                         dist: Number.MAX_VALUE
                     };
-                    const detectionHitbox = new CircleHitbox(3, this.position);
+                    const detectionHitbox = new CircleHitbox(3 * this._sizeMod, this.position);
                     const nearObjects = this.game.grid.intersectsHitbox(detectionHitbox);
 
                     for (const object of nearObjects) {
@@ -2033,6 +2048,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 activeItem: this.activeItem.definition
             }
         };
+
+        if (this.dirty.size) {
+            data.full.sizeMod = this._sizeMod;
+        }
 
         if (this._animation.dirty) {
             data.animation = this.animation;

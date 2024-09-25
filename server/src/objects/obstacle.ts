@@ -55,7 +55,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
     scale = 1;
 
-    declare hitbox: Hitbox;
+    override hitbox: Hitbox;
 
     puzzlePiece?: string | boolean;
 

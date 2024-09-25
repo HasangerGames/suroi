@@ -853,7 +853,7 @@ export class Game {
                 object: undefined,
                 dist: Number.MAX_VALUE
             };
-            const detectionHitbox = new CircleHitbox(3, player.position);
+            const detectionHitbox = new CircleHitbox(3 * player.sizeMod, player.position);
 
             for (const object of this.objects) {
                 const { isLoot, isObstacle, isPlayer, isBuilding } = object;

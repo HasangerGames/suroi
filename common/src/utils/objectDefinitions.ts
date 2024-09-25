@@ -657,6 +657,17 @@ export type BaseBulletDefinition = {
     readonly explodeOnImpact?: boolean
 });
 
+export interface PlayerModifiers {
+    // Multiplicative
+    maxHealth: number
+    maxAdrenaline: number
+    baseSpeed: number
+    size: number
+
+    // Additive
+    minAdrenaline: number
+}
+
 export interface WearerAttributes {
     /**
      * A number by which the player's maximum health will be multiplied
@@ -675,6 +686,10 @@ export interface WearerAttributes {
      * A number by which the player's base speed will be multiplied
      */
     readonly speedBoost?: number
+    /**
+     * A number by which the player's size will be multiplied
+     */
+    readonly sizeMod?: number
 }
 
 export interface ExtendedWearerAttributes extends WearerAttributes {

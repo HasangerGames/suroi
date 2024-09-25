@@ -19,6 +19,7 @@ import { Loot } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { Player } from "./objects/player";
 import { Logger } from "./utils/misc";
+import type { PlayerModifiers } from "@common/utils/objectDefinitions";
 
 interface PlayerDamageEvent extends DamageParams {
     readonly player: Player
@@ -491,16 +492,16 @@ export interface EventDataMap {
         /**
          * Specific type will be `(typeof item)["modifiers"]`
          */
-        readonly oldMods: InventoryItem["modifiers"]
+        readonly oldMods: PlayerModifiers
         /**
          * Specific type will be `(typeof item)["modifiers"]`
          */
-        readonly newMods: InventoryItem["modifiers"]
+        readonly newMods: PlayerModifiers
         /**
          * Specific type will be `{ readonly [K in (typeof item)["modifiers"]]: boolean }`
          */
         readonly diff: {
-            readonly [K in keyof InventoryItem["modifiers"]]: boolean
+            readonly [K in keyof PlayerModifiers]: boolean
         }
     }
 

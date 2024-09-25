@@ -122,7 +122,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         let position = Vec.add(
             owner.position,
-            Vec.rotate(Vec.create(definition.length, offset), owner.rotation) // player radius + gun length
+            Vec.scale(Vec.rotate(Vec.create(definition.length, offset), owner.rotation), owner.sizeMod)
         );
 
         for (const object of owner.game.grid.intersectsHitbox(RectangleHitbox.fromLine(startPosition, position))) {

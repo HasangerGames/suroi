@@ -69,7 +69,7 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
     get layer(): Layer { return this._layer; }
     set layer(value: Layer) { this._layer = value; }
 
-    hitbox?: Hitbox;
+    abstract hitbox?: Hitbox;
 
     private _fullStream?: SuroiBitStream | undefined;
     get fullStream(): SuroiBitStream { return this._fullStream ??= SuroiBitStream.alloc(this.fullAllocBytes * 8); }
