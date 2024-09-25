@@ -226,10 +226,9 @@ const maps = {
         },
         obstacles: {
             oil_tank: 12,
-            // christmas_tree: 1, // winter mode
             oak_tree: 200,
             birch_tree: 20,
-            pine_tree: 10,
+            maple_tree: 15,
             regular_crate: 160,
             flint_crate: 5,
             aegis_crate: 5,
@@ -238,7 +237,6 @@ const maps = {
             river_chest: 1,
             river_rock: 45,
             vibrant_bush: 160,
-            // birthday_cake: 100, // birthday mode
             lily_pad: 20,
             barrel: 80,
             viking_chest: 1,

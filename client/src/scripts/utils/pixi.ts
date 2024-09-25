@@ -7,6 +7,7 @@ import { getTranslatedString } from "../../translations";
 import { Obstacles } from "../../../../common/src/definitions/obstacles";
 
 const textures: Record<string, Texture> = {};
+const reskinnedTextures: Record<string, Texture> = {};
 
 const loadingText = $("#loading-text");
 
@@ -115,6 +116,10 @@ const loadSpritesheet = (renderer: Renderer) => async(data: SpritesheetData, pat
             void new Spritesheet(texture, data).parse().then(sheetTextures => {
                 for (const frame in sheetTextures) {
                     textures[frame] = sheetTextures[frame];
+
+                    if (MODE.reskin && textures[frame].source.label.includes(MODE.idString)) {
+                        reskinnedTextures[frame] = textures[frame];
+                    }
                 }
 
                 resolve();
@@ -129,7 +134,7 @@ export class SuroiSprite extends Sprite {
             console.warn(`Texture not found: "${frame}"`);
             return textures._missing_texture;
         }
-        return textures[frame];
+        return (MODE.reskin && frame in reskinnedTextures) ? reskinnedTextures[frame] : textures[frame];
     }
 
     constructor(frame?: string) {
