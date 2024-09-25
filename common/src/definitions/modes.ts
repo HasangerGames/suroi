@@ -84,7 +84,7 @@ export const Reskins: Record<string, ReskinDefinition> = {
             "oak_tree_3",
             "oak_tree_4",
             "oak_tree_5",
-            "oak_tree_6",
+            "oak_tree_6"
         ]
     }
 
