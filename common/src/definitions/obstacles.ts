@@ -494,10 +494,29 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: new CircleHitbox(5.5),
                 spawnHitbox: new CircleHitbox(15),
                 rotationMode: RotationMode.Full,
-                variations: 3,
+                variations: 6,
                 zIndex: ZIndexes.ObstaclesLayer4,
                 allowFlyover: FlyoverPref.Never
             },
+            /* wip
+            {
+                idString: "dormant_oak_tree",
+                name: "Dormant Oak Tree",
+                material: "tree",
+                health: 120,
+                scale: {
+                    spawnMin: 0.9,
+                    spawnMax: 1,
+                    destroy: 0.75
+                },
+                hitbox: new CircleHitbox(5.5),
+                spawnHitbox: new CircleHitbox(15),
+                rotationMode: RotationMode.Full,
+                variations: 2,
+                zIndex: ZIndexes.ObstaclesLayer4,
+                allowFlyover: FlyoverPref.Never
+            },
+            **/
             {
                 idString: "oil_tank",
                 name: "Oil Tank",

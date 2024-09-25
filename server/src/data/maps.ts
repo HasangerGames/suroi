@@ -227,7 +227,7 @@ const maps = {
         obstacles: {
             oil_tank: 12,
             // christmas_tree: 1, // winter mode
-            oak_tree: 100,
+            oak_tree: 200,
             birch_tree: 20,
             pine_tree: 10,
             regular_crate: 160,
