@@ -1,7 +1,7 @@
 import { defaultBulletTemplate } from "../constants";
-import { Loots } from "../definitions/loots";
-import { ItemType, ObjectDefinitions, type BaseBulletDefinition, type ObjectDefinition } from "../utils/objectDefinitions";
+import { ObjectDefinitions, type BaseBulletDefinition, type ObjectDefinition } from "../utils/objectDefinitions";
 import { Explosions } from "./explosions";
+import { Guns } from "./guns";
 
 export type BulletDefinition = BaseBulletDefinition & ObjectDefinition;
 
@@ -18,7 +18,7 @@ const bulletColors: Record<string, number> = {
 export const Bullets = ObjectDefinitions.withDefault<BulletDefinition>()(
     defaultBulletTemplate,
     () => [
-        ...Loots.byType(ItemType.Gun),
+        ...Guns.definitions,
         ...Explosions.definitions
     ]
         .filter(def => !("isDual" in def) || !def.isDual)

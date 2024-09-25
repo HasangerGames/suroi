@@ -29,7 +29,7 @@ const teamEmote = createTemplate<EmoteDefinition>()((idString: string) => ({
     category: EmoteCategory.TeamEmote
 }));
 
-export const Emotes = new ObjectDefinitions<EmoteDefinition>([
+export const Emotes = ObjectDefinitions.create<EmoteDefinition>([
     ...[
         "Happy Face",
         "Sad Face",
