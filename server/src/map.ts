@@ -337,7 +337,7 @@ export class GameMap {
                     if (majorBuildings.includes(idString)) {
                         if (
                             this.quadMajorBuildings.includes(quad)
-                            || this.majorBuildingPositions.some(pos => Geometry.distanceSquared(pos, position!) < 100000)
+                            || this.majorBuildingPositions.some(pos => Geometry.distanceSquared(pos, position!) < 150000)
                         ) {
                             attempts++;
                             continue;
