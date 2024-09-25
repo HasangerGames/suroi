@@ -518,6 +518,23 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             },
             **/
             {
+                idString: "maple_tree",
+                name: "Maple Tree",
+                material: "tree",
+                health: 290,
+                scale: {
+                    spawnMin: 0.68,
+                    spawnMax: 1,
+                    destroy: 0.75
+                },
+                hitbox: new CircleHitbox(5.5),
+                spawnHitbox: new CircleHitbox(20),
+                rotationMode: RotationMode.Full,
+                variations: 3,
+                zIndex: ZIndexes.ObstaclesLayer4,
+                allowFlyover: FlyoverPref.Never
+            },
+            {
                 idString: "oil_tank",
                 name: "Oil Tank",
                 material: "metal_heavy",
