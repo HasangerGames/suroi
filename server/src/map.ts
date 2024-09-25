@@ -14,7 +14,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { Config } from "./config";
 
 import { LootTables, type WeightedItem } from "./data/lootTables";
-import { MapName, Maps, ObstacleClump } from "./data/maps";
+import { MapDefinition, MapName, Maps, ObstacleClump } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
@@ -23,9 +23,10 @@ import { CARDINAL_DIRECTIONS, Logger, getLootTableLoot, getRandomIDString } from
 export class GameMap {
     readonly game: Game;
 
-    private readonly quadBuildingLimit: Record<ReferenceTo<BuildingDefinition>, number> = {};
-
-    private readonly quadBuildings: { [key in 1 | 2 | 3 | 4]: string[] };
+    private readonly mapDef: MapDefinition;
+    private readonly quadBuildings: { [key in 1 | 2 | 3 | 4]: string[] } = { 1: [], 2: [], 3: [], 4: [] };
+    private readonly quadMajorBuildings: Array<1 | 2 | 3 | 4> = [];
+    private readonly majorBuildingPositions: Vector[] = [];
 
     private readonly occupiedBridgePositions: Vector[] = [];
 
@@ -99,14 +100,7 @@ export class GameMap {
         this.oceanSize = packet.oceanSize = mapDef.oceanSize;
         this.beachSize = packet.beachSize = mapDef.beachSize;
 
-        this.quadBuildingLimit = mapDef.quadBuildingLimit ?? {};
-
-        this.quadBuildings = {
-            1: [],
-            2: [],
-            3: [],
-            4: []
-        };
+        this.mapDef = mapDef;
 
         // + 8 to account for the jagged points
         const beachPadding = this._beachPadding = mapDef.oceanSize + mapDef.beachSize + 8;
@@ -139,12 +133,19 @@ export class GameMap {
             const randomGenerator = new SeededRandom(this.seed);
             const amount = randomGenerator.getInt(riverDef.minAmount, riverDef.maxAmount);
 
+            let wideAmount = 0;
+
             // generate a list of widths and sort by biggest, to make sure wide rivers generate first
             const widths = Array.from(
                 { length: amount },
-                () => randomGenerator.get() < riverDef.wideChance
-                    ? randomGenerator.getInt(riverDef.minWideWidth, riverDef.maxWideWidth)
-                    : randomGenerator.getInt(riverDef.minWidth, riverDef.maxWidth)
+                () => {
+                    if (wideAmount < riverDef.maxWideAmount && randomGenerator.get() < riverDef.wideChance) {
+                        wideAmount++;
+                        return randomGenerator.getInt(riverDef.minWideWidth, riverDef.maxWideWidth);
+                    } else {
+                        return randomGenerator.getInt(riverDef.minWidth, riverDef.maxWidth);
+                    }
+                }
             ).sort((a, b) => b - a);
 
             // extracted from loop
@@ -228,10 +229,6 @@ export class GameMap {
         this.buffer = stream.getBuffer();
     }
 
-    private _addBuildingToQuad(quad: 1 | 2 | 3 | 4, idString: ReferenceTo<BuildingDefinition>): void {
-        this.quadBuildings[quad].push(idString);
-    }
-
     private _generateRiver(
         startPos: Vector,
         startAngle: number,
@@ -293,7 +290,7 @@ export class GameMap {
     }
 
     // TODO Move this to a utility class and use it in gas.ts as well
-    getQuadrant(x: number, y: number, width: number, height: number): number {
+    getQuadrant(x: number, y: number, width: number, height: number): 1 | 2 | 3 | 4 {
         if (x < width / 2 && y < height / 2) {
             return 1;
         } else if (x >= width / 2 && y < height / 2) {
@@ -310,15 +307,18 @@ export class GameMap {
 
         if (!definition.bridgeSpawnOptions) {
             const { idString, rotationMode } = definition;
-            let attempts = 0;
+            const { majorBuildings = [], quadBuildingLimit = {} } = this.mapDef;
 
+            let attempts = 0;
             for (let i = 0; i < count; i++) {
+                let position: Vector | undefined;
+                let orientation: Orientation | undefined;
                 let validPositionFound = false;
 
                 while (!validPositionFound && attempts < 100) {
-                    let orientation = GameMap.getRandomBuildingOrientation(rotationMode);
+                    orientation = GameMap.getRandomBuildingOrientation(rotationMode);
 
-                    const position = this.getRandomPosition(definition.spawnHitbox, {
+                    position = this.getRandomPosition(definition.spawnHitbox, {
                         orientation,
                         spawnMode: definition.spawnMode,
                         orientationConsumer: (newOrientation: Orientation) => {
@@ -332,26 +332,36 @@ export class GameMap {
                         continue;
                     }
 
-                    const quad = this.getQuadrant(position.x, position.y, this.width, this.height) as 1 | 2 | 3 | 4;
+                    const quad = this.getQuadrant(position.x, position.y, this.width, this.height);
 
-                    if (idString in this.quadBuildingLimit) {
-                        const limit = this.quadBuildingLimit[idString];
-                        const count = this.quadBuildings[quad].filter((b: string) => b === idString).length;
-
-                        if (count >= limit) {
+                    if (majorBuildings.includes(idString)) {
+                        if (
+                            this.quadMajorBuildings.includes(quad)
+                            || this.majorBuildingPositions.some(pos => Geometry.distanceSquared(pos, position!) < 100000)
+                        ) {
                             attempts++;
-                            continue;  // Try to find a different position
+                            continue;
+                        } else {
+                            this.quadMajorBuildings.push(quad);
+                            this.majorBuildingPositions.push(position);
+                        }
+                    } else if (idString in quadBuildingLimit) {
+                        if (this.quadBuildings[quad].filter(b => b === idString).length >= quadBuildingLimit[idString]) {
+                            attempts++;
+                            continue;
+                        } else {
+                            this.quadBuildings[quad].push(idString);
                         }
                     }
 
-                    this.generateBuilding(definition, position, orientation);
-                    this._addBuildingToQuad(quad, idString);
                     validPositionFound = true;
                 }
 
                 if (!validPositionFound) {
                     Logger.warn(`Failed to place building ${idString} after ${attempts} attempts`);
                 }
+
+                if (position) this.generateBuilding(definition, position, orientation);
 
                 attempts = 0; // Reset attempts counter for the next building
             }
