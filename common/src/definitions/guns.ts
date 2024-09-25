@@ -1823,7 +1823,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireDelay: 115,
                 shotSpread: 5,
                 moveSpread: 9.5,
-                capacity: 16,
+                capacity: 14,
                 reloadTime: 3.8
             }
         },
