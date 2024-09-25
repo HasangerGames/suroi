@@ -3832,7 +3832,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "grey_office_chair", position: Vec.create(-10, 24), rotation: 0 },
                     { idString: "headquarters_wall_9", position: Vec.create(3, 25.25), rotation: 1 },
                     { idString: "water_cooler", position: Vec.create(7.5, 25), rotation: 1 },
-                    { idString: "metal_small_drawer", position: Vec.create(8, 32), rotation: 1 },
+                    { idString: "filing_cabinet", position: Vec.create(8, 32), rotation: 1 },
                     { idString: "potted_plant", position: Vec.create(64.5, 5) },
                     { idString: "bookshelf", position: Vec.create(42, 6.25), rotation: 0 },
                     { idString: "headquarters_wall_6", position: Vec.create(50.05, 10), rotation: 0 },
@@ -4063,7 +4063,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "headquarters_wall_1", position: Vec.create(-3.6, -62.7), rotation: 1 },
                     { idString: "grey_office_chair", position: Vec.create(-26.8, -90), rotation: 0 },
                     { idString: "grey_office_chair", position: Vec.create(-28, -74.5), rotation: 2 },
-                    { idString: "metal_small_drawer", position: Vec.create(-8.4, -101), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
+                    { idString: "filing_cabinet", position: Vec.create(-8.4, -101), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
                     { idString: "bookshelf", position: Vec.create(-18.6, -102), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
                     { idString: "bookshelf", position: Vec.create(-31.5, -102), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
                     { idString: "potted_plant", position: Vec.create(1.5, -61) },
@@ -4087,7 +4087,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "potted_plant", position: Vec.create(-32.5, 32.2) },
                     { idString: "falchion_case", position: Vec.create(-51, 32.25), lootSpawnOffset: Vec.create(0, -2), rotation: 2 },
                     { idString: "water_cooler", position: Vec.create(-71.8, -27.5), rotation: 1 },
-                    { idString: "metal_small_drawer", position: Vec.create(-32.5, -27.5), lootSpawnOffset: Vec.create(-2, 0), rotation: 3 },
+                    { idString: "filing_cabinet", position: Vec.create(-32.5, -27.5), lootSpawnOffset: Vec.create(-2, 0), rotation: 3 },
 
                     // schematic: 3 tables, 2 chairs on each (left & right) with 2 chairs on top and bottom of the whole table group
                     { idString: "chair", position: Vec.create(-54.1, -14.6), rotation: 2 },

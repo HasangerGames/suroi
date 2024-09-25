@@ -258,7 +258,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     container_particle_green:     { base: "metal_particle_1", tint: 0x00a30e },
     container_particle_blue:      { base: "metal_particle_1", tint: 0x005fa3 },
     container_particle_yellow:    { base: "metal_particle_1", tint: 0xcccc00 },
-    metal_small_drawer_particle:  { base: "metal_particle_2", tint: 0x7f714d },
+    filing_cabinet_particle:      { base: "metal_particle_2", tint: 0x7f714d },
     briefcase_particle:           { base: "metal_particle_2", tint: 0xcfcfcf },
     aegis_crate_particle:         { base: "wood_particle",    tint: 0x2687d9 },
     airdrop_crate_particle:       { base: "wood_particle",    tint: 0x4059bf },
@@ -1624,8 +1624,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 }
             },
             {
-                idString: "metal_small_drawer",
-                name: "Metal Small Drawer",
+                idString: "filing_cabinet",
+                name: "Filing Cabinet",
                 material: "iron",
                 health: 125,
                 scale: {

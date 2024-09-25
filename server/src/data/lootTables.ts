@@ -289,7 +289,7 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "guns", weight: 0.3 }
         ]
     },
-    metal_small_drawer: {
+    filing_cabinet: {
         min: 1,
         max: 1,
         loot: [
