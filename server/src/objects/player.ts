@@ -625,33 +625,28 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const dt = this.game.dt;
 
         // This system allows opposite movement keys to cancel each other out.
-        const movement = Vec.create(0, 0);
+        let movement: Vector;
 
         const playerMovement = this.movement;
         if (this.isMobile && playerMovement.moving) {
-            movement.x = Math.cos(playerMovement.angle) * 1.45;
-            movement.y = Math.sin(playerMovement.angle) * 1.45;
+            movement = Vec.fromPolar(playerMovement.angle);
         } else {
-            if (playerMovement.up) movement.y--;
-            if (playerMovement.down) movement.y++;
-            if (playerMovement.left) movement.x--;
-            if (playerMovement.right) movement.x++;
-        }
+            let x = +playerMovement.right - +playerMovement.left;
+            let y = +playerMovement.down - +playerMovement.up;
 
-        if (movement.x * movement.y !== 0) { // If the product is non-zero, then both of the components must be non-zero
-            movement.x *= Math.SQRT1_2;
-            movement.y *= Math.SQRT1_2;
+            if (x * y !== 0) {
+                // If the product is non-zero, then both of the components must be non-zero
+                x *= Math.SQRT1_2;
+                y *= Math.SQRT1_2;
+            }
+
+            movement = Vec.create(x, y);
         }
 
         // Calculate speed
-        let recoilMultiplier = 1;
-        if (this.recoil.active) {
-            if (this.recoil.time < this.game.now) {
-                this.recoil.active = false;
-            } else {
-                recoilMultiplier = this.recoil.multiplier;
-            }
-        }
+        const recoilMultiplier = this.recoil.active && (this.recoil.active = (this.recoil.time >= this.game.now))
+            ? this.recoil.multiplier
+            : 1;
 
         const speed = this.baseSpeed                                        // Base speed
             * (FloorTypes[this.floor].speedMultiplier ?? 1)                 // Speed multiplier from floor player is standing in
