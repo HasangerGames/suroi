@@ -202,18 +202,18 @@ const maps = {
         oceanSize: 128,
         beachSize: 32,
         rivers: {
-            minAmount: 3,
-            maxAmount: 3,
+            minAmount: 2,
+            maxAmount: 2,
             wideChance: 0.35,
             minWidth: 12,
             maxWidth: 18,
             minWideWidth: 25,
-            maxWideWidth: 30
+            maxWideWidth: 28
         },
         buildings: {
             small_bridge: Infinity,
             sea_traffic_control: 1,
-            small_bunker: 1,
+        //    small_bunker: 1,
             construction_site: 1
         },
         quadBuildingLimit: {
@@ -227,7 +227,7 @@ const maps = {
         obstacles: {
             oil_tank: 12,
             oak_tree: 160,
-            birch_tree: 20,
+            birch_tree_fall: 20,
             maple_tree: 15,
             pine_tree: 10,
             dormant_oak_tree: 10,
@@ -266,7 +266,7 @@ const maps = {
                     minAmount: 2,
                     maxAmount: 3,
                     jitter: 5,
-                    obstacles: ["birch_tree"],
+                    obstacles: ["birch_tree_fall"],
                     radius: 12
                 }
             },
