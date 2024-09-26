@@ -498,7 +498,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 zIndex: ZIndexes.ObstaclesLayer4,
                 allowFlyover: FlyoverPref.Never
             },
-            /* wip
             {
                 idString: "dormant_oak_tree",
                 name: "Dormant Oak Tree",
@@ -506,7 +505,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 health: 120,
                 scale: {
                     spawnMin: 0.9,
-                    spawnMax: 1,
+                    spawnMax: 1.4,
                     destroy: 0.75
                 },
                 hitbox: new CircleHitbox(5.5),
@@ -516,7 +515,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 zIndex: ZIndexes.ObstaclesLayer4,
                 allowFlyover: FlyoverPref.Never
             },
-            **/
             {
                 idString: "maple_tree",
                 name: "Maple Tree",
