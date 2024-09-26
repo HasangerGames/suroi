@@ -2603,7 +2603,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1,
                     destroy: 0.9
                 },
-                health: 400,
+                health: 220,
                 impenetrable: true,
                 hasLoot: true,
                 reflectBullets: true,
