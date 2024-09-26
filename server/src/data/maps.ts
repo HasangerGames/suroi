@@ -266,6 +266,7 @@ const maps = {
             wideChance: 0.2,
             minWidth: 10,
             maxWidth: 16,
+            maxWideAmount: 1,
             minWideWidth: 25,
             maxWideWidth: 30
         },

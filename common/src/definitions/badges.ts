@@ -10,7 +10,7 @@ const badge = createTemplate<BadgeDefinition>()((name: string, roles: string[] =
     roles
 }));
 
-export const Badges = new ObjectDefinitions<BadgeDefinition>([
+export const Badges = ObjectDefinitions.create<BadgeDefinition>([
     badge(["Youtubr", ["youtubr", "123op"]]),
     badge(["Developr", ["developr", "error"]]),
     badge(["Lead Designr", ["lead_designr"]]),

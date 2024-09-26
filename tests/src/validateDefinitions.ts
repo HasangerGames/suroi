@@ -289,13 +289,6 @@ logger.indent("Validating map definitions", () => {
                     const errorPath2 = tester.createPath(errorPath, "majorBuildings");
 
                     logger.indent("Validating major buildings", () => {
-                        // this field is never actually used so lol
-                        tester.assertWarn(
-                            true,
-                            "Field 'majorBuildings' of MapDefinitions is currently unused by map generation code",
-                            errorPath2
-                        );
-
                         tester.runTestOnArray(majorBuildings, (majorBuilding, errorPath) => {
                             tester.assertReferenceExists({
                                 value: majorBuilding,

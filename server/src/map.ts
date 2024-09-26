@@ -337,6 +337,8 @@ export class GameMap {
                     if (majorBuildings.includes(idString)) {
                         if (
                             this.quadMajorBuildings.includes(quad)
+                            // undefined position would cause continue above
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                             || this.majorBuildingPositions.some(pos => Geometry.distanceSquared(pos, position!) < 150000)
                         ) {
                             attempts++;
