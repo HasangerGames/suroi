@@ -10,7 +10,6 @@ export interface ModeDefinition {
 }
 
 export interface ReskinDefinition {
-    readonly textures?: string[]
     readonly sounds?: string[]
 }
 
@@ -76,15 +75,7 @@ export const Reskins: Record<string, ReskinDefinition> = {
         sounds: [
             "airdrop_plane"
         ]
-    },
-    fall: {
-        textures: [ // why does this exist? its not even used..
-            "oak_tree",
-            "birch_tree"
-
-        ]
     }
-
 };
 
 /*

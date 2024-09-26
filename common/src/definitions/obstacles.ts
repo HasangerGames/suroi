@@ -488,7 +488,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 health: 180,
                 scale: {
                     spawnMin: 0.9,
-                    spawnMax: 1,
+                    spawnMax: 1.5, // fall mode only, original 0.9, 1.1
                     destroy: 0.75
                 },
                 hitbox: new CircleHitbox(5.5),
@@ -523,8 +523,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 material: "tree",
                 health: 290,
                 scale: {
-                    spawnMin: 0.68,
-                    spawnMax: 1,
+                    spawnMin: 1.1,
+                    spawnMax: 1.6,
                     destroy: 0.75
                 },
                 hitbox: new CircleHitbox(5.5),
@@ -563,8 +563,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 material: "tree",
                 health: 180,
                 scale: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.1,
+                    spawnMin: 1.2,
+                    spawnMax: 1.5, // fall mode only, original 0.9, 1.1
                     destroy: 0.75
                 },
                 hitbox: new CircleHitbox(5.5),
@@ -580,13 +580,14 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 health: 240,
                 scale: {
                     spawnMin: 0.9,
-                    spawnMax: 1,
+                    spawnMax: 1.5, // fall mode only, original 0.9, 1.1
                     destroy: 0.75
                 },
                 hitbox: new CircleHitbox(5.5),
                 spawnHitbox: new CircleHitbox(15),
                 rotationMode: RotationMode.Full,
                 zIndex: ZIndexes.ObstaclesLayer4,
+                variations: 2,
                 allowFlyover: FlyoverPref.Never
             },
             {
