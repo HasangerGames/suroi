@@ -226,10 +226,12 @@ const maps = {
         },
         obstacles: {
             oil_tank: 12,
-            oak_tree: 200,
+            oak_tree: 160,
             birch_tree: 20,
             maple_tree: 15,
-            regular_crate: 160,
+            pine_tree: 10,
+            dormant_oak_tree: 10,
+            regular_crate: 130,
             flint_crate: 5,
             aegis_crate: 5,
             grenade_crate: 35,
@@ -249,7 +251,7 @@ const maps = {
         },
         obstacleClumps: [
             {
-                clumpAmount: 100,
+                clumpAmount: 120,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
@@ -259,7 +261,7 @@ const maps = {
                 }
             },
             {
-                clumpAmount: 25,
+                clumpAmount: 15,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
@@ -269,7 +271,7 @@ const maps = {
                 }
             },
             {
-                clumpAmount: 4,
+                clumpAmount: 15,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
