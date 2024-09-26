@@ -728,16 +728,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
-        // Drain adrenaline
         if (this._adrenaline > 0) {
+            // Drain adrenaline
             this.adrenaline -= 0.0005 * dt;
-        }
 
-        // Regenerate health
-        if (this._adrenaline >= 87.5) this.health += dt * 2.75 / (30 ** 2);
-        else if (this._adrenaline >= 50) this.health += dt * 2.125 / (30 ** 2);
-        else if (this._adrenaline >= 25) this.health += dt * 1.125 / (30 ** 2);
-        else if (this._adrenaline > 0) this.health += dt * 0.625 / (30 ** 2);
+            // Regenerate health
+            this.health += dt / 900 * (this.adrenaline / 40 + 0.35);
+        }
 
         // Shoot gun/use item
         if (this.startedAttacking) {
