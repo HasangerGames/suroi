@@ -228,8 +228,8 @@ const maps = {
             oil_tank: 12,
             oak_tree: 150,
             birch_tree_fall: 20,
-            maple_tree: 80,
-            pine_tree: 50,
+            maple_tree: 50,
+            pine_tree: 70,
             dormant_oak_tree: 15,
             regular_crate: 180,
             flint_crate: 5,
@@ -251,7 +251,7 @@ const maps = {
         },
         obstacleClumps: [
             {
-                clumpAmount: 150,
+                clumpAmount: 80,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
