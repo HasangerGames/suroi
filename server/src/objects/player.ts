@@ -506,7 +506,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     giveThrowable(idString: ReferenceTo<ThrowableDefinition>, count?: number): void {
         const { inventory } = this;
 
-        inventory.items.incrementItem(idString, count ?? 3);
+        inventory.items.incrementItem(idString, count ?? inventory.backpack.maxCapacity[idString]);
         inventory.useItem(idString);
 
         // we hope `throwableItemMap` is correctly sync'd

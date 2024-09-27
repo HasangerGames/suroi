@@ -322,7 +322,10 @@ export class InputManager {
                 activePlayer.images.aimTrail.alpha = 1;
 
                 const attacking = data.distance > game.console.getBuiltInCVar("mb_joystick_size") / 3;
-                if (def.itemType === ItemType.Gun && def.shootOnRelease) {
+                if (
+                    (def.itemType === ItemType.Throwable && this.attacking)
+                    || (def.itemType === ItemType.Gun && def.shootOnRelease)
+                ) {
                     shootOnRelease = true;
                     this.shootOnReleaseAngle = this.rotation;
                 } else {
