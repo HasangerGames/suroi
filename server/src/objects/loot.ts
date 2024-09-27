@@ -217,6 +217,7 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
     interact(player: Player, noPickup = false): void {
         if (
             this.dead
+            || player.downed
             || this.game.pluginManager.emit("loot_will_interact", {
                 loot: this,
                 noPickup,

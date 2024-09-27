@@ -960,9 +960,10 @@ export class Game {
                     }
 
                     if (
-                        !object?.isObstacle
-                        || !object.definition.isActivatable
-                        || !object.definition.noInteractMessage
+                        !player.downed
+                        && (!object?.isObstacle
+                            || !object.definition.isActivatable
+                            || !object.definition.noInteractMessage)
                     ) interactMsg.show();
                 } else {
                     interactMsg.hide();
