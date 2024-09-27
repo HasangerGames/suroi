@@ -6,7 +6,7 @@ import { MapObjectSpawnMode, NullString, ObjectDefinitions, type ObjectDefinitio
 import { randomSign, randomVector } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
-import { Materials, RotationMode, type ObstacleDefinition } from "./obstacles";
+import { FlyoverPref, Materials, RotationMode, type ObstacleDefinition } from "./obstacles";
 
 interface BuildingObstacle {
     readonly idString: ReferenceOrRandom<ObstacleDefinition>
@@ -50,6 +50,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly spawnHitbox: Hitbox
     readonly scopeHitbox?: Hitbox
     readonly ceilingHitbox?: Hitbox
+    readonly allowFlyover: FlyoverPref
     readonly hideOnMap: boolean
     readonly spawnMode: MapObjectSpawnMode
 
@@ -228,7 +229,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
         graphics: [],
         graphicsZIndex: ZIndexes.BuildingsFloor,
         groundGraphics: [],
-        rotationMode: RotationMode.Limited
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never
     } satisfies DeepPartial<Omit<BuildingDefinition, "idString">>,
     ([derive, , , _missingType]) => {
         const blueHouseVaultLayout = derive((id: number, obstacles: readonly BuildingObstacle[], subBuildings?: readonly SubBuilding[]) => {
@@ -3342,6 +3344,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 idString: "small_bridge",
                 name: "Small Bridge",
                 noBulletCollision: true,
+                allowFlyover: FlyoverPref.Always,
                 material: "wood",
                 particle: "furniture_particle",
                 hitbox: new GroupHitbox(
@@ -3390,6 +3393,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             {
                 idString: "large_bridge",
                 name: "Large Bridge",
+                allowFlyover: FlyoverPref.Always,
                 material: "stone",
                 particle: "rock_particle",
                 particleVariations: 2,

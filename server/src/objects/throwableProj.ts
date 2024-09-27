@@ -11,6 +11,7 @@ import { type Game } from "../game";
 import { type ThrowableItem } from "../inventory/throwableItem";
 import { BaseGameObject, type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
+import { Building } from "./building";
 
 const enum Drag {
     Normal = 0.001,
@@ -52,7 +53,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
     private _activated = false;
     get activated(): boolean { return this._activated; }
 
-    private readonly _currentlyAbove = new Set<Obstacle>();
+    private readonly _currentlyAbove = new Set<Obstacle | Building>();
 
     public static readonly squaredThresholds = Object.freeze({
         impactDamage: 0.0009 as number,
@@ -174,21 +175,25 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             [FlyoverPref.Never]: false
         };
 
-        const canFlyOver = (obstacle: Obstacle): boolean => {
-            /*
-                Closed doors can never be flown over
-            */
-            return obstacle.door?.isOpen !== false && (
+        const canFlyOver = (object: Building | Obstacle): boolean => {
+            if (object.isObstacle) {
                 /*
-                    If the obstacle is of a lower layer than this throwable, then the throwable can fly over it.
-                    This allows throwables to go down stairs with ease.
+                    Closed doors can never be flown over
                 */
-                obstacle.layer < this.layer
-                /*
-                    Otherwise, check conditions as normal
-                */
-                || flyoverCondMap[obstacle.definition.allowFlyover]
-            );
+                return object.door?.isOpen !== false && (
+                    /*
+                        If the obstacle is of a lower layer than this throwable, then the throwable can fly over it.
+                        This allows throwables to go down stairs with ease.
+                    */
+                    object.layer < this.layer
+                    /*
+                        Otherwise, check conditions as normal
+                    */
+                    || flyoverCondMap[object.definition.allowFlyover]
+                );
+            } else {
+                return flyoverCondMap[object.definition.allowFlyover];
+            }
         };
 
         const damagedThisTick = new Set<GameObject>();
@@ -236,7 +241,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
 
             const collidingWithObject = isGeometricCollision || isRayCastedCollision;
 
-            if (isObstacle) {
+            if (isObstacle || isBuilding) {
                 if (collidingWithObject) {
                     let isAbove = false;
                     if (isAbove = canFlyOver(object)) {
@@ -245,7 +250,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
                         this._currentDrag = Drag.Harsh;
                     }
 
-                    if (object.definition.isStair) {
+                    if (object.isObstacle && object.definition.isStair) {
                         object.handleStairInteraction(this);
                         continue;
                     }
