@@ -70,8 +70,15 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                                 && adjacentOrEqualLayer(object.layer, this.owner.layer)
                         ) as CollidableGameObject[]
                 ).sort((a, b) => {
-                    if (a.isObstacle && a.definition.noMeleeCollision) return Infinity;
-                    if (b.isObstacle && b.definition.noMeleeCollision) return -Infinity;
+                    if (
+                        (a.isObstacle && a.definition.noMeleeCollision)
+                        || (owner.game.teamMode && a.isPlayer && a.teamID === this.owner.teamID)
+                    ) return Infinity;
+
+                    if (
+                        (b.isObstacle && b.definition.noMeleeCollision)
+                        || (owner.game.teamMode && b.isPlayer && b.teamID === this.owner.teamID)
+                    ) return -Infinity;
 
                     return a.hitbox.distanceTo(this.owner.hitbox).distance - b.hitbox.distanceTo(this.owner.hitbox).distance;
                 });

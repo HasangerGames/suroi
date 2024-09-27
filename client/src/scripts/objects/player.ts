@@ -1184,8 +1184,15 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                     && (!object.isObstacle || (!object.definition.noMeleeCollision))
                             ) as Array<Player | Obstacle>
                         ).sort((a, b) => {
-                            if (a.isObstacle && a.definition.noMeleeCollision) return Infinity;
-                            if (b.isObstacle && b.definition.noMeleeCollision) return -Infinity;
+                            if (
+                                (a.isObstacle && a.definition.noMeleeCollision)
+                                || (this.game.teamMode && a.isPlayer && a.teamID === this.teamID)
+                            ) return Infinity;
+
+                            if (
+                                (b.isObstacle && b.definition.noMeleeCollision)
+                                || (this.game.teamMode && b.isPlayer && b.teamID === this.teamID)
+                            ) return -Infinity;
 
                             return a.hitbox.distanceTo(selfHitbox).distance - b.hitbox.distanceTo(selfHitbox).distance;
                         }).slice(0, weaponDef.maxTargets)
