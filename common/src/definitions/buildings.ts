@@ -3406,7 +3406,19 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(5, 5, Vec.create(-21.5, -72)),
                     RectangleHitbox.fromRect(5, 5, Vec.create(21.5, -72)),
                     RectangleHitbox.fromRect(5, 5, Vec.create(-21.5, 69)),
-                    RectangleHitbox.fromRect(5, 5, Vec.create(21.5, 69))
+                    RectangleHitbox.fromRect(5, 5, Vec.create(21.5, 69)),
+
+                    // Pillars
+                    RectangleHitbox.fromRect(5, 3.25, Vec.create(-25.25, -1.35)),
+                    RectangleHitbox.fromRect(5, 3.25, Vec.create(25.25, -1.35)),
+                    RectangleHitbox.fromRect(5, 3.25, Vec.create(-25.25, -35.9)),
+                    RectangleHitbox.fromRect(5, 3.25, Vec.create(25.25, -35.9)),
+                    RectangleHitbox.fromRect(5, 3.25, Vec.create(-25.25, 33.15)),
+                    RectangleHitbox.fromRect(5, 3.25, Vec.create(25.25, 33.15)),
+                    RectangleHitbox.fromRect(5, 3.25, Vec.create(-25.25, 67.8)),
+                    RectangleHitbox.fromRect(5, 3.25, Vec.create(25.25, 67.8)),
+                    RectangleHitbox.fromRect(5, 3.25, Vec.create(-25.25, -70.65)),
+                    RectangleHitbox.fromRect(5, 3.25, Vec.create(25.25, -70.65))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(105, 230),
                 bridgeSpawnOptions: {
