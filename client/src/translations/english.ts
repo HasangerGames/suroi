@@ -236,7 +236,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     // ------------------------------------------------------------------
 
     // Kill Leader stuff
-    "kf_kl_promotion": "<player> is promoted to the Kill Leader!",
+    "kf_kl_promotion": "<player> promoted to Kill Leader!",
     "kf_kl_killed": "<player> killed the Kill Leader",
     "kf_kl_dead": "The Kill Leader is dead!",
     "kf_kl_suicide": "The Kill Leader killed themselves!",
