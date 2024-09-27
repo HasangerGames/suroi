@@ -492,7 +492,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     destroy: 0.75
                 },
                 hitbox: new CircleHitbox(5.5),
-                spawnHitbox: new CircleHitbox(15),
+                spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
                 variations: 6,
                 zIndex: ZIndexes.ObstaclesLayer4,
@@ -509,7 +509,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     destroy: 0.75
                 },
                 hitbox: new CircleHitbox(5.5),
-                spawnHitbox: new CircleHitbox(15),
+                spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
                 variations: 2,
                 zIndex: ZIndexes.ObstaclesLayer4,
@@ -566,7 +566,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     destroy: 0.75
                 },
                 hitbox: new CircleHitbox(5.5),
-                spawnHitbox: new CircleHitbox(15),
+                spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
                 zIndex: ZIndexes.ObstaclesLayer4,
                 allowFlyover: FlyoverPref.Never
@@ -582,7 +582,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     destroy: 0.75
                 },
                 hitbox: new CircleHitbox(5.5),
-                spawnHitbox: new CircleHitbox(15),
+                spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
                 zIndex: ZIndexes.ObstaclesLayer4,
                 allowFlyover: FlyoverPref.Never
@@ -593,12 +593,12 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 material: "tree",
                 health: 240,
                 scale: {
-                    spawnMin: 0.9,
+                    spawnMin: 1.1,
                     spawnMax: 1.5, // fall mode only, original 0.9, 1.1
                     destroy: 0.75
                 },
                 hitbox: new CircleHitbox(5.5),
-                spawnHitbox: new CircleHitbox(15),
+                spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
                 zIndex: ZIndexes.ObstaclesLayer4,
                 variations: 2,

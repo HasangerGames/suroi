@@ -213,7 +213,7 @@ const maps = {
         buildings: {
             small_bridge: Infinity,
             sea_traffic_control: 1,
-        //    small_bunker: 1,
+            //    small_bunker: 1,
             construction_site: 1
         },
         quadBuildingLimit: {
@@ -226,20 +226,20 @@ const maps = {
         },
         obstacles: {
             oil_tank: 12,
-            oak_tree: 160,
+            oak_tree: 150,
             birch_tree_fall: 20,
-            maple_tree: 15,
-            pine_tree: 10,
-            dormant_oak_tree: 10,
-            regular_crate: 130,
+            maple_tree: 80,
+            pine_tree: 50,
+            dormant_oak_tree: 15,
+            regular_crate: 180,
             flint_crate: 5,
             aegis_crate: 5,
             grenade_crate: 35,
-            rock: 150,
+            rock: 180,
             river_chest: 1,
             river_rock: 45,
-            vibrant_bush: 160,
-            lily_pad: 20,
+            vibrant_bush: 200,
+            lily_pad: 40,
             barrel: 80,
             viking_chest: 1,
             super_barrel: 30,
@@ -251,7 +251,7 @@ const maps = {
         },
         obstacleClumps: [
             {
-                clumpAmount: 120,
+                clumpAmount: 150,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
