@@ -206,7 +206,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     position: this.hitbox.randomPoint(),
                     lifetime: 1000,
                     zIndex: ZIndexes.Players,
-                    get layer(): Layer { return game.layer ?? Layer.Ground; },
+                    layer: this.layer,
                     rotation: 0,
                     alpha: {
                         start: 1,
