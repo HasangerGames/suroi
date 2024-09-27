@@ -646,8 +646,10 @@ export class UIManager {
             this.updateWeapons();
         }
 
-        this.ui.c4Button.toggle(activeC4s);
-        if (activeC4s !== undefined) this.hasC4s = activeC4s;
+        if (activeC4s !== undefined) {
+            this.ui.c4Button.toggle(activeC4s);
+            this.hasC4s = activeC4s;
+        }
     }
 
     skinID?: string;

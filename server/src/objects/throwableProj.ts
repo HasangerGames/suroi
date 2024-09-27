@@ -88,7 +88,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         }
         if (this.definition.c4) {
             this.source.owner.c4s.push(this);
-            this.source.owner.updatedC4Button = false;
+            this.source.owner.dirty.activeC4s = true;
         }
         if (this.definition.health) this.health = this.definition.health;
     }
@@ -510,7 +510,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             // use a Set instead
             this.source.owner.c4s.splice(this.source.owner.c4s.indexOf(this), 1);
             this.game.removeProjectile(this);
-            this.source.owner.updatedC4Button = false;
+            this.source.owner.dirty.activeC4s = true;
 
             const { particles } = this.definition.detonation;
             const referencePosition = Vec.clone(this.position ?? this.source.owner.position);
