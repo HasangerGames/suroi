@@ -149,6 +149,7 @@ export class UIManager {
         ammoCounterContainer: $<HTMLDivElement>("#weapon-ammo-container"),
         activeAmmo: $<HTMLSpanElement>("#weapon-clip-ammo-count"),
         reserveAmmo: $<HTMLDivElement>("#weapon-inventory-ammo"),
+        reloadIcon: $<HTMLElement>("#weapon-clip-reload-icon"),
         killStreakIndicator: $<HTMLDivElement>("#killstreak-indicator-container"),
         killStreakCounter: $<HTMLSpanElement>("#killstreak-indicator-counter"),
 
@@ -692,6 +693,8 @@ export class UIManager {
             if (!showReserve) {
                 this.ui.reserveAmmo.hide();
             }
+
+            if (this.game.inputManager.isMobile) this.ui.reloadIcon.toggle(activeWeapon.definition.itemType !== ItemType.Throwable)
         }
 
         if (activeWeapon?.stats?.kills === undefined) { // killstreaks

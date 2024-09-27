@@ -2044,7 +2044,6 @@ export async function setUpUI(game: Game): Promise<void> {
         ui.interactKey.html('<img src="./img/misc/tap-icon.svg" alt="Tap">');
 
         // Active weapon ammo button reloads
-        $("#weapon-clip-reload-icon").show();
         ui.activeAmmo.on("click", () => game.console.handleQuery("reload", "never"));
 
         // Emote button & wheel
