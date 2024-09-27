@@ -84,7 +84,7 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
     }
 
     override updateZIndex(): void {
-        this.container.zIndex = Number.MAX_SAFE_INTEGER - 3;
+        this.container.zIndex = 994; // gas is 996 ig
     }
 
     destroy(): void {
