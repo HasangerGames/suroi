@@ -374,12 +374,13 @@ export class GameMap {
                 return;
             }
 
-            const { minRiverWidth, maxRiverWidth, landCheckDist } = bridgeSpawnOptions;
+            const { minRiverWidth, maxRiverWidth, landHitbox } = bridgeSpawnOptions;
 
             let spawnedCount = 0;
 
             const generateBridge = (river: River) => (start: number, end: number): void => {
                 if (spawnedCount >= count) return;
+
                 let shortestDistance = Number.MAX_VALUE;
                 let bestPosition = 0.5;
                 let bestOrientation: Orientation = 0;
@@ -399,11 +400,7 @@ export class GameMap {
 
                 if (
                     this.occupiedBridgePositions.some(pos => Vec.equals(pos, position))
-                    // Make sure there's dry land on either side of the bridge
-                    || [
-                        Vec.addAdjust(position, Vec.create(0, landCheckDist), bestOrientation),
-                        Vec.addAdjust(position, Vec.create(0, -landCheckDist), bestOrientation)
-                    ].some(point => this.terrain.getFloor(point, 0) === FloorNames.Water)
+                    || !this.isInRiver(landHitbox.transform(position, 1, bestOrientation), position)
                 ) return;
 
                 // checks if the distance between this position and the new bridge's position is less than
@@ -414,29 +411,14 @@ export class GameMap {
                     )
                 ) return;
 
-                const spawnHitbox = definition.spawnHitbox.toRectangle();
-
-                // if the bridge is sideways it rotates the hitbox accordingly
-                if (bestOrientation % 2) {
-                    const { min, max } = spawnHitbox;
-
-                    [
-                        min.y, min.x,
-                        max.y, max.x
-                    ] = [
-                        min.x, min.y,
-                        max.x, max.y
-                    ];
-                }
-
-                const hitbox = spawnHitbox.transform(position);
+                const spawnHitbox = definition.spawnHitbox.transform(position, 1, bestOrientation);
 
                 // checks if the bridge hitbox collides with another object and if so does not spawn it
-                for (const object of this.game.grid.intersectsHitbox(hitbox)) {
+                for (const object of this.game.grid.intersectsHitbox(spawnHitbox)) {
                     const objectHitbox = "spawnHitbox" in object && object.spawnHitbox;
 
                     if (!objectHitbox) continue;
-                    if (hitbox.collidesWith(objectHitbox)) return;
+                    if (spawnHitbox.collidesWith(objectHitbox)) return;
                 }
 
                 this.occupiedBridgePositions.push(position);
@@ -444,9 +426,8 @@ export class GameMap {
                 spawnedCount++;
             };
 
-            this.terrain.rivers.filter(
-                ({ width }) => minRiverWidth <= width && width <= maxRiverWidth
-            )
+            this.terrain.rivers
+                .filter(({ width }) => width >= minRiverWidth && width <= maxRiverWidth)
                 .map(generateBridge)
                 .forEach(generator => {
                     generator(0.2, 0.4);
@@ -917,14 +898,9 @@ export class GameMap {
                     break;
                 }
                 case MapObjectSpawnMode.RiverBank: {
-                    for (const river of this.terrain.getRiversInHitbox(hitbox)) {
-                        if (
-                            river.waterHitbox.isPointInside(position)
-                            || hitbox.collidesWith(river.waterHitbox)
-                        ) {
-                            collided = true;
-                            break;
-                        }
+                    if (this.isInRiver(hitbox, position)) {
+                        collided = true;
+                        break;
                     }
                     break;
                 }
@@ -932,6 +908,18 @@ export class GameMap {
         }
 
         return attempts < maxAttempts ? position : undefined;
+    }
+
+    private isInRiver(hitbox: Hitbox, position: Vector): boolean {
+        for (const river of this.terrain.getRiversInHitbox(hitbox)) {
+            if (
+                river.waterHitbox.isPointInside(position)
+                || hitbox.collidesWith(river.waterHitbox)
+            ) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

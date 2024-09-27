@@ -56,7 +56,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly bridgeSpawnOptions?: {
         readonly minRiverWidth: number
         readonly maxRiverWidth: number
-        readonly landCheckDist: number
+        readonly landHitbox: Hitbox
     }
 
     readonly obstacles: readonly BuildingObstacle[]
@@ -231,8 +231,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
         rotationMode: RotationMode.Limited
     } satisfies DeepPartial<Omit<BuildingDefinition, "idString">>,
     ([derive, , , _missingType]) => {
-        type Missing = typeof _missingType;
-
         const blueHouseVaultLayout = derive((id: number, obstacles: readonly BuildingObstacle[], subBuildings?: readonly SubBuilding[]) => {
             return {
                 idString: `blue_house_vault_layout_${id}`,
@@ -3366,7 +3364,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 bridgeSpawnOptions: {
                     minRiverWidth: 0,
                     maxRiverWidth: 20,
-                    landCheckDist: 30
+                    landHitbox: new GroupHitbox(
+                        RectangleHitbox.fromRect(20, 5, Vec.create(0, 28.5)),
+                        RectangleHitbox.fromRect(20, 5, Vec.create(0, -28.5))
+                    )
                 },
                 floorImages: [
                     {
@@ -3407,7 +3408,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 bridgeSpawnOptions: {
                     minRiverWidth: 20,
                     maxRiverWidth: 100,
-                    landCheckDist: 103
+                    landHitbox: new GroupHitbox(
+                        RectangleHitbox.fromRect(105, 45, Vec.create(0, 92.5)),
+                        RectangleHitbox.fromRect(105, 45, Vec.create(0, -92.5))
+                    )
                 },
                 floorImages: [
                     { key: "large_bridge_railing", position: Vec.create(23.3, -38) },
@@ -4229,6 +4233,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "small_bunker_entrance", position: Vec.create(0, 20), layer: -1 }
                 ]
             }
-        ] as readonly Missing[];
+        ];
     }
 );
