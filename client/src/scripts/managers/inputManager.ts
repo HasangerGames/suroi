@@ -13,7 +13,7 @@ import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
 import { defaultBinds } from "../utils/console/defaultClientCVars";
 import { type GameSettings, type PossibleError } from "../utils/console/gameConsole";
-import { PIXI_SCALE } from "../utils/constants";
+import { FORCE_MOBILE, PIXI_SCALE } from "../utils/constants";
 import { html } from "../utils/misc";
 
 export class InputManager {
@@ -177,8 +177,7 @@ export class InputManager {
     private mWheelStopTimer: number | undefined;
     setupInputs(): void {
         // @ts-expect-error init code
-        // noinspection JSConstantReassignment
-        this.isMobile = isMobile.any && this.game.console.getBuiltInCVar("mb_controls_enabled");
+        this.isMobile = (isMobile.any && this.game.console.getBuiltInCVar("mb_controls_enabled")) || FORCE_MOBILE;
 
         const game = this.game;
         const gameContainer = $("#game")[0];
