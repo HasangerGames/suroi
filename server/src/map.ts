@@ -9,7 +9,7 @@ import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
 import { type Mutable, type SMutable } from "@common/utils/misc";
 import { MapObjectSpawnMode, NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
-import { FloorNames, River, Terrain } from "@common/utils/terrain";
+import { River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Config } from "./config";
 
