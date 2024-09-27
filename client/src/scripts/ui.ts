@@ -653,7 +653,10 @@ export async function setUpUI(game: Game): Promise<void> {
                 .addClass("fa-eye-slash");
 
             urlField.removeClass("hidden")
-                .css("color", "");
+                .css({
+                    color: "",
+                    textShadow: ""
+                });
 
             return;
         }
@@ -662,7 +665,10 @@ export async function setUpUI(game: Game): Promise<void> {
             .addClass("fa-eye");
 
         urlField.addClass("hidden")
-            .css("color", "#FFFFFF00");
+            .css({
+                color: "transparent",
+                textShadow: "0 0 8px rgba(0, 0, 0, 0.5)"
+            });
     });
 
     $<HTMLInputElement>("#create-team-toggle-auto-fill").on("click", function() {
