@@ -121,6 +121,8 @@
                 padding: 4px 8px;
                 outline: none;
                 border: none;
+                border-bottom: 2px solid rgb(209, 207, 207);
+                box-shadow: inset 0 -2px rgb(209, 207, 207);
             }
 
             #btn-copy-team-url {
