@@ -440,9 +440,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         for (const object of this.game.grid.intersectsHitbox(this.spawnHitbox)) {
             if (object.isPlayer) {
                 const player = object;
-                const triggerCondition = player.activeItem.definition.idString !== "fists" || player.inventory.vest || player.inventory.helmet;
 
-                this.detectedMetal = this.hitbox.collidesWith(player.hitbox) && triggerCondition && equalLayer(this.layer, player.layer);
+                this.detectedMetal = this.hitbox.collidesWith(player.hitbox) && equalLayer(this.layer, player.layer);
 
                 this.setDirty();
             }
