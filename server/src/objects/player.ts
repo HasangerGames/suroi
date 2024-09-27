@@ -1780,6 +1780,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             );
         }
 
+        this.canDespawn = false;
         this.downed = true;
         this.action?.cancel();
         this.activeItem.stopUse();
