@@ -403,7 +403,7 @@ export class Game {
                     const inventoryMsg = this.uiManager.ui.inventoryMsg;
                     inventoryMsg.text(getTranslatedString(inventoryMessageMap[message])).fadeIn(250);
                     clearTimeout(this.inventoryMsgTimeout);
-                    this.inventoryMsgTimeout = setTimeout(() => inventoryMsg.fadeOut(250), 4000) as unknown as number;
+                    this.inventoryMsgTimeout = setTimeout(() => inventoryMsg.fadeOut(250), 2500) as unknown as number;
                 } else if (item !== undefined) {
                     let soundID: string;
                     switch (item.itemType) {
