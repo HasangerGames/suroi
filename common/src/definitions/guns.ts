@@ -217,7 +217,6 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
         ballistics: defaultBulletTemplate
     } as const,
     ([, , , _missingType]) => {
-        type Missing = typeof _missingType;
         return ([
             {
                 idString: "ak47",
