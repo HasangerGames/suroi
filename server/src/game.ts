@@ -81,13 +81,16 @@ export class Game implements GameData {
     updateObjects = false;
 
     readonly livingPlayers = new Set<Player>();
+    /**
+     * Players that have connected but haven't sent a JoinPacket yet
+     */
+    readonly connectingPlayers = new Set<Player>();
     readonly connectedPlayers = new Set<Player>();
     readonly spectatablePlayers: Player[] = [];
     /**
      * New players created this tick
      */
     readonly newPlayers: Player[] = [];
-
     /**
     * Players deleted this tick
     */
@@ -525,6 +528,13 @@ export class Game implements GameData {
         // Update gas
         this.gas.tick();
 
+        // Delete players that haven't sent a JoinPacket after 5 seconds
+        for (const player of this.connectingPlayers) {
+            if (this.now - player.joinTime > 5000) {
+                player.disconnect("JoinPacket not received after 5 seconds");
+            }
+        }
+
         // First loop over players: movement, animations, & actions
         for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
             if (!player.dead) player.update();
@@ -802,6 +812,7 @@ export class Game implements GameData {
 
         // Player is added to the players array when a JoinPacket is received from the client
         const player = new Player(this, socket, spawnPosition, spawnLayer, team);
+        this.connectingPlayers.add(player);
         this.pluginManager.emit("player_did_connect", player);
         return player;
     }
@@ -839,6 +850,7 @@ export class Game implements GameData {
 
         this.livingPlayers.add(player);
         this.spectatablePlayers.push(player);
+        this.connectingPlayers.delete(player);
         this.connectedPlayers.add(player);
         this.newPlayers.push(player);
         this.grid.addObject(player);
@@ -892,6 +904,7 @@ export class Game implements GameData {
 
         player.disconnected = true;
         this.aliveCountDirty = true;
+        this.connectingPlayers.delete(player);
         this.connectedPlayers.delete(player);
 
         if (player.canDespawn) {
