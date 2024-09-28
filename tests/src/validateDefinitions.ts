@@ -818,11 +818,7 @@ logger.indent("Validating building definitions", () => {
                         }
                     );
 
-                    tester.assertIsRealNumber({
-                        obj: bridgeSpawnOptions,
-                        field: "landCheckDist",
-                        baseErrorPath: errorPath2
-                    });
+                    validators.hitbox(errorPath2, bridgeSpawnOptions.landHitbox);
                 });
             }
 
