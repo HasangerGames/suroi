@@ -2029,7 +2029,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     }
                 }
             }
-        ] satisfies ReadonlyArray<RawDefinition<Missing>>).map(e => {
+        ] satisfies ReadonlyArray<RawDefinition<RawGunDefinition>>).map(e => {
             if (e.dual === undefined) {
                 return [e];
             }

@@ -1933,7 +1933,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                     for (const object of nearObjects) {
                         const { isLoot, isObstacle, isPlayer } = object;
-                        const isInteractable = (isLoot || isObstacle || isPlayer) && object.canInteract(this);
+                        const isInteractable = (isLoot || isObstacle || isPlayer) && object.canInteract(this) === true;
 
                         if (
                             (isLoot || (type === InputActions.Interact && isInteractable))
@@ -1972,7 +1972,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                             }
                         }
                     } else {
-                        uninteractable.object?.interact(this, !uninteractable.object.canInteract(this));
+                        uninteractable.object?.interact(this, uninteractable.object.canInteract(this));
                     }
 
                     this.canDespawn = false;

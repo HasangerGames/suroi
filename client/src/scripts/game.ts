@@ -1,7 +1,7 @@
 import { sound, type Sound } from "@pixi/sound";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
-import { InputActions, Layer, ObjectCategory, TeamSize } from "../../../common/src/constants";
+import { InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
@@ -354,6 +354,8 @@ export class Game {
         };
     }
 
+    inventoryMsgTimeout: number | undefined;
+
     onPacket(packet: OutputPacket): void {
         switch (true) {
             case packet instanceof JoinedPacket:
@@ -388,34 +390,49 @@ export class Game {
                 break;
             }
             case packet instanceof PickupPacket: {
-                let soundID: string;
-                const { output } = packet;
-                switch (output.item.itemType) {
-                    case ItemType.Ammo:
-                        soundID = "ammo_pickup";
-                        break;
-                    case ItemType.Healing:
-                        soundID = `${output.item.idString}_pickup`;
-                        break;
-                    case ItemType.Scope:
-                        soundID = "scope_pickup";
-                        break;
-                    case ItemType.Armor:
-                        if (output.item.armorType === ArmorType.Helmet) soundID = "helmet_pickup";
-                        else soundID = "vest_pickup";
-                        break;
-                    case ItemType.Backpack:
-                        soundID = "backpack_pickup";
-                        break;
-                    case ItemType.Throwable:
-                        soundID = "throwable_pickup";
-                        break;
-                    default:
-                        soundID = "pickup";
-                        break;
-                }
+                const { output: { message, item } } = packet;
 
-                this.soundManager.play(soundID);
+                const inventoryMessageMap = {
+                    [InventoryMessages.NotEnoughSpace]: "msg_not_enough_space",
+                    [InventoryMessages.ItemAlreadyEquipped]: "msg_item_already_equipped",
+                    [InventoryMessages.BetterItemEquipped]: "msg_better_item_equipped",
+                    [InventoryMessages.CannotUseRadio]: "msg_cannot_use_radio"
+                };
+
+                if (message !== undefined) {
+                    const inventoryMsg = this.uiManager.ui.inventoryMsg;
+                    inventoryMsg.text(getTranslatedString(inventoryMessageMap[message])).fadeIn(250);
+                    clearTimeout(this.inventoryMsgTimeout);
+                    this.inventoryMsgTimeout = setTimeout(() => inventoryMsg.fadeOut(250), 4000) as unknown as number;
+                } else if (item !== undefined) {
+                    let soundID: string;
+                    switch (item.itemType) {
+                        case ItemType.Ammo:
+                            soundID = "ammo_pickup";
+                            break;
+                        case ItemType.Healing:
+                            soundID = `${item.idString}_pickup`;
+                            break;
+                        case ItemType.Scope:
+                            soundID = "scope_pickup";
+                            break;
+                        case ItemType.Armor:
+                            if (item.armorType === ArmorType.Helmet) soundID = "helmet_pickup";
+                            else soundID = "vest_pickup";
+                            break;
+                        case ItemType.Backpack:
+                            soundID = "backpack_pickup";
+                            break;
+                        case ItemType.Throwable:
+                            soundID = "throwable_pickup";
+                            break;
+                        default:
+                            soundID = "pickup";
+                            break;
+                    }
+
+                    this.soundManager.play(soundID);
+                }
                 break;
             }
             case packet instanceof DisconnectPacket:

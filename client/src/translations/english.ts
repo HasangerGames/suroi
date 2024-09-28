@@ -126,6 +126,11 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
 
     "msg_kills": "Kills: <kills>",
 
+    "msg_not_enough_space": "Not enough space!",
+    "msg_item_already_equipped": "Item already equipped!",
+    "msg_better_item_equipped": "Better item equipped!",
+    "msg_cannot_use_radio": "Radio cannot be used in buildings!",
+
     "gas_waiting": "Toxic gas advances in <time>",
     "gas_advancing": "Toxic gas is advancing! Move to the safe zone",
     "gas_inactive": "Waiting for players...",

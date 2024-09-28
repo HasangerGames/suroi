@@ -1057,6 +1057,21 @@
     }
 }
 
+#inventory-message {
+    position: absolute;
+    top: calc(60% + 100px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 30px;
+    font-weight: bold;
+    @include text-shadow;
+
+    @media screen and (max-height: 750px) {
+        font-size: 20px;
+        top: calc(60% + 50px);
+    }
+}
+
 .inventory-container {
     display: flex;
     justify-content: space-between;

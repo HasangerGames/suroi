@@ -120,6 +120,13 @@ export enum KillfeedEventSeverity {
     Down
 }
 
+export enum InventoryMessages {
+    NotEnoughSpace,
+    ItemAlreadyEquipped,
+    BetterItemEquipped,
+    CannotUseRadio
+}
+
 export const DEFAULT_INVENTORY: Record<string, number> = {};
 
 for (const item of [...HealingItems, ...Ammos, ...Scopes, ...Throwables]) {

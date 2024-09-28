@@ -263,7 +263,9 @@ export class UIManager {
         closeCreateTeam: $<HTMLButtonElement>("#close-create-team"),
 
         c4Button: $<HTMLButtonElement>("#c4-detonate-btn"),
-        detonateKey: $<HTMLButtonElement>("#detonate-key")
+        detonateKey: $<HTMLButtonElement>("#detonate-key"),
+
+        inventoryMsg: $<HTMLSpanElement>("#inventory-message")
     });
 
     private readonly _weaponSlotCache = new ExtendedMap<

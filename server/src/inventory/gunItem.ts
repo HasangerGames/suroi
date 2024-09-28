@@ -1,4 +1,4 @@
-import { AnimationType, FireMode } from "@common/constants";
+import { AnimationType, FireMode, InventoryMessages } from "@common/constants";
 import { type GunDefinition } from "@common/definitions/guns";
 import { RectangleHitbox } from "@common/utils/hitbox";
 import { Angle, Geometry, resolveStairInteraction } from "@common/utils/math";
@@ -12,6 +12,7 @@ import { ReloadAction } from "./action";
 import { InventoryItem } from "./inventoryItem";
 import { adjacentOrEqualLayer, isStairLayer } from "@common/utils/layer";
 import { Orientation } from "@common/typings";
+import { PickupPacket } from "@common/packets";
 
 /**
  * A class representing a firearm
@@ -68,8 +69,13 @@ export class GunItem extends InventoryItem<GunDefinition> {
             || owner.downed
             || owner.disconnected
             || this !== owner.activeItem
-            || (definition.summonAirdrop && owner.isInsideBuilding)
         ) {
+            this._shots = 0;
+            return;
+        }
+
+        if (definition.summonAirdrop && owner.isInsideBuilding) {
+            owner.sendPacket(PickupPacket.create({ message: InventoryMessages.CannotUseRadio }));
             this._shots = 0;
             return;
         }
