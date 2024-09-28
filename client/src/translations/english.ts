@@ -25,7 +25,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "play_duo": "Play Duos",
     "play_squad": "Play Squads",
     "join_team": "Join Team",
-    "msg_locked_tooltip": "The game switches between solos and duos every 24 hours, as there aren't enough players for both.",
+    "msg_locked_tooltip": "The game switches between modes every 24 hours, as there aren't enough players for all of them.",
     "rules_and_tutorial": "Rules & Tutorial",
     "news": "News",
     "loadout": "Loadout",
