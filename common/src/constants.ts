@@ -184,7 +184,6 @@ export enum ZIndexes {
     DeadObstacles,
     DeathMarkers,
     Explosions,
-    TeammateName,
     /**
      * This is the default layer for obstacles
      */
@@ -192,6 +191,7 @@ export enum ZIndexes {
     Loot,
     GroundedThrowables,
     ObstaclesLayer2,
+    TeammateName,
     Bullets,
     DownedPlayers,
     Players,
