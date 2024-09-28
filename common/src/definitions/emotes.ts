@@ -82,7 +82,8 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>([
         "AEGIS Logo",
         "Flint Logo",
         "Duel",
-        "Chicken Dinner"
+        "Chicken Dinner",
+        "Trophy"
     ].map(name => emote([name, EmoteCategory.Icons])),
     ...[
         "Troll Face",
