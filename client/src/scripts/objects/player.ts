@@ -1323,7 +1323,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             ),
                             randomFloat(gas.minSpeed, gas.maxSpeed)
                         ),
-                        zIndex: ZIndexes.ObstaclesLayer5 - 2,
+                        zIndex: ZIndexes.BuildingsCeiling - 2,
                         alpha: {
                             start: randomFloat(0.5, 1),
                             end: 0
