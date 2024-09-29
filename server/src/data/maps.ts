@@ -214,14 +214,13 @@ const maps = {
             small_bridge: Infinity,
             sea_traffic_control: 1,
             //    small_bunker: 1,
-            construction_site: 1
+            construction_site: 1,
+            barn: 3,
+            porta_potty: 6,
         },
         quadBuildingLimit: {
-            red_house: 1,
-            red_house_v2: 1,
+            barn: 2,
             warehouse: 2,
-            green_house: 1,
-            blue_house: 1,
             porta_potty: 3
         },
         obstacles: {

@@ -4293,6 +4293,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(20.5, 55.5, Vec.create(-19.5, 0)),
                     RectangleHitbox.fromRect(60, 14, Vec.create(0, -21))
                 ),
+                scopeHitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(20.5, 55.5, Vec.create(-19.5, 0)),
+                    RectangleHitbox.fromRect(60, 14, Vec.create(0, -21))
+                ),
                 floorImages: [
                     {
                         key: "barn_top_floor_2",
