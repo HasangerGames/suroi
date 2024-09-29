@@ -13,78 +13,13 @@ import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
 import { defaultBinds } from "../utils/console/defaultClientCVars";
 import { type GameSettings, type PossibleError } from "../utils/console/gameConsole";
-import { FORCE_MOBILE, PIXI_SCALE } from "../utils/constants";
+import { PIXI_SCALE } from "../utils/constants";
 import { html } from "../utils/misc";
 
-let controllerIndex = null;
-let gamepadA = false; let gamepadB = false; let gamepadX = false; let gamepadY = false;
-let gamepadLB = false; let gamepadRB = false; let gamepadLT = false; let gamepadRT = false;
-let gamepadView = false; let gamepadMenu = false; let gamepadLS = false; let gamepadRS = false;
-let dPadUp = false; let dPadDown = false; let dPadLeft = false; let dPadRight = false;
-let gamepadHome = false;
 
 
 
 
-let gamepadLeftStickHorizontal = 0;
-let gamepadLeftStickVertical = 0;
-let gamepadRightStickHorizontal = 0;
-let gamepadRightStickVertical = 0;
-
-
-
-
-window.addEventListener('gamepadconnected',(event)=>{
-   controllerIndex = event.gamepad.index;
-   console.log("gamepad connected");
-});
-
-
-window.addEventListener('gamepaddisconnected',(event)=>{
-   controllerIndex = null;
-   console.log("gamepad disconnected");
-});
-
-
-function controllerInput(){
-   if(controllerIndex !== null){
-       const gamepad = navigator.getGamepads()[controllerIndex];
-       const buttons = gamepad.buttons;
-       //button mappings below
-       gamepadA = buttons[0].pressed; gamepadB = buttons[1].pressed; gamepadX = buttons[2].pressed; gamepadY = buttons[3].pressed;
-       gamepadLB = buttons[4].pressed; gamepadRB = buttons[5].pressed; gamepadLT = buttons[6].pressed; gamepadRT = buttons[7].pressed;
-       gamepadView = buttons[8].pressed; gamepadMenu = buttons[9].pressed; gamepadLS = buttons[10].pressed; gamepadRS = buttons[11].pressed;
-       dPadUp = buttons[12].pressed; dPadDown = buttons[13].pressed; dPadLeft = buttons[14].pressed; dPadRight = buttons[15].pressed;
-       gamepadHome = buttons[16].pressed;
-
-
-       gamepadLeftStickHorizontal = gamepad.axes[0];
-       gamepadLeftStickVertical = gamepad.axes[1];
-       //please use left sticks for movement and make the player face where he is moving, like mobile
-       gamepadRightStickHorizontal = gamepad.axes[2];
-       gamepadRightStickVertical = gamepad.axes[3];
-       /*please use right sticks for aim (but not shoot, there's a different button)
-       and add aim line like mobile right joystick */
-       console.log("A, B, X, Y:", gamepadA, gamepadB, gamepadX, gamepadY);
-       console.log("LB, RB, LT, RT:", gamepadLB, gamepadRB, gamepadLT, gamepadRT);
-       console.log("View, Menu, LS, RS:", gamepadView, gamepadMenu, gamepadLS, gamepadRS);
-       console.log("DPad up, down, left, right: ", dPadUp, dPadDown, dPadLeft, dPadRight);
-       console.log("Home:", gamepadHome);
-       console.log("LS horizontal: ", gamepadLeftStickHorizontal);
-       console.log("LS vertical: ", gamepadLeftStickVertical);
-       console.log("RS horizontal: ", gamepadRightStickHorizontal);
-       console.log("RS vertical: ", gamepadRightStickVertical);
-       /*honestly you could just derive the controls from mobile and add
-       the physical joysticks as input instead of the virtual joysticks */
-   }
-};
-
-
-function gameLoop(){
-   controllerInput();
-   requestAnimationFrame(gameLoop);
-};
-gameLoop();
 
 export class InputManager {
     readonly binds = new InputMapper();
@@ -247,7 +182,8 @@ export class InputManager {
     private mWheelStopTimer: number | undefined;
     setupInputs(): void {
         // @ts-expect-error init code
-        this.isMobile = (isMobile.any && this.game.console.getBuiltInCVar("mb_controls_enabled")) || FORCE_MOBILE;
+        // noinspection JSConstantReassignment
+        this.isMobile = isMobile.any && this.game.console.getBuiltInCVar("mb_controls_enabled");
 
         const game = this.game;
         const gameContainer = $("#game")[0];
@@ -278,6 +214,7 @@ export class InputManager {
         gameContainer.addEventListener("pointerdown", this.handleInputEvent.bind(this, true));
         gameContainer.addEventListener("pointerup", this.handleInputEvent.bind(this, false));
         gameContainer.addEventListener("wheel", this.handleInputEvent.bind(this, true));
+        
 
         $("#emote-wheel > .button-center").on("click", () => {
             this.emoteWheelActive = false;
@@ -392,10 +329,7 @@ export class InputManager {
                 activePlayer.images.aimTrail.alpha = 1;
 
                 const attacking = data.distance > game.console.getBuiltInCVar("mb_joystick_size") / 3;
-                if (
-                    (def.itemType === ItemType.Throwable && this.attacking)
-                    || (def.itemType === ItemType.Gun && def.shootOnRelease)
-                ) {
+                if (def.itemType === ItemType.Gun && def.shootOnRelease) {
                     shootOnRelease = true;
                     this.shootOnReleaseAngle = this.rotation;
                 } else {
@@ -529,7 +463,7 @@ export class InputManager {
             }
 
             if (typeof query === "string") {
-                const { compiled } = this.game.console.handleQuery(query, "always");
+                const { compiled } = this.game.console.handleQuery(query);
 
                 if (compiled !== undefined) {
                     this.binds.overrideWithCompiled(input, query, compiled);
@@ -546,6 +480,7 @@ export class InputManager {
         type Ret = typeof event extends KeyboardEvent ? string[] : string;
 
         let input = "";
+        
         if (event instanceof KeyboardEvent) {
             const { key, code, location } = event;
 
@@ -562,7 +497,115 @@ export class InputManager {
                 default: return input as Ret;
             }
         }
-
+        let controllerIndex = null;
+        let gamepadA = false; let gamepadB = false; let gamepadX = false; let gamepadY = false;
+        let gamepadLB = false; let gamepadRB = false; let gamepadLT = false; let gamepadRT = false;
+        let gamepadView = false; let gamepadMenu = false; let gamepadLS = false; let gamepadRS = false;
+        let dPadUp = false; let dPadDown = false; let dPadLeft = false; let dPadRight = false;
+        let gamepadHome = false;
+        
+        window.addEventListener('gamepadconnected',(event)=>{
+           controllerIndex = event.gamepad.index;
+           console.log("gamepad connected");
+        });
+        
+        
+        window.addEventListener('gamepaddisconnected',(event)=>{
+           controllerIndex = null;
+           console.log("gamepad disconnected");
+        });
+        
+        
+        function controllerInput(){
+           if(controllerIndex !== null){
+               const gamepad = navigator.getGamepads()[controllerIndex];
+               const buttons = gamepad.buttons;
+               //button mappings below
+               gamepadA = buttons[0].pressed; gamepadB = buttons[1].pressed; gamepadX = buttons[2].pressed; gamepadY = buttons[3].pressed;
+               gamepadLB = buttons[4].pressed; gamepadRB = buttons[5].pressed; gamepadLT = buttons[6].pressed; gamepadRT = buttons[7].pressed;
+               gamepadView = buttons[8].pressed; gamepadMenu = buttons[9].pressed; gamepadLS = buttons[10].pressed; gamepadRS = buttons[11].pressed;
+               dPadUp = buttons[12].pressed; dPadDown = buttons[13].pressed; dPadLeft = buttons[14].pressed; dPadRight = buttons[15].pressed;
+               gamepadHome = buttons[16].pressed;
+        
+               if(gamepadA){
+                console.log("gamepad A pressed");
+                input = "A";
+               }
+               if(gamepadB){
+                console.log("gamepad B pressed");
+                input = "B";
+               }
+               if(gamepadX){
+                console.log("gamepad X pressed");
+                input = "X";
+               }
+               if(gamepadY){
+                console.log("gamepad Y pressed");
+                input = "Y";
+               }
+               if(gamepadLB){
+                console.log("gamepad LB pressed");
+                input = "LB";
+               }
+               if(gamepadRB){
+                console.log("gamepad RB pressed");
+                input = "RB";
+               }
+               if(gamepadLT){
+                console.log("gamepad LT pressed");
+                input = "LT";
+               }
+               if(gamepadRT){
+                console.log("gamepad RT pressed");
+                input = "RT";
+               }
+               if(gamepadView){
+                console.log("gamepad View pressed");
+                input = "View";
+               }
+               if(gamepadMenu){
+                console.log("gamepad Menu pressed");
+                input = "Menu";
+               }
+               if(gamepadLS){
+                console.log("gamepad LS pressed");
+                input = "LS";
+               }
+               if(gamepadRS){
+                console.log("gamepad RS pressed");
+                input = "RS";
+               }
+               if(dPadUp){
+                console.log("DPad Up pressed");
+                input = "DPadUp";
+               }
+               if(dPadDown){
+                console.log("DPad Down pressed");
+                input = "DPadDown";
+               }
+               if(dPadLeft){
+                console.log("DPad Left pressed");
+                input = "DPadLeft";
+               }
+               if(dPadRight){
+                console.log("DPad Right pressed");
+                input = "DPadRight";
+               }
+               if(gamepadHome){
+                console.log("gamepad Home pressed");
+                input = "Home";
+               }
+        
+        
+           }
+        };
+        
+        
+        function gameLoop(){
+           controllerInput();
+           requestAnimationFrame(gameLoop);
+        };
+        gameLoop();
         if (event instanceof WheelEvent) {
             switch (true) {
                 case event.deltaX > 0: { input = "MWheelRight"; break; }
@@ -579,7 +622,7 @@ export class InputManager {
 
             return input as Ret;
         }
-
+     
         if (event instanceof MouseEvent) {
             input = `Mouse${event.button}`;
         }
@@ -686,7 +729,115 @@ export class InputManager {
 
                 const setKeyBind = (event: KeyboardEvent | MouseEvent | WheelEvent): void => {
                     event.stopImmediatePropagation();
-
+                    let controllerIndex = null;
+        let gamepadA = false; let gamepadB = false; let gamepadX = false; let gamepadY = false;
+        let gamepadLB = false; let gamepadRB = false; let gamepadLT = false; let gamepadRT = false;
+        let gamepadView = false; let gamepadMenu = false; let gamepadLS = false; let gamepadRS = false;
+        let dPadUp = false; let dPadDown = false; let dPadLeft = false; let dPadRight = false;
+        let gamepadHome = false;
+        
+        window.addEventListener('gamepadconnected',(event)=>{
+           controllerIndex = event.gamepad.index;
+           console.log("gamepad connected");
+        });
+        
+        
+        window.addEventListener('gamepaddisconnected',(event)=>{
+           controllerIndex = null;
+           console.log("gamepad disconnected");
+        });
+        
+        
+        function controllerInput(){
+           if(controllerIndex !== null){
+               const gamepad = navigator.getGamepads()[controllerIndex];
+               const buttons = gamepad.buttons;
+               //button mappings below
+               gamepadA = buttons[0].pressed; gamepadB = buttons[1].pressed; gamepadX = buttons[2].pressed; gamepadY = buttons[3].pressed;
+               gamepadLB = buttons[4].pressed; gamepadRB = buttons[5].pressed; gamepadLT = buttons[6].pressed; gamepadRT = buttons[7].pressed;
+               gamepadView = buttons[8].pressed; gamepadMenu = buttons[9].pressed; gamepadLS = buttons[10].pressed; gamepadRS = buttons[11].pressed;
+               dPadUp = buttons[12].pressed; dPadDown = buttons[13].pressed; dPadLeft = buttons[14].pressed; dPadRight = buttons[15].pressed;
+               gamepadHome = buttons[16].pressed;
+        
+               if(gamepadA){
+                console.log("gamepad A pressed");
+                activeButton?.classList.remove("active");
+               }
+               if(gamepadB){
+                console.log("gamepad B pressed");
+                activeButton?.classList.remove("active");
+               }
+               if(gamepadX){
+                console.log("gamepad X pressed");
+                activeButton?.classList.remove("active");
+               }
+               if(gamepadY){
+                console.log("gamepad Y pressed");
+                activeButton?.classList.remove("active");
+               }
+               if(gamepadLB){
+                console.log("gamepad LB pressed");
+                
+               }
+               if(gamepadRB){
+                console.log("gamepad RB pressed");
+                
+               }
+               if(gamepadLT){
+                console.log("gamepad LT pressed");
+                
+               }
+               if(gamepadRT){
+                console.log("gamepad RT pressed");
+                
+               }
+               if(gamepadView){
+                console.log("gamepad View pressed");
+                
+               }
+               if(gamepadMenu){
+                console.log("gamepad Menu pressed");
+                
+               }
+               if(gamepadLS){
+                console.log("gamepad LS pressed");
+                
+               }
+               if(gamepadRS){
+                console.log("gamepad RS pressed");
+                
+               }
+               if(dPadUp){
+                console.log("DPad Up pressed");
+                
+               }
+               if(dPadDown){
+                console.log("DPad Down pressed");
+                
+               }
+               if(dPadLeft){
+                console.log("DPad Left pressed");
+                
+               }
+               if(dPadRight){
+                console.log("DPad Right pressed");
+                
+               }
+               if(gamepadHome){
+                console.log("gamepad Home pressed");
+                
+               }
+        
+        
+           }
+        };
+        
+        
+        function gameLoop(){
+           controllerInput();
+           requestAnimationFrame(gameLoop);
+        };
+        gameLoop();
                     if (
                         event instanceof MouseEvent
                         && event.type === "mousedown"
@@ -697,7 +848,7 @@ export class InputManager {
                         activeButton = bindButton;
                         return;
                     }
-
+                    
                     if (bindButton.classList.contains("active")) {
                         event.preventDefault();
                         const keyRaw = this.getKeyFromInputEvent(event);
@@ -717,7 +868,6 @@ export class InputManager {
                         this.generateBindsConfigScreen();
                     }
                 };
-
                 bindButton.addEventListener("keydown", setKeyBind);
                 bindButton.addEventListener("mousedown", setKeyBind);
                 bindButton.addEventListener("wheel", setKeyBind);
