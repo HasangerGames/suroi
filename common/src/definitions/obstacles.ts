@@ -333,6 +333,43 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
     ([derive, , , _missingType]) => {
         type Missing = typeof _missingType;
 
+        const tree = derive(
+            (
+                props: {
+                    readonly name: string,
+                    readonly health: number
+                    readonly variations?: Exclude<Variation, 0>,
+                    readonly hitbox: Hitbox,
+                    readonly spawnHitbox: Hitbox,
+                    readonly rotationMode: RotationMode,
+                    readonly scaleProps: {
+                        readonly destroy: number
+                        readonly spawnMax: number
+                        readonly spawnMin: number
+                    }
+                    readonly allowFlyOver?: FlyoverPref
+                    readonly hasLoot?: boolean
+                }
+            ) => ({
+                idString: props.name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
+                material: "tree",
+                health: props.health,
+                scale: {
+                    spawnMin: props.scaleProps.spawnMin,
+                    spawnMax: props.scaleProps.spawnMax,
+                    destroy: props.scaleProps.destroy
+                },
+                spawnHitbox: props.spawnHitbox,
+                spawnMode: MapObjectSpawnMode.GrassAndSand,
+                rotationMode: props.rotationMode,
+                variations: props.variations ?? undefined,
+                hitbox: props.hitbox,
+                zIndex: ZIndexes.ObstaclesLayer5,
+                hasLoot: props.hasLoot ?? false,
+                allowFlyover: props.allowFlyOver ?? FlyoverPref.Sometimes
+            })
+        );
+
         const crate = derive({
             material: "crate",
             health: 80,
@@ -481,46 +518,39 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
         } as const));
 
         return [
-            {
-                idString: "oak_tree",
+            tree([{
                 name: "Oak Tree",
-                material: "tree",
                 health: 180,
-                scale: {
+                scaleProps: {
                     spawnMin: 0.9,
                     spawnMax: 1.5, // fall mode only, original 0.9, 1.1
                     destroy: 0.75
                 },
-                hitbox: new CircleHitbox(5.5),
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
+                hitbox: new CircleHitbox(5.5),
                 variations: 6,
-                zIndex: ZIndexes.ObstaclesLayer4,
-                allowFlyover: FlyoverPref.Never
-            },
-            {
-                idString: "dormant_oak_tree",
+            }]),
+
+            tree([{
                 name: "Dormant Oak Tree",
-                material: "tree",
                 health: 120,
-                scale: {
+                scaleProps: {
                     spawnMin: 0.9,
                     spawnMax: 1.4,
                     destroy: 0.75
                 },
-                hitbox: new CircleHitbox(5.5),
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
+                hitbox: new CircleHitbox(5.5),
                 variations: 2,
-                zIndex: ZIndexes.ObstaclesLayer4,
-                allowFlyover: FlyoverPref.Never
-            },
-            {
-                idString: "maple_tree",
+                allowFlyOver: FlyoverPref.Never
+            }]),
+
+            tree([{
                 name: "Maple Tree",
-                material: "tree",
                 health: 290,
-                scale: {
+                scaleProps: {
                     spawnMin: 1.1,
                     spawnMax: 1.6,
                     destroy: 0.75
@@ -529,9 +559,67 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 spawnHitbox: new CircleHitbox(20),
                 rotationMode: RotationMode.Full,
                 variations: 3,
-                zIndex: ZIndexes.ObstaclesLayer4,
-                allowFlyover: FlyoverPref.Never
-            },
+                allowFlyOver: FlyoverPref.Never
+            }]),
+
+            tree([{
+                name: "Pine Tree",
+                health: 180,
+                scaleProps: {
+                    spawnMin: 1.2,
+                    spawnMax: 1.5, // fall mode only, original 0.9, 1.1
+                    destroy: 0.75
+                },
+                hitbox: new CircleHitbox(5.5),
+                spawnHitbox: new CircleHitbox(8.5),
+                rotationMode: RotationMode.Full,
+                allowFlyOver: FlyoverPref.Never
+            }]),
+
+            tree([{
+                name: "Birch Tree",
+                health: 240,
+                scaleProps: {
+                    spawnMin: 0.9,
+                    spawnMax: 1.5, // fall mode only, original 0.9, 1.1
+                    destroy: 0.75
+                },
+                hitbox: new CircleHitbox(5.5),
+                spawnHitbox: new CircleHitbox(8.5),
+                rotationMode: RotationMode.Full,
+                allowFlyOver: FlyoverPref.Never
+            }]),
+
+            tree([{
+                name: "Birch Tree Fall",
+                health: 240,
+                scaleProps: {
+                    spawnMin: 1.1,
+                    spawnMax: 1.5, // fall mode only, original 0.9, 1.1
+                    destroy: 0.75
+                },
+                hitbox: new CircleHitbox(5.5),
+                spawnHitbox: new CircleHitbox(8.5),
+                rotationMode: RotationMode.Full,
+                variations: 2,
+                allowFlyOver: FlyoverPref.Never
+            }]),
+
+            tree([{
+                name: "Christmas Tree",
+                health: 720,
+                scaleProps: {
+                    spawnMin: 0.9,
+                    spawnMax: 1.1,
+                    destroy: 0.75
+                },
+                hitbox: new CircleHitbox(10),
+                spawnHitbox: new CircleHitbox(15),
+                rotationMode: RotationMode.Full,
+                allowFlyOver: FlyoverPref.Never,
+                hasLoot: true
+            }]),
+
             {
                 idString: "oil_tank",
                 name: "Oil Tank",
@@ -555,55 +643,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 reflectBullets: true
             },
-            {
-                idString: "pine_tree",
-                name: "Pine Tree",
-                material: "tree",
-                health: 180,
-                scale: {
-                    spawnMin: 1.2,
-                    spawnMax: 1.5, // fall mode only, original 0.9, 1.1
-                    destroy: 0.75
-                },
-                hitbox: new CircleHitbox(5.5),
-                spawnHitbox: new CircleHitbox(8.5),
-                rotationMode: RotationMode.Full,
-                zIndex: ZIndexes.ObstaclesLayer4,
-                allowFlyover: FlyoverPref.Never
-            },
-            {
-                idString: "birch_tree",
-                name: "Birch Tree",
-                material: "tree",
-                health: 240,
-                scale: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.5, // fall mode only, original 0.9, 1.1
-                    destroy: 0.75
-                },
-                hitbox: new CircleHitbox(5.5),
-                spawnHitbox: new CircleHitbox(8.5),
-                rotationMode: RotationMode.Full,
-                zIndex: ZIndexes.ObstaclesLayer4,
-                allowFlyover: FlyoverPref.Never
-            },
-            {
-                idString: "birch_tree_fall",
-                name: "Birch Tree",
-                material: "tree",
-                health: 240,
-                scale: {
-                    spawnMin: 1.1,
-                    spawnMax: 1.5, // fall mode only, original 0.9, 1.1
-                    destroy: 0.75
-                },
-                hitbox: new CircleHitbox(5.5),
-                spawnHitbox: new CircleHitbox(8.5),
-                rotationMode: RotationMode.Full,
-                zIndex: ZIndexes.ObstaclesLayer4,
-                variations: 2,
-                allowFlyover: FlyoverPref.Never
-            },
+
             {
                 idString: "stump",
                 name: "Stump",
@@ -617,23 +657,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: new CircleHitbox(2.9),
                 rotationMode: RotationMode.Full
             },
-            {
-                idString: "christmas_tree",
-                name: "Christmas Tree",
-                material: "tree",
-                health: 720,
-                scale: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.75
-                },
-                hitbox: new CircleHitbox(10),
-                spawnHitbox: new CircleHitbox(15),
-                rotationMode: RotationMode.Full,
-                zIndex: ZIndexes.ObstaclesLayer4,
-                allowFlyover: FlyoverPref.Never,
-                hasLoot: true
-            },
+
             {
                 idString: "rock",
                 name: "Rock",

@@ -217,6 +217,7 @@ const maps = {
             construction_site: 1,
             barn: 3,
             porta_potty: 6,
+            warehouse: 4,
         },
         quadBuildingLimit: {
             barn: 2,
