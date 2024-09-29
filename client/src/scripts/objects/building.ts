@@ -381,13 +381,16 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         for (const image of definition.ceilingImages) {
             let key = image.key;
             if (this.dead && image.residue) key = image.residue;
+
             const sprite = new SuroiSprite(key);
 
             if (this.dead && key !== image.residue) sprite.setVisible(false);
 
             sprite.setVPos(toPixiCoords(image.position));
             if (image.rotation) sprite.setRotation(image.rotation);
-            if (image.scale) sprite.scale = image.scale;
+
+            if (image.scale) sprite.scale = (this.definition.resetCeilingResidueScale && this.dead) ? 1 : image.scale;
+
             if (image.tint !== undefined) sprite.setTint(image.tint);
             this.ceilingContainer.addChild(sprite);
         }

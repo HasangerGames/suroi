@@ -218,7 +218,7 @@ const maps = {
             tugboat_white: 5,
             red_house: 2,
             red_house_v2: 2,
-            armory: 1,
+            armory_damaged: 1,
             small_bunker_fall: 1,
             barn: 3,
             green_house: 2,
@@ -233,6 +233,7 @@ const maps = {
             tent_big_3: 1,
             tent_big_4: 1
         },
+        majorBuildings: ["armory_damaged"],
         quadBuildingLimit: {
             barn: 2,
             red_house: 1,
