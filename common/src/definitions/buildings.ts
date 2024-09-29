@@ -361,7 +361,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
         const tent = derive((
             id: number,
             color: "red" | "green" | "blue" | "yellow" | "purple",
-            special?: boolean
+            special: boolean = false
         ) => {
             const tint = TentTints[color];
 
@@ -383,14 +383,13 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     residue: "tent_residue",
                     scale: Vec.create(1.01, 1.07)
                 }],
-                ceilingCollapseParticle: `tent_particle_${id}`,
-                destroyInnerUponCeilingCollapse: true,
-                wallsToDestroy: 1,
                 floors: [{
                     type: FloorNames.Carpet,
                     hitbox: RectangleHitbox.fromRect(25, 16)
                 }],
-                hideOnMap: special,
+                ceilingCollapseParticle: `tent_particle_${id}`,
+                destroyInnerUponCeilingCollapse: true,
+                wallsToDestroy: 1,
                 obstacles: special
                     ? [
                         { idString: `tent_wall_${id}`, position: Vec.create(0, -8), rotation: 0 },
@@ -4320,6 +4319,35 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(10, 23) },
                     { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-10, 16) },
                     { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-5, 37) }
+                ],
+                bulletMask: RectangleHitbox.fromRect(11, 30, Vec.create(0, 30)),
+                subBuildings: [
+                    { idString: "small_bunker_main", position: Vec.create(0, -5), layer: -2 },
+                    { idString: "small_bunker_entrance", position: Vec.create(0, 20), layer: -1 }
+                ]
+            },
+
+            {
+                idString: "small_bunker_fall",
+                name: "Small Bunker",
+                material: "metal_heavy",
+                particle: "metal_particle",
+                reflectBullets: true,
+                ceilingZIndex: ZIndexes.ObstaclesLayer3,
+                visibleFromLayers: Layers.All,
+                hitbox: RectangleHitbox.fromRect(12, 1, Vec.create(0, 12.3)),
+                ceilingImages: [{
+                    key: "small_bunker_entrance_ceiling",
+                    position: Vec.create(0, 18),
+                    scale: Vec.create(2.35, 2.1)
+                }],
+                spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec.create(0, 20)),
+                scopeHitbox: RectangleHitbox.fromRect(10, 15, Vec.create(0, 20)),
+                obstacles: [
+                    { idString: { oak_tree: 1, birch_tree_fall: 1 }, position: Vec.create(7.5, 9.8) },
+                    { idString: { oak_tree: 1, birch_tree_fall: 1 }, position: Vec.create(10, 23) },
+                    { idString: { oak_tree: 1, birch_tree_fall: 1 }, position: Vec.create(-10, 16) },
+                    { idString: { oak_tree: 1, birch_tree_fall: 1 }, position: Vec.create(-5, 37) }
                 ],
                 bulletMask: RectangleHitbox.fromRect(11, 30, Vec.create(0, 30)),
                 subBuildings: [
