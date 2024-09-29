@@ -732,7 +732,6 @@ export function setUpCommands(game: Game): void {
         "explode_c4",
         function() {
             game.inputManager.addAction(InputActions.ExplodeC4);
-            this.uiManager.ui.c4Button.hide();
         },
         game,
         {
@@ -1881,5 +1880,5 @@ export function setUpCommands(game: Game): void {
         alias toggle_hud "toggle cv_draw_hud";\
         alias toggle_map "toggle cv_map_expanded";\
         alias toggle_console "toggle cv_console_open";
-    `);
+    `, "never");
 }

@@ -7,13 +7,13 @@ import { type ReifiableDef } from "@common/utils/objectDefinitions";
 import { randomRotation } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
+import { Building } from "./building";
 import { Decal } from "./decal";
 import { type GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 import { ThrowableProjectile } from "./throwableProj";
-import { Building } from "./building";
 
 export class Explosion {
     readonly game: Game;
@@ -106,8 +106,8 @@ export class Explosion {
                 if (
                     (isObstacle
                         && !object.definition.noCollisions
-                        && !object.definition.isStair)
-                        || (isBuilding && !object.definition.noCollisions)
+                        && !object.definition.isStair
+                    ) || (isBuilding && !object.definition.noCollisions)
                 ) {
                     /*
                         an Obstacle with collisions will "eat" an explosion, protecting

@@ -147,6 +147,7 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
     "interact_headquarters_security_desk": "Kontroll Panel aktiválása",
     "interact_generator": "Generátor aktiválása",
     "interact_button": "Gomb megnyomása",
+    "interact_speaker": "Hangszóró lejátszása",
 
     "loading_spritesheets": "Spritesheet-ek betöltése <progress>",
     "loading_connecting": "Csatlakozás",
@@ -174,6 +175,7 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
     "bindings_+attack": "Fegyver használata",
     "bindings_drop": "Aktív fegyver eldobása",
     "bindings_reload": "Újratöltés",
+    "bindings_explode_c4": "C4 felrobbantása",
     "bindings_cycle_scopes -1": "Előző scope",
     "bindings_cycle_scopes 1": "Következő scope",
     "bindings_use_consumable gauze": "Kötszer használ.",

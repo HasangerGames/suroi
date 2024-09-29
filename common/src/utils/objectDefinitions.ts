@@ -388,10 +388,16 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
             > = createTemplate<Missing>().bind(null, defaultTemplate);
 
             return new ObjectDefinitions<Def>(
-                creationCallback([derive, inheritFrom, createTemplate<Missing>(), undefined as any])
-                    .map(d => defaultTemplate(d))
+                creationCallback([derive, inheritFrom, createTemplate<Missing>(), undefined as any]) as ReadonlyArray<RawDefinition<Def>>,
+                defaultValue
             );
         };
+    }
+
+    static create<Def extends ObjectDefinition>(
+        defs: ReadonlyArray<RawDefinition<Def>>
+    ): ObjectDefinitions<Def> {
+        return new ObjectDefinitions(defs);
     }
 
     /**
@@ -409,23 +415,31 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
      */
     private readonly idStringToNumber: Record<string, number> = {};
 
-    constructor(
-        defs: ReadonlyArray<RawDefinition<Def>>
+    protected constructor(
+        defs: ReadonlyArray<RawDefinition<Def>>,
+        defaultTemplate?: DeepPartial<Def>
     ) {
         this.bitCount = Math.ceil(Math.log2(defs.length));
 
         this.definitions = defs.map(
             def => (
                 function withTrace(
-                    def: RawDefinition<Def>,
+                    def: RawDefinition<DeepPartial<Def>>,
                     ...trace: readonly string[]
                 ): Def {
                     if (!(inheritFrom in def)) {
-                        return def as Def;
+                        return defaultTemplate === undefined
+                            ? def as Def
+                            : mergeDeep<Def>(
+                                {} as Def,
+                                defaultTemplate,
+                                def
+                            );
                     }
 
                     return mergeDeep<Def>(
                         {} as Def,
+                        defaultTemplate ?? {},
                         ...([def[inheritFrom]].flat() as ReadonlyArray<ReferenceTo<Def>>)
                             .map(targetName => {
                                 const target = defs.find(def => def.idString === targetName);
@@ -638,7 +652,7 @@ export type BaseBulletDefinition = {
     /**
      * When hitting a reflective surface:
      * - `true` causes the explosion to be spawned
-     * - `false` causes the projectile to be reflected
+     * - `false` causes the projectile to be reflected (default)
      */
     readonly explodeOnImpact?: boolean
 });

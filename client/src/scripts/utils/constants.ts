@@ -3,6 +3,7 @@ import { Modes, type ColorKeys } from "../../../../common/src/definitions/modes"
 import { Config } from "../config";
 import { Layer } from "../../../../common/src/constants";
 
+export const FORCE_MOBILE = false;
 export const UI_DEBUG_MODE = false;
 export const HITBOX_DEBUG_MODE = false;
 export const DIFF_LAYER_HITBOX_OPACITY = 0;
@@ -20,6 +21,7 @@ export const HITBOX_COLORS = {
     buildingScopeCeiling: new Color("cyan"),
     buildingVisOverride: new Color("teal"),
     bulletMask: new Color("fuchsia"),
+    landHitbox: new Color("orangered"),
     loot: new Color("magenta"),
     player: new Color("blue"),
     playerWeapon: new Color("lime")

@@ -159,7 +159,7 @@ export const LootTables: Record<string, LootTable> = {
                 { item: "15x_scope", weight: 0.0025 }
             ],
             [
-                { item: "tango_51", spawnSeparately: true, weight: 60 },
+                { item: "tango_51", weight: 60 },
                 { item: "tango_51", spawnSeparately: true, count: 2, weight: 30 },
                 { item: "tango_51", spawnSeparately: true, count: 3, weight: 3.5 },
                 { item: "tango_51", spawnSeparately: true, count: 4, weight: 0.1 },
@@ -289,7 +289,7 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "guns", weight: 0.3 }
         ]
     },
-    metal_small_drawer: {
+    filing_cabinet: {
         min: 1,
         max: 1,
         loot: [
@@ -746,9 +746,11 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "radio", weight: 0.005 },
         { item: "mosin_nagant", weight: 0.005 },
         { item: "vector", weight: 0.004 },
+        { item: "deagle", weight: 0.004 },
         { item: "negev", weight: 0.003 },
         { item: "mg5", weight: 0.003 },
-        { item: "tango_51", weight: 0.002 }
+        { item: "tango_51", weight: 0.002 },
+        { item: "dual_deagle", weight: 0.001 }
     ],
     healing_items: [
         { item: "gauze", count: 5, weight: 3 },
@@ -814,9 +816,11 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "radio", weight: 0.01 },
         { item: "mosin_nagant", weight: 0.01 },
         { item: "vector", weight: 0.008 },
+        { item: "deagle", weight: 0.008 },
         { item: "negev", weight: 0.005 },
         { item: "mg5", weight: 0.005 },
-        { item: "tango_51", weight: 0.004 }
+        { item: "tango_51", weight: 0.004 },
+        { item: "dual_deagle", weight: 0.003 }
     ],
     special_healing_items: [
         { item: "cola", weight: 3 },
@@ -934,7 +938,9 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "negev", weight: 0.1 },
         { item: "mg5", weight: 0.1 },
         { item: "tango_51", weight: 0.1 },
-        { item: "g19", weight: 0.1 }
+        { item: "deagle", weight: 0.1 },
+        { item: "g19", weight: 0.05 },
+        { item: "dual_deagle", weight: 0.04 }
     ],
     river_chest_guns: [
         { item: "m16a4", weight: 1 },

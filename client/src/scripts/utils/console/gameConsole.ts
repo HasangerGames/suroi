@@ -9,7 +9,7 @@ import { type Command } from "./commands";
 import { defaultBinds, defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
 import { Casters, ConVar, ConsoleVariables, flagBitfieldToInterface } from "./variables";
 
-enum MessageType {
+const enum MessageType {
     Log = "log",
     Important = "important",
     Warn = "warn",
@@ -36,10 +36,42 @@ export interface GameSettings {
 }
 
 /**
+ * General error type for console-related affairs
+ */
+export abstract class ConsoleError extends SyntaxError {
+    abstract readonly title: string;
+
+    constructor(
+        message: string,
+        public readonly charIndex: number,
+        public readonly length = 1
+    ) { super(message); }
+}
+
+/**
  * Error type indicating that a console query has invalid syntax
  */
-export class CommandSyntaxError extends SyntaxError {
-    constructor(message: string, public readonly charIndex: number, public readonly length = 1) { super(message); }
+export class CommandSyntaxError extends ConsoleError {
+    override readonly title = "Parsing error";
+
+    constructor(
+        message: string,
+        charIndex: number,
+        length = 1
+    ) { super(message, charIndex, length); }
+}
+
+/**
+ * Error type indicating that a variable reference doesn't exist
+ */
+export class CVarReferenceError extends ConsoleError {
+    override readonly title = "Reference error";
+
+    constructor(
+        message: string,
+        charIndex: number,
+        length = 1
+    ) { super(message, charIndex, length); }
 }
 
 // When opening the console with a key, the key will be typed to the console,
@@ -612,7 +644,7 @@ export class GameConsole {
 
                         this._history.add(input);
                         this.log.raw(`> ${sanitizeHTML(input, { strict: true, escapeNewLines: true, escapeSpaces: true })}`);
-                        this.handleQuery(input);
+                        this.handleQuery(input, "never");
                         this._updateAutocmp();
                         break;
                     }
@@ -888,7 +920,27 @@ export class GameConsole {
     }
 
     // The part everyone cares about
-    handleQuery(query: string, compileHint: "never" | "normal" | "always" = "normal"): { readonly success: boolean, readonly compiled?: CompiledAction | CompiledTuple } {
+    /**
+     * Evaluates a console query in the form of a string
+     * @param query The query to evaluate
+     * @param [compileHint="normal"] A hint on how the parser should compile the given query. Compiling a
+     * query creates a faster-to-execute version, at a small execution time and memory penalty. For queries
+     * entered by-hand into the console, this tradeoff is usually not worth it, since the queries are unlikely
+     * to be repeated; inversely, for queries bound to inputs, the tradeoff is almost always worth it.
+     * - `never`:  Never generate a compiled version of this query. If you do not intend to consult the `compiled`
+     *             field of this function's return value (or generally do not care about this function's
+     *             return value), you should use this.
+     * - `normal`: Only compile this query if it is sufficiently simple. "Simple" is up to the parser to define,
+     *             but usually, a query which is composed of a single invocation (whether a command, alias, or
+     *             variable access/assignment) is considered "simple". This is the default option.
+     * - `always`: Always generate a compiled version of this query. Self-explanatory.
+     * @returns An object containing a `success` boolean and, possibly, a compiled version of the query. The `success`
+     *          boolean indicates whether the query executed without
+     */
+    handleQuery(
+        query: string,
+        compileHint: "never" | "normal" | "always" = "normal"
+    ): { readonly success: boolean, readonly compiled?: CompiledAction | CompiledTuple } {
         if (query.trim().length === 0) return { success: true };
 
         /*
@@ -967,8 +1019,9 @@ export class GameConsole {
         /**
          * Represents a command invocation, with all of its arguments. Technically speaking,
          * this could also be a cvar access, but for the sake of simplifying vocabulary and reducing
-         * mental strain, that case is ignored, since a cvar access is like a no-arg command invocation
-         * from a parsing standpoint anyways
+         * mental strain, that case is ignored, since a cvar access is like a no-arg command
+         * invocation from a parsing standpoint anyways. CVar assignments also behave like
+         * single-arg command invocation from a parsing standpoint.
          */
         interface ParsedCommand {
             /**
@@ -984,9 +1037,24 @@ export class GameConsole {
              */
             args: Array<{
                 /**
-                 * The text content of the argument
+                 * The parts making up this argument. For non-string args, this
+                 * will always be a single raw part
                  */
-                arg: string
+                arg: Array<{
+                    /**
+                     * Whether this part is a raw string or the name of a variable
+                     * to be dereferenced
+                     */
+                    type: "raw" | "reference"
+                    /**
+                     * The textual content
+                     */
+                    content: string
+                    /**
+                     * The index of this part's first character in the original query
+                     */
+                    startIndex: number
+                }>
                 /**
                  * The index of this argument's first character in the original query
                  */
@@ -1030,7 +1098,7 @@ export class GameConsole {
              */
             let prevNode: ParserNode = currentNode; // <- this is basically a useless assignment, because it'll always be replaced
             /**
-             * An unchanging reference to the head of the linked list that will eventually be returned
+             * An unchanging reference to the head of the linked list
              */
             const commands: ParserNode = currentNode;
 
@@ -1053,6 +1121,12 @@ export class GameConsole {
              * be treated as literal characters or if they should fulfill their special functions
              */
             let escaping = false;
+
+            /**
+             * Whether the current argument part should be treated as a literal or as the name of a variable to
+             * later dereference
+             */
+            let argType = "raw" as "raw" | "reference";
 
             /**
              * A stack of parser nodes, each one corresponding to where a group "begins".
@@ -1096,7 +1170,7 @@ export class GameConsole {
              * Used to provide a snippet of the original query when reporting syntax errors
              */
             let charIndex = 0;
-            const throwCSE = (msg: string, mod = 0, length = 1): void => { throw new CommandSyntaxError(msg, charIndex + mod, length); };
+            const throwCSE = (msg: string, mod = 0, length = 1): never => { throw new CommandSyntaxError(msg, charIndex + mod, length); };
 
             /**
              * Simply adds the given character to the last argument of the current command
@@ -1104,9 +1178,14 @@ export class GameConsole {
              */
             const addCharToLast = (char: string): void => {
                 if (!args.length) {
-                    current.args = args = [{ arg: char, startIndex: charIndex }];
+                    current.args = args = [{ arg: [{ type: argType, content: char, startIndex: charIndex }], startIndex: charIndex }];
                 } else {
-                    args[args.length - 1].arg += char;
+                    const last = args[args.length - 1].arg;
+                    if (!last.length) {
+                        last[0] = { type: argType, content: char, startIndex: charIndex };
+                    } else {
+                        last[last.length - 1].content += char;
+                    }
                 }
             };
 
@@ -1170,6 +1249,7 @@ export class GameConsole {
 
                         if (inString) {
                             addCharToLast(char);
+                            escaping = false;
                             break;
                         }
 
@@ -1179,9 +1259,9 @@ export class GameConsole {
                             multiple consecutive spaces, line breaks, or combinations thereof
                             are treated as if only one had been given)
                         */
-                        if (args.at(-1)?.arg.length === 0) break;
+                        if (args.at(-1)?.arg.at(-1)?.content.length === 0) break;
 
-                        args.push({ arg: "", startIndex: charIndex });
+                        args.push({ arg: [{ type: argType, content: "", startIndex: charIndex }], startIndex: charIndex });
                         break;
                     }
                     case "#": {
@@ -1189,6 +1269,7 @@ export class GameConsole {
 
                         if (inString) {
                             addCharToLast(char);
+                            escaping = false;
                             break;
                         }
 
@@ -1231,10 +1312,11 @@ export class GameConsole {
 
                         if (inString) {
                             addCharToLast(char);
+                            escaping = false;
                             break;
                         }
 
-                        if (args.at(-1)?.arg.length === 0) {
+                        if (args.at(-1)?.arg.at(-1)?.content.length === 0) {
                             args.length -= 1;
                         }
 
@@ -1259,6 +1341,7 @@ export class GameConsole {
 
                         if (inString) {
                             addCharToLast(char);
+                            escaping = false;
                             break;
                         }
 
@@ -1272,6 +1355,7 @@ export class GameConsole {
                         if (parserPhase === "args") {
                             if (inString) {
                                 addCharToLast(char);
+                                escaping = false;
                                 break;
                             }
 
@@ -1310,8 +1394,74 @@ export class GameConsole {
                         expectingEndOfGroup++;
                         break;
                     }
+                    case "{": {
+                        if (commenting) break;
+
+                        if (inString && !escaping) {
+                            if (argType === "reference") {
+                                throwCSE("Unexpected start-of-reference ({) character encountered");
+                            }
+
+                            argType = "reference";
+                            // if there are currently no args, then the new node will automatically be created
+                            // on the next call to addCharToLast, so we don't need to do anything
+                            if (args.length) {
+                                // the array isn't empty => there is an element at index -1
+                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                                const lastArg = args.at(-1)!.arg;
+                                let lastPart: ParsedCommand["args"][number]["arg"][number] | undefined;
+                                if ((lastPart = lastArg.at(-1))?.content.length === 0) {
+                                    // if the current part is empty, reuse it by switching its type
+
+                                    // undefined is not equal to 0 => coming here implies lastPart is non-null
+                                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                                    lastPart!.type = argType;
+                                } else {
+                                    // otherwise create a new one
+                                    lastArg.push({ type: argType, content: "", startIndex: charIndex });
+                                }
+                            }
+                        } else if (parserPhase === "args") {
+                            addCharToLast(char);
+                            escaping = false;
+                        } else current.name += char;
+                        break;
+                    }
+                    case "}": {
+                        if (commenting) break;
+
+                        if (inString && argType === "reference") {
+                            argType = "raw";
+
+                            let lastArg: ParsedCommand["args"][number]["arg"] | undefined;
+                            if (
+                                args.length === 0
+                                // above condition checks that args isn't empty
+                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                                || (lastArg = args.at(-1)!.arg).at(-1)?.content.length === 0
+                            ) {
+                                throwCSE("Unexpected empty reference", -1, 2);
+                            }
+
+                            // empty args array results in thrown CSE; args is
+                            // therefore not empty by the time we're here
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            (lastArg ??= args.at(-1)!.arg).push({ type: argType, content: "", startIndex: charIndex });
+                        } else if (parserPhase === "args") {
+                            addCharToLast(char);
+                            escaping = false;
+                        } else current.name += char;
+                        break;
+                    }
                     case "\"": {
-                        if (commenting || parserPhase === "cmd") break;
+                        if (commenting) break;
+
+                        if (parserPhase === "cmd") {
+                            // writing smth like `ab"d"` is objectively both ugly and stupid, but we can parse it so…
+                            parserPhase = "args";
+                            inString = true;
+                            break;
+                        }
 
                         if (inString) {
                             if (escaping) {
@@ -1320,8 +1470,12 @@ export class GameConsole {
                                 break;
                             }
 
-                            args.push({ arg: "", startIndex: charIndex });
-                        } else if (args.at(-1)?.arg.length) {
+                            if (argType === "reference") {
+                                throwCSE("Unterminated variable reference");
+                            }
+
+                            args.push({ arg: [{ type: argType, content: "", startIndex: charIndex }], startIndex: charIndex });
+                        } else if (args.at(-1)?.arg.at(-1)?.content.length) {
                             // If we encounter a " in the middle of an argument
                             // such as `say hel"lo`
                             throwCSE("Unexpected double-quote (\") character found.");
@@ -1331,9 +1485,11 @@ export class GameConsole {
                         break;
                     }
                     case "\\": {
-                        if (commenting || parserPhase === "cmd" || !inString || (escaping = !escaping)) break;
-
-                        addCharToLast(char);
+                        if (commenting) break;
+                        if (parserPhase === "cmd" || !inString || !(escaping = !escaping)) {
+                            addCharToLast(char);
+                            break;
+                        }
                         break;
                     }
                     default: {
@@ -1374,18 +1530,31 @@ export class GameConsole {
             if (!current.next?.cmd.name.length) delete current.next;
 
             if (!current.name.length) {
-                /*
-                    Some people just like writing `a; b;`, and it's not super duper apocalyptic to allow it,
-                    even if writing something like `a; b &` is completely inane
-
-                    So instead of throwing an error, we'll just modify the parser output
-                */
                 // throwCSE("Unexpected end-of-input following chaining character");
                 delete prevNode.cmd.next;
             } else {
                 const args = current.args;
-                if (args.at(-1)?.arg.length === 0) {
-                    args.length -= 1;
+                let last: ParsedCommand["args"][number]["arg"] | undefined;
+                let goAgain = true;
+                while (goAgain) {
+                    goAgain = false;
+
+                    if (
+                        (last = args.at(-1)?.arg)?.at(-1)?.content.length === 0
+                        // undefined is not equal to 0 => last cannot be undefined
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        && (last!.length > 1 || args.length !== 1)
+                    ) {
+                        // undefined is not equal to 0 => last cannot be undefined
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        last!.length -= 1;
+                        goAgain = true;
+                    }
+
+                    if (last?.length === 0) {
+                        args.length -= 1;
+                        goAgain = true;
+                    }
                 }
             }
 
@@ -1506,6 +1675,52 @@ export class GameConsole {
             }
         };
 
+        /**
+         * Resolves an array of argument parts. Raw parts are appended as-is, and variables
+         * are dereferenced. Dereferencing a CVar that does not exist leads to a {@link CVarReferenceError}
+         * being thrown. This function returns its values as a tuple whose first element is
+         * a boolean indicating if this argument is constant (an argument is considered constant
+         * if it references no variable) and whose second argument is the resolved string
+         */
+        const resolveArgParts = (parts: ParsedCommand["args"][number]["arg"]): [isConst: boolean, value: string] => {
+            let isConst = true;
+            const value = parts.reduce<string>( // <- do not inline, has side-effects
+                (acc, cur) => {
+                    if (cur.type === "raw") return acc + cur.content;
+
+                    isConst = false;
+                    const cvar = this.variables.get(cur.content);
+                    if (cvar === undefined) {
+                        throw new CVarReferenceError(`Variable '${cur.content}' not found`, cur.startIndex, cur.content.length);
+                    }
+
+                    return `${acc}${cvar.value}`;
+                },
+                ""
+            );
+
+            return [
+                isConst,
+                value
+            ];
+        };
+
+        /**
+         * Resolves an arguments list, also indicating if the list as a whole is constant.
+         * A "constant argument list" is one that references no variables (and thus would
+         * always be resolved identically)
+         */
+        const resolveArgs = (args: ParsedCommand["args"]): [isConst: boolean, value: string[]] => {
+            let isConst = true;
+            const value = args.map(e => {
+                const [argIsConst, argVal] = resolveArgParts(e.arg);
+                isConst &&= argIsConst;
+                return argVal;
+            });
+
+            return [isConst, value];
+        };
+
         try {
             /*
                 Handles cases like `(a & b); c`, where we need to add a group anchor immediately
@@ -1523,7 +1738,8 @@ export class GameConsole {
 
                 const cmd = this.commands.get(name);
                 if (cmd) {
-                    const trueArgs = args.map(e => e.arg);
+                    const [isConst, trueArgs] = resolveArgs(args);
+
                     switch (compileHint) {
                         case "normal": {
                             if (compiledParts.length > 1) break;
@@ -1535,7 +1751,11 @@ export class GameConsole {
                                 const fn = (
                                     args.length === 0
                                         ? cmd.executor.bind(this.game)
-                                        : cmd.run.bind(cmd, trueArgs)
+                                        : isConst
+                                            // args are constant, we "lock them in" cuz we won't need to reevaluate them
+                                            ? cmd.run.bind(cmd, trueArgs)
+                                            : () => cmd.run(resolveArgs(args)[1])
+                                            // args aren't constant, we need to redo our resolution in case a CVar has changed
                                 ) as CompiledAction;
 
                                 // @ts-expect-error init code
@@ -1582,7 +1802,7 @@ export class GameConsole {
                 const cvar = this.variables.get(name);
                 if (cvar) {
                     if (args.length) {
-                        const { success, compiled } = this.handleQuery(`assign ${name} ${args.map(v => `"${v.arg}"`).join(" ")}`);
+                        const { success, compiled } = this.handleQuery(`assign ${name} ${args.map(v => `"${resolveArgParts(v.arg)[1]}"`).join(" ")}`, compileHint);
                         error = !success;
 
                         switch (compileHint) {
@@ -1608,13 +1828,13 @@ export class GameConsole {
                 stepForward();
             }
         } catch (e) {
-            if (e instanceof CommandSyntaxError) {
+            if (e instanceof ConsoleError) {
                 const index = e.charIndex;
                 const padding = 15;
                 const nbsp = "\u00a0";
 
                 this.error.raw({
-                    main: "Parsing error",
+                    main: e.title,
                     detail: `${e.message}<br><pre><code>`
                         + `${
                             sanitizeHTML(
@@ -1630,7 +1850,7 @@ export class GameConsole {
         }
 
         return {
-            success: true,
+            success: !error,
             compiled: (() => {
                 switch (compiledParts.length) {
                     case 0: return undefined;

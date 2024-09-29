@@ -22,14 +22,14 @@ const emote = createTemplate<EmoteDefinition>()((name: string, category: EmoteCa
     category
 }));
 
-const team_emote = createTemplate<EmoteDefinition>()((idString: string) => ({
+const teamEmote = createTemplate<EmoteDefinition>()((idString: string) => ({
     idString,
     name: idString,
     isTeamEmote: true,
     category: EmoteCategory.TeamEmote
 }));
 
-export const Emotes = new ObjectDefinitions<EmoteDefinition>([
+export const Emotes = ObjectDefinitions.create<EmoteDefinition>([
     ...[
         "Happy Face",
         "Sad Face",
@@ -82,7 +82,8 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
         "AEGIS Logo",
         "Flint Logo",
         "Duel",
-        "Chicken Dinner"
+        "Chicken Dinner",
+        "Trophy"
     ].map(name => emote([name, EmoteCategory.Icons])),
     ...[
         "Troll Face",
@@ -120,7 +121,7 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
     ...[
         ...Ammos.definitions.filter(a => !a.ephemeral),
         ...HealingItems.definitions
-    ].map(({ idString }) => team_emote([idString]))
+    ].map(({ idString }) => teamEmote([idString]))
 ]);
 
 export const emoteIdStrings = Emotes.definitions.map(emote => emote.idString);

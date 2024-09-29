@@ -1,8 +1,8 @@
 import { Layer, Layers, ZIndexes } from "../constants";
-import type { CommonGameObject } from "./gameObject";
+import { type CommonGameObject } from "./gameObject";
 import { HitboxType, type Hitbox, type RectangleHitbox } from "./hitbox";
-import { ObjectDefinition } from "./objectDefinitions";
-import { Vector } from "./vector";
+import { type ObjectDefinition } from "./objectDefinitions";
+import { type Vector } from "./vector";
 
 /**
  * Returns whether or not the provided layer is a "ground" layer.
@@ -89,7 +89,9 @@ export function equivLayer(
     switch (referenceObject.definition.collideWithLayers) {
         case Layers.All: return true;
         case Layers.Adjacent: return adjacentOrEqualLayer(referenceObject.layer, evalObject.layer);
-        case Layers.Equal: default: return equalLayer(referenceObject.layer, evalObject.layer);
+        case Layers.Equal:
+        default:
+            return equalLayer(referenceObject.layer, evalObject.layer);
     }
 }
 

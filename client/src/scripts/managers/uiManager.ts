@@ -149,6 +149,7 @@ export class UIManager {
         ammoCounterContainer: $<HTMLDivElement>("#weapon-ammo-container"),
         activeAmmo: $<HTMLSpanElement>("#weapon-clip-ammo-count"),
         reserveAmmo: $<HTMLDivElement>("#weapon-inventory-ammo"),
+        reloadIcon: $("#weapon-clip-reload-icon"),
         killStreakIndicator: $<HTMLDivElement>("#killstreak-indicator-container"),
         killStreakCounter: $<HTMLSpanElement>("#killstreak-indicator-counter"),
 
@@ -262,7 +263,9 @@ export class UIManager {
         closeCreateTeam: $<HTMLButtonElement>("#close-create-team"),
 
         c4Button: $<HTMLButtonElement>("#c4-detonate-btn"),
-        detonateKey: $<HTMLButtonElement>("#detonate-key")
+        detonateKey: $<HTMLButtonElement>("#detonate-key"),
+
+        inventoryMsg: $<HTMLSpanElement>("#inventory-message")
     });
 
     private readonly _weaponSlotCache = new ExtendedMap<
@@ -307,13 +310,13 @@ export class UIManager {
     readonly action = {
         active: false,
         /*
-        whether this timer corresponds to an actual action being carried
-        out by this player (like reloading), or if it corresponds to some
-        other timed event that just so happens to piggyback off this timer
-        system (getting revived). pretty much only exists for the
-        aforementioned case of being revived, and prevents the "cancel" popup
-        from appearing
-    */
+            whether this timer corresponds to an actual action being carried
+            out by this player (like reloading), or if it corresponds to some
+            other timed event that just so happens to piggyback off this timer
+            system (getting revived). pretty much only exists for the
+            aforementioned case of being revived, and prevents the "cancel" popup
+            from appearing
+        */
         fake: false,
         start: -1,
         time: 0
@@ -439,6 +442,7 @@ export class UIManager {
     updateEmoteWheel(): void {
         const { pingWheelActive } = this.game.inputManager;
         if (this.game.teamMode) {
+            $("#ammos-container, #healing-items-container").toggleClass("active", pingWheelActive);
             for (const ammo of Ammos) {
                 const itemSlot = this._itemSlotCache[ammo.idString] ??= $(`#${ammo.idString}-slot`);
                 if (pingWheelActive && ammo.hideUnlessPresent) itemSlot.css("visibility", "visible");
@@ -645,8 +649,10 @@ export class UIManager {
             this.updateWeapons();
         }
 
-        this.ui.c4Button.toggle(activeC4s);
-        if (activeC4s !== undefined) this.hasC4s = activeC4s;
+        if (activeC4s !== undefined) {
+            this.ui.c4Button.toggle(activeC4s);
+            this.hasC4s = activeC4s;
+        }
     }
 
     skinID?: string;
@@ -688,6 +694,10 @@ export class UIManager {
             this.ui.ammoCounterContainer.toggleClass("has-reserve", showReserve);
             if (!showReserve) {
                 this.ui.reserveAmmo.hide();
+            }
+
+            if (this.game.inputManager.isMobile) {
+                this.ui.reloadIcon.toggle(activeWeapon.definition.itemType !== ItemType.Throwable);
             }
         }
 

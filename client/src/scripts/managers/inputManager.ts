@@ -13,7 +13,7 @@ import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
 import { defaultBinds } from "../utils/console/defaultClientCVars";
 import { type GameSettings, type PossibleError } from "../utils/console/gameConsole";
-import { PIXI_SCALE } from "../utils/constants";
+import { FORCE_MOBILE, PIXI_SCALE } from "../utils/constants";
 import { html } from "../utils/misc";
 
 let controllerIndex = null;
@@ -247,8 +247,7 @@ export class InputManager {
     private mWheelStopTimer: number | undefined;
     setupInputs(): void {
         // @ts-expect-error init code
-        // noinspection JSConstantReassignment
-        this.isMobile = isMobile.any && this.game.console.getBuiltInCVar("mb_controls_enabled");
+        this.isMobile = (isMobile.any && this.game.console.getBuiltInCVar("mb_controls_enabled")) || FORCE_MOBILE;
 
         const game = this.game;
         const gameContainer = $("#game")[0];
@@ -393,7 +392,10 @@ export class InputManager {
                 activePlayer.images.aimTrail.alpha = 1;
 
                 const attacking = data.distance > game.console.getBuiltInCVar("mb_joystick_size") / 3;
-                if (def.itemType === ItemType.Gun && def.shootOnRelease) {
+                if (
+                    (def.itemType === ItemType.Throwable && this.attacking)
+                    || (def.itemType === ItemType.Gun && def.shootOnRelease)
+                ) {
                     shootOnRelease = true;
                     this.shootOnReleaseAngle = this.rotation;
                 } else {
@@ -527,7 +529,7 @@ export class InputManager {
             }
 
             if (typeof query === "string") {
-                const { compiled } = this.game.console.handleQuery(query);
+                const { compiled } = this.game.console.handleQuery(query, "always");
 
                 if (compiled !== undefined) {
                     this.binds.overrideWithCompiled(input, query, compiled);

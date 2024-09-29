@@ -206,7 +206,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     position: this.hitbox.randomPoint(),
                     lifetime: 1000,
                     zIndex: ZIndexes.Players,
-                    get layer(): Layer { return game.layer ?? Layer.Ground; },
+                    layer: this.layer,
                     rotation: 0,
                     alpha: {
                         start: 1,
@@ -675,11 +675,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this.spawnCasingParticles("reload", false);
 
                     const { weapons, activeWeaponIndex } = this.game.uiManager.inventory;
-                    const reloadFullClip = weaponDef.fullReloadTime && weapons[activeWeaponIndex]?.count === 0;
+                    const reloadFullClip = weaponDef.reloadFullOnEmpty && (weapons[activeWeaponIndex]?.count ?? 0) <= 0;
 
                     actionSoundName = `${weaponDef.idString}_reload${reloadFullClip ? "_full" : ""}`;
                     if (this.isActivePlayer) {
-                        uiManager.animateAction(getTranslatedString("action_reloading"), reloadFullClip ? weaponDef.fullReloadTime : weaponDef.reloadTime);
+                        uiManager.animateAction(
+                            getTranslatedString("action_reloading"),
+                            reloadFullClip ? weaponDef.fullReloadTime : weaponDef.reloadTime
+                        );
                     }
 
                     break;
@@ -689,13 +692,19 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     actionSoundName = itemDef.idString;
                     this.healingParticlesEmitter.active = true;
                     if (this.isActivePlayer) {
-                        uiManager.animateAction(getTranslatedString(`action_${itemDef.idString}_use`, { item: getTranslatedString(itemDef.idString) }), itemDef.useTime);
+                        uiManager.animateAction(
+                            getTranslatedString(`action_${itemDef.idString}_use`, { item: getTranslatedString(itemDef.idString) }),
+                            itemDef.useTime
+                        );
                     }
                     break;
                 }
                 case PlayerActions.Revive: {
                     if (this.isActivePlayer) {
-                        uiManager.animateAction(getTranslatedString("action_reviving"), GameConstants.player.reviveTime);
+                        uiManager.animateAction(
+                            getTranslatedString("action_reviving"),
+                            GameConstants.player.reviveTime
+                        );
                     }
                     break;
                 }
@@ -1175,8 +1184,15 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                     && (!object.isObstacle || (!object.definition.noMeleeCollision))
                             ) as Array<Player | Obstacle>
                         ).sort((a, b) => {
-                            if (a.isObstacle && a.definition.noMeleeCollision) return Infinity;
-                            if (b.isObstacle && b.definition.noMeleeCollision) return -Infinity;
+                            if (
+                                (a.isObstacle && a.definition.noMeleeCollision)
+                                || (this.game.teamMode && a.isPlayer && a.teamID === this.teamID)
+                            ) return Infinity;
+
+                            if (
+                                (b.isObstacle && b.definition.noMeleeCollision)
+                                || (this.game.teamMode && b.isPlayer && b.teamID === this.teamID)
+                            ) return -Infinity;
 
                             return a.hitbox.distanceTo(selfHitbox).distance - b.hitbox.distanceTo(selfHitbox).distance;
                         }).slice(0, weaponDef.maxTargets)
@@ -1307,7 +1323,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             ),
                             randomFloat(gas.minSpeed, gas.maxSpeed)
                         ),
-                        zIndex: ZIndexes.ObstaclesLayer5 - 2,
+                        zIndex: ZIndexes.BuildingsCeiling - 2,
                         alpha: {
                             start: randomFloat(0.5, 1),
                             end: 0

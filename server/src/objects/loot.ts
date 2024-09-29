@@ -1,4 +1,4 @@
-import { GameConstants, ObjectCategory, PlayerActions } from "@common/constants";
+import { GameConstants, InventoryMessages, ObjectCategory, PlayerActions } from "@common/constants";
 import { ArmorType } from "@common/definitions/armors";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { PickupPacket } from "@common/packets/pickupPacket";
@@ -153,8 +153,9 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
         this.velocity = Vec.add(this.velocity, Vec.fromPolar(angle, velocity));
     }
 
-    canInteract(player: Player): boolean {
+    canInteract(player: Player): boolean | InventoryMessages {
         if (this.dead || player.downed) return false;
+
         const inventory = player.inventory;
         const definition = this.definition;
 
@@ -180,9 +181,13 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
             case ItemType.Throwable: {
                 const idString = definition.idString;
 
-                return (
-                    definition.itemType !== ItemType.Throwable || !inventory.isLocked(3)
-                ) && inventory.items.getItem(idString) + 1 <= (inventory.backpack.maxCapacity[idString] ?? 0);
+                if (definition.itemType === ItemType.Throwable && inventory.isLocked(3)) {
+                    return false;
+                } else if (inventory.items.getItem(idString) + 1 > (inventory.backpack.maxCapacity[idString] ?? 0)) {
+                    return InventoryMessages.NotEnoughSpace;
+                } else {
+                    return true;
+                }
             }
             case ItemType.Melee: {
                 return definition !== inventory.getWeapon(2)?.definition && !inventory.isLocked(2);
@@ -200,26 +205,39 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
                     }
                 }
 
-                return definition.level > threshold;
+                if (definition.level < threshold) {
+                    return InventoryMessages.BetterItemEquipped;
+                } else if (definition.level === threshold) {
+                    return InventoryMessages.ItemAlreadyEquipped;
+                } else {
+                    return true;
+                }
             }
             case ItemType.Backpack: {
-                return definition.level > inventory.backpack.level;
+                if (definition.level < inventory.backpack.level) {
+                    return InventoryMessages.BetterItemEquipped;
+                } else if (definition.level === inventory.backpack.level) {
+                    return InventoryMessages.ItemAlreadyEquipped;
+                } else {
+                    return true;
+                }
             }
             case ItemType.Scope: {
-                return !inventory.items.hasItem(definition.idString);
+                return !inventory.items.hasItem(definition.idString) || InventoryMessages.ItemAlreadyEquipped;
             }
             case ItemType.Skin: {
-                return true;
+                return player.loadout.skin.idString !== definition.idString || InventoryMessages.ItemAlreadyEquipped;
             }
         }
     }
 
-    interact(player: Player, noPickup = false): void {
+    interact(player: Player, canPickup?: boolean | InventoryMessages): void {
         if (
             this.dead
+            || player.downed
             || this.game.pluginManager.emit("loot_will_interact", {
                 loot: this,
-                noPickup,
+                canPickup,
                 player
             })
         ) return;
@@ -235,11 +253,14 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
                 ?.push(player.rotation + Math.PI, 0.009);
         };
 
-        if (noPickup) {
+        if (canPickup === false) return;
+        else if (typeof canPickup === "number") { // means it's an inventory message
             // Do not play pickup & drop on melees and guns
             if ([ItemType.Gun, ItemType.Melee].includes(this.definition.itemType)) return;
+
             this.game.removeLoot(this);
             createNewItem();
+            player.sendPacket(PickupPacket.create({ message: canPickup }));
             return;
         }
 

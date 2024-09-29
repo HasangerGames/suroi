@@ -71,7 +71,7 @@ export class ReloadAction extends Action {
     readonly fullReload: boolean;
 
     constructor(player: Player, readonly item: GunItem) {
-        const fullReload = item.definition.reloadFullOnEmpty && item.definition.fullReloadTime && item.ammo <= 0;
+        const fullReload = item.definition.reloadFullOnEmpty && item.ammo <= 0;
         super(player, fullReload ? item.definition.fullReloadTime : item.definition.reloadTime);
         this.fullReload = !!fullReload;
     }

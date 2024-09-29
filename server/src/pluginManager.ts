@@ -4,7 +4,7 @@ import { type PlayerInputData } from "@common/packets/inputPacket";
 import { ExtendedMap } from "@common/utils/misc";
 import { Vector } from "@common/utils/vector";
 
-import type { Layer } from "@common/constants";
+import type { InventoryMessages, Layer } from "@common/constants";
 import type { LootDefinition } from "@common/definitions";
 import type { BuildingDefinition } from "@common/definitions/buildings";
 import type { ObstacleDefinition } from "@common/definitions/obstacles";
@@ -549,7 +549,7 @@ export interface EventDataMap {
     }
     readonly loot_will_interact: {
         readonly loot: Loot
-        readonly noPickup: boolean
+        readonly canPickup?: boolean | InventoryMessages
         readonly player: Player
     }
     readonly loot_did_interact: {

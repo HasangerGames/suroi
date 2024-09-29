@@ -653,7 +653,10 @@ export async function setUpUI(game: Game): Promise<void> {
                 .addClass("fa-eye-slash");
 
             urlField.removeClass("hidden")
-                .css("color", "");
+                .css({
+                    color: "",
+                    textShadow: ""
+                });
 
             return;
         }
@@ -662,7 +665,10 @@ export async function setUpUI(game: Game): Promise<void> {
             .addClass("fa-eye");
 
         urlField.addClass("hidden")
-            .css("color", "#FFFFFF00");
+            .css({
+                color: "transparent",
+                textShadow: "0 0 8px rgba(0, 0, 0, 0.5)"
+            });
     });
 
     $<HTMLInputElement>("#create-team-toggle-auto-fill").on("click", function() {
@@ -2038,8 +2044,7 @@ export async function setUpUI(game: Game): Promise<void> {
         ui.interactKey.html('<img src="./img/misc/tap-icon.svg" alt="Tap">');
 
         // Active weapon ammo button reloads
-        $("#weapon-clip-reload-icon").show();
-        ui.activeAmmo.on("click", () => game.console.handleQuery("reload"));
+        ui.activeAmmo.on("click", () => game.console.handleQuery("reload", "never"));
 
         // Emote button & wheel
         ui.emoteWheel

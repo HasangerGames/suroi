@@ -364,8 +364,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private readonly _mapPings: Game["mapPings"] = [];
 
     c4s: ThrowableProjectile[] = [];
-    // this should probably be on the dirty object
-    updatedC4Button = false;
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
@@ -506,7 +504,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     giveThrowable(idString: ReferenceTo<ThrowableDefinition>, count?: number): void {
         const { inventory } = this;
 
-        inventory.items.incrementItem(idString, count ?? 3);
+        inventory.items.incrementItem(idString, count ?? inventory.backpack.maxCapacity[idString]);
         inventory.useItem(idString);
 
         // we hope `throwableItemMap` is correctly sync'd
@@ -625,33 +623,28 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const dt = this.game.dt;
 
         // This system allows opposite movement keys to cancel each other out.
-        const movement = Vec.create(0, 0);
+        let movement: Vector;
 
         const playerMovement = this.movement;
         if (this.isMobile && playerMovement.moving) {
-            movement.x = Math.cos(playerMovement.angle) * 1.45;
-            movement.y = Math.sin(playerMovement.angle) * 1.45;
+            movement = Vec.fromPolar(playerMovement.angle);
         } else {
-            if (playerMovement.up) movement.y--;
-            if (playerMovement.down) movement.y++;
-            if (playerMovement.left) movement.x--;
-            if (playerMovement.right) movement.x++;
-        }
+            let x = +playerMovement.right - +playerMovement.left;
+            let y = +playerMovement.down - +playerMovement.up;
 
-        if (movement.x * movement.y !== 0) { // If the product is non-zero, then both of the components must be non-zero
-            movement.x *= Math.SQRT1_2;
-            movement.y *= Math.SQRT1_2;
+            if (x * y !== 0) {
+                // If the product is non-zero, then both of the components must be non-zero
+                x *= Math.SQRT1_2;
+                y *= Math.SQRT1_2;
+            }
+
+            movement = Vec.create(x, y);
         }
 
         // Calculate speed
-        let recoilMultiplier = 1;
-        if (this.recoil.active) {
-            if (this.recoil.time < this.game.now) {
-                this.recoil.active = false;
-            } else {
-                recoilMultiplier = this.recoil.multiplier;
-            }
-        }
+        const recoilMultiplier = this.recoil.active && (this.recoil.active = (this.recoil.time >= this.game.now))
+            ? this.recoil.multiplier
+            : 1;
 
         const speed = this.baseSpeed                                        // Base speed
             * (FloorTypes[this.floor].speedMultiplier ?? 1)                 // Speed multiplier from floor player is standing in
@@ -728,16 +721,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
-        // Drain adrenaline
         if (this._adrenaline > 0) {
+            // Drain adrenaline
             this.adrenaline -= 0.0005 * dt;
-        }
 
-        // Regenerate health
-        if (this._adrenaline >= 87.5) this.health += dt * 2.75 / (30 ** 2);
-        else if (this._adrenaline >= 50) this.health += dt * 2.125 / (30 ** 2);
-        else if (this._adrenaline >= 25) this.health += dt * 1.125 / (30 ** 2);
-        else if (this._adrenaline > 0) this.health += dt * 0.625 / (30 ** 2);
+            // Regenerate health
+            this.health += dt / 900 * (this.adrenaline / 40 + 0.35);
+        }
 
         // Shoot gun/use item
         if (this.startedAttacking) {
@@ -951,21 +941,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.startedSpectating = false;
         }
 
-        if (
-            player.dirty.maxMinStats
-            || player.dirty.health
-            || player.dirty.adrenaline
-            || player.dirty.zoom
-            || player.dirty.id
-            || player.dirty.teammates
-            || player.dirty.weapons
-            || player.dirty.slotLocks
-            || player.dirty.items
-            || forceInclude
-        ) {
-            this.updatedC4Button = false;
-        }
-
         packet.playerData = {
             ...(
                 player.dirty.maxMinStats || forceInclude
@@ -1043,15 +1018,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     : {}
             ),
             ...(
-                this.c4s.length > 0 && !this.updatedC4Button
-                    ? { activeC4s: true }
-                    : !this.updatedC4Button
-                        ? { activeC4s: false }
-                        : {}
+                player.dirty.activeC4s || forceInclude
+                    ? { activeC4s: this.c4s.length > 0 }
+                    : {}
             )
         };
-
-        if (!this.updatedC4Button) this.updatedC4Button = true;
 
         // Cull bullets
         /*
@@ -1809,6 +1780,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             );
         }
 
+        this.canDespawn = false;
         this.downed = true;
         this.action?.cancel();
         this.activeItem.stopUse();
@@ -1961,7 +1933,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                     for (const object of nearObjects) {
                         const { isLoot, isObstacle, isPlayer } = object;
-                        const isInteractable = (isLoot || isObstacle || isPlayer) && object.canInteract(this);
+                        const isInteractable = (isLoot || isObstacle || isPlayer) && object.canInteract(this) === true;
 
                         if (
                             (isLoot || (type === InputActions.Interact && isInteractable))
@@ -2000,7 +1972,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                             }
                         }
                     } else {
-                        uninteractable.object?.interact(this, !uninteractable.object.canInteract(this));
+                        uninteractable.object?.interact(this, uninteractable.object.canInteract(this));
                     }
 
                     this.canDespawn = false;
@@ -2026,7 +1998,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         c4.detonate(750);
                     }
                     this.c4s.length = 0;
-                    this.updatedC4Button = false;
+                    this.dirty.activeC4s = true;
                     break;
             }
         }

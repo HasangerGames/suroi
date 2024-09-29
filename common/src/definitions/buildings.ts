@@ -6,7 +6,7 @@ import { MapObjectSpawnMode, NullString, ObjectDefinitions, type ObjectDefinitio
 import { randomSign, randomVector } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
-import { Materials, RotationMode, type ObstacleDefinition } from "./obstacles";
+import { FlyoverPref, Materials, RotationMode, type ObstacleDefinition } from "./obstacles";
 
 interface BuildingObstacle {
     readonly idString: ReferenceOrRandom<ObstacleDefinition>
@@ -50,13 +50,14 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly spawnHitbox: Hitbox
     readonly scopeHitbox?: Hitbox
     readonly ceilingHitbox?: Hitbox
+    readonly allowFlyover: FlyoverPref
     readonly hideOnMap: boolean
     readonly spawnMode: MapObjectSpawnMode
 
     readonly bridgeSpawnOptions?: {
         readonly minRiverWidth: number
         readonly maxRiverWidth: number
-        readonly landCheckDist: number
+        readonly landHitbox: Hitbox
     }
 
     readonly obstacles: readonly BuildingObstacle[]
@@ -228,11 +229,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
         graphics: [],
         graphicsZIndex: ZIndexes.BuildingsFloor,
         groundGraphics: [],
-        rotationMode: RotationMode.Limited
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never
     } satisfies DeepPartial<Omit<BuildingDefinition, "idString">>,
     ([derive, , , _missingType]) => {
-        type Missing = typeof _missingType;
-
         const blueHouseVaultLayout = derive((id: number, obstacles: readonly BuildingObstacle[], subBuildings?: readonly SubBuilding[]) => {
             return {
                 idString: `blue_house_vault_layout_${id}`,
@@ -788,16 +788,16 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
 
                     // Outer walls
                     // Bottom left walls
-                    { key: "concrete_wall_end", position: Vec.create(-15, 83), rotation: 0 },
-                    { key: "concrete_wall_corner", position: Vec.create(-53, 83), rotation: 0 },
+                    { key: "concrete_wall_end", position: Vec.create(-15, 83) },
+                    { key: "concrete_wall_corner", position: Vec.create(-53, 83) },
                     { key: "concrete_wall_end_broken_1", position: Vec.create(-53, 65.5), rotation: Math.PI * 1.5 },
                     // Wall from bottom left to top left
                     { key: "concrete_wall_end_broken_2", position: Vec.create(-53, 44), rotation: Math.PI / 2 },
                     // Top left corner
                     { key: "concrete_wall_corner", position: Vec.create(-53, -40), rotation: Math.PI / 2 },
-                    { key: "concrete_wall_end_broken_1", position: Vec.create(7, -40), rotation: 0 },
+                    { key: "concrete_wall_end_broken_1", position: Vec.create(7, -40) },
                     { key: "concrete_wall_end_broken_2", position: Vec.create(20, -40), rotation: Math.PI },
-                    { key: "concrete_wall_end_broken_2", position: Vec.create(82, -40), rotation: 0 },
+                    { key: "concrete_wall_end_broken_2", position: Vec.create(82, -40) },
                     { key: "concrete_wall_end_broken_1", position: Vec.create(106, -40), rotation: Math.PI },
                     // Top right corner
                     { key: "concrete_wall_corner", position: Vec.create(123, -40), rotation: Math.PI },
@@ -3344,6 +3344,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 idString: "small_bridge",
                 name: "Small Bridge",
                 noBulletCollision: true,
+                allowFlyover: FlyoverPref.Always,
                 material: "wood",
                 particle: "furniture_particle",
                 hitbox: new GroupHitbox(
@@ -3366,7 +3367,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 bridgeSpawnOptions: {
                     minRiverWidth: 0,
                     maxRiverWidth: 20,
-                    landCheckDist: 30
+                    landHitbox: new GroupHitbox(
+                        RectangleHitbox.fromRect(20, 5, Vec.create(0, 28.5)),
+                        RectangleHitbox.fromRect(20, 5, Vec.create(0, -28.5))
+                    )
                 },
                 floorImages: [
                     {
@@ -3389,6 +3393,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             {
                 idString: "large_bridge",
                 name: "Large Bridge",
+                allowFlyover: FlyoverPref.Always,
                 material: "stone",
                 particle: "rock_particle",
                 particleVariations: 2,
@@ -3401,13 +3406,28 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(5, 5, Vec.create(-21.5, -72)),
                     RectangleHitbox.fromRect(5, 5, Vec.create(21.5, -72)),
                     RectangleHitbox.fromRect(5, 5, Vec.create(-21.5, 69)),
-                    RectangleHitbox.fromRect(5, 5, Vec.create(21.5, 69))
+                    RectangleHitbox.fromRect(5, 5, Vec.create(21.5, 69)),
+
+                    // Pillars
+                    RectangleHitbox.fromRect(5, 3.25, Vec.create(-25.25, -1.35)),
+                    RectangleHitbox.fromRect(5, 3.25, Vec.create(25.25, -1.35)),
+                    RectangleHitbox.fromRect(5, 3.25, Vec.create(-25.25, -35.9)),
+                    RectangleHitbox.fromRect(5, 3.25, Vec.create(25.25, -35.9)),
+                    RectangleHitbox.fromRect(5, 3.25, Vec.create(-25.25, 33.15)),
+                    RectangleHitbox.fromRect(5, 3.25, Vec.create(25.25, 33.15)),
+                    RectangleHitbox.fromRect(5, 3.25, Vec.create(-25.25, 67.8)),
+                    RectangleHitbox.fromRect(5, 3.25, Vec.create(25.25, 67.8)),
+                    RectangleHitbox.fromRect(5, 3.25, Vec.create(-25.25, -70.65)),
+                    RectangleHitbox.fromRect(5, 3.25, Vec.create(25.25, -70.65))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(105, 230),
                 bridgeSpawnOptions: {
                     minRiverWidth: 20,
                     maxRiverWidth: 100,
-                    landCheckDist: 103
+                    landHitbox: new GroupHitbox(
+                        RectangleHitbox.fromRect(105, 45, Vec.create(0, 92.5)),
+                        RectangleHitbox.fromRect(105, 45, Vec.create(0, -92.5))
+                    )
                 },
                 floorImages: [
                     { key: "large_bridge_railing", position: Vec.create(23.3, -38) },
@@ -3832,7 +3852,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "grey_office_chair", position: Vec.create(-10, 24), rotation: 0 },
                     { idString: "headquarters_wall_9", position: Vec.create(3, 25.25), rotation: 1 },
                     { idString: "water_cooler", position: Vec.create(7.5, 25), rotation: 1 },
-                    { idString: "metal_small_drawer", position: Vec.create(8, 32), rotation: 1 },
+                    { idString: "filing_cabinet", position: Vec.create(8, 32), rotation: 1 },
                     { idString: "potted_plant", position: Vec.create(64.5, 5) },
                     { idString: "bookshelf", position: Vec.create(42, 6.25), rotation: 0 },
                     { idString: "headquarters_wall_6", position: Vec.create(50.05, 10), rotation: 0 },
@@ -4007,8 +4027,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 },
                 sounds: {
                     solved: "speaker",
-                    position: Vec.create(61, -77),
-                    maxRange: 97,
+                    position: Vec.create(29.71, -79.14),
+                    maxRange: 105,
                     falloff: 0.5
                 },
                 obstacles: [
@@ -4063,7 +4083,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "headquarters_wall_1", position: Vec.create(-3.6, -62.7), rotation: 1 },
                     { idString: "grey_office_chair", position: Vec.create(-26.8, -90), rotation: 0 },
                     { idString: "grey_office_chair", position: Vec.create(-28, -74.5), rotation: 2 },
-                    { idString: "metal_small_drawer", position: Vec.create(-8.4, -101), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
+                    { idString: "filing_cabinet", position: Vec.create(-8.4, -101), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
                     { idString: "bookshelf", position: Vec.create(-18.6, -102), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
                     { idString: "bookshelf", position: Vec.create(-31.5, -102), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
                     { idString: "potted_plant", position: Vec.create(1.5, -61) },
@@ -4087,7 +4107,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "potted_plant", position: Vec.create(-32.5, 32.2) },
                     { idString: "falchion_case", position: Vec.create(-51, 32.25), lootSpawnOffset: Vec.create(0, -2), rotation: 2 },
                     { idString: "water_cooler", position: Vec.create(-71.8, -27.5), rotation: 1 },
-                    { idString: "metal_small_drawer", position: Vec.create(-32.5, -27.5), lootSpawnOffset: Vec.create(-2, 0), rotation: 3 },
+                    { idString: "filing_cabinet", position: Vec.create(-32.5, -27.5), lootSpawnOffset: Vec.create(-2, 0), rotation: 3 },
 
                     // schematic: 3 tables, 2 chairs on each (left & right) with 2 chairs on top and bottom of the whole table group
                     { idString: "chair", position: Vec.create(-54.1, -14.6), rotation: 2 },
@@ -4229,6 +4249,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "small_bunker_entrance", position: Vec.create(0, 20), layer: -1 }
                 ]
             }
-        ] as readonly Missing[];
+        ];
     }
 );

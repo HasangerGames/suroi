@@ -25,7 +25,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "play_duo": "Play Duos",
     "play_squad": "Play Squads",
     "join_team": "Join Team",
-    "msg_locked_tooltip": "The game switches between solos and duos every 24 hours, as there aren't enough players for both.",
+    "msg_locked_tooltip": "The game switches between modes every 24 hours, as there aren't enough players for all of them.",
     "rules_and_tutorial": "Rules & Tutorial",
     "news": "News",
     "loadout": "Loadout",
@@ -125,6 +125,11 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "msg_your_rank": "Rank",
 
     "msg_kills": "Kills: <kills>",
+
+    "msg_not_enough_space": "Not enough space!",
+    "msg_item_already_equipped": "Item already equipped!",
+    "msg_better_item_equipped": "Better item equipped!",
+    "msg_cannot_use_radio": "Radio cannot be used in buildings!",
 
     "gas_waiting": "Toxic gas advances in <time>",
     "gas_advancing": "Toxic gas is advancing! Move to the safe zone",
@@ -236,7 +241,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     // ------------------------------------------------------------------
 
     // Kill Leader stuff
-    "kf_kl_promotion": "<player> is promoted to the Kill Leader!",
+    "kf_kl_promotion": "<player> promoted to Kill Leader!",
     "kf_kl_killed": "<player> killed the Kill Leader",
     "kf_kl_dead": "The Kill Leader is dead!",
     "kf_kl_suicide": "The Kill Leader killed themselves!",

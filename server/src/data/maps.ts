@@ -26,6 +26,7 @@ export interface MapDefinition {
     readonly rivers?: {
         readonly minAmount: number
         readonly maxAmount: number
+        readonly maxWideAmount: number
         readonly wideChance: number
         readonly minWidth: number
         readonly maxWidth: number
@@ -76,15 +77,15 @@ const maps = {
         oceanSize: 128,
         beachSize: 32,
         rivers: {
-            minAmount: 3,
+            minAmount: 2,
             maxAmount: 3,
+            maxWideAmount: 1,
             wideChance: 0.35,
             minWidth: 12,
             maxWidth: 18,
             minWideWidth: 25,
             maxWideWidth: 30
         },
-        majorBuildings: ["armory", "port_complex", "refinery", "headquarters"],
         buildings: {
             large_bridge: 2,
             small_bridge: Infinity,
@@ -98,12 +99,12 @@ const maps = {
             refinery: 1,
             warehouse: 5,
             // firework_warehouse: 1, // birthday mode
-            green_house: 2,
-            blue_house: 2,
+            green_house: 3,
+            blue_house: 3,
             red_house: 3,
             red_house_v2: 3,
             construction_site: 1,
-            mobile_home: 9,
+            mobile_home: 10,
             porta_potty: 12,
             container_3: 2,
             container_4: 2,
@@ -114,6 +115,7 @@ const maps = {
             container_9: 1,
             container_10: 2
         },
+        majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
         quadBuildingLimit: {
             red_house: 1,
             red_house_v2: 1,
@@ -122,11 +124,7 @@ const maps = {
             blue_house: 1,
             mobile_home: 3,
             porta_potty: 3,
-            construction_site: 1,
-            armory: 1,
-            headquarters: 1,
-            port_complex: 1,
-            refinery: 1
+            construction_site: 1
         },
         obstacles: {
             oil_tank: 12,
@@ -134,6 +132,7 @@ const maps = {
             oak_tree: 100,
             birch_tree: 20,
             pine_tree: 10,
+            loot_tree: 1,
             regular_crate: 160,
             flint_crate: 5,
             aegis_crate: 5,
@@ -150,7 +149,6 @@ const maps = {
             super_barrel: 30,
             melee_crate: 1,
             gold_rock: 1,
-            loot_tree: 1,
             loot_barrel: 1,
             flint_stone: 1
         },
@@ -268,6 +266,7 @@ const maps = {
             wideChance: 0.2,
             minWidth: 10,
             maxWidth: 16,
+            maxWideAmount: 1,
             minWideWidth: 25,
             maxWideWidth: 30
         },

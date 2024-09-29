@@ -1,7 +1,7 @@
 import { Layers, ZIndexes } from "../constants";
 import { type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
-import type { GetEnumMemberName, Mutable } from "../utils/misc";
+import type { DeepPartial, GetEnumMemberName, Mutable } from "../utils/misc";
 import { MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import type { GunDefinition } from "./guns";
@@ -68,7 +68,8 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly health: number
     readonly indestructible: boolean
     readonly impenetrable: boolean
-    readonly noHitEffect?: boolean
+    readonly noHitEffect: boolean
+    readonly noCollisionAfterDestroyed: boolean
     readonly noResidue: boolean
     readonly invisible: boolean
     readonly hideOnMap: boolean
@@ -89,13 +90,12 @@ type RawObstacleDefinition = ObjectDefinition & {
      * Whether throwables can fly over this obstacle
      */
     readonly allowFlyover: FlyoverPref
-    readonly collideWithLayers?: Layers
-    readonly visibleFromLayers?: Layers
+    readonly collideWithLayers: Layers
+    readonly visibleFromLayers: Layers
     readonly hasLoot: boolean
     readonly spawnWithLoot: boolean
     readonly explosion?: string
-    readonly detector?: boolean
-    readonly noInteractMessage?: boolean
+    readonly detector: boolean
     readonly noMeleeCollision: boolean
     readonly noBulletCollision: boolean
     readonly reflectBullets: boolean
@@ -119,7 +119,7 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly spawnMode: MapObjectSpawnMode
     readonly tint?: number
     readonly particlesOnDestroy?: SyncedParticleSpawnerDefinition
-    readonly additionalDestroySounds: string[]
+    readonly additionalDestroySounds: readonly string[]
     readonly sound?: ({ readonly name: string } | { readonly names: string[] }) & {
         readonly maxRange?: number
         readonly falloff?: number
@@ -148,6 +148,7 @@ type RawObstacleDefinition = ObjectDefinition & {
         )
     ) | {
         readonly role: ObstacleSpecialRoles.Activatable
+        readonly noInteractMessage?: boolean
         readonly sound?: ({ readonly name: string } | { readonly names: string[] }) & {
             readonly maxRange?: number
             readonly falloff?: number
@@ -160,7 +161,6 @@ type RawObstacleDefinition = ObjectDefinition & {
         }
     } | {
         readonly role: ObstacleSpecialRoles.Window
-        readonly noCollisionAfterDestroyed?: boolean
     } | {
         readonly role: ObstacleSpecialRoles.Wall
     } | {
@@ -258,7 +258,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     container_particle_green:     { base: "metal_particle_1", tint: 0x00a30e },
     container_particle_blue:      { base: "metal_particle_1", tint: 0x005fa3 },
     container_particle_yellow:    { base: "metal_particle_1", tint: 0xcccc00 },
-    metal_small_drawer_particle:  { base: "metal_particle_2", tint: 0x7f714d },
+    filing_cabinet_particle:      { base: "metal_particle_2", tint: 0x7f714d },
     briefcase_particle:           { base: "metal_particle_2", tint: 0xcfcfcf },
     aegis_crate_particle:         { base: "wood_particle",    tint: 0x2687d9 },
     airdrop_crate_particle:       { base: "wood_particle",    tint: 0x4059bf },
@@ -303,16 +303,21 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
 };
 /* eslint-enable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 
-const defaultObstacle = {
+const defaultObstacle: DeepPartial<RawObstacleDefinition> = {
     indestructible: false,
     impenetrable: false,
+    noHitEffect: false,
+    noCollisionAfterDestroyed: true,
     noResidue: false,
     invisible: false,
     hideOnMap: false,
     noCollisions: false,
     allowFlyover: FlyoverPref.Sometimes,
+    collideWithLayers: Layers.Equal,
+    visibleFromLayers: Layers.Adjacent,
     hasLoot: false,
     spawnWithLoot: false,
+    detector: false,
     noMeleeCollision: false,
     noBulletCollision: false,
     reflectBullets: false,
@@ -320,7 +325,7 @@ const defaultObstacle = {
     imageAnchor: Vec.create(0, 0),
     spawnMode: MapObjectSpawnMode.Grass,
     additionalDestroySounds: []
-};
+} satisfies DeepPartial<RawObstacleDefinition>;
 
 export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
     defaultObstacle,
@@ -395,7 +400,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             wall: {
                 borderColor: customHealth ? 0x23282a : 0x4a4134,
                 color: customHealth ? 0x74858b : 0xafa08c,
-                rounded: !customHealth
+                ...(customHealth ? {} : { rounded: !customHealth })
             },
             role: ObstacleSpecialRoles.Wall
         }));
@@ -445,8 +450,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             },
             wall: {
                 borderColor: 0x666666,
-                color: 0xbfbfbf,
-                rounded: false
+                color: 0xbfbfbf
             },
             role: ObstacleSpecialRoles.Wall
         }));
@@ -473,7 +477,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 particle: "furniture_particle",
                 residue: "gun_mount_residue"
             }
-        }));
+        } as const));
 
         return [
             {
@@ -1620,8 +1624,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 }
             },
             {
-                idString: "metal_small_drawer",
-                name: "Metal Small Drawer",
+                idString: "filing_cabinet",
+                name: "Filing Cabinet",
                 material: "iron",
                 health: 125,
                 scale: {
@@ -2599,7 +2603,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1,
                     destroy: 0.9
                 },
-                health: 400,
+                health: 220,
                 impenetrable: true,
                 hasLoot: true,
                 reflectBullets: true,

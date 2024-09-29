@@ -167,21 +167,32 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const puzzleDef = this.definition.puzzle!;
 
-        this.game.addTimeout(() => {
-            puzzle.solved = true;
-            this.setPartialDirty();
-        }, puzzleDef.setSolvedImmediately ? 0 : puzzleDef.delay);
+        const runOrWait = (cb: () => void, delay: number): void => {
+            if (delay === 0) cb();
+            else this.game.addTimeout(cb, delay);
+        };
 
-        this.game.addTimeout(() => {
-            for (const obstacle of this.interactableObstacles) {
-                if (obstacle.definition.idString === puzzleDef.triggerOnSolve) {
-                    if (obstacle.door) obstacle.door.locked = false;
+        runOrWait(
+            () => {
+                puzzle.solved = true;
+                this.setPartialDirty();
+            },
+            puzzleDef.setSolvedImmediately ? 0 : puzzleDef.delay
+        );
 
-                    if (!puzzleDef.unlockOnly) obstacle.interact();
-                    else obstacle.setDirty();
+        runOrWait(
+            () => {
+                for (const obstacle of this.interactableObstacles) {
+                    if (obstacle.definition.idString === puzzleDef.triggerOnSolve) {
+                        if (obstacle.door) obstacle.door.locked = false;
+
+                        if (!puzzleDef.unlockOnly) obstacle.interact();
+                        else obstacle.setDirty();
+                    }
                 }
-            }
-        }, puzzleDef.delay);
+            },
+            puzzleDef.delay
+        );
     }
 
     resetPuzzle(): void {

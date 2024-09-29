@@ -20,7 +20,7 @@ export const enum Layer {
     Floor1 = 2
 }
 
-export enum Layers {
+export const enum Layers {
     All,      // Collide with objects on all layers
     Adjacent, // Collide with objects on the same or adjacent layers
     Equal     // Only collide with objects on the same layer
@@ -58,13 +58,13 @@ export enum KillfeedMessageType {
     KillLeaderUpdated
 }
 
-export enum GasState {
+export const enum GasState {
     Inactive,
     Waiting,
     Advancing
 }
 
-export enum FireMode {
+export const enum FireMode {
     Single,
     Burst,
     Auto
@@ -120,6 +120,13 @@ export enum KillfeedEventSeverity {
     Down
 }
 
+export enum InventoryMessages {
+    NotEnoughSpace,
+    ItemAlreadyEquipped,
+    BetterItemEquipped,
+    CannotUseRadio
+}
+
 export const DEFAULT_INVENTORY: Record<string, number> = {};
 
 for (const item of [...HealingItems, ...Ammos, ...Scopes, ...Throwables]) {
@@ -139,7 +146,7 @@ const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType
 export const GameConstants = freezeDeep({
     // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
     // or a new item is added to a definition list
-    protocolVersion: 25,
+    protocolVersion: 26,
     gridSize: 32,
     bleedOutDPMs: 0.002, // === 2 dps
     maxPosition: 1632,
@@ -184,7 +191,6 @@ export enum ZIndexes {
     DeadObstacles,
     DeathMarkers,
     Explosions,
-    TeammateName,
     /**
      * This is the default layer for obstacles
      */
@@ -192,6 +198,7 @@ export enum ZIndexes {
     Loot,
     GroundedThrowables,
     ObstaclesLayer2,
+    TeammateName,
     Bullets,
     DownedPlayers,
     Players,
