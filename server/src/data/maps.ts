@@ -231,6 +231,7 @@ const maps = {
             maple_tree: 50,
             pine_tree: 70,
             dormant_oak_tree: 15,
+            stump: 30,
             regular_crate: 180,
             flint_crate: 5,
             aegis_crate: 5,

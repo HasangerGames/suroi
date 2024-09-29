@@ -605,6 +605,19 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 allowFlyover: FlyoverPref.Never
             },
             {
+                idString: "stump",
+                name: "Stump",
+                material: "tree",
+                health: 180,
+                scale: {
+                    spawnMin: 0.9,
+                    spawnMax: 1,
+                    destroy: 0.5
+                },
+                hitbox: new CircleHitbox(2.9),
+                rotationMode: RotationMode.Full
+            },
+            {
                 idString: "christmas_tree",
                 name: "Christmas Tree",
                 material: "tree",
