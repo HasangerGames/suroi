@@ -69,7 +69,7 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly indestructible: boolean
     readonly impenetrable: boolean
     readonly noHitEffect: boolean
-    readonly noCollisionAfterDestroyed?: boolean
+    readonly noCollisionAfterDestroyed: boolean
     readonly noResidue: boolean
     readonly invisible: boolean
     readonly hideOnMap: boolean
@@ -307,6 +307,7 @@ const defaultObstacle: DeepPartial<RawObstacleDefinition> = {
     indestructible: false,
     impenetrable: false,
     noHitEffect: false,
+    noCollisionAfterDestroyed: true,
     noResidue: false,
     invisible: false,
     hideOnMap: false,
