@@ -755,6 +755,25 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             },
 
             {
+                idString: "hatchet_stump",
+                name: "Hatchet Stump",
+                material: "tree",
+                health: 180,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.5
+                },
+                hitbox: new CircleHitbox(2.9),
+                rotationMode: RotationMode.None,
+                hasLoot: true,
+                frames: {
+                    particle: "stump_particle",
+                    residue: "stump_residue"
+                }
+            },
+
+            {
                 idString: "rock",
                 name: "Rock",
                 material: "stone",
