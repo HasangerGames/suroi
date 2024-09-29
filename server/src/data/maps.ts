@@ -208,7 +208,8 @@ const maps = {
             minWidth: 12,
             maxWidth: 18,
             minWideWidth: 25,
-            maxWideWidth: 28
+            maxWideWidth: 28,
+            maxWideAmount: 1
         },
         buildings: {
             small_bridge: Infinity,
