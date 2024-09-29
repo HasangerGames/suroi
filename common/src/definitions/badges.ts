@@ -11,19 +11,17 @@ const badge = createTemplate<BadgeDefinition>()((name: string, roles: string[] =
 }));
 
 export const Badges = ObjectDefinitions.create<BadgeDefinition>([
-    badge(["Youtubr", ["youtubr", "123op"]]),
-    badge(["Developr", ["developr", "error"]]),
+    badge(["Developr", ["developr", "eipi", "pap", "error", "limenade"]]),
+    badge(["Designr", ["designr"]]),
     badge(["Lead Designr", ["lead_designr"]]),
     badge(["VIP Designr", ["vip_designr"]]),
     badge(["Composr", ["composr"]]),
     badge(["Lead Composr", ["lead_composr"]]),
     badge(["Moderatr", ["moderatr"]]),
-    badge(["Trial Moderatr", ["trial_moderatr"]]),
-    badge(["Studio Managr", ["studio_managr"]]),
+    badge(["Administratr", ["administratr", "katie", "error"]]),
+    badge(["Youtubr", ["youtubr", "123op"]]),
     badge(["Boostr", ["boostr"]]),
-    badge(["Designr", ["designr"]]),
     badge(["Ownr", ["hasanger"]]),
-    badge(["Contributr+", ["katie"]]),
     badge(["Bleh"]),
     badge(["Froog"]),
     badge(["AEGIS Logo"]),

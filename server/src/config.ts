@@ -39,14 +39,13 @@ export const Config = {
 
     roles: {
         "developr": { password: "developr", isDev: true },
-        "moderatr": { password: "moderatr", isDev: true },
-        "trial_moderatr": { password: "trial_moderatr" },
         "designr": { password: "designr" },
         "lead_designr": { password: "lead_designr" },
         "vip_designr": { password: "vip_designr" },
-        "studio_managr": { password: "studio_managr" },
         "composr": { password: "composr" },
         "lead_composr": { password: "lead_composr" },
+        "moderatr": { password: "moderatr" },
+        "administratr": { password: "administratr" },
         "youtubr": { password: "youtubr" },
         "boostr": { password: "boostr" },
 
