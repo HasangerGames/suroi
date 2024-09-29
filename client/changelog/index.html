@@ -29,30 +29,30 @@
   <pre>
 # Changelog
 
-v0.19.1 - [9/29/2024]
-- Fixed an issue with "error joining game" errors.
-- Fixed an issue where you could not request or drop ammo.
-- Fixed a bug where grenades would get thrown on the right side in mobile regardless of the joystick's position.
-- Fixed bridge generation.
-- Fixed a bug where healing and adrenaline particles would appear in different layers.
-- Fixed an issue where mobile players would move faster than pc players.
-- Fixed airdrop parachute appearing above gas in terms of z-index/layer.
-- Fixed cooler graphic's blood particles ignoring layers.
-- Fixed an issue where the reload button would appear in mobile if a throwable was equipped.
-- Replaced the loading logo with a png file, which should fix the weird glitches in some devices.
-- Added additional hitboxes to large bridge's pillars.
-- Added fly over preference support for building hitboxes, which fixes grenades not getting thrown through bridges.
-- Added additional stats in the game over screen (team mode only).
-- Added new emote: trophy.
-- Reverted the old sounds for CZ-600 (all) and Vepr-12 (firing sound only).
-
-## Balance changes
-- The gas is now occasionally biased to shrink towards certain PoIs (points of interest, like the armory and the headquarters).
-- DEagle can now rarely drop from world loot table.
-- 2 to 3 rivers now spawn per game (changed from fixed 3)
-- Only one large river can now spawn per game.
-- Health regeneration from adrenaline is now linear.
-- Major structures now spawn more evenly throughout the island.
+v0.19.1 - [9/28/2024]
+- Fixed "Error joining game" issue
+- Fixed requesting/dropping ammo not working
+- Fixed grenades sometimes being thrown to the right on mobile regardless of joystick position
+- Fixed issues with ghost teammates (hopefully)
+- Fixed grenades not going over bridges
+- Fixed bridge spawning issues (mostly)
+- Fixed missing large bridge hitboxes
+- Fixed healing particles from players on 1st floor showing on 2nd floor
+- Fixed airdrop parachute appearing above the gas
+- Fixed teammate name Z index
+- Replaced the logo on the loading screen with a png file, which should fix glitches with it on some devices
+- Fixed mobile players moving 2.5% faster than PC players
+- Fixed reload icon showing for throwables on mobile
+- Major structures now spawn more evenly throughout the island
+- "Not enough space," "Better item equipped," and "Radio cannot be used here" messages are now shown in their respective situations
+- Added trophy emote
+- Health regeneration from adrenaline is now linear
+- The DEagle now spawns rarely as world loot
+- 2-3 rivers now spawn per map, instead of a fixed 3
+- There is now a limit of 1 large river per map
+- Reverted CZ-600 sounds
+- Reverted Vepr firing sound
+- Improved ceiling collapse sound
 
 v0.19.0 - [9/22/2024]
 - Removed Barrett M95.
