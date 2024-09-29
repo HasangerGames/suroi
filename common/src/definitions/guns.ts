@@ -1,6 +1,6 @@
 import { defaultBulletTemplate, FireMode } from "../constants";
-import { mergeDeep } from "../utils/misc";
-import { inheritFrom, ItemType, ObjectDefinitions, RawDefinition, type BaseBulletDefinition, type InventoryItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { mergeDeep, type DeepPartial } from "../utils/misc";
+import { inheritFrom, ItemType, ObjectDefinitions, type BaseBulletDefinition, type InventoryItemDefinition, type RawDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { type AmmoDefinition } from "./ammos";
 
@@ -188,35 +188,37 @@ type RawGunDefinition = BaseGunDefinition & {
     }
 };
 
+const defaultGun = {
+    itemType: ItemType.Gun,
+    noDrop: false,
+    ammoSpawnAmount: 0,
+    speedMultiplier: 0.92,
+    singleReload: false,
+    infiniteAmmo: false,
+    jitterRadius: 0,
+    consistentPatterning: false,
+    noQuickswitch: false,
+    bulletCount: 1,
+    killstreak: false,
+    shootOnRelease: false,
+    summonAirdrop: false,
+    fists: {
+        leftZIndex: 1,
+        rightZIndex: 1
+    },
+    casingParticles: [] as RawGunDefinition["casingParticles"],
+    image: {
+        angle: 0,
+        zIndex: 2
+    },
+    isDual: false,
+    noMuzzleFlash: false,
+    ballistics: defaultBulletTemplate
+} satisfies DeepPartial<GunDefinition> as DeepPartial<GunDefinition>;
+
 export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
-    {
-        itemType: ItemType.Gun,
-        noDrop: false,
-        ammoSpawnAmount: 0,
-        speedMultiplier: 0.92,
-        singleReload: false,
-        infiniteAmmo: false,
-        jitterRadius: 0,
-        consistentPatterning: false,
-        noQuickswitch: false,
-        bulletCount: 1,
-        killstreak: false,
-        shootOnRelease: false,
-        summonAirdrop: false,
-        fists: {
-            leftZIndex: 1,
-            rightZIndex: 1
-        },
-        casingParticles: [] as RawGunDefinition["casingParticles"],
-        image: {
-            angle: 0,
-            zIndex: 2
-        },
-        isDual: false,
-        noMuzzleFlash: false,
-        ballistics: defaultBulletTemplate
-    } as const,
-    ([, , , _missingType]) => {
+    defaultGun,
+    () => {
         return ([
             {
                 idString: "ak47",
@@ -232,7 +234,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Auto,
                 shotSpread: 2,
                 moveSpread: 6,
-                length: 7.5,
+                length: 7.55,
                 fists: {
                     left: Vec.create(120, -2),
                     right: Vec.create(45, 0),
@@ -298,7 +300,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Auto,
                 shotSpread: 4,
                 moveSpread: 11,
-                length: 6.7,
+                length: 6.73,
                 fists: {
                     left: Vec.create(105, -2),
                     right: Vec.create(40, 0),
@@ -307,7 +309,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 },
                 image: { position: Vec.create(75, -4) },
                 casingParticles: [{
-                    position: Vec.create(2.5, 0.5)
+                    position: Vec.create(2.5, 0.4)
                 }],
                 gasParticles: gasParticlePresets.automatic,
                 capacity: 30,
@@ -332,7 +334,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 shotSpread: 2,
                 moveSpread: 7,
                 noMuzzleFlash: true,
-                length: 6.4,
+                length: 6.45,
                 fists: {
                     left: Vec.create(95, -2),
                     right: Vec.create(40, 0),
@@ -341,7 +343,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 },
                 image: { position: Vec.create(75, -1) },
                 casingParticles: [{
-                    position: Vec.create(4, 0.5)
+                    position: Vec.create(4, 0.4)
                 }],
                 capacity: 30,
                 reloadTime: 3,
@@ -371,7 +373,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 moveSpread: 7,
                 jitterRadius: 0.5,
                 bulletCount: 9,
-                length: 7.7,
+                length: 7.75,
                 fists: {
                     left: Vec.create(105, -3),
                     right: Vec.create(40, 0),
@@ -407,7 +409,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 moveSpread: 14,
                 jitterRadius: 1.25,
                 bulletCount: 10,
-                length: 7.9,
+                length: 7.85,
                 fists: {
                     left: Vec.create(122, -3),
                     right: Vec.create(45, 0),
@@ -579,7 +581,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Single,
                 shotSpread: 1,
                 moveSpread: 2,
-                length: 8.7,
+                length: 8.65,
                 shootOnRelease: true,
                 fists: {
                     left: Vec.create(115, -4),
@@ -619,7 +621,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Single,
                 shotSpread: 0.3,
                 moveSpread: 0.6,
-                length: 8.9,
+                length: 8.93,
                 shootOnRelease: true,
                 fists: {
                     left: Vec.create(106, -1),
@@ -658,7 +660,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Single,
                 shotSpread: 0.75,
                 moveSpread: 1.25,
-                length: 8.3,
+                length: 8.33,
                 shootOnRelease: true,
                 fists: {
                     left: Vec.create(115, -4),
@@ -843,7 +845,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Auto,
                 shotSpread: 8,
                 moveSpread: 14,
-                length: 5.1,
+                length: 5.12,
                 fists: {
                     left: Vec.create(40, 0),
                     right: Vec.create(40, 0),
@@ -853,7 +855,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 },
                 image: { position: Vec.create(70, -1) },
                 casingParticles: [{
-                    position: Vec.create(3.5, 0.5),
+                    position: Vec.create(3.5, 0.45),
                     velocity: {
                         y: {
                             min: 2,
@@ -897,7 +899,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Burst,
                 shotSpread: 3,
                 moveSpread: 4,
-                length: 5.9,
+                length: 5.95,
                 fists: {
                     left: Vec.create(95, -3),
                     right: Vec.create(40, 0),
@@ -906,7 +908,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 },
                 image: { position: Vec.create(71, 0) },
                 casingParticles: [{
-                    position: Vec.create(4, 0.5)
+                    position: Vec.create(4, 0.35)
                 }],
                 gasParticles: gasParticlePresets.automatic,
                 ballistics: {
@@ -934,7 +936,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Burst,
                 shotSpread: 2,
                 moveSpread: 4,
-                length: 8.6,
+                length: 8.68,
                 fists: {
                     left: Vec.create(120, -3),
                     right: Vec.create(40, 0),
@@ -943,7 +945,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 },
                 image: { position: Vec.create(100, 0) },
                 casingParticles: [{
-                    position: Vec.create(4, 0.5)
+                    position: Vec.create(4, 0.4)
                 }],
                 gasParticles: gasParticlePresets.automatic,
                 ballistics: {
@@ -1000,7 +1002,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Auto,
                 shotSpread: 2,
                 moveSpread: 7,
-                length: 7.1,
+                length: 7.2,
                 fists: {
                     left: Vec.create(85, -6),
                     right: Vec.create(40, 0),
@@ -1033,7 +1035,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Auto,
                 shotSpread: 3,
                 moveSpread: 6.75,
-                length: 6.9, // nice
+                length: 7,
                 noMuzzleFlash: true,
                 fists: {
                     left: Vec.create(88, -5),
@@ -1042,7 +1044,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     animationDuration: 100
                 },
                 casingParticles: [{
-                    position: Vec.create(3.5, 0.5)
+                    position: Vec.create(3.5, 0.35)
                 }],
                 image: { position: Vec.create(80, 0) },
                 ballistics: {
@@ -1069,7 +1071,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Auto,
                 shotSpread: 2,
                 moveSpread: 4,
-                length: 6.55,
+                length: 6.6,
                 fists: {
                     left: Vec.create(103, -2),
                     right: Vec.create(40, 0),
@@ -1078,7 +1080,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 },
                 image: { position: Vec.create(76, -3) },
                 casingParticles: [{
-                    position: Vec.create(4, 0.6)
+                    position: Vec.create(4, 0.4)
                 }],
                 gasParticles: gasParticlePresets.automatic,
                 ballistics: {
@@ -1111,7 +1113,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 },
                 image: { position: Vec.create(80, 0) },
                 casingParticles: [{
-                    position: Vec.create(5, 0.5)
+                    position: Vec.create(5, 0.4)
                 }],
                 gasParticles: gasParticlePresets.automatic,
                 ballistics: {
@@ -1238,7 +1240,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Auto,
                 shotSpread: 2,
                 moveSpread: 4.5,
-                length: 8.4,
+                length: 8.45,
                 fists: {
                     left: Vec.create(105, -3),
                     right: Vec.create(40, 0),
@@ -1345,7 +1347,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Auto,
                 shotSpread: 3.5,
                 moveSpread: 8,
-                length: 7.5,
+                length: 7.53,
                 fists: {
                     left: Vec.create(95, -4),
                     right: Vec.create(40, 0),
@@ -1355,7 +1357,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 image: { position: Vec.create(67, 0) },
                 casingParticles: [
                     {
-                        position: Vec.create(4, 0.6)
+                        position: Vec.create(4, 0.45)
                     }
                 ],
                 gasParticles: gasParticlePresets.automatic,
@@ -1380,7 +1382,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Single,
                 shotSpread: 1,
                 moveSpread: 3.5,
-                length: 8.1,
+                length: 8.2,
                 fists: {
                     left: Vec.create(110, -3),
                     right: Vec.create(40, 0),
@@ -1391,7 +1393,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 casingParticles: [
                     {
                         frame: "casing_30-06",
-                        position: Vec.create(4, 0.6),
+                        position: Vec.create(4, 0.5),
                         velocity: {
                             y: {
                                 min: 4,
@@ -1401,7 +1403,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     },
                     {
                         frame: "enbloc",
-                        position: Vec.create(4, 0.6),
+                        position: Vec.create(4, 0.5),
                         velocity: {
                             x: {
                                 min: 1,
@@ -1599,7 +1601,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 moveSpread: 0.4,
                 length: 10.8,
                 casingParticles: [{
-                    position: Vec.create(3.5, 0.2),
+                    position: Vec.create(5, 0.2),
                     ejectionDelay: 500
                 }],
                 fists: {
@@ -1621,6 +1623,122 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         length: 4
                     },
                     range: 300
+                }
+            },
+            {
+                idString: "deagle",
+                name: "DEagle",
+                ammoType: "50cal",
+                ammoSpawnAmount: 42,
+                fireDelay: 200,
+                switchDelay: 250,
+                recoilMultiplier: 0.65,
+                recoilDuration: 150,
+                fireMode: FireMode.Single,
+                shotSpread: 3,
+                moveSpread: 7,
+                length: 4.9,
+                fists: {
+                    left: Vec.create(40, 0),
+                    right: Vec.create(40, 0),
+                    leftZIndex: 4,
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(65, 0) },
+                casingParticles: [{
+                    frame: "casing_50ae",
+                    position: Vec.create(3.5, 0.3),
+                    velocity: {
+                        y: {
+                            min: 2,
+                            max: 18
+                        }
+                    }
+                }],
+                gasParticles: gasParticlePresets.pistol,
+                capacity: 7,
+                reloadTime: 2.3,
+                ballistics: {
+                    damage: 37,
+                    obstacleMultiplier: 1.25,
+                    speed: 0.22,
+                    range: 130,
+                    tracer: {
+                        color: 0xE2C910
+                    }
+                },
+                dual: {
+                    ammoSpawnAmount: 84,
+                    leftRightOffset: 1.4,
+                    fireDelay: 115,
+                    shotSpread: 5,
+                    moveSpread: 9.5,
+                    capacity: 14,
+                    reloadTime: 3.8
+                }
+            },
+            {
+                idString: "rsh12",
+                name: "RSh-12",
+                ammoType: "50cal",
+                ammoSpawnAmount: 30,
+                fireDelay: 400,
+                switchDelay: 250,
+                recoilMultiplier: 0.8,
+                recoilDuration: 600,
+                fsaReset: 600,
+                fireMode: FireMode.Single,
+                shotSpread: 4,
+                moveSpread: 8,
+                length: 6.2,
+                noMuzzleFlash: true,
+                fists: {
+                    left: Vec.create(40, 0),
+                    right: Vec.create(40, 0),
+                    leftZIndex: 4,
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                casingParticles: [{
+                    position: Vec.create(3.5, 0.3),
+                    frame: "casing_127x55mm",
+                    on: "reload",
+                    count: 5,
+                    velocity: {
+                        x: {
+                            min: -8,
+                            max: -2
+                        },
+                        y: {
+                            min: 2,
+                            max: 9,
+                            randomSign: true
+                        }
+                    }
+                }],
+                image: { position: Vec.create(80, 0) },
+                gasParticles: gasParticlePresets.pistol,
+                capacity: 5,
+                reloadTime: 2.4,
+                ballistics: {
+                    damage: 60,
+                    obstacleMultiplier: 1,
+                    speed: 0.3,
+                    range: 120,
+                    tracer: {
+                        opacity: 0.8,
+                        width: 1.1
+                    }
+                },
+                dual: {
+                    leftRightOffset: 1.3,
+                    ammoSpawnAmount: 60,
+                    fireDelay: 200,
+                    shotSpread: 7,
+                    moveSpread: 11,
+                    capacity: 10,
+                    reloadTime: 4.2
                 }
             },
 
@@ -1649,7 +1767,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 image: { position: Vec.create(90, -3.5) },
                 casingParticles: [{
                     frame: "casing_12ga_he",
-                    position: Vec.create(4, 0.6)
+                    position: Vec.create(4.5, 0.6)
                 }],
                 ballistics: {
                     damage: 8,
@@ -1775,122 +1893,6 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 } */
                 // justice for dual s_g17 when™
             },
-            {
-                idString: "deagle",
-                name: "DEagle",
-                ammoType: "50cal",
-                ammoSpawnAmount: 42,
-                fireDelay: 200,
-                switchDelay: 250,
-                recoilMultiplier: 0.65,
-                recoilDuration: 150,
-                fireMode: FireMode.Single,
-                shotSpread: 3,
-                moveSpread: 7,
-                length: 4.9,
-                fists: {
-                    left: Vec.create(40, 0),
-                    right: Vec.create(40, 0),
-                    leftZIndex: 4,
-                    rightZIndex: 4,
-                    animationDuration: 100
-                },
-                image: { position: Vec.create(65, 0) },
-                casingParticles: [{
-                    frame: "casing_50ae",
-                    position: Vec.create(3.5, 0.3),
-                    velocity: {
-                        y: {
-                            min: 2,
-                            max: 18
-                        }
-                    }
-                }],
-                gasParticles: gasParticlePresets.pistol,
-                capacity: 7,
-                reloadTime: 2.3,
-                ballistics: {
-                    damage: 37,
-                    obstacleMultiplier: 1.25,
-                    speed: 0.22,
-                    range: 130,
-                    tracer: {
-                        color: 0xE2C910
-                    }
-                },
-                dual: {
-                    ammoSpawnAmount: 84,
-                    leftRightOffset: 1.4,
-                    fireDelay: 115,
-                    shotSpread: 5,
-                    moveSpread: 9.5,
-                    capacity: 14,
-                    reloadTime: 3.8
-                }
-            },
-            {
-                idString: "rsh12",
-                name: "RSh-12",
-                ammoType: "50cal",
-                ammoSpawnAmount: 30,
-                fireDelay: 400,
-                switchDelay: 250,
-                recoilMultiplier: 0.8,
-                recoilDuration: 600,
-                fsaReset: 600,
-                fireMode: FireMode.Single,
-                shotSpread: 4,
-                moveSpread: 8,
-                length: 6,
-                noMuzzleFlash: true,
-                fists: {
-                    left: Vec.create(40, 0),
-                    right: Vec.create(40, 0),
-                    leftZIndex: 4,
-                    rightZIndex: 4,
-                    animationDuration: 100
-                },
-                casingParticles: [{
-                    position: Vec.create(3.5, 0.3),
-                    frame: "casing_127x55mm",
-                    on: "reload",
-                    count: 5,
-                    velocity: {
-                        x: {
-                            min: -8,
-                            max: -2
-                        },
-                        y: {
-                            min: 2,
-                            max: 9,
-                            randomSign: true
-                        }
-                    }
-                }],
-                image: { position: Vec.create(80, 0) },
-                gasParticles: gasParticlePresets.pistol,
-                capacity: 5,
-                reloadTime: 2.4,
-                ballistics: {
-                    damage: 60,
-                    obstacleMultiplier: 1,
-                    speed: 0.3,
-                    range: 120,
-                    tracer: {
-                        opacity: 0.8,
-                        width: 1.1
-                    }
-                },
-                dual: {
-                    leftRightOffset: 1.3,
-                    ammoSpawnAmount: 60,
-                    fireDelay: 200,
-                    shotSpread: 7,
-                    moveSpread: 11,
-                    capacity: 10,
-                    reloadTime: 4.2
-                }
-            },
             // only dev weapons below this point
             {
                 idString: "death_ray",
@@ -2000,6 +2002,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fists: {
                     left: Vec.create(112, -3)
                 },
+                length: 7.28,
                 wearerAttributes: {
                     passive: {
                         maxHealth: 0.51,
