@@ -332,7 +332,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         if (data.dead) {
             if (!this.dead && !isNew) {
                 this.game.particleManager.spawnParticles(10, () => ({
-                    frames: `${definition.idString}_particle`,
+                    frames: definition.ceilingCollapseParticle ?? `${definition.idString}_particle`,
                     position: this.ceilingHitbox?.randomPoint() ?? { x: 0, y: 0 },
                     zIndex: Math.max(ZIndexes.Players + 1, 4),
                     layer: this.layer,

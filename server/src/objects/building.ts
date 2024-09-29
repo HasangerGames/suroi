@@ -97,6 +97,17 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
             this.dead = true;
             this.setPartialDirty();
             this.game.pluginManager.emit("building_did_destroy_ceiling", this);
+
+            if (this.definition.destroyInnerUponCeilingCollapse && this.scopeHitbox) {
+                for (const object of this.game.grid.intersectsHitbox(this.scopeHitbox)) {
+                    if ((object.isPlayer || object.isObstacle) && object.hitbox.collidesWith(this.spawnHitbox)) {
+                        object.damage({
+                            source: this,
+                            amount: object.isPlayer ? object.health / 2 : object.health
+                        });
+                    }
+                }
+            }
         }
     }
 

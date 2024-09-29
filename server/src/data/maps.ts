@@ -218,12 +218,21 @@ const maps = {
             construction_site: 1,
             barn: 3,
             porta_potty: 6,
-            warehouse: 4
+            warehouse: 4,
+            tent_1: 2,
+            tent_2: 2,
+            tent_3: 2,
+            tent_4: 2,
+            tent_5: 1
         },
         quadBuildingLimit: {
             barn: 2,
             warehouse: 2,
-            porta_potty: 3
+            porta_potty: 3,
+            tent_1: 1,
+            tent_2: 1,
+            tent_3: 1,
+            tent_4: 1
         },
         obstacles: {
             oil_tank: 12,

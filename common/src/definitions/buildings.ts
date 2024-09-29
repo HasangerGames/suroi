@@ -41,6 +41,8 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly reflectBullets?: boolean
     readonly collideWithLayers?: Layers
     readonly visibleFromLayers?: Layers
+    readonly ceilingCollapseParticle?: string
+    readonly destroyInnerUponCeilingCollapse?: boolean
     readonly material?: typeof Materials[number]
     readonly particle?: string
     readonly particleVariations?: number
@@ -197,6 +199,14 @@ const ContainerTints = {
     yellow: 0xcccc00
 };
 
+const TentTints = {
+    red: 0x6e1414,
+    green: 0x0c4a0f,
+    blue: 0x231085,
+    yellow: 0x7a6612,
+    purple: 0x460c52
+};
+
 const ContainerWallOutlineTints = {
     white: 0x797979,
     red: 0x661900,
@@ -346,6 +356,59 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         table: "ground_loot"
                     }]
             } as const;
+        });
+
+        const tent = derive((
+            id: number,
+            color: "red" | "green" | "blue" | "yellow" | "purple",
+            special?: boolean
+        ) => {
+            const tint = TentTints[color];
+
+            return {
+                idString: `tent_${id}`,
+                name: `Tent ${id}`,
+                spawnHitbox: RectangleHitbox.fromRect(28, 23),
+                scopeHitbox: RectangleHitbox.fromRect(25, 16),
+                floorImages: [{
+                    key: "tent_floor",
+                    position: Vec.create(0, 0),
+                    scale: Vec.create(1.02, 1.02),
+                    tint: tint
+                }],
+                ceilingImages: [{
+                    key: "tent_ceiling",
+                    position: Vec.create(0, 0),
+                    tint: tint,
+                    residue: "tent_residue",
+                    scale: Vec.create(1.01, 1.07)
+                }],
+                ceilingCollapseParticle: `tent_particle_${id}`,
+                destroyInnerUponCeilingCollapse: true,
+                wallsToDestroy: 1,
+                floors: [{
+                    type: FloorNames.Carpet,
+                    hitbox: RectangleHitbox.fromRect(25, 16)
+                }],
+                hideOnMap: special,
+                obstacles: special
+                    ? [
+                        { idString: `tent_wall_${id}`, position: Vec.create(0, -8), rotation: 0 },
+                        { idString: `tent_wall_${id}`, position: Vec.create(0, 8), rotation: 2 },
+                        { idString: "box", position: Vec.create(0, 5) },
+                        { idString: "box", position: Vec.create(-7, 5) },
+                        { idString: "box", position: Vec.create(7, 5) }
+                    ]
+                    : [
+                        { idString: `tent_wall_${id}`, position: Vec.create(0, -8), rotation: 0 },
+                        { idString: `tent_wall_${id}`, position: Vec.create(0, 8), rotation: 2 },
+                        { idString: "box", position: Vec.create(0, 5) }
+                    ],
+                lootSpawners: [{
+                    table: special ? "warehouse" : "ground_loot",
+                    position: Vec.create(-3, 0)
+                }]
+            };
         });
 
         const tugboat = derive((color: string, mainLoot: string) => ({
@@ -1812,6 +1875,13 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             container([10, "yellow", "open2"]),
             container([11, "green", "closed"]),
             container([12, "yellow", "closed"]),
+
+            tent([1, "red"]),
+            tent([2, "green"]),
+            tent([3, "blue"]),
+            tent([4, "yellow"]),
+            tent([5, "purple", true]),
+
             {
                 idString: "cargo_ship_center_roof",
                 name: "Cargo Ship Center Roof",

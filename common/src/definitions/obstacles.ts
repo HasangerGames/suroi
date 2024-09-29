@@ -212,6 +212,14 @@ export enum RotationMode {
     None
 }
 
+const TentWallTints = {
+    red: 0x540d0d,
+    green: 0x0c4a0f,
+    blue: 0x0e1a4f,
+    yellow: 0x6b5a10,
+    purple: 0x631773
+};
+
 export const Materials = [
     "tree",
     "stone",
@@ -301,7 +309,24 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     red_small_couch_particle:     { base: "wood_particle",    tint: 0x823323 },
     planted_bushes_particle:      { base: "toilet_particle",  tint: 0xaaaaaa },
     barn_wall_particle_1:         { base: "stone_particle_1", tint: 0x690c0c },
-    barn_wall_particle_2:         { base: "stone_particle_2", tint: 0x690c0c }
+    barn_wall_particle_2:         { base: "stone_particle_2", tint: 0x690c0c },
+
+    tent_wall_particle_red_1:     { base: "stone_particle_1", tint: TentWallTints.red },
+    tent_wall_particle_red_2:     { base: "stone_particle_2", tint: TentWallTints.red },
+    tent_wall_particle_green_1:   { base: "stone_particle_1", tint: TentWallTints.green },
+    tent_wall_particle_green_2:   { base: "stone_particle_2", tint: TentWallTints.green },
+    tent_wall_particle_blue_1:    { base: "stone_particle_1", tint: TentWallTints.blue },
+    tent_wall_particle_blue_2:    { base: "stone_particle_2", tint: TentWallTints.blue },
+    tent_wall_particle_yellow_1:  { base: "stone_particle_1", tint: TentWallTints.yellow },
+    tent_wall_particle_yellow_2:  { base: "stone_particle_2", tint: TentWallTints.yellow },
+    tent_wall_particle_purple_1:  { base: "stone_particle_1", tint: TentWallTints.purple },
+    tent_wall_particle_purple_2:  { base: "stone_particle_2", tint: TentWallTints.purple },
+
+    tent_particle_1:              { base: "ceiling_particle", tint: TentWallTints.red },
+    tent_particle_2:              { base: "ceiling_particle", tint: TentWallTints.green },
+    tent_particle_3:              { base: "ceiling_particle", tint: TentWallTints.blue },
+    tent_particle_4:              { base: "ceiling_particle", tint: TentWallTints.yellow },
+    tent_particle_5:              { base: "ceiling_particle", tint: TentWallTints.purple }
 };
 /* eslint-enable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 
@@ -364,7 +389,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 rotationMode: props.rotationMode,
                 variations: props.variations ?? undefined,
                 hitbox: props.hitbox,
-                zIndex: ZIndexes.ObstaclesLayer4,
+                zIndex: ZIndexes.ObstaclesLayer5,
                 hasLoot: props.hasLoot ?? false,
                 allowFlyover: props.allowFlyOver ?? FlyoverPref.Sometimes
             })
@@ -492,6 +517,39 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             },
             role: ObstacleSpecialRoles.Wall
         }));
+
+        const tentWall = derive(
+            (
+                id: number,
+                color: "red" | "green" | "blue" | "yellow" | "purple"
+            ) => ({
+                idString: `tent_wall_${id}`,
+                name: `Tent Wall ${id}`,
+                material: "stone",
+                hideOnMap: true,
+                noResidue: true,
+                health: 100,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.95
+                },
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Never,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(25.1, 1, Vec.create(0, -0.75)),
+                    RectangleHitbox.fromRect(1, 2.5, Vec.create(-12.1, 0)),
+                    RectangleHitbox.fromRect(1, 2.5, Vec.create(12.1, 0))
+                ),
+                particleVariations: 2,
+                frames: {
+                    base: "tent_wall",
+                    particle: `tent_wall_particle_${color}`
+                },
+                tint: TentWallTints[color],
+                role: ObstacleSpecialRoles.Wall
+            })
+        );
 
         const gunMount = derive((gunID: ReferenceTo<GunDefinition>) => ({
             idString: `gun_mount_${gunID}`,
@@ -1332,6 +1390,12 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 [9],
                 { hitbox: RectangleHitbox.fromRect(21, 2.1) }
             ),
+
+            tentWall([1, "red"]),
+            tentWall([2, "green"]),
+            tentWall([3, "blue"]),
+            tentWall([4, "yellow"]),
+            tentWall([5, "purple"]),
 
             {
                 idString: "fridge",
