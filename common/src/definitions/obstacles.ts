@@ -336,12 +336,12 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
         const tree = derive(
             (
                 props: {
-                    readonly name: string,
+                    readonly name: string
                     readonly health: number
-                    readonly variations?: Exclude<Variation, 0>,
-                    readonly hitbox: Hitbox,
-                    readonly spawnHitbox: Hitbox,
-                    readonly rotationMode: RotationMode,
+                    readonly variations?: Exclude<Variation, 0>
+                    readonly hitbox: Hitbox
+                    readonly spawnHitbox: Hitbox
+                    readonly rotationMode: RotationMode
                     readonly scaleProps: {
                         readonly destroy: number
                         readonly spawnMax: number
@@ -529,7 +529,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
                 hitbox: new CircleHitbox(5.5),
-                variations: 6,
+                variations: 6
             }]),
 
             tree([{
