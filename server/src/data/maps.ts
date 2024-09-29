@@ -227,7 +227,11 @@ const maps = {
             tent_2: 2,
             tent_3: 2,
             tent_4: 2,
-            tent_5: 1
+            tent_5: 1,
+            tent_big_1: 1,
+            tent_big_2: 1,
+            tent_big_3: 1,
+            tent_big_4: 1
         },
         quadBuildingLimit: {
             barn: 2,

@@ -551,6 +551,44 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             })
         );
 
+        const bigTentWall = derive(
+            (
+                id: number,
+                color: "red" | "green" | "blue" | "yellow" | "purple"
+            ) => ({
+                idString: `tent_wall_big_${id}`,
+                name: `Big Tent Wall ${id}`,
+                material: "stone",
+                hideOnMap: true,
+                noResidue: true,
+                health: 200,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.95
+                },
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Never,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(1, 6.1, Vec.create(-3.2, -0.4)),
+                    RectangleHitbox.fromRect(10, 1, Vec.create(0, 3.2)),
+                    RectangleHitbox.fromRect(7, 2.1, Vec.create(-8.5, 3.25)),
+                    RectangleHitbox.fromRect(7, 2.1, Vec.create(8.5, 3.25)),
+                    RectangleHitbox.fromRect(9, 1, Vec.create(-16.25, 3.2)),
+                    RectangleHitbox.fromRect(9, 1, Vec.create(16.25, 3.2)),
+                    RectangleHitbox.fromRect(1, 8, Vec.create(-20.25, -0.25)),
+                    RectangleHitbox.fromRect(1, 8, Vec.create(20.25, -0.25))
+                ),
+                particleVariations: 2,
+                frames: {
+                    base: "tent_wall_big",
+                    particle: `tent_wall_particle_${color}`
+                },
+                tint: TentWallTints[color],
+                role: ObstacleSpecialRoles.Wall
+            })
+        );
+
         const gunMount = derive((gunID: ReferenceTo<GunDefinition>) => ({
             idString: `gun_mount_${gunID}`,
             name: "Gun Mount",
@@ -1396,6 +1434,11 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             tentWall([3, "blue"]),
             tentWall([4, "yellow"]),
             tentWall([5, "purple"]),
+
+            bigTentWall([1, "red"]),
+            bigTentWall([2, "green"]),
+            bigTentWall([3, "blue"]),
+            bigTentWall([4, "yellow"]),
 
             {
                 idString: "fridge",

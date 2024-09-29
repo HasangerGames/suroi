@@ -410,6 +410,55 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             };
         });
 
+        const bigTent = derive((
+            id: number,
+            color: "red" | "green" | "blue" | "yellow" | "purple",
+            special = false
+        ) => {
+            const tint = TentTints[color];
+
+            return {
+                idString: `tent_big_${id}`,
+                name: `Big Tent ${id}`,
+                spawnHitbox: RectangleHitbox.fromRect(46, 33),
+                scopeHitbox: RectangleHitbox.fromRect(40, 24.5),
+                floorImages: [{
+                    key: "tent_floor_big",
+                    position: Vec.create(0, 0),
+                    scale: Vec.create(1.02, 1.02),
+                    tint: tint
+                }],
+                ceilingImages: [{
+                    key: "tent_ceiling_big",
+                    position: Vec.create(0, 0),
+                    tint: tint,
+                    residue: "tent_residue_big",
+                    scale: Vec.create(1.01, 1.07)
+                }],
+                floors: [{
+                    type: FloorNames.Carpet,
+                    hitbox: RectangleHitbox.fromRect(40, 24.5)
+                }],
+                ceilingCollapseParticle: `tent_particle_${id}`,
+                destroyInnerUponCeilingCollapse: true,
+                wallsToDestroy: 1,
+                obstacles: [
+                    { idString: `tent_wall_big_${id}`, position: Vec.create(0, -10), rotation: 2 },
+                    { idString: `tent_wall_big_${id}`, position: Vec.create(0, 10), rotation: 0 },
+                    { idString: "office_chair", position: Vec.create(-16.15, -9.23), rotation: 1 },
+                    { idString: "office_chair", position: Vec.create(24.53, 9.15), rotation: 2 },
+                    { idString: { grenade_box: 1, box: 0.5 }, position: Vec.create(-16.93, 10.04) },
+                    { idString: "box", position: Vec.create(-0.6, -9.67) },
+                    { idString: "small_bed", position: Vec.create(11.19, 8.06), rotation: 3 },
+                    { idString: "box", position: Vec.create(16.74, -9.79), rotation: 0 }
+                ],
+                lootSpawners: [
+                    { table: "ground_loot", position: Vec.create(-10.68, 0) },
+                    { table: "ground_loot", position: Vec.create(10.68, 0) }
+                ]
+            };
+        });
+
         const tugboat = derive((color: string, mainLoot: string) => ({
             idString: `tugboat_${color}`,
             name: "Tugboat",
@@ -1875,6 +1924,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             container([11, "green", "closed"]),
             container([12, "yellow", "closed"]),
 
+            bigTent([1, "red"]),
+            bigTent([2, "green"]),
+            bigTent([3, "blue"]),
+            bigTent([4, "yellow"]),
             tent([1, "red"]),
             tent([2, "green"]),
             tent([3, "blue"]),
