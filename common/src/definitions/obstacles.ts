@@ -364,7 +364,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 rotationMode: props.rotationMode,
                 variations: props.variations ?? undefined,
                 hitbox: props.hitbox,
-                zIndex: ZIndexes.ObstaclesLayer5,
+                zIndex: ZIndexes.ObstaclesLayer4,
                 hasLoot: props.hasLoot ?? false,
                 allowFlyover: props.allowFlyOver ?? FlyoverPref.Sometimes
             })
@@ -3196,7 +3196,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     high: 0,
                     low: 2
                 },
-                hitbox: RectangleHitbox.fromRect(6.5, 7),
+                hitbox: RectangleHitbox.fromRect(6.5, 4),
                 frames: {
                     particle: "metal_particle"
                 },

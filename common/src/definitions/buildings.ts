@@ -4420,8 +4420,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "house_column", position: Vec.create(-33.5, -11.6), layer: 2 },
 
                     // stairs
-                    { idString: "barn_stair", position: Vec.create(9.47, -35.35), rotation: 1, layer: 1 },
-                    { idString: "barn_stair", position: Vec.create(-49.17, 0), rotation: 2, layer: 1 },
+                    { idString: "barn_stair", position: Vec.create(11, -35.35), rotation: 1, layer: 1 },
+                    { idString: "barn_stair", position: Vec.create(-49.17, -1.9), rotation: 2, layer: 1 },
 
                     // outside
                     { idString: "barrel", position: Vec.create(-31.04, 22.49) },
