@@ -361,7 +361,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
         const tent = derive((
             id: number,
             color: "red" | "green" | "blue" | "yellow" | "purple",
-            special: boolean = false
+            special = false
         ) => {
             const tint = TentTints[color];
 
