@@ -756,8 +756,23 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     width: 4,
                     alpha
                 });
-                ctx.moveTo(this.container.position.x, this.container.position.y);
-                const lineEnd = toPixiCoords(Vec.add(this.position, Vec.rotate(Vec.create(this.activeItem.length, 0), this.rotation)));
+                const offset = this.activeItem.bulletOffset ?? 0;
+
+                const start = toPixiCoords(
+                    Vec.add(
+                        this.position,
+                        Vec.rotate(Vec.create(0, offset), this.rotation)
+                    )
+                );
+
+                const lineEnd = toPixiCoords(
+                    Vec.add(
+                        this.position,
+                        Vec.rotate(Vec.create(this.activeItem.length, offset), this.rotation)
+                    )
+                );
+
+                ctx.moveTo(start.x, start.y);
                 ctx.lineTo(lineEnd.x, lineEnd.y);
                 ctx.stroke();
                 break;
