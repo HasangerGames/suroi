@@ -149,7 +149,7 @@ export const GameConstants = freezeDeep({
     protocolVersion: 26,
     gridSize: 32,
     bleedOutDPMs: 0.002, // === 2 dps
-    maxPosition: 1632,
+    maxPosition: 1924,
     player: {
         radius: 2.25,
         baseSpeed: 0.02655,

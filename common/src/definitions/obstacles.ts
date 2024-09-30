@@ -954,7 +954,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1.3,
                     destroy: 0.8
                 },
-                hitbox: new CircleHitbox(6),
+                hitbox: new CircleHitbox(5),
                 noCollisions: true,
                 rotationMode: RotationMode.Full,
                 zIndex: ZIndexes.ObstaclesLayer3,
