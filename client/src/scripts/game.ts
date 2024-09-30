@@ -311,7 +311,6 @@ export class Game {
             const particleEffect = MODE.particleEffects;
 
             if (particleEffect !== undefined) {
-                
                 this.particleManager.addEmitter(
                     {
                         delay: 30,
