@@ -7,6 +7,10 @@ export interface ModeDefinition {
     readonly reskin?: string
     // will be multiplied by the bullet trail color
     readonly bulletTrailAdjust?: string
+    readonly particleEffects?: {
+        readonly frames: string | string[]
+        readonly tint?: number
+    }
 }
 
 export interface ReskinDefinition {
@@ -51,7 +55,10 @@ export const Modes: readonly ModeDefinition[] = [
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
-        reskin: "fall"
+        reskin: "fall",
+        particleEffects: {
+            frames: ["leaf_particle_1", "leaf_particle_2", "leaf_particle_3"]
+        }
     },
     {
         idString: "winter",

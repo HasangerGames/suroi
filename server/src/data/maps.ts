@@ -1,5 +1,4 @@
 import { type WebSocket } from "uWebSockets.js";
-
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Loots } from "@common/definitions/loots";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
@@ -8,7 +7,6 @@ import { Collision } from "@common/utils/math";
 import { ItemType, MapObjectSpawnMode, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-
 import { type GunItem } from "../inventory/gunItem";
 import { GameMap } from "../map";
 import { Player, type PlayerContainer } from "../objects/player";

@@ -1,7 +1,7 @@
 import { sound, type Sound } from "@pixi/sound";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
-import { InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize } from "../../../common/src/constants";
+import { InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize, ZIndexes } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
@@ -55,6 +55,7 @@ import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
 import { loadTextures } from "./utils/pixi";
 import { Tween } from "./utils/tween";
+import { randomVector, randomFloat } from "../../../common/src/utils/random";
 
 /* eslint-disable @stylistic/indent */
 
@@ -306,6 +307,36 @@ export class Game {
 
             this.camera.addObject(this.gasRender.graphics);
             this.map.indicator.setFrame("player_indicator");
+
+            const particleEffectsEnabled = MODE.particleEffects;
+
+            if (particleEffectsEnabled !== undefined) {
+                this.particleManager.addEmitter(
+                    {
+                        delay: 10,
+                        active: true,
+                        spawnOptions: () => ({
+                            frames: particleEffectsEnabled.frames,
+                            position: randomVector(0, this.map.width, 0, this.map.height),
+                            speed: randomVector(-10, 10, -10, 10),
+                            lifetime: randomFloat(5000, 30000),
+                            zIndex: ZIndexes.ObstaclesLayer5,
+                            alpha: {
+                                start: 0.7,
+                                end: 0
+                            },
+                            rotation: {
+                                start: randomFloat(0, 36),
+                                end: randomFloat(40, 80)
+                            },
+                            scale: {
+                                start: randomFloat(0.8, 1.1),
+                                end: randomFloat(0.6, 0.8)
+                            }
+                        })
+                    }
+                );
+            }
         };
 
         // Handle incoming messages
