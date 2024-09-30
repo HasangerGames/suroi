@@ -1570,6 +1570,7 @@ export async function setUpUI(game: Game): Promise<void> {
             }
         }
     );
+    addCheckboxListener("#toggle-hide-ambient-particles", "cv_hide_ambient_particles");
 
     const { gameUi } = game.uiManager.ui;
 

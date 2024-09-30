@@ -311,10 +311,11 @@ export class Game {
             const particleEffect = MODE.particleEffects;
 
             if (particleEffect !== undefined) {
+                
                 this.particleManager.addEmitter(
                     {
                         delay: 30,
-                        active: true,
+                        active: !(this.console.getBuiltInCVar("cv_hide_ambient_particles")),
                         spawnOptions: () => ({
                             frames: particleEffect.frames,
                             position: randomVector(0, this.map.width, 0, this.map.height),
