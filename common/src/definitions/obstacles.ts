@@ -69,7 +69,6 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly indestructible: boolean
     readonly impenetrable: boolean
     readonly noHitEffect: boolean
-    readonly noCollisionAfterDestroyed?: boolean
     readonly noResidue: boolean
     readonly invisible: boolean
     readonly hideOnMap: boolean
@@ -613,7 +612,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             }
         } as const));
 
-        return [
+        return ([
             tree([{
                 name: "Oak Tree",
                 health: 180,
@@ -1790,7 +1789,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 reflectBullets: true,
                 doorSound: "metal_door",
                 indestructible: true,
-                spanAdjacentLayers: true,
+                collideWithLayers: Layers.Adjacent,
+                visibleFromLayers: Layers.All,
                 health: 500,
                 scale: {
                     spawnMin: 1,
@@ -3061,7 +3061,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 allowFlyover: FlyoverPref.Never,
                 rotationMode: RotationMode.Limited,
                 role: ObstacleSpecialRoles.Window,
-                noCollisionAfterDestroyed: true,
                 frames: {
                     particle: "window_particle"
                 }
@@ -3746,7 +3745,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     borderColor: 0xff0000
                 }
             }
-        ].map(
+        ] satisfies readonly Missing[]).map(
             o => {
                 const obj = o as Mutable<ObstacleDefinition>;
                 if (o.role !== undefined) obj[`is${ObstacleSpecialRoles[o.role] as keyof typeof ObstacleSpecialRoles}`] = true;
