@@ -944,6 +944,26 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     residue: "bush_residue"
                 }
             },
+            {
+                idString: "oak_leaf_pile",
+                name: "Oak Leaf Pile",
+                material: "bush",
+                health: 50,
+                scale: {
+                    spawnMin: 0.9,
+                    spawnMax: 1.3,
+                    destroy: 0.8
+                },
+                hitbox: new CircleHitbox(6),
+                noCollisions: true,
+                rotationMode: RotationMode.Full,
+                zIndex: ZIndexes.ObstaclesLayer3,
+                // spawnWithLoot: true,
+                frames: {
+                    particle: "leaf_particle_3",
+                    residue: "no_residue"
+                }
+            },
             crate(
                 {
                     idString: "regular_crate",
