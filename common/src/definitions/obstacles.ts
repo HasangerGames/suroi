@@ -3153,9 +3153,9 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 material: "bush",
                 health: 80,
                 scale: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.8
+                    spawnMin: 1.1,
+                    spawnMax: 1.4, // fall mode only, original 0.9, 1.1, 0.8
+                    destroy: 1
                 },
                 hitbox: new CircleHitbox(4.2),
                 noCollisions: true,

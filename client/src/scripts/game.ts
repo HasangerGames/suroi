@@ -308,19 +308,19 @@ export class Game {
             this.camera.addObject(this.gasRender.graphics);
             this.map.indicator.setFrame("player_indicator");
 
-            const particleEffectsEnabled = MODE.particleEffects;
+            const particleEffect = MODE.particleEffects;
 
-            if (particleEffectsEnabled !== undefined) {
+            if (particleEffect !== undefined) {
                 this.particleManager.addEmitter(
                     {
-                        delay: 10,
+                        delay: 30,
                         active: true,
                         spawnOptions: () => ({
-                            frames: particleEffectsEnabled.frames,
+                            frames: particleEffect.frames,
                             position: randomVector(0, this.map.width, 0, this.map.height),
                             speed: randomVector(-10, 10, -10, 10),
-                            lifetime: randomFloat(5000, 30000),
-                            zIndex: ZIndexes.ObstaclesLayer5,
+                            lifetime: randomFloat(12000, 50000),
+                            zIndex: ZIndexes.BuildingsCeiling,
                             alpha: {
                                 start: 0.7,
                                 end: 0
@@ -331,7 +331,7 @@ export class Game {
                             },
                             scale: {
                                 start: randomFloat(0.8, 1.1),
-                                end: randomFloat(0.6, 0.8)
+                                end: randomFloat(0.7, 0.8)
                             }
                         })
                     }
