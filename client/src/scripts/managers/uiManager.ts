@@ -290,14 +290,14 @@ export class UIManager {
             slot,
             () => {
                 const container = $<HTMLDivElement>(`#weapon-slot-${slot}`);
-                const inner = container.children(".main-container") as JQuery<HTMLDivElement>;
+                const inner = container.children(".main-container");
 
                 return {
                     container,
                     inner,
-                    name: inner.children(".item-name") as JQuery<HTMLSpanElement>,
-                    image: inner.children(".item-image") as JQuery<HTMLImageElement>,
-                    ammo: inner.children(".item-ammo") as JQuery<HTMLSpanElement>
+                    name: inner.children(".item-name"),
+                    image: inner.children(".item-image"),
+                    ammo: inner.children(".item-ammo")
                 };
             }
         );
