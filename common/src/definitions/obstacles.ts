@@ -8,14 +8,6 @@ import type { GunDefinition } from "./guns";
 import { type LootDefinition } from "./loots";
 import { type SyncedParticleSpawnerDefinition } from "./syncedParticles";
 
-/*
-
-    eslint-disable
-
-    @stylistic/no-multi-spaces,
-    @stylistic/key-spacing
-*/
-
 /**
  * An enum indicating the degree to which an obstacle should allow
  * throwables to sail over it.
@@ -246,7 +238,6 @@ export const MaterialSounds: Record<string, { hit?: string, destroyed?: string }
     trash_bag: { hit: "sand" }
 };
 
-/* eslint-disable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 export const TintedParticles: Record<string, { readonly base: string, readonly tint: number, readonly variants?: number }> = {
     metal_particle:               { base: "metal_particle_1", tint: 0x5f5f5f },
     super_barrel_particle:        { base: "metal_particle_1", tint: 0xce2b29 },
@@ -327,7 +318,6 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     tent_particle_4:              { base: "ceiling_particle", tint: TentWallTints.yellow },
     tent_particle_5:              { base: "ceiling_particle", tint: TentWallTints.purple }
 };
-/* eslint-enable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 
 const defaultObstacle: DeepPartial<RawObstacleDefinition> = {
     indestructible: false,
@@ -813,16 +803,20 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 material: "stone",
                 health: 850,
                 scale: {
-                    spawnMin: 0.7,
+                    spawnMin: 1,
                     spawnMax: 1.2,
                     destroy: 0.5
                 },
                 spawnMode: MapObjectSpawnMode.Grass,
-                hitbox: new CircleHitbox(12),
-                spawnHitbox: new CircleHitbox(10),
+                hitbox: new CircleHitbox(8),
+                spawnHitbox: new CircleHitbox(12),
                 rotationMode: RotationMode.Full,
                 variations: 2,
-                particleVariations: 2
+                particleVariations: 2,
+                frames: {
+                    particle: "rock_particle",
+                    residue: "rock_residue"
+                }
             },
             {
                 idString: "pumpkin",
