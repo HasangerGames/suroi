@@ -91,6 +91,7 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly noBulletCollision: boolean
     readonly reflectBullets: boolean
     readonly hitSoundVariations?: number
+    readonly noInteractMessage?: boolean
 
     readonly frames: {
         readonly base?: string
@@ -139,7 +140,6 @@ type RawObstacleDefinition = ObjectDefinition & {
         )
     ) | {
         readonly role: ObstacleSpecialRoles.Activatable
-        readonly noInteractMessage?: boolean
         readonly sound?: ({ readonly name: string } | { readonly names: string[] }) & {
             readonly maxRange?: number
             readonly falloff?: number
@@ -227,7 +227,8 @@ export const Materials = [
     "sand",
     "fence",
     "iron",
-    "piano"
+    "piano",
+    "trash_bag"
 ] as const;
 
 export const MaterialSounds: Record<string, { hit?: string, destroyed?: string }> = {
@@ -1747,6 +1748,21 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 frames: {
                     particle: "flint_stone_particle"
                 },
+                particleVariations: 2
+            },
+            {
+                idString: "hay_bale",
+                name: "Hay Bale",
+                material: "bush",
+                health: 180,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.9
+                },
+                hitbox: RectangleHitbox.fromRect(11.91, 10.2),
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Always,
                 particleVariations: 2
             },
             {
@@ -3523,7 +3539,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 health: 1000,
                 hideOnMap: true,
                 indestructible: true,
-                spanAdjacentLayers: true,
+                collideWithLayers: Layers.Adjacent,
                 reflectBullets: true,
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(1, 9, Vec.create(-45, 0.5)),

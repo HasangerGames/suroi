@@ -4501,6 +4501,11 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ),
                 floorImages: [
                     {
+                        key: "barn_floor_4",
+                        position: Vec.create(-22.5, 30),
+                        scale: Vec.create(2.14, 2.14)
+                    },
+                    {
                         key: "barn_floor_1",
                         position: Vec.create(-27.5, -10),
                         scale: Vec.create(1.07, 1.07)
@@ -4581,6 +4586,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "regular_crate", position: Vec.create(-40.5, 23.21) },
                     { idString: "ammo_crate", position: Vec.create(-7.85, 24.13) },
                     { idString: "regular_crate", position: Vec.create(39.88, 6.83) },
+                    { idString: "hay_bale", position: Vec.create(41.62, -33.27), rotation: 0 },
 
                     // inside
                     { idString: "barn_door", position: Vec.create(33.06, -4.48), rotation: 1 },
@@ -4598,6 +4604,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "box", position: Vec.create(-4.98, -36.84) },
                     { idString: "grenade_crate", position: Vec.create(-28.13, 12.05) },
                     { idString: "door", position: Vec.create(-19.78, 17.11), rotation: 2 },
+                    { idString: "hay_bale", position: Vec.create(6.22, -10.53), rotation: 2 },
+                    { idString: "box", position: Vec.create(16.55, -10.34) },
+                    { idString: "hay_bale", position: Vec.create(-15.64, -18.12), rotation: 1 },
+                    { idString: "hay_bale", position: Vec.create(-37.68, 9.15), rotation: 3 },
 
                     { idString: "house_wall_3", position: Vec.create(19.39, 10.31), rotation: 1 },
                     { idString: "house_wall_3", position: Vec.create(3.6, 10.31), rotation: 1 },
