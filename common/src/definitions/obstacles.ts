@@ -384,7 +384,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     destroy: props.scaleProps.destroy
                 },
                 spawnHitbox: props.spawnHitbox,
-                spawnMode: MapObjectSpawnMode.GrassAndSand,
+                spawnMode: MapObjectSpawnMode.Grass,
                 rotationMode: props.rotationMode,
                 variations: props.variations ?? undefined,
                 hitbox: props.hitbox,
@@ -805,6 +805,23 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 spawnHitbox: new CircleHitbox(9),
                 rotationMode: RotationMode.Full,
                 variations: 5,
+                particleVariations: 2
+            },
+            {
+                idString: "clearing_boulder",
+                name: "River Rock",
+                material: "stone",
+                health: 850,
+                scale: {
+                    spawnMin: 0.7,
+                    spawnMax: 1.2,
+                    destroy: 0.5
+                },
+                spawnMode: MapObjectSpawnMode.Grass,
+                hitbox: new CircleHitbox(12),
+                spawnHitbox: new CircleHitbox(10),
+                rotationMode: RotationMode.Full,
+                variations: 2,
                 particleVariations: 2
             },
             {
