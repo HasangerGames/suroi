@@ -230,7 +230,10 @@ const maps = {
             tent_big_2: 1,
             tent_big_3: 1,
             tent_big_4: 1,
-            porta_potty_fall: 10
+            porta_potty_fall: 10,
+            hay_shed_1: 1,
+            hay_shed_2: 2,
+            hay_shed_3: 2
         },
         majorBuildings: ["armory_damaged"],
         quadBuildingLimit: {

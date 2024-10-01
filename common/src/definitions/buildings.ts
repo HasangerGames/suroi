@@ -3,7 +3,7 @@ import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
 import { MapObjectSpawnMode, NullString, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
-import { randomSign, randomVector } from "../utils/random";
+import { randomBoolean, randomSign, randomVector } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
 import { FlyoverPref, Materials, RotationMode, type ObstacleDefinition } from "./obstacles";
@@ -409,6 +409,42 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     table: special ? "warehouse" : "ground_loot",
                     position: Vec.create(-3, 0)
                 }]
+            };
+        });
+
+        const hayShed = derive((
+            id: number,
+            ceilingVariation: number,
+            obstacles: BuildingObstacle[],
+            lootSpawners?: readonly LootSpawner[]
+        ) => {
+            return {
+                idString: `hay_shed_${id}`,
+                name: `Hay Shed ${id}`,
+                spawnHitbox: RectangleHitbox.fromRect(47, 32),
+                scopeHitbox: RectangleHitbox.fromRect(33.5, 24.5, Vec.create(-1.2, -0.5)),
+                floorImages: [{
+                    key: "fall_patch_floor",
+                    position: Vec.create(0, 0),
+                    scale: Vec.create(2.14, 2.14)
+                }],
+                ceilingImages: [{
+                    key: `hay_shed_ceiling_${ceilingVariation}`,
+                    position: Vec.create(-1, -0.5),
+                    residue: "porta_potty_residue",
+                    scale: Vec.create(2.14, 2.14)
+                }],
+                ceilingCollapseParticle: "porta_potty_fall_particle",
+                resetCeilingResidueScale: true,
+                wallsToDestroy: 2,
+                obstacles: [
+                    { idString: "pole", position: Vec.create(14.04, -11.53) },
+                    { idString: "pole", position: Vec.create(-16.68, -11.55) },
+                    { idString: "pole", position: Vec.create(-16.52, 10.83) },
+                    { idString: "pole", position: Vec.create(13.98, 10.87) },
+                    ...obstacles
+                ],
+                lootSpawners: lootSpawners ?? []
             };
         });
 
@@ -2014,6 +2050,36 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             tent([3, "blue"]),
             tent([4, "yellow"]),
             tent([5, "purple", true]),
+
+            hayShed([1, 2, [
+                { idString: "flint_crate", position: Vec.create(-1, -0.25) },
+                { idString: "barrel", position: Vec.create(0.27, -9.26) },
+                { idString: "super_barrel", position: Vec.create(-1.82, 8.8) },
+                { idString: "hay_bale", position: Vec.create(-11.5, 3), rotation: 1 },
+                { idString: "hay_bale", position: Vec.create(9.5, -3.29), rotation: 1 }
+            ]]),
+
+            hayShed([2, (randomBoolean() ? 1 : 2),
+                [
+                    { idString: "regular_crate", position: Vec.create(10.22, 4.45) },
+                    { idString: "barrel", position: Vec.create(11.56, -6.05) },
+                    { idString: "hay_bale", position: Vec.create(-11.89, 2.82), rotation: 1 },
+                    { idString: "box", position: Vec.create(-11.4, -7.28) }
+                ],
+                [{
+                    table: "ground_loot",
+                    position: Vec.create(-0.99, -1.75)
+                }]
+            ]),
+
+            hayShed([3, 1, [
+                { idString: "super_barrel", position: Vec.create(-11.56, -6.05) },
+                { idString: "hay_bale", position: Vec.create(9.5, 2.82), rotation: 1 },
+                { idString: "box", position: Vec.create(-13.03, 7.34) },
+                { idString: "box", position: Vec.create(-8.27, 2.09) },
+                { idString: "grenade_crate", position: Vec.create(8.85, -8.02) },
+                { idString: "box", position: Vec.create(-6.71, 8.27) }
+            ]]),
 
             {
                 idString: "cargo_ship_center_roof",

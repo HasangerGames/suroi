@@ -828,7 +828,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     residue: "stump_residue"
                 }
             },
-
             {
                 idString: "rock",
                 name: "Rock",
@@ -3878,6 +3877,26 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 wall: {
                     color: 0xffaa00,
                     borderColor: 0xff0000
+                }
+            },
+            {
+                idString: "pole",
+                name: "Pole",
+                material: "stone",
+                health: 150,
+                scale: {
+                    spawnMin: 0.9,
+                    spawnMax: 1.1,
+                    destroy: 0.5
+                },
+                noResidue: true,
+                role: ObstacleSpecialRoles.Wall,
+                spawnMode: MapObjectSpawnMode.GrassAndSand,
+                hitbox: new CircleHitbox(1),
+                rotationMode: RotationMode.Limited,
+                particleVariations: 2,
+                frames: {
+                    particle: "rock_particle"
                 }
             }
         ] satisfies readonly Missing[]).map(
