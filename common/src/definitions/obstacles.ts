@@ -799,7 +799,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             },
             {
                 idString: "clearing_boulder",
-                name: "River Rock",
+                name: "Clearing Boulder",
                 material: "stone",
                 health: 850,
                 scale: {
