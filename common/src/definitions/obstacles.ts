@@ -374,6 +374,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                         readonly spawnMax: number
                         readonly spawnMin: number
                     }
+                    readonly zIndex?: ZIndexes
                     readonly allowFlyOver?: FlyoverPref
                     readonly hasLoot?: boolean
                 }
@@ -387,11 +388,11 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     destroy: props.scaleProps.destroy
                 },
                 spawnHitbox: props.spawnHitbox,
-                spawnMode: MapObjectSpawnMode.GrassAndSand,
+                spawnMode: MapObjectSpawnMode.Grass,
                 rotationMode: props.rotationMode,
                 variations: props.variations ?? undefined,
                 hitbox: props.hitbox,
-                zIndex: ZIndexes.ObstaclesLayer5,
+                zIndex: props.zIndex ?? ZIndexes.ObstaclesLayer5,
                 hasLoot: props.hasLoot ?? false,
                 allowFlyover: props.allowFlyOver ?? FlyoverPref.Sometimes
             })
@@ -689,14 +690,15 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 health: 120,
                 scaleProps: {
                     spawnMin: 0.9,
-                    spawnMax: 1.4,
+                    spawnMax: 1.3,
                     destroy: 0.75
                 },
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
                 hitbox: new CircleHitbox(5.5),
                 variations: 2,
-                allowFlyOver: FlyoverPref.Never
+                allowFlyOver: FlyoverPref.Never,
+                zIndex: ZIndexes.ObstaclesLayer4
             }]),
 
             tree([{
