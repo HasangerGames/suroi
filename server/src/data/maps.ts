@@ -259,7 +259,7 @@ const maps = {
             aegis_crate: 5,
             grenade_crate: 50,
             rock: 220,
-            // clearing_boulder: 20,
+            clearing_boulder: 20,
             river_chest: 1,
             river_rock: 60,
             vibrant_bush: 200,
