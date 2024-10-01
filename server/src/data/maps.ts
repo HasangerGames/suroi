@@ -229,11 +229,13 @@ const maps = {
             tent_big_1: 1,
             tent_big_2: 1,
             tent_big_3: 1,
-            tent_big_4: 1
+            tent_big_4: 1,
+            porta_potty_fall: 10
         },
         majorBuildings: ["armory_damaged"],
         quadBuildingLimit: {
             barn: 2,
+            porta_potty_fall: 6,
             red_house: 1,
             green_house: 1,
             red_house_v2: 1,
@@ -257,7 +259,7 @@ const maps = {
             aegis_crate: 5,
             grenade_crate: 50,
             rock: 220,
-            clearing_boulder: 20,
+            // clearing_boulder: 20,
             river_chest: 1,
             river_rock: 60,
             vibrant_bush: 200,

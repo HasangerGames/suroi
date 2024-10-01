@@ -426,7 +426,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 floorImages: [{
                     key: "tent_floor_big",
                     position: Vec.create(0, 0),
-                    scale: Vec.create(1.02, 1.02),
+                    scale: Vec.create(2.04, 2.04),
                     tint: tint
                 }],
                 resetCeilingResidueScale: true,
@@ -706,6 +706,84 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     },
                     {
                         idString: "porta_potty_front_wall",
+                        position: Vec.create(-4.6, 8.66),
+                        rotation: 2
+                    }
+                ]
+            },
+            {
+                idString: "porta_potty_fall",
+                name: "Porta Potty",
+                spawnHitbox: RectangleHitbox.fromRect(20, 32),
+                scopeHitbox: RectangleHitbox.fromRect(14, 18),
+                floorImages: [
+                    {
+                        key: "porta_potty_floor_1",
+                        position: Vec.create(0, -3.8)
+                    },
+                    {
+                        key: "porta_potty_floor_2",
+                        position: Vec.create(0, 7)
+                    }
+                ],
+                ceilingImages: [
+                    {
+                        key: "porta_potty_ceiling_2",
+                        position: Vec.create(0, 0),
+                        residue: "porta_potty_residue"
+                    },
+                    {
+                        key: "porta_potty_ceiling_1",
+                        position: Vec.create(0, -4.81)
+                    },
+                    {
+                        key: "porta_potty_ceiling_2",
+                        position: Vec.create(0, 4.825)
+                    }
+                ],
+                wallsToDestroy: 2,
+                floors: [
+                    {
+                        type: FloorNames.Wood,
+                        hitbox: RectangleHitbox.fromRect(14, 18)
+                    },
+                    {
+                        type: FloorNames.Wood,
+                        hitbox: RectangleHitbox.fromRect(9.8, 3.5, Vec.create(1.5, 10.6))
+                    }
+                ],
+                obstacles: [
+                    {
+                        idString: {
+                            porta_potty_toilet_open: 0.7,
+                            porta_potty_toilet_closed: 0.3
+                        },
+                        position: Vec.create(0, -5),
+                        lootSpawnOffset: Vec.create(0, 5),
+                        rotation: 0
+                    },
+                    {
+                        idString: "porta_potty_back_wall_fall",
+                        position: Vec.create(0, -8.75),
+                        rotation: 0
+                    },
+                    {
+                        idString: "porta_potty_sink_wall_fall",
+                        position: Vec.create(-5.65, 0),
+                        rotation: 3
+                    },
+                    {
+                        idString: "porta_potty_toilet_paper_wall_fall",
+                        position: Vec.create(5.7, 0),
+                        rotation: 3
+                    },
+                    {
+                        idString: "porta_potty_door_fall",
+                        position: Vec.create(2.2, 8.8),
+                        rotation: 0
+                    },
+                    {
+                        idString: "porta_potty_front_wall_fall",
                         position: Vec.create(-4.6, 8.66),
                         rotation: 2
                     }

@@ -8,6 +8,14 @@ import type { GunDefinition } from "./guns";
 import { type LootDefinition } from "./loots";
 import { type SyncedParticleSpawnerDefinition } from "./syncedParticles";
 
+/*
+
+    eslint-disable
+
+    @stylistic/no-multi-spaces,
+    @stylistic/key-spacing
+*/
+
 /**
  * An enum indicating the degree to which an obstacle should allow
  * throwables to sail over it.
@@ -239,6 +247,7 @@ export const MaterialSounds: Record<string, { hit?: string, destroyed?: string }
     trash_bag: { hit: "sand" }
 };
 
+/* eslint-disable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 export const TintedParticles: Record<string, { readonly base: string, readonly tint: number, readonly variants?: number }> = {
     metal_particle:               { base: "metal_particle_1", tint: 0x5f5f5f },
     super_barrel_particle:        { base: "metal_particle_1", tint: 0xce2b29 },
@@ -286,7 +295,9 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     porta_potty_door_particle:    { base: "plastic_particle", tint: 0xf5f9fd },
     porta_potty_toilet_particle:  { base: "plastic_particle", tint: 0x5e5e5e },
     porta_potty_wall_particle:    { base: "plastic_particle", tint: 0x1c71d8 },
+    porta_potty_particle_fall:    { base: "plastic_particle", tint: 0x78593b },
     porta_potty_particle:         { base: "ceiling_particle", tint: 0xe7e7e7 },
+    porta_potty_fall_particle:    { base: "ceiling_particle", tint: 0x78593b },
     mobile_home_particle:         { base: "ceiling_particle", tint: 0xa8a8a8 },
     grey_office_chair_particle:   { base: "wood_particle",    tint: 0x616161 },
     office_chair_particle:        { base: "wood_particle",    tint: 0x7d2b2b },
@@ -319,6 +330,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     tent_particle_4:              { base: "ceiling_particle", tint: TentWallTints.yellow },
     tent_particle_5:              { base: "ceiling_particle", tint: TentWallTints.purple }
 };
+/* eslint-enable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 
 const defaultObstacle: DeepPartial<RawObstacleDefinition> = {
     indestructible: false,
@@ -375,7 +387,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     destroy: props.scaleProps.destroy
                 },
                 spawnHitbox: props.spawnHitbox,
-                spawnMode: MapObjectSpawnMode.Grass,
+                spawnMode: MapObjectSpawnMode.GrassAndSand,
                 rotationMode: props.rotationMode,
                 variations: props.variations ?? undefined,
                 hitbox: props.hitbox,
@@ -507,7 +519,27 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             },
             role: ObstacleSpecialRoles.Wall
         }));
-
+        /*                name: "Porta Potty Back Wall",
+                material: "wood",
+                health: 100,
+                noResidue: true,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.9
+                },
+                hideOnMap: true,
+                hitbox: RectangleHitbox.fromRect(12.8, 1.6),
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Never,
+                role: ObstacleSpecialRoles.Wall,
+                wall: {
+                    borderColor: 0x0d3565,
+                    color: 0x1c71d8
+                },
+                frames: {
+                    particle: "porta_potty_wall_particle"
+                } */
         const tentWall = derive(
             (
                 id: number,
@@ -538,6 +570,40 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 tint: TentWallTints[color],
                 role: ObstacleSpecialRoles.Wall
+            })
+        );
+
+        const portaPottyWall = derive(
+            (
+                name: string,
+                particle: string,
+                colors: {
+                    readonly borderColor: number
+                    readonly color: number
+                }
+            ) => ({
+                idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
+                name: name,
+                material: "wood",
+                health: 100,
+                noResidue: true,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.9
+                },
+                hideOnMap: true,
+                hitbox: RectangleHitbox.fromRect(12.8, 1.6),
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Never,
+                role: ObstacleSpecialRoles.Wall,
+                wall: {
+                    borderColor: colors.borderColor,
+                    color: colors.color
+                },
+                frames: {
+                    particle: particle
+                }
             })
         );
 
@@ -1490,6 +1556,22 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             bigTentWall([3, "blue"]),
             bigTentWall([4, "yellow"]),
 
+            portaPottyWall(["Porta Potty Back Wall", "porta_potty_wall_particle", {
+                color: 0x1c71d8, borderColor: 0x0d3565
+            }], { hitbox: RectangleHitbox.fromRect(12.8, 1.6) }),
+
+            portaPottyWall(["Porta Potty Front Wall", "porta_potty_wall_particle", {
+                color: 0x1c71d8, borderColor: 0x0d3565
+            }], { hitbox: RectangleHitbox.fromRect(3, 1.6) }),
+
+            portaPottyWall(["Porta Potty Back Wall Fall", "porta_potty_particle_fall", {
+                color: 0x78593b, borderColor: 0x3e2d1e
+            }], { hitbox: RectangleHitbox.fromRect(12.8, 1.6) }),
+
+            portaPottyWall(["Porta Potty Front Wall Fall", "porta_potty_particle_fall", {
+                color: 0x78593b, borderColor: 0x3e2d1e
+            }], { hitbox: RectangleHitbox.fromRect(3, 1.6) }),
+
             {
                 idString: "fridge",
                 name: "Fridge",
@@ -2331,26 +2413,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 }
             },
             {
-                idString: "porta_potty_back_wall",
-                name: "Porta Potty Back Wall",
-                material: "wood",
-                health: 100,
-                noResidue: true,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.9
-                },
-                hideOnMap: true,
-                hitbox: RectangleHitbox.fromRect(12.8, 1.6),
-                rotationMode: RotationMode.Limited,
-                allowFlyover: FlyoverPref.Never,
-                role: ObstacleSpecialRoles.Wall,
-                frames: {
-                    particle: "porta_potty_wall_particle"
-                }
-            },
-            {
                 idString: "porta_potty_door",
                 name: "Porta Potty Door",
                 material: "wood",
@@ -2369,23 +2431,25 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hingeOffset: Vec.create(-5.5, 0)
             },
             {
-                idString: "porta_potty_front_wall",
-                name: "Porta Potty Front Wall",
+                idString: "porta_potty_door_fall",
+                name: "Porta Potty Door",
                 material: "wood",
                 health: 100,
                 noResidue: true,
                 scale: {
                     spawnMin: 1,
                     spawnMax: 1,
-                    destroy: 0.9
+                    destroy: 1
                 },
                 hideOnMap: true,
-                hitbox: RectangleHitbox.fromRect(3, 1.6),
+                hitbox: RectangleHitbox.fromRect(10.5, 1.4, Vec.create(-0.8, 0)),
                 rotationMode: RotationMode.Limited,
                 allowFlyover: FlyoverPref.Never,
-                role: ObstacleSpecialRoles.Wall,
+                role: ObstacleSpecialRoles.Door,
+                hingeOffset: Vec.create(-5.5, 0),
                 frames: {
-                    particle: "porta_potty_wall_particle"
+                    base: "porta_potty_door",
+                    particle: "porta_potty_particle_fall"
                 }
             },
             {
@@ -2407,6 +2471,50 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 zIndex: ZIndexes.ObstaclesLayer2,
                 frames: {
                     particle: "porta_potty_wall_particle"
+                }
+            },
+            {
+                idString: "porta_potty_sink_wall_fall",
+                name: "Porta Potty Sink Wall",
+                material: "wood",
+                health: 100,
+                noResidue: true,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.9
+                },
+                hideOnMap: true,
+                hitbox: RectangleHitbox.fromRect(19.2, 1.9, Vec.create(0, 1.25)),
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Never,
+                role: ObstacleSpecialRoles.Wall,
+                zIndex: ZIndexes.ObstaclesLayer2,
+                frames: {
+                    base: "porta_potty_sink_wall",
+                    particle: "porta_potty_particle_fall"
+                }
+            },
+            {
+                idString: "porta_potty_toilet_paper_wall_fall",
+                name: "Porta Potty Toilet Paper Wall",
+                material: "wood",
+                health: 100,
+                noResidue: true,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.9
+                },
+                hideOnMap: true,
+                hitbox: RectangleHitbox.fromRect(19.2, 1.7, Vec.create(0, -1.15)),
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Never,
+                role: ObstacleSpecialRoles.Wall,
+                zIndex: ZIndexes.ObstaclesLayer2,
+                frames: {
+                    base: "porta_potty_toilet_paper_wall",
+                    particle: "porta_potty_particle_fall"
                 }
             },
             {
