@@ -382,13 +382,14 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     position: Vec.create(0, 0),
                     tint: tint,
                     residue: "tent_residue",
-                    scale: Vec.create(1.01, 1.07)
+                    scale: Vec.create(2.04, 2.14)
                 }],
                 floors: [{
                     type: FloorNames.Carpet,
                     hitbox: RectangleHitbox.fromRect(25, 16)
                 }],
                 ceilingCollapseParticle: `tent_particle_${id}`,
+                resetCeilingResidueScale: true,
                 destroyInnerUponCeilingCollapse: true,
                 wallsToDestroy: 1,
                 obstacles: special
