@@ -466,7 +466,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     scale: Vec.create(2.04, 2.04),
                     tint: tint
                 }],
-                resetCeilingResidueScale: true,
                 ceilingImages: [{
                     key: "tent_ceiling_big",
                     position: Vec.create(0, 0),
@@ -4862,6 +4861,100 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ]
             },
             {
+                idString: "armory_vault_damaged",
+                name: "Armory Vault",
+                material: "stone",
+                particle: "rock_particle",
+                particleVariations: 2,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(2.09, 36, Vec.create(36.03, -2)),
+                    RectangleHitbox.fromRect(2.09, 11.67, Vec.create(-13.96, -15.16)),
+                    RectangleHitbox.fromRect(13.4, 2.09, Vec.create(30.37, 16.52)),
+                    RectangleHitbox.fromRect(74.12, 2.09, Vec.create(0.01, -20.98)),
+                    RectangleHitbox.fromRect(2.09, 11.07, Vec.create(-13.96, 10.47)),
+                    RectangleHitbox.fromRect(29, 2.09, Vec.create(21.9, -6.66)),
+                    RectangleHitbox.fromRect(2.07, 37, Vec.create(-36.01, -2.5)),
+                    RectangleHitbox.fromRect(35.39, 2.09, Vec.create(-19.35, 16.52)),
+                    RectangleHitbox.fromRect(4.16, 2.09, Vec.create(10.5, 16.52))
+                ),
+                spawnHitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2)),
+                scopeHitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2)),
+                floorImages: [
+                    {
+                        key: "armory_vault_floor_1",
+                        position: Vec.create(-16.6, 0)
+                    },
+                    {
+                        key: "armory_vault_floor_2",
+                        position: Vec.create(20.2, 0)
+                    },
+                    {
+                        key: "fridge_residue",
+                        position: Vec.create(-9, -3.22),
+                        zIndex: ZIndexes.Decals,
+                        rotation: 1
+                    },
+                    {
+                        key: "window_residue",
+                        position: Vec.create(18.1, 16.5),
+                        zIndex: ZIndexes.Decals,
+                        rotation: 1.5
+                    },
+                    { key: "explosion_decal", position: Vec.create(3.8, 16.5), zIndex: ZIndexes.Decals },
+                    { key: "explosion_decal", position: Vec.create(-8, -8), zIndex: ZIndexes.Decals },
+                    { key: "ammo_crate_residue", position: Vec.create(12.85, -0.45), zIndex: ZIndexes.Decals },
+                    { key: "barrel_residue", position: Vec.create(30.7, -14), zIndex: ZIndexes.Decals },
+                    { key: "gun_case_residue", position: Vec.create(-7.5, 12.4), zIndex: ZIndexes.Decals },
+                    { key: "regular_crate_residue", position: Vec.create(-21.06, 0.29), zIndex: ZIndexes.Decals },
+                    { key: "large_refinery_barrel_residue", position: Vec.create(6.43, 7.48), scale: Vec.create(0.8, 0.8), zIndex: ZIndexes.Decals },
+                    ...Array.from(
+                        { length: 4 },
+                        (_, i) => ({
+                            key: "explosion_decal",
+                            position: Vec.create(10 + 4.75 * i, -16 - (i % 2 === 0 ? -2 : 0))
+                        })
+                    )
+                ],
+                ceilingImages: [{
+                    key: "armory_vault_ceiling",
+                    position: Vec.create(0, -2.5),
+                    scale: Vec.create(2, 2)
+                }],
+                ceilingZIndex: ZIndexes.BuildingsCeiling + 1,
+                floors: [{
+                    type: FloorNames.Wood,
+                    hitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2))
+                }],
+                subBuildings: [{
+                    idString: "armory_inner_vault",
+                    position: Vec.create(-25, -2.25)
+                }],
+                obstacles: [
+                    { idString: "gun_case", position: Vec.create(31.9, 10), rotation: 3 },
+                    { idString: "ammo_crate", position: Vec.create(29.5, -0.45), rotation: 0 },
+                    { idString: "tear_gas_crate", position: Vec.create(21.2, -0.45), rotation: 1 },
+                    { idString: "grenade_crate", position: Vec.create(-9.1, -15.9) },
+                    { idString: "briefcase", position: Vec.create(-28.93, -14.85), rotation: 2 },
+                    { idString: "barrel", position: Vec.create(-19.59, -9.22) },
+                    { idString: "barrel", position: Vec.create(-29.81, -6.01) },
+                    { idString: "box", position: Vec.create(-18.46, -16.58) },
+                    { idString: "regular_crate", position: Vec.create(-29.77, 10.54) },
+                    { idString: "box", position: Vec.create(-21.29, 12.33) },
+                    { idString: "box", position: Vec.create(-17.88, 6.72) },
+                    { idString: "armory_damaged_vault_wall", position: Vec.create(-13.9, -2.1), rotation: 1 }
+                ],
+                lootSpawners: [
+                    {
+                        position: Vec.create(12.85, -0.45),
+                        table: "ammo_crate"
+                    },
+                    {
+                        position: Vec.create(-7.5, 12.4),
+                        table: "gun_case"
+                    }
+                ]
+            },
+            {
                 idString: "armory_damaged",
                 name: "Armory (Damaged)",
                 spawnHitbox: RectangleHitbox.fromRect(160, 176),
@@ -4869,7 +4962,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 subBuildings: [
                     { idString: "armory_barracks", position: Vec.create(-41.31, 27.86) },
                     { idString: "armory_center_damaged", position: Vec.create(55.4, 15.07) },
-                    { idString: "armory_vault", position: Vec.create(-35.03, -58.37) },
+                    { idString: "armory_vault_damaged", position: Vec.create(-35.03, -58.37) },
                     { idString: "porta_potty_fall", position: Vec.create(-60.9, -65.63), orientation: 2 }
                 ],
                 groundGraphics: [
@@ -4977,6 +5070,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     ])
                 }],
                 floorImages: [
+                    { key: "barrel_residue", position: Vec.create(69.75, 42.55), zIndex: ZIndexes.Decals },
                     { key: "barrel_residue", position: Vec.create(24.36, -46.95), zIndex: ZIndexes.Decals },
                     { key: "super_barrel_residue", position: Vec.create(34.44, -55.28), zIndex: ZIndexes.Decals },
                     { key: "flint_crate_residue", position: Vec.create(33.86, -46.16), zIndex: ZIndexes.Decals },
@@ -5005,11 +5099,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "regular_crate", position: Vec.create(65.01, -56.73) },
                     { idString: "regular_crate", position: Vec.create(8.45, -66.79) },
 
-                    { idString: "barrel", position: Vec.create(-10.72, -7.93) },
-                    { idString: "barrel", position: Vec.create(9.13, 40.34) },
-                    { idString: "barrel", position: Vec.create(69.75, 42.55) },
+                    { idString: "super_barrel", position: Vec.create(-10.72, -7.93) },
+                    { idString: "super_barrel", position: Vec.create(9.13, 40.34) },
 
-                    { idString: "barrel", position: Vec.create(70.01, -72.17) },
+                    { idString: "super_barrel", position: Vec.create(70.01, -72.17) },
                     { idString: "super_barrel", position: Vec.create(44.51, 78.15), rotation: 0 },
                     { idString: "sandbags", position: Vec.create(15.15, 17.92), rotation: 0 },
                     { idString: "sandbags", position: Vec.create(-10, 78.77), rotation: 0 },

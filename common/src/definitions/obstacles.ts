@@ -2565,6 +2565,27 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             innerConcreteWall([3, RectangleHitbox.fromRect(39.14, 1.9)]),
             innerConcreteWall([4, RectangleHitbox.fromRect(47.14, 1.9)]),
             {
+                idString: "armory_damaged_vault_wall",
+                material: "stone",
+                hitbox: RectangleHitbox.fromRect(14.5, 2.05),
+                health: 500,
+                noResidue: true,
+                hideOnMap: true,
+                impenetrable: true,
+                rotationMode: RotationMode.Limited,
+                role: ObstacleSpecialRoles.Wall,
+                allowFlyover: FlyoverPref.Never,
+                particleVariations: 2,
+                frames: {
+                    particle: "rock_particle"
+                },
+                wall: {
+                    color: 0x606060,
+                    borderColor: 0x262626,
+                    rounded: true
+                }
+            },
+            {
                 idString: "small_refinery_barrel",
                 name: "Small Refinery Barrel",
                 material: "metal_light",
