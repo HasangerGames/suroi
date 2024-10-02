@@ -4568,7 +4568,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     {
                         key: "barn_top_floor_shadow",
                         position: Vec.create(0, 0),
-                        scale: Vec.create(4.25, 4.25)
+                        scale: Vec.create(8.5, 8.5)
                     }
                 ]
             },
@@ -4593,7 +4593,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ),
                 scopeHitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(20.5, 55.5, Vec.create(-19.5, 0)),
-                    RectangleHitbox.fromRect(60, 14, Vec.create(0, -21))
+                    RectangleHitbox.fromRect(61, 14, Vec.create(0, -21))
                 ),
                 floorImages: [
                     {
