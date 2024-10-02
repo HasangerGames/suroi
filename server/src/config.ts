@@ -21,9 +21,9 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "fall",
+    map: "singleBuilding:lodge",
 
-    spawn: { mode: SpawnMode.Normal },
+    spawn: { mode: SpawnMode.Center },
 
     maxTeamSize: TeamSize.Solo,
 
@@ -36,6 +36,8 @@ export const Config = {
     tps: 40,
 
     plugins: [],
+
+    disableBuildingCheck: true,
 
     roles: {
         "developr": { password: "developr", isDev: true },

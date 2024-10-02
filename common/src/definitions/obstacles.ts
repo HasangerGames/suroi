@@ -312,6 +312,8 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     planted_bushes_particle:      { base: "toilet_particle",  tint: 0xaaaaaa },
     barn_wall_particle_1:         { base: "stone_particle_1", tint: 0x690c0c },
     barn_wall_particle_2:         { base: "stone_particle_2", tint: 0x690c0c },
+    lodge_particle:               { base: "wood_particle",    tint: 0x49371d },
+    lodge_wall_particle:          { base: "wood_particle",    tint: 0x5a4320 },
 
     tent_wall_particle_red_1:     { base: "stone_particle_1", tint: TentWallTints.red },
     tent_wall_particle_red_2:     { base: "stone_particle_2", tint: TentWallTints.red },
@@ -467,6 +469,32 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 borderColor: customHealth ? 0x23282a : 0x4a4134,
                 color: customHealth ? 0x74858b : 0xafa08c,
                 ...(customHealth ? {} : { rounded: !customHealth })
+            },
+            role: ObstacleSpecialRoles.Wall
+        }));
+
+        const lodgeWall = derive((id: string, length: number) => ({
+            idString: `lodge_wall_${id}`,
+            name: "Lodge Wall",
+            material: "wood",
+            hideOnMap: true,
+            noResidue: true,
+            health: 170,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.95
+            },
+            hitbox: RectangleHitbox.fromRect(length, 2.06),
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Never,
+            frames: {
+                particle: "lodge_wall_particle"
+            },
+            wall: {
+                borderColor: 0x291e0f,
+                color: 0x5a4320,
+                rounded: true
             },
             role: ObstacleSpecialRoles.Wall
         }));
@@ -669,6 +697,22 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 residue: "gun_mount_residue"
             }
         } as const));
+
+        const kitchenUnit = derive((id: string) => ({
+            idString: `kitchen_unit_${id}`,
+            name: "Kitchen Unit",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.7
+            },
+            hideOnMap: true,
+            hasLoot: true,
+            rotationMode: RotationMode.Limited,
+            allowFlyover: FlyoverPref.Always
+        }));
 
         return ([
             tree([{
@@ -1546,6 +1590,13 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 { hitbox: RectangleHitbox.fromRect(21, 2.1) }
             ),
 
+            lodgeWall(["1", 9.15]),
+            lodgeWall(["2", 9.7]),
+            lodgeWall(["3", 15.08]),
+            lodgeWall(["4", 19.77]),
+            lodgeWall(["5", 26.15]),
+            lodgeWall(["6", 27.03]),
+
             tentWall([1, "red"]),
             tentWall([2, "green"]),
             tentWall([3, "blue"]),
@@ -2231,6 +2282,26 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hideOnMap: true,
                 hitbox: RectangleHitbox.fromRect(12, 16.6),
                 rotationMode: RotationMode.Limited,
+                frames: {
+                    particle: "furniture_particle"
+                },
+                zIndex: ZIndexes.ObstaclesLayer3,
+                noCollisions: true,
+                noResidue: true
+            },
+            {
+                idString: "round_table",
+                name: "Round Table",
+                material: "wood",
+                health: 100,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.9
+                },
+                hideOnMap: true,
+                hitbox: new CircleHitbox(6.12),
+                rotationMode: RotationMode.Full,
                 frames: {
                     particle: "furniture_particle"
                 },
@@ -3164,6 +3235,27 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             mobileHomeWall(["2"], { hitbox: RectangleHitbox.fromRect(20.6, 1.68) }),
             mobileHomeWall(["3"], { hitbox: RectangleHitbox.fromRect(20.5, 1.68) }),
             mobileHomeWall(["4"], { hitbox: RectangleHitbox.fromRect(10.65, 1.68) }),
+            kitchenUnit(["1"], {
+                hitbox: RectangleHitbox.fromRect(6.61, 6.61, Vec.create(0, -0.45)),
+                frames: {
+                    particle: "furniture_particle",
+                    residue: "small_drawer_residue"
+                }
+            }),
+            kitchenUnit(["2"], {
+                hitbox: RectangleHitbox.fromRect(6.61, 6.61),
+                frames: {
+                    particle: "furniture_particle",
+                    residue: "small_drawer_residue"
+                }
+            }),
+            kitchenUnit(["3"], {
+                hitbox: RectangleHitbox.fromRect(9.45, 6.61, Vec.create(0, -0.48)),
+                frames: {
+                    particle: "furniture_particle",
+                    residue: "sink_residue"
+                }
+            }),
             {
                 idString: "sink",
                 name: "Sink",

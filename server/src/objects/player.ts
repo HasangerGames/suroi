@@ -871,11 +871,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.updateObjects = false;
 
             const dim = player.zoom * 2 + 8;
-            this.screenHitbox = RectangleHitbox.fromRect(
-                dim,
-                dim,
-                player.position
-            );
+            this.screenHitbox = RectangleHitbox.fromRect(dim, dim, player.position);
 
             const visCache = new ExtendedMap<GameObject, boolean>();
             const newVisibleObjects = game.grid.intersectsHitbox(this.screenHitbox);

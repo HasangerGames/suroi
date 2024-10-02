@@ -693,6 +693,33 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "ammo", weight: 1 }
         ]
     },
+    kitchen_unit_1: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "healing_items", weight: 1.2 },
+            { tier: "ammo", weight: 1 },
+            { tier: "guns", weight: 0.9 }
+        ]
+    },
+    kitchen_unit_2: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "healing_items", weight: 1.2 },
+            { tier: "ammo", weight: 1 },
+            { tier: "guns", weight: 0.9 },
+            { tier: "special_guns", weight: 0.5 }
+        ]
+    },
+    kitchen_unit_3: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "healing_items", weight: 1.2 },
+            { tier: "ammo", weight: 1 }
+        ]
+    },
     sea_traffic_control_floor: {
         min: 1,
         max: 1,

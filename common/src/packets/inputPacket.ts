@@ -110,7 +110,7 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
         if (turning) {
             stream.writeRotation(data.rotation, 16);
             if (!isMobile) {
-                stream.writeFloat(data.distanceToMouse, 0, GameConstants.player.maxMouseDist, 8);
+                stream.writeFloat(data.distanceToMouse, 0, GameConstants.player.maxMouseDist, 16);
             }
         }
 
@@ -163,7 +163,7 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
         if (data.turning = stream.readBoolean()) {
             data.rotation = stream.readRotation(16);
             if (!data.isMobile) {
-                data.distanceToMouse = stream.readFloat(0, GameConstants.player.maxMouseDist, 8);
+                data.distanceToMouse = stream.readFloat(0, GameConstants.player.maxMouseDist, 16);
             }
         }
 

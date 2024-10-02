@@ -5214,6 +5214,186 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         position: Vec.create(7.06, 30.07)
                     }
                 ]
+            },
+            {
+                idString: "lodge",
+                name: "Lodge",
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(10, 10, Vec.create(235.14, 40.53)),
+                    RectangleHitbox.fromRect(2.96, 2.98, Vec.create(20.05, 57.73)),
+                    RectangleHitbox.fromRect(2.96, 2.98, Vec.create(-2.67, -4.07)),
+                    RectangleHitbox.fromRect(2.96, 2.98, Vec.create(-14.9, 15.4)),
+                    RectangleHitbox.fromRect(2.96, 2.98, Vec.create(9.45, 15.38)),
+                    RectangleHitbox.fromRect(2.96, 2.98, Vec.create(47, -59.24)),
+                    RectangleHitbox.fromRect(2.96, 2.98, Vec.create(-47.09, 33.64)),
+                    RectangleHitbox.fromRect(2.96, 2.98, Vec.create(-47.09, 57.73)),
+                    RectangleHitbox.fromRect(2.96, 2.98, Vec.create(-26.2, 57.73)),
+                    RectangleHitbox.fromRect(2.96, 2.98, Vec.create(-3.08, 57.73)),
+                    RectangleHitbox.fromRect(45.05, 1.55, Vec.create(-3.17, 57.76)),
+                    RectangleHitbox.fromRect(1.89, 10.18, Vec.create(48.1, 36.23)),
+                    RectangleHitbox.fromRect(1.92, 21.1, Vec.create(-26.44, -49.7)),
+                    RectangleHitbox.fromRect(41.7, 1.89, Vec.create(28.2, 41.01)),
+                    RectangleHitbox.fromRect(2.96, 2.98, Vec.create(-8.41, -21.93)),
+                    RectangleHitbox.fromRect(1.91, 38.19, Vec.create(21.04, -25.91)),
+                    RectangleHitbox.fromRect(8.53, 1.89, Vec.create(17.73, -60.3)),
+                    RectangleHitbox.fromRect(1.9, 4.8, Vec.create(21.04, -57.5)),
+                    RectangleHitbox.fromRect(1.91, 26.33, Vec.create(-48.17, 18.65)),
+                    RectangleHitbox.fromRect(1.91, 35.26, Vec.create(48.12, 2.77)),
+                    RectangleHitbox.fromRect(1.91, 38.99, Vec.create(-48.18, -24.78)),
+                    RectangleHitbox.fromRect(26.19, 1.89, Vec.create(34.76, -35.84)),
+                    RectangleHitbox.fromRect(12.04, 1.28, Vec.create(-32.61, 20.51)),
+                    RectangleHitbox.fromRect(35.43, 1.89, Vec.create(-14.83, -60.26)),
+                    RectangleHitbox.fromRect(1.9, 6.28, Vec.create(-48.15, -58.09)),
+                    RectangleHitbox.fromRect(1.91, 33.42, Vec.create(21.04, 23.84)),
+                    RectangleHitbox.fromRect(5.25, 1.89, Vec.create(-45.28, -60.29)),
+                    RectangleHitbox.fromRect(1.9, 11.11, Vec.create(48.1, -31.23)),
+                    RectangleHitbox.fromRect(1.24, 12.93, Vec.create(-38.53, 14.66)),
+                    RectangleHitbox.fromRect(14.65, 1.89, Vec.create(-20.12, 41.02)),
+                    RectangleHitbox.fromRect(1.92, 33.2, Vec.create(-26.48, 23.74)),
+                    RectangleHitbox.fromRect(21.08, 1.89, Vec.create(-37.59, 30.88))
+                ),
+                material: "stone",
+                spawnHitbox: RectangleHitbox.fromRect(200, 200),
+                floors: [
+                    {
+                        type: FloorNames.Wood,
+                        hitbox: new GroupHitbox(
+                            RectangleHitbox.fromRect(11.7, 11.48, Vec.create(29.52, -61.28)),
+                            RectangleHitbox.fromRect(98.21, 103.21, Vec.create(-0.05, -9.65)),
+                            RectangleHitbox.fromRect(71.22, 18.04, Vec.create(-13.5, 50.74)),
+                            RectangleHitbox.fromRect(10.25, 11.48, Vec.create(24.33, 48.98)),
+                            RectangleHitbox.fromRect(14.46, 11.48, Vec.create(-36.61, 61.35))
+                        )
+                    },
+                    {
+                        type: FloorNames.Stone,
+                        hitbox: RectangleHitbox.fromRect(10.36, 5.23, Vec.create(-37.56, -63.2))
+                    }
+                ],
+                floorImages: [
+                    {
+                        key: "lodge_floor",
+                        position: Vec.create(0, 0)
+                    }
+                ],
+                obstacles: [
+                    //
+                    // windows & doors (placed clockwise)
+                    //
+
+                    // windows
+                    { idString: "window", position: Vec.create(-48.18, 0.04), rotation: 0 },
+                    { idString: "window", position: Vec.create(-48.2, -49.57), rotation: 0 },
+                    { idString: "window", position: Vec.create(8.08, -60.36), rotation: 1 },
+                    { idString: "window", position: Vec.create(48.2, -20.34), rotation: 0 },
+                    { idString: "window", position: Vec.create(48.19, 25.82), rotation: 0 },
+
+                    // outside doors
+                    { idString: "door", position: Vec.create(-37.14, -60.32), rotation: 0 },
+                    { idString: "door", position: Vec.create(21.05, -50.48), rotation: 1 },
+                    { idString: "door", position: Vec.create(1.86, 41), rotation: 2 },
+                    { idString: "door", position: Vec.create(-7.3, 41), rotation: 0 },
+
+                    // inside doors
+                    { idString: "door", position: Vec.create(-26.44, 2.61), rotation: 3 },
+                    { idString: "door", position: Vec.create(-32.98, -27.69), rotation: 2 },
+                    { idString: "door", position: Vec.create(-26.41, -33.66), rotation: 3 },
+                    { idString: "door", position: Vec.create(27.5, -7.78), rotation: 0 },
+                    { idString: "door", position: Vec.create(33.13, 6.82), rotation: 1 },
+                    { idString: "door", position: Vec.create(27.5, 13.49), rotation: 0 },
+
+                    //
+                    // walls
+                    //
+
+                    // front entrance
+                    { idString: "lodge_wall_1", position: Vec.create(15.5, 15.4), rotation: 0 },
+                    { idString: "lodge_wall_1", position: Vec.create(-20.92, 15.4), rotation: 0 },
+
+                    // bathroom
+                    { idString: "lodge_wall_3", position: Vec.create(39.67, -7.79), rotation: 0 },
+                    { idString: "lodge_wall_3", position: Vec.create(39.67, 13.39), rotation: 0 },
+                    { idString: "lodge_wall_1", position: Vec.create(33.11, -2.38), rotation: 1 },
+
+                    // laundry room
+                    { idString: "lodge_wall_4", position: Vec.create(-37.33, -9.94), rotation: 0 },
+                    { idString: "lodge_wall_5", position: Vec.create(-26.45, -16), rotation: 1 },
+                    { idString: "lodge_wall_5", position: Vec.create(-26.45, -16), rotation: 1 },
+                    { idString: "lodge_wall_2", position: Vec.create(-42.47, -27.75), rotation: 0 },
+
+                    // between dining table and couch
+                    { idString: "lodge_wall_6", position: Vec.create(6.58, -21.93), rotation: 0 },
+
+
+                    //
+                    // obstacles
+                    //
+
+                    // front porch
+                    { idString: "barrel", position: Vec.create(-32.09, 36.35) },
+                    { idString: "trash_bag", position: Vec.create(-38.97, 41.27), rotation: 0 },
+                    { idString: "box", position: Vec.create(-42.36, 35.52) },
+
+                    // front entrance
+                    { idString: "red_small_couch", position: Vec.create(-21.2, 21.81), rotation: 1 },
+                    { idString: "red_small_couch", position: Vec.create(15.77, 21.7), rotation: 3 },
+                    { idString: "large_drawer", position: Vec.create(-21.38, 33.19), rotation: 1 },
+                    { idString: "bookshelf", position: Vec.create(17.37, 33.09), rotation: 1 },
+
+                    // living room/main area
+                    { idString: "small_table", position: Vec.create(5.5, -5.08), rotation: 1 },
+                    { idString: "couch_end_left", position: Vec.create(-1.54, -16.37), rotation: 3 },
+                    { idString: "couch_part", position: Vec.create(5.4, -16.69), rotation: 3 },
+                    { idString: "couch_end_right", position: Vec.create(12.44, -16.36), rotation: 0 },
+                    { idString: "small_drawer", position: Vec.create(16.24, 10.36), rotation: 2 },
+                    { idString: "potted_plant", position: Vec.create(-21.04, 10.09) },
+                    { idString: "bookshelf", position: Vec.create(-22.83, -18.2), rotation: 1 },
+
+                    // big bedroom
+                    { idString: "bed", position: Vec.create(30.33, -28.95), rotation: 1 },
+                    { idString: "small_drawer", position: Vec.create(43.56, -30.85), rotation: 0 },
+                    { idString: "bookshelf", position: Vec.create(40.54, -11.34), rotation: 0 },
+
+                    // small bedroom
+                    { idString: "small_bed", position: Vec.create(30.64, 35.92), rotation: 1 },
+                    { idString: "potted_plant", position: Vec.create(43.19, 35.93) },
+                    { idString: "bookshelf", position: Vec.create(40.58, 16.84), rotation: 0 },
+
+                    // bathroom
+                    { idString: "toilet", position: Vec.create(40.76, -2.19), rotation: 0 },
+
+                    // stairs area
+                    { idString: "bookshelf", position: Vec.create(-34.05, -6.26), rotation: 0 },
+                    { idString: "box", position: Vec.create(-30.42, 16.73) },
+
+                    // laundry room
+                    { idString: "trash_can", position: Vec.create(-44.02, -14.19), rotation: 0 },
+                    { idString: "washing_machine", position: Vec.create(-43.47, -21.73), rotation: 1 },
+
+                    // room above laundry room
+                    { idString: "red_small_couch", position: Vec.create(-43.33, -33.69), rotation: 1 },
+                    { idString: "box", position: Vec.create(-44.24, -40.98) },
+                    { idString: "bookshelf", position: Vec.create(-29.82, -52.62), rotation: 1 },
+
+                    // kitchen + dining room
+                    { idString: "kitchen_unit_1", position: Vec.create(-21.78, -49.79), rotation: 1 },
+                    { idString: "kitchen_unit_3", position: Vec.create(-14.56, -55.59), rotation: 0 },
+                    { idString: "kitchen_unit_2", position: Vec.create(-22.21, -56.1), rotation: 0 },
+                    { idString: "fridge", position: Vec.create(-5.09, -55.81), rotation: 0 },
+                    { idString: "small_stove", position: Vec.create(-21.74, -42.92), rotation: 1 },
+                    { idString: "large_table", position: Vec.create(6.81, -31.59), rotation: 0 },
+                    { idString: "chair", position: Vec.create(6.92, -40.01), rotation: 2 },
+                    { idString: "chair", position: Vec.create(13.81, -34.49), rotation: 1 },
+                    { idString: "chair", position: Vec.create(13.81, -27.38), rotation: 1 },
+                    { idString: "chair", position: Vec.create(0.13, -34.49), rotation: 3 },
+                    { idString: "chair", position: Vec.create(0.13, -27.38), rotation: 3 },
+
+                    // back porch
+                    { idString: "round_table", position: Vec.create(41.47, -47.84) },
+                    { idString: "chair", position: Vec.create(41.52, -41.77), rotation: 0 },
+                    { idString: "chair", position: Vec.create(41.52, -53.97), rotation: 2 },
+                    { idString: "potted_plant", position: Vec.create(26.66, -41.09), rotation: 0 },
+                ]
             }
         ];
     }

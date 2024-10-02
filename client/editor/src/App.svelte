@@ -305,7 +305,7 @@
 
     main {
         display: flex;
-        background-color: $bg;
+        background-color: #49993e;
         color: white;
     }
 
