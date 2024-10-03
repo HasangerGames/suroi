@@ -2638,7 +2638,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             {
                 idString: "armory_damaged_vault_wall",
                 material: "stone",
-                hitbox: RectangleHitbox.fromRect(14.5, 2.05),
+                hitbox: RectangleHitbox.fromRect(14.5, 2.04),
                 health: 500,
                 noResidue: true,
                 hideOnMap: true,

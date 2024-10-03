@@ -4799,10 +4799,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         key: "armory_center_floor_2",
                         position: Vec.create(0, 11.5)
                     },
-                    {
+                    /* {
                         key: "window_residue",
                         position: Vec.create(-13.9, 7.1)
-                    },
+                    }, */
                     {
                         key: "chair_residue",
                         rotation: 3,
@@ -4847,7 +4847,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 obstacles: [
                     { idString: "chair", position: Vec.create(10.1, 6), rotation: 0 },
                     { idString: "gun_mount_maul", position: Vec.create(2, 19.05), rotation: 2 },
-                    { idString: "trash_can", position: Vec.create(12, 17.5) }
+                    { idString: "trash_can", position: Vec.create(12, 17.5) },
+                    { idString: "window", position: Vec.create(-13.9, 7.1), rotation: 0 }
                 ],
                 lootSpawners: [
                     {
@@ -4894,12 +4895,12 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         zIndex: ZIndexes.Decals,
                         rotation: 1
                     },
-                    {
+                    /*  {
                         key: "window_residue",
                         position: Vec.create(18.1, 16.5),
                         zIndex: ZIndexes.Decals,
                         rotation: 1.5
-                    },
+                    }, */
                     { key: "explosion_decal", position: Vec.create(3.8, 16.5), zIndex: ZIndexes.Decals },
                     { key: "explosion_decal", position: Vec.create(-8, -8), zIndex: ZIndexes.Decals },
                     { key: "ammo_crate_residue", position: Vec.create(12.85, -0.45), zIndex: ZIndexes.Decals },
@@ -4937,6 +4938,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "briefcase", position: Vec.create(-28.93, -14.85), rotation: 2 },
                     { idString: "barrel", position: Vec.create(-19.59, -9.22) },
                     { idString: "barrel", position: Vec.create(-29.81, -6.01) },
+                    { idString: "window", position: Vec.create(18.1, 16.5), rotation: 1 },
                     { idString: "box", position: Vec.create(-18.46, -16.58) },
                     { idString: "regular_crate", position: Vec.create(-29.77, 10.54) },
                     { idString: "box", position: Vec.create(-21.29, 12.33) },
@@ -5324,7 +5326,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // between dining table and couch
                     { idString: "lodge_wall_6", position: Vec.create(6.58, -21.93), rotation: 0 },
 
-
                     //
                     // obstacles
                     //
@@ -5392,7 +5393,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "round_table", position: Vec.create(41.47, -47.84) },
                     { idString: "chair", position: Vec.create(41.52, -41.77), rotation: 0 },
                     { idString: "chair", position: Vec.create(41.52, -53.97), rotation: 2 },
-                    { idString: "potted_plant", position: Vec.create(26.66, -41.09), rotation: 0 },
+                    { idString: "potted_plant", position: Vec.create(26.66, -41.09), rotation: 0 }
                 ]
             }
         ];
