@@ -1,0 +1,366 @@
+import type { TranslationMap } from "../translations";
+
+export const KOREAN_TRANSLATIONS: TranslationMap = {
+    "name": "한국어",
+    "flag": "🇰🇷",
+
+    "msg_rotate": "더 나은 플레이 경험을 위해 기기를 가로 모드로 전환하세요.",
+    "msg_loading": "연결 중",
+    "msg_err_joining": "게임 참가 오류.",
+    "msg_err_finding": "게임 찾기 오류.",
+    "msg_spectating": "관전 중",
+    "msg_enter_team_code": "팀 코드를 입력하세요:",
+    "msg_lost_team_connection": "팀과의 연결이 끊어졌습니다.",
+    "msg_error_joining_team": "팀 참가 오류.<br>존재하지 않거나 가득 찼을 수 있습니다.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
+    "msg_try_again": "다시 시도해 주세요.",
+    "msg_warning": "경고를 받았습니다!",
+    "msg_warning_msg": "관리자가 다음과 같은 사유로 경고를 발부했습니다: <reason>",
+    "msg_temp_ban": "일시적으로 차단되었습니다!",
+    "msg_temp_ban_msg": "다음과 같은 사유로 차단되었습니다: <reason>",
+    "msg_perma_ban": "영구적으로 차단되었습니다!",
+    "msg_perma_ban_msg": "다음과 같은 사유로 영구적으로 차단되었습니다: <reason>",
+    "msg_no_reason": "사유가 제공되지 않았습니다.",
+
+    "play_solo": "솔로 플레이",
+    "play_duo": "듀오 플레이",
+    "play_squad": "스쿼드 플레이",
+    "join_team": "팀 참가",
+    "msg_locked_tooltip": "플레이어가 충분하지 않으므로 게임 모드는 24시간마다 전환됩니다.",
+    "rules_and_tutorial": "규칙 및 튜토리얼",
+    "news": "소식",
+    "loadout": "장비",
+    "settings": "설정",
+    "fullscreen": "전체 화면",
+    "resume": "다시 시작",
+    "quit": "종료",
+    "none": "없음",
+    "copy": "복사",
+    "copied": "복사됨",
+
+    "health": "체력",
+    "adrenaline": "아드레날린",
+
+    "settings_volume": "볼륨",
+    "settings_keybinds": "키 설정",
+    "settings_graphics": "그래픽",
+    "settings_interface": "인터페이스",
+    "settings_save_load": "저장/불러오기",
+    "settings_mobile": "모바일",
+    "settings_require_reload": "* 이 설정을 변경하려면 페이지를 새로 고쳐야 합니다.",
+    "settings_performance_warning": "* 이 설정은 일부 장치에서 문제를 일으킬 수 있습니다. 게임에 참가할 수 없을 경우 비활성화하세요.",
+
+    "settings_master_volume": "마스터 볼륨",
+    "settings_sfx_volume": "효과음 볼륨",
+    "settings_music_volume": "음악 볼륨",
+    "settings_old_menu_music": "이전 메뉴 음악",
+
+    "settings_render_mode": "렌더링 모드",
+    "settings_render_resolution": "렌더링 해상도",
+    "settings_render_resolution_auto": "자동",
+    "settings_hires_textures": "고해상도 텍스처",
+    "settings_cooler_graphics": "향상된 그래픽",
+    "settings_antialias": "안티에일리어싱",
+    "settings_movement_smoothing": "부드러운 이동",
+    "settings_responsive_rotation": "빠른 회전",
+    "settings_camera_shake": "카메라 흔들림",
+
+    "settings_interface_scale": "인터페이스 크기",
+    "settings_minimap_opacity": "미니맵 투명도",
+    "settings_fs_map_opacity": "전체 맵 투명도",
+    "settings_hide_minimap": "미니맵 숨기기",
+    "settings_blur_splash": "스플래시 화면 흐리게",
+    "settings_hide_rules": "규칙 버튼 숨기기",
+    "settings_warn_before_leaving": "나가기 전 경고",
+    "settings_show_fps": "FPS 표시",
+    "settings_show_ping": "핑 표시",
+    "settings_show_coordinates": "좌표 표시",
+    "settings_anon_names": "플레이어 이름 익명으로 표시",
+    "settings_hide_emotes": "이모트 숨기기",
+    "settings_text_killfeed": "킬로그 텍스트로 표시",
+    "settings_colored_weapon_slots": "무기 슬롯 색상",
+    "settings_scope_looping": "배율 ",
+    "settings_draw_hud": "HUD 표시",
+    "settings_autopickup": "자동으로 줍기",
+    "settings_autopickup_dual_guns": "듀얼 총 자동으로 줍기",
+
+    "settings_load_settings": "설정 불러오기",
+    "settings_copy_settings": "설정 복사",
+    "settings_reset_settings": "설정 초기화",
+
+    "settings_reload": "설정 리로드",
+    "settings_mobile_controls": "모바일 컨트롤러 활성화",
+    "settings_joystick_size": "조이스틱 크기",
+    "settings_joystick_opacity": "조이스틱 투명도",
+
+    "loadout_skins": "스킨",
+    "loadout_emotes": "이모티콘",
+    "loadout_crosshairs": "조준점",
+    "loadout_badges": "배지",
+    "loadout_special": "스페셜",
+    "loadout_crosshairs_default": "시스템 기본값",
+    "loadout_crosshairs_size": "크기:",
+    "loadout_crosshairs_color": "색상:",
+    "loadout_crosshairs_stroke_size": "윤곽선 크기:",
+    "loadout_crosshairs_stroke_color": "윤곽선 색상:",
+
+    "emotes_category_People": "사람",
+    "emotes_category_Text": "텍스트",
+    "emotes_category_Memes": "밈",
+    "emotes_category_Icons": "아이콘",
+    "emotes_category_Misc": "기타",
+
+    "featured_youtubr": "추천 유튜버",
+    "featured_streamr": "추천 스트리머",
+
+    "btn_report": "신고",
+    "btn_spectate_kill_leader": "킬 리더 관전하기",
+    "btn_spectate": "관전하기",
+    "btn_play_again": "다시 플레이",
+    "btn_menu": "메뉴",
+
+    "msg_waiting_for_leader": "리더를 기다리는 중",
+    "msg_you_died": "사망했습니다.",
+    "msg_player_died": "<player> 사망.",
+    "msg_win": "승리! 오늘 저녁은 치킨이다!",
+    "msg_your_rank": "순위",
+
+    "msg_kills": "킬 수: <kills>",
+
+    "msg_not_enough_space": "공간이 부족합니다!",
+    "msg_item_already_equipped": "아이템이 이미 장착되어 있습니다!",
+    "msg_better_item_equipped": "더 좋은 아이템을 장착하고 있습니다!",
+    "msg_cannot_use_radio": "건물 내에서는 라디오를 사용할 수 없습니다!",
+
+    "gas_waiting": "독가스가 <time>에 출발합니다",
+    "gas_advancing": "독가스 접근 중! 안전 구역으로 이동하세요",
+    "gas_inactive": "플레이어를 기다리는 중...",
+
+    "action_open_door": "문 열기",
+    "action_close_door": "문 닫기",
+    "action_revive": "<player> 되살리기",
+    "action_cancel": "취소",
+    "action_reloading": "재장전 중...",
+    "action_reviving": "되살리는 중...",
+    "action_being_revived": "되살려지는 중...",
+    "action_gauze_use": "<item> 감는 중",
+    "action_medikit_use": "<item> 사용 중",
+    "action_cola_use": "<item> 마시는 중",
+    "action_tablets_use": "<item> 사용 중",
+
+    "interact_airdrop_crate_locked": "보급 열기",
+    "interact_control_panel": "컨트롤 패널 활성화",
+    "interact_headquarters_security_desk": "컨트롤 패널 활성화",
+    "interact_generator": "발전기 활성화",
+    "interact_button": "버튼 누르기",
+    "interact_speaker": "스피커 재생",
+
+    "loading_spritesheets": "오브젝트 이미지 로드 중 <progress>",
+    "loading_connecting": "연결 중",
+    "loading_joining_game": "게임 참가 중",
+    "loading_fetching_data": "서버 데이터 불러오는 중...",
+    "loading_finding_game": "게임 찾는 중",
+
+    "keybind_clear_tooltip": "단축키를 제거하려면 단축키를 누른 다음 <kbd>Escape</kbd> 또는 <kbd>Backspace</kbd>를 누르세요.",
+    "keybind_reset": "기본값으로 재설정",
+    "bindings_+up": "위로 이동",
+    "bindings_+down": "아래로 이동",
+    "bindings_+left": "왼쪽으로 이동",
+    "bindings_+right": "오른쪽으로 이동",
+    "bindings_interact": "상호작용",
+    "bindings_loot": "전리품 획득",
+    "bindings_slot 0": "첫 번째 무기 들기",
+    "bindings_slot 1": "두 번째 무기 들기",
+    "bindings_slot 2": "근접 무기 들기",
+    "bindings_equip_or_cycle_throwables 1": "투척 무기 들기/바꾸기",
+    "bindings_last_item": "마지막 무기 들기",
+    "bindings_other_weapon": "다른 총 들기",
+    "bindings_swap_gun_slots": "총 슬롯 교체",
+    "bindings_cycle_items -1": "이전 무기 들기",
+    "bindings_cycle_items 1": "다음 무기 들기",
+    "bindings_+attack": "무기 사용",
+    "bindings_drop": "무기 버리기",
+    "bindings_reload": "재장전",
+    "bindings_explode_c4": "C4 폭파",
+    "bindings_cycle_scopes -1": "이전 배율",
+    "bindings_cycle_scopes 1": "다음 배율",
+    "bindings_use_consumable gauze": "붕대 사용",
+    "bindings_use_consumable medikit": "구급상자 사용",
+    "bindings_use_consumable cola": "콜라 사용",
+    "bindings_use_consumable tablets": "알약 사용",
+    "bindings_cancel_action": "행동 취소",
+    "bindings_+view_map": "맵 보기",
+    "bindings_toggle_map": "전체 맵 전환",
+    "bindings_toggle_minimap": "미니맵 전환",
+    "bindings_toggle_hud": "HUD 전환",
+    "bindings_+emote_wheel": "이모트",
+    "bindings_+map_ping_wheel": "맵 핑 전환",
+    "bindings_+map_ping": "맵 핑",
+    "bindings_toggle_console": "콘솔 열기",
+    "bindings_toggle_slot_lock": "슬롯 잠금",
+
+    "kf_suicide_kill": "<player>이(가) 스스로 목숨을 끊었습니다.",
+    "kf_suicide_down": "<player>이(가) 스스로 기절했습니다.",
+
+    "kf_bleed_out_kill": "<player>이(가) 출혈로 사망했습니다.",
+    "kf_bleed_out_down": "<player>이(가) 출혈로 기절했습니다.",
+
+    "kf_finished_off_kill": "<player>이(가) <victim>을(를) 처치했습니다.",
+    "kf_finished_off_down": "<player>이(가) <victim>을(를) 기절시켰습니다.",
+
+    "kf_finally_died": "<player>이(가) 결국 사망했습니다.",
+    "kf_finally_ended_themselves": "<player>이(가) 결국 스스로 목숨을 끊었습니다.",
+
+    "kf_finally_killed": "<player>이(가) 결국 사망했습니다.",
+    "kf_finally_down": "<player>이(가) 결국 기절했습니다.",
+
+    "kf_gas_kill": "<player>이(가) 독가스에 의해 사망했습니다.",
+    "kf_gas_down": "<player>이(가) 독가스에 의해 기절했습니다.",
+
+    "kf_airdrop_kill": "<player>이(가) 보급품에 깔려 사망했습니다.",
+    "kf_airdrop_down": "<player>이(가) 보급품에 깔려 기절했습니다.",
+
+    // ------------------------------------------------------------------
+    "finally": "결국",
+    "with": "with",
+
+    // Kill modal only
+    "you": "당신은",
+    "yourself": "스스로",
+    "km_killed": "처치했습니다",
+    "km_knocked": "기절시켰습니다",
+
+    "km_message": "<you> <finally> <event> <victim> <with> <weapon>",
+
+    // Killfeed.
+    "kf_killed": "처치",
+    "kf_knocked": "기절",
+    "kf_finished_off": "처치했습니다",
+    "themselves": "기절시켰습니다",
+
+    "kf_message": "<player> <finally> <event> <victim> <with> <weapon>",
+    // ------------------------------------------------------------------
+
+    // Kill Leader stuff
+    "kf_kl_promotion": "<player>이(가) 킬 리더가 되었습니다!",
+    "kf_kl_killed": "<player>이(가) 킬 리더를 처치했습니다.",
+    "kf_kl_dead": "킬 리더가 사망했습니다!",
+    "kf_kl_suicide": "킬 리더가 스스로 목숨을 끊었습니다!",
+
+    "tt_restores": "<item> <type>을 <amount>만큼 회복",
+    "tt_reduces": "<item> 피해량 <percent>% 감소",
+
+    "go_kills": "처치 수:",
+    "go_damage_done": "입힌 피해:",
+    "go_damage_taken": "받은 피해:",
+    "go_time_alive": "생존 시간:",
+
+    "create_team": "팀 생성",
+    "create_team_autofill": "자동 채우기",
+    "create_team_lock": "팀 잠금",
+    "create_team_waiting": "대기 중...",
+    "create_team_play": "게임 시작",
+
+    "report_reporting": "신고 중",
+    "report_id": "신고 ID:",
+    "report_instructions": `
+      <p><strong>아래 지침을 꼭 따라주세요!</strong> 그렇지 않으면 신고가 무시될 수 있습니다.</p>
+      <h4>신고 제출 방법</h4>
+      <ol>
+        <li><a href="https://discord.suroi.io">Discord 서버</a>에 참가하세요.</li>
+        <li><a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports 채널</a>로 이동하세요.</li>
+        <li>고정된 포스트에 있는 신고 가이드를 읽으세요.</li>
+        <li>신고 포스트를 생성하세요.</li>
+      </ol>`,
+
+    "languages": "언어",
+
+    // loot
+
+    "gauze": "붕대",
+    "medikit": "구급상자",
+    "cola": "콜라",
+    "tablets": "알약",
+
+    "basic_vest": "기본 조끼",
+    "regular_vest": "일반 조끼",
+    "tactical_vest": "전술 조끼",
+    "basic_helmet": "기본 헬멧",
+    "regular_helmet": "일반 헬멧",
+    "tactical_helmet": "전술 헬멧",
+    "bag": "가방", // This shouldn't show up in game
+    "basic_pack": "기본 가방",
+    "regular_pack": "일반 가방",
+    "tactical_pack": "전술 가방",
+
+    "1x_scope": "1x 배율", // This shouldn't show up in game
+    "2x_scope": "2x 배율",
+    "4x_scope": "4x 배율",
+    "8x_scope": "8x 배율",
+    "15x_scope": "15x 배율",
+
+    "fists": "주먹",
+    "baseball_bat": "야구 방망이",
+    "hatchet": "손도끼",
+    "kbar": "K-bar",
+    "maul": "양손 망치",
+    "gas_can": "가스통",
+    "heap_sword": "광선검",
+    "steelfang": "steelfang",
+    "ice_pick": "얼음 송곳",
+    "seax": "seax",
+    "crowbar": "쇠지렛대",
+    "sickle": "낫",
+
+    "mosin_nagant": "모신 나강",
+    "radio": "라디오",
+    "lewis_gun": "루이스 경기관총",
+    "hp18": "HP-18",
+    "acr": "ACR",
+    "saf200": "SAF-200",
+    "death_ray": "죽음의 광선",
+    "usas12": "USAS-12",
+    "firework_launcher": "폭죽 발사기",
+    "destroyer_of_worlds": "세상의 파괴자",
+    "revitalizer": "리바이탈라이저",
+    "g17_scoped": "G17",
+    "vss": "VSS",
+    "aug": "AUG",
+    "pp19": "PP-19",
+    "vepr12": "Vepr-12",
+    "flues": "Flues",
+    "cz75a": "CZ-75A",
+    "g19": "G19",
+    "mp40": "MP40",
+    "m1895": "M1895",
+    "ak47": "AK-47",
+    "vector": "벡터",
+    "mini14": "미니-14",
+    "model_37": "Model 37",
+    "model_89": "Model 89",
+    "negev": "네게브 기관총",
+    "sr25": "SR-25",
+    "tango_51": "Tango 51",
+    "barrett_m95": "barrett M95",
+    "stoner_63": "스토너 63",
+    "m1_garand": "M1 개런드",
+    "micro_uzi": "마이크로 UZI",
+    "m3k": "M3K",
+    "arx160": "ARX-160",
+    "m16a4": "M16A4",
+    "mg36": "MG-36",
+    "mcx_spear": "MCX 스피어",
+
+    "frag_grenade": "수류탄",
+    "smoke_grenade": "연막탄",
+    "confetti_grenade": "색종이 수류탄",
+
+    // For dual guns
+    "dual_template": "듀얼 <gun>",
+
+    // regions
+    "region_dev": "로컬 서버",
+    "region_na": "북미",
+    "region_eu": "유럽",
+    "region_sa": "남미",
+    "region_as": "아시아"
+};
