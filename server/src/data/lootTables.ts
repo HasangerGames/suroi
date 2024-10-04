@@ -469,6 +469,13 @@ export const LootTables: Record<string, LootTable> = {
             { item: "hp18", weight: 1 }
         ]
     },
+    gun_mount_m590m: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "m590m", weight: 1 }
+        ]
+    },
     gas_can: {
         min: 1,
         max: 1,
@@ -691,6 +698,15 @@ export const LootTables: Record<string, LootTable> = {
         loot: [
             { tier: "healing_items", weight: 1.2 },
             { tier: "ammo", weight: 1 }
+        ]
+    },
+    sink2: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "healing_items", weight: 1.2 },
+            { tier: "ammo", weight: 1 },
+            { tier: "guns", weight: 0.8 }
         ]
     },
     kitchen_unit_1: {

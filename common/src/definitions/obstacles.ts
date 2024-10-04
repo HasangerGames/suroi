@@ -1592,10 +1592,32 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
 
             lodgeWall(["1", 9.15]),
             lodgeWall(["2", 9.7]),
-            lodgeWall(["3", 15.08]),
-            lodgeWall(["4", 19.77]),
-            lodgeWall(["5", 26.15]),
-            lodgeWall(["6", 27.03]),
+            lodgeWall(["3", 9.82]),
+            lodgeWall(["4", 15.08]),
+            lodgeWall(["5", 19.77]),
+            lodgeWall(["6", 20.44]),
+            lodgeWall(["7", 26.15]),
+            lodgeWall(["8", 27.03]),
+            {
+                idString: "lodge_secret_room_wall",
+                name: "Lodge Secret Room Wall",
+                material: "wood",
+                hideOnMap: true,
+                noResidue: true,
+                health: 100,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.95
+                },
+                hitbox: RectangleHitbox.fromRect(17.62, 1.91),
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Never,
+                frames: {
+                    particle: "lodge_wall_particle"
+                },
+                role: ObstacleSpecialRoles.Wall
+            },
 
             tentWall([1, "red"]),
             tentWall([2, "green"]),
@@ -1695,6 +1717,26 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: RectangleHitbox.fromRect(6.9, 6.64, Vec.create(0, -0.3)),
                 rotationMode: RotationMode.Limited,
                 explosion: "stove_explosion",
+                frames: {
+                    particle: "metal_particle",
+                    residue: "stove_residue"
+                },
+                reflectBullets: true
+            },
+            {
+                idString: "fireplace",
+                name: "Fireplace",
+                material: "metal_heavy",
+                health: 300,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.9
+                },
+                hideOnMap: true,
+                hitbox: RectangleHitbox.fromRect(15.05, 7.71, Vec.create(0, -0.3)),
+                rotationMode: RotationMode.Limited,
+                explosion: "fireplace_explosion",
                 frames: {
                     particle: "metal_particle",
                     residue: "stove_residue"
@@ -2022,6 +2064,62 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     particle: "toilet_particle",
                     residue: "toilet_residue"
                 }
+            },
+            {
+                idString: "sink",
+                name: "Sink",
+                material: "wood",
+                health: 100,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.7
+                },
+                hideOnMap: true,
+                hasLoot: true,
+                hitbox: RectangleHitbox.fromRect(9.5, 6.63, Vec.create(0, -0.47)),
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Always,
+                frames: {
+                    particle: "furniture_particle"
+                }
+            },
+            {
+                idString: "sink2",
+                name: "Sink",
+                material: "porcelain",
+                health: 120,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.8
+                },
+                hitbox: RectangleHitbox.fromRect(7.32, 5.79, Vec.create(0, -0.52)),
+                allowFlyover: FlyoverPref.Always,
+                rotationMode: RotationMode.Limited,
+                frames: {
+                    particle: "toilet_particle"
+                },
+                hideOnMap: true,
+                hasLoot: true
+            },
+            {
+                idString: "bathtub",
+                name: "Bathtub",
+                material: "appliance",
+                health: 180,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.8
+                },
+                hitbox: RectangleHitbox.fromRect(17.72, 9.29),
+                allowFlyover: FlyoverPref.Sometimes,
+                rotationMode: RotationMode.Limited,
+                frames: {
+                    particle: "toilet_particle"
+                },
+                hideOnMap: true
             },
             {
                 idString: "small_drawer",
@@ -2756,6 +2854,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             gunMount(["stoner_63"]),
             gunMount(["mini_14"]),
             gunMount(["hp18"]),
+            gunMount(["m590m"]),
             gunMount(
                 ["maul"],
                 {
@@ -3257,25 +3356,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 }
             }),
             {
-                idString: "sink",
-                name: "Sink",
-                material: "wood",
-                health: 100,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.7
-                },
-                hideOnMap: true,
-                hasLoot: true,
-                hitbox: RectangleHitbox.fromRect(9.5, 6.63, Vec.create(0, -0.47)),
-                rotationMode: RotationMode.Limited,
-                allowFlyover: FlyoverPref.Always,
-                frames: {
-                    particle: "furniture_particle"
-                }
-            },
-            {
                 idString: "tire",
                 name: "Tire",
                 material: "stone",
@@ -3628,6 +3708,25 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     low: 2
                 },
                 hitbox: RectangleHitbox.fromRect(13.8, 27.8),
+                frames: {
+                    particle: "metal_particle"
+                },
+                rotationMode: RotationMode.Limited,
+                zIndex: ZIndexes.BuildingsFloor
+            },
+            {
+                idString: "lodge_stair",
+                name: "Lodge Stair",
+                material: "metal_heavy",
+                health: 1000,
+                indestructible: true,
+                invisible: true,
+                role: ObstacleSpecialRoles.Stair,
+                activeEdges: {
+                    high: 2,
+                    low: 0
+                },
+                hitbox: RectangleHitbox.fromRect(8.1, 8),
                 frames: {
                     particle: "metal_particle"
                 },

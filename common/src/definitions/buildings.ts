@@ -109,6 +109,7 @@ export interface BuildingDefinition extends ObjectDefinition {
         readonly tint?: number | `#${string}`
     }>
     readonly ceilingZIndex: ZIndexes
+    readonly ceilingHiddenAlpha?: number
 
     // players within these zones are subjected to the override
     readonly visibilityOverrides?: ReadonlyArray<{
@@ -244,6 +245,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
         allowFlyover: FlyoverPref.Never
     } satisfies DeepPartial<Omit<BuildingDefinition, "idString">>,
     ([derive, , , _missingType]) => {
+        type Missing = typeof _missingType;
         const blueHouseVaultLayout = derive((id: number, obstacles: readonly BuildingObstacle[], subBuildings?: readonly SubBuilding[]) => {
             return {
                 idString: `blue_house_vault_layout_${id}`,
@@ -3880,7 +3882,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     key: "secret_room_ceiling",
                     position: Vec.create(0, 0),
                     scale: Vec.create(1.1, 1.01)
-                }]
+                }],
+                ceilingHiddenAlpha: 0.45
             },
             {
                 idString: "headquarters",
@@ -4799,10 +4802,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         key: "armory_center_floor_2",
                         position: Vec.create(0, 11.5)
                     },
-                    /* {
+                    {
                         key: "window_residue",
                         position: Vec.create(-13.9, 7.1)
-                    }, */
+                    },
                     {
                         key: "chair_residue",
                         rotation: 3,
@@ -4847,8 +4850,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 obstacles: [
                     { idString: "chair", position: Vec.create(10.1, 6), rotation: 0 },
                     { idString: "gun_mount_maul", position: Vec.create(2, 19.05), rotation: 2 },
-                    { idString: "trash_can", position: Vec.create(12, 17.5) },
-                    { idString: "window", position: Vec.create(-13.9, 7.1), rotation: 0 }
+                    { idString: "trash_can", position: Vec.create(12, 17.5) }
                 ],
                 lootSpawners: [
                     {
@@ -4895,12 +4897,12 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         zIndex: ZIndexes.Decals,
                         rotation: 1
                     },
-                    /*  {
+                    {
                         key: "window_residue",
                         position: Vec.create(18.1, 16.5),
                         zIndex: ZIndexes.Decals,
                         rotation: 1.5
-                    }, */
+                    },
                     { key: "explosion_decal", position: Vec.create(3.8, 16.5), zIndex: ZIndexes.Decals },
                     { key: "explosion_decal", position: Vec.create(-8, -8), zIndex: ZIndexes.Decals },
                     { key: "ammo_crate_residue", position: Vec.create(12.85, -0.45), zIndex: ZIndexes.Decals },
@@ -4938,7 +4940,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "briefcase", position: Vec.create(-28.93, -14.85), rotation: 2 },
                     { idString: "barrel", position: Vec.create(-19.59, -9.22) },
                     { idString: "barrel", position: Vec.create(-29.81, -6.01) },
-                    { idString: "window", position: Vec.create(18.1, 16.5), rotation: 1 },
                     { idString: "box", position: Vec.create(-18.46, -16.58) },
                     { idString: "regular_crate", position: Vec.create(-29.77, 10.54) },
                     { idString: "box", position: Vec.create(-21.29, 12.33) },
@@ -5255,8 +5256,20 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(21.08, 1.89, Vec.create(-37.59, 30.88))
                 ),
                 material: "stone",
-                spawnHitbox: RectangleHitbox.fromRect(200, 200),
+                spawnHitbox: RectangleHitbox.fromRect(110, 140),
+                ceilingHitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(97.2, 102, Vec.create(0, -9.5)),
+                    RectangleHitbox.fromRect(70.5, 18.5, Vec.create(-13.38, 50))
+                ),
+                scopeHitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(97.2, 102, Vec.create(0, -9.5)),
+                    RectangleHitbox.fromRect(70.5, 18.5, Vec.create(-13.38, 50))
+                ),
                 floors: [
+                    {
+                        type: FloorNames.Carpet,
+                        hitbox: RectangleHitbox.fromRect(16.55, 30.95, Vec.create(-2.77, 18.55))
+                    },
                     {
                         type: FloorNames.Wood,
                         hitbox: new GroupHitbox(
@@ -5271,12 +5284,38 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         type: FloorNames.Stone,
                         hitbox: RectangleHitbox.fromRect(10.36, 5.23, Vec.create(-37.56, -63.2))
                     }
+
                 ],
                 floorImages: [
                     {
-                        key: "lodge_floor",
-                        position: Vec.create(0, 0)
+                        key: "lodge_floor_top",
+                        position: Vec.create(0, -33.4)
+                    },
+                    {
+                        key: "lodge_floor_bottom",
+                        position: Vec.create(0, 33.4)
                     }
+                ],
+                ceilingImages: [
+                    {
+                        key: "lodge_second_floor_top",
+                        position: Vec.create(0, -30.7)
+                    },
+                    {
+                        key: "lodge_second_floor_bottom",
+                        position: Vec.create(0, 29.9)
+                    },
+                    {
+                        key: "lodge_ceiling_top",
+                        position: Vec.create(0, -35)
+                    },
+                    {
+                        key: "lodge_ceiling_bottom",
+                        position: Vec.create(0, 16.85)
+                    }
+                ],
+                subBuildings: [
+                    { idString: "lodge_second_floor", position: Vec.create(0, 0), layer: 2 }
                 ],
                 obstacles: [
                     //
@@ -5301,7 +5340,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "door", position: Vec.create(-32.98, -27.69), rotation: 2 },
                     { idString: "door", position: Vec.create(-26.41, -33.66), rotation: 3 },
                     { idString: "door", position: Vec.create(27.5, -7.78), rotation: 0 },
-                    { idString: "door", position: Vec.create(33.13, 6.82), rotation: 1 },
+                    { idString: "door", position: Vec.create(33.13, 6.87), rotation: 1 },
                     { idString: "door", position: Vec.create(27.5, 13.49), rotation: 0 },
 
                     //
@@ -5313,18 +5352,19 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "lodge_wall_1", position: Vec.create(-20.92, 15.4), rotation: 0 },
 
                     // bathroom
-                    { idString: "lodge_wall_3", position: Vec.create(39.67, -7.79), rotation: 0 },
-                    { idString: "lodge_wall_3", position: Vec.create(39.67, 13.39), rotation: 0 },
-                    { idString: "lodge_wall_1", position: Vec.create(33.11, -2.38), rotation: 1 },
+                    { idString: "lodge_wall_4", position: Vec.create(39.67, -7.79), rotation: 0 },
+                    { idString: "lodge_wall_4", position: Vec.create(39.67, 13.39), rotation: 0 },
+                    { idString: "lodge_wall_1", position: Vec.create(33.11, -2.34), rotation: 1 },
 
                     // laundry room
-                    { idString: "lodge_wall_4", position: Vec.create(-37.33, -9.94), rotation: 0 },
-                    { idString: "lodge_wall_5", position: Vec.create(-26.45, -16), rotation: 1 },
-                    { idString: "lodge_wall_5", position: Vec.create(-26.45, -16), rotation: 1 },
+                    { idString: "lodge_wall_5", position: Vec.create(-37.33, -9.94), rotation: 0 },
+                    { idString: "lodge_wall_7", position: Vec.create(-26.45, -16), rotation: 1 },
+                    { idString: "lodge_wall_7", position: Vec.create(-26.45, -16), rotation: 1 },
                     { idString: "lodge_wall_2", position: Vec.create(-42.47, -27.75), rotation: 0 },
 
                     // between dining table and couch
-                    { idString: "lodge_wall_6", position: Vec.create(6.58, -21.93), rotation: 0 },
+                    { idString: "lodge_wall_8", position: Vec.create(6.58, -21.93), rotation: 0 },
+
 
                     //
                     // obstacles
@@ -5366,6 +5406,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // stairs area
                     { idString: "bookshelf", position: Vec.create(-34.05, -6.26), rotation: 0 },
                     { idString: "box", position: Vec.create(-30.42, 16.73) },
+                    { idString: "lodge_stair", position: Vec.create(-43.17, 17), rotation: 0, layer: 1 },
 
                     // laundry room
                     { idString: "trash_can", position: Vec.create(-44.02, -14.19), rotation: 0 },
@@ -5395,7 +5436,137 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "chair", position: Vec.create(41.52, -53.97), rotation: 2 },
                     { idString: "potted_plant", position: Vec.create(26.66, -41.09), rotation: 0 }
                 ]
+            },
+            {
+                idString: "lodge_second_floor",
+                name: "Lodge Second Floor",
+                material: "stone",
+                particle: "lodge_particle",
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(11.73, 1.28, Vec.create(-41.36, 9.24)),
+                    RectangleHitbox.fromRect(1.27, 12.72, Vec.create(-36.1, 15.09)),
+                    RectangleHitbox.fromRect(13.47, 1.53, Vec.create(-2.21, 25.18)),
+                    RectangleHitbox.fromRect(13.47, 1.51, Vec.create(-2.57, 11.38)),
+                    RectangleHitbox.fromRect(1.54, 12.05, Vec.create(-10.08, 18.39)),
+                    RectangleHitbox.fromRect(1.54, 12.05, Vec.create(5.09, 18.24)),
+                    RectangleHitbox.fromRect(3.01, 3, Vec.create(9.5, -3.79)),
+                    RectangleHitbox.fromRect(3.01, 3, Vec.create(-10.11, 11.35)),
+                    RectangleHitbox.fromRect(3.01, 3, Vec.create(5.09, 11.36)),
+                    RectangleHitbox.fromRect(3.01, 3, Vec.create(5.09, 25.19)),
+                    RectangleHitbox.fromRect(3.01, 3, Vec.create(-10.11, 25.2)),
+                    RectangleHitbox.fromRect(3.01, 3, Vec.create(-3.59, -3.8)),
+                    RectangleHitbox.fromRect(1.91, 57.24, Vec.create(-26.47, -32.12)),
+                    RectangleHitbox.fromRect(1.91, 46.22, Vec.create(21.09, 19.38)),
+                    RectangleHitbox.fromRect(1.91, 36.84, Vec.create(-48.15, 13.74)),
+                    RectangleHitbox.fromRect(1.91, 32.26, Vec.create(48.17, -18.91)),
+                    RectangleHitbox.fromRect(1.91, 25.25, Vec.create(21.09, -48.11)),
+                    RectangleHitbox.fromRect(1.91, 34.18, Vec.create(-26.47, 24.4)),
+                    RectangleHitbox.fromRect(21.82, 1.91, Vec.create(-37.12, 31.37)),
+                    RectangleHitbox.fromRect(49.02, 1.91, Vec.create(-2.91, 41.53)),
+                    RectangleHitbox.fromRect(27.79, 1.91, Vec.create(34.02, -3.73)),
+                    RectangleHitbox.fromRect(46.75, 1.91, Vec.create(-2.85, -59.79)),
+                    RectangleHitbox.fromRect(40.23, 1.91, Vec.create(29, -35.34)),
+                    RectangleHitbox.fromRect(19.89, 1.91, Vec.create(-16.31, -35.34)),
+                    RectangleHitbox.fromRect(23.11, 1.91, Vec.create(-37.07, -3.73))
+                ).transform(Vec.create(0, -0.4)),
+                spawnHitbox: RectangleHitbox.fromRect(105, 130),
+                scopeHitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(48.4, 101.5, Vec.create(-2.61, -8.89)),
+                    RectangleHitbox.fromRect(22.35, 35.02, Vec.create(-37.24, 13.81)),
+                    RectangleHitbox.fromRect(29.6, 32.08, Vec.create(33.77, -19.63))
+                ),
+                ceilingHitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(48.4, 101.5, Vec.create(-2.61, -8.89)),
+                    RectangleHitbox.fromRect(22.35, 35.02, Vec.create(-37.24, 13.81)),
+                    RectangleHitbox.fromRect(29.6, 32.08, Vec.create(33.77, -19.63))
+                ),
+                floors: [
+                    {
+                        type: FloorNames.Carpet,
+                        hitbox: RectangleHitbox.fromRect(17.67, 11.63, Vec.create(0.6, -18.99))
+                    },
+                    {
+                        type: FloorNames.Wood,
+                        hitbox: new GroupHitbox(
+                            RectangleHitbox.fromRect(48.4, 101.5, Vec.create(-2.61, -8.89)),
+                            RectangleHitbox.fromRect(22.35, 35.02, Vec.create(-37.24, 13.81)),
+                            RectangleHitbox.fromRect(29.6, 32.08, Vec.create(33.77, -19.63))
+                        )
+                    }
+                ],
+                floorImages: [
+                    {
+                        key: "lodge_second_floor_top",
+                        position: Vec.create(0, -30.7)
+                    },
+                    {
+                        key: "lodge_second_floor_bottom",
+                        position: Vec.create(0, 29.8)
+                    },
+                ],
+                subBuildings: [
+                    { idString: "lodge_secret_room", position: Vec.create(-2.7, -48) }
+                ],
+                obstacles: [
+                    // near stairs
+                    { idString: "small_drawer", position: Vec.create(-43.29, 0.37), rotation: 1 },
+                    { idString: "door", position: Vec.create(-26.44, 2.24), rotation: 3 },
+
+                    // balcony area
+                    { idString: "bookshelf", position: Vec.create(-18.85, 37.54), rotation: 0 },
+                    { idString: "bookshelf", position: Vec.create(-6, 37.54), rotation: 0 },
+                    { idString: "potted_plant", position: Vec.create(15.46, 35.54), rotation: 0 },
+                    { idString: "red_small_couch", position: Vec.create(16.23, 1.76), rotation: 3 },
+
+                    // fireplace area
+                    { idString: "lodge_wall_1", position: Vec.create(15.55, -4.28), rotation: 0 },
+                    { idString: "lodge_wall_6", position: Vec.create(-15.28, -4.28), rotation: 0 },
+                    { idString: "door", position: Vec.create(3.41, -4.15), rotation: 0 },
+                    { idString: "couch_end_right", position: Vec.create(-21.24, -16.68), rotation: 1 },
+                    { idString: "couch_part", position: Vec.create(-15.33, -9.51), rotation: 1 },
+                    { idString: "couch_corner", position: Vec.create(-21.68, -9.4), rotation: 1 },
+                    { idString: "couch_end_left", position: Vec.create(-8.23, -9.85), rotation: 1 },
+                    { idString: "fireplace", position: Vec.create(0.84, -30.75), rotation: 0 },
+                    { idString: "grenade_box", position: Vec.create(16.62, -31.92), rotation: 0 },
+                    { idString: "potted_plant", position: Vec.create(15.6, -9.61), rotation: 0 },
+                    { idString: "large_drawer", position: Vec.create(-15.85, -31.06), rotation: 0 },
+                    { idString: "tv", position: Vec.create(-15.94, -34.02), rotation: 1 },
+
+                    // bathroom
+                    { idString: "door", position: Vec.create(21.13, -20.44), rotation: 1 },
+                    { idString: "lodge_wall_3", position: Vec.create(21.15, -10.04), rotation: 1 },
+                    { idString: "lodge_wall_3", position: Vec.create(21.15, -29.96), rotation: 1 },
+                    { idString: "small_drawer", position: Vec.create(25.85, -30.78), rotation: 0 },
+                    { idString: "sink2", position: Vec.create(33.52, -30.95), rotation: 0 },
+                    { idString: { toilet: 1, used_toilet: 1 }, position: Vec.create(41.73, -30.27), rotation: 0 },
+                    { idString: "bathtub", position: Vec.create(38.2, -9.99), rotation: 0 },
+                    { idString: "trash_can", position: Vec.create(25.61, -8.19), rotation: 0 },
+
+                    // secret room
+                    { idString: "lodge_secret_room_wall", position: Vec.create(0.67, -35.78), rotation: 0 },
+                    { idString: "regular_crate", position: Vec.create(-10.13, -53.51), rotation: 0 },
+                    { idString: "gun_locker", position: Vec.create(13.19, -56.51), rotation: 0 },
+                    { idString: "box", position: Vec.create(-21.82, -39.93), rotation: 0 },
+                    { idString: "box", position: Vec.create(-19.8, -45.18), rotation: 0 },
+                    { idString: "ammo_crate", position: Vec.create(-11.38, -42.41), rotation: 0 },
+                    { idString: "bookshelf", position: Vec.create(13.5, -39.3), rotation: 0 },
+                    { idString: "gun_mount_m590m", position: Vec.create(-20.59, -57.46), rotation: 0 },
+                ]
+            },
+            {
+                idString: "lodge_secret_room",
+                name: "Lodge Secret Room",
+                spawnHitbox: RectangleHitbox.fromRect(47.5, 24.5),
+                ceilingHitbox: RectangleHitbox.fromRect(47.5, 24.5),
+                ceilingImages: [
+                    {
+                        key: "lodge_secret_room_ceiling",
+                        position: Vec.create(0, 0),
+                        scale: Vec.create(8, 8)
+                    }
+                ],
+                ceilingHiddenAlpha: 0.45
             }
-        ];
+        ] satisfies Missing[];
     }
 );

@@ -83,6 +83,33 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             }
         },
         {
+            name: "Fireplace",
+            damage: 180,
+            obstacleMultiplier: 2,
+            radius: {
+                min: 10,
+                max: 30
+            },
+            cameraShake: {
+                duration: 300,
+                intensity: 75
+            },
+            animation: {
+                duration: 1000,
+                tint: 0xff5500,
+                scale: 2
+            },
+            shrapnelCount: 20,
+            ballistics: {
+                damage: 5,
+                obstacleMultiplier: 5,
+                speed: 0.1,
+                range: 20,
+                rangeVariance: 1,
+                shrapnel: true
+            }
+        },
+        {
             name: "Control Panel",
             damage: 130,
             obstacleMultiplier: 1.5,

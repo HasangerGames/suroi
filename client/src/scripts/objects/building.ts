@@ -187,7 +187,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
         this.ceilingTween = this.game.addTween({
             target: this.ceilingContainer,
-            to: { alpha: visible ? 0 : 1 },
+            to: { alpha: visible ? this.definition.ceilingHiddenAlpha ?? 0 : 1 },
             duration: visible ? duration : 300,
             ease: EaseFunctions.sineOut,
             onComplete: () => {
