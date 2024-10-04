@@ -1826,7 +1826,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             },
             {
                 idString: "mk18",
-                name: "Mk18 Mjölnir",
+                name: "Mk-18 Mjölnir",
                 ammoType: "338lap",
                 ammoSpawnAmount: 20,
                 fireDelay: 600,
@@ -1953,8 +1953,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 recoilMultiplier: 0.7,
                 recoilDuration: 525,
                 fireMode: FireMode.Auto,
-                shotSpread: 5,
-                moveSpread: 14,
+                shotSpread: 2,
+                moveSpread: 5,
                 length: 7.7,
                 fists: {
                     left: Vec.create(115, -1),
