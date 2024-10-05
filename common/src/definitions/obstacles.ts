@@ -89,7 +89,7 @@ type RawObstacleDefinition = ObjectDefinition & {
      * Whether throwables can fly over this obstacle
      */
     readonly allowFlyover: FlyoverPref
-    readonly collideWithLayers: Layers
+    readonly collideWithLayers?: Layers
     readonly visibleFromLayers: Layers
     readonly hasLoot: boolean
     readonly spawnWithLoot: boolean
@@ -343,7 +343,6 @@ const defaultObstacle: DeepPartial<RawObstacleDefinition> = {
     hideOnMap: false,
     noCollisions: false,
     allowFlyover: FlyoverPref.Sometimes,
-    collideWithLayers: Layers.Equal,
     visibleFromLayers: Layers.Adjacent,
     hasLoot: false,
     spawnWithLoot: false,
@@ -3723,10 +3722,10 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 invisible: true,
                 role: ObstacleSpecialRoles.Stair,
                 activeEdges: {
-                    high: 2,
-                    low: 0
+                    high: 0,
+                    low: 3
                 },
-                hitbox: RectangleHitbox.fromRect(8.1, 8),
+                hitbox: RectangleHitbox.fromRect(11.72, 8.8),
                 frames: {
                     particle: "metal_particle"
                 },
@@ -3800,6 +3799,24 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 noHitEffect: true,
                 particleVariations: 2,
                 visibleFromLayers: Layers.All,
+                rotationMode: RotationMode.Limited
+            },
+            {
+                idString: "lodge_railing",
+                name: "Lodge Railing",
+                material: "stone",
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(12.04, 1.28, Vec.create(-32.61, 20.51)),
+                    RectangleHitbox.fromRect(1.24, 12.93, Vec.create(-38.53, 14.66))
+                ),
+                collideWithLayers: Layers.Equal,
+                health: 1000,
+                indestructible: true,
+                invisible: true,
+                visibleFromLayers: Layers.All,
+                frames: {
+                    particle: "lodge_particle"
+                },
                 rotationMode: RotationMode.Limited
             },
 

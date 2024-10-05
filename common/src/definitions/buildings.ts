@@ -5244,17 +5244,16 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(1.91, 35.26, Vec.create(48.12, 2.77)),
                     RectangleHitbox.fromRect(1.91, 38.99, Vec.create(-48.18, -24.78)),
                     RectangleHitbox.fromRect(26.19, 1.89, Vec.create(34.76, -35.84)),
-                    RectangleHitbox.fromRect(12.04, 1.28, Vec.create(-32.61, 20.51)),
                     RectangleHitbox.fromRect(35.43, 1.89, Vec.create(-14.83, -60.26)),
                     RectangleHitbox.fromRect(1.9, 6.28, Vec.create(-48.15, -58.09)),
                     RectangleHitbox.fromRect(1.91, 33.42, Vec.create(21.04, 23.84)),
                     RectangleHitbox.fromRect(5.25, 1.89, Vec.create(-45.28, -60.29)),
                     RectangleHitbox.fromRect(1.9, 11.11, Vec.create(48.1, -31.23)),
-                    RectangleHitbox.fromRect(1.24, 12.93, Vec.create(-38.53, 14.66)),
                     RectangleHitbox.fromRect(14.65, 1.89, Vec.create(-20.12, 41.02)),
                     RectangleHitbox.fromRect(1.92, 33.2, Vec.create(-26.48, 23.74)),
                     RectangleHitbox.fromRect(21.08, 1.89, Vec.create(-37.59, 30.88))
                 ),
+                collideWithLayers: Layers.Adjacent,
                 material: "stone",
                 spawnHitbox: RectangleHitbox.fromRect(110, 140),
                 ceilingHitbox: new GroupHitbox(
@@ -5405,8 +5404,9 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
 
                     // stairs area
                     { idString: "bookshelf", position: Vec.create(-34.05, -6.26), rotation: 0 },
-                    { idString: "box", position: Vec.create(-30.42, 16.73) },
-                    { idString: "lodge_stair", position: Vec.create(-43.17, 17), rotation: 0, layer: 1 },
+                    { idString: "box", position: Vec.create(-30.42, 16) },
+                    { idString: "lodge_railing", position: Vec.create(0, 0), rotation: 0 },
+                    { idString: "lodge_stair", position: Vec.create(-33.26, 24.86), rotation: 0, layer: 1 },
 
                     // laundry room
                     { idString: "trash_can", position: Vec.create(-44.02, -14.19), rotation: 0 },
