@@ -44,6 +44,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly ceilingCollapseParticle?: string
     readonly resetCeilingResidueScale?: boolean
     readonly destroyInnerUponCeilingCollapse?: boolean
+    readonly ceilingCollapseSound?: string
     readonly material?: typeof Materials[number]
     readonly particle?: string
     readonly particleVariations?: number
@@ -390,6 +391,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     type: FloorNames.Carpet,
                     hitbox: RectangleHitbox.fromRect(25, 16)
                 }],
+                ceilingCollapseSound: "tent_collapse",
                 ceilingCollapseParticle: `tent_particle_${id}`,
                 resetCeilingResidueScale: true,
                 destroyInnerUponCeilingCollapse: true,
@@ -479,6 +481,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     type: FloorNames.Carpet,
                     hitbox: RectangleHitbox.fromRect(40, 24.5)
                 }],
+                ceilingCollapseSound: "tent_collapse",
                 ceilingCollapseParticle: `tent_particle_${id}`,
                 destroyInnerUponCeilingCollapse: true,
                 wallsToDestroy: 1,

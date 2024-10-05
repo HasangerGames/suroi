@@ -59,7 +59,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "settings_render_resolution_auto": "Auto",
     "settings_hires_textures": "High resolution textures",
     "settings_cooler_graphics": "Cooler graphics",
-    "settings_hide_ambient_particles": "Hide Ambient Particles",
+    "settings_hide_ambient_particles": "Hide Ambient Particles and sounds",
     "settings_antialias": "Anti-aliasing",
     "settings_movement_smoothing": "Movement smoothing",
     "settings_responsive_rotation": "Responsive rotation",

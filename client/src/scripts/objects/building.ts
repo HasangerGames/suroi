@@ -351,7 +351,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 }));
 
                 this.playSound(
-                    "ceiling_collapse",
+                    definition.ceilingCollapseSound ?? "ceiling_collapse",
                     {
                         falloff: 0.5,
                         maxRange: 96
