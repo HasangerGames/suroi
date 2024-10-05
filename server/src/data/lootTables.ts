@@ -39,7 +39,7 @@ export const LootTierOverrides: Record<string, LootTierOverride> = {
             { item: "mosin_nagant", weight: 0.5 },
             { item: "tango_51", weight: 0.15 },
             { item: "vks", weight: 0.06 },
-            { item: "model_89", weight: 0.06 },
+            { item: "model_89", weight: 0.06 }
         ],
         special_guns: [
             { item: "hp18", weight: 0.8 },
@@ -59,7 +59,7 @@ export const LootTierOverrides: Record<string, LootTierOverride> = {
             { item: "vks", weight: 0.25 },
             { item: "model_89", weight: 0.1 },
             { item: "m1_garand", weight: 0.3 },
-            { item: "rsh12", weight: 0.09 },
+            { item: "rsh12", weight: 0.09 }
         ],
         airdrop_guns: [
             { item: "m1_garand", weight: 0.6 },
@@ -94,7 +94,7 @@ export const LootTierOverrides: Record<string, LootTierOverride> = {
             { item: "tango_51", weight: 0.1 },
             { item: "vks", weight: 0.1 },
             { item: "m1_garand", weight: 0.1 },
-            { item: "model_89", weight: 0.09 },
+            { item: "model_89", weight: 0.09 }
         ],
         river_chest_guns: [
             { item: "cz600", weight: 0.35 },
