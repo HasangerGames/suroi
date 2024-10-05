@@ -362,7 +362,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             this.ceilingContainer.zIndex = getEffectiveZIndex(ZIndexes.DeadObstacles, this.layer, this.game.layer);
             this.ceilingContainer.alpha = 1;
 
-            this.ceilingContainer.addChild(new SuroiSprite(`${definition.idString}_residue`));
+            //  this.ceilingContainer.addChild(new SuroiSprite(`${definition.idString}_residue`));
         }
         this.dead = data.dead;
 
