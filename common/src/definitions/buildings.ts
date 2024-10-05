@@ -4862,7 +4862,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 obstacles: [
                     { idString: "chair", position: Vec.create(10.1, 6), rotation: 0 },
                     { idString: "gun_mount_maul", position: Vec.create(2, 19.05), rotation: 2 },
-                    { idString: "trash_can", position: Vec.create(12, 17.5) }
+                    { idString: "trash_can", position: Vec.create(12, 17.5) },
+                    { idString: "window_damaged", position: Vec.create(-13.9, 7.1) }
                 ],
                 lootSpawners: [
                     {
@@ -4948,6 +4949,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "gun_case", position: Vec.create(31.9, 10), rotation: 3 },
                     { idString: "ammo_crate", position: Vec.create(29.5, -0.45), rotation: 0 },
                     { idString: "tear_gas_crate", position: Vec.create(21.2, -0.45), rotation: 1 },
+                    { idString: "window_damaged", position: Vec.create(18.1, 16.5), rotation: 1 },
                     { idString: "grenade_crate", position: Vec.create(-9.1, -15.9) },
                     { idString: "briefcase", position: Vec.create(-28.93, -14.85), rotation: 2 },
                     { idString: "barrel", position: Vec.create(-19.59, -9.22) },

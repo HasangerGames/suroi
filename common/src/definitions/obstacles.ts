@@ -2444,6 +2444,22 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 }
             },
             {
+                idString: "window_damaged",
+                name: "Window",
+                material: "glass",
+                health: 20,
+                invisible: true,
+                noMeleeCollision: true,
+                noBulletCollision: true,
+                indestructible: true,
+                hideOnMap: true,
+                hitbox: RectangleHitbox.fromRect(1.8, 9.4),
+                zIndex: ZIndexes.ObstaclesLayer2,
+                allowFlyover: FlyoverPref.Never,
+                rotationMode: RotationMode.Limited,
+                role: ObstacleSpecialRoles.Window
+            },
+            {
                 idString: "window",
                 name: "Window",
                 material: "glass",
