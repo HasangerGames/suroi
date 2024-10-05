@@ -5364,7 +5364,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // between dining table and couch
                     { idString: "lodge_wall_8", position: Vec.create(6.58, -21.93), rotation: 0 },
 
-
                     //
                     // obstacles
                     //
@@ -5502,7 +5501,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     {
                         key: "lodge_second_floor_bottom",
                         position: Vec.create(0, 29.8)
-                    },
+                    }
                 ],
                 subBuildings: [
                     { idString: "lodge_secret_room", position: Vec.create(-2.7, -48) }
@@ -5550,7 +5549,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "box", position: Vec.create(-19.8, -45.18), rotation: 0 },
                     { idString: "ammo_crate", position: Vec.create(-11.38, -42.41), rotation: 0 },
                     { idString: "bookshelf", position: Vec.create(13.5, -39.3), rotation: 0 },
-                    { idString: "gun_mount_m590m", position: Vec.create(-20.59, -57.46), rotation: 0 },
+                    { idString: "gun_mount_m590m", position: Vec.create(-20.59, -57.46), rotation: 0 }
                 ]
             },
             {

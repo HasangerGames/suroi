@@ -3,7 +3,8 @@ import { ColorStyles, styleText } from "@common/utils/ansiColoring";
 import { NullString, type ObjectDefinition, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { weightedRandom } from "@common/utils/random";
 
-import { LootTiers, type WeightedItem } from "../data/lootTables";
+import { LootTierOverrides, LootTiers, type WeightedItem } from "../data/lootTables";
+import { Config } from "../config";
 
 export const Logger = {
     log(...message: string[]): void {
@@ -53,7 +54,8 @@ export function getLootTableLoot(loots: readonly WeightedItem[]): LootItem[] {
         const selection of [weightedRandom<WeightedItem | readonly WeightedItem[]>(items, weights)].flat()
     ) {
         if ("tier" in selection) {
-            loot = loot.concat(getLootTableLoot(LootTiers[selection.tier]));
+            const lootTier = (Config.mode && LootTierOverrides[Config.mode][selection.tier]) ?? LootTiers[selection.tier];
+            loot = loot.concat(getLootTableLoot(lootTier));
             continue;
         }
 

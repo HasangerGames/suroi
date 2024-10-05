@@ -4,6 +4,7 @@ import { type Vector } from "@common/utils/vector";
 import { type Maps } from "./data/maps";
 import { type Game } from "./game";
 import { type GamePlugin } from "./pluginManager";
+import { LootMode } from "./data/lootTables";
 
 export enum SpawnMode {
     Normal,
@@ -21,9 +22,11 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "singleBuilding:lodge",
+    map: "fall",
 
-    spawn: { mode: SpawnMode.Center },
+    mode: "fall",
+
+    spawn: { mode: SpawnMode.Normal },
 
     maxTeamSize: TeamSize.Solo,
 
@@ -36,8 +39,6 @@ export const Config = {
     tps: 40,
 
     plugins: [],
-
-    disableBuildingCheck: true,
 
     roles: {
         "developr": { password: "developr", isDev: true },
@@ -92,6 +93,11 @@ export interface ConfigType {
      * Parameters can also be specified for certain maps, separated by colons (e.g. `singleObstacle:rock`)
      */
     readonly map: `${keyof typeof Maps}${string}`
+
+    /**
+     * The gamemode, which over-rides loot tables.
+     */
+    readonly mode?: LootMode
 
     /**
      * There are 4 spawn modes: `Normal`, `Radius`, `Fixed`, and `Center`.

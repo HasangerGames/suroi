@@ -100,15 +100,15 @@ export function adjacentOrEquivLayer(
     evalLayer: Layer
 ): boolean {
     return !(
-            (referenceObject.isObstacle || referenceObject.isBuilding)
-            && referenceObject.definition.collideWithLayers === Layers.Equal
-            && !equalLayer(referenceObject.layer, evalLayer)
-        )
-        && ((
-            (referenceObject.isObstacle || referenceObject.isBuilding)
-            && referenceObject.definition.collideWithLayers === Layers.All
-        )
-        || adjacentOrEqualLayer(referenceObject.layer, evalLayer));
+        (referenceObject.isObstacle || referenceObject.isBuilding)
+        && referenceObject.definition.collideWithLayers === Layers.Equal
+        && !equalLayer(referenceObject.layer, evalLayer)
+    )
+    && ((
+        (referenceObject.isObstacle || referenceObject.isBuilding)
+        && referenceObject.definition.collideWithLayers === Layers.All
+    )
+    || adjacentOrEqualLayer(referenceObject.layer, evalLayer));
 }
 
 /**

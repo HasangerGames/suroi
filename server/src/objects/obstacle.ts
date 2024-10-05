@@ -9,7 +9,7 @@ import { random } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 
 import { equalLayer } from "@common/utils/layer";
-import { LootTables, type WeightedItem } from "../data/lootTables";
+import { LootTableOverrides, LootTables, type WeightedItem } from "../data/lootTables";
 import { type Game } from "../game";
 import { InventoryItem } from "../inventory/inventoryItem";
 import { getLootTableLoot, getRandomIDString, type LootItem } from "../utils/misc";
@@ -17,6 +17,7 @@ import { type Building } from "./building";
 import type { Bullet } from "./bullet";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { type Player } from "./player";
+import { Config } from "../config";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override readonly fullAllocBytes = 8;
@@ -101,7 +102,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         this.collidable = !definition.noCollisions;
 
         if (definition.hasLoot) {
-            const lootTable = LootTables[this.definition.idString];
+            const lootTable = (Config.mode && LootTableOverrides[Config.mode][this.definition.idString]) ?? LootTables[this.definition.idString];
             // TODO Clean up code
             for (let i = 0; i < random(lootTable.min, lootTable.max); i++) {
                 if (lootTable.loot.length > 0 && lootTable.loot[0] instanceof Array) {
