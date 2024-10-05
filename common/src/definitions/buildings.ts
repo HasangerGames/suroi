@@ -5285,8 +5285,12 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     {
                         type: FloorNames.Stone,
                         hitbox: RectangleHitbox.fromRect(10.36, 5.23, Vec.create(-37.56, -63.2))
+                    },
+                    {
+                        type: FloorNames.Wood,
+                        hitbox: RectangleHitbox.fromRect(11.72, 8.8, Vec.create(-33.26, 24.86)),
+                        layer: 1
                     }
-
                 ],
                 floorImages: [
                     {
