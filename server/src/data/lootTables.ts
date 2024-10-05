@@ -926,6 +926,7 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "deagle", weight: 1 },
         { item: "cz600", weight: 1 },
         { item: "mcx_spear", weight: 0.95 },
+        { item: "model_89", weight: 0.95 },
         { item: "mosin_nagant", weight: 0.95 },
         { item: "tango_51", weight: 0.9 },
         { item: "stoner_63", weight: 0.9 },
@@ -938,7 +939,6 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "negev", weight: 1 },
         { item: "mg5", weight: 1 },
         { item: "l115a1", weight: 0.5 },
-        { item: "model_89", weight: 0.5 },
         { item: "dual_rsh12", weight: 0.5 },
         { item: "g19", weight: 0.0005 }
     ],

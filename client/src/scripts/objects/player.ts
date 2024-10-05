@@ -1287,16 +1287,16 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     }
                 } = this._getItemReference() as SingleGunNarrowing;
 
-                this.playSound(
-                    `${idString}_fire`,
-                    {
-                        falloff: 0.5
-                    }
-                );
-
                 if (anim === AnimationType.LastShot) {
                     this.playSound(
-                        `${idString}_last_shot`,
+                        `${idString}_fire_last`,
+                        {
+                            falloff: 0.5
+                        }
+                    );
+                } else {
+                    this.playSound(
+                        `${idString}_fire`,
                         {
                             falloff: 0.5
                         }

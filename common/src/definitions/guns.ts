@@ -533,7 +533,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoSpawnAmount: 20,
                 capacity: 5,
                 reloadTime: 2.4,
-                fireDelay: 450,
+                fireDelay: 350,
                 switchDelay: 650,
                 recoilMultiplier: 0.7,
                 recoilDuration: 550,
@@ -923,7 +923,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 name: "M16A4",
                 ammoType: "556mm",
                 ammoSpawnAmount: 90,
-                capacity: 30,
+                capacity: 20,
                 reloadTime: 2.2,
                 fireDelay: 75,
                 burstProperties: {
@@ -995,7 +995,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoSpawnAmount: 99,
                 capacity: 33,
                 reloadTime: 1.7,
-                fireDelay: 35,
+                fireDelay: 40,
                 switchDelay: 300,
                 recoilMultiplier: 0.75,
                 recoilDuration: 60,
@@ -1015,10 +1015,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 gasParticles: gasParticlePresets.automatic,
                 image: { position: Vec.create(80, 0) },
                 ballistics: {
-                    damage: 6.75,
+                    damage: 8,
                     obstacleMultiplier: 1,
-                    speed: 0.25,
-                    range: 85
+                    speed: 0.27,
+                    range: 120
                 }
             },
             {
@@ -1375,7 +1375,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoSpawnAmount: 40,
                 capacity: 8,
                 reloadTime: 2.1,
-                fireDelay: 200,
+                fireDelay: 250,
                 switchDelay: 400,
                 recoilMultiplier: 0.75,
                 recoilDuration: 200,
@@ -1421,9 +1421,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
                 gasParticles: gasParticlePresets.rifle,
                 ballistics: {
-                    damage: 39,
-                    obstacleMultiplier: 1.5,
-                    speed: 0.3,
+                    damage: 55,
+                    obstacleMultiplier: 1,
+                    speed: 0.35,
                     range: 230,
                     tracer: {
                         length: 2
@@ -1553,9 +1553,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "50cal",
                 ammoSpawnAmount: 28,
                 capacity: 7,
-                reloadTime: 0.6,
+                reloadTime: 0.4,
                 singleReload: true,
-                fireDelay: 375,
+                fireDelay: 350,
                 switchDelay: 400,
                 recoilMultiplier: 0.7,
                 recoilDuration: 300,
@@ -1577,9 +1577,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }],
                 gasParticles: gasParticlePresets.rifle,
                 ballistics: {
-                    damage: 62.5,
+                    damage: 49,
                     obstacleMultiplier: 1.5,
-                    speed: 0.3,
+                    speed: 0.28,
                     range: 250,
                     tracer: {
                         width: 1.8,
@@ -1741,6 +1741,204 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     reloadTime: 4.2
                 }
             },
+            {
+                idString: "dt11",
+                name: "DT-11",
+                ammoType: "12g",
+                ammoSpawnAmount: 10,
+                capacity: 2,
+                reloadTime: 2.8,
+                fireDelay: 300,
+                switchDelay: 500,
+                recoilMultiplier: 0.6,
+                recoilDuration: 400,
+                fireMode: FireMode.Single,
+                shotSpread: 5,
+                moveSpread: 7,
+                length: 7.45,
+                jitterRadius: 0.5,
+                bulletCount: 9,
+                fists: {
+                    left: Vec.create(87, -3),
+                    right: Vec.create(45, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(85, 0) },
+                casingParticles: [{
+                    position: Vec.create(4.5, 0.6),
+                    count: 2,
+                    velocity: {
+                        y: {
+                            min: 8,
+                            max: 12,
+                            randomSign: true
+                        }
+                    },
+                    on: "reload"
+                }],
+                gasParticles: gasParticlePresets.shotgun,
+                ballistics: {
+                    damage: 9,
+                    obstacleMultiplier: 1,
+                    speed: 0.2,
+                    range: 80
+                }
+            },
+            {
+                idString: "m590m",
+                name: "M590M",
+                ammoType: "12g",
+                ammoSpawnAmount: 15,
+                capacity: 5,
+                reloadTime: 2.8,
+                fireDelay: 800,
+                switchDelay: 900,
+                recoilMultiplier: 0.6,
+                recoilDuration: 500,
+                fireMode: FireMode.Single,
+                shotSpread: 2,
+                moveSpread: 5,
+                length: 7.85,
+                fists: {
+                    left: Vec.create(114, -3),
+                    right: Vec.create(45, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(90, 0) },
+                casingParticles: [{
+                    position: Vec.create(4.5, 0.6),
+                    ejectionDelay: 400,
+                    frame: "casing_12g_slug"
+                }],
+                gasParticles: gasParticlePresets.shotgun,
+                ballistics: {
+                    damage: 78,
+                    obstacleMultiplier: 1,
+                    speed: 0.25,
+                    range: 120,
+                    tracer: {
+                        width: 1.6,
+                        length: 1.3
+                    }
+                }
+            },
+            {
+                idString: "mk18",
+                name: "Mk-18 Mjölnir",
+                ammoType: "338lap",
+                ammoSpawnAmount: 20,
+                fireDelay: 600,
+                switchDelay: 900,
+                recoilMultiplier: 0.6,
+                recoilDuration: 600,
+                fireMode: FireMode.Single,
+                shotSpread: 1,
+                moveSpread: 4,
+                length: 9.07,
+                casingParticles: [{
+                    position: Vec.create(4.5, 0.3)
+                }],
+                fists: {
+                    left: Vec.create(120, 0),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(100, 2) },
+                gasParticles: gasParticlePresets.rifle,
+                capacity: 5,
+                reloadTime: 4.3,
+                ballistics: {
+                    damage: 90,
+                    obstacleMultiplier: 1,
+                    speed: 0.4,
+                    tracer: {
+                        width: 1.8,
+                        length: 3
+                    },
+                    range: 250
+                }
+            },
+            {
+                idString: "vks",
+                name: "VKS Vykhlop",
+                ammoType: "50cal",
+                ammoSpawnAmount: 25,
+                fireDelay: 800,
+                switchDelay: 900,
+                recoilMultiplier: 0.6,
+                recoilDuration: 1000,
+                fireMode: FireMode.Single,
+                shotSpread: 1,
+                moveSpread: 3,
+                length: 8.7,
+                fists: {
+                    left: Vec.create(90, 3),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(90, 2) },
+                casingParticles: [{
+                    position: Vec.create(3.5, 0.3),
+                    ejectionDelay: 400
+                }],
+                gasParticles: gasParticlePresets.rifle,
+                noMuzzleFlash: true,
+                capacity: 5,
+                reloadTime: 3.2,
+                ballistics: {
+                    damage: 95,
+                    obstacleMultiplier: 1,
+                    speed: 0.27,
+                    range: 180,
+                    tracer: {
+                        width: 1.2
+                    }
+                }
+            },
+            {
+                idString: "sks",
+                name: "SKS",
+                ammoType: "762mm",
+                ammoSpawnAmount: 30,
+                capacity: 10,
+                reloadTime: 0.4,
+                singleReload: true,
+                reloadFullOnEmpty: true,
+                fullReloadTime: 3.2,
+                fireDelay: 180,
+                switchDelay: 400,
+                recoilMultiplier: 0.8,
+                recoilDuration: 150,
+                fireMode: FireMode.Single,
+                shotSpread: 4,
+                moveSpread: 7,
+                length: 7.9,
+                fists: {
+                    left: Vec.create(105, 3),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(85, 2) },
+                casingParticles: [{
+                    position: Vec.create(4.2, 0.4),
+                    frame: "casing_762x39mm"
+                }],
+                gasParticles: gasParticlePresets.rifle,
+                ballistics: {
+                    damage: 20,
+                    obstacleMultiplier: 1,
+                    speed: 0.26,
+                    range: 180,
+                    tracer: {
+                        length: 1.2
+                    }
+                }
+            },
 
             // only event weapons below this point
             {
@@ -1755,8 +1953,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 recoilMultiplier: 0.7,
                 recoilDuration: 525,
                 fireMode: FireMode.Auto,
-                shotSpread: 5,
-                moveSpread: 14,
+                shotSpread: 2,
+                moveSpread: 5,
                 length: 7.7,
                 fists: {
                     left: Vec.create(115, -1),
@@ -1770,10 +1968,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     position: Vec.create(4.5, 0.6)
                 }],
                 ballistics: {
-                    damage: 8,
+                    damage: 20,
                     obstacleMultiplier: 1,
-                    speed: 0.16,
-                    range: 55,
+                    speed: 0.22,
+                    range: 70,
                     onHitExplosion: "usas_explosion",
                     allowRangeOverride: true,
                     tracer: {
