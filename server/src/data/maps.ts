@@ -277,7 +277,7 @@ const maps = {
             gold_rock: 1,
             loot_tree: 1,
             loot_barrel: 1,
-            flint_stone: 1
+            flint_stone: 3
         },
         obstacleClumps: [
             {
