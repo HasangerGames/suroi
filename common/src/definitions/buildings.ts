@@ -1998,6 +1998,15 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         position: Vec.create(-0.8, 5.9)
                     }
                 ],
+                floors: [
+                    {
+                        type: FloorNames.Stone,
+                        hitbox: new GroupHitbox(
+                            RectangleHitbox.fromRect(20.5, 27, Vec.create(-0.5, -2)),
+                            RectangleHitbox.fromRect(10, 4.5, Vec.create(3.55, 14))
+                        )
+                    }
+                ],
                 obstacles: [
                     {
                         idString: "door",
