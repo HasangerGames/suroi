@@ -18,18 +18,7 @@ export interface LootTable {
     readonly loot: ReadonlyArray<WeightedItem | readonly WeightedItem[]>
 }
 
-interface LootTierOverride { // please refactor ffs
-    guns?: readonly WeightedItem[]
-    special_guns?: readonly WeightedItem[]
-    airdrop_guns?: readonly WeightedItem[]
-    gold_airdrop_guns?: readonly WeightedItem[]
-    river_chest_guns?: readonly WeightedItem[]
-    ammo?: readonly WeightedItem[]
-    throwables?: readonly WeightedItem[]
-    equipment?: readonly WeightedItem[]
-    special_equipment?: readonly WeightedItem[]
-    melee?: readonly WeightedItem[]
-}
+type LootTierOverride = Record<string, readonly WeightedItem[]>;
 
 export const LootTierOverrides: Record<string, LootTierOverride> = {
     fall: {
@@ -145,9 +134,7 @@ export const LootTierOverrides: Record<string, LootTierOverride> = {
 
 export type LootMode = keyof typeof LootTierOverrides;
 
-interface LootTableOverride { // please refactor ffs
-    briefcase?: LootTable
-}
+type LootTableOverride = Record<string, LootTable>;
 
 export const LootTableOverrides: Record<string, LootTableOverride> = {
     fall: {

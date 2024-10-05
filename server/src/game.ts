@@ -793,7 +793,7 @@ export class Game implements GameData {
                 break;
             }
             case SpawnMode.Radius: {
-                const [x, y] = Config.spawn.position;
+                const { x, y } = Config.spawn.position;
                 spawnPosition = randomPointInsideCircle(
                     Vec.create(x, y),
                     Config.spawn.radius
@@ -801,9 +801,9 @@ export class Game implements GameData {
                 break;
             }
             case SpawnMode.Fixed: {
-                const [x, y, layer] = Config.spawn.position;
+                const { x, y } = Config.spawn.position;
                 spawnPosition = Vec.create(x, y);
-                spawnLayer = layer ?? Layer.Ground;
+                spawnLayer = Config.spawn.layer ?? Layer.Ground;
                 break;
             }
             case SpawnMode.Center: {
