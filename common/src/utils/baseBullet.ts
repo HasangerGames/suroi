@@ -115,7 +115,6 @@ export class BaseBullet {
             if (
                 ((isObstacle || isBuilding) && (
                     object.definition.noBulletCollision
-                    || object.definition.noCollisions
                     || !equivLayer(object, this)
                 ))
                 || (isPlayer && !adjacentOrEqualLayer(this.layer, object.layer))

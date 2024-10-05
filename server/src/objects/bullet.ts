@@ -117,6 +117,8 @@ export class Bullet extends BaseBullet {
             this.damagedIDs.add(object.id);
             this.position = point;
 
+            if (isObstacle && object.definition.noCollisions) continue;
+
             if (
                 (isObstacle || isBuilding)
                 && object.definition.reflectBullets
