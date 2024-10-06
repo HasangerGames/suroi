@@ -1,6 +1,6 @@
 {
   "name": "@suroi/client",
-  "description": "",
+  "description": "Client folder for suroi",
   "main": "src/index.js",
   "type": "module",
   "private": true,
@@ -23,6 +23,7 @@
     "@types/node": "^22.6.1",
     "canvas": "^2.11.2",
     "chokidar": "^3.6.0",
+    "electron": "^32.1.2",
     "maxrects-packer": "^2.7.3",
     "minimatch": "^10.0.1",
     "postcss": "^8.4.47",
@@ -46,5 +47,15 @@
     "nipplejs": "^0.10.2",
     "pixi-filters": "^6.0.5",
     "pixi.js": "^8.4.1"
-  }
+  },
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arman-AIi/suroi-electron.git"
+  },
+  "author": "Henry Sanger",
+  "bugs": {
+    "url": "https://github.com/Arman-AIi/suroi-electron/issues"
+  },
+  "homepage": "https://github.com/Arman-AIi/suroi-electron#readme"
 }

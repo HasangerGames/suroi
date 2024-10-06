@@ -1,6 +1,6 @@
 {
   "name": "@suroi/common",
-  "description": "",
+  "description": "Common folder for Suroi",
   "private": true,
   "main": "index.js",
   "scripts": {},
@@ -10,6 +10,17 @@
     "@damienvesper/bit-buffer": "^1.0.1"
   },
   "devDependencies": {
-    "@types/node": "^22.6.1"
-  }
+    "@types/node": "^22.6.1",
+    "electron": "^32.1.2"
+  },
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arman-AIi/suroi-electron.git"
+  },
+  "author": "Henry Sanger",
+  "bugs": {
+    "url": "https://github.com/Arman-AIi/suroi-electron/issues"
+  },
+  "homepage": "https://github.com/Arman-AIi/suroi-electron#readme"
 }
