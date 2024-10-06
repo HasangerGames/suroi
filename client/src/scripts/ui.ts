@@ -21,7 +21,7 @@ import { type Game } from "./game";
 import { news } from "./news/newsPosts";
 import { body, createDropdown } from "./uiHelpers";
 import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";
-import { PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
+import { PIXI_SCALE, UI_DEBUG_MODE, EMOTE_SLOTS } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
 
@@ -1011,11 +1011,11 @@ export async function setUpUI(game: Game): Promise<void> {
     handleEmote("win");
     handleEmote("death");
 
-    let selectedEmoteSlot: typeof emoteSlots[number] | undefined;
+    let selectedEmoteSlot: typeof EMOTE_SLOTS[number] | undefined;
     const emoteList = $<HTMLDivElement>("#emotes-list");
 
-    const bottomEmoteUiCache: Partial<Record<typeof emoteSlots[number], JQuery<HTMLSpanElement>>> = {};
-    const emoteWheelUiCache: Partial<Record<typeof emoteSlots[number], JQuery<HTMLDivElement>>> = {};
+    const bottomEmoteUiCache: Partial<Record<typeof EMOTE_SLOTS[number], JQuery<HTMLSpanElement>>> = {};
+    const emoteWheelUiCache: Partial<Record<typeof EMOTE_SLOTS[number], JQuery<HTMLDivElement>>> = {};
 
     function updateEmotesList(): void {
         emoteList.empty();
@@ -1075,13 +1075,13 @@ export async function setUpUI(game: Game): Promise<void> {
     const customizeEmote = $<HTMLDivElement>("#emote-customize-wheel");
     const emoteListItemContainer = $<HTMLDivElement>(".emotes-list-item-container");
 
-    function changeEmoteSlotImage(slot: typeof emoteSlots[number], emote: ReferenceTo<EmoteDefinition>): JQuery<HTMLDivElement> {
+    function changeEmoteSlotImage(slot: typeof EMOTE_SLOTS[number], emote: ReferenceTo<EmoteDefinition>): JQuery<HTMLDivElement> {
         return (
             emoteWheelUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
         ).css("background-image", emote ? `url("./img/game/emotes/${emote}.svg")` : "none");
     }
 
-    for (const slot of emoteSlots) {
+    for (const slot of EMOTE_SLOTS) {
         const cvar = `cv_loadout_${slot}_emote` as const;
         const emote = game.console.getBuiltInCVar(cvar);
 
@@ -1106,7 +1106,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
                 updateEmotesList();
 
-                if (emoteSlots.indexOf(slot) > 3) {
+                if (EMOTE_SLOTS.indexOf(slot) > 3) {
                     // win / death emote
                     customizeEmote.css(
                         "background-image",
@@ -2052,7 +2052,7 @@ export async function setUpUI(game: Game): Promise<void> {
             .css("top", "50%")
             .css("left", "50%");
 
-        const createEmoteWheelListener = (slot: typeof emoteSlots[number], emoteSlot: number): void => {
+        const createEmoteWheelListener = (slot: typeof EMOTE_SLOTS[number], emoteSlot: number): void => {
             $(`#emote-wheel .emote-${slot}`).on("click", () => {
                 ui.emoteWheel.hide();
                 let clicked = true;

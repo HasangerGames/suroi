@@ -52,7 +52,7 @@ import { autoPickup, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, u
 import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
-import { COLORS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
+import { COLORS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE, EMOTE_SLOTS } from "./utils/constants";
 import { loadTextures } from "./utils/pixi";
 import { Tween } from "./utils/tween";
 import { randomVector, randomFloat } from "../../../common/src/utils/random";
@@ -298,7 +298,7 @@ export class Game {
                         : skin
                 ),
                 badge: Badges.fromStringSafe(this.console.getBuiltInCVar("cv_loadout_badge")),
-                emotes: emoteSlots.map(
+                emotes: EMOTE_SLOTS.map(
                     slot => Emotes.fromStringSafe(this.console.getBuiltInCVar(`cv_loadout_${slot}_emote`))
                 )
             };
