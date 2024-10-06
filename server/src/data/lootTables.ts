@@ -23,19 +23,21 @@ type LootTierOverride = Record<string, readonly WeightedItem[]>;
 export const LootTierOverrides: Record<string, LootTierOverride> = {
     fall: {
         guns: [
-            { item: "m590m", weight: 0.8 },
+            { item: "m590m", weight: 0.4 },
             { item: "m1895", weight: 1.5 },
             { item: "sks", weight: 1 },
             { item: "hp18", weight: 1 },
-            { item: "dt11", weight: 0.5 },
+            { item: "dt11", weight: 0.6 },
             { item: "model_37", weight: 0.95 },
-            { item: "m3k", weight: 0.8 },
+            { item: "cz600", weight: 0.8 },
+            { item: "m3k", weight: 0.3 },
             { item: "flues", weight: 0.25 },
             { item: "sr25", weight: 0.25 },
             { item: "mini14", weight: 0.25 },
-            { item: "cz600", weight: 0.8 },
             { item: "vepr12", weight: 0.1 },
-            { item: "rsh12", weight: 0.05 },
+
+            { item: "rsh12", weight: 0.1 },
+            { item: "sks", weight: 0.8 },
             { item: "mosin_nagant", weight: 0.5 },
             { item: "tango_51", weight: 0.15 },
             { item: "vks", weight: 0.06 },
@@ -48,21 +50,21 @@ export const LootTierOverrides: Record<string, LootTierOverride> = {
             { item: "dt11", weight: 0.95 },
             { item: "m590m", weight: 0.8 },
             { item: "flues", weight: 0.8 },
-            { item: "m1895", weight: 0.45 },
             { item: "sr25", weight: 0.5 },
             { item: "mini14", weight: 0.5 },
-            { item: "vepr12", weight: 0.1 },
+            { item: "m1895", weight: 0.45 },
             { item: "cz600", weight: 0.3 },
             { item: "mosin_nagant", weight: 0.2 },
             { item: "tango_51", weight: 0.1 },
             { item: "sks", weight: 0.95 },
             { item: "vks", weight: 0.25 },
+            { item: "mosin_nagant", weight: 0.2 },
+            { item: "vepr12", weight: 0.1 },
             { item: "model_89", weight: 0.1 },
             { item: "m1_garand", weight: 0.3 },
             { item: "rsh12", weight: 0.09 }
         ],
         airdrop_guns: [
-            { item: "m1_garand", weight: 0.6 },
             { item: "mini14", weight: 1 },
             { item: "rsh12", weight: 1 },
             { item: "sr25", weight: 1 },
@@ -71,11 +73,13 @@ export const LootTierOverrides: Record<string, LootTierOverride> = {
             { item: "vks", weight: 1 },
             { item: "cz600", weight: 1 },
             { item: "mosin_nagant", weight: 0.95 },
+            { item: "m1_garand", weight: 0.9 },
             { item: "tango_51", weight: 0.9 },
             { item: "radio", weight: 0.1 }
         ],
         gold_airdrop_guns: [
             { item: "usas12", weight: 1 },
+            { item: "dual_rsh12", weight: 1 },
             { item: "l115a1", weight: 0.7 },
             { item: "mk18", weight: 0.7 },
             { item: "dual_rsh12", weight: 1 },
@@ -87,26 +91,26 @@ export const LootTierOverrides: Record<string, LootTierOverride> = {
             { item: "flues", weight: 0.9 },
             { item: "mini14", weight: 0.75 },
             { item: "sr25", weight: 0.75 },
+            { item: "m1_garand", weight: 0.1 },
+            { item: "tango_51", weight: 0.1 },
+            { item: "mosin_nagant", weight: 0.55 },
+            { item: "vks", weight: 0.1 },
             { item: "cz600", weight: 0.7 },
             { item: "vepr12", weight: 0.6 },
             { item: "rsh12", weight: 0.5 },
-            { item: "mosin_nagant", weight: 0.55 },
-            { item: "tango_51", weight: 0.1 },
-            { item: "vks", weight: 0.1 },
-            { item: "m1_garand", weight: 0.1 },
             { item: "model_89", weight: 0.09 }
         ],
         river_chest_guns: [
-            { item: "cz600", weight: 0.35 },
-            { item: "mini14", weight: 0.75 },
-            { item: "m1_garand", weight: 0.8 },
-            { item: "sr25", weight: 0.5 },
-            { item: "vks", weight: 0.5 },
-            { item: "rsh12", weight: 0.3 },
-            { item: "m1_garand", weight: 0.1 },
-            { item: "model_89", weight: 0.07 },
-            { item: "mosin_nagant", weight: 0.45 },
-            { item: "tango_51", weight: 0.2 }
+            { item: "model_89", weight: 1 },
+            { item: "mini14", weight: 1 },
+            { item: "sr25", weight: 1 },
+            { item: "vepr12", weight: 1 },
+            { item: "vks", weight: 0.7 },
+            { item: "m1_garand", weight: 0.7 },
+            { item: "tango_51", weight: 0.7 },
+            { item: "rsh12", weight: 0.7 },
+            { item: "l115a1", weight: 0.05 },
+            { item: "mk18", weight: 0.05 }
         ],
         ammo: [
             { item: "12g", count: 10, weight: 1 },
@@ -162,9 +166,9 @@ export const LootTableOverrides: Record<string, LootTableOverride> = {
             min: 1,
             max: 1,
             loot: [
+                { item: "usas12", weight: 1 },
                 { item: "mk18", weight: 0.2 },
-                { item: "l115a1", weight: 0.2 },
-                { item: "usas12", weight: 1 }
+                { item: "l115a1", weight: 0.2 }
             ]
         },
         gun_locker: {
@@ -177,14 +181,14 @@ export const LootTableOverrides: Record<string, LootTableOverride> = {
                 { item: "m3k", weight: 0.6 },
                 { item: "model_37", weight: 0.6 },
                 { item: "flues", weight: 0.6 },
-                { item: "cz600", weight: 0.3 },
+                { item: "cz600", weight: 0.4 },
                 { item: "vks", weight: 0.25 },
                 { item: "mosin_nagant", weight: 0.2 },
                 { item: "sr25", weight: 0.5 },
                 { item: "mini14", weight: 0.5 },
-                { item: "rsh12", weight: 0.25 },
                 { item: "vepr12", weight: 0.15 },
-                { item: "tango_51", weight: 0.5 }
+                { item: "tango_51", weight: 0.5 },
+                { item: "rsh12", weight: 0.25 }
             ]
         }
     }
