@@ -213,7 +213,7 @@ const maps = {
             small_bridge: Infinity,
             sea_traffic_control: 1,
             tugboat_red: 1,
-            tugboat_white: 5,
+            tugboat_white: 7,
             red_house: 2,
             red_house_v2: 2,
             lodge: 1,
@@ -222,10 +222,10 @@ const maps = {
             barn: 3,
             green_house: 2,
             warehouse: 4,
-            tent_1: 2,
-            tent_2: 2,
-            tent_3: 2,
-            tent_4: 2,
+            tent_1: 3,
+            tent_2: 3,
+            tent_3: 3,
+            tent_4: 3,
             tent_5: 1,
             tent_big_1: 1,
             tent_big_2: 1,
@@ -233,8 +233,8 @@ const maps = {
             tent_big_4: 1,
             porta_potty_fall: 10,
             hay_shed_1: 1,
-            hay_shed_2: 2,
-            hay_shed_3: 2
+            hay_shed_2: 3,
+            hay_shed_3: 3
         },
         majorBuildings: ["armory_damaged", "lodge"],
         quadBuildingLimit: {
@@ -281,7 +281,7 @@ const maps = {
         },
         obstacleClumps: [
             {
-                clumpAmount: 100,
+                clumpAmount: 110,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
