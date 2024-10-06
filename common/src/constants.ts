@@ -161,7 +161,7 @@ export const GameConstants = freezeDeep({
         defaultName: "Player",
         defaultSkin: "hazel_jumpsuit",
         killLeaderMinKills: 3,
-        maxMouseDist: 128,
+        maxMouseDist: 256,
         reviveTime: 8,
         maxReviveDist: 5
     },

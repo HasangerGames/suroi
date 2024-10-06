@@ -14,6 +14,8 @@ import type { Building } from "./building";
 import { type Obstacle } from "./obstacle";
 import { type Player } from "./player";
 
+const white = 0xFFFFFF;
+
 export class Bullet extends BaseBullet {
     readonly game: Game;
     private readonly _image: SuroiSprite;
@@ -36,10 +38,10 @@ export class Bullet extends BaseBullet {
             .setRotation(this.rotation - Math.PI / 2)
             .setVPos(toPixiCoords(this.position));
 
-        this.tracerLength = tracerStats.length;
+        this.tracerLength = tracerStats.length * (options.modifiers?.tracer?.length ?? 1);
         this.maxLength = this._image.width * this.tracerLength;
-        this._image.scale.y = tracerStats.width;
-        this._image.alpha = tracerStats.opacity / (this.reflectionCount + 1);
+        this._image.scale.y = tracerStats.width * (options.modifiers?.tracer?.width ?? 1);
+        this._image.alpha = tracerStats.opacity * (options.modifiers?.tracer?.opacity ?? 1) / (this.reflectionCount + 1);
         if (this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
             this._image.filters = new BloomFilter({
                 strength: 5
@@ -48,7 +50,6 @@ export class Bullet extends BaseBullet {
 
         if (!tracerStats.particle) this._image.anchor.set(1, 0.5);
 
-        const white = 0xFFFFFF;
         const color = new Color(
             tracerStats.color === -1
                 ? random(0, white)
@@ -100,13 +101,13 @@ export class Bullet extends BaseBullet {
 
         if (this.definition.tracer.particle) {
             this._image.scale.set(1 + (traveledDistance / this.maxDistance));
-            this._image.alpha = 2 * this.definition.speed * this._trailTicks / this.maxDistance;
+            this._image.alpha = 2 * this.definition.speed * (this.modifiers?.speed ?? 1) * this._trailTicks / this.maxDistance;
 
             this._trailReachedMaxLength ||= this._image.alpha >= 1;
         } else {
             const length = Math.min(
                 Math.min(
-                    this.definition.speed * this._trailTicks,
+                    this.definition.speed * (this.modifiers?.speed ?? 1) * this._trailTicks,
                     traveledDistance
                 ) * PIXI_SCALE,
                 this.maxLength

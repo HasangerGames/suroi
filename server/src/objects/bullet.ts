@@ -1,7 +1,7 @@
 import { Bullets } from "@common/definitions/bullets";
 import { type SingleGunNarrowing } from "@common/definitions/guns";
 import { Loots } from "@common/definitions/loots";
-import { BaseBullet } from "@common/utils/baseBullet";
+import { BaseBullet, type BulletOptions } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";
 import { Angle } from "@common/utils/math";
 import { randomFloat } from "@common/utils/random";
@@ -31,6 +31,7 @@ export interface ServerBulletOptions {
     readonly reflectionCount?: number
     readonly variance?: number
     readonly rangeOverride?: number
+    readonly modifiers?: BulletOptions["modifiers"]
 }
 
 export class Bullet extends BaseBullet {
@@ -76,8 +77,12 @@ export class Bullet extends BaseBullet {
     }
 
     update(): DamageRecord[] {
-        const lineRect = RectangleHitbox.fromLine(this.position, Vec.add(this.position, Vec.scale(this.velocity, this.game.dt)));
+        const lineRect = RectangleHitbox.fromLine(
+            this.position,
+            Vec.add(this.position, Vec.scale(this.velocity, this.game.dt))
+        );
         const { grid, dt, map: { width: mapWidth, height: mapHeight } } = this.game;
+        const noReflect = this.reflectionCount === 0;
 
         // Bullets from dead players should not deal damage so delete them
         // Also delete bullets out of map bounds
@@ -87,6 +92,11 @@ export class Bullet extends BaseBullet {
             || this.position.y < 0 || this.position.y > mapHeight
         ) {
             this.dead = true;
+
+            if (noReflect && this.sourceGun instanceof GunItem) {
+                this.sourceGun.registerMiss(this);
+            }
+
             return [];
         }
 
@@ -95,12 +105,14 @@ export class Bullet extends BaseBullet {
 
         const objects = grid.intersectsHitbox(lineRect);
 
+        let registered = false;
+        const damageMod = (this.modifiers?.damage ?? 1) / (this.reflectionCount + 1);
         for (const collision of this.updateAndGetCollisions(dt, objects)) {
             const object = collision.object as DamageRecord["object"];
             const { isObstacle, isBuilding } = object;
 
             if (isObstacle && object.definition.isStair) {
-                (object).handleStairInteraction(this);
+                object.handleStairInteraction(this);
                 continue;
             }
 
@@ -108,11 +120,20 @@ export class Bullet extends BaseBullet {
 
             records.push({
                 object,
-                damage: definition.damage / (this.reflectionCount + 1) * (isObstacle ? definition.obstacleMultiplier : 1),
+                damage: damageMod * definition.damage * (isObstacle ? (this.modifiers?.dtc ?? 1) * definition.obstacleMultiplier : 1),
                 weapon: this.sourceGun,
                 source: this.shooter,
                 position: point
             });
+
+            if (noReflect && this.sourceGun instanceof GunItem) {
+                registered = true;
+                if (object === this.shooter || !object.isPlayer) {
+                    this.sourceGun.registerMiss(this);
+                } else {
+                    this.sourceGun.registerHit(this);
+                }
+            }
 
             this.damagedIDs.add(object.id);
             this.position = point;
@@ -154,6 +175,12 @@ export class Bullet extends BaseBullet {
             }
         }
 
+        if (this.dead && noReflect && this.sourceGun instanceof GunItem) {
+            if (!registered) {
+                this.sourceGun.registerMiss(this);
+            }
+        }
+
         return records;
     }
 
@@ -167,6 +194,7 @@ export class Bullet extends BaseBullet {
                 layer: this.layer,
                 reflectionCount: this.reflectionCount + 1,
                 variance: this.rangeVariance,
+                modifiers: this.modifiers,
                 rangeOverride: this.clipDistance
             }
         );

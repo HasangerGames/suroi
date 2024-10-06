@@ -21,9 +21,9 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "main",
+    map: "arena",
 
-    spawn: { mode: SpawnMode.Normal },
+    spawn: { mode: SpawnMode.Center },
 
     maxTeamSize: TeamSize.Solo,
 
@@ -31,7 +31,7 @@ export const Config = {
     maxGames: 4,
     gameJoinTime: 60,
 
-    gas: { mode: GasMode.Normal },
+    gas: { mode: GasMode.Disabled },
 
     tps: 40,
 

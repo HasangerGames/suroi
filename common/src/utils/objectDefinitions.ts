@@ -71,7 +71,7 @@ type FunctionTemplate<
  * @template Def The overarching definition at play
  * @template Base The partial version being used as a template
  */
-type GetMissing<
+export type GetMissing<
     Def extends object,
     Base extends DeepPartial<Def> | FunctionTemplate<Def>
 > = Base extends (...args: any[]) => (infer Ret extends DeepPartial<Def>)
@@ -413,7 +413,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
     /**
      * A private mapping between identification strings and the index in the definition array
      */
-    private readonly idStringToNumber: Record<string, number> = {};
+    protected readonly idStringToNumber: Readonly<Record<string, number>> = {};
 
     protected constructor(
         defs: ReadonlyArray<RawDefinition<Def>>,
@@ -470,6 +470,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                 throw new Error(`Duplicated idString: ${idString}`);
             }
 
+            // @ts-expect-error init code
             this.idStringToNumber[idString] = i;
         }
     }
@@ -562,7 +563,8 @@ export enum ItemType {
     Armor,
     Backpack,
     Scope,
-    Skin
+    Skin,
+    Perk
 }
 
 export enum ObstacleSpecialRoles {
@@ -593,7 +595,8 @@ export const LootRadius: Record<ItemType, number> = {
     [ItemType.Armor]: 3,
     [ItemType.Backpack]: 3,
     [ItemType.Scope]: 3,
-    [ItemType.Skin]: 3
+    [ItemType.Skin]: 3,
+    [ItemType.Perk]: 3
 };
 
 export type BaseBulletDefinition = {
@@ -663,10 +666,23 @@ export interface PlayerModifiers {
     maxAdrenaline: number
     baseSpeed: number
     size: number
+    adrenDrain: number
 
     // Additive
     minAdrenaline: number
+    hpRegen: number
 }
+
+export const defaultModifiers = (): PlayerModifiers => ({
+    maxHealth: 1,
+    maxAdrenaline: 1,
+    baseSpeed: 1,
+    size: 1,
+    adrenDrain: 1,
+
+    minAdrenaline: 0,
+    hpRegen: 0
+});
 
 export interface WearerAttributes {
     /**
@@ -690,6 +706,14 @@ export interface WearerAttributes {
      * A number by which the player's size will be multiplied
      */
     readonly sizeMod?: number
+    /**
+     * A number by which the default adrenaline drain will be multiplied
+     */
+    readonly adrenDrain?: number
+    /**
+     * A number that will be added to the player's default health regen
+     */
+    readonly hpRegen?: number
 }
 
 export interface ExtendedWearerAttributes extends WearerAttributes {
@@ -705,6 +729,17 @@ export interface ExtendedWearerAttributes extends WearerAttributes {
      * A fixed amount of adrenaline restored
      */
     readonly adrenalineRestored?: number
+}
+
+export interface EventModifiers {
+    /**
+     * A set of attributes to applied whenever the player gets a kill
+     */
+    readonly kill: readonly ExtendedWearerAttributes[]
+    /**
+     * A set of attributes to applied whenever the player deals damage
+     */
+    readonly damageDealt: readonly ExtendedWearerAttributes[]
 }
 
 export interface ItemDefinition extends ObjectDefinition {
@@ -738,15 +773,6 @@ export interface InventoryItemDefinition extends ItemDefinition {
         /**
          * These attributes are applied or removed when certain events occur
          */
-        readonly on?: {
-            /**
-             * These attributes are applied whenever the player gets a kill
-             */
-            readonly kill?: readonly ExtendedWearerAttributes[]
-            /**
-             * These attributs are applied whenever the player deals damage
-             */
-            readonly damageDealt?: readonly ExtendedWearerAttributes[]
-        }
+        readonly on?: Partial<EventModifiers>
     }
 }

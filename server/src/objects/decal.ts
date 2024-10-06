@@ -12,6 +12,8 @@ export class Decal extends BaseGameObject.derive(ObjectCategory.Decal) {
     override readonly fullAllocBytes = 4;
     override readonly partialAllocBytes = 4;
 
+    declare hitbox?: undefined;
+
     readonly definition: DecalDefinition;
 
     constructor(game: Game, definition: ReifiableDef<DecalDefinition>, position: Vector, rotation?: number, layer?: number) {

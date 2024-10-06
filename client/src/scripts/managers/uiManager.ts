@@ -10,7 +10,7 @@ import { MapPings, type PlayerPing } from "../../../../common/src/definitions/ma
 import { DEFAULT_SCOPE, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { type GameOverData } from "../../../../common/src/packets/gameOverPacket";
 import { type KillFeedPacketData } from "../../../../common/src/packets/killFeedPacket";
-import { type PlayerData } from "../../../../common/src/packets/updatePacket";
+import { type PerkCollection, type PlayerData } from "../../../../common/src/packets/updatePacket";
 import { Numeric } from "../../../../common/src/utils/math";
 import { ExtendedMap, freezeDeep } from "../../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
@@ -57,6 +57,11 @@ export class UIManager {
     emotes: ReadonlyArray<EmoteDefinition | undefined> = [];
 
     teammates: PlayerData["teammates"] & object = [];
+
+    perks: PerkCollection = {
+        asBitfield: () => 0,
+        asList: () => []
+    };
 
     readonly debugReadouts = Object.freeze({
         fps: $<HTMLSpanElement>("#fps-counter"),
@@ -481,7 +486,8 @@ export class UIManager {
             inventory,
             lockedSlots,
             items,
-            activeC4s
+            activeC4s,
+            perks
         } = data;
 
         if (id !== undefined) this.game.activePlayerID = id.id;
@@ -652,6 +658,11 @@ export class UIManager {
         if (activeC4s !== undefined) {
             this.ui.c4Button.toggle(activeC4s);
             this.hasC4s = activeC4s;
+        }
+
+        if (perks) {
+            this.perks = perks;
+            // TODO: funny perks hud stuff
         }
     }
 

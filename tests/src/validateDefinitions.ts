@@ -1677,6 +1677,19 @@ logger.indent("Validating guns", () => {
                 baseErrorPath: errorPath
             });
 
+            tester.assertValidOrNPV({
+                obj: gun,
+                field: "extendedCapacity",
+                defaultValue: gun.capacity,
+                validatorIfPresent: (extended, errorPath) => {
+                    tester.assertIsNaturalFiniteNumber({
+                        value: extended,
+                        errorPath
+                    });
+                },
+                baseErrorPath: errorPath
+            });
+
             tester.assertIsPositiveFiniteReal({
                 obj: gun,
                 field: "reloadTime",

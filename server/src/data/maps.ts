@@ -336,7 +336,8 @@ const maps = {
                     [ItemType.Armor]: 1,
                     [ItemType.Backpack]: 1,
                     [ItemType.Scope]: 1,
-                    [ItemType.Skin]: 1
+                    [ItemType.Skin]: 1,
+                    [ItemType.Perk]: Infinity
                 };
 
                 const game = map.game;

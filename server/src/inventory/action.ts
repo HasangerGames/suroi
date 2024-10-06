@@ -6,6 +6,7 @@ import { type ReifiableDef } from "@common/utils/objectDefinitions";
 
 import { type Player } from "../objects/player";
 import { type GunItem } from "./gunItem";
+import { PerkIds } from "@common/definitions/perks";
 
 export abstract class Action {
     readonly player: Player;
@@ -83,12 +84,15 @@ export class ReloadAction extends Action {
         const definition = this.item.definition;
 
         const doSingleReload = definition.singleReload && !this.fullReload;
+        const capacity = this.player.hasPerk(PerkIds.HiCap)
+            ? definition.extendedCapacity ?? definition.capacity
+            : definition.capacity;
 
         const difference = Math.min(
             items.getItem(definition.ammoType),
             doSingleReload
-                ? (definition.isDual && this.item.ammo !== (this.item.definition.capacity - 1)) ? 2 : 1
-                : this.item.definition.capacity - this.item.ammo
+                ? (definition.isDual && this.item.ammo !== (capacity - 1)) ? 2 : 1
+                : capacity - this.item.ammo
         );
         this.item.ammo += difference;
         items.decrementItem(definition.ammoType, difference);

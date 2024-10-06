@@ -501,7 +501,7 @@ export interface EventDataMap {
          * Specific type will be `{ readonly [K in (typeof item)["modifiers"]]: boolean }`
          */
         readonly diff: {
-            readonly [K in keyof PlayerModifiers]: boolean
+            readonly [K in Exclude<keyof PlayerModifiers, "on">]: boolean
         }
     }
 

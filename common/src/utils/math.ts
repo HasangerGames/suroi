@@ -101,12 +101,29 @@ export const Numeric = Object.freeze({
     addOrientations(n1: Orientation, n2: Orientation): Orientation {
         return (n1 + n2) % 4 as Orientation;
     },
-
     /**
      * Remaps a value from a range to another
      */
     remap(value: number, min0: number, max0: number, min1: number, max1: number) {
         return Numeric.lerp(min1, max1, Numeric.clamp((value - min0) / (max0 - min0), 0, 1));
+    },
+    /**
+     * Returns the smaller of two values
+     * @param a The first value
+     * @param b The second value
+     * @returns The smallest of the two
+     */
+    min<N extends number | bigint>(a: N, b: N): N {
+        return a < b ? a : b;
+    },
+    /**
+     * Returns the larger of two values
+     * @param a The first value
+     * @param b The second value
+     * @returns The largest of the two
+     */
+    max<N extends number | bigint>(a: N, b: N): N {
+        return a > b ? a : b;
     }
 });
 

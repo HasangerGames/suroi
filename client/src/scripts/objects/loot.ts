@@ -115,6 +115,10 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                     backgroundTexture = "loot_background_throwable";
                     break;
                 }
+                case ItemType.Perk: {
+                    backgroundTexture = "loot_background_perk";
+                    break;
+                }
             }
 
             if (backgroundTexture !== undefined) {
@@ -238,6 +242,9 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                 return inventory.items[definition.idString] === 0;
             }
             case ItemType.Skin: {
+                return true;
+            }
+            case ItemType.Perk: {
                 return true;
             }
         }

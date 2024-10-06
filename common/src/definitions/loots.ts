@@ -5,6 +5,7 @@ import { Backpacks, type BackpackDefinition } from "./backpacks";
 import { Guns, type GunDefinition } from "./guns";
 import { HealingItems, type HealingItemDefinition } from "./healingItems";
 import { Melees, type MeleeDefinition } from "./melees";
+import { Perks, type PerkDefinition } from "./perks";
 import { Scopes, type ScopeDefinition } from "./scopes";
 import { Skins, type SkinDefinition } from "./skins";
 import { Throwables, type ThrowableDefinition } from "./throwables";
@@ -18,7 +19,8 @@ export type LootDefinition =
     BackpackDefinition |
     ScopeDefinition |
     SkinDefinition |
-    ThrowableDefinition;
+    ThrowableDefinition |
+    PerkDefinition;
 
 export type WeaponDefinition =
     GunDefinition |
@@ -65,6 +67,7 @@ export const Loots = new LootDefinitions(
         ...Armors,
         ...Backpacks,
         ...Scopes,
-        ...Skins
+        ...Skins,
+        ...Perks
     ]
 );

@@ -403,7 +403,7 @@ export class Game {
                     const inventoryMsg = this.uiManager.ui.inventoryMsg;
                     inventoryMsg.text(getTranslatedString(inventoryMessageMap[message])).fadeIn(250);
                     clearTimeout(this.inventoryMsgTimeout);
-                    this.inventoryMsgTimeout = setTimeout(() => inventoryMsg.fadeOut(250), 2500) as unknown as number;
+                    this.inventoryMsgTimeout = window.setTimeout(() => inventoryMsg.fadeOut(250), 2500);
                 } else if (item !== undefined) {
                     let soundID: string;
                     switch (item.itemType) {
@@ -446,7 +446,7 @@ export class Game {
         // game started if page is out of focus.
         if (!document.hasFocus()) this.soundManager.play("join_notification");
 
-       // this.windAmbientSound = this.soundManager.play("wind_ambience", { loop: true });
+        // this.windAmbientSound = this.soundManager.play("wind_ambience", { loop: true });
 
         this.uiManager.emotes = packet.emotes;
         this.uiManager.updateEmoteWheel();

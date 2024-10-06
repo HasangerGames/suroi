@@ -1,7 +1,8 @@
 import { Loots, type LootDefinition, type WeaponDefinition } from "@common/definitions/loots";
-import { type ItemType, type PlayerModifiers, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
+import { defaultModifiers, type ItemType, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 
 import { type Player } from "../objects/player";
+import { Numeric } from "@common/utils/math";
 
 /**
  * Represents some item in the player's inventory *that can be equipped*
@@ -21,14 +22,7 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
      */
     readonly owner: Player;
 
-    private readonly _modifiers: PlayerModifiers = {
-        maxHealth: 1,
-        maxAdrenaline: 1,
-        baseSpeed: 1,
-        size: 1,
-
-        minAdrenaline: 0
-    };
+    private readonly _modifiers = defaultModifiers();
 
     /**
      * Returns a clone
@@ -127,23 +121,21 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
     stopUse(): void { /* see doc comment */ }
 
     refreshModifiers(): void {
-        const definition = this.definition;
-        if (!definition.wearerAttributes) return;
+        const wearerAttributes = this.definition.wearerAttributes;
+        if (!wearerAttributes) return;
 
-        const { active, passive, on } = definition.wearerAttributes;
-        const newModifiers: PlayerModifiers = {
-            maxHealth: 1,
-            maxAdrenaline: 1,
-            baseSpeed: 1,
-            size: 1,
-            minAdrenaline: 0
-        };
+        const { active, passive, on } = wearerAttributes;
+        const newModifiers = defaultModifiers();
+
         const applyModifiers = (modifiers: WearerAttributes): void => {
             newModifiers.maxHealth *= modifiers.maxHealth ?? 1;
             newModifiers.maxAdrenaline *= modifiers.maxAdrenaline ?? 1;
             newModifiers.baseSpeed *= modifiers.speedBoost ?? 1;
             newModifiers.size *= modifiers.sizeMod ?? 1;
+            newModifiers.adrenDrain *= modifiers.adrenDrain ?? 1;
+
             newModifiers.minAdrenaline += modifiers.minAdrenaline ?? 0;
+            newModifiers.hpRegen += modifiers.hpRegen ?? 0;
         };
 
         if (passive) applyModifiers(passive);
@@ -151,7 +143,6 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
 
         if (on) {
             const { damageDealt, kill } = on;
-
             for (
                 const { modifiers, count } of [
                     { modifiers: damageDealt, count: this._stats.damage },
@@ -160,7 +151,7 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
             ) {
                 for (const entry of modifiers ?? []) {
                     for (
-                        let i = 0, limit = Math.min(count, entry.limit ?? Infinity);
+                        let i = 0, limit = Numeric.min(count, entry.limit ?? Infinity);
                         i < limit;
                         i++
                     ) applyModifiers(entry);
@@ -173,7 +164,10 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
             maxAdrenaline: this._modifiers.maxAdrenaline !== newModifiers.maxAdrenaline,
             minAdrenaline: this._modifiers.minAdrenaline !== newModifiers.minAdrenaline,
             size: this._modifiers.size !== newModifiers.size,
-            baseSpeed: this._modifiers.baseSpeed !== newModifiers.baseSpeed
+            adrenDrain: this._modifiers.adrenDrain !== newModifiers.adrenDrain,
+
+            baseSpeed: this._modifiers.baseSpeed !== newModifiers.baseSpeed,
+            hpRegen: this._modifiers.hpRegen !== newModifiers.hpRegen
         };
 
         if (Object.values(diff).some(v => v)) {
@@ -183,7 +177,10 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
             this._modifiers.maxAdrenaline = newModifiers.maxAdrenaline;
             this._modifiers.minAdrenaline = newModifiers.minAdrenaline;
             this._modifiers.size = newModifiers.size;
+            this._modifiers.adrenDrain = newModifiers.adrenDrain;
+
             this._modifiers.baseSpeed = newModifiers.baseSpeed;
+            this._modifiers.hpRegen = newModifiers.hpRegen;
 
             this.owner.game.pluginManager.emit(
                 "inv_item_modifiers_changed",
@@ -233,6 +230,13 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
             );
         }
     }
+
+    /**
+     * A method that *does nothing*, but that may be overridden by subclasses to perform any cleanup
+     * when this weapon instance is destroyed. An inventory item is "destroyed" when it is removed
+     * from an inventory.
+     */
+    destroy(): void { /* see doc comment */ };
 }
 
 export abstract class CountableInventoryItem<Def extends WeaponDefinition = WeaponDefinition> extends InventoryItem<Def> {

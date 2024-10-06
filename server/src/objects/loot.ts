@@ -228,6 +228,9 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
             case ItemType.Skin: {
                 return player.loadout.skin.idString !== definition.idString || InventoryMessages.ItemAlreadyEquipped;
             }
+            case ItemType.Perk: {
+                return !player.hasPerk(definition);
+            }
         }
     }
 
@@ -426,6 +429,12 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
                 player.loadout.skin = definition;
 
                 player.setDirty();
+                break;
+            }
+            case ItemType.Perk: {
+                if (player.perks.addPerk(definition)) {
+                    player.updateAndApplyModifiers();
+                }
                 break;
             }
         }
