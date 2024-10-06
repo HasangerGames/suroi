@@ -1,7 +1,6 @@
 import { FireMode } from "../constants";
 import { ItemType, ObjectDefinitions, type InventoryItemDefinition } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
-import { Materials } from "./obstacles";
 
 export interface MeleeDefinition extends InventoryItemDefinition {
     readonly itemType: ItemType.Melee
@@ -9,7 +8,7 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     readonly damage: number
     readonly obstacleMultiplier: number
     readonly piercingMultiplier?: number // If it does less dmg vs pierceable objects than it would vs a normal one
-    readonly canPierceMaterials?: ReadonlyArray<typeof Materials[number]>
+    readonly stonePiercing?: boolean
     readonly swingSound: string
     readonly radius: number
     readonly offset: Vector
@@ -101,7 +100,6 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             damage: 45,
             obstacleMultiplier: 2,
             piercingMultiplier: 1.5,
-            canPierceMaterials: ["cardboard", "crate", "iron"], // because ammo crate has "cardboard" material
             radius: 2,
             swingSound: "heavy_swing",
             offset: Vec.create(5.4, -0.5),
@@ -127,7 +125,6 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             damage: 50,
             obstacleMultiplier: 2,
             piercingMultiplier: 2,
-            canPierceMaterials: ["cardboard", "crate", "iron"],
             radius: 2.05,
             swingSound: "heavy_swing",
             offset: Vec.create(5.4, -0.5),
@@ -154,7 +151,6 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             damage: 40,
             obstacleMultiplier: 2.2,
             piercingMultiplier: 2,
-            canPierceMaterials: ["cardboard", "crate", "iron"], // ammo crate moment
             radius: 2.58,
             offset: Vec.create(5.9, 1.7),
             cooldown: 560,
@@ -228,8 +224,8 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             damage: 54,
             swingSound: "heavy_swing",
             obstacleMultiplier: 2,
+            stonePiercing: true,
             piercingMultiplier: 1,
-            canPierceMaterials: ["cardboard", "crate", "iron", "stone"],
             radius: 2.7,
             offset: Vec.create(5.4, -0.5),
             cooldown: 450,
@@ -253,9 +249,9 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             name: "Steelfang",
             damage: 40,
             noDrop: true,
+            stonePiercing: true,
             obstacleMultiplier: 1,
             piercingMultiplier: 1,
-            canPierceMaterials: ["cardboard", "crate", "iron", "stone"],
             radius: 2.7,
             offset: Vec.create(3.1, 0.9),
             cooldown: 200,
@@ -308,8 +304,8 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             damage: 75,
             obstacleMultiplier: 2.5,
             piercingMultiplier: 1,
-            canPierceMaterials: Materials,
             killstreak: true,
+            stonePiercing: true,
             radius: 4,
             offset: Vec.create(5, 0),
             cooldown: 300,
@@ -387,7 +383,6 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             radius: 4.1,
             // maxTargets: Infinity, - TODO: It must hit multiple targets at once, however enabling this causes melee through wall bug to appear
             offset: Vec.create(7.2, 0.5),
-            canPierceMaterials: ["cardboard", "crate", "iron"],
             piercingMultiplier: 0.95,
             cooldown: 450,
             fists: {

@@ -16,7 +16,7 @@ import { Loots } from "../../common/src/definitions/loots";
 import { MapPings } from "../../common/src/definitions/mapPings";
 import { Melees } from "../../common/src/definitions/melees";
 import { Modes } from "../../common/src/definitions/modes";
-import { Materials, Obstacles, RotationMode } from "../../common/src/definitions/obstacles";
+import { Obstacles, RotationMode } from "../../common/src/definitions/obstacles";
 import { Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
 import { SyncedParticles } from "../../common/src/definitions/syncedParticles";
@@ -2158,23 +2158,6 @@ logger.indent("Validating melees", () => {
                     baseErrorPath: errorPath
                 });
             }
-
-            tester.assertValidOrNPV({
-                obj: melee,
-                field: "canPierceMaterials",
-                defaultValue: [],
-                equalityFunction: a => a.length === 0,
-                validatorIfPresent: (pierce, errorPath) => {
-                    tester.runTestOnArray(
-                        pierce,
-                        (material, errorPath) => {
-                            tester.assert(Materials.includes(material), `Material '${material}' does not exist.`, errorPath);
-                        },
-                        errorPath
-                    );
-                },
-                baseErrorPath: errorPath
-            });
 
             tester.assertIsPositiveReal({
                 obj: melee,
