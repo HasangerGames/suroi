@@ -5749,7 +5749,13 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(81.5, 1.8, Vec.create(47.9, 70.5)),
                     RectangleHitbox.fromRect(1.8, 18, Vec.create(8.05, 71.4))
                 ),
-                obstacles: [],
+                obstacles: [
+                  /*  { idString: "file_cart", position: Vec.create(-19.76, -5.83), rotation: 1 },
+                    { idString: "house_column", position: Vec.create(-5.9, -17.94) },
+                    { idString: "house_column", position: Vec.create(-5.84, 2.99) },
+                    { idString: "house_column", position: Vec.create(-121.44, 9) },
+                    { idString: "house_column", position: Vec.create(-121.52, -11.84) },*/
+                ],
                 subBuildings: []
             }
         ] satisfies Missing[];
