@@ -191,7 +191,7 @@
         hitboxes.push(JSON.parse(JSON.stringify(selected)));
     }
 
-    const bgImage = loadImage("/img/modes/fall/buildings/lodge_floor.png");
+    const bgImage = loadImage("/img/modes/fall/buildings/plumpkin_bunker_floor_tweaked&tiled.png");
 </script>
 
 <main>

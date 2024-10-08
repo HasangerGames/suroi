@@ -5675,6 +5675,82 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     }
                 ],
                 ceilingHiddenAlpha: 0.45
+            },
+            {
+                idString: "plumpkin_bunker",
+                name: "Plumpkin Bunker",
+                material: "metal_heavy",
+                particle: "metal_particle",
+                reflectBullets: true,
+                spawnHitbox: RectangleHitbox.fromRect(350, 290),
+                floorImages: [
+                    {
+                        key: "plumpkin_bunker_floor",
+                        position: Vec.create(0, 0)
+                    }
+                ],
+                hitbox: new GroupHitbox(
+
+                    // Inner
+                    RectangleHitbox.fromRect(4.25, 4.25, Vec.create(-29.85, 41.7)),
+                    RectangleHitbox.fromRect(4.25, 4.25, Vec.create(-10.05, 41.7)),
+                    RectangleHitbox.fromRect(4.25, 4.25, Vec.create(-29.85, 61.4)),
+                    RectangleHitbox.fromRect(4.25, 4.25, Vec.create(-10.05, 61.4)),
+
+                    RectangleHitbox.fromRect(5.15, 1.8, Vec.create(9.8, 41.9)),
+                    RectangleHitbox.fromRect(1.8, 18, Vec.create(8.1, 33)),
+                    RectangleHitbox.fromRect(1.8, 68.9, Vec.create(11.5, 8.4)),
+                    RectangleHitbox.fromRect(1.8, 96.8, Vec.create(-48.1, -5.7)),
+                    RectangleHitbox.fromRect(32.5, 1.8, Vec.create(-46.6, 24.2)),
+                    RectangleHitbox.fromRect(39.3, 1.8, Vec.create(-91.9, 24.2)),
+                    RectangleHitbox.fromRect(23.1, 1.8, Vec.create(0.9, 24.2)),
+                    RectangleHitbox.fromRect(13.5, 1.8, Vec.create(-41.5, -25.15)),
+                    RectangleHitbox.fromRect(1.85, 18.25, Vec.create(-35.8, -45)),
+                    RectangleHitbox.fromRect(1.85, 18.25, Vec.create(11.6, -45)),
+                    RectangleHitbox.fromRect(49.3, 1.5, Vec.create(-12.1, -53.4)),
+                    RectangleHitbox.fromRect(31.5, 1.8, Vec.create(26.25, -25.2)),
+                    RectangleHitbox.fromRect(1.8, 28.5, Vec.create(23.9, -39.9)),
+                    RectangleHitbox.fromRect(1.8, 28.5, Vec.create(33.6, -39.9)),
+                    RectangleHitbox.fromRect(39, 1.8, Vec.create(42.8, -53.25)),
+                    RectangleHitbox.fromRect(18.7, 1.8, Vec.create(-39.7, 80.4)),
+                    RectangleHitbox.fromRect(1.8, 22.5, Vec.create(-37.6, -108.7)),
+                    RectangleHitbox.fromRect(1.8, 22.5, Vec.create(-18.4, -108.7)),
+                    RectangleHitbox.fromRect(1.8, 22.5, Vec.create(-5.6, -108.7)),
+                    RectangleHitbox.fromRect(1.8, 22.5, Vec.create(13.6, -108.7)),
+                    RectangleHitbox.fromRect(12, 1.8, Vec.create(-12, -98.35)),
+                    RectangleHitbox.fromRect(4.7, 1.8, Vec.create(15, -98.35)),
+                    RectangleHitbox.fromRect(4.9, 1.8, Vec.create(9.95, 63.3)),
+                    RectangleHitbox.fromRect(1.8, 8, Vec.create(11.5, 66.5)),
+
+                    // Outer
+                    RectangleHitbox.fromRect(1.8, 29, Vec.create(-7.3, 94)),
+                    RectangleHitbox.fromRect(16.1, 1.8, Vec.create(-0.1, 107.8)),
+                    RectangleHitbox.fromRect(79.3, 1.8, Vec.create(-31.7, 120.25)),
+                    RectangleHitbox.fromRect(19.55, 1.8, Vec.create(-0.85, 80.4)),
+                    RectangleHitbox.fromRect(1.8, 20.5, Vec.create(-70.5, 109.6)),
+                    RectangleHitbox.fromRect(64, 1.8, Vec.create(-101.8, 100.25)),
+                    RectangleHitbox.fromRect(1.8, 78, Vec.create(-132.8, 62.3)),
+                    RectangleHitbox.fromRect(12, 1.8, Vec.create(-138.5, 24.2)),
+                    RectangleHitbox.fromRect(1.8, 101.9, Vec.create(-143.6, -25.9)),
+                    RectangleHitbox.fromRect(71.9, 1.8, Vec.create(-108.5, -76)),
+                    RectangleHitbox.fromRect(1.8, 35.3, Vec.create(-73.45, -81.65)),
+                    RectangleHitbox.fromRect(17.79, 1.8, Vec.create(-64.85, -98.4)),
+                    RectangleHitbox.fromRect(21, 1.8, Vec.create(39.9, -98.4)),
+                    RectangleHitbox.fromRect(1.8, 22.5, Vec.create(-56.85, -109.9)),
+                    RectangleHitbox.fromRect(91.8, 1.8, Vec.create(-12, -120.25)),
+                    RectangleHitbox.fromRect(1.8, 22.5, Vec.create(32.95, -109.9)),
+                    RectangleHitbox.fromRect(1.9, 16, Vec.create(49.425, -90)),
+                    RectangleHitbox.fromRect(82, 1.8, Vec.create(91.05, -90.1)),
+                    RectangleHitbox.fromRect(1.8, 66, Vec.create(131.2, -57.4)),
+                    RectangleHitbox.fromRect(14, 1.8, Vec.create(137.5, -40.25)),
+                    RectangleHitbox.fromRect(1.85, 35, Vec.create(143.6, -22.6)),
+                    RectangleHitbox.fromRect(57, 1.85, Vec.create(115.35, -6)),
+                    RectangleHitbox.fromRect(1.85, 77, Vec.create(87.8, 33)),
+                    RectangleHitbox.fromRect(81.5, 1.8, Vec.create(47.9, 70.5)),
+                    RectangleHitbox.fromRect(1.8, 18, Vec.create(8.05, 71.4))
+                ),
+                obstacles: [],
+                subBuildings: []
             }
         ] satisfies Missing[];
     }
