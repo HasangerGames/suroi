@@ -22,11 +22,11 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "singleBuilding:plumpkin_bunker",
+    map: "fall",
 
-    mode: "fall",
+    lootTableOverride: "fall", // IMPORTANT: DELETE IF NORMAL MODE.
 
-    spawn: { mode: SpawnMode.Center },
+    spawn: { mode: SpawnMode.Normal },
 
     maxTeamSize: TeamSize.Solo,
 
@@ -97,7 +97,7 @@ export interface ConfigType {
     /**
      * The gamemode, which over-rides loot tables.
      */
-    readonly mode?: LootMode
+    readonly lootTableOverride?: LootMode
 
     /**
      * There are 4 spawn modes: `Normal`, `Radius`, `Fixed`, and `Center`.

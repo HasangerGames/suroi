@@ -54,7 +54,7 @@ export function getLootTableLoot(loots: readonly WeightedItem[]): LootItem[] {
         const selection of [weightedRandom<WeightedItem | readonly WeightedItem[]>(items, weights)].flat()
     ) {
         if ("tier" in selection) {
-            const lootTier = ((Config.mode && LootTierOverrides[Config.mode][selection.tier]) ?? LootTiers[selection.tier]) as WeightedItem[];
+            const lootTier = ((Config.lootTableOverride && LootTierOverrides[Config.lootTableOverride][selection.tier]) ?? LootTiers[selection.tier]) as WeightedItem[];
             loot = loot.concat(getLootTableLoot(lootTier));
             continue;
         }

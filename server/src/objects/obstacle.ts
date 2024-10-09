@@ -102,7 +102,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         this.collidable = !definition.noCollisions;
 
         if (definition.hasLoot) {
-            const lootTable = ((Config.mode && LootTableOverrides[Config.mode]?.[this.definition.idString]) ?? LootTables[this.definition.idString]) as LootTable;
+            const lootTable = ((Config.lootTableOverride && LootTableOverrides[Config.lootTableOverride]?.[this.definition.idString]) ?? LootTables[this.definition.idString]) as LootTable;
             // TODO Clean up code
             for (let i = 0; i < random(lootTable.min, lootTable.max); i++) {
                 if (lootTable.loot.length > 0 && lootTable.loot[0] instanceof Array) {
