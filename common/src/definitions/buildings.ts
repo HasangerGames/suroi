@@ -73,6 +73,7 @@ export interface BuildingDefinition extends ObjectDefinition {
         readonly delay: number
         readonly order?: readonly string[]
         readonly solvedSound?: boolean
+        readonly soundPosition?: Vector
         /**
          * Don't wait for the interact delay before setting solved to true
          */
@@ -3872,7 +3873,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 spawnHitbox: RectangleHitbox.fromRect(9, 3, Vec.create(0, 1)),
                 obstacles: [
                     { idString: "detector_walls", position: Vec.create(0, 0), rotation: 0 },
-                    { idString: "detector_top", position: Vec.create(0, 1), rotation: 0 }
+                    { idString: "detector_top", position: Vec.create(0, 0.5), rotation: 0 }
                 ]
             },
             {
@@ -5685,83 +5686,330 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 idString: "plumpkin_bunker",
                 name: "Plumpkin Bunker",
                 material: "metal_heavy",
-                particle: "metal_particle",
                 reflectBullets: true,
                 spawnHitbox: RectangleHitbox.fromRect(350, 290),
+                sounds: {
+                    normal: "plumpkin_bunker_pump_ambience",
+                    position: Vec.create(119.27, -51.22),
+                    maxRange: 350,
+                    falloff: 1
+                },
                 floorImages: [
                     {
                         key: "plumpkin_bunker_floor",
                         position: Vec.create(0, 0)
-                    }
+                    },
+                    // {
+                    //     key: "plumpkin_bunker_obstacles",
+                    //     position: Vec.create(0, 0)
+                    // }
                 ],
                 hitbox: new GroupHitbox(
-
-                    // Inner
-                    RectangleHitbox.fromRect(4.25, 4.25, Vec.create(-29.85, 41.7)),
-                    RectangleHitbox.fromRect(4.25, 4.25, Vec.create(-10.05, 41.7)),
-                    RectangleHitbox.fromRect(4.25, 4.25, Vec.create(-29.85, 61.4)),
-                    RectangleHitbox.fromRect(4.25, 4.25, Vec.create(-10.05, 61.4)),
-
-                    RectangleHitbox.fromRect(5.15, 1.8, Vec.create(9.8, 41.9)),
-                    RectangleHitbox.fromRect(1.8, 18, Vec.create(8.1, 33)),
-                    RectangleHitbox.fromRect(1.8, 68.9, Vec.create(11.5, 8.4)),
-                    RectangleHitbox.fromRect(1.8, 96.8, Vec.create(-48.1, -5.7)),
-                    RectangleHitbox.fromRect(32.5, 1.8, Vec.create(-46.6, 24.2)),
-                    RectangleHitbox.fromRect(39.3, 1.8, Vec.create(-91.9, 24.2)),
-                    RectangleHitbox.fromRect(23.1, 1.8, Vec.create(0.9, 24.2)),
-                    RectangleHitbox.fromRect(13.5, 1.8, Vec.create(-41.5, -25.15)),
-                    RectangleHitbox.fromRect(1.85, 18.25, Vec.create(-35.8, -45)),
-                    RectangleHitbox.fromRect(1.85, 18.25, Vec.create(11.6, -45)),
-                    RectangleHitbox.fromRect(49.3, 1.5, Vec.create(-12.1, -53.4)),
-                    RectangleHitbox.fromRect(31.5, 1.8, Vec.create(26.25, -25.2)),
-                    RectangleHitbox.fromRect(1.8, 28.5, Vec.create(23.9, -39.9)),
-                    RectangleHitbox.fromRect(1.8, 28.5, Vec.create(33.6, -39.9)),
-                    RectangleHitbox.fromRect(39, 1.8, Vec.create(42.8, -53.25)),
-                    RectangleHitbox.fromRect(18.7, 1.8, Vec.create(-39.7, 80.4)),
-                    RectangleHitbox.fromRect(1.8, 22.5, Vec.create(-37.6, -108.7)),
-                    RectangleHitbox.fromRect(1.8, 22.5, Vec.create(-18.4, -108.7)),
-                    RectangleHitbox.fromRect(1.8, 22.5, Vec.create(-5.6, -108.7)),
-                    RectangleHitbox.fromRect(1.8, 22.5, Vec.create(13.6, -108.7)),
-                    RectangleHitbox.fromRect(12, 1.8, Vec.create(-12, -98.35)),
-                    RectangleHitbox.fromRect(4.7, 1.8, Vec.create(15, -98.35)),
-                    RectangleHitbox.fromRect(4.9, 1.8, Vec.create(9.95, 63.3)),
-                    RectangleHitbox.fromRect(1.8, 8, Vec.create(11.5, 66.5)),
-
-                    // Outer
-                    RectangleHitbox.fromRect(1.8, 29, Vec.create(-7.3, 94)),
-                    RectangleHitbox.fromRect(16.1, 1.8, Vec.create(-0.1, 107.8)),
-                    RectangleHitbox.fromRect(79.3, 1.8, Vec.create(-31.7, 120.25)),
-                    RectangleHitbox.fromRect(19.55, 1.8, Vec.create(-0.85, 80.4)),
-                    RectangleHitbox.fromRect(1.8, 20.5, Vec.create(-70.5, 109.6)),
-                    RectangleHitbox.fromRect(64, 1.8, Vec.create(-101.8, 100.25)),
-                    RectangleHitbox.fromRect(1.8, 78, Vec.create(-132.8, 62.3)),
-                    RectangleHitbox.fromRect(12, 1.8, Vec.create(-138.5, 24.2)),
-                    RectangleHitbox.fromRect(1.8, 101.9, Vec.create(-143.6, -25.9)),
-                    RectangleHitbox.fromRect(71.9, 1.8, Vec.create(-108.5, -76)),
-                    RectangleHitbox.fromRect(1.8, 35.3, Vec.create(-73.45, -81.65)),
-                    RectangleHitbox.fromRect(17.79, 1.8, Vec.create(-64.85, -98.4)),
-                    RectangleHitbox.fromRect(21, 1.8, Vec.create(39.9, -98.4)),
-                    RectangleHitbox.fromRect(1.8, 22.5, Vec.create(-56.85, -109.9)),
-                    RectangleHitbox.fromRect(91.8, 1.8, Vec.create(-12, -120.25)),
-                    RectangleHitbox.fromRect(1.8, 22.5, Vec.create(32.95, -109.9)),
-                    RectangleHitbox.fromRect(1.9, 16, Vec.create(49.425, -90)),
-                    RectangleHitbox.fromRect(82, 1.8, Vec.create(91.05, -90.1)),
-                    RectangleHitbox.fromRect(1.8, 66, Vec.create(131.2, -57.4)),
-                    RectangleHitbox.fromRect(14, 1.8, Vec.create(137.5, -40.25)),
-                    RectangleHitbox.fromRect(1.85, 35, Vec.create(143.6, -22.6)),
-                    RectangleHitbox.fromRect(57, 1.85, Vec.create(115.35, -6)),
-                    RectangleHitbox.fromRect(1.85, 77, Vec.create(87.8, 33)),
-                    RectangleHitbox.fromRect(81.5, 1.8, Vec.create(47.9, 70.5)),
-                    RectangleHitbox.fromRect(1.8, 18, Vec.create(8.05, 71.4))
+                    RectangleHitbox.fromRect(2.01, 49.16, Vec.create(-89.3, 1.6)),
+                    RectangleHitbox.fromRect(26.92, 2.01, Vec.create(-64.74, -21.75)),
+                    RectangleHitbox.fromRect(1.99, 70.06, Vec.create(139.89, -60.88)),
+                    RectangleHitbox.fromRect(83.54, 2, Vec.create(52.84, 75.19)),
+                    RectangleHitbox.fromRect(2, 4.38, Vec.create(-104, -47.53)),
+                    RectangleHitbox.fromRect(17.01, 1.99, Vec.create(-144.6, -59.49)),
+                    RectangleHitbox.fromRect(1.96, 19.04, Vec.create(-38.12, -47.89)),
+                    RectangleHitbox.fromRect(5.66, 19.78, Vec.create(10.43, 35.72)),
+                    RectangleHitbox.fromRect(51.43, 1.67, Vec.create(-13.39, -56.93)),
+                    RectangleHitbox.fromRect(87.54, 2, Vec.create(97.13, -96.08)),
+                    RectangleHitbox.fromRect(24.64, 2, Vec.create(0.9, 25.83)),
+                    RectangleHitbox.fromRect(1.98, 20.08, Vec.create(52.67, -66.98)),
+                    RectangleHitbox.fromRect(40.59, 2, Vec.create(46.12, -56.79)),
+                    RectangleHitbox.fromRect(12.37, 31.09, Vec.create(30.73, -42.26)),
+                    RectangleHitbox.fromRect(12.92, 2, Vec.create(133.48, -76.02)),
+                    RectangleHitbox.fromRect(24.24, 2, Vec.create(104.45, -76.02)),
+                    RectangleHitbox.fromRect(1.98, 37.97, Vec.create(153.18, -24.41)),
+                    RectangleHitbox.fromRect(4.17, 2, Vec.create(16.37, -104.9)),
+                    RectangleHitbox.fromRect(20.42, 2, Vec.create(89.38, -56.78)),
+                    RectangleHitbox.fromRect(13.2, 2, Vec.create(133.63, -26.83)),
+                    RectangleHitbox.fromRect(15.5, 24.12, Vec.create(-12.77, -115.96)),
+                    RectangleHitbox.fromRect(14.49, 2, Vec.create(-44.28, -26.84)),
+                    RectangleHitbox.fromRect(2.01, 23.51, Vec.create(-153.18, -70.24)),
+                    RectangleHitbox.fromRect(27.86, 2.15, Vec.create(-64.21, -56.71)),
+                    RectangleHitbox.fromRect(18.56, 1.98, Vec.create(-68.97, -104.89)),
+                    RectangleHitbox.fromRect(1.96, 48.84, Vec.create(99.33, -51.3)),
+                    RectangleHitbox.fromRect(29.17, 2, Vec.create(67.27, -76.02)),
+                    RectangleHitbox.fromRect(96.85, 2, Vec.create(-12.3, -128.27)),
+                    RectangleHitbox.fromRect(1.99, 17.42, Vec.create(52.67, -96.2)),
+                    RectangleHitbox.fromRect(1.99, 24.16, Vec.create(35.13, -116.35)),
+                    RectangleHitbox.fromRect(22.36, 2, Vec.create(42.49, -104.9)),
+                    RectangleHitbox.fromRect(1.99, 24.76, Vec.create(-60.68, -116.89)),
+                    RectangleHitbox.fromRect(1.99, 24.16, Vec.create(14.55, -115.97)),
+                    RectangleHitbox.fromRect(1.99, 24.16, Vec.create(-40.1, -115.99)),
+                    RectangleHitbox.fromRect(75.09, 2, Vec.create(-115.96, -80.99)),
+                    RectangleHitbox.fromRect(1.91, 7.89, Vec.create(-78.42, -53.84)),
+                    RectangleHitbox.fromRect(1.99, 37.13, Vec.create(-78.37, -86.84)),
+                    RectangleHitbox.fromRect(9.06, 1.99, Vec.create(-107.68, -46.33)),
+                    RectangleHitbox.fromRect(30.46, 1.99, Vec.create(-137.93, -46.32)),
+                    RectangleHitbox.fromRect(2.01, 23.05, Vec.create(-123.7, -58.09)),
+                    RectangleHitbox.fromRect(13.42, 82.9, Vec.create(-147.42, 66.29)),
+                    RectangleHitbox.fromRect(53.8, 2, Vec.create(-78.11, -50.17)),
+                    RectangleHitbox.fromRect(61.41, 2, Vec.create(85.9, -26.84)),
+                    RectangleHitbox.fromRect(2.01, 73.45, Vec.create(-153.16, -10.59)),
+                    RectangleHitbox.fromRect(84.24, 2, Vec.create(-33.69, 128.28)),
+                    RectangleHitbox.fromRect(1.96, 19.48, Vec.create(12.37, -48.03)),
+                    RectangleHitbox.fromRect(69.78, 24.38, Vec.create(-109.08, 118.19)),
+                    RectangleHitbox.fromRect(2.01, 8.2, Vec.create(-129.22, 79.35)),
+                    RectangleHitbox.fromRect(41.85, 2, Vec.create(-98.02, 25.83)),
+                    RectangleHitbox.fromRect(32.42, 2, Vec.create(28.5, -26.84)),
+                    RectangleHitbox.fromRect(4.51, 4.51, Vec.create(-124.02, 49.94)),
+                    RectangleHitbox.fromRect(4.51, 4.51, Vec.create(-10.78, 44.56)),
+                    RectangleHitbox.fromRect(4.51, 4.51, Vec.create(-10.77, 65.55)),
+                    RectangleHitbox.fromRect(4.51, 4.51, Vec.create(-31.87, 65.48)),
+                    RectangleHitbox.fromRect(4.51, 4.51, Vec.create(-31.82, 44.51)),
+                    RectangleHitbox.fromRect(4.51, 4.51, Vec.create(-73.25, 49.94)),
+                    RectangleHitbox.fromRect(2.01, 55.95, Vec.create(12.29, 0.14)),
+                    RectangleHitbox.fromRect(78.65, 2, Vec.create(-90.89, 75.19)),
+                    RectangleHitbox.fromRect(2.01, 102.12, Vec.create(-51.28, -5.46)),
+                    RectangleHitbox.fromRect(34.66, 2, Vec.create(-49.67, 25.83)),
+                    RectangleHitbox.fromRect(5.66, 19.78, Vec.create(10.44, 76.44)),
+                    RectangleHitbox.fromRect(17.13, 31.24, Vec.create(-0.15, 100.38)),
+                    RectangleHitbox.fromRect(60.85, 82.78, Vec.create(123.02, 33.94)),
+                    RectangleHitbox.fromRect(2.01, 28.58, Vec.create(-51.29, 80.83)),
+                    RectangleHitbox.fromRect(8.96, 2, Vec.create(-6.94, 85.76)),
+                    RectangleHitbox.fromRect(18.73, 2, Vec.create(-41.7, 85.75)),
+                    RectangleHitbox.fromRect(19.92, 2, Vec.create(-42.29, 115.8)),
+                    RectangleHitbox.fromRect(34.7, 2, Vec.create(-67.64, 94.86)),
+                    RectangleHitbox.fromRect(2.01, 30.75, Vec.create(-33.34, 100.84)),
+                    RectangleHitbox.fromRect(2.01, 8.2, Vec.create(-83.99, 79.32)),
+                    RectangleHitbox.fromRect(3.03, 3.03, Vec.create(-20.53, 100.56)),
+                    RectangleHitbox.fromRect(18.98, 9.46, Vec.create(119.57, -41.97)),
+                    RectangleHitbox.fromRect(18.98, 9.46, Vec.create(119.57, -60.91)),
+                    RectangleHitbox.fromRect(16.22, 6.09, Vec.create(132.23, -92.07)),
+                    RectangleHitbox.fromRect(13.99, 25.08, Vec.create(90.87, -42.13)),
+                    new CircleHitbox(6.43, Vec.create(44.59, -64.9)),
+                    new CircleHitbox(10.32, Vec.create(-40.12, -82.14)),
+                    new CircleHitbox(10.32, Vec.create(14.73, -82.06))
                 ),
-                obstacles: [
-                    /*  { idString: "file_cart", position: Vec.create(-19.76, -5.83), rotation: 1 },
-                    { idString: "house_column", position: Vec.create(-5.9, -17.94) },
-                    { idString: "house_column", position: Vec.create(-5.84, 2.99) },
-                    { idString: "house_column", position: Vec.create(-121.44, 9) },
-                    { idString: "house_column", position: Vec.create(-121.52, -11.84) }, */
+                floors: [
+                    {
+                        type: FloorNames.Metal,
+                        hitbox: new GroupHitbox(
+                            RectangleHitbox.fromRect(14.45, 31.53, Vec.create(18.97, -42.02)),
+                            RectangleHitbox.fromRect(26.15, 30.85, Vec.create(-91.47, -65.47)),
+                            RectangleHitbox.fromRect(14.45, 31.53, Vec.create(-44.73, -41.96)),
+                            RectangleHitbox.fromRect(41.44, 50.28, Vec.create(119.66, -52.06)),
+                            RectangleHitbox.fromRect(87.56, 20.07, Vec.create(96.58, -86.2)),
+                            RectangleHitbox.fromRect(32.65, 20.07, Vec.create(-67.85, 85.24)),
+                            RectangleHitbox.fromRect(16.05, 13.43, Vec.create(0.39, 121.47)),
+                            RectangleHitbox.fromRect(48.96, 34.73, Vec.create(-127.96, -63.52))
+                        )
+                    },
+                    {
+                        type: FloorNames.Wood,
+                        hitbox: new GroupHitbox(
+                            RectangleHitbox.fromRect(64.01, 70.98, Vec.create(-121.09, -10.57)),
+                            RectangleHitbox.fromRect(49.34, 81.6, Vec.create(-12.84, -15.94)),
+                            RectangleHitbox.fromRect(16.81, 52.06, Vec.create(-42.96, -0.67)),
+                            RectangleHitbox.fromRect(51.85, 27.66, Vec.create(-77.15, -35.9))
+                        )
+                    },
+                    {
+                        type: FloorNames.Stone,
+                        hitbox: new GroupHitbox(
+                            RectangleHitbox.fromRect(296.09, 235.94, Vec.create(5.94, -10.79)),
+                            RectangleHitbox.fromRect(68.6, 46.75, Vec.create(-41.95, 104.97))
+                        )
+                    }
                 ],
-                subBuildings: []
+                puzzle: {
+                    triggerOnSolve: "metal_door",
+                    solvedSound: true,
+                    soundPosition: Vec.create(-95.68, 46.52),
+                    delay: 0,
+                    unlockOnly: true
+                },
+                obstacles: [
+                    // vault area
+                    { idString: "metal_auto_door", position: Vec.create(-33.27, 122.05), rotation: 3 },
+                    { idString: "metal_auto_door", position: Vec.create(-135.45, 75.18), rotation: 2 },
+                    { idString: "cabinet", position: Vec.create(-92.46, 78.93), rotation: 0 },
+                    { idString: "cabinet", position: Vec.create(-120.63, 78.99), rotation: 0 },
+                    { idString: "gun_locker", position: Vec.create(-106.58, 78.99), rotation: 0 },
+                    { idString: "ammo_crate", position: Vec.create(-107.64, 100.57), rotation: 0 },
+                    { idString: "barrel", position: Vec.create(-116.75, 101.47), rotation: 0 },
+                    { idString: "gun_case", position: Vec.create(-135.03, 102.56), rotation: 2 },
+                    { idString: "door", position: Vec.create(-75.25, 100.5), rotation: 1 },
+                    { idString: "grenade_crate", position: Vec.create(-70.23, 113.01), rotation: 0 },
+                    { idString: "flint_crate", position: Vec.create(-69.01, 122.1), rotation: 0 },
+                    { idString: "grey_office_chair", position: Vec.create(-46.79, 104.25), rotation: 1 },
+                    { idString: "potted_plant", position: Vec.create(-38.35, 90.99), rotation: 0 },
+                    { idString: "control_panel_small", position: Vec.create(-46.14, 91.33), rotation: 0 },
+                    { idString: "hq_desk_right", position: Vec.create(-40.79, 104.56), rotation: 3 },
+
+                    // vault
+                    { idString: "metal_door", position: Vec.create(-83.98, 88.35), rotation: 1, locked: true },
+                    { idString: "gun_mount_dual_rsh12", position: Vec.create(-54.09, 84.63), rotation: 3 },
+                    { idString: "regular_crate", position: Vec.create(-62.71, 81.57) },
+                    { idString: { box: 1, grenade_box: 1 }, position: Vec.create(-66.18, 89.31) },
+                    { idString: { box: 1, grenade_box: 1 }, position: Vec.create(-60.05, 90.57) },
+                    { idString: "trash_can", position: Vec.create(-79.69, 79.48) },
+
+                    // center area with plumpkin logo
+                    { idString: "red_metal_auto_door", position: Vec.create(8.67, 61.27), rotation: 1 },
+                    { idString: "red_metal_auto_door", position: Vec.create(8.67, 50.89), rotation: 3 },
+                    { idString: "red_metal_auto_door", position: Vec.create(-51.27, 50.89), rotation: 3 },
+                    { idString: "red_metal_auto_door", position: Vec.create(-51.27, 61.27), rotation: 1 },
+                    { idString: "red_metal_auto_door", position: Vec.create(-16.65, 25.89), rotation: 2 },
+                    { idString: "red_metal_auto_door", position: Vec.create(-27.15, 25.89), rotation: 0 },
+                    { idString: "red_metal_auto_door", position: Vec.create(-27.15, 85.62), rotation: 0 },
+                    { idString: "red_metal_auto_door", position: Vec.create(-16.65, 85.62), rotation: 2 },
+                    { idString: "couch", position: Vec.create(-31.89, 54.94), rotation: 0 },
+                    { idString: "couch", position: Vec.create(-10.72, 54.94), rotation: 2 },
+                    { idString: "potted_plant", position: Vec.create(-45.97, 80.45) },
+                    { idString: "potted_plant", position: Vec.create(-45.46, 31.26) },
+                    { idString: "potted_plant", position: Vec.create(3.11, 31.37) },
+                    { idString: "water_cooler", position: Vec.create(3.65, 81.22), rotation: 2 },
+                    { idString: "trash_can", position: Vec.create(-3.25, 81.24) },
+
+                    // west office
+                    { idString: "square_desk", position: Vec.create(-98.23, 50.04), rotation: 0 },
+                    { idString: "button", position: Vec.create(-95.68, 46.52), rotation: 3, puzzlePiece: true },
+                    { idString: "bookshelf", position: Vec.create(-110.44, 29.36), rotation: 0 },
+                    { idString: "bookshelf", position: Vec.create(-97.48, 29.36), rotation: 0 },
+                    { idString: "bookshelf", position: Vec.create(-109.18, 71.58), rotation: 0 },
+                    { idString: "white_small_couch", position: Vec.create(-57.77, 70.03), rotation: 2 },
+                    { idString: "small_drawer", position: Vec.create(-66.36, 70.25), rotation: 2 },
+                    { idString: "water_cooler", position: Vec.create(-119.28, 70.58), rotation: 2 },
+                    { idString: "filing_cabinet", position: Vec.create(-126.68, 70.11), rotation: 2 },
+                    { idString: "large_drawer", position: Vec.create(-59.14, 30.99), rotation: 0 },
+
+                    // bathroom
+                    { idString: "door", position: Vec.create(-71.61, 25.97), rotation: 0 },
+                    { idString: "sink2", position: Vec.create(-56.09, 20.93), rotation: 3 },
+                    { idString: "sink2", position: Vec.create(-56.09, 13.38), rotation: 3 },
+                    { idString: "hq_toilet_paper_wall", position: Vec.create(-61.88, 7.31), rotation: 2 },
+                    { idString: "hq_toilet_paper_wall", position: Vec.create(-61.88, -7.84), rotation: 2 },
+                    { idString: "porta_potty_door", position: Vec.create(-70.58, 2.03), rotation: 1 },
+                    { idString: "porta_potty_door", position: Vec.create(-70.58, -13.06), rotation: 1 },
+                    { idString: randomToilet, position: Vec.create(-57.06, 0.82), rotation: 3 },
+                    { idString: randomToilet, position: Vec.create(-57.06, -14.38), rotation: 3 },
+                    { idString: "headquarters_wall_7", position: Vec.create(-70.63, -19.18), rotation: 1 },
+                    { idString: "headquarters_wall_7", position: Vec.create(-70.63, -4.19), rotation: 1 },
+                    { idString: "potted_plant", position: Vec.create(-83.85, 20.77) },
+                    { idString: "door", position: Vec.create(-82.81, -21.71), rotation: 0 },
+
+                    // sleeping quarters
+                    { idString: "metal_door", position: Vec.create(-117.2, -46.26), rotation: 0 },
+                    { idString: "bookshelf", position: Vec.create(-96.31, -46.66), rotation: 0 },
+                    { idString: "potted_plant", position: Vec.create(-56.67, -27.04) },
+                    { idString: "bunk_bed", position: Vec.create(-57.95, -39.8), rotation: 0 },
+                    { idString: "bunk_bed", position: Vec.create(-80.86, -43.68), rotation: 1 },
+                    { idString: "bunk_bed", position: Vec.create(-99.45, -19.03), rotation: 3 },
+                    { idString: "bunk_bed", position: Vec.create(-99.45, 0.49), rotation: 3 },
+                    { idString: "bunk_bed", position: Vec.create(-99.45, 19.14), rotation: 3 },
+                    { idString: "small_table", position: Vec.create(-135.52, -30.65), rotation: 1 },
+                    { idString: "large_drawer", position: Vec.create(-140.88, -17.35), rotation: 2 },
+                    { idString: "tv", position: Vec.create(-140.91, -14.46), rotation: 3 },
+                    { idString: "couch_end_left", position: Vec.create(-147.63, -34.07), rotation: 0 },
+                    { idString: "couch_corner", position: Vec.create(-148.05, -41.34), rotation: 0 },
+                    { idString: "couch_part", position: Vec.create(-141.7, -41.19), rotation: 3 },
+                    { idString: "couch_end_right", position: Vec.create(-134.71, -40.81), rotation: 0 },
+                    { idString: "house_column", position: Vec.create(-129.67, -12.68), rotation: 0 },
+                    { idString: "house_column", position: Vec.create(-129.67, 9.58), rotation: 0 },
+                    { idString: "headquarters_wall_2", position: Vec.create(-141.6, -12.63), rotation: 0 },
+                    { idString: "headquarters_wall_2", position: Vec.create(-141.6, 9.58), rotation: 0 },
+                    { idString: "cabinet", position: Vec.create(-144.6, -8.7), rotation: 0 },
+                    { idString: "cabinet", position: Vec.create(-144.6, 5.74), rotation: 2 },
+                    { idString: "small_drawer", position: Vec.create(-148.13, 14.18), rotation: 1 },
+                    { idString: "water_cooler", position: Vec.create(-148.65, 20.95), rotation: 1 },
+                    { idString: "bigger_glass_door", position: Vec.create(-135.25, 25.85), rotation: 0 },
+                    { idString: "bigger_glass_door", position: Vec.create(-124.42, 25.85), rotation: 2 },
+
+                    // northwest entrance/fire hatchet area
+                    { idString: "fire_hatchet_case", position: Vec.create(-119.35, -63.03), rotation: 1 },
+                    { idString: "ammo_crate", position: Vec.create(-99.92, -56.44), rotation: 0 },
+                    { idString: "ammo_crate", position: Vec.create(-99.92, -74.76), rotation: 0 },
+                    { idString: "cabinet", position: Vec.create(-87, -53.95), rotation: 2 },
+                    { idString: "barrel", position: Vec.create(-90.56, -75.38) },
+                    { idString: "metal_door", position: Vec.create(-123.69, -74.57), rotation: 3 },
+                    { idString: { box: 1, grenade_box: 1 }, position: Vec.create(-139.01, -73.68) },
+                    { idString: "regular_crate", position: Vec.create(-146.74, -75.09) },
+                    { idString: "bookshelf", position: Vec.create(-145.4, -62.95), rotation: 0 },
+
+                    // plumpkin lab area
+                    { idString: "metal_auto_door", position: Vec.create(-78.35, -63.04), rotation: 3 },
+                    { idString: "pumpkin", position: Vec.create(-47.26, -117.89), rotation: 0 },
+                    { idString: "pumpkin", position: Vec.create(-53.98, -114.99), rotation: 0 },
+                    { idString: "mini_plumpkin", position: Vec.create(-34.18, -111.23), rotation: 0 },
+                    { idString: "mini_plumpkin", position: Vec.create(-26.74, -114.57), rotation: 0 },
+                    { idString: "mini_plumpkin", position: Vec.create(-31.39, -120.37), rotation: 0 },
+                    { idString: "plumpkin", position: Vec.create(3.67, -115.06), rotation: 0 },
+                    { idString: "diseased_plumpkin", position: Vec.create(24.92, -114.04), rotation: 0 },
+                    { idString: "bulletproof_window", position: Vec.create(-50.37, -104.85), rotation: 0 },
+                    { idString: "bulletproof_window", position: Vec.create(-29.8, -104.85), rotation: 0 },
+                    { idString: "bulletproof_window", position: Vec.create(4.32, -104.85), rotation: 0 },
+                    { idString: "windowed_vault_door", position: Vec.create(24.88, -104.54), rotation: 0 },
+                    { idString: "control_panel2", position: Vec.create(-12.74, -99.53), rotation: 0 },
+                    { idString: "control_panel_small", position: Vec.create(-0.04, -81.91), rotation: 3 },
+                    { idString: "control_panel_small", position: Vec.create(-25.47, -81.91), rotation: 1 },
+                    { idString: "gun_case", position: Vec.create(48.34, -98.34), rotation: 3 },
+                    { idString: "regular_crate", position: Vec.create(-71.7, -97.79) },
+                    { idString: "barrel", position: Vec.create(-71.84, -88.09) },
+                    { idString: "metal_auto_door", position: Vec.create(52.68, -82.25), rotation: 3 },
+
+                    // main office/control room
+                    { idString: "window2", position: Vec.create(-32.06, -57.7), rotation: 1 },
+                    { idString: "window2", position: Vec.create(-22.38, -57.7), rotation: 1 },
+                    { idString: "window2", position: Vec.create(-12.81, -57.7), rotation: 1 },
+                    { idString: "window2", position: Vec.create(-3.19, -57.7), rotation: 1 },
+                    { idString: "window2", position: Vec.create(6.39, -57.7), rotation: 1 },
+                    { idString: "headquarters_security_desk", position: Vec.create(-22.75, -52.96), rotation: 2 },
+                    { idString: "hq_desk_right", position: Vec.create(1.15, -49.64), rotation: 0 },
+                    { idString: "hq_desk_right", position: Vec.create(-43.83, -15.7), rotation: 1 },
+                    { idString: "hq_desk_left", position: Vec.create(-43.86, 14.69), rotation: 1 },
+                    { idString: "hq_desk_left", position: Vec.create(4.98, -7.99), rotation: 3 },
+                    { idString: "potted_plant", position: Vec.create(7.24, -24.14) },
+                    { idString: "potted_plant", position: Vec.create(-46.06, 0.73) },
+                    { idString: "bookshelf", position: Vec.create(8.73, 11.05), rotation: 1 },
+                    { idString: "water_cooler", position: Vec.create(7.71, 20.97), rotation: 3 },
+                    { idString: "grey_office_chair", position: Vec.create(-28.19, -45.52), rotation: 2 },
+                    { idString: "grey_office_chair", position: Vec.create(-6.76, -40.38), rotation: 2 },
+                    { idString: "grey_office_chair", position: Vec.create(-38.13, -14.42), rotation: 3 },
+                    { idString: "grey_office_chair", position: Vec.create(-38.3, 13.36), rotation: 3 },
+                    { idString: "grey_office_chair", position: Vec.create(-0.35, -5.96), rotation: 1 },
+                    { idString: "file_cart", position: Vec.create(-21.24, -6.17), rotation: 3 },
+                    { idString: "headquarters_wall_4", position: Vec.create(3.21, -19.2), rotation: 0 },
+                    { idString: "headquarters_wall_4", position: Vec.create(3.21, 3.27), rotation: 0 },
+                    { idString: "house_column", position: Vec.create(-6.3, -19.07), rotation: 0 },
+                    { idString: "house_column", position: Vec.create(-6.3, 3.22), rotation: 0 },
+                    { idString: "house_wall_15", position: Vec.create(-44.24, -4.36), rotation: 0 },
+                    { idString: "metal_auto_door", position: Vec.create(12.34, -33.03), rotation: 3 },
+                    { idString: "metal_auto_door", position: Vec.create(-38.1, -33.03), rotation: 3 },
+
+
+                    // northeast hall
+                    { idString: "gun_locker", position: Vec.create(60.72, -92.17), rotation: 0 },
+                    { idString: "ammo_crate", position: Vec.create(99.91, -82.15), rotation: 0 },
+                    { idString: "barrel", position: Vec.create(109.1, -81.6) },
+                    { idString: "regular_crate", position: Vec.create(133.93, -82.06) },
+
+                    // generator room
+                    { idString: "metal_door", position: Vec.create(87.38, -76.06), rotation: 0 },
+                    { idString: "cabinet", position: Vec.create(95.36, -66.43), rotation: 3 },
+                    { idString: { box: 1, grenade_box: 1 }, position: Vec.create(56.68, -71.05) },
+                    { idString: { box: 1, grenade_box: 1 }, position: Vec.create(62.1, -69.57) },
+                    { idString: "barrel", position: Vec.create(58.34, -62.63) },
+                    { idString: "generator", position: Vec.create(78.21, -32.55), rotation: 0 },
+                    { idString: "grenade_crate", position: Vec.create(69.29, -32.1) },
+                    { idString: "flint_crate", position: Vec.create(42.41, -50.77) },
+                    { idString: "super_barrel", position: Vec.create(51.32, -51.37) },
+                    { idString: "control_panel3", position: Vec.create(40.55, -32.63), rotation: 1 },
+                    { idString: "metal_door", position: Vec.create(49.71, -26.82), rotation: 2 },
+
+                    // server room
+                    { idString: "red_metal_auto_door", position: Vec.create(121.81, -26.84), rotation: 2 },
+                    { idString: "red_metal_auto_door", position: Vec.create(121.81, -76.09), rotation: 2 },
+
+                    // storage room
+                ],
+                subBuildings: [
+                    { idString: "detector", position: Vec.create(13.82, -100.67), orientation: 2 },
+                    { idString: "detector", position: Vec.create(27.24, -100.67), orientation: 2 },
+                ]
             }
         ] satisfies Missing[];
     }

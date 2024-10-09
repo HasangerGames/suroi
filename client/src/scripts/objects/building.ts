@@ -373,7 +373,12 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             this.errorSeq = data.puzzle.errorSeq;
 
             if (!isNew && data.puzzle.solved && definition.puzzle?.solvedSound) {
-                this.playSound("puzzle_solved");
+                this.game.soundManager.play("puzzle_solved", {
+                    position: definition.puzzle.soundPosition
+                        ? Vec.addAdjust(this.position, definition.puzzle.soundPosition, this.orientation)
+                        : this.position,
+                    layer: this.layer
+                });
             }
         }
 

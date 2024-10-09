@@ -652,6 +652,13 @@ export const LootTables: Record<string, LootTable> = {
             { item: "m590m", weight: 1 }
         ]
     },
+    gun_mount_dual_rsh12: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "dual_rsh12", weight: 1 }
+        ]
+    },
     gas_can: {
         min: 1,
         max: 1,

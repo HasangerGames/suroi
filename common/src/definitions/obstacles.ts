@@ -249,90 +249,93 @@ export const MaterialSounds: Record<string, { hit?: string, destroyed?: string }
 
 /* eslint-disable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 export const TintedParticles: Record<string, { readonly base: string, readonly tint: number, readonly variants?: number }> = {
-    metal_particle:               { base: "metal_particle_1", tint: 0x5f5f5f },
-    super_barrel_particle:        { base: "metal_particle_1", tint: 0xce2b29 },
-    dumpster_particle:            { base: "metal_particle_1", tint: 0x3c7033 },
-    washing_machine_particle:     { base: "metal_particle_1", tint: 0xcccccc },
-    tv_particle:                  { base: "metal_particle_1", tint: 0x333333 },
-    smokestack_particle:          { base: "metal_particle_1", tint: 0xb5b5b5 },
-    distillation_column_particle: { base: "metal_particle_1", tint: 0x1b5e98 },
-    ship_oil_tank_particle:       { base: "metal_particle_1", tint: 0x00538f },
-    forklift_particle:            { base: "metal_particle_1", tint: 0xac5339 },
-    bollard_particle:             { base: "metal_particle_1", tint: 0xa66e20 },
-    m1117_particle:               { base: "metal_particle_1", tint: 0x2f3725 },
-    file_cart_particle:           { base: "metal_particle_1", tint: 0x404040 },
-    container_particle_white:     { base: "metal_particle_1", tint: 0xc0c0c0 },
-    container_particle_red:       { base: "metal_particle_1", tint: 0xa32900 },
-    container_particle_green:     { base: "metal_particle_1", tint: 0x00a30e },
-    container_particle_blue:      { base: "metal_particle_1", tint: 0x005fa3 },
-    container_particle_yellow:    { base: "metal_particle_1", tint: 0xcccc00 },
-    filing_cabinet_particle:      { base: "metal_particle_2", tint: 0x7f714d },
-    briefcase_particle:           { base: "metal_particle_2", tint: 0xcfcfcf },
-    aegis_crate_particle:         { base: "wood_particle",    tint: 0x2687d9 },
-    airdrop_crate_particle:       { base: "wood_particle",    tint: 0x4059bf },
-    chest_particle:               { base: "wood_particle",    tint: 0xa87e5a },
-    cooler_particle:              { base: "wood_particle",    tint: 0x406c65 },
-    crate_particle:               { base: "wood_particle",    tint: 0x9e7437 },
-    flint_crate_particle:         { base: "wood_particle",    tint: 0xda6a0b },
-    furniture_particle:           { base: "wood_particle",    tint: 0x785a2e },
-    couch_part_particle:          { base: "wood_particle",    tint: 0x6a330b },
-    grenade_crate_particle:       { base: "wood_particle",    tint: 0x4c4823 },
-    gun_case_particle:            { base: "wood_particle",    tint: 0x3e5130 },
-    hazel_crate_particle:         { base: "wood_particle",    tint: 0x6ba371 },
-    lux_crate_particle:           { base: "wood_particle",    tint: 0x4e5c3d },
-    melee_crate_particle:         { base: "wood_particle",    tint: 0x23374c },
-    tango_crate_particle:         { base: "wood_particle",    tint: 0x3f4c39 },
-    wall_particle:                { base: "wood_particle",    tint: 0xafa08c },
-    flint_stone_particle_1:       { base: "stone_particle_1", tint: 0x26272c },
-    flint_stone_particle_2:       { base: "stone_particle_2", tint: 0x26272c },
-    gold_rock_particle_1:         { base: "stone_particle_1", tint: 0xaa8534 },
-    gold_rock_particle_2:         { base: "stone_particle_2", tint: 0xd3a440 },
-    rock_particle_1:              { base: "stone_particle_1", tint: 0x8e8e8e },
-    rock_particle_2:              { base: "stone_particle_2", tint: 0x8e8e8e },
-    river_rock_particle_1:        { base: "stone_particle_1", tint: 0x626471 },
-    river_rock_particle_2:        { base: "stone_particle_2", tint: 0x626471 },
-    clearing_boulder_particle_1:  { base: "stone_particle_1", tint: 0x5a5a5a },
-    clearing_boulder_particle_2:  { base: "stone_particle_2", tint: 0x5a5a5a },
-    sandbags_particle:            { base: "stone_particle_2", tint: 0xd59d4e },
-    porta_potty_door_particle:    { base: "plastic_particle", tint: 0xf5f9fd },
-    porta_potty_toilet_particle:  { base: "plastic_particle", tint: 0x5e5e5e },
-    porta_potty_wall_particle:    { base: "plastic_particle", tint: 0x1c71d8 },
-    porta_potty_particle_fall:    { base: "plastic_particle", tint: 0x78593b },
-    porta_potty_particle:         { base: "ceiling_particle", tint: 0xe7e7e7 },
-    porta_potty_fall_particle:    { base: "ceiling_particle", tint: 0x78593b },
-    mobile_home_particle:         { base: "ceiling_particle", tint: 0xa8a8a8 },
-    grey_office_chair_particle:   { base: "wood_particle",    tint: 0x616161 },
-    office_chair_particle:        { base: "wood_particle",    tint: 0x7d2b2b },
-    hq_stone_wall_particle_1:     { base: "stone_particle_1", tint: 0x591919 },
-    hq_stone_wall_particle_2:     { base: "stone_particle_2", tint: 0x591919 },
-    headquarters_desk_particle:   { base: "wood_particle",    tint: 0x61341a },
-    headquarters_c_desk_particle: { base: "wood_particle",    tint: 0x6e5838 },
-    gold_aegis_case_particle:     { base: "wood_particle",    tint: 0x1a1a1a },
-    hq_tp_wall_particle:          { base: "wood_particle",    tint: 0x74858b },
-    white_small_couch_particle:   { base: "wood_particle",    tint: 0xcfc1af },
-    red_small_couch_particle:     { base: "wood_particle",    tint: 0x823323 },
-    planted_bushes_particle:      { base: "toilet_particle",  tint: 0xaaaaaa },
-    barn_wall_particle_1:         { base: "stone_particle_1", tint: 0x690c0c },
-    barn_wall_particle_2:         { base: "stone_particle_2", tint: 0x690c0c },
-    lodge_particle:               { base: "wood_particle",    tint: 0x49371d },
-    lodge_wall_particle:          { base: "wood_particle",    tint: 0x5a4320 },
+    metal_particle:                { base: "metal_particle_1", tint: 0x5f5f5f },
+    super_barrel_particle:         { base: "metal_particle_1", tint: 0xce2b29 },
+    dumpster_particle:             { base: "metal_particle_1", tint: 0x3c7033 },
+    washing_machine_particle:      { base: "metal_particle_1", tint: 0xcccccc },
+    tv_particle:                   { base: "metal_particle_1", tint: 0x333333 },
+    smokestack_particle:           { base: "metal_particle_1", tint: 0xb5b5b5 },
+    distillation_column_particle:  { base: "metal_particle_1", tint: 0x1b5e98 },
+    ship_oil_tank_particle:        { base: "metal_particle_1", tint: 0x00538f },
+    forklift_particle:             { base: "metal_particle_1", tint: 0xac5339 },
+    bollard_particle:              { base: "metal_particle_1", tint: 0xa66e20 },
+    m1117_particle:                { base: "metal_particle_1", tint: 0x2f3725 },
+    file_cart_particle:            { base: "metal_particle_1", tint: 0x404040 },
+    container_particle_white:      { base: "metal_particle_1", tint: 0xc0c0c0 },
+    container_particle_red:        { base: "metal_particle_1", tint: 0xa32900 },
+    container_particle_green:      { base: "metal_particle_1", tint: 0x00a30e },
+    container_particle_blue:       { base: "metal_particle_1", tint: 0x005fa3 },
+    container_particle_yellow:     { base: "metal_particle_1", tint: 0xcccc00 },
+    filing_cabinet_particle:       { base: "metal_particle_2", tint: 0x7f714d },
+    briefcase_particle:            { base: "metal_particle_2", tint: 0xcfcfcf },
+    aegis_crate_particle:          { base: "wood_particle",    tint: 0x2687d9 },
+    airdrop_crate_particle:        { base: "wood_particle",    tint: 0x4059bf },
+    chest_particle:                { base: "wood_particle",    tint: 0xa87e5a },
+    cooler_particle:               { base: "wood_particle",    tint: 0x406c65 },
+    crate_particle:                { base: "wood_particle",    tint: 0x9e7437 },
+    flint_crate_particle:          { base: "wood_particle",    tint: 0xda6a0b },
+    furniture_particle:            { base: "wood_particle",    tint: 0x785a2e },
+    couch_part_particle:           { base: "wood_particle",    tint: 0x6a330b },
+    grenade_crate_particle:        { base: "wood_particle",    tint: 0x4c4823 },
+    gun_case_particle:             { base: "wood_particle",    tint: 0x3e5130 },
+    hazel_crate_particle:          { base: "wood_particle",    tint: 0x6ba371 },
+    lux_crate_particle:            { base: "wood_particle",    tint: 0x4e5c3d },
+    melee_crate_particle:          { base: "wood_particle",    tint: 0x23374c },
+    tango_crate_particle:          { base: "wood_particle",    tint: 0x3f4c39 },
+    wall_particle:                 { base: "wood_particle",    tint: 0xafa08c },
+    flint_stone_particle_1:        { base: "stone_particle_1", tint: 0x26272c },
+    flint_stone_particle_2:        { base: "stone_particle_2", tint: 0x26272c },
+    gold_rock_particle_1:          { base: "stone_particle_1", tint: 0xaa8534 },
+    gold_rock_particle_2:          { base: "stone_particle_2", tint: 0xd3a440 },
+    rock_particle_1:               { base: "stone_particle_1", tint: 0x8e8e8e },
+    rock_particle_2:               { base: "stone_particle_2", tint: 0x8e8e8e },
+    river_rock_particle_1:         { base: "stone_particle_1", tint: 0x626471 },
+    river_rock_particle_2:         { base: "stone_particle_2", tint: 0x626471 },
+    clearing_boulder_particle_1:   { base: "stone_particle_1", tint: 0x5a5a5a },
+    clearing_boulder_particle_2:   { base: "stone_particle_2", tint: 0x5a5a5a },
+    sandbags_particle:             { base: "stone_particle_2", tint: 0xd59d4e },
+    porta_potty_door_particle:     { base: "plastic_particle", tint: 0xf5f9fd },
+    porta_potty_toilet_particle:   { base: "plastic_particle", tint: 0x5e5e5e },
+    porta_potty_wall_particle:     { base: "plastic_particle", tint: 0x1c71d8 },
+    porta_potty_particle_fall:     { base: "plastic_particle", tint: 0x78593b },
+    porta_potty_particle:          { base: "ceiling_particle", tint: 0xe7e7e7 },
+    porta_potty_fall_particle:     { base: "ceiling_particle", tint: 0x78593b },
+    mobile_home_particle:          { base: "ceiling_particle", tint: 0xa8a8a8 },
+    grey_office_chair_particle:    { base: "wood_particle",    tint: 0x616161 },
+    office_chair_particle:         { base: "wood_particle",    tint: 0x7d2b2b },
+    hq_stone_wall_particle_1:      { base: "stone_particle_1", tint: 0x591919 },
+    hq_stone_wall_particle_2:      { base: "stone_particle_2", tint: 0x591919 },
+    headquarters_desk_particle:    { base: "wood_particle",    tint: 0x61341a },
+    headquarters_c_desk_particle:  { base: "wood_particle",    tint: 0x6e5838 },
+    gold_aegis_case_particle:      { base: "wood_particle",    tint: 0x1a1a1a },
+    hq_tp_wall_particle:           { base: "wood_particle",    tint: 0x74858b },
+    white_small_couch_particle:    { base: "wood_particle",    tint: 0xcfc1af },
+    red_small_couch_particle:      { base: "wood_particle",    tint: 0x823323 },
+    planted_bushes_particle:       { base: "toilet_particle",  tint: 0xaaaaaa },
+    barn_wall_particle_1:          { base: "stone_particle_1", tint: 0x690c0c },
+    barn_wall_particle_2:          { base: "stone_particle_2", tint: 0x690c0c },
+    lodge_particle:                { base: "wood_particle",    tint: 0x49371d },
+    lodge_wall_particle:           { base: "wood_particle",    tint: 0x5a4320 },
+    gun_mount_dual_rsh12_particle: { base: "wood_particle",    tint: 0x595959 },
+    square_desk_particle:          { base: "wood_particle",    tint: 0x4d3e28 },
+    plumpkin_bunker_particle:      { base: "metal_particle_1", tint: 0x262626 },
 
-    tent_wall_particle_red_1:     { base: "stone_particle_1", tint: TentWallTints.red },
-    tent_wall_particle_red_2:     { base: "stone_particle_2", tint: TentWallTints.red },
-    tent_wall_particle_green_1:   { base: "stone_particle_1", tint: TentWallTints.green },
-    tent_wall_particle_green_2:   { base: "stone_particle_2", tint: TentWallTints.green },
-    tent_wall_particle_blue_1:    { base: "stone_particle_1", tint: TentWallTints.blue },
-    tent_wall_particle_blue_2:    { base: "stone_particle_2", tint: TentWallTints.blue },
-    tent_wall_particle_yellow_1:  { base: "stone_particle_1", tint: TentWallTints.yellow },
-    tent_wall_particle_yellow_2:  { base: "stone_particle_2", tint: TentWallTints.yellow },
-    tent_wall_particle_purple_1:  { base: "stone_particle_1", tint: TentWallTints.purple },
-    tent_wall_particle_purple_2:  { base: "stone_particle_2", tint: TentWallTints.purple },
+    tent_wall_particle_red_1:      { base: "stone_particle_1", tint: TentWallTints.red },
+    tent_wall_particle_red_2:      { base: "stone_particle_2", tint: TentWallTints.red },
+    tent_wall_particle_green_1:    { base: "stone_particle_1", tint: TentWallTints.green },
+    tent_wall_particle_green_2:    { base: "stone_particle_2", tint: TentWallTints.green },
+    tent_wall_particle_blue_1:     { base: "stone_particle_1", tint: TentWallTints.blue },
+    tent_wall_particle_blue_2:     { base: "stone_particle_2", tint: TentWallTints.blue },
+    tent_wall_particle_yellow_1:   { base: "stone_particle_1", tint: TentWallTints.yellow },
+    tent_wall_particle_yellow_2:   { base: "stone_particle_2", tint: TentWallTints.yellow },
+    tent_wall_particle_purple_1:   { base: "stone_particle_1", tint: TentWallTints.purple },
+    tent_wall_particle_purple_2:   { base: "stone_particle_2", tint: TentWallTints.purple },
 
-    tent_particle_1:              { base: "ceiling_particle", tint: TentWallTints.red },
-    tent_particle_2:              { base: "ceiling_particle", tint: TentWallTints.green },
-    tent_particle_3:              { base: "ceiling_particle", tint: TentWallTints.blue },
-    tent_particle_4:              { base: "ceiling_particle", tint: TentWallTints.yellow },
-    tent_particle_5:              { base: "ceiling_particle", tint: TentWallTints.purple }
+    tent_particle_1:               { base: "ceiling_particle", tint: TentWallTints.red },
+    tent_particle_2:               { base: "ceiling_particle", tint: TentWallTints.green },
+    tent_particle_3:               { base: "ceiling_particle", tint: TentWallTints.blue },
+    tent_particle_4:               { base: "ceiling_particle", tint: TentWallTints.yellow },
+    tent_particle_5:               { base: "ceiling_particle", tint: TentWallTints.purple }
 };
 /* eslint-enable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 
@@ -715,6 +718,26 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             allowFlyover: FlyoverPref.Always
         }));
 
+        const controlPanel = derive((idString: string, name: string) => ({
+            idString,
+            name,
+            material: "metal_light",
+            health: 200,
+            reflectBullets: true,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(11, 8),
+            rotationMode: RotationMode.Limited,
+            explosion: "control_panel_explosion",
+            frames: {
+                particle: "metal_particle",
+                residue: "barrel_residue"
+            }
+        }));
+
         return ([
             tree([{
                 name: "Oak Tree",
@@ -937,11 +960,59 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1.1,
                     destroy: 0.5
                 },
-                hitbox: new CircleHitbox(2.4),
+                hitbox: new CircleHitbox(2.55),
                 spawnHitbox: new CircleHitbox(3),
                 rotationMode: RotationMode.Full,
                 allowFlyover: FlyoverPref.Always,
                 hasLoot: true
+            },
+            {
+                idString: "mini_plumpkin",
+                name: "Mini Plumpkin",
+                material: "pumpkin",
+                health: 100,
+                scale: {
+                    spawnMin: 0.9,
+                    spawnMax: 1.1,
+                    destroy: 0.5
+                },
+                hitbox: new CircleHitbox(1.83),
+                spawnHitbox: new CircleHitbox(2),
+                rotationMode: RotationMode.Full,
+                allowFlyover: FlyoverPref.Always,
+                // hasLoot: true
+            },
+            {
+                idString: "plumpkin",
+                name: "Plumpkin",
+                material: "pumpkin",
+                health: 160,
+                scale: {
+                    spawnMin: 0.9,
+                    spawnMax: 1.1,
+                    destroy: 0.5
+                },
+                hitbox: new CircleHitbox(4.69),
+                spawnHitbox: new CircleHitbox(5),
+                rotationMode: RotationMode.Full,
+                allowFlyover: FlyoverPref.Always,
+                // hasLoot: true
+            },
+            {
+                idString: "diseased_plumpkin",
+                name: "Diseased Plumpkin",
+                material: "pumpkin",
+                health: 140,
+                scale: {
+                    spawnMin: 0.9,
+                    spawnMax: 1.1,
+                    destroy: 0.5
+                },
+                hitbox: new CircleHitbox(4.45),
+                spawnHitbox: new CircleHitbox(5),
+                rotationMode: RotationMode.Full,
+                allowFlyover: FlyoverPref.Always,
+                // hasLoot: true
             },
             {
                 idString: "birthday_cake",
@@ -1221,9 +1292,29 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 }
             },
             {
+                idString: "square_desk",
+                name: "Square Desk",
+                material: "wood",
+                health: 120,
+                indestructible: true,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.8
+                },
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(18.55, 3.76, Vec.create(0, -7.39)),
+                    RectangleHitbox.fromRect(18.55, 3.76, Vec.create(0, 7.39)),
+                    RectangleHitbox.fromRect(6.02, 14.27, Vec.create(6.27, 0)),
+                    RectangleHitbox.fromRect(3.77, 3.37, Vec.create(-7.39, -4.57)),
+                    RectangleHitbox.fromRect(3.77, 3.37, Vec.create(-7.39, 4.57))
+                ),
+                rotationMode: RotationMode.Limited
+            },
+            {
                 idString: "piano",
                 name: "Piano",
-                material: "piano", // TODO: sounds
+                material: "piano",
                 health: 350,
                 hitSoundVariations: 8, // blus
                 indestructible: true,
@@ -1973,7 +2064,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 noResidue: true,
                 role: ObstacleSpecialRoles.Door,
                 hingeOffset: Vec.create(-5.5, 0),
-                zIndex: ZIndexes.ObstaclesLayer1,
                 frames: {
                     particle: "furniture_particle"
                 }
@@ -1982,7 +2072,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 idString: "glass_door",
                 name: "Glass Door",
                 material: "glass",
-                doorSound: "slide",
+                doorSound: "auto_door",
                 health: 100,
                 scale: {
                     spawnMin: 1,
@@ -1996,10 +2086,80 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 automatic: true,
                 operationStyle: "slide",
                 slideFactor: 0.9,
-                // zIndex: ZIndexes.ObstaclesLayer3,
                 frames: {
                     particle: "window_particle"
                 }
+            },
+            // TODO Combine this with glass_door (this is the same as glass_door but the image is in px)
+            {
+                idString: "bigger_glass_door",
+                name: "Bigger Glass Door",
+                material: "glass",
+                doorSound: "auto_door",
+                health: 100,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 1
+                },
+                hitbox: RectangleHitbox.fromRect(10.86, 1.14),
+                rotationMode: RotationMode.Limited,
+                noResidue: true,
+                role: ObstacleSpecialRoles.Door,
+                automatic: true,
+                operationStyle: "slide",
+                slideFactor: 0.9,
+                frames: {
+                    particle: "window_particle"
+                }
+            },
+            {
+                idString: "red_metal_auto_door",
+                name: "Red Metal Automatic Door",
+                material: "metal_heavy",
+                doorSound: "metal_auto_door",
+                health: 100,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 1
+                },
+                hitbox: RectangleHitbox.fromRect(10.5, 1.62),
+                rotationMode: RotationMode.Limited,
+                noResidue: true,
+                role: ObstacleSpecialRoles.Door,
+                automatic: true,
+                operationStyle: "slide",
+                slideFactor: 0.9,
+                animationDuration: 500,
+                frames: {
+                    base: "auto_door"
+                },
+                tint: 0x401a1a
+            },
+            {
+                idString: "metal_auto_door",
+                name: "Metal Automatic Door",
+                material: "metal_heavy",
+                doorSound: "metal_auto_door",
+                health: 100,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 1
+                },
+                hitbox: RectangleHitbox.fromRect(10.5, 1.62),
+                rotationMode: RotationMode.Limited,
+                noResidue: true,
+                role: ObstacleSpecialRoles.Door,
+                automatic: true,
+                operationStyle: "slide",
+                slideFactor: 0.9,
+                animationDuration: 500,
+                frames: {
+                    base: "auto_door"
+                },
+                tint: 0x404040
             },
             {
                 idString: "metal_door",
@@ -2042,6 +2202,20 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 doorSound: "vault_door",
                 animationDuration: 2000,
                 hingeOffset: Vec.create(-6.1, -0.8),
+                zIndex: ZIndexes.ObstaclesLayer3,
+                frames: {
+                    particle: "metal_particle"
+                }
+            },
+            {
+                idString: "windowed_vault_door",
+                name: "Windowed Vault Door",
+                material: "metal_heavy",
+                health: 1000,
+                indestructible: true,
+                reflectBullets: true,
+                hitbox: RectangleHitbox.fromRect(12.83, 1.9, Vec.create(0, -0.4)),
+                rotationMode: RotationMode.Limited,
                 zIndex: ZIndexes.ObstaclesLayer3,
                 frames: {
                     particle: "metal_particle"
@@ -2509,6 +2683,20 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 role: ObstacleSpecialRoles.Window
             },
             {
+                idString: "bulletproof_window",
+                name: "Bulletproof Window",
+                material: "glass",
+                health: 700,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 1
+                },
+                hitbox: RectangleHitbox.fromRect(18.57, 2.45),
+                allowFlyover: FlyoverPref.Never,
+                rotationMode: RotationMode.Limited
+            },
+            {
                 idString: "bed",
                 name: "Bed",
                 material: "wood",
@@ -2886,16 +3074,23 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             gunMount(["mini_14"]),
             gunMount(["hp18"]),
             gunMount(["m590m"]),
-            gunMount(
-                ["maul"],
-                {
-                    hitbox: new GroupHitbox(
-                        RectangleHitbox.fromRect(5.05, 1, Vec.create(0, -1.3)),
-                        RectangleHitbox.fromRect(0.8, 3, Vec.create(-1.55, 0.35)),
-                        RectangleHitbox.fromRect(0.8, 3, Vec.create(1.55, 0.35))
-                    )
-                }
-            ),
+            gunMount(["maul"], {
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(5.05, 1, Vec.create(0, -1.3)),
+                    RectangleHitbox.fromRect(0.8, 3, Vec.create(-1.55, 0.35)),
+                    RectangleHitbox.fromRect(0.8, 3, Vec.create(1.55, 0.35))
+                )
+            }),
+            gunMount(["dual_rsh12"], {
+                frames: {
+                    particle: "gun_mount_dual_rsh12_particle",
+                    residue: "gun_mount_dual_rsh12_residue"
+                },
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(6.5, 0.99, Vec.create(0, -1.36)),
+                    RectangleHitbox.fromRect(5.7, 2.5, Vec.create(0, 0.4))
+                )
+            }),
             {
                 idString: "truck",
                 name: "Truck",
@@ -2956,68 +3151,22 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 allowFlyover: FlyoverPref.Always,
                 hasLoot: true
             },
-            {
-                idString: "control_panel",
-                name: "Control Panel",
-                material: "metal_light",
-                health: 200,
-                reflectBullets: true,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.7
-                },
-                hitbox: RectangleHitbox.fromRect(11, 8),
-                rotationMode: RotationMode.Limited,
-                explosion: "control_panel_explosion",
+            controlPanel(["control_panel", "Control Panel"], {
                 role: ObstacleSpecialRoles.Activatable,
                 sound: {
                     names: ["button_press", "puzzle_solved"]
                 },
                 frames: {
-                    activated: "control_panel_activated",
-                    particle: "metal_particle",
-                    residue: "barrel_residue"
+                    activated: "control_panel_activated"
                 }
-            },
-            {
-                idString: "control_panel2",
-                name: "Control Panel",
-                material: "metal_light",
-                health: 200,
-                reflectBullets: true,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.7
-                },
-                hitbox: RectangleHitbox.fromRect(11, 8),
-                rotationMode: RotationMode.Limited,
-                explosion: "control_panel_explosion",
-                frames: {
-                    particle: "metal_particle",
-                    residue: "barrel_residue"
-                }
-            },
-            {
-                idString: "control_panel_small",
-                name: "Small Control Panel",
-                material: "metal_light",
-                health: 200,
-                reflectBullets: true,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.7
-                },
-                hitbox: RectangleHitbox.fromRect(7.5, 8),
-                rotationMode: RotationMode.Limited,
-                explosion: "control_panel_explosion",
-                frames: {
-                    particle: "metal_particle",
-                    residue: "barrel_residue"
-                }
-            },
+            }),
+            controlPanel(["control_panel2", "Control Panel"]),
+            controlPanel(["control_panel3", "Control Panel"], {
+                hitbox: RectangleHitbox.fromRect(8.7, 6.34)
+            }),
+            controlPanel(["control_panel_small", "Small Control Panel"], {
+                hitbox: RectangleHitbox.fromRect(7.5, 8)
+            }),
             {
                 idString: "small_desk",
                 name: "Small Desk",
