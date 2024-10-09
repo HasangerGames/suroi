@@ -967,7 +967,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 indestructible: true,
                 scale: {
                     spawnMin: 1,
-                    spawnMax: 1
+                    spawnMax: 1,
+                    destroy: 0
                 },
                 hitbox: RectangleHitbox.fromRect(9, 9),
                 noHitEffect: true,
