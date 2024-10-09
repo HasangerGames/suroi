@@ -291,6 +291,8 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     rock_particle_2:              { base: "stone_particle_2", tint: 0x8e8e8e },
     river_rock_particle_1:        { base: "stone_particle_1", tint: 0x626471 },
     river_rock_particle_2:        { base: "stone_particle_2", tint: 0x626471 },
+    clearing_boulder_particle_1:  { base: "stone_particle_1", tint: 0x5a5a5a },
+    clearing_boulder_particle_2:  { base: "stone_particle_2", tint: 0x5a5a5a },
     sandbags_particle:            { base: "stone_particle_2", tint: 0xd59d4e },
     porta_potty_door_particle:    { base: "plastic_particle", tint: 0xf5f9fd },
     porta_potty_toilet_particle:  { base: "plastic_particle", tint: 0x5e5e5e },
@@ -919,15 +921,11 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     destroy: 0.5
                 },
                 spawnMode: MapObjectSpawnMode.Grass,
-                hitbox: new CircleHitbox(8),
+                hitbox: new CircleHitbox(8.2),
                 spawnHitbox: new CircleHitbox(12),
                 rotationMode: RotationMode.Full,
                 variations: 2,
-                particleVariations: 2,
-                frames: {
-                    particle: "rock_particle",
-                    residue: "rock_residue"
-                }
+                particleVariations: 2
             },
             {
                 idString: "pumpkin",
