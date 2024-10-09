@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="219.595"
+   height="74.389"
+   viewBox="0 0 58.101176 19.68209"
+   version="1.1"
+   id="svg29172"
+   inkscape:version="1.3.2 (1:1.3.2+202404261509+091e20ef0f)"
+   sodipodi:docname="gun_mount_dual_rsh12_residue.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview29174"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:document-units="px"
+     showgrid="false"
+     units="px"
+     inkscape:zoom="4.3893395"
+     inkscape:cx="104.11589"
+     inkscape:cy="56.842266"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#505050" />
+  <defs
+     id="defs29169" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="rect1178"
+       style="opacity:1;fill:#595959;fill-opacity:1;stroke:#212121;stroke-width:0.529119;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 15.403593,15.241397 2.316218,-1.899276 -0.830317,1.540473 1.523459,-1.308559 -0.03163,-0.942564 0.912919,-0.197328 -1.358969,2.730008 1.314201,-1.039126 -0.867112,2.836164 7.672917,-13.2898827 -1.405643,1.3360051 -0.01905,-0.7163089 -0.711649,1.1178939 0.249642,-1.0618139 -1.61846,2.2317139 1.296372,-3.4267064 -1.485973,1.555756 0.715998,-2.7563313 z" />
+    <path
+       id="rect1178-3"
+       style="opacity:1;fill:#595959;fill-opacity:1;stroke:#212121;stroke-width:0.529119;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 38.785052,17.229721 -1.150493,-3.183336 0.814922,0.716954 -0.625634,-1.736817 0.513285,0.243078 -0.152609,-0.617795 -0.984264,-0.629926 0.584957,-0.977396 1.044408,1.354213 0.93167,0.737266 0.389838,1.13721 1.612686,1.236757 -7.672916,-13.289881 0.08334,0.5939395 -0.1428,0.2900998 0.678214,1.4826924 -0.917721,-0.728611 0.941157,2.4652261 -1.958731,-2.5006917 0.108066,1.5690059 -1.770294,-1.4518695 z" />
+    <path
+       id="rect1178-6"
+       style="opacity:1;fill:#595959;fill-opacity:1;stroke:#212121;stroke-width:0.529119;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 17.141578,4.9469237 3.394858,3.007244 -1.819304,-0.713234 0.264527,0.576388 -0.56745,-0.115786 1.369886,1.022426 -0.79224,-0.116082 1.446282,1.053405 -0.830829,-0.08645 -1.508886,-0.81268 -0.579038,-0.06161 -2.097598,-0.774853 13.289881,7.6729163 -2.820753,-2.485435 0.895871,0.622847 -0.04799,-0.508056 0.696711,0.164755 -0.40465,-0.675784 2.130153,0.876593 -0.699747,-0.893298 1.970198,-0.08039 z" />
+  </g>
+</svg>
