@@ -30,40 +30,39 @@ Any amount helps! All donation money goes towards keeping the servers running.
 [discord.suroi.io](https://discord.suroi.io)
 
 ## Installation and setup
-Start by installing [Node.js](https://nodejs.org) and [pnpm](https://pnpm.io).
+Start by installing [Node.js](https://nodejs.org)
 
-Next, [click here to download the repo](https://github.com/HasangerGames/suroi/archive/refs/heads/master.zip), or use the following command to clone it:
+Next, use the following command to clone it:
 ```sh
-git clone https://github.com/HasangerGames/suroi.git
+git clone https://github.com/Arman-AIi/suroi-electron.git
 ```
 
-To install dependencies, open a terminal in the project root, and run this command:
+To install electron's dependencies, open a terminal in the project root, and run this command:
 ```sh
-pnpm install
+npm install electron --save-dev
 ```
+Next, run it in the client folder
+``` sh
+cd client
+```
+and run the same command
+``` sh
+npm install electron --save-dev
+```
+Repeat this step for the server and tests folders.
 
-This will create a `node_modules` directory in all three folders (`client`, `common`, and `server`) and link the packages there.
 
 ## Development
 To run the game locally, open a terminal in the project root and run the following:
 
 ```sh
-pnpm dev
+npm run start
 ```
-To open the game, go to http://127.0.0.1:3000 in your browser.
+This will launch the electron app if you have set it up correctly.
 
 ## Production
 To build for production, run this command in the project root:
 ```sh
-pnpm build
+npm run build
 ```
 
-To start the WebSocket server, run this command:
-```sh
-pnpm start
-```
-
-Production builds are served using [NGINX](https://nginx.org). A sample configuration file can be found [here](nginx.conf).
-
-## Self-hosting
-Visit [the wiki](https://github.com/HasangerGames/suroi/wiki/Self%E2%80%90hosting) for details on how to self-host.
