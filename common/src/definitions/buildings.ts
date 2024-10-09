@@ -194,6 +194,11 @@ const randomBarrel = {
     barrel: 2
 };
 
+const randomToilet = {
+    toilet: 1,
+    used_toilet: 1
+};
+
 const ContainerTints = {
     white: 0xc0c0c0,
     red: 0xa32900,
@@ -1576,7 +1581,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // bathroom (top right)
                     { idString: "door", position: Vec.create(16.1, -12.5), rotation: 1 },
                     { idString: "house_wall_11", position: Vec.create(16.1, -22.9), rotation: 1 },
-                    { idString: "toilet", position: Vec.create(23, -24), rotation: 0 },
+                    { idString: randomToilet, position: Vec.create(23, -24), rotation: 0 },
                     { idString: "house_wall_11", position: Vec.create(23.4, -5.5), rotation: 0 },
 
                     // windows (y += 0.2, (x, y + 0.2))
@@ -1665,7 +1670,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "house_wall_6", position: Vec.create(-7.33, 18.92), rotation: 1 },
                     { idString: "house_wall_7", position: Vec.create(-38.53, -6.29), rotation: 0 },
 
-                    { idString: "toilet", position: Vec.create(-2.75, -24.92), rotation: 0 },
+                    { idString: randomToilet, position: Vec.create(-2.75, -24.92), rotation: 0 },
                     { idString: "trash_can", position: Vec.create(-3, -10.5) },
                     { idString: "sink", position: Vec.create(5.91, -25.15), rotation: 0 },
                     { idString: "bed", position: Vec.create(-43.06, -20.98), rotation: 0 },
@@ -4188,9 +4193,9 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "headquarters_wall_3", position: Vec.create(11.9, -100.9), rotation: 1 },
                     { idString: "door", position: Vec.create(11.9, -91.85), rotation: 1 },
                     { idString: "headquarters_wall_6", position: Vec.create(-10.9, -62.7), rotation: 0 },
-                    { idString: "toilet", position: Vec.create(5.5, -69), rotation: 2 },
-                    { idString: "toilet", position: Vec.create(-9, -69), rotation: 2 },
-                    { idString: "used_toilet", position: Vec.create(-24, -69), rotation: 2 },
+                    { idString: randomToilet, position: Vec.create(5.5, -69), rotation: 2 },
+                    { idString: randomToilet, position: Vec.create(-9, -69), rotation: 2 },
+                    { idString: randomToilet, position: Vec.create(-24, -69), rotation: 2 },
                     { idString: "hq_toilet_paper_wall", position: Vec.create(-2, -73.3), rotation: 1 },
                     { idString: "hq_toilet_paper_wall", position: Vec.create(-17, -73.3), rotation: 1 },
                     { idString: "headquarters_wall_7", position: Vec.create(-5.55, -82.1), rotation: 0 },
@@ -5509,7 +5514,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "bookshelf", position: Vec.create(40.58, 16.84), rotation: 0 },
 
                     // bathroom
-                    { idString: "toilet", position: Vec.create(40.76, -2.19), rotation: 0 },
+                    { idString: randomToilet, position: Vec.create(40.76, -2.19), rotation: 0 },
 
                     // stairs area
                     { idString: "bookshelf", position: Vec.create(-34.05, -6.26), rotation: 0 },
