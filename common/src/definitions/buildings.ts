@@ -5196,7 +5196,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "roadblock", position: Vec.create(-59.26, -19.45), rotation: 1 },
                     { idString: "roadblock", position: Vec.create(-46.35, -30.64), rotation: 0 },
                     { idString: "roadblock", position: Vec.create(-25.87, -72.26), rotation: 0 },
-                    { idString: "roadblock", position: Vec.create(-31.56, -41.84), rotation: 1 },
+                    { idString: "roadblock", position: Vec.create(-31.56, -39.5), rotation: 1 },
                     { idString: "roadblock", position: Vec.create(38.9, 2.88), rotation: 0 },
                     { idString: "roadblock", position: Vec.create(32.42, 50.74), rotation: 0 },
                     { idString: "roadblock", position: Vec.create(47.87, 51.55), rotation: 0 },
