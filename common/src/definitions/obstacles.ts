@@ -960,6 +960,24 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hasLoot: true
             },
             {
+                idString: "cobweb",
+                name: "Cobweb",
+                material: "stone",
+                health: 69420,
+                indestructible: true,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1
+                },
+                hitbox: RectangleHitbox.fromRect(9, 9),
+                noHitEffect: true,
+                noCollisions: true,
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Always,
+                zIndex: ZIndexes.ObstaclesLayer4
+
+            },
+            {
                 idString: "flint_stone",
                 name: "Flint Stone",
                 material: "stone",
@@ -1075,12 +1093,12 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 hitbox: new CircleHitbox(5),
                 noCollisions: true,
+                noResidue: true,
                 rotationMode: RotationMode.Full,
                 zIndex: ZIndexes.ObstaclesLayer3,
                 // spawnWithLoot: true,
                 frames: {
-                    particle: "leaf_particle_3",
-                    residue: "no_residue"
+                    particle: "leaf_particle_3"
                 }
             },
             crate(
