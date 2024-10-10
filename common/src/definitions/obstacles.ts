@@ -324,7 +324,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
 
     pumpkin_particle:              { base: "pumpkin_particle_base", tint: 0xff8c01 },
     plumpkin_particle:             { base: "pumpkin_particle_base", tint: 0x8a4c70 },
-    disased_plumpkin_particle:     { base: "pumpkin_particle_base", tint: 0x654646 },
+    diseased_plumpkin_particle:    { base: "pumpkin_particle_base", tint: 0x654646 },
 
     tent_wall_particle_red_1:      { base: "stone_particle_1", tint: TentWallTints.red },
     tent_wall_particle_red_2:      { base: "stone_particle_2", tint: TentWallTints.red },
@@ -1027,9 +1027,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 spawnHitbox: new CircleHitbox(5),
                 rotationMode: RotationMode.Full,
                 allowFlyover: FlyoverPref.Always,
-                frames: {
-                    particle: "disased_plumpkin_particle"
-                }
                 // hasLoot: true
             },
             {
