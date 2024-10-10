@@ -69,7 +69,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly subBuildings: readonly SubBuilding[]
 
     readonly puzzle?: {
-        readonly triggerOnSolve: ReferenceTo<ObstacleDefinition>
+        readonly triggerOnSolve?: ReferenceTo<ObstacleDefinition>
         readonly delay: number
         readonly order?: readonly string[]
         readonly solvedSound?: boolean
@@ -5698,11 +5698,11 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     {
                         key: "plumpkin_bunker_floor",
                         position: Vec.create(0, 0)
-                    }
-                    // {
-                    //     key: "plumpkin_bunker_obstacles",
-                    //     position: Vec.create(0, 0)
-                    // }
+                    }/* ,
+                    {
+                        key: "plumpkin_bunker_obstacles",
+                        position: Vec.create(0, 0)
+                    } */
                 ],
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(2.01, 49.16, Vec.create(-89.3, 1.6)),
@@ -5839,6 +5839,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "potted_plant", position: Vec.create(-38.35, 90.99), rotation: 0 },
                     { idString: "control_panel_small", position: Vec.create(-46.14, 91.33), rotation: 0 },
                     { idString: "hq_desk_right", position: Vec.create(-40.79, 104.56), rotation: 3 },
+                    { idString: "pipe_4", position: Vec.create(-136.1, 95.81), rotation: 0 },
 
                     // vault
                     { idString: "metal_door", position: Vec.create(-83.98, 88.35), rotation: 1, locked: true },
@@ -5929,6 +5930,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: { box: 1, grenade_box: 1 }, position: Vec.create(-139.01, -73.68) },
                     { idString: "regular_crate", position: Vec.create(-146.74, -75.09) },
                     { idString: "bookshelf", position: Vec.create(-145.4, -62.95), rotation: 0 },
+                    { idString: "pipe_3", position: Vec.create(-145.31, -71.55), rotation: 0 },
 
                     // plumpkin lab area
                     { idString: "metal_auto_door", position: Vec.create(-78.35, -63.04), rotation: 3 },
@@ -5957,7 +5959,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "window2", position: Vec.create(-12.81, -57.7), rotation: 1 },
                     { idString: "window2", position: Vec.create(-3.19, -57.7), rotation: 1 },
                     { idString: "window2", position: Vec.create(6.39, -57.7), rotation: 1 },
-                    { idString: "headquarters_security_desk", position: Vec.create(-22.75, -52.96), rotation: 2 },
                     { idString: "hq_desk_right", position: Vec.create(1.15, -49.64), rotation: 0 },
                     { idString: "hq_desk_right", position: Vec.create(-43.83, -15.7), rotation: 1 },
                     { idString: "hq_desk_left", position: Vec.create(-43.86, 14.69), rotation: 1 },
@@ -5979,6 +5980,17 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "house_wall_15", position: Vec.create(-44.24, -4.36), rotation: 0 },
                     { idString: "metal_auto_door", position: Vec.create(12.34, -33.03), rotation: 3 },
                     { idString: "metal_auto_door", position: Vec.create(-38.1, -33.03), rotation: 3 },
+
+                    // next to plumpkin logo room/shelf room
+                    { idString: "ammo_crate", position: Vec.create(107.16, -12.64) },
+                    { idString: "ammo_crate", position: Vec.create(134.15, -20.66) },
+                    { idString: "dumpster", position: Vec.create(36.91, 69.82), rotation: 1 },
+                    { idString: "dumpster", position: Vec.create(21.47, 69.82), rotation: 1 },
+                    { idString: "forklift", position: Vec.create(79.41, -5.73), rotation: 3 },
+                    { idString: "forklift", position: Vec.create(54.37, 20.06), rotation: 0 },
+                    { idString: "pallet", position: Vec.create(54.45, 31.59), rotation: 0 },
+                    { idString: "pipe_1", position: Vec.create(106.85, -16.65), rotation: 0 },
+                    { idString: "pipe_2", position: Vec.create(62.22, -86.03), rotation: 0 },
 
                     // northeast hall
                     { idString: "gun_locker", position: Vec.create(60.72, -92.17), rotation: 0 },
@@ -6007,7 +6019,26 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ],
                 subBuildings: [
                     { idString: "detector", position: Vec.create(13.82, -100.67), orientation: 2 },
-                    { idString: "detector", position: Vec.create(27.24, -100.67), orientation: 2 }
+                    { idString: "detector", position: Vec.create(27.24, -100.67), orientation: 2 },
+                    { idString: "plumpkin_bunker_second_puzzle", position: Vec.create(0, 0) }
+                ]
+            },
+
+            {
+                idString: "plumpkin_bunker_second_puzzle",
+                name: "Plumpkin Bunker Second Puzzle",
+                spawnHitbox: RectangleHitbox.fromRect(40, 40),
+                sounds: {
+                    solved: "plumpkin_bunker_ambience",
+                    position: Vec.create(-13.28, -81.95),
+                    maxRange: 250,
+                    falloff: 0.5
+                },
+                puzzle: {
+                    delay: 1000
+                },
+                obstacles: [
+                    { idString: "headquarters_security_desk", position: Vec.create(-22.75, -52.96), rotation: 2, puzzlePiece: true }
                 ]
             }
         ] satisfies Missing[];

@@ -489,6 +489,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         ) * PIXI_SCALE
                         : 0;
                     this.image.setPos(x, 0);
+                    this.image.setAlpha(this.door?.offset === offset ? 1 : 0);
                 }
                 break;
             case "swivel":

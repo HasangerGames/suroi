@@ -1129,13 +1129,15 @@ logger.indent("Validating building definitions", () => {
                 const puzzle = building.puzzle;
                 const errorPath2 = tester.createPath(errorPath, "puzzle");
 
-                tester.assertReferenceExists({
-                    obj: puzzle,
-                    field: "triggerOnSolve",
-                    collection: Obstacles,
-                    collectionName: "Obstacles",
-                    baseErrorPath: errorPath2
-                });
+                if (puzzle.triggerOnSolve) {
+                    tester.assertReferenceExists({
+                        obj: puzzle,
+                        field: "triggerOnSolve",
+                        collection: Obstacles,
+                        collectionName: "Obstacles",
+                        baseErrorPath: errorPath2
+                    });
+                }
 
                 const hasObstacles = building.obstacles.length > 0;
 
@@ -1145,13 +1147,13 @@ logger.indent("Validating building definitions", () => {
                             return o.idString === puzzle.triggerOnSolve;
                         }
                         case "object": {
-                            return Object.keys(o.idString).length === 1 && puzzle.triggerOnSolve in o.idString;
+                            return Object.keys(o.idString).length === 1 && puzzle.triggerOnSolve && puzzle.triggerOnSolve in o.idString;
                         }
                     }
                 });
 
-                if (definitePuzzleTargets.length === 0) {
-                    const targetMightExist = hasObstacles && building.obstacles.some(o => typeof o.idString === "object" && puzzle.triggerOnSolve in o.idString);
+                if (definitePuzzleTargets.length === 0 && puzzle.triggerOnSolve) {
+                    const targetMightExist = hasObstacles && building.obstacles.some(o => typeof o.idString === "object" && puzzle.triggerOnSolve && puzzle.triggerOnSolve in o.idString);
 
                     if (targetMightExist) {
                         tester.assertWarn(

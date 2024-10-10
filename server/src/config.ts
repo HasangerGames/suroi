@@ -22,11 +22,11 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "fall",
+    map: "singleBuilding:plumpkin_bunker",
 
     lootTableOverride: "fall", // IMPORTANT: DELETE IF NORMAL MODE.
 
-    spawn: { mode: SpawnMode.Normal },
+    spawn: { mode: SpawnMode.Center },
 
     maxTeamSize: TeamSize.Solo,
 

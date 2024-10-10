@@ -322,6 +322,10 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     metal_auto_door_particle:      { base: "metal_particle_1", tint: 0x404040 },
     red_metal_auto_door_particle:  { base: "metal_particle_1", tint: 0x401a1a },
 
+    pumpkin_particle:              { base: "pumpkin_particle_base", tint: 0xff8c01 },
+    plumpkin_particle:             { base: "pumpkin_particle_base", tint: 0x8a4c70 },
+    disased_plumpkin_particle:     { base: "pumpkin_particle_base", tint: 0x654646 },
+
     tent_wall_particle_red_1:      { base: "stone_particle_1", tint: TentWallTints.red },
     tent_wall_particle_red_2:      { base: "stone_particle_2", tint: TentWallTints.red },
     tent_wall_particle_green_1:    { base: "stone_particle_1", tint: TentWallTints.green },
@@ -966,7 +970,10 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 spawnHitbox: new CircleHitbox(3),
                 rotationMode: RotationMode.Full,
                 allowFlyover: FlyoverPref.Always,
-                hasLoot: true
+                hasLoot: true,
+                frames: {
+                    particle: "pumpkin_particle"
+                }
             },
             {
                 idString: "mini_plumpkin",
@@ -981,7 +988,10 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: new CircleHitbox(1.83),
                 spawnHitbox: new CircleHitbox(2),
                 rotationMode: RotationMode.Full,
-                allowFlyover: FlyoverPref.Always
+                allowFlyover: FlyoverPref.Always,
+                frames: {
+                    particle: "plumpkin_particle"
+                }
                 // hasLoot: true
             },
             {
@@ -997,7 +1007,10 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: new CircleHitbox(4.69),
                 spawnHitbox: new CircleHitbox(5),
                 rotationMode: RotationMode.Full,
-                allowFlyover: FlyoverPref.Always
+                allowFlyover: FlyoverPref.Always,
+                frames: {
+                    particle: "plumpkin_particle"
+                }
                 // hasLoot: true
             },
             {
@@ -1013,7 +1026,10 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: new CircleHitbox(4.45),
                 spawnHitbox: new CircleHitbox(5),
                 rotationMode: RotationMode.Full,
-                allowFlyover: FlyoverPref.Always
+                allowFlyover: FlyoverPref.Always,
+                frames: {
+                    particle: "disased_plumpkin_particle"
+                }
                 // hasLoot: true
             },
             {
@@ -3257,6 +3273,60 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 noCollisions: true
             },
+
+            // --------------------------------------------
+            // variations no work for some reason
+            // (someone fix pls uwu)
+            // --------------------------------------------
+            {
+                idString: "pipe_1",
+                name: "Pipe",
+                material: "metal_light",
+                health: 200,
+                indestructible: true,
+                hitbox: RectangleHitbox.fromRect(0, 0),
+                zIndex: ZIndexes.ObstaclesLayer4,
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Always,
+                noCollisions: true
+            },
+            {
+                idString: "pipe_2",
+                name: "Pipe",
+                material: "metal_light",
+                health: 200,
+                indestructible: true,
+                hitbox: RectangleHitbox.fromRect(0, 0),
+                zIndex: ZIndexes.ObstaclesLayer4,
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Always,
+                noCollisions: true
+            },
+            {
+                idString: "pipe_3",
+                name: "Pipe",
+                material: "metal_light",
+                health: 200,
+                indestructible: true,
+                hitbox: RectangleHitbox.fromRect(0, 0),
+                zIndex: ZIndexes.ObstaclesLayer4,
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Always,
+                noCollisions: true
+            },
+            {
+                idString: "pipe_4",
+                name: "Pipe",
+                material: "metal_light",
+                health: 200,
+                indestructible: true,
+                hitbox: RectangleHitbox.fromRect(0, 0),
+                zIndex: ZIndexes.ObstaclesLayer4,
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Always,
+                noCollisions: true
+            },
+            // --------------------------------------------
             {
                 idString: "bollard",
                 name: "Bollard",
