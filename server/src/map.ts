@@ -302,6 +302,28 @@ export class GameMap {
         }
     }
 
+    private _generateClearing(
+        maxWidth: number,
+        maxHeight: number,
+        minWidth: number,
+        minHeight: number,
+        obstacles: string[],
+        count: number
+    ) {
+        const clearings: RectangleHitbox[] = [];
+        for (let i = 0; i <= count; i++) {
+            const width = randomFloat(minWidth, maxWidth);
+            const height = randomFloat(minHeight, maxHeight);
+            const position = this.getRandomPosition(this.beachHitbox);
+            if (position !== undefined) {
+                clearings.push(new RectangleHitbox(
+                    Vec.create(position.x + width / 2, position.y + height / 2),
+                    Vec.create(position.x - width / 2, position.y - height / 2)
+                ));
+            }
+        }
+    }
+
     private _generateBuildings(definition: ReifiableDef<BuildingDefinition>, count: number): void {
         definition = Buildings.reify(definition);
 
