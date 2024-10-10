@@ -5698,7 +5698,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     {
                         key: "plumpkin_bunker_floor",
                         position: Vec.create(0, 0)
-                    },
+                    }
                     // {
                     //     key: "plumpkin_bunker_obstacles",
                     //     position: Vec.create(0, 0)
@@ -5980,7 +5980,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "metal_auto_door", position: Vec.create(12.34, -33.03), rotation: 3 },
                     { idString: "metal_auto_door", position: Vec.create(-38.1, -33.03), rotation: 3 },
 
-
                     // northeast hall
                     { idString: "gun_locker", position: Vec.create(60.72, -92.17), rotation: 0 },
                     { idString: "ammo_crate", position: Vec.create(99.91, -82.15), rotation: 0 },
@@ -6002,13 +6001,13 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
 
                     // server room
                     { idString: "red_metal_auto_door", position: Vec.create(121.81, -26.84), rotation: 2 },
-                    { idString: "red_metal_auto_door", position: Vec.create(121.81, -76.09), rotation: 2 },
+                    { idString: "red_metal_auto_door", position: Vec.create(121.81, -76.09), rotation: 2 }
 
                     // storage room
                 ],
                 subBuildings: [
                     { idString: "detector", position: Vec.create(13.82, -100.67), orientation: 2 },
-                    { idString: "detector", position: Vec.create(27.24, -100.67), orientation: 2 },
+                    { idString: "detector", position: Vec.create(27.24, -100.67), orientation: 2 }
                 ]
             }
         ] satisfies Missing[];

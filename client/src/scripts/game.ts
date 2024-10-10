@@ -477,7 +477,7 @@ export class Game {
         // game started if page is out of focus.
         if (!document.hasFocus()) this.soundManager.play("join_notification");
 
-        //if (!this.console.getBuiltInCVar("cv_hide_ambient_particles")) this.windAmbientSound = this.soundManager.play("wind_ambience", { loop: true });
+        // if (!this.console.getBuiltInCVar("cv_hide_ambient_particles")) this.windAmbientSound = this.soundManager.play("wind_ambience", { loop: true });
 
         this.uiManager.emotes = packet.emotes;
         this.uiManager.updateEmoteWheel();

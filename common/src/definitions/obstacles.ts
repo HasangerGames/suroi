@@ -319,6 +319,8 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     gun_mount_dual_rsh12_particle: { base: "wood_particle",    tint: 0x595959 },
     square_desk_particle:          { base: "wood_particle",    tint: 0x4d3e28 },
     plumpkin_bunker_particle:      { base: "metal_particle_1", tint: 0x262626 },
+    metal_auto_door_particle:      { base: "metal_particle_1", tint: 0x404040 },
+    red_metal_auto_door_particle:  { base: "metal_particle_1", tint: 0x401a1a },
 
     tent_wall_particle_red_1:      { base: "stone_particle_1", tint: TentWallTints.red },
     tent_wall_particle_red_2:      { base: "stone_particle_2", tint: TentWallTints.red },
@@ -979,7 +981,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: new CircleHitbox(1.83),
                 spawnHitbox: new CircleHitbox(2),
                 rotationMode: RotationMode.Full,
-                allowFlyover: FlyoverPref.Always,
+                allowFlyover: FlyoverPref.Always
                 // hasLoot: true
             },
             {
@@ -995,7 +997,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: new CircleHitbox(4.69),
                 spawnHitbox: new CircleHitbox(5),
                 rotationMode: RotationMode.Full,
-                allowFlyover: FlyoverPref.Always,
+                allowFlyover: FlyoverPref.Always
                 // hasLoot: true
             },
             {
@@ -1011,7 +1013,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: new CircleHitbox(4.45),
                 spawnHitbox: new CircleHitbox(5),
                 rotationMode: RotationMode.Full,
-                allowFlyover: FlyoverPref.Always,
+                allowFlyover: FlyoverPref.Always
                 // hasLoot: true
             },
             {
@@ -2118,6 +2120,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 name: "Red Metal Automatic Door",
                 material: "metal_heavy",
                 doorSound: "metal_auto_door",
+                indestructible: true,
+                reflectBullets: true,
                 health: 100,
                 scale: {
                     spawnMin: 1,
@@ -2133,7 +2137,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 slideFactor: 0.9,
                 animationDuration: 500,
                 frames: {
-                    base: "auto_door"
+                    base: "auto_door",
+                    particle: "red_metal_auto_door_particle"
                 },
                 tint: 0x401a1a
             },
@@ -2143,6 +2148,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 material: "metal_heavy",
                 doorSound: "metal_auto_door",
                 health: 100,
+                indestructible: true,
+                reflectBullets: true,
                 scale: {
                     spawnMin: 1,
                     spawnMax: 1,
@@ -2157,7 +2164,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 slideFactor: 0.9,
                 animationDuration: 500,
                 frames: {
-                    base: "auto_door"
+                    base: "auto_door",
+                    particle: "metal_auto_door_particle"
                 },
                 tint: 0x404040
             },
@@ -2694,7 +2702,10 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 hitbox: RectangleHitbox.fromRect(18.57, 2.45),
                 allowFlyover: FlyoverPref.Never,
-                rotationMode: RotationMode.Limited
+                rotationMode: RotationMode.Limited,
+                frames: {
+                    particle: "window_particle"
+                }
             },
             {
                 idString: "bed",
