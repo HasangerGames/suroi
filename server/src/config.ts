@@ -1,11 +1,10 @@
 import { Layer, TeamSize } from "@common/constants";
-import { Vec, type Vector } from "@common/utils/vector";
+import { type Vector } from "@common/utils/vector";
 
 import { type Maps } from "./data/maps";
 import { type Game } from "./game";
 import { type GamePlugin } from "./pluginManager";
 import { LootMode } from "./data/lootTables";
-import { PlaceObjectPlugin } from "./defaultPlugins/placeObjectPlugin";
 
 export enum SpawnMode {
     Normal,

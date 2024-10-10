@@ -309,7 +309,7 @@ export class GameMap {
         minHeight: number,
         obstacles: string[],
         count: number
-    ) {
+    ): void {
         const clearings: RectangleHitbox[] = [];
         for (let i = 0; i <= count; i++) {
             const width = randomFloat(minWidth, maxWidth);
