@@ -5824,8 +5824,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 },
                 obstacles: [
                     // vault area
-                    { idString: "metal_auto_door", position: Vec.create(-33.27, 122.05), rotation: 3 },
-                    { idString: "metal_auto_door", position: Vec.create(-135.45, 75.18), rotation: 2 },
                     { idString: "cabinet", position: Vec.create(-92.46, 78.93), rotation: 0 },
                     { idString: "cabinet", position: Vec.create(-120.63, 78.99), rotation: 0 },
                     { idString: "gun_locker", position: Vec.create(-106.58, 78.99), rotation: 0 },
@@ -5933,7 +5931,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "pipe_3", position: Vec.create(-145.31, -71.55), rotation: 0 },
 
                     // plumpkin lab area
-                    { idString: "metal_auto_door", position: Vec.create(-78.35, -63.04), rotation: 3 },
                     { idString: "pumpkin", position: Vec.create(-47.26, -117.89), rotation: 0 },
                     { idString: "pumpkin", position: Vec.create(-53.98, -114.99), rotation: 0 },
                     { idString: "mini_plumpkin", position: Vec.create(-34.18, -111.23), rotation: 0 },
@@ -5951,7 +5948,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "gun_case", position: Vec.create(48.34, -98.34), rotation: 3 },
                     { idString: "regular_crate", position: Vec.create(-71.7, -97.79) },
                     { idString: "barrel", position: Vec.create(-71.84, -88.09) },
-                    { idString: "metal_auto_door", position: Vec.create(52.68, -82.25), rotation: 3 },
 
                     // main office/control room
                     { idString: "window2", position: Vec.create(-32.06, -57.7), rotation: 1 },
@@ -5978,8 +5974,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "house_column", position: Vec.create(-6.3, -19.07), rotation: 0 },
                     { idString: "house_column", position: Vec.create(-6.3, 3.22), rotation: 0 },
                     { idString: "house_wall_15", position: Vec.create(-44.24, -4.36), rotation: 0 },
-                    { idString: "metal_auto_door", position: Vec.create(12.34, -33.03), rotation: 3 },
-                    { idString: "metal_auto_door", position: Vec.create(-38.1, -33.03), rotation: 3 },
 
                     // next to plumpkin logo room/shelf room
                     { idString: "ammo_crate", position: Vec.create(107.16, -12.64) },
@@ -6035,9 +6029,16 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     falloff: 0.5
                 },
                 puzzle: {
+                    triggerOnSolve: "metal_auto_door",
                     delay: 1000
                 },
                 obstacles: [
+                    { idString: "metal_auto_door", position: Vec.create(-33.27, 122.05), rotation: 3 },
+                    { idString: "metal_auto_door", position: Vec.create(-135.45, 75.18), rotation: 2 },
+                    { idString: "metal_auto_door", position: Vec.create(-78.35, -63.04), rotation: 3 },
+                    { idString: "metal_auto_door", position: Vec.create(52.68, -82.25), rotation: 3 },
+                    { idString: "metal_auto_door", position: Vec.create(12.34, -33.03), rotation: 3 },
+                    { idString: "metal_auto_door", position: Vec.create(-38.1, -33.03), rotation: 3 },
                     { idString: "headquarters_security_desk", position: Vec.create(-22.75, -52.96), rotation: 2, puzzlePiece: true }
                 ]
             }
