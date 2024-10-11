@@ -5784,6 +5784,30 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     new CircleHitbox(10.32, Vec.create(-40.12, -82.14)),
                     new CircleHitbox(10.32, Vec.create(14.73, -82.06))
                 ),
+                scopeHitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(14.45, 31.53, Vec.create(18.97, -42.02)),
+                    RectangleHitbox.fromRect(26.15, 30.85, Vec.create(-91.47, -65.47)),
+                    RectangleHitbox.fromRect(14.45, 31.53, Vec.create(-44.73, -41.96)),
+                    RectangleHitbox.fromRect(41.44, 50.28, Vec.create(119.66, -52.06)),
+                    RectangleHitbox.fromRect(87.56, 20.07, Vec.create(96.58, -86.2)),
+                    RectangleHitbox.fromRect(32.65, 20.07, Vec.create(-67.85, 85.24)),
+                    RectangleHitbox.fromRect(16.05, 13.43, Vec.create(0.39, 121.47)),
+                    RectangleHitbox.fromRect(48.96, 34.73, Vec.create(-127.96, -63.52)),
+                    RectangleHitbox.fromRect(14.45, 31.53, Vec.create(18.97, -42.02)),
+                    RectangleHitbox.fromRect(26.15, 30.85, Vec.create(-91.47, -65.47)),
+                    RectangleHitbox.fromRect(14.45, 31.53, Vec.create(-44.73, -41.96)),
+                    RectangleHitbox.fromRect(41.44, 50.28, Vec.create(119.66, -52.06)),
+                    RectangleHitbox.fromRect(87.56, 20.07, Vec.create(96.58, -86.2)),
+                    RectangleHitbox.fromRect(32.65, 20.07, Vec.create(-67.85, 85.24)),
+                    RectangleHitbox.fromRect(16.05, 13.43, Vec.create(0.39, 121.47)),
+                    RectangleHitbox.fromRect(48.96, 34.73, Vec.create(-127.96, -63.52)),
+                    RectangleHitbox.fromRect(64.01, 70.98, Vec.create(-121.09, -10.57)),
+                    RectangleHitbox.fromRect(49.34, 81.6, Vec.create(-12.84, -15.94)),
+                    RectangleHitbox.fromRect(16.81, 52.06, Vec.create(-42.96, -0.67)),
+                    RectangleHitbox.fromRect(51.85, 27.66, Vec.create(-77.15, -35.9)),
+                    RectangleHitbox.fromRect(296.09, 235.94, Vec.create(5.94, -10.79)),
+                    RectangleHitbox.fromRect(68.6, 46.75, Vec.create(-41.95, 104.97))
+                ),
                 floors: [
                     {
                         type: FloorNames.Metal,

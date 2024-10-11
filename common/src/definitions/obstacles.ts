@@ -1026,7 +1026,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: new CircleHitbox(4.45),
                 spawnHitbox: new CircleHitbox(5),
                 rotationMode: RotationMode.Full,
-                allowFlyover: FlyoverPref.Always,
+                allowFlyover: FlyoverPref.Always
                 // hasLoot: true
             },
             {
