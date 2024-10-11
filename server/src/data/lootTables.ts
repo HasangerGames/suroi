@@ -149,7 +149,8 @@ export const LootTierOverrides: Record<string, LootTierOverride> = {
             { item: "tactical_pack", weight: 0.09 }
         ],
         melee: [
-            { item: "hatchet", weight: 3 },
+            { item: "squash", weight: 3 },
+            { item: "hatchet", weight: 1 },
             { item: "sickle", weight: 0.5 },
             { item: "kbar", weight: 2 }
         ]
@@ -938,6 +939,14 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             { item: "deep_sea", weight: 1 }
+        ]
+    },
+    barn_floor: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "squash", weight: 1 },
+            { item: NullString, weight: 1 }
         ]
     },
     potted_plant: {
