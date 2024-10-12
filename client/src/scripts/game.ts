@@ -554,8 +554,9 @@ export class Game {
             }
         }
 
+        let players: Set<Player> | undefined;
         if (this.console.getBuiltInCVar("cv_movement_smoothing")) {
-            for (const player of this.objects.getCategory(ObjectCategory.Player)) {
+            for (const player of players = this.objects.getCategory(ObjectCategory.Player)) {
                 player.updateContainerPosition();
                 if (!player.isActivePlayer || !this.console.getBuiltInCVar("cv_responsive_rotation") || this.spectating) {
                     player.updateContainerRotation();
@@ -580,6 +581,10 @@ export class Game {
                 syncedParticle.updateContainerRotation();
                 syncedParticle.updateContainerScale();
             }
+        }
+
+        for (const player of players ?? this.objects.getCategory(ObjectCategory.Player)) {
+            player.updateGrenadePreview();
         }
 
         for (const tween of this.tweens) tween.update();

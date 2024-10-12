@@ -478,108 +478,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.playAnimation(data.animation);
         }
 
-        this.grenadeImpactPreview?.clear();
-        if (
-            this.animation === AnimationType.ThrowableCook
-            && this.activeItem.itemType === ItemType.Throwable
-        ) {
-            // prediction for impact point is basically just done by yoinking sever
-            // code and plopping it client-side lol
-            if (this.game.uiManager.perks.hasPerk(PerkIds.DemoExpert)) {
-                if (this.grenadeImpactPreview === undefined) {
-                    this.grenadeImpactPreview = new Graphics();
-                    this.grenadeImpactPreview.zIndex = 999;
-                    this.game.camera.addObject(this.grenadeImpactPreview);
-                }
-
-                const graphics = this.grenadeImpactPreview;
-                const def = this.activeItem;
-
-                // mirrors server logic
-                const pos = Vec.add(
-                    toPixiCoords(this.position),
-                    Vec.rotate(toPixiCoords(def.animation.cook.rightFist), this.rotation)
-                );
-
-                const range = def.c4
-                    ? 0
-                    : Numeric.min(
-                        this.game.inputManager.distanceToMouse * 0.9, // <- this constant is defined server-side
-                        def.maxThrowDistance * PerkData[PerkIds.DemoExpert].rangeMod
-                    );
-
-                const cookMod = def.cookable ? Date.now() - this.animationChangeTime : 0;
-                const drag = 0.001; // defined server-side
-                const physDist = (range / (985 * drag)) * (1 - Math.exp(-drag * (def.fuseTime - cookMod))); // also defined server-side
-
-                const { x, y } = Vec.add(
-                    pos,
-                    Vec.fromPolar(
-                        this.rotation,
-                        physDist * PIXI_SCALE
-                    )
-                );
-
-                const ln = new DashLine(graphics, { dash: [100, 50] });
-
-                graphics.clear()
-                    .setFillStyle({
-                        color: 0xff0000,
-                        alpha: 0.3
-                    })
-                    .setStrokeStyle({
-                        color: 0xff0000,
-                        width: 8,
-                        alpha: 0.7
-                    })
-                    .beginPath();
-
-                ln.moveTo(pos.x, pos.y)
-                    .lineTo(x, y);
-
-                graphics.stroke()
-                    .setStrokeStyle({
-                        color: 0xff0000,
-                        width: 3,
-                        alpha: 0.5
-                    })
-                    .beginPath();
-
-                const explosionDef = Explosions.fromStringSafe(def.detonation.explosion ?? "");
-                if (
-                    explosionDef !== undefined
-                    && explosionDef.damage !== 0
-                    && explosionDef.radius.min + explosionDef.radius.max !== 0
-                ) {
-                    graphics.circle(x, y, explosionDef.radius.min * PIXI_SCALE)
-                        .closePath()
-                        .fill()
-                        .stroke()
-                        .beginPath()
-                        .setFillStyle({
-                            color: 0xFFFF00,
-                            alpha: 0.8
-                        })
-                        .setStrokeStyle({
-                            color: 0xFFFF00,
-                            width: 3,
-                            alpha: 0.1
-                        })
-                        .circle(x, y, 0.5 * PIXI_SCALE)
-                        .closePath()
-                        .fill()
-                        .stroke();
-                } else {
-                    graphics.circle(x, y, 1.5 * PIXI_SCALE)
-                        .closePath()
-                        .fill()
-                        .stroke();
-                }
-            } else {
-                this.grenadeImpactPreview?.destroy();
-                this.grenadeImpactPreview = undefined;
-            }
-        }
+        this.updateGrenadePreview();
 
         if (data.full) {
             const full = data.full;
@@ -856,6 +755,109 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         }
 
         this.updateDebugGraphics();
+    }
+
+    updateGrenadePreview(): void {
+        this.grenadeImpactPreview?.clear();
+        if (
+            this.animation === AnimationType.ThrowableCook
+            && this.activeItem.itemType === ItemType.Throwable
+        ) {
+            // prediction for impact point is basically just done by yoinking sever
+            // code and plopping it client-side lol
+            if (this.game.uiManager.perks.hasPerk(PerkIds.DemoExpert)) {
+                if (this.grenadeImpactPreview === undefined) {
+                    this.grenadeImpactPreview = new Graphics();
+                    this.grenadeImpactPreview.zIndex = 999;
+                    this.game.camera.addObject(this.grenadeImpactPreview);
+                }
+
+                const graphics = this.grenadeImpactPreview;
+                const def = this.activeItem;
+
+                // mirrors server logic
+                const pos = Vec.add(
+                    toPixiCoords(this.position),
+                    Vec.rotate(toPixiCoords(def.animation.cook.rightFist), this.rotation)
+                );
+
+                const range = def.c4
+                    ? 0
+                    : Numeric.min(
+                        this.game.inputManager.distanceToMouse * 0.9, // <- this constant is defined server-side
+                        def.maxThrowDistance * PerkData[PerkIds.DemoExpert].rangeMod
+                    );
+
+                const cookMod = def.cookable ? Date.now() - this.animationChangeTime : 0;
+                const drag = 0.001; // defined server-side
+                const physDist = (range / (985 * drag)) * (1 - Math.exp(-drag * (def.fuseTime - cookMod))); // also defined server-side
+
+                const { x, y } = Vec.add(
+                    pos,
+                    Vec.fromPolar(
+                        this.rotation,
+                        physDist * PIXI_SCALE
+                    )
+                );
+
+                const ln = new DashLine(graphics, { dash: [100, 50] });
+
+                graphics.clear()
+                    .setFillStyle({
+                        color: 0xff0000,
+                        alpha: 0.3
+                    })
+                    .setStrokeStyle({
+                        color: 0xff0000,
+                        width: 8,
+                        alpha: 0.7
+                    })
+                    .beginPath();
+
+                ln.moveTo(pos.x, pos.y)
+                    .lineTo(x, y);
+
+                graphics.stroke()
+                    .setStrokeStyle({
+                        color: 0xff0000,
+                        width: 3,
+                        alpha: 0.5
+                    })
+                    .beginPath();
+
+                const explosionDef = Explosions.fromStringSafe(def.detonation.explosion ?? "");
+                if (explosionDef !== undefined
+                    && explosionDef.damage !== 0
+                    && explosionDef.radius.min + explosionDef.radius.max !== 0) {
+                    graphics.circle(x, y, explosionDef.radius.min * PIXI_SCALE)
+                        .closePath()
+                        .fill()
+                        .stroke()
+                        .beginPath()
+                        .setFillStyle({
+                            color: 0xFFFF00,
+                            alpha: 0.8
+                        })
+                        .setStrokeStyle({
+                            color: 0xFFFF00,
+                            width: 3,
+                            alpha: 0.1
+                        })
+                        .circle(x, y, 0.5 * PIXI_SCALE)
+                        .closePath()
+                        .fill()
+                        .stroke();
+                } else {
+                    graphics.circle(x, y, 1.5 * PIXI_SCALE)
+                        .closePath()
+                        .fill()
+                        .stroke();
+                }
+            } else {
+                this.grenadeImpactPreview?.destroy();
+                this.grenadeImpactPreview = undefined;
+            }
+        }
     }
 
     override updateDebugGraphics(): void {

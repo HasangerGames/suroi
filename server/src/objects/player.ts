@@ -139,6 +139,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private _sizeMod = 1;
     get sizeMod(): number { return this._sizeMod; }
     set sizeMod(size: number) {
+        if (this._sizeMod === size) return;
         this._sizeMod = size;
         this._hitbox = Player.baseHitbox.transform(this._hitbox.position, size);
         this.dirty.size = true;

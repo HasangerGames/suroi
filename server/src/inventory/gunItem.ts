@@ -436,10 +436,12 @@ export class GunItem extends InventoryItem<GunDefinition> {
         for (const perk of owner.perks) {
             switch (perk.idString) {
                 case PerkIds.Splinter: {
-                    projCount *= perk.split;
-                    modifiers.damage *= perk.damageMod;
-                    modifyForDamageMod(perk.damageMod);
-                    modifiersModified = true;
+                    if (definition.ballistics.onHitExplosion === undefined && !definition.summonAirdrop) {
+                        projCount *= perk.split;
+                        modifiers.damage *= perk.damageMod;
+                        modifyForDamageMod(perk.damageMod);
+                        modifiersModified = true;
+                    }
                     break;
                 }
                 case PerkIds.Sabot: {
