@@ -3263,6 +3263,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                             idString: "button",
                             position: Vec.create(10 + 4.75 * i, -19.2),
                             rotation: 0,
+                            variation: 0,
                             puzzlePiece: ["y", "o", "j", "l"][i]
                         } satisfies BuildingObstacle)
                     ),
@@ -5767,7 +5768,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "grenade_crate", position: Vec.create(22.35, 79.86) },
                     { idString: "barrel", position: Vec.create(30.12, 80.17) },
                     { idString: "gun_case", position: Vec.create(14.92, 110.4), rotation: 2 },
-                    { idString: "red_metal_auto_door", position: Vec.create(29.27, 114.78), rotation: 0 },
+                    { idString: "metal_auto_door", position: Vec.create(29.27, 114.78), rotation: 0 },
                 ],
                 subBuildings: [
                     { idString: "hay_shed_4", position: Vec.create(40.03, 146.55), orientation: 1 },
@@ -5930,13 +5931,15 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     }
                 ],
                 puzzle: {
-                    triggerOnSolve: "vault_door",
+                    triggerOnSolve: "blue_metal_auto_door",
                     solvedSound: true,
                     soundPosition: Vec.create(-95.68, 46.52),
                     delay: 0
                 },
                 obstacles: [
-                    // vault area
+                    // security office
+                    { idString: "blue_metal_auto_door", position: Vec.create(-33.27, 122.05), rotation: 3 },
+                    { idString: "blue_metal_auto_door", position: Vec.create(-135.45, 75.18), rotation: 2 },
                     { idString: "cabinet", position: Vec.create(-92.46, 78.93), rotation: 0 },
                     { idString: "cabinet", position: Vec.create(-120.63, 78.99), rotation: 0 },
                     { idString: "gun_locker", position: Vec.create(-106.58, 78.99), rotation: 0 },
@@ -5961,14 +5964,14 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "trash_can", position: Vec.create(-79.69, 79.48) },
 
                     // center area with plumpkin logo
-                    { idString: "red_metal_auto_door", position: Vec.create(8.67, 61.27), rotation: 1 },
-                    { idString: "red_metal_auto_door", position: Vec.create(8.67, 50.87), rotation: 3 },
-                    { idString: "red_metal_auto_door", position: Vec.create(-51.27, 50.83), rotation: 3 },
-                    { idString: "red_metal_auto_door", position: Vec.create(-51.27, 61.31), rotation: 1 },
-                    { idString: "red_metal_auto_door", position: Vec.create(-16.65, 25.89), rotation: 2 },
-                    { idString: "red_metal_auto_door", position: Vec.create(-27.13, 25.89), rotation: 0 },
-                    { idString: "red_metal_auto_door", position: Vec.create(-27.13, 85.62), rotation: 0 },
-                    { idString: "red_metal_auto_door", position: Vec.create(-16.65, 85.62), rotation: 2 },
+                    { idString: "metal_auto_door", position: Vec.create(8.67, 61.27), rotation: 1 },
+                    { idString: "metal_auto_door", position: Vec.create(8.67, 50.87), rotation: 3 },
+                    { idString: "metal_auto_door", position: Vec.create(-51.27, 50.83), rotation: 3 },
+                    { idString: "metal_auto_door", position: Vec.create(-51.27, 61.31), rotation: 1 },
+                    { idString: "metal_auto_door", position: Vec.create(-16.65, 25.89), rotation: 2 },
+                    { idString: "metal_auto_door", position: Vec.create(-27.13, 25.89), rotation: 0 },
+                    { idString: "metal_auto_door", position: Vec.create(-27.13, 85.62), rotation: 0 },
+                    { idString: "metal_auto_door", position: Vec.create(-16.65, 85.62), rotation: 2 },
                     { idString: "couch", position: Vec.create(-31.89, 54.94), rotation: 0 },
                     { idString: "couch", position: Vec.create(-10.72, 54.94), rotation: 2 },
                     { idString: "potted_plant", position: Vec.create(-45.97, 80.45) },
@@ -5979,7 +5982,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
 
                     // west office
                     { idString: "square_desk", position: Vec.create(-98.23, 50.04), rotation: 0 },
-                    { idString: "button", position: Vec.create(-95.68, 46.52), rotation: 3, puzzlePiece: true },
+                    { idString: "button", position: Vec.create(-95.68, 46.52), rotation: 3, variation: 1, puzzlePiece: true },
                     { idString: "bookshelf", position: Vec.create(-110.44, 29.36), rotation: 0 },
                     { idString: "bookshelf", position: Vec.create(-97.48, 29.36), rotation: 0 },
                     { idString: "bookshelf", position: Vec.create(-109.18, 71.58), rotation: 0 },
@@ -6043,7 +6046,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "bookshelf", position: Vec.create(-145.4, -62.95), rotation: 0 },
                     { idString: "pipe_3", position: Vec.create(-145.31, -71.55), rotation: 0 },
 
-                    // plumpkin lab area
+                    // lab
                     { idString: "pumpkin", position: Vec.create(-47.26, -117.89), rotation: 0 },
                     { idString: "pumpkin", position: Vec.create(-53.98, -114.99), rotation: 0 },
                     { idString: "mini_plumpkin", position: Vec.create(-34.18, -111.23), rotation: 0 },
@@ -6088,17 +6091,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "house_column", position: Vec.create(-6.3, 3.22), rotation: 0 },
                     { idString: "house_wall_15", position: Vec.create(-44.24, -4.36), rotation: 0 },
 
-                    // next to plumpkin logo room/shelf room
-                    { idString: "ammo_crate", position: Vec.create(107.16, -12.64) },
-                    { idString: "ammo_crate", position: Vec.create(134.15, -20.66) },
-                    { idString: "dumpster", position: Vec.create(36.91, 69.82), rotation: 1 },
-                    { idString: "dumpster", position: Vec.create(21.47, 69.82), rotation: 1 },
-                    { idString: "forklift", position: Vec.create(79.41, -5.73), rotation: 3 },
-                    { idString: "forklift", position: Vec.create(53.37, 20.06), rotation: 0 },
-                    { idString: "pallet", position: Vec.create(53.45, 31.59), rotation: 0 },
-                    { idString: "pipe_1", position: Vec.create(106.85, -16.65), rotation: 0 },
-                    { idString: "pipe_2", position: Vec.create(62.22, -86.03), rotation: 0 },
-
                     // northeast hall
                     { idString: "gun_locker", position: Vec.create(60.72, -92.17), rotation: 0 },
                     { idString: "ammo_crate", position: Vec.create(99.91, -82.15), rotation: 0 },
@@ -6119,10 +6111,19 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "metal_door", position: Vec.create(49.71, -26.82), rotation: 2 },
 
                     // server room
-                    { idString: "red_metal_auto_door", position: Vec.create(121.81, -26.84), rotation: 2 },
-                    { idString: "red_metal_auto_door", position: Vec.create(121.81, -76.09), rotation: 2 },
+                    { idString: "metal_auto_door", position: Vec.create(121.81, -26.84), rotation: 2 },
+                    { idString: "metal_auto_door", position: Vec.create(121.81, -76.09), rotation: 2 },
 
                     // storage room
+                    { idString: "ammo_crate", position: Vec.create(107.16, -12.64) },
+                    { idString: "ammo_crate", position: Vec.create(134.15, -20.66) },
+                    { idString: "dumpster", position: Vec.create(36.91, 69.82), rotation: 1 },
+                    { idString: "dumpster", position: Vec.create(21.47, 69.82), rotation: 1 },
+                    { idString: "forklift", position: Vec.create(79.41, -5.73), rotation: 3 },
+                    { idString: "forklift", position: Vec.create(53.37, 20.06), rotation: 0 },
+                    { idString: "pallet", position: Vec.create(53.45, 31.59), rotation: 0 },
+                    { idString: "pipe_1", position: Vec.create(106.85, -16.65), rotation: 0 },
+                    { idString: "pipe_2", position: Vec.create(62.22, -86.03), rotation: 0 },
                     { idString: "ammo_crate", position: Vec.create(85.68, 24.35), rotation: 0 },
                     { idString: "ammo_crate", position: Vec.create(19.97, 24.35), rotation: 0 },
                     { idString: "regular_crate", position: Vec.create(20.24, 13.59) },
@@ -6164,16 +6165,14 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     falloff: 0.5
                 },
                 puzzle: {
-                    triggerOnSolve: "metal_auto_door",
+                    triggerOnSolve: "red_metal_auto_door",
                     delay: 1000
                 },
                 obstacles: [
-                    { idString: "metal_auto_door", position: Vec.create(-33.27, 122.05), rotation: 3 },
-                    { idString: "metal_auto_door", position: Vec.create(-135.45, 75.18), rotation: 2 },
-                    { idString: "metal_auto_door", position: Vec.create(-78.35, -63.04), rotation: 3 },
-                    { idString: "metal_auto_door", position: Vec.create(52.68, -82.25), rotation: 3 },
-                    { idString: "metal_auto_door", position: Vec.create(12.34, -33.03), rotation: 3 },
-                    { idString: "metal_auto_door", position: Vec.create(-38.1, -33.03), rotation: 3 },
+                    { idString: "red_metal_auto_door", position: Vec.create(-78.35, -63.04), rotation: 3 },
+                    { idString: "red_metal_auto_door", position: Vec.create(52.68, -82.25), rotation: 3 },
+                    { idString: "red_metal_auto_door", position: Vec.create(12.34, -33.03), rotation: 3 },
+                    { idString: "red_metal_auto_door", position: Vec.create(-38.1, -33.03), rotation: 3 },
                     { idString: "headquarters_security_desk", position: Vec.create(-22.75, -52.96), rotation: 2, puzzlePiece: true }
                 ]
             }
