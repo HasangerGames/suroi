@@ -1129,6 +1129,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 hitbox: new CircleHitbox(5.4),
                 noCollisions: true,
+                spawnWithLoot: true,
                 rotationMode: RotationMode.Full,
                 particleVariations: 2,
                 variations: 3,
@@ -4403,7 +4404,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             {
                 idString: "pole",
                 name: "Pole",
-                material: "stone",
+                material: "fence",
                 health: 150,
                 scale: {
                     spawnMin: 0.9,
@@ -4417,7 +4418,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 rotationMode: RotationMode.None,
                 particleVariations: 2,
                 frames: {
-                    particle: "rock_particle"
+                    particle: "metal_particle"
                 }
             }
         ] satisfies readonly Missing[]).map(
