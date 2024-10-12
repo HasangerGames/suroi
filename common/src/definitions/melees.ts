@@ -30,6 +30,7 @@ export interface MeleeDefinition extends InventoryItemDefinition {
         readonly useAngle?: number
         readonly lootScale?: number
         readonly separateWorldImage?: boolean
+        readonly animated?: boolean
     }
     readonly fireMode: FireMode
 }
@@ -177,10 +178,10 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             fireMode: FireMode.Auto,
             obstacleMultiplier: 2,
             piercingMultiplier: 2,
-            radius: 2.05,
+            radius: 2.5,
             swingSound: "chainsaw",
             stopSound: "chainsaw_stop",
-            offset: Vec.create(5.4, -0.5),
+            offset: Vec.create(7, 0.5),
             cooldown: 0,
             fists: {
                 animationDuration: 200,
@@ -194,7 +195,8 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 usePosition: Vec.create(106, 27),
                 angle: 10,
                 useAngle: 10,
-                lootScale: 0.5
+                lootScale: 0.5,
+                animated: true
             }
         },
         {

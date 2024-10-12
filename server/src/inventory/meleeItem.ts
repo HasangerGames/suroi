@@ -122,7 +122,6 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
     }
 
     override useItem(): void {
-        if (this.owner.startedAttacking && !this.owner.attacking && this.definition.fireMode === FireMode.Auto) return; // prevent spam clicking
         super._bufferAttack(
             this.definition.cooldown,
             this._useItemNoDelayCheck.bind(this, true)

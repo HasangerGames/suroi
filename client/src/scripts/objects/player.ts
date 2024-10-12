@@ -1176,7 +1176,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     }
                 );
 
-                if (weaponDef.stopSound && !this.meleeStopSound) {
+                if (weaponDef.stopSound && this.meleeStopSound === undefined) {
                     this.meleeStopSound = this.playSound(
                         weaponDef.stopSound,
                         {
@@ -1184,14 +1184,17 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             maxRange: 96
                         }
                     );
+                } else {
+                    this.meleeStopSound = undefined;
+                }
+
+                if (weaponDef.image?.animated) {
                     if (this.meleeAttackCounter >= 1) {
                         this.meleeAttackCounter--;
                     } else {
                         this.meleeAttackCounter++;
                     }
                     this.images.weapon.setFrame(`${weaponDef.idString}${this.meleeAttackCounter <= 0 ? "_used" : ""}`);
-                } else {
-                    this.meleeStopSound = undefined;
                 }
 
                 this.addTimeout(() => {
