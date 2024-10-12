@@ -5428,11 +5428,13 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     },
                     {
                         key: "lodge_ceiling_top",
-                        position: Vec.create(0, -35)
+                        position: Vec.create(0, -35),
+                        scale: Vec.create(2, 2)
                     },
                     {
                         key: "lodge_ceiling_bottom",
-                        position: Vec.create(0, 16.85)
+                        position: Vec.create(0, 16.85),
+                        scale: Vec.create(2, 2)
                     }
                 ],
                 subBuildings: [
