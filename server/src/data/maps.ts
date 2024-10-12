@@ -216,6 +216,13 @@ const maps = {
             maxWideWidth: 28,
             maxWideAmount: 1
         },
+        clearings: {
+            maxHeight: 90,
+            maxWidth: 90,
+            minWidth: 80,
+            minHeight: 80,
+            count: 2
+        },
         buildings: {
             small_bridge: Infinity,
             sea_traffic_control: 1,

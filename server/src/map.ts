@@ -325,15 +325,23 @@ export class GameMap {
         for (let i = 0; i <= count; i++) {
             const width = randomFloat(minWidth, maxWidth);
             const height = randomFloat(minHeight, maxHeight);
-            let position = this.getRandomPosition(this.beachHitbox);
+            let position = this.getRandomPosition(new RectangleHitbox(
+                Vec.create(-(width / 2), -(height / 2)),
+                Vec.create(width / 2, height / 2)
+            ));
+            let foundValidPosition = false;
             let attempts = 0;
-            while (!position && attempts < 100) {
-                position = this.getRandomPosition(this.beachHitbox);
+            while (!foundValidPosition && attempts < 100) {
+                position = this.getRandomPosition(new RectangleHitbox(
+                    Vec.create(-(width / 2), -(height / 2)),
+                    Vec.create(width / 2, height / 2)
+                ));
                 if (position !== undefined) {
                     clearings.push(new RectangleHitbox(
                         Vec.create(position.x + width / 2, position.y + height / 2),
                         Vec.create(position.x - width / 2, position.y - height / 2)
                     ));
+                    foundValidPosition = true;
                 }
                 attempts++;
             }
@@ -342,6 +350,7 @@ export class GameMap {
             }
             attempts = 0; // reset for next clearing
         }
+        console.log(clearings);
     }
 
     private _generateBuildings(definition: ReifiableDef<BuildingDefinition>, count: number): void {
