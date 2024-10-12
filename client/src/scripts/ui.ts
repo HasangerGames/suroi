@@ -1475,6 +1475,9 @@ export async function setUpUI(game: Game): Promise<void> {
     // Old menu music
     addCheckboxListener("#toggle-old-music", "cv_use_old_menu_music");
 
+    // Ambient sounds
+    addCheckboxListener("#toggle-ambience", "cv_play_ambience");
+
     // Camera shake
     addCheckboxListener("#toggle-camera-shake", "cv_camera_shake_fx");
 
