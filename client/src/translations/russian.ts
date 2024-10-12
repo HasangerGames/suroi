@@ -25,6 +25,7 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "msg_item_already_equipped": "Предмет уже экипирован",
     "msg_better_item_equipped": "Уже экипирован предмет лучше",
     "msg_cannot_use_radio": "Нет связи в здании",
+    "msg_radio_overused": "Радио сломалось из-за чрезмерного использования",
     "enter_nickname": "Введите ваш ник",
 
     "play_solo": "Одиночный",

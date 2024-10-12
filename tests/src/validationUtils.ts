@@ -611,6 +611,18 @@ export const validators = Object.freeze({
                         includeMax: true
                     });
                 }
+
+                if (tracer.saturatedColor !== undefined) {
+                    tester.assertIntAndInBounds({
+                        obj: tracer,
+                        field: "saturatedColor",
+                        min: -1, // <- random color
+                        max: 0xFFFFFF,
+                        baseErrorPath: errorPath,
+                        includeMin: true,
+                        includeMax: true
+                    });
+                }
             });
         }
 

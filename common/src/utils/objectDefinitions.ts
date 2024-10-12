@@ -609,16 +609,21 @@ export type BaseBulletDefinition = {
         readonly opacity: number
         readonly width: number
         readonly length: number
-        /**
-         * A value of `-1` causes a random color to be chosen
-         */
-        readonly color?: number
         readonly image: string
         // used by the radio bullet
         // this will make it scale and fade in and out
         readonly particle: boolean
         readonly zIndex: ZIndexes
-    }
+    } & ({
+        readonly color?: undefined
+        readonly saturatedColor?: never
+    } | {
+        /**
+         * A value of `-1` causes a random color to be chosen
+         */
+        readonly color: number
+        readonly saturatedColor: number
+    })
 
     readonly trail?: {
         readonly interval: number

@@ -1,10 +1,10 @@
-import { Assets, Container, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type ContainerChild, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
+import $ from "jquery";
+import { Assets, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
+import { Obstacles } from "../../../../common/src/definitions/obstacles";
 import { HitboxType, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
-import { MODE, PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
-import $ from "jquery";
 import { getTranslatedString } from "../../translations";
-import { Obstacles } from "../../../../common/src/definitions/obstacles";
+import { MODE, PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
 
 const textures: Record<string, Texture> = {};
 
@@ -191,11 +191,6 @@ export class SuroiSprite extends Sprite {
 
     setAlpha(alpha: number): this {
         this.alpha = alpha;
-        return this;
-    }
-
-    setMask(mask: Container<ContainerChild>): this {
-        this.mask = mask;
         return this;
     }
 }

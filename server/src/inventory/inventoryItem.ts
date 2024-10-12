@@ -233,10 +233,9 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
 
     /**
      * A method that *does nothing*, but that may be overridden by subclasses to perform any cleanup
-     * when this weapon instance is destroyed. An inventory item is "destroyed" when it is removed
-     * from an inventory.
+     * when this weapon instance is destroyed
      */
-    destroy(): void { /* see doc comment */ };
+    destroy(): void { /* see doc comment */ }
 }
 
 export abstract class CountableInventoryItem<Def extends WeaponDefinition = WeaponDefinition> extends InventoryItem<Def> {

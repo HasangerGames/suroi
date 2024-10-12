@@ -396,7 +396,8 @@ export class Game {
                     [InventoryMessages.NotEnoughSpace]: "msg_not_enough_space",
                     [InventoryMessages.ItemAlreadyEquipped]: "msg_item_already_equipped",
                     [InventoryMessages.BetterItemEquipped]: "msg_better_item_equipped",
-                    [InventoryMessages.CannotUseRadio]: "msg_cannot_use_radio"
+                    [InventoryMessages.CannotUseRadio]: "msg_cannot_use_radio",
+                    [InventoryMessages.RadioOverused]: "msg_radio_overused"
                 };
 
                 if (message !== undefined) {

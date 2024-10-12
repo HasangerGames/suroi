@@ -4,7 +4,9 @@ import { CircleHitbox } from "@common/utils/hitbox";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
 
+import { PerkIds } from "@common/definitions/perks";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
+import { Numeric } from "@common/utils/math";
 import { type CollidableGameObject } from "../objects/gameObject";
 import { type Player } from "../objects/player";
 import { InventoryItem } from "./inventoryItem";
@@ -85,27 +87,28 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                     return a.hitbox.distanceTo(this.owner.hitbox).distance - b.hitbox.distanceTo(this.owner.hitbox).distance;
                 });
 
-                const targetLimit = Math.min(damagedObjects.length, definition.maxTargets);
+                const targetLimit = Numeric.min(damagedObjects.length, definition.maxTargets);
+                const initMultiplier = this.owner.mapPerkOrDefault(PerkIds.Berserker, ({ damageMod }) => damageMod, 1);
+
                 for (let i = 0; i < targetLimit; i++) {
                     const closestObject = damagedObjects[i];
-                    let multiplier = 1;
+                    let multiplier = initMultiplier;
 
                     if (closestObject.isObstacle) {
-                        multiplier = definition.piercingMultiplier !== undefined && closestObject.definition.impenetrable
+                        multiplier *= definition.piercingMultiplier !== undefined && closestObject.definition.impenetrable
                             ? definition.piercingMultiplier
                             : definition.obstacleMultiplier;
                     }
 
-                    if (closestObject.isThrowableProjectile) { // C4
-                        // Currently this code treats C4 as if it is an obstacle in terms of melee damage.
-                        closestObject.damageC4(definition.damage * definition.obstacleMultiplier);
-                    } else {
-                        closestObject.damage({
-                            amount: definition.damage * multiplier,
-                            source: owner,
-                            weaponUsed: this
-                        });
+                    if (closestObject.isThrowableProjectile) {
+                        multiplier *= definition.obstacleMultiplier;
                     }
+
+                    closestObject.damage({
+                        amount: definition.damage * multiplier,
+                        source: owner,
+                        weaponUsed: this
+                    });
 
                     if (closestObject.isObstacle && !closestObject.dead) {
                         closestObject.interact(this.owner);

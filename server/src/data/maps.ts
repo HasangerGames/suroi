@@ -388,10 +388,10 @@ const maps = {
                 map.generateObstacle(id, Vec.add(center, Vec.create(-posX, -posY)), { rotation: 0 });
             }
 
-            genLoots(Vec.add(center, Vec.create(-70, 85)), 8, 8);
-            genLoots(Vec.add(center, Vec.create(70, 85)), 8, 8);
-            genLoots(Vec.add(center, Vec.create(-70, -85)), -8, 8);
-            genLoots(Vec.add(center, Vec.create(70, -85)), -8, 8);
+            genLoots(Vec.add(center, Vec.create(-70, 100)), 8, 8);
+            genLoots(Vec.add(center, Vec.create(70, 100)), 8, 8);
+            genLoots(Vec.add(center, Vec.create(-70, -100)), -8, 8);
+            genLoots(Vec.add(center, Vec.create(70, -100)), -8, 8);
 
             // Generate random obstacles around the center
             const randomObstacles: MapDefinition["obstacles"] = {

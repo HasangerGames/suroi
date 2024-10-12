@@ -1698,7 +1698,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     speed: 0.22,
                     range: 130,
                     tracer: {
-                        color: 0xE2C910
+                        color: 0xE2C910,
+                        saturatedColor: 0xFFBF00
                     }
                 },
                 dual: {
@@ -2011,7 +2012,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     allowRangeOverride: true,
                     tracer: {
                         length: 0.5,
-                        color: 0xFF0000
+                        color: 0xFF0000,
+                        saturatedColor: 0xF55C3D
                     }
                 }
             },
@@ -2115,7 +2117,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     tracer: {
                         width: 0.7,
                         opacity: 0.85,
-                        color: 16744448
+                        color: 0xFF8000,
+                        saturatedColor: 0xF5B83D
                     }
                 } /* ,
                 dual: {

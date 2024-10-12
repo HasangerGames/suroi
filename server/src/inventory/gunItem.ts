@@ -4,7 +4,7 @@ import { PerkIds } from "@common/definitions/perks";
 import { PickupPacket } from "@common/packets";
 import { Orientation } from "@common/typings";
 import { type BulletOptions } from "@common/utils/baseBullet";
-import { RectangleHitbox } from "@common/utils/hitbox";
+import { CircleHitbox, RectangleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, isStairLayer } from "@common/utils/layer";
 import { Angle, Geometry, resolveStairInteraction } from "@common/utils/math";
 import { type DeepMutable, type DeepRequired, type Timeout } from "@common/utils/misc";
@@ -204,7 +204,7 @@ class GroupedShotManager extends ShotManager<GroupedHitRecord> {
         const key = this._bulletGroupMap.get(bullet);
 
         if (key === undefined) {
-            throw new Error("Called _addEntryToRecord with a bullet not registered with this shot manager.");
+            return;
         }
 
         let hitRecord = this._hitRecord.get(key);
@@ -241,7 +241,10 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
     ammo = 0;
 
+    private _consecutiveShots = 0;
+
     private _shots = 0;
+    get shots(): number { return this._shots; }
 
     private _reloadTimeout?: Timeout;
 
@@ -330,13 +333,13 @@ export class GunItem extends InventoryItem<GunDefinition> {
             || owner.disconnected
             || this !== owner.activeItem
         ) {
-            this._shots = 0;
+            this._consecutiveShots = 0;
             return;
         }
 
         if (definition.summonAirdrop && owner.isInsideBuilding) {
             owner.sendPacket(PickupPacket.create({ message: InventoryMessages.CannotUseRadio }));
-            this._shots = 0;
+            this._consecutiveShots = 0;
             return;
         }
 
@@ -346,7 +349,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 owner.setPartialDirty();
             }
 
-            this._shots = 0;
+            this._consecutiveShots = 0;
             return;
         }
 
@@ -363,6 +366,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         owner.dirty.weapons = true;
 
+        this._consecutiveShots++;
         this._shots++;
 
         const { moveSpread, shotSpread, fsaReset } = definition;
@@ -381,8 +385,9 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         const startPosition = Vec.rotate(Vec.create(0, offset), owner.rotation);
 
+        const ownerPos = owner.position;
         let position = Vec.add(
-            owner.position,
+            ownerPos,
             Vec.scale(Vec.rotate(Vec.create(definition.length, offset), owner.rotation), owner.sizeMod)
         );
 
@@ -396,10 +401,10 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 || (object.isObstacle && object.definition.isStair)
             ) continue;
 
-            const intersection = object.hitbox.intersectsLine(owner.position, position);
+            const intersection = object.hitbox.intersectsLine(ownerPos, position);
             if (intersection === null) continue;
 
-            if (Geometry.distanceSquared(owner.position, position) > Geometry.distanceSquared(owner.position, intersection.point)) {
+            if (Geometry.distanceSquared(ownerPos, position) > Geometry.distanceSquared(ownerPos, intersection.point)) {
                 position = Vec.sub(intersection.point, Vec.rotate(Vec.create(0.2 + jitter, 0), owner.rotation));
             }
         }
@@ -418,18 +423,22 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 length: 1
             }
         };
+        let saturate = false;
+        let thin = false;
+
+        const modifyForDamageMod = (damageMod: number): void => {
+            if (damageMod < 1) thin = true;
+            if (damageMod > 1) saturate = true;
+        };
 
         // ! evil starts here
         let modifiersModified = false; // lol
         for (const perk of owner.perks) {
             switch (perk.idString) {
-                case PerkIds.Werewolf: { /* not applicable */ break; }
-                case PerkIds.SecondWind: { /* not applicable */ break; }
-                case PerkIds.Overstimmed: { /* not applicable */ break; }
                 case PerkIds.Splinter: {
                     projCount *= perk.split;
                     modifiers.damage *= perk.damageMod;
-                    modifiers.tracer.width *= perk.tracerWidthMod;
+                    modifyForDamageMod(perk.damageMod);
                     modifiersModified = true;
                     break;
                 }
@@ -437,16 +446,49 @@ export class GunItem extends InventoryItem<GunDefinition> {
                     modifiers.range *= perk.rangeMod;
                     modifiers.speed *= perk.speedMod;
                     modifiers.damage *= perk.damageMod;
-                    modifiers.tracer.width *= perk.tracerWidthMod;
+                    modifyForDamageMod(perk.damageMod);
                     modifiers.tracer.length *= perk.tracerLengthMod;
                     spread *= perk.spreadMod;
                     modifiersModified = true;
                     break;
                 }
-                case PerkIds.HiCap: { /* not applicable */ break; }
-                case PerkIds.Engorged: { /* not applicable */ break; }
-                case PerkIds.Recycling: { /* not applicable */ break; }
-                case PerkIds.DemoExport: { /* not applicable */ break; }
+                case PerkIds.CloseQuartersCombat: {
+                    const sqCutoff = perk.cutoff ** 2;
+                    if (
+                        [
+                            ...this.owner.game.grid.intersectsHitbox(
+                                new CircleHitbox(perk.cutoff, ownerPos),
+                                this.owner.layer
+                            )
+                        ].some(
+                            obj => obj !== owner
+                                && obj.isPlayer
+                                && (!owner.game.teamMode || obj.teamID !== owner.teamID)
+                                && Geometry.distanceSquared(ownerPos, obj.position) <= sqCutoff
+                        )
+                    ) {
+                        modifiers.damage *= perk.damageMod;
+                        modifyForDamageMod(perk.damageMod);
+                    }
+                    break;
+                }
+                case PerkIds.Toploaded: {
+                    // assumption: threshholds are sorted from least to greatest
+                    const ratio = 1 - this.ammo / (
+                        owner.hasPerk(PerkIds.HiCap)
+                            ? definition.extendedCapacity ?? definition.capacity
+                            : definition.capacity
+                    );
+
+                    for (const [cutoff, mod] of perk.thresholds) {
+                        if (ratio <= cutoff) {
+                            modifiers.damage *= mod;
+                            modifyForDamageMod(mod);
+                            break;
+                        }
+                    }
+                    break;
+                }
             }
         }
         // ! evil ends here
@@ -482,7 +524,9 @@ export class GunItem extends InventoryItem<GunDefinition> {
                             )
                             : owner.layer,
                         rangeOverride,
-                        modifiers: modifiersModified ? modifiers : undefined
+                        modifiers: modifiersModified ? modifiers : undefined,
+                        saturate,
+                        thin
                     }
                 )
             );
@@ -494,6 +538,18 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         if (definition.summonAirdrop) {
             owner.game.summonAirdrop(owner.position);
+
+            if (
+                this.owner.mapPerkOrDefault(
+                    PerkIds.InfiniteAmmo,
+                    ({ airdropCallerLimit }) => this._shots >= airdropCallerLimit,
+                    false
+                )
+            ) {
+                owner.sendPacket(PickupPacket.create({ message: InventoryMessages.RadioOverused }));
+                this.owner.inventory.destroyWeapon(this.owner.inventory.activeWeaponIndex);
+                return;
+            }
         }
 
         if (!definition.infiniteAmmo) {
@@ -501,7 +557,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
         }
 
         if (this.ammo <= 0) {
-            this._shots = 0;
+            this._consecutiveShots = 0;
             this._reloadTimeout = owner.game.addTimeout(
                 this.reload.bind(this, true),
                 definition.fireDelay
@@ -509,8 +565,8 @@ export class GunItem extends InventoryItem<GunDefinition> {
             return;
         }
 
-        if (definition.fireMode === FireMode.Burst && this._shots >= definition.burstProperties.shotsPerBurst) {
-            this._shots = 0;
+        if (definition.fireMode === FireMode.Burst && this._consecutiveShots >= definition.burstProperties.shotsPerBurst) {
+            this._consecutiveShots = 0;
             this._burstTimeout = setTimeout(
                 this._useItemNoDelayCheck.bind(this, false),
                 definition.burstProperties.burstCooldown
@@ -547,7 +603,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
         if (
             definition.infiniteAmmo
             || this.ammo >= (this.owner.hasPerk(PerkIds.HiCap) ? definition.extendedCapacity ?? definition.capacity : definition.capacity)
-            || !owner.inventory.items.hasItem(definition.ammoType)
+            || (!owner.inventory.items.hasItem(definition.ammoType) && !this.owner.hasPerk(PerkIds.InfiniteAmmo))
             || owner.action !== undefined
             || owner.activeItem !== this
             || (!skipFireDelayCheck && owner.game.now - this._lastUse < definition.fireDelay)

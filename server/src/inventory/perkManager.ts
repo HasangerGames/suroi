@@ -1,24 +1,15 @@
 import { GameConstants } from "@common/constants";
-import { PerkIds, Perks, type PerkDefinition, type PerkNames } from "@common/definitions/perks";
-import { type PerkCollection } from "@common/packets/updatePacket";
+import { PerkIds, type PerkDefinition, type PerkNames } from "@common/definitions/perks";
+import { PerkManager } from "@common/utils/perkManager";
 import { type Player } from "../objects";
 import { GunItem } from "./gunItem";
 
-export class PerkManager implements Iterable<PerkDefinition>, PerkCollection {
-    // this is a bitfield
-    // change to bigint once perk count exceeds 30
-    private _perks = 0;
-
+export class ServerPerkManager extends PerkManager {
     constructor(
         readonly owner: Player,
         perks?: number | readonly PerkDefinition[]
     ) {
-        // @ts-expect-error we write terse code and stay winning
-        if (typeof (this._perks = (perks ?? 0)) === "object") {
-            this._perks = (perks as readonly PerkDefinition[])
-                .map(({ idString }) => 1 << Perks.idStringToNumber[idString])
-                .reduce((acc, cur) => acc + cur, 0);
-        }
+        super(perks);
     }
 
     /**
@@ -26,29 +17,22 @@ export class PerkManager implements Iterable<PerkDefinition>, PerkCollection {
      * @param perk The perk to add
      * @returns Whether the perk was already present (and thus nothing has changed)
      */
-    addPerk(perk: PerkDefinition | PerkNames): boolean {
+    override addPerk(perk: PerkDefinition | PerkNames): boolean {
         const idString = typeof perk === "object"
             ? perk.idString
             : perk;
-
-        const n = 1 << Perks.idStringToNumber[idString];
-        const absent = (this._perks & n) === 0;
-        this._perks |= n;
+        const absent = super.addPerk(perk);
 
         if (absent) {
             // ! evil starts here
             // some perks need to perform setup when added
             switch (idString) {
                 case PerkIds.Werewolf: {
-                    this.owner.inventory.dropWeapon(0, true);
-                    this.owner.inventory.dropWeapon(1, true);
+                    this.owner.inventory.dropWeapon(0, true)?.destroy();
+                    this.owner.inventory.dropWeapon(1, true)?.destroy();
                     /* TODO: continue crying */
                     break;
                 }
-                case PerkIds.SecondWind: { /* not applicable */ break; }
-                case PerkIds.Overstimmed: { /* not applicable */ break; }
-                case PerkIds.Splinter: { /* not applicable */ break; }
-                case PerkIds.Sabot: { /* not applicable */ break; }
                 case PerkIds.HiCap: {
                     const weapons = this.owner.inventory.weapons;
                     const maxWeapons = GameConstants.player.maxWeapons;
@@ -70,9 +54,6 @@ export class PerkManager implements Iterable<PerkDefinition>, PerkCollection {
                     }
                     break;
                 }
-                case PerkIds.Engorged: { /* not applicable */ break; }
-                case PerkIds.Recycling: { /* not applicable */ break; }
-                case PerkIds.DemoExport: { /* not applicable */ break; }
             }
             // ! evil ends here
         }
@@ -81,32 +62,22 @@ export class PerkManager implements Iterable<PerkDefinition>, PerkCollection {
         return absent;
     }
 
-    hasPerk(perk: PerkDefinition | PerkNames): boolean {
-        const idString = typeof perk === "object" ? perk.idString : perk;
-        return (this._perks & (1 << Perks.idStringToNumber[idString])) !== 0;
-    }
-
     /**
      * Removes a perk from this manager
      * @param perk The perk to remove
      * @returns Whether the perk was present (and therefore removed, as opposed
      * to not being removed due to not being present to begin with)
      */
-    removePerk(perk: PerkDefinition | PerkNames): boolean {
+    override removePerk(perk: PerkDefinition | PerkNames): boolean {
         const idString = typeof perk === "object" ? perk.idString : perk;
-        const n = 1 << Perks.idStringToNumber[idString];
-        const has = (this._perks & n) !== 0;
-        this._perks &= ~n;
+
+        const has = super.removePerk(perk);
 
         if (has) {
             // ! evil starts here
             // some perks need to perform cleanup on removal
             switch (idString) {
                 case PerkIds.Werewolf: { /* TODO: cry */ break; }
-                case PerkIds.SecondWind: { /* not applicable */ break; }
-                case PerkIds.Overstimmed: { /* not applicable */ break; }
-                case PerkIds.Splinter: { /* not applicable */ break; }
-                case PerkIds.Sabot: { /* not applicable */ break; }
                 case PerkIds.HiCap: {
                     const weapons = this.owner.inventory.weapons;
                     const maxWeapons = GameConstants.player.maxWeapons;
@@ -125,26 +96,11 @@ export class PerkManager implements Iterable<PerkDefinition>, PerkCollection {
                     }
                     break;
                 }
-                case PerkIds.Engorged: { /* not applicable */ break; }
-                case PerkIds.Recycling: { /* not applicable */ break; }
-                case PerkIds.DemoExport: { /* not applicable */ break; }
             }
             // ! evil ends here
         }
 
         this.owner.dirty.perks ||= has;
         return has;
-    }
-
-    asBitfield(): number {
-        return this._perks;
-    }
-
-    asList(): PerkDefinition[] {
-        return Perks.definitions.filter((_, i) => (this._perks & (1 << i)) !== 0);
-    }
-
-    [Symbol.iterator](): Iterator<PerkDefinition> {
-        return this.asList()[Symbol.iterator]();
     }
 }

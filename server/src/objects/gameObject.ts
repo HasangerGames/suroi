@@ -35,7 +35,7 @@ export type GameObject = ObjectMapping[ObjectCategory];
 
 export interface DamageParams {
     readonly amount: number
-    readonly source: GameObject | KillfeedEventType.Gas | KillfeedEventType.Airdrop | KillfeedEventType.BleedOut | KillfeedEventType.FinallyKilled
+    readonly source?: GameObject | KillfeedEventType.Gas | KillfeedEventType.Airdrop | KillfeedEventType.BleedOut | KillfeedEventType.FinallyKilled
     readonly weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
 }
 

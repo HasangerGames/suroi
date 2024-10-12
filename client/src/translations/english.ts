@@ -130,6 +130,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "msg_item_already_equipped": "Item already equipped!",
     "msg_better_item_equipped": "Better item equipped!",
     "msg_cannot_use_radio": "Radio cannot be used in buildings!",
+    "msg_radio_overused": "Radio has broken due to overuse!",
 
     "gas_waiting": "Toxic gas advances in <time>",
     "gas_advancing": "Toxic gas is advancing! Move to the safe zone",

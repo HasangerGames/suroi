@@ -23,7 +23,7 @@ import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
 import { CountableInventoryItem, InventoryItem } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
-import { PerkManager } from "../inventory/perkManager";
+import { ServerPerkManager } from "../inventory/perkManager";
 import { ThrowableItem } from "../inventory/throwableItem";
 import { type Team } from "../team";
 import { mod_api_data, sendPostRequest } from "../utils/apiHelper";
@@ -368,7 +368,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     c4s: ThrowableProjectile[] = [];
 
-    readonly perks = new PerkManager(this, Perks.defaults);
+    readonly perks = new ServerPerkManager(this, Perks.defaults);
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
@@ -625,7 +625,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     update(): void {
         const dt = this.game.dt;
 
-        // this.updateAndApplyModifiers();
+        this.updateAndApplyModifiers();
 
         // This system allows opposite movement keys to cancel each other out.
         let movement: Vector;
@@ -651,122 +651,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             ? this.recoil.multiplier
             : 1;
 
-        const speed = this.baseSpeed                                          // Base speed
-            * (FloorTypes[this.floor].speedMultiplier ?? 1)                   // Speed multiplier from floor player is standing in
-            * recoilMultiplier                                                // Recoil from items
-            * (this.action?.speedMultiplier ?? 1)                             // Speed modifier from performing actions
-            * (1 + (this.adrenaline / 1000))                                  // Linear speed boost from adrenaline
-            * (this.downed ? 0.5 : this.activeItemDefinition.speedMultiplier) // Active item/knocked out speed modifier
-            * (this.beingRevivedBy ? 0.5 : 1)                                 // Being revived speed multiplier
-            * this._modifiers.baseSpeed;                                       // Current on-wearer modifier
-
-        const oldPosition = Vec.clone(this.position);
-        const movementVector = Vec.scale(movement, speed);
-        this._movementVector = movementVector;
-
-        this.position = Vec.add(
-            this.position,
-            Vec.scale(this.movementVector, dt)
-        );
-
-        if (this.action instanceof ReviveAction) {
-            if (
-                Vec.squaredLength(
-                    Vec.sub(
-                        this.position,
-                        this.action.target.position
-                    )
-                ) >= 7 ** 2
-            ) {
-                this.action.cancel();
-            }
-        }
-
-        // Find and resolve collisions
-        this.nearObjects = this.game.grid.intersectsHitbox(this._hitbox, this.layer);
-
-        for (let step = 0; step < 10; step++) {
-            let collided = false;
-
-            for (const potential of this.nearObjects) {
-                if (
-                    (potential.isObstacle || potential.isBuilding)
-                    && potential.collidable
-                    && potential.hitbox?.collidesWith(this._hitbox)
-                ) {
-                    if (potential.isObstacle && potential.definition.isStair) {
-                        potential.handleStairInteraction(this);
-                        this.activeStair = potential;
-                    } else {
-                        collided = true;
-                        this._hitbox.resolveCollision(potential.hitbox);
-                    }
-                }
-            }
-
-            if (!collided) break;
-        }
-
-        // World boundaries
-        this.position.x = Numeric.clamp(this.position.x, this._hitbox.radius, this.game.map.width - this._hitbox.radius);
-        this.position.y = Numeric.clamp(this.position.y, this._hitbox.radius, this.game.map.height - this._hitbox.radius);
-
-        this.isMoving = !Vec.equals(oldPosition, this.position);
-
-        if (this.isMoving) this.game.grid.updateObject(this);
-
-        // Disable invulnerability if the player moves or turns
-        if (this.isMoving || this.turning) {
-            this.disableInvulnerability();
-            this.setPartialDirty();
-
-            if (this.isMoving) {
-                this.floor = this.game.map.terrain.getFloor(this.position, this.layer);
-            }
-        }
-
-        let toRegen = this._modifiers.hpRegen;
-        if (this._adrenaline > 0) {
-            // Drain adrenaline
-            this.adrenaline -= 0.0005 * this._modifiers.adrenDrain * dt;
-
-            // Regenerate health
-            toRegen += this.adrenaline / 40 + 0.35;
-        }
-
-        this.health += dt / 900 * toRegen;
-
-        // Shoot gun/use item
-        if (this.startedAttacking) {
-            this.game.pluginManager.emit("player_start_attacking", this);
-            this.startedAttacking = false;
-            this.disableInvulnerability();
-            this.activeItem.useItem();
-        }
-
-        if (this.stoppedAttacking) {
-            this.game.pluginManager.emit("player_stop_attacking", this);
-            this.stoppedAttacking = false;
-            this.activeItem.stopUse();
-        }
-
-        // Gas damage
-        const gas = this.game.gas;
-        if (gas.doDamage && gas.isInGas(this.position)) {
-            this.piercingDamage({
-                amount: gas.scaledDamage(this.position),
-                source: KillfeedEventType.Gas
-            });
-        }
-
-        // Knocked out damage
-        if (this.downed && !this.beingRevivedBy) {
-            this.piercingDamage({
-                amount: GameConstants.bleedOutDPMs * dt,
-                source: KillfeedEventType.BleedOut
-            });
-        }
-
+        // building & smoke checks
         let isInsideBuilding = false;
         const depleters = new Set<SyncedParticle>();
         for (const object of this.nearObjects) {
@@ -808,6 +693,152 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
+        const perkSpeedMod = this.mapPerkOrDefault(
+            PerkIds.AdvancedAthletics,
+            ({ waterSpeedMod, smokeSpeedMod }) => {
+                return (
+                    (FloorTypes[this.floor].overlay ? waterSpeedMod : 1) // man do we need a better way of detecting water lol
+                    * (depleters.size !== 0 ? smokeSpeedMod : 1) // man do we need a better way of detecting water lol
+                );
+            },
+            1
+        ) * this.mapPerkOrDefault(
+            PerkIds.Claustrophobic,
+            ({ speedMod }) => isInsideBuilding ? speedMod : 1,
+            1
+        );
+
+        const speed = this.baseSpeed                                          // Base speed
+            * (FloorTypes[this.floor].speedMultiplier ?? 1)                   // Speed multiplier from floor player is standing in
+            * recoilMultiplier                                                // Recoil from items
+            * perkSpeedMod                                                    // See above
+            * (this.action?.speedMultiplier ?? 1)                             // Speed modifier from performing actions
+            * (1 + (this.adrenaline / 1000))                                  // Linear speed boost from adrenaline
+            * (this.downed ? 0.5 : this.activeItemDefinition.speedMultiplier) // Active item/knocked out speed modifier
+            * (this.beingRevivedBy ? 0.5 : 1)                                 // Being revived speed multiplier
+            * this._modifiers.baseSpeed;                                      // Current on-wearer modifier
+
+        const oldPosition = Vec.clone(this.position);
+        const movementVector = Vec.scale(movement, speed);
+        this._movementVector = movementVector;
+
+        this.position = Vec.add(
+            this.position,
+            Vec.scale(this.movementVector, dt)
+        );
+
+        if (this.action instanceof ReviveAction) {
+            if (
+                Vec.squaredLength(
+                    Vec.sub(
+                        this.position,
+                        this.action.target.position
+                    )
+                ) >= 7 ** 2
+            ) {
+                this.action.cancel();
+            }
+        }
+
+        // Find and resolve collisions
+        this.nearObjects = this.game.grid.intersectsHitbox(this._hitbox, this.layer);
+
+        for (let step = 0; step < 10; step++) {
+            let collided = false;
+
+            for (const potential of this.nearObjects) {
+                const { isObstacle, isBuilding } = potential;
+
+                if (
+                    (isObstacle || isBuilding)
+                    && this.mapPerkOrDefault(
+                        PerkIds.AdvancedAthletics,
+                        () => {
+                            return potential.definition.material !== "tree"
+                                && (
+                                    !isObstacle
+                                    || !potential.definition.isWindow
+                                    || !potential.dead
+                                );
+                        },
+                        true
+                    )
+                    && potential.collidable
+                    && potential.hitbox?.collidesWith(this._hitbox)
+                ) {
+                    if (isObstacle && potential.definition.isStair) {
+                        potential.handleStairInteraction(this);
+                        this.activeStair = potential;
+                    } else {
+                        collided = true;
+                        this._hitbox.resolveCollision(potential.hitbox);
+                    }
+                }
+            }
+
+            if (!collided) break;
+        }
+
+        // World boundaries
+        this.position.x = Numeric.clamp(this.position.x, this._hitbox.radius, this.game.map.width - this._hitbox.radius);
+        this.position.y = Numeric.clamp(this.position.y, this._hitbox.radius, this.game.map.height - this._hitbox.radius);
+
+        this.isMoving = !Vec.equals(oldPosition, this.position);
+
+        if (this.isMoving) this.game.grid.updateObject(this);
+
+        // Disable invulnerability if the player moves or turns
+        if (this.isMoving || this.turning) {
+            this.disableInvulnerability();
+            this.setPartialDirty();
+
+            if (this.isMoving) {
+                this.floor = this.game.map.terrain.getFloor(this.position, this.layer);
+            }
+        }
+
+        let toRegen = this._modifiers.hpRegen;
+        if (this._adrenaline > 0) {
+            // Drain adrenaline
+            this.adrenaline -= 0.0005 * this._modifiers.adrenDrain * dt;
+
+            // Regenerate health
+            toRegen += (this.adrenaline / 40 + 0.35) * this.mapPerkOrDefault(PerkIds.LacedStimulants, ({ healDmgRate }) => -healDmgRate, 1);
+        }
+
+        this.health += dt / 900 * toRegen;
+
+        // Shoot gun/use item
+        if (this.startedAttacking) {
+            this.game.pluginManager.emit("player_start_attacking", this);
+            this.startedAttacking = false;
+            this.disableInvulnerability();
+            this.activeItem.useItem();
+        }
+
+        if (this.stoppedAttacking) {
+            this.game.pluginManager.emit("player_stop_attacking", this);
+            this.stoppedAttacking = false;
+            this.activeItem.stopUse();
+        }
+
+        // Gas damage
+        const gas = this.game.gas;
+        if (gas.doDamage && gas.isInGas(this.position)) {
+            this.piercingDamage({
+                amount: gas.scaledDamage(this.position),
+                source: KillfeedEventType.Gas
+            });
+        }
+
+        // Knocked out damage
+        if (this.downed && !this.beingRevivedBy) {
+            this.piercingDamage({
+                amount: GameConstants.bleedOutDPMs * dt,
+                source: KillfeedEventType.BleedOut
+            });
+        }
+
         if (!this.isInsideBuilding) {
             this.effectiveScope = isInsideBuilding
                 ? DEFAULT_SCOPE
@@ -841,7 +872,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
 
             if (depletion.adrenaline) {
-                this.adrenaline = Math.max(0, this.adrenaline - depletion.adrenaline * dt);
+                this.adrenaline -= depletion.adrenaline * dt;
             }
         });
 
@@ -1160,9 +1191,22 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         perk: Name | PerkDefinition & { readonly idString: Name },
         cb: (data: PerkDefinition & { readonly idString: Name }) => void
     ): void {
-        if (this.perks.hasPerk(perk)) {
-            cb(Perks.reify(perk));
-        }
+        return this.perks.ifPresent<Name>(perk, cb);
+    }
+
+    mapPerk<Name extends PerkNames, U>(
+        perk: Name | PerkDefinition & { readonly idString: Name },
+        mapper: (data: PerkDefinition & { readonly idString: Name }) => U
+    ): U | undefined {
+        return this.perks.map<Name, U>(perk, mapper);
+    }
+
+    mapPerkOrDefault<Name extends PerkNames, U>(
+        perk: Name | PerkDefinition & { readonly idString: Name },
+        mapper: (data: PerkDefinition & { readonly idString: Name }) => U,
+        defaultValue: U
+    ): U {
+        return this.perks.mapOrDefault<Name, U>(perk, mapper, defaultValue);
     }
 
     spectate(packet: SpectatePacketData): void {
@@ -1519,9 +1563,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     newModifiers.maxHealth *= perk.healthMod;
                     break;
                 }
-                case PerkIds.Splinter: { /* not applicable */ break; }
-                case PerkIds.Sabot: { /* not applicable */ break; }
-                case PerkIds.HiCap: { /* not applicable */ break; }
                 case PerkIds.Engorged: {
                     const base = newModifiers.maxHealth * GameConstants.player.defaultHealth;
                     (eventMods.kill as ExtendedWearerAttributes[]).push({
@@ -1530,8 +1571,16 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     });
                     break;
                 }
-                case PerkIds.Recycling: { /* not applicable */ break; }
-                case PerkIds.DemoExport: { /* not applicable */ break; }
+                case PerkIds.Berserker: {
+                    if (this.activeItem instanceof MeleeItem) {
+                        newModifiers.baseSpeed *= perk.speedMod;
+                    }
+                    break;
+                }
+                case PerkIds.LowProfile: {
+                    newModifiers.size *= perk.sizeMod;
+                    break;
+                }
             }
         }
         // ! evil ends here
@@ -1760,6 +1809,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // Drop loot
         //
 
+        const { position, layer } = this;
+
         // Drop weapons
         this.inventory.unlockAll();
         this.inventory.dropWeapons();
@@ -1781,13 +1832,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                     do {
                         left -= subtractAmount = Math.min(left, def.maxStackSize);
-                        this.game.addLoot(item, this.position, this.layer, { count: subtractAmount });
+                        this.game.addLoot(item, position, layer, { count: subtractAmount });
                     } while (left > 0);
 
                     continue;
                 }
 
-                this.game.addLoot(item, this.position, this.layer, { count });
+                this.game.addLoot(item, position, layer, { count });
                 this.inventory.items.setItem(item, 0);
             }
         }
@@ -1796,7 +1847,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         for (const itemType of ["helmet", "vest", "backpack"] as const) {
             const item = this.inventory[itemType];
             if (item?.noDrop === false) {
-                this.game.addLoot(item, this.position, this.layer);
+                this.game.addLoot(item, position, layer);
             }
         }
 
@@ -1805,15 +1856,21 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // Drop skin
         const { skin } = this.loadout;
         if (skin.hideFromLoadout && !skin.noDrop) {
-            this.game.addLoot(skin, this.position, this.layer);
+            this.game.addLoot(skin, position, layer);
+        }
+
+        for (const perk of this.perks) {
+            if (!perk.noDrop) {
+                this.game.addLoot(perk, position, layer);
+            }
         }
 
         // Create death marker
-        this.game.grid.addObject(new DeathMarker(this, this.layer));
+        this.game.grid.addObject(new DeathMarker(this, layer));
 
         // remove all c4s
         for (const c4 of this.c4s) {
-            c4.damageC4(Infinity);
+            c4.damage({ amount: Infinity });
         }
 
         // Send game over to dead player
@@ -1985,7 +2042,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
                 case InputActions.DropWeapon: {
                     this.action?.cancel();
-                    inventory.dropWeapon(action.slot);
+                    inventory.dropWeapon(action.slot)?.destroy();
                     break;
                 }
                 case InputActions.DropItem: {

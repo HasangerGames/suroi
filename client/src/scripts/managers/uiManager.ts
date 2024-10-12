@@ -1,6 +1,7 @@
 import $ from "jquery";
 import { Color } from "pixi.js";
 import { DEFAULT_INVENTORY, GameConstants, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType } from "../../../../common/src/constants";
+import { Skins } from "../../../../common/src/definitions";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type BadgeDefinition } from "../../../../common/src/definitions/badges";
 import { emoteIdStrings, type EmoteDefinition } from "../../../../common/src/definitions/emotes";
@@ -10,7 +11,7 @@ import { MapPings, type PlayerPing } from "../../../../common/src/definitions/ma
 import { DEFAULT_SCOPE, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { type GameOverData } from "../../../../common/src/packets/gameOverPacket";
 import { type KillFeedPacketData } from "../../../../common/src/packets/killFeedPacket";
-import { type PerkCollection, type PlayerData } from "../../../../common/src/packets/updatePacket";
+import { type PlayerData } from "../../../../common/src/packets/updatePacket";
 import { Numeric } from "../../../../common/src/utils/math";
 import { ExtendedMap, freezeDeep } from "../../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
@@ -22,8 +23,8 @@ import { Player } from "../objects/player";
 import { GHILLIE_TINT, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
-import { Skins } from "../../../../common/src/definitions";
-
+import { ClientPerkManager } from "./perkManager";
+import { PerkIds } from "../../../../common/src/definitions/perks";
 function safeRound(value: number): number {
     if (0 < value && value <= 1) return 1;
     return Math.round(value);
@@ -58,10 +59,7 @@ export class UIManager {
 
     teammates: PlayerData["teammates"] & object = [];
 
-    perks: PerkCollection = {
-        asBitfield: () => 0,
-        asList: () => []
-    };
+    readonly perks: ClientPerkManager;
 
     readonly debugReadouts = Object.freeze({
         fps: $<HTMLSpanElement>("#fps-counter"),
@@ -77,6 +75,8 @@ export class UIManager {
             throw new Error("Class 'UIManager' has already been instantiated");
         }
         UIManager._instantiated = true;
+
+        this.perks = new ClientPerkManager(this.game);
     }
 
     getRawPlayerNameNullish(id: number): string | undefined {
@@ -661,7 +661,7 @@ export class UIManager {
         }
 
         if (perks) {
-            this.perks = perks;
+            this.perks.overwrite(perks);
             // TODO: funny perks hud stuff
         }
     }
@@ -686,7 +686,9 @@ export class UIManager {
             let showReserve = false;
             if (activeWeapon.definition.itemType === ItemType.Gun) {
                 const ammoType = activeWeapon.definition.ammoType;
-                let totalAmmo: number | string = this.inventory.items[ammoType];
+                let totalAmmo: number | string = this.perks.hasPerk(PerkIds.InfiniteAmmo)
+                    ? "∞"
+                    : this.inventory.items[ammoType];
 
                 for (const ammo of Ammos) {
                     if (ammo.idString === ammoType && ammo.ephemeral) {

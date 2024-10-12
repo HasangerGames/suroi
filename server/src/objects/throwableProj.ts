@@ -9,7 +9,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 
 import { type Game } from "../game";
 import { type ThrowableItem } from "../inventory/throwableItem";
-import { BaseGameObject, type GameObject } from "./gameObject";
+import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { Building } from "./building";
 
@@ -502,7 +502,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         }
     }
 
-    damageC4(amount: number): void {
+    override damage({ amount }: DamageParams): void {
         if (!this.health) return;
 
         this.health = this.health - amount;
@@ -518,8 +518,6 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             if (particles !== undefined) this.game.addSyncedParticles(particles, referencePosition, this.source.owner.layer);
         }
     }
-
-    override damage(): void { /* can't damage a throwable projectile */ }
 
     get data(): FullData<ObjectCategory.ThrowableProjectile> {
         return {

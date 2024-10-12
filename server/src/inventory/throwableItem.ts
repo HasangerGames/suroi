@@ -8,6 +8,8 @@ import { type Game } from "../game";
 import { type Player } from "../objects/player";
 import { type ThrowableProjectile } from "../objects/throwableProj";
 import { CountableInventoryItem } from "./inventoryItem";
+import { Numeric } from "@common/utils/math";
+import { PerkIds } from "@common/definitions/perks";
 
 export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
     declare readonly category: ItemType.Throwable;
@@ -207,8 +209,8 @@ class GrenadeHandler {
                     this.owner.rotation,
                     soft
                         ? 0
-                        : Math.min(
-                            definition.maxThrowDistance,
+                        : Numeric.min(
+                            definition.maxThrowDistance * this.owner.mapPerkOrDefault(PerkIds.DemoExpert, ({ rangeMod }) => rangeMod, 1),
                             0.9 * this.owner.distanceToMouse
                         //  ^^^ Grenades will consistently undershoot the mouse by 10% in order to make long-range shots harder
                         //      while not really affecting close-range shots

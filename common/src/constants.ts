@@ -124,7 +124,8 @@ export enum InventoryMessages {
     NotEnoughSpace,
     ItemAlreadyEquipped,
     BetterItemEquipped,
-    CannotUseRadio
+    CannotUseRadio,
+    RadioOverused
 }
 
 export const DEFAULT_INVENTORY: Record<string, number> = {};

@@ -31,6 +31,8 @@ export interface ServerBulletOptions {
     readonly reflectionCount?: number
     readonly variance?: number
     readonly rangeOverride?: number
+    readonly saturate?: boolean
+    readonly thin?: boolean
     readonly modifiers?: BulletOptions["modifiers"]
 }
 
@@ -171,7 +173,7 @@ export class Bullet extends BaseBullet {
                 && object.definition.health
                 && lineRect.collidesWith(object.hitbox)
             ) {
-                object.damageC4(definition.damage);
+                object.damage({ amount: definition.damage });
             }
         }
 
@@ -195,7 +197,9 @@ export class Bullet extends BaseBullet {
                 reflectionCount: this.reflectionCount + 1,
                 variance: this.rangeVariance,
                 modifiers: this.modifiers,
-                rangeOverride: this.clipDistance
+                rangeOverride: this.clipDistance,
+                saturate: this.saturate,
+                thin: this.thin
             }
         );
     }

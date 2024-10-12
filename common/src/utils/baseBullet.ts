@@ -25,6 +25,8 @@ export interface BulletOptions {
             readonly length?: number
         }
     }
+    readonly saturate?: boolean
+    readonly thin?: boolean
     readonly sourceID: number
     readonly reflectionCount?: number
     readonly variance?: number
@@ -77,6 +79,9 @@ export class BaseBullet {
 
     readonly modifiers?: BulletOptions["modifiers"];
 
+    readonly saturate: boolean;
+    readonly thin: boolean;
+
     constructor(options: BulletOptions) {
         this.initialPosition = Vec.clone(options.position);
         this._oldPosition = this.position = options.position;
@@ -109,6 +114,9 @@ export class BaseBullet {
         );
 
         this.canHitShooter = this.definition.shrapnel || this.reflectionCount > 0;
+
+        this.saturate = options.saturate ?? false;
+        this.thin = options.thin ?? false;
     }
 
     /**
@@ -178,7 +186,7 @@ export class BaseBullet {
         stream.writeBoolean(hasMods);
         if (hasMods) {
             /*
-                several overrides aren't sent for performance, space, and security
+                some overrides aren't sent for performance, space, and security
                 reasons; if the client doesn't use value X, then don't send it for
                 those three reasons
             */
@@ -226,8 +234,11 @@ export class BaseBullet {
             }
         }
 
+        stream.writeBoolean(this.saturate);
+        stream.writeBoolean(this.thin);
+
         if (this.definition.allowRangeOverride) {
-            stream.writeFloat(this.maxDistance, 0, this.definition.range, 16);
+            stream.writeFloat(this.maxDistance, 0, this.definition.range * (this.modifiers?.range ?? 1), 16);
         }
     }
 
@@ -242,6 +253,14 @@ export class BaseBullet {
 
         const modifiers = stream.readBoolean()
             ? {
+                get damage(): number {
+                    console.warn("damage modifier is not sent to the client; accessing it is a mistake");
+                    return 1;
+                },
+                get dtc(): number {
+                    console.warn("dtc modifier is not sent to the client; accessing it is a mistake");
+                    return 1;
+                },
                 speed: stream.readBoolean() ? stream.readFloat(0, 4, 8) : undefined,
                 range: stream.readBoolean() ? stream.readFloat(0, 4, 8) : undefined,
                 tracer: {
@@ -252,7 +271,10 @@ export class BaseBullet {
             }
             : undefined;
 
-        const rangeOverride = source.allowRangeOverride ? stream.readFloat(0, source.range, 16) : undefined;
+        const saturate = stream.readBoolean();
+        const thin = stream.readBoolean();
+
+        const rangeOverride = source.allowRangeOverride ? stream.readFloat(0, source.range * (modifiers?.range ?? 1), 16) : undefined;
 
         return {
             source,
@@ -263,7 +285,9 @@ export class BaseBullet {
             reflectionCount,
             sourceID,
             rangeOverride,
-            modifiers
+            modifiers,
+            saturate,
+            thin
         };
     }
 }

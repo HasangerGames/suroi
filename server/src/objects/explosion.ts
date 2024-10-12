@@ -14,6 +14,7 @@ import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 import { ThrowableProjectile } from "./throwableProj";
+import { PerkIds } from "@common/definitions/perks";
 
 export class Explosion {
     readonly game: Game;
@@ -85,6 +86,7 @@ export class Explosion {
                         object.damage({
                             amount: this.definition.damage
                                 * (isObstacle ? this.definition.obstacleMultiplier : 1)
+                                * (isPlayer ? object.mapPerkOrDefault(PerkIds.LowProfile, ({ explosionMod }) => explosionMod, 1) : 1)
                                 * ((dist > min) ? (max - dist) / (max - min) : 1),
 
                             source: this.source,
@@ -93,9 +95,9 @@ export class Explosion {
                     }
 
                     if ((isLoot || isThrowableProjectile) && adjacentOrEqualLayer(object.layer, this.layer)) {
-                        if (isThrowableProjectile && object.definition.health) object.damageC4(this.definition.damage);
+                        if (isThrowableProjectile) object.damage({ amount: this.definition.damage });
                         else {
-                            (object as Loot).push(
+                            object.push(
                                 Angle.betweenPoints(object.position, this.position),
                                 (max - dist) * 0.01
                             );

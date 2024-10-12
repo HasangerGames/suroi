@@ -33,7 +33,7 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "fullscreen": "Plein écran",
     "resume": "Continuer",
     "quit": "Abandonner",
-    "none": "None",
+    "none": "Aucun",
     "copy": "Copier",
 
     "health": "vie",
@@ -45,7 +45,7 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "settings_interface": "Interface",
     "settings_save_load": "Savegarder/Charger",
     "settings_mobile": "Mobile",
-    "settings_require_reload": "* Changer ces paramètres requiert un rafraichissement de la page",
+    "settings_require_reload": "* Changer ces paramètres requiert un rafraîchissement de la page",
     "settings_performance_warning": "* Ce paramètre peut causer des problèmes sur certaines machines. Désactivez-le si rejoindre un match est impossible.",
 
     "settings_master_volume": "Volume principal",
@@ -188,7 +188,7 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "bindings_+map_ping_wheel": "Passer en ping de Map",
     "bindings_+map_ping": "Map Ping",
     "bindings_toggle_console": "Activer/Désactiver la Console",
-    "bindings_toggle_slot_lock": "Activer/Désactiver l'échange de Slots",
+    "bindings_toggle_slot_lock": "Activer/Désactiver verrouillage de slots",
 
     "kf_suicide_kill": "<player> s'est suicidé",
     "kf_suicide_down": "<player> s'est assommé",
@@ -200,7 +200,7 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "kf_finished_off_down": "<player> a rencontré un bug avec l'aide de <victim>",
 
     "kf_finally_died": "<player> a expiré",
-    "kf_finally_ended_themselves": "<player> s'est self-éxécuté",
+    "kf_finally_ended_themselves": "<player> s'est self-exécuté",
 
     "kf_finally_killed": "<player>  a été exécuté",
     "kf_finally_down": "<player> a rencontré un bug",

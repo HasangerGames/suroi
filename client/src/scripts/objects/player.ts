@@ -1,5 +1,6 @@
 import $ from "jquery";
-import { Container, Text, TilingSprite } from "pixi.js";
+import { Container, Graphics, Text, TilingSprite } from "pixi.js";
+import { DashLine } from "pixi-dashed-line";
 import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
@@ -9,11 +10,12 @@ import { type GunDefinition, type SingleGunNarrowing } from "../../../../common/
 import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
 import { Loots, type WeaponDefinition } from "../../../../common/src/definitions/loots";
 import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "../../../../common/src/definitions/melees";
+import { PerkData, PerkIds } from "../../../../common/src/definitions/perks";
 import { Skins, type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { adjacentOrEqualLayer, getEffectiveZIndex } from "../../../../common/src/utils/layer";
-import { Angle, EaseFunctions, Geometry } from "../../../../common/src/utils/math";
+import { Angle, EaseFunctions, Geometry, Numeric } from "../../../../common/src/utils/math";
 import { type Timeout } from "../../../../common/src/utils/misc";
 import { ItemType, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
@@ -29,6 +31,7 @@ import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
+import { Explosions } from "../../../../common/src/definitions";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -58,6 +61,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         type: PlayerActions.None,
         item: undefined as undefined | HealingItemDefinition
     };
+
+    animation = AnimationType.None;
+    animationChangeTime = 0;
 
     damageable = true;
 
@@ -130,6 +136,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     floorType: FloorNames = FloorNames.Grass;
 
     sizeMod = 1;
+
+    private grenadeImpactPreview?: Graphics;
 
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Player]) {
         super(game, id);
@@ -465,7 +473,112 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         }
 
         if (data.animation !== undefined) {
+            this.animation = data.animation;
+            this.animationChangeTime = Date.now();
             this.playAnimation(data.animation);
+        }
+
+        this.grenadeImpactPreview?.clear();
+        if (
+            this.animation === AnimationType.ThrowableCook
+            && this.activeItem.itemType === ItemType.Throwable
+        ) {
+            // prediction for impact point is basically just done by yoinking sever
+            // code and plopping it client-side lol
+            if (this.game.uiManager.perks.hasPerk(PerkIds.DemoExpert)) {
+                if (this.grenadeImpactPreview === undefined) {
+                    this.grenadeImpactPreview = new Graphics();
+                    this.grenadeImpactPreview.zIndex = 999;
+                    this.game.camera.addObject(this.grenadeImpactPreview);
+                }
+
+                const graphics = this.grenadeImpactPreview;
+                const def = this.activeItem;
+
+                // mirrors server logic
+                const pos = Vec.add(
+                    toPixiCoords(this.position),
+                    Vec.rotate(toPixiCoords(def.animation.cook.rightFist), this.rotation)
+                );
+
+                const range = def.c4
+                    ? 0
+                    : Numeric.min(
+                        this.game.inputManager.distanceToMouse * 0.9, // <- this constant is defined server-side
+                        def.maxThrowDistance * PerkData[PerkIds.DemoExpert].rangeMod
+                    );
+
+                const cookMod = def.cookable ? Date.now() - this.animationChangeTime : 0;
+                const drag = 0.001; // defined server-side
+                const physDist = (range / (985 * drag)) * (1 - Math.exp(-drag * (def.fuseTime - cookMod))); // also defined server-side
+
+                const { x, y } = Vec.add(
+                    pos,
+                    Vec.fromPolar(
+                        this.rotation,
+                        physDist * PIXI_SCALE
+                    )
+                );
+
+                const ln = new DashLine(graphics, { dash: [100, 50] });
+
+                graphics.clear()
+                    .setFillStyle({
+                        color: 0xff0000,
+                        alpha: 0.3
+                    })
+                    .setStrokeStyle({
+                        color: 0xff0000,
+                        width: 8,
+                        alpha: 0.7
+                    })
+                    .beginPath();
+
+                ln.moveTo(pos.x, pos.y)
+                    .lineTo(x, y);
+
+                graphics.stroke()
+                    .setStrokeStyle({
+                        color: 0xff0000,
+                        width: 3,
+                        alpha: 0.5
+                    })
+                    .beginPath();
+
+                const explosionDef = Explosions.fromStringSafe(def.detonation.explosion ?? "");
+                if (
+                    explosionDef !== undefined
+                    && explosionDef.damage !== 1
+                    && explosionDef.radius.min + explosionDef.radius.max !== 0
+                ) {
+                    graphics.circle(x, y, explosionDef.radius.min * PIXI_SCALE)
+                        .closePath()
+                        .fill()
+                        .stroke()
+                        .beginPath()
+                        .setFillStyle({
+                            color: 0xFFFF00,
+                            alpha: 0.8
+                        })
+                        .setStrokeStyle({
+                            color: 0xFFFF00,
+                            width: 3,
+                            alpha: 0.1
+                        })
+                        .circle(x, y, 0.5 * PIXI_SCALE)
+                        .closePath()
+                        .fill()
+                        .stroke();
+                } else {
+                    graphics.circle(x, y, 1.5 * PIXI_SCALE)
+                        .closePath()
+                        .fill()
+                        .stroke();
+                }
+            } else {
+                this.grenadeImpactPreview?.destroy();
+                this.grenadeImpactPreview = undefined;
+            }
         }
 
         if (data.full) {
@@ -704,7 +817,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     if (this.isActivePlayer) {
                         uiManager.animateAction(
                             getTranslatedString(`action_${itemDef.idString}_use`, { item: getTranslatedString(itemDef.idString) }),
-                            itemDef.useTime
+                            itemDef.useTime / this.game.uiManager.perks.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
                         );
                     }
                     break;
