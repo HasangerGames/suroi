@@ -335,10 +335,7 @@ export class GameMap {
                         Vec.create(position.x - width / 2, position.y - height / 2)
                     ));
                 }
-                if (!position) {
-                    Logger.warn(`Failed to place clearing #${i + 1}`);
-                    attempts++;
-                }
+                attempts++;
             }
             if (attempts >= 100) {
                 Logger.warn(`Failed to find valid position for clearing #${i + 1}`);
