@@ -19,6 +19,7 @@ import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
 import { CARDINAL_DIRECTIONS, Logger, getLootTableLoot, getRandomIDString } from "./utils/misc";
+import { equalLayer } from "@common/utils/layer";
 
 export class GameMap {
     readonly game: Game;
@@ -781,6 +782,7 @@ export class GameMap {
             collidableObjects?: Partial<Record<ObjectCategory, boolean>>
             spawnMode?: MapObjectSpawnMode
             scale?: number
+            layer?: Layer
             orientation?: Orientation
             maxAttempts?: number
             // used for beach spawn mode
@@ -884,7 +886,10 @@ export class GameMap {
                 }
                 if (objectHitbox === undefined) continue;
 
-                if (collidableObjects[object.type] && hitbox.collidesWith(objectHitbox)) {
+                if (
+                    collidableObjects[object.type]
+                    && equalLayer(object.layer, params?.layer ?? Layer.Ground)
+                    && hitbox.collidesWith(objectHitbox)) {
                     collided = true;
                     break;
                 }

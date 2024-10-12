@@ -15,8 +15,10 @@
 
     let hitboxes: HitboxJSON[] = [
         ...new GroupHitbox(
-            RectangleHitbox.fromRect(10, 10)
-        ).toJSON().hitboxes
+    RectangleHitbox.fromRect(2.01, 17.11, Vec.create(6.57, 0.48)),
+    RectangleHitbox.fromRect(15.15, 2.02, Vec.create(0.01, -8.03)),
+    RectangleHitbox.fromRect(2.01, 17.11, Vec.create(-6.57, 0.48))
+).transform(Vec.create(-145.11, -52.85), 1, 3).toJSON().hitboxes
     ];
 
     let selected = hitboxes[0];
@@ -191,7 +193,7 @@
         hitboxes.push(JSON.parse(JSON.stringify(selected)));
     }
 
-    const bgImage = loadImage("/img/modes/fall/buildings/plumpkin_bunker_floor_tweaked&tiled.png");
+    const bgImage = loadImage("/img/modes/fall/buildings/plumpkin_bunker_main_entrance_ceiling.svg");
 </script>
 
 <main>

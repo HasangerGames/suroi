@@ -4003,6 +4003,26 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 zIndex: ZIndexes.BuildingsFloor
             },
             {
+                idString: "plumpkin_bunker_stair",
+                name: "Plumpkin Bunker Stair",
+                material: "metal_heavy",
+                health: 1000,
+                indestructible: true,
+                invisible: true,
+                role: ObstacleSpecialRoles.Stair,
+                activeEdges: {
+                    high: 1,
+                    low: 3
+                },
+                hitbox: RectangleHitbox.fromRect(16.07, 11.3),
+                frames: {
+                    base: "plumpkin_bunker_entrance_floor",
+                    particle: "metal_particle"
+                },
+                rotationMode: RotationMode.Limited
+                // zIndex: 9999
+            },
+            {
                 idString: "hq_door_occluder",
                 name: "HQ Door Occluder",
                 material: "stone",
@@ -4394,7 +4414,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 role: ObstacleSpecialRoles.Wall,
                 spawnMode: MapObjectSpawnMode.GrassAndSand,
                 hitbox: new CircleHitbox(1),
-                rotationMode: RotationMode.Limited,
+                rotationMode: RotationMode.None,
                 particleVariations: 2,
                 frames: {
                     particle: "rock_particle"

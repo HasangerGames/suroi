@@ -435,6 +435,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 name: `Hay Shed ${id}`,
                 spawnHitbox: RectangleHitbox.fromRect(47, 32),
                 scopeHitbox: RectangleHitbox.fromRect(33.5, 24.5, Vec.create(-1.2, -0.5)),
+                ceilingHitbox: RectangleHitbox.fromRect(33.5, 24.5, Vec.create(-1.2, -0.5)),
                 floorImages: [{
                     key: "fall_patch_floor",
                     position: Vec.create(0, 0),
@@ -2101,6 +2102,11 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 { idString: "box", position: Vec.create(-8.27, 2.09) },
                 { idString: "grenade_crate", position: Vec.create(8.85, -8.02) },
                 { idString: "box", position: Vec.create(-6.71, 8.27) }
+            ]]),
+
+            hayShed([4, 1, [
+                { idString: "hay_bale", position: Vec.create(9.68, 3.88), rotation: 0 },
+                { idString: "super_barrel", position: Vec.create(7.71, -6.26) },
             ]]),
 
             {
@@ -4549,7 +4555,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "small_bunker_entrance", position: Vec.create(0, 20), layer: -1 }
                 ]
             },
-
             {
                 idString: "small_bunker_fall",
                 name: "Small Bunker",
@@ -5692,6 +5697,90 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 name: "Plumpkin Bunker",
                 material: "metal_heavy",
                 reflectBullets: true,
+                collideWithLayers: Layers.Equal,
+                hitbox: new GroupHitbox(
+                    // main entrance
+                    RectangleHitbox.fromRect(2.2, 17.09, Vec.create(35.58, 82.2)),
+                    RectangleHitbox.fromRect(45.52, 2.2, Vec.create(12.94, 128.31)),
+                    RectangleHitbox.fromRect(32.67, 2.2, Vec.create(7.67, 114.8)),
+                    RectangleHitbox.fromRect(2.2, 54.64, Vec.create(-8.72, 100.99)),
+                    RectangleHitbox.fromRect(14.19, 2.2, Vec.create(-1.02, 74.76)),
+                    RectangleHitbox.fromRect(2.2, 27.13, Vec.create(35.58, 115.84)),
+                    RectangleHitbox.fromRect(4.51, 4.51, Vec.create(16.08, 93.57)),
+                    RectangleHitbox.fromRect(18.12, 2.2, Vec.create(26.65, 74.75)),
+
+                    // utility entrance (hay shed)
+                    RectangleHitbox.fromRect(2.01, 17.11, Vec.create(139.98, -33.33)),
+                    RectangleHitbox.fromRect(15.15, 2.02, Vec.create(146.54, -24.82)),
+                    RectangleHitbox.fromRect(2.01, 17.11, Vec.create(153.12, -33.33)),
+
+                    // emergency entrance
+                    RectangleHitbox.fromRect(17.11, 2.01, Vec.create(-145.59, -46.28)),
+                    RectangleHitbox.fromRect(2.02, 15.15, Vec.create(-137.08, -52.84)),
+                    RectangleHitbox.fromRect(17.11, 2.01, Vec.create(-145.59, -59.42))
+                ),
+                spawnHitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(54, 62, Vec.create(13.43, 101.53)),
+                    RectangleHitbox.fromRect(18, 21, Vec.create(146.55, -32.85)),
+                    RectangleHitbox.fromRect(21, 18, Vec.create(-145.11, -52.85))
+                ),
+                ceilingHitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(45, 54, Vec.create(13.43, 101.53)),
+                    RectangleHitbox.fromRect(14, 17, Vec.create(146.55, -32.85)),
+                    RectangleHitbox.fromRect(17, 14, Vec.create(-145.11, -52.85))
+                ),
+                ceilingZIndex: ZIndexes.ObstaclesLayer3,
+                scopeHitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(45, 54, Vec.create(13.43, 101.53)),
+                    RectangleHitbox.fromRect(14, 17, Vec.create(146.55, -32.85)),
+                    RectangleHitbox.fromRect(17, 14, Vec.create(-145.11, -52.85))
+                ),
+                floorImages: [
+                    { key: "plumpkin_bunker_main_entrance_floor", position: Vec.create(13.43, 101.53), rotation: 0 },
+                    { key: "plumpkin_bunker_entrance_floor", position: Vec.create(146.55, -32.85), rotation: Math.PI },
+                    { key: "plumpkin_bunker_entrance_floor", position: Vec.create(-145.11, -52.85), rotation: Math.PI / 2 },
+                ],
+                floorZIndex: ZIndexes.BuildingsFloor + 0.5,
+                ceilingImages: [
+                    { key: "plumpkin_bunker_main_entrance_ceiling", position: Vec.create(13.43, 101.53), rotation: 0 },
+                    { key: "plumpkin_bunker_entrance_ceiling", position: Vec.create(146.55, -32.85), rotation: Math.PI },
+                    { key: "plumpkin_bunker_entrance_ceiling", position: Vec.create(-145.11, -52.85), rotation: Math.PI / 2 },
+                ],
+                obstacles: [
+                    { idString: "plumpkin_bunker_stair", position: Vec.create(0.39, 121.67), rotation: 0, layer: -1 },
+                    { idString: "plumpkin_bunker_stair", position: Vec.create(146.52, -33.84), rotation: 1, layer: -1 },
+                    { idString: "plumpkin_bunker_stair", position: Vec.create(-146.1, -52.88), rotation: 2, layer: -1 },
+
+                    // emergency entrance
+                    { idString: "dormant_oak_tree", position: Vec.create(-144.44, -62.77) },
+                    { idString: "dormant_oak_tree", position: Vec.create(-129.73, -51.34) },
+                    { idString: "dormant_oak_tree", position: Vec.create(-139.02, -43.52) },
+                    { idString: "dormant_oak_tree", position: Vec.create(-155.7, -43.14) },
+                    { idString: "dormant_oak_tree", position: Vec.create(-156.96, -60.07) },
+                    { idString: "dormant_oak_tree", position: Vec.create(-129.59, -61.37) },
+
+                    // main entrance
+                    { idString: "box", position: Vec.create(6.76, 109.03) },
+                    { idString: "regular_crate", position: Vec.create(-1.21, 91.53) },
+                    { idString: "regular_crate", position: Vec.create(-2.14, 81.36) },
+                    { idString: "ammo_crate", position: Vec.create(-1.44, 107.44) },
+                    { idString: "grenade_crate", position: Vec.create(22.35, 79.86) },
+                    { idString: "barrel", position: Vec.create(30.12, 80.17) },
+                    { idString: "gun_case", position: Vec.create(14.92, 110.4), rotation: 2 },
+                    { idString: "red_metal_auto_door", position: Vec.create(29.27, 114.78), rotation: 0 },
+                ],
+                subBuildings: [
+                    { idString: "hay_shed_4", position: Vec.create(40.03, 146.55), orientation: 1 },
+                    { idString: "plumpkin_bunker_main", position: Vec.create(0, 0), layer: -2 }
+                ]
+            },
+            {
+                idString: "plumpkin_bunker_main",
+                name: "Plumpkin Bunker Main",
+                material: "metal_heavy",
+                particle: "plumpkin_bunker_particle",
+                reflectBullets: true,
+                collideWithLayers: Layers.Adjacent,
                 spawnHitbox: RectangleHitbox.fromRect(350, 290),
                 sounds: {
                     normal: "plumpkin_bunker_pump_ambience",
@@ -5703,11 +5792,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     {
                         key: "plumpkin_bunker_floor",
                         position: Vec.create(0, 0)
-                    }/* ,
-                    {
-                        key: "plumpkin_bunker_obstacles",
-                        position: Vec.create(0, 0)
-                    } */
+                    }
                 ],
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(2.01, 49.16, Vec.create(-89.3, 1.6)),
@@ -5845,11 +5930,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     }
                 ],
                 puzzle: {
-                    triggerOnSolve: "metal_door",
+                    triggerOnSolve: "vault_door",
                     solvedSound: true,
                     soundPosition: Vec.create(-95.68, 46.52),
-                    delay: 0,
-                    unlockOnly: true
+                    delay: 0
                 },
                 obstacles: [
                     // vault area
@@ -5869,21 +5953,22 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "pipe_4", position: Vec.create(-136.1, 95.81), rotation: 0 },
 
                     // vault
-                    { idString: "metal_door", position: Vec.create(-83.98, 88.35), rotation: 1, locked: true },
+                    { idString: "vault_door", position: Vec.create(-83.48, 87.76), rotation: 1 },
                     { idString: "gun_mount_dual_rsh12", position: Vec.create(-54.09, 84.63), rotation: 3 },
                     { idString: "regular_crate", position: Vec.create(-62.71, 81.57) },
                     { idString: { box: 1, grenade_box: 1 }, position: Vec.create(-66.18, 89.31) },
                     { idString: { box: 1, grenade_box: 1 }, position: Vec.create(-60.05, 90.57) },
                     { idString: "trash_can", position: Vec.create(-79.69, 79.48) },
+                    { idString: "gun_locker", position: Vec.create(-71.51, 86.57), rotation: 3 },
 
                     // center area with plumpkin logo
                     { idString: "red_metal_auto_door", position: Vec.create(8.67, 61.27), rotation: 1 },
-                    { idString: "red_metal_auto_door", position: Vec.create(8.67, 50.89), rotation: 3 },
-                    { idString: "red_metal_auto_door", position: Vec.create(-51.27, 50.89), rotation: 3 },
-                    { idString: "red_metal_auto_door", position: Vec.create(-51.27, 61.27), rotation: 1 },
+                    { idString: "red_metal_auto_door", position: Vec.create(8.67, 50.87), rotation: 3 },
+                    { idString: "red_metal_auto_door", position: Vec.create(-51.27, 50.83), rotation: 3 },
+                    { idString: "red_metal_auto_door", position: Vec.create(-51.27, 61.31), rotation: 1 },
                     { idString: "red_metal_auto_door", position: Vec.create(-16.65, 25.89), rotation: 2 },
-                    { idString: "red_metal_auto_door", position: Vec.create(-27.15, 25.89), rotation: 0 },
-                    { idString: "red_metal_auto_door", position: Vec.create(-27.15, 85.62), rotation: 0 },
+                    { idString: "red_metal_auto_door", position: Vec.create(-27.13, 25.89), rotation: 0 },
+                    { idString: "red_metal_auto_door", position: Vec.create(-27.13, 85.62), rotation: 0 },
                     { idString: "red_metal_auto_door", position: Vec.create(-16.65, 85.62), rotation: 2 },
                     { idString: "couch", position: Vec.create(-31.89, 54.94), rotation: 0 },
                     { idString: "couch", position: Vec.create(-10.72, 54.94), rotation: 2 },
@@ -6010,8 +6095,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "dumpster", position: Vec.create(36.91, 69.82), rotation: 1 },
                     { idString: "dumpster", position: Vec.create(21.47, 69.82), rotation: 1 },
                     { idString: "forklift", position: Vec.create(79.41, -5.73), rotation: 3 },
-                    { idString: "forklift", position: Vec.create(54.37, 20.06), rotation: 0 },
-                    { idString: "pallet", position: Vec.create(54.45, 31.59), rotation: 0 },
+                    { idString: "forklift", position: Vec.create(53.37, 20.06), rotation: 0 },
+                    { idString: "pallet", position: Vec.create(53.45, 31.59), rotation: 0 },
                     { idString: "pipe_1", position: Vec.create(106.85, -16.65), rotation: 0 },
                     { idString: "pipe_2", position: Vec.create(62.22, -86.03), rotation: 0 },
 
@@ -6036,9 +6121,32 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
 
                     // server room
                     { idString: "red_metal_auto_door", position: Vec.create(121.81, -26.84), rotation: 2 },
-                    { idString: "red_metal_auto_door", position: Vec.create(121.81, -76.09), rotation: 2 }
+                    { idString: "red_metal_auto_door", position: Vec.create(121.81, -76.09), rotation: 2 },
 
                     // storage room
+                    { idString: "ammo_crate", position: Vec.create(85.68, 24.35), rotation: 0 },
+                    { idString: "ammo_crate", position: Vec.create(19.97, 24.35), rotation: 0 },
+                    { idString: "regular_crate", position: Vec.create(20.24, 13.59) },
+                    { idString: "regular_crate", position: Vec.create(85.43, 35.21) },
+                    { idString: "regular_crate", position: Vec.create(78.77, 45.92) },
+                    { idString: "regular_crate", position: Vec.create(31.32, 13.61) },
+                    { idString: "flint_crate", position: Vec.create(74.67, 35.17) },
+                    { idString: "flint_crate", position: Vec.create(26.57, 3.1) },
+                    { idString: "grenade_crate", position: Vec.create(30.57, 24.2) },
+                    { idString: "grenade_crate", position: Vec.create(86.05, 13.97) },
+                    { idString: "super_barrel", position: Vec.create(19.39, 34.32) },
+                    { idString: "barrel", position: Vec.create(74.98, 24.41) },
+                    { idString: "box", position: Vec.create(72.34, 16.81) },
+                    { idString: "box", position: Vec.create(77.3, 13.02) },
+                    { idString: "box", position: Vec.create(28.15, 32.11) },
+                    { idString: "box", position: Vec.create(31.63, 36.75) },
+                    { idString: "pallet", position: Vec.create(74.87, 14.81), rotation: 0 },
+                    { idString: "pallet", position: Vec.create(29.94, 34.32), rotation: 1 },
+                    { idString: "super_barrel", position: Vec.create(33, -20.94) },
+                    { idString: "barrel", position: Vec.create(69.28, 68.83) },
+                    { idString: "gun_case", position: Vec.create(21.19, -21.89), rotation: 0 },
+                    { idString: "gun_case", position: Vec.create(82.81, 69.33), rotation: 2 },
+                    { idString: "flint_crate", position: Vec.create(53.4, 31.53) },
                 ],
                 subBuildings: [
                     { idString: "detector", position: Vec.create(13.82, -100.67), orientation: 2 },
@@ -6046,7 +6154,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "plumpkin_bunker_second_puzzle", position: Vec.create(0, 0) }
                 ]
             },
-
             {
                 idString: "plumpkin_bunker_second_puzzle",
                 name: "Plumpkin Bunker Second Puzzle",

@@ -676,13 +676,9 @@ export class Game {
 
                     // Yes, we need to do this specifically for building ceilings as well.
                     if (_object.isBuilding) {
+                        _object.ceilingVisible = false;
                         _object.ceilingContainer.alpha = 0;
-                        this.addTween({
-                            target: _object.ceilingContainer,
-                            to: { alpha: 1 },
-                            duration: LAYER_TRANSITION_DELAY,
-                            ease: EaseFunctions.sineIn
-                        });
+                        _object.toggleCeiling(LAYER_TRANSITION_DELAY);
                     }
 
                     this.addTween({
@@ -719,7 +715,7 @@ export class Game {
                 object.container.alpha = 1;
 
                 // Yes, we need to do this specifically for building ceilings as well.
-                if (object.isBuilding) {
+                if (object.isBuilding && object.ceilingVisible) {
                     object.ceilingContainer.alpha = 1;
                     this.addTween({
                         target: object.ceilingContainer,

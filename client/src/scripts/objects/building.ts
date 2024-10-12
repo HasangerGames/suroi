@@ -1,10 +1,10 @@
 import { Container, Graphics } from "pixi.js";
-import { Layer, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { MaterialSounds } from "../../../../common/src/definitions/obstacles";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
-import { getEffectiveZIndex, isGroundLayer, equivLayer } from "../../../../common/src/utils/layer";
+import { equivLayer, getEffectiveZIndex, isGroundLayer } from "../../../../common/src/utils/layer";
 import { Angle, Collision, EaseFunctions, Numeric, type CollisionResponse } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
@@ -55,18 +55,16 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         this.updateFromData(data, true);
     }
 
-    toggleCeiling(): void {
+    toggleCeiling(duration = 200): void {
         if (this.ceilingHitbox === undefined || this.ceilingTween || this.dead) return;
         const player = this.game.activePlayer;
         if (player === undefined) return;
 
-        let visible = false;
+        let visible = true;
 
-        let duration = 150;
-
-        if (this.ceilingHitbox.collidesWith(player.hitbox) || player.layer < Layer.Ground) {
-            visible = true;
-            duration = !isGroundLayer(player.layer) ? 0 : 150; // We do not want a ceiling tween during the layer change.
+        if (this.ceilingHitbox.collidesWith(player.hitbox)) {
+            visible = false;
+            duration = !isGroundLayer(player.layer) ? 0 : 200; // We do not want a ceiling tween during the layer change.
         } else {
             const visionSize = 14;
 
@@ -172,23 +170,25 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                                 )
                         )) break;
                     }
-                    visible = !collided;
+                    visible = collided;
                 } else {
-                    visible = false;
+                    visible = true;
                 }
 
                 if (visible) break;
             }
         }
 
-        if (this.ceilingVisible === visible) return;
+        const alpha = visible ? 1 : this.definition.ceilingHiddenAlpha ?? 0;
 
         this.ceilingVisible = visible;
 
+        if (this.ceilingContainer.alpha === alpha || this.ceilingTween) return;
+
         this.ceilingTween = this.game.addTween({
             target: this.ceilingContainer,
-            to: { alpha: visible ? this.definition.ceilingHiddenAlpha ?? 0 : 1 },
-            duration: visible ? duration : 300,
+            to: { alpha },
+            duration,
             ease: EaseFunctions.sineOut,
             onComplete: () => {
                 this.ceilingTween = undefined;
@@ -197,8 +197,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Building], isNew = false): void {
-        this.updateZIndex();
-
         if (data.full) {
             const full = data.full;
             const definition = this.definition = full.definition;
@@ -405,12 +403,15 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             if (image.tint !== undefined) sprite.setTint(image.tint);
             this.ceilingContainer.addChild(sprite);
         }
+        this.toggleCeiling();
+
+        this.updateZIndex();
 
         this.updateDebugGraphics();
     }
 
     override updateZIndex(): void {
-        this.container.zIndex = getEffectiveZIndex(ZIndexes.BuildingsFloor, this.layer, this.game.layer);
+        this.container.zIndex = getEffectiveZIndex(this.definition.floorZIndex, this.layer, this.game.layer);
     }
 
     override updateDebugGraphics(): void {
