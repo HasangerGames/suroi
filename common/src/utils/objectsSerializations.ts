@@ -51,6 +51,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly beingRevived: boolean
             readonly teamID: number
             readonly invulnerable: boolean
+            readonly stoppedAttacking: boolean
             readonly activeItem: WeaponDefinition
             readonly skin: SkinDefinition
             readonly helmet?: ArmorDefinition
@@ -206,6 +207,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 beingRevived,
                 teamID,
                 invulnerable,
+                stoppedAttacking,
                 activeItem,
                 skin,
                 backpack,
@@ -218,6 +220,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writeBoolean(beingRevived);
             stream.writeUint8(teamID);
             stream.writeBoolean(invulnerable);
+            stream.writeBoolean(stoppedAttacking);
             Loots.writeToStream(stream, activeItem);
             Skins.writeToStream(stream, skin);
             Backpacks.writeToStream(stream, backpack);
@@ -261,6 +264,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 beingRevived: stream.readBoolean(),
                 teamID: stream.readUint8(),
                 invulnerable: stream.readBoolean(),
+                stoppedAttacking: stream.readBoolean(),
                 activeItem: Loots.readFromStream(stream),
                 skin: Skins.readFromStream(stream),
                 backpack: Backpacks.readFromStream(stream)

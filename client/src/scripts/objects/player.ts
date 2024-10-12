@@ -35,6 +35,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     activeItem: WeaponDefinition = Loots.fromString("fists");
 
+    stoppedAttacking?: boolean;
+    meleeStopSound?: GameSound;
+    meleeAttackCounter = 0;
+
     private _oldItem = this.activeItem;
 
     equipment: {
@@ -494,6 +498,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             this.dead = full.dead;
+
+            this.stoppedAttacking = full.stoppedAttacking;
 
             this.layer = data.layer;
 
@@ -1172,6 +1178,24 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         maxRange: 96
                     }
                 );
+
+                if (weaponDef.stopSound && !this.stoppedAttacking && !this.meleeStopSound) {
+                    this.meleeStopSound = this.playSound(
+                        weaponDef.stopSound,
+                        {
+                            falloff: 0.4,
+                            maxRange: 96
+                        }
+                    );
+                    if (this.meleeAttackCounter >= 1) {
+                        this.meleeAttackCounter--;
+                    } else {
+                        this.meleeAttackCounter++;
+                    }
+                    this.images.weapon.setFrame(`${weaponDef.idString}${this.meleeAttackCounter <= 0 ? "_used" : ""}`);
+                } else {
+                    this.meleeStopSound = undefined;
+                }
 
                 this.addTimeout(() => {
                     // Play hit effect on closest object

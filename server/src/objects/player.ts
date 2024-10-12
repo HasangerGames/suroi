@@ -2022,6 +2022,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 beingRevived: !!this.beingRevivedBy,
                 teamID: this.teamID ?? 0,
                 invulnerable: this.invulnerable,
+                stoppedAttacking: this.stoppedAttacking,
                 helmet: this.inventory.helmet,
                 vest: this.inventory.vest,
                 backpack: this.inventory.backpack,

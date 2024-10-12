@@ -10,6 +10,7 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     readonly piercingMultiplier?: number // If it does less dmg vs pierceable objects than it would vs a normal one
     readonly stonePiercing?: boolean
     readonly swingSound: string
+    readonly stopSound?: string
     readonly radius: number
     readonly offset: Vector
     readonly cooldown: number
@@ -167,6 +168,33 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 angle: 190,
                 useAngle: 40,
                 lootScale: 0.65
+            }
+        },
+        {
+            idString: "chainsaw",
+            name: "Chain Saw",
+            damage: 25,
+            fireMode: FireMode.Auto,
+            obstacleMultiplier: 2,
+            piercingMultiplier: 2,
+            radius: 2.05,
+            swingSound: "chainsaw",
+            stopSound: "chainsaw_stop",
+            offset: Vec.create(5.4, -0.5),
+            cooldown: 0,
+            fists: {
+                animationDuration: 200,
+                left: Vec.create(61, 10),
+                right: Vec.create(35, 70),
+                useLeft: Vec.create(61, 10),
+                useRight: Vec.create(35, 70)
+            },
+            image: {
+                position: Vec.create(106, 27),
+                usePosition: Vec.create(106, 27),
+                angle: 10,
+                useAngle: 10,
+                lootScale: 0.5
             }
         },
         {
