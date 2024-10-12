@@ -548,7 +548,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 const explosionDef = Explosions.fromStringSafe(def.detonation.explosion ?? "");
                 if (
                     explosionDef !== undefined
-                    && explosionDef.damage !== 1
+                    && explosionDef.damage !== 0
                     && explosionDef.radius.min + explosionDef.radius.max !== 0
                 ) {
                     graphics.circle(x, y, explosionDef.radius.min * PIXI_SCALE)
