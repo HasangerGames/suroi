@@ -816,6 +816,12 @@ export class Game {
             },
             duration: LAYER_TRANSITION_DELAY
         });
+        if (this.console.getBuiltInCVar("cv_play_ambience") && this.layer === Layer.Basement1) {
+            this.windAmbientSound.stop();
+        }
+        if (this.console.getBuiltInCVar("cv_play_ambience") && this.layer === Layer.Ground) {
+            this.windAmbientSound = this.soundManager.play("wind_ambience", { loop: true });
+        }
     }
 
     // yes this might seem evil. but the two local variables really only need to
