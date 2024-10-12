@@ -5959,7 +5959,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: { box: 1, grenade_box: 1 }, position: Vec.create(-66.18, 89.31) },
                     { idString: { box: 1, grenade_box: 1 }, position: Vec.create(-60.05, 90.57) },
                     { idString: "trash_can", position: Vec.create(-79.69, 79.48) },
-                    { idString: "gun_locker", position: Vec.create(-71.51, 86.57), rotation: 3 },
 
                     // center area with plumpkin logo
                     { idString: "red_metal_auto_door", position: Vec.create(8.67, 61.27), rotation: 1 },
