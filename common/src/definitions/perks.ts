@@ -4,12 +4,14 @@ import { ItemType, ObjectDefinitions, type GetMissing, type ItemDefinition, type
 export interface BasicPerk extends ItemDefinition {
     readonly itemType: ItemType.Perk
     readonly giveByDefault: boolean
+    readonly categories: readonly PerkCategories[]
 }
 
 const defaultTemplate = {
     itemType: ItemType.Perk as const,
     noDrop: false,
-    giveByDefault: false
+    giveByDefault: false,
+    categories: [] as readonly PerkCategories[]
 } satisfies DeepPartial<BasicPerk>;
 
 export const updateInterval: unique symbol = Symbol.for("update interval");
@@ -152,10 +154,16 @@ export const enum PerkIds {
     LowProfile = "low_profile"
 }
 
+export const enum PerkCategories {
+    Normal,
+    Halloween
+}
+
 const perks = [
     {
         idString: PerkIds.Werewolf,
         name: "Lycanthropy",
+        categories: [PerkCategories.Halloween],
 
         speedMod: 1.3,
         healthMod: 2,
@@ -165,6 +173,7 @@ const perks = [
     {
         idString: PerkIds.SecondWind,
         name: "Second Wind",
+        categories: [PerkCategories.Normal],
 
         cutoff: 0.5,
         speedMod: 1.2
@@ -172,6 +181,7 @@ const perks = [
     {
         idString: PerkIds.Overstimmed,
         name: "Overstimulated",
+        categories: [PerkCategories.Halloween],
 
         adrenDecay: 0,
         adrenSet: 1,
@@ -180,6 +190,7 @@ const perks = [
     {
         idString: PerkIds.Splinter,
         name: "Fléchettes",
+        categories: [PerkCategories.Normal],
 
         split: 3,
         damageMod: 0.4
@@ -187,6 +198,7 @@ const perks = [
     {
         idString: PerkIds.Sabot,
         name: "Sabot Rounds",
+        categories: [PerkCategories.Normal],
 
         rangeMod: 1.5,
         speedMod: 1.5,
@@ -196,13 +208,15 @@ const perks = [
     },
     {
         idString: PerkIds.HiCap,
-        name: "Extended Magazines"
+        name: "Extended Magazines",
+        categories: [PerkCategories.Normal]
 
         // define for each weapon individually
     },
     {
         idString: PerkIds.Engorged,
         name: "Engorged",
+        categories: [PerkCategories.Halloween],
 
         hpMod: 10, // additive
         sizeMod: 1.05 // multiplicative
@@ -210,6 +224,7 @@ const perks = [
     {
         idString: PerkIds.Recycling,
         name: "Precision Recycling",
+        categories: [PerkCategories.Normal],
 
         hitReq: 2,
         accThreshold: 0.5,
@@ -219,6 +234,7 @@ const perks = [
     {
         idString: PerkIds.DemoExpert,
         name: "Demolitions Expert",
+        categories: [PerkCategories.Normal],
 
         rangeMod: 2,
         [updateInterval]: 10e3, // milliseconds
@@ -227,6 +243,7 @@ const perks = [
     {
         idString: PerkIds.PlumpkinBomb,
         name: "Plumpkin Bomb",
+        categories: [PerkCategories.Halloween],
 
         damageMod: 1.2, // for grenades
         plumpkinExplosionDmg: 100
@@ -234,13 +251,15 @@ const perks = [
     {
         idString: PerkIds.Wraith,
         name: "Wraith",
+        categories: [PerkCategories.Halloween],
 
         smokeAlpha: 0.7,
         smokeAlphaSelf: 0.1
     },
     {
         idString: PerkIds.PlumpkinGamble,
-        name: "Plumpkin Gamble"
+        name: "Plumpkin Gamble",
+        categories: [PerkCategories.Halloween]
 
         /*
             krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
@@ -267,18 +286,21 @@ const perks = [
     {
         idString: PerkIds.BabyPlumpkinPie,
         name: "Baby Plumpkin Pie",
+        categories: [PerkCategories.Halloween],
 
         [updateInterval]: 20e3 // milliseconds
     },
     {
         idString: PerkIds.Costumed,
         name: "Costumed",
+        categories: [PerkCategories.Halloween],
 
         plumpkinVariantChance: 0.01
     },
     {
         idString: PerkIds.TornPockets,
         name: "Torn Pockets",
+        categories: [PerkCategories.Halloween],
 
         [updateInterval]: 1e3,
         dropCount: 2
@@ -286,22 +308,26 @@ const perks = [
     {
         idString: PerkIds.Claustrophobic,
         name: "Claustrophobic",
+        categories: [PerkCategories.Halloween],
 
         speedMod: 0.9
     },
     {
         idString: PerkIds.LacedStimulants,
         name: "Laced Stimulants",
+        categories: [PerkCategories.Halloween],
 
         healDmgRate: 0.5
     },
     {
         idString: PerkIds.Hexxed,
-        name: "Hexxed"
+        name: "Hexxed",
+        categories: [PerkCategories.Halloween]
     },
     {
         idString: PerkIds.RottenPlumpkin,
         name: "Rotten Plumpkin",
+        categories: [PerkCategories.Halloween],
 
         [updateInterval]: 10e3, // milliseconds
         emote: "vomiting_face",
@@ -311,6 +337,7 @@ const perks = [
     {
         idString: PerkIds.AdvancedAthletics,
         name: "Advanced Athletics",
+        categories: [PerkCategories.Normal],
 
         // all multiplicative
         waterSpeedMod: (1 / 0.7) * 1.3,
@@ -319,6 +346,7 @@ const perks = [
     {
         idString: PerkIds.Toploaded,
         name: "Toploaded",
+        categories: [PerkCategories.Normal],
 
         thresholds: [
             [0.2, 1.25],
@@ -328,18 +356,21 @@ const perks = [
     {
         idString: PerkIds.InfiniteAmmo,
         name: "Infinite ammo",
+        categories: [PerkCategories.Normal],
 
         airdropCallerLimit: 3
     },
     {
         idString: PerkIds.FieldMedic,
         name: "Field medic",
+        categories: [PerkCategories.Normal],
 
         usageMod: 1.5 // divide
     },
     {
         idString: PerkIds.Berserker,
         name: "Berserker",
+        categories: [PerkCategories.Normal],
 
         speedMod: 1.6, // multiplicative
         damageMod: 1.4 // multiplicative
@@ -347,6 +378,7 @@ const perks = [
     {
         idString: PerkIds.CloseQuartersCombat,
         name: "Close Quarters Combat",
+        categories: [PerkCategories.Normal],
 
         cutoff: 60,
         reloadMod: 1.2, // divide
@@ -355,6 +387,7 @@ const perks = [
     {
         idString: PerkIds.LowProfile,
         name: "Low Profile",
+        categories: [PerkCategories.Normal],
 
         sizeMod: 0.7, // multiplicative
         explosionMod: 0.7 // multiplicative

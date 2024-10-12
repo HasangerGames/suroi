@@ -17,6 +17,7 @@ import { Layer } from "@common/constants";
 import { Guns } from "@common/definitions";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { getLootTableLoot } from "../utils/misc";
+import { PerkCategories } from "@common/definitions/perks";
 
 export interface MapDefinition {
     readonly width: number
@@ -346,6 +347,7 @@ const maps = {
                         ((item.itemType === ItemType.Melee || item.itemType === ItemType.Scope) && item.noDrop)
                         || ("ephemeral" in item && item.ephemeral)
                         || (item.itemType === ItemType.Backpack && item.level === 0)
+                        || (item.itemType === ItemType.Perk && item.categories.includes(PerkCategories.Halloween))
                         || item.itemType === ItemType.Skin
                     ) continue;
 
