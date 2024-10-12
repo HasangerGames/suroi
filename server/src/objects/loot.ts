@@ -140,7 +140,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                     this.velocity = Vec.sub(this.velocity, Vec.scale(collision.dir, 0.0005));
                 }
 
-                const dist = Math.max(Geometry.distance(object.position, this.position), 1);
+                const dist = Numeric.max(Geometry.distance(object.position, this.position), 1);
                 const vecCollision = Vec.create(object.position.x - this.position.x, object.position.y - this.position.y);
                 const vecCollisionNorm = Vec.create(vecCollision.x / dist, vecCollision.y / dist);
                 const vRelativeVelocity = Vec.create(this.velocity.x - object.velocity.x, this.velocity.y - object.velocity.y);

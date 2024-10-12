@@ -109,7 +109,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         frames: "smoke_particle",
                         position: this.position,
                         layer: this.layer,
-                        zIndex: Math.max((definition.zIndex ?? ZIndexes.ObstaclesLayer1) + 1, ZIndexes.Players),
+                        zIndex: Numeric.max((definition.zIndex ?? ZIndexes.ObstaclesLayer1) + 1, ZIndexes.Players),
                         lifetime: 3500,
                         scale: { start: 0, end: randomFloat(4, 5) },
                         alpha: { start: 0.9, end: 0 },
@@ -136,7 +136,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     // FIXME idString check, hard coded behavior
                     if (this.definition.idString === "airdrop_crate_locked") {
                         const options = (minSpeed: number, maxSpeed: number): Partial<ParticleOptions> => ({
-                            zIndex: Math.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
+                            zIndex: Numeric.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
                             lifetime: 1000,
                             scale: {
                                 start: randomFloat(0.85, 0.95),
@@ -378,7 +378,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         { x: min.x, y: max.y }
                     ];
                 const ratio = (vertexB.y - vertexA.y) / (vertexB.x - vertexA.x);
-                const protrusion = Math.min(50, 50 / ratio);
+                const protrusion = Numeric.min(50, 50 / ratio);
 
                 gphx.setStrokeStyle({ color: 0xffff00, width: 2, alpha })
                     .beginPath()
@@ -575,7 +575,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         this.game.particleManager.spawnParticle({
             frames: this.particleFrames,
             position,
-            zIndex: Math.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
+            zIndex: Numeric.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
             lifetime: 600,
             layer: this.layer,
             scale: { start: 0.9, end: 0.2 },

@@ -550,7 +550,7 @@ export class Minimap {
         if (this._expanded) {
             const screenWidth = window.innerWidth;
             const screenHeight = window.innerHeight;
-            const smallestDim = Math.min(screenHeight, screenWidth);
+            const smallestDim = Numeric.min(screenHeight, screenWidth);
             this.container.scale.set(smallestDim / this._height);
             // noinspection JSSuspiciousNameCombination
             this._minimapWidth = this.sprite.width * this.container.scale.x;
@@ -558,7 +558,7 @@ export class Minimap {
             this._margins = Vec.create(screenWidth / 2 - (this._minimapWidth / 2), screenHeight / 2 - (this._minimapHeight / 2));
 
             const closeButton = $("#btn-close-minimap");
-            const closeButtonPos = Math.min(
+            const closeButtonPos = Numeric.min(
                 this._margins.x + this._minimapWidth + 16,
                 screenWidth - (closeButton.outerWidth() ?? 0)
             ) / uiScale;

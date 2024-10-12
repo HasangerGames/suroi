@@ -102,7 +102,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     get health(): number { return this._health; }
     set health(health: number) {
-        this._health = Math.min(health, this._maxHealth);
+        this._health = Numeric.min(health, this._maxHealth);
         this._team?.setDirty();
         this.dirty.health = true;
         this._normalizedHealth = Numeric.remap(this.health, 0, this.maxHealth, 0, 1);
@@ -123,7 +123,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private _minAdrenaline = 0;
     get minAdrenaline(): number { return this._minAdrenaline; }
     set minAdrenaline(minAdrenaline: number) {
-        this._minAdrenaline = Math.min(minAdrenaline, this._maxAdrenaline);
+        this._minAdrenaline = Numeric.min(minAdrenaline, this._maxAdrenaline);
         this.dirty.maxMinStats = true;
         this.adrenaline = this._adrenaline;
     }
@@ -1831,7 +1831,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     let subtractAmount = 0;
 
                     do {
-                        left -= subtractAmount = Math.min(left, def.maxStackSize);
+                        left -= subtractAmount = Numeric.min(left, def.maxStackSize);
                         this.game.addLoot(item, position, layer, { count: subtractAmount });
                     } while (left > 0);
 

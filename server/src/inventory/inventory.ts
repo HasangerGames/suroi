@@ -411,7 +411,7 @@ export class Inventory {
         if (!this.items.hasItem(definition.idString)) return;
 
         const itemAmount = this.items.getItem(definition.idString);
-        const removalAmount = Math.min(itemAmount, removalCount ?? Math.ceil(itemAmount / 2));
+        const removalAmount = Numeric.min(itemAmount, removalCount ?? Math.ceil(itemAmount / 2));
 
         if (drop) {
             this._dropItem(definition, removalAmount);
@@ -861,7 +861,7 @@ export class ItemCollection<ItemDef extends LootDefinition> {
      * @param amount By how much to decrement the count. Defaults to 1
      */
     decrementItem(key: ReferenceTo<ItemDef>, amount = 1): void {
-        this.setItem(key, Math.max(this.getItem(key) - amount, 0));
+        this.setItem(key, Numeric.max(this.getItem(key) - amount, 0));
     }
 
     // addChangeListener(listener: (key: ReferenceTo<ItemDef>, oldValue: number, newValue: number) => void): void {

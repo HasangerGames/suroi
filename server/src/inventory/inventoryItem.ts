@@ -210,7 +210,7 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
         ) {
             internalCallback.call(this);
         } else {
-            const bufferDuration = Math.max(timeToFire, timeToSwitch);
+            const bufferDuration = Numeric.max(timeToFire, timeToSwitch);
 
             // We only honor buffered inputs shorter than 200ms
             if (bufferDuration >= 200) return;
