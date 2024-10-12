@@ -201,6 +201,18 @@ export class GameMap {
             rivers
         );
 
+        const clearingDef = mapDef.clearings;
+
+        if (clearingDef) {
+            this._generateClearings(
+                clearingDef.maxWidth,
+                clearingDef.maxHeight,
+                clearingDef.minWidth,
+                clearingDef.minHeight,
+                clearingDef.count
+            );
+        }
+
         Object.entries(mapDef.buildings ?? {}).forEach(([building, count]) => this._generateBuildings(building, count));
 
         for (const clump of mapDef.obstacleClumps ?? []) {
@@ -302,25 +314,36 @@ export class GameMap {
         }
     }
 
-    private _generateClearing(
+    private _generateClearings(
         maxWidth: number,
         maxHeight: number,
         minWidth: number,
         minHeight: number,
-        obstacles: string[],
         count: number
     ): void {
         const clearings: RectangleHitbox[] = [];
         for (let i = 0; i <= count; i++) {
             const width = randomFloat(minWidth, maxWidth);
             const height = randomFloat(minHeight, maxHeight);
-            const position = this.getRandomPosition(this.beachHitbox);
-            if (position !== undefined) {
-                clearings.push(new RectangleHitbox(
-                    Vec.create(position.x + width / 2, position.y + height / 2),
-                    Vec.create(position.x - width / 2, position.y - height / 2)
-                ));
+            let position = this.getRandomPosition(this.beachHitbox);
+            let attempts = 0;
+            while (!position && attempts < 100) {
+                position = this.getRandomPosition(this.beachHitbox);
+                if (position !== undefined) {
+                    clearings.push(new RectangleHitbox(
+                        Vec.create(position.x + width / 2, position.y + height / 2),
+                        Vec.create(position.x - width / 2, position.y - height / 2)
+                    ));
+                }
+                if (!position) {
+                    Logger.warn(`Failed to place clearing #${i + 1}`);
+                    attempts++;
+                }
             }
+            if (attempts >= 100) {
+                Logger.warn(`Failed to find valid position for clearing #${i + 1}`);
+            }
+            attempts = 0; // reset for next clearing
         }
     }
 

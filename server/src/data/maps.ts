@@ -31,6 +31,13 @@ export interface MapDefinition {
         readonly minWideWidth: number
         readonly maxWideWidth: number
     }
+    readonly clearings?: {
+        readonly maxWidth: number
+        readonly maxHeight: number
+        readonly minWidth: number
+        readonly minHeight: number
+        readonly count: number
+    }
 
     readonly bridges?: ReadonlyArray<ReferenceTo<BuildingDefinition>>
     readonly majorBuildings?: ReadonlyArray<ReferenceTo<BuildingDefinition>>
