@@ -331,8 +331,14 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
         if (data.dead) {
             if (!this.dead && !isNew) {
+                let particleFrame = definition.ceilingCollapseParticle ?? `${definition.idString}_particle`;
+
+                if (definition.ceilingCollapseParticleVariations) {
+                    particleFrame += `_${Math.floor(Math.random() * definition.ceilingCollapseParticleVariations) + 1}`;
+                }
+
                 this.game.particleManager.spawnParticles(10, () => ({
-                    frames: definition.ceilingCollapseParticle ?? `${definition.idString}_particle`,
+                    frames: particleFrame,
                     position: this.ceilingHitbox?.randomPoint() ?? { x: 0, y: 0 },
                     zIndex: Math.max(ZIndexes.Players + 1, 4),
                     layer: this.layer,
@@ -346,7 +352,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                         end: 0,
                         ease: EaseFunctions.sexticIn
                     },
-                    scale: { start: 1, end: 0.2 },
+                    scale: { start: (definition.ceilingCollapseParticle ? 2 : 1), end: 0.2 },
                     speed: Vec.fromPolar(randomRotation(), randomFloat(1, 2))
                 }));
 

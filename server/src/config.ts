@@ -22,7 +22,7 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "singleBuilding:plumpkin_bunker",
+    map: "fall",
 
     lootTableOverride: "fall", // IMPORTANT: DELETE IF NORMAL MODE.
 

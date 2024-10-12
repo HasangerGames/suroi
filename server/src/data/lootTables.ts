@@ -167,7 +167,7 @@ export const LootTableOverrides: Record<string, LootTableOverride> = {
             min: 1,
             max: 1,
             loot: [
-                { item: "usas12", weight: 1 },
+                { item: "usas12", weight: 1.2 },
                 { item: "mk18", weight: 0.2 },
                 { item: "l115a1", weight: 0.2 }
             ]

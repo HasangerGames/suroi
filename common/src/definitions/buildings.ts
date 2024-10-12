@@ -42,6 +42,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly collideWithLayers?: Layers
     readonly visibleFromLayers?: Layers
     readonly ceilingCollapseParticle?: string
+    readonly ceilingCollapseParticleVariations?: number
     readonly resetCeilingResidueScale?: boolean
     readonly destroyInnerUponCeilingCollapse?: boolean
     readonly ceilingCollapseSound?: string
@@ -398,7 +399,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     hitbox: RectangleHitbox.fromRect(25, 16)
                 }],
                 ceilingCollapseSound: "tent_collapse",
-                ceilingCollapseParticle: `tent_particle_${id}`,
+                ceilingCollapseParticle: `tent_ceiling_particle_${id}`,
+                ceilingCollapseParticleVariations: 3,
                 resetCeilingResidueScale: true,
                 destroyInnerUponCeilingCollapse: true,
                 wallsToDestroy: 1,
@@ -441,11 +443,11 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ceilingImages: [{
                     key: `hay_shed_ceiling_${ceilingVariation}`,
                     position: Vec.create(-1, -0.5),
-                    residue: "porta_potty_residue",
+                    residue: "hay_shed_residue",
                     scale: Vec.create(2.14, 2.14)
                 }],
-                ceilingCollapseParticle: "porta_potty_fall_particle",
-                resetCeilingResidueScale: true,
+                ceilingCollapseParticle: "hay_shed_ceiling_particle",
+                ceilingCollapseParticleVariations: 2,
                 wallsToDestroy: 2,
                 obstacles: [
                     { idString: "pole", position: Vec.create(14.04, -11.53) },
@@ -488,7 +490,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     hitbox: RectangleHitbox.fromRect(40, 24.5)
                 }],
                 ceilingCollapseSound: "tent_collapse",
-                ceilingCollapseParticle: `tent_particle_${id}`,
+                ceilingCollapseParticle: `tent_ceiling_particle_${id}`,
+                ceilingCollapseParticleVariations: 3,
                 destroyInnerUponCeilingCollapse: true,
                 wallsToDestroy: 1,
                 obstacles: [

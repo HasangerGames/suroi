@@ -341,7 +341,27 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     tent_particle_2:               { base: "ceiling_particle", tint: TentWallTints.green },
     tent_particle_3:               { base: "ceiling_particle", tint: TentWallTints.blue },
     tent_particle_4:               { base: "ceiling_particle", tint: TentWallTints.yellow },
-    tent_particle_5:               { base: "ceiling_particle", tint: TentWallTints.purple }
+    tent_particle_5:               { base: "ceiling_particle", tint: TentWallTints.purple },
+
+    tent_ceiling_particle_1_1:     { base: "tent_ceiling_particle_1", tint: TentWallTints.red },
+    tent_ceiling_particle_1_2:     { base: "tent_ceiling_particle_2", tint: TentWallTints.red },
+    tent_ceiling_particle_1_3:     { base: "tent_ceiling_particle_3", tint: TentWallTints.red },
+
+    tent_ceiling_particle_2_1:     { base: "tent_ceiling_particle_1", tint: TentWallTints.green },
+    tent_ceiling_particle_2_2:     { base: "tent_ceiling_particle_2", tint: TentWallTints.green },
+    tent_ceiling_particle_2_3:     { base: "tent_ceiling_particle_3", tint: TentWallTints.green },
+
+    tent_ceiling_particle_3_1:     { base: "tent_ceiling_particle_1", tint: TentWallTints.blue },
+    tent_ceiling_particle_3_2:     { base: "tent_ceiling_particle_2", tint: TentWallTints.blue },
+    tent_ceiling_particle_3_3:     { base: "tent_ceiling_particle_3", tint: TentWallTints.blue },
+
+    tent_ceiling_particle_4_1:     { base: "tent_ceiling_particle_1", tint: TentWallTints.yellow },
+    tent_ceiling_particle_4_2:     { base: "tent_ceiling_particle_2", tint: TentWallTints.yellow },
+    tent_ceiling_particle_4_3:     { base: "tent_ceiling_particle_3", tint: TentWallTints.yellow },
+
+    tent_ceiling_particle_5_1:     { base: "tent_ceiling_particle_1", tint: TentWallTints.purple },
+    tent_ceiling_particle_5_2:     { base: "tent_ceiling_particle_2", tint: TentWallTints.purple },
+    tent_ceiling_particle_5_3:     { base: "tent_ceiling_particle_3", tint: TentWallTints.purple }
 };
 /* eslint-enable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 
