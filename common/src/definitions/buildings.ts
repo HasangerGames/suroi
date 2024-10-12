@@ -4791,9 +4791,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "grenade_box", position: Vec.create(-37.47, 13.07), layer: 2 },
                     { idString: "bookshelf", position: Vec.create(-46.82, 13.36), rotation: 0, layer: 2, lootSpawnOffset: Vec.create(0, -1) }
                 ],
-                lootSpawners: [
-                    { table: "barn_floor", position: Vec.create(-40.33, -34.23) }
-                ],
                 subBuildings: [
                     { idString: "barn_top_floor_shadow", position: Vec.create(-24.5, -11.7) },
                     { idString: "barn_top_floor", position: Vec.create(-23.9, -11.85), layer: 2 },
