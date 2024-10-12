@@ -116,6 +116,10 @@ export class GameSound {
         }
     }
 
+    setPaused(paused: boolean): void {
+        if (this.instance) this.instance.paused = paused;
+    }
+
     stop(): void {
         // trying to stop a sound that already ended or was stopped will stop a random sound
         // (maybe a bug? idk)

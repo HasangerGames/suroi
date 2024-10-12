@@ -817,10 +817,10 @@ export class Game {
             duration: LAYER_TRANSITION_DELAY
         });
         if (this.console.getBuiltInCVar("cv_play_ambience") && this.layer === Layer.Basement1) {
-            this.windAmbientSound.stop();
+            this.windAmbientSound.setPaused(true);
         }
         if (this.console.getBuiltInCVar("cv_play_ambience") && this.layer === Layer.Ground) {
-            this.windAmbientSound = this.soundManager.play("wind_ambience", { loop: true });
+            this.windAmbientSound.setPaused(false);
         }
     }
 
