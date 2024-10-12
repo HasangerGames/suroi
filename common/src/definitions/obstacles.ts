@@ -770,7 +770,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 health: 180,
                 scaleProps: {
                     spawnMin: 0.9,
-                    spawnMax: 1.5, // fall mode only, original 0.9, 1.1
+                    spawnMax: 1.2, 
                     destroy: 0.75
                 },
                 spawnHitbox: new CircleHitbox(8.5),
@@ -784,7 +784,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 health: 120,
                 scaleProps: {
                     spawnMin: 0.9,
-                    spawnMax: 1.3,
+                    spawnMax: 1.1,
                     destroy: 0.75
                 },
                 spawnHitbox: new CircleHitbox(8.5),
@@ -799,13 +799,13 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 name: "Maple Tree",
                 health: 290,
                 scaleProps: {
-                    spawnMin: 1.1,
-                    spawnMax: 1.6,
+                    spawnMin: 0.9,
+                    spawnMax: 1.2,
                     destroy: 0.75
                 },
-                hitbox: new CircleHitbox(5.5),
                 spawnHitbox: new CircleHitbox(20),
                 rotationMode: RotationMode.Full,
+                hitbox: new CircleHitbox(5.5),
                 variations: 3,
                 allowFlyOver: FlyoverPref.Never
             }]),
@@ -814,8 +814,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 name: "Pine Tree",
                 health: 180,
                 scaleProps: {
-                    spawnMin: 1.2,
-                    spawnMax: 1.5, // fall mode only, original 0.9, 1.1
+                    spawnMin: 0.9,
+                    spawnMax: 1.1,
                     destroy: 0.75
                 },
                 hitbox: new CircleHitbox(5.5),
@@ -829,7 +829,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 health: 240,
                 scaleProps: {
                     spawnMin: 0.9,
-                    spawnMax: 1.5, // fall mode only, original 0.9, 1.1
+                    spawnMax: 1.1,
                     destroy: 0.75
                 },
                 hitbox: new CircleHitbox(5.5),
@@ -842,8 +842,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 name: "Birch Tree Fall",
                 health: 240,
                 scaleProps: {
-                    spawnMin: 1.1,
-                    spawnMax: 1.5, // fall mode only, original 0.9, 1.1
+                    spawnMin: 0.9,
+                    spawnMax: 1.1,
                     destroy: 0.75
                 },
                 hitbox: new CircleHitbox(5.5),
