@@ -26,6 +26,10 @@ Any amount helps! All donation money goes towards keeping the servers running.
 
 [ko-fi.com/suroi](https://ko-fi.com/suroi)
 
+Crypto donations:
+
+[Ethereum](https://etherscan.io/address/suroi.eth)
+
 ## Join the Discord!
 [discord.suroi.io](https://discord.suroi.io)
 
