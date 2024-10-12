@@ -35,7 +35,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     activeItem: WeaponDefinition = Loots.fromString("fists");
 
-    stoppedAttacking?: boolean;
     meleeStopSound?: GameSound;
     meleeAttackCounter = 0;
 
@@ -498,8 +497,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             this.dead = full.dead;
-
-            this.stoppedAttacking = full.stoppedAttacking;
 
             this.layer = data.layer;
 
@@ -1179,7 +1176,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     }
                 );
 
-                if (weaponDef.stopSound && !this.stoppedAttacking && !this.meleeStopSound) {
+                if (weaponDef.stopSound && !this.meleeStopSound) {
                     this.meleeStopSound = this.playSound(
                         weaponDef.stopSound,
                         {
