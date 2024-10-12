@@ -406,15 +406,15 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             damage: 40,
             swingSound: "heavy_swing",
             obstacleMultiplier: 1.5,
-            radius: 3.1,
+            radius: 3.5,
             offset: Vec.create(5.4, -0.5),
-            cooldown: 450,
+            cooldown: 410,
             fists: {
                 animationDuration: 160,
                 left: Vec.create(40, -25),
                 right: Vec.create(40, 15),
                 useLeft: Vec.create(35, -35),
-                useRight: Vec.create(75, -20)
+                useRight: Vec.create(65, -20)
             },
             image: {
                 position: Vec.create(60, 20),
