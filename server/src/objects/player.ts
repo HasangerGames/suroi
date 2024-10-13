@@ -408,6 +408,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.inventory.addOrReplaceWeapon(2, "fists");
 
         this.inventory.scope = "1x_scope";
+        if (Config.map === "fall") {
+            this.inventory.scope = "2x_scope";
+            this.inventory.items.setItem("2x_scope", 1);
+        };
         this.effectiveScope = DEFAULT_SCOPE;
 
         const specialFunnies = this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing;

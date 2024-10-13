@@ -1001,19 +1001,16 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "medikit", weight: 1 }
     ],
     scopes: [
-        { item: "2x_scope", weight: 1 },
-        { item: "4x_scope", weight: 0.5 },
-        { item: "8x_scope", weight: 0.1 },
-        { item: "15x_scope", weight: 0.00025 }
+        { item: "4x_scope", weight: 1 },
+        { item: "8x_scope", weight: 0.3 },
+        { item: "15x_scope", weight: 0.0005 }
     ],
     equipment: [
-        { item: "basic_helmet", weight: 1 },
-        { item: "regular_helmet", weight: 0.2 },
-        { item: "tactical_helmet", weight: 0.01 },
+        { item: "regular_helmet", weight: 1 },
+        { item: "tactical_helmet", weight: 0.2 },
 
-        { item: "basic_vest", weight: 1 },
-        { item: "regular_vest", weight: 0.2 },
-        { item: "tactical_vest", weight: 0.01 },
+        { item: "regular_vest", weight: 1 },
+        { item: "tactical_vest", weight: 0.2 },
 
         { item: "basic_pack", weight: 1 },
         { item: "regular_pack", weight: 0.2 },
@@ -1071,19 +1068,16 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "gauze", count: 5, weight: 3 }
     ],
     special_scopes: [
-        { item: "2x_scope", weight: 1 },
-        { item: "4x_scope", weight: 0.45 },
-        { item: "8x_scope", weight: 0.1 },
+        { item: "4x_scope", weight: 1 },
+        { item: "8x_scope", weight: 0.5 },
         { item: "15x_scope", weight: 0.005 }
     ],
     special_equipment: [
-        { item: "basic_helmet", weight: 1 },
-        { item: "regular_helmet", weight: 0.3 },
-        { item: "tactical_helmet", weight: 0.03 },
+        { item: "regular_helmet", weight: 1 },
+        { item: "tactical_helmet", weight: 0.3 },
 
-        { item: "basic_vest", weight: 1 },
-        { item: "regular_vest", weight: 0.3 },
-        { item: "tactical_vest", weight: 0.03 },
+        { item: "regular_vest", weight: 1 },
+        { item: "tactical_vest", weight: 0.3 },
 
         { item: "basic_pack", weight: 1 },
         { item: "regular_pack", weight: 0.3 },
@@ -1100,9 +1094,8 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "tactical_pack", weight: 1 }
     ],
     airdrop_scopes: [
-        { item: "4x_scope", weight: 1 },
-        { item: "8x_scope", weight: 0.5 },
-        { item: "15x_scope", weight: 0.0025 }
+        { item: "8x_scope", weight: 1 },
+        { item: "15x_scope", weight: 0.005 }
     ],
     airdrop_healing_items: [
         { item: "gauze", count: 5, weight: 1.5 },
