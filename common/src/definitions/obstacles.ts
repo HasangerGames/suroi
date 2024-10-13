@@ -4439,9 +4439,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 noResidue: true,
                 role: ObstacleSpecialRoles.Wall,
                 spawnMode: MapObjectSpawnMode.GrassAndSand,
-                hitbox: new CircleHitbox(1),
+                hitbox: new CircleHitbox(1.1),
                 rotationMode: RotationMode.None,
-                particleVariations: 2,
                 frames: {
                     particle: "metal_particle"
                 }
