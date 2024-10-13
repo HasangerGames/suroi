@@ -615,7 +615,6 @@ export class Game {
         }
 
         for (const player of players ?? this.objects.getCategory(ObjectCategory.Player)) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             player.updateGrenadePreview();
         }
 

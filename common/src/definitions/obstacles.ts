@@ -770,7 +770,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 health: 180,
                 scaleProps: {
                     spawnMin: 0.9,
-                    spawnMax: 1.2, 
+                    spawnMax: 1.2,
                     destroy: 0.75
                 },
                 spawnHitbox: new CircleHitbox(8.5),
@@ -1030,8 +1030,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 allowFlyover: FlyoverPref.Always,
                 frames: {
                     particle: "plumpkin_particle"
-                }
-                // hasLoot: true
+                },
+                hasLoot: true
             },
             {
                 idString: "diseased_plumpkin",
@@ -4033,7 +4033,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 material: "metal_heavy",
                 health: 1000,
                 indestructible: true,
-                invisible: true,
+                // invisible: true,
                 role: ObstacleSpecialRoles.Stair,
                 activeEdges: {
                     high: 1,

@@ -16,7 +16,7 @@ import { Loots } from "../../common/src/definitions/loots";
 import { MapPings } from "../../common/src/definitions/mapPings";
 import { Melees } from "../../common/src/definitions/melees";
 import { Modes } from "../../common/src/definitions/modes";
-import { Materials, Obstacles, RotationMode } from "../../common/src/definitions/obstacles";
+import { Obstacles, RotationMode } from "../../common/src/definitions/obstacles";
 import { DEFAULT_SCOPE, Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
 import { SyncedParticles } from "../../common/src/definitions/syncedParticles";
@@ -3272,11 +3272,11 @@ const [
     printBottom,
     noDetails
 ] = [
-        flags.includes("-Werror"),
-        flags.includes("-print-top"),
-        flags.includes("-print-bottom"),
-        flags.includes("-no-details")
-    ];
+    flags.includes("-Werror"),
+    flags.includes("-print-top"),
+    flags.includes("-print-bottom"),
+    flags.includes("-no-details")
+];
 
 const exitCode = +(
     fatalErrors.length > 0

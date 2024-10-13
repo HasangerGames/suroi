@@ -662,7 +662,22 @@ export class UIManager {
 
         if (perks) {
             this.perks.overwrite(perks);
-            // TODO: funny perks hud stuff
+
+            if (this.game.activePlayer) {
+                const perks = [];
+                for (const perkDef of this.perks) perks.push(perkDef);
+
+                for (const perk of perks) {
+                    let index = 0; // aw dangit
+                    for (let perkIndex = 0; perkIndex < perks.length; perkIndex++) {
+                        if (perks[perkIndex].idString === perk.idString) {
+                            index = perkIndex;
+                            break;
+                        }
+                    }
+                    this.game.activePlayer.updatePerkSlot(perk, index);
+                }
+            }
         }
     }
 

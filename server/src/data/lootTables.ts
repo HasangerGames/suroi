@@ -1,4 +1,5 @@
 import { type LootDefinition } from "@common/definitions/loots";
+import { PerkIds } from "@common/definitions/perks";
 import { NullString, type ReferenceTo } from "@common/utils/objectDefinitions";
 
 export type WeightedItem =
@@ -388,8 +389,18 @@ export const LootTables: Record<string, LootTable> = {
         min: 1,
         max: 1,
         loot: [
-            { item: "g17_scoped", weight: 0.95 },
-            { item: "usas12", weight: 0.05 }
+            { tier: "equipment", weight: 1 },
+            { tier: "healing_items", weight: 1 },
+            { tier: "ammo", weight: 1 },
+            { tier: "guns", weight: 0.9 },
+            { tier: "scopes", weight: 0.3 }
+        ]
+    },
+    plumpkin: {
+        min: 3,
+        max: 3,
+        loot: [
+            { tier: "perks", weight: 1 }
         ]
     },
     birthday_cake: {
@@ -1189,5 +1200,11 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "stoner_63", weight: 0.08 },
         { item: "tango_51", weight: 0.08 },
         { item: "g19", weight: 0.08 }
+    ],
+    perks: [
+        { item: PerkIds.InfiniteAmmo, weight: 1 },
+        { item: PerkIds.HiCap, weight: 1 },
+        { item: PerkIds.Splinter, weight: 1 },
+        { item: PerkIds.DemoExpert, weight: 1 }
     ]
 };
