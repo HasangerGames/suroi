@@ -5735,6 +5735,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(14, 17, Vec.create(146.55, -32.85)),
                     RectangleHitbox.fromRect(17, 14, Vec.create(-145.11, -52.85))
                 ),
+                floors: [{
+                    type: FloorNames.Stone,
+                    hitbox: RectangleHitbox.fromRect(46.52, 55.74, Vec.create(13.43, 101.53))
+                }],
                 floorImages: [
                     { key: "plumpkin_bunker_main_entrance_floor", position: Vec.create(13.43, 101.53) },
                     { key: "plumpkin_bunker_entrance_floor", position: Vec.create(146.55, -32.85), rotation: Math.PI },
