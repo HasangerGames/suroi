@@ -632,7 +632,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         this.updateAndApplyModifiers();
 
-        // This system allows opposite movement keys to cancel each other out.
+        // Calculate movement
         let movement: Vector;
 
         const playerMovement = this.movement;
@@ -651,7 +651,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             movement = Vec.create(x, y);
         }
 
-        // Calculate speed
+        // Recoil
         const recoilMultiplier = this.recoil.active && (this.recoil.active = (this.recoil.time >= this.game.now))
             ? this.recoil.multiplier
             : 1;
@@ -668,28 +668,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 && !Config.disableBuildingCheck
             ) {
                 isInsideBuilding = true;
-            }
 
-            // Automatic doors
-            if (
-                object?.isObstacle
-                && object.definition.isDoor
-                && object.definition.automatic
-                && !object.door?.isOpen
-                && Geometry.distanceSquared(object.position, this.position) < 100
-            ) {
-                object.interact();
-                const closeDoor = (): void => {
-                    if (Geometry.distanceSquared(object.position, this.position) >= 100) {
-                        object.interact();
-                    } else {
-                        this.game.addTimeout(closeDoor, 1000);
-                    }
-                };
-                this.game.addTimeout(closeDoor, 1000);
-            }
-
-            if (
+            } else if (
                 object.isSyncedParticle
                 && object.hitbox?.collidesWith(this._hitbox)
                 && adjacentOrEqualLayer(object.layer, this.layer)
@@ -698,12 +678,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
+        // Speed multiplier for perks
         const perkSpeedMod = this.mapPerkOrDefault(
             PerkIds.AdvancedAthletics,
             ({ waterSpeedMod, smokeSpeedMod }) => {
                 return (
                     (FloorTypes[this.floor].overlay ? waterSpeedMod : 1) // man do we need a better way of detecting water lol
-                    * (depleters.size !== 0 ? smokeSpeedMod : 1) // man do we need a better way of detecting water lol
+                    * (depleters.size !== 0 ? smokeSpeedMod : 1)
                 );
             },
             1
@@ -713,6 +694,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             1
         );
 
+        // Calculate speed
         const speed = this.baseSpeed                                          // Base speed
             * (FloorTypes[this.floor].speedMultiplier ?? 1)                   // Speed multiplier from floor player is standing in
             * recoilMultiplier                                                // Recoil from items
@@ -723,6 +705,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             * (this.beingRevivedBy ? 0.5 : 1)                                 // Being revived speed multiplier
             * this._modifiers.baseSpeed;                                      // Current on-wearer modifier
 
+        // Update position
         const oldPosition = Vec.clone(this.position);
         const movementVector = Vec.scale(movement, speed);
         this._movementVector = movementVector;
@@ -732,6 +715,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             Vec.scale(this.movementVector, dt)
         );
 
+        // Cancel reviving when out of range
         if (this.action instanceof ReviveAction) {
             if (
                 Vec.squaredLength(
@@ -789,8 +773,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.position.y = Numeric.clamp(this.position.y, this._hitbox.radius, this.game.map.height - this._hitbox.radius);
 
         this.isMoving = !Vec.equals(oldPosition, this.position);
-
-        if (this.isMoving) this.game.grid.updateObject(this);
+        if (this.isMoving) {
+            this.game.grid.updateObject(this);
+        }
 
         // Disable invulnerability if the player moves or turns
         if (this.isMoving || this.turning) {
@@ -844,6 +829,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             });
         }
 
+        // Determine if player is inside building + reduce scope in buildings
         if (!this.isInsideBuilding) {
             this.effectiveScope = isInsideBuilding
                 ? DEFAULT_SCOPE
@@ -884,6 +870,43 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if (scopeTarget !== undefined || this.isInsideBuilding || this.downed) {
             this.effectiveScope = scopeTarget ?? DEFAULT_SCOPE;
         }
+
+        // Automatic doors
+        const openedDoors: Obstacle[] = [];
+        const unopenedDoors: Obstacle[] = [];
+
+        for (const door of this.game.grid.intersectsHitbox(new CircleHitbox(10, this.position), this.layer)) {
+            if (
+                !door?.isObstacle
+                || !door.definition.isDoor
+                || !door.definition.automatic
+                || door.door?.isOpen
+            ) continue;
+
+            if (Geometry.distanceSquared(door.position, this.position) > 100) {
+                unopenedDoors.push(door);
+                continue;
+            }
+
+            door.interact();
+            openedDoors.push(door);
+        }
+
+        for (const door of unopenedDoors) {
+            if (openedDoors.every(d => Geometry.distanceSquared(door.position, d.position) > 300)) continue; // Don't open the door if there are no other open doors in range
+
+            door.interact();
+            openedDoors.push(door);
+        }
+
+        const closeDoors = (): void => {
+            if (openedDoors.every(obj => Geometry.distanceSquared(obj.position, this.position) >= 100)) {
+                for (const door of openedDoors) door.interact();
+            } else {
+                this.game.addTimeout(closeDoors, 1000);
+            }
+        };
+        this.game.addTimeout(closeDoors, 1000);
 
         this.turning = false;
         this.game.pluginManager.emit("player_update", this);
