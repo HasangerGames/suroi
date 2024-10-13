@@ -4033,7 +4033,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 material: "metal_heavy",
                 health: 1000,
                 indestructible: true,
-                // invisible: true,
+                invisible: true,
                 role: ObstacleSpecialRoles.Stair,
                 activeEdges: {
                     high: 1,
@@ -4041,7 +4041,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 hitbox: RectangleHitbox.fromRect(16.07, 11.3),
                 frames: {
-                    base: "plumpkin_bunker_entrance_floor",
+                    // base: "plumpkin_bunker_entrance_floor",
                     particle: "metal_particle"
                 },
                 rotationMode: RotationMode.Limited

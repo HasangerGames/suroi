@@ -400,7 +400,7 @@ export const LootTables: Record<string, LootTable> = {
         min: 3,
         max: 3,
         loot: [
-            { tier: "perks", weight: 1 }
+            { tier: "normal_perks", weight: 1 }
         ]
     },
     birthday_cake: {
@@ -1201,10 +1201,19 @@ export const LootTiers: Record<string, readonly WeightedItem[]> = {
         { item: "tango_51", weight: 0.08 },
         { item: "g19", weight: 0.08 }
     ],
-    perks: [
+    normal_perks: [
         { item: PerkIds.InfiniteAmmo, weight: 1 },
         { item: PerkIds.HiCap, weight: 1 },
         { item: PerkIds.Splinter, weight: 1 },
-        { item: PerkIds.DemoExpert, weight: 1 }
+        { item: PerkIds.DemoExpert, weight: 1 },
+        { item: PerkIds.SecondWind, weight: 1 },
+        { item: PerkIds.FieldMedic, weight: 1 },
+        { item: PerkIds.Sabot, weight: 1 },
+        { item: PerkIds.AdvancedAthletics, weight: 1 },
+        { item: PerkIds.Toploaded, weight: 1 },
+        { item: PerkIds.CloseQuartersCombat, weight: 1 },
+        { item: PerkIds.LowProfile, weight: 1 },
+        { item: PerkIds.Splinter, weight: 1 },
+        { item: PerkIds.Berserker, weight: 1 }
     ]
 };

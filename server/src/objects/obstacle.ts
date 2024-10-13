@@ -360,7 +360,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                         this.game.map.generateObstacle(
                             idString,
                             this.position,
-                            { rotation: this.rotation }
+                            { rotation: this.rotation, layer: this.layer }
                         );
                     }, replaceWith.delay);
                 }

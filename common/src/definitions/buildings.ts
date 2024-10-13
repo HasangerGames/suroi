@@ -5698,6 +5698,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 name: "Plumpkin Bunker",
                 material: "metal_heavy",
                 reflectBullets: true,
+                collideWithLayers: Layers.Equal,
                 hitbox: new GroupHitbox(
                     // main entrance
                     RectangleHitbox.fromRect(2.2, 17.09, Vec.create(35.58, 82.2)),
