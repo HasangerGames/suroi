@@ -668,7 +668,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 && !Config.disableBuildingCheck
             ) {
                 isInsideBuilding = true;
-
             } else if (
                 object.isSyncedParticle
                 && object.hitbox?.collidesWith(this._hitbox)

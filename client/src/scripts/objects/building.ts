@@ -175,7 +175,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                     visible = true;
                 }
 
-                if (visible) break;
+                if (!visible) break;
             }
         }
 
