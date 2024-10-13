@@ -28,8 +28,8 @@ export const LootTierOverrides: Record<string, LootTierOverride> = {
             { item: "sks", weight: 1 },
             { item: "model_37", weight: 0.95 },
             { item: "dt11", weight: 0.8 },
-            { item: "m3k", weight: 0.8 },
             { item: "dual_m1895", weight: 0.7 },
+            { item: "m3k", weight: 0.5 },
             { item: "cz600", weight: 0.5 },
             { item: "flues", weight: 0.4 },
             { item: "sr25", weight: 0.3 },
@@ -44,10 +44,10 @@ export const LootTierOverrides: Record<string, LootTierOverride> = {
         ],
         special_guns: [
             { item: "model_37", weight: 1 },
-            { item: "m3k", weight: 1 },
             { item: "dt11", weight: 1 },
             { item: "sks", weight: 0.95 },
             { item: "dual_m1895", weight: 0.75 },
+            { item: "m3k", weight: 0.6 },
             { item: "cz600", weight: 0.6 },
             { item: "hp18", weight: 0.5 },
             { item: "flues", weight: 0.5 },
@@ -71,19 +71,18 @@ export const LootTierOverrides: Record<string, LootTierOverride> = {
             { item: "vepr12", weight: 1 },
             { item: "model_89", weight: 1 },
             { item: "vks", weight: 0.7 },
-            { item: "m1_garand", weight: 0.2 },
             { item: "tango_51", weight: 0.3 },
+            { item: "m1_garand", weight: 0.2 },
             { item: "radio", weight: 0.1 }
         ],
         gold_airdrop_guns: [
-            { item: "dual_rsh12", weight: 1.5 },
+            { item: "dual_rsh12", weight: 1 },
             { item: "usas12", weight: 1 },
-            { item: "l115a1", weight: 0.7 },
-            { item: "mk18", weight: 0.7 },
+            { item: "l115a1", weight: 1 },
+            { item: "mk18", weight: 1 },
             { item: "g19", weight: 0.0001 }
         ],
         viking_chest_guns: [
-            { item: "dt11", weight: 1 },
             { item: "m3k", weight: 1 },
             { item: "cz600", weight: 1 },
             { item: "mini14", weight: 0.75 },
@@ -169,7 +168,6 @@ export const LootTableOverrides: Record<string, LootTableOverride> = {
             min: 1,
             max: 2,
             loot: [
-                { item: "dt11", weight: 1 },
                 { item: "m3k", weight: 1 },
                 { item: "model_37", weight: 1 },
                 { item: "cz600", weight: 0.8 },
