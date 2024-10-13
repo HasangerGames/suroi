@@ -29,7 +29,7 @@ export class GameSound {
 
     name: string;
     position?: Vector;
-    fallOff: number;
+    falloff: number;
     maxRange: number;
     layer: Layer | number;
     onEnd?: () => void;
@@ -46,7 +46,7 @@ export class GameSound {
         this.name = name;
         this.manager = manager;
         this.position = options.position;
-        this.fallOff = options.falloff;
+        this.falloff = options.falloff;
         this.maxRange = options.maxRange;
         this.layer = options.layer;
         this.dynamic = options.dynamic;
@@ -105,14 +105,11 @@ export class GameSound {
         if (this.instance && this.position) {
             const diff = Vec.sub(this.manager.position, this.position);
 
-            this.instance.volume = (1
-                - Numeric.clamp(
-                    Math.abs(Vec.length(diff) / this.maxRange),
-                    0,
-                    1
-                )) ** (1 + this.fallOff * 2) * this.manager.volume;
+            this.instance.volume = (
+                1 - Numeric.clamp(Math.abs(Vec.length(diff) / this.maxRange), 0, 1)
+            ) ** (1 + this.falloff * 2) * this.manager.volume;
 
-            this.stereoFilter.pan = Numeric.clamp(diff.x / this.maxRange * -1, -1, 1);
+            this.stereoFilter.pan = Numeric.clamp(diff.x / this.maxRange, -1, 1);
         }
     }
 

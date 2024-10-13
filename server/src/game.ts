@@ -3,11 +3,11 @@ import { isMainThread, parentPort, workerData } from "worker_threads";
 
 import { GameConstants, KillfeedMessageType, Layer, ObjectCategory, TeamSize } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
-import { Loots, type LootDefinition } from "@common/definitions/loots";
+import { type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "@common/definitions/syncedParticles";
-import { type ThrowableDefinition } from "@common/definitions/throwables";
+import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
 import { PlayerInputPacket } from "@common/packets/inputPacket";
 import { JoinPacket, type JoinPacketData } from "@common/packets/joinPacket";
 import { JoinedPacket } from "@common/packets/joinedPacket";
@@ -30,13 +30,13 @@ import { MapName, Maps } from "./data/maps";
 import { WorkerMessages, type GameData, type WorkerInitData, type WorkerMessage } from "./gameManager";
 import { Gas } from "./gas";
 import { type GunItem } from "./inventory/gunItem";
-import { type ThrowableItem } from "./inventory/throwableItem";
+import { ThrowableItem } from "./inventory/throwableItem";
 import { GameMap } from "./map";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
 import { type Emote } from "./objects/emote";
 import { Explosion } from "./objects/explosion";
 import { type BaseGameObject, type GameObject } from "./objects/gameObject";
-import { Loot } from "./objects/loot";
+import { Loot, type LootBasisForDef } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { Parachute } from "./objects/parachute";
 import { Player, type PlayerContainer } from "./objects/player";
@@ -49,6 +49,7 @@ import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
+import { PerkData, PerkIds, Perks, updateInterval } from "@common/definitions/perks";
 
 /*
     eslint-disable
@@ -217,6 +218,9 @@ export class Game implements GameData {
 
     private readonly _idAllocator = new IDAllocator(OBJECT_ID_BITS);
 
+    private readonly _start = this._now;
+    get start(): number { return this._start; }
+
     /**
      * **Warning**: This is a getter _with side effects_! Make
      * sure to either use the id returned by this getter or
@@ -231,7 +235,6 @@ export class Game implements GameData {
         this.maxTeamSize = (workerData as WorkerInitData).maxTeamSize;
         this.teamMode = this.maxTeamSize > TeamSize.Solo;
 
-        const start = Date.now();
         this.pluginManager.loadPlugins();
 
         parentPort?.on("message", (message: WorkerMessage) => {
@@ -409,7 +412,7 @@ export class Game implements GameData {
         this.setGameData({ allowJoin: true });
 
         this.pluginManager.emit("game_created", this);
-        Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
+        Logger.log(`Game ${this.id} | Created in ${Date.now() - this._start} ms`);
 
         // Start the tick loop
         this.tick();
@@ -448,6 +451,11 @@ export class Game implements GameData {
         }
     }
 
+    private readonly _perkIntervalUpdateMap = Perks.definitions.reduce(
+        (acc, cur) => { acc[cur.idString] = this._start; return acc; },
+        {} as Record<PerkIds, number>
+    );
+
     readonly tick = (): void => {
         const now = Date.now();
         this._dt = now - this._now;
@@ -464,6 +472,78 @@ export class Game implements GameData {
                 timeout.callback();
                 this._timeouts.delete(timeout);
             }
+        }
+
+        const players = this.grid.pool.getCategory(ObjectCategory.Player);
+        // Update perks on an interval timer
+        for (const perk of Perks) {
+            if (!(updateInterval in perk)) continue;
+
+            const lastUpdate = now - this._perkIntervalUpdateMap[perk.idString];
+            if (lastUpdate < perk[updateInterval]) continue;
+            this._perkIntervalUpdateMap[perk.idString] = now;
+
+            // ! evil starts here
+            switch (perk.idString) {
+                case PerkIds.DemoExpert: {
+                    for (const player of players) {
+                        if (!player.hasPerk(PerkIds.DemoExpert)) continue;
+
+                        const { inventory } = player;
+                        const { items, backpack: { maxCapacity }, throwableItemMap } = inventory;
+
+                        for (const throwable of Throwables) {
+                            const { idString } = throwable;
+                            const count = items.hasItem(idString) ? items.getItem(idString) : 0;
+                            const max = maxCapacity[idString];
+
+                            if (count >= max) continue;
+
+                            const toAdd = Math.ceil(max * PerkData[PerkIds.DemoExpert].restoreAmount);
+
+                            if (toAdd === 0) continue;
+                            const newCount = Numeric.clamp(
+                                count + toAdd,
+                                0, max
+                            );
+                            items.setItem(
+                                idString,
+                                newCount
+                            );
+
+                            const item = throwableItemMap.getAndGetDefaultIfAbsent(
+                                idString,
+                                () => new ThrowableItem(throwable, player, newCount)
+                            );
+
+                            item.count = newCount;
+
+                            const slot = inventory.slotsByItemType[ItemType.Throwable]?.[0];
+
+                            if (slot !== undefined && !inventory.hasWeapon(slot)) {
+                                inventory.replaceWeapon(slot, item);
+                            }
+
+                            player.dirty.weapons = true;
+                            player.dirty.items = true;
+                        }
+                    }
+                    break;
+                }
+                case PerkIds.BabyPlumpkinPie: {
+                    // TODO lol
+                    break;
+                }
+                case PerkIds.TornPockets: {
+                    // TODO lol
+                    break;
+                }
+                case PerkIds.RottenPlumpkin: {
+                    // TODO lol
+                    break;
+                }
+            }
+            // ! evil ends here
         }
 
         for (const loot of this.grid.pool.getCategory(ObjectCategory.Loot)) {
@@ -536,7 +616,7 @@ export class Game implements GameData {
         }
 
         // First loop over players: movement, animations, & actions
-        for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
+        for (const player of players) {
             if (!player.dead) player.update();
         }
 
@@ -958,14 +1038,14 @@ export class Game implements GameData {
 
     /**
      * Adds a `Loot` item to the game world
-     * @param definition The type of loot to add. Prefer passing `LootDefinition` if possible
+     * @param basis The type of loot to add. Prefer passing `LootDefinition` if possible
      * @param position The position to spawn this loot at
      * @param count Optionally define an amount of this loot (note that this does not equate spawning
      * that many `Loot` objects, but rather how many the singular `Loot` object will contain)
      * @returns The created loot object
      */
-    addLoot(
-        definition: ReifiableDef<LootDefinition>,
+    addLoot<Def extends LootDefinition = LootDefinition>(
+        basis: LootBasisForDef<Def>,
         position: Vector,
         layer: Layer,
         { count, pushVel, jitterSpawn = true }: {
@@ -989,15 +1069,15 @@ export class Game implements GameData {
             this.pluginManager.emit(
                 "loot_will_generate",
                 {
-                    definition: definition = Loots.reify(definition),
+                    definition: basis,
                     ...args
                 }
             )
         ) return;
 
-        const loot = new Loot(
+        const loot = new Loot<Def>(
             this,
-            definition,
+            basis,
             jitterSpawn
                 ? Vec.add(
                     position,

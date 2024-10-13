@@ -12,6 +12,7 @@ import { ObjectSerializations, type FullData, type ObjectsNetData } from "../uti
 import { OBJECT_ID_BITS, type SuroiBitStream } from "../utils/suroiBitStream";
 import { Vec, type Vector } from "../utils/vector";
 import { createPacket } from "./packet";
+import { Perks, type PerkDefinition } from "../definitions/perks";
 
 interface ObjectFullData {
     readonly id: number
@@ -193,6 +194,55 @@ const [serializePlayerData, deserializePlayerData] = (() => {
         stream => stream.readBoolean()
     );
 
+    const perks = generateReadWritePair<PlayerData["perks"]>(
+        (perks, stream) => {
+            /*
+                note: will break once perk count exceeds 30
+                (bit-buffer relies on js' bitwise operators,
+                which convert values to signed 32-bit integers)
+            */
+
+            const list = perks.asList();
+            const perkCount = list.length;
+
+            const useList = perkCount <= Perks.bitfieldCutoff;
+            stream.writeBoolean(useList);
+            if (useList) {
+                stream.writeBits(perkCount, Perks.bitCount);
+                for (const perk of list) {
+                    Perks.writeToStream(stream, perk);
+                }
+            } else {
+                stream.writeBits(perks.asBitfield(), Perks.definitions.length);
+            }
+        },
+        stream => {
+            if (stream.readBoolean()) {
+                const count = stream.readBits(Perks.bitCount);
+
+                let bitfield = 0;
+                const list: PerkDefinition[] = [];
+                for (let i = 0; i < count; i++) {
+                    bitfield += 1 << Perks.idStringToNumber[
+                        (list[i] = Perks.readFromStream(stream)).idString
+                    ];
+                }
+
+                return {
+                    asBitfield: () => bitfield,
+                    asList: () => list
+                };
+            }
+
+            const bitfield = stream.readBits(Perks.definitions.length);
+            let list: PerkDefinition[] | undefined;
+            return {
+                asBitfield: () => bitfield,
+                asList: () => list ??= Perks.definitions.filter((_, i) => (bitfield & (1 << i)) !== 0)
+            };
+        }
+    );
+
     return [
         (stream: SuroiBitStream, data: PlayerData): void => {
             minMax.write(stream, data.minMax);
@@ -206,6 +256,7 @@ const [serializePlayerData, deserializePlayerData] = (() => {
             slotLocks.write(stream, data.lockedSlots);
             items.write(stream, data.items);
             activeC4s.write(stream, data.activeC4s);
+            perks.write(stream, data.perks);
         },
 
         (stream: SuroiBitStream): PlayerData => {
@@ -220,7 +271,8 @@ const [serializePlayerData, deserializePlayerData] = (() => {
                 inventory: inventory.read(stream),
                 lockedSlots: slotLocks.read(stream),
                 items: items.read(stream),
-                activeC4s: activeC4s.read(stream)
+                activeC4s: activeC4s.read(stream),
+                perks: perks.read(stream)
             };
         }
     ];
@@ -269,6 +321,11 @@ export type EmoteSerialization = {
     readonly playerID: number
 };
 
+export interface PerkCollection {
+    asBitfield(): number
+    asList(): PerkDefinition[]
+}
+
 export type PlayerData = {
     readonly minMax?: {
         readonly maxHealth: number
@@ -306,6 +363,7 @@ export type PlayerData = {
         readonly scope: ScopeDefinition
     }
     readonly activeC4s?: boolean
+    readonly perks?: PerkCollection
 };
 
 export type UpdatePacketDataCommon = {
@@ -373,7 +431,7 @@ export type UpdatePacketDataOut = UpdatePacketDataCommon & ClientOnly;
 export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, UpdatePacketDataOut>({
     serialize(stream, data) {
         let flags = 0;
-        // save the current index to write flags latter
+        // save the current index to write flags later
         const flagsIdx = stream.index;
         stream.writeBits(flags, UPDATE_FLAGS_BITS);
 

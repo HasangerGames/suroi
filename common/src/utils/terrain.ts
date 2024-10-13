@@ -289,7 +289,7 @@ export class River {
                 );
 
                 if (length < river.width * 2) {
-                    bankWidth = Math.max(bankWidth, river.bankWidth);
+                    bankWidth = Numeric.max(bankWidth, river.bankWidth);
                 }
 
                 if ((i === 0 || i === this.points.length - 1) && length < 48) {
@@ -299,7 +299,7 @@ export class River {
 
             let width = this.width;
 
-            const end = 2 * (Math.max(1 - i / length, i / length) - 0.5);
+            const end = 2 * (Numeric.max(1 - i / length, i / length) - 0.5);
             // increase river width near map bounds
             if (i < (this.points.length / 2) || endsOnMapBounds) {
                 width = (1 + end ** 3 * 1.5) * this.width;

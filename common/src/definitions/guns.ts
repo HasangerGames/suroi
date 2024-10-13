@@ -10,6 +10,7 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly ammoType: ReferenceTo<AmmoDefinition>
     readonly ammoSpawnAmount: number
     readonly capacity: number
+    readonly extendedCapacity?: number
     readonly reloadTime: number
     readonly singleReload: boolean
     readonly infiniteAmmo: boolean
@@ -172,6 +173,7 @@ type RawGunDefinition = BaseGunDefinition & {
             "wearerAttributes" |
             "ammoSpawnAmount" |
             "capacity" |
+            "extendedCapacity" |
             "reloadTime" |
             "fireDelay" |
             "switchDelay" |
@@ -226,6 +228,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "762mm",
                 ammoSpawnAmount: 90,
                 capacity: 30,
+                extendedCapacity: 40,
                 reloadTime: 2.5,
                 fireDelay: 100,
                 switchDelay: 400,
@@ -260,6 +263,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "762mm",
                 ammoSpawnAmount: 90,
                 capacity: 30,
+                extendedCapacity: 40,
                 reloadTime: 2.75,
                 fireDelay: 75,
                 switchDelay: 400,
@@ -313,6 +317,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }],
                 gasParticles: gasParticlePresets.automatic,
                 capacity: 30,
+                extendedCapacity: 42,
                 reloadTime: 2.25,
                 ballistics: {
                     damage: 10.5,
@@ -346,6 +351,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     position: Vec.create(4, 0.4)
                 }],
                 capacity: 30,
+                extendedCapacity: 45,
                 reloadTime: 3,
                 ballistics: {
                     damage: 14.5,
@@ -363,6 +369,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "12g",
                 ammoSpawnAmount: 18,
                 capacity: 9,
+                extendedCapacity: 12,
                 reloadTime: 0.55,
                 fireDelay: 700,
                 switchDelay: 700,
@@ -399,6 +406,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "12g",
                 ammoSpawnAmount: 15,
                 capacity: 5,
+                extendedCapacity: 8,
                 reloadTime: 0.75,
                 fireDelay: 900,
                 switchDelay: 900,
@@ -446,6 +454,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "12g",
                 ammoSpawnAmount: 15,
                 capacity: 5,
+                extendedCapacity: 8,
                 reloadTime: 0.725,
                 singleReload: true,
                 fireDelay: 300,
@@ -532,6 +541,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "12g",
                 ammoSpawnAmount: 20,
                 capacity: 5,
+                extendedCapacity: 10,
                 reloadTime: 2.4,
                 fireDelay: 350,
                 switchDelay: 650,
@@ -613,6 +623,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "762mm",
                 ammoSpawnAmount: 20,
                 capacity: 5,
+                extendedCapacity: 10,
                 reloadTime: 2.6,
                 fireDelay: 900,
                 switchDelay: 900,
@@ -652,6 +663,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "556mm",
                 ammoSpawnAmount: 20,
                 capacity: 5,
+                extendedCapacity: 10,
                 reloadTime: 2.2,
                 fireDelay: 600,
                 switchDelay: 600,
@@ -773,6 +785,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }],
                 gasParticles: gasParticlePresets.pistol,
                 capacity: 15,
+                extendedCapacity: 24,
                 reloadTime: 1.5,
                 ballistics: {
                     damage: 13,
@@ -786,6 +799,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     shotSpread: 7,
                     moveSpread: 15,
                     capacity: 30,
+                    extendedCapacity: 48,
                     reloadTime: 2.9
                 }
             },
@@ -865,6 +879,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }],
                 gasParticles: gasParticlePresets.pistol,
                 capacity: 16,
+                extendedCapacity: 26,
                 reloadTime: 1.9,
                 ballistics: {
                     damage: 9,
@@ -878,6 +893,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     shotSpread: 14,
                     moveSpread: 25,
                     capacity: 32,
+                    extendedCapacity: 52,
                     reloadTime: 3.7
                 }
             },
@@ -887,6 +903,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "9mm",
                 ammoSpawnAmount: 90,
                 capacity: 30,
+                extendedCapacity: 42,
                 reloadTime: 1.8,
                 fireDelay: 75,
                 burstProperties: {
@@ -924,6 +941,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "556mm",
                 ammoSpawnAmount: 90,
                 capacity: 20,
+                extendedCapacity: 30,
                 reloadTime: 2.2,
                 fireDelay: 75,
                 burstProperties: {
@@ -961,6 +979,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "9mm",
                 ammoSpawnAmount: 96,
                 capacity: 32,
+                extendedCapacity: 50,
                 reloadTime: 1.75,
                 fireDelay: 40,
                 switchDelay: 300,
@@ -994,6 +1013,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "9mm",
                 ammoSpawnAmount: 99,
                 capacity: 33,
+                extendedCapacity: 50,
                 reloadTime: 1.7,
                 fireDelay: 40,
                 switchDelay: 300,
@@ -1027,6 +1047,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "9mm",
                 ammoSpawnAmount: 90,
                 capacity: 30,
+                extendedCapacity: 45,
                 reloadTime: 2.3,
                 fireDelay: 50,
                 switchDelay: 300,
@@ -1063,6 +1084,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "9mm",
                 ammoSpawnAmount: 96,
                 capacity: 32,
+                extendedCapacity: 40,
                 reloadTime: 2.1,
                 fireDelay: 90,
                 switchDelay: 300,
@@ -1096,6 +1118,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "762mm",
                 ammoSpawnAmount: 80,
                 capacity: 20,
+                extendedCapacity: 30,
                 reloadTime: 2.75,
                 fireDelay: 87.5,
                 switchDelay: 400,
@@ -1171,6 +1194,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "556mm",
                 ammoSpawnAmount: 150,
                 capacity: 75,
+                extendedCapacity: 125,
                 reloadTime: 3.8,
                 fireDelay: 90,
                 switchDelay: 400,
@@ -1231,6 +1255,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "762mm",
                 ammoSpawnAmount: 240,
                 capacity: 120,
+                extendedCapacity: 160,
                 reloadTime: 5.2,
                 fireDelay: 95,
                 switchDelay: 400,
@@ -1285,6 +1310,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "556mm",
                 ammoSpawnAmount: 200,
                 capacity: 200,
+                extendedCapacity: 250,
                 reloadTime: 5.8,
                 fireDelay: 70,
                 switchDelay: 400,
@@ -1339,6 +1365,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "556mm",
                 ammoSpawnAmount: 120,
                 capacity: 40,
+                extendedCapacity: 100,
                 reloadTime: 2.75,
                 fireDelay: 75,
                 switchDelay: 400,
@@ -1437,6 +1464,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "9mm",
                 ammoSpawnAmount: 60,
                 capacity: 20,
+                extendedCapacity: 30,
                 reloadTime: 2.15,
                 fireDelay: 140,
                 switchDelay: 400,
@@ -1475,6 +1503,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "762mm",
                 ammoSpawnAmount: 80,
                 capacity: 20,
+                extendedCapacity: 30,
                 reloadTime: 2.5,
                 fireDelay: 190,
                 switchDelay: 400,
@@ -1511,6 +1540,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "556mm",
                 ammoSpawnAmount: 80,
                 capacity: 20,
+                extendedCapacity: 30,
                 reloadTime: 2.4,
                 fireDelay: 155,
                 switchDelay: 400,
@@ -1553,6 +1583,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "50cal",
                 ammoSpawnAmount: 28,
                 capacity: 7,
+                extendedCapacity: 10,
                 reloadTime: 0.4,
                 singleReload: true,
                 fireDelay: 350,
@@ -1613,6 +1644,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 image: { position: Vec.create(120, 4) },
                 gasParticles: gasParticlePresets.rifle,
                 capacity: 3,
+                extendedCapacity: 5,
                 reloadTime: 3.8,
                 ballistics: {
                     damage: 150,
@@ -1658,6 +1690,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }],
                 gasParticles: gasParticlePresets.pistol,
                 capacity: 7,
+                extendedCapacity: 9,
                 reloadTime: 2.3,
                 ballistics: {
                     damage: 37,
@@ -1665,7 +1698,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     speed: 0.22,
                     range: 130,
                     tracer: {
-                        color: 0xE2C910
+                        color: 0xE2C910,
+                        saturatedColor: 0xFFBF00
                     }
                 },
                 dual: {
@@ -1675,6 +1709,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     shotSpread: 5,
                     moveSpread: 9.5,
                     capacity: 14,
+                    extendedCapacity: 18,
                     reloadTime: 3.8
                 }
             },
@@ -1947,6 +1982,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "12g",
                 ammoSpawnAmount: 30,
                 capacity: 10,
+                extendedCapacity: 20,
                 reloadTime: 3,
                 fireDelay: 525,
                 switchDelay: 400,
@@ -1976,7 +2012,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     allowRangeOverride: true,
                     tracer: {
                         length: 0.5,
-                        color: 0xFF0000
+                        color: 0xFF0000,
+                        saturatedColor: 0xF55C3D
                     }
                 }
             },
@@ -1986,6 +2023,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "firework_rocket",
                 ammoSpawnAmount: 9,
                 capacity: 3,
+                extendedCapacity: 5,
                 reloadTime: 1.25,
                 singleReload: true,
                 shootOnRelease: true,
@@ -2069,6 +2107,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 noMuzzleFlash: true,
                 image: { position: Vec.create(65, 0) },
                 capacity: 100,
+                extendedCapacity: 250,
                 reloadTime: 1.5,
                 ballistics: {
                     damage: 2,
@@ -2078,12 +2117,14 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     tracer: {
                         width: 0.7,
                         opacity: 0.85,
-                        color: 16744448
+                        color: 0xFF8000,
+                        saturatedColor: 0xF5B83D
                     }
                 } /* ,
                 dual: {
                     leftRightOffset: 1.3,
                     capacity: 200,
+                    extendedCapacity: 500,
                     fireDelay: 20,
                     shotSpread: 1,
                     moveSpread: 8,
@@ -2135,6 +2176,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "50cal",
                 ammoSpawnAmount: 255,
                 capacity: 255,
+                extendedCapacity: 1, // womp womp
                 reloadTime: 0.4,
                 fireDelay: 50,
                 switchDelay: 250,

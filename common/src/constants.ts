@@ -124,7 +124,8 @@ export enum InventoryMessages {
     NotEnoughSpace,
     ItemAlreadyEquipped,
     BetterItemEquipped,
-    CannotUseRadio
+    CannotUseRadio,
+    RadioOverused
 }
 
 export const DEFAULT_INVENTORY: Record<string, number> = {};
@@ -146,7 +147,7 @@ const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType
 export const GameConstants = freezeDeep({
     // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
     // or a new item is added to a definition list
-    protocolVersion: 26,
+    protocolVersion: 27,
     gridSize: 32,
     bleedOutDPMs: 0.002, // === 2 dps
     maxPosition: 1924,
@@ -161,7 +162,7 @@ export const GameConstants = freezeDeep({
         defaultName: "Player",
         defaultSkin: "hazel_jumpsuit",
         killLeaderMinKills: 3,
-        maxMouseDist: 128,
+        maxMouseDist: 256,
         reviveTime: 8,
         maxReviveDist: 5
     },

@@ -15,6 +15,7 @@ import { Layer } from "@common/constants";
 import { Guns } from "@common/definitions";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { getLootTableLoot } from "../utils/misc";
+import { PerkCategories } from "@common/definitions/perks";
 
 export interface MapDefinition {
     readonly width: number
@@ -478,7 +479,8 @@ const maps = {
                     [ItemType.Armor]: 1,
                     [ItemType.Backpack]: 1,
                     [ItemType.Scope]: 1,
-                    [ItemType.Skin]: 1
+                    [ItemType.Skin]: 1,
+                    [ItemType.Perk]: Infinity
                 };
 
                 const game = map.game;
@@ -487,6 +489,7 @@ const maps = {
                         ((item.itemType === ItemType.Melee || item.itemType === ItemType.Scope) && item.noDrop)
                         || ("ephemeral" in item && item.ephemeral)
                         || (item.itemType === ItemType.Backpack && item.level === 0)
+                        || (item.itemType === ItemType.Perk && item.categories.includes(PerkCategories.Halloween))
                         || item.itemType === ItemType.Skin
                     ) continue;
 
@@ -529,10 +532,10 @@ const maps = {
                 map.generateObstacle(id, Vec.add(center, Vec.create(-posX, -posY)), { rotation: 0 });
             }
 
-            genLoots(Vec.add(center, Vec.create(-70, 85)), 8, 8);
-            genLoots(Vec.add(center, Vec.create(70, 85)), 8, 8);
-            genLoots(Vec.add(center, Vec.create(-70, -85)), -8, 8);
-            genLoots(Vec.add(center, Vec.create(70, -85)), -8, 8);
+            genLoots(Vec.add(center, Vec.create(-70, 100)), 8, 8);
+            genLoots(Vec.add(center, Vec.create(70, 100)), 8, 8);
+            genLoots(Vec.add(center, Vec.create(-70, -100)), -8, 8);
+            genLoots(Vec.add(center, Vec.create(70, -100)), -8, 8);
 
             // Generate random obstacles around the center
             const randomObstacles: MapDefinition["obstacles"] = {

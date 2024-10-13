@@ -12,16 +12,23 @@ import { FloorNames } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
+import type { InventoryItemMapping } from "../inventory/inventory";
+import { InventoryItem } from "../inventory/inventoryItem";
 import { BaseGameObject } from "./gameObject";
 import { type Player } from "./player";
 
-export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
+export type LootBasis = ReifiableDef<LootDefinition> | InstanceType<(typeof InventoryItemMapping)[keyof typeof InventoryItemMapping]>;
+export type LootBasisForDef<Def extends LootDefinition = LootDefinition> = ReifiableDef<Def> | (Def["itemType"] extends keyof typeof InventoryItemMapping ? InstanceType<(typeof InventoryItemMapping)[Def["itemType"]]> : never);
+
+export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameObject.derive(ObjectCategory.Loot) {
     override readonly fullAllocBytes = 8;
     override readonly partialAllocBytes = 4;
 
     declare readonly hitbox: CircleHitbox;
 
-    readonly definition: LootDefinition;
+    readonly definition: Def;
+
+    readonly instance?: Def["itemType"] extends keyof typeof InventoryItemMapping ? InstanceType<(typeof InventoryItemMapping)[Def["itemType"]]> : never;
 
     private _count;
     get count(): number { return this._count; }
@@ -36,7 +43,7 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
 
     constructor(
         game: Game,
-        definition: ReifiableDef<LootDefinition>,
+        basis: LootBasisForDef<Def>,
         position: Vector,
         layer: number,
         count?: number,
@@ -44,7 +51,13 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
     ) {
         super(game, position);
 
-        this.definition = Loots.reify(definition);
+        if (basis instanceof InventoryItem) {
+            this.definition = basis.definition as Def;
+            this.instance = basis;
+        } else {
+            this.definition = Loots.reify(basis);
+        }
+
         this.hitbox = new CircleHitbox(LootRadius[this.definition.itemType], Vec.clone(position));
         this.layer = layer;
 
@@ -127,7 +140,7 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
                     this.velocity = Vec.sub(this.velocity, Vec.scale(collision.dir, 0.0005));
                 }
 
-                const dist = Math.max(Geometry.distance(object.position, this.position), 1);
+                const dist = Numeric.max(Geometry.distance(object.position, this.position), 1);
                 const vecCollision = Vec.create(object.position.x - this.position.x, object.position.y - this.position.y);
                 const vecCollisionNorm = Vec.create(vecCollision.x / dist, vecCollision.y / dist);
                 const vRelativeVelocity = Vec.create(this.velocity.x - object.velocity.x, this.velocity.y - object.velocity.y);
@@ -228,6 +241,9 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
             case ItemType.Skin: {
                 return player.loadout.skin.idString !== definition.idString || InventoryMessages.ItemAlreadyEquipped;
             }
+            case ItemType.Perk: {
+                return !player.hasPerk(definition);
+            }
         }
     }
 
@@ -281,7 +297,7 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
                 }
 
                 // Operation is safe because `slot` is guaranteed to point to a melee slot
-                inventory.addOrReplaceWeapon(slot, definition);
+                inventory.addOrReplaceWeapon(slot, this.instance ?? definition);
 
                 break;
             }
@@ -315,7 +331,8 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
                 }
                 if (gotDual) break;
 
-                const slot = inventory.appendWeapon(definition);
+                const toAdd = this.instance as GunItem | undefined ?? definition;
+                const slot = inventory.appendWeapon(toAdd);
 
                 if (slot === -1) { // If it wasn't added, then either there are no gun slots or they're all occupied
                     /*
@@ -329,7 +346,7 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
 
                         // Let's replace the active item then
                         // This operation is safe because if the active item is a gun, then the current slot must be a gun slot
-                        inventory.addOrReplaceWeapon(inventory.activeWeaponIndex, definition);
+                        inventory.addOrReplaceWeapon(inventory.activeWeaponIndex, toAdd);
                     } else {
                         /*
                             Being here means that the active weapon isn't a gun, but all the gun slots (if any) are occupied
@@ -426,6 +443,12 @@ export class Loot extends BaseGameObject.derive(ObjectCategory.Loot) {
                 player.loadout.skin = definition;
 
                 player.setDirty();
+                break;
+            }
+            case ItemType.Perk: {
+                if (player.perks.addPerk(definition)) {
+                    player.updateAndApplyModifiers();
+                }
                 break;
             }
         }

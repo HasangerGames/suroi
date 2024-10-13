@@ -6,6 +6,8 @@ import { type ReifiableDef } from "@common/utils/objectDefinitions";
 
 import { type Player } from "../objects/player";
 import { type GunItem } from "./gunItem";
+import { PerkIds } from "@common/definitions/perks";
+import { Numeric } from "@common/utils/math";
 
 export abstract class Action {
     readonly player: Player;
@@ -72,7 +74,10 @@ export class ReloadAction extends Action {
 
     constructor(player: Player, readonly item: GunItem) {
         const fullReload = item.definition.reloadFullOnEmpty && item.ammo <= 0;
-        super(player, fullReload ? item.definition.fullReloadTime : item.definition.reloadTime);
+        super(
+            player,
+            fullReload ? item.definition.fullReloadTime : item.definition.reloadTime
+        );
         this.fullReload = !!fullReload;
     }
 
@@ -83,15 +88,27 @@ export class ReloadAction extends Action {
         const definition = this.item.definition;
 
         const doSingleReload = definition.singleReload && !this.fullReload;
+        const capacity = this.player.hasPerk(PerkIds.HiCap)
+            ? definition.extendedCapacity ?? definition.capacity
+            : definition.capacity;
 
-        const difference = Math.min(
-            items.getItem(definition.ammoType),
-            doSingleReload
-                ? (definition.isDual && this.item.ammo !== (this.item.definition.capacity - 1)) ? 2 : 1
-                : this.item.definition.capacity - this.item.ammo
-        );
-        this.item.ammo += difference;
-        items.decrementItem(definition.ammoType, difference);
+        const hasInfiniteAmmo = this.player.hasPerk(PerkIds.InfiniteAmmo);
+
+        const desiredLoad = doSingleReload
+            ? (definition.isDual && this.item.ammo !== (capacity - 1)) ? 2 : 1
+            : capacity - this.item.ammo;
+
+        const toLoad = hasInfiniteAmmo
+            ? desiredLoad
+            : Numeric.min(
+                items.getItem(definition.ammoType),
+                desiredLoad
+            );
+
+        this.item.ammo += toLoad;
+        if (!hasInfiniteAmmo) {
+            items.decrementItem(definition.ammoType, toLoad);
+        }
 
         if (doSingleReload) { // this is to chain single reloads together
             this.item.reload();
@@ -112,7 +129,10 @@ export class HealingAction extends Action {
 
     constructor(player: Player, item: ReifiableDef<HealingItemDefinition>) {
         const itemDef = Loots.reify<HealingItemDefinition>(item);
-        super(player, itemDef.useTime);
+        super(
+            player,
+            itemDef.useTime / player.mapPerkOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
+        );
         this.item = itemDef;
     }
 

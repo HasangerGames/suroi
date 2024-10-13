@@ -1,21 +1,21 @@
+import type { InventoryMessages, Layer } from "@common/constants";
+import type { BuildingDefinition } from "@common/definitions/buildings";
 import { EmoteDefinition } from "@common/definitions/emotes";
 import { type PlayerPing } from "@common/definitions/mapPings";
-import { type PlayerInputData } from "@common/packets/inputPacket";
-import { ExtendedMap } from "@common/utils/misc";
-import { Vector } from "@common/utils/vector";
-
-import type { InventoryMessages, Layer } from "@common/constants";
-import type { LootDefinition } from "@common/definitions";
-import type { BuildingDefinition } from "@common/definitions/buildings";
 import type { ObstacleDefinition } from "@common/definitions/obstacles";
+import { type PlayerInputData } from "@common/packets/inputPacket";
 import type { JoinPacketData } from "@common/packets/joinPacket";
 import type { Orientation, Variation } from "@common/typings";
+import { ExtendedMap } from "@common/utils/misc";
+import type { PlayerModifiers } from "@common/utils/objectDefinitions";
+import { Vector } from "@common/utils/vector";
+
 import { Config } from "./config";
 import { Airdrop, Game } from "./game";
 import { type InventoryItem } from "./inventory/inventoryItem";
 import { Building } from "./objects/building";
 import { DamageParams } from "./objects/gameObject";
-import { Loot } from "./objects/loot";
+import { Loot, type LootBasis } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { Player } from "./objects/player";
 import { Logger } from "./utils/misc";
@@ -491,16 +491,16 @@ export interface EventDataMap {
         /**
          * Specific type will be `(typeof item)["modifiers"]`
          */
-        readonly oldMods: InventoryItem["modifiers"]
+        readonly oldMods: PlayerModifiers
         /**
          * Specific type will be `(typeof item)["modifiers"]`
          */
-        readonly newMods: InventoryItem["modifiers"]
+        readonly newMods: PlayerModifiers
         /**
          * Specific type will be `{ readonly [K in (typeof item)["modifiers"]]: boolean }`
          */
         readonly diff: {
-            readonly [K in keyof InventoryItem["modifiers"]]: boolean
+            readonly [K in Exclude<keyof PlayerModifiers, "on">]: boolean
         }
     }
 
@@ -532,7 +532,7 @@ export interface EventDataMap {
     }
 
     readonly loot_will_generate: {
-        readonly definition: LootDefinition
+        readonly definition: LootBasis
         readonly position: Vector
         readonly layer: Layer
         readonly count?: number

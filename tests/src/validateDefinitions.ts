@@ -16,8 +16,8 @@ import { Loots } from "../../common/src/definitions/loots";
 import { MapPings } from "../../common/src/definitions/mapPings";
 import { Melees } from "../../common/src/definitions/melees";
 import { Modes } from "../../common/src/definitions/modes";
-import { Obstacles, RotationMode } from "../../common/src/definitions/obstacles";
-import { Scopes } from "../../common/src/definitions/scopes";
+import { Materials, Obstacles, RotationMode } from "../../common/src/definitions/obstacles";
+import { DEFAULT_SCOPE, Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
 import { SyncedParticles } from "../../common/src/definitions/syncedParticles";
 import { Throwables, type ThrowableDefinition } from "../../common/src/definitions/throwables";
@@ -1679,6 +1679,19 @@ logger.indent("Validating guns", () => {
                 baseErrorPath: errorPath
             });
 
+            tester.assertValidOrNPV({
+                obj: gun,
+                field: "extendedCapacity",
+                defaultValue: gun.capacity,
+                validatorIfPresent: (extended, errorPath) => {
+                    tester.assertIsNaturalFiniteNumber({
+                        value: extended,
+                        errorPath
+                    });
+                },
+                baseErrorPath: errorPath
+            });
+
             tester.assertIsPositiveFiniteReal({
                 obj: gun,
                 field: "reloadTime",
@@ -2653,6 +2666,12 @@ logger.indent("Validating scopes", () => {
             });
         });
     }
+
+    tester.assert(
+        DEFAULT_SCOPE !== undefined,
+        "Default scope is undefined (definitions list is empty)",
+        tester.createPath("scopes")
+    );
 });
 
 logger.indent("Validating skins", () => {
@@ -3253,11 +3272,11 @@ const [
     printBottom,
     noDetails
 ] = [
-    flags.includes("-Werror"),
-    flags.includes("-print-top"),
-    flags.includes("-print-bottom"),
-    flags.includes("-no-details")
-];
+        flags.includes("-Werror"),
+        flags.includes("-print-top"),
+        flags.includes("-print-bottom"),
+        flags.includes("-no-details")
+    ];
 
 const exitCode = +(
     fatalErrors.length > 0

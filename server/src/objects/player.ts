@@ -1,12 +1,13 @@
 import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, Layer, ObjectCategory, PlayerActions, SpectateActions } from "@common/constants";
 import { Ammos, Armors, ArmorType, Backpacks, DEFAULT_SCOPE, Emotes, Guns, HealingItems, Loots, Melees, Scopes, Throwables, type BadgeDefinition, type EmoteDefinition, type GunDefinition, type MeleeDefinition, type PlayerPing, type ScopeDefinition, type SkinDefinition, type SyncedParticleDefinition, type ThrowableDefinition, type WeaponDefinition } from "@common/definitions";
+import { PerkIds, Perks, type PerkDefinition, type PerkNames } from "@common/definitions/perks";
 import { DisconnectPacket, GameOverPacket, KillFeedPacket, NoMobile, PacketStream, PlayerInputData, ReportPacket, SpectatePacketData, UpdatePacket, type ForEventType, type GameOverData, type InputPacket, type PlayerData, type UpdatePacketDataCommon, type UpdatePacketDataIn } from "@common/packets";
 import { createKillfeedMessage } from "@common/packets/killFeedPacket";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
 import { Collision, Geometry, Numeric } from "@common/utils/math";
 import { ExtendedMap, type SDeepMutable, type SMutable, type Timeout } from "@common/utils/misc";
-import { ItemType, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { defaultModifiers, ItemType, type EventModifiers, type ExtendedWearerAttributes, type PlayerModifiers, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray } from "@common/utils/random";
 import { SuroiBitStream } from "@common/utils/suroiBitStream";
@@ -22,6 +23,7 @@ import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
 import { CountableInventoryItem, InventoryItem } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
+import { ServerPerkManager } from "../inventory/perkManager";
 import { ThrowableItem } from "../inventory/throwableItem";
 import { type Team } from "../team";
 import { mod_api_data, sendPostRequest } from "../utils/apiHelper";
@@ -41,10 +43,14 @@ export interface PlayerContainer {
 }
 
 export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
+    private static readonly baseHitbox = new CircleHitbox(GameConstants.player.radius);
+
     override readonly fullAllocBytes = 16;
     override readonly partialAllocBytes = 4;
     override readonly damageable = true;
-    readonly hitbox: CircleHitbox;
+
+    private _hitbox: CircleHitbox;
+    override get hitbox(): CircleHitbox { return this._hitbox; }
 
     name: string;
     readonly ip?: string;
@@ -96,7 +102,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     get health(): number { return this._health; }
     set health(health: number) {
-        this._health = Math.min(health, this._maxHealth);
+        this._health = Numeric.min(health, this._maxHealth);
         this._team?.setDirty();
         this.dirty.health = true;
         this._normalizedHealth = Numeric.remap(this.health, 0, this.maxHealth, 0, 1);
@@ -117,7 +123,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private _minAdrenaline = 0;
     get minAdrenaline(): number { return this._minAdrenaline; }
     set minAdrenaline(minAdrenaline: number) {
-        this._minAdrenaline = Math.min(minAdrenaline, this._maxAdrenaline);
+        this._minAdrenaline = Numeric.min(minAdrenaline, this._maxAdrenaline);
         this.dirty.maxMinStats = true;
         this.adrenaline = this._adrenaline;
     }
@@ -130,21 +136,17 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._normalizedAdrenaline = Numeric.remap(this.adrenaline, this.minAdrenaline, this.maxAdrenaline, 0, 1);
     }
 
-    private _modifiers = {
-        // Multiplicative
-        maxHealth: 1,
-        maxAdrenaline: 1,
-        baseSpeed: 1,
+    private _sizeMod = 1;
+    get sizeMod(): number { return this._sizeMod; }
+    set sizeMod(size: number) {
+        if (this._sizeMod === size) return;
+        this._sizeMod = size;
+        this._hitbox = Player.baseHitbox.transform(this._hitbox.position, size);
+        this.dirty.size = true;
+        this.setDirty();
+    }
 
-        // Additive
-        minAdrenaline: 0
-    };
-
-    /**
-     * Returns a clone
-     */
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    get modifiers() { return { ...this._modifiers }; }
+    private _modifiers = defaultModifiers();
 
     killedBy?: Player;
     downedBy?: {
@@ -212,12 +214,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         health: true,
         maxMinStats: true,
         adrenaline: true,
+        size: true,
         weapons: true,
         slotLocks: true,
         items: true,
         zoom: true,
         layer: true,
-        activeC4s: true
+        activeC4s: true,
+        perks: true
     };
 
     readonly inventory = new Inventory(this);
@@ -344,13 +348,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     activeStair?: Obstacle;
 
     get position(): Vector {
-        return this.hitbox.position;
+        return this._hitbox.position;
     }
 
     set position(position: Vector) {
         if (Vec.equals(position, this.position)) return;
 
-        this.hitbox.position = position;
+        this._hitbox.position = position;
         this._team?.setDirty();
     }
 
@@ -364,6 +368,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private readonly _mapPings: Game["mapPings"] = [];
 
     c4s: ThrowableProjectile[] = [];
+
+    readonly perks = new ServerPerkManager(this, Perks.defaults);
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
@@ -403,7 +409,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         this.rotation = 0;
         this.joinTime = game.now;
-        this.hitbox = new CircleHitbox(GameConstants.player.radius, position);
+        this._hitbox = Player.baseHitbox.transform(position);
 
         this.inventory.addOrReplaceWeapon(2, "fists");
 
@@ -474,8 +480,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             determinePreset(1, weaponB, killB);
             determinePreset(2, melee, killsM);
         }
-
-        this.updateAndApplyModifiers();
 
         // good chance that if these were changed, they're meant to be applied
         if (this.maxHealth !== GameConstants.player.defaultHealth) {
@@ -626,6 +630,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     update(): void {
         const dt = this.game.dt;
 
+        this.updateAndApplyModifiers();
+
         // This system allows opposite movement keys to cancel each other out.
         let movement: Vector;
 
@@ -650,15 +656,72 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             ? this.recoil.multiplier
             : 1;
 
-        const speed = this.baseSpeed                                        // Base speed
-            * (FloorTypes[this.floor].speedMultiplier ?? 1)                 // Speed multiplier from floor player is standing in
-            * recoilMultiplier                                              // Recoil from items
-            * (this.action?.speedMultiplier ?? 1)                           // Speed modifier from performing actions
-            * (1 + (this.adrenaline / 1000))                                // Linear speed boost from adrenaline
-            * (this.downed ? 1 : this.activeItemDefinition.speedMultiplier) // Active item speed modifier
-            * (this.downed ? 0.5 : 1)                                       // Knocked out speed multiplier
-            * (this.beingRevivedBy ? 0.5 : 1)                               // Being revived speed multiplier
-            * this.modifiers.baseSpeed;                                     // Current on-wearer modifier
+        // building & smoke checks
+        let isInsideBuilding = false;
+        const depleters = new Set<SyncedParticle>();
+        for (const object of this.nearObjects) {
+            if (
+                !isInsideBuilding
+                && object?.isBuilding
+                && !object.dead
+                && object.scopeHitbox?.collidesWith(this._hitbox)
+                && !Config.disableBuildingCheck
+            ) {
+                isInsideBuilding = true;
+            }
+
+            // Automatic doors
+            if (
+                object?.isObstacle
+                && object.definition.isDoor
+                && object.definition.automatic
+                && !object.door?.isOpen
+                && Geometry.distanceSquared(object.position, this.position) < 100
+            ) {
+                object.interact();
+                const closeDoor = (): void => {
+                    if (Geometry.distanceSquared(object.position, this.position) >= 100) {
+                        object.interact();
+                    } else {
+                        this.game.addTimeout(closeDoor, 1000);
+                    }
+                };
+                this.game.addTimeout(closeDoor, 1000);
+            }
+
+            if (
+                object.isSyncedParticle
+                && object.hitbox?.collidesWith(this._hitbox)
+                && adjacentOrEqualLayer(object.layer, this.layer)
+            ) {
+                depleters.add(object);
+            }
+        }
+
+        const perkSpeedMod = this.mapPerkOrDefault(
+            PerkIds.AdvancedAthletics,
+            ({ waterSpeedMod, smokeSpeedMod }) => {
+                return (
+                    (FloorTypes[this.floor].overlay ? waterSpeedMod : 1) // man do we need a better way of detecting water lol
+                    * (depleters.size !== 0 ? smokeSpeedMod : 1) // man do we need a better way of detecting water lol
+                );
+            },
+            1
+        ) * this.mapPerkOrDefault(
+            PerkIds.Claustrophobic,
+            ({ speedMod }) => isInsideBuilding ? speedMod : 1,
+            1
+        );
+
+        const speed = this.baseSpeed                                          // Base speed
+            * (FloorTypes[this.floor].speedMultiplier ?? 1)                   // Speed multiplier from floor player is standing in
+            * recoilMultiplier                                                // Recoil from items
+            * perkSpeedMod                                                    // See above
+            * (this.action?.speedMultiplier ?? 1)                             // Speed modifier from performing actions
+            * (1 + (this.adrenaline / 1000))                                  // Linear speed boost from adrenaline
+            * (this.downed ? 0.5 : this.activeItemDefinition.speedMultiplier) // Active item/knocked out speed modifier
+            * (this.beingRevivedBy ? 0.5 : 1)                                 // Being revived speed multiplier
+            * this._modifiers.baseSpeed;                                      // Current on-wearer modifier
 
         const oldPosition = Vec.clone(this.position);
         const movementVector = Vec.scale(movement, speed);
@@ -683,23 +746,37 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         // Find and resolve collisions
-        this.nearObjects = this.game.grid.intersectsHitbox(this.hitbox, this.layer);
+        this.nearObjects = this.game.grid.intersectsHitbox(this._hitbox, this.layer);
 
         for (let step = 0; step < 10; step++) {
             let collided = false;
 
             for (const potential of this.nearObjects) {
+                const { isObstacle, isBuilding } = potential;
+
                 if (
-                    (potential.isObstacle || potential.isBuilding)
+                    (isObstacle || isBuilding)
+                    && this.mapPerkOrDefault(
+                        PerkIds.AdvancedAthletics,
+                        () => {
+                            return potential.definition.material !== "tree"
+                                && (
+                                    !isObstacle
+                                    || !potential.definition.isWindow
+                                    || !potential.dead
+                                );
+                        },
+                        true
+                    )
                     && potential.collidable
-                    && potential.hitbox?.collidesWith(this.hitbox)
+                    && potential.hitbox?.collidesWith(this._hitbox)
                 ) {
-                    if (potential.isObstacle && potential.definition.isStair) {
+                    if (isObstacle && potential.definition.isStair) {
                         potential.handleStairInteraction(this);
                         this.activeStair = potential;
                     } else {
                         collided = true;
-                        this.hitbox.resolveCollision(potential.hitbox);
+                        this._hitbox.resolveCollision(potential.hitbox);
                     }
                 }
             }
@@ -708,8 +785,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         // World boundaries
-        this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
-        this.position.y = Numeric.clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
+        this.position.x = Numeric.clamp(this.position.x, this._hitbox.radius, this.game.map.width - this._hitbox.radius);
+        this.position.y = Numeric.clamp(this.position.y, this._hitbox.radius, this.game.map.height - this._hitbox.radius);
 
         this.isMoving = !Vec.equals(oldPosition, this.position);
 
@@ -725,13 +802,16 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
+        let toRegen = this._modifiers.hpRegen;
         if (this._adrenaline > 0) {
             // Drain adrenaline
-            this.adrenaline -= 0.0005 * dt;
+            this.adrenaline -= 0.0005 * this._modifiers.adrenDrain * dt;
 
             // Regenerate health
-            this.health += dt / 900 * (this.adrenaline / 40 + 0.35);
+            toRegen += (this.adrenaline / 40 + 0.35) * this.mapPerkOrDefault(PerkIds.LacedStimulants, ({ healDmgRate }) => -healDmgRate, 1);
         }
+
+        this.health += dt / 900 * toRegen;
 
         // Shoot gun/use item
         if (this.startedAttacking) {
@@ -762,47 +842,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 amount: GameConstants.bleedOutDPMs * dt,
                 source: KillfeedEventType.BleedOut
             });
-        }
-
-        let isInsideBuilding = false;
-        const depleters = new Set<SyncedParticle>();
-        for (const object of this.nearObjects) {
-            if (
-                !isInsideBuilding
-                && object?.isBuilding
-                && !object.dead
-                && object.scopeHitbox?.collidesWith(this.hitbox)
-                && !Config.disableBuildingCheck
-            ) {
-                isInsideBuilding = true;
-            }
-
-            // Automatic doors
-            if (
-                object?.isObstacle
-                && object.definition.isDoor
-                && object.definition.automatic
-                && !object.door?.isOpen
-                && Geometry.distanceSquared(object.position, this.position) < 100
-            ) {
-                object.interact();
-                const closeDoor = (): void => {
-                    if (Geometry.distanceSquared(object.position, this.position) >= 100) {
-                        object.interact();
-                    } else {
-                        this.game.addTimeout(closeDoor, 1000);
-                    }
-                };
-                this.game.addTimeout(closeDoor, 1000);
-            }
-
-            if (
-                object.isSyncedParticle
-                && object.hitbox?.collidesWith(this.hitbox)
-                && adjacentOrEqualLayer(object.layer, this.layer)
-            ) {
-                depleters.add(object);
-            }
         }
 
         if (!this.isInsideBuilding) {
@@ -838,7 +877,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
 
             if (depletion.adrenaline) {
-                this.adrenaline = Math.max(0, this.adrenaline - depletion.adrenaline * dt);
+                this.adrenaline -= depletion.adrenaline * dt;
             }
         });
 
@@ -1021,6 +1060,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 player.dirty.activeC4s || forceInclude
                     ? { activeC4s: this.c4s.length > 0 }
                     : {}
+            ),
+            ...(
+                player.dirty.perks || forceInclude
+                    ? { perks: this.perks }
+                    : {}
             )
         };
 
@@ -1138,6 +1182,32 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
         this._animation.dirty = false;
         this._action.dirty = false;
+    }
+
+    hasPerk(perk: PerkNames | PerkDefinition): boolean {
+        return this.perks.hasPerk(perk);
+    }
+
+    ifPerkPresent<Name extends PerkNames>(
+        perk: Name | PerkDefinition & { readonly idString: Name },
+        cb: (data: PerkDefinition & { readonly idString: Name }) => void
+    ): void {
+        return this.perks.ifPresent<Name>(perk, cb);
+    }
+
+    mapPerk<Name extends PerkNames, U>(
+        perk: Name | PerkDefinition & { readonly idString: Name },
+        mapper: (data: PerkDefinition & { readonly idString: Name }) => U
+    ): U | undefined {
+        return this.perks.map<Name, U>(perk, mapper);
+    }
+
+    mapPerkOrDefault<Name extends PerkNames, U>(
+        perk: Name | PerkDefinition & { readonly idString: Name },
+        mapper: (data: PerkDefinition & { readonly idString: Name }) => U,
+        defaultValue: U
+    ): U {
+        return this.perks.mapOrDefault<Name, U>(perk, mapper, defaultValue);
     }
 
     spectate(packet: SpectatePacketData): void {
@@ -1450,12 +1520,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
     }
 
-    updateAndApplyModifiers(): void {
-        const newModifiers: this["modifiers"] = {
-            maxHealth: 1,
-            maxAdrenaline: 1,
-            baseSpeed: 1,
-            minAdrenaline: 0
+    private _calculateModifiers(): PlayerModifiers {
+        const newModifiers = defaultModifiers();
+        const eventMods: EventModifiers = {
+            kill: [],
+            damageDealt: []
         };
 
         const maxWeapons = GameConstants.player.maxWeapons;
@@ -1469,13 +1538,96 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             newModifiers.maxAdrenaline *= modifiers.maxAdrenaline;
             newModifiers.maxHealth *= modifiers.maxHealth;
             newModifiers.baseSpeed *= modifiers.baseSpeed;
+            newModifiers.size *= modifiers.size;
+            newModifiers.adrenDrain *= modifiers.adrenDrain;
+
             newModifiers.minAdrenaline += modifiers.minAdrenaline;
+            newModifiers.hpRegen += modifiers.hpRegen;
         }
 
-        this._modifiers = newModifiers;
-        this.maxHealth = GameConstants.player.defaultHealth * this._modifiers.maxHealth;
-        this.maxAdrenaline = GameConstants.player.maxAdrenaline * this._modifiers.maxAdrenaline;
-        this.minAdrenaline = this.modifiers.minAdrenaline;
+        // ! evil starts here
+        for (const perk of this.perks) {
+            switch (perk.idString) {
+                case PerkIds.Werewolf: {
+                    newModifiers.maxHealth *= perk.healthMod;
+                    newModifiers.hpRegen += perk.regenRate;
+                    newModifiers.baseSpeed *= perk.speedMod;
+                    break;
+                }
+                case PerkIds.SecondWind: {
+                    newModifiers.baseSpeed *= this._health / this._maxHealth < 0.5 ? perk.speedMod : 1;
+                    break;
+                }
+                case PerkIds.Overstimmed: {
+                    newModifiers.adrenDrain *= perk.adrenDecay;
+                    newModifiers.minAdrenaline += perk.adrenSet * newModifiers.maxAdrenaline * GameConstants.player.maxAdrenaline;
+                    newModifiers.maxHealth *= perk.healthMod;
+                    break;
+                }
+                case PerkIds.Engorged: {
+                    const base = newModifiers.maxHealth * GameConstants.player.defaultHealth;
+                    (eventMods.kill as ExtendedWearerAttributes[]).push({
+                        maxHealth: (base + perk.hpMod) / base,
+                        sizeMod: perk.sizeMod
+                    });
+                    break;
+                }
+                case PerkIds.Berserker: {
+                    if (this.activeItem instanceof MeleeItem) {
+                        newModifiers.baseSpeed *= perk.speedMod;
+                    }
+                    break;
+                }
+                case PerkIds.LowProfile: {
+                    newModifiers.size *= perk.sizeMod;
+                    break;
+                }
+            }
+        }
+        // ! evil ends here
+
+        const applyModifiers = (modifiers: WearerAttributes): void => {
+            newModifiers.maxHealth *= modifiers.maxHealth ?? 1;
+            newModifiers.maxAdrenaline *= modifiers.maxAdrenaline ?? 1;
+            newModifiers.baseSpeed *= modifiers.speedBoost ?? 1;
+            newModifiers.size *= modifiers.sizeMod ?? 1;
+            newModifiers.adrenDrain *= modifiers.adrenDrain ?? 1;
+
+            newModifiers.minAdrenaline += modifiers.minAdrenaline ?? 0;
+            newModifiers.hpRegen += modifiers.hpRegen ?? 0;
+        };
+
+        for (
+            const [modifiers, count] of [
+                [eventMods.kill, this._kills],
+                [eventMods.damageDealt, this.damageDone]
+            ] as const
+        ) {
+            for (const entry of modifiers) {
+                const limit = Numeric.min(entry.limit ?? Infinity, count);
+
+                // don't honor healthRestored and adrenalineRestored here (handled in Player#die method)
+                for (let i = 0; i < limit; i++) {
+                    applyModifiers(entry);
+                }
+            }
+        }
+
+        return newModifiers;
+    }
+
+    updateAndApplyModifiers(): void {
+        const {
+            maxHealth,
+            maxAdrenaline,
+            minAdrenaline,
+            size
+        } = this._modifiers = this._calculateModifiers();
+
+        this.maxHealth = GameConstants.player.defaultHealth * maxHealth;
+        this.maxAdrenaline = GameConstants.player.maxAdrenaline * maxAdrenaline;
+        this.minAdrenaline = minAdrenaline;
+        this.sizeMod = size;
     }
 
     // dies of death
@@ -1658,6 +1810,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // Drop loot
         //
 
+        const { position, layer } = this;
+
         // Drop weapons
         this.inventory.unlockAll();
         this.inventory.dropWeapons();
@@ -1678,14 +1832,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     let subtractAmount = 0;
 
                     do {
-                        left -= subtractAmount = Math.min(left, def.maxStackSize);
-                        this.game.addLoot(item, this.position, this.layer, { count: subtractAmount });
+                        left -= subtractAmount = Numeric.min(left, def.maxStackSize);
+                        this.game.addLoot(item, position, layer, { count: subtractAmount });
                     } while (left > 0);
 
                     continue;
                 }
 
-                this.game.addLoot(item, this.position, this.layer, { count });
+                this.game.addLoot(item, position, layer, { count });
                 this.inventory.items.setItem(item, 0);
             }
         }
@@ -1694,7 +1848,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         for (const itemType of ["helmet", "vest", "backpack"] as const) {
             const item = this.inventory[itemType];
             if (item?.noDrop === false) {
-                this.game.addLoot(item, this.position, this.layer);
+                this.game.addLoot(item, position, layer);
             }
         }
 
@@ -1703,15 +1857,21 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // Drop skin
         const { skin } = this.loadout;
         if (skin.hideFromLoadout && !skin.noDrop) {
-            this.game.addLoot(skin, this.position, this.layer);
+            this.game.addLoot(skin, position, layer);
+        }
+
+        for (const perk of this.perks) {
+            if (!perk.noDrop) {
+                this.game.addLoot(perk, position, layer);
+            }
         }
 
         // Create death marker
-        this.game.grid.addObject(new DeathMarker(this, this.layer));
+        this.game.grid.addObject(new DeathMarker(this, layer));
 
         // remove all c4s
         for (const c4 of this.c4s) {
-            c4.damageC4(Infinity);
+            c4.damage({ amount: Infinity });
         }
 
         // Send game over to dead player
@@ -1883,7 +2043,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
                 case InputActions.DropWeapon: {
                     this.action?.cancel();
-                    inventory.dropWeapon(action.slot);
+                    inventory.dropWeapon(action.slot)?.destroy();
                     break;
                 }
                 case InputActions.DropItem: {
@@ -1928,7 +2088,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         object: undefined,
                         dist: Number.MAX_VALUE
                     };
-                    const detectionHitbox = new CircleHitbox(3, this.position);
+                    const detectionHitbox = new CircleHitbox(3 * this._sizeMod, this.position);
                     const nearObjects = this.game.grid.intersectsHitbox(detectionHitbox);
 
                     for (const object of nearObjects) {
@@ -2033,6 +2193,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 activeItem: this.activeItem.definition
             }
         };
+
+        if (this.dirty.size) {
+            data.full.sizeMod = this._sizeMod;
+        }
 
         if (this._animation.dirty) {
             data.animation = this.animation;

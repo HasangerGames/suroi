@@ -427,14 +427,15 @@ export class Game {
                     [InventoryMessages.NotEnoughSpace]: "msg_not_enough_space",
                     [InventoryMessages.ItemAlreadyEquipped]: "msg_item_already_equipped",
                     [InventoryMessages.BetterItemEquipped]: "msg_better_item_equipped",
-                    [InventoryMessages.CannotUseRadio]: "msg_cannot_use_radio"
+                    [InventoryMessages.CannotUseRadio]: "msg_cannot_use_radio",
+                    [InventoryMessages.RadioOverused]: "msg_radio_overused"
                 };
 
                 if (message !== undefined) {
                     const inventoryMsg = this.uiManager.ui.inventoryMsg;
                     inventoryMsg.text(getTranslatedString(inventoryMessageMap[message])).fadeIn(250);
                     clearTimeout(this.inventoryMsgTimeout);
-                    this.inventoryMsgTimeout = setTimeout(() => inventoryMsg.fadeOut(250), 2500) as unknown as number;
+                    this.inventoryMsgTimeout = window.setTimeout(() => inventoryMsg.fadeOut(250), 2500);
                 } else if (item !== undefined) {
                     let soundID: string;
                     switch (item.itemType) {
@@ -584,8 +585,9 @@ export class Game {
             }
         }
 
+        let players: Set<Player> | undefined;
         if (this.console.getBuiltInCVar("cv_movement_smoothing")) {
-            for (const player of this.objects.getCategory(ObjectCategory.Player)) {
+            for (const player of players = this.objects.getCategory(ObjectCategory.Player)) {
                 player.updateContainerPosition();
                 if (!player.isActivePlayer || !this.console.getBuiltInCVar("cv_responsive_rotation") || this.spectating) {
                     player.updateContainerRotation();
@@ -610,6 +612,11 @@ export class Game {
                 syncedParticle.updateContainerRotation();
                 syncedParticle.updateContainerScale();
             }
+        }
+
+        for (const player of players ?? this.objects.getCategory(ObjectCategory.Player)) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            player.updateGrenadePreview();
         }
 
         for (const tween of this.tweens) tween.update();
@@ -886,7 +893,7 @@ export class Game {
                 object: undefined,
                 dist: Number.MAX_VALUE
             };
-            const detectionHitbox = new CircleHitbox(3, player.position);
+            const detectionHitbox = new CircleHitbox(3 * player.sizeMod, player.position);
 
             for (const object of this.objects) {
                 const { isLoot, isObstacle, isPlayer, isBuilding } = object;

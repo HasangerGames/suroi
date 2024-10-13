@@ -2,13 +2,13 @@ import { DEFAULT_INVENTORY, GameConstants } from "@common/constants";
 import { Ammos, type AmmoDefinition } from "@common/definitions/ammos";
 import { ArmorType, type ArmorDefinition } from "@common/definitions/armors";
 import { type BackpackDefinition } from "@common/definitions/backpacks";
-import { type DualGunNarrowing, type GunDefinition } from "@common/definitions/guns";
+import { type DualGunNarrowing, type GunDefinition, type SingleGunNarrowing } from "@common/definitions/guns";
 import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/healingItems";
 import { Loots, type LootDefinition, type WeaponDefinition } from "@common/definitions/loots";
 import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/scopes";
 import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
 import { Numeric } from "@common/utils/math";
-import { ExtendedMap, type Timeout } from "@common/utils/misc";
+import { ExtendedMap, type AbstractConstructor, type Timeout } from "@common/utils/misc";
 import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 
 import { type Player } from "../objects/player";
@@ -17,6 +17,7 @@ import { GunItem } from "./gunItem";
 import { InventoryItem } from "./inventoryItem";
 import { MeleeItem } from "./meleeItem";
 import { ThrowableItem } from "./throwableItem";
+import type { LootBasisForDef } from "../objects/loot";
 
 type ReifiableItem =
     GunItem |
@@ -28,6 +29,8 @@ export const InventoryItemMapping = {
     [ItemType.Gun]: GunItem,
     [ItemType.Melee]: MeleeItem,
     [ItemType.Throwable]: ThrowableItem
+} satisfies {
+    [K in ItemType]?: AbstractConstructor<InventoryItem>
 };
 
 /**
@@ -217,7 +220,7 @@ export class Inventory {
         owner.dirty.weapons = true;
         this.owner.setDirty();
 
-        owner.updateAndApplyModifiers();
+        // owner.updateAndApplyModifiers();
 
         return true;
     }
@@ -264,7 +267,7 @@ export class Inventory {
 
     /**
      * Determines whether a given index is valid. For an index to be valid, it must be an
-     * integer between 0 and `Inventory.MAX_SIZE - 1` (inclusive)
+     * integer between 0 and `GameConstants.player.maxWeapons - 1` (inclusive)
      * @param slot The number to test
      * @returns Whether the number is a valid slot
      */
@@ -277,7 +280,9 @@ export class Inventory {
      * @param item The item to convert
      * @returns The corresponding `InventoryItem` subclass
      */
-    private _reifyItem<Def extends WeaponDefinition>(item: ReifiableDef<Def> | InstanceType<(typeof InventoryItemMapping)[Def["itemType"]]>): InstanceType<(typeof InventoryItemMapping)[Def["itemType"]]> {
+    private _reifyItem<Def extends WeaponDefinition>(
+        item: ReifiableDef<Def> | InstanceType<(typeof InventoryItemMapping)[Def["itemType"]]>
+    ): InstanceType<(typeof InventoryItemMapping)[Def["itemType"]]> {
         if (item instanceof InventoryItem) return item;
         type Item = InstanceType<(typeof InventoryItemMapping)[Def["itemType"]]>;
         const definition = Loots.reify<WeaponDefinition>(item);
@@ -314,26 +319,32 @@ export class Inventory {
         this.owner.dirty.weapons = true;
     }
 
-    replaceWeapon(slot: number, item: ReifiableItem): boolean {
+    /**
+     * Replaces an item in an inventory slot with a new one. The old item and its ammo are
+     * completely discarded. Honors slot locks
+     * @param slot The slot to put the new item in
+     * @param item The item to place there
+     * @returns `null` if the replacement was not done at all; otherwise, the potentially-`undefined` item that used to be in that slot
+     */
+    replaceWeapon(slot: number, item: ReifiableItem): InventoryItem | undefined | null {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to set item in invalid slot '${slot}'`);
-        if (this.isLocked(slot)) return false;
+        if (this.isLocked(slot)) return null;
 
         if (slot === this.activeWeaponIndex) this.owner.setDirty();
-        this._setWeapon(slot, this._reifyItem(item));
-        return true;
+        return this._setWeapon(slot, this._reifyItem(item));
     }
 
     /**
      * Puts a weapon in a certain slot, replacing the old weapon if one was there. If an item is replaced, it is dropped into the game world
      * @param slot The slot in which to insert the item
      * @param item The item to add
-     * @returns Whether the weapon was set in the given slot
+     * @returns `null` if the operation was not done at all; otherwise, the potentially-`undefined` item that used to be in that slot
      * @throws {RangeError} If `slot` isn't a valid slot number
      */
-    addOrReplaceWeapon(slot: number, item: ReifiableItem): boolean {
+    addOrReplaceWeapon(slot: number, item: ReifiableItem): InventoryItem | undefined | null {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to set item in invalid slot '${slot}'`);
         if (slot === this.activeWeaponIndex) this.owner.setDirty();
-        if (this.isLocked(slot)) return false;
+        if (this.isLocked(slot)) return null;
 
         /**
          * `dropWeapon` changes the active item index to something potentially undesirable,
@@ -353,14 +364,14 @@ export class Inventory {
         }
 
         // Drop old item into the game world and set the new item
-        this.dropWeapon(slot);
+        const old = this.dropWeapon(slot);
         this._setWeapon(slot, this._reifyItem(item));
 
         if (index !== undefined) {
             this.setActiveWeaponIndex(index);
         }
 
-        return true;
+        return old;
     }
 
     /**
@@ -380,7 +391,7 @@ export class Inventory {
                 this.weapons[slot] === undefined
                 && GameConstants.player.inventorySlotTypings[slot] === itemType
             ) {
-                this._setWeapon(slot, item);
+                this._setWeapon(slot, item); // no "destroy" call because this slot is guaranteed to be empty
                 return slot;
             }
         }
@@ -388,7 +399,7 @@ export class Inventory {
         return -1;
     }
 
-    private _dropItem(toDrop: ReifiableDef<LootDefinition>, count?: number): void {
+    private _dropItem<Def extends LootDefinition = LootDefinition>(toDrop: LootBasisForDef<Def>, count?: number): void {
         this.owner.game
             .addLoot(toDrop, this.owner.position, this.owner.layer, { jitterSpawn: false, pushVel: 0, count })
             ?.push(this.owner.rotation + Math.PI, 0.025);
@@ -400,7 +411,7 @@ export class Inventory {
         if (!this.items.hasItem(definition.idString)) return;
 
         const itemAmount = this.items.getItem(definition.idString);
-        const removalAmount = Math.min(itemAmount, removalCount ?? Math.ceil(itemAmount / 2));
+        const removalAmount = Numeric.min(itemAmount, removalCount ?? Math.ceil(itemAmount / 2));
 
         if (drop) {
             this._dropItem(definition, removalAmount);
@@ -442,15 +453,16 @@ export class Inventory {
     /**
      * Drops a weapon from this inventory
      * @param slot The slot to drop
+     * @param [force=false] Whether to ignore slot locks
      * @returns The item that was dropped, if any
      */
-    dropWeapon(slot: number): InventoryItem | undefined {
+    dropWeapon(slot: number, force = false): InventoryItem | undefined {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to drop item from invalid slot '${slot}'`);
-        if (this.isLocked(slot)) return;
+        if (!force && this.isLocked(slot)) return;
 
         const item = this.weapons[slot];
 
-        if (item === undefined || item.definition.noDrop) return undefined;
+        if (item === undefined || item.definition.noDrop) return;
         const definition = item.definition;
 
         if (GameConstants.player.inventorySlotTypings[slot] === ItemType.Throwable) {
@@ -460,42 +472,15 @@ export class Inventory {
                 this._dropItem((definition as DualGunNarrowing).singleVariant);
                 this._dropItem((definition as DualGunNarrowing).singleVariant);
             } else {
-                this._dropItem(definition);
+                this._dropItem<SingleGunNarrowing>(item as GunItem);
             }
 
             this._setWeapon(slot, undefined);
 
             if (item instanceof GunItem && item.ammo > 0) {
                 // Put the ammo in the gun back in the inventory
-                const ammoType = (definition as GunDefinition).ammoType;
-                this.items.incrementItem(ammoType, item.ammo);
-
-                /*
-                    If the new amount is more than the inventory can hold, drop the extra
-                    unless the owner is dead; in that case, we ignore the limit
-
-                    When players die, they drop equipable items (firearms and melees) before
-                    dropping stackable items (ammos, consumable). Therefore, if a player has a gun
-                    and their ammo reserve for that gun's ammo is full, the gun and its stored ammo will
-                    be dropped, and the the reserve will be dropped, which potentially creates more
-                    blocks of ammo than required.
-
-                    For example, consider a 5-round shotgun with a 15-round reserve. Combined, this is 20
-                    rounds, well below the limit of 60 per block. However, because the gun is dropped with its
-                    5 ammo, and then the 15 ammo in reserve is dropped afterwards, we get two blocks instead of
-                    one.
-
-                    To solve this, we just ignore capacity limits when the player is dead.
-                */
-                const overAmount = Loots.reify<AmmoDefinition>(ammoType).ephemeral || this.owner.dead
-                    ? 0
-                    : this.items.getItem(ammoType) - (this.backpack.maxCapacity[ammoType] ?? 0);
-
-                if (overAmount > 0) {
-                    this.items.decrementItem(ammoType, overAmount);
-
-                    this._dropItem(ammoType, overAmount);
-                }
+                this.giveItem((definition as GunDefinition).ammoType, item.ammo);
+                item.ammo = 0;
             }
         }
 
@@ -507,27 +492,75 @@ export class Inventory {
     }
 
     /**
-     * Attempts to drop a item with given `idString`
-     * @param itemString The `idString` of the item;
+     * Removes and destroys the weapon in a given slot, ignoring slot locks
+     * @param slot The slot
      */
-    dropItem(itemString: ReifiableDef<LootDefinition>, pushVel = -0.03): void {
+    destroyWeapon(slot: number): void {
+        if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to destroy item in invalid slot '${slot}'`);
+        this._setWeapon(slot, undefined)?.destroy();
+
+        this.owner.setDirty();
+        this.owner.dirty.items = true;
+        this.owner.dirty.weapons = true;
+    }
+
+    giveItem(item: ReifiableDef<LootDefinition>, amount = 1): void {
+        const itemString = typeof item === "string" ? item : item.idString;
+        this.items.incrementItem(
+            itemString,
+            amount
+        );
+
+        /*
+            If the new amount is more than the inventory can hold, drop the extra
+            unless the owner is dead; in that case, we ignore the limit
+
+            When players die, they drop equipable items (firearms and melees) before
+            dropping stackable items (ammos, consumable). Therefore, if a player has a gun
+            and their ammo reserve for that gun's ammo is full, the gun and its stored ammo will
+            be dropped, and the the reserve will be dropped, which potentially creates more
+            blocks of ammo than required.
+
+            For example, consider a 5-round shotgun with a 15-round reserve. Combined, this is 20
+            rounds, well below the limit of 60 per block. However, because the gun is dropped with its
+            5 ammo, and then the 15 ammo in reserve is dropped afterwards, we get two blocks instead of
+            one.
+
+            To solve this, we just ignore capacity limits when the player is dead.
+        */
+        const overAmount = Loots.reify<AmmoDefinition>(itemString).ephemeral || this.owner.dead
+            ? 0
+            : this.items.getItem(itemString) - (this.backpack.maxCapacity[itemString] ?? 0);
+
+        if (overAmount > 0) {
+            this.items.decrementItem(itemString, overAmount);
+
+            this._dropItem(item, overAmount);
+        }
+    }
+
+    /**
+     * Attempts to drop a item with given `idString`
+     * @param itemString The `idString` of the item
+     */
+    dropItem(itemString: ReifiableDef<LootDefinition>): void {
         const definition = Loots.reify(itemString);
-        const { idString } = definition;
+        const { idString, itemType } = definition;
 
         if (
             (
                 !this.items.hasItem(idString)
-                && definition.itemType !== ItemType.Armor
-                && definition.itemType !== ItemType.Backpack
+                && itemType !== ItemType.Armor
+                && itemType !== ItemType.Backpack
             )
             || definition.noDrop
         ) return;
 
-        switch (definition.itemType) {
+        switch (itemType) {
             case ItemType.Healing:
             case ItemType.Ammo: {
                 const itemAmount = this.items.getItem(idString);
-                const removalAmount = Math.min(itemAmount, Math.ceil(itemAmount / 2));
+                const removalAmount = Numeric.min(itemAmount, Math.ceil(itemAmount / 2));
 
                 this._dropItem(definition, removalAmount);
                 this.items.decrementItem(idString, removalAmount);
@@ -583,12 +616,11 @@ export class Inventory {
 
     /**
      * Drops all weapons from this inventory
+     * @param [force=false] Whether to ignore slot locks
+     * @returns The weapons that used to be in the inventory
      */
-    dropWeapons(): void {
-        const weaponLength = this.weapons.length;
-        for (let i = 0; i < weaponLength; i++) {
-            this.dropWeapon(i);
-        }
+    dropWeapons(force = false): Array<InventoryItem | undefined> {
+        return this.weapons.map((_, i) => this.dropWeapon(i, force));
     }
 
     /**
@@ -622,7 +654,7 @@ export class Inventory {
         if (gun.definition.isDual || gun.definition.dualVariant === undefined) return false;
 
         const dualGun = this._reifyItem<GunDefinition>(gun.definition.dualVariant);
-        this._setWeapon(slot, dualGun);
+        this._setWeapon(slot, dualGun)?.destroy();
         dualGun.ammo = gun.ammo;
 
         return true;
@@ -791,6 +823,13 @@ export class ItemCollection<ItemDef extends LootDefinition> {
         return (this._internal.get(key) ?? -1) > 0;
     }
 
+    /**
+     * It is up to the caller to perform any bounds checks with regards to maximum/minimum capacity,
+     * and to perform any sanitization for abnormal values (decimals, `NaN`s, etc).
+     * This method is but a setter.
+     * @param key The item to modify
+     * @param amount The specific count to set this item to
+     */
     setItem(key: ReferenceTo<ItemDef>, amount: number): void {
         const old = this.getItem(key);
 
@@ -803,12 +842,26 @@ export class ItemCollection<ItemDef extends LootDefinition> {
         }
     }
 
+    /**
+     * It is up to the caller to perform any bounds checks with regards to maximum/minimum capacity,
+     * and to perform any sanitization for abnormal values (decimals, `NaN`s, etc).
+     * This method is but a setter.
+     * @param key The item to modify
+     * @param amount By how much to increment the count. Defaults to 1
+     */
     incrementItem(key: ReferenceTo<ItemDef>, amount = 1): void {
         this.setItem(key, this.getItem(key) + amount);
     }
 
+    /**
+     * It is up to the caller to perform any bounds checks with regards to maximum/minimum capacity,
+     * and to perform any sanitization for abnormal values (decimals, `NaN`s, etc).
+     * This method is but a setter.
+     * @param key The item to modify
+     * @param amount By how much to decrement the count. Defaults to 1
+     */
     decrementItem(key: ReferenceTo<ItemDef>, amount = 1): void {
-        this.setItem(key, Math.max(this.getItem(key) - amount, 0));
+        this.setItem(key, Numeric.max(this.getItem(key) - amount, 0));
     }
 
     // addChangeListener(listener: (key: ReferenceTo<ItemDef>, oldValue: number, newValue: number) => void): void {

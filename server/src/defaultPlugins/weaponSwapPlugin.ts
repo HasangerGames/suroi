@@ -7,6 +7,7 @@ import { pickRandomInArray } from "@common/utils/random";
 import { GunItem } from "../inventory/gunItem";
 import { Player } from "../objects/player";
 import { GamePlugin } from "../pluginManager";
+import { Numeric } from "../../../common/src/utils/math";
 
 const selectableGuns = Guns.definitions.filter(g => !g.killstreak && !g.wearerAttributes);
 const selectableMelees = Melees.definitions.filter(g => !g.killstreak && !g.wearerAttributes);
@@ -31,7 +32,7 @@ export class WeaponSwapPlugin extends GamePlugin {
                     item = gun;
                     const { ammoType } = gun;
                     if (gun.ammoSpawnAmount) {
-                        const amount = Math.min(
+                        const amount = Numeric.min(
                             inventory.backpack.maxCapacity[ammoType],
                             inventory.items.getItem(ammoType) + gun.ammoSpawnAmount
                         );

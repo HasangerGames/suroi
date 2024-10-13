@@ -24,6 +24,7 @@ import { CANTONESE_TRANSLATIONS } from "./translations/cantonese";
 import { CHINESE_TRADITIONAL_TRANSLATIONS } from "./translations/chinese_traditional";
 import { ROMANIAN_TRANSLATIONS } from "./translations/romanian";
 import { DRUNKGLISH_TRANSLATIONS } from "./translations/drunkglish";
+import { Numeric } from "../../common/src/utils/math";
 
 export type TranslationMap = Record<
     string,
@@ -154,10 +155,18 @@ function adjustFontSize(element: HTMLElement): void {
 
     switch (language) {
         case "ta": // has very long strings
-            fontSize = Math.max((MIN_FONT_SIZE - 2), Math.min(buttonWidth / textWidth * FONT_WIDTH_PER_CHARACTER, 13));
+            fontSize = Numeric.clamp(
+                buttonWidth / textWidth * FONT_WIDTH_PER_CHARACTER,
+                MIN_FONT_SIZE - 2,
+                13
+            );
             break;
         default:
-            fontSize = Math.max(MIN_FONT_SIZE, Math.min(buttonWidth / textWidth * FONT_WIDTH_PER_CHARACTER, 20));
+            fontSize = Numeric.clamp(
+                buttonWidth / textWidth * FONT_WIDTH_PER_CHARACTER,
+                MIN_FONT_SIZE - 2,
+                20
+            );
             break;
     }
 
