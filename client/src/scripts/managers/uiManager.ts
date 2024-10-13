@@ -8,7 +8,7 @@ import { emoteIdStrings, type EmoteDefinition } from "../../../../common/src/def
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { MapPings, type PlayerPing } from "../../../../common/src/definitions/mapPings";
-import { PerkIds } from "../../../../common/src/definitions/perks";
+import { PerkIds, type PerkDefinition } from "../../../../common/src/definitions/perks";
 import { DEFAULT_SCOPE, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { type GameOverData } from "../../../../common/src/packets/gameOverPacket";
 import { type KillFeedPacketData } from "../../../../common/src/packets/killFeedPacket";
@@ -296,7 +296,7 @@ export class UIManager {
             slot,
             () => {
                 const container = $<HTMLDivElement>(`#weapon-slot-${slot}`);
-                const inner = container.children(".main-container");
+                const inner = container.children<HTMLDivElement>(".main-container");
 
                 return {
                     container,
@@ -664,14 +664,12 @@ export class UIManager {
         if (perks) {
             this.perks.overwrite(perks);
 
-            if (this.game.activePlayer) {
-                const perks = this.perks.asList();
-                const length = perks.length;
+            const perkList = this.perks.asList();
+            const length = perkList.length;
 
-                for (let i = 0; i < length; i++) {
-                    const perk = perks[i];
-                    this.game.activePlayer.updatePerkSlot(perk, i);
-                }
+            for (let i = 0; i < length; i++) {
+                const perk = perkList[i];
+                this.updatePerkSlot(perk, i);
             }
         }
     }
@@ -750,7 +748,7 @@ export class UIManager {
       TODO proper caching would require keeping a copy of the inventory currently being shown,
            so that we can compare it to what it should now be showing (in other words, a kind
            of "oldInventory—newInventory" thing).
-  */
+    */
     updateWeaponSlots(): void {
         const inventory = this.inventory;
 
@@ -852,6 +850,39 @@ export class UIManager {
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         element[0].offsetWidth; // causes browser reflow
         element.toggleClass("active");
+    }
+
+    updatePerkSlot(perkDef: PerkDefinition, index: number): void {
+        if (index > 3) index = 0; // overwrite stuff ig?
+        // no, write a hud that can handle it
+
+        const container = $(`#perk-slot-${index}`);
+
+        container.children(".item-tooltip").text(perkDef.name);
+        container.children(".item-image").attr("src", `./img/game/perks/${perkDef.idString}.svg`);
+        container.css("visibility", this.game.uiManager.perks.hasPerk(perkDef.idString) ? "visible" : "hidden");
+
+        /*  container[0].addEventListener( - todo: perk dropping
+            "pointerdown",
+            (e: PointerEvent): void => {
+                e.stopImmediatePropagation();
+                if (e.button === 2 && perkDef && this.game.teamMode) {
+                    this.game.inputManager.addAction({
+                        type: InputActions.DropItem,
+                        item: perkDef
+                    });
+                }
+            }
+        ); */
+    }
+
+    resetPerkSlots(): void {
+        for (let i = 0; i < 3; i++) {
+            const container = $(`#perk-slot-${i}`);
+            container.children(".item-tooltip").text("");
+            container.children(".item-image").attr("src", "");
+            container.css("visibility", "hidden");
+        }
     }
 
     updateItems(): void {

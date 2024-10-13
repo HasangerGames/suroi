@@ -1,7 +1,8 @@
 import $ from "jquery";
-import { Container, Graphics, Text, TilingSprite } from "pixi.js";
 import { DashLine } from "pixi-dashed-line";
+import { Container, Graphics, Text, TilingSprite } from "pixi.js";
 import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
+import { Explosions } from "../../../../common/src/definitions";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { Backpacks, type BackpackDefinition } from "../../../../common/src/definitions/backpacks";
@@ -10,7 +11,7 @@ import { type GunDefinition, type SingleGunNarrowing } from "../../../../common/
 import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
 import { Loots, type WeaponDefinition } from "../../../../common/src/definitions/loots";
 import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "../../../../common/src/definitions/melees";
-import { PerkData, PerkIds, type PerkDefinition } from "../../../../common/src/definitions/perks";
+import { PerkData, PerkIds } from "../../../../common/src/definitions/perks";
 import { Skins, type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
@@ -31,7 +32,6 @@ import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
-import { Explosions } from "../../../../common/src/definitions";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -473,7 +473,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.container.position.copyFrom(toPixiCoords(this.position));
             this.emote.container.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, -175)));
             this.teammateName?.container.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, 95)));
-            this.resetPerkSlots();
+            if (this.isActivePlayer) this.game.uiManager.resetPerkSlots();
         }
 
         if (data.animation !== undefined) {
@@ -598,11 +598,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             if (this.dead || this.beingRevived) {
                 clearInterval(this.bleedEffectInterval);
                 this.bleedEffectInterval = undefined;
-                this.resetPerkSlots();
             }
 
-            if (this.dead && this.teammateName) {
-                this.teammateName.container.visible = false;
+            if (this.dead) {
+                if (this.isActivePlayer) this.game.uiManager.resetPerkSlots();
+                if (this.teammateName !== undefined) this.teammateName.container.visible = false;
             }
 
             this._oldItem = this.activeItem;
@@ -1138,39 +1138,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
         } else {
             image.setVisible(false);
-        }
-    }
-
-    updatePerkSlot(perkDef: PerkDefinition, index: number): void {
-        if (index > 3) index = 0; // overwrite stuff ig?
-        // no, write a hud that can handle it
-
-        const container = $(`#perk-slot-${index}`);
-
-        container.children(".item-tooltip").text(perkDef.name);
-        container.children(".item-image").attr("src", `./img/game/perks/${perkDef.idString}.svg`);
-        container.css("visibility", this.game.uiManager.perks.hasPerk(perkDef.idString) ? "visible" : "hidden");
-
-        /*  container[0].addEventListener( - todo: perk dropping
-            "pointerdown",
-            (e: PointerEvent): void => {
-                e.stopImmediatePropagation();
-                if (e.button === 2 && perkDef && this.game.teamMode) {
-                    this.game.inputManager.addAction({
-                        type: InputActions.DropItem,
-                        item: perkDef
-                    });
-                }
-            }
-        ); */
-    }
-
-    resetPerkSlots(): void {
-        for (let i = 0; i < 3; i++) {
-            const container = $(`#perk-slot-${i}`);
-            container.children(".item-tooltip").text("");
-            container.children(".item-image").attr("src", "");
-            container.css("visibility", "hidden");
         }
     }
 
