@@ -8,6 +8,7 @@ import { emoteIdStrings, type EmoteDefinition } from "../../../../common/src/def
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { MapPings, type PlayerPing } from "../../../../common/src/definitions/mapPings";
+import { PerkIds } from "../../../../common/src/definitions/perks";
 import { DEFAULT_SCOPE, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { type GameOverData } from "../../../../common/src/packets/gameOverPacket";
 import { type KillFeedPacketData } from "../../../../common/src/packets/killFeedPacket";
@@ -24,7 +25,7 @@ import { GHILLIE_TINT, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
 import { ClientPerkManager } from "./perkManager";
-import { PerkIds } from "../../../../common/src/definitions/perks";
+
 function safeRound(value: number): number {
     if (0 < value && value <= 1) return 1;
     return Math.round(value);
@@ -664,18 +665,12 @@ export class UIManager {
             this.perks.overwrite(perks);
 
             if (this.game.activePlayer) {
-                const perks = [];
-                for (const perkDef of this.perks) perks.push(perkDef);
+                const perks = this.perks.asList();
+                const length = perks.length;
 
-                for (const perk of perks) {
-                    let index = 0; // aw dangit
-                    for (let perkIndex = 0; perkIndex < perks.length; perkIndex++) {
-                        if (perks[perkIndex].idString === perk.idString) {
-                            index = perkIndex;
-                            break;
-                        }
-                    }
-                    this.game.activePlayer.updatePerkSlot(perk, index);
+                for (let i = 0; i < length; i++) {
+                    const perk = perks[i];
+                    this.game.activePlayer.updatePerkSlot(perk, i);
                 }
             }
         }

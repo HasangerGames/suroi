@@ -22,7 +22,7 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "fall",
+    map: "arena",
 
     lootTableOverride: "fall", // IMPORTANT: DELETE IF NORMAL MODE.
 

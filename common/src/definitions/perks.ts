@@ -125,7 +125,7 @@ type LoosenNumerics<T> = T extends object
             : T
     );
 
-export enum PerkIds {
+export const enum PerkIds {
     Werewolf = "werewolf",
     SecondWind = "second_wind",
     Overstimmed = "overstimmed",

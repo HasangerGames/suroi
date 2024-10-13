@@ -1141,31 +1141,27 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     }
 
     updatePerkSlot(perkDef: PerkDefinition, index: number): void {
-        if (Object.values(PerkIds).includes(perkDef.idString as PerkIds)) {
-            if (index > 3) index = 0; // overwrite stuff ig?
+        if (index > 3) index = 0; // overwrite stuff ig?
+        // no, write a hud that can handle it
 
-            const container = $(`#perk-slot-${index}`);
+        const container = $(`#perk-slot-${index}`);
 
-            container.children(".item-tooltip").text(perkDef.name);
-            container.children(".item-image").attr("src", `./img/game/perks/${perkDef.idString}.svg`);
-            container.css("visibility", this.game.uiManager.perks.hasPerk(perkDef.idString) ? "visible" : "hidden");
+        container.children(".item-tooltip").text(perkDef.name);
+        container.children(".item-image").attr("src", `./img/game/perks/${perkDef.idString}.svg`);
+        container.css("visibility", this.game.uiManager.perks.hasPerk(perkDef.idString) ? "visible" : "hidden");
 
-            /*  container[0].addEventListener( - todo: perk dropping
-                "pointerdown",
-                (e: PointerEvent): void => {
-                    e.stopImmediatePropagation();
-                    if (e.button === 2 && perkDef && this.game.teamMode) {
-                        this.game.inputManager.addAction({
-                            type: InputActions.DropItem,
-                            item: perkDef
-                        });
-                    }
+        /*  container[0].addEventListener( - todo: perk dropping
+            "pointerdown",
+            (e: PointerEvent): void => {
+                e.stopImmediatePropagation();
+                if (e.button === 2 && perkDef && this.game.teamMode) {
+                    this.game.inputManager.addAction({
+                        type: InputActions.DropItem,
+                        item: perkDef
+                    });
                 }
-            ); */
-        } else {
-            console.warn("[updatePerkSlot]: Non-existent perk was given.");
-            return;
-        }
+            }
+        ); */
     }
 
     resetPerkSlots(): void {
