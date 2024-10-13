@@ -2118,11 +2118,12 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1,
                     destroy: 1
                 },
-                hitbox: RectangleHitbox.fromRect(10.25, 1.25),
+                hitbox: RectangleHitbox.fromRect(10.86, 1.13),
                 rotationMode: RotationMode.Limited,
                 noResidue: true,
                 role: ObstacleSpecialRoles.Door,
                 automatic: true,
+                hideWhenOpen: true,
                 operationStyle: "slide",
                 slideFactor: 0.9,
                 frames: {
@@ -4053,20 +4054,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 rotationMode: RotationMode.Limited
                 // zIndex: 9999
-            },
-            {
-                idString: "hq_door_occluder",
-                name: "HQ Door Occluder",
-                material: "stone",
-                health: 1000,
-                indestructible: true,
-                noCollisions: true,
-                noMeleeCollision: true,
-                noBulletCollision: true,
-                noResidue: true,
-                hitbox: RectangleHitbox.fromRect(0, 0),
-                rotationMode: RotationMode.Limited,
-                zIndex: ZIndexes.ObstaclesLayer2
             },
             {
                 idString: "fire_exit_railing",
