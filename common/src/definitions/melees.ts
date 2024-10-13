@@ -172,34 +172,6 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             }
         },
         {
-            idString: "chainsaw",
-            name: "Chain Saw",
-            damage: 25,
-            fireMode: FireMode.Auto,
-            obstacleMultiplier: 2,
-            piercingMultiplier: 2,
-            radius: 2.5,
-            swingSound: "chainsaw",
-            stopSound: "chainsaw_stop",
-            offset: Vec.create(7, 0.5),
-            cooldown: 0,
-            fists: {
-                animationDuration: 200,
-                left: Vec.create(61, 10),
-                right: Vec.create(35, 70),
-                useLeft: Vec.create(61, 10),
-                useRight: Vec.create(35, 70)
-            },
-            image: {
-                position: Vec.create(106, 27),
-                usePosition: Vec.create(106, 27),
-                angle: 10,
-                useAngle: 10,
-                lootScale: 0.5,
-                animated: true
-            }
-        },
-        {
             idString: "kbar",
             name: "K-bar",
             swingSound: "soft_swing",
@@ -428,6 +400,34 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 angle: 130,
                 useAngle: 25,
                 lootScale: 0.6
+            }
+        },
+        {
+            idString: "chainsaw",
+            name: "Chain Saw",
+            damage: 25,
+            fireMode: FireMode.Auto,
+            obstacleMultiplier: 2,
+            piercingMultiplier: 2,
+            radius: 2.7,
+            swingSound: "chainsaw",
+            stopSound: "chainsaw_stop",
+            offset: Vec.create(7, 0.5),
+            cooldown: 0,
+            fists: {
+                animationDuration: 200,
+                left: Vec.create(61, 10),
+                right: Vec.create(35, 70),
+                useLeft: Vec.create(61, 10),
+                useRight: Vec.create(35, 70)
+            },
+            image: {
+                position: Vec.create(106, 27),
+                usePosition: Vec.create(106, 27),
+                angle: 10,
+                useAngle: 10,
+                lootScale: 0.5,
+                animated: true
             }
         }
     ]
