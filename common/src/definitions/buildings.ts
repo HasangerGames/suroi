@@ -5934,7 +5934,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     triggerOnSolve: "blue_metal_auto_door",
                     solvedSound: true,
                     soundPosition: Vec.create(-95.68, 46.52),
-                    delay: 0
+                    delay: 1000
                 },
                 obstacles: [
                     // security office
