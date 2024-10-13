@@ -767,6 +767,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         if (
             this.animation === AnimationType.ThrowableCook
             && this.activeItem.itemType === ItemType.Throwable
+            && this.isActivePlayer
         ) {
             // prediction for impact point is basically just done by yoinking sever
             // code and plopping it client-side lol
@@ -1914,6 +1915,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         anims.weapon?.kill();
         anims.muzzleFlashFade?.kill();
         anims.muzzleFlashRecoil?.kill();
+
+        this.grenadeImpactPreview?.destroy();
 
         this.healingParticlesEmitter.destroy();
         this.actionSound?.stop();
