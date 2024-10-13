@@ -129,9 +129,11 @@ type RawObstacleDefinition = ObjectDefinition & {
     (
         {
             readonly role: ObstacleSpecialRoles.Door
+            readonly hitbox: RectangleHitbox
             readonly locked?: boolean
             readonly openOnce?: boolean
             readonly automatic?: boolean
+            readonly hideWhenOpen?: boolean
             readonly animationDuration?: number
             readonly doorSound?: string
         } & (
@@ -2144,6 +2146,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 noResidue: true,
                 role: ObstacleSpecialRoles.Door,
                 automatic: true,
+                hideWhenOpen: true,
                 operationStyle: "slide",
                 slideFactor: 0.9,
                 frames: {
@@ -2164,6 +2167,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 rotationMode: RotationMode.Limited,
                 noResidue: true,
                 role: ObstacleSpecialRoles.Door,
+                hideWhenOpen: true,
                 operationStyle: "slide",
                 slideFactor: 1,
                 animationDuration: 500,
@@ -2187,6 +2191,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 rotationMode: RotationMode.Limited,
                 noResidue: true,
                 role: ObstacleSpecialRoles.Door,
+                hideWhenOpen: true,
                 operationStyle: "slide",
                 slideFactor: 1,
                 animationDuration: 500,
@@ -2209,6 +2214,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 noResidue: true,
                 role: ObstacleSpecialRoles.Door,
                 automatic: true,
+                hideWhenOpen: true,
                 operationStyle: "slide",
                 slideFactor: 1,
                 animationDuration: 500,

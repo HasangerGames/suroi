@@ -1,3 +1,4 @@
+import { Graphics } from "pixi.js";
 import { Layer, Layers, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { MaterialSounds, type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
@@ -57,6 +58,8 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     hitSound?: GameSound;
 
     notOnCoolDown = true;
+
+    doorMask?: Graphics;
 
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Obstacle]) {
         super(game, id);
@@ -504,6 +507,25 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
         if (isNew) {
             this._door.offset = offset;
+
+            if (this.definition.isDoor && this.definition.hideWhenOpen) {
+                this.doorMask = new Graphics();
+                this.doorMask.alpha = 0;
+                this.container.addChild(this.doorMask);
+
+                const { min, max } = this.definition.hitbox;
+                this.doorMask
+                    .beginPath()
+                    .rect(
+                        min.x * PIXI_SCALE,
+                        min.y * PIXI_SCALE,
+                        (max.x - min.x) * PIXI_SCALE,
+                        (max.y - min.y) * PIXI_SCALE
+                    )
+                    .closePath()
+                    .fill(0xffffff);
+                this.image.mask = this.doorMask;
+            }
         } else if (offset !== this._door.offset) {
             this._door.offset = offset;
 
@@ -587,6 +609,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     override destroy(): void {
         super.destroy();
         this.image.destroy();
+        this.doorMask?.destroy();
         this.smokeEmitter?.destroy();
     }
 }
