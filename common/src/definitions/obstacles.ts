@@ -100,6 +100,7 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly reflectBullets: boolean
     readonly hitSoundVariations?: number
     readonly noInteractMessage?: boolean
+    readonly weaponSwap?: boolean
 
     readonly frames: {
         readonly base?: string
@@ -1011,8 +1012,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 allowFlyover: FlyoverPref.Always,
                 frames: {
                     particle: "plumpkin_particle"
-                }
-                // hasLoot: true
+                },
+                weaponSwap: true
             },
             {
                 idString: "plumpkin",

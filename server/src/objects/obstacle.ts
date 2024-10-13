@@ -1,11 +1,11 @@
-import { ObjectCategory } from "@common/constants";
+import { FireMode, ObjectCategory } from "@common/constants";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Angle, calculateDoorHitboxes, resolveStairInteraction } from "@common/utils/math";
 import { ItemType, NullString, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
-import { random } from "@common/utils/random";
+import { pickRandomInArray, random } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 
 import { equalLayer } from "@common/utils/layer";
@@ -18,6 +18,9 @@ import type { Bullet } from "./bullet";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { type Player } from "./player";
 import { Config } from "../config";
+import { GunItem } from "../inventory/gunItem";
+import { MeleeItem } from "../inventory/meleeItem";
+import { Guns, Melees } from "@common/definitions";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override readonly fullAllocBytes = 8;
@@ -202,6 +205,43 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         if (!notDead) {
             this.health = 0;
             this.dead = true;
+
+            if (definition.weaponSwap && source && source instanceof BaseGameObject && source.isPlayer) {
+                const itemDef = source.inventory.activeWeapon;
+                const slot = source.inventory.activeWeaponIndex;
+
+                switch (true) {
+                    case itemDef instanceof GunItem: {
+                        const bannedAmmoTypes = ["9mm", "firework_rocket", "bb", "power_cell"];
+
+                        const guns = Guns.definitions.filter(gunDef => {
+                            return !gunDef.killstreak && !bannedAmmoTypes.includes(gunDef.ammoType) && gunDef.fireMode !== FireMode.Auto;
+                        });
+
+                        const chosenGun = pickRandomInArray(guns);
+                        source.inventory.replaceWeapon(slot, chosenGun.idString);
+                        (source.activeItem as GunItem).ammo = chosenGun.capacity;
+                        this.game.addLoot(chosenGun.ammoType, this.position, this.layer, { jitterSpawn: false, count: chosenGun.ammoSpawnAmount });
+                    }
+                        break;
+
+                    case itemDef instanceof MeleeItem: {
+                        // get rid of dev shit
+                        const melees = Melees.definitions.filter(meleeDef => {
+                            return !meleeDef.killstreak && !meleeDef.noDrop && !meleeDef.image?.animated; // to exclude chainsaw :(                        })
+                        });
+                        source.inventory.replaceWeapon(slot, pickRandomInArray(melees).idString);
+                    }
+                        break;
+
+                    /* case itemDef instanceof ThrowableItem: { brings back infinite nades glitch idk
+                        const chosenThrowable = pickRandomInArray(Throwables.definitions).idString;
+                        source.inventory.items.setItem(chosenThrowable, 3);
+                        source.inventory.addOrReplaceWeapon(slot, chosenThrowable);
+                    }
+                        break; */
+                }
+            }
 
             if (
                 this.game.pluginManager.emit("obstacle_will_destroy", {
