@@ -6163,17 +6163,18 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             {
                 idString: "plumpkin_bunker_second_puzzle",
                 name: "Plumpkin Bunker Second Puzzle",
-                spawnHitbox: RectangleHitbox.fromRect(40, 40),
+                spawnHitbox: RectangleHitbox.fromRect(104.67, 37.14, Vec.create(0, -75.62)),
                 sounds: {
+                    normal: "plumpkin_bunker_pump_ambience",
                     solved: "plumpkin_bunker_pump_ambience",
                     position: Vec.create(-13.28, -81.95),
                     maxRange: 250,
                     falloff: 0.5
                 },
                 floorImages: [
-                    { key: "plumpkin_bunker_large_mixing_stick", position: Vec.create(14.75, -82.03), rotation: random(0, Math.PI * 2), spinSpeed: 0.002, spinOnSolve: true },
-                    { key: "plumpkin_bunker_large_mixing_stick", position: Vec.create(-40.11, -82.03), rotation: random(0, Math.PI * 2), spinSpeed: 0.002, spinOnSolve: true },
-                    { key: "plumpkin_bunker_small_mixing_stick", position: Vec.create(44.62, -64.92), rotation: random(0, Math.PI * 2), spinSpeed: 0.002, spinOnSolve: true },
+                    { key: "plumpkin_bunker_large_mixing_stick", position: Vec.create(14.75, -82.03), rotation: random(0, Math.PI * 2), spinSpeed: 0.002 },
+                    { key: "plumpkin_bunker_large_mixing_stick", position: Vec.create(-40.11, -82.03), rotation: random(0, Math.PI * 2), spinSpeed: 0.002 },
+                    { key: "plumpkin_bunker_small_mixing_stick", position: Vec.create(44.62, -64.92), rotation: random(0, Math.PI * 2), spinSpeed: 0.002 },
                     { key: "plumpkin_bunker_large_mixing_frame", position: Vec.create(14.75, -82.03) },
                     { key: "plumpkin_bunker_large_mixing_frame", position: Vec.create(-40.11, -82.03) },
                     { key: "plumpkin_bunker_small_mixing_frame", position: Vec.create(44.62, -64.92) },
