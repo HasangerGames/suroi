@@ -4145,17 +4145,17 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "trash_bag", position: Vec.create(-69.5, -57.3) },
 
                     // office room
-                    { idString: "hq_desk_left", position: Vec.create(-8.5, -17.5), rotation: 0 },
+                    { idString: "hq_desk_left", position: Vec.create(-8, -17.3), rotation: 0 },
                     { idString: "trash_can", position: Vec.create(-15, -8.25) },
                     { idString: "grey_office_chair", position: Vec.create(-6.5, -13), rotation: 2 },
-                    { idString: "hq_desk_right", position: Vec.create(37, -17.5), rotation: 0 },
+                    { idString: "hq_desk_right", position: Vec.create(36.6, -17.3), rotation: 0 },
                     { idString: "grey_office_chair", position: Vec.create(31.5, -11.5), rotation: 2 },
-                    { idString: "hq_desk_left", position: Vec.create(59, -17.5), rotation: 0 },
+                    { idString: "hq_desk_left", position: Vec.create(59.6, -17.3), rotation: 0 },
                     { idString: "grey_office_chair", position: Vec.create(60, -13), rotation: 2 },
                     { idString: "headquarters_wall_4", position: Vec.create(3.1, -15.57), rotation: 1 },
                     { idString: "headquarters_wall_4", position: Vec.create(25.5, -15.57), rotation: 1 },
                     { idString: "headquarters_wall_4", position: Vec.create(48, -15.57), rotation: 1 },
-                    { idString: "hq_desk_left", position: Vec.create(-8.5, 29.5), rotation: 2 },
+                    { idString: "hq_desk_left", position: Vec.create(-8, 29.6), rotation: 2 },
                     { idString: "box", position: Vec.create(-1.6, 21) },
                     { idString: "grey_office_chair", position: Vec.create(-10, 24), rotation: 0 },
                     { idString: "headquarters_wall_9", position: Vec.create(3, 25.25), rotation: 1 },
@@ -4171,7 +4171,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "gun_case", position: Vec.create(36, 14.5), rotation: 0 },
                     { idString: "trash_can", position: Vec.create(66.5, 14.5) },
                     { idString: "grey_office_chair", position: Vec.create(56, 16), rotation: 0 },
-                    { idString: "hq_desk_left", position: Vec.create(59.9, 23.25), rotation: 2 },
+                    { idString: "hq_desk_left", position: Vec.create(59.6, 23.25), rotation: 2 },
                     { idString: "office_chair", position: Vec.create(58, 32.25), rotation: 2 },
 
                     // cafeteria (top right)

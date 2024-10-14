@@ -1303,7 +1303,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     RectangleHitbox.fromRect(4.5, 11, Vec.create(-6.8, 0))
                 ),
                 rotationMode: RotationMode.Limited,
-                noResidue: true,
                 hasLoot: true,
                 frames: {
                     particle: "headquarters_desk_particle"
@@ -1324,7 +1323,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     RectangleHitbox.fromRect(4.5, 11, Vec.create(6.8, 0))
                 ),
                 rotationMode: RotationMode.Limited,
-                noResidue: true,
                 hasLoot: true,
                 frames: {
                     particle: "headquarters_desk_particle"
