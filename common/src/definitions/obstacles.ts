@@ -3331,6 +3331,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 zIndex: ZIndexes.ObstaclesLayer4,
                 rotationMode: RotationMode.Limited,
                 allowFlyover: FlyoverPref.Always,
+                noBulletCollision: true,
+                noMeleeCollision: true,
                 noCollisions: true
             },
             {
@@ -3343,6 +3345,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 zIndex: ZIndexes.ObstaclesLayer4,
                 rotationMode: RotationMode.Limited,
                 allowFlyover: FlyoverPref.Always,
+                noBulletCollision: true,
+                noMeleeCollision: true,
                 noCollisions: true
             },
             {
@@ -3355,6 +3359,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 zIndex: ZIndexes.ObstaclesLayer4,
                 rotationMode: RotationMode.Limited,
                 allowFlyover: FlyoverPref.Always,
+                noBulletCollision: true,
+                noMeleeCollision: true,
                 noCollisions: true
             },
             {

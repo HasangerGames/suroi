@@ -14,6 +14,7 @@ export interface SoundOptions {
     layer: Layer | number
     maxRange: number
     loop: boolean
+    speed?: number
     /**
      * If the sound volume and panning will be updated
      * when the camera position changes after it started playing
@@ -32,6 +33,7 @@ export class GameSound {
     falloff: number;
     maxRange: number;
     layer: Layer | number;
+    speed?: number;
     onEnd?: () => void;
 
     readonly dynamic: boolean;
@@ -49,6 +51,7 @@ export class GameSound {
         this.falloff = options.falloff;
         this.maxRange = options.maxRange;
         this.layer = options.layer;
+        this.speed = options.speed;
         this.dynamic = options.dynamic;
         this.onEnd = options.onEnd;
         this.stereoFilter = new PixiSound.filters.StereoFilter(0);
@@ -80,7 +83,8 @@ export class GameSound {
             },
             filters: [filter],
             loop: options.loop,
-            volume: this.manager.volume
+            volume: this.manager.volume,
+            speed: options.speed ?? 1
         });
 
         // PixiSound.sound.play returns a promise if the sound has not finished loading
