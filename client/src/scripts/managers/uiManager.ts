@@ -858,7 +858,7 @@ export class UIManager {
 
         const container = $(`#perk-slot-${index}`);
 
-        container.children(".item-tooltip").text(perkDef.name);
+        container.children(".item-tooltip").html(`<strong>${perkDef.name}</strong><br>${perkDef.description}`);
         container.children(".item-image").attr("src", `./img/game/perks/${perkDef.idString}.svg`);
         container.css("visibility", this.game.uiManager.perks.hasPerk(perkDef.idString) ? "visible" : "hidden");
 
