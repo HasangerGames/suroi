@@ -425,7 +425,6 @@ const perks = [
         typeof defaultTemplate
     > & Record<string, unknown>
 >;
-console.log(perks.length);
 
 export type PerkDefinition = LoosenNumerics<(typeof perks)[number]> & BasicPerk;
 
