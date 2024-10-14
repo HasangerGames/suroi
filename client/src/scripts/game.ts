@@ -436,6 +436,7 @@ export class Game {
                 if (message !== undefined) {
                     const inventoryMsg = this.uiManager.ui.inventoryMsg;
                     inventoryMsg.text(getTranslatedString(inventoryMessageMap[message])).fadeIn(250);
+                    if (inventoryMessageMap[message] === inventoryMessageMap[4]) this.soundManager.play("metal_light_destroyed");
                     clearTimeout(this.inventoryMsgTimeout);
                     this.inventoryMsgTimeout = window.setTimeout(() => inventoryMsg.fadeOut(250), 2500);
                 } else if (item !== undefined) {

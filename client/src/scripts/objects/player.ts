@@ -7,10 +7,10 @@ import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { Backpacks, type BackpackDefinition } from "../../../../common/src/definitions/backpacks";
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
-import { type GunDefinition, type SingleGunNarrowing } from "../../../../common/src/definitions/guns";
+import { Guns, type GunDefinition, type SingleGunNarrowing } from "../../../../common/src/definitions/guns";
 import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
 import { Loots, type WeaponDefinition } from "../../../../common/src/definitions/loots";
-import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "../../../../common/src/definitions/melees";
+import { DEFAULT_HAND_RIGGING, Melees, type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { PerkData, PerkIds } from "../../../../common/src/definitions/perks";
 import { Skins, type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
@@ -32,6 +32,8 @@ import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
+
+const weaponIdStrings = [...Melees.definitions.map(meleeItem => meleeItem.idString), ...Guns.definitions.map(gunDef => gunDef.idString)];
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -1217,10 +1219,20 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         );
         this.emote.image.setFrame(type.idString);
 
+        const isWeaponEmote = weaponIdStrings.includes(type.idString);
+
         const container = this.emote.container;
         container.visible = true;
         container.scale.set(0);
         container.alpha = 0;
+
+        this.emote.image.setScale(isWeaponEmote ? 0.7 : 1);
+
+        if (Guns.fromStringSafe(type.idString)) {
+            this.emote.background.setFrame(`loot_background_gun_${Guns.fromStringSafe(type.idString)?.ammoType}`);
+        } else {
+            this.emote.background.setFrame("emote_background");
+        }
 
         this.anims.emote = this.game.addTween({
             target: container,
@@ -1253,7 +1265,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this._emoteHideTimeout = undefined;
                 }
             });
-        }, 4000);
+        }, isWeaponEmote ? 2000 : 4000);
     }
 
     playAnimation(anim: AnimationType): void {

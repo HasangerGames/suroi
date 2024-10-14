@@ -780,7 +780,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         key: "outhouse_ceiling",
                         position: Vec.create(0, -1.95),
                         residue: "outhouse_residue"
-                    },
+                    }
                 ],
                 wallsToDestroy: 2,
                 floors: [
@@ -800,7 +800,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "outhouse_side_wall", position: Vec.create(6.76, -2.83), rotation: 0 },
                     { idString: "outhouse_front_wall", position: Vec.create(6.33, 7.68), rotation: 0 },
                     { idString: "outhouse_front_wall", position: Vec.create(-6.29, 7.68), rotation: 0 },
-                    { idString: "outhouse_door", position: Vec.create(-0.05, 7.64), rotation: 0 },
+                    { idString: "outhouse_door", position: Vec.create(-0.05, 7.64), rotation: 0 }
                 ]
             },
             {
@@ -6138,7 +6138,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { key: "plumpkin_bunker_small_mixing_stick", position: Vec.create(44.62, -64.92), rotation: random(0, Math.PI * 2), spinSpeed: 0.002 },
                     { key: "plumpkin_bunker_large_mixing_frame", position: Vec.create(14.75, -82.03) },
                     { key: "plumpkin_bunker_large_mixing_frame", position: Vec.create(-40.11, -82.03) },
-                    { key: "plumpkin_bunker_small_mixing_frame", position: Vec.create(44.62, -64.92) },
+                    { key: "plumpkin_bunker_small_mixing_frame", position: Vec.create(44.62, -64.92) }
                 ],
                 puzzle: {
                     triggerOnSolve: "red_metal_auto_door",
@@ -6160,7 +6160,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ceilingImages: [{
                     key: "plumpkin_bunker_vault_ceiling",
                     position: Vec.create(-67.67, 85.03)
-                }],
+                }]
             }
         ] satisfies Missing[];
     }

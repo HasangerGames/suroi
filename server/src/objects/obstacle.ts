@@ -20,7 +20,7 @@ import { type Player } from "./player";
 import { Config } from "../config";
 import { GunItem } from "../inventory/gunItem";
 import { MeleeItem } from "../inventory/meleeItem";
-import { Guns, Melees } from "@common/definitions";
+import { Emotes, Guns, Melees } from "@common/definitions";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override readonly fullAllocBytes = 8;
@@ -212,16 +212,24 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
                 switch (true) {
                     case itemDef instanceof GunItem: {
-                        const bannedAmmoTypes = ["9mm", "firework_rocket", "bb", "power_cell"];
+                        source.action?.cancel();
+                        const bannedAmmoTypes = ["9mm", "firework_rocket", "bb", "power_cell"]; // no 9mm guns in fall
+                        const weirdbannedidstrings = ["m16a4", "deagle", "dual_deagle"]; // todo: figure out why cant check burst properties of gun def
 
                         const guns = Guns.definitions.filter(gunDef => {
-                            return !gunDef.killstreak && !bannedAmmoTypes.includes(gunDef.ammoType) && gunDef.fireMode !== FireMode.Auto;
+                            return !weirdbannedidstrings.includes(gunDef.idString) && !gunDef.killstreak && !bannedAmmoTypes.includes(gunDef.ammoType) && gunDef.fireMode !== FireMode.Auto;
                         });
 
                         const chosenGun = pickRandomInArray(guns);
                         source.inventory.replaceWeapon(slot, chosenGun.idString);
                         (source.activeItem as GunItem).ammo = chosenGun.capacity;
-                        this.game.addLoot(chosenGun.ammoType, this.position, this.layer, { jitterSpawn: false, count: chosenGun.ammoSpawnAmount });
+
+                        // Give the player ammo for the new gun if they do not have any ammo for it.
+                        if (!source.inventory.items.hasItem(chosenGun.ammoType)) {
+                            source.inventory.items.setItem(chosenGun.ammoType, chosenGun.ammoSpawnAmount);
+                            source.dirty.items = true;
+                        }
+                        source.sendEmote(Emotes.fromStringSafe(chosenGun.idString));
                     }
                         break;
 
@@ -230,7 +238,9 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                         const melees = Melees.definitions.filter(meleeDef => {
                             return !meleeDef.killstreak && !meleeDef.noDrop && !meleeDef.image?.animated; // to exclude chainsaw :(                        })
                         });
-                        source.inventory.replaceWeapon(slot, pickRandomInArray(melees).idString);
+                        const chosenMelee = pickRandomInArray(melees).idString;
+                        source.inventory.replaceWeapon(slot, chosenMelee);
+                        source.sendEmote(Emotes.fromStringSafe(chosenMelee));
                     }
                         break;
 
