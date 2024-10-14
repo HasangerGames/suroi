@@ -215,7 +215,7 @@ const perks = [
     {
         idString: PerkIds.HiCap,
         name: "Extended Magazines",
-        description: "Most weapons have larger mag sizes.",
+        description: "Most weapons have increased bullet capacity.",
         categories: [PerkCategories.Normal]
 
         // define for each weapon individually
@@ -223,7 +223,7 @@ const perks = [
     {
         idString: PerkIds.Engorged,
         name: "Engorged",
-        description: "Gain max health and size with each kill.",
+        description: "Increased max health and size with each kill.",
         categories: [PerkCategories.Halloween],
 
         hpMod: 10, // additive
