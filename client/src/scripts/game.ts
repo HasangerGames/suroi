@@ -53,7 +53,7 @@ import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE, EMOTE_SLOTS } from "./utils/constants";
-import { loadTextures } from "./utils/pixi";
+import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
 import { randomVector, randomFloat } from "../../../common/src/utils/random";
 
@@ -97,6 +97,8 @@ export class Game {
     readonly planes = new Set<Plane>();
 
     windAmbientSound!: GameSound;
+
+    readonly spinningImages = new Map<SuroiSprite, number>();
 
     readonly playerNames = new Map<number, {
         readonly name: string
@@ -616,6 +618,10 @@ export class Game {
 
         for (const player of players ?? this.objects.getCategory(ObjectCategory.Player)) {
             player.updateGrenadePreview();
+        }
+
+        for (const [image, spinSpeed] of this.spinningImages.entries()) {
+            image.rotation += spinSpeed * delta;
         }
 
         for (const tween of this.tweens) tween.update();

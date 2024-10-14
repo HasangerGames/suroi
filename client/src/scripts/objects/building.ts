@@ -44,6 +44,9 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
     mask?: Graphics;
 
+    spinningImages?: Map<SuroiSprite, number>;
+    spinOnSolveImages?: Map<SuroiSprite, number>;
+
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Building]) {
         super(game, id);
 
@@ -216,6 +219,14 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 if (image.rotation) sprite.setRotation(image.rotation);
                 if (image.scale) sprite.scale = image.scale;
                 if (image.zIndex !== undefined) sprite.setZIndex(image.zIndex);
+                if (image.spinSpeed) {
+                    if (image.spinOnSolve && !data.puzzle?.solved) {
+                        (this.spinOnSolveImages ??= new Map<SuroiSprite, number>()).set(sprite, image.spinSpeed);
+                    } else {
+                        (this.spinningImages ??= new Map<SuroiSprite, number>()).set(sprite, image.spinSpeed);
+                        this.game.spinningImages.set(sprite, image.spinSpeed);
+                    }
+                }
                 this.container.addChild(sprite);
             }
 
@@ -376,13 +387,21 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             }
             this.errorSeq = data.puzzle.errorSeq;
 
-            if (!isNew && data.puzzle.solved && definition.puzzle?.solvedSound) {
-                this.game.soundManager.play("puzzle_solved", {
-                    position: definition.puzzle.soundPosition
-                        ? Vec.addAdjust(this.position, definition.puzzle.soundPosition, this.orientation)
-                        : this.position,
-                    layer: this.layer
-                });
+            if (!isNew && data.puzzle.solved) {
+                if (this.spinOnSolveImages) {
+                    for (const [image, spinSpeed] of this.spinOnSolveImages.entries()) {
+                        this.game.spinningImages.set(image, spinSpeed);
+                    }
+                }
+
+                if (definition.puzzle?.solvedSound) {
+                    this.game.soundManager.play("puzzle_solved", {
+                        position: definition.puzzle.soundPosition
+                            ? Vec.addAdjust(this.position, definition.puzzle.soundPosition, this.orientation)
+                            : this.position,
+                        layer: this.layer
+                    });
+                }
             }
         }
 
@@ -514,5 +533,11 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         this.ceilingTween?.kill();
         this.ceilingContainer.destroy();
         this.sound?.stop();
+
+        if (this.spinningImages) {
+            for (const image of this.spinningImages.keys()) {
+                this.game.spinningImages.delete(image);
+            }
+        }
     }
 }

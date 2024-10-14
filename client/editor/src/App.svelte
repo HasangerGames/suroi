@@ -191,7 +191,7 @@
         hitboxes.push(JSON.parse(JSON.stringify(selected)));
     }
 
-    const bgImage = loadImage("/img/game/obstacles/bigger_glass_door.svg");
+    const bgImage = loadImage("/img/modes/fall/buildings/plumpkin_bunker_floor.svg");
 </script>
 
 <main>

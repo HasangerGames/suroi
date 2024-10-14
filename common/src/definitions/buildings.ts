@@ -3,7 +3,7 @@ import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
 import { MapObjectSpawnMode, NullString, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
-import { randomBoolean, randomSign, randomVector } from "../utils/random";
+import { random, randomBoolean, randomSign, randomVector } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
 import { FlyoverPref, Materials, RotationMode, type ObstacleDefinition } from "./obstacles";
@@ -100,6 +100,8 @@ export interface BuildingDefinition extends ObjectDefinition {
         readonly scale?: Vector
         readonly tint?: number | `#${string}`
         readonly zIndex?: ZIndexes
+        readonly spinSpeed?: number
+        readonly spinOnSolve?: boolean
     }>
     readonly floorZIndex: ZIndexes
 
@@ -5787,7 +5789,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 collideWithLayers: Layers.Adjacent,
                 spawnHitbox: RectangleHitbox.fromRect(350, 290),
                 sounds: {
-                    normal: "plumpkin_bunker_pump_ambience",
+                    normal: "plumpkin_bunker_ambience",
                     position: Vec.create(119.27, -51.22),
                     maxRange: 350,
                     falloff: 1
@@ -6163,11 +6165,19 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 name: "Plumpkin Bunker Second Puzzle",
                 spawnHitbox: RectangleHitbox.fromRect(40, 40),
                 sounds: {
-                    solved: "plumpkin_bunker_ambience",
+                    solved: "plumpkin_bunker_pump_ambience",
                     position: Vec.create(-13.28, -81.95),
                     maxRange: 250,
                     falloff: 0.5
                 },
+                floorImages: [
+                    { key: "plumpkin_bunker_large_mixing_stick", position: Vec.create(14.75, -82.03), rotation: random(0, Math.PI * 2), spinSpeed: 0.002, spinOnSolve: true },
+                    { key: "plumpkin_bunker_large_mixing_stick", position: Vec.create(-40.11, -82.03), rotation: random(0, Math.PI * 2), spinSpeed: 0.002, spinOnSolve: true },
+                    { key: "plumpkin_bunker_small_mixing_stick", position: Vec.create(44.62, -64.92), rotation: random(0, Math.PI * 2), spinSpeed: 0.002, spinOnSolve: true },
+                    { key: "plumpkin_bunker_large_mixing_frame", position: Vec.create(14.75, -82.03) },
+                    { key: "plumpkin_bunker_large_mixing_frame", position: Vec.create(-40.11, -82.03) },
+                    { key: "plumpkin_bunker_small_mixing_frame", position: Vec.create(44.62, -64.92) },
+                ],
                 puzzle: {
                     triggerOnSolve: "red_metal_auto_door",
                     delay: 1000
