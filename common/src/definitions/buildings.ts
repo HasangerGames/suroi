@@ -5959,7 +5959,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "pipe_4", position: Vec.create(-136.1, 95.81), rotation: 0 },
 
                     // vault
-                    { idString: "vault_door", position: Vec.create(-83.48, 87.76), rotation: 1 },
+                    { idString: "metal_door", position: Vec.create(-84.12, 88.37), rotation: 1 },
                     { idString: "gun_mount_dual_rsh12", position: Vec.create(-54.09, 84.63), rotation: 3 },
                     { idString: "regular_crate", position: Vec.create(-62.71, 81.57) },
                     { idString: { box: 1, grenade_box: 1 }, position: Vec.create(-66.18, 89.31) },
@@ -6154,7 +6154,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 subBuildings: [
                     { idString: "detector", position: Vec.create(13.82, -100.67), orientation: 2 },
                     { idString: "detector", position: Vec.create(27.24, -100.67), orientation: 2 },
-                    { idString: "plumpkin_bunker_second_puzzle", position: Vec.create(0, 0) }
+                    { idString: "plumpkin_bunker_second_puzzle", position: Vec.create(0, 0) },
+                    { idString: "plumpkin_bunker_vault", position: Vec.create(0, 0) }
                 ]
             },
             {
@@ -6178,6 +6179,16 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "red_metal_auto_door", position: Vec.create(-38.1, -33.03), rotation: 3 },
                     { idString: "headquarters_security_desk", position: Vec.create(-22.75, -52.96), rotation: 2, puzzlePiece: true }
                 ]
+            },
+            {
+                idString: "plumpkin_bunker_vault",
+                name: "Plumpkin Bunker Vault",
+                spawnHitbox: RectangleHitbox.fromRect(33.39, 20.34, Vec.create(-67.67, 85.03)),
+                ceilingHitbox: RectangleHitbox.fromRect(33.39, 20.34, Vec.create(-67.67, 85.03)),
+                ceilingImages: [{
+                    key: "plumpkin_bunker_vault_ceiling",
+                    position: Vec.create(-67.67, 85.03)
+                }],
             }
         ] satisfies Missing[];
     }
