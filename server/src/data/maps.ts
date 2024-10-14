@@ -250,12 +250,12 @@ const maps = {
             hay_shed_1: 1,
             hay_shed_2: 3,
             hay_shed_3: 3,
-            porta_potty_fall: 10
+            outhouse: 10
         },
         majorBuildings: ["armory_damaged", "lodge", "plumpkin_bunker"],
         quadBuildingLimit: {
             barn: 2,
-            porta_potty_fall: 6,
+            outhouse: 3,
             red_house: 1,
             green_house: 1,
             red_house_v2: 1,

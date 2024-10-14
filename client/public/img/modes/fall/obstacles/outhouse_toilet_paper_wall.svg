@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="82.574226"
+   height="383.95233"
+   viewBox="0 0 21.847764 101.58739"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (1:1.3.2+202404261509+091e20ef0f)"
+   sodipodi:docname="outhouse_toilet_paper_wall.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="px"
+     inkscape:zoom="133.52817"
+     inkscape:cx="33.041717"
+     inkscape:cy="2.452666"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g23931" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-94.191666,-97.631246)">
+    <g
+       stroke-miterlimit="10"
+       transform="matrix(0,-0.41306248,0.41306248,0,14.072207,206.79046)"
+       id="g23931">
+      <path
+         d="M 117.48537,245.60666 H 95.485375 v -6.8 h 21.999995 z"
+         fill="#eaeaea"
+         stroke="#b8b8b8"
+         stroke-width="2.5"
+         id="path23921" />
+      <g
+         transform="translate(0,-19.03097)"
+         id="g23927">
+        <path
+           d="m 120.90537,233.75762 v 17 H 91.905375 v -17"
+           fill="none"
+           stroke="#858585"
+           stroke-linecap="round"
+           stroke-width="5"
+           id="path23923" />
+        <path
+           d="M 117.40537,258.55763 H 95.405375 v -15.6 h 21.999995 z"
+           fill="#ffffff"
+           stroke="#c7c7c7"
+           stroke-width="2.5"
+           id="path23925" />
+      </g>
+      <path
+         d="M 261.86865,214.71799 H 20.73032 v -18.3541 h 241.13834 z"
+         fill="#1c71d8"
+         stroke="#0d3565"
+         stroke-linejoin="round"
+         stroke-width="4.79877"
+         id="path23929"
+         style="fill:#6e4d2f;fill-opacity:1;stroke:#261b14;stroke-width:4.79893103;stroke-dasharray:none;stroke-opacity:1;stroke-linejoin:miter" />
+    </g>
+  </g>
+</svg>

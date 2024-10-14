@@ -302,7 +302,8 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     porta_potty_wall_particle:     { base: "plastic_particle", tint: 0x1c71d8 },
     porta_potty_particle_fall:     { base: "plastic_particle", tint: 0x78593b },
     porta_potty_particle:          { base: "ceiling_particle", tint: 0xe7e7e7 },
-    porta_potty_fall_particle:     { base: "ceiling_particle", tint: 0x78593b },
+    outhouse_particle:             { base: "ceiling_particle", tint: 0x78593b },
+    outhouse_wall_particle:        { base: "wood_particle",    tint: 0x6e4d2f },
     mobile_home_particle:          { base: "ceiling_particle", tint: 0xa8a8a8 },
     grey_office_chair_particle:    { base: "wood_particle",    tint: 0x616161 },
     office_chair_particle:         { base: "wood_particle",    tint: 0x7d2b2b },
@@ -1782,13 +1783,17 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 color: 0x1c71d8, borderColor: 0x0d3565
             }], { hitbox: RectangleHitbox.fromRect(3, 1.6) }),
 
-            portaPottyWall(["Porta Potty Back Wall Fall", "porta_potty_particle_fall", {
-                color: 0x78593b, borderColor: 0x3e2d1e
-            }], { hitbox: RectangleHitbox.fromRect(12.8, 1.6) }),
+            portaPottyWall(["Outhouse Back Wall", "outhouse_wall_particle", {
+                color: 0x6e4d2f, borderColor: 0x261b14
+            }], { hitbox: RectangleHitbox.fromRect(11.71, 1.81) }),
 
-            portaPottyWall(["Porta Potty Front Wall Fall", "porta_potty_particle_fall", {
-                color: 0x78593b, borderColor: 0x3e2d1e
-            }], { hitbox: RectangleHitbox.fromRect(3, 1.6) }),
+            portaPottyWall(["Outhouse Side Wall", "outhouse_wall_particle", {
+                color: 0x6e4d2f, borderColor: 0x261b14
+            }], { hitbox: RectangleHitbox.fromRect(1.81, 19.2) }),
+
+            portaPottyWall(["Outhouse Front Wall", "outhouse_wall_particle", {
+                color: 0x6e4d2f, borderColor: 0x261b14
+            }], { hitbox: RectangleHitbox.fromRect(2.68, 1.81) }),
 
             {
                 idString: "fridge",
@@ -2883,11 +2888,12 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 rotationMode: RotationMode.Limited,
                 allowFlyover: FlyoverPref.Never,
                 role: ObstacleSpecialRoles.Door,
+                zIndex: ZIndexes.ObstaclesLayer3,
                 hingeOffset: Vec.create(-5.5, 0)
             },
             {
-                idString: "porta_potty_door_fall",
-                name: "Porta Potty Door",
+                idString: "outhouse_door",
+                name: "Outhouse Door",
                 material: "wood",
                 health: 100,
                 noResidue: true,
@@ -2897,14 +2903,14 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     destroy: 1
                 },
                 hideOnMap: true,
-                hitbox: RectangleHitbox.fromRect(10.5, 1.4, Vec.create(-0.8, 0)),
+                hitbox: RectangleHitbox.fromRect(9.91, 1.5),
                 rotationMode: RotationMode.Limited,
                 allowFlyover: FlyoverPref.Never,
                 role: ObstacleSpecialRoles.Door,
-                hingeOffset: Vec.create(-5.5, 0),
+                zIndex: ZIndexes.ObstaclesLayer3,
+                hingeOffset: Vec.create(-4.96, 0),
                 frames: {
-                    base: "porta_potty_door",
-                    particle: "porta_potty_particle_fall"
+                    particle: "outhouse_wall_particle"
                 }
             },
             {
@@ -2951,8 +2957,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 }
             },
             {
-                idString: "porta_potty_toilet_paper_wall_fall",
-                name: "Porta Potty Toilet Paper Wall",
+                idString: "outhouse_toilet_paper_wall",
+                name: "Outhouse Toilet Paper Wall",
                 material: "wood",
                 health: 100,
                 noResidue: true,
@@ -2962,14 +2968,13 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     destroy: 0.9
                 },
                 hideOnMap: true,
-                hitbox: RectangleHitbox.fromRect(19.2, 1.7, Vec.create(0, -1.15)),
+                hitbox: RectangleHitbox.fromRect(1.81, 19.2, Vec.create(-1.16, 0.01)),
                 rotationMode: RotationMode.Limited,
                 allowFlyover: FlyoverPref.Never,
                 role: ObstacleSpecialRoles.Wall,
                 zIndex: ZIndexes.ObstaclesLayer2,
                 frames: {
-                    base: "porta_potty_toilet_paper_wall",
-                    particle: "porta_potty_particle_fall"
+                    particle: "outhouse_wall_particle"
                 }
             },
             {

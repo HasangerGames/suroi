@@ -765,81 +765,42 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ]
             },
             {
-                idString: "porta_potty_fall",
-                name: "Porta Potty",
-                spawnHitbox: RectangleHitbox.fromRect(20, 32),
-                scopeHitbox: RectangleHitbox.fromRect(14, 18),
+                idString: "outhouse",
+                name: "Outhouse",
+                spawnHitbox: RectangleHitbox.fromRect(19, 29),
+                scopeHitbox: RectangleHitbox.fromRect(14.94, 20.8, Vec.create(0, -2.02)),
                 floorImages: [
                     {
-                        key: "porta_potty_floor_1",
-                        position: Vec.create(0, -3.8)
-                    },
-                    {
-                        key: "porta_potty_floor_2",
-                        position: Vec.create(0, 7)
+                        key: "outhouse_floor",
+                        position: Vec.create(0, 0)
                     }
                 ],
                 ceilingImages: [
                     {
-                        key: "porta_potty_ceiling_2",
-                        position: Vec.create(0, 0),
-                        residue: "porta_potty_residue"
+                        key: "outhouse_ceiling",
+                        position: Vec.create(0, -1.95),
+                        residue: "outhouse_residue"
                     },
-                    {
-                        key: "porta_potty_ceiling_1",
-                        position: Vec.create(0, -4.81)
-                    },
-                    {
-                        key: "porta_potty_ceiling_2",
-                        position: Vec.create(0, 4.825)
-                    }
                 ],
                 wallsToDestroy: 2,
                 floors: [
                     {
                         type: FloorNames.Wood,
-                        hitbox: RectangleHitbox.fromRect(14, 18)
+                        hitbox: RectangleHitbox.fromRect(14.94, 20.8, Vec.create(0, -2.02))
                     },
                     {
-                        type: FloorNames.Wood,
-                        hitbox: RectangleHitbox.fromRect(9.8, 3.5, Vec.create(1.5, 10.6))
+                        type: FloorNames.Stone,
+                        hitbox: RectangleHitbox.fromRect(10, 4.7, Vec.create(0, 10.07))
                     }
                 ],
                 obstacles: [
-                    {
-                        idString: {
-                            porta_potty_toilet_open: 0.7,
-                            porta_potty_toilet_closed: 0.3
-                        },
-                        position: Vec.create(0, -5),
-                        lootSpawnOffset: Vec.create(0, 5),
-                        rotation: 0
-                    },
-                    {
-                        idString: "porta_potty_back_wall_fall",
-                        position: Vec.create(0, -8.75),
-                        rotation: 0
-                    },
-                    {
-                        idString: "porta_potty_sink_wall_fall",
-                        position: Vec.create(-5.65, 0),
-                        rotation: 3
-                    },
-                    {
-                        idString: "porta_potty_toilet_paper_wall_fall",
-                        position: Vec.create(5.7, 0),
-                        rotation: 3
-                    },
-                    {
-                        idString: "porta_potty_door_fall",
-                        position: Vec.create(2.2, 8.8),
-                        rotation: 0
-                    },
-                    {
-                        idString: "porta_potty_front_wall_fall",
-                        position: Vec.create(-4.6, 8.66),
-                        rotation: 2
-                    }
+                    { idString: randomToilet, position: Vec.create(0, -6), rotation: 0 },
+                    { idString: "outhouse_back_wall", position: Vec.create(0, -11.58), rotation: 0 },
+                    { idString: "outhouse_toilet_paper_wall", position: Vec.create(-5.58, -2.83), rotation: 0 },
+                    { idString: "outhouse_side_wall", position: Vec.create(6.76, -2.83), rotation: 0 },
+                    { idString: "outhouse_front_wall", position: Vec.create(6.33, 7.68), rotation: 0 },
+                    { idString: "outhouse_front_wall", position: Vec.create(-6.29, 7.68), rotation: 0 },
+                    { idString: "outhouse_door", position: Vec.create(-0.05, 7.64), rotation: 0 },
                 ]
             },
             {
@@ -4205,9 +4166,9 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "headquarters_wall_3", position: Vec.create(11.9, -100.9), rotation: 1 },
                     { idString: "door", position: Vec.create(11.9, -91.85), rotation: 1 },
                     { idString: "headquarters_wall_6", position: Vec.create(-10.9, -62.7), rotation: 0 },
-                    { idString: randomToilet, position: Vec.create(5.5, -69), rotation: 2 },
-                    { idString: randomToilet, position: Vec.create(-9, -69), rotation: 2 },
-                    { idString: randomToilet, position: Vec.create(-24, -69), rotation: 2 },
+                    { idString: "toilet", position: Vec.create(5.5, -69), rotation: 2 },
+                    { idString: "toilet", position: Vec.create(-9, -69), rotation: 2 },
+                    { idString: "used_toilet", position: Vec.create(-24, -69), rotation: 2 },
                     { idString: "hq_toilet_paper_wall", position: Vec.create(-2, -73.3), rotation: 1 },
                     { idString: "hq_toilet_paper_wall", position: Vec.create(-17, -73.3), rotation: 1 },
                     { idString: "headquarters_wall_7", position: Vec.create(-5.55, -82.1), rotation: 0 },
@@ -5074,7 +5035,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "armory_barracks_damaged", position: Vec.create(-41.31, 27.86) },
                     { idString: "armory_center_damaged", position: Vec.create(55.4, 15.07) },
                     { idString: "armory_vault_damaged", position: Vec.create(-35.03, -58.37) },
-                    { idString: "porta_potty_fall", position: Vec.create(-60.9, -65.63), orientation: 2 }
+                    { idString: "outhouse", position: Vec.create(-60.9, -65.63), orientation: 2 }
                 ],
                 groundGraphics: [
                     {
