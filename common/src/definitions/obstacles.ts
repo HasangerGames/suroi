@@ -325,6 +325,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     plumpkin_bunker_particle:      { base: "metal_particle_1", tint: 0x262626 },
     metal_auto_door_particle:      { base: "metal_particle_1", tint: 0x404040 },
     red_metal_auto_door_particle:  { base: "metal_particle_1", tint: 0x401a1a },
+    blue_metal_auto_door_particle: { base: "metal_particle_1", tint: 0x1a1a40 },
 
     pumpkin_particle:              { base: "pumpkin_particle_base", tint: 0xff8c01 },
     plumpkin_particle:             { base: "pumpkin_particle_base", tint: 0x8a4c70 },
@@ -2201,7 +2202,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 animationDuration: 500,
                 frames: {
                     base: "auto_door",
-                    particle: "red_metal_auto_door_particle"
+                    particle: "blue_metal_auto_door_particle"
                 },
                 tint: 0x1a1a40
             },

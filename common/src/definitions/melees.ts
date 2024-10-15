@@ -412,7 +412,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             radius: 2.7,
             swingSound: "chainsaw",
             stopSound: "chainsaw_stop",
-            offset: Vec.create(7, 0.5),
+            offset: Vec.create(6.8, 0.5),
             cooldown: 0,
             fists: {
                 animationDuration: 200,
