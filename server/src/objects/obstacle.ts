@@ -214,10 +214,12 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                     case itemDef instanceof GunItem: {
                         source.action?.cancel();
                         const bannedAmmoTypes = ["9mm", "firework_rocket", "bb", "power_cell"]; // no 9mm guns in fall
-                        const weirdbannedidstrings = ["m16a4", "deagle", "dual_deagle"]; // todo: figure out why cant check burst properties of gun def
+                        const weirdbannedidstrings = ["deagle", "dual_deagle"]; // exclude deagle from fall
 
                         const guns = Guns.definitions.filter(gunDef => {
-                            return !weirdbannedidstrings.includes(gunDef.idString) && !gunDef.killstreak && !bannedAmmoTypes.includes(gunDef.ammoType) && gunDef.fireMode !== FireMode.Auto;
+                            const isShotgun = gunDef.ammoType === "12g";
+
+                            return !weirdbannedidstrings.includes(gunDef.idString) && !gunDef.killstreak && !bannedAmmoTypes.includes(gunDef.ammoType) && (gunDef.fireMode === FireMode.Single || (isShotgun && gunDef.fireMode === FireMode.Auto));
                         });
 
                         const chosenGun = pickRandomInArray(guns);
@@ -225,7 +227,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                         (source.activeItem as GunItem).ammo = chosenGun.capacity;
 
                         // Give the player ammo for the new gun if they do not have any ammo for it.
-                        if (!source.inventory.items.hasItem(chosenGun.ammoType)) {
+                        if (!source.inventory.items.hasItem(chosenGun.ammoType) && !chosenGun.summonAirdrop) {
                             source.inventory.items.setItem(chosenGun.ammoType, chosenGun.ammoSpawnAmount);
                             source.dirty.items = true;
                         }
