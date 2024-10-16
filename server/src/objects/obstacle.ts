@@ -1,4 +1,4 @@
-import { FireMode, ObjectCategory } from "@common/constants";
+import { ObjectCategory } from "@common/constants";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
@@ -7,9 +7,8 @@ import { ItemType, NullString, ObstacleSpecialRoles, type ReferenceTo, type Reif
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray, random } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-
 import { equalLayer } from "@common/utils/layer";
-import { LootTable, LootTableOverrides, LootTables, type WeightedItem } from "../data/lootTables";
+import { LootTable, LootTableOverrides, LootTables, LootTiers, LootTierOverrides, type WeightedItem } from "../data/lootTables";
 import { type Game } from "../game";
 import { InventoryItem } from "../inventory/inventoryItem";
 import { getLootTableLoot, getRandomIDString, type LootItem } from "../utils/misc";
@@ -205,21 +204,63 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         if (!notDead) {
             this.health = 0;
             this.dead = true;
-
             if (definition.weaponSwap && source && source instanceof BaseGameObject && source.isPlayer) {
                 const itemDef = source.inventory.activeWeapon;
+
                 const slot = source.inventory.activeWeaponIndex;
 
+                const swappables = new Set();
+
+                for (const key of Object.keys(LootTables)) {
+                    if (Config.lootTableOverride && LootTableOverrides[Config.lootTableOverride]?.[key]) {
+                        LootTableOverrides[Config.lootTableOverride]?.[key].loot.forEach(element => {
+                            if ("item" in element) {
+                                if (element.item !== NullString) {
+                                    swappables.add(element.item);
+                                }
+                            }
+                        }
+                        );
+                    }
+                    else if (Config.lootTableOverride === undefined) {
+                        LootTables?.[key].loot.forEach(element => {
+                            if ("item" in element) {
+                                if (element.item !== NullString) {
+                                    swappables.add(element.item);
+                                }
+                            }
+                        }
+                        );
+                    }
+                }
+                for (const key of Object.keys(LootTiers)) {
+                    if (Config.lootTableOverride && LootTierOverrides[Config.lootTableOverride]?.[key]) {
+                        LootTierOverrides[Config.lootTableOverride]?.[key].forEach(element => {
+                            if ("item" in element) {
+                                if (element.item !== NullString) {
+                                    swappables.add(element.item);
+                                }
+                            }
+                        }
+                        );
+                    }
+                    else if (Config.lootTableOverride === undefined) {
+                        LootTiers?.[key].forEach(element => {
+                            if ("item" in element) {
+                                if (element.item !== NullString) {
+                                    swappables.add(element.item);
+                                }
+                            }
+                        }
+                        );
+                    }
+                }
                 switch (true) {
                     case itemDef instanceof GunItem: {
                         source.action?.cancel();
-                        const bannedAmmoTypes = ["9mm", "firework_rocket", "bb", "power_cell"]; // no 9mm guns in fall
-                        const weirdbannedidstrings = ["deagle", "dual_deagle"]; // exclude deagle from fall
 
                         const guns = Guns.definitions.filter(gunDef => {
-                            const isShotgun = gunDef.ammoType === "12g";
-
-                            return !weirdbannedidstrings.includes(gunDef.idString) && !gunDef.killstreak && !bannedAmmoTypes.includes(gunDef.ammoType) && (gunDef.fireMode === FireMode.Single || (isShotgun && gunDef.fireMode === FireMode.Auto));
+                            return swappables.has(gunDef.idString);
                         });
 
                         const chosenGun = pickRandomInArray(guns);
@@ -238,7 +279,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                     case itemDef instanceof MeleeItem: {
                         // get rid of dev shit
                         const melees = Melees.definitions.filter(meleeDef => {
-                            return !meleeDef.killstreak && !meleeDef.noDrop && !meleeDef.image?.animated; // to exclude chainsaw :(                        })
+                            return swappables.has(meleeDef.idString);
                         });
                         const chosenMelee = pickRandomInArray(melees).idString;
                         source.inventory.replaceWeapon(slot, chosenMelee);
