@@ -52,6 +52,8 @@ function removePunishment(ip: string): void {
     }
 }
 
+let teamsCreated: Record<string, number> = {};
+
 export const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
 
 export let maxTeamSize = typeof Config.maxTeamSize === "number" ? Config.maxTeamSize : Config.maxTeamSize.rotation[0];
@@ -148,19 +150,25 @@ if (isMainThread) {
         upgrade(res, req, context) {
             res.onAborted((): void => { /* Handle errors in WS connection */ });
 
-            const searchParams = new URLSearchParams(req.getQuery());
+            const ip = getIP(res, req);
+            const maxTeams = Config.protection?.maxTeams;
+            if (
+                maxTeamSize === TeamSize.Solo
+                || (maxTeams && teamsCreated[ip] > maxTeams)
+            ) {
+                forbidden(res);
+                return;
+            }
 
+            const searchParams = new URLSearchParams(req.getQuery());
             const teamID = searchParams.get("teamID");
 
             let team!: CustomTeam;
             const noTeamIdGiven = teamID !== null;
             if (
-                maxTeamSize === TeamSize.Solo
-                || (
-                    noTeamIdGiven
-                    // @ts-expect-error cleanest overall way to do this (`undefined` gets filtered out anyways)
-                    && (team = customTeams.get(teamID)) === undefined
-                )
+                noTeamIdGiven
+                // @ts-expect-error cleanest overall way to do this (`undefined` gets filtered out anyways)
+                && (team = customTeams.get(teamID)) === undefined
             ) {
                 forbidden(res);
                 return;
@@ -177,6 +185,10 @@ if (isMainThread) {
                 isLeader = true;
                 team = new CustomTeam();
                 customTeams.set(team.id, team);
+
+                if (Config.protection?.maxTeams) {
+                    teamsCreated[ip] = (teamsCreated[ip] ?? 0) + 1;
+                }
             }
 
             const name = cleanUsername(searchParams.get("name"));
@@ -353,6 +365,8 @@ if (isMainThread) {
                         i--;
                     }
                 }
+
+                teamsCreated = {};
 
                 Logger.log("Reloaded punishment list");
             }, protection.refreshDuration);
