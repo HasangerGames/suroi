@@ -221,8 +221,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                             }
                         }
                         );
-                    }
-                    else if (Config.lootTableOverride === undefined) {
+                    } else if (Config.lootTableOverride === undefined) {
                         LootTables?.[key].loot.forEach(element => {
                             if ("item" in element) {
                                 if (element.item !== NullString) {
@@ -243,8 +242,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                             }
                         }
                         );
-                    }
-                    else if (Config.lootTableOverride === undefined) {
+                    } else if (Config.lootTableOverride === undefined) {
                         LootTiers?.[key].forEach(element => {
                             if ("item" in element) {
                                 if (element.item !== NullString) {
