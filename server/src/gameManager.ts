@@ -42,12 +42,31 @@ export class GameContainer {
 
                     if (message.data.allowJoin === true) { // This means the game was just created
                         creatingID = -1;
+                        activeGameID = this.id; // The active game is the most recently created one
                     }
 
                     if (message.data.stopped === true) {
                         // If allowJoin is true, then a new game hasn't been created by this game, so create one to replace this one
-                        const shouldCreateNewGame = this.data.allowJoin;
-                        endGame(this.id, shouldCreateNewGame);
+                        let shouldCreateNewGame = this.data.allowJoin;
+
+                        // If this is the active game, set the active game to the most recently created one
+                        // If there is no eligible game, create one to replace this one
+                        if (activeGameID === this.id && !shouldCreateNewGame) {
+                            const runningGames = games.filter((g?: GameContainer): g is GameContainer => !!g && !g.data.over);
+                            if (runningGames.length) {
+                                activeGameID = runningGames.reduce((a, b) => a.data.startedTime > b.data.startedTime ? a : b).id;
+                            } else {
+                                shouldCreateNewGame = true;
+                            }
+                        }
+
+                        void this.worker.terminate();
+                        Logger.log(`Game ${this.id} | Ended`);
+                        if (shouldCreateNewGame) {
+                            newGame(this.id);
+                        } else {
+                            games[this.id] = undefined;
+                        }
                     }
                     break;
                 }
@@ -109,28 +128,16 @@ export interface GameData {
 }
 
 export function findGame(): GetGameResponse {
-    for (let gameID = 0; gameID < Config.maxGames; gameID++) {
-        const game = games[gameID];
-        if (canJoin(game)) return { success: true, gameID };
-    }
+    const game = games[activeGameID];
 
-    // Create a game if there's a free slot
-    const gameID = newGame();
-    if (gameID !== -1) {
-        return { success: true, gameID };
-    } else {
-        // Join the game that most recently started
-        const game = games
-            .filter((g => g && !g.data.allowJoin && !g.data.over) as (g?: GameContainer) => g is GameContainer)
-            .reduce((a, b) => a.data.startedTime > b.data.startedTime ? a : b);
-
-        return game
-            ? { success: true, gameID: game.id }
-            : { success: false };
-    }
+    return game && !game.data.over
+        ? { success: true, gameID: activeGameID }
+        : { success: false };
 }
 
 export const games: Array<GameContainer | undefined> = [];
+
+let activeGameID = 0;
 
 let creatingID = -1;
 
@@ -150,22 +157,4 @@ export function newGame(id?: number): number {
         }
     }
     return -1;
-}
-
-export function endGame(id: number, createNewGame: boolean): void {
-    void games[id]?.worker.terminate();
-    Logger.log(`Game ${id} | Ended`);
-    if (createNewGame) newGame(id);
-    else games[id] = undefined;
-}
-
-/**
- * Whether a game is joinable.
- * @param game The (nullable) game in question.
- */
-export function canJoin(game: GameContainer | undefined): boolean {
-    return game?.data !== undefined
-        && game.data.aliveCount < Config.maxPlayersPerGame
-        && !game.data.over
-        && game?.data.allowJoin;
 }

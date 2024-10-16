@@ -689,6 +689,10 @@ export class Game implements GameData {
             }, 1000);
         }
 
+        if (this.aliveCount >= Config.maxPlayersPerGame) {
+            this.createNewGame();
+        }
+
         // Record performance and start the next tick
         // THIS TICK COUNTER IS WORKING CORRECTLY!
         // It measures the time it takes to calculate a tick, not the time between ticks.
@@ -719,6 +723,12 @@ export class Game implements GameData {
 
     updateGameData(data: Partial<GameData>): void {
         parentPort?.postMessage({ type: WorkerMessages.UpdateGameData, data } satisfies WorkerMessage);
+    }
+
+    createNewGame(): void {
+        parentPort?.postMessage({ type: WorkerMessages.CreateNewGame });
+        Logger.log(`Game ${this.id} | Creating new game`);
+        this.setGameData({ allowJoin: false });
     }
 
     private _killLeader: Player | undefined;
@@ -967,11 +977,7 @@ export class Game implements GameData {
                 this.setGameData({ startedTime: this.now });
                 this.gas.advanceGasStage();
 
-                this.addTimeout(() => {
-                    parentPort?.postMessage({ type: WorkerMessages.CreateNewGame });
-                    Logger.log(`Game ${this.id} | Preventing new players from joining`);
-                    this.setGameData({ allowJoin: false });
-                }, Config.gameJoinTime * 1000);
+                this.addTimeout(this.createNewGame, Config.gameJoinTime * 1000);
             }, 3000);
         }
 

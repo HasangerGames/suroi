@@ -30,7 +30,7 @@ export const Config = {
 
     maxTeamSize: TeamSize.Solo,
 
-    maxPlayersPerGame: 80,
+    maxPlayersPerGame: 60,
     maxGames: 4,
     gameJoinTime: 60,
 
