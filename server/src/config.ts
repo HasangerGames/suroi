@@ -221,6 +221,11 @@ export interface ConfigType {
          * The list is only reloaded on server startup.
          */
         readonly ipBlocklistURL?: string
+
+        /**
+         * Limits the number of teams that can be created by any one IP address.
+         */
+        readonly maxTeams?: number
     }
 
     /**
