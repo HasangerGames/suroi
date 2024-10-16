@@ -3232,8 +3232,18 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 }
             }),
             controlPanel(["control_panel2", "Control Panel"]),
-            controlPanel(["control_panel3", "Control Panel"], {
-                hitbox: RectangleHitbox.fromRect(8.7, 6.34)
+            controlPanel(["recorder", "Recorder"], {
+                hitbox: RectangleHitbox.fromRect(8.7, 6.34),
+                indestructible: true,
+                role: ObstacleSpecialRoles.Activatable,
+                noInteractMessage: true,
+                requiredItem: "heap_sword", // womp womp
+                sound: {
+                    names: ["speaker_start", "speaker_start"]
+                },
+                frames: {
+                    activated: "recorder_used"
+                }
             }),
             controlPanel(["control_panel_small", "Small Control Panel"], {
                 hitbox: RectangleHitbox.fromRect(7.5, 8)

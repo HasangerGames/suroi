@@ -6069,11 +6069,9 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: { box: 1, grenade_box: 1 }, position: Vec.create(56.68, -71.05) },
                     { idString: { box: 1, grenade_box: 1 }, position: Vec.create(62.1, -69.57) },
                     { idString: "barrel", position: Vec.create(58.34, -62.63) },
-                    { idString: "generator", position: Vec.create(78.21, -32.55), rotation: 0 },
                     { idString: "grenade_crate", position: Vec.create(69.29, -32.1) },
                     { idString: "flint_crate", position: Vec.create(42.41, -50.77) },
                     { idString: "super_barrel", position: Vec.create(51.32, -51.37) },
-                    { idString: "control_panel3", position: Vec.create(40.55, -32.63), rotation: 1 },
                     { idString: "metal_door", position: Vec.create(49.71, -26.82), rotation: 2 },
 
                     // server room
@@ -6118,6 +6116,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "detector", position: Vec.create(13.82, -100.67), orientation: 2 },
                     { idString: "detector", position: Vec.create(27.24, -100.67), orientation: 2 },
                     { idString: "plumpkin_bunker_second_puzzle", position: Vec.create(0, 0) },
+                    { idString: "plumpkin_bunker_third_puzzle", position: Vec.create(0, 0) },
                     { idString: "plumpkin_bunker_vault", position: Vec.create(0, 0) }
                 ]
             },
@@ -6150,6 +6149,25 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "red_metal_auto_door", position: Vec.create(12.34, -33.03), rotation: 3 },
                     { idString: "red_metal_auto_door", position: Vec.create(-38.1, -33.03), rotation: 3 },
                     { idString: "headquarters_security_desk", position: Vec.create(-22.75, -52.96), rotation: 2, puzzlePiece: true }
+                ]
+            },
+            {
+                idString: "plumpkin_bunker_third_puzzle",
+                name: "Plumpkin Bunker Third Puzzle",
+                spawnHitbox: RectangleHitbox.fromRect(104.67, 37.14, Vec.create(0, -75.62)),
+                sounds: {
+                    solved: "recorder_buzz",
+                    position: Vec.create(40.55, -32.63),
+                    maxRange: 200,
+                    falloff: 2
+                },
+                puzzle: {
+                    triggerOnSolve: "recorder",
+                    delay: 2000
+                },
+                obstacles: [
+                    { idString: "generator", position: Vec.create(78.21, -32.55), rotation: 0, puzzlePiece: true },
+                    { idString: "recorder", position: Vec.create(40.55, -32.63), rotation: 1 }
                 ]
             },
             {

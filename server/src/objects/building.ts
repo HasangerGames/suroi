@@ -197,7 +197,7 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
                     if (obstacle.definition.idString === puzzleDef.triggerOnSolve) {
                         if (obstacle.door) obstacle.door.locked = false;
 
-                        if (!puzzleDef.unlockOnly) obstacle.interact();
+                        if (!puzzleDef.unlockOnly) obstacle.interact(undefined);
                         else obstacle.setDirty();
                     }
                 }

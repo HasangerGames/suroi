@@ -408,7 +408,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
     interact(player?: Player): void {
         if (
-            !this.canInteract(player)
+            (player && !this.canInteract(player))
             && !this.door?.locked
             && !this.game.pluginManager.emit("obstacle_will_interact", {
                 obstacle: this,
