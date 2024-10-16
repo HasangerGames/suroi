@@ -446,28 +446,18 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 break;
             }
             case ItemType.Perk: {
-                if (player.perks.addPerk(definition)) {
-                    player.updateAndApplyModifiers();
-                }
-                break;
-                /* const currentPerks = player.perks.asList(); // todo: equip perk, drop current one (swap)
+                const currentPerks = player.perks.asList();
                 const perksLength = currentPerks.length;
 
                 if (perksLength === GameConstants.player.maxPerkCount) {
-
+                    // remove the old perk
                     const equippedPerk = currentPerks[0];
-
                     createNewItem({ type: equippedPerk, count: 1 });
                     player.perks.removePerk(equippedPerk);
-
-                    player.perks.addPerk(definition);
-
                 }
 
-                else if (perksLength <= GameConstants.player.maxPerkCount) {
-                    player.perks.addPerk(definition);
-                    player.updateAndApplyModifiers();
-                } */
+                player.perks.addPerk(definition);
+                player.updateAndApplyModifiers();
                 break;
             }
         }
