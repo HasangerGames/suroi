@@ -486,48 +486,48 @@ export class Game implements GameData {
             // ! evil starts here
             switch (perk.idString) {
                 case PerkIds.DemoExpert: {
-                    for (const player of players) {
-                        if (!player.hasPerk(PerkIds.DemoExpert)) continue;
+                    // for (const player of players) {
+                    //     if (!player.hasPerk(PerkIds.DemoExpert)) continue;
 
-                        const { inventory } = player;
-                        const { items, backpack: { maxCapacity }, throwableItemMap } = inventory;
+                    //     const { inventory } = player;
+                    //     const { items, backpack: { maxCapacity }, throwableItemMap } = inventory;
 
-                        for (const throwable of Throwables) {
-                            const { idString } = throwable;
-                            const count = items.hasItem(idString) ? items.getItem(idString) : 0;
-                            const max = maxCapacity[idString];
+                    //     for (const throwable of Throwables) {
+                    //         const { idString } = throwable;
+                    //         const count = items.hasItem(idString) ? items.getItem(idString) : 0;
+                    //         const max = maxCapacity[idString];
 
-                            if (count >= max) continue;
+                    //         if (count >= max) continue;
 
-                            const toAdd = Math.ceil(max * PerkData[PerkIds.DemoExpert].restoreAmount);
+                    //         const toAdd = Math.ceil(max * PerkData[PerkIds.DemoExpert].restoreAmount);
 
-                            if (toAdd === 0) continue;
-                            const newCount = Numeric.clamp(
-                                count + toAdd,
-                                0, max
-                            );
-                            items.setItem(
-                                idString,
-                                newCount
-                            );
+                    //         if (toAdd === 0) continue;
+                    //         const newCount = Numeric.clamp(
+                    //             count + toAdd,
+                    //             0, max
+                    //         );
+                    //         items.setItem(
+                    //             idString,
+                    //             newCount
+                    //         );
 
-                            const item = throwableItemMap.getAndGetDefaultIfAbsent(
-                                idString,
-                                () => new ThrowableItem(throwable, player, newCount)
-                            );
+                    //         const item = throwableItemMap.getAndGetDefaultIfAbsent(
+                    //             idString,
+                    //             () => new ThrowableItem(throwable, player, newCount)
+                    //         );
 
-                            item.count = newCount;
+                    //         item.count = newCount;
 
-                            const slot = inventory.slotsByItemType[ItemType.Throwable]?.[0];
+                    //         const slot = inventory.slotsByItemType[ItemType.Throwable]?.[0];
 
-                            if (slot !== undefined && !inventory.hasWeapon(slot)) {
-                                inventory.replaceWeapon(slot, item);
-                            }
+                    //         if (slot !== undefined && !inventory.hasWeapon(slot)) {
+                    //             inventory.replaceWeapon(slot, item);
+                    //         }
 
-                            player.dirty.weapons = true;
-                            player.dirty.items = true;
-                        }
-                    }
+                    //         player.dirty.weapons = true;
+                    //         player.dirty.items = true;
+                    //     }
+                    // }
                     break;
                 }
                 case PerkIds.BabyPlumpkinPie: {
