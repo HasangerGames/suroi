@@ -175,11 +175,11 @@ const perks = [
     {
         idString: PerkIds.SecondWind,
         name: "Second Wind",
-        description: "Move faster below 50% health.",
+        description: "Move faster below half health.",
         categories: [PerkCategories.Normal],
 
         cutoff: 0.5,
-        speedMod: 1.2
+        speedMod: 1.4
     },
     {
         idString: PerkIds.Overstimmed,
@@ -203,18 +203,18 @@ const perks = [
     {
         idString: PerkIds.Sabot,
         name: "Sabot Rounds",
-        description: "Large velocity and range increase, but 20% lower damage.",
+        description: "Large increase to range, velocity, and accuracy, but at the cost of lower damage.",
         categories: [PerkCategories.Normal],
 
         rangeMod: 1.5,
         speedMod: 1.5,
         spreadMod: 0.6,
-        damageMod: 0.8,
+        damageMod: 0.9,
         tracerLengthMod: 1.2
     },
     {
         idString: PerkIds.HiCap,
-        name: "Extended Magazines",
+        name: "Extended Mags",
         description: "Most weapons have increased bullet capacity.",
         categories: [PerkCategories.Normal]
 
@@ -242,8 +242,8 @@ const perks = [
     },
     {
         idString: PerkIds.DemoExpert,
-        name: "Demolitions Expert",
-        description: "Grenades have a greater throwing distance, visible landing point, and slowly refill over time.",
+        name: "Demo Expert",
+        description: "Grenades have a greater throwing range and visible detonation point.",
         categories: [PerkCategories.Normal],
 
         rangeMod: 2,
@@ -372,13 +372,13 @@ const perks = [
 
         thresholds: [
             [0.2, 1.25],
-            [0.5, 1.1]
+            [0.49, 1.1]
         ] as ReadonlyArray<readonly [number, number]>
     },
     {
         idString: PerkIds.InfiniteAmmo,
         name: "Infinite Ammo",
-        description: "All weapons have unlimited ammo.",
+        description: "All weapons have unlimited ammo. Electronic devices may break if overused.",
         categories: [PerkCategories.Normal],
 
         airdropCallerLimit: 3
@@ -386,7 +386,7 @@ const perks = [
     {
         idString: PerkIds.FieldMedic,
         name: "Field Medic",
-        description: "All consumable items can be used faster.",
+        description: "All consumable items can be used faster. Teammates can be revived more quickly.",
         categories: [PerkCategories.Normal],
 
         usageMod: 1.5 // divide
@@ -397,8 +397,8 @@ const perks = [
         description: "Melee weapons make you move faster when equipped, and deal more damage.",
         categories: [PerkCategories.Normal],
 
-        speedMod: 1.6, // multiplicative
-        damageMod: 1.4 // multiplicative
+        speedMod: 1.3, // multiplicative
+        damageMod: 1.3 // multiplicative
     },
     {
         idString: PerkIds.CloseQuartersCombat,
@@ -416,7 +416,7 @@ const perks = [
         description: "Become smaller and take less damage from explosions.",
         categories: [PerkCategories.Normal],
 
-        sizeMod: 0.7, // multiplicative
+        sizeMod: 0.8, // multiplicative
         explosionMod: 0.7 // multiplicative
     }
 ] as const satisfies ReadonlyArray<
