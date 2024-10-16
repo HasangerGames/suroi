@@ -1035,10 +1035,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 gasParticles: gasParticlePresets.automatic,
                 image: { position: Vec.create(80, 0) },
                 ballistics: {
-                    damage: 8,
+                    damage: 10,
                     obstacleMultiplier: 1,
                     speed: 0.27,
-                    range: 120
+                    range: 100
                 }
             },
             {
