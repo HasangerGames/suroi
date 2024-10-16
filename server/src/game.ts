@@ -977,7 +977,7 @@ export class Game implements GameData {
                 this.setGameData({ startedTime: this.now });
                 this.gas.advanceGasStage();
 
-                this.addTimeout(this.createNewGame, Config.gameJoinTime * 1000);
+                this.addTimeout(this.createNewGame.bind(this), Config.gameJoinTime * 1000);
             }, 3000);
         }
 
