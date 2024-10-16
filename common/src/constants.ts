@@ -164,7 +164,8 @@ export const GameConstants = freezeDeep({
         killLeaderMinKills: 3,
         maxMouseDist: 256,
         reviveTime: 8,
-        maxReviveDist: 5
+        maxReviveDist: 5,
+        maxPerkCount: 1 // how many perks the player can have equipped
     },
     gas: {
         damageScaleFactor: 0.005, // Extra damage, linear per distance unit into the gas

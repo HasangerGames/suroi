@@ -242,7 +242,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 return player.loadout.skin.idString !== definition.idString || InventoryMessages.ItemAlreadyEquipped;
             }
             case ItemType.Perk: {
-                return !player.hasPerk(definition);
+                return !player.hasPerk(definition) || InventoryMessages.ItemAlreadyEquipped;
             }
         }
     }
@@ -449,6 +449,25 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 if (player.perks.addPerk(definition)) {
                     player.updateAndApplyModifiers();
                 }
+                break;
+                /* const currentPerks = player.perks.asList(); // todo: equip perk, drop current one (swap)
+                const perksLength = currentPerks.length;
+
+                if (perksLength === GameConstants.player.maxPerkCount) {
+
+                    const equippedPerk = currentPerks[0];
+
+                    createNewItem({ type: equippedPerk, count: 1 });
+                    player.perks.removePerk(equippedPerk);
+
+                    player.perks.addPerk(definition);
+
+                }
+
+                else if (perksLength <= GameConstants.player.maxPerkCount) {
+                    player.perks.addPerk(definition);
+                    player.updateAndApplyModifiers();
+                } */
                 break;
             }
         }
