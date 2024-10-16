@@ -661,6 +661,25 @@ export class UIManager {
             this.hasC4s = activeC4s;
         }
 
+        /* if (perks) {
+            const oldPerks = this.perks.asList();
+            this.perks.overwrite(perks);
+            const newPerks = this.perks.asList();
+
+            const length = Math.max(oldPerks.length, newPerks.length);
+
+            if (length === 0) {
+                this.resetPerkSlots();
+            }
+
+            for (let i = 0; i < length; i++) {
+                const perk = newPerks[i];
+
+                if (!oldPerks[i] && perk) {
+                    this.updatePerkSlot(perk, i);
+                }
+            }
+        } */
         if (perks) {
             this.perks.overwrite(perks);
 
@@ -852,6 +871,38 @@ export class UIManager {
         element.toggleClass("active");
     }
 
+    resetPerkSlot(index: number): void {
+        const container = $(`#perk-slot-${index}`);
+
+        container.children(".item-tooltip").html("");
+        container.children(".item-image").attr("src", "");
+        container.css("visibility", "hidden");
+        container.off("pointerdown");
+    }
+
+    /* updatePerkSlot(perkDef: PerkDefinition, index: number): void {
+        const container = $(`#perk-slot-${index}`);
+
+        container.children(".item-tooltip").html(`<strong>${perkDef.name}</strong><br>${perkDef.description}`);
+        container.children(".item-image").attr("src", `./img/game/perks/${perkDef.idString}.svg`);
+        container.css("visibility", this.perks.hasPerk(perkDef) ? "visible" : "hidden");
+
+        container.off("pointerdown");
+        container[0].addEventListener( // todo
+            "pointerdown",
+            (e: PointerEvent): void => {
+                e.stopImmediatePropagation();
+                if (e.button === 2 && perkDef && this.game.teamMode) {
+                    this.game.inputManager.addAction({
+                        type: InputActions.DropItem,
+                        item: perkDef
+                    });
+                    this.resetPerkSlot(index);
+                }
+            }
+        );
+    } */
+
     updatePerkSlot(perkDef: PerkDefinition, index: number): void {
         if (index > 3) index = 0; // overwrite stuff ig?
         // no, write a hud that can handle it
@@ -878,10 +929,7 @@ export class UIManager {
 
     resetPerkSlots(): void {
         for (let i = 0; i < 3; i++) {
-            const container = $(`#perk-slot-${i}`);
-            container.children(".item-tooltip").text("");
-            container.children(".item-image").attr("src", "");
-            container.css("visibility", "hidden");
+            this.resetPerkSlot(i);
         }
     }
 

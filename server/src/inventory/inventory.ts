@@ -552,6 +552,7 @@ export class Inventory {
                 !this.items.hasItem(idString)
                 && itemType !== ItemType.Armor
                 && itemType !== ItemType.Backpack
+                && itemType !== ItemType.Perk
             )
             || definition.noDrop
         ) return;
@@ -607,6 +608,13 @@ export class Inventory {
             }
             case ItemType.Backpack: {
                 return;
+            }
+
+            case ItemType.Perk: {
+                if (!this.owner.hasPerk(definition)) return;
+                this.owner.perks.removePerk(definition);
+                this._dropItem(definition);
+                break;
             }
         }
 

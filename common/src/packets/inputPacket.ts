@@ -6,6 +6,7 @@ import { type EmoteDefinition, Emotes } from "../definitions/emotes";
 import { type HealingItemDefinition } from "../definitions/healingItems";
 import { Loots } from "../definitions/loots";
 import { type MapPingDefinition, MapPings, type PlayerPing } from "../definitions/mapPings";
+import { PerkDefinition } from "../definitions/perks";
 import { type ScopeDefinition } from "../definitions/scopes";
 import { type ThrowableDefinition } from "../definitions/throwables";
 import { type DeepMutable } from "../utils/misc";
@@ -38,7 +39,7 @@ export type InputAction =
     }
     | {
         readonly type: InputActions.DropItem
-        readonly item: HealingItemDefinition | ScopeDefinition | ThrowableDefinition | ArmorDefinition | BackpackDefinition | AmmoDefinition
+        readonly item: HealingItemDefinition | ScopeDefinition | ThrowableDefinition | ArmorDefinition | BackpackDefinition | AmmoDefinition | PerkDefinition
     }
     | {
         readonly type: InputActions.EquipItem | InputActions.DropWeapon | InputActions.LockSlot | InputActions.UnlockSlot | InputActions.ToggleSlotLock
@@ -172,7 +173,7 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
             const type: InputActions = stream.readBits(INPUT_ACTIONS_BITS);
 
             let slot: number | undefined;
-            let item: HealingItemDefinition | ScopeDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition | undefined;
+            let item: HealingItemDefinition | ScopeDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition | PerkDefinition | undefined;
             let emote: EmoteDefinition | undefined;
             let position: Vector | undefined;
             let ping: MapPingDefinition | undefined;
@@ -186,7 +187,7 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
                     slot = stream.readBits(2);
                     break;
                 case InputActions.DropItem:
-                    item = Loots.readFromStream<HealingItemDefinition | ScopeDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition>(stream);
+                    item = Loots.readFromStream<HealingItemDefinition | ScopeDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition | PerkDefinition>(stream);
                     break;
                 case InputActions.UseItem:
                     item = Loots.readFromStream<HealingItemDefinition | ScopeDefinition>(stream);
