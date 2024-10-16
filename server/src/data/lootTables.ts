@@ -202,6 +202,76 @@ export const LootTableOverrides: Record<string, LootTableOverride> = {
                 { item: "model_89", weight: 0.25 },
                 { item: "m1_garand", weight: 0.1 }
             ]
+        },
+        airdrop_crate: {
+            min: 1,
+            max: 1,
+            loot: [
+                [
+                    { tier: "airdrop_equipment", weight: 1 }
+                ],
+                [
+                    { tier: "airdrop_scopes", weight: 1 }
+                ],
+                [
+                    { tier: "airdrop_healing_items", weight: 1 }
+                ],
+                [
+                    { tier: "airdrop_skins", weight: 1 }
+                ],
+                [
+                    { tier: "airdrop_melee", weight: 1 }
+                ],
+                [
+                    { tier: "ammo", weight: 1 }
+                ],
+                [
+                    { tier: "airdrop_guns", weight: 1 }
+                ],
+                [
+                    { item: "frag_grenade", count: 3, weight: 2 },
+                    { item: NullString, weight: 1 }
+                ],
+                [
+                    { item: NullString, count: 1, weight: 0.9 },
+                    { tier: "perks", count: 1, weight: 0.1 }
+                ]
+            ]
+        },
+        gold_airdrop_crate: {
+            min: 1,
+            max: 1,
+            loot: [
+                [
+                    { tier: "airdrop_equipment", weight: 1 }
+                ],
+                [
+                    { tier: "airdrop_scopes", weight: 1 }
+                ],
+                [
+                    { tier: "airdrop_healing_items", weight: 1 }
+                ],
+                [
+                    { tier: "airdrop_skins", weight: 1 }
+                ],
+                [
+                    { tier: "airdrop_melee", weight: 1 }
+                ],
+                [
+                    { tier: "ammo", weight: 1 }
+                ],
+                [
+                    { tier: "gold_airdrop_guns", weight: 1 }
+                ],
+                [
+                    { item: "frag_grenade",
+                        count: 3, weight: 1 }
+                ],
+                [
+                    { item: NullString, count: 1, weight: 1 },
+                    { tier: "perks", count: 1, weight: 1 }
+                ]
+            ]
         }
     }
 };
