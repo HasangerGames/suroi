@@ -456,9 +456,14 @@
     .locked {
         filter: brightness(70%) blur(2px);
         pointer-events: none;
+        animation: none;
 
         & .btn, &.btn {
             text-shadow: none;
+            background-color: #008aff;
+            img {
+                display: none;
+            }
         }
 
         & .btn-primary, &.btn-primary {
@@ -759,5 +764,31 @@
 
     a {
         color: white;
+    }
+}
+
+
+.event-fall {
+    background-color: #72742f;
+    border-bottom: 2px solid #535421;
+    box-shadow: inset 0 -2px #535421;
+    animation: mode-fall-color 4s linear infinite;
+}
+
+@keyframes mode-fall-color {
+    0% {
+        background-color: #72742f;
+        border-bottom: 2px solid #535421;
+        box-shadow: inset 0 -2px #535421;
+    }
+    50% {
+        background-color: #535421;
+        border-bottom: 2px solid #373710;
+        box-shadow: inset 0 -2px #373710;
+    }
+    100% {
+        background-color: #72742f;
+        border-bottom: 2px solid #535421;
+        box-shadow: inset 0 -2px #535421;
     }
 }
