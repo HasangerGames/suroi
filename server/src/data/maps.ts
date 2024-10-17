@@ -276,7 +276,7 @@ const maps = {
             stump: 40,
             hatchet_stump: 3,
             regular_crate: 200,
-            flint_crate: 10, 
+            flint_crate: 10,
             grenade_crate: 50,
             rock: 220,
             clearing_boulder: 20,
