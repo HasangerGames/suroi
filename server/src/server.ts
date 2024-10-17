@@ -106,7 +106,7 @@ if (isMainThread) {
             response = { success: false, message: "perma", reason: "VPN/proxy detected. To play the game, please disable it." };
 
         } else {
-            let teamID;
+            const teamID = maxTeamSize !== TeamSize.Solo && new URLSearchParams(req.getQuery()).get("teamID");
             const result = await proxyCheck?.checkIP(ip, { vpn: 3 }, 5000);
 
             if (
@@ -116,10 +116,7 @@ if (isMainThread) {
                 knownVPNs.add(ip);
                 response = { success: false, message: "perma", reason: "VPN/proxy detected. To play the game, please disable it." };
 
-            } else if (
-                maxTeamSize !== TeamSize.Solo
-                && (teamID = new URLSearchParams(req.getQuery()).get("teamID"))
-            ) {
+            } else if (teamID) {
                 const team = customTeams.get(teamID);
                 if (team?.gameID !== undefined) {
                     response = games[team.gameID]
