@@ -269,7 +269,7 @@ const maps = {
         },
         obstacles: {
             oak_tree: 250,
-            birch_tree_fall: 25,
+            birch_tree: 25,
             maple_tree: 70,
             pine_tree: 95,
             dormant_oak_tree: 25,
@@ -312,7 +312,7 @@ const maps = {
                     minAmount: 2,
                     maxAmount: 3,
                     jitter: 5,
-                    obstacles: ["birch_tree_fall"],
+                    obstacles: ["birch_tree"],
                     radius: 12
                 }
             },

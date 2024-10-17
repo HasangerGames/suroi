@@ -4535,10 +4535,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec.create(0, 20)),
                 scopeHitbox: RectangleHitbox.fromRect(10, 15, Vec.create(0, 20)),
                 obstacles: [
-                    { idString: { oak_tree: 1, birch_tree_fall: 1 }, position: Vec.create(7.5, 9.8) },
-                    { idString: { oak_tree: 1, birch_tree_fall: 1 }, position: Vec.create(10, 23) },
-                    { idString: { oak_tree: 1, birch_tree_fall: 1 }, position: Vec.create(-10, 16) },
-                    { idString: { oak_tree: 1, birch_tree_fall: 1 }, position: Vec.create(-5, 37) }
+                    { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(7.5, 9.8) },
+                    { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(10, 23) },
+                    { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-10, 16) },
+                    { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-5, 37) }
                 ],
                 bulletMask: RectangleHitbox.fromRect(11, 30, Vec.create(0, 30)),
                 subBuildings: [

@@ -840,20 +840,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: new CircleHitbox(5.5),
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
-                allowFlyOver: FlyoverPref.Never
-            }]),
-
-            tree([{
-                name: "Birch Tree Fall",
-                health: 240,
-                scaleProps: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.75
-                },
-                hitbox: new CircleHitbox(5.5),
-                spawnHitbox: new CircleHitbox(8.5),
-                rotationMode: RotationMode.Full,
                 variations: 2,
                 allowFlyOver: FlyoverPref.Never
             }]),
