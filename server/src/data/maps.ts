@@ -276,8 +276,7 @@ const maps = {
             stump: 40,
             hatchet_stump: 3,
             regular_crate: 200,
-            flint_crate: 5,
-            aegis_crate: 5,
+            flint_crate: 10, 
             grenade_crate: 50,
             rock: 220,
             clearing_boulder: 20,
@@ -293,7 +292,8 @@ const maps = {
             gold_rock: 1,
             loot_tree: 1,
             loot_barrel: 1,
-            flint_stone: 3
+            flint_stone: 3,
+            pumpkin: 200
         },
         obstacleClumps: [
             {
@@ -331,12 +331,12 @@ const maps = {
             ground_loot: 60
         },
         places: [
-            { name: "Banana", position: Vec.create(0.23, 0.2) },
-            { name: "Takedown", position: Vec.create(0.23, 0.8) },
-            { name: "Lavlandet", position: Vec.create(0.75, 0.2) },
-            { name: "Noskin Narrows", position: Vec.create(0.72, 0.8) },
-            { name: "Mt. Sanger", position: Vec.create(0.5, 0.35) },
-            { name: "Deepwood", position: Vec.create(0.5, 0.65) }
+            { name: "Antler", position: Vec.create(0.23, 0.2) },
+            { name: "Deadfall", position: Vec.create(0.23, 0.8) },
+            { name: "Beaverdam", position: Vec.create(0.75, 0.2) },
+            { name: "Overgrown Pasture", position: Vec.create(0.72, 0.8) },
+            { name: "Emerald Farms", position: Vec.create(0.5, 0.35) },
+            { name: "Darkwood", position: Vec.create(0.5, 0.65) }
         ]
     },
     debug: {
