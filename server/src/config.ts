@@ -26,7 +26,7 @@ export const Config = {
 
     lootTableOverride: "fall", // IMPORTANT: DELETE IF NORMAL MODE.
 
-    spawn: { mode: SpawnMode.Center },
+    spawn: { mode: SpawnMode.Normal },
 
     maxTeamSize: TeamSize.Solo,
 

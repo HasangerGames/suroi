@@ -253,6 +253,7 @@ export const MaterialSounds: Record<string, { hit?: string, destroyed?: string }
 /* eslint-disable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 export const TintedParticles: Record<string, { readonly base: string, readonly tint: number, readonly variants?: number }> = {
     metal_particle:                { base: "metal_particle_1", tint: 0x5f5f5f },
+    metal_column_particle:         { base: "metal_particle_1", tint: 0x8f8f8f },
     super_barrel_particle:         { base: "metal_particle_1", tint: 0xce2b29 },
     dumpster_particle:             { base: "metal_particle_1", tint: 0x3c7033 },
     washing_machine_particle:      { base: "metal_particle_1", tint: 0xcccccc },
@@ -3437,8 +3438,34 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 ),
                 rotationMode: RotationMode.Limited,
                 allowFlyover: FlyoverPref.Never,
+                tint: 0xa3917b,
                 frames: {
+                    base: "column",
                     particle: "wall_particle"
+                },
+                role: ObstacleSpecialRoles.Wall
+            },
+            {
+                idString: "metal_column",
+                name: "Metal Column",
+                material: "metal_light",
+                reflectBullets: true,
+                indestructible: true,
+                health: 340,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.95
+                },
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(3, 3)
+                ),
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Never,
+                tint: 0x8f8f8f,
+                frames: {
+                    base: "column",
+                    particle: "metal_column_particle"
                 },
                 role: ObstacleSpecialRoles.Wall
             },
