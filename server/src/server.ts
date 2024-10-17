@@ -48,7 +48,7 @@ async function isVPNCheck(ip: string): Promise<boolean> {
     if (ipIsVPN !== undefined) return ipIsVPN;
 
     const result = await proxyCheck.checkIP(ip, { vpn: 3 }, 5000);
-    if (result?.status !== "ok") return false;
+    if (!result || result.status === "denied" || result.status === "error") return false;
 
     ipIsVPN = result[ip].proxy === "yes" || result[ip].vpn === "yes";
     isVPN.set(ip, ipIsVPN);
@@ -365,7 +365,7 @@ if (isMainThread) {
                         }
                     })();
                 } else {
-                    if (!existsSync("punishments.json")) writeFileSync("punishments.json", "{}");
+                    if (!existsSync("punishments.json")) writeFileSync("punishments.json", "[]");
                     readFile("punishments.json", "utf8", (error, data) => {
                         if (error) {
                             console.error("Error: Unable to load punishment list. Details:", error);
