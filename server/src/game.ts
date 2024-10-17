@@ -46,9 +46,8 @@ import { PluginManager } from "./pluginManager";
 import { Team } from "./team";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
-import { Logger, removeFrom } from "./utils/misc";
+import { cleanUsername, Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
-import { cleanUsername } from "./utils/usernameFilter";
 
 /*
     eslint-disable

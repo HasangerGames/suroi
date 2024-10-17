@@ -4,6 +4,8 @@ import { NullString, type ObjectDefinition, type ReferenceTo } from "@common/uti
 import { weightedRandom } from "@common/utils/random";
 
 import { LootTiers, type WeightedItem } from "../data/lootTables";
+import { Config } from "../config";
+import { GameConstants } from "@common/constants";
 
 export const Logger = {
     log(...message: string[]): void {
@@ -21,6 +23,17 @@ function internalLog(...message: string[]): void {
         styleText(`[${date.toLocaleDateString("en-US")} ${date.toLocaleTimeString("en-US")}]`, ColorStyles.foreground.green.bright),
         message.join(" ")
     );
+}
+
+export function cleanUsername(name?: string | null): string {
+    return (
+        !name?.length
+        || name.length > 16
+        || Config.protection?.usernameFilters?.some(regex => regex.test(name))
+        || /[^\x20-\x7E]/g.test(name) // extended ASCII chars
+    )
+        ? GameConstants.player.defaultName
+        : name;
 }
 
 export class LootItem {

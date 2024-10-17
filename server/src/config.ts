@@ -226,6 +226,11 @@ export interface ConfigType {
          * Limits the number of teams that can be created by any one IP address.
          */
         readonly maxTeams?: number
+
+        /**
+         * If a player's username matches one of the regexes in this array, it will be replaced with the default username.
+         */
+        readonly usernameFilters?: RegExp[]
     }
 
     /**

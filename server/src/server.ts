@@ -16,7 +16,7 @@ import { findGame, games, newGame } from "./gameManager";
 import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./team";
 import { Logger } from "./utils/misc";
 import { cors, createServer, forbidden, getIP, textDecoder } from "./utils/serverHelpers";
-import { cleanUsername } from "./utils/usernameFilter";
+import { cleanUsername } from "./utils/misc";
 
 export interface Punishment {
     readonly id: string
