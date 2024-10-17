@@ -121,11 +121,11 @@ if (isMainThread) {
             response = { success: false, message: punishment.punishmentType, reason: punishment.reason, reportID: punishment.reportId };
 
         } else {
-            let teamID;
+            const teamID = maxTeamSize !== TeamSize.Solo && new URLSearchParams(req.getQuery()).get("teamID"); // must be here or it causes uWS errors
             if (await isVPNCheck(ip)) {
                 response = { success: false, message: "perma", reason: "VPN/proxy detected. To play the game, please disable it." };
 
-            } else if (teamID = maxTeamSize !== TeamSize.Solo && new URLSearchParams(req.getQuery()).get("teamID")) {
+            } else if (teamID) {
                 const team = customTeams.get(teamID);
                 if (team?.gameID !== undefined) {
                     response = games[team.gameID]
