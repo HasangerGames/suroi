@@ -217,12 +217,6 @@ export interface ConfigType {
         readonly refreshDuration: number
 
         /**
-         * If `true`, a list of blocked IPs will be downloaded from the given URL on server startup. The IPs must be separated by newlines.
-         * The list is only reloaded on server startup.
-         */
-        readonly ipBlocklistURL?: string
-
-        /**
          * Limits the number of teams that can be created by any one IP address.
          */
         readonly maxTeams?: number
@@ -231,6 +225,11 @@ export interface ConfigType {
          * If a player's username matches one of the regexes in this array, it will be replaced with the default username.
          */
         readonly usernameFilters?: RegExp[]
+
+        /**
+         * If specified, the proxycheck.io API will be used to detect and block VPNs and proxies.
+         */
+        readonly proxyCheckAPIKey?: string
     }
 
     /**
