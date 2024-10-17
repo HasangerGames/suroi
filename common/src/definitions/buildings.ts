@@ -5770,7 +5770,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(17.01, 1.99, Vec.create(-144.6, -59.49)),
                     RectangleHitbox.fromRect(1.96, 19.04, Vec.create(-38.12, -47.89)),
                     RectangleHitbox.fromRect(5.66, 19.78, Vec.create(10.43, 35.72)),
-                    RectangleHitbox.fromRect(51.43, 1.67, Vec.create(-13.39, -56.93)),
+                    //   RectangleHitbox.fromRect(51.43, 1.67, Vec.create(-13.39, -56.93)),
                     RectangleHitbox.fromRect(87.54, 2, Vec.create(97.13, -96.08)),
                     RectangleHitbox.fromRect(24.64, 2, Vec.create(0.9, 25.83)),
                     RectangleHitbox.fromRect(1.98, 20.08, Vec.create(52.67, -66.98)),

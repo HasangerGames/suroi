@@ -4334,6 +4334,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: RectangleHitbox.fromRect(27.5, 5.2),
                 rotationMode: RotationMode.Limited,
                 role: ObstacleSpecialRoles.Activatable,
+                allowFlyover: FlyoverPref.Always,
                 replaceWith: {
                     idString: "headquarters_security_desk_activated",
                     delay: 0
