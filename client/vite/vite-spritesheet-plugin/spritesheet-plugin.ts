@@ -3,9 +3,9 @@ import { Minimatch } from "minimatch";
 import { resolve } from "path";
 import { type SpritesheetData } from "pixi.js";
 import { type FSWatcher, type Plugin, type ResolvedConfig } from "vite";
-import { ModeAtlases } from "../../../common/src/definitions/modes";
 import readDirectory from "./utils/readDirectory.js";
 import { type CompilerOptions, createSpritesheets, type MultiResAtlasList } from "./utils/spritesheet.js";
+import { GameConstants } from "../../../common/src/constants";
 
 const defaultGlob = "**/*.{png,gif,jpg,bmp,tiff,svg}";
 const imagesMatcher = new Minimatch(defaultGlob);
@@ -23,12 +23,9 @@ const compilerOpts = {
 } satisfies CompilerOptions as CompilerOptions;
 
 const atlasesToBuild: Record<string, string> = {
-    main: "public/img/game"
+    main: "public/img/game",
+    [GameConstants.modeName]: `public/img/modes/${GameConstants.modeName}`
 };
-
-for (const atlasId of ModeAtlases) {
-    atlasesToBuild[atlasId] = `public/img/modes/${atlasId}`;
-}
 
 const foldersToWatch = Object.values(atlasesToBuild);
 

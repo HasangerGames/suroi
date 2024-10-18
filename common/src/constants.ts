@@ -1,5 +1,6 @@
 import { Ammos } from "./definitions/ammos";
 import { HealingItems } from "./definitions/healingItems";
+import { Mode } from "./definitions/modes";
 import { Scopes } from "./definitions/scopes";
 import { Throwables } from "./definitions/throwables";
 import { freezeDeep } from "./utils/misc";
@@ -27,7 +28,7 @@ export const GameConstants = freezeDeep({
     protocolVersion: 27,
     gridSize: 32,
     maxPosition: 1924,
-    mode: "fall",
+    modeName: "fall" satisfies Mode as Mode,
     player: {
         radius: 2.25,
         baseSpeed: 0.02655,

@@ -28,14 +28,12 @@ export const Config = {
             gameAddress: "wss://<ID>.as.suroi.io"
         }
     },
-    defaultRegion: "na",
-    mode: "fall"
+    defaultRegion: "na"
 } satisfies ConfigType as ConfigType;
 
 export interface ConfigType {
     readonly regions: Record<string, Region>
     readonly defaultRegion: string
-    readonly mode: string
 }
 
 export interface Region {

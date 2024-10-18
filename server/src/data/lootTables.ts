@@ -34,7 +34,7 @@ export class LootItem {
 }
 
 export function getLootFromTable(tableID: string): LootItem[] {
-    const lootTable = LootTables[GameConstants.mode][tableID] ?? LootTables.normal[tableID];
+    const lootTable = LootTables[GameConstants.modeName][tableID] ?? LootTables.normal[tableID];
     if (lootTable === undefined) {
         throw new ReferenceError(`Unknown loot table: ${tableID}`);
     }
@@ -1004,7 +1004,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
 };
 
 export const SpawnableLoots = new Set<ReferenceTo<LootDefinition>>(
-    Object.values(LootTables[GameConstants.mode])
+    Object.values(LootTables[GameConstants.modeName])
         .map((table: LootTable) =>
             (
                 Array.isArray(table)

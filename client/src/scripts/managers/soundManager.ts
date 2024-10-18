@@ -1,5 +1,4 @@
 import { Layer } from "../../../../common/src/constants";
-import { Reskins } from "../../../../common/src/definitions/modes";
 // import { equalLayer, isGroundLayer } from "../../../../common/src/utils/layer";
 import { Numeric } from "../../../../common/src/utils/math";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
@@ -193,7 +192,7 @@ export class SoundManager {
         for (const key in soundsToLoad) {
             let path = soundsToLoad[key];
 
-            if (MODE.reskin && Reskins[MODE.reskin]?.sounds?.includes(key)) {
+            if (MODE.specialSounds?.includes(key)) {
                 path += `_${MODE.reskin}`;
             }
 

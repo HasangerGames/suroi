@@ -1,9 +1,9 @@
 export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "gas" | "void";
 
 export interface ModeDefinition {
-    readonly idString: string
     readonly colors: Record<ColorKeys, string>
     readonly specialMenuMusic?: boolean
+    readonly specialSounds?: string[]
     readonly reskin?: string
     // will be multiplied by the bullet trail color
     readonly bulletTrailAdjust?: string
@@ -13,13 +13,10 @@ export interface ModeDefinition {
     }
 }
 
-export interface ReskinDefinition {
-    readonly sounds?: string[]
-}
+export type Mode = "normal" | "fall" | "halloween" | "winter";
 
-export const Modes: readonly ModeDefinition[] = [
-    {
-        idString: "normal",
+export const Modes: Record<Mode, ModeDefinition> = {
+    normal: {
         colors: {
             grass: "hsl(113, 42%, 42%)",
             water: "hsl(211, 63%, 42%)",
@@ -30,22 +27,7 @@ export const Modes: readonly ModeDefinition[] = [
             void: "hsl(25, 80%, 6%)"
         }
     },
-    {
-        idString: "halloween",
-        colors: {
-            grass: "hsl(65, 100%, 12%)",
-            water: "hsl(4, 100%, 14%)",
-            border: "hsl(4, 90%, 12%)",
-            beach: "hsl(33, 77%, 21%)",
-            riverBank: "hsl(33, 50%, 30%)",
-            gas: "hsla(17, 100%, 50%, 0.55)",
-            void: "hsl(25, 80%, 6%)"
-        },
-        specialMenuMusic: true,
-        reskin: "fall"
-    },
-    {
-        idString: "fall",
+    fall: {
         colors: {
             grass: "hsl(62, 42%, 32%)",
             water: "hsl(211, 63%, 42%)",
@@ -60,8 +42,20 @@ export const Modes: readonly ModeDefinition[] = [
             frames: ["leaf_particle_1", "leaf_particle_2", "leaf_particle_3"]
         }
     },
-    {
-        idString: "winter",
+    halloween: {
+        colors: {
+            grass: "hsl(65, 100%, 12%)",
+            water: "hsl(4, 100%, 14%)",
+            border: "hsl(4, 90%, 12%)",
+            beach: "hsl(33, 77%, 21%)",
+            riverBank: "hsl(33, 50%, 30%)",
+            gas: "hsla(17, 100%, 50%, 0.55)",
+            void: "hsl(25, 80%, 6%)"
+        },
+        specialMenuMusic: true,
+        reskin: "fall"
+    },
+    winter: {
         colors: {
             grass: "hsl(210, 18%, 82%)",
             water: "hsl(211, 63%, 42%)",
@@ -72,24 +66,10 @@ export const Modes: readonly ModeDefinition[] = [
             void: "hsl(25, 80%, 6%)"
         },
         specialMenuMusic: true,
+        specialSounds: [
+            "airdrop_plane"
+        ],
         reskin: "winter",
         bulletTrailAdjust: "hsl(0, 50%, 80%)"
     }
-];
-
-export const Reskins: Record<string, ReskinDefinition> = {
-    winter: {
-        sounds: [
-            "airdrop_plane"
-        ]
-    }
 };
-
-/*
-    equivalent to [...new Set(whatever)], but is faster and also becomes
-    even faster when duplicates are present (yes this was benchmarked)
-*/
-export const ModeAtlases = Modes
-    .map(mode => mode.reskin)
-    .filter(reskin => reskin !== undefined)
-    .filter((item, index, array) => array.indexOf(item) === index);

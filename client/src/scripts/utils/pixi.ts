@@ -5,6 +5,7 @@ import { HitboxType, RectangleHitbox, type Hitbox } from "../../../../common/src
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { getTranslatedString } from "../../translations";
 import { MODE, PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
+import { GameConstants } from "../../../../common/src/constants";
 
 const textures: Record<string, Texture> = {};
 const reskinnedTextures: Record<string, Texture> = {};
@@ -117,7 +118,7 @@ const loadSpritesheet = (renderer: Renderer) => async(data: SpritesheetData, pat
                 for (const frame in sheetTextures) {
                     textures[frame] = sheetTextures[frame];
 
-                    if (MODE.reskin && textures[frame].source.label.includes(MODE.idString)) {
+                    if (MODE.reskin && textures[frame].source.label.includes(GameConstants.modeName)) {
                         reskinnedTextures[frame] = textures[frame];
                     }
                 }
