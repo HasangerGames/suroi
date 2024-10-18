@@ -5159,7 +5159,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { key: "gun_case_residue", position: Vec.create(63.16, -36.39), zIndex: ZIndexes.Decals, rotation: 1 },
                     { key: "grenade_crate_residue", position: Vec.create(69.81, -34.24), zIndex: ZIndexes.Decals },
                     { key: "large_refinery_barrel_residue", position: Vec.create(-60.35, -31.87), zIndex: ZIndexes.Decals },
-                    { key: "porta_potty_residue", position: Vec.create(-60.35, -31.87), zIndex: ZIndexes.Decals },
+                    { key: "outhouse_residue", position: Vec.create(-60.35, -31.87), zIndex: ZIndexes.Decals },
                     { key: "large_refinery_barrel_residue", position: Vec.create(40, 50.33), zIndex: ZIndexes.Decals },
                     { key: "regular_crate_residue", position: Vec.create(7.06, 30.07), zIndex: ZIndexes.Decals }
                 ],
