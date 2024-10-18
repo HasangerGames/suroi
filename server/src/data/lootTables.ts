@@ -1,8 +1,8 @@
 import { GameConstants } from "@common/constants";
-import { Guns, Melees } from "@common/definitions";
-import { Loots, type LootDefinition } from "@common/definitions/loots";
-import { PerkIds } from "@common/definitions/perks";
-import { NullString, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { Ammos, Armors, Backpacks, Guns, HealingItems, Melees, Scopes, Skins, Throwables } from "@common/definitions";
+import { Loots, type LootDefForType, type LootDefinition } from "@common/definitions/loots";
+import { PerkIds, Perks } from "@common/definitions/perks";
+import { ItemType, NullString, type ObjectDefinitions, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, weightedRandom } from "@common/utils/random";
 
 export type WeightedItem =
@@ -16,15 +16,15 @@ export type WeightedItem =
         | { readonly spawnSeparately: true, readonly count: number }
     );
 
-type SimpleLootTable = ReadonlyArray<WeightedItem | readonly WeightedItem[]>;
+export type SimpleLootTable = ReadonlyArray<WeightedItem | readonly WeightedItem[]>;
 
-type FullLootTable = {
+export type FullLootTable = {
     readonly min: number
     readonly max: number
-    readonly loot: WeightedItem[]
+    readonly loot: readonly WeightedItem[]
 };
 
-type LootTable = SimpleLootTable | FullLootTable;
+export type LootTable = SimpleLootTable | FullLootTable;
 
 export class LootItem {
     constructor(
@@ -34,27 +34,29 @@ export class LootItem {
 }
 
 export function getLootFromTable(tableID: string): LootItem[] {
-    const lootTable = LootTables[GameConstants.modeName][tableID] ?? LootTables.normal[tableID];
+    const lootTable = (LootTables[GameConstants.modeName] ?? LootTables.normal)[tableID];
     if (lootTable === undefined) {
         throw new ReferenceError(`Unknown loot table: ${tableID}`);
     }
 
     const isSimple = Array.isArray(lootTable);
     const { min, max, loot } = isSimple
-        ? { min: 1, max: 1, loot: lootTable }
+        ? { min: 1, max: 1, loot: lootTable as SimpleLootTable }
         : lootTable as FullLootTable;
 
     return (
-        isSimple && Array.isArray(loot[0])
-            ? loot.map(innerTable => getLoot(innerTable))
+        isSimple
+            ? (loot as SimpleLootTable).map(innerTable => getLoot(innerTable))
             : Array.from(
                 { length: random(min, max) },
-                () => getLoot(loot)
+                () => getLoot(loot as FullLootTable["loot"])
             )
     ).flat();
 }
 
-function getLoot(table: WeightedItem[]): LootItem[] {
+function getLoot(table: WeightedItem | readonly WeightedItem[]): LootItem[] {
+    table = [table].flat();
+
     const selection = table.length === 1
         ? table[0]
         : weightedRandom(table, table.map(({ weight }) => weight));
@@ -66,13 +68,9 @@ function getLoot(table: WeightedItem[]): LootItem[] {
     const item = selection.item;
     if (item === NullString) return [];
 
-    let loot: LootItem[] = [];
-
-    if (selection.spawnSeparately) {
-        loot.push(...Array.from({ length: selection.count! }, () => new LootItem(item, 1)));
-    } else {
-        loot.push(new LootItem(item, selection.count ?? 1));
-    }
+    const loot: LootItem[] = selection.spawnSeparately
+        ? Array.from({ length: selection.count }, () => new LootItem(item, 1))
+        : [new LootItem(item, selection.count ?? 1)];
 
     const definition = Loots.fromStringSafe(item);
     if (definition === undefined) {
@@ -80,10 +78,11 @@ function getLoot(table: WeightedItem[]): LootItem[] {
     }
 
     if ("ammoType" in definition && definition.ammoSpawnAmount) {
+        // eslint-disable-next-line prefer-const
         let { ammoType, ammoSpawnAmount } = definition;
 
         if (selection.spawnSeparately) {
-            ammoSpawnAmount *= selection.count!;
+            ammoSpawnAmount *= selection.count;
         }
 
         if (ammoSpawnAmount > 1) {
@@ -1003,19 +1002,61 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
     }
 };
 
-export const SpawnableLoots = new Set<ReferenceTo<LootDefinition>>(
-    Object.values(LootTables[GameConstants.modeName])
-        .map((table: LootTable) =>
-            (
-                Array.isArray(table)
-                    ? table
-                    : (table as FullLootTable).loot
-            )
-            .flat()
-            .filter(item => "item" in item && item.item !== NullString)
-            .map(({ item }) => item)
+const spawnableLoots: ReadonlySet<ReferenceTo<LootDefinition>> = new Set<ReferenceTo<LootDefinition>>(
+    Object.values(
+        Object.assign(
+            {},
+            LootTables.normal,
+            LootTables[GameConstants.modeName] ?? {}
         )
-        .flat()
+    ).map(table =>
+        (
+            Array.isArray(table)
+                ? table as SimpleLootTable
+                : (table as FullLootTable).loot
+        )
+            .flat()
+            .map(entry => "item" in entry ? entry.item : NullString)
+            // we don't need to follow indirection from table references because
+            // any table reference is also in the list somewhere
+            .filter(item => item !== NullString)
+    ).flat()
 );
-export const SpawnableGuns = Guns.definitions.filter(gunDef => SpawnableLoots.has(gunDef.idString));
-export const SpawnableMelees = Melees.definitions.filter(meleeDef => SpawnableLoots.has(meleeDef.idString));
+
+export const SpawnableLoots = (() => {
+    type SpawnableItemRegistry = ReadonlySet<ReferenceTo<LootDefinition>> & {
+        forType<K extends ItemType>(type: K): ReadonlyArray<LootDefForType<K>>
+    };
+
+    const itemTypeToCollection: {
+        [K in ItemType]: ObjectDefinitions<LootDefForType<K>>
+    } = {
+        [ItemType.Gun]: Guns,
+        [ItemType.Ammo]: Ammos,
+        [ItemType.Melee]: Melees,
+        [ItemType.Throwable]: Throwables,
+        [ItemType.Healing]: HealingItems,
+        [ItemType.Armor]: Armors,
+        [ItemType.Backpack]: Backpacks,
+        [ItemType.Scope]: Scopes,
+        [ItemType.Skin]: Skins,
+        [ItemType.Perk]: Perks
+    };
+
+    const spawnableItemTypeCache: {
+        [K in ItemType]?: Array<LootDefForType<K>>
+    } = {};
+
+    (spawnableLoots as SpawnableItemRegistry).forType = <K extends ItemType>(type: K): ReadonlyArray<LootDefForType<K>> => {
+        return (
+            // without this seemingly useless assertion, assignability error occur
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            spawnableItemTypeCache[type] as Array<LootDefForType<K>> | undefined
+        ) ??= itemTypeToCollection[type].definitions.filter(({ idString }) => spawnableLoots.has(idString));
+    };
+
+    return spawnableLoots as SpawnableItemRegistry;
+})();
+
+export const SpawnableGuns = SpawnableLoots.forType(ItemType.Gun);
+export const SpawnableMelees = SpawnableLoots.forType(ItemType.Melee);

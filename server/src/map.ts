@@ -5,21 +5,21 @@ import { MapPacket, type MapPacketData } from "@common/packets/mapPacket";
 import { PacketStream } from "@common/packets/packetStream";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { equalLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
 import { type Mutable, type SMutable } from "@common/utils/misc";
 import { MapObjectSpawnMode, NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
 import { River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
-import { Config } from "./config";
 
+import { Config } from "./config";
 import { getLootFromTable } from "./data/lootTables";
 import { MapDefinition, MapName, Maps, ObstacleClump } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
 import { CARDINAL_DIRECTIONS, Logger, getRandomIDString } from "./utils/misc";
-import { equalLayer } from "@common/utils/layer";
 
 export class GameMap {
     readonly game: Game;

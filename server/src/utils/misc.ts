@@ -1,8 +1,6 @@
-import { type LootDefinition } from "@common/definitions/loots";
 import { ColorStyles, styleText } from "@common/utils/ansiColoring";
 import { NullString, type ObjectDefinition, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { weightedRandom } from "@common/utils/random";
-
 
 export const Logger = {
     log(...message: string[]): void {

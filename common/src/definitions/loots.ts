@@ -29,6 +29,19 @@ export type WeaponDefinition =
 
 export type TypedLootDefinition<Type extends ItemType> = LootDefinition & { readonly itemType: Type };
 
+export type LootDefForType<K extends ItemType> = {
+    [ItemType.Gun]: GunDefinition
+    [ItemType.Ammo]: AmmoDefinition
+    [ItemType.Melee]: MeleeDefinition
+    [ItemType.Throwable]: ThrowableDefinition
+    [ItemType.Healing]: HealingItemDefinition
+    [ItemType.Armor]: ArmorDefinition
+    [ItemType.Backpack]: BackpackDefinition
+    [ItemType.Scope]: ScopeDefinition
+    [ItemType.Skin]: SkinDefinition
+    [ItemType.Perk]: PerkDefinition
+}[K];
+
 /**
  * Specialized subclass of {@linkcode ObjectDefinitions} that provides facilities for getting
  * a set of definitions according to their item type

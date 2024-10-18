@@ -1,5 +1,5 @@
 import { ObjectCategory } from "@common/constants";
-import { Emotes, Guns, Melees } from "@common/definitions";
+import { Emotes } from "@common/definitions";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
@@ -9,7 +9,7 @@ import { ItemType, NullString, ObstacleSpecialRoles, type ReferenceTo, type Reif
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-import { getLootFromTable, LootItem, SpawnableGuns, SpawnableLoots, SpawnableMelees } from "../data/lootTables";
+import { getLootFromTable, LootItem, SpawnableGuns, SpawnableMelees } from "../data/lootTables";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { InventoryItem } from "../inventory/inventoryItem";

@@ -1,20 +1,20 @@
-import { type WebSocket } from "uWebSockets.js";
+import { Layer } from "@common/constants";
+import { Guns } from "@common/definitions";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Loots } from "@common/definitions/loots";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { PerkCategories } from "@common/definitions/perks";
 import { Orientation, type Variation } from "@common/typings";
+import { CircleHitbox } from "@common/utils/hitbox";
 import { Collision } from "@common/utils/math";
 import { ItemType, MapObjectSpawnMode, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
+import { type WebSocket } from "uWebSockets.js";
 import { type GunItem } from "../inventory/gunItem";
 import { GameMap } from "../map";
 import { Player, type PlayerContainer } from "../objects/player";
 import { getLootFromTable, LootTables } from "./lootTables";
-import { Layer } from "@common/constants";
-import { Guns } from "@common/definitions";
-import { CircleHitbox } from "@common/utils/hitbox";
-import { PerkCategories } from "@common/definitions/perks";
 
 export interface MapDefinition {
     readonly width: number
