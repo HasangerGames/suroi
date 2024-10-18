@@ -34,29 +34,27 @@ export class LootItem {
 }
 
 export function getLootFromTable(tableID: string): LootItem[] {
-    const lootTable = (LootTables[GameConstants.modeName] ?? LootTables.normal)[tableID];
+    const lootTable = LootTables[GameConstants.modeName][tableID] ?? LootTables.normal[tableID];
     if (lootTable === undefined) {
         throw new ReferenceError(`Unknown loot table: ${tableID}`);
     }
 
     const isSimple = Array.isArray(lootTable);
     const { min, max, loot } = isSimple
-        ? { min: 1, max: 1, loot: lootTable as SimpleLootTable }
+        ? { min: 1, max: 1, loot: lootTable }
         : lootTable as FullLootTable;
 
     return (
-        isSimple
-            ? (loot as SimpleLootTable).map(innerTable => getLoot(innerTable))
+        isSimple && Array.isArray(loot[0])
+            ? loot.map(innerTable => getLoot(innerTable as WeightedItem[]))
             : Array.from(
                 { length: random(min, max) },
-                () => getLoot(loot as FullLootTable["loot"])
+                () => getLoot(loot as WeightedItem[])
             )
     ).flat();
 }
 
-function getLoot(table: WeightedItem | readonly WeightedItem[]): LootItem[] {
-    table = [table].flat();
-
+function getLoot(table: WeightedItem[]): LootItem[] {
     const selection = table.length === 1
         ? table[0]
         : weightedRandom(table, table.map(({ weight }) => weight));

@@ -631,26 +631,13 @@ const maps = {
     })(),
     obstaclesTest: {
         width: 128,
-        height: 48 + (32 * Obstacles.definitions.length),
-        beachSize: 4,
-        oceanSize: 4,
-        onGenerate(map) {
-            for (let i = 0; i < Obstacles.definitions.length; i++) {
-                const obstacle = Obstacles.definitions[i];
-                // setInterval(() => player.activeItem.useItem(), 30);
-                map.generateObstacle(obstacle.idString, Vec.create(map.width / 2, 40 * i), { variation: i as Variation });
-            }
-        }
-    },
-    obstaclesTest2: {
-        width: 128,
         height: 128,
         beachSize: 0,
         oceanSize: 0,
-        onGenerate(map) {
+        onGenerate(map, [obstacle]) {
             for (let x = 0; x <= 128; x += 16) {
                 for (let y = 0; y <= 128; y += 16) {
-                    map.generateObstacle("flint_crate", Vec.create(x, y));
+                    map.generateObstacle(obstacle, Vec.create(x, y));
                 }
             }
         }
