@@ -99,16 +99,19 @@ export function adjacentOrEquivLayer(
     referenceObject: CommonGameObject,
     evalLayer: Layer
 ): boolean {
-    return !(
-        (referenceObject.isObstacle || referenceObject.isBuilding)
-        && referenceObject.definition.collideWithLayers === Layers.Equal
-        && !equalLayer(referenceObject.layer, evalLayer)
-    )
-    && ((
-        (referenceObject.isObstacle || referenceObject.isBuilding)
-        && referenceObject.definition.collideWithLayers === Layers.All
-    )
-    || adjacentOrEqualLayer(referenceObject.layer, evalLayer));
+    const buildingOrObstacle = referenceObject.isObstacle || referenceObject.isBuilding;
+
+    return (
+        !buildingOrObstacle
+        || (referenceObject.definition.collideWithLayers ?? Layers.Equal) !== Layers.Equal
+        || equalLayer(referenceObject.layer, evalLayer)
+    ) && (
+        (
+            buildingOrObstacle
+            && (referenceObject.definition.collideWithLayers ?? Layers.Equal) === Layers.All
+        )
+        || adjacentOrEqualLayer(referenceObject.layer, evalLayer)
+    );
 }
 
 /**

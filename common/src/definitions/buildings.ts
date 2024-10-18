@@ -3,7 +3,7 @@ import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
 import { MapObjectSpawnMode, NullString, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
-import { random, randomBoolean, randomSign, randomVector } from "../utils/random";
+import { randomBoolean, randomSign, randomVector } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
 import { FlyoverPref, Materials, RotationMode, type ObstacleDefinition } from "./obstacles";
@@ -4186,7 +4186,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "grey_office_chair", position: Vec.create(-60, 18), rotation: 0 },
                     { idString: "metal_door", position: Vec.create(-64.25, -0.65), rotation: 0, locked: true },
                     { idString: "headquarters_security_desk", position: Vec.create(-55.9, 33.25), rotation: 0, puzzlePiece: true },
-                    { idString: "gun_mount_mini_14", position: Vec.create(-68, -27), lootSpawnOffset: Vec.create(5, 0.5), rotation: 1 },
+                    { idString: "gun_mount_mini14", position: Vec.create(-68, -27), lootSpawnOffset: Vec.create(5, 0.5), rotation: 1 },
                     { idString: "gun_locker", position: Vec.create(-62.5, -13.5), lootSpawnOffset: Vec.create(0.5, 0), rotation: 0 },
                     { idString: "gun_locker", position: Vec.create(-62.5, -19), lootSpawnOffset: Vec.create(0.5, 0), rotation: 2 },
                     { idString: "box", position: Vec.create(-53, -19) },
@@ -5660,7 +5660,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 name: "Plumpkin Bunker",
                 material: "metal_heavy",
                 reflectBullets: true,
-                collideWithLayers: Layers.Equal, // no dv, shut up, this is NEEDED
                 hitbox: new GroupHitbox(
                     // main entrance
                     RectangleHitbox.fromRect(2.2, 17.09, Vec.create(35.58, 82.2)),
@@ -6187,9 +6186,9 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     falloff: 0.5
                 },
                 floorImages: [
-                    { key: "plumpkin_bunker_large_mixing_stick", position: Vec.create(14.75, -82.03), rotation: random(0, Math.PI * 2), spinSpeed: 0.002 },
-                    { key: "plumpkin_bunker_large_mixing_stick", position: Vec.create(-40.11, -82.03), rotation: random(0, Math.PI * 2), spinSpeed: 0.002 },
-                    { key: "plumpkin_bunker_small_mixing_stick", position: Vec.create(44.62, -64.92), rotation: random(0, Math.PI * 2), spinSpeed: 0.002 },
+                    { key: "plumpkin_bunker_large_mixing_stick", position: Vec.create(14.75, -82.03), spinSpeed: 0.002 },
+                    { key: "plumpkin_bunker_large_mixing_stick", position: Vec.create(-40.11, -82.03), spinSpeed: 0.002 },
+                    { key: "plumpkin_bunker_small_mixing_stick", position: Vec.create(44.62, -64.92), spinSpeed: 0.002 },
                     { key: "plumpkin_bunker_large_mixing_frame", position: Vec.create(14.75, -82.03) },
                     { key: "plumpkin_bunker_large_mixing_frame", position: Vec.create(-40.11, -82.03) },
                     { key: "plumpkin_bunker_small_mixing_frame", position: Vec.create(44.62, -64.92) }

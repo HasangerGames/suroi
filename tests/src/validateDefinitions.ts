@@ -27,7 +27,7 @@ import { FloorTypes } from "../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { Config, GasMode, Config as ServerConfig, SpawnMode } from "../../server/src/config";
 import { GasStages } from "../../server/src/data/gasStages";
-import { LootTables, LootTiers } from "../../server/src/data/lootTables";
+import { LootTables, type FullLootTable, type SimpleLootTable, type WeightedItem } from "../../server/src/data/lootTables";
 import { Maps, type MapName } from "../../server/src/data/maps";
 import { findDupes, logger, safeString, tester, validators } from "./validationUtils";
 
@@ -73,54 +73,73 @@ logger.indent("Validating gas stages", () => {
     );
 });
 
-logger.indent("Validating loot table references", () => {
-    logger.indent("Validating loot tables", () => {
-        for (const [name, lootData] of Object.entries(LootTables)) {
-            logger.indent(`Validating table '${name}'`, () => {
-                const errorPath = tester.createPath("loot table references", "loot tables", `table '${name}'`);
+logger.indent("Validating loot tables", () => {
+    const normalTable = LootTables.normal;
 
-                logger.indent("Validating min/max", () => {
-                    validators.numericInterval(
-                        errorPath,
-                        lootData,
-                        {
-                            globalMin: { value: 0, include: true },
-                            globalMax: { value: Infinity, include: true },
-                            allowDegenerateIntervals: true
-                        }
-                    );
-                });
+    tester.assert(
+        normalTable !== undefined,
+        "Normal mode loot table missing",
+        tester.createPath("loot tables")
+    );
 
-                logger.indent("Validating drop declaration", () => {
-                    const errorPath2 = tester.createPath(errorPath, "drop declaration");
+    for (const [mode, entries] of Object.entries(LootTables)) {
+        logger.indent(`Validating mode '${mode}'`, () => {
+            const errorPath = tester.createPath("loot tables", `mode '${mode}'`);
 
-                    tester.runTestOnArray(
-                        lootData.loot.flat(),
-                        (entry, errorPath) => {
-                            validators.weightedItem(errorPath, entry);
-                        },
+            for (const [name, lootData] of Object.entries(entries)) {
+                const errorPath2 = tester.createPath(errorPath, `table '${name}'`);
+
+                if (mode !== "normal") {
+                    tester.assert(
+                        name in normalTable,
+                        `Table '${name}' does not override any existing normal mode table`,
                         errorPath2
                     );
+                }
+
+                logger.indent(`Validating table '${name}'`, () => {
+                    const isSimple = Array.isArray(lootData);
+                    if (!isSimple) {
+                        logger.indent("Validating min/max", () => {
+                            validators.numericInterval(
+                                errorPath2,
+                                lootData as FullLootTable,
+                                {
+                                    globalMin: { value: 0, include: true },
+                                    globalMax: { value: Infinity, include: true },
+                                    allowDegenerateIntervals: true
+                                }
+                            );
+                        });
+                    }
+
+                    logger.indent("Validating drop declaration", () => {
+                        const errorPath3 = tester.createPath(errorPath2, "drop declaration");
+
+                        tester.runTestOnArray(
+                            isSimple
+                                ? lootData as SimpleLootTable
+                                : (lootData as FullLootTable).loot,
+                            (entry, errorPath) => {
+                                if (Array.isArray(entry)) {
+                                    tester.runTestOnArray(
+                                        entry as readonly WeightedItem[],
+                                        (loot, errorPath) => {
+                                            validators.weightedItem(errorPath, loot);
+                                        },
+                                        errorPath
+                                    );
+                                } else {
+                                    validators.weightedItem(errorPath, entry as WeightedItem);
+                                }
+                            },
+                            errorPath3
+                        );
+                    });
                 });
-            });
-        }
-    });
-
-    logger.indent("Validating loot tiers", () => {
-        for (const [name, lootTierData] of Object.entries(LootTiers)) {
-            logger.indent(`Validating tier '${name}'`, () => {
-                const errorPath = tester.createPath("loot table references", "loot tiers", `tier '${name}'`);
-
-                tester.runTestOnArray(
-                    lootTierData,
-                    (entry, errorPath) => {
-                        validators.weightedItem(errorPath, entry);
-                    },
-                    errorPath
-                );
-            });
-        }
-    });
+            }
+        });
+    }
 });
 
 logger.indent("Validating map definitions", () => {
@@ -489,7 +508,7 @@ logger.indent("Validating map definitions", () => {
                             tester.assertReferenceExistsObject({
                                 value: loot,
                                 errorPath: errorPath2,
-                                collection: LootTables,
+                                collection: LootTables.normal,
                                 collectionName: "LootTables"
                             });
 
@@ -1041,7 +1060,7 @@ logger.indent("Validating building definitions", () => {
                         tester.assertReferenceExistsObject({
                             obj: spawner,
                             field: "table",
-                            collection: LootTables,
+                            collection: LootTables.normal,
                             collectionName: "LootTables",
                             baseErrorPath: errorPath
                         });
@@ -2293,11 +2312,9 @@ logger.indent("Validating melees", () => {
 });
 
 logger.indent("Validating modes", () => {
-    tester.assertNoDuplicateIDStrings(Modes, "Modes", "modes");
-
-    for (const mode of Modes) {
-        logger.indent(`Validating mode '${mode.idString}'`, () => {
-            const errorPath = tester.createPath("modes", `mode '${mode.idString}'`);
+    for (const [name, mode] of Object.entries(Modes)) {
+        logger.indent(`Validating mode '${name}'`, () => {
+            const errorPath = tester.createPath("modes", `mode '${name}'`);
 
             tester.assertNoPointlessValue({
                 obj: mode,
@@ -2384,15 +2401,22 @@ logger.indent("Validating obstacles", () => {
                 });
             }
 
-            if (obstacle.hasLoot || obstacle.spawnWithLoot) {
-                tester.assertReferenceExistsObject({
-                    obj: obstacle,
-                    field: "idString",
-                    collection: LootTables,
-                    collectionName: "LootTables",
-                    baseErrorPath: errorPath
-                });
-            }
+            tester.assertValidOrNPV({
+                obj: obstacle,
+                field: "lootTable",
+                defaultValue: obstacle.idString,
+                validatorIfPresent: (lootTable, errorPath) => {
+                    if (obstacle.hasLoot || obstacle.spawnWithLoot) {
+                        tester.assertReferenceExistsObject({
+                            value: lootTable,
+                            collection: LootTables.normal,
+                            collectionName: "LootTables",
+                            errorPath
+                        });
+                    }
+                },
+                baseErrorPath: errorPath
+            });
 
             if (obstacle.explosion !== undefined) {
                 tester.assertReferenceExists({
@@ -3250,14 +3274,6 @@ logger.indent("Validating configurations", () => {
             field: "defaultRegion",
             collection: ClientConfig.regions,
             collectionName: "regions",
-            baseErrorPath: errorPath
-        });
-
-        tester.assertReferenceExistsArray({
-            obj: ClientConfig,
-            field: "mode",
-            collection: Modes,
-            collectionName: "Modes",
             baseErrorPath: errorPath
         });
     });
