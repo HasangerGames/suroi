@@ -92,6 +92,7 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly collideWithLayers?: Layers
     readonly visibleFromLayers: Layers
     readonly hasLoot: boolean
+    readonly lootTable?: string
     readonly spawnWithLoot: boolean
     readonly explosion?: string
     readonly detector: boolean
@@ -1122,6 +1123,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: new CircleHitbox(5.4),
                 noCollisions: true,
                 spawnWithLoot: true,
+                lootTable: "special_bush",
                 rotationMode: RotationMode.Full,
                 particleVariations: 2,
                 variations: 3,
@@ -1176,6 +1178,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 particleVariations: 2,
                 zIndex: ZIndexes.ObstaclesLayer3,
                 spawnWithLoot: true,
+                lootTable: "special_bush",
                 frames: {
                     particle: "bush_particle",
                     residue: "bush_residue"
@@ -1293,6 +1296,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 ),
                 rotationMode: RotationMode.Limited,
                 hasLoot: true,
+                lootTable: "small_drawer",
                 frames: {
                     particle: "headquarters_desk_particle"
                 }
@@ -1313,6 +1317,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 ),
                 rotationMode: RotationMode.Limited,
                 hasLoot: true,
+                lootTable: "small_drawer",
                 frames: {
                     particle: "headquarters_desk_particle"
                 }
@@ -2058,6 +2063,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 rotationMode: RotationMode.Full,
                 allowFlyover: FlyoverPref.Always,
                 hasLoot: true,
+                lootTable: "trash",
                 frames: {
                     particle: "flint_stone_particle"
                 },
@@ -2164,8 +2170,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 slideFactor: 1,
                 animationDuration: 500,
                 frames: {
-                    base: "auto_door",
-                    particle: "red_metal_auto_door_particle"
+                    base: "auto_door"
                 },
                 tint: 0x401a1a
             },
@@ -2188,8 +2193,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 slideFactor: 1,
                 animationDuration: 500,
                 frames: {
-                    base: "auto_door",
-                    particle: "blue_metal_auto_door_particle"
+                    base: "auto_door"
                 },
                 tint: 0x1a1a40
             },
@@ -3129,7 +3133,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             },
             gunMount(["mcx_spear"]),
             gunMount(["stoner_63"]),
-            gunMount(["mini_14"]),
+            gunMount(["mini14"]),
             gunMount(["hp18"]),
             gunMount(["m590m"]),
             gunMount(["maul"], {
@@ -3495,6 +3499,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     destroy: 0.95
                 },
                 hasLoot: true,
+                lootTable: "trash",
                 reflectBullets: true,
                 hitbox: new CircleHitbox(2.5),
                 rotationMode: RotationMode.Full,

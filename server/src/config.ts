@@ -4,7 +4,6 @@ import { type Vector } from "@common/utils/vector";
 import { type Maps } from "./data/maps";
 import { type Game } from "./game";
 import { type GamePlugin } from "./pluginManager";
-import { LootMode } from "./data/lootTables";
 
 export enum SpawnMode {
     Normal,
@@ -23,8 +22,6 @@ export const Config = {
     port: 8000,
 
     map: "fall",
-
-    lootTableOverride: "fall", // IMPORTANT: DELETE IF NORMAL MODE.
 
     spawn: { mode: SpawnMode.Normal },
 
@@ -93,11 +90,6 @@ export interface ConfigType {
      * Parameters can also be specified for certain maps, separated by colons (e.g. `singleObstacle:rock`)
      */
     readonly map: `${keyof typeof Maps}${string}`
-
-    /**
-     * The gamemode, which over-rides loot tables.
-     */
-    readonly lootTableOverride?: LootMode
 
     /**
      * There are 4 spawn modes: `Normal`, `Radius`, `Fixed`, and `Center`.

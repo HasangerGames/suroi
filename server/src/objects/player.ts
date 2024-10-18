@@ -823,7 +823,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // Knocked out damage
         if (this.downed && !this.beingRevivedBy) {
             this.piercingDamage({
-                amount: GameConstants.bleedOutDPMs * dt,
+                amount: GameConstants.player.bleedOutDPMs * dt,
                 source: KillfeedEventType.BleedOut
             });
         }

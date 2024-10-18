@@ -1,25 +1,24 @@
 import { ObjectCategory } from "@common/constants";
+import { Emotes, Guns, Melees } from "@common/definitions";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { equalLayer } from "@common/utils/layer";
 import { Angle, calculateDoorHitboxes, resolveStairInteraction } from "@common/utils/math";
 import { ItemType, NullString, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
-import { pickRandomInArray, random } from "@common/utils/random";
+import { pickRandomInArray } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-import { equalLayer } from "@common/utils/layer";
-import { LootTable, LootTableOverrides, LootTables, LootTiers, LootTierOverrides, type WeightedItem } from "../data/lootTables";
+import { getLootFromTable, LootItem, SpawnableGuns, SpawnableLoots, SpawnableMelees } from "../data/lootTables";
 import { type Game } from "../game";
+import { GunItem } from "../inventory/gunItem";
 import { InventoryItem } from "../inventory/inventoryItem";
-import { getLootTableLoot, getRandomIDString, type LootItem } from "../utils/misc";
+import { MeleeItem } from "../inventory/meleeItem";
+import { getRandomIDString } from "../utils/misc";
 import { type Building } from "./building";
 import type { Bullet } from "./bullet";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { type Player } from "./player";
-import { Config } from "../config";
-import { GunItem } from "../inventory/gunItem";
-import { MeleeItem } from "../inventory/meleeItem";
-import { Emotes, Guns, Melees } from "@common/definitions";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override readonly fullAllocBytes = 8;
@@ -104,27 +103,11 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         this.collidable = !definition.noCollisions;
 
         if (definition.hasLoot) {
-            const lootTable = ((Config.lootTableOverride && LootTableOverrides[Config.lootTableOverride]?.[this.definition.idString]) ?? LootTables[this.definition.idString]) as LootTable;
-            // TODO Clean up code
-            for (let i = 0; i < random(lootTable.min, lootTable.max); i++) {
-                if (lootTable.loot.length > 0 && lootTable.loot[0] instanceof Array) {
-                    for (const loot of lootTable.loot) {
-                        for (const drop of getLootTableLoot(loot as WeightedItem[])) this.loot.push(drop);
-                    }
-                } else {
-                    for (const drop of getLootTableLoot(lootTable.loot as WeightedItem[])) this.loot.push(drop);
-                }
-            }
-            /* const drops = lootTable.loot.flat();
-
-            this.loot = Array.from(
-                { length: random(lootTable.min, lootTable.max) },
-                () => getLootTableLoot(drops)
-            ).flat(); */
+            this.loot = getLootFromTable(definition.lootTable ?? definition.idString);
         }
 
         if (definition.spawnWithLoot) {
-            for (const item of getLootTableLoot(LootTables[this.definition.idString].loot.flat())) {
+            for (const item of getLootFromTable(definition.lootTable ?? definition.idString)) {
                 this.game.addLoot(
                     item.idString,
                     this.position,
@@ -209,60 +192,12 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
                 const slot = source.inventory.activeWeaponIndex;
 
-                const swappables = new Set();
-
-                for (const key of Object.keys(LootTables)) {
-                    if (Config.lootTableOverride && LootTableOverrides[Config.lootTableOverride]?.[key]) {
-                        LootTableOverrides[Config.lootTableOverride]?.[key].loot.forEach(element => {
-                            if ("item" in element) {
-                                if (element.item !== NullString) {
-                                    swappables.add(element.item);
-                                }
-                            }
-                        }
-                        );
-                    } else if (Config.lootTableOverride === undefined) {
-                        LootTables?.[key].loot.forEach(element => {
-                            if ("item" in element) {
-                                if (element.item !== NullString) {
-                                    swappables.add(element.item);
-                                }
-                            }
-                        }
-                        );
-                    }
-                }
-                for (const key of Object.keys(LootTiers)) {
-                    if (Config.lootTableOverride && LootTierOverrides[Config.lootTableOverride]?.[key]) {
-                        LootTierOverrides[Config.lootTableOverride]?.[key].forEach(element => {
-                            if ("item" in element) {
-                                if (element.item !== NullString) {
-                                    swappables.add(element.item);
-                                }
-                            }
-                        }
-                        );
-                    } else if (Config.lootTableOverride === undefined) {
-                        LootTiers?.[key].forEach(element => {
-                            if ("item" in element) {
-                                if (element.item !== NullString) {
-                                    swappables.add(element.item);
-                                }
-                            }
-                        }
-                        );
-                    }
-                }
                 switch (true) {
                     case itemDef instanceof GunItem: {
                         source.action?.cancel();
 
-                        const guns = Guns.definitions.filter(gunDef => {
-                            return swappables.has(gunDef.idString);
-                        });
-
-                        const chosenGun = pickRandomInArray(guns);
-                        source.inventory.replaceWeapon(slot, chosenGun.idString);
+                        const chosenGun = pickRandomInArray(SpawnableGuns);
+                        source.inventory.replaceWeapon(slot, chosenGun);
                         (source.activeItem as GunItem).ammo = chosenGun.capacity;
 
                         // Give the player ammo for the new gun if they do not have any ammo for it.
@@ -275,15 +210,11 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                         break;
 
                     case itemDef instanceof MeleeItem: {
-                        // get rid of dev shit
-                        const melees = Melees.definitions.filter(meleeDef => {
-                            return swappables.has(meleeDef.idString);
-                        });
-                        const chosenMelee = pickRandomInArray(melees).idString;
+                        const chosenMelee = pickRandomInArray(SpawnableMelees);
                         source.inventory.replaceWeapon(slot, chosenMelee);
-                        source.sendEmote(Emotes.fromStringSafe(chosenMelee));
-                    }
+                        source.sendEmote(Emotes.fromStringSafe(chosenMelee.idString));
                         break;
+                    }
 
                     /* case itemDef instanceof ThrowableItem: { brings back infinite nades glitch idk
                         const chosenThrowable = pickRandomInArray(Throwables.definitions).idString;

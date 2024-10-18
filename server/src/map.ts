@@ -13,12 +13,12 @@ import { River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Config } from "./config";
 
-import { LootTables, type WeightedItem } from "./data/lootTables";
+import { getLootFromTable } from "./data/lootTables";
 import { MapDefinition, MapName, Maps, ObstacleClump } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
-import { CARDINAL_DIRECTIONS, Logger, getLootTableLoot, getRandomIDString } from "./utils/misc";
+import { CARDINAL_DIRECTIONS, Logger, getRandomIDString } from "./utils/misc";
 import { equalLayer } from "@common/utils/layer";
 
 export class GameMap {
@@ -553,15 +553,7 @@ export class GameMap {
         }
 
         for (const lootData of definition.lootSpawners) {
-            const table = LootTables[lootData.table];
-            const drops = table.loot;
-
-            for (
-                const item of Array.from(
-                    { length: random(table.min, table.max) },
-                    () => getLootTableLoot(drops as WeightedItem[]) // FIXME This will break if multiple tables are specified
-                ).flat()
-            ) {
+            for (const item of getLootFromTable(lootData.table)) {
                 this.game.addLoot(
                     item.idString,
                     Vec.addAdjust(position, lootData.position, orientation),
@@ -744,14 +736,9 @@ export class GameMap {
         }
     }
 
-    private _generateLoots(table: keyof typeof LootTables, count: number): void {
-        if (!(table in LootTables)) {
-            throw new Error(`Unknown loot table: '${table}'`);
-        }
-
+    private _generateLoots(table: string, count: number): void {
         for (let i = 0; i < count; i++) {
-            const loot = getLootTableLoot(LootTables[table].loot.flat());
-            //                                                   ^^^^^^ dubious?
+            const loot = getLootFromTable(table);
 
             const position = this.getRandomPosition(
                 new CircleHitbox(5),

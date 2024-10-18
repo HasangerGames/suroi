@@ -10,11 +10,10 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { type GunItem } from "../inventory/gunItem";
 import { GameMap } from "../map";
 import { Player, type PlayerContainer } from "../objects/player";
-import { LootTables } from "./lootTables";
+import { getLootFromTable, LootTables } from "./lootTables";
 import { Layer } from "@common/constants";
 import { Guns } from "@common/definitions";
 import { CircleHitbox } from "@common/utils/hitbox";
-import { getLootTableLoot } from "../utils/misc";
 import { PerkCategories } from "@common/definitions/perks";
 
 export interface MapDefinition {
@@ -849,9 +848,9 @@ const maps = {
                 }
             });
 
-            Object.entries(loots ?? {}).forEach(([loot_, count]) => {
+            Object.entries(loots ?? {}).forEach(([lootTable, count]) => {
                 for (let i = 0; i < count; i++) {
-                    const loot = getLootTableLoot(LootTables[loot_].loot.flat());
+                    const loot = getLootFromTable(lootTable);
 
                     const position = map.getRandomPosition(
                         new CircleHitbox(5),
