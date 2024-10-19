@@ -411,6 +411,12 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         armory_skin: [
             { item: "nsd_uniform", weight: 1 }
         ],
+        plumpkin_bunker_skin: [
+            { item: "pumpkified", weight: 1 }
+        ],
+        armory_damaged_skin: [
+            { item: "one_at_nsd", weight: 1 }
+        ],
         airdrop_crate: [
             [{ table: "airdrop_equipment", weight: 1 }],
             [{ table: "airdrop_scopes", weight: 1 }],
@@ -925,6 +931,14 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "tango_51", weight: 0.3 },
             { item: "m1_garand", weight: 0.2 },
             { item: "radio", weight: 0.1 }
+        ],
+        airdrop_skins: [
+            { item: NullString, weight: 1 },
+            { item: "diseased", weight: 0.2 },
+            { item: "sky", weight: 0.7 },
+            { item: "nebula", weight: 0.6 },
+            { item: "ghillie_suit", weight: 0.1 },
+            { item: "basic_outfit", weight: 0.001 }
         ],
         airdrop_scopes: [
             { item: "8x_scope", weight: 1 },

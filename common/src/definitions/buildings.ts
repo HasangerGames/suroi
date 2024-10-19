@@ -1,4 +1,4 @@
-import { Layer, Layers, ZIndexes } from "../constants";
+import { Layers, ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
@@ -5288,6 +5288,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         position: Vec.create(33.86, -46.16)
                     },
                     {
+                        table: "armory_damaged_skin",
+                        position: Vec.create(33.86, -45.6)
+                    },
+                    {
                         table: "gun_case",
                         position: Vec.create(63.16, -36.39)
                     },
@@ -5902,6 +5906,9 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     soundPosition: Vec.create(-95.68, 46.52),
                     delay: 1000
                 },
+                lootSpawners: [
+                    { table: "plumpkin_bunker_skin", position: Vec.create(-49.23, -110.21) }
+                ],
                 obstacles: [
                     // security office
                     { idString: "blue_metal_auto_door", position: Vec.create(-33.27, 122.05), rotation: 3 },
