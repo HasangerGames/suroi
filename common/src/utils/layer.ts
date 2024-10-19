@@ -103,12 +103,12 @@ export function adjacentOrEquivLayer(
 
     return (
         !buildingOrObstacle
-        || (referenceObject.definition.collideWithLayers ?? Layers.Equal) !== Layers.Equal
+        || referenceObject.definition.collideWithLayers !== Layers.Equal
         || equalLayer(referenceObject.layer, evalLayer)
     ) && (
         (
             buildingOrObstacle
-            && (referenceObject.definition.collideWithLayers ?? Layers.Equal) === Layers.All
+            && referenceObject.definition.collideWithLayers === Layers.All
         )
         || adjacentOrEqualLayer(referenceObject.layer, evalLayer)
     );
