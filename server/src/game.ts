@@ -1310,7 +1310,7 @@ export class Game implements GameData {
             {
                 const padded = thisHitbox.clone();
                 padded.scale(paddingFactor);
-                for (const object of this.grid.intersectsHitbox(padded)) {
+                for (const object of this.grid.intersectsHitbox(padded, Layer.Ground)) {
                     let hitbox: Hitbox;
                     if (
                         object.isObstacle
@@ -1332,7 +1332,7 @@ export class Game implements GameData {
                 const padded = thisHitbox.clone();
                 padded.scale(paddingFactor);
                 // second loop, buildings
-                for (const object of this.grid.intersectsHitbox(thisHitbox)) {
+                for (const object of this.grid.intersectsHitbox(thisHitbox, Layer.Ground)) {
                     if (
                         object.isBuilding
                         && object.scopeHitbox
