@@ -2,6 +2,7 @@ import { GameConstants } from "@common/constants";
 import { Ammos, Armors, Backpacks, Guns, HealingItems, Melees, Scopes, Skins, Throwables } from "@common/definitions";
 import { Loots, type LootDefForType, type LootDefinition } from "@common/definitions/loots";
 import { PerkIds, Perks } from "@common/definitions/perks";
+import { isArray } from "@common/utils/misc";
 import { ItemType, NullString, type ObjectDefinitions, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, weightedRandom } from "@common/utils/random";
 
@@ -16,7 +17,7 @@ export type WeightedItem =
         | { readonly spawnSeparately: true, readonly count: number }
     );
 
-export type SimpleLootTable = ReadonlyArray<WeightedItem | readonly WeightedItem[]>;
+export type SimpleLootTable = readonly WeightedItem[] | ReadonlyArray<readonly WeightedItem[]>;
 
 export type FullLootTable = {
     readonly min: number
@@ -34,19 +35,19 @@ export class LootItem {
 }
 
 export function getLootFromTable(tableID: string): LootItem[] {
-    const lootTable = LootTables[GameConstants.modeName][tableID] ?? LootTables.normal[tableID];
+    const lootTable = LootTables[GameConstants.modeName]?.[tableID] ?? LootTables.normal[tableID];
     if (lootTable === undefined) {
         throw new ReferenceError(`Unknown loot table: ${tableID}`);
     }
 
-    const isSimple = Array.isArray(lootTable);
+    const isSimple = isArray(lootTable);
     const { min, max, loot } = isSimple
         ? { min: 1, max: 1, loot: lootTable }
-        : lootTable as FullLootTable;
+        : lootTable;
 
     return (
-        isSimple && Array.isArray(loot[0])
-            ? loot.map(innerTable => getLoot(innerTable as WeightedItem[]))
+        isSimple && isArray(loot[0])
+            ? (loot as ReadonlyArray<readonly WeightedItem[]>).map(innerTable => getLoot(innerTable))
             : Array.from(
                 { length: random(min, max) },
                 () => getLoot(loot as WeightedItem[])
@@ -54,7 +55,7 @@ export function getLootFromTable(tableID: string): LootItem[] {
     ).flat();
 }
 
-function getLoot(table: WeightedItem[]): LootItem[] {
+function getLoot(table: readonly WeightedItem[]): LootItem[] {
     const selection = table.length === 1
         ? table[0]
         : weightedRandom(table, table.map(({ weight }) => weight));
