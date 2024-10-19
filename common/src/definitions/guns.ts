@@ -1870,6 +1870,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 switchDelay: 900,
                 recoilMultiplier: 0.6,
                 recoilDuration: 600,
+                fsaReset: 900,
                 fireMode: FireMode.Single,
                 shotSpread: 1,
                 moveSpread: 4,

@@ -333,7 +333,7 @@ const maps = {
             { name: "Antler", position: Vec.create(0.23, 0.2) },
             { name: "Deadfall", position: Vec.create(0.23, 0.8) },
             { name: "Beaverdam", position: Vec.create(0.75, 0.2) },
-            { name: "Overgrown Pasture", position: Vec.create(0.72, 0.8) },
+            { name: "Crimson Hills", position: Vec.create(0.72, 0.8) },
             { name: "Emerald Farms", position: Vec.create(0.5, 0.35) },
             { name: "Darkwood", position: Vec.create(0.5, 0.65) }
         ]
