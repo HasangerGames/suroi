@@ -830,6 +830,22 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
     },
 
     fall: {
+        ground_loot: [
+            { table: "healing_items", weight: 1 },
+            { table: "ammo", weight: 1 },
+            { table: "guns", weight: 1 },
+            { table: "equipment", weight: 0.6 },
+            { table: "scopes", weight: 0.3 }
+        ],
+        regular_crate: [
+            { table: "guns", weight: 1.25 },
+            { table: "healing_items", weight: 1 },
+            { table: "equipment", weight: 0.6 },
+            { table: "ammo", weight: 0.5 },
+            { table: "scopes", weight: 0.3 },
+            { table: "throwables", weight: 0.3 },
+            { table: "melee", weight: 0.04 }
+        ],
         briefcase: [
             { item: "usas12", weight: 1 },
             { item: "mk18", weight: 0.2 },
