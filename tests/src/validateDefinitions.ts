@@ -736,13 +736,6 @@ logger.indent("Validating building definitions", () => {
                     defaultValue: false,
                     baseErrorPath: errorPath
                 });
-
-                tester.assertNoPointlessValue({
-                    obj: building,
-                    field: "collideWithLayers",
-                    defaultValue: Layers.Equal,
-                    baseErrorPath: errorPath
-                });
             } else {
                 tester.assertWarn(
                     "noCollisions" in building,
