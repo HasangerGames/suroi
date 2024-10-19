@@ -118,7 +118,7 @@ logger.indent("Validating loot tables", () => {
 
                         tester.runTestOnArray(
                             isSimple
-                                ? lootData as SimpleLootTable
+                                ? (lootData as SimpleLootTable).flat()
                                 : (lootData as FullLootTable).loot,
                             (entry, errorPath) => {
                                 if (Array.isArray(entry)) {
@@ -130,7 +130,7 @@ logger.indent("Validating loot tables", () => {
                                         errorPath
                                     );
                                 } else {
-                                    validators.weightedItem(errorPath, entry as WeightedItem);
+                                    validators.weightedItem(errorPath, entry);
                                 }
                             },
                             errorPath3

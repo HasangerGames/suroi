@@ -866,7 +866,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "m3k", weight: 0.5 },
             { item: "cz600", weight: 0.5 },
             { item: "flues", weight: 0.4 },
-            { item: "sr25", weight: 0.1  },
+            { item: "sr25", weight: 0.1 },
             { item: "mini14", weight: 0.1 },
             { item: "mosin_nagant", weight: 0.1 },
             { item: "m590m", weight: 0.05 },
@@ -877,7 +877,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "model_89", weight: 0.02 }
         ],
         special_guns: [
-            { item: "model_37", weight: 0.8  },
+            { item: "model_37", weight: 0.8 },
             { item: "dt11", weight: 0.8 },
             { item: "m3k", weight: 0.7 },
             { item: "dual_m1895", weight: 0.7 },
