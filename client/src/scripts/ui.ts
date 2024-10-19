@@ -2009,6 +2009,14 @@ export async function setUpUI(game: Game): Promise<void> {
 
     // Alright so in mobile we have a completely different spectating container.
     if (inputManager.isMobile) {
+        ui.spectatingContainer.addClass("mobile-mode");
+        ui.spectatingContainer.css({
+            width: "150px",
+            position: "fixed",
+            top: "10%",
+            left: "5rem"
+        });
+
         ui.btnReport.html("<i class=\"fa-solid fa-flag\"></i>");
         ui.btnPlayAgainSpectating.html("<i class=\"fa-solid fa-rotate-right\"></i>");
 
