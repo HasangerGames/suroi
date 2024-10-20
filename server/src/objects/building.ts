@@ -100,6 +100,7 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
 
             if (this.definition.destroyInnerUponCeilingCollapse && this.scopeHitbox) {
                 for (const object of this.game.grid.intersectsHitbox(this.scopeHitbox)) {
+                    if (object.isObstacle) object.collidable = false;
                     if ((object.isPlayer || object.isObstacle) && object.hitbox.collidesWith(this.spawnHitbox)) {
                         object.damage({
                             source: this,
