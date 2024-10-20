@@ -2148,7 +2148,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 role: ObstacleSpecialRoles.Door,
                 hideWhenOpen: true,
                 operationStyle: "slide",
-                slideFactor: 1,
+                slideFactor: 0.9,
                 animationDuration: 500,
                 frames: {
                     base: "auto_door"
@@ -2171,7 +2171,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 role: ObstacleSpecialRoles.Door,
                 hideWhenOpen: true,
                 operationStyle: "slide",
-                slideFactor: 1,
+                slideFactor: 0.9,
                 animationDuration: 500,
                 frames: {
                     base: "auto_door"
@@ -2193,7 +2193,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 automatic: true,
                 hideWhenOpen: true,
                 operationStyle: "slide",
-                slideFactor: 1,
+                slideFactor: 0.9,
                 animationDuration: 500,
                 frames: {
                     base: "auto_door",
