@@ -1,4 +1,4 @@
-import { Layers, ZIndexes } from "../constants";
+import { Layers, TentTints, ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
@@ -211,14 +211,6 @@ const ContainerTints = {
     yellow: 0xcccc00
 };
 
-const TentTints = {
-    red: 0x6e1414,
-    green: 0x0c4a0f,
-    blue: 0x231085,
-    yellow: 0x7a6612,
-    purple: 0x460c52
-};
-
 const ContainerWallOutlineTints = {
     white: 0x797979,
     red: 0x661900,
@@ -373,7 +365,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
 
         const tent = derive((
             id: number,
-            color: "red" | "green" | "blue" | "yellow" | "purple",
+            color: "red" | "green" | "blue" | "orange" | "purple",
             special = false
         ) => {
             const tint = TentTints[color];
@@ -381,8 +373,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             return {
                 idString: `tent_${id}`,
                 name: `Tent ${id}`,
-                spawnHitbox: RectangleHitbox.fromRect(28, 23),
-                scopeHitbox: RectangleHitbox.fromRect(25, 16),
+                spawnHitbox: RectangleHitbox.fromRect(31, 23),
+                scopeHitbox: RectangleHitbox.fromRect(26, 16),
                 floorImages: [{
                     key: "tent_floor",
                     position: Vec.create(0, 0),
@@ -398,16 +390,17 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 }],
                 floors: [{
                     type: FloorNames.Carpet,
-                    hitbox: RectangleHitbox.fromRect(25, 16)
+                    hitbox: RectangleHitbox.fromRect(26.5, 18)
                 }],
                 ceilingCollapseSound: "tent_collapse",
-                ceilingCollapseParticle: `tent_ceiling_particle_${id}`,
+                ceilingCollapseParticle: `tent_ceiling_particle_${color}`,
                 ceilingCollapseParticleVariations: 3,
                 resetCeilingResidueScale: true,
                 destroyInnerUponCeilingCollapse: true,
                 wallsToDestroy: 1,
                 obstacles: special
                     ? [
+                        { idString: "pole", position: Vec.create(0, 0) },
                         { idString: `tent_wall_${id}`, position: Vec.create(0, -8), rotation: 0 },
                         { idString: `tent_wall_${id}`, position: Vec.create(0, 8), rotation: 2 },
                         { idString: "box", position: Vec.create(0, 5) },
@@ -415,13 +408,14 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         { idString: "box", position: Vec.create(7, 5) }
                     ]
                     : [
+                        { idString: "pole", position: Vec.create(0, 0) },
                         { idString: `tent_wall_${id}`, position: Vec.create(0, -8), rotation: 0 },
                         { idString: `tent_wall_${id}`, position: Vec.create(0, 8), rotation: 2 },
                         { idString: "box", position: Vec.create(0, 5) }
                     ],
                 lootSpawners: [{
                     table: special ? "warehouse" : "ground_loot",
-                    position: Vec.create(-3, 0)
+                    position: Vec.create(0, -5)
                 }]
             };
         });
@@ -465,16 +459,15 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
 
         const bigTent = derive((
             id: number,
-            color: "red" | "green" | "blue" | "yellow" | "purple",
-            special = false
+            color: "red" | "green" | "blue" | "orange" | "purple"
         ) => {
             const tint = TentTints[color];
 
             return {
                 idString: `tent_big_${id}`,
                 name: `Big Tent ${id}`,
-                spawnHitbox: RectangleHitbox.fromRect(46, 33),
-                scopeHitbox: RectangleHitbox.fromRect(40, 24.5),
+                spawnHitbox: RectangleHitbox.fromRect(58, 35),
+                scopeHitbox: RectangleHitbox.fromRect(44, 27),
                 floorImages: [{
                     key: "tent_floor_big",
                     position: Vec.create(0, 0),
@@ -486,26 +479,33 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     position: Vec.create(0, 0),
                     tint: tint,
                     residue: "tent_residue_big",
-                    scale: Vec.create(2.02, 2.14)
+                    scale: Vec.create(2.02, 2.02)
                 }],
                 floors: [{
                     type: FloorNames.Carpet,
-                    hitbox: RectangleHitbox.fromRect(40, 24.5)
+                    hitbox: RectangleHitbox.fromRect(44.25, 29)
                 }],
                 ceilingCollapseSound: "tent_collapse",
-                ceilingCollapseParticle: `tent_ceiling_particle_${id}`,
+                ceilingCollapseParticle: `tent_ceiling_particle_${color}`,
                 ceilingCollapseParticleVariations: 3,
                 destroyInnerUponCeilingCollapse: true,
                 wallsToDestroy: 1,
                 obstacles: [
-                    { idString: `tent_wall_big_${id}`, position: Vec.create(0, -10), rotation: 2 },
-                    { idString: `tent_wall_big_${id}`, position: Vec.create(0, 10), rotation: 0 },
-                    { idString: "office_chair", position: Vec.create(-16.15, -9.23), rotation: 1 },
-                    { idString: "office_chair", position: Vec.create(24.53, 9.15), rotation: 2 },
-                    { idString: { grenade_box: 1, box: 0.5 }, position: Vec.create(-16.93, 10.04) },
-                    { idString: "box", position: Vec.create(-0.6, -9.67) },
-                    { idString: "small_bed", position: Vec.create(11.19, 8.06), rotation: 3 },
-                    { idString: "box", position: Vec.create(16.74, -9.79), rotation: 0 }
+                    { idString: "pole", position: Vec.create(3.42, -5.76) },
+                    { idString: "pole", position: Vec.create(-3.42, 5.76) },
+                    { idString: `tent_wall_big_${id}`, position: Vec.create(0, -10.5), rotation: 2 },
+                    { idString: `tent_wall_big_${id}`, position: Vec.create(0, 10.5), rotation: 0 },
+                    { idString: "office_chair", position: Vec.create(-17, -9.73), rotation: 1 },
+                    { idString: { box: 1, office_chair: 2 }, position: Vec.create(25.5, 9.65), rotation: 2 },
+                    { idString: { grenade_box: 1, box: 0.5 }, position: Vec.create(-18.07, 10.49) },
+                    { idString: "box", position: Vec.create(-0.07, -10.51) },
+                    { idString: "small_bed", position: Vec.create(12, 8.56), rotation: 3 },
+                    { idString: "box", position: Vec.create(18.17, -10.51), rotation: 0 },
+                    { idString: { box: 2, office_chair: 1 }, position: Vec.create(-25.5, -9.65), rotation: 0 },
+                    { idString: "tent_window", position: Vec.create(9.11, -14.03), rotation: 0 },
+                    { idString: "tent_window", position: Vec.create(-9.11, -14.03), rotation: 0 },
+                    { idString: "tent_window", position: Vec.create(-9.11, 14.03), rotation: 0 },
+                    { idString: "tent_window", position: Vec.create(9.11, 14.03), rotation: 0 },
                 ],
                 lootSpawners: [
                     { table: "ground_loot", position: Vec.create(-10.68, 0) },
@@ -2030,11 +2030,11 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             bigTent([1, "red"]),
             bigTent([2, "green"]),
             bigTent([3, "blue"]),
-            bigTent([4, "yellow"]),
+            bigTent([4, "orange"]),
             tent([1, "red"]),
             tent([2, "green"]),
             tent([3, "blue"]),
-            tent([4, "yellow"]),
+            tent([4, "orange"]),
             tent([5, "purple", true]),
 
             hayShed([1, 2, [

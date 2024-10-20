@@ -239,3 +239,11 @@ export const defaultBulletTemplate = {
     lastShotFX: false,
     noCollision: false
 };
+
+export const TentTints = {
+    red: 0xb24c4c,
+    green: 0x90b24c,
+    blue: 0x4c7fb2,
+    orange: 0xc67438,
+    purple: 0x994cb2
+};

@@ -1,4 +1,4 @@
-import { Layers, ZIndexes } from "../constants";
+import { Layers, TentTints, ZIndexes } from "../constants";
 import { type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import type { DeepPartial, GetEnumMemberName, Mutable } from "../utils/misc";
@@ -215,14 +215,6 @@ export enum RotationMode {
     None
 }
 
-const TentWallTints = {
-    red: 0x540d0d,
-    green: 0x0c4a0f,
-    blue: 0x0e1a4f,
-    yellow: 0x6b5a10,
-    purple: 0x631773
-};
-
 export const Materials = [
     "tree",
     "stone",
@@ -333,42 +325,31 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     plumpkin_particle:             { base: "pumpkin_particle_base", tint: 0x8a4c70 },
     diseased_plumpkin_particle:    { base: "pumpkin_particle_base", tint: 0x654646 },
 
-    tent_wall_particle_red_1:      { base: "stone_particle_1", tint: TentWallTints.red },
-    tent_wall_particle_red_2:      { base: "stone_particle_2", tint: TentWallTints.red },
-    tent_wall_particle_green_1:    { base: "stone_particle_1", tint: TentWallTints.green },
-    tent_wall_particle_green_2:    { base: "stone_particle_2", tint: TentWallTints.green },
-    tent_wall_particle_blue_1:     { base: "stone_particle_1", tint: TentWallTints.blue },
-    tent_wall_particle_blue_2:     { base: "stone_particle_2", tint: TentWallTints.blue },
-    tent_wall_particle_yellow_1:   { base: "stone_particle_1", tint: TentWallTints.yellow },
-    tent_wall_particle_yellow_2:   { base: "stone_particle_2", tint: TentWallTints.yellow },
-    tent_wall_particle_purple_1:   { base: "stone_particle_1", tint: TentWallTints.purple },
-    tent_wall_particle_purple_2:   { base: "stone_particle_2", tint: TentWallTints.purple },
+    tent_particle_1:               { base: "ceiling_particle", tint: TentTints.red },
+    tent_particle_2:               { base: "ceiling_particle", tint: TentTints.green },
+    tent_particle_3:               { base: "ceiling_particle", tint: TentTints.blue },
+    tent_particle_4:               { base: "ceiling_particle", tint: TentTints.orange },
+    tent_particle_5:               { base: "ceiling_particle", tint: TentTints.purple },
 
-    tent_particle_1:               { base: "ceiling_particle", tint: TentWallTints.red },
-    tent_particle_2:               { base: "ceiling_particle", tint: TentWallTints.green },
-    tent_particle_3:               { base: "ceiling_particle", tint: TentWallTints.blue },
-    tent_particle_4:               { base: "ceiling_particle", tint: TentWallTints.yellow },
-    tent_particle_5:               { base: "ceiling_particle", tint: TentWallTints.purple },
+    tent_ceiling_particle_red_1:     { base: "tent_ceiling_particle_1", tint: TentTints.red },
+    tent_ceiling_particle_red_2:     { base: "tent_ceiling_particle_2", tint: TentTints.red },
+    tent_ceiling_particle_red_3:     { base: "tent_ceiling_particle_3", tint: TentTints.red },
 
-    tent_ceiling_particle_1_1:     { base: "tent_ceiling_particle_1", tint: TentWallTints.red },
-    tent_ceiling_particle_1_2:     { base: "tent_ceiling_particle_2", tint: TentWallTints.red },
-    tent_ceiling_particle_1_3:     { base: "tent_ceiling_particle_3", tint: TentWallTints.red },
+    tent_ceiling_particle_green_1:     { base: "tent_ceiling_particle_1", tint: TentTints.green },
+    tent_ceiling_particle_green_2:     { base: "tent_ceiling_particle_2", tint: TentTints.green },
+    tent_ceiling_particle_green_3:     { base: "tent_ceiling_particle_3", tint: TentTints.green },
 
-    tent_ceiling_particle_2_1:     { base: "tent_ceiling_particle_1", tint: TentWallTints.green },
-    tent_ceiling_particle_2_2:     { base: "tent_ceiling_particle_2", tint: TentWallTints.green },
-    tent_ceiling_particle_2_3:     { base: "tent_ceiling_particle_3", tint: TentWallTints.green },
+    tent_ceiling_particle_blue_1:     { base: "tent_ceiling_particle_1", tint: TentTints.blue },
+    tent_ceiling_particle_blue_2:     { base: "tent_ceiling_particle_2", tint: TentTints.blue },
+    tent_ceiling_particle_blue_3:     { base: "tent_ceiling_particle_3", tint: TentTints.blue },
 
-    tent_ceiling_particle_3_1:     { base: "tent_ceiling_particle_1", tint: TentWallTints.blue },
-    tent_ceiling_particle_3_2:     { base: "tent_ceiling_particle_2", tint: TentWallTints.blue },
-    tent_ceiling_particle_3_3:     { base: "tent_ceiling_particle_3", tint: TentWallTints.blue },
+    tent_ceiling_particle_orange_1:     { base: "tent_ceiling_particle_1", tint: TentTints.orange },
+    tent_ceiling_particle_orange_2:     { base: "tent_ceiling_particle_2", tint: TentTints.orange },
+    tent_ceiling_particle_orange_3:     { base: "tent_ceiling_particle_3", tint: TentTints.orange },
 
-    tent_ceiling_particle_4_1:     { base: "tent_ceiling_particle_1", tint: TentWallTints.yellow },
-    tent_ceiling_particle_4_2:     { base: "tent_ceiling_particle_2", tint: TentWallTints.yellow },
-    tent_ceiling_particle_4_3:     { base: "tent_ceiling_particle_3", tint: TentWallTints.yellow },
-
-    tent_ceiling_particle_5_1:     { base: "tent_ceiling_particle_1", tint: TentWallTints.purple },
-    tent_ceiling_particle_5_2:     { base: "tent_ceiling_particle_2", tint: TentWallTints.purple },
-    tent_ceiling_particle_5_3:     { base: "tent_ceiling_particle_3", tint: TentWallTints.purple }
+    tent_ceiling_particle_purple_1:     { base: "tent_ceiling_particle_1", tint: TentTints.purple },
+    tent_ceiling_particle_purple_2:     { base: "tent_ceiling_particle_2", tint: TentTints.purple },
+    tent_ceiling_particle_purple_3:     { base: "tent_ceiling_particle_3", tint: TentTints.purple }
 };
 /* eslint-enable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 
@@ -609,7 +590,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
         const tentWall = derive(
             (
                 id: number,
-                color: "red" | "green" | "blue" | "yellow" | "purple"
+                color: "red" | "green" | "blue" | "orange" | "purple"
             ) => ({
                 idString: `tent_wall_${id}`,
                 name: `Tent Wall ${id}`,
@@ -625,16 +606,16 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 rotationMode: RotationMode.Limited,
                 allowFlyover: FlyoverPref.Never,
                 hitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(25.1, 1, Vec.create(0, -0.75)),
-                    RectangleHitbox.fromRect(1, 2.5, Vec.create(-12.1, 0)),
-                    RectangleHitbox.fromRect(1, 2.5, Vec.create(12.1, 0))
+                    RectangleHitbox.fromRect(26.1, 1.25, Vec.create(0, -0.75)),
+                    RectangleHitbox.fromRect(1.25, 2.8, Vec.create(-12.9, 0)),
+                    RectangleHitbox.fromRect(1.25, 2.8, Vec.create(12.9, 0))
                 ),
-                particleVariations: 2,
+                particleVariations: 3,
                 frames: {
                     base: "tent_wall",
-                    particle: `tent_wall_particle_${color}`
+                    particle: `tent_ceiling_particle_${color}`
                 },
-                tint: TentWallTints[color],
+                tint: TentTints[color],
                 role: ObstacleSpecialRoles.Wall
             })
         );
@@ -676,7 +657,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
         const bigTentWall = derive(
             (
                 id: number,
-                color: "red" | "green" | "blue" | "yellow" | "purple"
+                color: "red" | "green" | "blue" | "orange" | "purple"
             ) => ({
                 idString: `tent_wall_big_${id}`,
                 name: `Big Tent Wall ${id}`,
@@ -692,21 +673,21 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 rotationMode: RotationMode.Limited,
                 allowFlyover: FlyoverPref.Never,
                 hitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(1, 6.1, Vec.create(-3.2, -0.4)),
-                    RectangleHitbox.fromRect(10, 1, Vec.create(0, 3.2)),
-                    RectangleHitbox.fromRect(7, 2.1, Vec.create(-8.5, 3.25)),
-                    RectangleHitbox.fromRect(7, 2.1, Vec.create(8.5, 3.25)),
-                    RectangleHitbox.fromRect(9, 1, Vec.create(-16.25, 3.2)),
-                    RectangleHitbox.fromRect(9, 1, Vec.create(16.25, 3.2)),
-                    RectangleHitbox.fromRect(1, 8, Vec.create(-20.25, -0.25)),
-                    RectangleHitbox.fromRect(1, 8, Vec.create(20.25, -0.25))
+                    RectangleHitbox.fromRect(1.25, 6.5, Vec.create(-3.425, -0.5)),
+                    RectangleHitbox.fromRect(10.5, 1.25, Vec.create(0, 3.5)),
+                   // RectangleHitbox.fromRect(7, 2.1, Vec.create(-8.5, 3.25)),
+                   // RectangleHitbox.fromRect(7, 2.1, Vec.create(8.5, 3.25)),
+                    RectangleHitbox.fromRect(9, 1.25, Vec.create(-17.45, 3.5)),
+                    RectangleHitbox.fromRect(9, 1.25, Vec.create(17.45, 3.5)),
+                    RectangleHitbox.fromRect(1.25, 8.7, Vec.create(-21.5, -0.3)),
+                    RectangleHitbox.fromRect(1.25, 8.7, Vec.create(21.5, -0.3))
                 ),
                 particleVariations: 2,
                 frames: {
                     base: "tent_wall_big",
-                    particle: `tent_wall_particle_${color}`
+                    particle: `tent_ceiling_particle_${color}`
                 },
-                tint: TentWallTints[color],
+                tint: TentTints[color],
                 role: ObstacleSpecialRoles.Wall
             })
         );
@@ -1760,13 +1741,13 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             tentWall([1, "red"]),
             tentWall([2, "green"]),
             tentWall([3, "blue"]),
-            tentWall([4, "yellow"]),
+            tentWall([4, "orange"]),
             tentWall([5, "purple"]),
 
             bigTentWall([1, "red"]),
             bigTentWall([2, "green"]),
             bigTentWall([3, "blue"]),
-            bigTentWall([4, "yellow"]),
+            bigTentWall([4, "orange"]),
 
             portaPottyWall(["Porta Potty Back Wall", "porta_potty_wall_particle", {
                 color: 0x1c71d8, borderColor: 0x0d3565
@@ -2261,6 +2242,23 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 doorSound: "vault_door",
                 animationDuration: 2000,
                 hingeOffset: Vec.create(-6.1, -0.8),
+                zIndex: ZIndexes.ObstaclesLayer3,
+                frames: {
+                    particle: "metal_particle"
+                }
+            },
+            {
+                idString: "tent_window",
+                name: "Tent Window",
+                material: "wood",
+                health: 1000,
+                invisible: true,
+                indestructible: true,
+                noMeleeCollision: true,
+                role: ObstacleSpecialRoles.Window,
+                noBulletCollision: true,
+                hitbox: RectangleHitbox.fromRect(7.6, 2.5, Vec.create(0, 0)),
+                rotationMode: RotationMode.Limited,
                 zIndex: ZIndexes.ObstaclesLayer3,
                 frames: {
                     particle: "metal_particle"
