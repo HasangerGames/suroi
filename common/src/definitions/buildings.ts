@@ -5707,13 +5707,15 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     hitbox: RectangleHitbox.fromRect(46.52, 55.74, Vec.create(13.43, 101.53))
                 }],
                 floorImages: [
-                    { key: "plumpkin_bunker_main_entrance_floor", position: Vec.create(13.43, 101.53) },
+                    { key: "plumpkin_bunker_main_entrance_floor_1", position: Vec.create(13.43, 87.7) },
+                    { key: "plumpkin_bunker_main_entrance_floor_2", position: Vec.create(13.43, 115.3) },
                     { key: "plumpkin_bunker_entrance_floor", position: Vec.create(146.55, -32.85), rotation: Math.PI },
                     { key: "plumpkin_bunker_entrance_floor", position: Vec.create(-145.11, -52.85), rotation: Math.PI / 2 }
                 ],
                 floorZIndex: ZIndexes.BuildingsFloor + 0.5,
                 ceilingImages: [
-                    { key: "plumpkin_bunker_main_entrance_ceiling", position: Vec.create(13.43, 101.53) },
+                    { key: "plumpkin_bunker_main_entrance_ceiling_1", position: Vec.create(13.43, 87.7), scale: Vec.create(2, 2) },
+                    { key: "plumpkin_bunker_main_entrance_ceiling_2", position: Vec.create(13.43, 115.3), scale: Vec.create(2, 2) },
                     { key: "plumpkin_bunker_entrance_ceiling", position: Vec.create(146.55, -32.85), rotation: Math.PI },
                     { key: "plumpkin_bunker_entrance_ceiling", position: Vec.create(-145.11, -52.85), rotation: Math.PI / 2 }
                 ],
@@ -5762,7 +5764,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 floorImages: [
                     {
                         key: "plumpkin_bunker_floor",
-                        position: Vec.create(0, 0)
+                        position: Vec.create(0, 0),
+                        scale: Vec.create(1.506, 1.506)
                     }
                 ],
                 hitbox: new GroupHitbox(
