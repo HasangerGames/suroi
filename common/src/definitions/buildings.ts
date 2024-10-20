@@ -505,7 +505,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "tent_window", position: Vec.create(9.11, -14.03), rotation: 0 },
                     { idString: "tent_window", position: Vec.create(-9.11, -14.03), rotation: 0 },
                     { idString: "tent_window", position: Vec.create(-9.11, 14.03), rotation: 0 },
-                    { idString: "tent_window", position: Vec.create(9.11, 14.03), rotation: 0 },
+                    { idString: "tent_window", position: Vec.create(9.11, 14.03), rotation: 0 }
                 ],
                 lootSpawners: [
                     { table: "ground_loot", position: Vec.create(-10.68, 0) },

@@ -675,8 +675,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(1.25, 6.5, Vec.create(-3.425, -0.5)),
                     RectangleHitbox.fromRect(10.5, 1.25, Vec.create(0, 3.5)),
-                   // RectangleHitbox.fromRect(7, 2.1, Vec.create(-8.5, 3.25)),
-                   // RectangleHitbox.fromRect(7, 2.1, Vec.create(8.5, 3.25)),
+                    // RectangleHitbox.fromRect(7, 2.1, Vec.create(-8.5, 3.25)),
+                    // RectangleHitbox.fromRect(7, 2.1, Vec.create(8.5, 3.25)),
                     RectangleHitbox.fromRect(9, 1.25, Vec.create(-17.45, 3.5)),
                     RectangleHitbox.fromRect(9, 1.25, Vec.create(17.45, 3.5)),
                     RectangleHitbox.fromRect(1.25, 8.7, Vec.create(-21.5, -0.3)),
