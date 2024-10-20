@@ -880,6 +880,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 || !door.definition.isDoor
                 || !door.definition.automatic
                 || door.door?.isOpen
+                || !isInsideBuilding // womp womp
             ) continue;
 
             if (Geometry.distanceSquared(door.position, this.position) > 100) {
