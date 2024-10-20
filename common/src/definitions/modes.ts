@@ -25,7 +25,8 @@ export const Modes: Record<Mode, ModeDefinition> = {
             riverBank: "hsl(33, 50%, 30%)",
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
-        }
+        },
+        reskin: "normal"
     },
     fall: {
         colors: {
