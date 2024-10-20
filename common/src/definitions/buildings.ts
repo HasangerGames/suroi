@@ -386,7 +386,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     position: Vec.create(0, 0),
                     tint: tint,
                     residue: "tent_residue",
-                    scale: Vec.create(2.04, 2.14)
+                    scale: Vec.create(2.04, 2.04)
                 }],
                 floors: [{
                     type: FloorNames.Carpet,
@@ -5882,6 +5882,15 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                             RectangleHitbox.fromRect(16.05, 13.43, Vec.create(0.39, 121.47)),
                             RectangleHitbox.fromRect(48.96, 34.73, Vec.create(-127.96, -63.52))
                         )
+                    },
+                    { // stairs
+                        type: FloorNames.Metal,
+                        hitbox: new GroupHitbox(
+                            RectangleHitbox.fromRect(16.07, 11.3, Vec.create(0.39, 121.67)),
+                            RectangleHitbox.fromRect(11.3, 16.07, Vec.create(146.52, -33.84)),
+                            RectangleHitbox.fromRect(16.07, 11.3, Vec.create(-146.1, -52.88))
+                        ),
+                        layer: -1
                     },
                     {
                         type: FloorNames.Wood,
