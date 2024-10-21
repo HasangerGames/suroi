@@ -22,6 +22,10 @@ export type SimpleLootTable = readonly WeightedItem[] | ReadonlyArray<readonly W
 export type FullLootTable = {
     readonly min: number
     readonly max: number
+    /**
+     * Ensures no duplicate drops. Only applies to items in the table, not tables.
+     */
+    readonly noDuplicates?: boolean
     readonly loot: readonly WeightedItem[]
 };
 
@@ -41,24 +45,33 @@ export function getLootFromTable(tableID: string): LootItem[] {
     }
 
     const isSimple = isArray(lootTable);
-    const { min, max, loot } = isSimple
-        ? { min: 1, max: 1, loot: lootTable }
-        : lootTable;
+    const { min, max, noDuplicates, loot } = isSimple
+        ? {
+            min: 1,
+            max: 1,
+            noDuplicates: false,
+            loot: lootTable
+        }
+        : lootTable.noDuplicates
+            ? { ...lootTable, loot: [...lootTable.loot] } // cloning the array is necessary because noDuplicates mutates it
+            : lootTable;
 
     return (
         isSimple && isArray(loot[0])
-            ? (loot as ReadonlyArray<readonly WeightedItem[]>).map(innerTable => getLoot(innerTable))
-            : Array.from(
-                { length: random(min, max) },
-                () => getLoot(loot as WeightedItem[])
-            )
+            ? (loot as readonly WeightedItem[][]).map(innerTable => getLoot(innerTable))
+            : min === 1 && max === 1
+                ? getLoot(loot as WeightedItem[], noDuplicates)
+                : Array.from(
+                    { length: random(min, max) },
+                    () => getLoot(loot as WeightedItem[], noDuplicates)
+                )
     ).flat();
 }
 
-function getLoot(table: readonly WeightedItem[]): LootItem[] {
-    const selection = table.length === 1
-        ? table[0]
-        : weightedRandom(table, table.map(({ weight }) => weight));
+function getLoot(items: WeightedItem[], noDuplicates?: boolean): LootItem[] {
+    const selection = items.length === 1
+        ? items[0]
+        : weightedRandom(items, items.map(({ weight }) => weight));
 
     if ("table" in selection) {
         return getLootFromTable(selection.table);
@@ -93,6 +106,11 @@ function getLoot(table: readonly WeightedItem[]): LootItem[] {
         } else {
             loot.push(new LootItem(ammoType, ammoSpawnAmount));
         }
+    }
+
+    if (noDuplicates) {
+        const index = items.findIndex(entry => "item" in entry && entry.item === selection.item);
+        if (index !== -1) items.splice(index, 1);
     }
 
     return loot;
@@ -248,8 +266,21 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         plumpkin: {
             min: 3,
             max: 3,
+            noDuplicates: true,
             loot: [
-                { table: "normal_perks", weight: 1 }
+                { item: PerkIds.InfiniteAmmo, weight: 1 },
+                { item: PerkIds.HiCap, weight: 1 },
+                { item: PerkIds.Splinter, weight: 1 },
+                { item: PerkIds.DemoExpert, weight: 1 },
+                { item: PerkIds.SecondWind, weight: 1 },
+                { item: PerkIds.FieldMedic, weight: 1 },
+                { item: PerkIds.Sabot, weight: 1 },
+                { item: PerkIds.AdvancedAthletics, weight: 1 },
+                { item: PerkIds.Toploaded, weight: 1 },
+                { item: PerkIds.CloseQuartersCombat, weight: 1 },
+                { item: PerkIds.LowProfile, weight: 1 },
+                { item: PerkIds.Splinter, weight: 1 },
+                { item: PerkIds.Berserker, weight: 1 }
             ]
         },
         birthday_cake: [
@@ -817,21 +848,6 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "stoner_63", weight: 0.08 },
             { item: "tango_51", weight: 0.08 },
             { item: "g19", weight: 0.08 }
-        ],
-        normal_perks: [
-            { item: PerkIds.InfiniteAmmo, weight: 1 },
-            { item: PerkIds.HiCap, weight: 1 },
-            { item: PerkIds.Splinter, weight: 1 },
-            { item: PerkIds.DemoExpert, weight: 1 },
-            { item: PerkIds.SecondWind, weight: 1 },
-            { item: PerkIds.FieldMedic, weight: 1 },
-            { item: PerkIds.Sabot, weight: 1 },
-            { item: PerkIds.AdvancedAthletics, weight: 1 },
-            { item: PerkIds.Toploaded, weight: 1 },
-            { item: PerkIds.CloseQuartersCombat, weight: 1 },
-            { item: PerkIds.LowProfile, weight: 1 },
-            { item: PerkIds.Splinter, weight: 1 },
-            { item: PerkIds.Berserker, weight: 1 }
         ]
     },
 
