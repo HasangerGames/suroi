@@ -240,7 +240,7 @@ export class Game implements GameData {
         parentPort?.on("message", (message: WorkerMessage) => {
             switch (message.type) {
                 case WorkerMessages.AllowIP: {
-                    this.allowedIPs.set(message.ip, this.now + 5000);
+                    this.allowedIPs.set(message.ip, this.now + 10000);
                     parentPort?.postMessage({
                         type: WorkerMessages.IPAllowed,
                         ip: message.ip
