@@ -1079,16 +1079,21 @@ export const SpawnableLoots = (() => {
         [ItemType.Perk]: Perks
     };
 
-    const spawnableItemTypeCache: {
-        [K in ItemType]?: Array<LootDefForType<K>>
-    } = {};
+    type Cache = {
+        [K in ItemType]?: Array<LootDefForType<K>> | undefined;
+    };
+
+    // an array is just an object with numeric keys
+    const spawnableItemTypeCache = [] as Cache;
 
     (spawnableLoots as SpawnableItemRegistry).forType = <K extends ItemType>(type: K): ReadonlyArray<LootDefForType<K>> => {
         return (
-            // without this seemingly useless assertion, assignability error occur
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-            spawnableItemTypeCache[type] as Array<LootDefForType<K>> | undefined
-        ) ??= itemTypeToCollection[type].definitions.filter(({ idString }) => spawnableLoots.has(idString));
+            (
+                // without this seemingly useless assertion, assignability errors occur
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+                spawnableItemTypeCache[type] as Array<LootDefForType<K>> | undefined
+            ) ??= itemTypeToCollection[type].definitions.filter(({ idString }) => spawnableLoots.has(idString))
+        );
     };
 
     return spawnableLoots as SpawnableItemRegistry;
