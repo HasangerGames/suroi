@@ -2070,7 +2070,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     break;
                 }
                 case InputActions.DropItem: {
-                    if (!this.game.teamMode) break;
+                    if (!this.game.teamMode && action.item.itemType !== ItemType.Perk) break;
                     this.action?.cancel();
                     inventory.dropItem(action.item);
                     break;

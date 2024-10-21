@@ -24,6 +24,7 @@ import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaul
 import { PIXI_SCALE, UI_DEBUG_MODE, EMOTE_SLOTS } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
+import { PerkIds, Perks } from "../../../common/src/definitions/perks";
 
 /*
     eslint-disable
@@ -2004,6 +2005,21 @@ export async function setUpUI(game: Game): Promise<void> {
             if (shouldDrop !== undefined) {
                 mobileDropItem(button, shouldDrop, game.activePlayer?.getEquipment(type));
             }
+        });
+    }
+
+    for (const perkSlot of ["#perk-slot-0", "#perk-slot-1", "#perk-slot-2"]) {
+        $(perkSlot)[0].addEventListener("pointerdown", function(e: PointerEvent): void {
+            e.stopImmediatePropagation();
+            if (e.button !== 2) return;
+
+            const perkIDString = $(this).attr("data-idString");
+            if (!perkIDString) return;
+
+            game.inputManager.addAction({
+                type: InputActions.DropItem,
+                item: Perks.fromString(perkIDString as PerkIds)
+            });
         });
     }
 

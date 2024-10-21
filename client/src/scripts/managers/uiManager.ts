@@ -686,6 +686,8 @@ export class UIManager {
             const perkList = this.perks.asList();
             const length = perkList.length;
 
+            if (length === 0) this.resetPerkSlots();
+
             for (let i = 0; i < length; i++) {
                 const perk = perkList[i];
                 this.updatePerkSlot(perk, i);
@@ -908,23 +910,10 @@ export class UIManager {
         // no, write a hud that can handle it
 
         const container = $(`#perk-slot-${index}`);
-
+        container.attr("data-idString", perkDef.idString);
         container.children(".item-tooltip").html(`<strong>${perkDef.name}</strong><br>${perkDef.description}`);
         container.children(".item-image").attr("src", `./img/game/perks/${perkDef.idString}.svg`);
-        container.css("visibility", this.game.uiManager.perks.hasPerk(perkDef.idString) ? "visible" : "hidden");
-
-        /*  container[0].addEventListener( - todo: perk dropping
-            "pointerdown",
-            (e: PointerEvent): void => {
-                e.stopImmediatePropagation();
-                if (e.button === 2 && perkDef && this.game.teamMode) {
-                    this.game.inputManager.addAction({
-                        type: InputActions.DropItem,
-                        item: perkDef
-                    });
-                }
-            }
-        ); */
+        container.css("visibility", this.perks.hasPerk(perkDef.idString) ? "visible" : "hidden");
     }
 
     resetPerkSlots(): void {

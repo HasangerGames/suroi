@@ -614,6 +614,7 @@ export class Inventory {
                 if (!this.owner.hasPerk(definition)) return;
                 this.owner.perks.removePerk(definition);
                 this._dropItem(definition);
+                this.owner.dirty.perks = true;
                 break;
             }
         }
