@@ -233,7 +233,6 @@ const maps = {
             lodge: 1,
             armory_damaged: 1,
             plumpkin_bunker: 1,
-            small_bunker_fall: 1,
             barn: 3,
             green_house: 2,
             warehouse: 4,
@@ -253,7 +252,7 @@ const maps = {
         },
         majorBuildings: ["armory_damaged", "lodge", "plumpkin_bunker"],
         quadBuildingLimit: {
-            barn: 2,
+            barn: 1,
             outhouse: 3,
             red_house: 1,
             green_house: 1,

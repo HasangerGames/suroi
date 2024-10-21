@@ -4519,35 +4519,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ]
             },
             {
-                idString: "small_bunker_fall",
-                name: "Small Bunker",
-                material: "metal_heavy",
-                particle: "metal_particle",
-                reflectBullets: true,
-                ceilingZIndex: ZIndexes.ObstaclesLayer3,
-                visibleFromLayers: Layers.All,
-                hitbox: RectangleHitbox.fromRect(12, 1, Vec.create(0, 12.3)),
-                ceilingImages: [{
-                    key: "small_bunker_entrance_ceiling",
-                    position: Vec.create(0, 18),
-                    scale: Vec.create(2.35, 2.1)
-                }],
-                spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec.create(0, 20)),
-                scopeHitbox: RectangleHitbox.fromRect(10, 15, Vec.create(0, 20)),
-                obstacles: [
-                    { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(7.5, 9.8) },
-                    { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(10, 23) },
-                    { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-10, 16) },
-                    { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-5, 37) }
-                ],
-                bulletMask: RectangleHitbox.fromRect(11, 30, Vec.create(0, 30)),
-                subBuildings: [
-                    { idString: "small_bunker_main", position: Vec.create(0, -5), layer: -2 },
-                    { idString: "small_bunker_entrance", position: Vec.create(0, 20), layer: -1 }
-                ]
-            },
-
-            {
                 idString: "barn_top_floor_shadow",
                 name: "Barn Shadow",
                 spawnHitbox: new GroupHitbox(
