@@ -46,7 +46,7 @@ export const CUTE_ENGWISH_TRANSLATIONS: TranslationMap = {
 
     "settings_master_volume": "Master vowume",
     "settings_sfx_volume": "SFX vowume",
-    "settings_music_volume": "Meowsic vowume",
+    "settings_music_volume": "Mewsic vowume",
     "settings_old_menu_music": "Owd menu meowsic",
 
     "settings_render_mode": "Wendew mode",
@@ -87,7 +87,7 @@ export const CUTE_ENGWISH_TRANSLATIONS: TranslationMap = {
     "settings_joystick_size": "Funstick size",
     "settings_joystick_opacity": "Funstick opwacity",
 
-    "loadout_skins": "Fursuits",
+    "loadout_skins": "Fuwsuits",
     "loadout_emotes": "Emotes",
     "loadout_crosshairs": "Cwosshairs",
     "loadout_badges": "Badges",
@@ -104,20 +104,20 @@ export const CUTE_ENGWISH_TRANSLATIONS: TranslationMap = {
     "emotes_category_Icons": "Icwons",
     "emotes_category_Misc": "Mwisc",
 
-    "featured_youtubr": "Featuwed Youtuba",
-    "featured_streamr": "Featuwed Stweama",
+    "featured_youtubr": "Featuwed Youtubw",
+    "featured_streamr": "Featuwed Stweamw",
 
     "btn_report": "Wepowt",
     "btn_spectate_kill_leader": "Spectate Kwill Weader",
-    "btn_spectate": "Spectate",
+    "btn_spectate": "Spwectate",
     "btn_play_again": "Pway Again",
     "btn_menu": "Menu",
 
     "msg_waiting_for_leader": "Waiting for weader",
     "msg_you_died": "You died. OwO",
     "msg_player_died": "<player> died. L",
-    "msg_win": "Winna Winna Chickwen Dinna!! UwU",
-    "msg_your_rank": "Wank",
+    "msg_win": "Winnew Winnew Chickwen Dinnew!! UwU",
+    "msg_your_rank": "Rank",
 
     "msg_kills": "Kwills: <kills>",
 
@@ -258,7 +258,7 @@ export const CUTE_ENGWISH_TRANSLATIONS: TranslationMap = {
 
     // loot
 
-    "gauze": "Gauze",
+    "gauze": "Gawze",
     "medikit": "Medikit",
     "cola": "Cowa",
     "tablets": "Tabwets",
