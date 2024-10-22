@@ -191,6 +191,10 @@ export class GameMap {
             }
         }
 
+        if (mapDef.trails) {
+
+        }
+
         packet.rivers = rivers;
 
         this.terrain = new Terrain(
@@ -243,6 +247,66 @@ export class GameMap {
     }
 
     private _generateRiver(
+        startPos: Vector,
+        startAngle: number,
+        width: number,
+        bounds: RectangleHitbox,
+        rivers: River[],
+        randomGenerator: SeededRandom
+    ): void {
+        const riverPoints: Vector[] = [];
+
+        riverPoints.push(startPos);
+
+        let angle = startAngle;
+
+        for (let i = 1; i < 60; i++) {
+            const lastPoint = riverPoints[i - 1];
+            const center = Vec.create(this.width / 2, this.height / 2);
+
+            const distFactor = Geometry.distance(lastPoint, center) / (this.width / 2);
+
+            const maxDeviation = Numeric.lerp(0.8, 0.1, distFactor);
+            const minDeviation = Numeric.lerp(0.3, 0.1, distFactor);
+
+            angle = angle + randomGenerator.get(
+                -randomGenerator.get(minDeviation, maxDeviation),
+                randomGenerator.get(minDeviation, maxDeviation)
+            );
+
+            const pos = Vec.add(lastPoint, Vec.fromPolar(angle, randomGenerator.getInt(30, 80)));
+
+            let collided = false;
+
+            // end the river if it collides with another river
+            for (const river of rivers) {
+                const points = river.points;
+                for (let j = 1; j < points.length; j++) {
+                    const intersection = Collision.lineIntersectsLine(lastPoint, pos, points[j - 1], points[j]);
+                    if (intersection) {
+                        const dist = Geometry.distance(intersection, riverPoints[i - 1]);
+                        if (dist > 16) riverPoints[i] = intersection;
+                        collided = true;
+                        break;
+                    }
+                }
+                if (collided) break;
+            }
+            if (collided) break;
+            riverPoints[i] = pos;
+
+            if (!bounds.isPointInside(pos)) break;
+        }
+        if (riverPoints.length < 20 || riverPoints.length > 59) return;
+
+        const mapBounds = new RectangleHitbox(
+            Vec.create(this.oceanSize, this.oceanSize),
+            Vec.create(this.width - this.oceanSize, this.height - this.oceanSize)
+        );
+        rivers.push(new River(width, riverPoints, rivers, mapBounds));
+    }
+
+    private _generateTrail(
         startPos: Vector,
         startAngle: number,
         width: number,

@@ -31,6 +31,12 @@ export interface MapDefinition {
         readonly minWideWidth: number
         readonly maxWideWidth: number
     }
+    readonly trails?: {
+        readonly minAmount: number
+        readonly maxAmount: number
+        readonly minWidth: number
+        readonly maxWidth: number
+    }
     readonly clearings?: {
         readonly maxWidth: number
         readonly maxHeight: number
@@ -215,6 +221,12 @@ const maps = {
             minWideWidth: 25,
             maxWideWidth: 28,
             maxWideAmount: 1
+        },
+        trails: {
+            minAmount: 3,
+            maxAmount: 5,
+            minWidth: 10,
+            maxWidth: 15
         },
         clearings: {
             maxHeight: 90,
