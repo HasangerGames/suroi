@@ -1849,7 +1849,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             {
                 idString: "fireplace",
                 name: "Fireplace",
-                material: "metal_heavy",
+                material: "metal_light",
                 health: 300,
                 scale: {
                     spawnMin: 1,

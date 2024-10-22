@@ -1847,17 +1847,20 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 casingParticles: [{
                     position: Vec.create(4.5, 0.6),
                     ejectionDelay: 400,
-                    frame: "casing_12g_slug"
+                    frame: "casing_12ga_he"
                 }],
                 gasParticles: gasParticlePresets.shotgun,
                 ballistics: {
-                    damage: 78,
+                    damage: 20,
                     obstacleMultiplier: 1,
-                    speed: 0.25,
-                    range: 120,
+                    speed: 0.22,
+                    range: 70,
+                    onHitExplosion: "usas_explosion",
+                    allowRangeOverride: true,
                     tracer: {
-                        width: 1.6,
-                        length: 1.3
+                        length: 0.5,
+                        color: 0xFF0000,
+                        saturatedColor: 0xF55C3D
                     }
                 }
             },
