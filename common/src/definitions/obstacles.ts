@@ -2743,7 +2743,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 idString: "bulletproof_window",
                 name: "Bulletproof Window",
                 material: "glass",
-                health: 700,
+                health: 1000,
                 scale: {
                     spawnMin: 1,
                     spawnMax: 1,
