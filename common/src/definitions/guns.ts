@@ -1855,7 +1855,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     obstacleMultiplier: 1,
                     speed: 0.22,
                     range: 70,
-                    onHitExplosion: "usas_explosion",
+                    onHitExplosion: "m590m_explosion",
                     allowRangeOverride: true,
                     tracer: {
                         length: 0.5,

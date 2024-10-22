@@ -244,7 +244,37 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
                 rangeVariance: 1,
                 shrapnel: true
             },
-            sound: "usas_explosion",
+            sound: "12g_frag_explosion",
+            decal: "explosion_decal"
+        },
+        {
+            idString: "m590m_explosion",
+            name: "m590m",
+            damage: 40,
+            obstacleMultiplier: 1,
+            radius: {
+                min: 6,
+                max: 16
+            },
+            cameraShake: {
+                duration: 100,
+                intensity: 10
+            },
+            animation: {
+                duration: 1500,
+                tint: 0x6c1313,
+                scale: 0.8
+            },
+            shrapnelCount: 13,
+            ballistics: {
+                damage: 3,
+                obstacleMultiplier: 1.5,
+                speed: 0.06,
+                range: 10,
+                rangeVariance: 1,
+                shrapnel: true
+            },
+            sound: "12g_frag_explosion",
             decal: "explosion_decal"
         },
         {
