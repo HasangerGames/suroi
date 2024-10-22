@@ -35,7 +35,7 @@ export class LootItem {
     constructor(
         public readonly idString: ReferenceTo<LootDefinition>,
         public readonly count: number
-    ) {}
+    ) { }
 }
 
 export function getLootFromTable(tableID: string): LootItem[] {
@@ -831,7 +831,32 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "stoner_63", weight: 0.08 },
             { item: "tango_51", weight: 0.08 },
             { item: "g19", weight: 0.08 }
-        ]
+        ],
+        plumpkin: {
+            min: 3,
+            max: 3,
+            loot: [{ table: "fall_perks", weight: 1 }]
+        },
+        fall_perks: {
+            min: 1,
+            max: 1,
+            noDuplicates: true,
+            loot: [
+                { item: PerkIds.InfiniteAmmo, weight: 1 },
+                { item: PerkIds.HiCap, weight: 1 },
+                { item: PerkIds.Splinter, weight: 1 },
+                { item: PerkIds.DemoExpert, weight: 1 },
+                { item: PerkIds.SecondWind, weight: 1 },
+                { item: PerkIds.FieldMedic, weight: 1 },
+                { item: PerkIds.Sabot, weight: 1 },
+                { item: PerkIds.AdvancedAthletics, weight: 1 },
+                { item: PerkIds.Toploaded, weight: 1 },
+                { item: PerkIds.CloseQuartersCombat, weight: 1 },
+                { item: PerkIds.LowProfile, weight: 1 },
+                { item: PerkIds.Splinter, weight: 1 },
+                { item: PerkIds.Berserker, weight: 1 }
+            ]
+        }
     },
 
     fall: {
@@ -851,12 +876,6 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { table: "throwables", weight: 0.3 },
             { table: "melee", weight: 0.04 }
         ],
-        plumpkin: {
-            min: 3,
-            max: 3,
-            loot: [{ table: "fall_perks", weight: 1}]
-            
-        },
         airdrop_crate: [
             [{ table: "airdrop_equipment", weight: 1 }],
             [{ table: "airdrop_scopes", weight: 1 }],
@@ -866,7 +885,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ table: "ammo", weight: 1 }],
             [{ table: "airdrop_guns", weight: 1 }],
             [
-                { table: "fall_perks",  weight: 0.1 },
+                { table: "fall_perks", weight: 0.1 },
                 { item: NullString, weight: 0.9 }
             ],
             [
@@ -883,10 +902,10 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ table: "ammo", weight: 1 }],
             [{ table: "gold_airdrop_guns", weight: 1 }],
             [
-                { table: "fall_perks",  weight: 0.5 },
+                { table: "fall_perks", weight: 0.5 },
                 { item: NullString, weight: 0.5 }
             ],
-            [{ item: "frag_grenade", count: 3, weight: 1 }],
+            [{ item: "frag_grenade", count: 3, weight: 1 }]
         ],
         briefcase: [
             { item: "usas12", weight: 1 },
@@ -903,7 +922,6 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { item: "curadell", weight: 0.1 }
             ]
         ],
-        
         gun_locker: {
             min: 1,
             max: 2,
@@ -1070,26 +1088,6 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "regular_pack", weight: 0.5 },
             { item: "tactical_pack", weight: 0.09 }
         ],
-        fall_perks: {
-            min: 1,
-            max: 1,
-            noDuplicates: true,
-            loot: [
-                { item: PerkIds.InfiniteAmmo, weight: 1 },
-                { item: PerkIds.HiCap, weight: 1 },
-                { item: PerkIds.Splinter, weight: 1 },
-                { item: PerkIds.DemoExpert, weight: 1 },
-                { item: PerkIds.SecondWind, weight: 1 },
-                { item: PerkIds.FieldMedic, weight: 1 },
-                { item: PerkIds.Sabot, weight: 1 },
-                { item: PerkIds.AdvancedAthletics, weight: 1 },
-                { item: PerkIds.Toploaded, weight: 1 },
-                { item: PerkIds.CloseQuartersCombat, weight: 1 },
-                { item: PerkIds.LowProfile, weight: 1 },
-                { item: PerkIds.Splinter, weight: 1 },
-                { item: PerkIds.Berserker, weight: 1 }
-                ]
-            },
         scopes: [
             { item: "4x_scope", weight: 1 },
             { item: "8x_scope", weight: 0.1 },
