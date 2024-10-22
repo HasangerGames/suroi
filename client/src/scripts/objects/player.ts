@@ -730,7 +730,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     if (this.isActivePlayer) {
                         uiManager.animateAction(
                             getTranslatedString("action_reviving"),
-                            GameConstants.player.reviveTime
+                            GameConstants.player.reviveTime / this.game.uiManager.perks.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
                         );
                     }
                     break;

@@ -44,7 +44,7 @@ export class ReviveAction extends Action {
     override readonly speedMultiplier = 0.5;
 
     constructor(reviver: Player, readonly target: Player) {
-        super(reviver, GameConstants.player.reviveTime);
+        super(reviver, GameConstants.player.reviveTime / reviver.mapPerkOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1));
     }
 
     override execute(): void {
