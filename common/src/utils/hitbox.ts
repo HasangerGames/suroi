@@ -599,6 +599,10 @@ export class PolygonHitbox extends BaseHitbox<HitboxType.Polygon> {
                 }
                 return false;
             }
+            case HitboxType.Group:
+            case HitboxType.Circle: {
+                return that.collidesWith(this);
+            }
         }
         this.throwUnknownSubclassError(that);
     }

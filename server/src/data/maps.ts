@@ -16,27 +16,24 @@ import { GameMap } from "../map";
 import { Player, type PlayerContainer } from "../objects/player";
 import { getLootFromTable, LootTables } from "./lootTables";
 
+export interface RiverDefinition {
+    readonly minAmount: number
+    readonly maxAmount: number
+    readonly maxWideAmount: number
+    readonly wideChance: number
+    readonly minWidth: number
+    readonly maxWidth: number
+    readonly minWideWidth: number
+    readonly maxWideWidth: number
+}
+
 export interface MapDefinition {
     readonly width: number
     readonly height: number
     readonly oceanSize: number
     readonly beachSize: number
-    readonly rivers?: {
-        readonly minAmount: number
-        readonly maxAmount: number
-        readonly maxWideAmount: number
-        readonly wideChance: number
-        readonly minWidth: number
-        readonly maxWidth: number
-        readonly minWideWidth: number
-        readonly maxWideWidth: number
-    }
-    readonly trails?: {
-        readonly minAmount: number
-        readonly maxAmount: number
-        readonly minWidth: number
-        readonly maxWidth: number
-    }
+    readonly rivers?: RiverDefinition
+    readonly trails?: RiverDefinition
     readonly clearings?: {
         readonly minWidth: number
         readonly minHeight: number
@@ -225,10 +222,14 @@ const maps = {
             maxWideAmount: 1
         },
         trails: {
-            minAmount: 3,
-            maxAmount: 5,
-            minWidth: 10,
-            maxWidth: 15
+            minAmount: 2,
+            maxAmount: 3,
+            wideChance: 0.2,
+            minWidth: 2,
+            maxWidth: 4,
+            minWideWidth: 3,
+            maxWideWidth: 5,
+            maxWideAmount: 1
         },
         clearings: {
             minWidth: 200,
@@ -241,7 +242,8 @@ const maps = {
                 { idString: "clearing_boulder", min: 3, max: 5 },
                 { idString: "flint_crate", min: 3, max: 5 },
                 { idString: "grenade_crate", min: 0, max: 2 },
-                { idString: "melee_crate", min: 0, max: 1 }
+                { idString: "melee_crate", min: 0, max: 1 },
+                { idString: "flint_stone", min: 0, max: 1 }
             ]
         },
         buildings: {

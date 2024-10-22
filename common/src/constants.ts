@@ -55,7 +55,9 @@ export const GameConstants = freezeDeep({
         fallTime: 8000,
         flyTime: 30000,
         damage: 300
-    }
+    },
+    riverPadding: 64,
+    trailPadding: 384
 });
 
 export enum ZIndexes {

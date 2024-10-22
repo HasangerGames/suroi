@@ -218,7 +218,7 @@ export class Terrain {
                     floor = FloorNames.Sand;
                 }
 
-                if (river.waterHitbox.isPointInside(position)) {
+                if (river.waterHitbox?.isPointInside(position)) {
                     floor = FloorNames.Water;
                     break;
                 }
@@ -297,18 +297,24 @@ function clipRayToPoly(point: Vector, direction: Vector, polygon: PolygonHitbox)
 export class River {
     readonly bankWidth: number;
 
-    readonly waterHitbox: PolygonHitbox;
+    readonly waterHitbox?: PolygonHitbox;
     readonly bankHitbox: PolygonHitbox;
+
+    readonly isTrail: boolean;
 
     constructor(
         readonly width: number,
         readonly points: readonly Vector[],
         otherRivers: readonly River[],
-        bounds: RectangleHitbox
+        bounds: RectangleHitbox,
+        isTrail: boolean
     ) {
+        this.isTrail = isTrail;
+        const isRiver = !isTrail;
+
         const length = this.points.length - 1;
 
-        this.bankWidth = Numeric.clamp(this.width * 0.75, 12, 20);
+        this.bankWidth = isRiver ? Numeric.clamp(this.width * 0.75, 12, 20) : this.width;
 
         const waterPoints: Vector[] = new Array<Vector>(length * 2);
         const bankPoints: Vector[] = new Array<Vector>(length * 2);
@@ -324,6 +330,7 @@ export class River {
             // find closest colliding river to adjust the bank width and clip this river
             let collidingRiver: River | null = null;
             for (const river of otherRivers) {
+                if (river.isTrail !== isTrail) continue;
                 const length = Vec.length(
                     Vec.sub(
                         river.getPosition(river.getClosestT(current)),
@@ -344,38 +351,31 @@ export class River {
 
             const end = 2 * (Numeric.max(1 - i / length, i / length) - 0.5);
             // increase river width near map bounds
-            if (i < (this.points.length / 2) || endsOnMapBounds) {
+            if (isRiver && (i < (this.points.length / 2) || endsOnMapBounds)) {
                 width = (1 + end ** 3 * 1.5) * this.width;
             }
 
-            const finalBankWidth = width + bankWidth;
+            const calculatePoints = (width: number, hitbox: PolygonHitbox | undefined, points: Vector[]): void => {
+                let ray1 = Vec.scale(normal, width);
+                let ray2 = Vec.scale(normal, -width);
 
-            let waterRay1 = Vec.scale(normal, width);
-            let waterRay2 = Vec.scale(normal, -width);
-            let bankRay1 = Vec.scale(normal, finalBankWidth);
-            let bankRay2 = Vec.scale(normal, -finalBankWidth);
+                if (hitbox) {
+                    ray1 = clipRayToPoly(current, ray1, hitbox);
+                    ray2 = clipRayToPoly(current, ray2, hitbox);
+                }
 
-            if (collidingRiver) {
-                waterRay1 = clipRayToPoly(current, waterRay1, collidingRiver.waterHitbox);
-                waterRay2 = clipRayToPoly(current, waterRay2, collidingRiver.waterHitbox);
-                bankRay1 = clipRayToPoly(current, bankRay1, collidingRiver.bankHitbox);
-                bankRay2 = clipRayToPoly(current, bankRay2, collidingRiver.bankHitbox);
+                points[i] = Vec.add(current, ray1);
+                points[this.points.length + length - i] = Vec.add(current, ray2);
+            };
+
+            if (isRiver) {
+                calculatePoints(width, collidingRiver?.waterHitbox, waterPoints);
             }
 
-            const waterPoint1 = Vec.add(current, waterRay1);
-            const waterPoint2 = Vec.add(current, waterRay2);
-
-            waterPoints[i] = waterPoint1;
-            waterPoints[this.points.length + length - i] = waterPoint2;
-
-            const bankPoint1 = Vec.add(current, bankRay1);
-            const bankPoint2 = Vec.add(current, bankRay2);
-
-            bankPoints[i] = bankPoint1;
-            bankPoints[this.points.length + length - i] = bankPoint2;
+            calculatePoints(width + bankWidth, collidingRiver?.bankHitbox, bankPoints);
         }
 
-        this.waterHitbox = new PolygonHitbox(waterPoints);
+        this.waterHitbox = isRiver ? new PolygonHitbox(waterPoints) : undefined;
         this.bankHitbox = new PolygonHitbox(bankPoints);
     }
 

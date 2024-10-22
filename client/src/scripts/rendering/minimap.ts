@@ -174,15 +174,19 @@ export class Minimap {
         }
 
         // river bank needs to be draw first
-        ctx.beginPath();
         for (const river of this._terrain.rivers) {
-            ctx.roundShape(getRiverPoly(river.bankHitbox.points), 0, true);
+            console.log(COLORS.riverBank, COLORS.trail);
+            ctx
+                .beginPath()
+                .roundShape(getRiverPoly(river.bankHitbox.points), 0, true)
+                .fill(river.isTrail ? COLORS.trail : COLORS.riverBank);
         }
-        ctx.fill(COLORS.riverBank);
 
         ctx.beginPath();
         for (const river of this._terrain.rivers) {
-            ctx.roundShape(getRiverPoly(river.waterHitbox.points), 0, true);
+            if (river.waterHitbox) {
+                ctx.roundShape(getRiverPoly(river.waterHitbox.points), 0, true);
+            }
         }
         ctx.fill(COLORS.water);
 
@@ -390,7 +394,7 @@ export class Minimap {
         for (const river of this._terrain.rivers) {
             const points = river.points.map(point => Vec.scale(point, PIXI_SCALE));
 
-            drawHitbox(river.waterHitbox, FloorTypes.water.debugColor, debugGraphics);
+            if (river.waterHitbox) drawHitbox(river.waterHitbox, FloorTypes.water.debugColor, debugGraphics);
             drawHitbox(river.bankHitbox, FloorTypes.sand.debugColor, debugGraphics);
 
             debugGraphics.setStrokeStyle({
@@ -431,7 +435,7 @@ export class Minimap {
         );
 
         const rivers: River[] = [];
-        rivers.push(...mapPacket.rivers.map(({ width, points }) => new River(width, points, rivers, mapBounds)));
+        rivers.push(...mapPacket.rivers.map(({ width, points, isTrail }) => new River(width, points, rivers, mapBounds, isTrail)));
 
         this._terrain = new Terrain(
             width,

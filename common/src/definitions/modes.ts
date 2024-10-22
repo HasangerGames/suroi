@@ -1,4 +1,4 @@
-export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "gas" | "void";
+export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "trail" | "gas" | "void";
 
 export interface ModeDefinition {
     readonly colors: Record<ColorKeys, string>
@@ -23,6 +23,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
             border: "hsl(211, 63%, 30%)",
             beach: "hsl(40, 39%, 55%)",
             riverBank: "hsl(33, 50%, 30%)",
+            trail: "hsl(35, 50%, 40%)",
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
@@ -35,6 +36,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
             border: "hsl(211, 63%, 30%)",
             beach: "hsl(40, 39%, 55%)",
             riverBank: "hsl(33, 50%, 30%)",
+            trail: "hsl(35, 50%, 40%)",
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
@@ -50,6 +52,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
             border: "hsl(4, 90%, 12%)",
             beach: "hsl(33, 77%, 21%)",
             riverBank: "hsl(33, 50%, 30%)",
+            trail: "hsl(35, 50%, 40%)",
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
@@ -63,6 +66,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
             border: "hsl(208, 94%, 45%)",
             beach: "hsl(210, 18%, 75%)",
             riverBank: "hsl(210, 18%, 70%)",
+            trail: "hsl(35, 50%, 40%)",
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
