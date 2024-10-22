@@ -263,26 +263,6 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { table: "guns", weight: 0.9 },
             { table: "scopes", weight: 0.3 }
         ],
-        plumpkin: {
-            min: 3,
-            max: 3,
-            noDuplicates: true,
-            loot: [
-                { item: PerkIds.InfiniteAmmo, weight: 1 },
-                { item: PerkIds.HiCap, weight: 1 },
-                { item: PerkIds.Splinter, weight: 1 },
-                { item: PerkIds.DemoExpert, weight: 1 },
-                { item: PerkIds.SecondWind, weight: 1 },
-                { item: PerkIds.FieldMedic, weight: 1 },
-                { item: PerkIds.Sabot, weight: 1 },
-                { item: PerkIds.AdvancedAthletics, weight: 1 },
-                { item: PerkIds.Toploaded, weight: 1 },
-                { item: PerkIds.CloseQuartersCombat, weight: 1 },
-                { item: PerkIds.LowProfile, weight: 1 },
-                { item: PerkIds.Splinter, weight: 1 },
-                { item: PerkIds.Berserker, weight: 1 }
-            ]
-        },
         birthday_cake: [
             { table: "special_guns", weight: 0.25 },
             { table: "special_equipment", weight: 0.25 },
@@ -518,12 +498,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             ]
         },
         ammo_crate: [
-            [
-                { table: "ammo", weight: 1 },
-            ],
-            [
-                { table: "ammo", weight: 1 },
-            ],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "ammo", weight: 1 }],
             [
                 { item: "50cal", count: 20, weight: 0.3 },
                 { item: "338lap", count: 6, weight: 0.1 },
@@ -875,6 +851,43 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { table: "throwables", weight: 0.3 },
             { table: "melee", weight: 0.04 }
         ],
+        plumpkin: {
+            min: 3,
+            max: 3,
+            loot: [{ table: "fall_perks", weight: 1}]
+            
+        },
+        airdrop_crate: [
+            [{ table: "airdrop_equipment", weight: 1 }],
+            [{ table: "airdrop_scopes", weight: 1 }],
+            [{ table: "airdrop_healing_items", weight: 1 }],
+            [{ table: "airdrop_skins", weight: 1 }],
+            [{ table: "airdrop_melee", weight: 1 }],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "airdrop_guns", weight: 1 }],
+            [
+                { table: "fall_perks",  weight: 0.1 },
+                { item: NullString, weight: 0.9 }
+            ],
+            [
+                { item: "frag_grenade", count: 3, weight: 2 },
+                { item: NullString, weight: 1 }
+            ]
+        ],
+        gold_airdrop_crate: [
+            [{ table: "airdrop_equipment", weight: 1 }],
+            [{ table: "airdrop_scopes", weight: 1 }],
+            [{ table: "airdrop_healing_items", weight: 1 }],
+            [{ table: "airdrop_skins", weight: 1 }],
+            [{ table: "airdrop_melee", weight: 1 }],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "gold_airdrop_guns", weight: 1 }],
+            [
+                { table: "fall_perks",  weight: 0.5 },
+                { item: NullString, weight: 0.5 }
+            ],
+            [{ item: "frag_grenade", count: 3, weight: 1 }],
+        ],
         briefcase: [
             { item: "usas12", weight: 1 },
             { item: "mk18", weight: 0.2 },
@@ -882,12 +895,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "g19", weight: 0.0001 }
         ],
         ammo_crate: [
-            [
-                { table: "ammo", weight: 1 },
-            ],
-            [
-                { table: "ammo", weight: 1 },
-            ],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "ammo", weight: 1 }],
             [
                 { item: "50cal", count: 20, weight: 0.8 },
                 { item: "338lap", count: 6, weight: 0.3 },
@@ -1061,6 +1070,26 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "regular_pack", weight: 0.5 },
             { item: "tactical_pack", weight: 0.09 }
         ],
+        fall_perks: {
+            min: 1,
+            max: 1,
+            noDuplicates: true,
+            loot: [
+                { item: PerkIds.InfiniteAmmo, weight: 1 },
+                { item: PerkIds.HiCap, weight: 1 },
+                { item: PerkIds.Splinter, weight: 1 },
+                { item: PerkIds.DemoExpert, weight: 1 },
+                { item: PerkIds.SecondWind, weight: 1 },
+                { item: PerkIds.FieldMedic, weight: 1 },
+                { item: PerkIds.Sabot, weight: 1 },
+                { item: PerkIds.AdvancedAthletics, weight: 1 },
+                { item: PerkIds.Toploaded, weight: 1 },
+                { item: PerkIds.CloseQuartersCombat, weight: 1 },
+                { item: PerkIds.LowProfile, weight: 1 },
+                { item: PerkIds.Splinter, weight: 1 },
+                { item: PerkIds.Berserker, weight: 1 }
+                ]
+            },
         scopes: [
             { item: "4x_scope", weight: 1 },
             { item: "8x_scope", weight: 0.1 },
