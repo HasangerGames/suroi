@@ -52,6 +52,38 @@ export const FloorTypes: Record<FloorNames, FloorDefinition> = {
     }
 };
 
+function jaggedRectangle(
+    hitbox: RectangleHitbox,
+    spacing: number,
+    variation: number,
+    random: SeededRandom
+): Vector[] {
+    const topLeft = Vec.clone(hitbox.min);
+    const topRight = Vec.create(hitbox.max.x, hitbox.min.y);
+    const bottomRight = Vec.clone(hitbox.max);
+    const bottomLeft = Vec.create(hitbox.min.x, hitbox.max.y);
+
+    const points: Vector[] = [];
+
+    variation = variation / 2;
+    const getVariation = (): number => random.get(-variation, variation);
+
+    for (let x = topLeft.x + spacing; x < topRight.x; x += spacing) {
+        points.push(Vec.create(x, topLeft.y + getVariation()));
+    }
+    for (let y = topRight.y + spacing; y < bottomRight.y; y += spacing) {
+        points.push(Vec.create(topRight.x + getVariation(), y));
+    }
+    for (let x = bottomRight.x - spacing; x > bottomLeft.x; x -= spacing) {
+        points.push(Vec.create(x, bottomRight.y + getVariation()));
+    }
+    for (let y = bottomLeft.y - spacing; y > topLeft.y; y -= spacing) {
+        points.push(Vec.create(bottomLeft.x + getVariation(), y));
+    }
+
+    return points;
+}
+
 export class Terrain {
     readonly width: number;
     readonly height: number;
@@ -251,6 +283,17 @@ function catmullRom(t: number, p0: number, p1: number, p2: number, p3: number): 
     return 0.5 * (2 * p1 + t * (p2 - p0) + tSquared * (2 * p0 - 5 * p1 + 4 * p2 - p3) + tSquared * t * (3 * p1 - 3 * p2 + p3 - p0));
 }
 
+function clipRayToPoly(point: Vector, direction: Vector, polygon: PolygonHitbox): Vector {
+    const end = Vec.add(point, direction);
+    if (!polygon.isPointInside(end)) {
+        const t = Collision.rayIntersectsPolygon(point, direction, polygon.points);
+        if (t) {
+            return Vec.scale(direction, t);
+        }
+    }
+    return direction;
+}
+
 export class River {
     readonly bankWidth: number;
 
@@ -304,17 +347,6 @@ export class River {
             if (i < (this.points.length / 2) || endsOnMapBounds) {
                 width = (1 + end ** 3 * 1.5) * this.width;
             }
-
-            const clipRayToPoly = (point: Vector, direction: Vector, polygon: PolygonHitbox): Vector => {
-                const end = Vec.add(point, direction);
-                if (!polygon.isPointInside(end)) {
-                    const t = Collision.rayIntersectsPolygon(point, direction, polygon.points);
-                    if (t) {
-                        return Vec.scale(direction, t);
-                    }
-                }
-                return direction;
-            };
 
             const finalBankWidth = width + bankWidth;
 
@@ -443,36 +475,4 @@ export class River {
 
         return nearestT;
     }
-}
-
-function jaggedRectangle(
-    hitbox: RectangleHitbox,
-    spacing: number,
-    variation: number,
-    random: SeededRandom
-): Vector[] {
-    const topLeft = Vec.clone(hitbox.min);
-    const topRight = Vec.create(hitbox.max.x, hitbox.min.y);
-    const bottomRight = Vec.clone(hitbox.max);
-    const bottomLeft = Vec.create(hitbox.min.x, hitbox.max.y);
-
-    const points: Vector[] = [];
-
-    variation = variation / 2;
-    const getVariation = (): number => random.get(-variation, variation);
-
-    for (let x = topLeft.x + spacing; x < topRight.x; x += spacing) {
-        points.push(Vec.create(x, topLeft.y + getVariation()));
-    }
-    for (let y = topRight.y + spacing; y < bottomRight.y; y += spacing) {
-        points.push(Vec.create(topRight.x + getVariation(), y));
-    }
-    for (let x = bottomRight.x - spacing; x > bottomLeft.x; x -= spacing) {
-        points.push(Vec.create(x, bottomRight.y + getVariation()));
-    }
-    for (let y = bottomLeft.y - spacing; y > topLeft.y; y -= spacing) {
-        points.push(Vec.create(bottomLeft.x + getVariation(), y));
-    }
-
-    return points;
 }

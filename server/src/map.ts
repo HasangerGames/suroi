@@ -31,6 +31,8 @@ export class GameMap {
 
     private readonly occupiedBridgePositions: Vector[] = [];
 
+    private readonly clearings: RectangleHitbox[] = [];
+
     readonly width: number;
     readonly height: number;
     readonly oceanSize: number;
@@ -191,10 +193,6 @@ export class GameMap {
             }
         }
 
-        if (mapDef.trails) {
-
-        }
-
         packet.rivers = rivers;
 
         this.terrain = new Terrain(
@@ -206,17 +204,7 @@ export class GameMap {
             rivers
         );
 
-        const clearingDef = mapDef.clearings;
-
-        if (clearingDef) {
-            this._generateClearings(
-                clearingDef.maxWidth,
-                clearingDef.maxHeight,
-                clearingDef.minWidth,
-                clearingDef.minHeight,
-                clearingDef.count
-            );
-        }
+        this._generateClearings(mapDef.clearings);
 
         Object.entries(mapDef.buildings ?? {}).forEach(([building, count]) => this._generateBuildings(building, count));
 
@@ -379,38 +367,46 @@ export class GameMap {
         }
     }
 
-    private _generateClearings(
-        maxWidth: number,
-        maxHeight: number,
-        minWidth: number,
-        minHeight: number,
-        count: number
-    ): void {
-        const clearings: RectangleHitbox[] = [];
-        for (let i = 0; i <= count; i++) {
+    private _generateClearings(clearingDef: MapDefinition["clearings"]): void {
+        if (!clearingDef) return;
+
+        const {
+            minWidth,
+            minHeight,
+            maxWidth,
+            maxHeight,
+            count,
+            obstacles
+        } = clearingDef;
+
+        for (let i = 0; i < count; i++) {
             const width = randomFloat(minWidth, maxWidth);
             const height = randomFloat(minHeight, maxHeight);
+            let hitbox = RectangleHitbox.fromRect(width, height);
+
             let position;
-            let foundValidPosition = false;
             let attempts = 0;
-            while (!foundValidPosition && attempts < 100) {
-                position = this.getRandomPosition(new RectangleHitbox(
-                    Vec.create(-(width / 2), -(height / 2)),
-                    Vec.create(width / 2, height / 2)
-                ));
-                if (position !== undefined) {
-                    clearings.push(new RectangleHitbox(
-                        Vec.create(position.x - width / 2, position.y - height / 2),
-                        Vec.create(position.x + width / 2, position.y + height / 2)
-                    ));
-                    foundValidPosition = true;
+            let validPositionFound = false;
+            while (!validPositionFound && attempts < 100) {
+                if ((position = this.getRandomPosition(hitbox)) !== undefined) {
+                    validPositionFound = true;
+                    this.clearings.push(hitbox = RectangleHitbox.fromRect(width, height, position));
+                    break;
                 }
                 attempts++;
             }
             if (attempts >= 100) {
-                Logger.warn(`Failed to find valid position for clearing #${i + 1}`);
+                Logger.warn("Failed to find valid position for clearing");
+                continue;
             }
-            attempts = 0; // reset for next clearing
+
+            for (const obstacle of obstacles) {
+                this._generateObstacles(
+                    obstacle.idString,
+                    random(obstacle.min, obstacle.max),
+                    () => hitbox.randomPoint()
+                );
+            }
         }
     }
 
@@ -655,7 +651,7 @@ export class GameMap {
         return building;
     }
 
-    private _generateObstacles(definition: ReifiableDef<ObstacleDefinition>, count: number): void {
+    private _generateObstacles(definition: ReifiableDef<ObstacleDefinition>, count: number, getPosition?: () => Vector): void {
         // i don't know why "definition = Obstacles.reify(definition)" doesn't work anymore, but it doesn't
         const def = Obstacles.reify(definition);
 
@@ -664,7 +660,7 @@ export class GameMap {
         const effSpawnHitbox = def.spawnHitbox ?? def.hitbox;
 
         for (let i = 0; i < count; i++) {
-            const scale = randomFloat(spawnMin ?? 1, spawnMax ?? 1);
+            const scale = randomFloat(spawnMin, spawnMax);
             const variation = (variations !== undefined ? random(0, variations - 1) : 0) as Variation;
             const rotation = GameMap.getRandomRotation(rotationMode);
 
@@ -675,9 +671,11 @@ export class GameMap {
             }
 
             const position = this.getRandomPosition(effSpawnHitbox, {
+                getPosition,
                 scale,
                 orientation,
-                spawnMode: def.spawnMode
+                spawnMode: def.spawnMode,
+                ignoreClearings: this.mapDef.clearings?.allowedObstacles?.includes(def.idString)
             });
 
             if (!position) {
@@ -839,6 +837,7 @@ export class GameMap {
             // used for beach spawn mode
             // so it can retry on different orientations
             orientationConsumer?: (orientation: Orientation) => void
+            ignoreClearings?: boolean
         }
     ): Vector | undefined {
         let position: Vector | undefined = Vec.create(0, 0);
@@ -973,6 +972,14 @@ export class GameMap {
                         ) {
                             collided = true;
                             break;
+                        }
+                    }
+                    if (!params?.ignoreClearings) {
+                        for (const clearing of this.clearings) {
+                            if (clearing.collidesWith(hitbox)) {
+                                collided = true;
+                                break;
+                            }
                         }
                     }
                     break;

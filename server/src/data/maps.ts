@@ -38,11 +38,13 @@ export interface MapDefinition {
         readonly maxWidth: number
     }
     readonly clearings?: {
-        readonly maxWidth: number
-        readonly maxHeight: number
         readonly minWidth: number
         readonly minHeight: number
+        readonly maxWidth: number
+        readonly maxHeight: number
         readonly count: number
+        readonly allowedObstacles: Array<ReferenceTo<ObstacleDefinition>>
+        readonly obstacles: Array<{ idString: ReferenceTo<ObstacleDefinition>, min: number, max: number }>
     }
 
     readonly bridges?: ReadonlyArray<ReferenceTo<BuildingDefinition>>
@@ -229,30 +231,32 @@ const maps = {
             maxWidth: 15
         },
         clearings: {
-            maxHeight: 90,
-            maxWidth: 90,
-            minWidth: 80,
-            minHeight: 80,
-            count: 2
+            minWidth: 200,
+            minHeight: 150,
+            maxWidth: 250,
+            maxHeight: 200,
+            count: 2,
+            allowedObstacles: ["clearing_boulder", "rock", "flint_crate"],
+            obstacles: [
+                { idString: "clearing_boulder", min: 3, max: 5 },
+                { idString: "flint_crate", min: 3, max: 5 },
+                { idString: "grenade_crate", min: 0, max: 2 },
+                { idString: "melee_crate", min: 0, max: 1 }
+            ]
         },
         buildings: {
             small_bridge: Infinity,
             sea_traffic_control: 1,
             tugboat_red: 1,
             tugboat_white: 7,
-            red_house: 2,
-            red_house_v2: 2,
             lodge: 1,
             armory_damaged: 1,
             plumpkin_bunker: 1,
             barn: 3,
             green_house: 2,
             warehouse: 4,
-            tent_1: 3,
-            tent_2: 3,
-            tent_3: 3,
-            tent_4: 3,
-            tent_5: 1,
+            red_house: 2,
+            red_house_v2: 2,
             tent_big_1: 2,
             tent_big_2: 2,
             tent_big_3: 2,
@@ -260,6 +264,11 @@ const maps = {
             hay_shed_1: 1,
             hay_shed_2: 3,
             hay_shed_3: 3,
+            tent_1: 3,
+            tent_2: 3,
+            tent_3: 3,
+            tent_4: 3,
+            tent_5: 1,
             outhouse: 10
         },
         majorBuildings: ["armory_damaged", "lodge", "plumpkin_bunker"],
@@ -289,7 +298,7 @@ const maps = {
             flint_crate: 10,
             grenade_crate: 50,
             rock: 220,
-            clearing_boulder: 20,
+            clearing_boulder: 15,
             river_chest: 1,
             river_rock: 60,
             vibrant_bush: 200,
