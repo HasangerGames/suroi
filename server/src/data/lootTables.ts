@@ -518,10 +518,17 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             ]
         },
         ammo_crate: [
-            { table: "ammo", weight: 1 },
-            { item: "50cal", count: 20, weight: 0.3 },
-            { item: "338lap", count: 6, weight: 0.1 },
-            { item: "curadell", weight: 0.1 }
+            [
+                { table: "ammo", weight: 1 },
+            ],
+            [
+                { table: "ammo", weight: 1 },
+            ],
+            [
+                { item: "50cal", count: 20, weight: 0.3 },
+                { item: "338lap", count: 6, weight: 0.1 },
+                { item: "curadell", weight: 0.1 }
+            ]
         ],
         rocket_box: [
             { item: "firework_rocket", count: 10, weight: 2 },
@@ -874,6 +881,20 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "l115a1", weight: 0.2 },
             { item: "g19", weight: 0.0001 }
         ],
+        ammo_crate: [
+            [
+                { table: "ammo", weight: 1 },
+            ],
+            [
+                { table: "ammo", weight: 1 },
+            ],
+            [
+                { item: "50cal", count: 20, weight: 0.8 },
+                { item: "338lap", count: 6, weight: 0.3 },
+                { item: "curadell", weight: 0.1 }
+            ]
+        ],
+        
         gun_locker: {
             min: 1,
             max: 2,
@@ -885,6 +906,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { item: "sr25", weight: 0.4 },
                 { item: "mini14", weight: 0.4 },
                 { item: "mosin_nagant", weight: 0.4 },
+                { item: "m590m", weight: 0.4 },
                 { item: "vepr12", weight: 0.2 },
                 { item: "tango_51", weight: 0.1 },
                 { item: "rsh12", weight: 0.25 },
@@ -926,7 +948,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "sr25", weight: 0.3 },
             { item: "mini14", weight: 0.3 },
             { item: "mosin_nagant", weight: 0.3 },
-            { item: "m590m", weight: 0.2 },
+            { item: "m590m", weight: 0.1 },
             { item: "model_89", weight: 0.1 },
             { item: "vepr12", weight: 0.1 },
             { item: "tango_51", weight: 0.1 },
@@ -939,7 +961,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "mini14", weight: 1.5 },
             { item: "sr25", weight: 1.5 },
             { item: "mosin_nagant", weight: 1.5 },
-            { item: "m590m", weight: 1.2 },
+            { item: "m590m", weight: 1 },
             { item: "rsh12", weight: 1 },
             { item: "vepr12", weight: 1 },
             { item: "model_89", weight: 1 },
@@ -984,6 +1006,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "vepr12", weight: 0.5 },
             { item: "rsh12", weight: 0.5 },
             { item: "model_89", weight: 0.5 },
+            { item: "m590m", weight: 0.5 },
             { item: "vks", weight: 0.1 },
             { item: "tango_51", weight: 0.1 },
             { item: "radio", weight: 0.1 },
@@ -996,6 +1019,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "mini14", weight: 0.8 },
             { item: "sr25", weight: 0.8 },
             { item: "vepr12", weight: 0.5 },
+            { item: "m590m", weight: 0.5 },
             { item: "rsh12", weight: 0.5 },
             { item: "vks", weight: 0.3 },
             { item: "tango_51", weight: 0.3 },
@@ -1008,7 +1032,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "12g", count: 10, weight: 1 },
             { item: "556mm", count: 60, weight: 1 },
             { item: "762mm", count: 60, weight: 1 },
-            { item: "50cal", count: 20, weight: 0.5 }
+            { item: "50cal", count: 20, weight: 0.5 },
+            { item: "338lap", count: 6, weight: 0.05 }
         ],
         throwables: [
             { item: "frag_grenade", count: 2, weight: 1 },
