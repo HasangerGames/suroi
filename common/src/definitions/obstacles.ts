@@ -126,64 +126,72 @@ type RawObstacleDefinition = ObjectDefinition & {
         readonly maxRange?: number
         readonly falloff?: number
     }
-} & (
-    (
-        {
-            readonly role: ObstacleSpecialRoles.Door
-            readonly hitbox: RectangleHitbox
-            readonly locked?: boolean
-            readonly openOnce?: boolean
-            readonly automatic?: boolean
-            readonly hideWhenOpen?: boolean
-            readonly animationDuration?: number
-            readonly doorSound?: string
-        } & (
-            {
-                readonly operationStyle?: "swivel"
-                readonly hingeOffset: Vector
-            } | {
-                readonly operationStyle: "slide"
-                /**
-                 * Determines how much the door slides. 1 means it'll be displaced by its entire width,
-                 * 0.5 means it'll be displaced by half its width, etc
-                 */
-                readonly slideFactor?: number
-            }
-        )
-    ) | {
-        readonly role: ObstacleSpecialRoles.Activatable
-        readonly sound?: ({ readonly name: string } | { readonly names: string[] }) & {
-            readonly maxRange?: number
-            readonly falloff?: number
-        }
-        readonly requiredItem?: ReferenceTo<LootDefinition>
-        readonly emitParticles?: boolean
-        readonly replaceWith?: {
-            readonly idString: ReferenceOrRandom<RawObstacleDefinition>
-            readonly delay: number
-        }
+} & ObstacleRoleMixin;
+
+export type DoorMixin = {
+    readonly role: ObstacleSpecialRoles.Door
+    readonly hitbox: RectangleHitbox
+    readonly locked?: boolean
+    readonly openOnce?: boolean
+    readonly automatic?: boolean
+    readonly hideWhenOpen?: boolean
+    readonly animationDuration?: number
+    readonly doorSound?: string
+} & ({
+    readonly operationStyle?: "swivel"
+    readonly hingeOffset: Vector
+} | {
+    readonly operationStyle: "slide"
+    /**
+     * Determines how much the door slides. 1 means it'll be displaced by its entire width,
+     * 0.5 means it'll be displaced by half its width, etc
+     */
+    readonly slideFactor?: number
+});
+
+type ActivatableMixin = {
+    readonly role: ObstacleSpecialRoles.Activatable
+    readonly sound?: ({
+        readonly name: string
     } | {
+        readonly names: string[]
+    }) & {
+        readonly maxRange?: number
+        readonly falloff?: number
+    }
+    readonly requiredItem?: ReferenceTo<LootDefinition>
+    readonly emitParticles?: boolean
+    readonly replaceWith?: {
+        readonly idString: ReferenceOrRandom<RawObstacleDefinition>
+        readonly delay: number
+    }
+};
+
+type StairMixin = {
+    readonly role: ObstacleSpecialRoles.Stair
+    /**
+     * A stair is a rectangular collider with two active edges (or sides):
+     * one of the edges functions as the origin (the foot of the stairs) and the
+     * other functions as the target (the top of the stairs). The stair always runs
+     * between the two ground layers neighboring its indicated stair layer in a building.
+     *
+     * The edges allowing for transition are numbered 0 through 3, with 0 being top,
+     * 1 being right, 2 being bottom, and 3 being right (before any orientation adjustments
+     * are made)
+     */
+    readonly hitbox: RectangleHitbox
+    readonly activeEdges: {
+        readonly high: 0 | 1 | 2 | 3
+        readonly low: 0 | 1 | 2 | 3
+    }
+};
+
+export type ObstacleRoleMixin = (
+    DoorMixin | ActivatableMixin | {
         readonly role: ObstacleSpecialRoles.Window
     } | {
         readonly role: ObstacleSpecialRoles.Wall
-    } | {
-        readonly role: ObstacleSpecialRoles.Stair
-        /**
-         * A stair is a rectangular collider with two active edges (or sides):
-         * one of the edges functions as the origin (the foot of the stairs) and the
-         * other functions as the target (the top of the stairs). The stair always runs
-         * between the two ground layers neighboring its indicated stair layer in a building.
-         *
-         * The edges allowing for transition are numbered 0 through 3, with 0 being top,
-         * 1 being right, 2 being bottom, and 3 being right (before any orientation adjustments
-         * are made)
-         */
-        readonly hitbox: RectangleHitbox
-        readonly activeEdges: {
-            readonly high: 0 | 1 | 2 | 3
-            readonly low: 0 | 1 | 2 | 3
-        }
-    } | {
+    } | StairMixin | {
         readonly role?: undefined
     }
 );

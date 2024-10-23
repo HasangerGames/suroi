@@ -80,21 +80,26 @@ type BaseGunDefinition = InventoryItemDefinition & {
 
     readonly noMuzzleFlash: boolean
     readonly ballistics: BaseBulletDefinition
-} & ({
-    readonly reloadFullOnEmpty?: false
-} | {
-    readonly reloadFullOnEmpty: true
-    readonly fullReloadTime: number
-}) & ({
+} & ReloadOnEmptyMixin & BurstFireMixin & DualDefMixin;
+
+type BurstFireMixin = ({
     readonly fireMode: FireMode.Auto | FireMode.Single
 } | {
     readonly fireMode: FireMode.Burst
     readonly burstProperties: {
         readonly shotsPerBurst: number
         readonly burstCooldown: number
-        // note: the time between bursts is burstCooldown, and the time between shots within a burst is cooldown
     }
-}) & ({
+});
+
+type ReloadOnEmptyMixin = ({
+    readonly reloadFullOnEmpty?: false
+} | {
+    readonly reloadFullOnEmpty: true
+    readonly fullReloadTime: number
+});
+
+type DualDefMixin = ({
     readonly isDual?: false
     readonly fists?: InventoryItemDefinition["fists"]
     readonly image: {
