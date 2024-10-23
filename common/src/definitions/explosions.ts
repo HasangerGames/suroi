@@ -249,7 +249,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             idString: "m590m_explosion",
-            name: "m590m",
+            name: "M590M",
             damage: 40,
             obstacleMultiplier: 1,
             radius: {
