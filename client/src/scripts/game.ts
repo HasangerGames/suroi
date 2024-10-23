@@ -1057,6 +1057,9 @@ export class Game {
 
                                     // Don't pick up skins
                                     && type !== ItemType.Skin
+
+                                    // Don't pick up perks
+                                    && type !== ItemType.Perk
                                 )
                             ) || (
                                 type === ItemType.Gun
