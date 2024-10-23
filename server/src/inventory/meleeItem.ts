@@ -1,12 +1,12 @@
 import { AnimationType, FireMode } from "@common/constants";
 import { type MeleeDefinition } from "@common/definitions/melees";
+import { PerkIds } from "@common/definitions/perks";
 import { CircleHitbox } from "@common/utils/hitbox";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
+import { Numeric } from "@common/utils/math";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
 
-import { PerkIds } from "@common/definitions/perks";
-import { adjacentOrEqualLayer } from "@common/utils/layer";
-import { Numeric } from "@common/utils/math";
 import { type CollidableGameObject } from "../objects/gameObject";
 import { type Player } from "../objects/player";
 import { InventoryItem } from "./inventoryItem";

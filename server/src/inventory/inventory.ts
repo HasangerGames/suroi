@@ -2,7 +2,7 @@ import { DEFAULT_INVENTORY, GameConstants } from "@common/constants";
 import { Ammos, type AmmoDefinition } from "@common/definitions/ammos";
 import { ArmorType, type ArmorDefinition } from "@common/definitions/armors";
 import { type BackpackDefinition } from "@common/definitions/backpacks";
-import { type DualGunNarrowing, type GunDefinition, type SingleGunNarrowing } from "@common/definitions/guns";
+import { type DualGunNarrowing, type GunDefinition } from "@common/definitions/guns";
 import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/healingItems";
 import { Loots, type LootDefinition, type WeaponDefinition } from "@common/definitions/loots";
 import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/scopes";
@@ -17,7 +17,6 @@ import { GunItem } from "./gunItem";
 import { InventoryItem } from "./inventoryItem";
 import { MeleeItem } from "./meleeItem";
 import { ThrowableItem } from "./throwableItem";
-import type { LootBasisForDef } from "../objects/loot";
 
 type ReifiableItem =
     GunItem |
@@ -399,7 +398,7 @@ export class Inventory {
         return -1;
     }
 
-    private _dropItem<Def extends LootDefinition = LootDefinition>(toDrop: LootBasisForDef<Def>, count?: number): void {
+    private _dropItem<Def extends LootDefinition = LootDefinition>(toDrop: ReifiableDef<Def>, count?: number): void {
         this.owner.game
             .addLoot(toDrop, this.owner.position, this.owner.layer, { jitterSpawn: false, pushVel: 0, count })
             ?.push(this.owner.rotation + Math.PI, 0.025);
@@ -472,7 +471,7 @@ export class Inventory {
                 this._dropItem((definition as DualGunNarrowing).singleVariant);
                 this._dropItem((definition as DualGunNarrowing).singleVariant);
             } else {
-                this._dropItem<SingleGunNarrowing>(item as GunItem);
+                this._dropItem(definition);
             }
 
             this._setWeapon(slot, undefined);

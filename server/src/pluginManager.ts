@@ -10,12 +10,13 @@ import { ExtendedMap } from "@common/utils/misc";
 import type { PlayerModifiers } from "@common/utils/objectDefinitions";
 import { Vector } from "@common/utils/vector";
 
+import type { LootDefinition } from "@common/definitions";
 import { Config } from "./config";
 import { Airdrop, Game } from "./game";
 import { type InventoryItem } from "./inventory/inventoryItem";
 import { Building } from "./objects/building";
 import { DamageParams } from "./objects/gameObject";
-import { Loot, type LootBasis } from "./objects/loot";
+import { Loot } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { Player } from "./objects/player";
 import { Logger } from "./utils/misc";
@@ -532,7 +533,7 @@ export interface EventDataMap {
     }
 
     readonly loot_will_generate: {
-        readonly definition: LootBasis
+        readonly definition: LootDefinition
         readonly position: Vector
         readonly layer: Layer
         readonly count?: number

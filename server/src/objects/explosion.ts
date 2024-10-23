@@ -96,12 +96,12 @@ export class Explosion {
 
                     if ((isLoot || isThrowableProjectile) && adjacentOrEqualLayer(object.layer, this.layer)) {
                         if (isThrowableProjectile) object.damage({ amount: this.definition.damage });
-                        else {
-                            object.push(
-                                Angle.betweenPoints(object.position, this.position),
-                                (max - dist) * 0.01
-                            );
-                        }
+
+                        const multiplier = isThrowableProjectile ? 0.002 : 0.01;
+                        object.push(
+                            Angle.betweenPoints(object.position, this.position),
+                            (max - dist) * multiplier
+                        );
                     }
                 }
 

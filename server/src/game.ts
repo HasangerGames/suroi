@@ -3,7 +3,7 @@ import { isMainThread, parentPort, workerData } from "worker_threads";
 
 import { GameConstants, KillfeedMessageType, Layer, ObjectCategory, TeamSize } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
-import { type LootDefinition } from "@common/definitions/loots";
+import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "@common/definitions/syncedParticles";
@@ -25,6 +25,7 @@ import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation
 import { OBJECT_ID_BITS, SuroiBitStream } from "@common/utils/suroiBitStream";
 import { Vec, type Vector } from "@common/utils/vector";
 
+import { PerkIds, Perks, updateInterval } from "@common/definitions/perks";
 import { Config, SpawnMode } from "./config";
 import { MapName, Maps } from "./data/maps";
 import { WorkerMessages, type GameData, type WorkerInitData, type WorkerMessage } from "./gameManager";
@@ -36,7 +37,7 @@ import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/b
 import { type Emote } from "./objects/emote";
 import { Explosion } from "./objects/explosion";
 import { type BaseGameObject, type GameObject } from "./objects/gameObject";
-import { Loot, type LootBasisForDef } from "./objects/loot";
+import { Loot } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { Parachute } from "./objects/parachute";
 import { Player, type PlayerContainer } from "./objects/player";
@@ -49,7 +50,6 @@ import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
-import { PerkIds, Perks, updateInterval } from "@common/definitions/perks";
 
 /*
     eslint-disable
@@ -1044,14 +1044,14 @@ export class Game implements GameData {
 
     /**
      * Adds a `Loot` item to the game world
-     * @param basis The type of loot to add. Prefer passing `LootDefinition` if possible
+     * @param definition The type of loot to add. Prefer passing `LootDefinition` if possible
      * @param position The position to spawn this loot at
      * @param count Optionally define an amount of this loot (note that this does not equate spawning
      * that many `Loot` objects, but rather how many the singular `Loot` object will contain)
      * @returns The created loot object
      */
     addLoot<Def extends LootDefinition = LootDefinition>(
-        basis: LootBasisForDef<Def>,
+        definition: ReifiableDef<Def>,
         position: Vector,
         layer: Layer,
         { count, pushVel, jitterSpawn = true }: {
@@ -1071,11 +1071,13 @@ export class Game implements GameData {
             jitterSpawn
         };
 
+        definition = Loots.reify<Def>(definition);
+
         if (
             this.pluginManager.emit(
                 "loot_will_generate",
                 {
-                    definition: basis,
+                    definition,
                     ...args
                 }
             )
@@ -1083,7 +1085,7 @@ export class Game implements GameData {
 
         const loot = new Loot<Def>(
             this,
-            basis,
+            definition,
             jitterSpawn
                 ? Vec.add(
                     position,

@@ -84,7 +84,6 @@ export class Bullet extends BaseBullet {
             Vec.add(this.position, Vec.scale(this.velocity, this.game.dt))
         );
         const { grid, dt, map: { width: mapWidth, height: mapHeight } } = this.game;
-        const noReflect = this.reflectionCount === 0;
 
         // Bullets from dead players should not deal damage so delete them
         // Also delete bullets out of map bounds
@@ -94,11 +93,6 @@ export class Bullet extends BaseBullet {
             || this.position.y < 0 || this.position.y > mapHeight
         ) {
             this.dead = true;
-
-            if (noReflect && this.sourceGun instanceof GunItem) {
-                this.sourceGun.registerMiss(this);
-            }
-
             return [];
         }
 
@@ -107,7 +101,6 @@ export class Bullet extends BaseBullet {
 
         const objects = grid.intersectsHitbox(lineRect);
 
-        let registered = false;
         const damageMod = (this.modifiers?.damage ?? 1) / (this.reflectionCount + 1);
         for (const collision of this.updateAndGetCollisions(dt, objects)) {
             const object = collision.object as DamageRecord["object"];
@@ -127,15 +120,6 @@ export class Bullet extends BaseBullet {
                 source: this.shooter,
                 position: point
             });
-
-            if (noReflect && this.sourceGun instanceof GunItem) {
-                registered = true;
-                if (object === this.shooter || !object.isPlayer) {
-                    this.sourceGun.registerMiss(this);
-                } else {
-                    this.sourceGun.registerHit(this);
-                }
-            }
 
             this.damagedIDs.add(object.id);
             this.position = point;
@@ -176,12 +160,6 @@ export class Bullet extends BaseBullet {
                 && lineRect.collidesWith(object.hitbox)
             ) {
                 object.damage({ amount: definition.damage });
-            }
-        }
-
-        if (this.dead && noReflect && this.sourceGun instanceof GunItem) {
-            if (!registered) {
-                this.sourceGun.registerMiss(this);
             }
         }
 
