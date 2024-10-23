@@ -951,6 +951,29 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 particleVariations: 2
             },
             {
+                idString: "pebble",
+                name: "Pebble",
+                material: "stone",
+                health: 200,
+                indestructible: true,
+                noCollisions: true,
+                noMeleeCollision: true,
+                scale: {
+                    spawnMin: 0.15,
+                    spawnMax: 0.2,
+                    destroy: 0
+                },
+                spawnMode: MapObjectSpawnMode.Trail,
+                hitbox: new CircleHitbox(0.5),
+                spawnHitbox: new CircleHitbox(0.5),
+                rotationMode: RotationMode.Full,
+                frames: {
+                    base: "rock"
+                },
+                variations: 7,
+                particleVariations: 2
+            },
+            {
                 idString: "pumpkin",
                 name: "Pumpkin",
                 material: "pumpkin",

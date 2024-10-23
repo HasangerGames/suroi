@@ -314,7 +314,8 @@ const maps = {
             loot_tree: 1,
             loot_barrel: 1,
             flint_stone: 3,
-            pumpkin: 200
+            pumpkin: 200,
+            pebble: 150
         },
         obstacleClumps: [
             {

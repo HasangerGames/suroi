@@ -872,6 +872,9 @@ export class GameMap {
                         return beachRect.randomPoint();
                     };
                 }
+                case MapObjectSpawnMode.Trail: {
+                    return () => pickRandomInArray(this.terrain.rivers.filter(({ isTrail }) => isTrail)).bankHitbox.randomPoint();
+                }
             }
         })();
 
@@ -976,7 +979,8 @@ export class GameMap {
                     // TODO add code for other hitbox types
                     break;
                 }
-                case MapObjectSpawnMode.RiverBank: {
+                case MapObjectSpawnMode.RiverBank:
+                case MapObjectSpawnMode.Trail: {
                     if (this.isInRiver(hitbox, position)) {
                         collided = true;
                         break;
