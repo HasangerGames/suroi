@@ -8,7 +8,7 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "msg_loading": "Connexion",
     "msg_err_joining": "Erreur rencontrée en rejoignant la partie.",
     "msg_err_finding": "Erreur rencontrée en cherchant la partie.",
-    "msg_spectating": "En spectateur",
+    "msg_spectating": "Mode spectateur",
     "msg_enter_team_code": "Entrez un code d'équipe:",
     "msg_lost_team_connection": "Connexion à l'équipe perdue",
     "msg_error_joining_team": "Erreur en rejoignant l'équipe.<br>Elle n'existe pas ou est déja remplie.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE. I will move the br
@@ -21,9 +21,9 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "msg_perma_ban_msg": "Vous avez été banni pour : <reason>",
     "msg_no_reason": "Pas de raison donnée.",
 
-    "play_solo": "Jouer Solo",
-    "play_duo": "Jouer Duos",
-    "play_squad": "Jouer Squads",
+    "play_solo": "Solo",
+    "play_duo": "Duos",
+    "play_squad": "Squads",
     "join_team": "Rejoindre une équipe",
     "msg_locked_tooltip": "Le jeu alterne entre solos et duos toutes les 24 heures, n'ayant pas assez de joueurs pour les deux.",
     "rules_and_tutorial": "Règles et tutoriel",
@@ -41,7 +41,7 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
 
     "settings_volume": "Volume",
     "settings_keybinds": "Contrôles",
-    "settings_graphics": "Graphiques",
+    "settings_graphics": "Graphismes",
     "settings_interface": "Interface",
     "settings_save_load": "Savegarder/Charger",
     "settings_mobile": "Mobile",
@@ -57,7 +57,7 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "settings_render_resolution": "Résolution",
     "settings_render_resolution_auto": "Auto",
     "settings_hires_textures": "Textures haute résolution",
-    "settings_cooler_graphics": "Meilleures graphiques",
+    "settings_cooler_graphics": "Graphismes améliorés",
     "settings_antialias": "Textures lisses",
     "settings_movement_smoothing": "Mouvements fluides",
     "settings_responsive_rotation": "Rotation sensible",
@@ -75,11 +75,11 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "settings_show_coordinates": "Montrer coordonnées",
     "settings_anon_names": "Joueurs anonymes",
     "settings_hide_emotes": "Cacher emotes",
-    "settings_text_killfeed": "Killfeed sous forme de texte",
-    "settings_colored_weapon_slots": "Slots d'armes en couleur",
+    "settings_text_killfeed": "Journal d'éliminations sous forme de texte",
+    "settings_colored_weapon_slots": "Emplacements d'armes en couleur",
     "settings_scope_looping": "Faire boucler la sélection de viseurs",
     "settings_draw_hud": "Montrer le HUD",
-    "settings_autopickup": "Récupération automatique",
+    "settings_autopickup": "Ramassage automatique",
     "settings_autopickup_dual_guns": "Récupérer les armes doubles automatiquement",
 
     "settings_load_settings": "Charger des paramètres",
@@ -102,10 +102,10 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "loadout_crosshairs_stroke_size": "Taille du contour:",
     "loadout_crosshairs_stroke_color": "Couleur du contour:",
 
-    "emotes_category_People": "Faces",
+    "emotes_category_People": "Émotion",
     "emotes_category_Text": "Texte",
     "emotes_category_Memes": "Memes",
-    "emotes_category_Icons": "Icones",
+    "emotes_category_Icons": "Icônes",
     "emotes_category_Misc": "Autres",
 
     "featured_youtubr": "YouTubr du moment",
@@ -113,7 +113,7 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
 
     "btn_report": "Signaler",
     "btn_spectate_kill_leader": "Regarder le Kill Leader",
-    "btn_spectate": "Passer en spectateur",
+    "btn_spectate": "Passer en mode spectateur",
     "btn_play_again": "Rejouer",
     "btn_menu": "Menu",
 
@@ -123,25 +123,25 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "msg_win": "Winner winner chicken dinner!",
     "msg_your_rank": "Rang",
 
-    "msg_kills": "Kills : <kills>",
+    "msg_kills": "Nb de Kills : <kills>",
 
-    "gas_waiting": "Le gas toxique avance dans <time>",
-    "gas_advancing": "Le gas toxique avance! Allez vers la zone sûre.",
+    "gas_waiting": "Le gaz toxique avance dans <time>",
+    "gas_advancing": "Le gaz toxique avance! Allez vers la zone de sécurité.",
     "gas_inactive": "En attente de joueurs...",
 
     "action_open_door": "Ouvrir la porte",
     "action_close_door": "Fermer la porte",
     "action_revive": "Réanimer <player>",
     "action_cancel": "Annuler",
-    "action_reloading": "Rechargeant...",
-    "action_reviving": "Réanimant...",
+    "action_reloading": "Rechargement...",
+    "action_reviving": "Réanimation...",
     "action_being_revived": "En train d'être réanimé...",
-    "action_gauze_use": "Utilisant <item>",
-    "action_medikit_use": "Utilisant <item>",
-    "action_cola_use": "Utilisant <item>",
-    "action_tablets_use": "Utilisant <item>",
+    "action_gauze_use": "Utilise <item>",
+    "action_medikit_use": "Utilise <item>",
+    "action_cola_use": "Utilise <item>",
+    "action_tablets_use": "Utilise <item>",
 
-    "interact_airdrop_crate_locked": "Ouvrir l'Airdrop",
+    "interact_airdrop_crate_locked": "Ouvrir le colis aérien.",
     "interact_control_panel": "Activer le panneau de contrôle",
     "interact_headquarters_security_desk": "Activer le panneau de contrôle",
     "interact_generator": "Activer le Générateur",
@@ -151,9 +151,9 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "loading_connecting": "Connexion",
     "loading_joining_game": "Connexion à la partie...",
     "loading_fetching_data": "Récupération des données serveur...",
-    "loading_finding_game": "En recherche d'une partie",
+    "loading_finding_game": "Recherche d'une partie...",
 
-    "keybind_clear_tooltip": "Pour supprimer une touche, appuyez dessus puis soit sur <kbd>Escape</kbd> ou <kbd>Backspace</kbd>.",
+    "keybind_clear_tooltip": "Pour supprimer une touche, cliquez dessus puis sur <kbd>Escape</kbd> ou <kbd>Backspace</kbd>.",
     "keybind_reset": "Réinitialiser au paramètres par défaut",
     "bindings_+up": "Aller en haut",
     "bindings_+down": "Aller en bas",
@@ -161,17 +161,17 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "bindings_+right": "Aller à droite",
     "bindings_interact": "Interagir",
     "bindings_loot": "Piller",
-    "bindings_slot 0": "Équiper l'arme primaire",
+    "bindings_slot 0": "Équiper l'arme principale",
     "bindings_slot 1": "Équiper l'arme secondaire",
     "bindings_slot 2": "Équiper l'arme de mêlée",
     "bindings_equip_or_cycle_throwables 1": "Équiper/changer de lançable",
     "bindings_last_item": "Équiper la dernière arme",
     "bindings_other_weapon": "Équiper l'autre arme",
-    "bindings_swap_gun_slots": "Échanger les slots d'arme",
+    "bindings_swap_gun_slots": "Échanger les emplacements d'arme",
     "bindings_cycle_items -1": "Équiper l'arme précédente",
     "bindings_cycle_items 1": "Équiper l'arme suivante",
     "bindings_+attack": "Utiliser l'arme",
-    "bindings_drop": "Abandonner l'arme active'",
+    "bindings_drop": "Jeter l'arme active",
     "bindings_reload": "Recharger",
     "bindings_cycle_scopes -1": "Viseur précédent",
     "bindings_cycle_scopes 1": "Viseur suivant",
@@ -180,18 +180,18 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "bindings_use_consumable cola": "Utiliser un Cola",
     "bindings_use_consumable tablets": "Utiliser des Tablettes",
     "bindings_cancel_action": "Annuler l'Action",
-    "bindings_+view_map": "Voir la Map",
-    "bindings_toggle_map": "Activer/Désactiver la Map plein écran",
+    "bindings_+view_map": "Voir la Carte",
+    "bindings_toggle_map": "Activer/Désactiver la Carte plein écran",
     "bindings_toggle_minimap": "Activer/Désactiver la Minimap",
     "bindings_toggle_hud": "Activer/Désactiver le HUD",
     "bindings_+emote_wheel": "Emote",
     "bindings_+map_ping_wheel": "Passer en ping de Map",
     "bindings_+map_ping": "Map Ping",
     "bindings_toggle_console": "Activer/Désactiver la Console",
-    "bindings_toggle_slot_lock": "Activer/Désactiver l'échange de Slots",
+    "bindings_toggle_slot_lock": "Activer/Désactiver l'échange d'emplacements",
 
     "kf_suicide_kill": "<player> s'est suicidé",
-    "kf_suicide_down": "<player> s'est assommé",
+    "kf_suicide_down": "<player> s'est mis K.-O.",
 
     "kf_bleed_out_kill": "<player> a saigné à mort",
     "kf_bleed_out_down": "<player> a rencontré un bug",
@@ -199,14 +199,14 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "kf_finished_off_kill": "<player> a exécuté <victim>",
     "kf_finished_off_down": "<player> a rencontré un bug avec l'aide de <victim>",
 
-    "kf_finally_died": "<player> a expiré",
-    "kf_finally_ended_themselves": "<player> s'est self-éxécuté",
+    "kf_finally_died": "<player> a mis fin à ses souffrances.",
+    "kf_finally_ended_themselves": "<player> s'est auto-éxécuté",
 
     "kf_finally_killed": "<player>  a été exécuté",
     "kf_finally_down": "<player> a rencontré un bug",
 
-    "kf_gas_kill": "<player> a été asphyxié par le gas",
-    "kf_gas_down": "<player> a été assommé par le gas",
+    "kf_gas_kill": "<player> a été asphyxié par le gaz",
+    "kf_gas_down": "<player> a été assommé par le gaz",
 
     "kf_airdrop_kill": "<player> s'est fait aplatir par un airdrop",
     "kf_airdrop_down": "<player> s'est fait assommer par un airdrop",
@@ -219,7 +219,7 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "you": "Vous",
     "yourself": "vous-même",
     "km_killed": "avez tué",
-    "km_knocked": "avez assommé",
+    "km_knocked": "avez mis K.-O.",
 
     "km_message": "<you> <finally> <event> <victim> <with> <weapon>",
 
@@ -232,13 +232,13 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "kf_message": "<player> <finally> <event> <victim> <with> <weapon>",
     // ------------------------------------------------------------------
 
-    "tt_restores": "<item> : restore <amount> <type>",
-    "tt_reduces": "<item> : nullifie <percent>% des dégâts",
+    "tt_restores": "<item> : recouvre <amount> <type>",
+    "tt_reduces": "<item> : atténue <percent>% des dégâts",
 
     "go_kills": "Kills:",
-    "go_damage_done": "Dégâts faits:",
-    "go_damage_taken": "Dégâts pris:",
-    "go_time_alive": "Temps vivant:",
+    "go_damage_done": "Dégâts infligés:",
+    "go_damage_taken": "Dégâts subits:",
+    "go_time_alive": "Temps en vie:",
 
     "create_team": "Créer son équipe",
     "create_team_autofill": "Remplissage auto",
@@ -246,14 +246,14 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "create_team_waiting": "En attente...",
     "create_team_play": "Commencer une partie",
 
-    "report_reporting": "Signalant",
-    "report_id": "Report ID:",
+    "report_reporting": "Signale",
+    "report_id": "ID du rapport:",
     "report_instructions": `
       <p><strong>Merci de suivre les instructions ci-dessous! Sinon, votre signalement sera ignoré.</p>
-      <h4>Comment signaler</h4>
+      <h4>Comment signaler ?</h4>
       <ol>
         <li>Rejoignez le <a href="https://discord.suroi.io">serveur Discord.</a></li>
-        <li>Allez dans le salon <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports.</a></li>
+        <li>Allez dans le salon <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports</a>.</li>
         <li>Lisez les règles de signalement dans le post épinglé.</li>
         <li>Envoyez votre signalement sous forme de post.</li>
       </ol>`,
@@ -278,24 +278,24 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "regular_pack": "Gros sac à dos",
     "tactical_pack": "Sac à dos tactique",
 
-    "1x_scope": "Viseur 1x", // This shouldn't show up in game
-    "2x_scope": "Viseur 2x",
-    "4x_scope": "Viseur 4x",
-    "8x_scope": "Viseur 8x",
-    "15x_scope": "Viseur 15x",
+    "1x_scope": "Viseur x1", // This shouldn't show up in game
+    "2x_scope": "Viseur x2",
+    "4x_scope": "Viseur x4",
+    "8x_scope": "Viseur x8",
+    "15x_scope": "Viseur x15",
 
     "fists": "Poings",
     "baseball_bat": "Batte de baseball",
     "hatchet": "Hachette",
     "kbar": "K-bar",
     "maul": "Masse",
-    "gas_can": "Jerrycan",
+    "gas_can": "Essence",
     "heap_sword": "Épée HE-AP",
     "steelfang": "Dent d'argent",
     "ice_pick": "Pic à glace",
     "seax": "Scramasaxe",
     "crowbar": "Pied de Biche",
-    "sickle": "Faucille",
+    "sickle": "Serpe",
 
     "mosin_nagant": "Mosin-Nagant",
     "radio": "Radio",
@@ -336,7 +336,7 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "mg36": "MG-36",
     "mcx_spear": "MCX Spear",
 
-    "frag_grenade": "Grenade à frag",
+    "frag_grenade": "Grenade frag",
     "smoke_grenade": "Fumigène",
     "confetti_grenade": "Grenade à confettis",
 
@@ -344,7 +344,7 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "dual_template": "Double <gun>",
 
     // Regions
-    "region_dev": "Serveur Localhost",
+    "region_dev": "Serveur local",
     "region_na": "Amérique du Nord",
     "region_eu": "Europe",
     "region_sa": "Amérique du Sud",
