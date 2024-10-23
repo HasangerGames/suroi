@@ -195,7 +195,7 @@ export class SoundManager {
     }
 
     loadSounds(): void {
-        for (const path in import.meta.glob("/public/audio/**/*.mp3")) {
+        for (const path in import.meta.glob(["/public/audio/sfx/**/*.mp3", "/public/audio/ambience/**/*.mp3"])) {
             /**
              * For some reason, PIXI will call the `loaded` callback twice
              * when an error occurs…
