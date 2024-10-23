@@ -56,6 +56,7 @@ import { COLORS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE, EMOTE_
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
 import { randomVector, randomFloat } from "../../../common/src/utils/random";
+import { Vec, type Vector } from "../../../common/src/utils/vector";
 
 /* eslint-disable @stylistic/indent */
 
@@ -310,16 +311,24 @@ export class Game {
             this.camera.addObject(this.gasRender.graphics);
             this.map.indicator.setFrame("player_indicator");
 
-            const particleEffect = MODE.particleEffects;
+            const particleEffects = MODE.particleEffects;
 
-            if (particleEffect !== undefined) {
+            if (particleEffects !== undefined) {
+                const This = this;
                 this.particleManager.addEmitter(
                     {
-                        delay: 30,
+                        delay: 1000,
                         active: this.console.getBuiltInCVar("cv_ambient_particles"),
                         spawnOptions: () => ({
-                            frames: particleEffect.frames,
-                            position: randomVector(0, this.map.width, 0, this.map.height),
+                            frames: particleEffects.frames,
+                            get position(): Vector {
+                                const width = This.camera.width / PIXI_SCALE;
+                                const height = This.camera.height / PIXI_SCALE;
+                                const player = This.activePlayer;
+                                if (!player) return Vec.create(0, 0);
+                                const { x, y } = player.position;
+                                return randomVector(x - width, x + width, y - height, y + height);
+                            },
                             speed: randomVector(-10, 10, -10, 10),
                             lifetime: randomFloat(12000, 50000),
                             zIndex: ZIndexes.BuildingsCeiling,
