@@ -316,7 +316,7 @@ export class Game {
                 this.particleManager.addEmitter(
                     {
                         delay: 30,
-                        active: !(this.console.getBuiltInCVar("cv_hide_ambient_particles")),
+                        active: this.console.getBuiltInCVar("cv_ambient_particles"),
                         spawnOptions: () => ({
                             frames: particleEffect.frames,
                             position: randomVector(0, this.map.width, 0, this.map.height),
