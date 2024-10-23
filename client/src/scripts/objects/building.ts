@@ -316,6 +316,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 fallOff: sounds.falloff,
                 maxRange: sounds.maxRange,
                 dynamic: true,
+                ambient: true,
                 loop: true
             };
 

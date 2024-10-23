@@ -96,7 +96,7 @@ export class Game {
     readonly bullets = new Set<Bullet>();
     readonly planes = new Set<Plane>();
 
-    windAmbientSound!: GameSound;
+    ambience?: GameSound;
 
     readonly spinningImages = new Map<SuroiSprite, number>();
 
@@ -481,7 +481,9 @@ export class Game {
         // game started if page is out of focus.
         if (!document.hasFocus()) this.soundManager.play("join_notification");
 
-        if (this.console.getBuiltInCVar("cv_play_ambience")) this.windAmbientSound = this.soundManager.play("wind_ambience", { loop: true });
+        if (MODE.ambience) {
+            this.ambience = this.soundManager.play(MODE.ambience, { loop: true, ambient: true });
+        }
 
         this.uiManager.emotes = packet.emotes;
         this.uiManager.updateEmoteWheel();
@@ -825,12 +827,8 @@ export class Game {
             },
             duration: LAYER_TRANSITION_DELAY
         });
-        if (this.console.getBuiltInCVar("cv_play_ambience") && this.layer === Layer.Basement1) {
-            this.windAmbientSound.setPaused(true);
-        }
-        if (this.console.getBuiltInCVar("cv_play_ambience") && this.layer === Layer.Ground) {
-            this.windAmbientSound.setPaused(false);
-        }
+
+        this.ambience?.setPaused(layer < Layer.Ground);
     }
 
     // yes this might seem evil. but the two local variables really only need to

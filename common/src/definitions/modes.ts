@@ -3,6 +3,7 @@ export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "
 export interface ModeDefinition {
     readonly colors: Record<ColorKeys, string>
     readonly specialMenuMusic?: boolean
+    readonly ambience?: string
     readonly specialSounds?: string[]
     readonly reskin?: string
     // will be multiplied by the bullet trail color
@@ -40,6 +41,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
+        ambience: "wind_ambience",
         reskin: "fall",
         particleEffects: {
             frames: ["leaf_particle_1", "leaf_particle_2", "leaf_particle_3"]

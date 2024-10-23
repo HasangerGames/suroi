@@ -51,9 +51,9 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
 
     "settings_master_volume": "Master volume",
     "settings_sfx_volume": "SFX volume",
+    "settings_ambience_volume": "Ambience volume",
     "settings_music_volume": "Music volume",
     "settings_old_menu_music": "Old menu music",
-    "settings_play_ambience": "Play Ambient Noises",
 
     "settings_render_mode": "Render mode",
     "settings_render_resolution": "Render resolution",

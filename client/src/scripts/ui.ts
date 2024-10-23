@@ -1457,7 +1457,16 @@ export async function setUpUI(game: Game): Promise<void> {
         "#slider-sfx-volume",
         "cv_sfx_volume",
         value => {
-            game.soundManager.volume = value;
+            game.soundManager.sfxVolume = value;
+        }
+    );
+
+    // Ambience volume
+    addSliderListener(
+        "#slider-ambience-volume",
+        "cv_ambience_volume",
+        value => {
+            game.soundManager.ambienceVolume = value;
         }
     );
 
@@ -1472,9 +1481,6 @@ export async function setUpUI(game: Game): Promise<void> {
 
     // Old menu music
     addCheckboxListener("#toggle-old-music", "cv_use_old_menu_music");
-
-    // Ambient sounds
-    addCheckboxListener("#toggle-ambience", "cv_play_ambience");
 
     // Camera shake
     addCheckboxListener("#toggle-camera-shake", "cv_camera_shake_fx");
