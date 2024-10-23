@@ -1449,7 +1449,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
                 gasParticles: gasParticlePresets.rifle,
                 ballistics: {
-                    damage: 55,
+                    damage: 48,
                     obstacleMultiplier: 1,
                     speed: 0.35,
                     range: 230,
