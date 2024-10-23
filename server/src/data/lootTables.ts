@@ -1,10 +1,14 @@
 import { GameConstants } from "@common/constants";
-import { Ammos, Armors, Backpacks, Guns, HealingItems, Melees, Scopes, Skins, Throwables } from "@common/definitions";
+import { Ammos, Armors, Backpacks, Buildings, Guns, HealingItems, Melees, Scopes, Skins, Throwables } from "@common/definitions";
+import type { BuildingDefinition } from "@common/definitions/buildings";
 import { Loots, type LootDefForType, type LootDefinition } from "@common/definitions/loots";
+import { Obstacles, ObstacleDefinition } from "@common/definitions/obstacles";
 import { PerkIds, Perks } from "@common/definitions/perks";
 import { isArray } from "@common/utils/misc";
-import { ItemType, NullString, type ObjectDefinitions, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { ItemType, NullString, type ObjectDefinition, type ObjectDefinitions, type ReferenceOrRandom, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, weightedRandom } from "@common/utils/random";
+import { Config } from "../config";
+import { Maps, type MapName } from "./maps";
 
 export type WeightedItem =
     (
@@ -39,7 +43,7 @@ export class LootItem {
 }
 
 export function getLootFromTable(tableID: string): LootItem[] {
-    const lootTable = LootTables[GameConstants.modeName]?.[tableID] ?? LootTables.normal[tableID];
+    const lootTable = resolveTable(tableID);
     if (lootTable === undefined) {
         throw new ReferenceError(`Unknown loot table: ${tableID}`);
     }
@@ -66,6 +70,10 @@ export function getLootFromTable(tableID: string): LootItem[] {
                     () => getLoot(loot as WeightedItem[], noDuplicates)
                 )
     ).flat();
+}
+
+export function resolveTable(tableID: string): LootTable {
+    return LootTables[GameConstants.modeName]?.[tableID] ?? LootTables.normal[tableID];
 }
 
 function getLoot(items: WeightedItem[], noDuplicates?: boolean): LootItem[] {
@@ -1109,53 +1117,114 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
     }
 };
 
-const spawnableLoots: ReadonlySet<ReferenceTo<LootDefinition>> = new Set<ReferenceTo<LootDefinition>>(
-    Object.values(
-        Object.assign(
-            {},
-            LootTables.normal,
-            LootTables[GameConstants.modeName] ?? {}
+// either return a reference as-is, or take all the non-null string references
+const referenceOrRandomOptions = <T extends ObjectDefinition>(obj: ReferenceOrRandom<T>): Array<ReferenceTo<T>> => {
+    return typeof obj === "string"
+        ? [obj]
+        // well, Object.keys already filters out symbols so…
+        : Object.keys(obj)/* .filter(k => k !== NullString) */;
+};
+
+type SpawnableItemRegistry = ReadonlySet<ReferenceTo<LootDefinition>> & {
+    forType<K extends ItemType>(type: K): ReadonlyArray<LootDefForType<K>>
+};
+
+const itemTypeToCollection: {
+    [K in ItemType]: ObjectDefinitions<LootDefForType<K>>
+} = {
+    [ItemType.Gun]: Guns,
+    [ItemType.Ammo]: Ammos,
+    [ItemType.Melee]: Melees,
+    [ItemType.Throwable]: Throwables,
+    [ItemType.Healing]: HealingItems,
+    [ItemType.Armor]: Armors,
+    [ItemType.Backpack]: Backpacks,
+    [ItemType.Scope]: Scopes,
+    [ItemType.Skin]: Skins,
+    [ItemType.Perk]: Perks
+};
+
+type Cache = {
+    [K in ItemType]?: Array<LootDefForType<K>> | undefined;
+};
+
+// an array is just an object with numeric keys
+const spawnableItemTypeCache = [] as Cache;
+
+// has to lazy-loaded to avoid circular dependency issues
+let spawnableLoots: SpawnableItemRegistry | undefined = undefined;
+export const SpawnableLoots = (): SpawnableItemRegistry => spawnableLoots ??= (() => {
+    /*
+        we have a collection of loot tables, but not all of them are necessarily reachable
+        for example, if loot table A belongs to obstacle A, but said obstacle is never spawned,
+        then we mustn't take loot table A into account
+    */
+
+    const activeMap = Maps[Config.map.split(":")[0] as MapName];
+
+    // first, get all the reachable buildings
+    // to do this, we get all the buildings in the map def, then for each one, include itself and any subbuildings
+    // flatten that array, and that's the reachable buildings
+    // and for good measure, we exclude duplicates by using a set
+    const reachableBuildings = [
+        ...new Set(
+            Object.keys(activeMap.buildings ?? {}).map(building => {
+                const b = Buildings.fromString(building);
+
+                // for each subbuilding, we either take it as-is, or take all possible spawn options
+                return b.subBuildings.map(
+                    ({ idString }) => referenceOrRandomOptions(idString).map(s => Buildings.fromString(s))
+                ).concat([b]);
+            }).flat(2)
         )
-    ).map(table =>
+    ] satisfies readonly BuildingDefinition[];
+
+    // now obstacles
+    // for this, we take the list of obstacles from the map def, and append to that alllllll the obstacles from the
+    // reachable buildings, which again involves flattening some arrays
+    const reachableObstacles = [
+        ...new Set(
+            Object.keys(activeMap.obstacles ?? {}).map(o => Obstacles.fromString(o)).concat(
+                reachableBuildings.map(
+                    ({ obstacles }) => obstacles.map(
+                        ({ idString }) => referenceOrRandomOptions(idString).map(o => Obstacles.fromString(o))
+                    )
+                ).flat(2)
+            )
+        )
+    ] satisfies readonly ObstacleDefinition[];
+
+    // and now, we generate the list of reachable tables, by taking those from map def, and adding those from
+    // both the obstacles and the buildings
+    const reachableLootTables = [
+        ...new Set(
+            Object.keys(activeMap.loots ?? {}).map(t => resolveTable(t)).concat(
+                reachableObstacles.filter(({ hasLoot }) => hasLoot).map(
+                    ({ lootTable, idString }) => resolveTable(lootTable ?? idString)
+                )
+            ).concat(
+                reachableBuildings.map(
+                    ({ lootSpawners }) => lootSpawners.map(({ table }) => resolveTable(table))
+                ).flat()
+            )
+        )
+    ] satisfies readonly LootTable[];
+
+    const getAllItemsFromTable = (table: LootTable): Array<ReferenceTo<LootDefinition>> =>
         (
             Array.isArray(table)
                 ? table as SimpleLootTable
                 : (table as FullLootTable).loot
         )
             .flat()
-            .map(entry => "item" in entry ? entry.item : NullString)
-            // we don't need to follow indirection from table references because
-            // any table reference is also in the list somewhere
+            .map(entry => "item" in entry ? entry.item : getAllItemsFromTable(resolveTable(entry.table)))
             .filter(item => item !== NullString)
-    ).flat()
-);
+            .flat();
 
-export const SpawnableLoots = (() => {
-    type SpawnableItemRegistry = ReadonlySet<ReferenceTo<LootDefinition>> & {
-        forType<K extends ItemType>(type: K): ReadonlyArray<LootDefForType<K>>
-    };
-
-    const itemTypeToCollection: {
-        [K in ItemType]: ObjectDefinitions<LootDefForType<K>>
-    } = {
-        [ItemType.Gun]: Guns,
-        [ItemType.Ammo]: Ammos,
-        [ItemType.Melee]: Melees,
-        [ItemType.Throwable]: Throwables,
-        [ItemType.Healing]: HealingItems,
-        [ItemType.Armor]: Armors,
-        [ItemType.Backpack]: Backpacks,
-        [ItemType.Scope]: Scopes,
-        [ItemType.Skin]: Skins,
-        [ItemType.Perk]: Perks
-    };
-
-    type Cache = {
-        [K in ItemType]?: Array<LootDefForType<K>> | undefined;
-    };
-
-    // an array is just an object with numeric keys
-    const spawnableItemTypeCache = [] as Cache;
+    // and now we go get the spawnable loots
+    const spawnableLoots: ReadonlySet<ReferenceTo<LootDefinition>> = new Set<ReferenceTo<LootDefinition>>(
+        reachableLootTables.map(getAllItemsFromTable).flat()
+    );
 
     (spawnableLoots as SpawnableItemRegistry).forType = <K extends ItemType>(type: K): ReadonlyArray<LootDefForType<K>> => {
         return (
@@ -1169,6 +1238,3 @@ export const SpawnableLoots = (() => {
 
     return spawnableLoots as SpawnableItemRegistry;
 })();
-
-export const SpawnableGuns = SpawnableLoots.forType(ItemType.Gun);
-export const SpawnableMelees = SpawnableLoots.forType(ItemType.Melee);

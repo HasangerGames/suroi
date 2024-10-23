@@ -9,7 +9,7 @@ import { ItemType, NullString, ObstacleSpecialRoles, type ReferenceTo, type Reif
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-import { getLootFromTable, LootItem, SpawnableGuns, SpawnableMelees } from "../data/lootTables";
+import { getLootFromTable, LootItem, SpawnableLoots } from "../data/lootTables";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { InventoryItem } from "../inventory/inventoryItem";
@@ -191,12 +191,13 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 const itemDef = source.inventory.activeWeapon;
 
                 const slot = source.inventory.activeWeaponIndex;
+                const spawnable = SpawnableLoots();
 
                 switch (true) {
                     case itemDef instanceof GunItem: {
                         source.action?.cancel();
 
-                        const chosenGun = pickRandomInArray(SpawnableGuns);
+                        const chosenGun = pickRandomInArray(spawnable.forType(ItemType.Gun));
                         source.inventory.replaceWeapon(slot, chosenGun);
                         (source.activeItem as GunItem).ammo = chosenGun.capacity;
 
@@ -210,7 +211,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                         break;
 
                     case itemDef instanceof MeleeItem: {
-                        const chosenMelee = pickRandomInArray(SpawnableMelees);
+                        const chosenMelee = pickRandomInArray(spawnable.forType(ItemType.Melee));
                         source.inventory.replaceWeapon(slot, chosenMelee);
                         source.sendEmote(Emotes.fromStringSafe(chosenMelee.idString));
                         break;
