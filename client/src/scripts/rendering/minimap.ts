@@ -175,7 +175,6 @@ export class Minimap {
 
         // river bank needs to be draw first
         for (const river of this._terrain.rivers) {
-            console.log(COLORS.riverBank, COLORS.trail);
             ctx
                 .beginPath()
                 .roundShape(getRiverPoly(river.bankHitbox.points), 0, true)
