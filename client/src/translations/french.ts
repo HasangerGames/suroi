@@ -136,10 +136,10 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "action_reloading": "Rechargement...",
     "action_reviving": "Réanimation...",
     "action_being_revived": "En train d'être réanimé...",
-    "action_gauze_use": "Utilise <item>",
-    "action_medikit_use": "Utilise <item>",
-    "action_cola_use": "Utilise <item>",
-    "action_tablets_use": "Utilise <item>",
+    "action_gauze_use": "Utilisant <item>",
+    "action_medikit_use": "Utilisant <item>",
+    "action_cola_use": "Utilisant <item>",
+    "action_tablets_use": "Utilisant <item>",
 
     "interact_airdrop_crate_locked": "Ouvrir le colis aérien.",
     "interact_control_panel": "Activer le panneau de contrôle",
@@ -247,7 +247,7 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "create_team_play": "Commencer une partie",
 
     "report_reporting": "Signale",
-    "report_id": "ID du rapport:",
+    "report_id": "Report ID:",
     "report_instructions": `
       <p><strong>Merci de suivre les instructions ci-dessous! Sinon, votre signalement sera ignoré.</p>
       <h4>Comment signaler ?</h4>
