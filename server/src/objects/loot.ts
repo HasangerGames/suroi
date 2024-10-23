@@ -86,7 +86,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         const { terrain } = this.game.map;
         if (terrain.getFloor(this.position, this.layer) === FloorNames.Water && terrain.groundRect.isPointInside(this.position)) {
             for (const river of terrain.getRiversInPosition(this.position)) {
-                if (river.waterHitbox.isPointInside(this.position)) {
+                if (river.waterHitbox?.isPointInside(this.position)) {
                     const tangent = river.getTangent(
                         river.getClosestT(this.position)
                     );
