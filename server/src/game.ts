@@ -37,7 +37,7 @@ import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/b
 import { type Emote } from "./objects/emote";
 import { Explosion } from "./objects/explosion";
 import { type BaseGameObject, type GameObject } from "./objects/gameObject";
-import { Loot } from "./objects/loot";
+import { Loot, type ItemData as ItemData } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { Parachute } from "./objects/parachute";
 import { Player, type PlayerContainer } from "./objects/player";
@@ -1094,13 +1094,14 @@ export class Game implements GameData {
         definition: ReifiableDef<Def>,
         position: Vector,
         layer: Layer,
-        { count, pushVel, jitterSpawn = true }: {
+        { count, pushVel, jitterSpawn = true, data }: {
             readonly count?: number
             readonly pushVel?: number
             /**
              * Whether to add a random offset to the given position
              */
             readonly jitterSpawn?: boolean
+            readonly data?: ItemData<Def>
         } = {}
     ): Loot | undefined {
         const args = {
@@ -1108,7 +1109,8 @@ export class Game implements GameData {
             layer,
             count,
             pushVel,
-            jitterSpawn
+            jitterSpawn,
+            data
         };
 
         definition = Loots.reify<Def>(definition);
@@ -1133,8 +1135,11 @@ export class Game implements GameData {
                 )
                 : position,
             layer,
-            count,
-            pushVel
+            {
+                count,
+                pushVel,
+                data
+            }
         );
         this.grid.addObject(loot);
 

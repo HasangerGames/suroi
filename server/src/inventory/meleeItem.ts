@@ -4,10 +4,11 @@ import { PerkIds } from "@common/definitions/perks";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Numeric } from "@common/utils/math";
-import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
 
 import { type CollidableGameObject } from "../objects/gameObject";
+import type { ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import { InventoryItem } from "./inventoryItem";
 
@@ -25,11 +26,16 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
      * @param owner The `Player` that owns this melee weapon
      * @throws {TypeError} If the `idString` given does not point to a definition for a melee weapon
      */
-    constructor(idString: ReferenceTo<MeleeDefinition>, owner: Player) {
+    constructor(idString: ReifiableDef<MeleeDefinition>, owner: Player, data?: ItemData<MeleeDefinition>) {
         super(idString, owner);
 
         if (this.category !== ItemType.Melee) {
             throw new TypeError(`Attempted to create a Melee object based on a definition for a non-melee object (Received a ${this.category as unknown as string} definition)`);
+        }
+
+        if (data) {
+            this.stats.kills = data.kills;
+            this.stats.damage = data.damage;
         }
     }
 
@@ -124,6 +130,13 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                 }
             }
         }, 50);
+    }
+
+    override itemData(): ItemData<MeleeDefinition> {
+        return {
+            kills: this.stats.kills,
+            damage: this.stats.damage
+        };
     }
 
     override useItem(): void {

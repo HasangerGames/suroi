@@ -1,4 +1,5 @@
 import { GameConstants, InventoryMessages, ObjectCategory, PlayerActions } from "@common/constants";
+import type { GunDefinition } from "@common/definitions";
 import { ArmorType } from "@common/definitions/armors";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { PickupPacket } from "@common/packets/pickupPacket";
@@ -15,6 +16,24 @@ import { GunItem } from "../inventory/gunItem";
 import { BaseGameObject } from "./gameObject";
 import { type Player } from "./player";
 
+export type DataMap = Record<ItemType, unknown> & {
+    [ItemType.Gun]: {
+        readonly kills: number
+        readonly damage: number
+        readonly totalShots: number
+    }
+    [ItemType.Melee]: {
+        readonly kills: number
+        readonly damage: number
+    }
+    [ItemType.Throwable]: {
+        readonly kills: number
+        readonly damage: number
+    }
+};
+
+export type ItemData<Def extends LootDefinition = LootDefinition> = DataMap[Def["itemType"]];
+
 export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameObject.derive(ObjectCategory.Loot) {
     override readonly fullAllocBytes = 8;
     override readonly partialAllocBytes = 4;
@@ -22,6 +41,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
     declare readonly hitbox: CircleHitbox;
 
     readonly definition: Def;
+    readonly itemData?: ItemData<Def>;
 
     private _count;
     get count(): number { return this._count; }
@@ -39,12 +59,16 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         basis: ReifiableDef<Def>,
         position: Vector,
         layer: number,
-        count?: number,
-        pushVel = 0.003
+        { count, pushVel = 0.003, data }: {
+            readonly count?: number
+            readonly pushVel?: number
+            readonly data?: ItemData<Def>
+        } = {}
     ) {
         super(game, position);
 
         this.definition = Loots.reify(basis);
+        this.itemData = data;
 
         this.hitbox = new CircleHitbox(LootRadius[this.definition.itemType], Vec.clone(position));
         this.layer = layer;
@@ -246,14 +270,15 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
             })
         ) return;
 
-        const createNewItem = (
+        const createNewItem = <D extends LootDefinition = Def>(
             { type, count }: {
-                readonly type: LootDefinition
+                readonly type?: D
                 readonly count: number
-            } = { type: this.definition, count: this._count }
+                readonly data?: ItemData<D>
+            } = { count: this._count }
         ): void => {
             this.game
-                .addLoot(type, this.position, this.layer, { count, pushVel: 0, jitterSpawn: false })
+                .addLoot(type ?? this.definition, this.position, this.layer, { count, pushVel: 0, jitterSpawn: false, data: this.itemData })
                 ?.push(player.rotation + Math.PI, 0.009);
         };
 
@@ -272,9 +297,9 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         let countToRemove = 1;
 
         const definition = this.definition;
-        const idString = definition.idString;
+        const { idString, itemType } = definition;
 
-        switch (definition.itemType) {
+        switch (itemType) {
             case ItemType.Melee: {
                 const slot: number | undefined = (inventory.slotsByItemType[ItemType.Melee] ?? [])[0];
 
@@ -319,7 +344,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 }
                 if (gotDual) break;
 
-                const slot = inventory.appendWeapon(definition);
+                const slot = inventory.appendWeapon<ItemType.Gun>(definition, (this as Loot<GunDefinition>).itemData);
 
                 if (slot === -1) { // If it wasn't added, then either there are no gun slots or they're all occupied
                     /*

@@ -1,4 +1,5 @@
 import type { InventoryMessages, Layer } from "@common/constants";
+import type { LootDefinition } from "@common/definitions";
 import type { BuildingDefinition } from "@common/definitions/buildings";
 import { EmoteDefinition } from "@common/definitions/emotes";
 import { type PlayerPing } from "@common/definitions/mapPings";
@@ -10,13 +11,12 @@ import { ExtendedMap } from "@common/utils/misc";
 import type { PlayerModifiers } from "@common/utils/objectDefinitions";
 import { Vector } from "@common/utils/vector";
 
-import type { LootDefinition } from "@common/definitions";
 import { Config } from "./config";
 import { Airdrop, Game } from "./game";
 import { type InventoryItem } from "./inventory/inventoryItem";
 import { Building } from "./objects/building";
 import { DamageParams } from "./objects/gameObject";
-import { Loot } from "./objects/loot";
+import { Loot, type ItemData } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { Player } from "./objects/player";
 import { Logger } from "./utils/misc";
@@ -539,6 +539,7 @@ export interface EventDataMap {
         readonly count?: number
         readonly pushVel?: number
         readonly jitterSpawn?: boolean
+        readonly data?: ItemData // with the same definition as the 'definition' field
     }
     readonly loot_did_generate: {
         readonly loot: Loot

@@ -8,10 +8,11 @@ import { CircleHitbox, RectangleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, isStairLayer } from "@common/utils/layer";
 import { Angle, Geometry, resolveStairInteraction } from "@common/utils/math";
 import { type DeepMutable, type DeepRequired, type Timeout } from "@common/utils/misc";
-import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { randomFloat, randomPointInsideCircle } from "@common/utils/random";
 import { Vec } from "@common/utils/vector";
 
+import type { ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import { ReloadAction } from "./action";
 import { InventoryItem } from "./inventoryItem";
@@ -51,11 +52,17 @@ export class GunItem extends InventoryItem<GunDefinition> {
      * @param owner The `Player` that owns this gun
      * @throws {TypeError} If the `idString` given does not point to a definition for a gun
      */
-    constructor(idString: ReferenceTo<GunDefinition>, owner: Player) {
+    constructor(idString: ReifiableDef<GunDefinition>, owner: Player, data?: ItemData<GunDefinition>) {
         super(idString, owner);
 
         if (this.category !== ItemType.Gun) {
             throw new TypeError(`Attempted to create a Gun object based on a definition for a non-gun object (Received a ${this.category as unknown as string} definition)`);
+        }
+
+        if (data) {
+            this.stats.kills = data.kills;
+            this.stats.damage = data.damage;
+            this._shots = data.totalShots;
         }
     }
 
@@ -320,6 +327,14 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 definition.fireDelay
             );
         }
+    }
+
+    override itemData(): ItemData<GunDefinition> {
+        return {
+            kills: this.stats.kills,
+            damage: this.stats.damage,
+            totalShots: this._shots
+        };
     }
 
     override useItem(): void {

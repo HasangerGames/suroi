@@ -3,6 +3,7 @@ import { defaultModifiers, type ItemType, type ReifiableDef, type WearerAttribut
 
 import { type Player } from "../objects/player";
 import { Numeric } from "@common/utils/math";
+import type { ItemData } from "../objects/loot";
 
 /**
  * Represents some item in the player's inventory *that can be equipped*
@@ -104,6 +105,11 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
      * @abstract
      */
     abstract useItem(): void;
+
+    /**
+     * Generates the item data for this item
+     */
+    abstract itemData(): ItemData<Def>;
 
     /**
      * A method which *does nothing*, but that can be overridden by subclasses if desired. This method is called
