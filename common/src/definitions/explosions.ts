@@ -426,6 +426,34 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             },
             sound: "frag_grenade",
             decal: "frag_explosion_decal"
+        },
+        {
+            name: "Pumpkin",
+            damage: 125,
+            obstacleMultiplier: 1,
+            radius: {
+                min: 8,
+                max: 25
+            },
+            cameraShake: {
+                duration: 250,
+                intensity: 50
+            },
+            animation: {
+                duration: 1000,
+                tint: 0x91140b,
+                scale: 1.5
+            },
+            sound: "pumpkin_bomb",
+            shrapnelCount: 10,
+            ballistics: {
+                damage: 2,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                range: 20,
+                rangeVariance: 1,
+                shrapnel: true
+            }
         }
     ].map(def => {
         return {

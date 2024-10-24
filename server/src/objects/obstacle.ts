@@ -15,6 +15,7 @@ import { type Building } from "./building";
 import type { Bullet } from "./bullet";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { type Player } from "./player";
+import { PerkIds } from "@common/definitions/perks";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override readonly fullAllocBytes = 8;
@@ -205,6 +206,11 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 //                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                 // FIXME This is implying that obstacles won't explode if destroyed by non–game objects
                 this.game.addExplosion(definition.explosion, this.position, source, source.layer, weaponIsItem ? weaponUsed : weaponUsed?.weapon);
+            }
+
+            // Pumpkin Bombs
+            if (source instanceof BaseGameObject && source.isPlayer && source.perks.hasPerk(PerkIds.PlumpkinBomb) && definition.material === "pumpkin") {
+                this.game.addExplosion("pumpkin_explosion", this.position, source, source.layer);
             }
 
             if (definition.particlesOnDestroy !== undefined) {
