@@ -271,6 +271,17 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { table: "guns", weight: 0.9 },
             { table: "scopes", weight: 0.3 }
         ],
+        large_pumpkin: {
+            min: 1,
+            max: 2,
+            loot: [
+                { table: "equipment", weight: 1 },
+                { table: "healing_items", weight: 1 },
+                { table: "ammo", weight: 1 },
+                { table: "guns", weight: 0.9 },
+                { table: "scopes", weight: 0.3 }
+            ]
+        },
         birthday_cake: [
             { table: "special_guns", weight: 0.25 },
             { table: "special_equipment", weight: 0.25 },

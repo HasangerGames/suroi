@@ -1002,6 +1002,26 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 }
             },
             {
+                idString: "large_pumpkin",
+                name: "Large Pumpkin",
+                material: "pumpkin",
+                health: 160,
+                scale: {
+                    spawnMin: 0.9,
+                    spawnMax: 1.1,
+                    destroy: 0.5
+                },
+                hitbox: new CircleHitbox(2.55),
+                spawnHitbox: new CircleHitbox(3),
+                rotationMode: RotationMode.Full,
+                allowFlyover: FlyoverPref.Always,
+                hasLoot: true,
+                frames: {
+                    particle: "pumpkin_particle",
+                    residue: "pumpkin_residue"
+                }
+            },
+            {
                 idString: "mini_plumpkin",
                 name: "Mini Plumpkin",
                 material: "pumpkin",

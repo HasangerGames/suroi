@@ -315,6 +315,7 @@ const maps = {
             loot_barrel: 1,
             flint_stone: 3,
             pumpkin: 200,
+            large_pumpkin: 50, // placeholder
             pebble: 150
         },
         obstacleClumps: [
