@@ -221,7 +221,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             idString: "usas_explosion",
             name: "USAS-12",
             damage: 40,
-            obstacleMultiplier: 1,
+            obstacleMultiplier: 1.5,
             radius: {
                 min: 6,
                 max: 16
@@ -251,7 +251,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             idString: "m590m_explosion",
             name: "M590M",
             damage: 40,
-            obstacleMultiplier: 1,
+            obstacleMultiplier: 1.5,
             radius: {
                 min: 6,
                 max: 16

@@ -1351,6 +1351,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     speed: 0.22,
                     range: 70,
                     onHitExplosion: "usas_explosion",
+                    explodeOnImpact: true,
                     allowRangeOverride: true,
                     tracer: {
                         length: 0.5,
@@ -1450,9 +1451,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 capacity: 5,
                 extendedCapacity: 10,
                 reloadTime: 2.8,
-                fireDelay: 800,
+                fireDelay: 900,
                 switchDelay: 900,
-                recoilMultiplier: 0.6,
+                recoilMultiplier: 0.5,
                 recoilDuration: 500,
                 fireMode: FireMode.Single,
                 shotSpread: 2,
@@ -1477,6 +1478,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     speed: 0.22,
                     range: 70,
                     onHitExplosion: "m590m_explosion",
+                    explodeOnImpact: true,
                     allowRangeOverride: true,
                     tracer: {
                         length: 0.5,
