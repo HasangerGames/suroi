@@ -237,10 +237,10 @@ const maps = {
             maxWidth: 250,
             maxHeight: 200,
             count: 2,
-            allowedObstacles: ["clearing_boulder", "rock", "flint_crate"],
+            allowedObstacles: ["clearing_boulder", "rock", "flint_crate", "grenade_crate", "melee_crate", "flint_stone"],
             obstacles: [
                 { idString: "clearing_boulder", min: 3, max: 5 },
-                { idString: "flint_crate", min: 3, max: 5 },
+                { idString: "flint_crate", min: 1, max: 3 },
                 { idString: "grenade_crate", min: 0, max: 2 },
                 { idString: "melee_crate", min: 0, max: 1 },
                 { idString: "flint_stone", min: 0, max: 1 }
