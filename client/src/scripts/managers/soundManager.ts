@@ -55,12 +55,8 @@ export class GameSound {
         this.maxRange = options.maxRange;
         this.layer = options.layer;
         this.speed = options.speed ?? 1;
-        if (this.dynamic = options.dynamic) {
-            this.manager.dynamicSounds.add(this);
-        }
-        if (this.ambient = options.ambient ?? false) {
-            this.manager.ambientSounds.add(this);
-        }
+        this.dynamic = options.dynamic;
+        this.ambient = options.ambient;
         this.onEnd = options.onEnd;
         this.stereoFilter = new PixiSound.filters.StereoFilter(0);
         // this.reverbFilter = new PixiSound.filters.ReverbFilter(1, 20);
@@ -139,24 +135,14 @@ export class GameSound {
         if (this.ended) return;
         this.instance?.stop();
         this.ended = true;
-        if (this.dynamic) this.manager.dynamicSounds.delete(this);
-        if (this.ambient) this.manager.ambientSounds.delete(this);
     }
 }
 
 export class SoundManager {
-    readonly dynamicSounds = new Set<GameSound>();
-    readonly ambientSounds = new Set<GameSound>();
+    readonly updatableSounds = new Set<GameSound>();
 
     sfxVolume: number;
-    private _ambienceVolume: number;
-    get ambienceVolume(): number { return this._ambienceVolume; }
-    set ambienceVolume(ambienceVolume: number) {
-        this._ambienceVolume = ambienceVolume;
-        for (const sound of this.ambientSounds) {
-            sound.update();
-        }
-    }
+    ambienceVolume: number;
 
     position = Vec.create(0, 0);
 
@@ -168,12 +154,12 @@ export class SoundManager {
         SoundManager._instantiated = true;
 
         this.sfxVolume = game.console.getBuiltInCVar("cv_sfx_volume");
-        this._ambienceVolume = game.console.getBuiltInCVar("cv_ambience_volume");
+        this.ambienceVolume = game.console.getBuiltInCVar("cv_ambience_volume");
         this.loadSounds();
     }
 
     play(name: string, options?: Partial<SoundOptions>): GameSound {
-        return new GameSound(name, {
+        const sound = new GameSound(name, {
             falloff: 1,
             maxRange: 256,
             dynamic: false,
@@ -182,10 +168,20 @@ export class SoundManager {
             loop: false,
             ...options
         }, this);
+
+        if (sound.dynamic || sound.ambient) {
+            this.updatableSounds.add(sound);
+        }
+
+        return sound;
     }
 
     update(): void {
-        for (const sound of this.dynamicSounds) {
+        for (const sound of this.updatableSounds) {
+            if (sound.ended) {
+                this.updatableSounds.delete(sound);
+                continue;
+            }
             sound.update();
         }
     }
