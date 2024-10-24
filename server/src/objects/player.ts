@@ -521,42 +521,98 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
     }
 
-    weaponSwap(): void {
+    swapActiveWeaponRandomly(): void {
         const slot = this.activeItemIndex;
         const itemDef = this.activeItem;
 
         const spawnable = SpawnableLoots();
 
+        let chosen: ReferenceTo<WeaponDefinition> | undefined;
+
+        const { inventory } = this;
+        const { items, backpack: { maxCapacity }, throwableItemMap } = inventory;
         switch (true) {
             case itemDef instanceof GunItem: {
                 this.action?.cancel();
 
                 const chosenGun = pickRandomInArray(spawnable.forType(ItemType.Gun));
-                this.inventory.replaceWeapon(slot, chosenGun);
+
+                // exceptional circumstance that can occur if the array is empty
+                if (chosenGun === undefined) break;
+
+                inventory.replaceWeapon(slot, chosenGun);
                 (this.activeItem as GunItem).ammo = chosenGun.capacity;
 
                 // Give the player ammo for the new gun if they do not have any ammo for it.
-                if (!this.inventory.items.hasItem(chosenGun.ammoType) && !chosenGun.summonAirdrop) {
-                    this.inventory.items.setItem(chosenGun.ammoType, chosenGun.ammoSpawnAmount);
+                if (!items.hasItem(chosenGun.ammoType) && !chosenGun.summonAirdrop) {
+                    items.setItem(chosenGun.ammoType, chosenGun.ammoSpawnAmount);
                     this.dirty.items = true;
                 }
-                this.sendEmote(Emotes.fromStringSafe(chosenGun.idString));
-            }
+                chosen = chosenGun.idString;
                 break;
+            }
 
             case itemDef instanceof MeleeItem: {
                 const chosenMelee = pickRandomInArray(spawnable.forType(ItemType.Melee));
-                this.inventory.replaceWeapon(slot, chosenMelee);
-                this.sendEmote(Emotes.fromStringSafe(chosenMelee.idString));
+
+                // exceptional circumstance that can occur if the array is empty
+                if (chosenMelee === undefined) break;
+
+                inventory.replaceWeapon(slot, chosenMelee);
+                chosen = chosenMelee.idString;
                 break;
             }
 
-            /* case itemDef instanceof ThrowableItem: { brings back infinite nades glitch idk
-                const chosenThrowable = pickRandomInArray(Throwables.definitions).idString;
-                source.inventory.items.setItem(chosenThrowable, 3);
-                source.inventory.addOrReplaceWeapon(slot, chosenThrowable);
+            case itemDef instanceof ThrowableItem: {
+                const chosenThrowable = pickRandomInArray(
+                    spawnable.forType(ItemType.Throwable).filter(
+                        ({ idString: thr }) => (items.hasItem(thr) ? items.getItem(thr) : 0) < maxCapacity[thr]
+                    )
+                );
+
+                // happens if array is empty
+                if (chosenThrowable === undefined) break;
+                chosen = chosenThrowable.idString;
+
+                const { idString } = chosenThrowable;
+
+                const count = items.hasItem(idString) ? items.getItem(idString) : 0;
+                const max = maxCapacity[idString];
+
+                const toAdd = Numeric.min(max - count, 3);
+                // toAdd is greater than 0
+
+                const newCount = Numeric.clamp(
+                    count + toAdd,
+                    0, max
+                );
+
+                items.setItem(
+                    idString,
+                    newCount
+                );
+
+                const item = throwableItemMap.getAndGetDefaultIfAbsent(
+                    idString,
+                    () => new ThrowableItem(chosenThrowable, this, undefined, newCount)
+                );
+
+                item.count = newCount;
+
+                const slot = inventory.slotsByItemType[ItemType.Throwable]?.[0];
+
+                if (slot !== undefined && !inventory.hasWeapon(slot)) {
+                    inventory.replaceWeapon(slot, item);
+                }
+
+                this.dirty.weapons = true;
+                this.dirty.items = true;
+                break;
             }
-                break; */
+        }
+
+        if (chosen !== undefined) {
+            this.sendEmote(Emotes.fromStringSafe(chosen));
         }
     }
 
@@ -1731,7 +1787,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.killedBy = source;
             if (source !== this && (!this.game.teamMode || source.teamID !== this.teamID)) source.kills++;
 
-            if (source.perks.hasPerk(PerkIds.BabyPlumpkinPie)) source.weaponSwap();
+            if (source.perks.hasPerk(PerkIds.BabyPlumpkinPie)) source.swapActiveWeaponRandomly();
         }
 
         if (

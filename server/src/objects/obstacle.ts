@@ -1,5 +1,4 @@
 import { ObjectCategory } from "@common/constants";
-import { Emotes } from "@common/definitions";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
@@ -7,13 +6,10 @@ import { equalLayer } from "@common/utils/layer";
 import { Angle, calculateDoorHitboxes, resolveStairInteraction } from "@common/utils/math";
 import { ItemType, NullString, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
-import { pickRandomInArray } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-import { getLootFromTable, LootItem, SpawnableLoots } from "../data/lootTables";
+import { getLootFromTable, LootItem } from "../data/lootTables";
 import { type Game } from "../game";
-import { GunItem } from "../inventory/gunItem";
 import { InventoryItem } from "../inventory/inventoryItem";
-import { MeleeItem } from "../inventory/meleeItem";
 import { getRandomIDString } from "../utils/misc";
 import { type Building } from "./building";
 import type { Bullet } from "./bullet";
@@ -187,43 +183,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         if (!notDead) {
             this.health = 0;
             this.dead = true;
-            if (definition.weaponSwap && source && source instanceof BaseGameObject && source.isPlayer) {
-                const itemDef = source.inventory.activeWeapon;
-
-                const slot = source.inventory.activeWeaponIndex;
-                const spawnable = SpawnableLoots();
-
-                switch (true) {
-                    case itemDef instanceof GunItem: {
-                        source.action?.cancel();
-
-                        const chosenGun = pickRandomInArray(spawnable.forType(ItemType.Gun));
-                        source.inventory.replaceWeapon(slot, chosenGun);
-                        (source.activeItem as GunItem).ammo = chosenGun.capacity;
-
-                        // Give the player ammo for the new gun if they do not have any ammo for it.
-                        if (!source.inventory.items.hasItem(chosenGun.ammoType) && !chosenGun.summonAirdrop) {
-                            source.inventory.items.setItem(chosenGun.ammoType, chosenGun.ammoSpawnAmount);
-                            source.dirty.items = true;
-                        }
-                        source.sendEmote(Emotes.fromStringSafe(chosenGun.idString));
-                    }
-                        break;
-
-                    case itemDef instanceof MeleeItem: {
-                        const chosenMelee = pickRandomInArray(spawnable.forType(ItemType.Melee));
-                        source.inventory.replaceWeapon(slot, chosenMelee);
-                        source.sendEmote(Emotes.fromStringSafe(chosenMelee.idString));
-                        break;
-                    }
-
-                    /* case itemDef instanceof ThrowableItem: { brings back infinite nades glitch idk
-                        const chosenThrowable = pickRandomInArray(Throwables.definitions).idString;
-                        source.inventory.items.setItem(chosenThrowable, 3);
-                        source.inventory.addOrReplaceWeapon(slot, chosenThrowable);
-                    }
-                        break; */
-                }
+            if (definition.weaponSwap && source instanceof BaseGameObject && source.isPlayer) {
+                source.swapActiveWeaponRandomly();
             }
 
             if (

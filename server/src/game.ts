@@ -21,10 +21,11 @@ import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric, Statistics } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
 import { ItemType, MapObjectSpawnMode, type ReifiableDef } from "@common/utils/objectDefinitions";
-import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "@common/utils/random";
+import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation, weightedRandom } from "@common/utils/random";
 import { OBJECT_ID_BITS, SuroiBitStream } from "@common/utils/suroiBitStream";
 import { Vec, type Vector } from "@common/utils/vector";
 
+import { Ammos, Emotes } from "@common/definitions";
 import { PerkIds, Perks, updateInterval } from "@common/definitions/perks";
 import { Config, SpawnMode } from "./config";
 import { MapName, Maps } from "./data/maps";
@@ -37,7 +38,7 @@ import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/b
 import { type Emote } from "./objects/emote";
 import { Explosion } from "./objects/explosion";
 import { type BaseGameObject, type GameObject } from "./objects/gameObject";
-import { Loot, type ItemData as ItemData } from "./objects/loot";
+import { Loot, type ItemData } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { Parachute } from "./objects/parachute";
 import { Player, type PlayerContainer } from "./objects/player";
@@ -50,7 +51,6 @@ import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
-import { Ammos, Emotes } from "@common/definitions";
 
 /*
     eslint-disable
@@ -535,7 +535,7 @@ export class Game implements GameData {
                     for (const player of players) {
                         if (!player.hasPerk(PerkIds.BabyPlumpkinPie)) continue;
 
-                        player.weaponSwap();
+                        player.swapActiveWeaponRandomly();
                     }
                     break;
                 }
@@ -543,28 +543,26 @@ export class Game implements GameData {
                     for (const player of players) {
                         if (!player.hasPerk(PerkIds.TornPockets)) continue;
 
-                        const ammos = Ammos.definitions.filter(ammoDef => {
-                            return !ammoDef.ephemeral;
-                        });
+                        const candidates = new Set(Ammos.definitions.filter(({ ephemeral }) => !ephemeral).map(({ idString }) => idString));
 
-                        // -----------------------------------------------------------------------
-                        // check if player doesn't have any ammo
-                        // -----------------------------------------------------------------------
-                        let loopCount = 0;
-                        for (const ammo of ammos) {
-                            if (!player.inventory.items.hasItem(ammo.idString)) loopCount++;
-                        }
+                        const counts = Object.entries(player.inventory.items.asRecord()).filter(
+                            ([str, count]) => Ammos.hasString(str) && candidates.has(str) && count !== 0
+                        );
 
-                        if (loopCount === ammos.length) continue;
-                        // -----------------------------------------------------------------------
+                        // no ammo at all
+                        if (counts.length === 0) continue;
 
-                        let chosenAmmo = pickRandomInArray(ammos);
+                        const chosenAmmo = Ammos.fromString(
+                            weightedRandom(
+                                counts.map(([str]) => str),
+                                counts.map(([, cnt]) => cnt)
+                            )
+                        );
 
-                        while (!player.inventory.items.hasItem(chosenAmmo.idString)) {
-                            chosenAmmo = pickRandomInArray(ammos);
-                        }
-
-                        const amountToDrop = player.inventory.items.getItem(chosenAmmo.idString) === 1 ? 1 : 2;
+                        const amountToDrop = Numeric.min(
+                            player.inventory.items.getItem(chosenAmmo.idString),
+                            perk.dropCount
+                        );
 
                         this.addLoot(chosenAmmo, player.position, player.layer, { count: amountToDrop })?.push(player.rotation + Math.PI, 0.025);
                         player.inventory.items.decrementItem(chosenAmmo.idString, amountToDrop);
@@ -577,8 +575,8 @@ export class Game implements GameData {
                         if (!player.hasPerk(PerkIds.RottenPlumpkin)) continue;
 
                         player.sendEmote(Emotes.fromStringSafe(perk.emote));
-                        player.health -= 5;
-                        player.adrenaline -= player.adrenaline * 0.05;
+                        player.health -= perk.healthLoss;
+                        player.adrenaline -= player.adrenaline * (perk.healthLoss);
                     }
                     break;
                 }

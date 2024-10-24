@@ -384,7 +384,6 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                 Base extends (...args: infer Args) => infer Ret
                     ? (...args: Args) => Ret & Default
                     : Base & Default
-                // @ts-expect-error lol, is this the new ts2589
             > = createTemplate<Missing>().bind(null, defaultTemplate);
 
             return new ObjectDefinitions<Def>(
@@ -413,7 +412,8 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
     /**
      * A private mapping between identification strings and the index in the definition array
      */
-    protected readonly idStringToNumber: Readonly<Record<string, number>> = {};
+    protected readonly idStringToNumber: Readonly<Record<string, number>> = Object.create(null) as Record<string, number>;
+    // yes this is intentional, because we use 'in' somewhere else—don't want things like __proto__ creating false results
 
     protected constructor(
         defs: ReadonlyArray<RawDefinition<Def>>,
@@ -492,6 +492,10 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
         if (id === undefined) return undefined;
 
         return this.definitions[id] as U;
+    }
+
+    hasString(idString: string): boolean {
+        return idString in this.idStringToNumber;
     }
 
     writeToStream(stream: BitStream, type: ReifiableDef<Def>): void {
