@@ -1,6 +1,6 @@
 import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, Layer, ObjectCategory, PlayerActions, SpectateActions } from "@common/constants";
 import { Ammos, Armors, ArmorType, Backpacks, DEFAULT_SCOPE, Emotes, Guns, HealingItems, Loots, Melees, Scopes, Throwables, type BadgeDefinition, type EmoteDefinition, type GunDefinition, type MeleeDefinition, type PlayerPing, type ScopeDefinition, type SkinDefinition, type SyncedParticleDefinition, type ThrowableDefinition, type WeaponDefinition } from "@common/definitions";
-import { PerkIds, Perks, type PerkDefinition, type PerkNames } from "@common/definitions/perks";
+import { PerkCategories, PerkIds, Perks, type PerkDefinition, type PerkNames } from "@common/definitions/perks";
 import { DisconnectPacket, GameOverPacket, KillFeedPacket, NoMobile, PacketStream, PlayerInputData, ReportPacket, SpectatePacketData, UpdatePacket, type ForEventType, type GameOverData, type InputPacket, type PlayerData, type UpdatePacketDataCommon, type UpdatePacketDataIn } from "@common/packets";
 import { createKillfeedMessage } from "@common/packets/killFeedPacket";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
@@ -28,6 +28,7 @@ import { ThrowableItem } from "../inventory/throwableItem";
 import { type Team } from "../team";
 import { mod_api_data, sendPostRequest } from "../utils/apiHelper";
 import { removeFrom } from "../utils/misc";
+import { SpawnableLoots } from "../data/lootTables";
 
 export interface PlayerContainer {
     readonly teamID?: string
@@ -518,6 +519,45 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // we hope `throwableItemMap` is correctly sync'd
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
+    }
+
+    weaponSwap(): void {
+        const slot = this.activeItemIndex;
+        const itemDef = this.activeItem;
+
+        const spawnable = SpawnableLoots();
+
+        switch (true) {
+            case itemDef instanceof GunItem: {
+                this.action?.cancel();
+
+                const chosenGun = pickRandomInArray(spawnable.forType(ItemType.Gun));
+                this.inventory.replaceWeapon(slot, chosenGun);
+                (this.activeItem as GunItem).ammo = chosenGun.capacity;
+
+                // Give the player ammo for the new gun if they do not have any ammo for it.
+                if (!this.inventory.items.hasItem(chosenGun.ammoType) && !chosenGun.summonAirdrop) {
+                    this.inventory.items.setItem(chosenGun.ammoType, chosenGun.ammoSpawnAmount);
+                    this.dirty.items = true;
+                }
+                this.sendEmote(Emotes.fromStringSafe(chosenGun.idString));
+            }
+                break;
+
+            case itemDef instanceof MeleeItem: {
+                const chosenMelee = pickRandomInArray(spawnable.forType(ItemType.Melee));
+                this.inventory.replaceWeapon(slot, chosenMelee);
+                this.sendEmote(Emotes.fromStringSafe(chosenMelee.idString));
+                break;
+            }
+
+            /* case itemDef instanceof ThrowableItem: { brings back infinite nades glitch idk
+                const chosenThrowable = pickRandomInArray(Throwables.definitions).idString;
+                source.inventory.items.setItem(chosenThrowable, 3);
+                source.inventory.addOrReplaceWeapon(slot, chosenThrowable);
+            }
+                break; */
+        }
     }
 
     fillInventory(max = false): void {
@@ -1571,6 +1611,15 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // ! evil starts here
         for (const perk of this.perks) {
             switch (perk.idString) {
+                case PerkIds.PlumpkinGamble: { // AW DANG IT
+                    this.perks.removePerk(PerkIds.PlumpkinGamble);
+
+                    const halloweenPerks = Perks.definitions.filter(perkDef => {
+                        return perkDef.idString !== PerkIds.PlumpkinGamble && perkDef.categories.includes(PerkCategories.Halloween);
+                    });
+                    this.perks.addPerk(pickRandomInArray(halloweenPerks));
+                    break;
+                }
                 case PerkIds.Werewolf: {
                     newModifiers.maxHealth *= perk.healthMod;
                     newModifiers.hpRegen += perk.regenRate;
@@ -1681,6 +1730,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if (sourceIsPlayer) {
             this.killedBy = source;
             if (source !== this && (!this.game.teamMode || source.teamID !== this.teamID)) source.kills++;
+
+            if (source.perks.hasPerk(PerkIds.BabyPlumpkinPie)) source.weaponSwap();
         }
 
         if (
@@ -2122,6 +2173,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                             (isLoot || (type === InputActions.Interact && isInteractable))
                             && object.hitbox?.collidesWith(detectionHitbox)
                             && adjacentOrEqualLayer(this.layer, object.layer)
+                            && !(isLoot && [ItemType.Throwable, ItemType.Gun].includes(object.definition.itemType) && this.perks.hasPerk(PerkIds.Werewolf))
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
                             if (isInteractable) {

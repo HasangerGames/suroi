@@ -30,7 +30,7 @@ import { Config, SpawnMode } from "./config";
 import { MapName, Maps } from "./data/maps";
 import { WorkerMessages, type GameData, type WorkerInitData, type WorkerMessage } from "./gameManager";
 import { Gas } from "./gas";
-import { type GunItem } from "./inventory/gunItem";
+import { GunItem } from "./inventory/gunItem";
 import { ThrowableItem } from "./inventory/throwableItem";
 import { GameMap } from "./map";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
@@ -50,6 +50,7 @@ import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
+import { Ammos, Emotes } from "@common/definitions";
 
 /*
     eslint-disable
@@ -531,15 +532,54 @@ export class Game implements GameData {
                     break;
                 }
                 case PerkIds.BabyPlumpkinPie: {
-                    // TODO lol
+                    for (const player of players) {
+                        if (!player.hasPerk(PerkIds.BabyPlumpkinPie)) continue;
+
+                        player.weaponSwap();
+                    }
                     break;
                 }
                 case PerkIds.TornPockets: {
-                    // TODO lol
+                    for (const player of players) {
+                        if (!player.hasPerk(PerkIds.TornPockets)) continue;
+
+                        const ammos = Ammos.definitions.filter(ammoDef => {
+                            return !ammoDef.ephemeral;
+                        });
+
+                        // -----------------------------------------------------------------------
+                        // check if player doesn't have any ammo
+                        // -----------------------------------------------------------------------
+                        let loopCount = 0;
+                        for (const ammo of ammos) {
+                            if (!player.inventory.items.hasItem(ammo.idString)) loopCount++;
+                        }
+
+                        if (loopCount === ammos.length) continue;
+                        // -----------------------------------------------------------------------
+
+                        let chosenAmmo = pickRandomInArray(ammos);
+
+                        while (!player.inventory.items.hasItem(chosenAmmo.idString)) {
+                            chosenAmmo = pickRandomInArray(ammos);
+                        }
+
+                        const amountToDrop = player.inventory.items.getItem(chosenAmmo.idString) === 1 ? 1 : 2;
+
+                        this.addLoot(chosenAmmo, player.position, player.layer, { count: amountToDrop })?.push(player.rotation + Math.PI, 0.025);
+                        player.inventory.items.decrementItem(chosenAmmo.idString, amountToDrop);
+                        player.dirty.items = true;
+                    }
                     break;
                 }
                 case PerkIds.RottenPlumpkin: {
-                    // TODO lol
+                    for (const player of players) {
+                        if (!player.hasPerk(PerkIds.RottenPlumpkin)) continue;
+
+                        player.sendEmote(Emotes.fromStringSafe(perk.emote));
+                        player.health -= 5;
+                        player.adrenaline -= player.adrenaline * 0.05;
+                    }
                     break;
                 }
             }

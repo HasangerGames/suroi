@@ -28,8 +28,15 @@ export class ServerPerkManager extends PerkManager {
             // some perks need to perform setup when added
             switch (idString) {
                 case PerkIds.Werewolf: {
+                    this.owner.action?.cancel();
                     this.owner.inventory.dropWeapon(0, true)?.destroy();
                     this.owner.inventory.dropWeapon(1, true)?.destroy();
+
+                    // Drop all throwables
+                    while (this.owner.inventory.getWeapon(3)) {
+                        this.owner.inventory.dropWeapon(3, true)?.destroy();
+                    }
+
                     /* TODO: continue crying */
                     break;
                 }
