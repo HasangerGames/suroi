@@ -2241,7 +2241,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 doorSound: "metal_door",
                 indestructible: true,
                 collideWithLayers: Layers.Adjacent,
-                visibleFromLayers: Layers.All,
+                //  visibleFromLayers: Layers.All,
                 health: 500,
                 scale: {
                     spawnMin: 1,

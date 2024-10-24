@@ -1797,7 +1797,23 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.killedBy = source;
             if (source !== this && (!this.game.teamMode || source.teamID !== this.teamID)) source.kills++;
 
-            if (source.perks.hasPerk(PerkIds.BabyPlumpkinPie)) source.swapWeaponRandomly();
+            for (const perk of source.perks) {
+                switch (perk.idString) {
+                    case PerkIds.BabyPlumpkinPie: {
+                        source.swapWeaponRandomly();
+                        break;
+                    }
+
+                    case PerkIds.Engorged: {
+                        if (source.kills <= perk.killsLimit) {
+                            source.sizeMod *= perk.sizeMod;
+                            source.maxHealth *= perk.hpMod;
+                            source.updateAndApplyModifiers();
+                        }
+                        break;
+                    }
+                }
+            }
         }
 
         if (

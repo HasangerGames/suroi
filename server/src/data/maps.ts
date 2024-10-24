@@ -239,7 +239,7 @@ const maps = {
             count: 2,
             allowedObstacles: ["clearing_boulder", "flint_crate", "rock", "vibrant_bush", "river_chest", "lily_pad", "grenade_crate", "oak_leaf_pile", "river_rock", "melee_crate", "flint_stone"],
             obstacles: [
-                { idString: "clearing_boulder", min: 3, max: 6},
+                { idString: "clearing_boulder", min: 3, max: 6 },
                 { idString: "flint_crate", min: 0, max: 2 },
                 { idString: "grenade_crate", min: 0, max: 2 },
                 { idString: "melee_crate", min: 0, max: 1 },

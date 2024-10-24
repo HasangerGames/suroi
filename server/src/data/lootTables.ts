@@ -876,7 +876,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { table: "ammo", weight: 1 },
             { table: "guns", weight: 1 },
             { table: "equipment", weight: 0.6 },
-            { table: "scopes", weight: 0.3 }
+            { table: "scopes", weight: 0.3 },
+            { item: "deer_season", weight: 0.2 }
         ],
         regular_crate: [
             { table: "guns", weight: 1.25 },
@@ -885,6 +886,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { table: "ammo", weight: 0.5 },
             { table: "scopes", weight: 0.3 },
             { table: "throwables", weight: 0.3 },
+            { item: "deer_season", weight: 0.2 },
             { table: "melee", weight: 0.04 }
         ],
         airdrop_crate: [

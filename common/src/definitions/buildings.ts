@@ -5953,7 +5953,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     {
                         idString: { gun_mount_dual_rsh12: 0.1, gun_mount_mini14: 1, gun_mount_m590m: 0.2 },
                         position: Vec.create(-54.09, 84.63),
-                        rotation: 3,
+                        rotation: 3
                     },
                     { idString: "regular_crate", position: Vec.create(-62.71, 81.57) },
                     { idString: { box: 1, grenade_box: 1 }, position: Vec.create(-66.18, 89.31) },

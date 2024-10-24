@@ -227,7 +227,8 @@ const perks = [
         categories: [PerkCategories.Halloween],
 
         hpMod: 10, // additive
-        sizeMod: 1.05 // multiplicative
+        sizeMod: 1.05, // multiplicative
+        killsLimit: 10
     },
     {
         idString: PerkIds.Recycling,

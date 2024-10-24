@@ -85,8 +85,9 @@ export class Explosion {
                     const dist = Math.sqrt(collision.squareDistance);
 
                     if ((isPlayer || isObstacle || isBuilding) && adjacentOrEqualLayer(object.layer, this.layer)) {
+                        const perkDamageMod = this.source.isPlayer ? this.source.mapPerkOrDefault(PerkIds.PlumpkinBomb, ({ damageMod }) => damageMod, 1) : 1;
                         object.damage({
-                            amount: this.definition.damage
+                            amount: perkDamageMod * this.definition.damage
                                 * (isObstacle ? this.definition.obstacleMultiplier : 1)
                                 * (isPlayer ? object.mapPerkOrDefault(PerkIds.LowProfile, ({ explosionMod }) => explosionMod, 1) : 1)
                                 * ((dist > min) ? (max - dist) / (max - min) : 1),

@@ -429,7 +429,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "Pumpkin",
-            damage: 125,
+            damage: 100,
             obstacleMultiplier: 1,
             radius: {
                 min: 8,
