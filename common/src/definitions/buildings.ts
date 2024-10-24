@@ -5950,7 +5950,11 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
 
                     // vault
                     { idString: "metal_door", position: Vec.create(-84.12, 88.37), rotation: 1 },
-                    { idString: "gun_mount_dual_rsh12", position: Vec.create(-54.09, 84.63), rotation: 3 },
+                    {
+                        idString: { gun_mount_dual_rsh12: 0.1, gun_mount_mini14: 1, gun_mount_m590m: 0.2 },
+                        position: Vec.create(-54.09, 84.63),
+                        rotation: 3,
+                    },
                     { idString: "regular_crate", position: Vec.create(-62.71, 81.57) },
                     { idString: { box: 1, grenade_box: 1 }, position: Vec.create(-66.18, 89.31) },
                     { idString: { box: 1, grenade_box: 1 }, position: Vec.create(-60.05, 90.57) },
