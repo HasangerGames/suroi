@@ -966,6 +966,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 indestructible: true,
                 noCollisions: true,
                 noMeleeCollision: true,
+                noBulletCollision: true,
                 scale: {
                     spawnMin: 0.15,
                     spawnMax: 0.2,
@@ -3345,7 +3346,9 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 frames: {
                     particle: "crate_particle"
                 },
-                noCollisions: true
+                noCollisions: true,
+                noMeleeCollision: true,
+                noBulletCollision: true
             },
 
             // --------------------------------------------
