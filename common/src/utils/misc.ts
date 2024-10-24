@@ -29,11 +29,11 @@ export type Fn<Out = unknown> = (...args: any) => Out;
 
 // see above
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Constructor<Args extends any[], Out = unknown> = new (...args: Args) => Out;
+export type Constructor<Out = unknown, Args extends any[] = any[]> = new (...args: Args) => Out;
 
 // see above
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AbstractConstructor<Args extends any[], Out = unknown> = abstract new (...args: Args) => Out;
+export type AbstractConstructor<Out = unknown, Args extends any[] = any[]> = abstract new (...args: Args) => Out;
 
 export type DeepPartial<T> = {
     [K in keyof T]?: DeepPartial<T[K]>;

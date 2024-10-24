@@ -9,9 +9,9 @@ import { Vec, type Vector } from "@common/utils/vector";
 
 import { type Game } from "../game";
 import { type ThrowableItem } from "../inventory/throwableItem";
+import { Building } from "./building";
 import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
-import { Building } from "./building";
 
 const enum Drag {
     Normal = 0.001,
@@ -126,7 +126,8 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
                     explosion,
                     referencePosition,
                     this.source.owner,
-                    this.layer
+                    this.layer,
+                    this.source
                 );
             }
         }, delay);

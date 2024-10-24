@@ -821,7 +821,7 @@ export function calculateDoorHitboxes<
 * - This `Obstacle` instance is indeed one corresponding to a stair (such that `this.definition.isStair`)
 * - The given game object or bullet's hitbox overlaps this obstacle's (such that `gameObject.hitbox.collidesWith(this.hitbox)`)
 *
-* @returns the layer on which te game object should be placed after the interaction has been resolved
+* @returns the layer on which the game object should be placed after the interaction has been resolved
 */
 export function resolveStairInteraction(
     definition: ObstacleDefinition,
@@ -902,15 +902,17 @@ export function resolveStairInteraction(
         and assign a layer consequently, as visualized below.
         For the diagram, assume that low = 0 and that high = 1.
 
-                        ╱
+                     ╱
                     ╱
-        layer 0       ╱
+        layer 0    ╱
             ┌─────┐
+            │     │
             │  1  │
+            │     │
             └─────┘   layer 2
-            ╱
-            ╱
-            ╱
+           ╱
+          ╱
+         ╱
 
         in theory, only two sides of the stair would be accessible,
         and the other two would be clipped off with walls, but it's

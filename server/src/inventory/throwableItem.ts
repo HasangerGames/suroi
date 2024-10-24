@@ -110,7 +110,8 @@ class GrenadeHandler {
                 explosion,
                 referencePosition,
                 this.parent.owner,
-                this._projectile?.layer ?? this.parent.owner.layer
+                this._projectile?.layer ?? this.parent.owner.layer,
+                this.parent
             );
         }
 

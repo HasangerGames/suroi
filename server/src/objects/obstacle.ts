@@ -141,7 +141,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         const { amount, source, weaponUsed, position } = params;
         if (this.health === 0 || definition.indestructible) return;
 
-        const weaponDef = weaponUsed instanceof InventoryItem ? weaponUsed.definition : undefined;
+        const weaponIsItem = weaponUsed instanceof InventoryItem;
+        const weaponDef = weaponIsItem ? weaponUsed.definition : undefined;
         if (
             (
                 definition.impenetrable
@@ -184,7 +185,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             this.health = 0;
             this.dead = true;
             if (definition.weaponSwap && source instanceof BaseGameObject && source.isPlayer) {
-                source.swapActiveWeaponRandomly();
+                source.swapWeaponRandomly(weaponIsItem ? weaponUsed : weaponUsed?.weapon);
             }
 
             if (
@@ -203,7 +204,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             if (definition.explosion !== undefined && source instanceof BaseGameObject) {
                 //                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                 // FIXME This is implying that obstacles won't explode if destroyed by non–game objects
-                this.game.addExplosion(definition.explosion, this.position, source, source.layer);
+                this.game.addExplosion(definition.explosion, this.position, source, source.layer, weaponIsItem ? weaponUsed : weaponUsed?.weapon);
             }
 
             if (definition.particlesOnDestroy !== undefined) {

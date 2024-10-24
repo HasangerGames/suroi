@@ -32,6 +32,7 @@ import { MapName, Maps } from "./data/maps";
 import { WorkerMessages, type GameData, type WorkerInitData, type WorkerMessage } from "./gameManager";
 import { Gas } from "./gas";
 import { GunItem } from "./inventory/gunItem";
+import type { MeleeItem } from "./inventory/meleeItem";
 import { ThrowableItem } from "./inventory/throwableItem";
 import { GameMap } from "./map";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
@@ -535,7 +536,7 @@ export class Game implements GameData {
                     for (const player of players) {
                         if (!player.hasPerk(PerkIds.BabyPlumpkinPie)) continue;
 
-                        player.swapActiveWeaponRandomly();
+                        player.swapWeaponRandomly();
                     }
                     break;
                 }
@@ -608,7 +609,13 @@ export class Game implements GameData {
             if (bullet.dead) {
                 const onHitExplosion = bullet.definition.onHitExplosion;
                 if (onHitExplosion && !bullet.reflected) {
-                    this.addExplosion(onHitExplosion, bullet.position, bullet.shooter, bullet.layer);
+                    this.addExplosion(
+                        onHitExplosion,
+                        bullet.position,
+                        bullet.shooter,
+                        bullet.layer,
+                        bullet.sourceGun instanceof GunItem ? bullet.sourceGun : undefined
+                    );
                 }
                 this.bullets.delete(bullet);
             }
@@ -1168,8 +1175,14 @@ export class Game implements GameData {
         return bullet;
     }
 
-    addExplosion(type: ReifiableDef<ExplosionDefinition>, position: Vector, source: GameObject, layer: Layer): Explosion {
-        const explosion = new Explosion(this, type, position, source, layer);
+    addExplosion(
+        type: ReifiableDef<ExplosionDefinition>,
+        position: Vector,
+        source: GameObject,
+        layer: Layer,
+        weapon?: GunItem | MeleeItem | ThrowableItem
+    ): Explosion {
+        const explosion = new Explosion(this, type, position, source, layer, weapon);
         this.explosions.push(explosion);
         return explosion;
     }

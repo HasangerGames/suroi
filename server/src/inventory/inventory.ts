@@ -36,7 +36,7 @@ export const InventoryItemMapping = {
     [ItemType.Melee]: MeleeItem,
     [ItemType.Throwable]: ThrowableItem
 } satisfies {
-    [K in ItemType]?: AbstractConstructor<[def: ReifiableDef<LootDefForType<K>>, owner: Player, data?: ItemData<LootDefForType<K>>], InventoryItem>
+    [K in ItemType]?: AbstractConstructor<InventoryItem, [def: ReifiableDef<LootDefForType<K>>, owner: Player, data?: ItemData<LootDefForType<K>>]>
 };
 
 /**

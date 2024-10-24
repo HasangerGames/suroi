@@ -3,6 +3,7 @@ import { Ammos } from "./ammos";
 import { Guns } from "./guns";
 import { HealingItems } from "./healingItems";
 import { Melees } from "./melees";
+import { Throwables } from "./throwables";
 
 export enum EmoteCategory {
     People,
@@ -134,6 +135,7 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>([
         ...HealingItems.definitions
     ].map(({ idString }) => teamEmote([idString])),
     ...[
+        ...Throwables.definitions,
         ...Melees.definitions,
         ...Guns.definitions
     ].map(({ idString }) => weaponEmote([idString]))

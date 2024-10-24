@@ -384,6 +384,9 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                 Base extends (...args: infer Args) => infer Ret
                     ? (...args: Args) => Ret & Default
                     : Base & Default
+                // ts is inconsistent about when it wants to accept/reject this
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore lol, is this the new ts2589
             > = createTemplate<Missing>().bind(null, defaultTemplate);
 
             return new ObjectDefinitions<Def>(

@@ -1,5 +1,6 @@
 import { Layer } from "@common/constants";
 import { Explosions, type ExplosionDefinition } from "@common/definitions/explosions";
+import { PerkIds } from "@common/definitions/perks";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Angle, Geometry } from "@common/utils/math";
@@ -7,6 +8,9 @@ import { type ReifiableDef } from "@common/utils/objectDefinitions";
 import { randomRotation } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
+import type { GunItem } from "../inventory/gunItem";
+import type { MeleeItem } from "../inventory/meleeItem";
+import type { ThrowableItem } from "../inventory/throwableItem";
 import { Building } from "./building";
 import { Decal } from "./decal";
 import { type GameObject } from "./gameObject";
@@ -14,21 +18,19 @@ import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 import { ThrowableProjectile } from "./throwableProj";
-import { PerkIds } from "@common/definitions/perks";
 
 export class Explosion {
-    readonly game: Game;
     readonly definition: ExplosionDefinition;
-    readonly position: Vector;
-    readonly source: GameObject;
-    readonly layer: Layer;
 
-    constructor(game: Game, definition: ReifiableDef<ExplosionDefinition>, position: Vector, source: GameObject, layer: Layer) {
-        this.game = game;
+    constructor(
+        readonly game: Game,
+        definition: ReifiableDef<ExplosionDefinition>,
+        readonly position: Vector,
+        readonly source: GameObject,
+        readonly layer: Layer,
+        readonly weapon?: GunItem | MeleeItem | ThrowableItem
+    ) {
         this.definition = Explosions.reify(definition);
-        this.position = position;
-        this.source = source;
-        this.layer = layer;
     }
 
     explode(): void {

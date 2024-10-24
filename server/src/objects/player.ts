@@ -521,9 +521,19 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
     }
 
-    swapActiveWeaponRandomly(): void {
-        const slot = this.activeItemIndex;
-        const itemDef = this.activeItem;
+    swapWeaponRandomly(itemOrSlot: InventoryItem | number = this.activeItem): void {
+        let slot = itemOrSlot === this.activeItem
+            ? this.activeItemIndex
+            : typeof itemOrSlot === "number"
+                ? itemOrSlot
+                : this.inventory.weapons.findIndex(i => i === itemOrSlot);
+
+        if (slot === -1) {
+            // this happens if the item to be swapped isn't currently in the inventory
+            // in that case, we just take the first slot matching that item's type
+            slot = GameConstants.player.inventorySlotTypings.filter(slot => slot === (itemOrSlot as InventoryItem).definition.itemType)?.[0] ?? 0;
+            // and if we somehow don't have any matching slots, then someone's probably messing with us… fallback to slot 0 lol
+        }
 
         const spawnable = SpawnableLoots();
 
@@ -532,7 +542,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const { inventory } = this;
         const { items, backpack: { maxCapacity }, throwableItemMap } = inventory;
         switch (true) {
-            case itemDef instanceof GunItem: {
+            case itemOrSlot instanceof GunItem: {
                 this.action?.cancel();
 
                 const chosenGun = pickRandomInArray(spawnable.forType(ItemType.Gun));
@@ -552,7 +562,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 break;
             }
 
-            case itemDef instanceof MeleeItem: {
+            case itemOrSlot instanceof MeleeItem: {
                 const chosenMelee = pickRandomInArray(spawnable.forType(ItemType.Melee));
 
                 // exceptional circumstance that can occur if the array is empty
@@ -563,7 +573,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 break;
             }
 
-            case itemDef instanceof ThrowableItem: {
+            case itemOrSlot instanceof ThrowableItem: {
                 const chosenThrowable = pickRandomInArray(
                     spawnable.forType(ItemType.Throwable).filter(
                         ({ idString: thr }) => (items.hasItem(thr) ? items.getItem(thr) : 0) < maxCapacity[thr]
@@ -1787,7 +1797,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.killedBy = source;
             if (source !== this && (!this.game.teamMode || source.teamID !== this.teamID)) source.kills++;
 
-            if (source.perks.hasPerk(PerkIds.BabyPlumpkinPie)) source.swapActiveWeaponRandomly();
+            if (source.perks.hasPerk(PerkIds.BabyPlumpkinPie)) source.swapWeaponRandomly();
         }
 
         if (
