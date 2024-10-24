@@ -932,6 +932,20 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { item: "338lap", count: 6, weight: 0.3 },
                 { item: "curadell", weight: 0.1 }
             ]
+        
+        ],
+        loot_tree: [
+            [
+                { item: "m3k", weight: 1 },
+                { item: "vepr12", weight: 0.2 },
+                { item: "m590m", weight: 0.05 },
+                { item: "usas12", weight: 0.005 }
+            ],
+            [{ item: "hatchet", weight: 1 }],
+            [{ item: "lumberjack", weight: 1 }],
+            [{ item: "regular_helmet", weight: 1 }],
+            [{ item: "regular_pack", weight: 1 }],
+            [{ item: "12g", count: 15, weight: 1 }]
         ],
         gun_locker: {
             min: 1,
