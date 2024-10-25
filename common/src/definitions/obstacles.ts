@@ -1021,6 +1021,25 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 }
             },
             {
+                idString: "jack_o_lantern",
+                name: "Jack O' Lantern",
+                material: "pumpkin",
+                health: 160,
+                scale: {
+                    spawnMin: 0.9,
+                    spawnMax: 1.1,
+                    destroy: 0.5
+                },
+                hitbox: new CircleHitbox(4.69),
+                rotationMode: RotationMode.Full,
+                allowFlyover: FlyoverPref.Always,
+                // hasLoot: true,
+                frames: {
+                    particle: "pumpkin_particle",
+                    residue: "pumpkin_residue"
+                }
+            },
+            {
                 idString: "mini_plumpkin",
                 name: "Mini Plumpkin",
                 material: "pumpkin",
