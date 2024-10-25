@@ -255,6 +255,44 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }
             },
             {
+                idString: "ar15",
+                name: "AR-15 American Edition",
+                ammoType: "762mm",
+                ammoSpawnAmount: 90,
+                capacity: 69,
+                reloadTime: 26,
+                fireDelay: 400,
+                switchDelay: 400,
+                recoilMultiplier: 0.75,
+                recoilDuration: 150,
+                fireMode: FireMode.Auto,
+                shotSpread: 2,
+                moveSpread: 6,
+                length: 7.55,
+                fists: {
+                    left: Vec.create(120, -2),
+                    right: Vec.create(45, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(90, 2) },
+                casingParticles: [{
+                    frame: "casing_762x39mm",
+                    position: Vec.create(4, 0.4)
+                }],
+                gasParticles: gasParticlePresets.automatic,
+                ballistics: {
+                    damage: 100,
+                    obstacleMultiplier: 1.5,
+                    speed: 0.26,
+                    range: 160,
+                    tracer: {
+                        width: 2.5,
+                        length: 4
+                    }
+                }
+            },
+            {
                 idString: "arx160",
                 name: "ARX-160",
                 ammoType: "762mm",
