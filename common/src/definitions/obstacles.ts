@@ -1024,7 +1024,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 idString: "jack_o_lantern",
                 name: "Jack O' Lantern",
                 material: "pumpkin",
-                health: 160,
+                health: 300,
                 scale: {
                     spawnMin: 0.9,
                     spawnMax: 1.1,
@@ -1062,7 +1062,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 idString: "plumpkin",
                 name: "Plumpkin",
                 material: "pumpkin",
-                health: 160,
+                health: 300,
                 scale: {
                     spawnMin: 0.9,
                     spawnMax: 1.1,
@@ -1081,7 +1081,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 idString: "diseased_plumpkin",
                 name: "Diseased Plumpkin",
                 material: "pumpkin",
-                health: 140,
+                health: 200,
                 scale: {
                     spawnMin: 0.9,
                     spawnMax: 1.1,
