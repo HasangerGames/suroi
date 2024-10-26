@@ -521,6 +521,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ table: "ammo", weight: 1 }],
             [{ table: "ammo", weight: 1 }],
             [
+                { item: NullString, weight: 1 },
                 { item: "50cal", count: 20, weight: 0.3 },
                 { item: "338lap", count: 6, weight: 0.1 },
                 { item: "curadell", weight: 0.1 }
@@ -941,8 +942,9 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ table: "ammo", weight: 1 }],
             [{ table: "ammo", weight: 1 }],
             [
-                { item: "50cal", count: 20, weight: 0.8 },
-                { item: "338lap", count: 6, weight: 0.3 },
+                { item: NullString, weight: 1 },
+                { item: "50cal", count: 20, weight: 0.7 },
+                { item: "338lap", count: 6, weight: 0.2 },
                 { item: "curadell", weight: 0.1 }
             ]
         ],
