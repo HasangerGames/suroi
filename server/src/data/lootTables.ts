@@ -1147,7 +1147,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "12g", count: 10, weight: 1 },
             { item: "556mm", count: 60, weight: 1 },
             { item: "762mm", count: 60, weight: 1 },
-            { item: "50cal", count: 20, weight: 0.5 },
+            { item: "50cal", count: 20, weight: 0.2 },
             { item: "338lap", count: 6, weight: 0.05 }
         ],
         throwables: [
