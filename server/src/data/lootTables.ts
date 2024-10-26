@@ -965,20 +965,28 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             min: 1,
             max: 2,
             loot: [
-                { item: "m3k", weight: 1 },
-                { item: "model_37", weight: 1 },
-                { item: "cz600", weight: 0.8 },
-                { item: "flues", weight: 0.6 },
-                { item: "sr25", weight: 0.4 },
-                { item: "mini14", weight: 0.4 },
-                { item: "mosin_nagant", weight: 0.4 },
-                { item: "m590m", weight: 0.4 },
-                { item: "vepr12", weight: 0.2 },
-                { item: "tango_51", weight: 0.1 },
-                { item: "rsh12", weight: 0.25 },
-                { item: "vks", weight: 0.25 },
-                { item: "model_89", weight: 0.25 },
-                { item: "m1_garand", weight: 0.1 }
+                // 65% chance for one of these
+                { item: "model_37", weight: 0.13 },
+                { item: "m3k", weight: 0.13 },
+                { item: "cz600", weight: 0.13 },
+                { item: "flues", weight: 0.13 },
+                { item: "dual_m1895", weight: 0.13 },
+
+                // 20% chance for one of these
+                { item: "sr25", weight: 0.066 },
+                { item: "mini14", weight: 0.066 },
+                { item: "mosin_nagant", weight: 0.066 },
+
+                // 10% chance for one of these
+                { item: "m590m", weight: 0.05 },
+                { item: "vepr12", weight: 0.05 },
+
+                // 5% chance for one of these
+                { item: "tango_51", weight: 0.01 },
+                { item: "rsh12", weight: 0.01 },
+                { item: "vks", weight: 0.01 },
+                { item: "model_89", weight: 0.01 },
+                { item: "m1_garand", weight: 0.01 }
             ]
         },
 
@@ -1086,38 +1094,54 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "g19", weight: 0.0001 }
         ],
         viking_chest_guns: [
-            { item: "m3k", weight: 1 },
-            { item: "cz600", weight: 1 },
-            { item: "flues", weight: 0.5 },
-            { item: "mini14", weight: 0.3 },
-            { item: "sr25", weight: 0.3 },
-            { item: "mosin_nagant", weight: 0.3 },
-            { item: "m590m", weight: 0.1 },
-            { item: "vepr12", weight: 0.1 },
-            { item: "radio", weight: 0.1 },
-            { item: "rsh12", weight: 0.05 },
-            { item: "model_89", weight: 0.05 },
-            { item: "vks", weight: 0.05 },
-            { item: "tango_51", weight: 0.05 },
-            { item: "m1_garand", weight: 0.02 }
+            // 35% chance for one of these
+            { item: "m3k", weight: 0.1166 },
+            { item: "cz600", weight: 0.1166 },
+            { item: "flues", weight: 0.1166 },
+
+            // 40% chance for one of these
+            { item: "mini14", weight: 0.133 },
+            { item: "sr25", weight: 0.133 },
+            { item: "mosin_nagant", weight: 0.133 },
+
+            // 10% chance for one of these
+            { item: "m590m", weight: 0.033 },
+            { item: "vepr12", weight: 0.033 },
+            { item: "radio", weight: 0.033 },
+
+            // 5% chance for one of these
+            { item: "rsh12", weight: 0.01 },
+            { item: "model_89", weight: 0.01 },
+            { item: "vks", weight: 0.01 },
+            { item: "tango_51", weight: 0.01 },
+            { item: "m1_garand", weight: 0.01 }
         ],
         river_chest_guns: [
-            { item: "m3k", weight: 1 },
-            { item: "cz600", weight: 1 },
-            { item: "flues", weight: 0.5 },
-            { item: "mini14", weight: 0.3 },
-            { item: "sr25", weight: 0.3 },
-            { item: "mosin_nagant", weight: 0.3 },
-            { item: "vepr12", weight: 0.2 },
-            { item: "m590m", weight: 0.2 },
-            { item: "rsh12", weight: 0.1 },
-            { item: "model_89", weight: 0.1 },
-            { item: "vks", weight: 0.1 },
-            { item: "radio", weight: 0.1 },
-            { item: "tango_51", weight: 0.05 },
-            { item: "m1_garand", weight: 0.02 },
-            { item: "l115a1", weight: 0.01 },
-            { item: "mk18", weight: 0.01 }
+            // 60% chance for one of these
+            { item: "m3k", weight: 0.2 },
+            { item: "cz600", weight: 0.2 },
+            { item: "flues", weight: 0.2 },
+
+            // 20% chance for one of these
+            { item: "mini14", weight: 0.066 },
+            { item: "sr25", weight: 0.066 },
+            { item: "mosin_nagant", weight: 0.066 },
+
+            // 15% chance for one of these
+            { item: "rsh12", weight: 0.03 },
+            { item: "model_89", weight: 0.03 },
+            { item: "vks", weight: 0.03 },
+            { item: "tango_51", weight: 0.03 },
+            { item: "m1_garand", weight: 0.03 },
+
+            // 5% chance for one of these
+            { item: "vepr12", weight: 0.0166 },
+            { item: "m590m", weight: 0.0166 },
+            { item: "radio", weight: 0.0166 },
+
+            // 5% chance for one of these
+            { item: "l115a1", weight: 0.025 },
+            { item: "mk18", weight: 0.025 }
         ],
         ammo: [
             { item: "12g", count: 10, weight: 1 },
