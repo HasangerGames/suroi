@@ -983,46 +983,68 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         },
 
         guns: [
-            { item: "m1895", weight: 1 },
-            { item: "hp18", weight: 1 },
-            { item: "sks", weight: 1 },
-            { item: "dt11", weight: 0.8 },
-            { item: "model_37", weight: 0.8 },
-            { item: "dual_m1895", weight: 0.8 },
-            { item: "m3k", weight: 0.2 },
-            { item: "cz600", weight: 0.2 },
-            { item: "flues", weight: 0.2 },
-            { item: "sr25", weight: 0.04 },
-            { item: "mini14", weight: 0.04 },
-            { item: "mosin_nagant", weight: 0.04 },
-            { item: "m590m", weight: 0.01 },
-            { item: "model_89", weight: 0.01 },
-            { item: "vepr12", weight: 0.01 },
-            { item: "rsh12", weight: 0.005 },
-            { item: "tango_51", weight: 0.005 },
-            { item: "vks", weight: 0.005 },
-            { item: "radio", weight: 0.005 }
+            // 50% chance for one of these
+            { item: "m1895", weight: 0.166 },
+            { item: "hp18", weight: 0.166 },
+            { item: "sks", weight: 0.166 },
+
+            // 30% chance for one of these
+            { item: "dt11", weight: 0.15 },
+            { item: "model_37", weight: 0.15 },
+
+            // 14% chance for one of these
+            { item: "m3k", weight: 0.035 },
+            { item: "cz600", weight: 0.035 },
+            { item: "flues", weight: 0.035 },
+            { item: "dual_m1895", weight: 0.035 },
+
+            // 4% chance for one of these
+            { item: "sr25", weight: 0.0133 },
+            { item: "mini14", weight: 0.0133 },
+            { item: "mosin_nagant", weight: 0.0133 },
+
+            // 2% chance for one of these
+            { item: "m590m", weight: 0.0066 },
+            { item: "model_89", weight: 0.0066 },
+            { item: "vepr12", weight: 0.0066 },
+
+            // very rare shit
+            { item: "rsh12", weight: 0.001 },
+            { item: "tango_51", weight: 0.001 },
+            { item: "vks", weight: 0.001 },
+            { item: "radio", weight: 0.001 }
         ],
         special_guns: [
-            { item: "dt11", weight: 0.8 },
-            { item: "model_37", weight: 0.8 },
-            { item: "dual_m1895", weight: 0.8 },
-            { item: "m3k", weight: 0.7 },
-            { item: "cz600", weight: 0.7 },
-            { item: "flues", weight: 0.7 },
-            { item: "sks", weight: 0.5 },
-            { item: "hp18", weight: 0.5 },
-            { item: "sr25", weight: 0.09 },
-            { item: "mini14", weight: 0.09 },
-            { item: "mosin_nagant", weight: 0.09 },
-            { item: "m590m", weight: 0.05 },
-            { item: "model_89", weight: 0.05 },
-            { item: "vepr12", weight: 0.05 },
-            { item: "tango_51", weight: 0.01 },
-            { item: "vks", weight: 0.01 },
-            { item: "rsh12", weight: 0.01 },
-            { item: "radio", weight: 0.01 },
-            { item: "m1_garand", weight: 0.005 }
+            // 32% chance for one of these
+            { item: "dt11", weight: 0.16 },
+            { item: "model_37", weight: 0.16 },
+
+            // 37% chance for one of these
+            { item: "dual_m1895", weight: 0.0925 },
+            { item: "m3k", weight: 0.0925 },
+            { item: "cz600", weight: 0.0925 },
+            { item: "flues", weight: 0.0925 },
+
+            // 15% chance for one of these (L unlucky)
+            { item: "sks", weight: 0.075 },
+            { item: "hp18", weight: 0.075 },
+
+            // 10% chance for one of these
+            { item: "sr25", weight: 0.033 },
+            { item: "mini14", weight: 0.033 },
+            { item: "mosin_nagant", weight: 0.033 },
+
+            // 5% chance for one of these
+            { item: "m590m", weight: 0.0166 },
+            { item: "model_89", weight: 0.0166 },
+            { item: "vepr12", weight: 0.0166 },
+
+            // 1% chance for one of these
+            { item: "tango_51", weight: 0.002 },
+            { item: "vks", weight: 0.002 },
+            { item: "rsh12", weight: 0.002 },
+            { item: "radio", weight: 0.002 },
+            { item: "m1_garand", weight: 0.002 }
         ],
         airdrop_guns: [
             { item: "mini14", weight: 1.5 },
