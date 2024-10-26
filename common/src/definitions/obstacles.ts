@@ -968,19 +968,15 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 noMeleeCollision: true,
                 noBulletCollision: true,
                 scale: {
-                    spawnMin: 0.15,
-                    spawnMax: 0.2,
+                    spawnMin: 0.8,
+                    spawnMax: 1.2,
                     destroy: 0
                 },
                 spawnMode: MapObjectSpawnMode.Trail,
                 hitbox: new CircleHitbox(0.5),
                 spawnHitbox: new CircleHitbox(0.5),
                 rotationMode: RotationMode.Full,
-                frames: {
-                    base: "rock"
-                },
-                variations: 7,
-                particleVariations: 2
+                variations: 2
             },
             {
                 idString: "pumpkin",
