@@ -1,5 +1,5 @@
-import { type TemplatedApp, type WebSocket } from "uWebSockets.js";
-import { isMainThread, parentPort, workerData } from "worker_threads";
+import { type WebSocket } from "uWebSockets.js";
+import { parentPort } from "worker_threads";
 
 import { GameConstants, KillfeedMessageType, Layer, ObjectCategory, TeamSize } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
@@ -29,7 +29,7 @@ import { Ammos, Emotes } from "@common/definitions";
 import { PerkIds, Perks, updateInterval } from "@common/definitions/perks";
 import { Config, SpawnMode } from "./config";
 import { MapName, Maps } from "./data/maps";
-import { WorkerMessages, type GameData, type WorkerInitData, type WorkerMessage } from "./gameManager";
+import { WorkerMessages, type GameData, type WorkerMessage } from "./gameManager";
 import { Gas } from "./gas";
 import { GunItem } from "./inventory/gunItem";
 import type { MeleeItem } from "./inventory/meleeItem";
@@ -50,7 +50,6 @@ import { Team } from "./team";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Logger, removeFrom } from "./utils/misc";
-import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/usernameFilter";
 
 /*
@@ -64,14 +63,6 @@ import { cleanUsername } from "./utils/usernameFilter";
  */
 export class Game implements GameData {
     public readonly id: number;
-
-    server: TemplatedApp;
-
-    // string = ip, number = expire time
-    readonly allowedIPs = new Map<string, number>();
-
-    readonly simultaneousConnections: Record<string, number> = {};
-    joinAttempts: Record<string, number> = {};
 
     readonly map: GameMap;
     readonly gas: Gas;
@@ -232,177 +223,19 @@ export class Game implements GameData {
         return this._idAllocator.takeNext();
     }
 
-    constructor() {
-        this.id = (workerData as WorkerInitData).id;
-        this.maxTeamSize = (workerData as WorkerInitData).maxTeamSize;
+    constructor(id: number, maxTeamSize: TeamSize) {
+        this.id = id;
+        this.maxTeamSize = maxTeamSize;
         this.teamMode = this.maxTeamSize > TeamSize.Solo;
+        this.updateGameData({
+            aliveCount: 0,
+            allowJoin: false,
+            over: false,
+            stopped: false,
+            startedTime: -1
+        });
 
         this.pluginManager.loadPlugins();
-
-        parentPort?.on("message", (message: WorkerMessage) => {
-            switch (message.type) {
-                case WorkerMessages.AllowIP: {
-                    this.allowedIPs.set(message.ip, this.now + 10000);
-                    parentPort?.postMessage({
-                        type: WorkerMessages.IPAllowed,
-                        ip: message.ip
-                    });
-                    break;
-                }
-            }
-        });
-
-        const This = this;
-
-        this.server = createServer().ws("/play", {
-            idleTimeout: 30,
-
-            /**
-             * Upgrade the connection to WebSocket.
-             */
-            upgrade(res, req, context) {
-                res.onAborted((): void => { /* Handle errors in WS connection */ });
-
-                const ip = getIP(res, req);
-
-                //
-                // Rate limits
-                //
-                if (Config.protection) {
-                    const { maxSimultaneousConnections, maxJoinAttempts } = Config.protection;
-                    const { simultaneousConnections, joinAttempts } = This;
-
-                    if (
-                        (simultaneousConnections[ip] >= (maxSimultaneousConnections ?? Infinity))
-                        || (joinAttempts[ip] >= (maxJoinAttempts?.count ?? Infinity))
-                    ) {
-                        Logger.log(`Game ${This.id} | Rate limited: ${ip}`);
-                        forbidden(res);
-                        return;
-                    } else {
-                        if (maxSimultaneousConnections) {
-                            simultaneousConnections[ip] = (simultaneousConnections[ip] ?? 0) + 1;
-                            Logger.log(`Game ${This.id} | ${simultaneousConnections[ip]}/${Config.protection.maxSimultaneousConnections} simultaneous connections: ${ip}`);
-                        }
-                        if (maxJoinAttempts) {
-                            joinAttempts[ip] = (joinAttempts[ip] ?? 0) + 1;
-                            Logger.log(`Game ${This.id} | ${joinAttempts[ip]}/${maxJoinAttempts.count} join attempts in the last ${maxJoinAttempts.duration} ms: ${ip}`);
-                        }
-                    }
-                }
-
-                const searchParams = new URLSearchParams(req.getQuery());
-
-                //
-                // Ensure IP is allowed
-                //
-                if ((This.allowedIPs.get(ip) ?? Infinity) < This.now) {
-                    forbidden(res);
-                    return;
-                }
-
-                //
-                // Validate and parse role and name color
-                //
-                const password = searchParams.get("password");
-                const givenRole = searchParams.get("role");
-                let role: string | undefined;
-                let isDev = false;
-
-                let nameColor: number | undefined;
-                if (
-                    password !== null
-                    && givenRole !== null
-                    && givenRole in Config.roles
-                    && Config.roles[givenRole].password === password
-                ) {
-                    role = givenRole;
-                    isDev = Config.roles[givenRole].isDev ?? false;
-
-                    if (isDev) {
-                        try {
-                            const colorString = searchParams.get("nameColor");
-                            if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
-                        } catch { /* guess your color sucks lol */ }
-                    }
-                }
-
-                //
-                // Upgrade the connection
-                //
-                res.upgrade(
-                    {
-                        teamID: searchParams.get("teamID") ?? undefined,
-                        autoFill: Boolean(searchParams.get("autoFill")),
-                        player: undefined,
-                        ip,
-                        role,
-                        isDev,
-                        nameColor,
-                        lobbyClearing: searchParams.get("lobbyClearing") === "true",
-                        weaponPreset: searchParams.get("weaponPreset") ?? ""
-                    },
-                    req.getHeader("sec-websocket-key"),
-                    req.getHeader("sec-websocket-protocol"),
-                    req.getHeader("sec-websocket-extensions"),
-                    context
-                );
-            },
-
-            /**
-             * Handle opening of the socket.
-             * @param socket The socket being opened.
-             */
-            open(socket: WebSocket<PlayerContainer>) {
-                const data = socket.getUserData();
-                if ((data.player = This.addPlayer(socket)) === undefined) {
-                    socket.close();
-                }
-
-                // data.player.sendGameOverPacket(false); // uncomment to test game over screen
-            },
-
-            /**
-             * Handle messages coming from the socket.
-             * @param socket The socket in question.
-             * @param message The message to handle.
-             */
-            message(socket: WebSocket<PlayerContainer>, message) {
-                const stream = new SuroiBitStream(message);
-                try {
-                    const player = socket.getUserData().player;
-                    if (player === undefined) return;
-                    This.onMessage(stream, player);
-                } catch (e) {
-                    console.warn("Error parsing message:", e);
-                }
-            },
-
-            /**
-             * Handle closing of the socket.
-             * @param socket The socket being closed.
-             */
-            close(socket: WebSocket<PlayerContainer>) {
-                const data = socket.getUserData();
-
-                // this should never be null-ish, but will leave it here for any potential race conditions (i.e. TFO? (verification required))
-                if (Config.protection && data.ip !== undefined) This.simultaneousConnections[data.ip]--;
-
-                const { player } = data;
-                if (!player) return;
-
-                Logger.log(`Game ${This.id} | "${player.name}" left`);
-                This.removePlayer(player);
-            }
-        }).listen(Config.host, Config.port + this.id + 1, (): void => {
-            Logger.log(`Game ${this.id} | Listening on ${Config.host}:${Config.port + this.id + 1}`);
-        });
-
-        if (Config.protection?.maxJoinAttempts) {
-            setInterval((): void => {
-                this.joinAttempts = {};
-            }, Config.protection.maxJoinAttempts.duration);
-        }
 
         const { width, height } = Maps[Config.map.split(":")[0] as MapName];
         this.grid = new Grid(this, width, height);
@@ -729,8 +562,8 @@ export class Game implements GameData {
 
             // End the game in 1 second
             this.addTimeout(() => {
-                this.server.close();
                 this.setGameData({ stopped: true });
+                Logger.log(`Game ${this.id} | Ended`);
             }, 1000);
         }
 
@@ -771,6 +604,8 @@ export class Game implements GameData {
     }
 
     createNewGame(): void {
+        if (!this.allowJoin) return; // means a new game has already been created by this game
+
         parentPort?.postMessage({ type: WorkerMessages.CreateNewGame });
         Logger.log(`Game ${this.id} | Creating new game`);
         this.setGameData({ allowJoin: false });
@@ -1446,5 +1281,3 @@ export interface Airdrop {
     readonly position: Vector
     readonly type: ObstacleDefinition
 }
-
-if (!isMainThread) new Game();

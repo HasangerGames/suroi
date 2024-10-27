@@ -179,6 +179,9 @@ importers:
       nanotimer:
         specifier: ^0.3.15
         version: 0.3.15
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@22.7.5)(typescript@5.6.3)
       ws:
         specifier: ^8.18.0
         version: 8.18.0
@@ -201,6 +204,9 @@ importers:
       tsc-alias:
         specifier: ^1.8.10
         version: 1.8.10
+      tsconfig-paths:
+        specifier: ^4.2.0
+        version: 4.2.0
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
