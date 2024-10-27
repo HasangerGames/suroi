@@ -2324,7 +2324,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 noHitEffect: true,
                 noDestroyEffect: true,
                 noBulletCollision: true,
-                hitbox: RectangleHitbox.fromRect(7.6, 2.5, Vec.create(0, 0)),
+                hitbox: RectangleHitbox.fromRect(7.6, 2.5),
                 rotationMode: RotationMode.Limited,
                 zIndex: ZIndexes.ObstaclesLayer3,
                 frames: { }

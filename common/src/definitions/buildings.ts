@@ -45,7 +45,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly ceilingCollapseParticleVariations?: number
     readonly resetCeilingResidueScale?: boolean
     readonly ceilingCollapseSound?: string
-    readonly destroyUponCeilingCollapse?: string[]
+    readonly destroyObstaclesOnCeilingCollapse?: boolean
     readonly material?: typeof Materials[number]
     readonly particle?: string
     readonly particleVariations?: number
@@ -396,7 +396,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ceilingCollapseParticle: `tent_ceiling_particle_${color}`,
                 ceilingCollapseParticleVariations: 3,
                 resetCeilingResidueScale: true,
-                destroyUponCeilingCollapse: ["pole", `tent_wall_${id}`],
+                destroyObstaclesOnCeilingCollapse: true,
                 wallsToDestroy: 1,
                 obstacles: special
                     ? [
@@ -490,7 +490,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ceilingCollapseParticle: `tent_ceiling_particle_${color}`,
                 ceilingCollapseParticleVariations: 3,
                 wallsToDestroy: 1,
-                destroyUponCeilingCollapse: ["pole", `tent_wall_big_${id}`, "tent_window"],
+                destroyObstaclesOnCeilingCollapse: true,
                 obstacles: [
                     { idString: "pole", position: Vec.create(3.42, -5.76) },
                     { idString: "pole", position: Vec.create(-3.42, 5.76) },
