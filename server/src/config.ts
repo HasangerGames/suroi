@@ -229,7 +229,10 @@ export interface ConfigType {
         /**
          * If specified, the proxycheck.io API will be used to detect and block VPNs and proxies.
          */
-        readonly proxyCheckAPIKey?: string
+        readonly ipChecker?: {
+            readonly key: string
+            readonly baseUrl: string
+        }
     }
 
     /**

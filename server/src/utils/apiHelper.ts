@@ -1,85 +1,105 @@
-import * as https from "https";
-// FIXME this should be in a .env!
-export const mod_api_data = {
-    API_SERVER_URL: "api server url",
-    API_SERVER_KEY: "Server Key",
-    API_WEBHOOK_URL: "Logging webhook"
-};
+interface IpCheckResponse {
+    flagged: boolean
+    message: string
+}
 
-/**
- * Sends a POST request to the specified URL with the given data.
- * @param url URL to contact
- * @param data Data to send
- * @returns Promise resolving to the response data
- */
-export const sendPostRequest = (url: string, data: unknown): Promise<string> => {
-    return new Promise((resolve, reject) => {
-        const payload = JSON.stringify(data);
+export interface Punishment {
+    readonly id: string
+    readonly ip: string
+    readonly reportId: string
+    readonly reason: string
+    readonly reporter: string
+    readonly expires?: number
+    readonly punishmentType: "warn" | "temp" | "perma"
+}
 
-        const options: https.RequestOptions = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "api-key": mod_api_data.API_SERVER_KEY
+class IpChecker {
+    private readonly baseUrl: string;
+    private readonly apiKey: string;
+
+    /**
+     * Constructs an instance of IpChecker.
+     * @param baseUrl - The base URL of the API (e.g., 'https://api.example.com')
+     * @param apiKey - The API key to be sent in the 'api-key' header
+     */
+    constructor(baseUrl: string, apiKey: string) {
+        this.baseUrl = baseUrl.replace(/\/+$/, ""); // Remove trailing slashes
+        this.apiKey = apiKey;
+    }
+
+    /**
+     * Checks if the given IP is flagged by the API.
+     * If any error occurs, it returns { flagged: false, message: 'IP is not a proxy/VPN' }
+     * @param ip - The IP address to check
+     * @returns A promise that resolves to an IpCheckResponse
+     */
+    async check(ip: string): Promise<IpCheckResponse> {
+        try {
+            this.validateIp(ip);
+            const url = `${this.baseUrl}/${ip}`;
+
+            const headers = {
+                "api-key": this.apiKey
+            };
+
+            const response = await fetch(url, {
+                method: "GET",
+                headers: headers
+            });
+
+            return await this.handleResponse<IpCheckResponse>(response);
+        } catch (error: unknown) {
+        // If any error occurs, return that the IP is not a proxy/VPN
+            if (error instanceof Error) {
+                console.log(error.message);
+            } else {
+                console.log(String(error));
             }
-        };
+            return {
+                flagged: false,
+                message: "IP is not a proxy/VPN"
+            };
+        }
+    }
 
-        const req = https.request(url, options, res => {
-            let responseData = "";
+    /**
+     * Validates the IP address format.
+     * @param ip - The IP address to validate
+     */
+    private validateIp(ip: string): void {
+        const ipRegex
+        = /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;
+        if (!ipRegex.test(ip)) {
+            throw new Error(`Invalid IP address: ${ip}`);
+        }
+    }
 
-            res.on("data", chunk => {
-                responseData += String(chunk);
-            });
+    /**
+     * Handles the API response, checking for errors and parsing JSON.
+     * If the response is not OK, it returns an IpCheckResponse indicating IP is not a proxy/VPN.
+     * @param response - The fetch Response object
+     * @returns A promise that resolves to the parsed response data
+     */
+    private async handleResponse<T>(response: Response): Promise<T> {
+        const contentType = response.headers.get("Content-Type");
+        let data: T | string;
 
-            res.on("end", () => {
-                resolve(responseData);
-            });
-        });
+        if (contentType?.includes("application/json")) {
+            data = (await response.json()) as T;
+        } else {
+            data = await response.text();
+        }
 
-        req.on("error", (error: Error) => {
-            reject(error);
-        });
+        if (!response.ok) {
+        // Instead of throwing an error, return an IpCheckResponse indicating IP is not a proxy/VPN
+            return {
+                flagged: false,
+                message: "IP is not a proxy/VPN"
+            } as unknown as T;
+        }
 
-        req.write(payload);
-        req.end();
-    });
-};
+        return data as T;
+    }
+}
 
-/**
- * Sends a GET request to the specified URL with the given data as query parameters.
- * @param url URL to contact
- * @param data Data to send as query parameters
- * @returns Promise resolving to the response data
- */
-export const sendGetRequest = (url: string, data: unknown): Promise<string> => {
-    return new Promise((resolve, reject) => {
-        const queryString = new URLSearchParams(data as Record<string, string>).toString();
-        const fullUrl = `${url}?${queryString}`;
-
-        const options: https.RequestOptions = {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "api-key": mod_api_data.API_SERVER_KEY
-            }
-        };
-
-        const req = https.request(fullUrl, options, res => {
-            let responseData = "";
-
-            res.on("data", chunk => {
-                responseData += String(chunk);
-            });
-
-            res.on("end", () => {
-                resolve(responseData);
-            });
-        });
-
-        req.on("error", (error: Error) => {
-            reject(error);
-        });
-
-        req.end();
-    });
-};
+export default IpChecker;
