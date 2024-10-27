@@ -315,7 +315,7 @@ const maps = {
             flint_stone: 3,
             pumpkin: 200,
             large_pumpkin: 5,
-            pebble: 150
+            pebble: 110
         },
         obstacleClumps: [
             {
