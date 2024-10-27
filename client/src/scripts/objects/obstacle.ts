@@ -204,7 +204,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         // Change the texture of the obstacle and play a sound when it's destroyed
         if (!this.dead && data.dead) {
             this.dead = true;
-            if (!isNew && !("replaceWith" in definition && definition.replaceWith)) {
+            if (!isNew && !("replaceWith" in definition && definition.replaceWith) && !definition.noDestroyEffect) {
                 const playSound = (name: string): void => {
                     this.playSound(name, {
                         falloff: 0.2,

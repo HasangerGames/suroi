@@ -69,6 +69,7 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly indestructible: boolean
     readonly impenetrable: boolean
     readonly noHitEffect: boolean
+    readonly noDestroyEffect?: boolean
     readonly noResidue: boolean
     readonly invisible: boolean
     readonly hideOnMap: boolean
@@ -2317,18 +2318,16 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 idString: "tent_window",
                 name: "Tent Window",
                 material: "wood",
-                health: 1000,
+                health: 9999999999999, // shhh
                 invisible: true,
-                indestructible: true,
                 noMeleeCollision: true,
-                role: ObstacleSpecialRoles.Window,
+                noHitEffect: true,
+                noDestroyEffect: true,
                 noBulletCollision: true,
                 hitbox: RectangleHitbox.fromRect(7.6, 2.5, Vec.create(0, 0)),
                 rotationMode: RotationMode.Limited,
                 zIndex: ZIndexes.ObstaclesLayer3,
-                frames: {
-                    particle: "metal_particle"
-                }
+                frames: { }
             },
             {
                 idString: "windowed_vault_door",
