@@ -3,7 +3,6 @@ import { Guns } from "@common/definitions";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Loots } from "@common/definitions/loots";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { PerkCategories } from "@common/definitions/perks";
 import { Orientation, type Variation } from "@common/typings";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Collision } from "@common/utils/math";
