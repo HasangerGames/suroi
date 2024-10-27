@@ -5659,7 +5659,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(17.11, 2.01, Vec.create(-145.59, -59.42))
                 ),
                 spawnHitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(54, 62, Vec.create(13.43, 101.53)),
+                    RectangleHitbox.fromRect(150, 150, Vec.create(13.43, 101.53)),
                     RectangleHitbox.fromRect(18, 21, Vec.create(146.55, -32.85)),
                     RectangleHitbox.fromRect(21, 18, Vec.create(-145.11, -52.85)),
 
@@ -5759,7 +5759,17 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "large_pumpkin", position: Vec.create(-40.07, -49.44) },
                     { idString: "large_pumpkin", position: Vec.create(-170.08, 137.13) },
                     { idString: "large_pumpkin", position: Vec.create(-62.39, 247.93) },
-                    { idString: "large_pumpkin", position: Vec.create(112.61, 281.56) }
+                    { idString: "large_pumpkin", position: Vec.create(112.61, 281.56) },
+                    { idString: "vibrant_bush", position: Vec.create(-19.11, 42.93) },
+                    { idString: "vibrant_bush", position: Vec.create(-106.56, 41.65) },
+                    { idString: "vibrant_bush", position: Vec.create(-104.52, 119.49) },
+                    { idString: "vibrant_bush", position: Vec.create(-122.06, 189.4) },
+                    { idString: "vibrant_bush", position: Vec.create(0.57, 229.84) },
+                    { idString: "vibrant_bush", position: Vec.create(92.86, 213.36) },
+                    { idString: "vibrant_bush", position: Vec.create(187.25, 173.39) },
+                    { idString: "vibrant_bush", position: Vec.create(88.89, 135.27) },
+                    { idString: "vibrant_bush", position: Vec.create(156.44, 65.25) },
+                    { idString: "vibrant_bush", position: Vec.create(95.86, -18.52) }
                 ],
                 subBuildings: [
                     { idString: "hay_shed_4", position: Vec.create(40.03, 146.55), orientation: 1 },
