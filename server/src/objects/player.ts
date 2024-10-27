@@ -24,7 +24,6 @@ import { CountableInventoryItem, InventoryItem } from "../inventory/inventoryIte
 import { MeleeItem } from "../inventory/meleeItem";
 import { ThrowableItem } from "../inventory/throwableItem";
 import { type Team } from "../team";
-import { mod_api_data, sendPostRequest } from "../utils/apiHelper";
 import { removeFrom } from "../utils/misc";
 
 export interface PlayerContainer {
@@ -1199,48 +1198,51 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     playerName: this.spectating?.name ?? "",
                     reportID: reportID
                 }));
+                if (Config.protection) {
+                    const reportURL = String(Config.protection?.ipChecker?.logURL);
+                    const reportData = {
+                        embeds: [
+                            {
+                                title: "Report Received",
+                                description: `Report ID: \`${reportID}\``,
+                                color: 16711680,
+                                fields: [
+                                    {
+                                        name: "Username",
+                                        value: `\`${this.spectating?.name}\``
+                                    },
+                                    {
+                                        name: "Time reported",
+                                        value: this.game.now
+                                    },
+                                    {
+                                        name: "Reporter",
+                                        value: this.name
+                                    }
 
-                const reportURL = String(mod_api_data.API_WEBHOOK_URL);
-                const reportData = {
-                    embeds: [
-                        {
-                            title: "Report Received",
-                            description: `Report ID: \`${reportID}\``,
-                            color: 16711680,
-                            fields: [
-                                {
-                                    name: "Username",
-                                    value: `\`${this.spectating?.name}\``
-                                },
-                                {
-                                    name: "Time reported",
-                                    value: this.game.now
-                                },
-                                {
-                                    name: "Reporter",
-                                    value: this.name
-                                }
+                                ]
+                            }
+                        ]
+                    };
 
-                            ]
-                        }
-                    ]
-                };
-
-                /*
-                    Promise result ignored because we don't really care
-                    what happens when we send a post request to Discord
-                    for logging
-                */
-                sendPostRequest(reportURL, reportData)
-                    .catch(error => {
+                    // Send report to Discord
+                    fetch(reportURL, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(reportData)
+                    }).catch(error => {
                         console.error("Error: ", error);
                     });
 
-                // Post the report to the server with the json
-                sendPostRequest(`${mod_api_data.API_SERVER_URL}/reports`, reportJson)
-                    .then(console.log)
-                    .catch((e: unknown) => console.error(e));
-                // i love eslint
+                    // Post the report to the server
+                    fetch(`${Config.protection?.punishments?.url}/reports`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(reportJson)
+                    }).then(response => response.json())
+                        .then(console.log)
+                        .catch((e: unknown) => console.error(e));
+                }
             }
         }
 

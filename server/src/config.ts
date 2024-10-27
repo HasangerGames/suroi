@@ -232,6 +232,7 @@ export interface ConfigType {
         readonly ipChecker?: {
             readonly key: string
             readonly baseUrl: string
+            readonly logURL: string
         }
     }
 
