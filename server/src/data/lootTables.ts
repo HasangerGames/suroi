@@ -991,6 +991,10 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         },
 
         guns: [
+
+            // Trailer footange purposes only
+            { item: "mk18", weight: 1},
+
             // 50% chance for one of these
             { item: "m1895", weight: 0.166 },
             { item: "hp18", weight: 0.166 },
