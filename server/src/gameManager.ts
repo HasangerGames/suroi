@@ -80,10 +80,13 @@ export class GameContainer {
         this.resolve = resolve;
         (
             this.worker = new Worker(
-                //                                      @ts-expect-error No typings available for this
-                //                                     ______________________^^^^______________________
-                path.resolve(__dirname, `gameManager.${process[Symbol.for("ts-node.register.instance")] ? "ts" : "js"}`),
-                { workerData: { id, maxTeamSize } satisfies WorkerInitData }
+                __filename,
+                {
+                    workerData: { id, maxTeamSize } satisfies WorkerInitData,
+                    execArgv: __filename.endsWith(".ts")
+                        ? ["-r", "ts-node/register", "-r", "tsconfig-paths/register"]
+                        : undefined
+                }
             )
         ).on("message", (message: WorkerMessage): void => {
             switch (message.type) {
