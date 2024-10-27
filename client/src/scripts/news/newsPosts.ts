@@ -1,6 +1,93 @@
 import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
+    
+    {
+        date: 1730057509000,
+        author: "HAZEL",
+        title: "Open Season",
+        bannerImage: "../img/news/v0.20.0.png",
+        content: `Fall settles on a brand new mode, <strong>Harvest</strong>, bringing a plethora of <strong>new guns</strong>, a wide assortment of <strong>Perks</strong>, and the mysterious <strong>Plumpkins...</strong>
+
+<br><br>Harvest is a large map filled with new trees, trails, and brand new ambient sounds and particles, as well as a bounty of new structures, including the <strong>Barns</strong>, old farming relics with plenty of cover, and the <strong>Lodge</strong>, a luxurious forest getaway with more than meets the eye...
+
+<br><br>Deep underground, the <strong>Plumpkin Bunker</strong> has been uncovered. This monument of engineering and science contains everything from a fully stocked guard's quarters, to a warehouse, generator room, and the main labs themselves. Rumors have it that the experiments sealed inside the test chambers are highly enigmatic, but <strong>richly rewarding</strong> to anyone fortunate enough to lay hands on them. One of the samples seems to be sealed off... <strong>for now.</strong>
+
+<br><br>Recent documents have revealed the <strong>Bombed Armory</strong>, containing the returning fan-favorite <strong>USAS-12</strong> sealed inside the vault, although getting inside might take a more <strong>brute force</strong> approach this time.
+
+<br><br>Brand new weapon shipments to both Harvest and Normal mode include the <strong>SKS</strong>, a reliable and common DMR chambered in 7.62, although it leaves something to be desired in damage. The <strong>VKS Vykhlop</strong> has that more than covered, firing high damage suppressed .50 cal rounds at a low velocity. Finally, the monstrous <strong>Mk-18 Mjölnir</strong>, chambered in .338 Lapua Magnum, will rip through any competition with an impressive mixture of immense damage and fast fire rate.
+
+<br><br>Unique to Harvest mode are two brand new shotguns, the <strong>DT-11</strong>, an under-over double barrel shotgun with longer range and lower damage compared to its sawed-off counterpart, and the <strong>M590M</strong>, a military pump-action shotgun firing high-explosive slugs.
+
+<br><br>There's much more to check out, including new skins, a variety of small structures, brand new foliage, and changes yet to come.```
+        `,
+        longContent: `<h2>Suroi v0.20.0</h2>
+<h3>New features</h3>
+<ul>
+ 
+</ul>
+
+<h3>Changes</h3>
+<ul>
+</ul>
+
+<h3>Bug fixes</h3>
+<ul>
+  
+</ul><br>`
+    },
+    {
+        date: 1717870665000,
+        author: "HAZEL",
+        title: "Back in the Saddle",
+        bannerImage: "../img/news/v0.18.0.png",
+        content: `After a long break, we're back with some important updates and fun changes. Although we're late, we're celebrating Suroi's 1 year birthday with some new items, and even more exciting, limited edition squads.<br><br>
+
+    A revamped moderation system is here to combat those cheater pests with improved efficiency. Say hello to our new Game Moderatrs on Discord!<br><br>
+
+    There's also a new structure, the large bridge. While huge in proportion, it offers plenty of cover and close quarter combat. It's also a perfect spot to set up your squad in a defensive position!<br><br>
+
+    Lots of changes and bug fixes have made it into this update, so check out the full log. Thank you everyone for sticking with us!`,
+        longContent: `<h2>Suroi v0.18.0</h2>
+<h3>New features</h3>
+<ul>
+  <li><strong>Squads!</strong> To celebrate Suroi's 1st birthday, squads will be available for the next week only. They will be back once we have enough players.</li>
+  <li><strong>New structures!</strong> Added the large bridge and the construction site.</li>
+  <li><strong>Birthday exclusive items!</strong> Added the birthday cake skin and obstacle, firework launcher, confetti grenade, and firework warehouse. Like squads, they will be available for the next week only.</li>
+  <li><strong>Better moderation system!</strong> We now have a dedicated team of Game Moderatrs. They will manage #cheatr-reports using a new Discord bot.</li>
+  <ul>
+    <li>In the future, we are planning on moving to a more self-contained report system that doesn't rely on Discord.</li>
+  </ul>
+  <li>Added a new skin and 5 new emotes.</li>
+  <li>Added crawling animation for knocked out players.</li>
+  <li>Added inventory slot animations.</li>
+  <li>Added emote categories.</li>
+</ul>
+
+<h3>Changes</h3>
+<ul>
+  <li>New Mosin top down.</li>
+  <li>New ammo crate, forklift, pallet, couch, and life preserver textures.</li>
+  <li>Improved mobile and spectate controls.</li>
+  <li>Improved loot physics.</li>
+  <li>Badges now display next to names when spectating.</li>
+  <li>Adjusted the length of some reload sounds.</li>
+  <li>Changed the way updates from the server are handled, which should improve smoothness.</li>
+  <li>Added LMGs to briefcase loot table.</li>
+  <li>Adjusted pine tree hitbox.</li>
+  <li>The kill feed is now hidden when the map is open.</li>
+</ul>
+
+<h3>Bug fixes</h3>
+<ul>
+  <li>Fixed issues with team pings.</li>
+  <li>Fixed badges.</li>
+  <li>Fixed infinite health by spamming healing items while knocked out.</li>
+  <li>Fixed team emotes working in solo.</li>
+  <li>Fixed players not rendering correctly after being revived.</li>
+  <li>Fixed drop sound not playing when dropping weapons with fists equipped.</li>
+</ul>`
+    },
     {
         date: 1727030995000,
         author: "HAZEL",
