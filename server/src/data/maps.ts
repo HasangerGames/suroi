@@ -247,12 +247,12 @@ const maps = {
         },
         buildings: {
             small_bridge: Infinity,
+            plumpkin_bunker: 1,
             sea_traffic_control: 1,
             tugboat_red: 1,
             tugboat_white: 7,
             lodge: 1,
             armory_damaged: 1,
-            plumpkin_bunker: 1,
             barn: 3,
             green_house: 2,
             warehouse: 4,
