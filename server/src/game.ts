@@ -607,7 +607,7 @@ export class Game implements GameData {
         if (!this.allowJoin) return; // means a new game has already been created by this game
 
         parentPort?.postMessage({ type: WorkerMessages.CreateNewGame });
-        Logger.log(`Game ${this.id} | Creating new game`);
+        Logger.log(`Game ${this.id} | Attempting to create new game`);
         this.setGameData({ allowJoin: false });
     }
 
