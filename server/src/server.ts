@@ -26,11 +26,13 @@ const ipCheck = Config.protection?.ipChecker
     ? new IpChecker(Config.protection.ipChecker.baseUrl, Config.protection.ipChecker.key)
     : undefined;
 
-const isVPN = new Map<string, boolean>(
-    existsSync("isVPN.json")
-        ? Object.entries(JSON.parse(readFileSync("isVPN.json", "utf8")) as Record<string, boolean>)
-        : undefined
-);
+const isVPN = Config.protection?.ipChecker
+    ? new Map<string, boolean>()
+    : new Map<string, boolean>(
+        existsSync("isVPN.json")
+            ? Object.entries(JSON.parse(readFileSync("isVPN.json", "utf8")) as Record<string, boolean>)
+            : undefined
+    );
 
 async function isVPNCheck(ip: string): Promise<boolean> {
     if (!ipCheck) return false;
@@ -382,7 +384,7 @@ if (isMainThread) {
 
                 teamsCreated = {};
 
-                if (protection.ipChecker) {
+                if (!Config.protection?.ipChecker) {
                     writeFileSync("isVPN.json", JSON.stringify(Object.fromEntries(isVPN)));
                 }
 
