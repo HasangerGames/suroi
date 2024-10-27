@@ -433,7 +433,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 floorImages: [{
                     key: "fall_patch_floor",
                     position: Vec.create(0, 0),
-                    scale: Vec.create(2.14, 2.14)
+                    scale: Vec.create(2.14, 2.14),
+                    zIndex: ZIndexes.Ground
                 }],
                 ceilingImages: [{
                     key: `hay_shed_ceiling_${ceilingVariation}`,
