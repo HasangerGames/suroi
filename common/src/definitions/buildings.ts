@@ -5508,7 +5508,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 particle: "lodge_particle",
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(11.73, 1.28, Vec.create(-41.36, 9.24)),
-                    RectangleHitbox.fromRect(1.27, 12.72, Vec.create(-36.1, 15.09)),
+                    RectangleHitbox.fromRect(4, 12.72, Vec.create(-37.5, 15.09)),
                     RectangleHitbox.fromRect(13.47, 1.53, Vec.create(-2.21, 25.18)),
                     RectangleHitbox.fromRect(13.47, 1.51, Vec.create(-2.57, 11.38)),
                     RectangleHitbox.fromRect(1.54, 12.05, Vec.create(-10.08, 18.39)),
