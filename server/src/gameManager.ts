@@ -1,4 +1,3 @@
-import path from "node:path";
 import { isMainThread, parentPort, Worker, workerData } from "node:worker_threads";
 
 import { type GetGameResponse } from "@common/typings";
