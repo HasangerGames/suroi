@@ -17,40 +17,33 @@ import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./
 import { Logger } from "./utils/misc";
 import { cors, createServer, forbidden, getIP, textDecoder } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/misc";
-import ProxyCheck from "proxycheck-ts";
-
-export interface Punishment {
-    readonly id: string
-    readonly ip: string
-    readonly reportId: string
-    readonly reason: string
-    readonly reporter: string
-    readonly expires?: number
-    readonly punishmentType: "warn" | "temp" | "perma"
-}
+import IpChecker from "./utils/apiHelper";
+import { Punishment } from "./utils/apiHelper";
 
 let punishments: Punishment[] = [];
 
-const proxyCheck = Config.protection?.proxyCheckAPIKey
-    ? new ProxyCheck({ api_key: Config.protection.proxyCheckAPIKey })
+const ipCheck = Config.protection?.ipChecker
+    ? new IpChecker(Config.protection.ipChecker.baseUrl, Config.protection.ipChecker.key)
     : undefined;
 
-const isVPN = new Map<string, boolean>(
-    existsSync("isVPN.json")
-        ? Object.entries(JSON.parse(readFileSync("isVPN.json", "utf8")))
-        : undefined
-);
+const isVPN = Config.protection?.ipChecker
+    ? new Map<string, boolean>()
+    : new Map<string, boolean>(
+        existsSync("isVPN.json")
+            ? Object.entries(JSON.parse(readFileSync("isVPN.json", "utf8")) as Record<string, boolean>)
+            : undefined
+    );
 
 async function isVPNCheck(ip: string): Promise<boolean> {
-    if (!proxyCheck) return false;
+    if (!ipCheck) return false;
 
     let ipIsVPN = isVPN.get(ip);
     if (ipIsVPN !== undefined) return ipIsVPN;
 
-    const result = await proxyCheck.checkIP(ip, { vpn: 3 }, 5000);
-    if (!result || result.status === "denied" || result.status === "error") return false;
+    const result = await ipCheck.check(ip);
+    if (!result?.flagged) return false;
 
-    ipIsVPN = result[ip].proxy === "yes" || result[ip].vpn === "yes";
+    ipIsVPN = result.flagged;
     isVPN.set(ip, ipIsVPN);
     return ipIsVPN;
 }
@@ -119,12 +112,10 @@ if (isMainThread) {
                 removePunishment(ip);
             }
             response = { success: false, message: punishment.punishmentType, reason: punishment.reason, reportID: punishment.reportId };
-
         } else {
             const teamID = maxTeamSize !== TeamSize.Solo && new URLSearchParams(req.getQuery()).get("teamID"); // must be here or it causes uWS errors
             if (await isVPNCheck(ip)) {
                 response = { success: false, message: "perma", reason: "VPN/proxy detected. To play the game, please disable it." };
-
             } else if (teamID) {
                 const team = customTeams.get(teamID);
                 if (team?.gameID !== undefined) {
@@ -134,7 +125,6 @@ if (isMainThread) {
                 } else {
                     response = { success: false };
                 }
-
             } else {
                 response = await findGame();
             }
@@ -398,7 +388,7 @@ if (isMainThread) {
 
                 teamsCreated = {};
 
-                if (protection.proxyCheckAPIKey) {
+                if (!Config.protection?.ipChecker) {
                     writeFileSync("isVPN.json", JSON.stringify(Object.fromEntries(isVPN)));
                 }
 

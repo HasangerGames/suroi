@@ -142,9 +142,6 @@ importers:
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
-      proxycheck-ts:
-        specifier: ^0.0.11
-        version: 0.0.11
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@swc/core@1.7.40(@swc/helpers@0.5.13))(@types/node@22.7.5)(typescript@5.6.3)
@@ -1592,9 +1589,6 @@ packages:
     resolution: {integrity: sha512-ypfPFcAXHuAZRCzo3vJL6ltENzniTjwe/qsLleH1V2/7SRDjgvRQyrLmumFTLmjFax4IuSxfGXEn79fozXcJog==}
     engines: {node: '>=18.0'}
 
-  cross-fetch@4.0.0:
-    resolution: {integrity: sha512-e4a5N8lVvuLgAWgnCrLr2PP0YyDOTHa9H/Rj54dirp61qXnNq46m82bRhNqIA5VccJtWBvPTFRV3TtvHUKPB1g==}
-
   cross-spawn@7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
     engines: {node: '>= 8'}
@@ -2753,9 +2747,6 @@ packages:
   prompts@2.4.2:
     resolution: {integrity: sha512-NxNv/kLguCA7p3jE8oL2aEBsrJWgAakBpgmgK6lpPWV+WuOmY6r2/zbAVnP+T8bQlA0nzHXSJSJW0Hq7ylaD2Q==}
     engines: {node: '>= 6'}
-
-  proxycheck-ts@0.0.11:
-    resolution: {integrity: sha512-RxkN5FuklqDjiTNdRqair96AgkP/tc6boVZgNcLil17qNNmlZhXHPKhIlw51EdC+vgrsDCk5MA1fUzojEXo4Bg==}
 
   pstree.remy@1.1.8:
     resolution: {integrity: sha512-77DZwxQmxKnu3aR542U+X8FypNzbfJ+C5XQDk3uWjWxn6151aIMGthWYRXTqT1E5oJvg+ljaa2OJi+VfvCOQ8w==}
@@ -4670,12 +4661,6 @@ snapshots:
 
   croner@8.1.2: {}
 
-  cross-fetch@4.0.0:
-    dependencies:
-      node-fetch: 2.7.0
-    transitivePeerDependencies:
-      - encoding
-
   cross-spawn@7.0.3:
     dependencies:
       path-key: 3.1.1
@@ -6043,12 +6028,6 @@ snapshots:
     dependencies:
       kleur: 3.0.3
       sisteransi: 1.0.5
-
-  proxycheck-ts@0.0.11:
-    dependencies:
-      cross-fetch: 4.0.0
-    transitivePeerDependencies:
-      - encoding
 
   pstree.remy@1.1.8: {}
 
