@@ -310,7 +310,7 @@ const maps = {
             super_barrel: 35,
             melee_crate: 1,
             gold_rock: 1,
-            loot_tree: 1,
+            loot_tree: 4,
             loot_barrel: 1,
             flint_stone: 3,
             pumpkin: 200,
