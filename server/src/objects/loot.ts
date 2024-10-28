@@ -464,7 +464,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 if (perksLength === GameConstants.player.maxPerkCount) {
                     // remove the old perk
                     const equippedPerk = currentPerks[0];
-                    createNewItem({ type: equippedPerk, count: 1 });
+                    if (!equippedPerk.noDrop) createNewItem({ type: equippedPerk, count: 1 });
                     player.perks.removePerk(equippedPerk);
                 }
 

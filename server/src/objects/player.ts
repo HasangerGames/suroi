@@ -897,7 +897,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.adrenaline -= 0.0005 * this._modifiers.adrenDrain * dt;
 
             // Regenerate health
-            toRegen += (this.adrenaline / 40 + 0.35) * this.mapPerkOrDefault(PerkIds.LacedStimulants, ({ healDmgRate }) => -healDmgRate, 1);
+            toRegen += (this.adrenaline / 40 + 0.35) * this.mapPerkOrDefault(PerkIds.LacedStimulants, ({ healDmgRate }) => (this.health <= 1 ? 0 : -healDmgRate), 1);
         }
 
         this.health += dt / 900 * toRegen;
@@ -2021,6 +2021,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         for (const perk of this.perks) {
             if (!perk.noDrop) {
                 this.game.addLoot(perk, position, layer);
+            }
+            else if (perk.noDrop && perk.categories.includes(PerkCategories.Halloween)) {
+                this.game.addLoot(PerkIds.PlumpkinGamble, position, layer);
             }
         }
 

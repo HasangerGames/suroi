@@ -1079,7 +1079,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 name: "Diseased Plumpkin",
                 material: "pumpkin",
                 health: 200,
-                indestructible: true, // temp
                 scale: {
                     spawnMin: 0.9,
                     spawnMax: 1.1,
@@ -1088,8 +1087,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: new CircleHitbox(4.45),
                 spawnHitbox: new CircleHitbox(5),
                 rotationMode: RotationMode.Full,
-                allowFlyover: FlyoverPref.Always
-                // hasLoot: true
+                allowFlyover: FlyoverPref.Always,
+                hasLoot: true
             },
             {
                 idString: "birthday_cake",
@@ -1119,8 +1118,9 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     destroy: 0
                 },
                 hitbox: RectangleHitbox.fromRect(9, 9),
-                noHitEffect: true,
                 noCollisions: true,
+                noMeleeCollision: true,
+                noBulletCollision: true,
                 rotationMode: RotationMode.Limited,
                 allowFlyover: FlyoverPref.Always,
                 zIndex: ZIndexes.ObstaclesLayer4

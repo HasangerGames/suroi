@@ -4,6 +4,7 @@ import { type Vector } from "@common/utils/vector";
 import { type Maps } from "./data/maps";
 import { type Game } from "./game";
 import { type GamePlugin } from "./pluginManager";
+import { PlaceObjectPlugin } from "./defaultPlugins/placeObjectPlugin";
 
 export enum SpawnMode {
     Normal,
@@ -21,9 +22,9 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "fall",
+    map: "halloween",
 
-    spawn: { mode: SpawnMode.Normal },
+    spawn: { mode: SpawnMode.Center },
 
     maxTeamSize: TeamSize.Solo,
 

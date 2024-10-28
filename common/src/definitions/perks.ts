@@ -170,7 +170,8 @@ const perks = [
         speedMod: 1.3,
         healthMod: 2,
         regenRate: 0.5,
-        meleeMult: 2
+        meleeMult: 2,
+        noDrop: true
     },
     {
         idString: PerkIds.SecondWind,
@@ -189,7 +190,8 @@ const perks = [
 
         adrenDecay: 0,
         adrenSet: 1,
-        healthMod: 0.8
+        healthMod: 0.8,
+        noDrop: true
     },
     {
         idString: PerkIds.Splinter,
@@ -228,7 +230,8 @@ const perks = [
 
         hpMod: 10, // additive
         sizeMod: 1.05, // multiplicative
-        killsLimit: 10
+        killsLimit: 10,
+        noDrop: true
     },
     {
         idString: PerkIds.Recycling,
@@ -258,7 +261,8 @@ const perks = [
         categories: [PerkCategories.Halloween],
 
         damageMod: 1.2, // for grenades
-        plumpkinExplosionDmg: 100
+        plumpkinExplosionDmg: 100,
+        noDrop: true
     },
     {
         idString: PerkIds.Wraith,
@@ -267,7 +271,8 @@ const perks = [
         categories: [PerkCategories.Halloween],
 
         smokeAlpha: 0.7,
-        smokeAlphaSelf: 0.1
+        smokeAlphaSelf: 0.1,
+        noDrop: true
     },
     {
         idString: PerkIds.PlumpkinGamble,
@@ -303,7 +308,8 @@ const perks = [
         description: "Your held weapon randomizes every 20 seconds and after every kill.",
         categories: [PerkCategories.Halloween],
 
-        [updateInterval]: 20e3 // milliseconds
+        [updateInterval]: 20e3, // milliseconds
+        noDrop: true
     },
     {
         idString: PerkIds.Costumed,
@@ -311,7 +317,8 @@ const perks = [
         description: "Become a Pumpkin, or very rarely, a Plumpkin.",
         categories: [PerkCategories.Halloween],
 
-        plumpkinVariantChance: 0.01
+        plumpkinVariantChance: 0.01,
+        noDrop: true
     },
     {
         idString: PerkIds.TornPockets,
@@ -320,7 +327,8 @@ const perks = [
         categories: [PerkCategories.Halloween],
 
         [updateInterval]: 1e3,
-        dropCount: 2
+        dropCount: 2,
+        noDrop: true
     },
     {
         idString: PerkIds.Claustrophobic,
@@ -328,7 +336,8 @@ const perks = [
         description: "Move slower inside buildings and bunkers.",
         categories: [PerkCategories.Halloween],
 
-        speedMod: 0.9
+        speedMod: 0.9,
+        noDrop: true
     },
     {
         idString: PerkIds.LacedStimulants,
@@ -336,14 +345,16 @@ const perks = [
         description: "Instead of healing you, adrenaline damages you at half the normal healing rate.",
         categories: [PerkCategories.Halloween],
 
-        healDmgRate: 0.5
+        healDmgRate: 0.5,
+        noDrop: true
     },
-    {
+   /* {
         idString: PerkIds.Hexxed,
         name: "Hexxed",
         description: "All players on the map can see your location.",
-        categories: [PerkCategories.Halloween]
-    },
+        categories: [PerkCategories.Halloween],
+        noDrop: true
+    },*/
     {
         idString: PerkIds.RottenPlumpkin,
         name: "Rotten Plumpkin",
@@ -353,7 +364,8 @@ const perks = [
         [updateInterval]: 10e3, // milliseconds
         emote: "vomiting_face",
         adrenLoss: 5, // percentage
-        healthLoss: 5 // absolute
+        healthLoss: 5, // absolute
+        noDrop: true
     },
     {
         idString: PerkIds.AdvancedAthletics,

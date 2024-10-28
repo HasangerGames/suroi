@@ -1,7 +1,7 @@
 import { type WebSocket } from "uWebSockets.js";
 import { parentPort } from "worker_threads";
 
-import { GameConstants, KillfeedMessageType, Layer, ObjectCategory, TeamSize } from "@common/constants";
+import { GameConstants, KillfeedEventType, KillfeedMessageType, Layer, ObjectCategory, TeamSize } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
@@ -366,7 +366,7 @@ export class Game implements GameData {
                 }
                 case PerkIds.BabyPlumpkinPie: {
                     for (const player of players) {
-                        if (!player.hasPerk(PerkIds.BabyPlumpkinPie)) continue;
+                        if (!player.hasPerk(PerkIds.BabyPlumpkinPie) || player.dead) continue;
 
                         player.swapWeaponRandomly();
                     }
@@ -374,7 +374,7 @@ export class Game implements GameData {
                 }
                 case PerkIds.TornPockets: {
                     for (const player of players) {
-                        if (!player.hasPerk(PerkIds.TornPockets)) continue;
+                        if (!player.hasPerk(PerkIds.TornPockets) || player.dead) continue;
 
                         const candidates = new Set(Ammos.definitions.filter(({ ephemeral }) => !ephemeral).map(({ idString }) => idString));
 
@@ -405,11 +405,15 @@ export class Game implements GameData {
                 }
                 case PerkIds.RottenPlumpkin: {
                     for (const player of players) {
-                        if (!player.hasPerk(PerkIds.RottenPlumpkin)) continue;
+                        if (!player.hasPerk(PerkIds.RottenPlumpkin) || player.dead) continue;
 
                         player.sendEmote(Emotes.fromStringSafe(perk.emote));
                         player.health -= perk.healthLoss;
                         player.adrenaline -= player.adrenaline * (perk.healthLoss);
+                        
+                        player.piercingDamage({
+                            amount: perk.healthLoss
+                        });
                     }
                     break;
                 }

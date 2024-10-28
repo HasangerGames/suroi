@@ -860,6 +860,11 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             max: 3,
             loot: [{ table: "fall_perks", weight: 1 }]
         },
+        diseased_plumpkin: {
+            min: 1,
+            max: 1,
+            loot: [{ item: PerkIds.PlumpkinGamble, weight: 1 }]
+        },
         fall_perks: {
             min: 1,
             max: 1,
