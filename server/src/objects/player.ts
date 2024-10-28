@@ -1436,7 +1436,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     // Post the report to the server
                     fetch(`${Config.protection?.punishments?.url}/reports`, {
                         method: "POST",
-                        headers: { "Content-Type": "application/json" },
+                        headers: { "Content-Type": "application/json", "api-key": Config?.protection?.punishments?.password || "" },
                         body: JSON.stringify(reportJson)
                     }).then(response => response.json())
                         .then(console.log)
