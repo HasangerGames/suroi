@@ -1209,7 +1209,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         melee: [
             { item: "hatchet", weight: 3 },
             { item: "kbar", weight: 2 },
-            { item: "baseball_bat", weight: 2 }
+            { item: "baseball_bat", weight: 2 },
+            { item: "gas_can", weight: 0 } // somewhat hack in order to make the gas can obtainable through mini plumpkins
         ]
     }
 };
