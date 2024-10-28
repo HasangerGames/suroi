@@ -1079,6 +1079,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 name: "Diseased Plumpkin",
                 material: "pumpkin",
                 health: 200,
+                indestructible: true, // temp
                 scale: {
                     spawnMin: 0.9,
                     spawnMax: 1.1,
