@@ -998,12 +998,12 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { item: "mosin_nagant", weight: 0.066 },
 
                 // 10% chance for one of these
-                { item: "m590m", weight: 0.05 },
+                { item: "rsh12", weight: 0.05 },
                 { item: "vepr12", weight: 0.05 },
 
                 // 5% chance for one of these
                 { item: "tango_51", weight: 0.01 },
-                { item: "rsh12", weight: 0.01 },
+                { item: "m590m", weight: 0.01 },
                 { item: "vks", weight: 0.01 },
                 { item: "model_89", weight: 0.01 },
                 { item: "m1_garand", weight: 0.01 }
@@ -1032,13 +1032,13 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "mosin_nagant", weight: 0.0133 },
 
             // 2% chance for one of these
-            { item: "m590m", weight: 0.0066 },
+            { item: "tango_51", weight: 0.0066 },
             { item: "model_89", weight: 0.0066 },
             { item: "vepr12", weight: 0.0066 },
 
             // very rare shit
             { item: "rsh12", weight: 0.001 },
-            { item: "tango_51", weight: 0.001 },
+            { item: "m590m", weight: 0.001 },
             { item: "vks", weight: 0.001 },
             { item: "radio", weight: 0.001 }
         ],
@@ -1063,14 +1063,14 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "mosin_nagant", weight: 0.033 },
 
             // 5% chance for one of these
-            { item: "m590m", weight: 0.0166 },
+            { item: "rsh12", weight: 0.0166 },
             { item: "model_89", weight: 0.0166 },
             { item: "vepr12", weight: 0.0166 },
 
             // 1% chance for one of these
+            { item: "m590m", weight: 0.002 },
             { item: "tango_51", weight: 0.002 },
             { item: "vks", weight: 0.002 },
-            { item: "rsh12", weight: 0.002 },
             { item: "radio", weight: 0.002 },
             { item: "m1_garand", weight: 0.002 }
         ],
