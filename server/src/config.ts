@@ -21,13 +21,13 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "main",
+    map: "fall",
 
     spawn: { mode: SpawnMode.Normal },
 
     maxTeamSize: TeamSize.Solo,
 
-    maxPlayersPerGame: 80,
+    maxPlayersPerGame: 60,
     maxGames: 4,
     gameJoinTime: 60,
 

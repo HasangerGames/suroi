@@ -1,10 +1,10 @@
 import { Container, Graphics } from "pixi.js";
-import { Layer, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { MaterialSounds } from "../../../../common/src/definitions/obstacles";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
-import { getEffectiveZIndex, isGroundLayer, equivLayer } from "../../../../common/src/utils/layer";
+import { equivLayer, getEffectiveZIndex, isGroundLayer } from "../../../../common/src/utils/layer";
 import { Angle, Collision, EaseFunctions, Numeric, type CollisionResponse } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
@@ -44,6 +44,9 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
     mask?: Graphics;
 
+    spinningImages?: Map<SuroiSprite, number>;
+    spinOnSolveImages?: Map<SuroiSprite, number>;
+
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Building]) {
         super(game, id);
 
@@ -55,18 +58,16 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         this.updateFromData(data, true);
     }
 
-    toggleCeiling(): void {
+    toggleCeiling(duration = 200): void {
         if (this.ceilingHitbox === undefined || this.ceilingTween || this.dead) return;
         const player = this.game.activePlayer;
         if (player === undefined) return;
 
-        let visible = false;
+        let visible = true;
 
-        let duration = 150;
-
-        if (this.ceilingHitbox.collidesWith(player.hitbox) || player.layer < Layer.Ground) {
-            visible = true;
-            duration = !isGroundLayer(player.layer) ? 0 : 150; // We do not want a ceiling tween during the layer change.
+        if (this.ceilingHitbox.collidesWith(player.hitbox)) {
+            visible = false;
+            duration = !isGroundLayer(player.layer) ? 0 : 200; // We do not want a ceiling tween during the layer change.
         } else {
             const visionSize = 14;
 
@@ -172,23 +173,25 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                                 )
                         )) break;
                     }
-                    visible = !collided;
+                    visible = collided;
                 } else {
-                    visible = false;
+                    visible = true;
                 }
 
-                if (visible) break;
+                if (!visible) break;
             }
         }
 
-        if (this.ceilingVisible === visible) return;
+        const alpha = visible ? 1 : this.definition.ceilingHiddenAlpha ?? 0;
 
         this.ceilingVisible = visible;
 
+        if (this.ceilingContainer.alpha === alpha || this.ceilingTween) return;
+
         this.ceilingTween = this.game.addTween({
             target: this.ceilingContainer,
-            to: { alpha: visible ? 0 : 1 },
-            duration: visible ? duration : 300,
+            to: { alpha },
+            duration,
             ease: EaseFunctions.sineOut,
             onComplete: () => {
                 this.ceilingTween = undefined;
@@ -197,8 +200,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Building], isNew = false): void {
-        this.updateZIndex();
-
         if (data.full) {
             const full = data.full;
             const definition = this.definition = full.definition;
@@ -218,6 +219,14 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 if (image.rotation) sprite.setRotation(image.rotation);
                 if (image.scale) sprite.scale = image.scale;
                 if (image.zIndex !== undefined) sprite.setZIndex(image.zIndex);
+                if (image.spinSpeed) {
+                    if (image.spinOnSolve && !data.puzzle?.solved) {
+                        (this.spinOnSolveImages ??= new Map<SuroiSprite, number>()).set(sprite, image.spinSpeed);
+                    } else {
+                        (this.spinningImages ??= new Map<SuroiSprite, number>()).set(sprite, image.spinSpeed);
+                        this.game.spinningImages.set(sprite, image.spinSpeed);
+                    }
+                }
                 this.container.addChild(sprite);
             }
 
@@ -307,6 +316,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 fallOff: sounds.falloff,
                 maxRange: sounds.maxRange,
                 dynamic: true,
+                ambient: true,
                 loop: true
             };
 
@@ -331,10 +341,16 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
         if (data.dead) {
             if (!this.dead && !isNew) {
+                let particleFrame = definition.ceilingCollapseParticle ?? `${definition.idString}_particle`;
+
+                if (definition.ceilingCollapseParticleVariations) {
+                    particleFrame += `_${Math.floor(Math.random() * definition.ceilingCollapseParticleVariations) + 1}`;
+                }
+
                 this.game.particleManager.spawnParticles(10, () => ({
-                    frames: `${definition.idString}_particle`,
+                    frames: particleFrame,
                     position: this.ceilingHitbox?.randomPoint() ?? { x: 0, y: 0 },
-                    zIndex: Math.max(ZIndexes.Players + 1, 4),
+                    zIndex: Numeric.max(ZIndexes.Players + 1, 4),
                     layer: this.layer,
                     lifetime: 2000,
                     rotation: {
@@ -346,12 +362,12 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                         end: 0,
                         ease: EaseFunctions.sexticIn
                     },
-                    scale: { start: 1, end: 0.2 },
+                    scale: { start: (definition.ceilingCollapseParticle ? 2 : 1), end: 0.2 },
                     speed: Vec.fromPolar(randomRotation(), randomFloat(1, 2))
                 }));
 
                 this.playSound(
-                    "ceiling_collapse",
+                    definition.ceilingCollapseSound ?? "ceiling_collapse",
                     {
                         falloff: 0.5,
                         maxRange: 96
@@ -362,7 +378,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             this.ceilingContainer.zIndex = getEffectiveZIndex(ZIndexes.DeadObstacles, this.layer, this.game.layer);
             this.ceilingContainer.alpha = 1;
 
-            this.ceilingContainer.addChild(new SuroiSprite(`${definition.idString}_residue`));
+            //  this.ceilingContainer.addChild(new SuroiSprite(`${definition.idString}_residue`));
         }
         this.dead = data.dead;
 
@@ -372,8 +388,21 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             }
             this.errorSeq = data.puzzle.errorSeq;
 
-            if (!isNew && data.puzzle.solved && definition.puzzle?.solvedSound) {
-                this.playSound("puzzle_solved");
+            if (!isNew && data.puzzle.solved) {
+                if (this.spinOnSolveImages) {
+                    for (const [image, spinSpeed] of this.spinOnSolveImages.entries()) {
+                        this.game.spinningImages.set(image, spinSpeed);
+                    }
+                }
+
+                if (definition.puzzle?.solvedSound) {
+                    this.game.soundManager.play("puzzle_solved", {
+                        position: definition.puzzle.soundPosition
+                            ? Vec.addAdjust(this.position, definition.puzzle.soundPosition, this.orientation)
+                            : this.position,
+                        layer: this.layer
+                    });
+                }
             }
         }
 
@@ -381,22 +410,28 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         for (const image of definition.ceilingImages) {
             let key = image.key;
             if (this.dead && image.residue) key = image.residue;
+
             const sprite = new SuroiSprite(key);
 
             if (this.dead && key !== image.residue) sprite.setVisible(false);
 
             sprite.setVPos(toPixiCoords(image.position));
             if (image.rotation) sprite.setRotation(image.rotation);
-            if (image.scale) sprite.scale = image.scale;
+
+            if (image.scale) sprite.scale = (this.definition.resetCeilingResidueScale && this.dead) ? 1 : image.scale;
+
             if (image.tint !== undefined) sprite.setTint(image.tint);
             this.ceilingContainer.addChild(sprite);
         }
+        this.toggleCeiling();
+
+        this.updateZIndex();
 
         this.updateDebugGraphics();
     }
 
     override updateZIndex(): void {
-        this.container.zIndex = getEffectiveZIndex(ZIndexes.BuildingsFloor, this.layer, this.game.layer);
+        this.container.zIndex = getEffectiveZIndex(this.definition.floorZIndex, this.layer, this.game.layer);
     }
 
     override updateDebugGraphics(): void {
@@ -499,5 +534,11 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         this.ceilingTween?.kill();
         this.ceilingContainer.destroy();
         this.sound?.stop();
+
+        if (this.spinningImages) {
+            for (const image of this.spinningImages.keys()) {
+                this.game.spinningImages.delete(image);
+            }
+        }
     }
 }

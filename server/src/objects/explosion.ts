@@ -1,5 +1,6 @@
 import { Layer } from "@common/constants";
 import { Explosions, type ExplosionDefinition } from "@common/definitions/explosions";
+import { PerkIds } from "@common/definitions/perks";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Angle, Geometry } from "@common/utils/math";
@@ -7,6 +8,9 @@ import { type ReifiableDef } from "@common/utils/objectDefinitions";
 import { randomRotation } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
+import type { GunItem } from "../inventory/gunItem";
+import type { MeleeItem } from "../inventory/meleeItem";
+import type { ThrowableItem } from "../inventory/throwableItem";
 import { Building } from "./building";
 import { Decal } from "./decal";
 import { type GameObject } from "./gameObject";
@@ -16,18 +20,17 @@ import { Player } from "./player";
 import { ThrowableProjectile } from "./throwableProj";
 
 export class Explosion {
-    readonly game: Game;
     readonly definition: ExplosionDefinition;
-    readonly position: Vector;
-    readonly source: GameObject;
-    readonly layer: Layer;
 
-    constructor(game: Game, definition: ReifiableDef<ExplosionDefinition>, position: Vector, source: GameObject, layer: Layer) {
-        this.game = game;
+    constructor(
+        readonly game: Game,
+        definition: ReifiableDef<ExplosionDefinition>,
+        readonly position: Vector,
+        readonly source: GameObject,
+        readonly layer: Layer,
+        readonly weapon?: GunItem | MeleeItem | ThrowableItem
+    ) {
         this.definition = Explosions.reify(definition);
-        this.position = position;
-        this.source = source;
-        this.layer = layer;
     }
 
     explode(): void {
@@ -82,9 +85,11 @@ export class Explosion {
                     const dist = Math.sqrt(collision.squareDistance);
 
                     if ((isPlayer || isObstacle || isBuilding) && adjacentOrEqualLayer(object.layer, this.layer)) {
+                        const perkDamageMod = this.source.isPlayer ? this.source.mapPerkOrDefault(PerkIds.PlumpkinBomb, ({ damageMod }) => damageMod, 1) : 1;
                         object.damage({
-                            amount: this.definition.damage
+                            amount: perkDamageMod * this.definition.damage
                                 * (isObstacle ? this.definition.obstacleMultiplier : 1)
+                                * (isPlayer ? object.mapPerkOrDefault(PerkIds.LowProfile, ({ explosionMod }) => explosionMod, 1) : 1)
                                 * ((dist > min) ? (max - dist) / (max - min) : 1),
 
                             source: this.source,
@@ -93,13 +98,13 @@ export class Explosion {
                     }
 
                     if ((isLoot || isThrowableProjectile) && adjacentOrEqualLayer(object.layer, this.layer)) {
-                        if (isThrowableProjectile && object.definition.health) object.damageC4(this.definition.damage);
-                        else {
-                            (object as Loot).push(
-                                Angle.betweenPoints(object.position, this.position),
-                                (max - dist) * 0.01
-                            );
-                        }
+                        if (isThrowableProjectile) object.damage({ amount: this.definition.damage });
+
+                        const multiplier = isThrowableProjectile ? 0.002 : 0.01;
+                        object.push(
+                            Angle.betweenPoints(object.position, this.position),
+                            (max - dist) * multiplier
+                        );
                     }
                 }
 

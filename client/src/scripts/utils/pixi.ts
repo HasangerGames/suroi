@@ -1,12 +1,14 @@
-import { Assets, Container, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type ContainerChild, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
+import $ from "jquery";
+import { Assets, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
+import { Obstacles } from "../../../../common/src/definitions/obstacles";
 import { HitboxType, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
-import { MODE, PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
-import $ from "jquery";
 import { getTranslatedString } from "../../translations";
-import { Obstacles } from "../../../../common/src/definitions/obstacles";
+import { MODE, PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
+import { GameConstants } from "../../../../common/src/constants";
 
 const textures: Record<string, Texture> = {};
+const reskinnedTextures: Record<string, Texture> = {};
 
 const loadingText = $("#loading-text");
 
@@ -21,53 +23,44 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
 
     // we pray
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const atlases: Record<string, SpritesheetData[]> = highResolution
+    const spritesheets: SpritesheetData[] = highResolution
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         ? (await import("virtual:spritesheets-jsons-high-res")).atlases
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         : (await import("virtual:spritesheets-jsons-low-res")).atlases;
-
-    const mainAtlas = atlases.main;
-
-    const spritesheets = [
-        ...mainAtlas,
-        ...((MODE.reskin !== undefined ? atlases[MODE.reskin] : undefined) ?? [])
-    ];
 
     let resolved = 0;
     const count = spritesheets.length;
     const loader = loadSpritesheet(renderer);
 
     await Promise.all([
-        ...spritesheets.map(
-            spritesheet => {
-                /**
-                 * this is defined via vite-spritesheet-plugin, so it is never nullish
-                 * @link `client/vite/vite-spritesheet-plugin/utils/spritesheet.ts:197`
-                 */
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const image = spritesheet.meta.image!;
+        ...spritesheets.map(spritesheet => {
+            /**
+             * this is defined via vite-spritesheet-plugin, so it is never nullish
+             * @link `client/vite/vite-spritesheet-plugin/utils/spritesheet.ts:197`
+             */
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const image = spritesheet.meta.image!;
 
-                return new Promise<void>(resolve => {
-                    loader(spritesheet, image)
-                        .then(() => {
-                            const resolvedCount = ++resolved;
-                            const progress = `(${resolvedCount} / ${count})`;
+            return new Promise<void>(resolve => {
+                loader(spritesheet, image)
+                    .then(() => {
+                        const resolvedCount = ++resolved;
+                        const progress = `(${resolvedCount} / ${count})`;
 
-                            console.log(`Atlas ${image} loaded ${progress}`);
-                            loadingText.text(getTranslatedString("loading_spritesheets", {
-                                progress
-                            }));
-                        })
-                        .catch(err => {
-                            ++resolved;
-                            console.error(`Atlas ${image} failed to load`);
-                            console.error(err);
-                        })
-                        .finally(resolve);
-                });
-            }
-        ),
+                        console.log(`Atlas ${image} loaded ${progress}`);
+                        loadingText.text(getTranslatedString("loading_spritesheets", {
+                            progress
+                        }));
+                    })
+                    .catch(err => {
+                        ++resolved;
+                        console.error(`Atlas ${image} failed to load`);
+                        console.error(err);
+                    })
+                    .finally(resolve);
+            });
+        }),
         ...Obstacles.definitions
             .filter(obj => obj.wall)
             .map(def => new Promise<void>(resolve => {
@@ -115,6 +108,10 @@ const loadSpritesheet = (renderer: Renderer) => async(data: SpritesheetData, pat
             void new Spritesheet(texture, data).parse().then(sheetTextures => {
                 for (const frame in sheetTextures) {
                     textures[frame] = sheetTextures[frame];
+
+                    if (MODE.reskin && textures[frame].source.label.includes(GameConstants.modeName)) {
+                        reskinnedTextures[frame] = textures[frame];
+                    }
                 }
 
                 resolve();
@@ -129,7 +126,7 @@ export class SuroiSprite extends Sprite {
             console.warn(`Texture not found: "${frame}"`);
             return textures._missing_texture;
         }
-        return textures[frame];
+        return (MODE.reskin && frame in reskinnedTextures) ? reskinnedTextures[frame] : textures[frame];
     }
 
     constructor(frame?: string) {
@@ -191,11 +188,6 @@ export class SuroiSprite extends Sprite {
 
     setAlpha(alpha: number): this {
         this.alpha = alpha;
-        return this;
-    }
-
-    setMask(mask: Container<ContainerChild>): this {
-        this.mask = mask;
         return this;
     }
 }

@@ -2,21 +2,20 @@ import { ObjectCategory } from "@common/constants";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { equalLayer } from "@common/utils/layer";
 import { Angle, calculateDoorHitboxes, resolveStairInteraction } from "@common/utils/math";
 import { ItemType, NullString, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
-import { random } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-
-import { equalLayer } from "@common/utils/layer";
-import { LootTables, type WeightedItem } from "../data/lootTables";
+import { getLootFromTable, LootItem } from "../data/lootTables";
 import { type Game } from "../game";
 import { InventoryItem } from "../inventory/inventoryItem";
-import { getLootTableLoot, getRandomIDString, type LootItem } from "../utils/misc";
+import { getRandomIDString } from "../utils/misc";
 import { type Building } from "./building";
 import type { Bullet } from "./bullet";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { type Player } from "./player";
+import { PerkIds } from "@common/definitions/perks";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override readonly fullAllocBytes = 8;
@@ -55,7 +54,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
     scale = 1;
 
-    declare hitbox: Hitbox;
+    override hitbox: Hitbox;
 
     puzzlePiece?: string | boolean;
 
@@ -101,27 +100,11 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         this.collidable = !definition.noCollisions;
 
         if (definition.hasLoot) {
-            const lootTable = LootTables[this.definition.idString];
-            // TODO Clean up code
-            for (let i = 0; i < random(lootTable.min, lootTable.max); i++) {
-                if (lootTable.loot.length > 0 && lootTable.loot[0] instanceof Array) {
-                    for (const loot of lootTable.loot) {
-                        for (const drop of getLootTableLoot(loot as WeightedItem[])) this.loot.push(drop);
-                    }
-                } else {
-                    for (const drop of getLootTableLoot(lootTable.loot as WeightedItem[])) this.loot.push(drop);
-                }
-            }
-            /* const drops = lootTable.loot.flat();
-
-            this.loot = Array.from(
-                { length: random(lootTable.min, lootTable.max) },
-                () => getLootTableLoot(drops)
-            ).flat(); */
+            this.loot = getLootFromTable(definition.lootTable ?? definition.idString);
         }
 
         if (definition.spawnWithLoot) {
-            for (const item of getLootTableLoot(LootTables[this.definition.idString].loot.flat())) {
+            for (const item of getLootFromTable(definition.lootTable ?? definition.idString)) {
                 this.game.addLoot(
                     item.idString,
                     this.position,
@@ -159,18 +142,19 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         const { amount, source, weaponUsed, position } = params;
         if (this.health === 0 || definition.indestructible) return;
 
-        const weaponDef = weaponUsed instanceof InventoryItem ? weaponUsed.definition : undefined;
+        const weaponIsItem = weaponUsed instanceof InventoryItem;
+        const weaponDef = weaponIsItem ? weaponUsed.definition : undefined;
         if (
             (
                 definition.impenetrable
-                && !(
+                && (!(
                     (
                         weaponDef?.itemType === ItemType.Melee
                         && weaponDef.piercingMultiplier !== undefined
-                        && weaponDef?.canPierceMaterials?.includes(this.definition.material)
                     )
                     || source instanceof Obstacle
                 )
+                || (weaponDef?.itemType === ItemType.Melee && definition.material === "stone" && !weaponDef?.stonePiercing))
             )
             || this.game.pluginManager.emit("obstacle_will_damage", {
                 obstacle: this,
@@ -201,6 +185,9 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         if (!notDead) {
             this.health = 0;
             this.dead = true;
+            if (definition.weaponSwap && source instanceof BaseGameObject && source.isPlayer) {
+                source.swapWeaponRandomly(weaponIsItem ? weaponUsed : weaponUsed?.weapon);
+            }
 
             if (
                 this.game.pluginManager.emit("obstacle_will_destroy", {
@@ -211,14 +198,19 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 })
             ) return;
 
-            if (this.definition.isWindow || this.definition.noCollisionAfterDestroyed) this.collidable = false;
+            if (!this.definition.isWindow) this.collidable = false;
 
             this.scale = definition.scale?.spawnMin ?? 1;
 
             if (definition.explosion !== undefined && source instanceof BaseGameObject) {
                 //                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                 // FIXME This is implying that obstacles won't explode if destroyed by non–game objects
-                this.game.addExplosion(definition.explosion, this.position, source, source.layer);
+                this.game.addExplosion(definition.explosion, this.position, source, source.layer, weaponIsItem ? weaponUsed : weaponUsed?.weapon);
+            }
+
+            // Pumpkin Bombs
+            if (source instanceof BaseGameObject && source.isPlayer && source.perks.hasPerk(PerkIds.PlumpkinBomb) && definition.material === "pumpkin") {
+                this.game.addExplosion("pumpkin_explosion", this.position, source, source.layer);
             }
 
             if (definition.particlesOnDestroy !== undefined) {
@@ -316,7 +308,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
     interact(player?: Player): void {
         if (
-            !this.canInteract(player)
+            (player && !this.canInteract(player))
             && !this.door?.locked
             && !this.game.pluginManager.emit("obstacle_will_interact", {
                 obstacle: this,
@@ -359,7 +351,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                         this.game.map.generateObstacle(
                             idString,
                             this.position,
-                            { rotation: this.rotation }
+                            { rotation: this.rotation, layer: this.layer }
                         );
                     }, replaceWith.delay);
                 }

@@ -1,5 +1,5 @@
 import { type Orientation } from "../typings";
-import { Collision, Geometry, type CollisionRecord, type IntersectionResponse } from "./math";
+import { Collision, Geometry, Numeric, type CollisionRecord, type IntersectionResponse } from "./math";
 import { cloneDeepSymbol, cloneSymbol, type Cloneable, type DeepCloneable } from "./misc";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle } from "./random";
 import { Vec, type Vector } from "./vector";
@@ -176,7 +176,7 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
             case HitboxType.Group:
                 return that.collidesWith(this);
             case HitboxType.Polygon:
-                // todo: proper circle to polygon detection
+                // TODO: proper circle to polygon detection
                 return that.collidesWith(this.toRectangle());
         }
     }
@@ -264,12 +264,12 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
     static fromLine(a: Vector, b: Vector): RectangleHitbox {
         return new RectangleHitbox(
             Vec.create(
-                Math.min(a.x, b.x),
-                Math.min(a.y, b.y)
+                Numeric.min(a.x, b.x),
+                Numeric.min(a.y, b.y)
             ),
             Vec.create(
-                Math.max(a.x, b.x),
-                Math.max(a.y, b.y)
+                Numeric.max(a.x, b.x),
+                Numeric.max(a.y, b.y)
             )
         );
     }
@@ -535,10 +535,10 @@ export class GroupHitbox<GroupType extends Array<RectangleHitbox | CircleHitbox>
         const max = Vec.create(0, 0);
         for (const hitbox of this.hitboxes) {
             const toRect = hitbox.toRectangle();
-            min.x = Math.min(min.x, toRect.min.x);
-            min.y = Math.min(min.y, toRect.min.y);
-            max.x = Math.max(max.x, toRect.max.x);
-            max.y = Math.max(max.y, toRect.max.y);
+            min.x = Numeric.min(min.x, toRect.min.x);
+            min.y = Numeric.min(min.y, toRect.min.y);
+            max.x = Numeric.max(max.x, toRect.max.x);
+            max.y = Numeric.max(max.y, toRect.max.y);
         }
 
         return new RectangleHitbox(min, max);
@@ -599,6 +599,10 @@ export class PolygonHitbox extends BaseHitbox<HitboxType.Polygon> {
                 }
                 return false;
             }
+            case HitboxType.Group:
+            case HitboxType.Circle: {
+                return that.collidesWith(this);
+            }
         }
         this.throwUnknownSubclassError(that);
     }
@@ -650,10 +654,10 @@ export class PolygonHitbox extends BaseHitbox<HitboxType.Polygon> {
         const min = Vec.create(Number.MAX_VALUE, Number.MAX_VALUE);
         const max = Vec.create(0, 0);
         for (const point of this.points) {
-            min.x = Math.min(min.x, point.x);
-            min.y = Math.min(min.y, point.y);
-            max.x = Math.max(max.x, point.x);
-            max.y = Math.max(max.y, point.y);
+            min.x = Numeric.min(min.x, point.x);
+            min.y = Numeric.min(min.y, point.y);
+            max.x = Numeric.max(max.x, point.x);
+            max.y = Numeric.max(max.y, point.y);
         }
 
         return new RectangleHitbox(min, max);

@@ -1,12 +1,14 @@
 import $ from "jquery";
 import { Color } from "pixi.js";
 import { DEFAULT_INVENTORY, GameConstants, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType } from "../../../../common/src/constants";
+import { Skins } from "../../../../common/src/definitions";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { type BadgeDefinition } from "../../../../common/src/definitions/badges";
 import { emoteIdStrings, type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { MapPings, type PlayerPing } from "../../../../common/src/definitions/mapPings";
+import { PerkIds, type PerkDefinition } from "../../../../common/src/definitions/perks";
 import { DEFAULT_SCOPE, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { type GameOverData } from "../../../../common/src/packets/gameOverPacket";
 import { type KillFeedPacketData } from "../../../../common/src/packets/killFeedPacket";
@@ -22,7 +24,7 @@ import { Player } from "../objects/player";
 import { GHILLIE_TINT, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
-import { Skins } from "../../../../common/src/definitions";
+import { ClientPerkManager } from "./perkManager";
 
 function safeRound(value: number): number {
     if (0 < value && value <= 1) return 1;
@@ -58,6 +60,8 @@ export class UIManager {
 
     teammates: PlayerData["teammates"] & object = [];
 
+    readonly perks: ClientPerkManager;
+
     readonly debugReadouts = Object.freeze({
         fps: $<HTMLSpanElement>("#fps-counter"),
         ping: $<HTMLSpanElement>("#ping-counter"),
@@ -72,6 +76,8 @@ export class UIManager {
             throw new Error("Class 'UIManager' has already been instantiated");
         }
         UIManager._instantiated = true;
+
+        this.perks = new ClientPerkManager(this.game);
     }
 
     getRawPlayerNameNullish(id: number): string | undefined {
@@ -290,7 +296,7 @@ export class UIManager {
             slot,
             () => {
                 const container = $<HTMLDivElement>(`#weapon-slot-${slot}`);
-                const inner = container.children(".main-container");
+                const inner = container.children<HTMLDivElement>(".main-container");
 
                 return {
                     container,
@@ -481,7 +487,8 @@ export class UIManager {
             inventory,
             lockedSlots,
             items,
-            activeC4s
+            activeC4s,
+            perks
         } = data;
 
         if (id !== undefined) this.game.activePlayerID = id.id;
@@ -653,6 +660,39 @@ export class UIManager {
             this.ui.c4Button.toggle(activeC4s);
             this.hasC4s = activeC4s;
         }
+
+        /* if (perks) {
+            const oldPerks = this.perks.asList();
+            this.perks.overwrite(perks);
+            const newPerks = this.perks.asList();
+
+            const length = Math.max(oldPerks.length, newPerks.length);
+
+            if (length === 0) {
+                this.resetPerkSlots();
+            }
+
+            for (let i = 0; i < length; i++) {
+                const perk = newPerks[i];
+
+                if (!oldPerks[i] && perk) {
+                    this.updatePerkSlot(perk, i);
+                }
+            }
+        } */
+        if (perks) {
+            this.perks.overwrite(perks);
+
+            const perkList = this.perks.asList();
+            const length = perkList.length;
+
+            if (length === 0) this.resetPerkSlots();
+
+            for (let i = 0; i < length; i++) {
+                const perk = perkList[i];
+                this.updatePerkSlot(perk, i);
+            }
+        }
     }
 
     skinID?: string;
@@ -675,7 +715,9 @@ export class UIManager {
             let showReserve = false;
             if (activeWeapon.definition.itemType === ItemType.Gun) {
                 const ammoType = activeWeapon.definition.ammoType;
-                let totalAmmo: number | string = this.inventory.items[ammoType];
+                let totalAmmo: number | string = this.perks.hasPerk(PerkIds.InfiniteAmmo)
+                    ? "∞"
+                    : this.inventory.items[ammoType];
 
                 for (const ammo of Ammos) {
                     if (ammo.idString === ammoType && ammo.ephemeral) {
@@ -727,7 +769,7 @@ export class UIManager {
       TODO proper caching would require keeping a copy of the inventory currently being shown,
            so that we can compare it to what it should now be showing (in other words, a kind
            of "oldInventory—newInventory" thing).
-  */
+    */
     updateWeaponSlots(): void {
         const inventory = this.inventory;
 
@@ -829,6 +871,55 @@ export class UIManager {
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         element[0].offsetWidth; // causes browser reflow
         element.toggleClass("active");
+    }
+
+    resetPerkSlot(index: number): void {
+        const container = $(`#perk-slot-${index}`);
+
+        container.children(".item-tooltip").html("");
+        container.children(".item-image").attr("src", "");
+        container.css("visibility", "hidden");
+        container.off("pointerdown");
+    }
+
+    /* updatePerkSlot(perkDef: PerkDefinition, index: number): void {
+        const container = $(`#perk-slot-${index}`);
+
+        container.children(".item-tooltip").html(`<strong>${perkDef.name}</strong><br>${perkDef.description}`);
+        container.children(".item-image").attr("src", `./img/game/perks/${perkDef.idString}.svg`);
+        container.css("visibility", this.perks.hasPerk(perkDef) ? "visible" : "hidden");
+
+        container.off("pointerdown");
+        container[0].addEventListener( // todo
+            "pointerdown",
+            (e: PointerEvent): void => {
+                e.stopImmediatePropagation();
+                if (e.button === 2 && perkDef && this.game.teamMode) {
+                    this.game.inputManager.addAction({
+                        type: InputActions.DropItem,
+                        item: perkDef
+                    });
+                    this.resetPerkSlot(index);
+                }
+            }
+        );
+    } */
+
+    updatePerkSlot(perkDef: PerkDefinition, index: number): void {
+        if (index > 3) index = 0; // overwrite stuff ig?
+        // no, write a hud that can handle it
+
+        const container = $(`#perk-slot-${index}`);
+        container.attr("data-idString", perkDef.idString);
+        container.children(".item-tooltip").html(`<strong>${perkDef.name}</strong><br>${perkDef.description}`);
+        container.children(".item-image").attr("src", `./img/game/perks/${perkDef.idString}.svg`);
+        container.css("visibility", this.perks.hasPerk(perkDef.idString) ? "visible" : "hidden");
+    }
+
+    resetPerkSlots(): void {
+        for (let i = 0; i < 3; i++) {
+            this.resetPerkSlot(i);
+        }
     }
 
     updateItems(): void {

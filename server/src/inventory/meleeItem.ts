@@ -1,11 +1,14 @@
 import { AnimationType, FireMode } from "@common/constants";
 import { type MeleeDefinition } from "@common/definitions/melees";
+import { PerkIds } from "@common/definitions/perks";
 import { CircleHitbox } from "@common/utils/hitbox";
-import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
+import { Numeric } from "@common/utils/math";
+import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
 
-import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { type CollidableGameObject } from "../objects/gameObject";
+import type { ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import { InventoryItem } from "./inventoryItem";
 
@@ -23,11 +26,16 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
      * @param owner The `Player` that owns this melee weapon
      * @throws {TypeError} If the `idString` given does not point to a definition for a melee weapon
      */
-    constructor(idString: ReferenceTo<MeleeDefinition>, owner: Player) {
+    constructor(idString: ReifiableDef<MeleeDefinition>, owner: Player, data?: ItemData<MeleeDefinition>) {
         super(idString, owner);
 
         if (this.category !== ItemType.Melee) {
             throw new TypeError(`Attempted to create a Melee object based on a definition for a non-melee object (Received a ${this.category as unknown as string} definition)`);
+        }
+
+        if (data) {
+            this.stats.kills = data.kills;
+            this.stats.damage = data.damage;
         }
     }
 
@@ -54,9 +62,11 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                 && !owner.downed
                 && !owner.disconnected
             ) {
-                const rotated = Vec.rotate(definition.offset, owner.rotation);
-                const position = Vec.add(owner.position, rotated);
-                const hitbox = new CircleHitbox(definition.radius, position);
+                const position = Vec.add(
+                    owner.position,
+                    Vec.scale(Vec.rotate(definition.offset, owner.rotation), owner.sizeMod)
+                );
+                const hitbox = new CircleHitbox(definition.radius * owner.sizeMod, position);
 
                 // Damage the closest object
                 const damagedObjects: readonly CollidableGameObject[] = (
@@ -83,27 +93,28 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                     return a.hitbox.distanceTo(this.owner.hitbox).distance - b.hitbox.distanceTo(this.owner.hitbox).distance;
                 });
 
-                const targetLimit = Math.min(damagedObjects.length, definition.maxTargets);
+                const targetLimit = Numeric.min(damagedObjects.length, definition.maxTargets);
+                const initMultiplier = this.owner.mapPerkOrDefault(PerkIds.Berserker, ({ damageMod }) => damageMod, 1);
+
                 for (let i = 0; i < targetLimit; i++) {
                     const closestObject = damagedObjects[i];
-                    let multiplier = 1;
+                    let multiplier = initMultiplier;
 
                     if (closestObject.isObstacle) {
-                        multiplier = definition.piercingMultiplier !== undefined && closestObject.definition.impenetrable
+                        multiplier *= definition.piercingMultiplier !== undefined && closestObject.definition.impenetrable
                             ? definition.piercingMultiplier
                             : definition.obstacleMultiplier;
                     }
 
-                    if (closestObject.isThrowableProjectile) { // C4
-                        // Currently this code treats C4 as if it is an obstacle in terms of melee damage.
-                        closestObject.damageC4(definition.damage * definition.obstacleMultiplier);
-                    } else {
-                        closestObject.damage({
-                            amount: definition.damage * multiplier,
-                            source: owner,
-                            weaponUsed: this
-                        });
+                    if (closestObject.isThrowableProjectile) {
+                        multiplier *= definition.obstacleMultiplier;
                     }
+
+                    closestObject.damage({
+                        amount: definition.damage * multiplier,
+                        source: owner,
+                        weaponUsed: this
+                    });
 
                     if (closestObject.isObstacle && !closestObject.dead) {
                         closestObject.interact(this.owner);
@@ -119,6 +130,13 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                 }
             }
         }, 50);
+    }
+
+    override itemData(): ItemData<MeleeDefinition> {
+        return {
+            kills: this.stats.kills,
+            damage: this.stats.damage
+        };
     }
 
     override useItem(): void {

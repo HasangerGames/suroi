@@ -5,6 +5,7 @@ import { Backpacks, type BackpackDefinition } from "./backpacks";
 import { Guns, type GunDefinition } from "./guns";
 import { HealingItems, type HealingItemDefinition } from "./healingItems";
 import { Melees, type MeleeDefinition } from "./melees";
+import { Perks, type PerkDefinition } from "./perks";
 import { Scopes, type ScopeDefinition } from "./scopes";
 import { Skins, type SkinDefinition } from "./skins";
 import { Throwables, type ThrowableDefinition } from "./throwables";
@@ -18,7 +19,8 @@ export type LootDefinition =
     BackpackDefinition |
     ScopeDefinition |
     SkinDefinition |
-    ThrowableDefinition;
+    ThrowableDefinition |
+    PerkDefinition;
 
 export type WeaponDefinition =
     GunDefinition |
@@ -26,6 +28,19 @@ export type WeaponDefinition =
     ThrowableDefinition;
 
 export type TypedLootDefinition<Type extends ItemType> = LootDefinition & { readonly itemType: Type };
+
+export type LootDefForType<K extends ItemType> = {
+    [ItemType.Gun]: GunDefinition
+    [ItemType.Ammo]: AmmoDefinition
+    [ItemType.Melee]: MeleeDefinition
+    [ItemType.Throwable]: ThrowableDefinition
+    [ItemType.Healing]: HealingItemDefinition
+    [ItemType.Armor]: ArmorDefinition
+    [ItemType.Backpack]: BackpackDefinition
+    [ItemType.Scope]: ScopeDefinition
+    [ItemType.Skin]: SkinDefinition
+    [ItemType.Perk]: PerkDefinition
+}[K];
 
 /**
  * Specialized subclass of {@linkcode ObjectDefinitions} that provides facilities for getting
@@ -65,6 +80,7 @@ export const Loots = new LootDefinitions(
         ...Armors,
         ...Backpacks,
         ...Scopes,
-        ...Skins
+        ...Skins,
+        ...Perks
     ]
 );

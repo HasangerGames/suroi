@@ -199,7 +199,7 @@ export class CustomTeam {
                 break;
             }
             case CustomTeamMessages.Start: {
-                const result = findGame();
+                const result = await findGame();
                 if (result.success) {
                     this.gameID = result.gameID;
                     this._publishMessage({ type: CustomTeamMessages.Started });

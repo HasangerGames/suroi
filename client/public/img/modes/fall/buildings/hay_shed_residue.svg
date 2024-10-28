@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="265.466735"
+   height="230.036345"
+   viewBox="0 0 140.47614 121.72757"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="hay_shed_residue.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.71713664"
+     inkscape:cx="423.21084"
+     inkscape:cy="-138.74622"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Στρώση 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(7.1437881,-185.20833)">
+    <g
+       id="g190576"
+       transform="translate(5012.72,124.90877)">
+      <g
+         id="g184030"
+         transform="translate(-257.05983,10.476965)">
+        <rect
+           style="fill:#72542f;fill-opacity:1;stroke:#3f321c;stroke-width:2.3;stroke-linecap:round;stroke-opacity:1;stop-color:#000000"
+           id="rect184022"
+           width="18.899651"
+           height="98.72007"
+           x="776.50385"
+           y="4560.8398"
+           transform="matrix(-0.13802122,0.99042927,-0.99026747,-0.13917735,0,0)" />
+        <path
+           id="path184024"
+           style="fill:#684e2c;fill-opacity:1;stroke:#3f321c;stroke-width:2.3;stroke-linecap:round;stroke-opacity:1;stop-color:#000000"
+           d="m -4760.4123,102.03886 13.8897,1.15385 55.2367,-35.942849 -10.3223,-15.836637 -42.8776,27.900639 -5.596,11.132543 z" />
+        <path
+           id="path184026"
+           style="fill:#72542f;fill-opacity:1;stroke:#3f321c;stroke-width:2.3;stroke-linecap:round;stroke-opacity:1;stop-color:#000000"
+           d="m -4727.3444,84.959015 48.7555,24.678555 -1.8417,-12.0129 7.344,-6.364622 -45.7403,-23.152654 z" />
+        <path
+           id="path184028"
+           style="fill:#684e2c;fill-opacity:1;stroke:#3f321c;stroke-width:2.3;stroke-linecap:round;stroke-opacity:1;stop-color:#000000"
+           d="m -4643.844,129.20174 -6.0288,-2.5598 1.2548,-8.99881 -9.3878,-1.31999 -28.2427,43.2883 15.8141,10.34599 z" />
+      </g>
+    </g>
+  </g>
+</svg>

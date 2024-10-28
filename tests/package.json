@@ -7,22 +7,29 @@
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "mathUnitTests": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && cd dist/tests/src && jest",
     "validateDefinitions": "node dist/tests/src/validateDefinitions.js -print-top -print-bottom",
-    "stressTest": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && node --enable-source-maps dist/tests/src/stressTest.js"
+    "stressTest:start": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && node --enable-source-maps dist/server/src/stressTest.js",
+    "stressTest": "nodemon -r ts-node/register -r tsconfig-paths/register --watch ./src --watch ../common src/stressTest.ts"
   },
   "keywords": [],
   "license": "GPL-3.0",
   "devDependencies": {
     "@jest/globals": "^29.7.0",
-    "@types/node": "^22.6.1",
+    "@swc/core": "^1.7.40",
+    "@swc/helpers": "^0.5.13",
+    "@types/node": "^22.7.5",
     "@types/ws": "^8.5.12",
     "jest": "^29.7.0",
+    "nodemon": "^3.1.7",
+    "regenerator-runtime": "^0.14.1",
     "ts-jest": "^29.2.5",
     "tsc-alias": "^1.8.10",
-    "typescript": "^5.6.2"
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.6.3"
   },
   "dependencies": {
     "@damienvesper/bit-buffer": "^1.0.1",
     "nanotimer": "^0.3.15",
+    "ts-node": "^10.9.2",
     "ws": "^8.18.0"
   }
 }

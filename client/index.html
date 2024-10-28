@@ -8,6 +8,8 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
 
+    <meta name="apple-itunes-app" content="app-id=4N5YQ8X3F5, app-argument=https://suroi.io">
+
     <meta name="title" content="Suroi - 2D battle royale game" />
     <meta
       name="description"
@@ -181,10 +183,19 @@
                 <ul class="dropdown-content" id="server-list"></ul>
               </div>
 
-              <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo" translation="play_solo"></button>
+              <button class="btn btn-lg btn-darken btn-primary event-fall" id="btn-play-solo">
+                <img class="btn-icon" width="26" height="26" src="./img/modes/fall/obstacles/mini_plumpkin.svg">
+                <span translation="play_solo"></span>
+              </button>
               <div class="team-btns-container">
-                <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo" translation="play_duo"></button>
-                <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad" translation="play_squad"></button>
+                <button class="btn btn-lg btn-darken btn-primary event-fall" id="btn-play-duo">
+                  <img class="btn-icon" width="26" height="26" src="./img/modes/fall/obstacles/mini_plumpkin.svg">
+                  <span translation="play_duo" style="margin-left: 20px;"></span>
+                </button>
+                <button class="btn btn-lg btn-darken btn-primary event-fall" id="btn-play-squad">
+                  <img class="btn-icon" width="26" height="26" src="./img/modes/fall/obstacles/mini_plumpkin.svg">
+                  <span translation="play_squad" style="margin-left: 25px;"></span>
+                </button>
               </div>
               <div id="team-option-btns" class="team-btns-container">
                 <button class="btn btn-lg btn-darken btn-purple" id="btn-join-team" translation="join_team"></button>
@@ -530,6 +541,21 @@
             <div class="item-tooltip"></div>
           </div>
         </div>
+        <div class="inventory-container" id="perk-container">
+          <!-- Slot 0 is intentionally in center -->
+          <div class="inventory-slot has-item" id="perk-slot-1">
+            <img class="item-image" draggable="false" />
+            <div class="item-tooltip"></div>
+          </div>
+          <div class="inventory-slot has-item" id="perk-slot-0">
+            <img class="item-image" draggable="false" />
+            <div class="item-tooltip"></div>
+          </div>
+          <div class="inventory-slot has-item" id="perk-slot-2">
+            <img class="item-image" draggable="false" />
+            <div class="item-tooltip"></div>
+          </div>
+        </div>
         <div class="inventory-container" id="weapons-container">
         </div>
         <div id="emote-wheel" style="display: none">
@@ -677,6 +703,13 @@
           </div>
           <div class="modal-item">
             <label>
+              <span class="setting-title" translation="settings_ambience_volume"></span>
+              <span class="range-input-value"></span>
+              <input type="range" max="1" min="0" id="slider-ambience-volume" step="0.1" value="1">
+            </label>
+          </div>
+          <div class="modal-item">
+            <label>
               <span class="setting-title" translation="settings_music_volume"></span>
               <span class="range-input-value"></span>
               <input type="range" max="1" min="0" id="slider-music-volume" step="0.1" value="1">
@@ -725,6 +758,12 @@
             <label>
               <span class="setting-title" translation="settings_cooler_graphics"></span>
               <input type="checkbox" id="toggle-cooler-graphics">
+            </label>
+          </div>
+          <div class="modal-item checkbox-setting">
+            <label>
+              <span class="setting-title" translation="settings_ambient_particles"></span>
+              <input type="checkbox" id="toggle-ambient-particles">
             </label>
           </div>
           <div class="modal-item checkbox-setting">

@@ -1,10 +1,13 @@
 import { AnimationType, Layer } from "@common/constants";
+import { PerkIds } from "@common/definitions/perks";
 import { type ThrowableDefinition } from "@common/definitions/throwables";
+import { Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
 
 import { type Game } from "../game";
+import type { ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import { type ThrowableProjectile } from "../objects/throwableProj";
 import { CountableInventoryItem } from "./inventoryItem";
@@ -16,13 +19,18 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
 
     private _activeHandler?: GrenadeHandler;
 
-    constructor(definition: ReifiableDef<ThrowableDefinition>, owner: Player, count = 1) {
+    constructor(definition: ReifiableDef<ThrowableDefinition>, owner: Player, data?: ItemData<ThrowableDefinition>, count = 1) {
         super(definition, owner);
 
         this.count = count;
 
         if (this.category !== ItemType.Throwable) {
             throw new TypeError(`Attempted to create a Throwable object based on a definition for a non-gun object (Received a ${this.category as unknown as string} definition)`);
+        }
+
+        if (data) {
+            this.stats.kills = data.kills;
+            this.stats.damage = data.damage;
         }
     }
 
@@ -56,6 +64,13 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
 
     private _detachHandler(): void {
         this._activeHandler = undefined;
+    }
+
+    override itemData(): ItemData<ThrowableDefinition> {
+        return {
+            kills: this.stats.kills,
+            damage: this.stats.damage
+        };
     }
 
     override useItem(): void {
@@ -95,7 +110,8 @@ class GrenadeHandler {
                 explosion,
                 referencePosition,
                 this.parent.owner,
-                this._projectile?.layer ?? this.parent.owner.layer
+                this._projectile?.layer ?? this.parent.owner.layer,
+                this.parent
             );
         }
 
@@ -207,8 +223,8 @@ class GrenadeHandler {
                     this.owner.rotation,
                     soft
                         ? 0
-                        : Math.min(
-                            definition.maxThrowDistance,
+                        : Numeric.min(
+                            definition.maxThrowDistance * this.owner.mapPerkOrDefault(PerkIds.DemoExpert, ({ rangeMod }) => rangeMod, 1),
                             0.9 * this.owner.distanceToMouse
                         //  ^^^ Grenades will consistently undershoot the mouse by 10% in order to make long-range shots harder
                         //      while not really affecting close-range shots

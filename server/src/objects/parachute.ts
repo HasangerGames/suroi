@@ -52,7 +52,7 @@ export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
             }, crate.position, crate.layer);
 
             // Crush damage
-            for (const object of this.game.grid.intersectsHitbox(crate.hitbox)) {
+            for (const object of this.game.grid.intersectsHitbox(crate.hitbox, crate.layer)) {
                 if (object.hitbox?.collidesWith(crate.hitbox)) {
                     switch (true) {
                         case object.isPlayer: {
@@ -78,7 +78,7 @@ export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
             }
 
             // loop again to make sure loot added by destroyed obstacles is checked
-            for (const loot of this.game.grid.intersectsHitbox(this.hitbox)) {
+            for (const loot of this.game.grid.intersectsHitbox(this.hitbox, this.layer)) {
                 if (loot.isLoot && this.hitbox.collidesWith(loot.hitbox)) {
                     if (loot.hitbox.collidesWith(crate.hitbox)) {
                         loot.hitbox.resolveCollision(crate.hitbox);

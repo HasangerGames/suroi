@@ -1,24 +1,25 @@
-import { Layer, ObjectCategory } from "@common/constants";
+import { GameConstants, Layer, ObjectCategory } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { MapPacket, type MapPacketData } from "@common/packets/mapPacket";
 import { PacketStream } from "@common/packets/packetStream";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { equalLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
 import { type Mutable, type SMutable } from "@common/utils/misc";
 import { MapObjectSpawnMode, NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
 import { River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
-import { Config } from "./config";
 
-import { LootTables, type WeightedItem } from "./data/lootTables";
-import { MapDefinition, MapName, Maps, ObstacleClump } from "./data/maps";
+import { Config } from "./config";
+import { getLootFromTable } from "./data/lootTables";
+import { MapDefinition, MapName, Maps, ObstacleClump, RiverDefinition } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
-import { CARDINAL_DIRECTIONS, Logger, getLootTableLoot, getRandomIDString } from "./utils/misc";
+import { CARDINAL_DIRECTIONS, Logger, getRandomIDString } from "./utils/misc";
 
 export class GameMap {
     readonly game: Game;
@@ -29,6 +30,8 @@ export class GameMap {
     private readonly majorBuildingPositions: Vector[] = [];
 
     private readonly occupiedBridgePositions: Vector[] = [];
+
+    private readonly clearings: RectangleHitbox[] = [];
 
     readonly width: number;
     readonly height: number;
@@ -81,7 +84,7 @@ export class GameMap {
         this.game = game;
 
         const [name, ...params] = mapData.split(":") as [MapName, ...string[]];
-        const mapDef = Maps[name];
+        const mapDef: MapDefinition = Maps[name];
 
         // @ts-expect-error I don't know why this rule exists
         type PacketType = this["_packet"];
@@ -127,67 +130,11 @@ export class GameMap {
 
         const rivers: River[] = [];
 
-        if (mapDef.rivers) {
-            const riverDef = mapDef.rivers;
-            const riverPadding = 64;
-            const randomGenerator = new SeededRandom(this.seed);
-            const amount = randomGenerator.getInt(riverDef.minAmount, riverDef.maxAmount);
+        if (mapDef.rivers || mapDef.trails) {
+            const seededRandom = new SeededRandom(this.seed);
 
-            let wideAmount = 0;
-
-            // generate a list of widths and sort by biggest, to make sure wide rivers generate first
-            const widths = Array.from(
-                { length: amount },
-                () => {
-                    if (wideAmount < riverDef.maxWideAmount && randomGenerator.get() < riverDef.wideChance) {
-                        wideAmount++;
-                        return randomGenerator.getInt(riverDef.minWideWidth, riverDef.maxWideWidth);
-                    } else {
-                        return randomGenerator.getInt(riverDef.minWidth, riverDef.maxWidth);
-                    }
-                }
-            ).sort((a, b) => b - a);
-
-            // extracted from loop
-            const halfWidth = this.width / 2;
-            const halfHeight = this.height / 2;
-            const riverRect = new RectangleHitbox(
-                Vec.create(riverPadding, riverPadding),
-                Vec.create(this.width - riverPadding, this.height - riverPadding)
-            );
-            const center = Vec.create(halfWidth, halfHeight);
-            const width = this.width - riverPadding;
-            const height = this.height - riverPadding;
-
-            let attempts = 0;
-            while (rivers.length < amount && attempts < 100) {
-                attempts++;
-                let start: Vector;
-
-                const horizontal = !!randomGenerator.getInt();
-                const reverse = !!randomGenerator.getInt();
-
-                if (horizontal) {
-                    const topHalf = randomGenerator.get(riverPadding, halfHeight);
-                    const bottomHalf = randomGenerator.get(halfHeight, height);
-                    start = Vec.create(riverPadding, reverse ? bottomHalf : topHalf);
-                } else {
-                    const leftHalf = randomGenerator.get(riverPadding, halfWidth);
-                    const rightHalf = randomGenerator.get(halfWidth, width);
-                    start = Vec.create(reverse ? rightHalf : leftHalf, riverPadding);
-                }
-
-                const startAngle = Angle.betweenPoints(center, start) + (reverse ? 0 : Math.PI);
-
-                this._generateRiver(
-                    start,
-                    startAngle,
-                    widths[rivers.length],
-                    riverRect,
-                    rivers,
-                    randomGenerator
-                );
-            }
+            if (mapDef.trails) rivers.push(...this._generateRivers(mapDef.trails, seededRandom, true));
+            if (mapDef.rivers) rivers.push(...this._generateRivers(mapDef.rivers, seededRandom));
         }
 
         packet.rivers = rivers;
@@ -201,11 +148,13 @@ export class GameMap {
             rivers
         );
 
+        this._generateClearings(mapDef.clearings);
+
         Object.entries(mapDef.buildings ?? {}).forEach(([building, count]) => this._generateBuildings(building, count));
 
         for (const clump of mapDef.obstacleClumps ?? []) {
             this._generateObstacleClumps(clump);
-        };
+        }
 
         Object.entries(mapDef.obstacles ?? {}).forEach(([obstacle, count]) => this._generateObstacles(obstacle, count));
 
@@ -229,21 +178,100 @@ export class GameMap {
         this.buffer = stream.getBuffer();
     }
 
+    private _generateRivers(definition: RiverDefinition, randomGenerator: SeededRandom, isTrail = false): River[] {
+        const {
+            minAmount,
+            maxAmount,
+            maxWideAmount,
+            wideChance,
+            minWidth,
+            maxWidth,
+            minWideWidth,
+            maxWideWidth
+        } = definition;
+        const rivers: River[] = [];
+        const amount = randomGenerator.getInt(minAmount, maxAmount);
+
+        // generate a list of widths and sort by biggest, to make sure wide rivers generate first
+        let wideAmount = 0;
+        const widths = Array.from(
+            { length: amount },
+            () => {
+                if (wideAmount < maxWideAmount && randomGenerator.get() < wideChance) {
+                    wideAmount++;
+                    return randomGenerator.getInt(minWideWidth, maxWideWidth);
+                } else {
+                    return randomGenerator.getInt(minWidth, maxWidth);
+                }
+            }
+        ).sort((a, b) => b - a);
+
+        const halfWidth = this.width / 2;
+        const halfHeight = this.height / 2;
+        const center = Vec.create(halfWidth, halfHeight);
+
+        const padding = isTrail ? GameConstants.trailPadding : GameConstants.riverPadding;
+        const width = this.width - padding;
+        const height = this.height - padding;
+        const bounds = new RectangleHitbox(
+            Vec.create(padding, padding),
+            Vec.create(width, height)
+        );
+
+        let i = 0;
+        let attempts = 0;
+        while (i < amount && attempts < 100) {
+            attempts++;
+            let start: Vector;
+
+            const horizontal = !!randomGenerator.getInt();
+            const reverse = !!randomGenerator.getInt();
+
+            if (horizontal) {
+                const topHalf = randomGenerator.get(padding, halfHeight);
+                const bottomHalf = randomGenerator.get(halfHeight, height);
+                start = Vec.create(padding, reverse ? bottomHalf : topHalf);
+            } else {
+                const leftHalf = randomGenerator.get(padding, halfWidth);
+                const rightHalf = randomGenerator.get(halfWidth, width);
+                start = Vec.create(reverse ? rightHalf : leftHalf, padding);
+            }
+
+            const startAngle = Angle.betweenPoints(center, start) + (reverse ? 0 : Math.PI);
+
+            const riverWidth = widths[i];
+
+            if (this._generateRiver(
+                start,
+                startAngle,
+                riverWidth,
+                bounds,
+                isTrail,
+                rivers,
+                randomGenerator
+            )) i++;
+        }
+
+        return rivers;
+    }
+
     private _generateRiver(
         startPos: Vector,
         startAngle: number,
         width: number,
         bounds: RectangleHitbox,
+        isTrail: boolean,
         rivers: River[],
         randomGenerator: SeededRandom
-    ): void {
+    ): boolean {
         const riverPoints: Vector[] = [];
 
         riverPoints.push(startPos);
 
         let angle = startAngle;
+        const points = isTrail ? 25 : 60;
 
-        for (let i = 1; i < 60; i++) {
+        for (let i = 1; i < points; i++) {
             const lastPoint = riverPoints[i - 1];
             const center = Vec.create(this.width / 2, this.height / 2);
 
@@ -259,10 +287,10 @@ export class GameMap {
 
             const pos = Vec.add(lastPoint, Vec.fromPolar(angle, randomGenerator.getInt(30, 80)));
 
-            let collided = false;
-
             // end the river if it collides with another river
+            let collided = false;
             for (const river of rivers) {
+                if (river.isTrail !== isTrail) continue; // Trails should only end when colliding with other trails, same for rivers
                 const points = river.points;
                 for (let j = 1; j < points.length; j++) {
                     const intersection = Collision.lineIntersectsLine(lastPoint, pos, points[j - 1], points[j]);
@@ -276,17 +304,21 @@ export class GameMap {
                 if (collided) break;
             }
             if (collided) break;
+
             riverPoints[i] = pos;
 
             if (!bounds.isPointInside(pos)) break;
         }
-        if (riverPoints.length < 20 || riverPoints.length > 59) return;
+        if (riverPoints.length < 20 || riverPoints.length > 59) return false;
 
         const mapBounds = new RectangleHitbox(
             Vec.create(this.oceanSize, this.oceanSize),
             Vec.create(this.width - this.oceanSize, this.height - this.oceanSize)
         );
-        rivers.push(new River(width, riverPoints, rivers, mapBounds));
+
+        rivers.push(new River(width, riverPoints, rivers, mapBounds, isTrail));
+
+        return true;
     }
 
     // TODO Move this to a utility class and use it in gas.ts as well
@@ -299,6 +331,49 @@ export class GameMap {
             return 3;
         } else {
             return 4;
+        }
+    }
+
+    private _generateClearings(clearingDef: MapDefinition["clearings"]): void {
+        if (!clearingDef) return;
+
+        const {
+            minWidth,
+            minHeight,
+            maxWidth,
+            maxHeight,
+            count,
+            obstacles
+        } = clearingDef;
+
+        for (let i = 0; i < count; i++) {
+            const width = randomFloat(minWidth, maxWidth);
+            const height = randomFloat(minHeight, maxHeight);
+            let hitbox = RectangleHitbox.fromRect(width, height);
+
+            let position;
+            let attempts = 0;
+            let validPositionFound = false;
+            while (!validPositionFound && attempts < 100) {
+                if ((position = this.getRandomPosition(hitbox)) !== undefined) {
+                    validPositionFound = true;
+                    this.clearings.push(hitbox = RectangleHitbox.fromRect(width, height, position));
+                    break;
+                }
+                attempts++;
+            }
+            if (attempts >= 100) {
+                Logger.warn("Failed to find valid position for clearing");
+                continue;
+            }
+
+            for (const obstacle of obstacles) {
+                this._generateObstacles(
+                    obstacle.idString,
+                    random(obstacle.min, obstacle.max),
+                    () => hitbox.randomPoint()
+                );
+            }
         }
     }
 
@@ -427,7 +502,7 @@ export class GameMap {
             };
 
             this.terrain.rivers
-                .filter(({ width }) => width >= minRiverWidth && width <= maxRiverWidth)
+                .filter(({ width, isTrail }) => !isTrail && width >= minRiverWidth && width <= maxRiverWidth)
                 .map(generateBridge)
                 .forEach(generator => {
                     generator(0.2, 0.4);
@@ -505,15 +580,7 @@ export class GameMap {
         }
 
         for (const lootData of definition.lootSpawners) {
-            const table = LootTables[lootData.table];
-            const drops = table.loot;
-
-            for (
-                const item of Array.from(
-                    { length: random(table.min, table.max) },
-                    () => getLootTableLoot(drops as WeightedItem[]) // FIXME This will break if multiple tables are specified
-                ).flat()
-            ) {
+            for (const item of getLootFromTable(lootData.table)) {
                 this.game.addLoot(
                     item.idString,
                     Vec.addAdjust(position, lootData.position, orientation),
@@ -551,7 +618,7 @@ export class GameMap {
         return building;
     }
 
-    private _generateObstacles(definition: ReifiableDef<ObstacleDefinition>, count: number): void {
+    private _generateObstacles(definition: ReifiableDef<ObstacleDefinition>, count: number, getPosition?: () => Vector): void {
         // i don't know why "definition = Obstacles.reify(definition)" doesn't work anymore, but it doesn't
         const def = Obstacles.reify(definition);
 
@@ -560,7 +627,7 @@ export class GameMap {
         const effSpawnHitbox = def.spawnHitbox ?? def.hitbox;
 
         for (let i = 0; i < count; i++) {
-            const scale = randomFloat(spawnMin ?? 1, spawnMax ?? 1);
+            const scale = randomFloat(spawnMin, spawnMax);
             const variation = (variations !== undefined ? random(0, variations - 1) : 0) as Variation;
             const rotation = GameMap.getRandomRotation(rotationMode);
 
@@ -571,9 +638,11 @@ export class GameMap {
             }
 
             const position = this.getRandomPosition(effSpawnHitbox, {
+                getPosition,
                 scale,
                 orientation,
-                spawnMode: def.spawnMode
+                spawnMode: def.spawnMode,
+                ignoreClearings: this.mapDef.clearings?.allowedObstacles?.includes(def.idString)
             });
 
             if (!position) {
@@ -696,14 +765,9 @@ export class GameMap {
         }
     }
 
-    private _generateLoots(table: keyof typeof LootTables, count: number): void {
-        if (!(table in LootTables)) {
-            throw new Error(`Unknown loot table: '${table}'`);
-        }
-
+    private _generateLoots(table: string, count: number): void {
         for (let i = 0; i < count; i++) {
-            const loot = getLootTableLoot(LootTables[table].loot.flat());
-            //                                                   ^^^^^^ dubious?
+            const loot = getLootFromTable(table);
 
             const position = this.getRandomPosition(
                 new CircleHitbox(5),
@@ -734,11 +798,13 @@ export class GameMap {
             collidableObjects?: Partial<Record<ObjectCategory, boolean>>
             spawnMode?: MapObjectSpawnMode
             scale?: number
+            layer?: Layer
             orientation?: Orientation
             maxAttempts?: number
             // used for beach spawn mode
             // so it can retry on different orientations
             orientationConsumer?: (orientation: Orientation) => void
+            ignoreClearings?: boolean
         }
     ): Vector | undefined {
         let position: Vector | undefined = Vec.create(0, 0);
@@ -774,10 +840,12 @@ export class GameMap {
                 }
                 // TODO: evenly distribute objects based on river size
                 case MapObjectSpawnMode.River: {
-                    return () => pickRandomInArray(this.terrain.rivers).waterHitbox.randomPoint();
+                    // rivers that aren't trails must have a waterHitbox
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    return () => pickRandomInArray(this.terrain.rivers.filter(({ isTrail }) => !isTrail))?.waterHitbox!.randomPoint();
                 }
                 case MapObjectSpawnMode.RiverBank: {
-                    return () => pickRandomInArray(this.terrain.rivers).bankHitbox.randomPoint();
+                    return () => pickRandomInArray(this.terrain.rivers.filter(({ isTrail }) => !isTrail)).bankHitbox.randomPoint();
                 }
                 case MapObjectSpawnMode.Beach: {
                     return () => {
@@ -803,6 +871,9 @@ export class GameMap {
 
                         return beachRect.randomPoint();
                     };
+                }
+                case MapObjectSpawnMode.Trail: {
+                    return () => pickRandomInArray(this.terrain.rivers.filter(({ isTrail }) => isTrail)).bankHitbox.randomPoint();
                 }
             }
         })();
@@ -837,7 +908,10 @@ export class GameMap {
                 }
                 if (objectHitbox === undefined) continue;
 
-                if (collidableObjects[object.type] && hitbox.collidesWith(objectHitbox)) {
+                if (
+                    collidableObjects[object.type]
+                    && equalLayer(object.layer, params?.layer ?? Layer.Ground)
+                    && hitbox.collidesWith(objectHitbox)) {
                     collided = true;
                     break;
                 }
@@ -851,7 +925,7 @@ export class GameMap {
                 case MapObjectSpawnMode.Beach: {
                     for (const river of this.terrain.getRiversInHitbox(hitbox)) {
                         if (
-                            spawnMode !== MapObjectSpawnMode.GrassAndSand
+                            (spawnMode !== MapObjectSpawnMode.GrassAndSand || river.isTrail)
                             && (
                                 river.bankHitbox.isPointInside(position)
                                 || hitbox.collidesWith(river.bankHitbox)
@@ -864,12 +938,20 @@ export class GameMap {
                         if (
                             spawnMode === MapObjectSpawnMode.GrassAndSand
                             && (
-                                river.waterHitbox.isPointInside(position)
-                                || hitbox.collidesWith(river.waterHitbox)
+                                river.waterHitbox?.isPointInside(position)
+                                || river.waterHitbox?.collidesWith(hitbox)
                             )
                         ) {
                             collided = true;
                             break;
+                        }
+                    }
+                    if (!params?.ignoreClearings) {
+                        for (const clearing of this.clearings) {
+                            if (clearing.collidesWith(hitbox)) {
+                                collided = true;
+                                break;
+                            }
                         }
                     }
                     break;
@@ -886,7 +968,7 @@ export class GameMap {
                             ]
                         ) {
                             for (const river of this.terrain.getRiversInHitbox(hitbox)) {
-                                if (!river.waterHitbox.isPointInside(point)) {
+                                if (!river.waterHitbox?.isPointInside(point)) {
                                     collided = true;
                                     break;
                                 }
@@ -897,7 +979,8 @@ export class GameMap {
                     // TODO add code for other hitbox types
                     break;
                 }
-                case MapObjectSpawnMode.RiverBank: {
+                case MapObjectSpawnMode.RiverBank:
+                case MapObjectSpawnMode.Trail: {
                     if (this.isInRiver(hitbox, position)) {
                         collided = true;
                         break;
@@ -913,8 +996,8 @@ export class GameMap {
     private isInRiver(hitbox: Hitbox, position: Vector): boolean {
         for (const river of this.terrain.getRiversInHitbox(hitbox)) {
             if (
-                river.waterHitbox.isPointInside(position)
-                || hitbox.collidesWith(river.waterHitbox)
+                river.waterHitbox?.isPointInside(position)
+                || river.waterHitbox?.collidesWith(hitbox)
             ) {
                 return true;
             }

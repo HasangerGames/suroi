@@ -116,7 +116,12 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ["Lumberjack",            0x924a24],
                 ["Gold Tie Event",        0x2b2929],
                 ["Ship Carrier",          0x679bd9],
-                ["NSD Uniform",           0x593b26]
+                ["NSD Uniform",           0x593b26],
+                ["Pumpkified",            0x402000],
+                ["One at NSD",            0x27331a],
+                ["Sky",                   0x002121],
+                ["Diseased",              0x2d1f1f],
+                ["Deer Season",           0x9a3604]
             ] satisfies ReadonlyArray<readonly [string, number]>).map(([name, tint]) => hidden([name, tint])),
             hidden(
                 ["Ghillie Suit", 0xffffff],

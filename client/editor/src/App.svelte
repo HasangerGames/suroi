@@ -1,21 +1,22 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import {
+        BaseHitbox,
+        CircleHitbox,
         GroupHitbox,
+        type HitboxJSON,
         HitboxType,
         RectangleHitbox
     } from "../../../common/src/utils/hitbox";
     import { Numeric } from "../../../common/src/utils/math";
     import { Vec } from "../../../common/src/utils/vector";
+    import { PIXI_SCALE } from "../../src/scripts/utils/constants";
     import Hitbox from "./lib/hitbox.svelte";
 
-    let hitboxes = [
+    let hitboxes: HitboxJSON[] = [
         ...new GroupHitbox(
-                RectangleHitbox.fromRect(2, 14.8, Vec.create(8.4, 14)),
-                RectangleHitbox.fromRect(2, 15.5, Vec.create(32.4, 12)),
-                RectangleHitbox.fromRect(25, 2, Vec.create(21, 20.4)),
-                RectangleHitbox.fromRect(2, 4, Vec.create(20.5, 6.5)),
-                RectangleHitbox.fromRect(11, 2, Vec.create(14.5, 7.5))
-            ).transform(Vec.create(14.1, -20.5), 1, 3).toJSON().hitboxes
+    RectangleHitbox.fromRect(1, 1)
+).toJSON().hitboxes
     ];
 
     let selected = hitboxes[0];
@@ -24,6 +25,11 @@
     let x = 0;
     let y = 0;
     let scale = 1;
+    let pointerX = 0;
+    let pointerY = 0;
+
+    let hitboxesContainer: HTMLElement;
+    onMount(() => { hitboxesContainer = document.getElementById("hitboxes-container"); });
 
     let dragging = false;
     let rightDragging = false; // Flag for right mouse button drag
@@ -40,33 +46,98 @@
             dragging = false;
         } else if (e.button === 2) {
             rightDragging = false;
+            adjustingWidth = false;
+            adjustingHeight = false;
         }
     }
 
+    let lastHitboxMove;
+    let adjustingWidth = false;
+    let adjustingHeight = false;
+
     function pointermove(e: PointerEvent) {
+        const { x: rectX, y: rectY } = hitboxesContainer.getBoundingClientRect();
+        [pointerX, pointerY] = [
+            (e.clientX - x - rectX) / scale / PIXI_SCALE,
+            (e.clientY - y - rectY) / scale / PIXI_SCALE
+        ];
+
         if (dragging && !rightDragging) {
-            x += e.movementX;
-            y += e.movementY;
-        } else if (rightDragging && !dragging) {
-            if (selected.type === HitboxType.Circle) {
-                selected.position.x += e.movementX;
-                selected.position.y += e.movementY;
-            } else if (selected.type === HitboxType.Rect) {
-                selected.min.x += e.movementX / 10;
-                selected.min.y += e.movementY / 10;
-                selected.max.x += e.movementX / 10;
-                selected.max.y += e.movementY / 10;
+            const now = Date.now();
+            if (now - lastHitboxMove < 100 || BaseHitbox.fromJSON(selected).isPointInside(Vec.create(pointerX, pointerY))) {
+                lastHitboxMove = now;
+                const [dx, dy] = [
+                    e.movementX / scale / PIXI_SCALE,
+                    e.movementY / scale / PIXI_SCALE
+                ];
+                if (selected.type === HitboxType.Circle) {
+                    selected.position.x += dx;
+                    selected.position.y += dy;
+                } else if (selected.type === HitboxType.Rect) {
+                    selected.min.x += dx;
+                    selected.min.y += dy;
+                    selected.max.x += dx;
+                    selected.max.y += dy;
+                }
+                updateSelected();
+            } else {
+                x += e.movementX;
+                y += e.movementY;
             }
-            updateSelected();
+        } else if (rightDragging) {
+            if (selected.type === HitboxType.Rect) {
+                const { min, max } = selected;
+                let [width, height] = [max.x - min.x, max.y - min.y];
+                const [centerX, centerY] = [min.x + width / 2, min.y + height / 2];
+                if (
+                    (
+                        (pointerX > selected.max.x || pointerX < selected.min.x)
+                        && (pointerY > selected.min.y && pointerY < selected.max.y)
+                    ) || adjustingWidth
+                ) {
+                    width += e.movementX / scale / PIXI_SCALE;
+                    adjustingWidth = true;
+                    adjustingHeight = false;
+                }
+                if (
+                    (
+                        (pointerY > selected.max.y || pointerY < selected.min.y)
+                        && (pointerX > selected.min.x && pointerX < selected.max.x)
+                    ) || adjustingHeight
+                ) {
+                    height += e.movementY / scale / PIXI_SCALE;
+                    adjustingWidth = false;
+                    adjustingHeight = true;
+                }
+
+                min.x = centerX - width / 2;
+                min.y = centerY - height / 2;
+                max.x = centerX + width / 2;
+                max.y = centerY + height / 2;
+                updateSelected();
+            } else if (selected.type === HitboxType.Circle) {
+                // @ts-expect-error radius is technically read only but who cares
+                selected.radius += e.movementX / scale / PIXI_SCALE;
+                updateSelected();
+            }
         }
     }
 
     function mouseWheel(e: WheelEvent) {
-        scale = Numeric.clamp(scale - e.deltaY / 1000, 0.1, 10);
+        const oldScale = scale;
+        const { x: rectX, y: rectY } = hitboxesContainer.getBoundingClientRect();
+        const [mouseX, mouseY] = [
+            e.clientX - rectX,
+            e.clientY - rectY
+        ];
+        scale = Numeric.clamp(scale * (e.deltaY > 0 ? 0.75 : 1.25), 0.1, 10);
+        x = mouseX - (mouseX - x) * (scale / oldScale);
+        y = mouseY - (mouseY - y) * (scale / oldScale);
     }
 
     function updateSelected() {
         hitboxes[hitboxes.indexOf(selected)] = selected;
+        convertHitboxes();
     }
 
     function onOutputInput(event: Event) {
@@ -98,7 +169,7 @@
                 const height = hitbox.max.y - hitbox.min.y;
                 const center = Vec.create(hitbox.min.x + (width / 2), hitbox.min.y + (height / 2));
                 return `    RectangleHitbox.fromRect(${round(width)}, ${round(height)}, ${(width === 0 && height === 0) ? "" : `Vec.create(${round(center.x)}, ${round(center.y)})`})`;
-            } else {
+            } else if (hitbox.type === HitboxType.Circle) {
                 return `    new CircleHitbox(${round(hitbox.radius)}, Vec.create(${round(hitbox.position.x)}, ${round(hitbox.position.y)}))`;
             }
         }).join(",\n");
@@ -106,12 +177,30 @@
     }
     convertHitboxes();
 
-    const bgImage = loadImage("/img/game/buildings/container_floor_open1.svg");
+    function createHitbox(hitbox) {
+        hitbox = hitbox.toJSON();
+        hitboxes.push(hitbox);
+        selected = hitbox;
+        updateSelected();
+    }
 
+    const addRectangle = () => createHitbox(new RectangleHitbox(Vec.create(-10, -10), Vec.create(10, 10)));
+    const addCircle = () => createHitbox(new CircleHitbox(5));
+
+    function duplicateSelected() {
+        hitboxes.push(JSON.parse(JSON.stringify(selected)));
+    }
+
+    const bgImage = loadImage("/img/modes/fall/obstacles/outhouse_door.svg");
 </script>
 
 <main>
     <div id="editor">
+        <div id="buttons-container">
+            <button on:click={addRectangle}>Add Rectangle Hitbox</button>
+            <button on:click={addCircle}>Add Circle Hitbox</button>
+            <button on:click={duplicateSelected}>Duplicate Selected</button>
+        </div>
         {#if selected.type === HitboxType.Circle}
             <div>
                 <span>Radius: </span>
@@ -216,20 +305,30 @@
 
     main {
         display: flex;
-        background-color: $bg;
+        background-color: #49993e;
         color: white;
     }
 
     #editor {
         height: 100vh;
         width: 20vw;
+        padding: 10px;
         background-color: $transparent_bg;
         display: flex;
         flex-direction: column;
 
+        #buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+
+            button {
+                padding: 5px;
+            }
+        }
+
         .output {
-            justify-self: flex-end;
-            width: 90%;
             height: 500px;
             resize: none;
         }

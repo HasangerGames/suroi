@@ -1,16 +1,16 @@
 import { watch } from "chokidar";
 import { Minimatch } from "minimatch";
-import { resolve } from "path";
+import path, { resolve } from "path";
 import { type SpritesheetData } from "pixi.js";
 import { type FSWatcher, type Plugin, type ResolvedConfig } from "vite";
-import { ModeAtlases } from "../../../common/src/definitions/modes";
 import readDirectory from "./utils/readDirectory.js";
 import { type CompilerOptions, createSpritesheets, type MultiResAtlasList } from "./utils/spritesheet.js";
+import { GameConstants } from "../../../common/src/constants";
+
+const PLUGIN_NAME = "vite-spritesheet-plugin";
 
 const defaultGlob = "**/*.{png,gif,jpg,bmp,tiff,svg}";
 const imagesMatcher = new Minimatch(defaultGlob);
-
-const PLUGIN_NAME = "vite-spritesheet-plugin";
 
 const compilerOpts = {
     outputFormat: "png",
@@ -18,37 +18,28 @@ const compilerOpts = {
     margin: 8,
     removeExtensions: true,
     maximumSize: 4096,
-    name: "",
+    name: "atlas",
     packerOptions: {}
 } satisfies CompilerOptions as CompilerOptions;
 
-const atlasesToBuild: Record<string, string> = {
-    main: "public/img/game"
-};
-
-for (const atlasId of ModeAtlases) {
-    atlasesToBuild[atlasId] = `public/img/modes/${atlasId}`;
-}
-
-const foldersToWatch = Object.values(atlasesToBuild);
+const imageDirs = [
+    "public/img/game",
+    `public/img/modes/${GameConstants.modeName}`
+];
 
 async function buildSpritesheets(): Promise<MultiResAtlasList> {
-    const atlases: MultiResAtlasList = {};
+    const fileMap = new Map<string, string>();
 
-    const ids = Object.keys(atlasesToBuild);
-    let i = 0;
-    for (const atlasId of ids) {
-        const files: string[] = readDirectory(atlasesToBuild[atlasId]).filter(x => imagesMatcher.match(x));
-
-        console.log(`Building spritesheet '${atlasId}' (${++i} / ${ids.length}, ${files.length} files in '${atlasId}')`);
-
-        atlases[atlasId] = await createSpritesheets(files, {
-            ...compilerOpts,
-            name: atlasId
-        });
+    // Maps have unique keys.
+    // Since the filename is used as the key, and mode sprites are added to the map after the common sprites,
+    // this method allows mode sprites to override common sprites with the same filename.
+    for (const imagePath of imageDirs.map(dir => readDirectory(dir).filter(x => imagesMatcher.match(x))).flat()) {
+        fileMap.set(imagePath.slice(imagePath.lastIndexOf(path.sep)), imagePath);
     }
 
-    return atlases;
+    console.log("Building spritesheets...");
+
+    return await createSpritesheets([...fileMap.values()], compilerOpts);
 }
 
 const highResVirtualModuleId = "virtual:spritesheets-jsons-high-res";
@@ -68,15 +59,12 @@ export function spritesheet(): Plugin[] {
     let watcher: FSWatcher;
     let config: ResolvedConfig;
 
-    let atlases: MultiResAtlasList = {};
+    let atlases: MultiResAtlasList;
 
     const exportedAtlases: {
-        readonly low: Record<string, readonly SpritesheetData[]>
-        readonly high: Record<string, readonly SpritesheetData[]>
-    } = {
-        low: {},
-        high: {}
-    };
+        low: SpritesheetData[]
+        high: SpritesheetData[]
+    } = { low: [], high: [] };
 
     const load = (id: string): string | undefined => {
         switch (id) {
@@ -94,22 +82,17 @@ export function spritesheet(): Plugin[] {
             async buildStart() {
                 atlases = await buildSpritesheets();
 
-                for (const atlasId in atlases) {
-                    exportedAtlases.high[atlasId] = atlases[atlasId].high.map(sheet => sheet.json);
-                    exportedAtlases.low[atlasId] = atlases[atlasId].low.map(sheet => sheet.json);
-                }
+                exportedAtlases.high = atlases.high.map(sheet => sheet.json);
+                exportedAtlases.low = atlases.low.map(sheet => sheet.json);
             },
             generateBundle() {
-                for (const atlasId in atlases) {
-                    const sheets = atlases[atlasId];
-                    for (const sheet of [...sheets.low, ...sheets.high]) {
-                        this.emitFile({
-                            type: "asset",
-                            fileName: sheet.json.meta.image,
-                            source: sheet.image
-                        });
-                        this.info(`Built spritesheet ${sheet.json.meta.image}`);
-                    }
+                for (const sheet of [...atlases.low, ...atlases.high]) {
+                    this.emitFile({
+                        type: "asset",
+                        fileName: sheet.json.meta.image,
+                        source: sheet.image
+                    });
+                    this.info("Built spritesheets");
                 }
             },
             resolveId,
@@ -135,7 +118,7 @@ export function spritesheet(): Plugin[] {
                     }, 500);
                 }
 
-                watcher = watch(foldersToWatch.map(pattern => resolve(pattern, defaultGlob)), {
+                watcher = watch(imageDirs.map(pattern => resolve(pattern, defaultGlob)), {
                     cwd: config.root,
                     ignoreInitial: true
                 })
@@ -148,20 +131,14 @@ export function spritesheet(): Plugin[] {
                 async function buildSheets(): Promise<void> {
                     atlases = await buildSpritesheets();
 
-                    const { low, high } = exportedAtlases;
-                    for (const atlasId in atlases) {
-                        high[atlasId] = atlases[atlasId].high.map(sheet => sheet.json);
-                        low[atlasId] = atlases[atlasId].low.map(sheet => sheet.json);
-                    }
+                    exportedAtlases.high = atlases.high.map(sheet => sheet.json);
+                    exportedAtlases.low = atlases.low.map(sheet => sheet.json);
 
                     files.clear();
-                    for (const atlasId in atlases) {
-                        const sheets = atlases[atlasId];
-                        for (const sheet of [...sheets.low, ...sheets.high]) {
-                            // consistently assigned in ./spritesheet.ts in function `createSheet` (in function `createSpritesheets`)
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                            files.set(sheet.json.meta.image!, sheet.image);
-                        }
+                    for (const sheet of [...atlases.low, ...atlases.high]) {
+                        // consistently assigned in ./spritesheet.ts in function `createSheet` (in function `createSpritesheets`)
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        files.set(sheet.json.meta.image!, sheet.image);
                     }
                 }
                 await buildSheets();
