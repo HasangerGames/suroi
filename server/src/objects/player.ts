@@ -2021,8 +2021,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         for (const perk of this.perks) {
             if (!perk.noDrop) {
                 this.game.addLoot(perk, position, layer);
-            }
-            else if (perk.noDrop && perk.categories.includes(PerkCategories.Halloween)) {
+            } else if (perk.noDrop && perk.categories.includes(PerkCategories.Halloween)) {
                 this.game.addLoot(PerkIds.PlumpkinGamble, position, layer);
             }
         }

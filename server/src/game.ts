@@ -1,7 +1,7 @@
 import { type WebSocket } from "uWebSockets.js";
 import { parentPort } from "worker_threads";
 
-import { GameConstants, KillfeedEventType, KillfeedMessageType, Layer, ObjectCategory, TeamSize } from "@common/constants";
+import { GameConstants, KillfeedMessageType, Layer, ObjectCategory, TeamSize } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
@@ -410,7 +410,7 @@ export class Game implements GameData {
                         player.sendEmote(Emotes.fromStringSafe(perk.emote));
                         player.health -= perk.healthLoss;
                         player.adrenaline -= player.adrenaline * (perk.healthLoss);
-                        
+
                         player.piercingDamage({
                             amount: perk.healthLoss
                         });

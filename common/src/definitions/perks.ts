@@ -348,13 +348,13 @@ const perks = [
         healDmgRate: 0.5,
         noDrop: true
     },
-   /* {
+    /* {
         idString: PerkIds.Hexxed,
         name: "Hexxed",
         description: "All players on the map can see your location.",
         categories: [PerkCategories.Halloween],
         noDrop: true
-    },*/
+    }, */
     {
         idString: PerkIds.RottenPlumpkin,
         name: "Rotten Plumpkin",
