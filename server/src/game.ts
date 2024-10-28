@@ -409,7 +409,7 @@ export class Game implements GameData {
 
                         player.sendEmote(Emotes.fromStringSafe(perk.emote));
                         player.health -= perk.healthLoss;
-                        player.adrenaline -= player.adrenaline * (perk.healthLoss);
+                        player.adrenaline -= player.adrenaline * (perk.adrenLoss / 100);
 
                         player.piercingDamage({
                             amount: perk.healthLoss
