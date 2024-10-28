@@ -1,7 +1,6 @@
 import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
-    
     {
         date: 1730057509000,
         author: "HAZEL",
@@ -19,73 +18,39 @@ export const news: NewsPost[] = [
 
 <br><br>Unique to Harvest mode are two brand new shotguns, the <strong>DT-11</strong>, an under-over double barrel shotgun with longer range and lower damage compared to its sawed-off counterpart, and the <strong>M590M</strong>, a military pump-action shotgun firing high-explosive slugs.
 
-<br><br>There's much more to check out, including new skins, a variety of small structures, brand new foliage, and changes yet to come.```
+<br><br>There's much more to check out, including new skins, a variety of small structures, brand new foliage, and changes yet to come.
         `,
         longContent: `<h2>Suroi v0.20.0</h2>
 <h3>New features</h3>
 <ul>
- 
-</ul>
-
-<h3>Changes</h3>
-<ul>
-</ul>
-
-<h3>Bug fixes</h3>
-<ul>
-  
-</ul><br>`
-    },
-    {
-        date: 1717870665000,
-        author: "HAZEL",
-        title: "Back in the Saddle",
-        bannerImage: "../img/news/v0.18.0.png",
-        content: `After a long break, we're back with some important updates and fun changes. Although we're late, we're celebrating Suroi's 1 year birthday with some new items, and even more exciting, limited edition squads.<br><br>
-
-    A revamped moderation system is here to combat those cheater pests with improved efficiency. Say hello to our new Game Moderatrs on Discord!<br><br>
-
-    There's also a new structure, the large bridge. While huge in proportion, it offers plenty of cover and close quarter combat. It's also a perfect spot to set up your squad in a defensive position!<br><br>
-
-    Lots of changes and bug fixes have made it into this update, so check out the full log. Thank you everyone for sticking with us!`,
-        longContent: `<h2>Suroi v0.18.0</h2>
-<h3>New features</h3>
-<ul>
-  <li><strong>Squads!</strong> To celebrate Suroi's 1st birthday, squads will be available for the next week only. They will be back once we have enough players.</li>
-  <li><strong>New structures!</strong> Added the large bridge and the construction site.</li>
-  <li><strong>Birthday exclusive items!</strong> Added the birthday cake skin and obstacle, firework launcher, confetti grenade, and firework warehouse. Like squads, they will be available for the next week only.</li>
-  <li><strong>Better moderation system!</strong> We now have a dedicated team of Game Moderatrs. They will manage #cheatr-reports using a new Discord bot.</li>
+  <li><strong>Harvest mode!</strong> A larger, fall-themed map with terrain features.</li>
+  <li><strong>Perks!</strong> Added 12 perks.</li>
+  <li><strong>New structures!</strong> Added the Plumpkin Bunker, Lodge, Barn, Bombed Armory, Tents, Outhouses, and Hay Sheds.</li>
+  <li><strong>New guns!</strong></li>
   <ul>
-    <li>In the future, we are planning on moving to a more self-contained report system that doesn't rely on Discord.</li>
+    <li>SKS: A DMR chambered in 7.62mm.</li>
+    <li>VKS Vykhlop: A suppressed sniper chambered in .50 Cal.</li>
+    <li>Mk-18 Mjölnir: A powerful DMR chambered in .338 Lapua Magnum.</li>
+    <li>DT-11: A double-barrel shotgun. Exclusive to Harvest mode.</li>
+    <li>M590M: A pump-action shotgun which fires high explosive rounds, similar to the USAS-12. Also exclusive to Harvest mode.</li>
   </ul>
-  <li>Added a new skin and 5 new emotes.</li>
-  <li>Added crawling animation for knocked out players.</li>
-  <li>Added inventory slot animations.</li>
-  <li>Added emote categories.</li>
 </ul>
 
 <h3>Changes</h3>
 <ul>
-  <li>New Mosin top down.</li>
-  <li>New ammo crate, forklift, pallet, couch, and life preserver textures.</li>
-  <li>Improved mobile and spectate controls.</li>
-  <li>Improved loot physics.</li>
-  <li>Badges now display next to names when spectating.</li>
-  <li>Adjusted the length of some reload sounds.</li>
-  <li>Changed the way updates from the server are handled, which should improve smoothness.</li>
-  <li>Added LMGs to briefcase loot table.</li>
-  <li>Adjusted pine tree hitbox.</li>
-  <li>The kill feed is now hidden when the map is open.</li>
-</ul>
-
-<h3>Bug fixes</h3>
-<ul>
-  <li>Fixed issues with team pings.</li>
-  <li>Fixed badges.</li>
-  <li>Fixed infinite health by spamming healing items while knocked out.</li>
-  <li>Fixed team emotes working in solo.</li>
-  <li>Fixed players not rendering correctly after being revived.</li>
-  <li>Fixed drop sound not playing when dropping weapons with fists equipped.</li>
+  <li>Overhaul to matchmaking algorithm. This should reduce late spawning and improve server performance.</li>
+  <ul>
+    <li>Reduced max players per game to 60.</li>
+  </ul>
+  <li>Nerfed grenade boosting.</li>
+  <li>Ammo crates now drop 2-3 pieces of ammo.</li>
+  <li>The Model 89 is now more common in normal mode.</li>
+  <li>Increased M1 Garand damage from 39 to 48.</li>
+  <li>Increased SR-25 damage from 28.5 to 33.</li>
+  <li>New AK-47, M16A4, and Vector sounds.</li>
+  <li>New Flues and G19 fire sounds.</li>
+  <li>Fixed bullets not damaging bushes and tables.</li>
+  <li>Fixed occasional “Error joining game” issues.</li>
 </ul>`
     },
     {
