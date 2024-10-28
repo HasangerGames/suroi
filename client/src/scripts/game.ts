@@ -1,7 +1,7 @@
 import { sound, type Sound } from "@pixi/sound";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
-import { InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize } from "../../../common/src/constants";
+import { GameConstants, InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize, ZIndexes } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
 import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
 import { Emotes } from "../../../common/src/definitions/emotes";
@@ -29,7 +29,7 @@ import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { getTranslatedString, initTranslation } from "../translations";
 import { InputManager } from "./managers/inputManager";
-import { /* GameSound, */ SoundManager } from "./managers/soundManager";
+import { GameSound, SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
 import { Building } from "./objects/building";
 import { Bullet } from "./objects/bullet";
@@ -52,9 +52,11 @@ import { autoPickup, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, u
 import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
-import { COLORS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
-import { loadTextures } from "./utils/pixi";
+import { COLORS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE, EMOTE_SLOTS } from "./utils/constants";
+import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
+import { randomVector, randomFloat } from "../../../common/src/utils/random";
+import { Vec, type Vector } from "../../../common/src/utils/vector";
 
 /* eslint-disable @stylistic/indent */
 
@@ -95,7 +97,9 @@ export class Game {
     readonly bullets = new Set<Bullet>();
     readonly planes = new Set<Plane>();
 
-   // windAmbientSound!: GameSound;
+    ambience?: GameSound;
+
+    readonly spinningImages = new Map<SuroiSprite, number>();
 
     readonly playerNames = new Map<number, {
         readonly name: string
@@ -242,7 +246,7 @@ export class Game {
         this.inputManager.generateBindsConfigScreen();
 
         this.music = sound.add("menu_music", {
-            url: `./audio/music/menu_music${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${MODE.idString}` : ""}.mp3`,
+            url: `./audio/music/menu_music${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${GameConstants.modeName}` : ""}.mp3`,
             singleInstance: true,
             preload: true,
             autoPlay: true,
@@ -297,7 +301,7 @@ export class Game {
                         : skin
                 ),
                 badge: Badges.fromStringSafe(this.console.getBuiltInCVar("cv_loadout_badge")),
-                emotes: emoteSlots.map(
+                emotes: EMOTE_SLOTS.map(
                     slot => Emotes.fromStringSafe(this.console.getBuiltInCVar(`cv_loadout_${slot}_emote`))
                 )
             };
@@ -306,6 +310,44 @@ export class Game {
 
             this.camera.addObject(this.gasRender.graphics);
             this.map.indicator.setFrame("player_indicator");
+
+            const particleEffects = MODE.particleEffects;
+
+            if (particleEffects !== undefined) {
+                const This = this;
+                this.particleManager.addEmitter(
+                    {
+                        delay: 1000,
+                        active: this.console.getBuiltInCVar("cv_ambient_particles"),
+                        spawnOptions: () => ({
+                            frames: particleEffects.frames,
+                            get position(): Vector {
+                                const width = This.camera.width / PIXI_SCALE;
+                                const height = This.camera.height / PIXI_SCALE;
+                                const player = This.activePlayer;
+                                if (!player) return Vec.create(0, 0);
+                                const { x, y } = player.position;
+                                return randomVector(x - width, x + width, y - height, y + height);
+                            },
+                            speed: randomVector(-10, 10, -10, 10),
+                            lifetime: randomFloat(12000, 50000),
+                            zIndex: ZIndexes.BuildingsCeiling,
+                            alpha: {
+                                start: 0.7,
+                                end: 0
+                            },
+                            rotation: {
+                                start: randomFloat(0, 36),
+                                end: randomFloat(40, 80)
+                            },
+                            scale: {
+                                start: randomFloat(0.8, 1.1),
+                                end: randomFloat(0.7, 0.8)
+                            }
+                        })
+                    }
+                );
+            }
         };
 
         // Handle incoming messages
@@ -396,14 +438,16 @@ export class Game {
                     [InventoryMessages.NotEnoughSpace]: "msg_not_enough_space",
                     [InventoryMessages.ItemAlreadyEquipped]: "msg_item_already_equipped",
                     [InventoryMessages.BetterItemEquipped]: "msg_better_item_equipped",
-                    [InventoryMessages.CannotUseRadio]: "msg_cannot_use_radio"
+                    [InventoryMessages.CannotUseRadio]: "msg_cannot_use_radio",
+                    [InventoryMessages.RadioOverused]: "msg_radio_overused"
                 };
 
                 if (message !== undefined) {
                     const inventoryMsg = this.uiManager.ui.inventoryMsg;
                     inventoryMsg.text(getTranslatedString(inventoryMessageMap[message])).fadeIn(250);
+                    if (inventoryMessageMap[message] === inventoryMessageMap[4]) this.soundManager.play("metal_light_destroyed");
                     clearTimeout(this.inventoryMsgTimeout);
-                    this.inventoryMsgTimeout = setTimeout(() => inventoryMsg.fadeOut(250), 2500) as unknown as number;
+                    this.inventoryMsgTimeout = window.setTimeout(() => inventoryMsg.fadeOut(250), 2500);
                 } else if (item !== undefined) {
                     let soundID: string;
                     switch (item.itemType) {
@@ -446,7 +490,9 @@ export class Game {
         // game started if page is out of focus.
         if (!document.hasFocus()) this.soundManager.play("join_notification");
 
-       // this.windAmbientSound = this.soundManager.play("wind_ambience", { loop: true });
+        if (MODE.ambience) {
+            this.ambience = this.soundManager.play(MODE.ambience, { loop: true, ambient: true });
+        }
 
         this.uiManager.emotes = packet.emotes;
         this.uiManager.updateEmoteWheel();
@@ -553,8 +599,9 @@ export class Game {
             }
         }
 
+        let players: Set<Player> | undefined;
         if (this.console.getBuiltInCVar("cv_movement_smoothing")) {
-            for (const player of this.objects.getCategory(ObjectCategory.Player)) {
+            for (const player of players = this.objects.getCategory(ObjectCategory.Player)) {
                 player.updateContainerPosition();
                 if (!player.isActivePlayer || !this.console.getBuiltInCVar("cv_responsive_rotation") || this.spectating) {
                     player.updateContainerRotation();
@@ -579,6 +626,14 @@ export class Game {
                 syncedParticle.updateContainerRotation();
                 syncedParticle.updateContainerScale();
             }
+        }
+
+        for (const player of players ?? this.objects.getCategory(ObjectCategory.Player)) {
+            player.updateGrenadePreview();
+        }
+
+        for (const [image, spinSpeed] of this.spinningImages.entries()) {
+            image.rotation += spinSpeed * delta;
         }
 
         for (const tween of this.tweens) tween.update();
@@ -645,13 +700,9 @@ export class Game {
 
                     // Yes, we need to do this specifically for building ceilings as well.
                     if (_object.isBuilding) {
+                        _object.ceilingVisible = false;
                         _object.ceilingContainer.alpha = 0;
-                        this.addTween({
-                            target: _object.ceilingContainer,
-                            to: { alpha: 1 },
-                            duration: LAYER_TRANSITION_DELAY,
-                            ease: EaseFunctions.sineIn
-                        });
+                        _object.toggleCeiling(LAYER_TRANSITION_DELAY);
                     }
 
                     this.addTween({
@@ -688,7 +739,7 @@ export class Game {
                 object.container.alpha = 1;
 
                 // Yes, we need to do this specifically for building ceilings as well.
-                if (object.isBuilding) {
+                if (object.isBuilding && object.ceilingVisible) {
                     object.ceilingContainer.alpha = 1;
                     this.addTween({
                         target: object.ceilingContainer,
@@ -785,6 +836,8 @@ export class Game {
             },
             duration: LAYER_TRANSITION_DELAY
         });
+
+        this.ambience?.setPaused(layer < Layer.Ground);
     }
 
     // yes this might seem evil. but the two local variables really only need to
@@ -853,7 +906,7 @@ export class Game {
                 object: undefined,
                 dist: Number.MAX_VALUE
             };
-            const detectionHitbox = new CircleHitbox(3, player.position);
+            const detectionHitbox = new CircleHitbox(3 * player.sizeMod, player.position);
 
             for (const object of this.objects) {
                 const { isLoot, isObstacle, isPlayer, isBuilding } = object;
@@ -1011,6 +1064,9 @@ export class Game {
 
                                     // Don't pick up skins
                                     && type !== ItemType.Skin
+
+                                    // Don't pick up perks
+                                    && type !== ItemType.Perk
                                 )
                             ) || (
                                 type === ItemType.Gun

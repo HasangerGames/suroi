@@ -49,7 +49,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
             Vec.lerp(
                 this._oldPosition,
                 this.position,
-                Math.min(
+                Numeric.min(
                     (Date.now() - this._lastPositionChange) / this.game.serverDt,
                     1
                 )
@@ -81,7 +81,10 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
         this.container.rotation = Numeric.lerp(
             this._oldRotation,
             this._oldRotation + Angle.minimize(this._oldRotation, this._rotation),
-            Math.min(((Date.now() - this._lastRotationChange) / this.game.serverDt), 1)
+            Numeric.min(
+                (Date.now() - this._lastRotationChange) / this.game.serverDt,
+                1
+            )
         );
     }
 

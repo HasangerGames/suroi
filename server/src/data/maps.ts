@@ -1,37 +1,46 @@
-import { type WebSocket } from "uWebSockets.js";
-
+import { Layer } from "@common/constants";
+import { Guns } from "@common/definitions";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Loots } from "@common/definitions/loots";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { Orientation, type Variation } from "@common/typings";
+import { CircleHitbox } from "@common/utils/hitbox";
 import { Collision } from "@common/utils/math";
 import { ItemType, MapObjectSpawnMode, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-
+import { type WebSocket } from "uWebSockets.js";
 import { type GunItem } from "../inventory/gunItem";
 import { GameMap } from "../map";
 import { Player, type PlayerContainer } from "../objects/player";
-import { LootTables } from "./lootTables";
-import { Layer } from "@common/constants";
-import { Guns } from "@common/definitions";
-import { CircleHitbox } from "@common/utils/hitbox";
-import { getLootTableLoot } from "../utils/misc";
+import { getLootFromTable, LootTables } from "./lootTables";
+
+export interface RiverDefinition {
+    readonly minAmount: number
+    readonly maxAmount: number
+    readonly maxWideAmount: number
+    readonly wideChance: number
+    readonly minWidth: number
+    readonly maxWidth: number
+    readonly minWideWidth: number
+    readonly maxWideWidth: number
+}
 
 export interface MapDefinition {
     readonly width: number
     readonly height: number
     readonly oceanSize: number
     readonly beachSize: number
-    readonly rivers?: {
-        readonly minAmount: number
-        readonly maxAmount: number
-        readonly maxWideAmount: number
-        readonly wideChance: number
+    readonly rivers?: RiverDefinition
+    readonly trails?: RiverDefinition
+    readonly clearings?: {
         readonly minWidth: number
+        readonly minHeight: number
         readonly maxWidth: number
-        readonly minWideWidth: number
-        readonly maxWideWidth: number
+        readonly maxHeight: number
+        readonly count: number
+        readonly allowedObstacles: Array<ReferenceTo<ObstacleDefinition>>
+        readonly obstacles: Array<{ idString: ReferenceTo<ObstacleDefinition>, min: number, max: number }>
     }
 
     readonly bridges?: ReadonlyArray<ReferenceTo<BuildingDefinition>>
@@ -196,6 +205,162 @@ const maps = {
             { name: "Deepwood", position: Vec.create(0.5, 0.65) }
         ]
     },
+    fall: {
+        width: 1924,
+        height: 1924,
+        oceanSize: 128,
+        beachSize: 32,
+        rivers: {
+            minAmount: 2,
+            maxAmount: 2,
+            wideChance: 0.35,
+            minWidth: 12,
+            maxWidth: 18,
+            minWideWidth: 25,
+            maxWideWidth: 28,
+            maxWideAmount: 1
+        },
+        trails: {
+            minAmount: 2,
+            maxAmount: 3,
+            wideChance: 0.2,
+            minWidth: 2,
+            maxWidth: 4,
+            minWideWidth: 3,
+            maxWideWidth: 5,
+            maxWideAmount: 1
+        },
+        clearings: {
+            minWidth: 200,
+            minHeight: 150,
+            maxWidth: 250,
+            maxHeight: 200,
+            count: 2,
+            allowedObstacles: ["clearing_boulder", "flint_crate", "rock", "vibrant_bush", "river_chest", "lily_pad", "grenade_crate", "oak_leaf_pile", "river_rock", "melee_crate", "flint_stone"],
+            obstacles: [
+                { idString: "clearing_boulder", min: 3, max: 6 },
+                { idString: "flint_crate", min: 0, max: 2 },
+                { idString: "grenade_crate", min: 0, max: 2 },
+                { idString: "melee_crate", min: 0, max: 1 },
+                { idString: "flint_stone", min: 0, max: 1 }
+            ]
+        },
+        buildings: {
+            small_bridge: Infinity,
+            plumpkin_bunker: 1,
+            sea_traffic_control: 1,
+            tugboat_red: 1,
+            tugboat_white: 7,
+            lodge: 1,
+            armory_damaged: 1,
+            barn: 3,
+            green_house: 2,
+            warehouse: 4,
+            red_house: 2,
+            red_house_v2: 2,
+            tent_big_1: 2,
+            tent_big_2: 2,
+            tent_big_3: 2,
+            tent_big_4: 2,
+            hay_shed_1: 1,
+            hay_shed_2: 3,
+            hay_shed_3: 3,
+            tent_1: 3,
+            tent_2: 3,
+            tent_3: 3,
+            tent_4: 3,
+            tent_5: 1,
+            outhouse: 10
+        },
+        majorBuildings: ["armory_damaged", "lodge", "plumpkin_bunker"],
+        quadBuildingLimit: {
+            barn: 1,
+            outhouse: 3,
+            red_house: 1,
+            green_house: 1,
+            red_house_v2: 1,
+            warehouse: 2,
+            armory_damaged: 1,
+            lodge: 1,
+            tent_1: 1,
+            tent_2: 1,
+            tent_3: 1,
+            tent_4: 1
+        },
+        obstacles: {
+            oak_tree: 250,
+            birch_tree: 25,
+            maple_tree: 70,
+            pine_tree: 95,
+            dormant_oak_tree: 25,
+            stump: 40,
+            hatchet_stump: 3,
+            regular_crate: 200,
+            flint_crate: 10,
+            grenade_crate: 50,
+            rock: 220,
+            clearing_boulder: 15,
+            river_chest: 1,
+            river_rock: 60,
+            vibrant_bush: 200,
+            oak_leaf_pile: 200,
+            lily_pad: 50,
+            barrel: 90,
+            viking_chest: 1,
+            super_barrel: 35,
+            melee_crate: 1,
+            gold_rock: 1,
+            loot_tree: 1,
+            loot_barrel: 1,
+            flint_stone: 3,
+            pumpkin: 200,
+            large_pumpkin: 5,
+            pebble: 110
+        },
+        obstacleClumps: [
+            {
+                clumpAmount: 110,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["oak_tree"],
+                    radius: 12
+                }
+            },
+            {
+                clumpAmount: 15,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["birch_tree"],
+                    radius: 12
+                }
+            },
+            {
+                clumpAmount: 15,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["pine_tree"],
+                    radius: 12
+                }
+            }
+        ],
+        loots: {
+            ground_loot: 60
+        },
+        places: [
+            { name: "Antler", position: Vec.create(0.23, 0.2) },
+            { name: "Deadfall", position: Vec.create(0.23, 0.8) },
+            { name: "Beaverdam", position: Vec.create(0.75, 0.2) },
+            { name: "Crimson Hills", position: Vec.create(0.72, 0.8) },
+            { name: "Emerald Farms", position: Vec.create(0.5, 0.35) },
+            { name: "Darkwood", position: Vec.create(0.5, 0.65) }
+        ]
+    },
     debug: {
         width: 1620,
         height: 1620,
@@ -321,7 +486,7 @@ const maps = {
         onGenerate(map) {
             // Function to generate all game loot items
             const genLoots = (pos: Vector, ySpacing: number, xSpacing: number): void => {
-                const width = 73;
+                const width = 80;
 
                 const startPos = Vec.clone(pos);
                 startPos.x -= width / 2;
@@ -336,7 +501,8 @@ const maps = {
                     [ItemType.Armor]: 1,
                     [ItemType.Backpack]: 1,
                     [ItemType.Scope]: 1,
-                    [ItemType.Skin]: 1
+                    [ItemType.Skin]: 1,
+                    [ItemType.Perk]: Infinity
                 };
 
                 const game = map.game;
@@ -345,6 +511,7 @@ const maps = {
                         ((item.itemType === ItemType.Melee || item.itemType === ItemType.Scope) && item.noDrop)
                         || ("ephemeral" in item && item.ephemeral)
                         || (item.itemType === ItemType.Backpack && item.level === 0)
+                        // || (item.itemType === ItemType.Perk && item.categories.includes(PerkCategories.Halloween))
                         || item.itemType === ItemType.Skin
                     ) continue;
 
@@ -364,14 +531,14 @@ const maps = {
             // Fixed obstacles
             const obstacles = [
                 { id: "rock", pos: Vec.create(10, 10) },
-                { id: "rock", pos: Vec.create(25, 40) },
-                { id: "rock", pos: Vec.create(25, 80) },
+                { id: "rock", pos: Vec.create(20, 40) },
+                { id: "rock", pos: Vec.create(20, 80) },
                 { id: "regular_crate", pos: Vec.create(20, 15) },
                 { id: "barrel", pos: Vec.create(25, 25) },
                 { id: "rock", pos: Vec.create(80, 10) },
                 { id: "rock", pos: Vec.create(60, 15) },
                 { id: "oak_tree", pos: Vec.create(20, 70) },
-                { id: "oil_tank", pos: Vec.create(120, 25) },
+                { id: "oil_tank", pos: Vec.create(140, 25) },
                 { id: "birch_tree", pos: Vec.create(120, 50) }
             ];
 
@@ -381,16 +548,16 @@ const maps = {
                 const { id, pos } = obstacle;
                 const { x: posX, y: posY } = pos;
 
-                map.generateObstacle(id, Vec.add(center, pos));
-                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, posY)));
-                map.generateObstacle(id, Vec.add(center, Vec.create(posX, -posY)));
-                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, -posY)));
+                map.generateObstacle(id, Vec.add(center, pos), { rotation: 0 });
+                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, posY)), { rotation: 0 });
+                map.generateObstacle(id, Vec.add(center, Vec.create(posX, -posY)), { rotation: 0 });
+                map.generateObstacle(id, Vec.add(center, Vec.create(-posX, -posY)), { rotation: 0 });
             }
 
-            genLoots(Vec.add(center, Vec.create(-70, 90)), 8, 8);
-            genLoots(Vec.add(center, Vec.create(70, 90)), 8, 8);
-            genLoots(Vec.add(center, Vec.create(-70, -90)), -8, 8);
-            genLoots(Vec.add(center, Vec.create(70, -90)), -8, 8);
+            genLoots(Vec.add(center, Vec.create(-70, 100)), 8, 8);
+            genLoots(Vec.add(center, Vec.create(70, 100)), 8, 8);
+            genLoots(Vec.add(center, Vec.create(-70, -100)), -8, 8);
+            genLoots(Vec.add(center, Vec.create(70, -100)), -8, 8);
 
             // Generate random obstacles around the center
             const randomObstacles: MapDefinition["obstacles"] = {
@@ -421,7 +588,7 @@ const maps = {
             }
         },
         places: [
-            { name: "stark is noob", position: Vec.create(0.5, 0.5) }
+            { name: "stark is pro", position: Vec.create(0.5, 0.5) }
         ]
     },
     singleBuilding: {
@@ -430,7 +597,7 @@ const maps = {
         beachSize: 32,
         oceanSize: 64,
         onGenerate(map, [building]) {
-            // map.game.grid.addObject(new Decal(map.game, "sea_traffic_control_decal", Vec.create(this.width / 2, this.height / 2), 0));
+            // map.game.grid.addObject(new Decal(map.game, "lodge_decal", Vec.create(this.width / 2, this.height / 2), 0));
             /* for (let i = 0; i < 10; i++) {
                 map.generateBuilding(`container_${i + 1}`, Vec.create((this.width / 2) + 15 * i, this.height / 2 - 15), 0);
             } */
@@ -443,7 +610,7 @@ const maps = {
         beachSize: 8,
         oceanSize: 8,
         onGenerate(map, [obstacle]) {
-            map.generateObstacle(obstacle, Vec.create(this.width / 2, this.height / 2), { layer: 0 });
+            map.generateObstacle(obstacle, Vec.create(this.width / 2, this.height / 2), { layer: 0, rotation: 0 });
         }
     },
     singleGun: {
@@ -487,26 +654,13 @@ const maps = {
     })(),
     obstaclesTest: {
         width: 128,
-        height: 48 + (32 * Obstacles.definitions.length),
-        beachSize: 4,
-        oceanSize: 4,
-        onGenerate(map) {
-            for (let i = 0; i < Obstacles.definitions.length; i++) {
-                const obstacle = Obstacles.definitions[i];
-                // setInterval(() => player.activeItem.useItem(), 30);
-                map.generateObstacle(obstacle.idString, Vec.create(map.width / 2, 40 * i), { variation: i as Variation });
-            }
-        }
-    },
-    obstaclesTest2: {
-        width: 128,
         height: 128,
         beachSize: 0,
         oceanSize: 0,
-        onGenerate(map) {
+        onGenerate(map, [obstacle]) {
             for (let x = 0; x <= 128; x += 16) {
                 for (let y = 0; y <= 128; y += 16) {
-                    map.generateObstacle("flint_crate", Vec.create(x, y));
+                    map.generateObstacle(obstacle, Vec.create(x, y));
                 }
             }
         }
@@ -704,9 +858,9 @@ const maps = {
                 }
             });
 
-            Object.entries(loots ?? {}).forEach(([loot_, count]) => {
+            Object.entries(loots ?? {}).forEach(([lootTable, count]) => {
                 for (let i = 0; i < count; i++) {
-                    const loot = getLootTableLoot(LootTables[loot_].loot.flat());
+                    const loot = getLootFromTable(lootTable);
 
                     const position = map.getRandomPosition(
                         new CircleHitbox(5),

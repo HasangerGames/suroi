@@ -19,7 +19,7 @@ export type MapPacketData = {
     readonly oceanSize: number
     readonly beachSize: number
 
-    readonly rivers: ReadonlyArray<{ readonly width: number, readonly points: readonly Vector[] }>
+    readonly rivers: ReadonlyArray<{ readonly width: number, readonly points: readonly Vector[], readonly isTrail: boolean }>
     readonly objects: readonly MapObject[]
     readonly places: ReadonlyArray<{ readonly position: Vector, readonly name: string }>
 };
@@ -37,6 +37,7 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
             stream.writeArray(river.points, 8, point => {
                 stream.writePosition(point);
             });
+            stream.writeBoolean(river.isTrail);
         });
 
         stream.writeArray(data.objects, 16, object => {
@@ -76,7 +77,8 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
             beachSize: stream.readUint16(),
             rivers: stream.readAndCreateArray(4, () => ({
                 width: stream.readUint8(),
-                points: stream.readAndCreateArray(8, () => stream.readPosition())
+                points: stream.readAndCreateArray(8, () => stream.readPosition()),
+                isTrail: stream.readBoolean()
             })),
             objects: stream.readAndCreateArray(16, () => {
                 const type = stream.readObjectType() as ObjectCategory.Obstacle | ObjectCategory.Building;

@@ -32,8 +32,9 @@ export const CVarCasters = Object.freeze({
     cv_loadout_death_emote: Casters.toString,
     cv_loadout_win_emote: Casters.toString,
     cv_master_volume: Casters.toNumber,
-    cv_music_volume: Casters.toNumber,
     cv_sfx_volume: Casters.toNumber,
+    cv_ambience_volume: Casters.toNumber,
+    cv_music_volume: Casters.toNumber,
 
     cv_loop_scope_selection: Casters.toBoolean,
     cv_anonymize_player_names: Casters.toBoolean,
@@ -51,6 +52,7 @@ export const CVarCasters = Object.freeze({
     cv_renderer_res: Casters.generateUnionCaster(["auto", "0.5", "1", "2", "3"]),
     cv_high_res_textures: Casters.toBoolean,
     cv_cooler_graphics: Casters.toBoolean,
+    cv_ambient_particles: Casters.toBoolean,
     cv_blur_splash: Casters.toBoolean,
 
     cv_rules_acknowledged: Casters.toBoolean,
@@ -139,9 +141,10 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_loadout_left_emote: "sad_face",
     cv_loadout_death_emote: "",
     cv_loadout_win_emote: "",
-    cv_music_volume: 1,
-    cv_sfx_volume: 1,
     cv_master_volume: 1,
+    cv_sfx_volume: 1,
+    cv_ambience_volume: 1,
+    cv_music_volume: 1,
 
     cv_loop_scope_selection: false,
     cv_anonymize_player_names: false,
@@ -159,6 +162,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_renderer_res: "auto",
     cv_high_res_textures: true,
     cv_cooler_graphics: false,
+    cv_ambient_particles: true,
     cv_blur_splash: !isMobile.any, // blur kills splash screen performance on phones from my testing
 
     cv_rules_acknowledged: false,

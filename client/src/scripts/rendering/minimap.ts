@@ -174,15 +174,18 @@ export class Minimap {
         }
 
         // river bank needs to be draw first
-        ctx.beginPath();
         for (const river of this._terrain.rivers) {
-            ctx.roundShape(getRiverPoly(river.bankHitbox.points), 0, true);
+            ctx
+                .beginPath()
+                .roundShape(getRiverPoly(river.bankHitbox.points), 0, true)
+                .fill(river.isTrail ? COLORS.trail : COLORS.riverBank);
         }
-        ctx.fill(COLORS.riverBank);
 
         ctx.beginPath();
         for (const river of this._terrain.rivers) {
-            ctx.roundShape(getRiverPoly(river.waterHitbox.points), 0, true);
+            if (river.waterHitbox) {
+                ctx.roundShape(getRiverPoly(river.waterHitbox.points), 0, true);
+            }
         }
         ctx.fill(COLORS.water);
 
@@ -390,7 +393,7 @@ export class Minimap {
         for (const river of this._terrain.rivers) {
             const points = river.points.map(point => Vec.scale(point, PIXI_SCALE));
 
-            drawHitbox(river.waterHitbox, FloorTypes.water.debugColor, debugGraphics);
+            if (river.waterHitbox) drawHitbox(river.waterHitbox, FloorTypes.water.debugColor, debugGraphics);
             drawHitbox(river.bankHitbox, FloorTypes.sand.debugColor, debugGraphics);
 
             debugGraphics.setStrokeStyle({
@@ -431,7 +434,7 @@ export class Minimap {
         );
 
         const rivers: River[] = [];
-        rivers.push(...mapPacket.rivers.map(({ width, points }) => new River(width, points, rivers, mapBounds)));
+        rivers.push(...mapPacket.rivers.map(({ width, points, isTrail }) => new River(width, points, rivers, mapBounds, isTrail)));
 
         this._terrain = new Terrain(
             width,
@@ -550,7 +553,7 @@ export class Minimap {
         if (this._expanded) {
             const screenWidth = window.innerWidth;
             const screenHeight = window.innerHeight;
-            const smallestDim = Math.min(screenHeight, screenWidth);
+            const smallestDim = Numeric.min(screenHeight, screenWidth);
             this.container.scale.set(smallestDim / this._height);
             // noinspection JSSuspiciousNameCombination
             this._minimapWidth = this.sprite.width * this.container.scale.x;
@@ -558,7 +561,7 @@ export class Minimap {
             this._margins = Vec.create(screenWidth / 2 - (this._minimapWidth / 2), screenHeight / 2 - (this._minimapHeight / 2));
 
             const closeButton = $("#btn-close-minimap");
-            const closeButtonPos = Math.min(
+            const closeButtonPos = Numeric.min(
                 this._margins.x + this._minimapWidth + 16,
                 screenWidth - (closeButton.outerWidth() ?? 0)
             ) / uiScale;

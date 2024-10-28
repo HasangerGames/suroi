@@ -2,7 +2,7 @@ import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import type { ThrowableDefinition } from "../../../../common/src/definitions";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { getEffectiveZIndex } from "../../../../common/src/utils/layer";
-import { PI } from "../../../../common/src/utils/math";
+import { Numeric, PI } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomBoolean, randomFloat } from "../../../../common/src/utils/random";
 import { FloorNames, FloorTypes } from "../../../../common/src/utils/terrain";
@@ -124,7 +124,7 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
                     frames: "metal_particle",
                     position,
                     layer: this.layer,
-                    zIndex: Math.max(ZIndexes.Players + 1, 4),
+                    zIndex: Numeric.max(ZIndexes.Players + 1, 4),
                     lifetime: 600,
                     scale: { start: 0.9, end: 0.2 },
                     alpha: { start: 1, end: 0.65 },

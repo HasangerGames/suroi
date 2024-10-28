@@ -96,18 +96,22 @@ export function equivLayer(
 }
 
 export function adjacentOrEquivLayer(
-    referenceObject: {
-        isObstacle?: boolean
-        isBuilding?: boolean
-        layer: Layer
-    },
+    referenceObject: CommonGameObject,
     evalLayer: Layer
 ): boolean {
+    const buildingOrObstacle = referenceObject.isObstacle || referenceObject.isBuilding;
+
     return (
-        (referenceObject.isObstacle || referenceObject.isBuilding)
-        && (referenceObject as unknown as { definition: { collideWithLayers?: Layers } }).definition.collideWithLayers === Layers.All
-    )
-    || adjacentOrEqualLayer(referenceObject.layer, evalLayer);
+        !buildingOrObstacle
+        || referenceObject.definition.collideWithLayers !== Layers.Equal
+        || equalLayer(referenceObject.layer, evalLayer)
+    ) && (
+        (
+            buildingOrObstacle
+            && referenceObject.definition.collideWithLayers === Layers.All
+        )
+        || adjacentOrEqualLayer(referenceObject.layer, evalLayer)
+    );
 }
 
 /**
@@ -188,11 +192,11 @@ export function isVisibleFromLayer(
 const layerCount = Object.keys(ZIndexes).length / 2; // account for double-indexing
 
 export function getEffectiveZIndex(orig: ZIndexes, layer = Layer.Ground, gameLayer = Layer.Ground): number {
-    if (
-        !isGroundLayer(layer)
-        && !equalLayer(gameLayer, Layer.Basement1)
-        && !equalLayer(layer, gameLayer)
-    ) return orig; // hahaha no stair glitch for u
+    // if (
+    //     !isGroundLayer(layer)
+    //     && !equalLayer(gameLayer, Layer.Basement1)
+    //     && !equalLayer(layer, gameLayer)
+    // ) return orig; // hahaha no stair glitch for u
 
     if (layer > Layer.Ground || (gameLayer < Layer.Ground && layer < Layer.Ground)) {
         layer = Layer.Floor1;

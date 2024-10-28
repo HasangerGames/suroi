@@ -51,6 +51,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
 
     "settings_master_volume": "Master volume",
     "settings_sfx_volume": "SFX volume",
+    "settings_ambience_volume": "Ambience volume",
     "settings_music_volume": "Music volume",
     "settings_old_menu_music": "Old menu music",
 
@@ -59,6 +60,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "settings_render_resolution_auto": "Auto",
     "settings_hires_textures": "High resolution textures",
     "settings_cooler_graphics": "Cooler graphics",
+    "settings_ambient_particles": "Ambient particles",
     "settings_antialias": "Anti-aliasing",
     "settings_movement_smoothing": "Movement smoothing",
     "settings_responsive_rotation": "Responsive rotation",
@@ -130,6 +132,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "msg_item_already_equipped": "Item already equipped!",
     "msg_better_item_equipped": "Better item equipped!",
     "msg_cannot_use_radio": "Radio cannot be used in buildings!",
+    "msg_radio_overused": "Radio has broken due to overuse!",
 
     "gas_waiting": "Toxic gas advances in <time>",
     "gas_advancing": "Toxic gas is advancing! Move to the safe zone",

@@ -18,17 +18,22 @@ export function isObject(item: unknown): item is Record<string, unknown> {
     return (item && typeof item === "object" && !Array.isArray(item)) as boolean;
 }
 
+// again, variance => use any on an array type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isArray = Array.isArray as (x: any) => x is readonly any[];
+// the default Array.isArray fails to correctly narrow readonly array types
+
 // presumably because of variance, using unknown[] causes issues
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Fn<Out = unknown> = (...args: any) => Out;
 
 // see above
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Constructor<Out = unknown> = new (...args: any) => Out;
+export type Constructor<Out = unknown, Args extends any[] = any[]> = new (...args: Args) => Out;
 
 // see above
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AbstractConstructor<Out = unknown> = abstract new (...args: any) => Out;
+export type AbstractConstructor<Out = unknown, Args extends any[] = any[]> = abstract new (...args: Args) => Out;
 
 export type DeepPartial<T> = {
     [K in keyof T]?: DeepPartial<T[K]>;

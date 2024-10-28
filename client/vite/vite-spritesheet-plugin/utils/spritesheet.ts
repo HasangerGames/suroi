@@ -1,7 +1,7 @@
 import { type Image, createCanvas, loadImage } from "canvas";
 import { createHash } from "crypto";
 import { type IOption, MaxRectsPacker } from "maxrects-packer";
-import { platform } from "os";
+import path from "path";
 import { type SpritesheetData } from "pixi.js";
 
 export const supportedFormats = ["png", "jpeg"] as const;
@@ -50,20 +50,14 @@ export interface CompilerOptions {
 
 export type AtlasList = Array<{ readonly json: SpritesheetData, readonly image: Buffer }>;
 
-export type MultiResAtlasList = Record<string, {
-    readonly low: AtlasList
-    readonly high: AtlasList
-}>;
+export type MultiResAtlasList = { readonly low: AtlasList, readonly high: AtlasList };
 
 /**
  * Pack images spritesheets.
  * @param paths List of paths to the images.
  * @param options Options passed to the packer.
  */
-export async function createSpritesheets(
-    paths: readonly string[],
-    options: CompilerOptions
-): Promise<{ readonly low: AtlasList, readonly high: AtlasList }> {
+export async function createSpritesheets(paths: readonly string[], options: CompilerOptions): Promise<MultiResAtlasList> {
     if (paths.length === 0) throw new Error("No file given.");
 
     if (!supportedFormats.includes(options.outputFormat)) {
@@ -75,6 +69,8 @@ export async function createSpritesheets(
         readonly path: string
     }
 
+    const start = performance.now();
+
     const length = paths.length;
     let resolved = 0;
     let prevLength = 0;
@@ -83,11 +79,13 @@ export async function createSpritesheets(
 
     const writeFromStart = (str: string): boolean => process.stdout.write(`\r${str}`);
 
-    process.stdout.write(`Loading images: ${"0".padStart(digits, " ")} / ${length}`);
+    const sep = path.sep;
+
+    process.stdout.write(`Loading ${length} images...\n`);
     const results = (await Promise.allSettled(
         paths.map(
             async path => {
-                const str = `Loading images: ${(++resolved).toString().padStart(digits, " ")} / ${length} ('${path}')`;
+                const str = `Loading images: ${(++resolved).toString().padStart(digits, " ")} / ${length} ('${path.slice(path.lastIndexOf(sep) + 1)}')`;
                 writeFromStart(str.padEnd(max(str.length, prevLength), " "));
                 prevLength = str.length;
 
@@ -104,11 +102,12 @@ export async function createSpritesheets(
     const images: readonly PackerRectData[] = results.filter(x => x.status === "fulfilled").map(({ value }) => value);
     const errors = results.filter(x => x.status === "rejected").map(({ reason }) => reason as unknown);
     if (errors.length) {
+        // @ts-expect-error ts doesn't know AggregateError is a thing for some reason
         throw new AggregateError(errors);
     }
 
     function createSheet(resolution: number): AtlasList {
-        console.log(`Building spritesheet ${options.name} (${resolution}x)`);
+        console.log(`Building spritesheet @ ${resolution}x...`);
         const packer = new MaxRectsPacker(
             options.maximumSize * resolution,
             options.maximumSize * resolution,
@@ -159,7 +158,7 @@ export async function createSpritesheets(
 
                 ctx.drawImage(data.image, rect.x, rect.y, rect.width, rect.height);
 
-                const sourceParts = data.path.split(platform() === "win32" ? "\\" : "/");
+                const sourceParts = data.path.split(path.sep);
 
                 /**
                  * there is _probably_ a file name
@@ -192,28 +191,30 @@ export async function createSpritesheets(
             writeFromStart("Creating buffer & hash".padEnd(prevLength, " "));
             const buffer = canvas.toBuffer(`image/${options.outputFormat}` as "image/png");
 
-            const hash = createHash("sha1");
-            hash.setEncoding("hex");
-            hash.write(buffer);
-            hash.end();
+            const hash = createHash("sha1").update(buffer).digest("hex").slice(0, 8);
 
-            json.meta.image = `${options.outDir}/${options.name}-${(hash.read() as string).slice(0, 8)}@${resolution}x.${options.outputFormat}`;
+            json.meta.image = `${options.outDir}/${options.name}-${hash}@${resolution}x.${options.outputFormat}`;
 
             atlases.push({
                 json,
                 image: buffer
             });
-            writeFromStart(`${++bins} / ${binCount} bins done`.padEnd(prevLength = max(prevLength, 22), " "));
-            console.log();
+            const str = `${++bins} / ${binCount} bins done`;
+            writeFromStart(str.padEnd(prevLength = max(prevLength, 22), " "));
+            prevLength = str.length;
         }
 
-        console.log(`Built spritesheet ${options.name} (${resolution}x)\n`);
+        console.log(`\nBuilt spritesheet @ ${resolution}x\n`);
 
         return atlases;
     }
 
-    return {
+    const sheets = {
         low: createSheet(0.5),
         high: createSheet(1)
     };
+
+    console.log(`Finished building spritesheets in ${Math.round(performance.now() - start) / 1000}s`);
+
+    return sheets;
 }

@@ -97,6 +97,16 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
             this.dead = true;
             this.setPartialDirty();
             this.game.pluginManager.emit("building_did_destroy_ceiling", this);
+            if (this.definition.destroyUponCeilingCollapse && this.scopeHitbox) {
+                for (const object of this.game.grid.intersectsHitbox(this.scopeHitbox)) {
+                    if ((object.isObstacle && this.definition.destroyUponCeilingCollapse.includes(object.definition.idString)) && object.hitbox.collidesWith(this.spawnHitbox)) {
+                        object.damage({
+                            source: this,
+                            amount: object.health
+                        });
+                    }
+                }
+            }
         }
     }
 
@@ -186,7 +196,7 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
                     if (obstacle.definition.idString === puzzleDef.triggerOnSolve) {
                         if (obstacle.door) obstacle.door.locked = false;
 
-                        if (!puzzleDef.unlockOnly) obstacle.interact();
+                        if (!puzzleDef.unlockOnly) obstacle.interact(undefined);
                         else obstacle.setDirty();
                     }
                 }

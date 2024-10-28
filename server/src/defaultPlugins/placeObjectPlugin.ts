@@ -1,6 +1,5 @@
 import { type ObstacleDefinition } from "@common/definitions/obstacles";
 import { Orientation } from "@common/typings";
-import { ColorStyles, styleText } from "@common/utils/ansiColoring";
 import { ExtendedMap } from "@common/utils/misc";
 import { type ReferenceTo } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
@@ -13,19 +12,8 @@ import { GamePlugin } from "../pluginManager";
  * Plugin to help place objects when developing buildings
  */
 export class PlaceObjectPlugin extends GamePlugin {
-    readonly obstacleToPlace: ReferenceTo<ObstacleDefinition> = "regular_crate";
-    private readonly _playerToObstacle = new class extends ExtendedMap<Player, Obstacle> {
-        override ifPresent(key: Player, callback: (obstacle: Obstacle) => void): void {
-            const obstacle = super.get(key);
-
-            if (obstacle === undefined) {
-                console.warn(`[${styleText(this.constructor.name, ColorStyles.foreground.yellow.normal)}] Player with id ${key.id} has no associated obstacle`);
-                return;
-            }
-
-            callback(obstacle);
-        }
-    } ();
+    readonly obstacleToPlace: ReferenceTo<ObstacleDefinition> = "vibrant_bush";
+    private readonly _playerToObstacle = new ExtendedMap<Player, Obstacle>();
 
     protected override initListeners(): void {
         this.on("player_did_join", ({ player }) => {

@@ -1,7 +1,7 @@
 import { Bullets } from "@common/definitions/bullets";
 import { type SingleGunNarrowing } from "@common/definitions/guns";
 import { Loots } from "@common/definitions/loots";
-import { BaseBullet } from "@common/utils/baseBullet";
+import { BaseBullet, type BulletOptions } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";
 import { Angle } from "@common/utils/math";
 import { randomFloat } from "@common/utils/random";
@@ -31,6 +31,9 @@ export interface ServerBulletOptions {
     readonly reflectionCount?: number
     readonly variance?: number
     readonly rangeOverride?: number
+    readonly saturate?: boolean
+    readonly thin?: boolean
+    readonly modifiers?: BulletOptions["modifiers"]
 }
 
 export class Bullet extends BaseBullet {
@@ -76,7 +79,10 @@ export class Bullet extends BaseBullet {
     }
 
     update(): DamageRecord[] {
-        const lineRect = RectangleHitbox.fromLine(this.position, Vec.add(this.position, Vec.scale(this.velocity, this.game.dt)));
+        const lineRect = RectangleHitbox.fromLine(
+            this.position,
+            Vec.add(this.position, Vec.scale(this.velocity, this.game.dt))
+        );
         const { grid, dt, map: { width: mapWidth, height: mapHeight } } = this.game;
 
         // Bullets from dead players should not deal damage so delete them
@@ -95,12 +101,13 @@ export class Bullet extends BaseBullet {
 
         const objects = grid.intersectsHitbox(lineRect);
 
+        const damageMod = (this.modifiers?.damage ?? 1) / (this.reflectionCount + 1);
         for (const collision of this.updateAndGetCollisions(dt, objects)) {
             const object = collision.object as DamageRecord["object"];
             const { isObstacle, isBuilding } = object;
 
             if (isObstacle && object.definition.isStair) {
-                (object).handleStairInteraction(this);
+                object.handleStairInteraction(this);
                 continue;
             }
 
@@ -108,7 +115,7 @@ export class Bullet extends BaseBullet {
 
             records.push({
                 object,
-                damage: definition.damage / (this.reflectionCount + 1) * (isObstacle ? definition.obstacleMultiplier : 1),
+                damage: damageMod * definition.damage * (isObstacle ? (this.modifiers?.dtc ?? 1) * definition.obstacleMultiplier : 1),
                 weapon: this.sourceGun,
                 source: this.shooter,
                 position: point
@@ -116,6 +123,8 @@ export class Bullet extends BaseBullet {
 
             this.damagedIDs.add(object.id);
             this.position = point;
+
+            if (isObstacle && object.definition.noCollisions) continue;
 
             if (
                 (isObstacle || isBuilding)
@@ -150,7 +159,7 @@ export class Bullet extends BaseBullet {
                 && object.definition.health
                 && lineRect.collidesWith(object.hitbox)
             ) {
-                object.damageC4(definition.damage);
+                object.damage({ amount: definition.damage });
             }
         }
 
@@ -167,7 +176,10 @@ export class Bullet extends BaseBullet {
                 layer: this.layer,
                 reflectionCount: this.reflectionCount + 1,
                 variance: this.rangeVariance,
-                rangeOverride: this.clipDistance
+                modifiers: this.modifiers,
+                rangeOverride: this.clipDistance,
+                saturate: this.saturate,
+                thin: this.thin
             }
         );
     }

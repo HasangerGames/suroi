@@ -41,7 +41,10 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
         this.container.scale.set(Numeric.lerp(
             this._oldScale,
             this._scale,
-            Math.min(((Date.now() - this._lastScaleChange) / this.game.serverDt), 1)
+            Numeric.min(
+                (Date.now() - this._lastScaleChange) / this.game.serverDt,
+                1
+            )
         ));
     }
 

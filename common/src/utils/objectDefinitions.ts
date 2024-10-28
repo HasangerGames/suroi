@@ -71,7 +71,7 @@ type FunctionTemplate<
  * @template Def The overarching definition at play
  * @template Base The partial version being used as a template
  */
-type GetMissing<
+export type GetMissing<
     Def extends object,
     Base extends DeepPartial<Def> | FunctionTemplate<Def>
 > = Base extends (...args: any[]) => (infer Ret extends DeepPartial<Def>)
@@ -384,7 +384,9 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                 Base extends (...args: infer Args) => infer Ret
                     ? (...args: Args) => Ret & Default
                     : Base & Default
-                // @ts-expect-error lol, is this the new ts2589
+                // ts is inconsistent about when it wants to accept/reject this
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore lol, is this the new ts2589
             > = createTemplate<Missing>().bind(null, defaultTemplate);
 
             return new ObjectDefinitions<Def>(
@@ -413,7 +415,8 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
     /**
      * A private mapping between identification strings and the index in the definition array
      */
-    private readonly idStringToNumber: Record<string, number> = {};
+    protected readonly idStringToNumber: Readonly<Record<string, number>> = Object.create(null) as Record<string, number>;
+    // yes this is intentional, because we use 'in' somewhere else—don't want things like __proto__ creating false results
 
     protected constructor(
         defs: ReadonlyArray<RawDefinition<Def>>,
@@ -470,6 +473,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                 throw new Error(`Duplicated idString: ${idString}`);
             }
 
+            // @ts-expect-error init code
             this.idStringToNumber[idString] = i;
         }
     }
@@ -491,6 +495,10 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
         if (id === undefined) return undefined;
 
         return this.definitions[id] as U;
+    }
+
+    hasString(idString: string): boolean {
+        return idString in this.idStringToNumber;
     }
 
     writeToStream(stream: BitStream, type: ReifiableDef<Def>): void {
@@ -562,7 +570,8 @@ export enum ItemType {
     Armor,
     Backpack,
     Scope,
-    Skin
+    Skin,
+    Perk
 }
 
 export enum ObstacleSpecialRoles {
@@ -581,7 +590,8 @@ export enum MapObjectSpawnMode {
     GrassAndSand,
     RiverBank,
     River,
-    Beach
+    Beach,
+    Trail
 }
 
 export const LootRadius: Record<ItemType, number> = {
@@ -593,7 +603,8 @@ export const LootRadius: Record<ItemType, number> = {
     [ItemType.Armor]: 3,
     [ItemType.Backpack]: 3,
     [ItemType.Scope]: 3,
-    [ItemType.Skin]: 3
+    [ItemType.Skin]: 3,
+    [ItemType.Perk]: 3
 };
 
 export type BaseBulletDefinition = {
@@ -606,16 +617,21 @@ export type BaseBulletDefinition = {
         readonly opacity: number
         readonly width: number
         readonly length: number
-        /**
-         * A value of `-1` causes a random color to be chosen
-         */
-        readonly color?: number
         readonly image: string
         // used by the radio bullet
         // this will make it scale and fade in and out
         readonly particle: boolean
         readonly zIndex: ZIndexes
-    }
+    } & ({
+        readonly color?: undefined
+        readonly saturatedColor?: never
+    } | {
+        /**
+         * A value of `-1` causes a random color to be chosen
+         */
+        readonly color: number
+        readonly saturatedColor: number
+    })
 
     readonly trail?: {
         readonly interval: number
@@ -657,6 +673,30 @@ export type BaseBulletDefinition = {
     readonly explodeOnImpact?: boolean
 });
 
+export interface PlayerModifiers {
+    // Multiplicative
+    maxHealth: number
+    maxAdrenaline: number
+    baseSpeed: number
+    size: number
+    adrenDrain: number
+
+    // Additive
+    minAdrenaline: number
+    hpRegen: number
+}
+
+export const defaultModifiers = (): PlayerModifiers => ({
+    maxHealth: 1,
+    maxAdrenaline: 1,
+    baseSpeed: 1,
+    size: 1,
+    adrenDrain: 1,
+
+    minAdrenaline: 0,
+    hpRegen: 0
+});
+
 export interface WearerAttributes {
     /**
      * A number by which the player's maximum health will be multiplied
@@ -675,6 +715,18 @@ export interface WearerAttributes {
      * A number by which the player's base speed will be multiplied
      */
     readonly speedBoost?: number
+    /**
+     * A number by which the player's size will be multiplied
+     */
+    readonly sizeMod?: number
+    /**
+     * A number by which the default adrenaline drain will be multiplied
+     */
+    readonly adrenDrain?: number
+    /**
+     * A number that will be added to the player's default health regen
+     */
+    readonly hpRegen?: number
 }
 
 export interface ExtendedWearerAttributes extends WearerAttributes {
@@ -690,6 +742,17 @@ export interface ExtendedWearerAttributes extends WearerAttributes {
      * A fixed amount of adrenaline restored
      */
     readonly adrenalineRestored?: number
+}
+
+export interface EventModifiers {
+    /**
+     * A set of attributes to applied whenever the player gets a kill
+     */
+    readonly kill: readonly ExtendedWearerAttributes[]
+    /**
+     * A set of attributes to applied whenever the player deals damage
+     */
+    readonly damageDealt: readonly ExtendedWearerAttributes[]
 }
 
 export interface ItemDefinition extends ObjectDefinition {
@@ -723,15 +786,6 @@ export interface InventoryItemDefinition extends ItemDefinition {
         /**
          * These attributes are applied or removed when certain events occur
          */
-        readonly on?: {
-            /**
-             * These attributes are applied whenever the player gets a kill
-             */
-            readonly kill?: readonly ExtendedWearerAttributes[]
-            /**
-             * These attributs are applied whenever the player deals damage
-             */
-            readonly damageDealt?: readonly ExtendedWearerAttributes[]
-        }
+        readonly on?: Partial<EventModifiers>
     }
 }

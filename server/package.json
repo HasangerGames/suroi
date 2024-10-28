@@ -8,22 +8,25 @@
     "start": "node dist/server/src/server.js",
     "moderation": "node dist/server/src/moderation.js",
     "validateDefinitions": "node dist/server/src/validateDefinitions.js",
-    "dev": "node -r ts-node/register -r tsconfig-paths/register --watch --watch-path=./src --watch-path=../common src/server.ts",
-    "dev:test": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && node --enable-source-maps dist/server/src/stressTest.js"
+    "dev": "nodemon -r ts-node/register -r tsconfig-paths/register --watch ./src --watch ../common src/server.ts"
   },
   "keywords": [],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@types/node": "^22.6.1",
+    "@swc/core": "^1.7.40",
+    "@swc/helpers": "^0.5.13",
+    "@types/node": "^22.7.5",
     "@types/sanitize-html": "^2.13.0",
     "@types/ws": "^8.5.12",
+    "nodemon": "^3.1.7",
+    "regenerator-runtime": "^0.14.1",
     "tsc-alias": "^1.8.10",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.3"
   },
   "dependencies": {
     "@damienvesper/bit-buffer": "^1.0.1",
-    "croner": "^8.1.1",
+    "croner": "^8.1.2",
     "dotenv": "^16.4.5",
     "proxycheck-ts": "^0.0.11",
     "ts-node": "^10.9.2",

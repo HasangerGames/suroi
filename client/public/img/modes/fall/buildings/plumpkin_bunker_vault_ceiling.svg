@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="631.51941"
+   height="371.07895"
+   viewBox="0 0 167.08951 98.181305"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (1:1.3.2+202404261509+091e20ef0f)"
+   sodipodi:docname="plumpkin_bunker_vault_ceiling.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="px"
+     inkscape:zoom="5.901167"
+     inkscape:cx="575.98777"
+     inkscape:cy="315.27662"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-21.431269,-99.483366)">
+    <g
+       id="g1"
+       transform="translate(-281.98678,-649.42281)">
+      <g
+         id="g7"
+         transform="matrix(0,-1.3314489,1.3733969,0,393.18544,1392.3386)"
+         style="stroke-width:0.728987">
+        <path
+           id="rect1"
+           style="fill:none;fill-opacity:1;stroke-width:0.0778616"
+           d="m 482.76863,-9.1164388 v 0 V -65.09449 H 409.7925 V 55.840346 h 39.83365 23.80875 9.33373 z" />
+        <g
+           id="g27"
+           transform="matrix(0,0.92819566,-0.85641866,0,651.14361,-269.91818)"
+           style="stroke:none;stroke-width:0.729081;stroke-dasharray:none;stroke-opacity:1">
+          <path
+             id="rect2"
+             style="fill:#4b4b4b;fill-opacity:1;stroke:none;stroke-width:0.729081;stroke-dasharray:none;stroke-opacity:1"
+             d="m 282.44163,197.01029 v 0 h -60.29296 v 83.34013 h 128.38854 v -10.89753 -60.48675 -11.95585 z" />
+        </g>
+        <path
+           d="m 409.8964,-52.440225 17.07998,-12.542077 h 5.49758 l -22.57756,16.579019 z m 39.11755,-12.542077 h 5.49745 l -44.615,32.761406 v -4.036849 z m 27.53472,0 -66.65227,48.943611 v -4.036849 l 61.15475,-44.906762 z m 6.32937,11.534706 L 409.8964,0.14378888 V -3.8931523 l 72.98164,-53.5913837 z m -72.98164,65.736647 72.98164,-53.591384 v 4.036941 L 409.8964,16.325993 Z m 72.98164,-33.372054 -72.98164,53.591012 v -4.036845 l 72.98164,-53.591016 z M 409.8964,44.653556 482.87804,-8.9376479 v 4.0368486 L 409.8964,48.6904 Z M 482.87804,11.281682 422.08798,55.920627 H 416.5904 L 482.87804,7.2447408 Z m 0,16.182116 -38.75286,28.456829 h -5.49745 l 44.25031,-32.493683 z m 0,16.182381 -16.7154,12.274448 h -5.49745 l 22.21285,-16.311293 z"
+           fill="#6d7379"
+           stroke="#313335"
+           stroke-width="9.59575"
+           id="path2-5"
+           style="fill:#606060;fill-opacity:1;stroke:#262626;stroke-width:0.758555;stroke-dasharray:none;stroke-opacity:1" />
+        <path
+           id="rect1-8"
+           style="fill:none;fill-opacity:1;stroke:#171717;stroke-width:1.70088;stroke-dasharray:none;stroke-opacity:1"
+           d="m 482.37334,-9.0292026 v 0 -55.4484494 H 410.4011 V 55.415977 h 39.34934 23.85594 8.76696 z" />
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="27.227188"
+   height="27.227188"
+   viewBox="0 0 27.227188 27.227194"
+   fill="none"
+   version="1.1"
+   id="svg52"
+   sodipodi:docname="stump_particle.svg"
+   inkscape:version="1.3 (0e150ed, 2023-07-21)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs56" />
+  <sodipodi:namedview
+     id="namedview54"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     showgrid="false"
+     inkscape:zoom="4.3372536"
+     inkscape:cx="29.050642"
+     inkscape:cy="30.318725"
+     inkscape:window-width="1440"
+     inkscape:window-height="834"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg52"
+     height="609.877px"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#505050" />
+  <metadata
+     id="metadata3223">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Radians</dc:title>
+          </cc:Agent>
+        </dc:creator>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <path
+     sodipodi:type="star"
+     style="fill:#6d4a2c;fill-opacity:1;stroke:#2b1e12;stroke-width:5.8;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+     id="path2"
+     inkscape:flatsided="false"
+     sodipodi:sides="4"
+     sodipodi:cx="20.289337"
+     sodipodi:cy="12.911396"
+     sodipodi:r1="27.732527"
+     sodipodi:r2="18.386856"
+     sodipodi:arg1="0.78539816"
+     sodipodi:arg2="1.5707963"
+     inkscape:rounded="0.34"
+     inkscape:randomized="0"
+     d="m 39.899195,32.521254 c -4.723689,4.723689 -12.929552,-1.223002 -19.609857,-1.223002 -6.680306,0 -14.8861688,5.946691 -19.60985852,1.223002 C -4.04421,27.797565 1.9024811,19.591702 1.9024811,12.911397 1.9024811,6.2310907 -4.0442101,-1.9747719 0.67947935,-6.6984617 5.4031686,-11.422151 13.609031,-5.47546 20.289337,-5.4754601 c 6.680306,0 14.886168,-5.9466909 19.609858,-1.2230017 4.723689,4.7236893 -1.223002,12.9295518 -1.223002,19.6098578 0,6.680305 5.946691,14.886168 1.223002,19.609858 z"
+     transform="matrix(0.55943217,0,0,0.55943217,2.263086,6.3905437)" />
+</svg>

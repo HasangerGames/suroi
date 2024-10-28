@@ -5,7 +5,7 @@ import { HitboxType, type Hitbox } from "../../common/src/utils/hitbox";
 import { type EaseFunctions } from "../../common/src/utils/math";
 import { NullString, type BaseBulletDefinition, type InventoryItemDefinition, type ObjectDefinitions, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../common/src/utils/vector";
-import { LootTiers, type WeightedItem } from "../../server/src/data/lootTables";
+import { LootTables, type WeightedItem } from "../../server/src/data/lootTables";
 
 export function findDupes<
     K extends string | number | symbol
@@ -611,6 +611,18 @@ export const validators = Object.freeze({
                         includeMax: true
                     });
                 }
+
+                if (tracer.saturatedColor !== undefined) {
+                    tester.assertIntAndInBounds({
+                        obj: tracer,
+                        field: "saturatedColor",
+                        min: -1, // <- random color
+                        max: 0xFFFFFF,
+                        baseErrorPath: errorPath,
+                        includeMin: true,
+                        includeMax: true
+                    });
+                }
             });
         }
 
@@ -892,8 +904,8 @@ export const validators = Object.freeze({
         });
 
         tester.assertWarn(
-            weightedItem.spawnSeparately === true && (weightedItem.count ?? 1) === 1,
-            "Specifying 'spawnSeparately' for a drop declaration with 'count' 1 is pointless",
+            weightedItem.spawnSeparately === true && weightedItem.count === 1,
+            "Specifying 'count' of 1 for a drop declaration marked as 'spawnSeparately' is pointless",
             baseErrorPath
         );
 
@@ -933,10 +945,10 @@ export const validators = Object.freeze({
         } else {
             tester.assertReferenceExistsObject({
                 obj: weightedItem,
-                field: "tier",
+                field: "table",
                 baseErrorPath,
-                collection: LootTiers,
-                collectionName: "LootTiers"
+                collection: LootTables.normal,
+                collectionName: "LootTables"
             });
         }
     },

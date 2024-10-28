@@ -1,7 +1,7 @@
 import { ShockwaveFilter } from "pixi-filters";
 import { Container, type Application } from "pixi.js";
 import { DEFAULT_SCOPE } from "../../../../common/src/definitions/scopes";
-import { EaseFunctions } from "../../../../common/src/utils/math";
+import { EaseFunctions, Numeric } from "../../../../common/src/utils/math";
 import { randomPointInsideCircle } from "../../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -53,9 +53,9 @@ export class Camera {
         this.width = this.pixi.screen.width;
         this.height = this.pixi.screen.height;
 
-        const minDimension = Math.min(this.width, this.height);
-        const maxDimension = Math.max(this.width, this.height);
-        const maxScreenDim = Math.max(minDimension * (16 / 9), maxDimension);
+        const minDimension = Numeric.min(this.width, this.height);
+        const maxDimension = Numeric.max(this.width, this.height);
+        const maxScreenDim = Numeric.max(minDimension * (16 / 9), maxDimension);
         const scale = (maxScreenDim * 0.5) / (this._zoom * PIXI_SCALE);
 
         this.zoomTween?.kill();

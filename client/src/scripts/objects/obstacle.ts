@@ -1,3 +1,4 @@
+import { Graphics } from "pixi.js";
 import { Layer, Layers, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { MaterialSounds, type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
@@ -58,6 +59,8 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
     notOnCoolDown = true;
 
+    doorMask?: Graphics;
+
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Obstacle]) {
         super(game, id);
 
@@ -109,7 +112,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         frames: "smoke_particle",
                         position: this.position,
                         layer: this.layer,
-                        zIndex: Math.max((definition.zIndex ?? ZIndexes.ObstaclesLayer1) + 1, ZIndexes.Players),
+                        zIndex: Numeric.max((definition.zIndex ?? ZIndexes.ObstaclesLayer1) + 1, ZIndexes.Players),
                         lifetime: 3500,
                         scale: { start: 0, end: randomFloat(4, 5) },
                         alpha: { start: 0.9, end: 0 },
@@ -136,7 +139,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     // FIXME idString check, hard coded behavior
                     if (this.definition.idString === "airdrop_crate_locked") {
                         const options = (minSpeed: number, maxSpeed: number): Partial<ParticleOptions> => ({
-                            zIndex: Math.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
+                            zIndex: Numeric.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
                             lifetime: 1000,
                             scale: {
                                 start: randomFloat(0.85, 0.95),
@@ -201,7 +204,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         // Change the texture of the obstacle and play a sound when it's destroyed
         if (!this.dead && data.dead) {
             this.dead = true;
-            if (!isNew && !("replaceWith" in definition && definition.replaceWith)) {
+            if (!isNew && !("replaceWith" in definition && definition.replaceWith) && !definition.noDestroyEffect) {
                 const playSound = (name: string): void => {
                     this.playSound(name, {
                         falloff: 0.2,
@@ -378,7 +381,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         { x: min.x, y: max.y }
                     ];
                 const ratio = (vertexB.y - vertexA.y) / (vertexB.x - vertexA.x);
-                const protrusion = Math.min(50, 50 / ratio);
+                const protrusion = Numeric.min(50, 50 / ratio);
 
                 gphx.setStrokeStyle({ color: 0xffff00, width: 2, alpha })
                     .beginPath()
@@ -504,6 +507,25 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
         if (isNew) {
             this._door.offset = offset;
+
+            if (this.definition.isDoor && this.definition.hideWhenOpen) {
+                this.doorMask = new Graphics();
+                this.doorMask.alpha = 0;
+                this.container.addChild(this.doorMask);
+
+                const { min, max } = this.definition.hitbox;
+                this.doorMask
+                    .beginPath()
+                    .rect(
+                        min.x * PIXI_SCALE,
+                        min.y * PIXI_SCALE,
+                        (max.x - min.x) * PIXI_SCALE,
+                        (max.y - min.y) * PIXI_SCALE
+                    )
+                    .closePath()
+                    .fill(0xffffff);
+                this.image.mask = this.doorMask;
+            }
         } else if (offset !== this._door.offset) {
             this._door.offset = offset;
 
@@ -575,7 +597,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         this.game.particleManager.spawnParticle({
             frames: this.particleFrames,
             position,
-            zIndex: Math.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
+            zIndex: Numeric.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
             lifetime: 600,
             layer: this.layer,
             scale: { start: 0.9, end: 0.2 },
@@ -587,6 +609,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     override destroy(): void {
         super.destroy();
         this.image.destroy();
+        this.doorMask?.destroy();
         this.smokeEmitter?.destroy();
     }
 }

@@ -20,7 +20,7 @@
     "@sveltejs/vite-plugin-svelte": "^3.1.2",
     "@tsconfig/svelte": "^5.0.4",
     "@types/jquery": "^3.5.30",
-    "@types/node": "^22.6.1",
+    "@types/node": "^22.7.5",
     "canvas": "^2.11.2",
     "chokidar": "^3.6.0",
     "maxrects-packer": "^2.7.3",
@@ -29,22 +29,24 @@
     "postcss-import": "^16.1.0",
     "postcss-loader": "^8.1.1",
     "postcss-preset-env": "^10.0.5",
-    "sass": "^1.79.3",
+    "sass": "^1.79.4",
     "sirv-cli": "^2.0.2",
     "svelte": "^4.2.19",
     "svgo": "^3.3.2",
     "ts-node": "^10.9.2",
     "tslib": "^2.7.0",
-    "typescript": "^5.6.2",
+    "typescript": "^5.6.3",
     "vite": "^5.4.7",
     "vite-plugin-image-optimizer": "^1.1.8"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.6.0",
     "@pixi/sound": "^6.0.1",
+    "colord": "^2.9.3",
     "jquery": "^3.7.1",
     "nipplejs": "^0.10.2",
+    "pixi-dashed-line": "^1.4.2",
     "pixi-filters": "^6.0.5",
-    "pixi.js": "^8.4.1"
+    "pixi.js": "^8.5.0"
   }
 }

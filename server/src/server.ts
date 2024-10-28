@@ -12,7 +12,7 @@ import { Numeric } from "@common/utils/math";
 
 import { version } from "../../package.json";
 import { Config } from "./config";
-import { findGame, games, newGame } from "./gameManager";
+import { findGame, games, newGame, WorkerMessages } from "./gameManager";
 import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./team";
 import { Logger } from "./utils/misc";
 import { cors, createServer, forbidden, getIP, textDecoder } from "./utils/serverHelpers";
@@ -91,7 +91,7 @@ if (isMainThread) {
         res
             .writeHeader("Content-Type", "application/json")
             .end(JSON.stringify({
-                playerCount: games.reduce((a, b) => (a + (b?.data.aliveCount ?? 0)), 0),
+                playerCount: games.reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
                 maxTeamSize,
 
                 nextSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
@@ -136,7 +136,7 @@ if (isMainThread) {
                 }
 
             } else {
-                response = findGame();
+                response = await findGame();
             }
 
             if (response.success) {
@@ -321,7 +321,7 @@ if (isMainThread) {
         Logger.log(`Listening on ${Config.host}:${Config.port}`);
         Logger.log("Press Ctrl+C to exit.");
 
-        newGame(0);
+        void newGame(0);
 
         setInterval(() => {
             const memoryUsage = process.memoryUsage().rss;
@@ -341,6 +341,10 @@ if (isMainThread) {
         if (typeof teamSize === "object") {
             maxTeamSizeSwitchCron = Cron(teamSize.switchSchedule, () => {
                 maxTeamSize = teamSize.rotation[teamSizeRotationIndex = (teamSizeRotationIndex + 1) % teamSize.rotation.length];
+
+                for (const game of games) {
+                    game?.worker.postMessage({ type: WorkerMessages.UpdateMaxTeamSize, maxTeamSize });
+                }
 
                 const humanReadableTeamSizes = [undefined, "solos", "duos", "trios", "squads"];
                 Logger.log(`Switching to ${humanReadableTeamSizes[maxTeamSize] ?? `team size ${maxTeamSize}`}`);

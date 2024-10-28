@@ -35,7 +35,7 @@ export type GameObject = ObjectMapping[ObjectCategory];
 
 export interface DamageParams {
     readonly amount: number
-    readonly source: GameObject | KillfeedEventType.Gas | KillfeedEventType.Airdrop | KillfeedEventType.BleedOut | KillfeedEventType.FinallyKilled
+    readonly source?: GameObject | KillfeedEventType.Gas | KillfeedEventType.Airdrop | KillfeedEventType.BleedOut | KillfeedEventType.FinallyKilled
     readonly weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
 }
 
@@ -69,7 +69,7 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
     get layer(): Layer { return this._layer; }
     set layer(value: Layer) { this._layer = value; }
 
-    hitbox?: Hitbox;
+    abstract hitbox?: Hitbox;
 
     private _fullStream?: SuroiBitStream | undefined;
     get fullStream(): SuroiBitStream { return this._fullStream ??= SuroiBitStream.alloc(this.fullAllocBytes * 8); }

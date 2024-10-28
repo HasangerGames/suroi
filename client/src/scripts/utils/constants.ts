@@ -1,7 +1,6 @@
 import { Color } from "pixi.js";
+import { GameConstants, Layer } from "../../../../common/src/constants";
 import { Modes, type ColorKeys } from "../../../../common/src/definitions/modes";
-import { Config } from "../config";
-import { Layer } from "../../../../common/src/constants";
 
 export const FORCE_MOBILE = false;
 export const UI_DEBUG_MODE = false;
@@ -27,9 +26,7 @@ export const HITBOX_COLORS = {
     playerWeapon: new Color("lime")
 };
 
-// validated by dv
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-export const MODE = Modes.find(m => m.idString === Config.mode)!;
+export const MODE = Modes[GameConstants.modeName];
 
 // Converts the strings in the mode definition to Color objects
 export const COLORS = (Object.keys(MODE.colors) as ColorKeys[])
@@ -54,7 +51,7 @@ export const PIXI_SCALE = 20;
 
 export const WALL_STROKE_WIDTH = 8;
 
-export const emoteSlots = ["top", "right", "bottom", "left", "win", "death"] as const;
+export const EMOTE_SLOTS = ["top", "right", "bottom", "left", "win", "death"] as const;
 
 export const SHOCKWAVE_EXPLOSION_MULTIPLIERS = Object.freeze({
     time: 5,

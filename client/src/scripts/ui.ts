@@ -21,9 +21,10 @@ import { type Game } from "./game";
 import { news } from "./news/newsPosts";
 import { body, createDropdown } from "./uiHelpers";
 import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";
-import { PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
+import { PIXI_SCALE, UI_DEBUG_MODE, EMOTE_SLOTS } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
+import { PerkIds, Perks } from "../../../common/src/definitions/perks";
 
 /*
     eslint-disable
@@ -48,9 +49,6 @@ interface RegionInfo {
 let selectedRegion: RegionInfo | undefined;
 
 const regionInfo: Record<string, RegionInfo> = Config.regions;
-
-const ammoIdStrings = Ammos.definitions.map(ammo => ammo.idString);
-const healingItemsIdStrings = HealingItems.definitions.map(healingItem => healingItem.idString);
 
 export let teamSocket: WebSocket | undefined;
 let teamID: string | undefined | null;
@@ -263,7 +261,7 @@ export async function setUpUI(game: Game): Promise<void> {
             };
 
             if (serverInfo.protocolVersion !== GameConstants.protocolVersion) {
-                console.error(`Protocol version mismatch for region ${regionID}. Expected ${GameConstants.protocolVersion}, got ${serverInfo.protocolVersion}`);
+                console.error(`Protocol version mismatch for region ${regionID}. Expected ${GameConstants.protocolVersion} (ours), got ${serverInfo.protocolVersion} (theirs)`);
                 return;
             }
 
@@ -1011,11 +1009,11 @@ export async function setUpUI(game: Game): Promise<void> {
     handleEmote("win");
     handleEmote("death");
 
-    let selectedEmoteSlot: typeof emoteSlots[number] | undefined;
+    let selectedEmoteSlot: typeof EMOTE_SLOTS[number] | undefined;
     const emoteList = $<HTMLDivElement>("#emotes-list");
 
-    const bottomEmoteUiCache: Partial<Record<typeof emoteSlots[number], JQuery<HTMLSpanElement>>> = {};
-    const emoteWheelUiCache: Partial<Record<typeof emoteSlots[number], JQuery<HTMLDivElement>>> = {};
+    const bottomEmoteUiCache: Partial<Record<typeof EMOTE_SLOTS[number], JQuery<HTMLSpanElement>>> = {};
+    const emoteWheelUiCache: Partial<Record<typeof EMOTE_SLOTS[number], JQuery<HTMLDivElement>>> = {};
 
     function updateEmotesList(): void {
         emoteList.empty();
@@ -1027,7 +1025,7 @@ export async function setUpUI(game: Game): Promise<void> {
         let lastCategory = -1;
 
         for (const emote of emotes) {
-            if (emote.isTeamEmote) continue;
+            if (emote.isTeamEmote || emote.isWeaponEmote) continue;
 
             if (emote.category as number !== lastCategory) {
                 const categoryHeader = $<HTMLDivElement>(`<div class="emote-list-header">${getTranslatedString(`emotes_category_${EmoteCategory[emote.category]}`)}</div>`);
@@ -1036,7 +1034,7 @@ export async function setUpUI(game: Game): Promise<void> {
             }
 
             // noinspection CssUnknownTarget
-            const emoteIdString = (ammoIdStrings.includes(emote.idString) || healingItemsIdStrings.includes(emote.idString)) ? `./img/game/loot/${emote.idString}.svg` : `./img/game/emotes/${emote.idString}.svg`;
+            const emoteIdString = `./img/game/emotes/${emote.idString}.svg`;
             const emoteItem = $<HTMLDivElement>(
                 `<div id="emote-${emote.idString}" class="emotes-list-item-container">
                     <div class="emotes-list-item" style="background-image: url(${emoteIdString})"></div>
@@ -1075,13 +1073,13 @@ export async function setUpUI(game: Game): Promise<void> {
     const customizeEmote = $<HTMLDivElement>("#emote-customize-wheel");
     const emoteListItemContainer = $<HTMLDivElement>(".emotes-list-item-container");
 
-    function changeEmoteSlotImage(slot: typeof emoteSlots[number], emote: ReferenceTo<EmoteDefinition>): JQuery<HTMLDivElement> {
+    function changeEmoteSlotImage(slot: typeof EMOTE_SLOTS[number], emote: ReferenceTo<EmoteDefinition>): JQuery<HTMLDivElement> {
         return (
             emoteWheelUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
         ).css("background-image", emote ? `url("./img/game/emotes/${emote}.svg")` : "none");
     }
 
-    for (const slot of emoteSlots) {
+    for (const slot of EMOTE_SLOTS) {
         const cvar = `cv_loadout_${slot}_emote` as const;
         const emote = game.console.getBuiltInCVar(cvar);
 
@@ -1106,7 +1104,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
                 updateEmotesList();
 
-                if (emoteSlots.indexOf(slot) > 3) {
+                if (EMOTE_SLOTS.indexOf(slot) > 3) {
                     // win / death emote
                     customizeEmote.css(
                         "background-image",
@@ -1459,7 +1457,16 @@ export async function setUpUI(game: Game): Promise<void> {
         "#slider-sfx-volume",
         "cv_sfx_volume",
         value => {
-            game.soundManager.volume = value;
+            game.soundManager.sfxVolume = value;
+        }
+    );
+
+    // Ambience volume
+    addSliderListener(
+        "#slider-ambience-volume",
+        "cv_ambience_volume",
+        value => {
+            game.soundManager.ambienceVolume = value;
         }
     );
 
@@ -1570,6 +1577,7 @@ export async function setUpUI(game: Game): Promise<void> {
             }
         }
     );
+    addCheckboxListener("#toggle-ambient-particles", "cv_ambient_particles");
 
     const { gameUi } = game.uiManager.ui;
 
@@ -2006,8 +2014,31 @@ export async function setUpUI(game: Game): Promise<void> {
         });
     }
 
+    for (const perkSlot of ["#perk-slot-0", "#perk-slot-1", "#perk-slot-2"]) {
+        $(perkSlot)[0].addEventListener("pointerdown", function(e: PointerEvent): void {
+            e.stopImmediatePropagation();
+            if (e.button !== 2) return;
+
+            const perkIDString = $(this).attr("data-idString");
+            if (!perkIDString) return;
+
+            game.inputManager.addAction({
+                type: InputActions.DropItem,
+                item: Perks.fromString(perkIDString as PerkIds)
+            });
+        });
+    }
+
     // Alright so in mobile we have a completely different spectating container.
     if (inputManager.isMobile) {
+        ui.spectatingContainer.addClass("mobile-mode");
+        ui.spectatingContainer.css({
+            width: "150px",
+            position: "fixed",
+            top: "10%",
+            left: "5rem"
+        });
+
         ui.btnReport.html("<i class=\"fa-solid fa-flag\"></i>");
         ui.btnPlayAgainSpectating.html("<i class=\"fa-solid fa-rotate-right\"></i>");
 
@@ -2051,7 +2082,7 @@ export async function setUpUI(game: Game): Promise<void> {
             .css("top", "50%")
             .css("left", "50%");
 
-        const createEmoteWheelListener = (slot: typeof emoteSlots[number], emoteSlot: number): void => {
+        const createEmoteWheelListener = (slot: typeof EMOTE_SLOTS[number], emoteSlot: number): void => {
             $(`#emote-wheel .emote-${slot}`).on("click", () => {
                 ui.emoteWheel.hide();
                 let clicked = true;

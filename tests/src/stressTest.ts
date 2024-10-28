@@ -15,20 +15,23 @@ import { ItemType, type ReferenceTo } from "../../common/src/utils/objectDefinit
 import { type FullData } from "../../common/src/utils/objectsSerializations";
 import { pickRandomInArray, random, randomBoolean, randomFloat, randomSign } from "../../common/src/utils/random";
 import { Vec, type Vector } from "../../common/src/utils/vector";
-import { removeFrom } from "../../server/src/utils/misc";
 
 console.log("start");
 
 const config = {
     mainAddress: "http://127.0.0.1:8000",
     gameAddress: "ws://127.0.0.1:800<ID>",
-    botCount: 79,
-    joinDelay: 100
+    botCount: 100,
+    joinDelay: 100,
+    rejoinOnDeath: true
 };
 
 const skins: ReadonlyArray<ReferenceTo<SkinDefinition>> = Skins.definitions
     .filter(({ hideFromLoadout, roleRequired }) => !hideFromLoadout && !roleRequired)
     .map(({ idString }) => idString);
+
+const emotes: EmoteDefinition[] = Emotes.definitions
+    .filter(({ isTeamEmote, isWeaponEmote }) => !isTeamEmote && !isWeaponEmote);
 
 const bots: Bot[] = [];
 const objects = new Map<number, Bot | undefined>();
@@ -44,6 +47,8 @@ class Bot {
     };
 
     private _serverId?: number;
+
+    readonly gameID: number;
 
     position = Vec.create(0, 0);
 
@@ -78,6 +83,7 @@ class Bot {
     private _lastInputPacket?: InputPacket<PlayerInputData>;
 
     constructor(readonly id: number, gameID: number) {
+        this.gameID = gameID;
         this._ws = new WebSocket(`${config.gameAddress.replace("<ID>", (gameID + 1).toString())}/play`);
 
         this._ws.addEventListener("error", console.error);
@@ -91,16 +97,17 @@ class Bot {
 
         this._ws.binaryType = "arraybuffer";
 
-        const emote = (): EmoteDefinition => pickRandomInArray(Emotes.definitions);
-
-        this._emotes = [emote(), emote(), emote(), emote(), emote(), emote()];
+        this._emotes = Array.from({ length: 6 }, () => pickRandomInArray(emotes));
 
         this._ws.onmessage = (message: MessageEvent): void => {
             const stream = new PacketStream(message.data as ArrayBuffer);
             while (true) {
-                const packet = stream.deserializeServerPacket();
-                if (packet === undefined) break;
-                this.onPacket(packet);
+                try {
+                    const packet = stream.deserializeServerPacket();
+                    if (packet === undefined) break;
+                    this.onPacket(packet);
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                } catch (e) { continue; }
             }
         };
     }
@@ -108,6 +115,8 @@ class Bot {
     onPacket(packet: OutputPacket): void {
         const updatePosition = (data: FullData<ObjectCategory>, object: Bot, id: number): void => {
             const { position } = data as FullData<ObjectCategory.Player>;
+
+            if (!position) return;
 
             object.position.x = position.x;
             object.position.y = position.y;
@@ -174,9 +183,12 @@ class Bot {
     join(): void {
         this._connected = true;
 
+        const name = `BOT_${this.id}`;
+        console.log(`${name} connected to game ${this.gameID}`);
+
         this.sendPacket(
             JoinPacket.create({
-                name: `BOT_${this.id}`,
+                name,
                 isMobile: false,
                 skin: Loots.reify(pickRandomInArray(skins)),
                 emotes: this._emotes
@@ -311,6 +323,16 @@ class Bot {
     }
 }
 
+const createBot = async(id: number): Promise<Bot> => {
+    const gameData = await (await fetch(`${config.mainAddress}/api/getGame`)).json() as GetGameResponse;
+
+    if (!gameData.success) {
+        throw new Error("Error finding game.");
+    }
+
+    return new Bot(id, gameData.gameID);
+};
+
 void (async() => {
     const { botCount, joinDelay } = config;
     console.log("scheduling joins");
@@ -318,14 +340,7 @@ void (async() => {
     for (let i = 1; i <= botCount; i++) {
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         setTimeout(async() => {
-            const gameData = await (await fetch(`${config.mainAddress}/api/getGame`)).json() as GetGameResponse;
-
-            if (!gameData.success) {
-                console.error("Failed to fetch game");
-                return;
-            }
-
-            bots.push(new Bot(i, gameData.gameID));
+            bots.push(await createBot(i));
             if (i === botCount) allBotsJoined = true;
             if (i === 1) console.log("here we go");
         }, i * joinDelay);
@@ -333,14 +348,22 @@ void (async() => {
 })();
 
 console.log("setting up loop");
-setInterval(() => {
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+setInterval(async() => {
     for (const bot of bots) {
         if (Math.random() < 0.02) bot.updateInputs();
 
         bot.sendInputs();
 
         if (bot.disconnected) {
-            removeFrom(bots, bot);
+            const index = bots.indexOf(bot);
+            if (index === -1) continue;
+
+            if (config.rejoinOnDeath) {
+                bots[index] = await createBot(index + 1);
+            } else {
+                bots.splice(index, 1);
+            }
         }
     }
 

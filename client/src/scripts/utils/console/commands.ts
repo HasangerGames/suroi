@@ -1813,7 +1813,6 @@ export function setUpCommands(game: Game): void {
                     online: navigator.onLine
                 },
                 regions: Config.regions as unknown as Record<string, ServerInfo>,
-                mode: Config.mode,
                 default_region: Config.defaultRegion
             };
 
