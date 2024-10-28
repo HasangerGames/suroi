@@ -887,6 +887,90 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         }
     },
 
+    halloween: {
+        guns: [
+            { item: "g19", weight: 2 },
+            { item: "m1895", weight: 1.75 },
+            { item: "mp40", weight: 1.7 },
+            { item: "saf200", weight: 1.5 },
+            { item: "cz75a", weight: 1.5 },
+            { item: "hp18", weight: 1.25 },
+            { item: "micro_uzi", weight: 1 },
+            { item: "ak47", weight: 1 },
+            { item: "model_37", weight: 0.95 },
+            { item: "dt11", weight: 1 },
+            { item: "aug", weight: 0.7 },
+            { item: "sks", weight: 0.7 },
+            { item: "m3k", weight: 0.3 },
+            { item: "m16a4", weight: 0.1 },
+            { item: "arx160", weight: 0.1 },
+            { item: "flues", weight: 0.1 },
+            { item: "lewis_gun", weight: 0.05 },
+            { item: "vss", weight: 0.02 },
+            { item: "mg36", weight: 0.015 },
+            { item: "sr25", weight: 0.01 },
+            { item: "mini14", weight: 0.01 },
+            { item: "mcx_spear", weight: 0.01 },
+            { item: "cz600", weight: 0.008 },
+            { item: "vepr12", weight: 0.008 },
+            { item: "stoner_63", weight: 0.005 },
+            { item: "radio", weight: 0.005 },
+            { item: "mosin_nagant", weight: 0.005 },
+            { item: "m590m", weight: 0.005 },
+            { item: "vector", weight: 0.004 },
+            { item: "deagle", weight: 0.004 },
+            { item: "model_89", weight: 0.003 },
+            { item: "vks", weight: 0.003 },
+            { item: "negev", weight: 0.003 },
+            { item: "mg5", weight: 0.003 },
+            { item: "tango_51", weight: 0.002 },
+            { item: "dual_deagle", weight: 0.001 }
+        ],
+
+        airdrop_guns: [
+            { item: "mini14", weight: 1.5 },
+            { item: "sr25", weight: 1.5 },
+            { item: "mosin_nagant", weight: 1.5 },
+            { item: "m590m", weight: 1 },
+            { item: "rsh12", weight: 1 },
+            { item: "vepr12", weight: 1 },
+            { item: "model_89", weight: 1 },
+            { item: "vks", weight: 0.5 },
+            { item: "tango_51", weight: 0.5 },
+            { item: "m1_garand", weight: 0.2 },
+            { item: "radio", weight: 0.1 },
+            { item: "m590m", weight: 1 },
+            { item: "m1_garand", weight: 0.2 },
+            { item: "radio", weight: 0.1 }
+        ],
+
+        gold_airdrop_guns: [
+            { item: "dual_rsh12", weight: 1 },
+            { item: "usas12", weight: 1 },
+            { item: "l115a1", weight: 1 },
+            { item: "mk18", weight: 1 },
+            { item: "g19", weight: 0.0001 },
+            { item: "acr", weight: 1 },
+            { item: "pp19", weight: 1 },
+            { item: "negev", weight: 1 },
+            { item: "mg5", weight: 1 },
+            { item: "dual_rsh12", weight: 0.5 }
+        ],
+
+        briefcase: [
+            { item: "usas12", weight: 1 },
+            { item: "mk18", weight: 0.2 },
+            { item: "l115a1", weight: 0.2 },
+            { item: "m590m", weight: 0.9 },
+            { item: "vector", weight: 0.9 },
+            { item: "vepr12", weight: 1 },
+            { item: "stoner_63", weight: 0.2 },
+            { item: "negev", weight: 0.15 },
+            { item: "mg5", weight: 0.15 },
+            { item: "g19", weight: 0.0001 }
+        ]
+    },
+
     fall: {
         ground_loot: [
             { table: "healing_items", weight: 1 },
