@@ -87,16 +87,18 @@ export class ReloadAction extends Action {
         const items = this.player.inventory.items;
         const definition = this.item.definition;
 
-        const doSingleReload = definition.singleReload && !this.fullReload;
         const capacity = this.player.hasPerk(PerkIds.HiCap)
             ? definition.extendedCapacity ?? definition.capacity
             : definition.capacity;
 
         const hasInfiniteAmmo = this.player.hasPerk(PerkIds.InfiniteAmmo);
 
-        const desiredLoad = doSingleReload
-            ? (definition.isDual && this.item.ammo !== (capacity - 1)) ? 2 : 1
-            : capacity - this.item.ammo;
+        const desiredLoad = Numeric.min(
+            definition.shotsPerReload !== undefined && !this.fullReload
+                ? (definition.isDual ? 2 : 1) * definition.shotsPerReload
+                : capacity,
+            capacity - this.item.ammo
+        );
 
         const toLoad = hasInfiniteAmmo
             ? desiredLoad
@@ -110,7 +112,7 @@ export class ReloadAction extends Action {
             items.decrementItem(definition.ammoType, toLoad);
         }
 
-        if (doSingleReload) { // this is to chain single reloads together
+        if (this.item.ammo < capacity) { // chain reloads if not full
             this.item.reload();
         }
 
