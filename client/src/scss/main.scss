@@ -1,9 +1,9 @@
-@import "./palette.scss";
+@use "palette.scss";
 
-@import "./utils/scrollbar.scss";
-@import "./utils/buttons.scss";
-@import "./utils/inputs.scss";
-@import "./utils/fonts.scss";
+@use "utils/scrollbar.scss";
+@use "utils/buttons.scss";
+@use "utils/inputs.scss";
+@use "utils/fonts.scss";
 
 * {
     box-sizing: border-box;
@@ -30,7 +30,7 @@ body {
 }
 
 a, a:visited {
-    color: $blue;
+    color: palette.$blue;
     text-decoration: none;
 }
 

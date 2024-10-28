@@ -1,4 +1,4 @@
-@import "../palette.scss";
+@use "../palette.scss";
 
 .tab-bar {
     user-select: none;
@@ -17,8 +17,8 @@
     border-left: 2px solid transparent;
 
     &.active {
-        border-color: $orange;
-        background: $transparent_bg;
+        border-color: palette.$orange;
+        background: palette.$transparent_bg;
     }
 
     i {
@@ -32,7 +32,7 @@
 
     &:focus {
         text-decoration: underline;
-        text-decoration-color: $blue;
+        text-decoration-color: palette.$blue;
         text-decoration-thickness: 3px;
         text-underline-offset: 3px;
     }
