@@ -408,12 +408,10 @@ export class Game implements GameData {
                         if (!player.hasPerk(PerkIds.RottenPlumpkin) || player.dead) continue;
 
                         player.sendEmote(Emotes.fromStringSafe(perk.emote));
-                        player.health -= perk.healthLoss;
-                        player.adrenaline -= player.adrenaline * (perk.adrenLoss / 100);
-
                         player.piercingDamage({
                             amount: perk.healthLoss
                         });
+                        player.adrenaline -= player.adrenaline * (perk.adrenLoss / 100);
                     }
                     break;
                 }

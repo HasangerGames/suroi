@@ -346,6 +346,7 @@ const perks = [
         categories: [PerkCategories.Halloween],
 
         healDmgRate: 0.5,
+        lowerHpLimit: 5, // absolute
         noDrop: true
     },
     /* {

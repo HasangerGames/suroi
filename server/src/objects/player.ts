@@ -897,7 +897,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.adrenaline -= 0.0005 * this._modifiers.adrenDrain * dt;
 
             // Regenerate health
-            toRegen += (this.adrenaline / 40 + 0.35) * this.mapPerkOrDefault(PerkIds.LacedStimulants, ({ healDmgRate }) => (this.health <= 1 ? 0 : -healDmgRate), 1);
+            toRegen += (this.adrenaline / 40 + 0.35) * this.mapPerkOrDefault(
+                PerkIds.LacedStimulants,
+                ({ healDmgRate, lowerHpLimit }) => (this.health <= lowerHpLimit ? 1 : -healDmgRate),
+                1
+            );
         }
 
         this.health += dt / 900 * toRegen;
