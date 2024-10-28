@@ -272,8 +272,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { table: "scopes", weight: 0.3 }
         ],
         large_pumpkin: {
-            min: 1,
-            max: 2,
+            min: 2,
+            max: 3,
             loot: [
                 { table: "equipment", weight: 1 },
                 { table: "healing_items", weight: 1 },
@@ -960,6 +960,26 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ item: "regular_helmet", weight: 1 }],
             [{ item: "regular_pack", weight: 1 }],
             [{ item: "12g", count: 15, weight: 1 }]
+        ],
+        lux_crate: [
+            [
+                { item: "vks", weight: 1 },
+                { item: "tango_51", weight: 1 }
+            ],
+            [{ table: "special_scopes", weight: 1 }]
+        ],
+        gold_rock: [
+            [{ item: "tango_51", weight: 1 }],
+            [{ table: "scopes", weight: 1 }]
+        ],
+        loot_barrel: [
+            [{ item: "crowbar", weight: 1 }],
+            [{ item: "sr25", weight: 1 }],
+            [
+                { table: "equipment", weight: 1 },
+                { table: "scopes", weight: 1 },
+                { table: "healing_items", weight: 1 }
+            ]
         ],
         gun_locker: {
             min: 1,
