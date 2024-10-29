@@ -923,6 +923,16 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     }
                 ],
                 obstacles: [
+
+                    // -----------------------------------------------------------------------
+                    // TEMP: Remove if halloween ends.
+                    // -----------------------------------------------------------------------
+                    { idString: "cobweb", position: Vec.create(-14.16, -29.07), rotation: 0 },
+                    { idString: "cobweb", position: Vec.create(14.16, -29.07), rotation: 3 },
+                    { idString: "cobweb", position: Vec.create(14.21, 28.79), rotation: 2 },
+                    { idString: "cobweb", position: Vec.create(-14.21, 28.79), rotation: 1 },
+                    // -----------------------------------------------------------------------
+                    
                     { idString: warehouseObstacle, position: Vec.create(14, -28.5) },
                     { idString: "regular_crate", position: Vec.create(-14, -28.5) },
                     { idString: "regular_crate", position: Vec.create(14, 28.5) },
@@ -4700,6 +4710,17 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     }
                 ],
                 obstacles: [
+
+                    // -----------------------------------------------------------------------
+                    // TEMP: Remove if halloween ends.
+                    // -----------------------------------------------------------------------
+                    { idString: "cobweb", position: Vec.create(-49.04, 11.34), rotation: 1 },
+                    { idString: "cobweb", position: Vec.create(-49.38, -35.17), rotation: 0 },
+                    { idString: "cobweb", position: Vec.create(27.42, -35.23), rotation: 3 },
+                    { idString: "cobweb", position: Vec.create(27.33, 11.48), rotation: 2 },
+                    { idString: "cobweb", position: Vec.create(-49.38, -35.11), rotation: 0, layer: 2 },
+                    // -----------------------------------------------------------------------
+
                     { idString: "barn_stair_walls", position: Vec.create(0, 0), rotation: 0 },
                     { idString: "barn_stair_walls_2", position: Vec.create(0, 0), rotation: 0 },
                     { idString: "barn_stair_walls_top_floor", position: Vec.create(0, 0), rotation: 0, layer: 2 },
@@ -6113,8 +6134,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "bulletproof_window", position: Vec.create(-50.37, -104.85), rotation: 0 },
                     { idString: "bulletproof_window", position: Vec.create(-29.8, -104.85), rotation: 0 },
                     { idString: "bulletproof_window", position: Vec.create(4.32, -104.85), rotation: 0 },
-                    { idString: "windowed_vault_door", position: Vec.create(24.88, -104.54), rotation: 0 },
-                    { idString: "control_panel2", position: Vec.create(-12.74, -99.53), rotation: 0 },
+                    /*{ idString: "windowed_vault_door", position: Vec.create(25.25, -104.54), rotation: 0 },
+                    { idString: "control_panel2", position: Vec.create(-12.74, -99.53), rotation: 0 }, uncomment for fall */
                     { idString: "control_panel_small", position: Vec.create(-0.04, -81.91), rotation: 3 },
                     { idString: "control_panel_small", position: Vec.create(-25.47, -81.91), rotation: 1 },
                     { idString: "gun_case", position: Vec.create(48.34, -98.34), rotation: 3 },
@@ -6229,6 +6250,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "detector", position: Vec.create(27.24, -100.67), orientation: 2 },
                     { idString: "plumpkin_bunker_second_puzzle", position: Vec.create(0, 0) },
                     { idString: "plumpkin_bunker_third_puzzle", position: Vec.create(0, 0) },
+                    { idString: "plumpkin_bunker_halloween_puzzle", position: Vec.create(0, 0) }, // halloween only
                     { idString: "plumpkin_bunker_vault", position: Vec.create(0, 0) }
                 ]
             },
@@ -6280,6 +6302,22 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 obstacles: [
                     { idString: "generator", position: Vec.create(78.21, -32.55), rotation: 0, puzzlePiece: true },
                     { idString: "recorder", position: Vec.create(40.55, -32.63), rotation: 1 }
+                ]
+            },
+            {
+                idString: "plumpkin_bunker_halloween_puzzle",
+                name: "Plumpkin Bunker Halloween Puzzle",
+                spawnHitbox: RectangleHitbox.fromRect(104.67, 37.14, Vec.create(0, -75.62)),
+                puzzle: {
+                    triggerOnSolve: "windowed_vault_door",
+                    delay: 2000
+                },
+                obstacles: [
+                    { idString: "windowed_vault_door", position: Vec.create(25.25, -104.54), rotation: 2 },
+                    { idString: "cobweb", position: Vec.create(20.39, -122.53), rotation: 0 },
+                    { idString: "cobweb", position: Vec.create(-72.69, -99.3), rotation: 0 },
+                    { idString: "cobweb", position: Vec.create(29.57, -122.55), rotation: 3 },
+                    { idString: "control_panel", position: Vec.create(-12.74, -99.53), rotation: 0, puzzlePiece: true },
                 ]
             },
             {
