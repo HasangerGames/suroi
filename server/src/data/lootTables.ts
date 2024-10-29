@@ -876,7 +876,6 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { item: PerkIds.Toploaded, weight: 1 },
                 { item: PerkIds.CloseQuartersCombat, weight: 1 },
                 { item: PerkIds.LowProfile, weight: 1 },
-                { item: PerkIds.Splinter, weight: 1 },
                 { item: PerkIds.Berserker, weight: 1 }
             ]
         }
