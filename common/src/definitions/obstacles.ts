@@ -1079,6 +1079,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 name: "Diseased Plumpkin",
                 material: "pumpkin",
                 health: 200,
+                hideOnMap: true,
                 scale: {
                     spawnMin: 0.9,
                     spawnMax: 1.1,
@@ -2338,13 +2339,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 health: 1000,
                 indestructible: true,
                 reflectBullets: true,
-                role: ObstacleSpecialRoles.Door,
-                locked: true,
-                openOnce: true,
-                doorSound: "vault_door",
-                animationDuration: 2000,
-                hingeOffset: Vec.create(-6.1, 0),
-                hitbox: RectangleHitbox.fromRect(12.83, 1.9, Vec.create(0.4, 0.45)),
+                hitbox: RectangleHitbox.fromRect(12.83, 1.9, Vec.create(0, -0.4)),
                 rotationMode: RotationMode.Limited,
                 zIndex: ZIndexes.ObstaclesLayer3,
                 frames: {
