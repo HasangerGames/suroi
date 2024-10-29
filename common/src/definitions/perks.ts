@@ -194,7 +194,7 @@ const perks = [
         adrenSet: 1,
         healthMod: 0.8,
         noDrop: true,
-        type: "positive"
+        type: "neutral"
     },
     {
         idString: PerkIds.Splinter,
@@ -235,7 +235,7 @@ const perks = [
         sizeMod: 1.05, // multiplicative
         killsLimit: 10,
         noDrop: true,
-        type: "positive"
+        type: "neutral"
     },
     {
         idString: PerkIds.Recycling,
@@ -269,7 +269,7 @@ const perks = [
         noDrop: true,
         type: "positive"
     },
-    {
+    /* {
         idString: PerkIds.Wraith,
         name: "Wraith",
         description: "Emit a trail of thick fog that other players have difficulty seeing through.",
@@ -279,7 +279,7 @@ const perks = [
         smokeAlphaSelf: 0.1,
         noDrop: true,
         type: "positive"
-    },
+    }, */
     {
         idString: PerkIds.PlumpkinGamble,
         name: "Plumpkin Gamble",
@@ -316,7 +316,7 @@ const perks = [
 
         [updateInterval]: 20e3, // milliseconds
         noDrop: true,
-        type: "negative"
+        type: "neutral" // how is this neutral its annoying
     },
     {
         idString: PerkIds.Costumed,
@@ -326,7 +326,7 @@ const perks = [
 
         plumpkinVariantChance: 0.01,
         noDrop: true,
-        type: "positive"
+        type: "neutral"
     },
     {
         idString: PerkIds.TornPockets,

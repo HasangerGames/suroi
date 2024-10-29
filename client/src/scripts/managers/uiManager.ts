@@ -925,33 +925,15 @@ export class UIManager {
 
         const flashAnimationDuration = 3000; // sec
 
-        if (perkDef.type) {
-            clearTimeout(this.perkAnimationTimeout);
-            this.game.soundManager.play(perkDef.type);
-            switch (perkDef.type) {
-                case "negative": {
-                    container.css("animation", "perk-negative-colors 1.5s linear infinite");
-                    this.perkAnimationTimeout = window.setTimeout(() => {
-                        container.css("animation", "none");
-                    }, flashAnimationDuration);
-                    break;
-                }
+        clearTimeout(this.perkAnimationTimeout);
 
-                case "positive": {
-                    container.css("animation", "perk-positive-colors 1.5s linear infinite");
-                    this.perkAnimationTimeout = window.setTimeout(() => {
-                        container.css("animation", "none");
-                    }, flashAnimationDuration);
-                    break;
-                }
+        container.css("animation", `perk-${perkDef.type ?? "normal"}-colors 1.5s linear infinite`);
 
-                default: {
-                    container.css("animation", "none");
-                }
-            }
-        } else {
+        if (perkDef.type) this.game.soundManager.play(perkDef.type);
+
+        this.perkAnimationTimeout = window.setTimeout(() => {
             container.css("animation", "none");
-        }
+        }, flashAnimationDuration);
     }
 
     resetPerkSlots(): void {
