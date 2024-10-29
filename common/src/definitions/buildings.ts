@@ -932,7 +932,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "cobweb", position: Vec.create(14.21, 28.79), rotation: 2 },
                     { idString: "cobweb", position: Vec.create(-14.21, 28.79), rotation: 1 },
                     // -----------------------------------------------------------------------
-                    
+
                     { idString: warehouseObstacle, position: Vec.create(14, -28.5) },
                     { idString: "regular_crate", position: Vec.create(-14, -28.5) },
                     { idString: "regular_crate", position: Vec.create(14, 28.5) },
@@ -6134,7 +6134,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "bulletproof_window", position: Vec.create(-50.37, -104.85), rotation: 0 },
                     { idString: "bulletproof_window", position: Vec.create(-29.8, -104.85), rotation: 0 },
                     { idString: "bulletproof_window", position: Vec.create(4.32, -104.85), rotation: 0 },
-                    /*{ idString: "windowed_vault_door", position: Vec.create(25.25, -104.54), rotation: 0 },
+                    /* { idString: "windowed_vault_door", position: Vec.create(25.25, -104.54), rotation: 0 },
                     { idString: "control_panel2", position: Vec.create(-12.74, -99.53), rotation: 0 }, uncomment for fall */
                     { idString: "control_panel_small", position: Vec.create(-0.04, -81.91), rotation: 3 },
                     { idString: "control_panel_small", position: Vec.create(-25.47, -81.91), rotation: 1 },
@@ -6317,7 +6317,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "cobweb", position: Vec.create(20.39, -122.53), rotation: 0 },
                     { idString: "cobweb", position: Vec.create(-72.69, -99.3), rotation: 0 },
                     { idString: "cobweb", position: Vec.create(29.57, -122.55), rotation: 3 },
-                    { idString: "control_panel", position: Vec.create(-12.74, -99.53), rotation: 0, puzzlePiece: true },
+                    { idString: "control_panel", position: Vec.create(-12.74, -99.53), rotation: 0, puzzlePiece: true }
                 ]
             },
             {
