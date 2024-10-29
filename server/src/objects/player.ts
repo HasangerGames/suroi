@@ -56,6 +56,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     readonly ip?: string;
 
     halloweenThrowableSkin = false;
+    activeBloodthirstEffect = false;
 
     teamID?: number;
 
@@ -1819,6 +1820,21 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                             source.maxHealth *= perk.hpMod;
                             source.updateAndApplyModifiers();
                         }
+                        break;
+                    }
+
+                    case PerkIds.Bloodthrist: {
+                        if (source.activeBloodthirstEffect) break;
+
+                        source.activeBloodthirstEffect = true;
+                        source.health += perk.healBonus;
+                        source.adrenaline += perk.adrenalineBonus;
+                        source.baseSpeed *= perk.speedMod;
+
+                        this.game.addTimeout(() => {
+                            source.baseSpeed /= perk.speedMod;
+                            source.activeBloodthirstEffect = false;
+                        }, perk.speedBoostDuration);
                         break;
                     }
                 }

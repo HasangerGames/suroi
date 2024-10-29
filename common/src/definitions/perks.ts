@@ -153,7 +153,8 @@ export const enum PerkIds {
     FieldMedic = "field_medic",
     Berserker = "stark_melee_gauntlet",
     CloseQuartersCombat = "cqc",
-    LowProfile = "low_profile"
+    LowProfile = "low_profile",
+    Bloodthrist = "bloodthrist"
 }
 
 export const enum PerkCategories {
@@ -172,6 +173,21 @@ const perks = [
         healthMod: 2,
         regenRate: 0.5,
         meleeMult: 2,
+        noDrop: true,
+        type: "positive"
+    },
+    {
+        idString: PerkIds.Bloodthrist,
+        name: "Bloodthrist",
+        description: "Gain 25% adrenaline, 25% health, and a speed boost on each kill. Slowly lose health over time.",
+        categories: [PerkCategories.Halloween],
+
+        speedMod: 1.5,
+        speedBoostDuration: 2000, // sec
+        healthLoss: 1,
+        [updateInterval]: 1e3,
+        healBonus: 25,
+        adrenalineBonus: 25,
         noDrop: true,
         type: "positive"
     },
