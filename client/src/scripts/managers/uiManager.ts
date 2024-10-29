@@ -42,6 +42,8 @@ export class UIManager {
     private minAdrenaline = 0;
     private adrenaline = 0;
 
+    private perkAnimationTimeout?: number;
+
     readonly inventory: {
         activeWeaponIndex: number
         weapons: (PlayerData["inventory"] & object)["weapons"] & object
@@ -914,6 +916,36 @@ export class UIManager {
         container.children(".item-tooltip").html(`<strong>${perkDef.name}</strong><br>${perkDef.description}`);
         container.children(".item-image").attr("src", `./img/game/perks/${perkDef.idString}.svg`);
         container.css("visibility", this.perks.hasPerk(perkDef.idString) ? "visible" : "hidden");
+
+        const flashAnimationDuration = 3000; // sec
+
+        if (perkDef.type) {
+            clearTimeout(this.perkAnimationTimeout);
+            this.game.soundManager.play(perkDef.type);
+            switch (perkDef.type) {
+                case "negative": {
+                    container.css("animation", "perk-negative-colors 1.5s linear infinite");
+                    this.perkAnimationTimeout = window.setTimeout(() => {
+                        container.css("animation", "none");
+                    }, flashAnimationDuration);
+                    break;
+                }
+
+                case "positive": {
+                    container.css("animation", "perk-positive-colors 1.5s linear infinite");
+                    this.perkAnimationTimeout = window.setTimeout(() => {
+                        container.css("animation", "none");
+                    }, flashAnimationDuration);
+                    break;
+                }
+
+                default: {
+                    container.css("animation", "none");
+                }
+            }
+        } else {
+            container.css("animation", "none");
+        }
     }
 
     resetPerkSlots(): void {

@@ -2051,3 +2051,33 @@
         scale: 100%;
     }
 }
+
+@keyframes perk-positive-colors {
+    0% {
+        box-shadow: none;
+        background-color: none;
+    }
+    50% {
+        box-shadow: 0px 0px 25px #207e0b;
+        background-color: #207e0b;
+    }
+    100% {
+        box-shadow: none;
+        background-color: none;
+    }
+}
+
+@keyframes perk-negative-colors {
+    0% {
+        box-shadow: none;
+        background-color: none;
+    }
+    50% {
+        box-shadow: 0px 0px 25px #610a0a;
+        background-color: #610a0a;
+    }
+    100% {
+        box-shadow: none;
+        background-color: none;
+    }
+}

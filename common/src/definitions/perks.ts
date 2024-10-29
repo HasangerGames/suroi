@@ -6,6 +6,7 @@ export interface BasicPerk extends ItemDefinition {
     readonly description: string
     readonly giveByDefault: boolean
     readonly categories: readonly PerkCategories[]
+    readonly type?: string
 }
 
 const defaultTemplate = {
@@ -171,7 +172,8 @@ const perks = [
         healthMod: 2,
         regenRate: 0.5,
         meleeMult: 2,
-        noDrop: true
+        noDrop: true,
+        type: "positive"
     },
     {
         idString: PerkIds.SecondWind,
@@ -191,7 +193,8 @@ const perks = [
         adrenDecay: 0,
         adrenSet: 1,
         healthMod: 0.8,
-        noDrop: true
+        noDrop: true,
+        type: "positive"
     },
     {
         idString: PerkIds.Splinter,
@@ -231,7 +234,8 @@ const perks = [
         hpMod: 10, // additive
         sizeMod: 1.05, // multiplicative
         killsLimit: 10,
-        noDrop: true
+        noDrop: true,
+        type: "positive"
     },
     {
         idString: PerkIds.Recycling,
@@ -262,7 +266,8 @@ const perks = [
 
         damageMod: 1.2, // for grenades
         plumpkinExplosionDmg: 100,
-        noDrop: true
+        noDrop: true,
+        type: "positive"
     },
     {
         idString: PerkIds.Wraith,
@@ -272,7 +277,8 @@ const perks = [
 
         smokeAlpha: 0.7,
         smokeAlphaSelf: 0.1,
-        noDrop: true
+        noDrop: true,
+        type: "positive"
     },
     {
         idString: PerkIds.PlumpkinGamble,
@@ -309,7 +315,8 @@ const perks = [
         categories: [PerkCategories.Halloween],
 
         [updateInterval]: 20e3, // milliseconds
-        noDrop: true
+        noDrop: true,
+        type: "negative"
     },
     {
         idString: PerkIds.Costumed,
@@ -318,7 +325,8 @@ const perks = [
         categories: [PerkCategories.Halloween],
 
         plumpkinVariantChance: 0.01,
-        noDrop: true
+        noDrop: true,
+        type: "positive"
     },
     {
         idString: PerkIds.TornPockets,
@@ -328,7 +336,8 @@ const perks = [
 
         [updateInterval]: 1e3,
         dropCount: 2,
-        noDrop: true
+        noDrop: true,
+        type: "negative"
     },
     {
         idString: PerkIds.Claustrophobic,
@@ -337,7 +346,8 @@ const perks = [
         categories: [PerkCategories.Halloween],
 
         speedMod: 0.9,
-        noDrop: true
+        noDrop: true,
+        type: "negative"
     },
     {
         idString: PerkIds.LacedStimulants,
@@ -347,7 +357,8 @@ const perks = [
 
         healDmgRate: 0.5,
         lowerHpLimit: 5, // absolute
-        noDrop: true
+        noDrop: true,
+        type: "negative"
     },
     /* {
         idString: PerkIds.Hexxed,
@@ -366,7 +377,8 @@ const perks = [
         emote: "vomiting_face",
         adrenLoss: 5, // percentage
         healthLoss: 5, // absolute
-        noDrop: true
+        noDrop: true,
+        type: "negative"
     },
     {
         idString: PerkIds.AdvancedAthletics,
