@@ -828,7 +828,13 @@ export class UIManager {
 
                 const isFists = weapon.definition.idString === "fists";
                 const oldSrc = itemImage.attr("src");
-                const newSrc = `./img/game/weapons/${weapon.definition.idString}.svg`;
+
+                let frame = weapon.definition.idString;
+                if (this.perks.hasPerk(PerkIds.PlumpkinBomb) && weapon.definition.itemType === ItemType.Throwable) {
+                    frame = `${weapon.definition.animation.spookyLiveImage ? "plumpkin_" : ""}${weapon.definition.idString}`;
+                }
+
+                const newSrc = `./img/game/weapons/${frame}.svg`;
                 if (oldSrc !== newSrc) {
                     this._playSlotAnimation(container);
                     itemImage.attr("src", newSrc);

@@ -55,6 +55,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     name: string;
     readonly ip?: string;
 
+    halloweenThrowableSkin = false;
+
     teamID?: number;
 
     readonly loadout: {
@@ -1681,6 +1683,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         // ! evil starts here
+        this.halloweenThrowableSkin = this.perks.hasPerk(PerkIds.PlumpkinBomb);
         for (const perk of this.perks) {
             switch (perk.idString) {
                 case PerkIds.PlumpkinGamble: { // AW DANG IT
@@ -2351,6 +2354,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 beingRevived: !!this.beingRevivedBy,
                 teamID: this.teamID ?? 0,
                 invulnerable: this.invulnerable,
+                halloweenThrowableSkin: this.halloweenThrowableSkin,
                 helmet: this.inventory.helmet,
                 vest: this.inventory.vest,
                 backpack: this.inventory.backpack,

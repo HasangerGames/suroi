@@ -38,14 +38,19 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly detonation: {
         readonly explosion?: ReferenceTo<ExplosionDefinition>
         readonly particles?: SyncedParticleSpawnerDefinition
+        readonly spookyParticles?: SyncedParticleSpawnerDefinition
     }
     readonly animation: {
         readonly pinImage?: string
         readonly liveImage: string
         readonly leverImage?: string
         readonly activatedImage?: string
+        readonly spookyActivatedImage?: string
+        readonly spookyLiveImage?: string
+        readonly spookyLeverImage?: string
         readonly cook: {
             readonly cookingImage?: string
+            readonly spookyCookingImage?: string
             readonly leftFist: Vector
             readonly rightFist: Vector
         }
@@ -104,7 +109,10 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
                 pinImage: "proj_frag_pin",
                 liveImage: "proj_frag",
                 leverImage: "proj_frag_lever",
+                spookyLiveImage: "proj_halloween_frag",
+                spookyLeverImage: "proj_halloween_frag_lever",
                 cook: {
+                    spookyCookingImage: "proj_halloween_frag",
                     leftFist: Vec.create(2.5, 0),
                     rightFist: Vec.create(-0.5, 2.15)
                 },
@@ -128,6 +136,18 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
             },
             detonation: {
                 explosion: "smoke_grenade_explosion",
+                spookyParticles: {
+                    type: "plumpkin_smoke_grenade_particle",
+                    count: 10,
+                    deployAnimation: {
+                        duration: 4000,
+                        staggering: {
+                            delay: 300,
+                            initialAmount: 2
+                        }
+                    },
+                    spawnRadius: 15
+                },
                 particles: {
                     type: "smoke_grenade_particle",
                     count: 10,
@@ -145,8 +165,11 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
                 pinImage: "proj_smoke_pin",
                 liveImage: "proj_smoke",
                 leverImage: "proj_smoke_lever",
+                spookyLiveImage: "proj_halloween_smoke",
+                spookyLeverImage: "proj_halloween_smoke_lever",
                 cook: {
                     cookingImage: "proj_smoke_nopin",
+                    spookyCookingImage: "proj_halloween_smoke_nopin",
                     leftFist: Vec.create(2.5, 0),
                     rightFist: Vec.create(-0.5, 2.15)
                 },
@@ -205,7 +228,9 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
             },
             animation: {
                 liveImage: "proj_c4",
+                spookyLiveImage: "proj_halloween_c4",
                 activatedImage: "proj_c4_activated",
+                spookyActivatedImage: "proj_halloween_c4_activated",
                 cook: {
                     leftFist: Vec.create(2, -1),
                     rightFist: Vec.create(3, 0)

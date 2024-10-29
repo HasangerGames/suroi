@@ -23,6 +23,8 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
 
     private _waterAnim?: Tween<SuroiSprite>;
 
+    halloweenSkin = false;
+
     radius?: number;
     hitbox: CircleHitbox;
     hitSound?: GameSound;
@@ -43,12 +45,28 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.ThrowableProjectile], isNew = false): void {
         if (data.full) {
-            this.image.setFrame((this._definition ??= data.full.definition).animation.liveImage);
+            const def = (this._definition ??= data.full.definition);
+
+            this.image.setFrame(def.animation.liveImage);
             this.radius = this._definition.hitboxRadius;
             this.c4 = true;
+
+            this.halloweenSkin = data.full.halloweenSkin;
+
+            if (this.halloweenSkin && def.animation.spookyLiveImage) {
+                this.image.setFrame(def.animation.spookyLiveImage);
+            }
         }
 
-        if (data.activated && this._definition?.animation.activatedImage) this.image.setFrame(this._definition.animation.activatedImage);
+        if (data.activated && this._definition?.animation.activatedImage) {
+            let frame = this._definition.animation.activatedImage;
+
+            if (this.halloweenSkin && this._definition.animation.spookyActivatedImage) {
+                frame = this._definition.animation.spookyActivatedImage;
+            }
+
+            this.image.setFrame(frame);
+        }
 
         this.position = data.position;
         this.rotation = data.rotation;

@@ -171,6 +171,14 @@ export const SyncedParticles = ObjectDefinitions.withDefault<SyncedParticleDefin
                 }
             ),
             smokeLike(
+                ["plumpkin_smoke_grenade_particle"],
+                {
+                    tint: 0x854770,
+                    hitbox: new CircleHitbox(5),
+                    snapScopeTo: "1x_scope"
+                }
+            ),
+            smokeLike(
                 ["tear_gas_particle"],
                 {
                     tint: 0xa0e6ff,

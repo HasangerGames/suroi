@@ -24,6 +24,8 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
 
     private health?: number;
 
+    halloweenSkin = false;
+
     declare readonly hitbox: CircleHitbox;
 
     private _velocity = Vec.create(0, 0);
@@ -528,7 +530,8 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             airborne: this._airborne,
             activated: this._activated,
             full: {
-                definition: this.definition
+                definition: this.definition,
+                halloweenSkin: this.halloweenSkin
             }
         };
     }

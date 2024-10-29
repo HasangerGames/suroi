@@ -51,6 +51,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly beingRevived: boolean
             readonly teamID: number
             readonly invulnerable: boolean
+            readonly halloweenThrowableSkin: boolean
             readonly activeItem: WeaponDefinition
             readonly sizeMod?: number
             readonly skin: SkinDefinition
@@ -148,6 +149,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
         readonly activated: boolean
         readonly full?: {
             readonly definition: ThrowableDefinition
+            readonly halloweenSkin: boolean
         }
     }
     //
@@ -207,6 +209,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 beingRevived,
                 teamID,
                 invulnerable,
+                halloweenThrowableSkin,
                 activeItem,
                 sizeMod,
                 skin,
@@ -220,6 +223,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writeBoolean(beingRevived);
             stream.writeUint8(teamID);
             stream.writeBoolean(invulnerable);
+            stream.writeBoolean(halloweenThrowableSkin);
             Loots.writeToStream(stream, activeItem);
 
             stream.writeBoolean(sizeMod !== undefined);
@@ -269,6 +273,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 beingRevived: stream.readBoolean(),
                 teamID: stream.readUint8(),
                 invulnerable: stream.readBoolean(),
+                halloweenThrowableSkin: stream.readBoolean(),
                 activeItem: Loots.readFromStream(stream),
                 sizeMod: stream.readBoolean() ? stream.readFloat(0, 4, 8) : undefined,
                 skin: Skins.readFromStream(stream),
@@ -491,6 +496,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         },
         serializeFull(stream, { full }) {
             Loots.writeToStream(stream, full.definition);
+            stream.writeBoolean(full.halloweenSkin);
         },
         deserializePartial(stream) {
             return {
@@ -503,8 +509,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         },
         deserializeFull(stream) {
             return {
-                definition: Loots.readFromStream(stream)
-
+                definition: Loots.readFromStream(stream),
+                halloweenSkin: stream.readBoolean()
             };
         }
     },

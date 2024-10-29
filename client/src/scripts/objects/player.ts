@@ -41,6 +41,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     meleeStopSound?: GameSound;
     meleeAttackCounter = 0;
 
+    halloweenThrowableSkin = false;
+
     private _oldItem = this.activeItem;
 
     equipment: {
@@ -488,6 +490,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             const full = data.full;
 
             this.container.visible = !full.dead;
+
+            this.halloweenThrowableSkin = full.halloweenThrowableSkin;
 
             // Blood particles on death (cooler graphics only)
             if (
@@ -1027,11 +1031,15 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         const imagePresent = image !== undefined;
         if (imagePresent) {
-            const frame = `${reference.idString}${
+            let frame = `${reference.idString}${
                 weaponDef.itemType === ItemType.Gun || (image as NonNullable<MeleeDefinition["image"]>).separateWorldImage
                     ? "_world"
                     : ""
             }`;
+
+            if (weaponDef.itemType === ItemType.Throwable && this.halloweenThrowableSkin) {
+                frame = `${weaponDef.animation.spookyLiveImage ? "plumpkin_" : ""}${reference.idString}`;
+            }
 
             const { angle, position: { x: pX, y: pY } } = image;
 
@@ -1609,7 +1617,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     pinImage.setPos(35, 0);
                     pinImage.setZIndex(ZIndexes.Players + 1);
                 }
-                projImage.setFrame(def.animation.cook.cookingImage ?? def.animation.liveImage);
+
+                let frame = def.animation.cook.cookingImage ?? def.animation.liveImage;
+
+                if (this.game.uiManager.perks.hasPerk(PerkIds.PlumpkinBomb) && def.animation.cook.spookyCookingImage) {
+                    frame = def.animation.cook.spookyCookingImage ?? def.animation.spookyLiveImage;
+                }
+
+                projImage.setFrame(frame);
                 this.updateFistsPosition(false);
 
                 this.anims.leftFist = this.game.addTween({
@@ -1713,7 +1728,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.images.altWeapon.visible = false;
                 const projImage = this.images.weapon;
                 projImage.visible = false;
-                projImage.setFrame(def.idString);
+
+                projImage.setFrame(`${this.game.uiManager.perks.hasPerk(PerkIds.PlumpkinBomb) && def.animation.spookyLiveImage ? "plumpkin_" : ""}${def.idString}`);
 
                 if (!def.cookable && def.animation.leverImage !== undefined) {
                     this.game.particleManager.spawnParticle({

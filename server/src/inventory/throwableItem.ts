@@ -100,7 +100,9 @@ class GrenadeHandler {
     }
 
     private _detonate(): void {
-        const { explosion, particles } = this.definition.detonation;
+        const { explosion } = this.definition.detonation;
+
+        const particles = (this.owner.halloweenThrowableSkin && this.definition.detonation.spookyParticles) ? this.definition.detonation.spookyParticles : this.definition.detonation.particles;
 
         const referencePosition = Vec.clone(this._projectile?.position ?? this.parent.owner.position);
         const game = this.game;
@@ -216,6 +218,8 @@ class GrenadeHandler {
             this.parent.owner.layer,
             this.parent
         );
+
+        projectile.halloweenSkin = this.owner.halloweenThrowableSkin;
 
         if (!this.definition.c4) {
             projectile.velocity = Vec.add(

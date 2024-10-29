@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="19"
+   height="36"
+   viewBox="0 0 19 36"
+   fill="none"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="proj_smoke_lever.svg"
+   inkscape:version="1.3 (0e150ed, 2023-07-21)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="6.5555556"
+     inkscape:cx="9.4576271"
+     inkscape:cy="18"
+     inkscape:window-width="1312"
+     inkscape:window-height="449"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg1" />
+  <path
+     d="M15.2596 3.67578L2.27295 9.04007L2.27295 30.7629L7.6227 32.7203L7.6227 11.3395L13.3959 8.91302L15.2596 3.67578Z"
+     fill="#4E4735"
+     stroke="#1B1913"
+     stroke-width="4"
+     stroke-miterlimit="3.99393"
+     id="path1"
+     style="fill:#8b7f50;fill-opacity:1;stroke:#1d1a11;stroke-opacity:1" />
+</svg>
