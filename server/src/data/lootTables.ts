@@ -861,7 +861,11 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             loot: [{ table: "fall_perks", weight: 1 }]
         },
         diseased_plumpkin: [
-            { item: PerkIds.PlumpkinGamble, weight: 1 }
+            [{ item: PerkIds.PlumpkinGamble, weight: 1 }],
+            [
+                { table: "diseased", weight: 0.1 },
+                { item: NullString, weight: 0.9 }
+            ]
         ],
         fall_perks: {
             min: 1,
@@ -885,6 +889,24 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
     },
 
     halloween: {
+        ground_loot: [
+            { table: "healing_items", weight: 1 },
+            { table: "ammo", weight: 1 },
+            { table: "guns", weight: 1 },
+            { table: "equipment", weight: 0.6 },
+            { table: "scopes", weight: 0.3 },
+            { item: "deer_season", weight: 0.2 }
+        ],
+        regular_crate: [
+            { table: "guns", weight: 1.25 },
+            { table: "healing_items", weight: 1 },
+            { table: "equipment", weight: 0.6 },
+            { table: "ammo", weight: 0.5 },
+            { table: "scopes", weight: 0.3 },
+            { table: "throwables", weight: 0.3 },
+            { item: "deer_season", weight: 0.2 },
+            { table: "melee", weight: 0.04 }
+        ],
         guns: [
             { item: "g19", weight: 2 },
             { item: "m1895", weight: 1.75 },
@@ -922,6 +944,16 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "mg5", weight: 0.003 },
             { item: "tango_51", weight: 0.002 },
             { item: "dual_deagle", weight: 0.001 }
+        ],
+
+        airdrop_skins: [
+            { item: NullString, weight: 1 },
+            { item: "diseased", weight: 0.2 },
+            { item: "stardust", weight: 0.5 },
+            { item: "aurora", weight: 0.7 },
+            { item: "nebula", weight: 0.6 },
+            { item: "ghillie_suit", weight: 0.1 },
+            { item: "basic_outfit", weight: 0.001 }
         ],
 
         airdrop_guns: [
