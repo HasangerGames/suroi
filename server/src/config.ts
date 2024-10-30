@@ -21,9 +21,9 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "arena",
+    map: "halloween",
 
-    spawn: { mode: SpawnMode.Center },
+    spawn: { mode: SpawnMode.Normal },
 
     maxTeamSize: TeamSize.Solo,
 
@@ -55,7 +55,8 @@ export const Config = {
         "pap": { password: "pap", isDev: true },
         "error": { password: "error", isDev: true },
         "limenade": { password: "limenade", isDev: true },
-        "123op": { password: "123op" }
+        "123op": { password: "123op" },
+        "solstice": { password: "solstice" }
     },
 
     authServer: {
