@@ -1007,6 +1007,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         if (reference.image) {
             const { image: { position, angle } } = reference;
 
+            if (reference.itemType === ItemType.Throwable) {
+                this.images.weapon.setFrame(`${reference.idString}${this.halloweenThrowableSkin ? "_halloween" : ""}`);
+            }
+
             this.images.weapon.setPos(position.x, position.y + offset);
             this.images.altWeapon.setPos(position.x, position.y - offset);
             this.images.weapon.setAngle(angle);
@@ -1038,7 +1042,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }`;
 
             if (weaponDef.itemType === ItemType.Throwable && this.halloweenThrowableSkin) {
-                frame = `${weaponDef.animation.spookyLiveImage ? "plumpkin_" : ""}${reference.idString}`;
+                frame += "_halloween";
             }
 
             const { angle, position: { x: pX, y: pY } } = image;
@@ -1620,8 +1624,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                 let frame = def.animation.cook.cookingImage ?? def.animation.liveImage;
 
-                if (this.game.uiManager.perks.hasPerk(PerkIds.PlumpkinBomb) && def.animation.cook.spookyCookingImage) {
-                    frame = def.animation.cook.spookyCookingImage ?? def.animation.spookyLiveImage;
+                if (this.game.uiManager.perks.hasPerk(PerkIds.PlumpkinBomb) && this.halloweenThrowableSkin) {
+                    frame += "_halloween";
                 }
 
                 projImage.setFrame(frame);
@@ -1729,7 +1733,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 const projImage = this.images.weapon;
                 projImage.visible = false;
 
-                projImage.setFrame(`${this.game.uiManager.perks.hasPerk(PerkIds.PlumpkinBomb) && def.animation.spookyLiveImage ? "plumpkin_" : ""}${def.idString}`);
+                projImage.setFrame(`${def.idString}${this.game.uiManager.perks.hasPerk(PerkIds.PlumpkinBomb) ? "_halloween" : ""}`);
 
                 if (!def.cookable && def.animation.leverImage !== undefined) {
                     this.game.particleManager.spawnParticle({

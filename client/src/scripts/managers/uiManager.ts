@@ -831,7 +831,7 @@ export class UIManager {
 
                 let frame = weapon.definition.idString;
                 if (this.perks.hasPerk(PerkIds.PlumpkinBomb) && weapon.definition.itemType === ItemType.Throwable) {
-                    frame = `${weapon.definition.animation.spookyLiveImage ? "plumpkin_" : ""}${weapon.definition.idString}`;
+                    frame += "_halloween";
                 }
 
                 const newSrc = `./img/game/weapons/${frame}.svg`;

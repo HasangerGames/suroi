@@ -47,22 +47,19 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
         if (data.full) {
             const def = (this._definition ??= data.full.definition);
 
-            this.image.setFrame(def.animation.liveImage);
             this.radius = this._definition.hitboxRadius;
             this.c4 = true;
 
             this.halloweenSkin = data.full.halloweenSkin;
 
-            if (this.halloweenSkin && def.animation.spookyLiveImage) {
-                this.image.setFrame(def.animation.spookyLiveImage);
-            }
+            this.image.setFrame(`${def.animation.liveImage}${this.halloweenSkin ? "_halloween" : ""}`);
         }
 
         if (data.activated && this._definition?.animation.activatedImage) {
             let frame = this._definition.animation.activatedImage;
 
-            if (this.halloweenSkin && this._definition.animation.spookyActivatedImage) {
-                frame = this._definition.animation.spookyActivatedImage;
+            if (this.halloweenSkin) {
+                frame += "_halloween";
             }
 
             this.image.setFrame(frame);
@@ -139,7 +136,7 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
 
             this.game.particleManager.spawnParticles(4, () => {
                 return {
-                    frames: this.halloweenSkin && this._definition.animation.spookyActivatedImage ? "plumpkin_particle" : "metal_particle",
+                    frames: this.halloweenSkin ? "plumpkin_particle" : "metal_particle",
                     position,
                     layer: this.layer,
                     zIndex: Numeric.max(ZIndexes.Players + 1, 4),

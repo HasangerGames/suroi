@@ -436,8 +436,8 @@ const maps = {
             maxWideAmount: 1
         },
         trails: {
-            minAmount: 2,
-            maxAmount: 3,
+            minAmount: 4,
+            maxAmount: 5,
             wideChance: 0.2,
             minWidth: 2,
             maxWidth: 4,
