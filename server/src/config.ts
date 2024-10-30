@@ -56,7 +56,7 @@ export const Config = {
         "error": { password: "error", isDev: true },
         "limenade": { password: "limenade", isDev: true },
         "123op": { password: "123op" },
-        "solstice": { password: "solstice" }
+        "solstice": { password: "solstice", isDev: true }
     },
 
     authServer: {
