@@ -364,9 +364,9 @@ export class Game implements GameData {
                     // }
                     break;
                 }
-                case PerkIds.Bloodthrist: {
+                case PerkIds.Bloodthirst: {
                     for (const player of players) {
-                        if (!player.hasPerk(PerkIds.Bloodthrist) || player.dead) continue;
+                        if (!player.hasPerk(PerkIds.Bloodthirst) || player.dead) continue;
 
                         player.piercingDamage({
                             amount: perk.healthLoss

@@ -1706,12 +1706,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     newModifiers.baseSpeed *= this._health / this._maxHealth < 0.5 ? perk.speedMod : 1;
                     break;
                 }
-                case PerkIds.Overstimmed: {
-                    newModifiers.adrenDrain *= perk.adrenDecay;
-                    newModifiers.minAdrenaline += perk.adrenSet * newModifiers.maxAdrenaline * GameConstants.player.maxAdrenaline;
-                    newModifiers.maxHealth *= perk.healthMod;
-                    break;
-                }
                 case PerkIds.Engorged: {
                     const base = newModifiers.maxHealth * GameConstants.player.defaultHealth;
                     (eventMods.kill as ExtendedWearerAttributes[]).push({
@@ -1823,7 +1817,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         break;
                     }
 
-                    case PerkIds.Bloodthrist: {
+                    case PerkIds.Bloodthirst: {
                         if (source.activeBloodthirstEffect) break;
 
                         source.activeBloodthirstEffect = true;
