@@ -1728,6 +1728,14 @@ logger.indent("Validating guns", () => {
                 baseErrorPath: errorPath
             });
 
+            if (gun.shotsPerReload !== undefined) {
+                tester.assertIsNaturalFiniteNumber({
+                    obj: gun,
+                    field: "shotsPerReload",
+                    baseErrorPath: errorPath
+                });
+            }
+
             tester.assertIsFiniteRealNumber({
                 obj: gun,
                 field: "recoilMultiplier",

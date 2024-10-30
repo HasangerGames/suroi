@@ -19,100 +19,6 @@ const defaultTemplate = {
 export const updateInterval: unique symbol = Symbol.for("update interval");
 
 /**
- *? **Lycanthropy**:           Transforms you into a werewolf with high speed, health, regeneration,
- *?                            and melee damage, but become unable to use guns and grenades. Become
- *?                            allies with other werewolves.
- *
- *  **Second Wind**:           Move faster below 50% health.
- *
- *  **Overstimulated**:        Gain permanent adrenaline, but have reduced max health.
- *
- *  **Fléchettes**:            All bullets splinter into 3 weaker versions.
- *
- *  **Sabot Rounds**:          Large velocity and range increase, but 20% lower damage
- *
- *  **Extended Magazines**:    Most weapons have larger mag sizes.
- *
- *  **Engorged**:              Gain max health and size with each kill.
- *
- *! **Precision Recycling**:   Hitting an enemy with two bullets in a row refunds two bullets back in
- *!                            your magazine
- *
- *
- *  **Demolitions Expert**:    Grenades can be thrown twice as far and slowly recharge over time. (If
- *                             possible to implement, add "and show their detonation point")
- *
- *! **Plumpkin Bomb**:         All plumpkins, jack-o-lanterns, and pumpkins you destroy explode. Frag Grenades,
- *!                            smokes, and C4 have a special plumpkin sprite and do additional damage.
- *
- *! **Wraith**:                Emit a trail of thick fog that other players have difficulty seeing through. (Smoke
- *!                            with high but not solid opacity for other players, very low opacity for you)
- *
- *! **Plumpkin Gamble**:       Picks a random perk from the halloween perks.
- *
- *! **Baby Plumpkin Pie**:     Your held weapon randomizes every 20 seconds and after every kill.
- *
- *! **Costumed**:              Become a Pumpkin. (Very rare chance to turn into any Plumpkin variant instead).
- *
- *! **Torn Pockets**:          Every second, drop 2 of a random ammo on the ground. (weighted by amount, the more
- *!                            ammo of a specific type, the more likely to be dropped)
- *
- *  **Claustrophobic**:        Move slower inside buildings and bunkers.
- *
- *  **Laced Stimulants**:      Adrenaline damages instead of healing you. (damage = half the normal healing rate)
- *
- *! **Hexxed**:                All players on the map can see your location.
- *
- *! **Rotten Plumpkin**:       Every ten seconds, force the vomit emote, lose 5% adrenaline, and 5 health.
- *
- *  **Advanced Athletics**:    Move faster in water and smoke, walk through trees, and vault through windows.
- *
- *  **Toploaded**:             Do more damage with the top half of your magazine. (The first 20% of your magazine
- *                             does 25% extra damage, the next 30% does 10% extra damage, the rest is normal)
- *
- *  **Infinite Ammo**:         Works exactly like Surviv
- *
- *  **Field Medic**:           All consumable items can be used faster
- *
- *  **Berserker**:             Move faster with melee weapons equipped and deal more damage with them
- *
- *? **Close Quarters Combat**: Weapons do more damage and reload faster when used at close range. (60 units, 1.2x
- *?                            reload speed and 10% extra damage)
- *
- *  **Low Profile**:           Become smaller and take less damage from explosions.
- *
- *
- * |          Name         | Speed | Max HP | Size | Adren drain | HP regen | Stateful |
- * |_______________________|_______|________|______|_____________|__________|__________|
- * |      Lycanthropy      |   √   |   √    |   √  |             |     √    |          |
- * |      Second Wind      |   √   |        |      |             |          |          |
- * |     Overstimulated    |       |   √    |      |      √      |          |          |
- * |       Fléchettes      |       |        |      |             |          |          |
- * |      Sabot Rounds     |       |        |      |             |          |          |
- * |   Extended Magazines  |       |        |      |             |          |          |
- * |        Engorged       |       |   √    |   √  |             |          |          |
- * |  Precision Recycling  |       |        |      |             |          |    √     |
- * |   Demolitions Expert  |       |        |      |             |          |    √     |
- * |     Plumpkin Bomb     |       |        |      |             |          |          |
- * |        Wraith         |       |        |      |             |          |          |
- * |    Plumpkin Gamble    |       |        |      |             |          |          |
- * |   Baby Plumpkin Pie   |       |        |      |             |          |          |
- * |        Costumed       |       |        |      |             |          |          |
- * |      Torn Pockets     |       |        |      |             |          |          |
- * |     Claustrophobic    |       |        |      |             |          |          |
- * |    Laced Stimulants   |       |        |      |             |          |          |
- * |        Hexxed         |       |        |      |             |          |          |
- * |    Rotten Plumpkin    |       |        |      |             |          |    √     |
- * |   Advanced Athletics  |       |        |      |             |          |          |
- * |       Toploaded       |       |        |      |             |          |          |
- * |     Infinite Ammo     |       |        |      |             |          |          |
- * |      Field Medic      |       |        |      |             |          |          |
- * |       Berserker       |   √   |        |      |             |          |          |
- * | Close Quarters Combat |       |        |      |             |          |          |
- * |      Low Profile      |       |        |   √  |             |          |          |
- */
-
-/**
  * As the name implies, loosens numeric literal type to be `number`
  */
 type LoosenNumerics<T> = T extends object
@@ -128,33 +34,39 @@ type LoosenNumerics<T> = T extends object
     );
 
 export const enum PerkIds {
-    Werewolf = "werewolf",
+    //
+    // Normal Perks
+    //
     SecondWind = "second_wind",
-    Overstimmed = "overstimmed",
     Splinter = "splinter",
     Sabot = "sabot",
     HiCap = "hi_cap",
-    Engorged = "engorged",
-    Recycling = "recycling",
     DemoExpert = "demo_expert",
-    PlumpkinBomb = "plumpkin_bomb",
-    Wraith = "wraith",
-    PlumpkinGamble = "lets_go_gambling",
-    BabyPlumpkinPie = "baby_plumpkin_pie",
-    Costumed = "costumed",
-    TornPockets = "torn_pockets",
-    Claustrophobic = "claustrophobic",
-    LacedStimulants = "laced_stimulants",
-    Hexxed = "hexxed",
-    RottenPlumpkin = "rotten_plumpkin",
-    Toploaded = "toploaded",
     AdvancedAthletics = "advanced_athletics",
+    Toploaded = "toploaded",
     InfiniteAmmo = "infinite_ammo",
     FieldMedic = "field_medic",
     Berserker = "stark_melee_gauntlet",
     CloseQuartersCombat = "cqc",
     LowProfile = "low_profile",
-    Bloodthrist = "bloodthrist"
+
+    //
+    // Halloween Perks
+    //
+    PlumpkinGamble = "lets_go_gambling",
+    Lycanthropy = "werewolf",
+    Bloodthirst = "bloodthirst",
+    PlumpkinBomb = "plumpkin_bomb",
+    Shrouded = "shrouded",
+    ExperimentalTreatment = "experimental_treatment",
+    Engorged = "engorged",
+    BabyPlumpkinPie = "baby_plumpkin_pie",
+    Costumed = "costumed",
+    TornPockets = "torn_pockets",
+    Claustrophobic = "claustrophobic",
+    LacedStimulants = "laced_stimulants",
+    RottenPlumpkin = "rotten_plumpkin",
+    PriorityTarget = "priority_target"
 }
 
 export const enum PerkCategories {
@@ -163,34 +75,9 @@ export const enum PerkCategories {
 }
 
 const perks = [
-    {
-        idString: PerkIds.Werewolf,
-        name: "Lycanthropy",
-        description: "Become a werewolf with high speed, health, regeneration, and melee damage, but can't use guns & grenades. Ally with other werewolves.",
-        categories: [PerkCategories.Halloween],
-
-        speedMod: 1.3,
-        healthMod: 2,
-        regenRate: 0.5,
-        meleeMult: 2,
-        noDrop: true,
-        type: "positive"
-    },
-    {
-        idString: PerkIds.Bloodthrist,
-        name: "Bloodthrist",
-        description: "Gain 25% adrenaline, 25% health, and a speed boost on each kill. Slowly lose health over time.",
-        categories: [PerkCategories.Halloween],
-
-        speedMod: 1.5,
-        speedBoostDuration: 2000, // sec
-        healthLoss: 1,
-        [updateInterval]: 1e3,
-        healBonus: 25,
-        adrenalineBonus: 25,
-        noDrop: true,
-        type: "positive"
-    },
+    //
+    // Normal Perks
+    //
     {
         idString: PerkIds.SecondWind,
         name: "Second Wind",
@@ -199,18 +86,6 @@ const perks = [
 
         cutoff: 0.5,
         speedMod: 1.4
-    },
-    {
-        idString: PerkIds.Overstimmed,
-        name: "Overstimulated",
-        description: "Permanent adrenaline, but reduced max health.",
-        categories: [PerkCategories.Halloween],
-
-        adrenDecay: 0,
-        adrenSet: 1,
-        healthMod: 0.8,
-        noDrop: true,
-        type: "neutral"
     },
     {
         idString: PerkIds.Splinter,
@@ -242,29 +117,6 @@ const perks = [
         // define for each weapon individually
     },
     {
-        idString: PerkIds.Engorged,
-        name: "Engorged",
-        description: "Increased max health and size with each kill.",
-        categories: [PerkCategories.Halloween],
-
-        hpMod: 10, // additive
-        sizeMod: 1.05, // multiplicative
-        killsLimit: 10,
-        noDrop: true,
-        type: "neutral"
-    },
-    {
-        idString: PerkIds.Recycling,
-        name: "Precision Recycling",
-        description: "Hitting an enemy with two bullets in a row refunds two bullets back in your magazine.",
-        categories: [PerkCategories.Normal],
-
-        hitReq: 2,
-        accThreshold: 0.5,
-        refund: 2,
-        margin: 3 // times fireDelay
-    },
-    {
         idString: PerkIds.DemoExpert,
         name: "Demo Expert",
         description: "Grenades have a greater throwing range and visible detonation point.",
@@ -273,128 +125,6 @@ const perks = [
         rangeMod: 2,
         [updateInterval]: 10e3, // milliseconds
         restoreAmount: 0.25 // times max capacity
-    },
-    {
-        idString: PerkIds.PlumpkinBomb,
-        name: "Plumpkin Bomb",
-        description: "All plumpkins/pumpkins explode when destroyed. Throwables have a special appearance and do extra damage.",
-        categories: [PerkCategories.Halloween],
-
-        damageMod: 1.2, // for grenades
-        plumpkinExplosionDmg: 100,
-        noDrop: true,
-        type: "positive"
-    },
-    /* {
-        idString: PerkIds.Wraith,
-        name: "Wraith",
-        description: "Emit a trail of thick fog that other players have difficulty seeing through.",
-        categories: [PerkCategories.Halloween],
-
-        smokeAlpha: 0.7,
-        smokeAlphaSelf: 0.1,
-        noDrop: true,
-        type: "positive"
-    }, */
-    {
-        idString: PerkIds.PlumpkinGamble,
-        name: "Plumpkin Gamble",
-        description: "Picks a random Halloween perk.",
-        categories: [PerkCategories.Halloween]
-
-        /*
-            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
-            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
-            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
-            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
-            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
-            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
-            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
-            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
-            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
-            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
-            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
-            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
-            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
-            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
-            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
-            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
-            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
-            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
-            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
-        */
-    },
-    {
-        idString: PerkIds.BabyPlumpkinPie,
-        name: "Baby Plumpkin Pie",
-        description: "Your held weapon randomizes every 20 seconds and after every kill.",
-        categories: [PerkCategories.Halloween],
-
-        [updateInterval]: 20e3, // milliseconds
-        noDrop: true,
-        type: "neutral" // how is this neutral its annoying
-    },
-    {
-        idString: PerkIds.Costumed,
-        name: "Costumed",
-        description: "Become a Pumpkin, or very rarely, a Plumpkin.",
-        categories: [PerkCategories.Halloween],
-
-        plumpkinVariantChance: 0.01,
-        noDrop: true,
-        type: "neutral"
-    },
-    {
-        idString: PerkIds.TornPockets,
-        name: "Torn Pockets",
-        description: "Every second, drop 2 of a random ammo on the ground.",
-        categories: [PerkCategories.Halloween],
-
-        [updateInterval]: 1e3,
-        dropCount: 2,
-        noDrop: true,
-        type: "negative"
-    },
-    {
-        idString: PerkIds.Claustrophobic,
-        name: "Claustrophobic",
-        description: "Move slower inside buildings and bunkers.",
-        categories: [PerkCategories.Halloween],
-
-        speedMod: 0.9,
-        noDrop: true,
-        type: "negative"
-    },
-    {
-        idString: PerkIds.LacedStimulants,
-        name: "Laced Stimulants",
-        description: "Instead of healing you, adrenaline damages you at half the normal healing rate.",
-        categories: [PerkCategories.Halloween],
-
-        healDmgRate: 0.5,
-        lowerHpLimit: 5, // absolute
-        noDrop: true,
-        type: "negative"
-    },
-    /* {
-        idString: PerkIds.Hexxed,
-        name: "Hexxed",
-        description: "All players on the map can see your location.",
-        categories: [PerkCategories.Halloween],
-        noDrop: true
-    }, */
-    {
-        idString: PerkIds.RottenPlumpkin,
-        name: "Rotten Plumpkin",
-        description: "Every 10 seconds, you send the vomit emote and lose 5% adrenaline and 5 health.",
-        categories: [PerkCategories.Halloween],
-
-        [updateInterval]: 10e3, // milliseconds
-        emote: "vomiting_face",
-        adrenLoss: 5, // percentage
-        healthLoss: 5, // absolute
-        noDrop: true,
-        type: "negative"
     },
     {
         idString: PerkIds.AdvancedAthletics,
@@ -460,6 +190,186 @@ const perks = [
 
         sizeMod: 0.8, // multiplicative
         explosionMod: 0.7 // multiplicative
+    },
+
+    //
+    // Halloween perks
+    //
+    {
+        idString: PerkIds.PlumpkinGamble,
+        name: "Plumpkin Gamble",
+        description: "Picks a random Halloween perk.",
+        categories: [PerkCategories.Halloween]
+
+        /*
+            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
+            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
+            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
+            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
+            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
+            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
+            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
+            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
+            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
+            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
+            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
+            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
+            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
+            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
+            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
+            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
+            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
+            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
+            krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
+        */
+    },
+    {
+        idString: PerkIds.Lycanthropy,
+        name: "Lycanthropy",
+        description: "Become a werewolf with high speed, health, regeneration, and melee damage, but can't use guns & grenades. Ally with other werewolves.",
+        categories: [PerkCategories.Halloween],
+
+        speedMod: 1.3,
+        healthMod: 2,
+        regenRate: 0.5,
+        meleeMult: 2,
+        noDrop: true,
+        type: "positive"
+    },
+    {
+        idString: PerkIds.Bloodthirst,
+        name: "Bloodthirst",
+        description: "Gain 25% adrenaline, 25% health, and a speed boost on kill. Slowly lose health over time.",
+        categories: [PerkCategories.Halloween],
+
+        speedMod: 1.5,
+        speedBoostDuration: 2000, // sec
+        healthLoss: 1,
+        [updateInterval]: 1e3,
+        healBonus: 25,
+        adrenalineBonus: 25,
+        noDrop: true,
+        type: "positive"
+    },
+    {
+        idString: PerkIds.PlumpkinBomb,
+        name: "Plumpkin Bomb",
+        description: "All plumpkins/pumpkins explode when destroyed. Throwables have a special appearance and do extra damage.",
+        categories: [PerkCategories.Halloween],
+
+        damageMod: 1.2, // for grenades
+        plumpkinExplosionDmg: 100,
+        noDrop: true,
+        type: "positive"
+    },
+    {
+        idString: PerkIds.Shrouded,
+        name: "Shrouded",
+        description: "Emit a trail of thick fog that other players have difficulty seeing through.",
+        categories: [PerkCategories.Halloween],
+
+        smokeAlpha: 0.7,
+        smokeAlphaSelf: 0.1,
+        noDrop: true,
+        type: "positive"
+    },
+    {
+        idString: PerkIds.ExperimentalTreatment,
+        name: "Experimental Treatment",
+        description: "Permanent adrenaline, but reduced max health.",
+        categories: [PerkCategories.Halloween],
+
+        adrenDecay: 0,
+        adrenSet: 1,
+        healthMod: 0.8,
+        noDrop: true,
+        type: "neutral"
+    },
+    {
+        idString: PerkIds.Engorged,
+        name: "Engorged",
+        description: "Increased max health and size with each kill.",
+        categories: [PerkCategories.Halloween],
+
+        hpMod: 10, // additive
+        sizeMod: 1.05, // multiplicative
+        killsLimit: 10,
+        noDrop: true,
+        type: "neutral"
+    },
+    {
+        idString: PerkIds.BabyPlumpkinPie,
+        name: "Baby Plumpkin Pie",
+        description: "Your held weapon randomizes every 20 seconds and after every kill.",
+        categories: [PerkCategories.Halloween],
+
+        [updateInterval]: 20e3, // milliseconds
+        noDrop: true,
+        type: "neutral" // how is this neutral its annoying
+    },
+    {
+        idString: PerkIds.Costumed,
+        name: "Costumed",
+        description: "Become a Pumpkin, or very rarely, a Plumpkin.",
+        categories: [PerkCategories.Halloween],
+
+        plumpkinVariantChance: 0.01,
+        noDrop: true,
+        type: "neutral"
+    },
+    {
+        idString: PerkIds.TornPockets,
+        name: "Torn Pockets",
+        description: "Every second, drop 2 of a random ammo on the ground.",
+        categories: [PerkCategories.Halloween],
+
+        [updateInterval]: 1e3,
+        dropCount: 2,
+        noDrop: true,
+        type: "negative"
+    },
+    {
+        idString: PerkIds.Claustrophobic,
+        name: "Claustrophobic",
+        description: "Move slower inside buildings and bunkers.",
+        categories: [PerkCategories.Halloween],
+
+        speedMod: 0.9,
+        noDrop: true,
+        type: "negative"
+    },
+    {
+        idString: PerkIds.LacedStimulants,
+        name: "Laced Stimulants",
+        description: "Instead of healing you, adrenaline damages you at half the normal healing rate.",
+        categories: [PerkCategories.Halloween],
+
+        healDmgRate: 0.5,
+        lowerHpLimit: 5, // absolute
+        noDrop: true,
+        type: "negative"
+    },
+    {
+        idString: PerkIds.RottenPlumpkin,
+        name: "Rotten Plumpkin",
+        description: "Every 10 seconds, you send the vomit emote and lose 5% adrenaline and 5 health.",
+        categories: [PerkCategories.Halloween],
+
+        [updateInterval]: 10e3, // milliseconds
+        emote: "vomiting_face",
+        adrenLoss: 5, // percentage
+        healthLoss: 5, // absolute
+        noDrop: true,
+        type: "negative"
+    },
+    {
+        idString: PerkIds.PriorityTarget,
+        name: "Priority Target",
+        description: "All players on the map can see your location.",
+        categories: [PerkCategories.Halloween],
+
+        noDrop: true,
+        type: "negative"
     }
 ] as const satisfies ReadonlyArray<
     GetMissing<

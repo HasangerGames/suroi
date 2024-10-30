@@ -119,7 +119,7 @@ export class GameSound {
                 1 - Numeric.clamp(Math.abs(Vec.length(diff) / this.maxRange), 0, 1)
             ) ** (1 + this.falloff * 2) * this.volume;
 
-            this.stereoFilter.pan = Numeric.clamp(diff.x / this.maxRange, -1, 1);
+            this.stereoFilter.pan = Numeric.clamp(-diff.x / this.maxRange, -1, 1);
         } else {
             this.instance.volume = this.volume;
         }

@@ -1,6 +1,7 @@
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { ArmorType } from "../../../../common/src/definitions/armors";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
+import { PerkIds } from "../../../../common/src/definitions/perks";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { getEffectiveZIndex } from "../../../../common/src/utils/layer";
 import { EaseFunctions } from "../../../../common/src/utils/math";
@@ -116,7 +117,10 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                     break;
                 }
                 case ItemType.Perk: {
-                    backgroundTexture = "loot_background_perk";
+                    // FIXME bad
+                    backgroundTexture = definition.idString === PerkIds.PlumpkinGamble
+                        ? "loot_background_plumpkin_gamble"
+                        : "loot_background_perk";
                     break;
                 }
             }

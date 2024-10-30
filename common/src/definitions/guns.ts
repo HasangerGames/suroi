@@ -12,7 +12,7 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly capacity: number
     readonly extendedCapacity?: number
     readonly reloadTime: number
-    readonly singleReload: boolean
+    readonly shotsPerReload?: number
     readonly infiniteAmmo: boolean
 
     readonly fireDelay: number
@@ -200,7 +200,6 @@ const defaultGun = {
     noDrop: false,
     ammoSpawnAmount: 0,
     speedMultiplier: 0.92,
-    singleReload: false,
     infiniteAmmo: false,
     jitterRadius: 0,
     consistentPatterning: false,
@@ -1175,7 +1174,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     position: Vec.create(4, 0.6)
                 }],
                 gasParticles: gasParticlePresets.shotgun,
-                singleReload: true,
+                shotsPerReload: 1,
                 ballistics: {
                     damage: 9,
                     obstacleMultiplier: 1,
@@ -1220,7 +1219,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     }
                 }],
                 gasParticles: gasParticlePresets.shotgun,
-                singleReload: true,
+                shotsPerReload: 1,
                 ballistics: {
                     damage: 10,
                     obstacleMultiplier: 1,
@@ -1239,7 +1238,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 capacity: 5,
                 extendedCapacity: 8,
                 reloadTime: 0.725,
-                singleReload: true,
+                shotsPerReload: 1,
                 fireDelay: 300,
                 switchDelay: 400,
                 recoilMultiplier: 0.6,
@@ -1349,7 +1348,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 20,
                     obstacleMultiplier: 1,
                     speed: 0.22,
-                    range: 70,
+                    range: 60,
                     onHitExplosion: "usas_explosion",
                     explodeOnImpact: true,
                     allowRangeOverride: true,
@@ -1476,7 +1475,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 20,
                     obstacleMultiplier: 1,
                     speed: 0.22,
-                    range: 70,
+                    range: 60,
                     onHitExplosion: "m590m_explosion",
                     explodeOnImpact: true,
                     allowRangeOverride: true,
@@ -1495,7 +1494,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoSpawnAmount: 20,
                 capacity: 5,
                 reloadTime: 0.85,
-                singleReload: true,
+                shotsPerReload: 1,
                 reloadFullOnEmpty: true,
                 fullReloadTime: 2.9,
                 fireDelay: 900,
@@ -1867,7 +1866,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     speed: 0.35,
                     range: 230,
                     tracer: {
-                        length: 2
+                        length: 2,
+                        width: 1.5
                     },
                     lastShotFX: true
                 }
@@ -1879,8 +1879,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoSpawnAmount: 28,
                 capacity: 7,
                 extendedCapacity: 10,
-                reloadTime: 0.5,
-                singleReload: true,
+                reloadTime: 0.4,
+                shotsPerReload: 1,
                 fireDelay: 350,
                 switchDelay: 400,
                 recoilMultiplier: 0.7,
@@ -1921,7 +1921,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 capacity: 10,
                 extendedCapacity: 20,
                 reloadTime: 0.4,
-                singleReload: true,
+                shotsPerReload: 2,
                 reloadFullOnEmpty: true,
                 fullReloadTime: 3.2,
                 fireDelay: 180,
@@ -1929,8 +1929,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 recoilMultiplier: 0.8,
                 recoilDuration: 150,
                 fireMode: FireMode.Single,
-                shotSpread: 4,
-                moveSpread: 7,
+                shotSpread: 3,
+                moveSpread: 5,
                 length: 7.9,
                 fists: {
                     left: Vec.create(105, 3),
@@ -1945,9 +1945,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }],
                 gasParticles: gasParticlePresets.rifle,
                 ballistics: {
-                    damage: 20,
+                    damage: 23,
                     obstacleMultiplier: 1.5,
-                    speed: 0.26,
+                    speed: 0.27,
                     range: 180,
                     tracer: {
                         length: 1.2
@@ -2047,7 +2047,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 capacity: 3,
                 extendedCapacity: 5,
                 reloadTime: 1.25,
-                singleReload: true,
+                shotsPerReload: 1,
                 shootOnRelease: true,
                 fireDelay: 1250,
                 switchDelay: 900,

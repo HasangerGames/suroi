@@ -1443,7 +1443,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     // Post the report to the server
                     fetch(`${Config.protection?.punishments?.url}/reports`, {
                         method: "POST",
-                        headers: { "Content-Type": "application/json" },
+                        headers: { "Content-Type": "application/json", "api-key": Config?.protection?.punishments?.password || "" },
                         body: JSON.stringify(reportJson)
                     }).then(response => response.json())
                         .then(console.log)
@@ -1696,7 +1696,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     this.perks.addPerk(pickRandomInArray(halloweenPerks));
                     break;
                 }
-                case PerkIds.Werewolf: {
+                case PerkIds.Lycanthropy: {
                     newModifiers.maxHealth *= perk.healthMod;
                     newModifiers.hpRegen += perk.regenRate;
                     newModifiers.baseSpeed *= perk.speedMod;
@@ -2282,7 +2282,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                             (isLoot || (type === InputActions.Interact && isInteractable))
                             && object.hitbox?.collidesWith(detectionHitbox)
                             && adjacentOrEqualLayer(this.layer, object.layer)
-                            && !(isLoot && [ItemType.Throwable, ItemType.Gun].includes(object.definition.itemType) && this.perks.hasPerk(PerkIds.Werewolf))
+                            && !(isLoot && [ItemType.Throwable, ItemType.Gun].includes(object.definition.itemType) && this.perks.hasPerk(PerkIds.Lycanthropy))
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
                             if (isInteractable) {

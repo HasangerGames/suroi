@@ -1,11 +1,12 @@
 @use "sass:color";
-@import "../utils/tabs.scss";
-@import "../palette.scss";
+@use "../utils/tabs.scss";
+@use "../palette.scss";
+@use "../variables";
 
 #settings-menu,
 #report-modal,
 #warning-modal {
-    background-color: $bg;
+    background-color: palette.$bg;
     max-width: 500px;
 }
 
@@ -49,7 +50,7 @@
 }
 
 #create-team-menu {
-    background-color: $bg;
+    background-color: palette.$bg;
     width: fit-content;
     max-width: unset;
     display: flex;
@@ -96,7 +97,7 @@
                     .create-team-player-name {
                         font-size: 20px;
                         font-weight: bold;
-                        @include text-shadow;
+                        @include variables.text-shadow;
                     }
 
                     .create-team-player-badge {
@@ -175,7 +176,7 @@
 }
 
 #select-language-menu {
-    background-color: $bg;
+    background-color: palette.$bg;
     width: fit-content;
     max-width: unset;
     display: flex;
@@ -209,12 +210,12 @@
                 }
 
                 input:checked + label {
-                    border: 2px solid $primary;
-                    background-color: $primary;
+                    border: 2px solid palette.$primary;
+                    background-color: palette.$primary;
                 }
 
                 label {
-                    border: 2px solid $orange;
+                    border: 2px solid palette.$orange;
                     display: block;
                     font-weight: bold;
                     width: 100%;
@@ -225,7 +226,7 @@
 
                 label:hover {
                     transition-duration: 0.25s;
-                    background-color: $orange;
+                    background-color: palette.$orange;
                 }
 
                 img {
@@ -253,7 +254,7 @@
         h3 {
             margin-left: 15px;
             display: flex;
-            @include text-shadow;
+            @include variables.text-shadow;
         }
 
         .dialog-close-btn {
@@ -331,13 +332,13 @@
             cursor: pointer;
 
             &.selected {
-                border-color: $orange;
+                border-color: palette.$orange;
             }
         }
 
         .skin-name {
             font-weight: bold;
-            @include text-shadow;
+            @include variables.text-shadow;
             text-align: center;
         }
     }
@@ -374,7 +375,7 @@
             height: 104px;
             background-size: 84px 84px;
             flex-shrink: 0;
-            background-color: $transparent_bg;
+            background-color: palette.$transparent_bg;
             border-radius: 10px;
             border: 5px solid transparent;
             background-repeat: no-repeat;
@@ -389,7 +390,7 @@
                 margin-top: calc(-2px - 1px);
             }
             &.selected {
-                border-color: $orange;
+                border-color: palette.$orange;
             }
 
             img {
@@ -421,7 +422,7 @@
             font-size: 2em;
             font-weight: bold;
             width: 100%;
-            @include text-shadow;
+            @include variables.text-shadow;
         }
 
         .emotes-list-item-container {
@@ -433,11 +434,11 @@
             border: 5px solid transparent;
             border-radius: 10px;
             padding: 5px;
-            background-color: $transparent_bg;
+            background-color: palette.$transparent_bg;
             justify-content: center;
 
             &.selected {
-                border-color: $orange;
+                border-color: palette.$orange;
             }
             .emote-name {
                 margin-top: auto;
@@ -454,7 +455,7 @@
         .emote-name {
             text-align: center;
             font-weight: bold;
-            @include text-shadow;
+            @include variables.text-shadow;
         }
 
         #emote- {
@@ -493,7 +494,7 @@
                 transform: translate(-50%, -50%);
 
                 font-size: 22px;
-                @include text-shadow;
+                @include variables.text-shadow;
             }
         }
 
@@ -530,13 +531,13 @@
             border: 3px solid transparent;
             border-radius: 10px;
             padding: 5px;
-            background-color: $transparent_bg;
+            background-color: palette.$transparent_bg;
 
             width: 100px;
             height: 100px;
 
             &.selected {
-                border-color: $orange;
+                border-color: palette.$orange;
             }
         }
 
@@ -547,7 +548,7 @@
 
         .crosshair-name {
             font-weight: bold;
-            @include text-shadow;
+            @include variables.text-shadow;
             text-align: center;
         }
     }
@@ -572,7 +573,7 @@
             cursor: pointer;
 
             &.selected {
-                border-color: $orange;
+                border-color: palette.$orange;
             }
         }
 
@@ -596,7 +597,7 @@
 
         .badge-name {
             font-weight: bold;
-            @include text-shadow;
+            @include variables.text-shadow;
             text-align: center;
         }
       }
@@ -710,14 +711,14 @@
     }
 
     #settings-tabs {
-        background: $transparent_bg;
+        background: palette.$transparent_bg;
 
         #tab-keybinds-content {
             #keybind-clear-tooltip {
                 border: 2px solid gray;
                 border-radius: 10px;
                 padding: 7px;
-                background-color: color.adjust($transparent_bg, $lightness: 30%);
+                background-color: color.adjust(palette.$transparent_bg, $lightness: 30%);
             }
 
             .modal-item:not(:last-child) {
@@ -738,7 +739,7 @@
     }
 
     #customize-tab-bar .tab {
-        @include text-shadow;
+        @include variables.text-shadow;
         padding-top: 7px;
 
         &.active {
@@ -749,7 +750,7 @@
             position: relative;
             top: 3px;
             margin-right: 5px;
-            @include drop-shadow;
+            @include variables.drop-shadow;
         }
     }
 
@@ -762,7 +763,7 @@
         margin: 0.2em;
         font-weight: bold;
         font-size: 16px;
-        @include text-shadow;
+        @include variables.text-shadow;
 
         i {
             color: red;
@@ -790,14 +791,14 @@
         }
 
         .range-input-value {
-            @include text-shadow;
+            @include variables.text-shadow;
             float: right;
         }
 
     }
 
     &.in-game {
-        background-color: $transparent_bg;
+        background-color: palette.$transparent_bg;
         box-shadow: none;
     }
 }

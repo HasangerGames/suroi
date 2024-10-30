@@ -1,4 +1,5 @@
-@import "../../palette.scss";
+@use "../../palette.scss";
+@use "../../variables";
 
 #game {
     user-select: none;
@@ -37,14 +38,14 @@
         box-sizing: border-box;
         height: 40px;
         width: 100px;
-        background: $transparent_bg;
+        background: palette.$transparent_bg;
         border-radius: 10px;
         font-size: 15px;
         align-items: center;
         padding: 0 8px 0 8px;
 
         &:hover {
-            outline: 2px solid $danger !important;
+            outline: 2px solid palette.$danger !important;
         }
 
         #detonate-key {
@@ -77,19 +78,19 @@
             float: left;
             width: 50px;
             height: 35px;
-            @include drop-shadow;
+            @include variables.drop-shadow;
 
-            @media screen and (max-width: $screen_large) {
+            @media screen and (max-width: variables.$screen_large) {
                 width: 40px;
                 height: 30px;
             }
         }
 
-        @media screen and (min-width: $screen_large) and (max-height: 720px) {
+        @media screen and (min-width: variables.$screen_large) and (max-height: 720px) {
             bottom: 370px;
         }
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             width: auto;
             height: auto;
             bottom: 216px;
@@ -106,7 +107,7 @@
             }
         }
 
-        @media screen and (max-width: $screen_medium) {
+        @media screen and (max-width: variables.$screen_medium) {
             bottom: 176px;
         }
 
@@ -132,7 +133,7 @@
     flex-direction: unset;
     flex-wrap: wrap;
 
-    @media screen and (max-width: $screen_large) {
+    @media screen and (max-width: variables.$screen_large) {
         top: 5px;
         left: 5px;
         flex-direction: unset;
@@ -156,10 +157,10 @@
     height: 220px;
     margin-right: 5px;
 
-    border: 10px solid $transparent_bg;
+    border: 10px solid palette.$transparent_bg;
     border-radius: 10px;
 
-    @media screen and (max-width: $screen_large) {
+    @media screen and (max-width: variables.$screen_large) {
         width: 135px;
         height: 135px;
         border-width: 5px;
@@ -172,7 +173,7 @@
     text-shadow: 1px 1px 2px black;
     font-family: monospace;
 
-    @media screen and (max-width: $screen_large) {
+    @media screen and (max-width: variables.$screen_large) {
         font-size: 14px;
     }
 }
@@ -185,9 +186,9 @@
     display: flex;
     border-radius: 6px;
     align-items: center;
-    background-color: $transparent_bg;
+    background-color: palette.$transparent_bg;
     font-size: 17px;
-    @include text-shadow;
+    @include variables.text-shadow;
 
     &.advancing {
         animation: advancing 2s linear infinite;
@@ -215,15 +216,15 @@
     #gas-timer-image {
         position: relative;
         bottom: 1px;
-        @include drop-shadow;
+        @include variables.drop-shadow;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             width: 14px;
             height: 14px;
         }
     }
 
-    @media screen and (max-width: $screen_large) {
+    @media screen and (max-width: variables.$screen_large) {
         padding: 4px 6px 4px 6px;
         margin: 4px 0 4px 0;
         font-size: 14px;
@@ -233,7 +234,7 @@
 }
 
 .spectating-mode {
-    @media screen and (max-width: $screen_large) {
+    @media screen and (max-width: variables.$screen_large) {
         display: inline-flex;
         gap: 5px;
 
@@ -254,7 +255,7 @@
     top: 50%;
     transform: translateY(-50%);
 
-    @media screen and (max-width: $screen_medium) {
+    @media screen and (max-width: variables.$screen_medium) {
         transform: scale(55%);
     }
 
@@ -263,14 +264,14 @@
         top: 160px;
         transform: scale(55%);
         transform-origin: 0% 0%;
-        @media screen and (min-width: $screen_large) {
+        @media screen and (min-width: variables.$screen_large) {
             flex-direction: column;
             left: 240px;
             top: 20px;
         }
     }
 
-    @media screen and (max-height: 465px) and (max-width: $screen-large) {
+    @media screen and (max-height: 465px) and (max-width: variables.$screen-large) {
         flex-direction: row;
         left: 145px;
         top: 106px;
@@ -282,13 +283,13 @@
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        background-color: $transparent_bg;
+        background-color: palette.$transparent_bg;
         padding: 6px 10px 6px 7px;
         border-radius: 8px;
         position: relative;
         width: max-content;
 
-        @media screen and (max-height: 465px) and (max-width: $screen-large) {
+        @media screen and (max-height: 465px) and (max-width: variables.$screen-large) {
             padding: 7px;
         }
 
@@ -345,7 +346,7 @@
             width: 30px;
         }
 
-        @media screen and (max-height: 465px) and (max-width: $screen-large) {
+        @media screen and (max-height: 465px) and (max-width: variables.$screen-large) {
             .teammate-name,
             .teammate-badge {
                 display: none;
@@ -361,11 +362,11 @@
     right: 185px;
     margin-left: auto;
     width: max-content;
-    background: $transparent_bg;
+    background: palette.$transparent_bg;
     border-radius: 8px;
     padding: 8px 12px 8px 12px;
     gap: 10px;
-    @media screen and (max-width: $screen_large) {
+    @media screen and (max-width: variables.$screen_large) {
         top: 7px;
         right: 90px;
         padding: 4px 5px 4px 8px;
@@ -374,14 +375,14 @@
         border-radius: 4px;
     }
 
-    @media screen and (max-width: $screen_medium) {
+    @media screen and (max-width: variables.$screen_medium) {
         display: none;
     }
 
     #kill-leader-leader-container {
         font-weight: bold;
         font-size: 25px;
-        @include text-shadow;
+        @include variables.text-shadow;
 
         .badge-icon {
             width: 25px;
@@ -389,7 +390,7 @@
             margin-bottom: -4px;
         }
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             font-size: 16px;
 
             .badge-icon {
@@ -408,7 +409,7 @@
         display: flex;
         align-items: center;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             display: flex;
         }
     }
@@ -416,7 +417,7 @@
     #kill-counter {
         margin-right: 5px;
 
-        @media screen and (max-width: $screen_large)  {
+        @media screen and (max-width: variables.$screen_large)  {
             bottom: 0;
             right: 0;
             margin: 0;
@@ -424,7 +425,7 @@
         }
     }
 
-    @media screen and (max-width: $screen_large) {
+    @media screen and (max-width: variables.$screen_large) {
         top: 5px;
         right: 5px;
     }
@@ -433,15 +434,15 @@
         margin-left: auto;
         width: fit-content;
         display: flex;
-        background: $transparent_bg;
+        background: palette.$transparent_bg;
         border-radius: 8px;
         justify-content: center;
         align-items: center;
         padding: 8px 10px 8px 16px;
         gap: 10px;
-        @include text-shadow;
+        @include variables.text-shadow;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             padding: 4px 5px 4px 8px;
             gap: 5px;
         }
@@ -451,7 +452,7 @@
             width: 32px;
             height: 32px;
 
-            @media screen and (max-width: $screen_large) {
+            @media screen and (max-width: variables.$screen_large) {
                 width: 16px;
                 height: 16px;
             }
@@ -463,7 +464,7 @@
             font-weight: bold;
             font-size: 50px;
 
-            @media screen and (max-width: $screen_large) {
+            @media screen and (max-width: variables.$screen_large) {
                 font-size: 25px;
             }
         }
@@ -472,14 +473,14 @@
     #kill-feed {
         margin-right: 185px;
         margin-top: -10px;
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             margin-right: 90px;
             margin-top: 0px;
         }
-        @media screen and (max-width: $screen_medium) {
+        @media screen and (max-width: variables.$screen_medium) {
             margin-right: 5px;
         }
-        @media screen and (max-width: $screen_medium) and (max-height: 500px) {
+        @media screen and (max-width: variables.$screen_medium) and (max-height: 500px) {
             margin-top: -40px;
             margin-right: 80px;
         }
@@ -487,16 +488,16 @@
             max-width: fit-content;
             padding: 8px 10px 8px 10px;
             margin: 5px 0 5px auto;
-            background: $transparent_bg;
+            background: palette.$transparent_bg;
             border-radius: 4px;
             font-weight: 600;
             position: relative;
             display: flex;
             align-items: center;
             gap: 4px;
-            @include text-shadow;
+            @include variables.text-shadow;
 
-            @media screen and (max-width: $screen_large) {
+            @media screen and (max-width: variables.$screen_large) {
                 font-size: 12px;
                 padding: 4px 5px 4px 5px;
                 margin: 3px 0 3px auto;
@@ -511,7 +512,7 @@
                 margin-right: 1px;
                 margin-top: -1px;
 
-                @media screen and (max-width: $screen_large) {
+                @media screen and (max-width: variables.$screen_large) {
                     height: 12px;
                 }
             }
@@ -521,7 +522,7 @@
                 margin-top: -1px;
                 margin-left: -1px;
 
-                @media screen and (max-width: $screen_large) {
+                @media screen and (max-width: variables.$screen_large) {
                     height: 12px;
                 }
             }
@@ -561,7 +562,7 @@
         top: -10%;
         text-align: center;
         justify-content: center;
-        @include drop-shadow;
+        @include variables.drop-shadow;
 
         #action-time {
             position: absolute;
@@ -578,8 +579,8 @@
     }
 
     #action-name {
-        background: $transparent_bg;
-        @include text-shadow;
+        background: palette.$transparent_bg;
+        @include variables.text-shadow;
 
         text-align: center;
         align-items: center;
@@ -599,7 +600,7 @@
     text-align: center;
     vertical-align: middle;
     transform: translateX(-50%);
-    background-color: $transparent_bg;
+    background-color: palette.$transparent_bg;
     padding: 8px;
     border-radius: 5px;
 }
@@ -627,7 +628,7 @@
 
 #interact-text {
     font-size: 20px;
-    @include text-shadow;
+    @include variables.text-shadow;
 }
 
 #interact-key.active + #interact-text {
@@ -644,12 +645,12 @@
     align-items: baseline;
 
     font-weight: bold;
-    @include text-shadow;
+    @include variables.text-shadow;
 
     &.has-reserve {
         left: calc(50% + 32px);
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             left: calc(50% + 24px);
         }
 
@@ -660,13 +661,13 @@
 
     div {
         display: flex;
-        background: $transparent_bg;
+        background: palette.$transparent_bg;
         text-align: center;
         align-items: center;
         justify-content: center;
     }
 
-    @media screen and (max-width: $screen_large) {
+    @media screen and (max-width: variables.$screen_large) {
         bottom: 60px;
         left: 50%;
     }
@@ -685,7 +686,7 @@
             font-size: 14px;
         }
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             width: 75px;
             height: 37px;
             font-size: 22px;
@@ -700,7 +701,7 @@
         margin-top: auto;
         font-size: large;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             width: 45px;
             height: 22px;
             font-size: 14px;
@@ -709,8 +710,8 @@
 }
 
 #health-bar-container {
-    background: $transparent_bg;
-    border: 8px solid $transparent_bg;
+    background: palette.$transparent_bg;
+    border: 8px solid palette.$transparent_bg;
     border-radius: 8px;
     position: absolute;
     bottom: 10px;
@@ -722,7 +723,7 @@
     justify-content: space-between;
     align-items: center;
 
-    @media screen and (max-width: $screen_large) {
+    @media screen and (max-width: variables.$screen_large) {
         width: 230px;
         height: 35px;
         bottom: 5px;
@@ -750,7 +751,7 @@
     }
 
     #health-bar {
-        background-color: $light;
+        background-color: palette.$light;
         transition: width ease-in-out 50ms;
     }
 
@@ -765,7 +766,7 @@
         z-index: 1;
         margin-left: 8px;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             font-size: 16px;
         }
     }
@@ -776,7 +777,7 @@
         font-size: 15px;
         margin-right: 8px;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             font-size: 12px;
         }
     }
@@ -801,7 +802,7 @@
 }
 
 #adrenaline-bar-container {
-    background: $transparent_bg;
+    background: palette.$transparent_bg;
     border-radius: 4px;
     position: absolute;
     bottom: 65px;
@@ -813,7 +814,7 @@
     justify-content: space-between;
     align-items: center;
 
-    @media screen and (max-width: $screen_large) {
+    @media screen and (max-width: variables.$screen_large) {
         width: 230px;
         height: 16px;
         bottom: 42px;
@@ -830,8 +831,8 @@
     #adrenaline-bar {
         transition: width ease-in-out 50ms;
         border-radius: 4px;
-        background: $orange;
-        background: linear-gradient(90deg, $orange 0px, #ffc800 330px);
+        background: palette.$orange;
+        background: linear-gradient(90deg, palette.$orange 0px, #ffc800 330px);
         background-attachment: fixed;
         position: absolute;
         top: 0;
@@ -839,8 +840,8 @@
         height: 100%;
         width: 100%;
 
-        @media screen and (max-width: $screen_large) {
-            background: linear-gradient(90deg, $orange 0px, #ffc800 230px);
+        @media screen and (max-width: variables.$screen_large) {
+            background: linear-gradient(90deg, palette.$orange 0px, #ffc800 230px);
         }
     }
 
@@ -852,7 +853,7 @@
         position: relative;
         top: -1px;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             font-size: 12px;
         }
     }
@@ -863,14 +864,14 @@
         font-size: 15px;
         margin-right: 8px;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             font-size: 10px;
         }
     }
 }
 
 #killstreak-indicator-container {
-    background: $transparent_bg;
+    background: palette.$transparent_bg;
     margin-left: 10px;
     border-radius: 4px;
     position: absolute;
@@ -899,12 +900,12 @@
     spec, span {
         margin: 4px;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             margin: 2px;
         }
     }
 
-    @media screen and (max-width: $screen_large) {
+    @media screen and (max-width: variables.$screen_large) {
         font-size: 14px;
 
         #btn-spectate-options {
@@ -923,7 +924,7 @@
         display: inline;
         margin-left: 4px;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             margin-left: 2.5px;
         }
     }
@@ -936,7 +937,7 @@
         margin-right: 4px;
         margin-bottom: 3px;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             width: 16px;
             height: 16px;
         }
@@ -950,7 +951,7 @@
     top: 200px;
 
     display: flex;
-    background: $transparent_bg;
+    background: palette.$transparent_bg;
     border-radius: 12px;
     width: 250px;
     margin-top: 5px;
@@ -991,7 +992,7 @@
 }
 
 #kill-msg {
-    background: $transparent_bg;
+    background: palette.$transparent_bg;
     padding: 10px;
     border-radius: 8px;
     text-align: center;
@@ -1000,7 +1001,7 @@
     left: 50%;
     transform: translateX(-50%);
     width: 320px;
-    @include text-shadow;
+    @include variables.text-shadow;
 
     .badge-icon {
         width: 18px;
@@ -1008,7 +1009,7 @@
         margin-left: 3px;
     }
 
-    @media screen and (max-width: $screen_large) {
+    @media screen and (max-width: variables.$screen_large) {
         width: 220px;
         bottom: 60px;
         font-size: 12px;
@@ -1022,17 +1023,17 @@
 
     #kill-msg-cont .kill-msg-player-name {
         font-weight: bold;
-        color: $orange;
-        @include text-shadow;
+        color: palette.$orange;
+        @include variables.text-shadow;
     }
 
     #kill-msg-kills {
-        color: $blue;
+        color: palette.$blue;
         font-weight: bold;
         font-size: 30px;
         margin-bottom: 3px;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             font-size: 22px;
         }
     }
@@ -1046,7 +1047,7 @@
         font-size: 36px;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             font-size: 16px;
         }
     }
@@ -1059,7 +1060,7 @@
     transform: translateX(-50%);
     font-size: 30px;
     font-weight: bold;
-    @include text-shadow;
+    @include variables.text-shadow;
 
     @media screen and (max-height: 750px) {
         font-size: 20px;
@@ -1072,16 +1073,16 @@
     justify-content: space-between;
     gap: 5px;
 
-    @media screen and (max-width: $screen_large) {
+    @media screen and (max-width: variables.$screen_large) {
         gap: 3px;
     }
 
-    @media screen and (max-width: $screen_medium) {
+    @media screen and (max-width: variables.$screen_medium) {
         gap: 2px;
     }
 
     .inventory-slot {
-        background: $transparent_bg;
+        background: palette.$transparent_bg;
         width: 110px;
         height: 110px;
         border-radius: 10px;
@@ -1100,17 +1101,17 @@
         &.item-slot {
             padding: 0 8px 0 8px;
 
-            @media screen and (max-width: $screen_large) {
+            @media screen and (max-width: variables.$screen_large) {
                 padding: 0 4px 0 4px;
             }
         }
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             width: 75px;
             height: 75px;
         }
 
-        @media screen and (max-width: $screen_medium) {
+        @media screen and (max-width: variables.$screen_medium) {
             width: 60px;
             height: 60px;
             border-radius: 5px;
@@ -1142,7 +1143,7 @@
                 width: 40px;
             }
 
-            @media screen and (max-width: $screen_large) {
+            @media screen and (max-width: variables.$screen_large) {
                 width: 28px;
                 height: 28px;
                 gap: 0.25px;
@@ -1160,22 +1161,22 @@
         }
 
         &:hover {
-            outline: 1px solid $orange;
+            outline: 1px solid palette.$orange;
             outline-width: 1px !important;
         }
 
         &.active {
-            outline: 3px solid $orange;
+            outline: 3px solid palette.$orange;
 
-            @media screen and (max-width: $screen_large) {
+            @media screen and (max-width: variables.$screen_large) {
                 outline-width: 2px;
             }
         }
 
         .item-tooltip {
             position: absolute;
-            background-color: $transparent_bg;
-            @include text-shadow;
+            background-color: palette.$transparent_bg;
+            @include variables.text-shadow;
             padding: 5px;
             border-radius: 5px;
             z-index: 1;
@@ -1195,13 +1196,13 @@
     .slot-number {
         position: absolute;
         top: 5px;
-        @include text-shadow;
+        @include variables.text-shadow;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             font-size: 12px;
         }
 
-        @media screen and (max-width: $screen_medium) {
+        @media screen and (max-width: variables.$screen_medium) {
             font-size: 10px;
         }
     }
@@ -1213,15 +1214,15 @@
         float: left;
         z-index: 1;
         font-size: 18px;
-        @include text-shadow;
+        @include variables.text-shadow;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             font-size: 12px;
             left: 4px;
             top: 2px;
         }
 
-        @media screen and (max-width: $screen_medium) {
+        @media screen and (max-width: variables.$screen_medium) {
             font-size: 10px;
             left: 2px;
             bottom: 25px;
@@ -1230,9 +1231,9 @@
 
     .item-count {
         font-size: 20px;
-        @include text-shadow;
+        @include variables.text-shadow;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             font-size: 14px;
         }
     }
@@ -1245,9 +1246,9 @@
         font-size: 20px;
         font-weight: bold;
         text-wrap: nowrap;
-        @include text-shadow;
+        @include variables.text-shadow;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             font-size: 12px;
         }
     }
@@ -1263,14 +1264,14 @@
         opacity: 0.75;
 
         &.full .item-count {
-            color: $orange;
+            color: palette.$orange;
         }
 
         &.has-item {
             opacity: 1;
         }
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             height: 25px;
             width: 55px;
             border-radius: 5px;
@@ -1285,9 +1286,9 @@
     .item-image {
         width: 40px;
         height: 30px;
-        @include drop-shadow;
+        @include variables.drop-shadow;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             width: 30px;
             height: 20px;
         }
@@ -1299,12 +1300,12 @@
 
         left: 110px;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             // bottom: 30px;
             left: 75px;
         }
 
-        @media screen and (max-width: $screen_small) {
+        @media screen and (max-width: variables.$screen_small) {
             // left: 70px;
             // bottom: 0;
         }
@@ -1321,7 +1322,7 @@
     right: 10px;
     flex-direction: column;
 
-    @media screen and (max-width: $screen_large) {
+    @media screen and (max-width: variables.$screen_large) {
         bottom: 5px;
         right: 5px;
     }
@@ -1337,12 +1338,12 @@
         width: 230px;
         opacity: 0.75;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             height: 50px;
             width: 140px;
         }
 
-        @media screen and (max-width: $screen_medium) {
+        @media screen and (max-width: variables.$screen_medium) {
             height: 40px;
             width: 110px;
         }
@@ -1415,12 +1416,12 @@
         position: absolute;
         left: 5px;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             width: 50px;
             height: 50px;
         }
 
-        @media screen and (max-width: $screen_medium) {
+        @media screen and (max-width: variables.$screen_medium) {
             width: 35px;
             height: 35px;
         }
@@ -1431,12 +1432,12 @@
             background-size: 32px;
             transform: rotate(90deg);
 
-            @media screen and (max-width: $screen_large) {
+            @media screen and (max-width: variables.$screen_large) {
                 background-size: 19px;
                 background-position-x: 15px;
             }
 
-            @media screen and (max-width: $screen_medium) {
+            @media screen and (max-width: variables.$screen_medium) {
                 background-size: 13px;
                 background-position-x: 11px;
             }
@@ -1452,11 +1453,11 @@
         cursor: pointer;
     }
 
-    @media screen and (max-width: $screen_large) {
+    @media screen and (max-width: variables.$screen_large) {
         left: 5px;
     }
 
-    @media screen and (max-width: $screen_medium) {
+    @media screen and (max-width: variables.$screen_medium) {
         bottom: 43px;
     }
 
@@ -1474,16 +1475,16 @@
     display: flex;
     gap: 5px;
 
-    @media screen and (min-width: $screen_large) and (max-height: 720px) {
+    @media screen and (min-width: variables.$screen_large) and (max-height: 720px) {
         bottom: 370px;
     }
 
-    @media screen and (max-width: $screen_large) {
+    @media screen and (max-width: variables.$screen_large) {
         bottom: 248px;
         right: 5px;
     }
 
-    @media screen and (max-width: $screen_medium) {
+    @media screen and (max-width: variables.$screen_medium) {
         bottom: 208px;
         right: 0;
     }
@@ -1513,12 +1514,12 @@
     flex-direction: row;
     z-index: 1002; /* idk what z-index to put here but it needs it because of joysticks-container */
 
-    @media screen and (max-width: $screen_large) {
+    @media screen and (max-width: variables.$screen_large) {
         bottom: 5px;
         left: 77%;
     }
 
-    @media screen and (max-width: $screen_medium) {
+    @media screen and (max-width: variables.$screen_medium) {
         flex-direction: row;
         left: 135px;
         transform: none;
@@ -1539,8 +1540,8 @@
         &.has-item {
             background: radial-gradient(
                 circle,
-                $light_transparent_bg 0%,
-                $transparent_bg 100%
+                palette.$light_transparent_bg 0%,
+                palette.$transparent_bg 100%
             );
         }
 
@@ -1549,7 +1550,7 @@
             width: max-content;
         }
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             width: 40px;
             height: 41px;
             font-size: small;
@@ -1559,7 +1560,7 @@
             }
         }
 
-        @media screen and (max-width: $screen_medium) {
+        @media screen and (max-width: variables.$screen_medium) {
             width: 36px;
             height: 36px !important;
 
@@ -1575,12 +1576,12 @@
             align-self: flex-start;
             margin-top: 5px;
 
-            @media screen and (max-width: $screen_large) {
+            @media screen and (max-width: variables.$screen_large) {
                 width: 32px;
                 height: 32px;
             }
 
-            @media screen and (max-width: $screen_medium) {
+            @media screen and (max-width: variables.$screen_medium) {
                 width: 28px;
                 height: 28px;
             }
@@ -1596,11 +1597,11 @@
     flex-direction: row;
     z-index: 1002; /* idk what z-index to put here but it needs it because of joysticks-container */
 
-    @media screen and (max-width: $screen_large) {
+    @media screen and (max-width: variables.$screen_large) {
         bottom: 5px;
     }
 
-    @media screen and (max-width: $screen_medium) {
+    @media screen and (max-width: variables.$screen_medium) {
         flex-direction: row;
         left: 5px;
         transform: none;
@@ -1620,8 +1621,8 @@
         &.has-item {
             background: radial-gradient(
                 circle,
-                $light_transparent_bg 0%,
-                $transparent_bg 100%
+                palette.$light_transparent_bg 0%,
+                palette.$transparent_bg 100%
             );
         }
 
@@ -1636,7 +1637,7 @@
             width: max-content;
         }
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             width: 40px;
             height: 60px;
             font-size: small;
@@ -1650,7 +1651,7 @@
             }
         }
 
-        @media screen and (max-width: $screen_medium) {
+        @media screen and (max-width: variables.$screen_medium) {
             width: 36px;
             height: 36px !important;
 
@@ -1669,12 +1670,12 @@
             align-self: flex-start;
             margin-top: 5px;
 
-            @media screen and (max-width: $screen_large) {
+            @media screen and (max-width: variables.$screen_large) {
                 width: 32px;
                 height: 32px;
             }
 
-            @media screen and (max-width: $screen_medium) {
+            @media screen and (max-width: variables.$screen_medium) {
                 width: 28px;
                 height: 28px;
             }
@@ -1713,7 +1714,7 @@
             transition-property: width height;
             transition-duration: 0.25s;
 
-            @media screen and (max-width: $screen_large) {
+            @media screen and (max-width: variables.$screen_large) {
                 width: 25px;
                 height: 25px;
             }
@@ -1732,12 +1733,12 @@
                 width: 60px;
                 height: 60px;
 
-                @media screen and (max-width: $screen_large) {
+                @media screen and (max-width: variables.$screen_large) {
                     width: 50px;
                     height: 50px;
                 }
 
-                @media screen and (max-width: $screen_medium) {
+                @media screen and (max-width: variables.$screen_medium) {
                     width: 35px;
                     height: 35px;
                 }
@@ -1838,14 +1839,14 @@
     z-index: 1003;
 
     background: rgba(0, 0, 0, 0.4);
-    @include text-shadow;
+    @include variables.text-shadow;
 
     #chicken-dinner {
         filter: drop-shadow(0 0 0.6rem rgba(0, 0, 0, 0.8));
         width: 100%;
         height: 100px;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             height: 50px;
         }
     }
@@ -1855,7 +1856,7 @@
         margin: 0 0 10px;
         text-align: center;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             font-size: 20px;
         }
     }
@@ -1865,7 +1866,7 @@
         margin-left: 5px;
         margin-bottom: -5px;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             width: 25px;
             margin-left: 4px;
             margin-bottom: -4px;
@@ -1881,7 +1882,7 @@
         width: max-content;
         margin: 5px auto 15px auto;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             margin: 0 auto 10px auto;
             font-size: 15px;
         }
@@ -1891,10 +1892,10 @@
             font-size: 35px;
 
             &.won {
-                color: $orange;
+                color: palette.$orange;
             }
 
-            @media screen and (max-width: $screen_large) {
+            @media screen and (max-width: variables.$screen_large) {
                 font-size: 17px;
             }
         }
@@ -1929,7 +1930,7 @@
         margin: auto;
         padding: 16px 20px 16px 20px;
 
-        @media screen and (max-width: $screen_large) {
+        @media screen and (max-width: variables.$screen_large) {
             width: 200px;
             padding: 8px 20px 8px 20px;
         }
@@ -1940,7 +1941,7 @@
             display: flex;
             padding: 0.5rem 0;
 
-            @media screen and (max-width: $screen_large) {
+            @media screen and (max-width: variables.$screen_large) {
                 padding: 0.25rem 0;
             }
         }
@@ -1955,7 +1956,7 @@
         }
     }
 
-    @media screen and (max-width: $screen_large) {
+    @media screen and (max-width: variables.$screen_large) {
         font-size: 12px;
         max-width: fit-content;
         width: 280px;
@@ -2004,7 +2005,7 @@
     display: flex;
     flex-direction: column;
 
-    @media screen and (max-width: $screen_large) {
+    @media screen and (max-width: variables.$screen_large) {
         position: relative;
         bottom: 3px;
     }

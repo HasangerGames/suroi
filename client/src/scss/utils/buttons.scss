@@ -1,4 +1,4 @@
-@import "../palette.scss";
+@use "../palette.scss";
 
 .btn {
   display: block;
@@ -53,40 +53,40 @@
 
 // Regular buttons
 .btn-primary {
-  background: $blue;
-  border-bottom: 2px solid $blue_bg;
-  box-shadow: inset 0 -2px $blue_bg;
+  background: palette.$blue;
+  border-bottom: 2px solid palette.$blue_bg;
+  box-shadow: inset 0 -2px palette.$blue_bg;
 }
 
 .btn-secondary {
-  background: $grey;
-  border-bottom: 2px solid $grey_bg;
-  box-shadow: inset 0 -2px $grey_bg;
+  background: palette.$grey;
+  border-bottom: 2px solid palette.$grey_bg;
+  box-shadow: inset 0 -2px palette.$grey_bg;
 }
 
 .btn-danger {
-  background: $danger;
-  border-bottom: 2px solid $transparent_bg;
-  box-shadow: inset 0 -2px $transparent_bg;
+  background: palette.$danger;
+  border-bottom: 2px solid palette.$transparent_bg;
+  box-shadow: inset 0 -2px palette.$transparent_bg;
 }
 
 .btn-alert {
   margin-top: 10px;
-  background: $orange;
-  border-bottom: 2px solid $orange_bg;
-  box-shadow: inset 0 -2px $orange_bg;
+  background: palette.$orange;
+  border-bottom: 2px solid palette.$orange_bg;
+  box-shadow: inset 0 -2px palette.$orange_bg;
 }
 
 .btn-purple {
-  background: $purple;
-  border-bottom: 2px solid $purple_bg;
-  box-shadow: inset 0 -2px $purple_bg;
+  background: palette.$purple;
+  border-bottom: 2px solid palette.$purple_bg;
+  box-shadow: inset 0 -2px palette.$purple_bg;
 }
 
 .btn-success {
-  background: $grass_bg;
-  border-bottom: 2px solid $success;
-  box-shadow: inset 0 -2px $success;
+  background: palette.$grass_bg;
+  border-bottom: 2px solid palette.$success;
+  box-shadow: inset 0 -2px palette.$success;
 }
 
 // Socials
@@ -111,44 +111,44 @@
 
 .btn-twitter {
   background-image: url("/img/socials/twitter.svg");
-  background-color: $twitter;
-  box-shadow: inset 0 -4px $twitter_bg;
+  background-color: palette.$twitter;
+  box-shadow: inset 0 -4px palette.$twitter_bg;
 }
 
 .btn-instagram {
   background-image: url("/img/socials/instagram.svg");
-  background-color: $instagram;
-  box-shadow: inset 0 -4px $instagram_bg;
+  background-color: palette.$instagram;
+  box-shadow: inset 0 -4px palette.$instagram_bg;
 }
 
 .btn-reddit {
   background-image: url("/img/socials/reddit.svg");
-  background-color: $reddit;
-  box-shadow: inset 0 -4px $reddit_bg;
+  background-color: palette.$reddit;
+  box-shadow: inset 0 -4px palette.$reddit_bg;
 }
 
 .btn-discord {
   background-image: url("/img/socials/discord.svg");
-  background-color: $discord;
-  box-shadow: inset 0 -4px $discord_bg;
+  background-color: palette.$discord;
+  box-shadow: inset 0 -4px palette.$discord_bg;
 }
 
 .btn-youtube {
   background-image: url("/img/socials/youtube.svg");
-  background-color: $youtube;
-  box-shadow: inset 0 -4px $youtube_bg;
+  background-color: palette.$youtube;
+  box-shadow: inset 0 -4px palette.$youtube_bg;
 }
 
 .btn-github {
   background-image: url("/img/socials/github.svg");
-  background-color: $github;
-  box-shadow: inset 0 -4px $github_bg;
+  background-color: palette.$github;
+  box-shadow: inset 0 -4px palette.$github_bg;
 }
 
 .btn-wiki {
   background-image: url("/img/socials/wiki.svg");
-  background-color: $orange;
-  box-shadow: inset 0 -4px $orange_bg;
+  background-color: palette.$orange;
+  box-shadow: inset 0 -4px palette.$orange_bg;
   padding: 0;
   display: flex;
   span {
@@ -165,7 +165,7 @@
   width: 45%;
 
   &.active {
-    outline: 5px solid $blue;
+    outline: 5px solid palette.$blue;
   }
 }
 
@@ -177,14 +177,14 @@
   z-index: 10;
   text-align: center;
   border-radius: 50%;
-  background-color: $danger;
+  background-color: palette.$danger;
   cursor: pointer;
 }
 
 .btn-spectate-kill-leader {
-  background: $orange;
-  border-bottom: 2px solid $orange_bg;
-  box-shadow: inset 0 -2px $orange_bg;
+  background: palette.$orange;
+  border-bottom: 2px solid palette.$orange_bg;
+  box-shadow: inset 0 -2px palette.$orange_bg;
 }
 
 .btn-donate {

@@ -1,13 +1,13 @@
-@import "../main.scss";
-@import "../palette.scss";
+@use "../main.scss";
+@use "../palette.scss";
 
-@import "./client/splash.scss";
-@import "./client/game.scss";
-@import "./client/console.scss";
-@import "./dialog.scss";
+@use "client/splash.scss";
+@use "client/game.scss";
+@use "client/console.scss";
+@use "dialog.scss";
 
 body {
-  background: $grass_bg;
+  background: palette.$grass_bg;
   display: flex;
   flex-direction: column;
   overflow-y: hidden;
@@ -31,7 +31,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: $transparent_bg;
+  background: palette.$transparent_bg;
   max-width: 350px;
   width: 100%;
   border-radius: 20px;

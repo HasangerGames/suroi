@@ -27,7 +27,7 @@ export class ServerPerkManager extends PerkManager {
             // ! evil starts here
             // some perks need to perform setup when added
             switch (idString) {
-                case PerkIds.Werewolf: {
+                case PerkIds.Lycanthropy: {
                     this.owner.action?.cancel();
                     this.owner.inventory.dropWeapon(0, true)?.destroy();
                     this.owner.inventory.dropWeapon(1, true)?.destroy();
@@ -84,7 +84,7 @@ export class ServerPerkManager extends PerkManager {
             // ! evil starts here
             // some perks need to perform cleanup on removal
             switch (idString) {
-                case PerkIds.Werewolf: { /* TODO: cry */ break; }
+                case PerkIds.Lycanthropy: { /* TODO: cry */ break; }
                 case PerkIds.HiCap: {
                     const weapons = this.owner.inventory.weapons;
                     const maxWeapons = GameConstants.player.maxWeapons;
