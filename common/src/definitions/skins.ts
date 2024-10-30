@@ -46,7 +46,7 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
             withRole([["hasanger"], ["Hasanger",      0x640000]]),
             withRole([["limenade"], ["LimeNade",      0xffffff]]),
             withRole([["katie"],    ["Katie",         0x7784f0]]),
-            withRole([["solstice"], ["Solstice",      0xb76615]]),
+            withRole([["solstice"], ["Solstice",      0x3f808d]]),
             withRole([["eipi"],     ["eipi",          0x8040BF]]),
             withRole([["error"],    ["error",         0x1fc462]]),
             withRole([["pap"],      ["pap",           0x060647]]),
