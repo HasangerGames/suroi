@@ -514,11 +514,6 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             this.source.owner.c4s.splice(this.source.owner.c4s.indexOf(this), 1);
             this.game.removeProjectile(this);
             this.source.owner.dirty.activeC4s = true;
-
-            const { particles } = this.definition.detonation;
-            const referencePosition = Vec.clone(this.position ?? this.source.owner.position);
-            // what?? why are these synced particles?
-            if (particles !== undefined) this.game.addSyncedParticles(particles, referencePosition, this.source.owner.layer);
         }
     }
 
