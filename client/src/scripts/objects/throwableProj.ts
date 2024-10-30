@@ -139,7 +139,7 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
 
             this.game.particleManager.spawnParticles(4, () => {
                 return {
-                    frames: "metal_particle",
+                    frames: this.halloweenSkin && this._definition.animation.spookyActivatedImage ? "plumpkin_particle" : "metal_particle",
                     position,
                     layer: this.layer,
                     zIndex: Numeric.max(ZIndexes.Players + 1, 4),

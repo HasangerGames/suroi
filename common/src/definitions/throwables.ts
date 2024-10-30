@@ -232,6 +232,7 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
                 activatedImage: "proj_c4_activated",
                 spookyActivatedImage: "proj_halloween_c4_activated",
                 cook: {
+                    spookyCookingImage: "proj_halloween_c4",
                     leftFist: Vec.create(2, -1),
                     rightFist: Vec.create(3, 0)
                 },
