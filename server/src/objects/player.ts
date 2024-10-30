@@ -1090,7 +1090,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         for (const object of game.fullDirtyObjects) {
-            if (!this.visibleObjects.has(object as GameObject)) return;
+            if (!this.visibleObjects.has(object as GameObject)) continue;
             fullObjects.add(object);
         }
 
