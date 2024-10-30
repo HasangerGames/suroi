@@ -13,6 +13,7 @@ export interface BasicPerk extends ItemDefinition {
     readonly giveByDefault: boolean
     readonly categories: readonly PerkCategories[]
     readonly type?: PerkQualities
+    readonly noSwap?: boolean
 }
 
 const defaultTemplate = {
@@ -241,6 +242,7 @@ const perks = [
         regenRate: 0.5,
         meleeMult: 2,
         noDrop: true,
+        noSwap: true,
         type: PerkQualities.Positive
     },
     {
@@ -312,6 +314,7 @@ const perks = [
 
         [updateInterval]: 20e3, // milliseconds
         noDrop: true,
+        noSwap: true,
         type: PerkQualities.Neutral // how is this neutral its annoying
     },
     {

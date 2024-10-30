@@ -254,7 +254,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 return player.loadout.skin.idString !== definition.idString || InventoryMessages.ItemAlreadyEquipped;
             }
             case ItemType.Perk: {
-                return !player.hasPerk(definition) || InventoryMessages.ItemAlreadyEquipped;
+                return !player.perks.asList()[0]?.noSwap && (!player.hasPerk(definition) || InventoryMessages.ItemAlreadyEquipped);
             }
         }
     }

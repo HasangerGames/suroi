@@ -23,7 +23,7 @@ export const Config = {
 
     map: "arena",
 
-    spawn: { mode: SpawnMode.Normal },
+    spawn: { mode: SpawnMode.Center },
 
     maxTeamSize: TeamSize.Solo,
 
