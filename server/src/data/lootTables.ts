@@ -860,23 +860,21 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             max: 3,
             loot: [{ table: "fall_perks", weight: 1 }]
         },
-        diseased_plumpkin: {
-            min: 1,
-            max: 1,
-            loot: [{ item: PerkIds.PlumpkinGamble, weight: 1 }]
-        },
+        diseased_plumpkin: [
+            { item: PerkIds.PlumpkinGamble, weight: 1 }
+        ],
         fall_perks: {
             min: 1,
             max: 1,
             noDuplicates: true,
             loot: [
                 { item: PerkIds.InfiniteAmmo, weight: 1 },
-                { item: PerkIds.HiCap, weight: 1 },
-                { item: PerkIds.Splinter, weight: 1 },
+                { item: PerkIds.ExtendedMags, weight: 1 },
+                { item: PerkIds.Flechettes, weight: 1 },
                 { item: PerkIds.DemoExpert, weight: 1 },
                 { item: PerkIds.SecondWind, weight: 1 },
                 { item: PerkIds.FieldMedic, weight: 1 },
-                { item: PerkIds.Sabot, weight: 1 },
+                { item: PerkIds.SabotRounds, weight: 1 },
                 { item: PerkIds.AdvancedAthletics, weight: 1 },
                 { item: PerkIds.Toploaded, weight: 1 },
                 { item: PerkIds.CloseQuartersCombat, weight: 1 },

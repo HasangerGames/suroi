@@ -40,7 +40,7 @@ export class ServerPerkManager extends PerkManager {
                     /* TODO: continue crying */
                     break;
                 }
-                case PerkIds.HiCap: {
+                case PerkIds.ExtendedMags: {
                     const weapons = this.owner.inventory.weapons;
                     const maxWeapons = GameConstants.player.maxWeapons;
                     for (let i = 0; i < maxWeapons; i++) {
@@ -85,7 +85,7 @@ export class ServerPerkManager extends PerkManager {
             // some perks need to perform cleanup on removal
             switch (idString) {
                 case PerkIds.Lycanthropy: { /* TODO: cry */ break; }
-                case PerkIds.HiCap: {
+                case PerkIds.ExtendedMags: {
                     const weapons = this.owner.inventory.weapons;
                     const maxWeapons = GameConstants.player.maxWeapons;
                     for (let i = 0; i < maxWeapons; i++) {

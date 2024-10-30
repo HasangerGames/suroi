@@ -184,7 +184,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
         let modifiersModified = false; // lol
         for (const perk of owner.perks) {
             switch (perk.idString) {
-                case PerkIds.Splinter: {
+                case PerkIds.Flechettes: {
                     if (definition.ballistics.onHitExplosion === undefined && !definition.summonAirdrop) {
                         projCount *= perk.split;
                         modifiers.damage *= perk.damageMod;
@@ -193,7 +193,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
                     }
                     break;
                 }
-                case PerkIds.Sabot: {
+                case PerkIds.SabotRounds: {
                     modifiers.range *= perk.rangeMod;
                     modifiers.speed *= perk.speedMod;
                     modifiers.damage *= perk.damageMod;
@@ -226,7 +226,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 case PerkIds.Toploaded: {
                     // assumption: threshholds are sorted from least to greatest
                     const ratio = 1 - this.ammo / (
-                        owner.hasPerk(PerkIds.HiCap)
+                        owner.hasPerk(PerkIds.ExtendedMags)
                             ? definition.extendedCapacity ?? definition.capacity
                             : definition.capacity
                     );
@@ -353,7 +353,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         if (
             definition.infiniteAmmo
-            || this.ammo >= (this.owner.hasPerk(PerkIds.HiCap) ? definition.extendedCapacity ?? definition.capacity : definition.capacity)
+            || this.ammo >= (this.owner.hasPerk(PerkIds.ExtendedMags) ? definition.extendedCapacity ?? definition.capacity : definition.capacity)
             || (!owner.inventory.items.hasItem(definition.ammoType) && !this.owner.hasPerk(PerkIds.InfiniteAmmo))
             || owner.action !== undefined
             || owner.activeItem !== this

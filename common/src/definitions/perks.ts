@@ -38,23 +38,23 @@ export const enum PerkIds {
     // Normal Perks
     //
     SecondWind = "second_wind",
-    Splinter = "splinter",
-    Sabot = "sabot",
-    HiCap = "hi_cap",
+    Flechettes = "flechettes",
+    SabotRounds = "sabot_rounds",
+    ExtendedMags = "extended_mags",
     DemoExpert = "demo_expert",
     AdvancedAthletics = "advanced_athletics",
     Toploaded = "toploaded",
     InfiniteAmmo = "infinite_ammo",
     FieldMedic = "field_medic",
     Berserker = "stark_melee_gauntlet",
-    CloseQuartersCombat = "cqc",
+    CloseQuartersCombat = "close_quarters_combat",
     LowProfile = "low_profile",
 
     //
     // Halloween Perks
     //
     PlumpkinGamble = "lets_go_gambling",
-    Lycanthropy = "werewolf",
+    Lycanthropy = "lycanthropy",
     Bloodthirst = "bloodthirst",
     PlumpkinBomb = "plumpkin_bomb",
     Shrouded = "shrouded",
@@ -88,7 +88,7 @@ const perks = [
         speedMod: 1.4
     },
     {
-        idString: PerkIds.Splinter,
+        idString: PerkIds.Flechettes,
         name: "Fléchettes",
         description: "All bullets splinter into 3 weaker versions.",
         categories: [PerkCategories.Normal],
@@ -97,7 +97,7 @@ const perks = [
         damageMod: 0.4
     },
     {
-        idString: PerkIds.Sabot,
+        idString: PerkIds.SabotRounds,
         name: "Sabot Rounds",
         description: "Large increase to range, velocity, and accuracy, but at the cost of lower damage.",
         categories: [PerkCategories.Normal],
@@ -109,7 +109,7 @@ const perks = [
         tracerLengthMod: 1.2
     },
     {
-        idString: PerkIds.HiCap,
+        idString: PerkIds.ExtendedMags,
         name: "Extended Mags",
         description: "Most weapons have increased bullet capacity.",
         categories: [PerkCategories.Normal]

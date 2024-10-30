@@ -87,7 +87,7 @@ export class ReloadAction extends Action {
         const items = this.player.inventory.items;
         const definition = this.item.definition;
 
-        const capacity = this.player.hasPerk(PerkIds.HiCap)
+        const capacity = this.player.hasPerk(PerkIds.ExtendedMags)
             ? definition.extendedCapacity ?? definition.capacity
             : definition.capacity;
 
