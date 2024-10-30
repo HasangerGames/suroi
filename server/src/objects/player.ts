@@ -543,7 +543,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const { items, backpack: { maxCapacity }, throwableItemMap } = inventory;
         const type = GameConstants.player.inventorySlotTypings[slot];
 
-        const chosenItem = pickRandomInArray(
+        const chosenItem = pickRandomInArray<WeaponDefinition>(
             type === ItemType.Throwable
                 ? spawnable.forType(ItemType.Throwable).filter(
                     ({ idString: thr }) => (items.hasItem(thr) ? items.getItem(thr) : 0) < maxCapacity[thr]
@@ -554,11 +554,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         inventory.replaceWeapon(slot, chosenItem);
 
-        switch (type) {
+        switch (chosenItem.itemType) { // chosenItem.itemType === type, but the former helps ts narrow chosenItem's type
             case ItemType.Gun: {
                 this.action?.cancel();
 
-                const { capacity, ammoType, ammoSpawnAmount, summonAirdrop } = chosenItem as GunDefinition;
+                const { capacity, ammoType, ammoSpawnAmount, summonAirdrop } = chosenItem;
 
                 (this.activeItem as GunItem).ammo = capacity;
 
