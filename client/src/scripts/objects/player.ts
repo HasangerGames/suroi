@@ -520,7 +520,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             this.dead = full.dead;
 
-            this.layer = data.layer;
+            // this.layer = data.layer; - why assign again?
 
             this.teamID = data.full.teamID;
             if (

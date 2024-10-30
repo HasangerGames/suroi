@@ -472,7 +472,6 @@ export class Game {
                             break;
                         case ItemType.Perk:
                             soundID = "pickup";
-                            this.activePlayer?.updateWeapon(true);
                             break;
                         default:
                             soundID = "pickup";
