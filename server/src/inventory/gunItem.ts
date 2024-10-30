@@ -1,16 +1,16 @@
 import { AnimationType, FireMode, InventoryMessages } from "@common/constants";
 import { type GunDefinition } from "@common/definitions/guns";
-import { PerkIds } from "@common/definitions/perks";
+import { PerkData, PerkIds } from "@common/definitions/perks";
 import { PickupPacket } from "@common/packets";
 import { Orientation } from "@common/typings";
 import { type BulletOptions } from "@common/utils/baseBullet";
 import { CircleHitbox, RectangleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, isStairLayer } from "@common/utils/layer";
-import { Angle, Geometry, resolveStairInteraction } from "@common/utils/math";
+import { Angle, Geometry, HALF_PI, resolveStairInteraction } from "@common/utils/math";
 import { type DeepMutable, type DeepRequired, type Timeout } from "@common/utils/misc";
 import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { randomFloat, randomPointInsideCircle } from "@common/utils/random";
-import { Vec } from "@common/utils/vector";
+import { Vec, type Vector } from "@common/utils/vector";
 
 import type { ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
@@ -159,7 +159,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
         }
 
         const rangeOverride = owner.distanceToMouse - this.definition.length;
-        let projCount = definition.bulletCount;
+        const projCount = definition.bulletCount;
 
         const modifiers: DeepMutable<DeepRequired<BulletOptions["modifiers"]>> = {
             damage: 1,
@@ -182,11 +182,12 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         // ! evil starts here
         let modifiersModified = false; // lol
+        let doSplinterGrouping = false;
         for (const perk of owner.perks) {
             switch (perk.idString) {
                 case PerkIds.Flechettes: {
                     if (definition.ballistics.onHitExplosion === undefined && !definition.summonAirdrop) {
-                        projCount *= perk.split;
+                        doSplinterGrouping = true;
                         modifiers.damage *= perk.damageMod;
                         modifyForDamageMod(perk.damageMod);
                         modifiersModified = true;
@@ -244,7 +245,18 @@ export class GunItem extends InventoryItem<GunDefinition> {
         }
         // ! evil ends here
 
-        for (let i = 0; i < projCount; i++) {
+        const activeStair = owner.activeStair;
+        const getStartingLayer = isStairLayer(owner.layer) && activeStair !== undefined
+            ? resolveStairInteraction.bind(
+                null,
+                activeStair.definition,
+                activeStair.rotation as Orientation,
+                activeStair.hitbox as RectangleHitbox,
+                activeStair.layer
+            )
+            : (_: Vector) => owner.layer;
+
+        const spawnWithSpread = (spread: number): void => {
             const finalSpawnPosition = jitter ? randomPointInsideCircle(position, jitter) : position;
 
             owner.game.addBullet(
@@ -252,27 +264,39 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 owner,
                 {
                     position: finalSpawnPosition,
-                    rotation: owner.rotation + Math.PI / 2
-                        + (
-                            definition.consistentPatterning
-                                ? 8 * (i / (projCount - 1) - 0.5) ** 3
-                                : randomFloat(-1, 1)
-                        ) * spread,
-                    layer: isStairLayer(owner.layer) && owner.activeStair
-                        ? resolveStairInteraction(
-                            owner.activeStair.definition,
-                            owner.activeStair.rotation as Orientation,
-                            owner.activeStair.hitbox as RectangleHitbox,
-                            owner.activeStair.layer,
-                            finalSpawnPosition
-                        )
-                        : owner.layer,
+                    rotation: owner.rotation + HALF_PI + spread,
+                    layer: getStartingLayer(finalSpawnPosition),
                     rangeOverride,
                     modifiers: modifiersModified ? modifiers : undefined,
                     saturate,
                     thin
                 }
             );
+        };
+
+        const { split, deviation } = PerkData[PerkIds.Flechettes];
+        const pcM1 = projCount - 1;
+        const sM1 = split - 1;
+
+        for (let i = 0; i < projCount; i++) {
+            const baseSpread = (
+                definition.consistentPatterning
+                    ? 8 * (i / pcM1 - 0.5) ** 3
+                    : randomFloat(-1, 1)
+            ) * spread;
+
+            if (!doSplinterGrouping) {
+                spawnWithSpread(baseSpread);
+                continue;
+            }
+
+            const dev = Angle.degreesToRadians(deviation);
+
+            for (let j = 0; j < split; j++) {
+                spawnWithSpread(
+                    (8 * (j / sM1 - 0.5) ** 3) * dev + baseSpread
+                );
+            }
         }
 
         owner.recoil.active = true;

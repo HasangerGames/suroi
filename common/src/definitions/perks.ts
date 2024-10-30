@@ -100,6 +100,7 @@ const perks = [
         categories: [PerkCategories.Normal],
 
         split: 3,
+        deviation: 0.7,
         damageMod: 0.4
     },
     {
