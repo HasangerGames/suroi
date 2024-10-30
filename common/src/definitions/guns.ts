@@ -1622,6 +1622,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Single,
                 shotSpread: 0.2,
                 moveSpread: 0.4,
+                shootOnRelease: true,
                 length: 10.8,
                 casingParticles: [{
                     position: Vec.create(5, 0.2),
