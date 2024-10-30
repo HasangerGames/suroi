@@ -923,6 +923,8 @@ export class UIManager {
         container.children(".item-image").attr("src", `./img/game/perks/${perkDef.idString}.svg`);
         container.css("visibility", this.perks.hasPerk(perkDef.idString) ? "visible" : "hidden");
 
+        container.css("outline", !perkDef.noDrop ? "" : "none");
+
         const flashAnimationDuration = 3000; // sec
 
         clearTimeout(this.perkAnimationTimeout);
