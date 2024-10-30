@@ -52,7 +52,7 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
 
             this.halloweenSkin = data.full.halloweenSkin;
 
-            this.image.setFrame(`${def.animation.liveImage}${this.halloweenSkin ? "_halloween" : ""}`);
+            this.image.setFrame(`${def.animation.liveImage}${this.halloweenSkin && !def.noSkin ? "_halloween" : ""}`);
         }
 
         if (data.activated && this._definition?.animation.activatedImage) {

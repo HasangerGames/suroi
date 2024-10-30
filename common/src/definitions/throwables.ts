@@ -24,6 +24,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly cookable: boolean
     readonly c4: boolean
     readonly health?: number
+    readonly noSkin?: boolean
     readonly cookSpeedMultiplier: number
     readonly maxThrowDistance: number
     readonly image: {
@@ -174,6 +175,7 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
             name: "Confetti Grenade",
             fuseTime: 4000,
             cookTime: 150,
+            noSkin: true,
             throwTime: 150,
             impactDamage: 1,
             obstacleMultiplier: 20,

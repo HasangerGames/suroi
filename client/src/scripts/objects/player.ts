@@ -1007,7 +1007,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         if (reference.image) {
             const { image: { position, angle } } = reference;
 
-            if (reference.itemType === ItemType.Throwable) {
+            if (reference.itemType === ItemType.Throwable && !reference.noSkin) {
                 this.images.weapon.setFrame(`${reference.idString}${this.halloweenThrowableSkin ? "_halloween" : ""}`);
             }
 
@@ -1041,7 +1041,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     : ""
             }`;
 
-            if (weaponDef.itemType === ItemType.Throwable && this.halloweenThrowableSkin) {
+            if (weaponDef.itemType === ItemType.Throwable && this.halloweenThrowableSkin && !weaponDef.noSkin) {
                 frame += "_halloween";
             }
 
@@ -1624,7 +1624,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                 let frame = def.animation.cook.cookingImage ?? def.animation.liveImage;
 
-                if (this.game.uiManager.perks.hasPerk(PerkIds.PlumpkinBomb) && this.halloweenThrowableSkin) {
+                if (this.game.uiManager.perks.hasPerk(PerkIds.PlumpkinBomb) && this.halloweenThrowableSkin && !def.noSkin) {
                     frame += "_halloween";
                 }
 
@@ -1733,7 +1733,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 const projImage = this.images.weapon;
                 projImage.visible = false;
 
-                projImage.setFrame(`${def.idString}${this.game.uiManager.perks.hasPerk(PerkIds.PlumpkinBomb) ? "_halloween" : ""}`);
+                projImage.setFrame(`${def.idString}${this.game.uiManager.perks.hasPerk(PerkIds.PlumpkinBomb) && !def.noSkin ? "_halloween" : ""}`);
 
                 if (!def.cookable && def.animation.leverImage !== undefined) {
                     this.game.particleManager.spawnParticle({

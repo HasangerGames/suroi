@@ -830,7 +830,7 @@ export class UIManager {
                 const oldSrc = itemImage.attr("src");
 
                 let frame = weapon.definition.idString;
-                if (this.perks.hasPerk(PerkIds.PlumpkinBomb) && weapon.definition.itemType === ItemType.Throwable) {
+                if (this.perks.hasPerk(PerkIds.PlumpkinBomb) && weapon.definition.itemType === ItemType.Throwable && !weapon.definition.noSkin) {
                     frame += "_halloween";
                 }
 
