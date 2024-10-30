@@ -1,12 +1,18 @@
 import { type DeepPartial } from "../utils/misc";
 import { ItemType, ObjectDefinitions, type GetMissing, type ItemDefinition, type RawDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 
+export const enum PerkQualities {
+    Positive = "positive",
+    Neutral = "neutral",
+    Negative = "negative"
+}
+
 export interface BasicPerk extends ItemDefinition {
     readonly itemType: ItemType.Perk
     readonly description: string
     readonly giveByDefault: boolean
     readonly categories: readonly PerkCategories[]
-    readonly type?: string
+    readonly type?: PerkQualities
 }
 
 const defaultTemplate = {
@@ -234,7 +240,7 @@ const perks = [
         regenRate: 0.5,
         meleeMult: 2,
         noDrop: true,
-        type: "positive"
+        type: PerkQualities.Positive
     },
     {
         idString: PerkIds.Bloodthirst,
@@ -249,7 +255,7 @@ const perks = [
         healBonus: 25,
         adrenalineBonus: 25,
         noDrop: true,
-        type: "positive"
+        type: PerkQualities.Positive
     },
     {
         idString: PerkIds.PlumpkinBomb,
@@ -260,7 +266,7 @@ const perks = [
         damageMod: 1.2, // for grenades
         plumpkinExplosionDmg: 100,
         noDrop: true,
-        type: "positive"
+        type: PerkQualities.Positive
     },
     {
         idString: PerkIds.Shrouded,
@@ -271,7 +277,7 @@ const perks = [
         smokeAlpha: 0.7,
         smokeAlphaSelf: 0.1,
         noDrop: true,
-        type: "positive"
+        type: PerkQualities.Positive
     },
     {
         idString: PerkIds.ExperimentalTreatment,
@@ -283,7 +289,7 @@ const perks = [
         adrenSet: 1,
         healthMod: 0.8,
         noDrop: true,
-        type: "neutral"
+        type: PerkQualities.Neutral
     },
     {
         idString: PerkIds.Engorged,
@@ -295,7 +301,7 @@ const perks = [
         sizeMod: 1.05, // multiplicative
         killsLimit: 10,
         noDrop: true,
-        type: "neutral"
+        type: PerkQualities.Neutral
     },
     {
         idString: PerkIds.BabyPlumpkinPie,
@@ -305,7 +311,7 @@ const perks = [
 
         [updateInterval]: 20e3, // milliseconds
         noDrop: true,
-        type: "neutral" // how is this neutral its annoying
+        type: PerkQualities.Neutral // how is this neutral its annoying
     },
     {
         idString: PerkIds.Costumed,
@@ -315,7 +321,7 @@ const perks = [
 
         plumpkinVariantChance: 0.01,
         noDrop: true,
-        type: "neutral"
+        type: PerkQualities.Neutral
     },
     {
         idString: PerkIds.TornPockets,
@@ -326,7 +332,7 @@ const perks = [
         [updateInterval]: 1e3,
         dropCount: 2,
         noDrop: true,
-        type: "negative"
+        type: PerkQualities.Negative
     },
     {
         idString: PerkIds.Claustrophobic,
@@ -336,7 +342,7 @@ const perks = [
 
         speedMod: 0.9,
         noDrop: true,
-        type: "negative"
+        type: PerkQualities.Negative
     },
     {
         idString: PerkIds.LacedStimulants,
@@ -347,7 +353,7 @@ const perks = [
         healDmgRate: 0.5,
         lowerHpLimit: 5, // absolute
         noDrop: true,
-        type: "negative"
+        type: PerkQualities.Negative
     },
     {
         idString: PerkIds.RottenPlumpkin,
@@ -360,7 +366,7 @@ const perks = [
         adrenLoss: 5, // percentage
         healthLoss: 5, // absolute
         noDrop: true,
-        type: "negative"
+        type: PerkQualities.Negative
     },
     {
         idString: PerkIds.PriorityTarget,
@@ -369,7 +375,7 @@ const perks = [
         categories: [PerkCategories.Halloween],
 
         noDrop: true,
-        type: "negative"
+        type: PerkQualities.Negative
     }
 ] as const satisfies ReadonlyArray<
     GetMissing<
