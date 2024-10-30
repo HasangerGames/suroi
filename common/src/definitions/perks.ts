@@ -207,7 +207,9 @@ const perks = [
         idString: PerkIds.PlumpkinGamble,
         name: "Plumpkin Gamble",
         description: "Picks a random Halloween perk.",
-        categories: [PerkCategories.Halloween]
+        categories: [PerkCategories.Halloween],
+
+        noDrop: true
 
         /*
             krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
