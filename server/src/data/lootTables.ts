@@ -863,7 +863,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         diseased_plumpkin: [
             [{ item: PerkIds.PlumpkinGamble, weight: 1 }],
             [
-                { table: "diseased", weight: 0.1 },
+                { item: "diseased", weight: 0.1 },
                 { item: NullString, weight: 0.9 }
             ]
         ],
