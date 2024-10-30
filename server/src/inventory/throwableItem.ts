@@ -109,7 +109,7 @@ class GrenadeHandler {
 
         if (explosion !== undefined) {
             game.addExplosion(
-                explosion,
+                (this._projectile?.definition.cookable && !this._projectile.definition.noSkin && this._projectile?.halloweenSkin) ? "pumpkin_explosion" : explosion,
                 referencePosition,
                 this.parent.owner,
                 this._projectile?.layer ?? this.parent.owner.layer,
