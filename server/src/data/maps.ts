@@ -80,7 +80,7 @@ export type ObstacleClump = {
 };
 
 const maps = {
-    main: {
+    normal: {
         width: 1632,
         height: 1632,
         oceanSize: 128,
@@ -361,65 +361,6 @@ const maps = {
             { name: "Darkwood", position: Vec.create(0.5, 0.65) }
         ]
     },
-    debug: {
-        width: 1620,
-        height: 1620,
-        oceanSize: 128,
-        beachSize: 32,
-        onGenerate(map) {
-            // Generate all buildings
-
-            const buildingPos = Vec.create(200, map.height - 600);
-
-            for (const building of Buildings.definitions) {
-                map.generateBuilding(building.idString, buildingPos);
-                const rect = building.spawnHitbox.toRectangle();
-                buildingPos.x += rect.max.x - rect.min.x;
-
-                buildingPos.x += 20;
-                if (buildingPos.x > map.width - 300) {
-                    buildingPos.x = 200 - 140;
-                    buildingPos.y += 200;
-                }
-            }
-
-            // Generate all obstacles
-            const obstaclePos = Vec.create(200, 200);
-
-            for (const obstacle of Obstacles.definitions) {
-                if (obstacle.invisible) continue;
-                for (let i = 0; i < (obstacle.variations ?? 1); i++) {
-                    map.generateObstacle(obstacle.idString, obstaclePos, { variation: i as Variation });
-
-                    obstaclePos.x += 20;
-                    if (obstaclePos.x > map.width / 2 - 20) {
-                        obstaclePos.x = map.width / 2 - 140;
-                        obstaclePos.y += 20;
-                    }
-                }
-            }
-
-            // Generate all Loots
-            const itemPos = Vec.create(map.width / 2, map.height / 2);
-            for (const item of Loots.definitions) {
-                map.game.addLoot(item, itemPos, 0, { count: Infinity, pushVel: 0, jitterSpawn: false });
-
-                itemPos.x += 10;
-                if (itemPos.x > map.width / 2 + 100) {
-                    itemPos.x = map.width / 2;
-                    itemPos.y += 10;
-                }
-            }
-        },
-        places: [
-            { name: "[object Object]", position: Vec.create(0.8, 0.7) },
-            { name: "Kernel Panic", position: Vec.create(0.6, 0.8) },
-            { name: "NullPointerException", position: Vec.create(0.7, 0.3) },
-            { name: "undefined Forest", position: Vec.create(0.3, 0.2) },
-            { name: "seg. fault\n(core dumped)", position: Vec.create(0.3, 0.7) },
-            { name: "Can't read props of null", position: Vec.create(0.4, 0.5) }
-        ]
-    },
     halloween: {
         width: 1924,
         height: 1924,
@@ -577,6 +518,65 @@ const maps = {
             { name: "Haunted Hollow", position: Vec.create(0.72, 0.8) },
             { name: "Mt. Fang", position: Vec.create(0.5, 0.35) },
             { name: "Darkwood", position: Vec.create(0.5, 0.65) }
+        ]
+    },
+    debug: {
+        width: 1620,
+        height: 1620,
+        oceanSize: 128,
+        beachSize: 32,
+        onGenerate(map) {
+            // Generate all buildings
+
+            const buildingPos = Vec.create(200, map.height - 600);
+
+            for (const building of Buildings.definitions) {
+                map.generateBuilding(building.idString, buildingPos);
+                const rect = building.spawnHitbox.toRectangle();
+                buildingPos.x += rect.max.x - rect.min.x;
+
+                buildingPos.x += 20;
+                if (buildingPos.x > map.width - 300) {
+                    buildingPos.x = 200 - 140;
+                    buildingPos.y += 200;
+                }
+            }
+
+            // Generate all obstacles
+            const obstaclePos = Vec.create(200, 200);
+
+            for (const obstacle of Obstacles.definitions) {
+                if (obstacle.invisible) continue;
+                for (let i = 0; i < (obstacle.variations ?? 1); i++) {
+                    map.generateObstacle(obstacle.idString, obstaclePos, { variation: i as Variation });
+
+                    obstaclePos.x += 20;
+                    if (obstaclePos.x > map.width / 2 - 20) {
+                        obstaclePos.x = map.width / 2 - 140;
+                        obstaclePos.y += 20;
+                    }
+                }
+            }
+
+            // Generate all Loots
+            const itemPos = Vec.create(map.width / 2, map.height / 2);
+            for (const item of Loots.definitions) {
+                map.game.addLoot(item, itemPos, 0, { count: Infinity, pushVel: 0, jitterSpawn: false });
+
+                itemPos.x += 10;
+                if (itemPos.x > map.width / 2 + 100) {
+                    itemPos.x = map.width / 2;
+                    itemPos.y += 10;
+                }
+            }
+        },
+        places: [
+            { name: "[object Object]", position: Vec.create(0.8, 0.7) },
+            { name: "Kernel Panic", position: Vec.create(0.6, 0.8) },
+            { name: "NullPointerException", position: Vec.create(0.7, 0.3) },
+            { name: "undefined Forest", position: Vec.create(0.3, 0.2) },
+            { name: "seg. fault\n(core dumped)", position: Vec.create(0.3, 0.7) },
+            { name: "Can't read props of null", position: Vec.create(0.4, 0.5) }
         ]
     },
     // Arena map to test guns with really bad custom generation code lol

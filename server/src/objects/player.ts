@@ -539,54 +539,39 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         const spawnable = SpawnableLoots();
 
-        let chosen: ReferenceTo<WeaponDefinition> | undefined;
-
         const { inventory } = this;
         const { items, backpack: { maxCapacity }, throwableItemMap } = inventory;
-        switch (true) {
-            case itemOrSlot instanceof GunItem: {
+        const type = GameConstants.player.inventorySlotTypings[slot];
+
+        const chosenItem = pickRandomInArray(
+            type === ItemType.Throwable
+                ? spawnable.forType(ItemType.Throwable).filter(
+                    ({ idString: thr }) => (items.hasItem(thr) ? items.getItem(thr) : 0) < maxCapacity[thr]
+                )
+                : spawnable.forType(type)
+        );
+        if (!chosenItem) return;
+
+        inventory.replaceWeapon(slot, chosenItem);
+
+        switch (type) {
+            case ItemType.Gun: {
                 this.action?.cancel();
 
-                const chosenGun = pickRandomInArray(spawnable.forType(ItemType.Gun));
+                const { capacity, ammoType, ammoSpawnAmount, summonAirdrop } = chosenItem as GunDefinition;
 
-                // exceptional circumstance that can occur if the array is empty
-                if (chosenGun === undefined) break;
-
-                inventory.replaceWeapon(slot, chosenGun);
-                (this.activeItem as GunItem).ammo = chosenGun.capacity;
+                (this.activeItem as GunItem).ammo = capacity;
 
                 // Give the player ammo for the new gun if they do not have any ammo for it.
-                if (!items.hasItem(chosenGun.ammoType) && !chosenGun.summonAirdrop) {
-                    items.setItem(chosenGun.ammoType, chosenGun.ammoSpawnAmount);
+                if (!items.hasItem(ammoType) && !summonAirdrop) {
+                    items.setItem(ammoType, ammoSpawnAmount);
                     this.dirty.items = true;
                 }
-                chosen = chosenGun.idString;
                 break;
             }
 
-            case itemOrSlot instanceof MeleeItem: {
-                const chosenMelee = pickRandomInArray(spawnable.forType(ItemType.Melee));
-
-                // exceptional circumstance that can occur if the array is empty
-                if (chosenMelee === undefined) break;
-
-                inventory.replaceWeapon(slot, chosenMelee);
-                chosen = chosenMelee.idString;
-                break;
-            }
-
-            case itemOrSlot instanceof ThrowableItem: {
-                const chosenThrowable = pickRandomInArray(
-                    spawnable.forType(ItemType.Throwable).filter(
-                        ({ idString: thr }) => (items.hasItem(thr) ? items.getItem(thr) : 0) < maxCapacity[thr]
-                    )
-                );
-
-                // happens if array is empty
-                if (chosenThrowable === undefined) break;
-                chosen = chosenThrowable.idString;
-
-                const { idString } = chosenThrowable;
+            case ItemType.Throwable: {
+                const { idString } = chosenItem;
 
                 const count = items.hasItem(idString) ? items.getItem(idString) : 0;
                 const max = maxCapacity[idString];
@@ -606,7 +591,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 const item = throwableItemMap.getAndGetDefaultIfAbsent(
                     idString,
-                    () => new ThrowableItem(chosenThrowable, this, undefined, newCount)
+                    () => new ThrowableItem(chosenItem, this, undefined, newCount)
                 );
 
                 item.count = newCount;
@@ -623,9 +608,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
-        if (chosen !== undefined) {
-            this.sendEmote(Emotes.fromStringSafe(chosen));
-        }
+        this.sendEmote(Emotes.fromStringSafe(chosenItem.idString));
     }
 
     fillInventory(max = false): void {
@@ -786,20 +769,22 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         // Speed multiplier for perks
-        const perkSpeedMod = this.mapPerkOrDefault(
-            PerkIds.AdvancedAthletics,
-            ({ waterSpeedMod, smokeSpeedMod }) => {
-                return (
-                    (FloorTypes[this.floor].overlay ? waterSpeedMod : 1) // man do we need a better way of detecting water lol
-                    * (depleters.size !== 0 ? smokeSpeedMod : 1)
-                );
-            },
-            1
-        ) * this.mapPerkOrDefault(
-            PerkIds.Claustrophobic,
-            ({ speedMod }) => isInsideBuilding ? speedMod : 1,
-            1
-        );
+        const perkSpeedMod
+            = this.mapPerkOrDefault(
+                PerkIds.AdvancedAthletics,
+                ({ waterSpeedMod, smokeSpeedMod }) => {
+                    return (
+                        (FloorTypes[this.floor].overlay ? waterSpeedMod : 1) // man do we need a better way of detecting water lol
+                        * (depleters.size !== 0 ? smokeSpeedMod : 1)
+                    );
+                },
+                1
+            )
+            * this.mapPerkOrDefault(
+                PerkIds.Claustrophobic,
+                ({ speedMod }) => isInsideBuilding ? speedMod : 1,
+                1
+            );
 
         // Calculate speed
         const speed = this.baseSpeed                                          // Base speed

@@ -1376,7 +1376,7 @@ export const SpawnableLoots = (): SpawnableItemRegistry => spawnableLoots ??= ((
         then we mustn't take loot table A into account
     */
 
-    const activeMap = Maps[Config.map.split(":")[0] as MapName];
+    const mainMap = Maps[GameConstants.modeName as keyof typeof Maps];
 
     // first, get all the reachable buildings
     // to do this, we get all the buildings in the map def, then for each one, include itself and any subbuildings
@@ -1384,7 +1384,7 @@ export const SpawnableLoots = (): SpawnableItemRegistry => spawnableLoots ??= ((
     // and for good measure, we exclude duplicates by using a set
     const reachableBuildings = [
         ...new Set(
-            Object.keys(activeMap.buildings ?? {}).map(building => {
+            Object.keys(mainMap.buildings ?? {}).map(building => {
                 const b = Buildings.fromString(building);
 
                 // for each subbuilding, we either take it as-is, or take all possible spawn options
@@ -1400,7 +1400,7 @@ export const SpawnableLoots = (): SpawnableItemRegistry => spawnableLoots ??= ((
     // reachable buildings, which again involves flattening some arrays
     const reachableObstacles = [
         ...new Set(
-            Object.keys(activeMap.obstacles ?? {}).map(o => Obstacles.fromString(o)).concat(
+            Object.keys(mainMap.obstacles ?? {}).map(o => Obstacles.fromString(o)).concat(
                 reachableBuildings.map(
                     ({ obstacles }) => obstacles.map(
                         ({ idString }) => referenceOrRandomOptions(idString).map(o => Obstacles.fromString(o))
@@ -1414,7 +1414,7 @@ export const SpawnableLoots = (): SpawnableItemRegistry => spawnableLoots ??= ((
     // both the obstacles and the buildings
     const reachableLootTables = [
         ...new Set(
-            Object.keys(activeMap.loots ?? {}).map(t => resolveTable(t)).concat(
+            Object.keys(mainMap.loots ?? {}).map(t => resolveTable(t)).concat(
                 reachableObstacles.filter(({ hasLoot }) => hasLoot).map(
                     ({ lootTable, idString }) => resolveTable(lootTable ?? idString)
                 )
