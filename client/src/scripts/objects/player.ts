@@ -1624,7 +1624,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                 let frame = def.animation.cook.cookingImage ?? def.animation.liveImage;
 
-                if (this.game.uiManager.perks.hasPerk(PerkIds.PlumpkinBomb) && this.halloweenThrowableSkin && !def.noSkin) {
+                if (this.halloweenThrowableSkin && !def.noSkin) {
                     frame += "_halloween";
                 }
 
@@ -1720,6 +1720,19 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                 break;
             }
+            // i have no idea on how this would be implemented differently
+            case AnimationType.UpdateThrowableSpriteToHalloween: {
+                if (this.activeItem.itemType === ItemType.Throwable) {
+                    this.images.weapon.setFrame(`${this.activeItem.idString}${!this.activeItem.noSkin ? "_halloween" : ""}`);
+                }
+                break;
+            }
+            case AnimationType.UpdateThrowableSpriteToNormal: {
+                if (this.activeItem.itemType === ItemType.Throwable) {
+                    this.images.weapon.setFrame(this.activeItem.idString);
+                }
+                break;
+            }
             case AnimationType.ThrowableThrow: {
                 if (this.activeItem.itemType !== ItemType.Throwable) {
                     console.warn(`Attempted to play throwable throwing animation with non-throwable item '${this.activeItem.idString}'`);
@@ -1733,7 +1746,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 const projImage = this.images.weapon;
                 projImage.visible = false;
 
-                projImage.setFrame(`${def.idString}${this.game.uiManager.perks.hasPerk(PerkIds.PlumpkinBomb) && !def.noSkin ? "_halloween" : ""}`);
+                projImage.setFrame(`${def.idString}${this.halloweenThrowableSkin && !def.noSkin ? "_halloween" : ""}`);
 
                 if (!def.cookable && def.animation.leverImage !== undefined) {
                     this.game.particleManager.spawnParticle({
@@ -1769,6 +1782,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     onComplete: () => {
                         this.anims.leftFist = undefined;
                         projImage.setVisible(true);
+                        projImage.setFrame(`${def.idString}${this.halloweenThrowableSkin && !def.noSkin ? "_halloween" : ""}`);
                         this.updateFistsPosition(true);
                     }
                 });

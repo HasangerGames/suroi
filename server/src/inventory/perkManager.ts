@@ -1,4 +1,4 @@
-import { GameConstants } from "@common/constants";
+import { AnimationType, GameConstants } from "@common/constants";
 import { PerkIds, type PerkDefinition, type PerkNames } from "@common/definitions/perks";
 import { PerkManager } from "@common/utils/perkManager";
 import { type Player } from "../objects";
@@ -27,6 +27,12 @@ export class ServerPerkManager extends PerkManager {
             // ! evil starts here
             // some perks need to perform setup when added
             switch (idString) {
+                case PerkIds.PlumpkinBomb: {
+                    this.owner.halloweenThrowableSkin = true;
+                    this.owner.animation = AnimationType.UpdateThrowableSpriteToHalloween;
+                    this.owner.setPartialDirty();
+                    break;
+                }
                 case PerkIds.Lycanthropy: {
                     this.owner.action?.cancel();
                     this.owner.inventory.dropWeapon(0, true)?.destroy();
@@ -60,6 +66,11 @@ export class ServerPerkManager extends PerkManager {
                         }
                     }
                     break;
+                }
+
+                default: {
+                    this.owner.animation = AnimationType.UpdateThrowableSpriteToNormal;
+                    this.owner.setPartialDirty();
                 }
             }
             // ! evil ends here

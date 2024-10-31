@@ -146,7 +146,9 @@ export enum AnimationType {
     GunFireAlt,
     GunClick,
     LastShot,
-    Revive
+    Revive,
+    UpdateThrowableSpriteToHalloween,
+    UpdateThrowableSpriteToNormal
 }
 
 export enum KillfeedMessageType {
