@@ -12,7 +12,7 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
     readonly image = new SuroiSprite();
 
     private _alpha = 1;
-    private _alphaOverride?: number;
+    private _alphaMult = 1;
 
     private _oldScale?: number;
     private _lastScaleChange?: number;
@@ -67,9 +67,9 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
             if (
                 full.creatorID === this.game.activePlayerID
                 && typeof definition.alpha === "object"
-                && "creator" in definition.alpha
-                && definition.alpha.creator !== undefined
-            ) this._alphaOverride = definition.alpha.creator;
+                && "creatorMult" in definition.alpha
+                && definition.alpha.creatorMult !== undefined
+            ) this._alphaMult = definition.alpha.creatorMult;
 
             this.image.setFrame(`${definition.frame}${variant !== undefined ? `_${variant}` : ""}`);
             if (definition.tint) this.image.tint = definition.tint;
@@ -79,7 +79,7 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
         this.position = data.position;
         this.rotation = data.rotation;
         this.scale = data.scale ?? this._scale;
-        this.container.alpha = this._alphaOverride ?? (this._alpha = data.alpha ?? this._alpha);
+        this.container.alpha = (this._alpha = data.alpha ?? this._alpha) * this._alphaMult;
 
         if (!this.game.console.getBuiltInCVar("cv_movement_smoothing") || isNew) {
             this.container.position = toPixiCoords(this.position);

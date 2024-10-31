@@ -35,7 +35,7 @@ export type SyncedParticleDefinition = ObjectDefinition & {
     /**
      * @default {1}
      */
-    readonly alpha: (Animated<number> & { creator?: number }) | NumericSpecifier
+    readonly alpha: (Animated<number> & { creatorMult?: number }) | NumericSpecifier
     /**
      * @default {Infinity}
      */
@@ -187,7 +187,7 @@ export const SyncedParticles = ObjectDefinitions.withDefault<SyncedParticleDefin
                     alpha: {
                         start: 0.7,
                         end: 0,
-                        creator: 0.1
+                        creatorMult: 0.15
                     },
                     lifetime: {
                         mean: 2000,
