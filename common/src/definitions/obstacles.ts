@@ -2123,6 +2123,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 idString: "hay_bale",
                 name: "Hay Bale",
                 material: "bush",
+                hideOnMap: true,
                 health: 180,
                 scale: {
                     spawnMin: 1,

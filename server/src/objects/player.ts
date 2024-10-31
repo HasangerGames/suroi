@@ -28,7 +28,7 @@ import { ServerPerkManager } from "../inventory/perkManager";
 import { ThrowableItem } from "../inventory/throwableItem";
 import { type Team } from "../team";
 import { removeFrom } from "../utils/misc";
-import type { ObstacleDefinition } from "@common/definitions/obstacles";
+import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 
 export interface PlayerContainer {
     readonly teamID?: string
@@ -2044,6 +2044,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // Disguise funnies
         if (this.activeDisguise !== undefined) {
             const disguiseObstacle = this.game.map.generateObstacle(this.activeDisguise?.idString, this.position, { layer: this.layer });
+            const disguiseDef = Obstacles.reify(this.activeDisguise);
 
             if (disguiseObstacle !== undefined) {
                 this.game.addTimeout(() => {
@@ -2051,6 +2052,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         amount: disguiseObstacle.health
                     });
                 }, 10); // small delay so sound plays
+            }
+
+            if (disguiseDef.explosion) {
+                this.game.addExplosion(disguiseDef.explosion, this.position, this, this.layer);
             }
         }
 
