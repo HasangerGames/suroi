@@ -446,13 +446,13 @@ const maps = {
             tent_4: 1
         },
         obstacles: {
-            oak_tree: 200,
+            oak_tree: 170,
             birch_tree: 65,
-            maple_tree: 70,
+            maple_tree: 55,
             pine_tree: 95,
-            dormant_oak_tree: 35,
+            dormant_oak_tree: 100,
             stump: 40,
-            diseased_plumpkin: 100,
+            diseased_plumpkin: 60,
             hatchet_stump: 3,
             regular_crate: 200,
             flint_crate: 10,
@@ -478,7 +478,7 @@ const maps = {
         },
         obstacleClumps: [
             {
-                clumpAmount: 110,
+                clumpAmount: 90,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
@@ -488,7 +488,7 @@ const maps = {
                 }
             },
             {
-                clumpAmount: 15,
+                clumpAmount: 50,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
