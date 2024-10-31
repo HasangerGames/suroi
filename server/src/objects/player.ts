@@ -1670,7 +1670,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     this.perks.removePerk(PerkIds.PlumpkinGamble);
 
                     const halloweenPerks = Perks.definitions.filter(perkDef => {
-                        return perkDef.idString !== PerkIds.PlumpkinGamble && perkDef.categories.includes(PerkCategories.Halloween);
+                        return !perkDef.plumpkinGambleIgnore && perkDef.categories.includes(PerkCategories.Halloween);
                     });
                     this.perks.addPerk(pickRandomInArray(halloweenPerks));
                     break;

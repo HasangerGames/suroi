@@ -14,6 +14,7 @@ export interface BasicPerk extends ItemDefinition {
     readonly categories: readonly PerkCategories[]
     readonly type?: PerkQualities
     readonly noSwap?: boolean
+    readonly plumpkinGambleIgnore?: boolean
 }
 
 const defaultTemplate = {
@@ -209,7 +210,8 @@ const perks = [
         description: "Picks a random Halloween perk.",
         categories: [PerkCategories.Halloween],
 
-        noDrop: true
+        noDrop: true,
+        plumpkinGambleIgnore: true
 
         /*
             krr krr krr *buzzer* aw dang it! krr krr krr *buzzer* aw dang it!
@@ -381,6 +383,7 @@ const perks = [
         categories: [PerkCategories.Halloween],
 
         noDrop: true,
+        plumpkinGambleIgnore: true,
         type: PerkQualities.Negative
     }
 ] as const satisfies ReadonlyArray<
