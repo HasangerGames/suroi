@@ -251,7 +251,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 return !inventory.items.hasItem(definition.idString) || InventoryMessages.ItemAlreadyEquipped;
             }
             case ItemType.Skin: {
-                return !player.loadout.skin.noSwap && !(player.loadout.skin.idString !== definition.idString || InventoryMessages.ItemAlreadyEquipped);
+                return !player.loadout.skin.noSwap && !(player.loadout.skin !== definition || InventoryMessages.ItemAlreadyEquipped);
             }
             case ItemType.Perk: {
                 return !player.perks.asList()[0]?.noSwap && (!player.hasPerk(definition) || InventoryMessages.ItemAlreadyEquipped);

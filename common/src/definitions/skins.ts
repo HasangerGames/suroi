@@ -125,7 +125,13 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ["Diseased",              0x2d1f1f],
                 ["Deer Season",           0x9a3604]
             ] satisfies ReadonlyArray<readonly [string, number]>).map(([name, tint]) => hidden([name, tint])),
-            hidden(["Werewolf", 0x323232], { noSwap: true }),
+            hidden(
+                ["Werewolf", 0x323232],
+                {
+                    noSwap: true,
+                    noDrop: true
+                }
+            ),
             hidden(
                 ["Ghillie Suit", 0xffffff],
                 {

@@ -7,9 +7,11 @@ import { weightedRandom } from "@common/utils/random";
 import { type Player } from "../objects";
 import { GunItem } from "./gunItem";
 
-export type UpdatablePerkDefinition = PerkDefinition & { updateInterval: number };
+export type UpdatablePerkDefinition = PerkDefinition & { readonly updateInterval: number };
 
 export class ServerPerkManager extends PerkManager {
+    private readonly _selfData: Record<string, unknown> = {};
+
     constructor(
         readonly owner: Player,
         perks?: number | readonly PerkDefinition[]
@@ -53,7 +55,7 @@ export class ServerPerkManager extends PerkManager {
                     break;
                 }
                 case PerkIds.Lycanthropy: {
-                    this.owner.loadout.skin = Skins.fromString("werewolf");
+                    [this._selfData["Lycanthropy::old_skin"], this.owner.loadout.skin] = [this.owner.loadout.skin, Skins.fromString("werewolf")];
                     this.owner.setDirty();
                     this.owner.action?.cancel();
                     this.owner.inventory.dropWeapon(0, true)?.destroy();
@@ -115,7 +117,11 @@ export class ServerPerkManager extends PerkManager {
             // ! evil starts here
             // some perks need to perform cleanup on removal
             switch (idString) {
-                case PerkIds.Lycanthropy: { /* TODO: cry */ break; }
+                case PerkIds.Lycanthropy: {
+                    this.owner.loadout.skin = Skins.fromStringSafe(this._selfData["Lycanthropy::old_skin"] as string) ?? Skins.fromString("hazel_jumpsuit");
+                    this.owner.setDirty();
+                    break;
+                }
                 case PerkIds.ExtendedMags: {
                     const weapons = this.owner.inventory.weapons;
                     const maxWeapons = GameConstants.player.maxWeapons;
