@@ -373,27 +373,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         this.rotation = data.rotation;
 
-        const oldDisguise = this.activeDisguise;
-        if (oldDisguise !== (this.activeDisguise = data.activeDisguise)) {
-            const def = this.activeDisguise;
-            if (def !== undefined) {
-                this.images.disguiseSprite.setVisible(true);
-                this.images.disguiseSprite.setFrame(`${def.frames.base ?? def.idString}${def.variations !== undefined ? `_${random(1, def.variations)}` : ""}`);
-            } else {
-                this.images.disguiseSprite.setVisible(false);
-            }
-        }
-
         const noMovementSmoothing = !this.game.console.getBuiltInCVar("cv_movement_smoothing");
 
         if (noMovementSmoothing || isNew) this.container.rotation = this.rotation;
 
-        const layerChange = this.layer !== data.layer || isNew;
-        this.layer = data.layer;
-
         if (this.isActivePlayer) {
-            if (layerChange) this.game.changeLayer(this.layer);
-
             this.game.soundManager.position = this.position;
             this.game.map.setPosition(this.position);
 
@@ -511,6 +495,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         if (data.full) {
             const full = data.full;
+
+            const layerChange = this.isActivePlayer && (this.layer !== full.layer || isNew);
+            this.layer = full.layer;
+            if (layerChange) this.game.changeLayer(this.layer);
 
             this.container.visible = !full.dead;
             this.disguiseContainer.visible = this.container.visible;
@@ -701,6 +689,17 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             if (itemDirty) {
                 this.updateFistsPosition(true);
                 this.updateWeapon(isNew);
+            }
+
+            const oldDisguise = this.activeDisguise;
+            if (oldDisguise !== (this.activeDisguise = full.activeDisguise)) {
+                const def = this.activeDisguise;
+                if (def !== undefined) {
+                    this.images.disguiseSprite.setVisible(true);
+                    this.images.disguiseSprite.setFrame(`${def.frames.base ?? def.idString}${def.variations !== undefined ? `_${random(1, def.variations)}` : ""}`);
+                } else {
+                    this.images.disguiseSprite.setVisible(false);
+                }
             }
         }
 

@@ -850,7 +850,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     && potential.hitbox?.collidesWith(this._hitbox)
                 ) {
                     if (isObstacle && potential.definition.isStair) {
+                        const oldLayer = this.layer;
                         potential.handleStairInteraction(this);
+                        if (this.layer !== oldLayer) this.setDirty();
                         this.activeStair = potential;
                     } else {
                         collided = true;
@@ -2356,20 +2358,20 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const data: SDeepMutable<FullData<ObjectCategory.Player>> = {
             position: this.position,
             rotation: this.rotation,
-            layer: this.layer,
-            activeDisguise: this.activeDisguise,
             full: {
+                layer: this.layer,
                 dead: this.dead,
                 downed: this.downed,
                 beingRevived: !!this.beingRevivedBy,
                 teamID: this.teamID ?? 0,
                 invulnerable: this.invulnerable,
-                halloweenThrowableSkin: this.halloweenThrowableSkin,
+                activeItem: this.activeItem.definition,
+                skin: this.loadout.skin,
                 helmet: this.inventory.helmet,
                 vest: this.inventory.vest,
                 backpack: this.inventory.backpack,
-                skin: this.loadout.skin,
-                activeItem: this.activeItem.definition
+                halloweenThrowableSkin: this.halloweenThrowableSkin,
+                activeDisguise: this.activeDisguise
             }
         };
 

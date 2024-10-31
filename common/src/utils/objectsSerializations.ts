@@ -36,8 +36,6 @@ export interface ObjectsNetData extends BaseObjectsNetData {
     readonly [ObjectCategory.Player]: {
         readonly position: Vector
         readonly rotation: number
-        readonly layer: Layer
-        readonly activeDisguise?: ObstacleDefinition
         readonly animation?: AnimationType
         readonly action?: ({
             readonly type: Exclude<PlayerActions, PlayerActions.UseItem>
@@ -47,18 +45,20 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly item: HealingItemDefinition
         })
         readonly full?: {
+            readonly layer: Layer
             readonly dead: boolean
             readonly downed: boolean
             readonly beingRevived: boolean
             readonly teamID: number
             readonly invulnerable: boolean
-            readonly halloweenThrowableSkin: boolean
             readonly activeItem: WeaponDefinition
             readonly sizeMod?: number
             readonly skin: SkinDefinition
             readonly helmet?: ArmorDefinition
             readonly vest?: ArmorDefinition
             readonly backpack: BackpackDefinition
+            readonly halloweenThrowableSkin: boolean
+            readonly activeDisguise?: ObstacleDefinition
         }
     }
     //
@@ -183,13 +183,9 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     // Player serialization
     //
     [ObjectCategory.Player]: {
-        serializePartial(stream, data): void {
-            const { position, rotation, layer, activeDisguise, animation, action } = data;
-
+        serializePartial(stream, { position, rotation, animation, action }): void {
             stream.writePosition(position);
             stream.writeRotation(rotation, 16);
-            stream.writeLayer(layer);
-            Obstacles.writeOptional(stream, activeDisguise);
 
             const animationDirty = animation !== undefined;
             stream.writeBoolean(animationDirty);
@@ -206,28 +202,31 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 }
             }
         },
-        serializeFull(stream, data): void {
-            const { full: {
+        serializeFull(
+            stream,
+            { full: {
+                layer,
                 dead,
                 downed,
                 beingRevived,
                 teamID,
                 invulnerable,
-                halloweenThrowableSkin,
                 activeItem,
                 sizeMod,
                 skin,
-                backpack,
                 helmet,
-                vest
-            } } = data;
-
+                vest,
+                backpack,
+                halloweenThrowableSkin,
+                activeDisguise
+            } }
+        ): void {
+            stream.writeLayer(layer);
             stream.writeBoolean(dead);
             stream.writeBoolean(downed);
             stream.writeBoolean(beingRevived);
             stream.writeUint8(teamID);
             stream.writeBoolean(invulnerable);
-            stream.writeBoolean(halloweenThrowableSkin);
             Loots.writeToStream(stream, activeItem);
 
             stream.writeBoolean(sizeMod !== undefined);
@@ -236,23 +235,18 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             }
 
             Skins.writeToStream(stream, skin);
+
+            Armors.writeOptional(stream, helmet);
+            Armors.writeOptional(stream, vest);
             Backpacks.writeToStream(stream, backpack);
 
-            stream.writeBoolean(helmet !== undefined);
-            if (helmet) {
-                Armors.writeToStream(stream, helmet);
-            }
-            stream.writeBoolean(vest !== undefined);
-            if (vest) {
-                Armors.writeToStream(stream, vest);
-            }
+            stream.writeBoolean(halloweenThrowableSkin);
+            Obstacles.writeOptional(stream, activeDisguise);
         },
         deserializePartial(stream) {
             const data: Mutable<ObjectsNetData[ObjectCategory.Player]> = {
                 position: stream.readPosition(),
                 rotation: stream.readRotation(16),
-                layer: stream.readLayer(),
-                activeDisguise: Obstacles.readOptional(stream),
                 animation: stream.readBoolean() ? stream.readBits(ANIMATION_TYPE_BITS) : undefined
             };
 
@@ -272,28 +266,22 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             return data;
         },
         deserializeFull(stream) {
-            const data: Mutable<ObjectsNetData[ObjectCategory.Player]["full"]> = {
+            return {
+                layer: stream.readLayer(),
                 dead: stream.readBoolean(),
                 downed: stream.readBoolean(),
                 beingRevived: stream.readBoolean(),
                 teamID: stream.readUint8(),
                 invulnerable: stream.readBoolean(),
-                halloweenThrowableSkin: stream.readBoolean(),
                 activeItem: Loots.readFromStream(stream),
                 sizeMod: stream.readBoolean() ? stream.readFloat(0, 4, 8) : undefined,
                 skin: Skins.readFromStream(stream),
-                backpack: Backpacks.readFromStream(stream)
+                helmet: Armors.readOptional(stream),
+                vest: Armors.readOptional(stream),
+                backpack: Backpacks.readFromStream(stream),
+                halloweenThrowableSkin: stream.readBoolean(),
+                activeDisguise: Obstacles.readOptional(stream)
             };
-
-            if (stream.readBoolean()) {
-                data.helmet = Armors.readFromStream<ArmorDefinition>(stream);
-            }
-
-            if (stream.readBoolean()) {
-                data.vest = Armors.readFromStream<ArmorDefinition>(stream);
-            }
-
-            return data;
         }
     },
     //
