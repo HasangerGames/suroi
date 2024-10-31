@@ -17,6 +17,7 @@ import { randomBytes } from "crypto";
 import { type WebSocket } from "uWebSockets.js";
 import { BaseGameObject, DamageParams, DeathMarker, Emote, Explosion, Loot, SyncedParticle, ThrowableProjectile, type GameObject, type Obstacle } from ".";
 import { Config } from "../config";
+import { SpawnableLoots } from "../data/lootTables";
 import { type Game } from "../game";
 import { HealingAction, ReloadAction, ReviveAction, type Action } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
@@ -27,7 +28,6 @@ import { ServerPerkManager } from "../inventory/perkManager";
 import { ThrowableItem } from "../inventory/throwableItem";
 import { type Team } from "../team";
 import { removeFrom } from "../utils/misc";
-import { SpawnableLoots } from "../data/lootTables";
 
 export interface PlayerContainer {
     readonly teamID?: string
@@ -1664,7 +1664,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         // ! evil starts here
-        this.halloweenThrowableSkin = this.perks.hasPerk(PerkIds.PlumpkinBomb);
         for (const perk of this.perks) {
             switch (perk.idString) {
                 case PerkIds.PlumpkinGamble: { // AW DANG IT

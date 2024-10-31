@@ -1,9 +1,9 @@
-import { AnimationType, GameConstants } from "@common/constants";
-import { PerkIds, type PerkDefinition, type PerkNames } from "@common/definitions/perks";
+import { GameConstants } from "@common/constants";
+import { Skins } from "@common/definitions";
+import { PerkData, PerkIds, type PerkDefinition, type PerkNames } from "@common/definitions/perks";
 import { PerkManager } from "@common/utils/perkManager";
 import { type Player } from "../objects";
 import { GunItem } from "./gunItem";
-import { Skins } from "@common/definitions";
 
 export class ServerPerkManager extends PerkManager {
     constructor(
@@ -40,8 +40,7 @@ export class ServerPerkManager extends PerkManager {
                 }
                 case PerkIds.PlumpkinBomb: {
                     this.owner.halloweenThrowableSkin = true;
-                    this.owner.animation = AnimationType.UpdateThrowableSpriteToHalloween;
-                    this.owner.setPartialDirty();
+                    this.owner.setDirty();
                     break;
                 }
                 case PerkIds.Lycanthropy: {
@@ -83,7 +82,6 @@ export class ServerPerkManager extends PerkManager {
 
                 default: {
                     this.owner.activeDisguise = "";
-                    this.owner.animation = AnimationType.UpdateThrowableSpriteToNormal;
                     this.owner.setPartialDirty();
                 }
             }
@@ -126,6 +124,11 @@ export class ServerPerkManager extends PerkManager {
                             this.owner.inventory.giveItem(def.ammoType, extra);
                         }
                     }
+                    break;
+                }
+                case PerkIds.PlumpkinBomb: {
+                    this.owner.halloweenThrowableSkin = false;
+                    this.owner.setDirty();
                     break;
                 }
             }

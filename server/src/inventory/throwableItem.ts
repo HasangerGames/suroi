@@ -1,5 +1,5 @@
 import { AnimationType, Layer } from "@common/constants";
-import { PerkIds } from "@common/definitions/perks";
+import { PerkData, PerkIds } from "@common/definitions/perks";
 import { type ThrowableDefinition } from "@common/definitions/throwables";
 import { Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
@@ -109,11 +109,12 @@ class GrenadeHandler {
 
         if (explosion !== undefined) {
             game.addExplosion(
-                (this._projectile?.definition.cookable && !this._projectile.definition.noSkin && this._projectile?.halloweenSkin) ? "pumpkin_explosion" : explosion,
+                explosion,
                 referencePosition,
                 this.parent.owner,
                 this._projectile?.layer ?? this.parent.owner.layer,
-                this.parent
+                this.parent,
+                (this._projectile?.halloweenSkin ?? false) ? PerkData[PerkIds.PlumpkinBomb].damageMod : 1
             );
         }
 
@@ -218,8 +219,6 @@ class GrenadeHandler {
             this.parent.owner.layer,
             this.parent
         );
-
-        projectile.halloweenSkin = this.owner.halloweenThrowableSkin;
 
         if (!this.definition.c4) {
             projectile.velocity = Vec.add(

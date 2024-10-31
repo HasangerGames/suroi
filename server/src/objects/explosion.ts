@@ -28,7 +28,8 @@ export class Explosion {
         readonly position: Vector,
         readonly source: GameObject,
         readonly layer: Layer,
-        readonly weapon?: GunItem | MeleeItem | ThrowableItem
+        readonly weapon?: GunItem | MeleeItem | ThrowableItem,
+        readonly damageMod = 1
     ) {
         this.definition = Explosions.reify(definition);
     }
@@ -85,9 +86,8 @@ export class Explosion {
                     const dist = Math.sqrt(collision.squareDistance);
 
                     if ((isPlayer || isObstacle || isBuilding) && adjacentOrEqualLayer(object.layer, this.layer)) {
-                        const perkDamageMod = this.source.isPlayer ? this.source.mapPerkOrDefault(PerkIds.PlumpkinBomb, ({ damageMod }) => damageMod, 1) : 1;
                         object.damage({
-                            amount: perkDamageMod * this.definition.damage
+                            amount: this.damageMod * this.definition.damage
                                 * (isObstacle ? this.definition.obstacleMultiplier : 1)
                                 * (isPlayer ? object.mapPerkOrDefault(PerkIds.LowProfile, ({ explosionMod }) => explosionMod, 1) : 1)
                                 * ((dist > min) ? (max - dist) / (max - min) : 1),

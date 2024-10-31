@@ -271,7 +271,6 @@ const perks = [
         categories: [PerkCategories.Halloween],
 
         damageMod: 1.2, // for grenades
-        plumpkinExplosionDmg: 100,
         noDrop: true,
         type: PerkQualities.Positive
     },

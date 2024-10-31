@@ -12,6 +12,7 @@ import { type ThrowableItem } from "../inventory/throwableItem";
 import { Building } from "./building";
 import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
+import { PerkIds } from "@common/definitions/perks";
 
 const enum Drag {
     Normal = 0.001,
@@ -24,7 +25,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
 
     private health?: number;
 
-    halloweenSkin = false;
+    readonly halloweenSkin: boolean;
 
     declare readonly hitbox: CircleHitbox;
 
@@ -84,6 +85,8 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         this.layer = layer;
         this._spawnTime = this.game.now;
         this.hitbox = new CircleHitbox(radius ?? 1, position);
+
+        this.halloweenSkin = this.source.owner.perks.hasPerk(PerkIds.PlumpkinBomb);
 
         for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
             this.handleCollision(object);

@@ -511,7 +511,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.container.visible = !full.dead;
             this.disguiseContainer.visible = this.container.visible;
 
-            this.halloweenThrowableSkin = full.halloweenThrowableSkin;
+            const hadSkin = this.halloweenThrowableSkin;
+            if (
+                hadSkin !== (this.halloweenThrowableSkin = full.halloweenThrowableSkin)
+                && this.activeItem.itemType === ItemType.Throwable
+                && !this.activeItem.noSkin
+            ) {
+                this.images.weapon.setFrame(`${this.activeItem.idString}${this.halloweenThrowableSkin ? "_halloween" : ""}`);
+            }
 
             // Blood particles on death (cooler graphics only)
             if (
@@ -1739,19 +1746,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     }
                 });
 
-                break;
-            }
-            // i have no idea on how this would be implemented differently
-            case AnimationType.UpdateThrowableSpriteToHalloween: {
-                if (this.activeItem.itemType === ItemType.Throwable) {
-                    this.images.weapon.setFrame(`${this.activeItem.idString}${!this.activeItem.noSkin ? "_halloween" : ""}`);
-                }
-                break;
-            }
-            case AnimationType.UpdateThrowableSpriteToNormal: {
-                if (this.activeItem.itemType === ItemType.Throwable) {
-                    this.images.weapon.setFrame(this.activeItem.idString);
-                }
                 break;
             }
             case AnimationType.ThrowableThrow: {
