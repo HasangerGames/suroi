@@ -854,6 +854,18 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "tango_51", weight: 0.08 },
             { item: "g19", weight: 0.08 }
         ],
+        jack_o_lantern: [
+            [{ table: "large_pumpkin", weight: 1 }],
+            [{ table: "large_pumpkin", weight: 1 }],
+            [
+                { table: "large_pumpkin", weight: 1 },
+                { item: NullString, weight: 1 }
+            ],
+            [
+                { item: PerkIds.Costumed, weight: 1 },
+                { item: NullString, weight: 1 }
+            ]
+        ],
         plumpkin: {
             min: 3,
             max: 3,

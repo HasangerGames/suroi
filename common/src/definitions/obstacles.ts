@@ -112,6 +112,22 @@ type RawObstacleDefinition = ObjectDefinition & {
         readonly activated?: string
     }
 
+    readonly glow?: {
+        readonly position?: Vector
+        readonly tint?: number
+        readonly scale?: number
+        readonly alpha?: number
+        readonly scaleAnim?: {
+            readonly to: number
+            readonly duration: number
+        }
+        readonly flicker?: {
+            readonly chance: number
+            readonly strength: number
+            readonly interval: number
+        }
+    }
+
     readonly wall?: {
         readonly color: number
         readonly borderColor: number
@@ -254,6 +270,8 @@ export const MaterialSounds: Record<string, { hit?: string, destroyed?: string }
 
 /* eslint-disable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 export const TintedParticles: Record<string, { readonly base: string, readonly tint: number, readonly variants?: number }> = {
+    _glow_:                        { base: "_glow_",           tint: 0xffffff },
+
     metal_particle:                { base: "metal_particle_1", tint: 0x5f5f5f },
     metal_column_particle:         { base: "metal_particle_1", tint: 0x8f8f8f },
     super_barrel_particle:         { base: "metal_particle_1", tint: 0xce2b29 },
@@ -1027,10 +1045,24 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1.1,
                     destroy: 0.5
                 },
+                glow: {
+                    tint: 0xfca202,
+                    scale: 0.6,
+                    alpha: 0.8,
+                    scaleAnim: {
+                        to: 0.7,
+                        duration: 5e3
+                    },
+                    flicker: {
+                        chance: 0.5,
+                        strength: 0.7,
+                        interval: 1e3
+                    }
+                },
                 hitbox: new CircleHitbox(4.69),
                 rotationMode: RotationMode.Full,
                 allowFlyover: FlyoverPref.Always,
-                // hasLoot: true,
+                hasLoot: true,
                 frames: {
                     particle: "pumpkin_particle",
                     residue: "pumpkin_residue"

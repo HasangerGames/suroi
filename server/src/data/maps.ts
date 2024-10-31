@@ -464,6 +464,7 @@ const maps = {
             oak_leaf_pile: 200,
             lily_pad: 50,
             barrel: 90,
+            jack_o_lantern: 100,
             viking_chest: 1,
             super_barrel: 35,
             melee_crate: 1,
