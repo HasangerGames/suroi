@@ -308,136 +308,6 @@ export class Game implements GameData {
             }
         }
 
-        const players = this.grid.pool.getCategory(ObjectCategory.Player);
-        // Update perks on an interval timer
-        for (const perk of Perks) {
-            if (!(updateInterval in perk)) continue;
-
-            const lastUpdate = now - this._perkIntervalUpdateMap[perk.idString];
-            if (lastUpdate < perk[updateInterval]) continue;
-            this._perkIntervalUpdateMap[perk.idString] = now;
-
-            // ! evil starts here
-            switch (perk.idString) {
-                case PerkIds.DemoExpert: {
-                    // for (const player of players) {
-                    //     if (!player.hasPerk(PerkIds.DemoExpert)) continue;
-
-                    //     const { inventory } = player;
-                    //     const { items, backpack: { maxCapacity }, throwableItemMap } = inventory;
-
-                    //     for (const throwable of Throwables) {
-                    //         const { idString } = throwable;
-                    //         const count = items.hasItem(idString) ? items.getItem(idString) : 0;
-                    //         const max = maxCapacity[idString];
-
-                    //         if (count >= max) continue;
-
-                    //         const toAdd = Math.ceil(max * PerkData[PerkIds.DemoExpert].restoreAmount);
-
-                    //         if (toAdd === 0) continue;
-                    //         const newCount = Numeric.clamp(
-                    //             count + toAdd,
-                    //             0, max
-                    //         );
-                    //         items.setItem(
-                    //             idString,
-                    //             newCount
-                    //         );
-
-                    //         const item = throwableItemMap.getAndGetDefaultIfAbsent(
-                    //             idString,
-                    //             () => new ThrowableItem(throwable, player, newCount)
-                    //         );
-
-                    //         item.count = newCount;
-
-                    //         const slot = inventory.slotsByItemType[ItemType.Throwable]?.[0];
-
-                    //         if (slot !== undefined && !inventory.hasWeapon(slot)) {
-                    //             inventory.replaceWeapon(slot, item);
-                    //         }
-
-                    //         player.dirty.weapons = true;
-                    //         player.dirty.items = true;
-                    //     }
-                    // }
-                    break;
-                }
-                case PerkIds.Bloodthirst: {
-                    for (const player of players) {
-                        if (!player.hasPerk(PerkIds.Bloodthirst) || player.dead) continue;
-
-                        player.piercingDamage({
-                            amount: perk.healthLoss
-                        });
-                    }
-                    break;
-                }
-                case PerkIds.BabyPlumpkinPie: {
-                    for (const player of players) {
-                        if (!player.hasPerk(PerkIds.BabyPlumpkinPie) || player.dead) continue;
-
-                        player.swapWeaponRandomly();
-                    }
-                    break;
-                }
-                case PerkIds.TornPockets: {
-                    for (const player of players) {
-                        if (!player.hasPerk(PerkIds.TornPockets) || player.dead) continue;
-
-                        const candidates = new Set(Ammos.definitions.filter(({ ephemeral }) => !ephemeral).map(({ idString }) => idString));
-
-                        const counts = Object.entries(player.inventory.items.asRecord()).filter(
-                            ([str, count]) => Ammos.hasString(str) && candidates.has(str) && count !== 0
-                        );
-
-                        // no ammo at all
-                        if (counts.length === 0) continue;
-
-                        const chosenAmmo = Ammos.fromString(
-                            weightedRandom(
-                                counts.map(([str]) => str),
-                                counts.map(([, cnt]) => cnt)
-                            )
-                        );
-
-                        const amountToDrop = Numeric.min(
-                            player.inventory.items.getItem(chosenAmmo.idString),
-                            perk.dropCount
-                        );
-
-                        this.addLoot(chosenAmmo, player.position, player.layer, { count: amountToDrop })?.push(player.rotation + Math.PI, 0.025);
-                        player.inventory.items.decrementItem(chosenAmmo.idString, amountToDrop);
-                        player.dirty.items = true;
-                    }
-                    break;
-                }
-                case PerkIds.RottenPlumpkin: {
-                    for (const player of players) {
-                        if (!player.hasPerk(PerkIds.RottenPlumpkin) || player.dead) continue;
-
-                        player.sendEmote(Emotes.fromStringSafe(perk.emote));
-                        player.piercingDamage({
-                            amount: perk.healthLoss
-                        });
-                        player.adrenaline -= player.adrenaline * (perk.adrenLoss / 100);
-                    }
-                    break;
-                }
-                case PerkIds.Shrouded: {
-                    for (const player of players) {
-                        if (!player.hasPerk(PerkIds.Shrouded) || player.dead) continue;
-
-                        this.addSyncedParticle(SyncedParticles.fromString("shrouded_particle"), player.position, player.layer, player.id)
-                            .setTarget(randomPointInsideCircle(player.position, 5), 1000, EaseFunctions.circOut);
-                    }
-                    break;
-                }
-            }
-            // ! evil ends here
-        }
-
         for (const loot of this.grid.pool.getCategory(ObjectCategory.Loot)) {
             loot.update();
         }
@@ -514,7 +384,7 @@ export class Game implements GameData {
         }
 
         // First loop over players: movement, animations, & actions
-        for (const player of players) {
+        for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
             if (!player.dead) player.update();
         }
 

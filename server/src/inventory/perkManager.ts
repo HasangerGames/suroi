@@ -1,11 +1,13 @@
 import { GameConstants } from "@common/constants";
 import { Skins } from "@common/definitions";
-import { PerkData, PerkIds, type PerkDefinition, type PerkNames } from "@common/definitions/perks";
+import { Obstacles } from "@common/definitions/obstacles";
+import { PerkData, PerkIds, type PerkDefinition } from "@common/definitions/perks";
 import { PerkManager } from "@common/utils/perkManager";
+import { weightedRandom } from "@common/utils/random";
 import { type Player } from "../objects";
 import { GunItem } from "./gunItem";
-import { Obstacles } from "@common/definitions/obstacles";
-import { weightedRandom } from "@common/utils/random";
+
+export type UpdatablePerkDefinition = PerkDefinition & { updateInterval: number };
 
 export class ServerPerkManager extends PerkManager {
     constructor(
@@ -20,11 +22,14 @@ export class ServerPerkManager extends PerkManager {
      * @param perk The perk to add
      * @returns Whether the perk was already present (and thus nothing has changed)
      */
-    override addPerk(perk: PerkDefinition | PerkNames): boolean {
-        const idString = typeof perk === "object"
-            ? perk.idString
-            : perk;
+    override addPerk(perk: PerkDefinition): boolean {
+        const idString = perk.idString;
         const absent = super.addPerk(perk);
+
+        if ("updateInterval" in perk) {
+            (this.owner.perkUpdateMap ??= new Map<UpdatablePerkDefinition, number>())
+                .set(perk as UpdatablePerkDefinition, this.owner.game.now);
+        }
 
         if (absent) {
             // ! evil starts here
@@ -97,8 +102,12 @@ export class ServerPerkManager extends PerkManager {
      * @returns Whether the perk was present (and therefore removed, as opposed
      * to not being removed due to not being present to begin with)
      */
-    override removePerk(perk: PerkDefinition | PerkNames): boolean {
-        const idString = typeof perk === "object" ? perk.idString : perk;
+    override removePerk(perk: PerkDefinition): boolean {
+        const idString = perk.idString;
+
+        if ("updateInterval" in perk) {
+            this.owner.perkUpdateMap?.delete(perk as UpdatablePerkDefinition);
+        }
 
         const has = super.removePerk(perk);
 

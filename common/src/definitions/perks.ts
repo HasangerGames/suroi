@@ -12,6 +12,7 @@ export interface BasicPerk extends ItemDefinition {
     readonly description: string
     readonly giveByDefault: boolean
     readonly categories: readonly PerkCategories[]
+    readonly updateInterval?: number
     readonly type?: PerkQualities
     readonly noSwap?: boolean
     readonly plumpkinGambleIgnore?: boolean
@@ -23,8 +24,6 @@ const defaultTemplate = {
     giveByDefault: false,
     categories: [] as readonly PerkCategories[]
 } satisfies DeepPartial<BasicPerk>;
-
-export const updateInterval: unique symbol = Symbol.for("update interval");
 
 /**
  * As the name implies, loosens numeric literal type to be `number`
@@ -131,8 +130,8 @@ const perks = [
         description: "Grenades have a greater throwing range and visible detonation point.",
         categories: [PerkCategories.Normal],
 
+        updateInterval: 10e3, // milliseconds
         rangeMod: 2,
-        [updateInterval]: 10e3, // milliseconds
         restoreAmount: 0.25 // times max capacity
     },
     {
@@ -255,10 +254,10 @@ const perks = [
         description: "Gain 25% adrenaline, 25% health, and a speed boost on kill. Slowly lose health over time.",
         categories: [PerkCategories.Halloween],
 
+        updateInterval: 1e3,
         speedMod: 1.5,
         speedBoostDuration: 2000, // sec
         healthLoss: 1,
-        [updateInterval]: 1e3,
         healBonus: 25,
         adrenalineBonus: 25,
         noDrop: true,
@@ -280,7 +279,7 @@ const perks = [
         description: "Emit a trail of thick fog that other players have difficulty seeing through.",
         categories: [PerkCategories.Halloween],
 
-        [updateInterval]: 100,
+        updateInterval: 100,
         smokeAlpha: 0.7,
         smokeAlphaSelf: 0.1,
         noDrop: true,
@@ -316,7 +315,7 @@ const perks = [
         description: "Your held weapon randomizes every 10 seconds and after every kill.",
         categories: [PerkCategories.Halloween],
 
-        [updateInterval]: 10e3, // milliseconds
+        updateInterval: 10e3, // milliseconds
         noDrop: true,
         noSwap: false,
         type: PerkQualities.Neutral // how is this neutral it's annoying
@@ -360,7 +359,7 @@ const perks = [
         description: "Every two seconds, drop 2 of a random ammo on the ground.",
         categories: [PerkCategories.Halloween],
 
-        [updateInterval]: 2e3,
+        updateInterval: 2e3,
         dropCount: 2,
         noDrop: true,
         type: PerkQualities.Negative
@@ -392,7 +391,7 @@ const perks = [
         description: "Every 10 seconds, you send the vomit emote and lose 5% adrenaline and 5 health.",
         categories: [PerkCategories.Halloween],
 
-        [updateInterval]: 10e3, // milliseconds
+        updateInterval: 10e3, // milliseconds
         emote: "vomiting_face",
         adrenLoss: 5, // percentage
         healthLoss: 5, // absolute
