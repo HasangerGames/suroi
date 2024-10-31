@@ -66,6 +66,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
     readonly [ObjectCategory.Obstacle]: {
         readonly scale: number
         readonly dead: boolean
+        readonly playMaterialDestroyedSound: boolean
         readonly full?: {
             readonly definition: ObstacleDefinition
             readonly position: Vector
@@ -299,6 +300,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         serializePartial(stream, data): void {
             stream.writeScale(data.scale);
             stream.writeBoolean(data.dead);
+            stream.writeBoolean(data.playMaterialDestroyedSound);
         },
         serializeFull(stream, { full }): void {
             Obstacles.writeToStream(stream, full.definition);
@@ -324,7 +326,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         deserializePartial(stream) {
             const data: ObjectsNetData[ObjectCategory.Obstacle] = {
                 scale: stream.readScale(),
-                dead: stream.readBoolean()
+                dead: stream.readBoolean(),
+                playMaterialDestroyedSound: stream.readBoolean()
             };
             return data;
         },

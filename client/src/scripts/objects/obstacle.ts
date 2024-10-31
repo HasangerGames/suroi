@@ -211,7 +211,10 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         maxRange: 96
                     });
                 };
-                playSound(`${MaterialSounds[definition.material]?.destroyed ?? definition.material}_destroyed`);
+                if (data.playMaterialDestroyedSound) {
+                    playSound(`${MaterialSounds[definition.material]?.destroyed ?? definition.material}_destroyed`);
+                }
+
                 for (const sound of definition.additionalDestroySounds) playSound(sound);
 
                 if (definition.noResidue) {
