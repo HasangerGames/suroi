@@ -3,6 +3,7 @@ import { PerkIds, type PerkDefinition, type PerkNames } from "@common/definition
 import { PerkManager } from "@common/utils/perkManager";
 import { type Player } from "../objects";
 import { GunItem } from "./gunItem";
+import { Skins } from "@common/definitions";
 
 export class ServerPerkManager extends PerkManager {
     constructor(
@@ -44,6 +45,8 @@ export class ServerPerkManager extends PerkManager {
                     break;
                 }
                 case PerkIds.Lycanthropy: {
+                    this.owner.loadout.skin = Skins.fromString("werewolf");
+                    this.owner.setDirty();
                     this.owner.action?.cancel();
                     this.owner.inventory.dropWeapon(0, true)?.destroy();
                     this.owner.inventory.dropWeapon(1, true)?.destroy();

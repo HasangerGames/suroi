@@ -6143,7 +6143,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // halloween only.
                     { idString: "cobweb", position: Vec.create(20.39, -122.53), rotation: 0 },
                     { idString: "cobweb", position: Vec.create(-72.69, -99.3), rotation: 0 },
-                    { idString: "cobweb", position: Vec.create(29.57, -122.55), rotation: 3 },
+                    { idString: "cobweb", position: Vec.create(29.57, -122.53), rotation: 3 },
 
                     { idString: "control_panel2", position: Vec.create(-12.74, -99.53), rotation: 0 },
                     { idString: "control_panel_small", position: Vec.create(-0.04, -81.91), rotation: 3 },
