@@ -39,7 +39,7 @@ export class ServerPerkManager extends PerkManager {
                             Object.values(choices)
                         )
                     );
-                    this.owner.setPartialDirty();
+                    this.owner.setDirty();
                     break;
                 }
                 case PerkIds.PlumpkinBomb: {
@@ -132,7 +132,7 @@ export class ServerPerkManager extends PerkManager {
                 }
                 case PerkIds.Costumed: {
                     this.owner.activeDisguise = undefined;
-                    this.owner.setPartialDirty();
+                    this.owner.setDirty();
                     break;
                 }
             }
