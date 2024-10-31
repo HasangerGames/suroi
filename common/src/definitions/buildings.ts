@@ -927,9 +927,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // -----------------------------------------------------------------------
                     // TEMP: Remove if halloween ends.
                     // -----------------------------------------------------------------------
-                    { idString: "cobweb", position: Vec.create(-14.16, -29.07), rotation: 0 },
                     { idString: "cobweb", position: Vec.create(14.16, -29.07), rotation: 3 },
-                    { idString: "cobweb", position: Vec.create(14.21, 28.79), rotation: 2 },
                     { idString: "cobweb", position: Vec.create(-14.21, 28.79), rotation: 1 },
                     // -----------------------------------------------------------------------
 
@@ -1350,7 +1348,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // TEMP: Remove if halloween ends.
                     // -----------------------------------------------------------------------
                     { idString: "cobweb", position: Vec.create(25.64, -24.17), rotation: 3 },
-                    { idString: "cobweb", position: Vec.create(-24.99, -23.79), rotation: 0 },
                     { idString: "cobweb", position: Vec.create(-25.46, 23.38), rotation: 1 },
                     // -----------------------------------------------------------------------
 
@@ -4714,7 +4711,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // -----------------------------------------------------------------------
                     // TEMP: Remove if halloween ends.
                     // -----------------------------------------------------------------------
-                    { idString: "cobweb", position: Vec.create(-49.04, 11.34), rotation: 1 },
                     { idString: "cobweb", position: Vec.create(-49.38, -35.17), rotation: 0 },
                     { idString: "cobweb", position: Vec.create(27.42, -35.23), rotation: 3 },
                     { idString: "cobweb", position: Vec.create(27.33, 11.48), rotation: 2 },
@@ -5853,6 +5849,14 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         key: "plumpkin_bunker_floor",
                         position: Vec.create(0, 0),
                         scale: Vec.create(1.506, 1.506)
+                    },
+
+                    // halloween only.
+                    {
+                        key: "windowed_vault_door_residue",
+                        position: Vec.create(24.88, -104.54),
+                        zIndex: ZIndexes.DeadObstacles,
+                        scale: Vec.create(0.9, 0.9)
                     }
                 ],
                 hitbox: new GroupHitbox(
