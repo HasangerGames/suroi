@@ -7,8 +7,7 @@ import { PerkIds, Perks } from "@common/definitions/perks";
 import { isArray } from "@common/utils/misc";
 import { ItemType, NullString, type ObjectDefinition, type ObjectDefinitions, type ReferenceOrRandom, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, weightedRandom } from "@common/utils/random";
-import { Config } from "../config";
-import { Maps, type MapName } from "./maps";
+import { Maps } from "./maps";
 
 export type WeightedItem =
     (
