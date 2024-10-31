@@ -238,15 +238,15 @@ const perks = [
     {
         idString: PerkIds.Lycanthropy,
         name: "Lycanthropy",
-        description: "Become a werewolf with high speed, health, regeneration, and melee damage, but can't use guns & grenades. Ally with other werewolves.",
+        description: "Become a werewolf with high speed, health, regeneration, and melee damage, but can't use guns & grenades.",
         categories: [PerkCategories.Halloween],
 
         speedMod: 1.3,
-        healthMod: 2,
-        regenRate: 0.5,
-        meleeMult: 2,
+        healthMod: 1.5,
+        regenRate: 1,
+        meleeMult: 1.5,
         noDrop: true,
-        noSwap: true,
+        noSwap: false,
         type: PerkQualities.Positive
     },
     {
@@ -313,18 +313,18 @@ const perks = [
     {
         idString: PerkIds.BabyPlumpkinPie,
         name: "Baby Plumpkin Pie",
-        description: "Your held weapon randomizes every 20 seconds and after every kill.",
+        description: "Your held weapon randomizes every 10 seconds and after every kill.",
         categories: [PerkCategories.Halloween],
 
-        [updateInterval]: 20e3, // milliseconds
+        [updateInterval]: 10e3, // milliseconds
         noDrop: true,
-        noSwap: true,
+        noSwap: false,
         type: PerkQualities.Neutral // how is this neutral it's annoying
     },
     {
         idString: PerkIds.Costumed,
         name: "Costumed",
-        description: "Become a Pumpkin, or very rarely, a Plumpkin.",
+        description: "Become a random obstacle. Rare chance to become a Plumpkin variant.",
         categories: [PerkCategories.Halloween],
 
         choices: {
@@ -357,10 +357,10 @@ const perks = [
     {
         idString: PerkIds.TornPockets,
         name: "Torn Pockets",
-        description: "Every second, drop 2 of a random ammo on the ground.",
+        description: "Every two seconds, drop 2 of a random ammo on the ground.",
         categories: [PerkCategories.Halloween],
 
-        [updateInterval]: 1e3,
+        [updateInterval]: 2e3,
         dropCount: 2,
         noDrop: true,
         type: PerkQualities.Negative
@@ -371,7 +371,7 @@ const perks = [
         description: "Move slower inside buildings and bunkers.",
         categories: [PerkCategories.Halloween],
 
-        speedMod: 0.9,
+        speedMod: 0.75,
         noDrop: true,
         type: PerkQualities.Negative
     },
