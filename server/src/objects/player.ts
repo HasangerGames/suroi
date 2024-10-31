@@ -375,6 +375,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     c4s: ThrowableProjectile[] = [];
 
     readonly perks = new ServerPerkManager(this, Perks.defaults);
+    readonly perkUpdateMap?: Map<PerkDefinition & { updateInterval: number }, number>; // key = perk, value = last updated
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
@@ -742,6 +743,15 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
 
             movement = Vec.create(x, y);
+        }
+
+        // Perks
+        if (this.perkUpdateMap) {
+            for (const [perk, lastUpdated] of this.perkUpdateMap.entries()) {
+                if (this.game.now - lastUpdated > perk.updateInterval) {
+
+                }
+            }
         }
 
         // Recoil
