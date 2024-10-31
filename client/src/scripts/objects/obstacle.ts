@@ -251,10 +251,12 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     // -eiπ
 
                     this._flickerTimeout ??= this.game.addTimeout(function flicker(): void {
+                        if (particle.dead) return;
                         if (Math.random() < chance) {
                             const old = particle.alpha;
                             particle.alpha *= strength;
                             This._flickerTimeout = This.game.addTimeout(() => {
+                                if (particle.dead) return;
                                 particle.alpha = old;
                                 This._flickerTimeout = This.game.addTimeout(flicker, interval);
                             }, 50);
