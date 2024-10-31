@@ -1347,6 +1347,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // TEMP: Remove if halloween ends.
                     // -----------------------------------------------------------------------
                     { idString: "cobweb", position: Vec.create(25.64, -24.17), rotation: 3 },
+                    { idString: "jack_o_lantern", position: Vec.create(6.2, -36.5), rotation: 3 },
+                    { idString: "jack_o_lantern", position: Vec.create(27.2, -36.5), rotation: 3 },
                     // -----------------------------------------------------------------------
 
                     { idString: "house_wall_4", position: Vec.create(8.6, -18), rotation: 1 },
@@ -1537,6 +1539,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // TEMP: Remove if halloween ends.
                     // -----------------------------------------------------------------------
                     { idString: "cobweb", position: Vec.create(-26.19, 23.5), rotation: 1 },
+                    { idString: "jack_o_lantern", position: Vec.create(-3.3, -36.8), rotation: 3 },
+                    { idString: "jack_o_lantern", position: Vec.create(17.7, -36.8), rotation: 3 },
                     // -----------------------------------------------------------------------
 
                     { idString: "door", position: Vec.create(7.6, -29.6), rotation: 0 },
@@ -1652,6 +1656,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // -----------------------------------------------------------------------
                     { idString: "cobweb", position: Vec.create(27.74, -24.95), rotation: 3 },
                     { idString: "cobweb", position: Vec.create(-44.48, -25.06), rotation: 0 },
+                    { idString: "jack_o_lantern", position: Vec.create(-46.48, 35.06), rotation: -0.1 }, // cursed
+                    { idString: "jack_o_lantern", position: Vec.create(40.24, 24), rotation: -1 },
                     // -----------------------------------------------------------------------
 
                     { idString: "window", position: Vec.create(32.99, -12.81), rotation: 0 },
@@ -1832,15 +1838,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     }
                 ],
                 obstacles: [
-
-                    // ---------------------------------------------------------------------
-                    // TEMP: Remove if halloween ends
-                    // ---------------------------------------------------------------------
-                    { idString: "cobweb", position: Vec.create(13.76, 15.04), rotation: 1 },
-                    { idString: "cobweb", position: Vec.create(-29.14, -24.55), rotation: 0 },
-                    { idString: "cobweb", position: Vec.create(29.28, -24.48), rotation: 3 },
-                    // ----------------------------------------------------------------------
-
                     // windows
                     { idString: "window", position: Vec.create(-34.5, 7.4), rotation: 0 },
                     { idString: "window", position: Vec.create(34.6, -2.5), rotation: 0 },
