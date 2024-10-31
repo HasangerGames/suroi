@@ -41,6 +41,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     meleeStopSound?: GameSound;
     meleeAttackCounter = 0;
 
+    activeDisguise = "";
+    disguiseContainer: Container;
     halloweenThrowableSkin = false;
 
     private _oldItem = this.activeItem;
@@ -95,6 +97,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         readonly muzzleFlash: SuroiSprite
         readonly waterOverlay: SuroiSprite
         readonly blood: Container
+        readonly disguiseSprite: SuroiSprite
         readonly badge?: SuroiSprite
     };
 
@@ -147,6 +150,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Player]) {
         super(game, id);
 
+        this.disguiseContainer = new Container();
+        this.game.camera.addObject(this.disguiseContainer);
+
         this.images = {
             aimTrail: new TilingSprite({ texture: SuroiSprite.getTexture("aimTrail"), width: 20, height: 6000 }),
             vest: new SuroiSprite().setVisible(false),
@@ -161,7 +167,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             altWeapon: new SuroiSprite().setZIndex(3),
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec.create(0, 0.5)),
             waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water),
-            blood: new Container()
+            blood: new Container(),
+            disguiseSprite: new SuroiSprite()
         };
 
         this.container.addChild(
@@ -179,6 +186,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.waterOverlay,
             this.images.blood
         );
+
+        this.disguiseContainer.addChild(this.images.disguiseSprite);
 
         // this.images.blood.zIndex = getEffectiveZIndex(4, this.game.layer, this.game.layer);
 
@@ -255,6 +264,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         super.updateContainerPosition();
         if (!this.destroyed) {
             this.emote.container.position = Vec.addComponent(this.container.position, 0, -175);
+            this.disguiseContainer.position = this.container.position;
             if (this.teammateName) {
                 this.teammateName.container.position = Vec.addComponent(this.container.position, 0, 95);
                 this.teammateName.container.zIndex = getEffectiveZIndex(ZIndexes.TeammateName, this.layer, this.game.layer);
@@ -361,6 +371,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this._hitbox.position = this.position;
 
         this.rotation = data.rotation;
+
+        this.activeDisguise = data.activeDisguise;
+        if (this.activeDisguise !== "") {
+            this.images.disguiseSprite.setVisible(true);
+            this.images.disguiseSprite.setFrame(this.activeDisguise);
+        } else {
+            this.images.disguiseSprite.setVisible(false);
+        }
 
         const noMovementSmoothing = !this.game.console.getBuiltInCVar("cv_movement_smoothing");
 
@@ -473,6 +491,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         if (isNew || !this.game.console.getBuiltInCVar("cv_movement_smoothing")) {
             this.container.position.copyFrom(toPixiCoords(this.position));
+            this.disguiseContainer.position.copyFrom(toPixiCoords(this.position));
             this.emote.container.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, -175)));
             this.teammateName?.container.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, 95)));
             if (this.isActivePlayer) this.game.uiManager.resetPerkSlots();
@@ -490,6 +509,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             const full = data.full;
 
             this.container.visible = !full.dead;
+            this.disguiseContainer.visible = this.container.visible;
 
             this.halloweenThrowableSkin = full.halloweenThrowableSkin;
 
@@ -1119,6 +1139,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 : ZIndexes.Players;
 
         this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, this.game.layer);
+        this.disguiseContainer.zIndex = this.container.zIndex + 1;
         this.emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer, this.game.layer);
     }
 
@@ -1910,6 +1931,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         images.muzzleFlash.destroy();
         images.waterOverlay.destroy();
         images.blood.destroy();
+        images.disguiseSprite.destroy();
 
         emote.image.destroy();
         emote.background.destroy();
@@ -1929,6 +1951,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         anims.muzzleFlashRecoil?.kill();
 
         this.grenadeImpactPreview?.destroy();
+
+        this.disguiseContainer.destroy();
 
         this.healingParticlesEmitter.destroy();
         this.actionSound?.stop();

@@ -37,6 +37,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
         readonly position: Vector
         readonly rotation: number
         readonly layer: Layer
+        readonly activeDisguise: string
         readonly animation?: AnimationType
         readonly action?: ({
             readonly type: Exclude<PlayerActions, PlayerActions.UseItem>
@@ -183,11 +184,12 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     //
     [ObjectCategory.Player]: {
         serializePartial(stream, data): void {
-            const { position, rotation, layer, animation, action } = data;
+            const { position, rotation, layer, activeDisguise, animation, action } = data;
 
             stream.writePosition(position);
             stream.writeRotation(rotation, 16);
             stream.writeLayer(layer);
+            stream.writeUTF8String(activeDisguise);
 
             const animationDirty = animation !== undefined;
             stream.writeBoolean(animationDirty);
@@ -250,6 +252,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 position: stream.readPosition(),
                 rotation: stream.readRotation(16),
                 layer: stream.readLayer(),
+                activeDisguise: stream.readUTF8String(),
                 animation: stream.readBoolean() ? stream.readBits(ANIMATION_TYPE_BITS) : undefined
             };
 

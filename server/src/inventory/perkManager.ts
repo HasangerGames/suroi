@@ -27,6 +27,16 @@ export class ServerPerkManager extends PerkManager {
             // ! evil starts here
             // some perks need to perform setup when added
             switch (idString) {
+                case PerkIds.Costumed: {
+                    this.owner.perks.map(PerkIds.Costumed, ({ plumpkinVariantChance }) => {
+                        if (Math.random() < plumpkinVariantChance) {
+                            this.owner.activeDisguise = "plumpkin";
+                        } else {
+                            this.owner.activeDisguise = "large_pumpkin";
+                        }
+                    });
+                    break;
+                }
                 case PerkIds.PlumpkinBomb: {
                     this.owner.halloweenThrowableSkin = true;
                     this.owner.animation = AnimationType.UpdateThrowableSpriteToHalloween;
@@ -69,6 +79,7 @@ export class ServerPerkManager extends PerkManager {
                 }
 
                 default: {
+                    this.owner.activeDisguise = "";
                     this.owner.animation = AnimationType.UpdateThrowableSpriteToNormal;
                     this.owner.setPartialDirty();
                 }

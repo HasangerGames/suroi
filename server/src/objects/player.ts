@@ -57,6 +57,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     halloweenThrowableSkin = false;
     activeBloodthirstEffect = false;
+    activeDisguise = "";
 
     teamID?: number;
 
@@ -2028,6 +2029,19 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
+        // Disguise funnies
+        if (this.activeDisguise !== "") {
+            const disguiseObstacle = this.game.map.generateObstacle(this.activeDisguise, this.position, { layer: this.layer });
+
+            if (disguiseObstacle) {
+                this.game.addTimeout(() => {
+                    disguiseObstacle.damage({
+                        amount: disguiseObstacle.health
+                    });
+                }, 10); // small delay so sound plays
+            }
+        }
+
         // Create death marker
         this.game.grid.addObject(new DeathMarker(this, layer));
 
@@ -2343,6 +2357,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             position: this.position,
             rotation: this.rotation,
             layer: this.layer,
+            activeDisguise: this.activeDisguise,
             full: {
                 dead: this.dead,
                 downed: this.downed,
