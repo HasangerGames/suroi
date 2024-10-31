@@ -391,8 +391,8 @@ const maps = {
             minHeight: 150,
             maxWidth: 250,
             maxHeight: 200,
-            count: 2,
-            allowedObstacles: ["clearing_boulder", "flint_crate", "rock", "vibrant_bush", "river_chest", "lily_pad", "grenade_crate", "oak_leaf_pile", "river_rock", "melee_crate", "flint_stone"],
+            count: 3,
+            allowedObstacles: ["clearing_boulder", "flint_crate", "rock", "plumpkin", "diseased_plumpkin", "vibrant_bush", "river_chest", "lily_pad", "grenade_crate", "oak_leaf_pile", "river_rock", "melee_crate", "flint_stone"],
             obstacles: [
                 { idString: "clearing_boulder", min: 3, max: 6 },
                 { idString: "flint_crate", min: 0, max: 2 },
@@ -444,14 +444,14 @@ const maps = {
             tent_4: 1
         },
         obstacles: {
-            oak_tree: 170,
-            birch_tree: 65,
-            maple_tree: 55,
-            pine_tree: 95,
+            oak_tree: 140,
+            birch_tree: 60,
+            maple_tree: 50,
+            pine_tree: 80,
             dormant_oak_tree: 100,
             stump: 40,
             hay_bale: 40,
-            diseased_plumpkin: 60,
+            diseased_plumpkin: 120,
             hatchet_stump: 3,
             regular_crate: 200,
             flint_crate: 10,
@@ -471,8 +471,9 @@ const maps = {
             loot_tree: 1,
             loot_barrel: 1,
             flint_stone: 3,
-            pumpkin: 200,
-            large_pumpkin: 5,
+            pumpkin: 300,
+            large_pumpkin: 40,
+            plumpkin: 5,
             pebble: 110
         },
         obstacleClumps: [
