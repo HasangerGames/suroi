@@ -237,6 +237,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         ],
         lux_crate: [
             [{ item: "cz600", weight: 1 }],
+            [{ item: "usas12", weight: 0.5 }],
             [{ table: "scopes", weight: 1 }]
         ],
         gold_rock: [
@@ -845,6 +846,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "m16a4", weight: 1 },
             { item: "cz600", weight: 0.75 },
             { item: "mini14", weight: 0.75 },
+            { item: "usas12", weight: 0.7},
             { item: "mcx_spear", weight: 0.55 },
             { item: "sr25", weight: 0.5 },
             { item: "vss", weight: 0.5 },
@@ -935,7 +937,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "usas12", weight: 1 },
             { item: "mk18", weight: 0.2 },
             { item: "l115a1", weight: 0.2 },
-            { item: "g19", weight: 0.0001 }
+            { item: "g19", weight: 0.000001 }
         ],
         ammo_crate: [
             [{ table: "ammo", weight: 1 }],
@@ -964,6 +966,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [
                 { item: "vks", weight: 1 },
                 { item: "tango_51", weight: 1 }
+                { item: "usas12", weight: 0.5 }
             ],
             [{ table: "special_scopes", weight: 1 }]
         ],
@@ -1209,7 +1212,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "hatchet", weight: 3 },
             { item: "kbar", weight: 2 },
             { item: "baseball_bat", weight: 2 },
-            { item: "gas_can", weight: 0 } // somewhat hack in order to make the gas can obtainable through mini plumpkins
+            { item: "gas_can", weight: 0.1 } 
         ]
     }
 };
