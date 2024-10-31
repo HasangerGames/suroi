@@ -1836,7 +1836,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
 
             portaPottyWall(["Outhouse Front Wall", "outhouse_wall_particle", {
                 color: 0x6e4d2f, borderColor: 0x261b14
-            }], { hitbox: RectangleHitbox.fromRect(2.68, 1.81) }),
+            }], { hitbox: RectangleHitbox.fromRect(2.8, 1.81) }),
 
             {
                 idString: "fridge",

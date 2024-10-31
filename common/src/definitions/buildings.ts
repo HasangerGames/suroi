@@ -769,7 +769,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 idString: "outhouse",
                 name: "Outhouse",
                 spawnHitbox: RectangleHitbox.fromRect(19, 29),
-                scopeHitbox: RectangleHitbox.fromRect(14.94, 20.8, Vec.create(0, -2.02)),
+                scopeHitbox: RectangleHitbox.fromRect(14.94, 20, Vec.create(0, -2.02)),
                 floorImages: [
                     {
                         key: "outhouse_floor",
@@ -796,11 +796,11 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ],
                 obstacles: [
                     { idString: randomToilet, position: Vec.create(0, -6), rotation: 0 },
-                    { idString: "outhouse_back_wall", position: Vec.create(0, -11.58), rotation: 0 },
+                    { idString: "outhouse_back_wall", position: Vec.create(0, -11.55), rotation: 0 },
                     { idString: "outhouse_toilet_paper_wall", position: Vec.create(-5.58, -2.83), rotation: 0 },
                     { idString: "outhouse_side_wall", position: Vec.create(6.76, -2.83), rotation: 0 },
-                    { idString: "outhouse_front_wall", position: Vec.create(6.33, 7.68), rotation: 0 },
-                    { idString: "outhouse_front_wall", position: Vec.create(-6.29, 7.68), rotation: 0 },
+                    { idString: "outhouse_front_wall", position: Vec.create(6.25, 7.68), rotation: 0 },
+                    { idString: "outhouse_front_wall", position: Vec.create(-6.25, 7.68), rotation: 0 },
                     { idString: "outhouse_door", position: Vec.create(-0.05, 7.64), rotation: 0 }
                 ]
             },
