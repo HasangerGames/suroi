@@ -319,7 +319,7 @@ const perks = [
         [updateInterval]: 20e3, // milliseconds
         noDrop: true,
         noSwap: true,
-        type: PerkQualities.Neutral // how is this neutral its annoying
+        type: PerkQualities.Neutral // how is this neutral it's annoying
     },
     {
         idString: PerkIds.Costumed,
@@ -327,7 +327,30 @@ const perks = [
         description: "Become a Pumpkin, or very rarely, a Plumpkin.",
         categories: [PerkCategories.Halloween],
 
-        plumpkinVariantChance: 0.01,
+        choices: {
+            oak_tree: 1,
+            dormant_oak_tree: 1,
+            maple_tree: 1,
+            pine_tree: 1,
+            birch_tree: 1,
+            stump: 1,
+
+            rock: 1,
+
+            regular_crate: 1,
+
+            barrel: 1,
+            super_barrel: 1,
+
+            vibrant_bush: 1,
+            oak_leaf_pile: 1,
+            blueberry_bush: 1,
+            hay_bale: 1,
+
+            mini_plumpkin: 0.01,
+            plumpkin: 0.01,
+            diseased_plumpkin: 0.01
+        },
         noDrop: true,
         type: PerkQualities.Neutral
     },

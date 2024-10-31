@@ -4,6 +4,8 @@ import { PerkData, PerkIds, type PerkDefinition, type PerkNames } from "@common/
 import { PerkManager } from "@common/utils/perkManager";
 import { type Player } from "../objects";
 import { GunItem } from "./gunItem";
+import { Obstacles } from "@common/definitions/obstacles";
+import { weightedRandom } from "@common/utils/random";
 
 export class ServerPerkManager extends PerkManager {
     constructor(
@@ -29,13 +31,15 @@ export class ServerPerkManager extends PerkManager {
             // some perks need to perform setup when added
             switch (idString) {
                 case PerkIds.Costumed: {
-                    this.owner.perks.map(PerkIds.Costumed, ({ plumpkinVariantChance }) => {
-                        if (Math.random() < plumpkinVariantChance) {
-                            this.owner.activeDisguise = "plumpkin";
-                        } else {
-                            this.owner.activeDisguise = "large_pumpkin";
-                        }
-                    });
+                    const { choices } = PerkData[PerkIds.Costumed];
+
+                    this.owner.activeDisguise = Obstacles.fromString(
+                        weightedRandom(
+                            Object.keys(choices),
+                            Object.values(choices)
+                        )
+                    );
+                    this.owner.setPartialDirty();
                     break;
                 }
                 case PerkIds.PlumpkinBomb: {
@@ -78,11 +82,6 @@ export class ServerPerkManager extends PerkManager {
                         }
                     }
                     break;
-                }
-
-                default: {
-                    this.owner.activeDisguise = "";
-                    this.owner.setPartialDirty();
                 }
             }
             // ! evil ends here
@@ -129,6 +128,11 @@ export class ServerPerkManager extends PerkManager {
                 case PerkIds.PlumpkinBomb: {
                     this.owner.halloweenThrowableSkin = false;
                     this.owner.setDirty();
+                    break;
+                }
+                case PerkIds.Costumed: {
+                    this.owner.activeDisguise = undefined;
+                    this.owner.setPartialDirty();
                     break;
                 }
             }

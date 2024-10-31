@@ -11,6 +11,7 @@ import { Guns, type GunDefinition, type SingleGunNarrowing } from "../../../../c
 import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
 import { Loots, type WeaponDefinition } from "../../../../common/src/definitions/loots";
 import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "../../../../common/src/definitions/melees";
+import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { PerkData, PerkIds } from "../../../../common/src/definitions/perks";
 import { Skins, type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
@@ -41,7 +42,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     meleeStopSound?: GameSound;
     meleeAttackCounter = 0;
 
-    activeDisguise = "";
+    activeDisguise?: ObstacleDefinition;
     disguiseContainer: Container;
     halloweenThrowableSkin = false;
 
@@ -372,10 +373,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         this.rotation = data.rotation;
 
-        this.activeDisguise = data.activeDisguise;
-        if (this.activeDisguise !== "") {
+        if ((this.activeDisguise = data.activeDisguise) !== undefined) {
             this.images.disguiseSprite.setVisible(true);
-            this.images.disguiseSprite.setFrame(this.activeDisguise);
+            this.images.disguiseSprite.setFrame(this.activeDisguise.idString);
         } else {
             this.images.disguiseSprite.setVisible(false);
         }

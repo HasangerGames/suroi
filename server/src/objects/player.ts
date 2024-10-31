@@ -28,6 +28,7 @@ import { ServerPerkManager } from "../inventory/perkManager";
 import { ThrowableItem } from "../inventory/throwableItem";
 import { type Team } from "../team";
 import { removeFrom } from "../utils/misc";
+import type { ObstacleDefinition } from "@common/definitions/obstacles";
 
 export interface PlayerContainer {
     readonly teamID?: string
@@ -57,7 +58,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     halloweenThrowableSkin = false;
     activeBloodthirstEffect = false;
-    activeDisguise = "";
+    activeDisguise?: ObstacleDefinition;
 
     teamID?: number;
 
@@ -2029,10 +2030,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         // Disguise funnies
-        if (this.activeDisguise !== "") {
-            const disguiseObstacle = this.game.map.generateObstacle(this.activeDisguise, this.position, { layer: this.layer });
+        if (this.activeDisguise !== undefined) {
+            const disguiseObstacle = this.game.map.generateObstacle(this.activeDisguise?.idString, this.position, { layer: this.layer });
 
-            if (disguiseObstacle) {
+            if (disguiseObstacle !== undefined) {
                 this.game.addTimeout(() => {
                     disguiseObstacle.damage({
                         amount: disguiseObstacle.health
