@@ -373,11 +373,15 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         this.rotation = data.rotation;
 
-        if ((this.activeDisguise = data.activeDisguise) !== undefined) {
-            this.images.disguiseSprite.setVisible(true);
-            this.images.disguiseSprite.setFrame(this.activeDisguise.idString);
-        } else {
-            this.images.disguiseSprite.setVisible(false);
+        const oldDisguise = this.activeDisguise;
+        if (oldDisguise !== (this.activeDisguise = data.activeDisguise)) {
+            const def = this.activeDisguise;
+            if (def !== undefined) {
+                this.images.disguiseSprite.setVisible(true);
+                this.images.disguiseSprite.setFrame(`${def.frames.base ?? def.idString}${def.variations !== undefined ? `_${random(1, def.variations)}` : ""}`);
+            } else {
+                this.images.disguiseSprite.setVisible(false);
+            }
         }
 
         const noMovementSmoothing = !this.game.console.getBuiltInCVar("cv_movement_smoothing");
