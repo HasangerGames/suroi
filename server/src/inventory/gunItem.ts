@@ -16,6 +16,7 @@ import type { ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import { ReloadAction } from "./action";
 import { InventoryItem } from "./inventoryItem";
+import { getPatterningShape } from "../utils/misc";
 
 /**
  * A class representing a firearm
@@ -256,16 +257,14 @@ export class GunItem extends InventoryItem<GunDefinition> {
             )
             : (_: Vector) => owner.layer;
 
-        const spawnWithSpread = (spread: number): void => {
-            const finalSpawnPosition = jitter ? randomPointInsideCircle(position, jitter) : position;
-
+        const spawn = (position: Vector, spread: number): void => {
             owner.game.addBullet(
                 this,
                 owner,
                 {
-                    position: finalSpawnPosition,
+                    position,
                     rotation: owner.rotation + HALF_PI + spread,
-                    layer: getStartingLayer(finalSpawnPosition),
+                    layer: getStartingLayer(position),
                     rangeOverride,
                     modifiers: modifiersModified ? modifiers : undefined,
                     saturate,
@@ -278,23 +277,38 @@ export class GunItem extends InventoryItem<GunDefinition> {
         const pcM1 = projCount - 1;
         const sM1 = split - 1;
 
+        let pattern: Vector[] | undefined;
         for (let i = 0; i < projCount; i++) {
-            const baseSpread = (
-                definition.consistentPatterning
-                    ? 8 * (i / pcM1 - 0.5) ** 3
-                    : randomFloat(-1, 1)
-            ) * spread;
+            let finalSpawnPosition: Vector;
+            let rotation: number;
+
+            if (definition.consistentPatterning) {
+                if (jitter === 0) {
+                    finalSpawnPosition = position;
+                    rotation = 8 * (i / pcM1 - 0.5) ** 3;
+                } else {
+                    const patternPoint = (pattern ??= getPatterningShape(projCount, jitter))[i];
+                    finalSpawnPosition = Vec.add(position, Vec.rotate(patternPoint, owner.rotation));
+                    rotation = (patternPoint.y / jitter) ** 3;
+                }
+            } else {
+                finalSpawnPosition = jitter === 0 ? position : randomPointInsideCircle(position, jitter);
+                rotation = randomFloat(-1, 1);
+            }
+
+            rotation *= spread;
 
             if (!doSplinterGrouping) {
-                spawnWithSpread(baseSpread);
+                spawn(finalSpawnPosition, rotation);
                 continue;
             }
 
             const dev = Angle.degreesToRadians(deviation);
 
             for (let j = 0; j < split; j++) {
-                spawnWithSpread(
-                    (8 * (j / sM1 - 0.5) ** 3) * dev + baseSpread
+                spawn(
+                    finalSpawnPosition,
+                    (8 * (j / sM1 - 0.5) ** 3) * dev + rotation
                 );
             }
         }
