@@ -457,6 +457,37 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 player.setDirty();
                 break;
             }
+            /*
+           // This seems to work server-side, but it breaks client-side perk display..
+           case ItemType.Perk: {
+                const currentPerks = player.perks.asList();
+                const perksLength = currentPerks.length;
+
+                const isHalloweenPerk = definition.categories.includes(PerkCategories.Halloween);
+                const isNormalPerk = definition.categories.includes(PerkCategories.Normal);
+
+                // Variable to track which perk to remove
+                let perkToRemove = null;
+
+                    if (isHalloweenPerk) {
+                        perkToRemove = currentPerks.find(perk => perk.categories.includes(PerkCategories.Halloween));
+                    } else if (isNormalPerk) {
+                        perkToRemove = currentPerks.find(perk => perk.categories.includes(PerkCategories.Normal));
+                    }
+
+                    // If a perk to remove has been identified, remove it
+                    if (perkToRemove) {
+                        if (!perkToRemove.noDrop) {
+                            createNewItem({ type: perkToRemove, count: 1 });
+                        }
+                        player.perks.removePerk(perkToRemove);
+                    }
+
+                // Add the new perk
+                player.perks.addPerk(definition);
+                player.updateAndApplyModifiers();
+                break;
+            } */
             case ItemType.Perk: {
                 const currentPerks = player.perks.asList();
                 const perksLength = currentPerks.length;
@@ -473,7 +504,6 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 break;
             }
         }
-
         this._count -= countToRemove;
 
         player.dirty.items = true;
