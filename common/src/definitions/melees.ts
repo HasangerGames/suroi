@@ -97,6 +97,31 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             }
         },
         {
+            idString: "feral_claws",
+            name: "Feral Claws",
+            damage: 20,
+            obstacleMultiplier: 1,
+            radius: 1.75,
+            offset: Vec.create(2.5, 0),
+            cooldown: 150,
+            // noDrop: true,
+            fists: {
+                animationDuration: 100,
+                randomFist: true,
+                left: Vec.create(38, -35),
+                right: Vec.create(38, 35),
+                useLeft: Vec.create(75, -10),
+                useRight: Vec.create(75, 10)
+            },
+            image: {
+                position: Vec.create(42, 20),
+                usePosition: Vec.create(80, -25),
+                angle: 45,
+                useAngle: 65,
+                lootScale: 0.6
+            }
+        },
+        {
             idString: "hatchet",
             name: "Hatchet",
             damage: 45,
