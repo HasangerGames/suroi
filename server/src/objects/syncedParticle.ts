@@ -79,12 +79,16 @@ export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedP
         readonly duration: number
     };
 
-    constructor(game: Game, definition: SyncedParticleDefinition, position: Vector, layer?: number) {
+    creatorID?: number;
+
+    constructor(game: Game, definition: SyncedParticleDefinition, position: Vector, layer?: number, creatorID?: number) {
         super(game, position);
         this._creationDate = game.now;
         this.definition = definition;
 
         this.layer = layer ?? 0;
+
+        this.creatorID = creatorID;
 
         this._lifetime = resolveNumericSpecifier(definition.lifetime);
 
@@ -236,7 +240,8 @@ export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedP
             rotation: this.rotation,
             layer: this.layer,
             full: {
-                definition: this.definition
+                definition: this.definition,
+                creatorID: this.creatorID
             }
         };
 

@@ -425,6 +425,15 @@ export class Game implements GameData {
                     }
                     break;
                 }
+                case PerkIds.Shrouded: {
+                    for (const player of players) {
+                        if (!player.hasPerk(PerkIds.Shrouded) || player.dead) continue;
+
+                        this.addSyncedParticle(SyncedParticles.fromString("shrouded_particle"), player.position, player.layer, player.id)
+                            .setTarget(randomPointInsideCircle(player.position, 5), 1000, EaseFunctions.circOut);
+                    }
+                    break;
+                }
             }
             // ! evil ends here
         }
@@ -1044,8 +1053,8 @@ export class Game implements GameData {
         projectile.dead = true;
     }
 
-    addSyncedParticle(definition: SyncedParticleDefinition, position: Vector, layer: Layer | number): SyncedParticle {
-        const syncedParticle = new SyncedParticle(this, definition, position, layer);
+    addSyncedParticle(definition: SyncedParticleDefinition, position: Vector, layer: Layer | number, creatorID?: number): SyncedParticle {
+        const syncedParticle = new SyncedParticle(this, definition, position, layer, creatorID);
         this.grid.addObject(syncedParticle);
         return syncedParticle;
     }

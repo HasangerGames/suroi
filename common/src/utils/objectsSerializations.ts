@@ -164,6 +164,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
         readonly full?: {
             readonly definition: SyncedParticleDefinition
             readonly variant?: Variation
+            readonly creatorID?: number
         }
     }
 }
@@ -544,6 +545,12 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 stream.writeBits(variant, full.definition.variationBits!);
             }
+
+            const creatorID = full.creatorID;
+            stream.writeBoolean(creatorID !== undefined);
+            if (creatorID !== undefined) {
+                stream.writeObjectID(creatorID);
+            }
         },
         deserializePartial(stream) {
             const data: Mutable<ObjectsNetData[ObjectCategory.SyncedParticle]> = {
@@ -568,7 +575,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 definition,
                 // we're assuming that the serialized form is already present if this method is being called
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                variant: stream.readBoolean() ? stream.readBits(definition.variationBits!) as Variation : undefined
+                variant: stream.readBoolean() ? stream.readBits(definition.variationBits!) as Variation : undefined,
+                creatorID: stream.readBoolean() ? stream.readObjectID() : undefined
             };
         }
     }

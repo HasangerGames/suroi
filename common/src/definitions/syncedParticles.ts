@@ -35,7 +35,7 @@ export type SyncedParticleDefinition = ObjectDefinition & {
     /**
      * @default {1}
      */
-    readonly alpha: Animated<number> | NumericSpecifier
+    readonly alpha: (Animated<number> & { creator?: number }) | NumericSpecifier
     /**
      * @default {Infinity}
      */
@@ -176,6 +176,23 @@ export const SyncedParticles = ObjectDefinitions.withDefault<SyncedParticleDefin
                     tint: 0x854770,
                     hitbox: new CircleHitbox(5),
                     snapScopeTo: "1x_scope"
+                }
+            ),
+            smokeLike(
+                ["shrouded_particle"],
+                {
+                    tint: 0xaaaaaa,
+                    hitbox: new CircleHitbox(5),
+                    snapScopeTo: "1x_scope",
+                    alpha: {
+                        start: 0.7,
+                        end: 0,
+                        creator: 0.1
+                    },
+                    lifetime: {
+                        mean: 2000,
+                        deviation: 200
+                    }
                 }
             ),
             smokeLike(
