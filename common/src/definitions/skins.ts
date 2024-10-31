@@ -16,6 +16,7 @@ export interface SkinDefinition extends ItemDefinition {
     readonly hideEquipment: boolean
     readonly roleRequired?: string
     readonly hideBlood: boolean
+    readonly noSwap?: boolean
 }
 
 export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
@@ -122,9 +123,9 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ["One at NSD",            0x27331a],
                 ["Sky",                   0x002121],
                 ["Diseased",              0x2d1f1f],
-                ["Deer Season",           0x9a3604],
-                ["Werewolf",              0x323232]
+                ["Deer Season",           0x9a3604]
             ] satisfies ReadonlyArray<readonly [string, number]>).map(([name, tint]) => hidden([name, tint])),
+            hidden(["Werewolf", 0x323232], { noSwap: true }),
             hidden(
                 ["Ghillie Suit", 0xffffff],
                 {
