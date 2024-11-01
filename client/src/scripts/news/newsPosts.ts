@@ -2,6 +2,31 @@ import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
+        date: 1730428409000,
+        author: "HAZEL",
+        title: "Plumpkin Panic",
+        bannerImage: "../img/news/v0.21.0.png",
+        content: `<strong>Happy Halloween!</strong> It's that time of year again, and the Plumpkins have broken out of the bunker, leaving the island covered in brand new perk opportunities. The Harvest map has been changed to fit the festivities, with a delightfully spooky theme.
+
+<br><br>For a limited time, <strong>13 brand new Halloween exclusive perks</strong> will be available to pick up alongside the normal perks. There's no need to choose between one or the other: You can have one of each!
+
+<br><br>Halloween will run for <strong>3 days</strong>, until 8 PM EST, Nov 3rd.
+        `,
+        longContent: `<h2>Suroi v0.21.0</h2>
+<h3>New features</h3>
+<ul>
+  <li><strong>Halloween mode!</strong> A variant of Harvest mode with some spooky goodies.</li>
+  <li><strong>More perks!</strong> Added 13 Halloween-exclusive perks.</li>
+</ul>
+
+<h3>Changes</h3>
+<ul>
+  <li>Buffed Model 89 and DT-11.</li>
+  <li>Slight tweaks to SKS sprites.</li>
+  <li>Fixed team pings rendering below airdrop parachutes.</li>
+</ul>`
+    },
+    {
         date: 1730057509000,
         author: "HAZEL",
         title: "Open Season",
