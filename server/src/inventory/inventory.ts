@@ -127,12 +127,12 @@ export class Inventory {
         return oldState;
     }
 
-    lockAll(): void {
+    lockAllSlots(): void {
         this._lockedSlots = ~0;
         this.owner.dirty.slotLocks = true;
     }
 
-    unlockAll(): void {
+    unlockAllSlots(): void {
         this._lockedSlots = 0;
         this.owner.dirty.slotLocks = true;
     }

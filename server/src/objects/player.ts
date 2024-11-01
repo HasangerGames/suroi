@@ -2043,7 +2043,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const { position, layer } = this;
 
         // Drop weapons
-        this.inventory.unlockAll();
+        this.inventory.unlockAllSlots();
         this.inventory.dropWeapons();
 
         // Drop inventory items
@@ -2311,6 +2311,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     break;
                 }
                 case InputActions.UnlockSlot: {
+                    if (this.hasPerk(PerkIds.Lycanthropy)) break;
                     inventory.unlock(action.slot);
                     break;
                 }

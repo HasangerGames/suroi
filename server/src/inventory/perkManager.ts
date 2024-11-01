@@ -26,11 +26,12 @@ export class ServerPerkManager extends PerkManager {
      */
     override addPerk(perk: PerkDefinition): boolean {
         const idString = perk.idString;
+        const owner = this.owner;
         const absent = super.addPerk(perk);
 
         if ("updateInterval" in perk) {
-            (this.owner.perkUpdateMap ??= new Map<UpdatablePerkDefinition, number>())
-                .set(perk as UpdatablePerkDefinition, this.owner.game.now);
+            (owner.perkUpdateMap ??= new Map<UpdatablePerkDefinition, number>())
+                .set(perk as UpdatablePerkDefinition, owner.game.now);
         }
 
         if (absent) {
@@ -40,37 +41,41 @@ export class ServerPerkManager extends PerkManager {
                 case PerkIds.Costumed: {
                     const { choices } = PerkData[PerkIds.Costumed];
 
-                    this.owner.activeDisguise = Obstacles.fromString(
+                    owner.activeDisguise = Obstacles.fromString(
                         weightedRandom(
                             Object.keys(choices),
                             Object.values(choices)
                         )
                     );
-                    this.owner.setDirty();
+                    owner.setDirty();
                     break;
                 }
                 case PerkIds.PlumpkinBomb: {
-                    this.owner.halloweenThrowableSkin = true;
-                    this.owner.setDirty();
+                    owner.halloweenThrowableSkin = true;
+                    owner.setDirty();
                     break;
                 }
                 case PerkIds.Lycanthropy: {
-                    [this._selfData["Lycanthropy::old_skin"], this.owner.loadout.skin] = [this.owner.loadout.skin, Skins.fromString("werewolf")];
-                    this.owner.setDirty();
-                    this.owner.action?.cancel();
-                    this.owner.inventory.dropWeapon(0, true)?.destroy();
-                    this.owner.inventory.dropWeapon(1, true)?.destroy();
+                    [this._selfData["Lycanthropy::old_skin"], owner.loadout.skin] = [owner.loadout.skin, Skins.fromString("werewolf")];
+                    owner.setDirty();
+                    owner.action?.cancel();
+                    const inventory = owner.inventory;
+                    inventory.dropWeapon(0, true)?.destroy();
+                    inventory.dropWeapon(1, true)?.destroy();
+                    inventory.dropWeapon(2, true)?.destroy();
 
                     // Drop all throwables
-                    while (this.owner.inventory.getWeapon(3)) {
-                        this.owner.inventory.dropWeapon(3, true)?.destroy();
+                    while (inventory.getWeapon(3)) {
+                        inventory.dropWeapon(3, true)?.destroy();
                     }
+
+                    inventory.lockAllSlots();
 
                     /* TODO: continue crying */
                     break;
                 }
                 case PerkIds.ExtendedMags: {
-                    const weapons = this.owner.inventory.weapons;
+                    const weapons = owner.inventory.weapons;
                     const maxWeapons = GameConstants.player.maxWeapons;
                     for (let i = 0; i < maxWeapons; i++) {
                         const weapon = weapons[i];
@@ -85,7 +90,7 @@ export class ServerPerkManager extends PerkManager {
                         if (extra > 0) {
                             // firepower is anti-boosting this weapon, we need to shave the extra rounds off
                             weapon.ammo = def.extendedCapacity;
-                            this.owner.inventory.giveItem(def.ammoType, extra);
+                            owner.inventory.giveItem(def.ammoType, extra);
                         }
                     }
                     break;
@@ -94,7 +99,7 @@ export class ServerPerkManager extends PerkManager {
             // ! evil ends here
         }
 
-        this.owner.dirty.perks ||= absent;
+        owner.dirty.perks ||= absent;
         return absent;
     }
 
@@ -106,9 +111,10 @@ export class ServerPerkManager extends PerkManager {
      */
     override removePerk(perk: PerkDefinition): boolean {
         const idString = perk.idString;
+        const owner = this.owner;
 
         if ("updateInterval" in perk) {
-            this.owner.perkUpdateMap?.delete(perk as UpdatablePerkDefinition);
+            owner.perkUpdateMap?.delete(perk as UpdatablePerkDefinition);
         }
 
         const has = super.removePerk(perk);
@@ -118,12 +124,13 @@ export class ServerPerkManager extends PerkManager {
             // some perks need to perform cleanup on removal
             switch (idString) {
                 case PerkIds.Lycanthropy: {
-                    this.owner.loadout.skin = Skins.fromStringSafe(this._selfData["Lycanthropy::old_skin"] as string) ?? Skins.fromString("hazel_jumpsuit");
-                    this.owner.setDirty();
+                    owner.loadout.skin = Skins.fromStringSafe(this._selfData["Lycanthropy::old_skin"] as string) ?? Skins.fromString("hazel_jumpsuit");
+                    owner.inventory.unlockAllSlots();
+                    owner.setDirty();
                     break;
                 }
                 case PerkIds.ExtendedMags: {
-                    const weapons = this.owner.inventory.weapons;
+                    const weapons = owner.inventory.weapons;
                     const maxWeapons = GameConstants.player.maxWeapons;
                     for (let i = 0; i < maxWeapons; i++) {
                         const weapon = weapons[i];
@@ -135,26 +142,26 @@ export class ServerPerkManager extends PerkManager {
                         if (extra > 0) {
                             // firepower boosted this weapon, we need to shave the extra rounds off
                             weapon.ammo = def.capacity;
-                            this.owner.inventory.giveItem(def.ammoType, extra);
+                            owner.inventory.giveItem(def.ammoType, extra);
                         }
                     }
                     break;
                 }
                 case PerkIds.PlumpkinBomb: {
-                    this.owner.halloweenThrowableSkin = false;
-                    this.owner.setDirty();
+                    owner.halloweenThrowableSkin = false;
+                    owner.setDirty();
                     break;
                 }
                 case PerkIds.Costumed: {
-                    this.owner.activeDisguise = undefined;
-                    this.owner.setDirty();
+                    owner.activeDisguise = undefined;
+                    owner.setDirty();
                     break;
                 }
             }
             // ! evil ends here
         }
 
-        this.owner.dirty.perks ||= has;
+        owner.dirty.perks ||= has;
         return has;
     }
 }
