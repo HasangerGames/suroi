@@ -927,8 +927,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ table: "ammo", weight: 1 }],
             [{ table: "airdrop_guns", weight: 1 }],
             [
-                { table: "fall_perks", weight: 0.1 },
-                { item: NullString, weight: 0.9 }
+                { table: "fall_perks", weight: 0.5 },
+                { item: NullString, weight: 0.5 }
             ],
             [
                 { item: "frag_grenade", count: 3, weight: 2 },
@@ -943,10 +943,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ table: "airdrop_melee", weight: 1 }],
             [{ table: "ammo", weight: 1 }],
             [{ table: "gold_airdrop_guns", weight: 1 }],
-            [
-                { table: "fall_perks", weight: 0.5 },
-                { item: NullString, weight: 0.5 }
-            ],
+            [{ table: "fall_perks", weight: 1 }],
             [{ item: "frag_grenade", count: 3, weight: 1 }]
         ],
         briefcase: [
@@ -1092,9 +1089,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "m1_garand", weight: 0.002 }
         ],
         airdrop_guns: [
-            { item: "mini14", weight: 1.5 },
             { item: "sr25", weight: 1.5 },
-            { item: "mosin_nagant", weight: 1.5 },
             { item: "m590m", weight: 1 },
             { item: "rsh12", weight: 1 },
             { item: "vepr12", weight: 1 },
@@ -1259,8 +1254,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ table: "ammo", weight: 1 }],
             [{ table: "airdrop_guns", weight: 1 }],
             [
-                { table: "fall_perks", weight: 0.1 },
-                { item: NullString, weight: 0.9 }
+                { table: "fall_perks", weight: 0.5 },
+                { item: NullString, weight: 0.5 }
             ],
             [
                 { item: "frag_grenade", count: 3, weight: 2 },
@@ -1275,10 +1270,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ table: "airdrop_melee", weight: 1 }],
             [{ table: "ammo", weight: 1 }],
             [{ table: "gold_airdrop_guns", weight: 1 }],
-            [
-                { table: "fall_perks", weight: 0.5 },
-                { item: NullString, weight: 0.5 }
-            ],
+            [{ table: "fall_perks", weight: 1 }],
             [{ item: "frag_grenade", count: 3, weight: 1 }]
         ],
         briefcase: [
@@ -1424,9 +1416,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "m1_garand", weight: 0.002 }
         ],
         airdrop_guns: [
-            { item: "mini14", weight: 1.5 },
             { item: "sr25", weight: 1.5 },
-            { item: "mosin_nagant", weight: 1.5 },
             { item: "m590m", weight: 1 },
             { item: "rsh12", weight: 1 },
             { item: "vepr12", weight: 1 },
