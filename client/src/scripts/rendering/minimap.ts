@@ -13,7 +13,6 @@ import { type Game } from "../game";
 import { COLORS, DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, drawGroundGraphics, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GasRender } from "./gas";
-import { getEffectiveZIndex } from "../../../../common/src/utils/layer";
 
 export class Minimap {
     private _expanded = false;

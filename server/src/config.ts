@@ -27,8 +27,8 @@ export const Config = {
 
     maxTeamSize: TeamSize.Solo,
 
-    maxPlayersPerGame: 60,
-    maxGames: 4,
+    maxPlayersPerGame: 70,
+    maxGames: 5,
     gameJoinTime: 60,
 
     gas: { mode: GasMode.Normal },

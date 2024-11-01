@@ -188,7 +188,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             this.health = 0;
             this.dead = true;
             if (definition.weaponSwap && source instanceof BaseGameObject && source.isPlayer) {
-                source.swapWeaponRandomly(weaponIsItem ? weaponUsed : weaponUsed?.weapon);
+                source.swapWeaponRandomly(weaponIsItem ? weaponUsed : weaponUsed?.weapon, true);
             }
 
             if (
