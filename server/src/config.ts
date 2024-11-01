@@ -21,7 +21,7 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "fall",
+    map: "halloween",
 
     spawn: { mode: SpawnMode.Normal },
 
@@ -55,7 +55,12 @@ export const Config = {
         "pap": { password: "pap", isDev: true },
         "error": { password: "error", isDev: true },
         "limenade": { password: "limenade", isDev: true },
-        "123op": { password: "123op" }
+        "123op": { password: "123op" },
+        "solstice": { password: "solstice", isDev: true }
+    },
+
+    authServer: {
+        address: "http://localhost:8080"
     }
 } satisfies ConfigType as ConfigType;
 

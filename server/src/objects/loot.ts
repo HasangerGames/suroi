@@ -15,6 +15,7 @@ import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { BaseGameObject } from "./gameObject";
 import { type Player } from "./player";
+import { PerkCategories } from "@common/definitions/perks";
 
 export type DataMap = Record<ItemType, unknown> & {
     [ItemType.Gun]: {
@@ -251,10 +252,10 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 return !inventory.items.hasItem(definition.idString) || InventoryMessages.ItemAlreadyEquipped;
             }
             case ItemType.Skin: {
-                return player.loadout.skin.idString !== definition.idString || InventoryMessages.ItemAlreadyEquipped;
+                return !player.loadout.skin.noSwap && !(player.loadout.skin !== definition || InventoryMessages.ItemAlreadyEquipped);
             }
             case ItemType.Perk: {
-                return !player.hasPerk(definition) || InventoryMessages.ItemAlreadyEquipped;
+                return !player.perks.asList()[0]?.noSwap && (!player.hasPerk(definition) || InventoryMessages.ItemAlreadyEquipped);
             }
         }
     }
@@ -457,23 +458,54 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 player.setDirty();
                 break;
             }
+
+            // This seems to work server-side, but it breaks client-side perk display..
             case ItemType.Perk: {
                 const currentPerks = player.perks.asList();
-                const perksLength = currentPerks.length;
+                // const perksLength = currentPerks.length;
 
-                if (perksLength === GameConstants.player.maxPerkCount) {
-                    // remove the old perk
-                    const equippedPerk = currentPerks[0];
-                    createNewItem({ type: equippedPerk, count: 1 });
-                    player.perks.removePerk(equippedPerk);
+                const isHalloweenPerk = definition.categories.includes(PerkCategories.Halloween);
+                const isNormalPerk = definition.categories.includes(PerkCategories.Normal);
+
+                // Variable to track which perk to remove
+                let perkToRemove = null;
+
+                if (isHalloweenPerk) {
+                    perkToRemove = currentPerks.find(perk => perk.categories.includes(PerkCategories.Halloween));
+                } else if (isNormalPerk) {
+                    perkToRemove = currentPerks.find(perk => perk.categories.includes(PerkCategories.Normal));
                 }
 
+                // If a perk to remove has been identified, remove it
+                if (perkToRemove) {
+                    if (!perkToRemove.noDrop) {
+                        createNewItem({ type: perkToRemove, count: 1 });
+                    }
+                    player.perks.removePerk(perkToRemove);
+                }
+
+                // Add the new perk
                 player.perks.addPerk(definition);
                 player.updateAndApplyModifiers();
                 break;
             }
-        }
 
+            // case ItemType.Perk: {
+            //     const currentPerks = player.perks.asList();
+            //     const perksLength = currentPerks.length;
+
+            //     if (perksLength === GameConstants.player.maxPerkCount) {
+            //         // remove the old perk
+            //         const equippedPerk = currentPerks[0];
+            //         if (!equippedPerk.noDrop) createNewItem({ type: equippedPerk, count: 1 });
+            //         player.perks.removePerk(equippedPerk);
+            //     }
+
+            //     player.perks.addPerk(definition);
+            //     player.updateAndApplyModifiers();
+            //     break;
+            // }
+        }
         this._count -= countToRemove;
 
         player.dirty.items = true;

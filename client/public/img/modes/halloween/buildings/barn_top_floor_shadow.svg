@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="40.798824mm"
+   height="38.970673mm"
+   viewBox="0 0 163.1953 155.88268"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (1:1.3.2+202404261509+091e20ef0f)"
+   sodipodi:docname="barn_top_floor_shadow.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="5.7370932"
+     inkscape:cx="93.950016"
+     inkscape:cy="82.881694"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter92665"
+       x="-0.026313192"
+       y="-0.027594366"
+       width="1.0526264"
+       height="1.0551887">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="3.3995327"
+         id="feGaussianBlur92667" />
+    </filter>
+  </defs>
+  <g
+     inkscape:label="Στρώση 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(92.761029,112.33721)">
+    <path
+       style="mix-blend-mode:normal;fill:#000000;fill-opacity:0.401512;stroke:none;stroke-width:4.8017;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0.992157;filter:url(#filter92665);stop-color:#000000"
+       d="m -88.34953,187.4112 h 108.228 V -33.7805 h 201.508 v -74.4802 h -310.068 z"
+       id="path64534"
+       sodipodi:nodetypes="ccccccc"
+       transform="matrix(0.50000739,0,0,0.4996406,-44.340109,-54.169259)" />
+  </g>
+</svg>

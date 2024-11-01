@@ -23,6 +23,8 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
 
     private _waterAnim?: Tween<SuroiSprite>;
 
+    halloweenSkin = false;
+
     radius?: number;
     hitbox: CircleHitbox;
     hitSound?: GameSound;
@@ -43,12 +45,25 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.ThrowableProjectile], isNew = false): void {
         if (data.full) {
-            this.image.setFrame((this._definition ??= data.full.definition).animation.liveImage);
+            const def = (this._definition ??= data.full.definition);
+
             this.radius = this._definition.hitboxRadius;
             this.c4 = true;
+
+            this.halloweenSkin = data.full.halloweenSkin;
+
+            this.image.setFrame(`${def.animation.liveImage}${this.halloweenSkin && !def.noSkin ? "_halloween" : ""}`);
         }
 
-        if (data.activated && this._definition?.animation.activatedImage) this.image.setFrame(this._definition.animation.activatedImage);
+        if (data.activated && this._definition?.animation.activatedImage) {
+            let frame = this._definition.animation.activatedImage;
+
+            if (this.halloweenSkin) {
+                frame += "_halloween";
+            }
+
+            this.image.setFrame(frame);
+        }
 
         this.position = data.position;
         this.rotation = data.rotation;
@@ -121,7 +136,7 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
 
             this.game.particleManager.spawnParticles(4, () => {
                 return {
-                    frames: "metal_particle",
+                    frames: this.halloweenSkin ? "plumpkin_particle" : "metal_particle",
                     position,
                     layer: this.layer,
                     zIndex: Numeric.max(ZIndexes.Players + 1, 4),

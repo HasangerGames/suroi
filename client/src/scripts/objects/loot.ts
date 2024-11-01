@@ -249,7 +249,8 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                 return true;
             }
             case ItemType.Perk: {
-                return true;
+                const perks = this.game.uiManager.perks;
+                return !perks.asList()[0]?.noSwap && !perks.hasPerk(definition);
             }
         }
     }

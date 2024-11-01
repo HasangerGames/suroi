@@ -11,6 +11,7 @@ import { Guns, type GunDefinition, type SingleGunNarrowing } from "../../../../c
 import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
 import { Loots, type WeaponDefinition } from "../../../../common/src/definitions/loots";
 import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "../../../../common/src/definitions/melees";
+import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { PerkData, PerkIds } from "../../../../common/src/definitions/perks";
 import { Skins, type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
@@ -40,6 +41,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     meleeStopSound?: GameSound;
     meleeAttackCounter = 0;
+
+    activeDisguise?: ObstacleDefinition;
+    disguiseContainer: Container;
+    halloweenThrowableSkin = false;
 
     private _oldItem = this.activeItem;
 
@@ -93,6 +98,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         readonly muzzleFlash: SuroiSprite
         readonly waterOverlay: SuroiSprite
         readonly blood: Container
+        readonly disguiseSprite: SuroiSprite
         readonly badge?: SuroiSprite
     };
 
@@ -145,6 +151,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Player]) {
         super(game, id);
 
+        this.disguiseContainer = new Container();
+        this.game.camera.addObject(this.disguiseContainer);
+
         this.images = {
             aimTrail: new TilingSprite({ texture: SuroiSprite.getTexture("aimTrail"), width: 20, height: 6000 }),
             vest: new SuroiSprite().setVisible(false),
@@ -159,7 +168,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             altWeapon: new SuroiSprite().setZIndex(3),
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec.create(0, 0.5)),
             waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water),
-            blood: new Container()
+            blood: new Container(),
+            disguiseSprite: new SuroiSprite()
         };
 
         this.container.addChild(
@@ -177,6 +187,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.waterOverlay,
             this.images.blood
         );
+
+        this.disguiseContainer.addChild(this.images.disguiseSprite);
 
         // this.images.blood.zIndex = getEffectiveZIndex(4, this.game.layer, this.game.layer);
 
@@ -253,6 +265,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         super.updateContainerPosition();
         if (!this.destroyed) {
             this.emote.container.position = Vec.addComponent(this.container.position, 0, -175);
+            this.disguiseContainer.position = this.container.position;
             if (this.teammateName) {
                 this.teammateName.container.position = Vec.addComponent(this.container.position, 0, 95);
                 this.teammateName.container.zIndex = getEffectiveZIndex(ZIndexes.TeammateName, this.layer, this.game.layer);
@@ -364,12 +377,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         if (noMovementSmoothing || isNew) this.container.rotation = this.rotation;
 
-        const layerChange = this.layer !== data.layer || isNew;
-        this.layer = data.layer;
-
         if (this.isActivePlayer) {
-            if (layerChange) this.game.changeLayer(this.layer);
-
             this.game.soundManager.position = this.position;
             this.game.map.setPosition(this.position);
 
@@ -471,6 +479,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         if (isNew || !this.game.console.getBuiltInCVar("cv_movement_smoothing")) {
             this.container.position.copyFrom(toPixiCoords(this.position));
+            this.disguiseContainer.position.copyFrom(toPixiCoords(this.position));
             this.emote.container.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, -175)));
             this.teammateName?.container.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, 95)));
             if (this.isActivePlayer) this.game.uiManager.resetPerkSlots();
@@ -487,7 +496,21 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         if (data.full) {
             const full = data.full;
 
+            const layerChange = this.isActivePlayer && (this.layer !== full.layer || isNew);
+            this.layer = full.layer;
+            if (layerChange) this.game.changeLayer(this.layer);
+
             this.container.visible = !full.dead;
+            this.disguiseContainer.visible = this.container.visible;
+
+            const hadSkin = this.halloweenThrowableSkin;
+            if (
+                hadSkin !== (this.halloweenThrowableSkin = full.halloweenThrowableSkin)
+                && this.activeItem.itemType === ItemType.Throwable
+                && !this.activeItem.noSkin
+            ) {
+                this.images.weapon.setFrame(`${this.activeItem.idString}${this.halloweenThrowableSkin ? "_halloween" : ""}`);
+            }
 
             // Blood particles on death (cooler graphics only)
             if (
@@ -516,7 +539,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             this.dead = full.dead;
 
-            this.layer = data.layer;
+            // this.layer = data.layer; - why assign again?
 
             this.teamID = data.full.teamID;
             if (
@@ -666,6 +689,17 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             if (itemDirty) {
                 this.updateFistsPosition(true);
                 this.updateWeapon(isNew);
+            }
+
+            const oldDisguise = this.activeDisguise;
+            if (oldDisguise !== (this.activeDisguise = full.activeDisguise)) {
+                const def = this.activeDisguise;
+                if (def !== undefined) {
+                    this.images.disguiseSprite.setVisible(true);
+                    this.images.disguiseSprite.setFrame(`${def.frames.base ?? def.idString}${def.variations !== undefined ? `_${random(1, def.variations)}` : ""}`);
+                } else {
+                    this.images.disguiseSprite.setVisible(false);
+                }
             }
         }
 
@@ -1003,6 +1037,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         if (reference.image) {
             const { image: { position, angle } } = reference;
 
+            if (reference.itemType === ItemType.Throwable && !reference.noSkin) {
+                this.images.weapon.setFrame(`${reference.idString}${this.halloweenThrowableSkin ? "_halloween" : ""}`);
+            }
+
             this.images.weapon.setPos(position.x, position.y + offset);
             this.images.altWeapon.setPos(position.x, position.y - offset);
             this.images.weapon.setAngle(angle);
@@ -1027,11 +1065,15 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         const imagePresent = image !== undefined;
         if (imagePresent) {
-            const frame = `${reference.idString}${
+            let frame = `${reference.idString}${
                 weaponDef.itemType === ItemType.Gun || (image as NonNullable<MeleeDefinition["image"]>).separateWorldImage
                     ? "_world"
                     : ""
             }`;
+
+            if (weaponDef.itemType === ItemType.Throwable && this.halloweenThrowableSkin && !weaponDef.noSkin) {
+                frame += "_halloween";
+            }
 
             const { angle, position: { x: pX, y: pY } } = image;
 
@@ -1107,6 +1149,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 : ZIndexes.Players;
 
         this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, this.game.layer);
+        this.disguiseContainer.zIndex = this.container.zIndex + 1;
         this.emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer, this.game.layer);
     }
 
@@ -1609,7 +1652,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     pinImage.setPos(35, 0);
                     pinImage.setZIndex(ZIndexes.Players + 1);
                 }
-                projImage.setFrame(def.animation.cook.cookingImage ?? def.animation.liveImage);
+
+                let frame = def.animation.cook.cookingImage ?? def.animation.liveImage;
+
+                if (this.halloweenThrowableSkin && !def.noSkin) {
+                    frame += "_halloween";
+                }
+
+                projImage.setFrame(frame);
                 this.updateFistsPosition(false);
 
                 this.anims.leftFist = this.game.addTween({
@@ -1713,7 +1763,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.images.altWeapon.visible = false;
                 const projImage = this.images.weapon;
                 projImage.visible = false;
-                projImage.setFrame(def.idString);
+
+                projImage.setFrame(`${def.idString}${this.halloweenThrowableSkin && !def.noSkin ? "_halloween" : ""}`);
 
                 if (!def.cookable && def.animation.leverImage !== undefined) {
                     this.game.particleManager.spawnParticle({
@@ -1749,6 +1800,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     onComplete: () => {
                         this.anims.leftFist = undefined;
                         projImage.setVisible(true);
+                        projImage.setFrame(`${def.idString}${this.halloweenThrowableSkin && !def.noSkin ? "_halloween" : ""}`);
                         this.updateFistsPosition(true);
                     }
                 });
@@ -1876,6 +1928,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         images.muzzleFlash.destroy();
         images.waterOverlay.destroy();
         images.blood.destroy();
+        images.disguiseSprite.destroy();
 
         emote.image.destroy();
         emote.background.destroy();
@@ -1895,6 +1948,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         anims.muzzleFlashRecoil?.kill();
 
         this.grenadeImpactPreview?.destroy();
+
+        this.disguiseContainer.destroy();
 
         this.healingParticlesEmitter.destroy();
         this.actionSound?.stop();

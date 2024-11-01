@@ -470,6 +470,9 @@ export class Game {
                         case ItemType.Throwable:
                             soundID = "throwable_pickup";
                             break;
+                        case ItemType.Perk:
+                            soundID = "pickup";
+                            break;
                         default:
                             soundID = "pickup";
                             break;
@@ -677,7 +680,10 @@ export class Game {
         }
 
         const playerData = updateData.playerData;
-        if (playerData) this.uiManager.updateUI(playerData);
+        if (playerData) {
+            this.uiManager.updateUI(playerData);
+            this.uiManager.updateWeaponSlots(); // to load reskins
+        }
 
         for (const deletedPlayerId of updateData.deletedPlayers ?? []) {
             this.playerNames.delete(deletedPlayerId);

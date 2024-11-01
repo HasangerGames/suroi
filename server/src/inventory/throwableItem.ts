@@ -1,5 +1,5 @@
 import { AnimationType, Layer } from "@common/constants";
-import { PerkIds } from "@common/definitions/perks";
+import { PerkData, PerkIds } from "@common/definitions/perks";
 import { type ThrowableDefinition } from "@common/definitions/throwables";
 import { Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
@@ -100,7 +100,9 @@ class GrenadeHandler {
     }
 
     private _detonate(): void {
-        const { explosion, particles } = this.definition.detonation;
+        const { explosion } = this.definition.detonation;
+
+        const particles = (this.owner.halloweenThrowableSkin && this.definition.detonation.spookyParticles) ? this.definition.detonation.spookyParticles : this.definition.detonation.particles;
 
         const referencePosition = Vec.clone(this._projectile?.position ?? this.parent.owner.position);
         const game = this.game;
@@ -111,7 +113,8 @@ class GrenadeHandler {
                 referencePosition,
                 this.parent.owner,
                 this._projectile?.layer ?? this.parent.owner.layer,
-                this.parent
+                this.parent,
+                (this._projectile?.halloweenSkin ?? false) ? PerkData[PerkIds.PlumpkinBomb].damageMod : 1
             );
         }
 

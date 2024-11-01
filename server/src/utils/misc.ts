@@ -1,8 +1,10 @@
+import { GameConstants } from "@common/constants";
 import { ColorStyles, styleText } from "@common/utils/ansiColoring";
+import { halfπ, τ } from "@common/utils/math";
 import { NullString, type ObjectDefinition, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { weightedRandom } from "@common/utils/random";
+import { Vec, type Vector } from "@common/utils/vector";
 import { Config } from "../config";
-import { GameConstants } from "@common/constants";
 
 export const Logger = {
     log(...message: string[]): void {
@@ -58,4 +60,52 @@ export function removeFrom<T>(array: T[], value: NoInfer<T>): void {
     if (index !== -1) array.splice(index, 1);
 }
 
-export const CARDINAL_DIRECTIONS = Array.from({ length: 4 }, (_, i) => i / 2 * Math.PI);
+export const CARDINAL_DIRECTIONS = Array.from({ length: 4 }, (_, i) => i / τ);
+
+export function getPatterningShape(
+    spawnCount: number,
+    radius: number
+): Vector[] {
+    const makeSimpleShape = (points: number) => {
+        const tauFrac = τ / points;
+        return (radius: number, offset = 0): Vector[] => Array.from(
+            { length: points },
+            (_, i) => Vec.fromPolar(i * tauFrac + offset, radius)
+        );
+    };
+
+    const [
+        makeTriangle,
+        makeSquare,
+        makePentagon,
+        makeHexagon
+    ] = [3, 4, 5, 6].map(makeSimpleShape);
+
+    switch (spawnCount) {
+        case 1: return [Vec.create(0, 0)];
+        case 2: return [
+            Vec.create(0, radius),
+            Vec.create(0, -radius)
+        ];
+        case 3: return makeTriangle(radius);
+        case 4: return [Vec.create(0, 0), ...makeTriangle(radius)];
+        case 5: return [Vec.create(0, 0), ...makeSquare(radius)];
+        case 6: return [Vec.create(0, 0), ...makePentagon(radius)];
+        case 7: return [Vec.create(0, 0), ...makeHexagon(radius, halfπ)];
+        case 8: return [
+            Vec.create(0, 0),
+            ...makeTriangle(radius / 2),
+            ...makeSquare(radius, halfπ)
+        ];
+        case 9: return [
+            Vec.create(0, 0),
+            ...makeTriangle(radius / 2),
+            ...makePentagon(radius)
+        ];
+    }
+
+    return [
+        ...getPatterningShape(spawnCount - 6, radius * 3 / 4),
+        ...makeHexagon(radius, halfπ)
+    ];
+}

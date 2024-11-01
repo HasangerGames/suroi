@@ -12,12 +12,12 @@
     height: 100%;
 
     // Darkens canvas (for Halloween mode)
-    /*
+
     canvas {
         filter: brightness(0.65) saturate(0.85);
         position: relative;
         z-index: -1;
-    }*/
+    }
 }
 
 #game-ui {
@@ -2050,5 +2050,65 @@
     }
     100% {
         scale: 100%;
+    }
+}
+
+@keyframes perk-normal-colors {
+    0% {
+        box-shadow: none;
+        background-color: none;
+    }
+    50% {
+        box-shadow: 0px 0px 25px #8c8c8c;
+        background-color: #8c8c8c;
+    }
+    100% {
+        box-shadow: none;
+        background-color: none;
+    }
+}
+
+@keyframes perk-positive-colors {
+    0% {
+        box-shadow: none;
+        background-color: none;
+    }
+    50% {
+        box-shadow: 0px 0px 25px #008aff;
+        background-color: #008aff;
+    }
+    100% {
+        box-shadow: none;
+        background-color: none;
+    }
+}
+
+@keyframes perk-neutral-colors {
+    0% {
+        box-shadow: none;
+        background-color: none;
+    }
+    50% {
+        box-shadow: 0px 0px 25px #8a4c70;
+        background-color: #8a4c70;
+    }
+    100% {
+        box-shadow: none;
+        background-color: none;
+    }
+}
+
+@keyframes perk-negative-colors {
+    0% {
+        box-shadow: none;
+        background-color: none;
+    }
+    50% {
+        box-shadow: 0px 0px 25px #5d0000;
+        background-color: #5d0000;
+    }
+    100% {
+        box-shadow: none;
+        background-color: none;
     }
 }

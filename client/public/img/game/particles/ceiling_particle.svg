@@ -7,7 +7,7 @@
    id="svg2430"
    xml:space="preserve"
    sodipodi:docname="ceiling_particle.svg"
-   inkscape:version="1.3.2 (1:1.3.2+202311252150+091e20ef0f)"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -22,12 +22,12 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="3.0757771"
-     inkscape:cx="69.901034"
+     inkscape:cx="69.738474"
      inkscape:cy="99.649614"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg2430" /><defs
      id="defs2424" /><path
@@ -38,5 +38,5 @@
      id="path3511"
      style="mix-blend-mode:normal;fill-rule:nonzero;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0" /><path
      d="M 6.2938646,5.8377028 7.2993266,15.316195 1.9258428,9.8088178 1.1252507,13.078503 17.490276,43.213441 23.2243,50.221753 24.882669,39.410278 29.56727,43.829556 26.90385,35.017312 34.379944,39.296703 14.113573,1.9777261 9.3664796,1.2910392 12.626992,11.320894 Z"
-     style="fill:#ffffff;stroke:#cbcbcb;stroke-width:2.11667;stroke-linecap:square;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
+     style="fill:#ffffff;stroke:#656565;stroke-width:2.11667;stroke-linecap:square;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
      id="path3" /></svg>

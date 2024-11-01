@@ -24,6 +24,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly cookable: boolean
     readonly c4: boolean
     readonly health?: number
+    readonly noSkin?: boolean
     readonly cookSpeedMultiplier: number
     readonly maxThrowDistance: number
     readonly image: {
@@ -38,6 +39,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly detonation: {
         readonly explosion?: ReferenceTo<ExplosionDefinition>
         readonly particles?: SyncedParticleSpawnerDefinition
+        readonly spookyParticles?: SyncedParticleSpawnerDefinition
     }
     readonly animation: {
         readonly pinImage?: string
@@ -128,6 +130,18 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
             },
             detonation: {
                 explosion: "smoke_grenade_explosion",
+                spookyParticles: {
+                    type: "plumpkin_smoke_grenade_particle",
+                    count: 10,
+                    deployAnimation: {
+                        duration: 4000,
+                        staggering: {
+                            delay: 300,
+                            initialAmount: 2
+                        }
+                    },
+                    spawnRadius: 15
+                },
                 particles: {
                     type: "smoke_grenade_particle",
                     count: 10,
@@ -161,6 +175,7 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
             name: "Confetti Grenade",
             fuseTime: 4000,
             cookTime: 150,
+            noSkin: true,
             throwTime: 150,
             impactDamage: 1,
             obstacleMultiplier: 20,

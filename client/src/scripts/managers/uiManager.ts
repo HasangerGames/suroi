@@ -42,6 +42,8 @@ export class UIManager {
     private minAdrenaline = 0;
     private adrenaline = 0;
 
+    private perkAnimationTimeout?: number;
+
     readonly inventory: {
         activeWeaponIndex: number
         weapons: (PlayerData["inventory"] & object)["weapons"] & object
@@ -826,7 +828,13 @@ export class UIManager {
 
                 const isFists = weapon.definition.idString === "fists";
                 const oldSrc = itemImage.attr("src");
-                const newSrc = `./img/game/weapons/${weapon.definition.idString}.svg`;
+
+                let frame = weapon.definition.idString;
+                if (this.perks.hasPerk(PerkIds.PlumpkinBomb) && weapon.definition.itemType === ItemType.Throwable && !weapon.definition.noSkin) {
+                    frame += "_halloween";
+                }
+
+                const newSrc = `./img/game/weapons/${frame}.svg`;
                 if (oldSrc !== newSrc) {
                     this._playSlotAnimation(container);
                     itemImage.attr("src", newSrc);
@@ -914,6 +922,20 @@ export class UIManager {
         container.children(".item-tooltip").html(`<strong>${perkDef.name}</strong><br>${perkDef.description}`);
         container.children(".item-image").attr("src", `./img/game/perks/${perkDef.idString}.svg`);
         container.css("visibility", this.perks.hasPerk(perkDef.idString) ? "visible" : "hidden");
+
+        container.css("outline", !perkDef.noDrop ? "" : "none");
+
+        const flashAnimationDuration = 3000; // sec
+
+        clearTimeout(this.perkAnimationTimeout);
+
+        container.css("animation", `perk-${perkDef.type ?? "normal"}-colors 1.5s linear infinite`);
+
+        if (perkDef.type !== undefined) this.game.soundManager.play(perkDef.type);
+
+        this.perkAnimationTimeout = window.setTimeout(() => {
+            container.css("animation", "none");
+        }, flashAnimationDuration);
     }
 
     resetPerkSlots(): void {

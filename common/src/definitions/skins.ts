@@ -16,6 +16,7 @@ export interface SkinDefinition extends ItemDefinition {
     readonly hideEquipment: boolean
     readonly roleRequired?: string
     readonly hideBlood: boolean
+    readonly noSwap?: boolean
 }
 
 export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
@@ -46,6 +47,7 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
             withRole([["hasanger"], ["Hasanger",      0x640000]]),
             withRole([["limenade"], ["LimeNade",      0xffffff]]),
             withRole([["katie"],    ["Katie",         0x7784f0]]),
+            withRole([["solstice"], ["Dragonscale",   0x3f808d]]),
             withRole([["eipi"],     ["eipi",          0x8040BF]]),
             withRole([["error"],    ["error",         0x1fc462]]),
             withRole([["pap"],      ["pap",           0x060647]]),
@@ -123,6 +125,13 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ["Diseased",              0x2d1f1f],
                 ["Deer Season",           0x9a3604]
             ] satisfies ReadonlyArray<readonly [string, number]>).map(([name, tint]) => hidden([name, tint])),
+            hidden(
+                ["Werewolf", 0x323232],
+                {
+                    noSwap: true,
+                    noDrop: true
+                }
+            ),
             hidden(
                 ["Ghillie Suit", 0xffffff],
                 {
