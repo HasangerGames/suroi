@@ -5813,7 +5813,11 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "vibrant_bush", position: Vec.create(187.25, 173.39) },
                     { idString: "vibrant_bush", position: Vec.create(88.89, 135.27) },
                     { idString: "vibrant_bush", position: Vec.create(156.44, 65.25) },
-                    { idString: "vibrant_bush", position: Vec.create(95.86, -18.52) }
+                    { idString: "vibrant_bush", position: Vec.create(95.86, -18.52) },
+                    { idString: "jack_o_lantern", position: Vec.create(24.07, 66.73), rotation: 0 },
+                    { idString: "jack_o_lantern", position: Vec.create(-0.54, 66.73), rotation: 0 },
+                    { idString: "jack_o_lantern", position: Vec.create(43.69, 84.06), rotation: 0 },
+                    { idString: "jack_o_lantern", position: Vec.create(43.69, 106.7), rotation: 0 }
                 ],
                 subBuildings: [
                     { idString: "hay_shed_4", position: Vec.create(40.03, 146.55), orientation: 1 },

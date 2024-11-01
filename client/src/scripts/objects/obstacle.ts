@@ -207,6 +207,8 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
         this.container.scale.set(this.dead ? 1 : this.scale);
 
+        this.updateZIndex();
+
         if (isNew) {
             if (definition.glow !== undefined) {
                 const glow = definition.glow;
@@ -327,8 +329,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             this._flickerTimeout?.kill();
             this._glow?.kill();
         }
-
-        this.updateZIndex();
 
         if (this._door === undefined) {
             this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
@@ -686,6 +686,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         this.image.destroy();
         this.doorMask?.destroy();
         this.smokeEmitter?.destroy();
+        this._glow?.kill();
         this._glowTween?.kill();
         this._flickerTimeout?.kill();
     }
