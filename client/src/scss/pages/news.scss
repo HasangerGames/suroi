@@ -1,8 +1,9 @@
-@import "../main.scss";
-@import "../pages/client/splash.scss";
+@use "../main.scss";
+@use "../pages/client/splash.scss";
+@use "../palette.scss";
 
 body {
-    background: $bg;
+    background: palette.$bg;
     overflow-x: hidden;
     overflow-y: scroll;
 }
