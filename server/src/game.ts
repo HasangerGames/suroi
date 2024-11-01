@@ -21,12 +21,11 @@ import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric, Statistics } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
 import { ItemType, MapObjectSpawnMode, type ReifiableDef } from "@common/utils/objectDefinitions";
-import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation, weightedRandom } from "@common/utils/random";
+import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "@common/utils/random";
 import { OBJECT_ID_BITS, SuroiBitStream } from "@common/utils/suroiBitStream";
 import { Vec, type Vector } from "@common/utils/vector";
 
-import { Ammos, Emotes } from "@common/definitions";
-import { PerkIds, Perks, updateInterval } from "@common/definitions/perks";
+import { PerkIds, Perks } from "@common/definitions/perks";
 import { Config, SpawnMode } from "./config";
 import { MapName, Maps } from "./data/maps";
 import { WorkerMessages, type GameData, type WorkerMessage } from "./gameManager";
