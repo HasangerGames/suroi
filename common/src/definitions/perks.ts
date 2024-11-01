@@ -253,9 +253,9 @@ const perks = [
         categories: [PerkCategories.Halloween],
 
         speedMod: 1.3,
-        healthMod: 2,
+        healthMod: 1.5,
         regenRate: 1,
-        meleeMult: 2.5,
+        damageMod: 2.5,
         noDrop: true,
         noSwap: false,
         type: PerkQualities.Positive

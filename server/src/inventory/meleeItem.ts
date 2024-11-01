@@ -94,11 +94,13 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                 });
 
                 const targetLimit = Numeric.min(damagedObjects.length, definition.maxTargets);
-                const initMultiplier = this.owner.mapPerkOrDefault(PerkIds.Berserker, ({ damageMod }) => damageMod, 1);
 
                 for (let i = 0; i < targetLimit; i++) {
                     const closestObject = damagedObjects[i];
-                    let multiplier = initMultiplier;
+                    let multiplier = 1;
+
+                    multiplier *= this.owner.mapPerkOrDefault(PerkIds.Berserker, ({ damageMod }) => damageMod, 1);
+                    multiplier *= this.owner.mapPerkOrDefault(PerkIds.Lycanthropy, ({ damageMod }) => damageMod, 1);
 
                     if (closestObject.isObstacle) {
                         multiplier *= definition.piercingMultiplier !== undefined && closestObject.definition.impenetrable
