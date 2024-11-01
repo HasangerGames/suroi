@@ -700,6 +700,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 } else {
                     this.images.disguiseSprite.setVisible(false);
                 }
+                updateContainerZIndex = true;
             }
         }
 
