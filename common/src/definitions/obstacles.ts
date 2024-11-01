@@ -1051,12 +1051,12 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     alpha: 0.8,
                     scaleAnim: {
                         to: 0.7,
-                        duration: 5e3
+                        duration: 2e3
                     },
                     flicker: {
                         chance: 0.5,
-                        strength: 0.7,
-                        interval: 1e3
+                        strength: 0.9,
+                        interval: 7e2
                     }
                 },
                 hitbox: new CircleHitbox(4.69),
@@ -1116,6 +1116,15 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMin: 0.9,
                     spawnMax: 1.1,
                     destroy: 0.5
+                },
+                glow: {
+                    tint: 0x643554,
+                    scale: 0.6,
+                    alpha: 0.8,
+                    scaleAnim: {
+                        to: 0.7,
+                        duration: 3e3
+                    }
                 },
                 hitbox: new CircleHitbox(4.45),
                 spawnHitbox: new CircleHitbox(5),
