@@ -185,7 +185,7 @@ export const SyncedParticles = ObjectDefinitions.withDefault<SyncedParticleDefin
                     hitbox: new CircleHitbox(5),
                     snapScopeTo: "1x_scope",
                     alpha: {
-                        start: 0.7,
+                        start: 0.5,
                         end: 0,
                         creatorMult: 0.15
                     },

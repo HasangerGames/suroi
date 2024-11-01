@@ -293,8 +293,6 @@ const perks = [
         categories: [PerkCategories.Halloween],
 
         updateInterval: 100,
-        smokeAlpha: 0.7,
-        smokeAlphaSelf: 0.1,
         noDrop: true,
         type: PerkQualities.Positive
     },
