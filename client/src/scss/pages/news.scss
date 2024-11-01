@@ -16,7 +16,7 @@ body {
     border-radius: 15px;
 
     h1 {
-        color: $orange;
+        color: palette.$orange;
         text-align: center;
         font-family: "Inter", sans-serif;
         font-size: 50px;
@@ -39,7 +39,7 @@ body {
         }
 
         .news-title {
-            color: $blue;
+            color: palette.$blue;
             font-size: 28px;
             font-weight: bold;
             margin-top: 0;
