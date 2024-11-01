@@ -42,8 +42,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     meleeStopSound?: GameSound;
     meleeAttackCounter = 0;
 
-    activeDisguise?: ObstacleDefinition;
-    disguiseContainer: Container;
+    private activeDisguise?: ObstacleDefinition;
+    private readonly disguiseContainer: Container;
     halloweenThrowableSkin = false;
 
     private _oldItem = this.activeItem;
@@ -151,8 +151,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Player]) {
         super(game, id);
 
-        this.disguiseContainer = new Container();
-        this.game.camera.addObject(this.disguiseContainer);
+        this.game.camera.addObject(this.disguiseContainer = new Container());
 
         this.images = {
             aimTrail: new TilingSprite({ texture: SuroiSprite.getTexture("aimTrail"), width: 20, height: 6000 }),
