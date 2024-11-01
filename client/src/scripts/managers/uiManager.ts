@@ -42,8 +42,6 @@ export class UIManager {
     private minAdrenaline = 0;
     private adrenaline = 0;
 
-    private perkAnimationTimeout?: number;
-
     readonly inventory: {
         activeWeaponIndex: number
         weapons: (PlayerData["inventory"] & object)["weapons"] & object
@@ -683,6 +681,8 @@ export class UIManager {
             }
         } */
         if (perks) {
+            const old = this.perks.asList();
+            const oldLength = old.length;
             this.perks.overwrite(perks);
 
             const perkList = this.perks.asList();
@@ -690,9 +690,17 @@ export class UIManager {
 
             if (length === 0) this.resetPerkSlots();
 
-            for (let i = 0; i < length; i++) {
+            const iterCount = Numeric.max(oldLength, length);
+            for (let i = 0; i < iterCount; i++) {
                 const perk = perkList[i];
-                this.updatePerkSlot(perk, i);
+                if (perk === undefined) {
+                    this.resetPerkSlot(i);
+                    continue;
+                }
+
+                if (old[i] !== perk) {
+                    this.updatePerkSlot(perk, i);
+                }
             }
         }
     }
@@ -913,11 +921,13 @@ export class UIManager {
         );
     } */
 
+    private readonly _perkSlots: Array<JQuery<HTMLDivElement> | undefined> = [];
+    private readonly _animationTimeouts: Array<number | undefined> = [];
     updatePerkSlot(perkDef: PerkDefinition, index: number): void {
         if (index > 3) index = 0; // overwrite stuff ig?
         // no, write a hud that can handle it
 
-        const container = $(`#perk-slot-${index}`);
+        const container = this._perkSlots[index] ??= $<HTMLDivElement>(`#perk-slot-${index}`);
         container.attr("data-idString", perkDef.idString);
         container.children(".item-tooltip").html(`<strong>${perkDef.name}</strong><br>${perkDef.description}`);
         container.children(".item-image").attr("src", `./img/game/perks/${perkDef.idString}.svg`);
@@ -925,15 +935,15 @@ export class UIManager {
 
         container.css("outline", !perkDef.noDrop ? "" : "none");
 
-        const flashAnimationDuration = 3000; // sec
+        const flashAnimationDuration = 3000; // ms
 
-        clearTimeout(this.perkAnimationTimeout);
+        clearTimeout(this._animationTimeouts[index]);
 
         container.css("animation", `perk-${perkDef.type ?? "normal"}-colors 1.5s linear infinite`);
 
         // if (perkDef.type !== undefined) this.game.soundManager.play(`perk_pickup_${perkDef.type}`);
 
-        this.perkAnimationTimeout = window.setTimeout(() => {
+        this._animationTimeouts[index] = window.setTimeout(() => {
             container.css("animation", "none");
         }, flashAnimationDuration);
     }
