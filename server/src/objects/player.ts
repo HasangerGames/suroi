@@ -1748,9 +1748,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     break;
                 }
                 case PerkIds.Lycanthropy: {
+                    newModifiers.baseSpeed *= perk.speedMod;
                     newModifiers.maxHealth *= perk.healthMod;
                     newModifiers.hpRegen += perk.regenRate;
-                    newModifiers.baseSpeed *= perk.speedMod;
                     break;
                 }
                 case PerkIds.SecondWind: {
