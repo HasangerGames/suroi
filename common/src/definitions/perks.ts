@@ -15,6 +15,7 @@ export interface BasicPerk extends ItemDefinition {
     readonly updateInterval?: number
     readonly type?: PerkQualities
     readonly noSwap?: boolean
+    readonly alwaysAllowSwap?: boolean
     readonly plumpkinGambleIgnore?: boolean
 }
 
@@ -363,6 +364,7 @@ const perks = [
             diseased_plumpkin: 0.01
         },
         noDrop: true,
+        alwaysAllowSwap: true,
         type: PerkQualities.Neutral
     },
     {
