@@ -30,6 +30,7 @@ import { type Team } from "../team";
 import { removeFrom } from "../utils/misc";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { SyncedParticles } from "@common/definitions/syncedParticles";
+import { Modes } from "@common/definitions/modes";
 
 export interface PlayerContainer {
     readonly teamID?: string
@@ -421,10 +422,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.inventory.addOrReplaceWeapon(2, "fists");
 
         this.inventory.scope = "1x_scope";
-        if (Config.map === "fall") {
-            this.inventory.scope = "2x_scope";
-            this.inventory.items.setItem("2x_scope", 1);
-        };
+        const defaultScope = Modes[GameConstants.modeName].defaultScope;
+        if (defaultScope) {
+            this.inventory.scope = defaultScope;
+            this.inventory.items.setItem(defaultScope, 1);
+        }
         this.effectiveScope = DEFAULT_SCOPE;
 
         const specialFunnies = this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing;
