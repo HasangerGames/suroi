@@ -333,11 +333,12 @@ export class Inventory {
      * completely discarded. Honors slot locks
      * @param slot The slot to put the new item in
      * @param item The item to place there
+     * @param force Whether to ignore slot locks
      * @returns `null` if the replacement was not done at all; otherwise, the potentially-`undefined` item that used to be in that slot
      */
-    replaceWeapon(slot: number, item: ReifiableItem): InventoryItem | undefined | null {
+    replaceWeapon(slot: number, item: ReifiableItem, force = false): InventoryItem | undefined | null {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to set item in invalid slot '${slot}'`);
-        if (this.isLocked(slot)) return null;
+        if (this.isLocked(slot) && !force) return null;
 
         if (slot === this.activeWeaponIndex) this.owner.setDirty();
         return this._setWeapon(slot, this._reifyItem(item));
@@ -788,6 +789,10 @@ export class Inventory {
                 break;
             }
             case ItemType.Throwable: {
+                if (this.activeWeapon.category === ItemType.Throwable) {
+                    this.activeWeapon.stopUse();
+                }
+
                 this.owner.setDirty();
                 this.owner.dirty.weapons = true;
                 const slot = this.slotsByItemType[ItemType.Throwable]?.[0];

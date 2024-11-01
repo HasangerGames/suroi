@@ -529,7 +529,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
     }
 
-    swapWeaponRandomly(itemOrSlot: InventoryItem | number = this.activeItem): void {
+    swapWeaponRandomly(itemOrSlot: InventoryItem | number = this.activeItem, force = false): void {
         let slot = itemOrSlot === this.activeItem
             ? this.activeItemIndex
             : typeof itemOrSlot === "number"
@@ -556,9 +556,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 )
                 : spawnable.forType(type)
         );
-        if (!chosenItem) return;
-
-        inventory.replaceWeapon(slot, chosenItem);
+        if (chosenItem === undefined) return;
 
         switch (chosenItem.itemType) { // chosenItem.itemType === type, but the former helps ts narrow chosenItem's type
             case ItemType.Gun: {
@@ -573,6 +571,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     items.setItem(ammoType, ammoSpawnAmount);
                     this.dirty.items = true;
                 }
+
+                inventory.replaceWeapon(slot, chosenItem, force);
+                break;
+            }
+
+            case ItemType.Melee: {
+                inventory.replaceWeapon(slot, chosenItem, force);
                 break;
             }
 
@@ -605,7 +610,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 const slot = inventory.slotsByItemType[ItemType.Throwable]?.[0];
 
                 if (slot !== undefined && !inventory.hasWeapon(slot)) {
-                    inventory.replaceWeapon(slot, item);
+                    inventory.replaceWeapon(slot, item, force);
                 }
 
                 this.dirty.weapons = true;
@@ -762,7 +767,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                             break;
                         }
                         case PerkIds.BabyPlumpkinPie: {
-                            this.swapWeaponRandomly();
+                            this.swapWeaponRandomly(undefined, true);
                             break;
                         }
                         case PerkIds.TornPockets: {
@@ -1861,7 +1866,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             for (const perk of source.perks) {
                 switch (perk.idString) {
                     case PerkIds.BabyPlumpkinPie: {
-                        source.swapWeaponRandomly();
+                        source.swapWeaponRandomly(undefined, true);
                         break;
                     }
 
@@ -2322,7 +2327,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                     inventory.isLocked(slot)
-                        ? inventory.unlock(slot)
+                        ? (this.hasPerk(PerkIds.Lycanthropy) || inventory.unlock(slot))
                         : inventory.lock(slot);
                     break;
                 }
