@@ -51,6 +51,7 @@ export const PORTUGUESE_BRAZIL_TRANSLATIONS: TranslationMap = {
 
     "settings_master_volume": "Volume principal",
     "settings_sfx_volume": "Volume de efeitos sonoros",
+    "settings_ambience_volume": "Volume do ambiente",
     "settings_music_volume": "Volume da música",
     "settings_old_menu_music": "Música do menu antigo",
 
@@ -59,6 +60,7 @@ export const PORTUGUESE_BRAZIL_TRANSLATIONS: TranslationMap = {
     "settings_render_resolution_auto": "Automático",
     "settings_hires_textures": "Texturas de alta resolução",
     "settings_cooler_graphics": "Gráficos mais legais",
+    "settings_ambient_particles": "Partículas de ambiente",
     "settings_antialias": "Anti-aliasing",
     "settings_movement_smoothing": "Suavização de movimento",
     "settings_responsive_rotation": "Rotação responsiva",
@@ -130,6 +132,7 @@ export const PORTUGUESE_BRAZIL_TRANSLATIONS: TranslationMap = {
     "msg_item_already_equipped": "Item já equipado!",
     "msg_better_item_equipped": "Item melhor equipado!",
     "msg_cannot_use_radio": "Rádio não pode ser usado em edifícios!",
+    "msg_radio_overused": "O rádio quebrou devido ao uso excessivo!"
 
     "gas_waiting": "Gás tóxico avança em <time>",
     "gas_advancing": "Gás tóxico avançando! Mova-se para a zona segura",
