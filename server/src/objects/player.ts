@@ -530,6 +530,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     swapWeaponRandomly(itemOrSlot: InventoryItem | number = this.activeItem, force = false): void {
+        if (this.perks.hasPerk(PerkIds.Lycanthropy)) return; // womp womp
+
         let slot = itemOrSlot === this.activeItem
             ? this.activeItemIndex
             : typeof itemOrSlot === "number"
@@ -564,8 +566,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 const { capacity, ammoType, ammoSpawnAmount, summonAirdrop } = chosenItem;
 
-                (this.activeItem as GunItem).ammo = capacity;
-
                 // Give the player ammo for the new gun if they do not have any ammo for it.
                 if (!items.hasItem(ammoType) && !summonAirdrop) {
                     items.setItem(ammoType, ammoSpawnAmount);
@@ -573,6 +573,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
 
                 inventory.replaceWeapon(slot, chosenItem, force);
+                (this.activeItem as GunItem).ammo = capacity;
                 break;
             }
 
