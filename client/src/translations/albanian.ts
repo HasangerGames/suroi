@@ -3,7 +3,11 @@ import type { TranslationMap } from "../translations";
 export const ALBANIAN_TRANSLATIONS: TranslationMap = {
     "name": "Shqip",
     "flag": "🇦🇱",
-
+    
+    "msg_spectating": "Duke vëzhguar"
+    "msg_enter_team_code": "Fut kodin e skuadrës"
+    "msg_lost_team_connection": "Lidhja me skuadrën u ndërpre"
+    "msg_error_joining_team": "Gabim gjatë bashkimit me skuadrën"
     "msg_rotate": "Për një eksperiencë më të mirë, ju lutem rrotulloni pajisjen tuaj.",
     "msg_loading": "Duke u lidhur",
     "msg_err_joining": "Gabime në hyrjen në lojë.",
@@ -31,7 +35,8 @@ export const ALBANIAN_TRANSLATIONS: TranslationMap = {
     "quit": "Hiq dorë",
     "none": "Asnje",
     "copy": "Kopjo",
-
+    "copied": "Kopjuar"
+        
     "health": "jeta",
     "adrenaline": "adrenalina",
 
@@ -46,6 +51,7 @@ export const ALBANIAN_TRANSLATIONS: TranslationMap = {
 
     "settings_master_volume": "Volumi kryesor",
     "settings_sfx_volume": "Volumi i efekteve zanore",
+    "settings_ambience_volume": "Zëri i ambientit"
     "settings_music_volume": "Volumi i muzikës",
     "settings_old_menu_music": "Muzika e menusë së vjetër",
 
@@ -55,6 +61,8 @@ export const ALBANIAN_TRANSLATIONS: TranslationMap = {
     "settings_hires_textures": "Tekstura me rezolucion të lartë",
     "settings_cooler_graphics": "Grafika më të bukura",
     "settings_antialias": "Anti-aliasing",
+    "settings_ambient_particles": "Grimcat e ambientit"
+
     "settings_movement_smoothing": "Zbutja e lëvizjes",
     "settings_responsive_rotation": "Rrotullim reagues",
     "settings_camera_shake": "Dridhja e kamerës",
@@ -270,6 +278,7 @@ export const ALBANIAN_TRANSLATIONS: TranslationMap = {
     "steelfang": "Steelfang",
     "ice_pick": "Kazëm Akulli",
     "seax": "Shpatë",
+    "sickle": "Drapër"
 
     "mosin_nagant": "Mosin-Nagant",
     "radio": "Radio",
