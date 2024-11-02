@@ -99,7 +99,7 @@ export class ServerPerkManager extends PerkManager {
             // ! evil ends here
         }
 
-        owner.dirty.perks ||= absent;
+        owner.dirty.perks = true;
         return absent;
     }
 
