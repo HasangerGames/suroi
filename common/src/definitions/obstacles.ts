@@ -318,6 +318,8 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     clearing_boulder_particle_1:   { base: "stone_particle_1", tint: 0x5a5a5a },
     clearing_boulder_particle_2:   { base: "stone_particle_2", tint: 0x5a5a5a },
     sandbags_particle:             { base: "stone_particle_2", tint: 0xd59d4e },
+    fire_pit_particle_1:           { base: "stone_particle_1", tint: 0x5b4f3e },
+    fire_pit_particle_2:           { base: "stone_particle_2", tint: 0x5b4f3e },
     porta_potty_door_particle:     { base: "plastic_particle", tint: 0xf5f9fd },
     porta_potty_toilet_particle:   { base: "plastic_particle", tint: 0x5e5e5e },
     porta_potty_wall_particle:     { base: "plastic_particle", tint: 0x1c71d8 },
@@ -1975,6 +1977,27 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     residue: "stove_residue"
                 },
                 reflectBullets: true
+            },
+            // placeholder copy pasted ahh definition (missing residue, will add later)
+            {
+                idString: "fire_pit",
+                name: "Fire Pit",
+                material: "wood",
+                health: 400,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.9
+                },
+                hideOnMap: true,
+                hitbox: new CircleHitbox(6.12),
+                rotationMode: RotationMode.Full,
+                particleVariations: 2,
+                frames: {
+                    particle: "fire_pit_particle"
+                },
+                zIndex: ZIndexes.ObstaclesLayer3,
+                noBulletCollision: true
             },
             {
                 idString: "speaker",
