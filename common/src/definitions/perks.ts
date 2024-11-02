@@ -342,7 +342,7 @@ const perks = [
 
             vibrant_bush: 1,
             oak_leaf_pile: 1,
-            blueberry_bush: 1,
+            // blueberry_bush: 1, // this doesn't even spawn in halloween map lol
             hay_bale: 1,
 
             mini_plumpkin: 0.01,
