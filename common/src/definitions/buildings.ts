@@ -5658,7 +5658,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "box", position: Vec.create(-19.8, -45.18), rotation: 0 },
                     { idString: "ammo_crate", position: Vec.create(-11.38, -42.41), rotation: 0 },
                     { idString: "bookshelf", position: Vec.create(13.5, -39.3), rotation: 0 },
-                    { idString: "gun_mount_m590m", position: Vec.create(-20.59, -57.46), rotation: 0, lootSpawnOffset: Vec.create(4, 0) }
+                    { idString: "gun_mount_m590m", position: Vec.create(-20.59, -57.46), rotation: 0, lootSpawnOffset: Vec.create(0, 4) }
                 ]
             },
             {
@@ -6032,7 +6032,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         idString: { gun_mount_dual_rsh12: 0.1, gun_mount_mini14: 1, gun_mount_m590m: 0.2 },
                         position: Vec.create(-54.09, 84.63),
                         rotation: 3,
-                        lootSpawnOffset: Vec.create(4, 0)
+                        lootSpawnOffset: Vec.create(-4, 0)
                     },
                     { idString: "regular_crate", position: Vec.create(-62.71, 81.57) },
                     { idString: { box: 1, grenade_box: 1 }, position: Vec.create(-66.18, 89.31) },
