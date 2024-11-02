@@ -93,8 +93,7 @@ const perks = [
         categories: [PerkCategories.Normal],
 
         cutoff: 0.5,
-        speedMod: 1.4,
-        type: PerkQualities.Positive
+        speedMod: 1.4
     },
     {
         idString: PerkIds.Flechettes,
@@ -104,8 +103,7 @@ const perks = [
 
         split: 3,
         deviation: 0.7,
-        damageMod: 0.4,
-        type: PerkQualities.Positive
+        damageMod: 0.4
     },
     {
         idString: PerkIds.SabotRounds,
@@ -117,15 +115,13 @@ const perks = [
         speedMod: 1.5,
         spreadMod: 0.6,
         damageMod: 0.9,
-        tracerLengthMod: 1.2,
-        type: PerkQualities.Positive
+        tracerLengthMod: 1.2
     },
     {
         idString: PerkIds.ExtendedMags,
         name: "Extended Mags",
         description: "Most weapons have increased bullet capacity.",
-        categories: [PerkCategories.Normal],
-        type: PerkQualities.Positive
+        categories: [PerkCategories.Normal]
 
         // define for each weapon individually
     },
@@ -137,8 +133,7 @@ const perks = [
 
         updateInterval: 10e3, // milliseconds
         rangeMod: 2,
-        restoreAmount: 0.25, // times max capacity
-        type: PerkQualities.Positive
+        restoreAmount: 0.25 // times max capacity
     },
     {
         idString: PerkIds.AdvancedAthletics,
@@ -148,8 +143,7 @@ const perks = [
 
         // all multiplicative
         waterSpeedMod: (1 / 0.7) * 1.3,
-        smokeSpeedMod: 1.2,
-        type: PerkQualities.Positive
+        smokeSpeedMod: 1.2
     },
     {
         idString: PerkIds.Toploaded,
@@ -160,8 +154,7 @@ const perks = [
         thresholds: [
             [0.2, 1.25],
             [0.49, 1.1]
-        ] as ReadonlyArray<readonly [number, number]>,
-        type: PerkQualities.Positive
+        ] as ReadonlyArray<readonly [number, number]>
     },
     {
         idString: PerkIds.InfiniteAmmo,
@@ -169,8 +162,7 @@ const perks = [
         description: "All weapons have unlimited ammo. Electronic devices may break if overused.",
         categories: [PerkCategories.Normal],
 
-        airdropCallerLimit: 3,
-        type: PerkQualities.Positive
+        airdropCallerLimit: 3
     },
     {
         idString: PerkIds.FieldMedic,
@@ -178,8 +170,7 @@ const perks = [
         description: "All consumable items can be used faster. Teammates can be revived more quickly.",
         categories: [PerkCategories.Normal],
 
-        usageMod: 1.5, // divide
-        type: PerkQualities.Positive
+        usageMod: 1.5 // divide
     },
     {
         idString: PerkIds.Berserker,
@@ -188,8 +179,7 @@ const perks = [
         categories: [PerkCategories.Normal],
 
         speedMod: 1.3, // multiplicative
-        damageMod: 1.3, // multiplicative
-        type: PerkQualities.Positive
+        damageMod: 1.3 // multiplicative
     },
     {
         idString: PerkIds.CloseQuartersCombat,
@@ -199,8 +189,7 @@ const perks = [
 
         cutoff: 60,
         reloadMod: 1.2, // divide
-        damageMod: 1.1, // multiplicative
-        type: PerkQualities.Positive
+        damageMod: 1.1 // multiplicative
     },
     {
         idString: PerkIds.LowProfile,
@@ -209,8 +198,7 @@ const perks = [
         categories: [PerkCategories.Normal],
 
         sizeMod: 0.8, // multiplicative
-        explosionMod: 0.7, // multiplicative
-        type: PerkQualities.Positive
+        explosionMod: 0.7 // multiplicative
     },
 
     //
