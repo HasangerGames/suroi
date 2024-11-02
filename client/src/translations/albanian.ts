@@ -6,6 +6,15 @@ export const ALBANIAN_TRANSLATIONS: TranslationMap = {
 
     "msg_rotate": "Për një eksperiencë më të mirë, ju lutem rrotulloni pajisjen tuaj.",
     "msg_loading": "Duke u lidhur",
+    "msg_spectating": "duke e parë",
+    "msg_enter_team_code": "futni kodin e ekipit",
+    "msg_lost_team_connection": "humbët lidhjen me ekipin",
+    "msg_error_joining_team": "gabim në bashkimin me ekipin",
+    "msg_not_enough_space": "nuk ka mjaft hapësirë",
+    "msg_item_already_equipped": "objekti është tashmë i pajisur",
+    "msg_better_item_equipped": "objekti më i mirë është i pajisur",
+    "msg_cannot_use_radio": "nuk mund të përdorni radios:,,
+    "msg_radio_overused": "radio e përdorur shumë",
     "msg_err_joining": "Gabime në hyrjen në lojë.",
     "msg_err_finding": "Gabime në gjetjen e lojës.",
     "msg_try_again": "Ju lutem provoni sërish.",
@@ -142,6 +151,7 @@ export const ALBANIAN_TRANSLATIONS: TranslationMap = {
     "interact_headquarters_security_desk": "Aktivizoni Panelin e Kontrollit",
     "interact_generator": "Aktivizoni gjeneratorin",
     "interact_button": "Shtyp butonin",
+    "interact_speaker": "ndërveproni me folësin",
 
     "loading_spritesheets": "Duke Ngarkuar Spritesheet <progress>",
     "loading_connecting": "Duke u Lidhur",
@@ -185,6 +195,7 @@ export const ALBANIAN_TRANSLATIONS: TranslationMap = {
     "bindings_+map_ping": "Rrota e Pingut të Hartës",
     "bindings_toggle_console": "Aktivizo Konsolën",
     "bindings_toggle_slot_lock": "Aktivizo Kyçjen e Slotit",
+    "bindings_explode_c4": "lidhjet e shpërthimit të C4",
 
     "kf_suicide_kill": "<player> u vetëvra",
     "kf_suicide_down": "<player> eleminoi veten",
@@ -206,9 +217,20 @@ export const ALBANIAN_TRANSLATIONS: TranslationMap = {
     "kf_kl_killed": "<player> vrau Udhëheqësin e Vrasjes",
     "kf_kl_dead": "Udhëheqësi i vrasësit ka vdekur!",
     "kf_kl_suicide": "Udhëheqësi i Vrasjes vrau veten!",
+    "kf_killed": "kf të vrarë",
+    "kf_knocked": "kf të rrëzuar",
+    "kf_finished_off": "kf e përfunduar",
+    "kf_message": "kf mesazh"
+
 
     "tt_restores": "<item> rikthen <amount> <type>",
     "tt_reduces": "<item> redukton <percent>% të dëmtit",
+
+    "finally": "përfundimisht",
+    "with": "me",
+    "you": "ti",
+    "yourself": "vetë",
+    "themselves": "vetveten",
 
     "go_kills": "Vrasjet:",
     "go_damage_done": "Dëmi i kryer:",
@@ -220,6 +242,10 @@ export const ALBANIAN_TRANSLATIONS: TranslationMap = {
     "create_team_lock": "Kyç Skuadrën",
     "create_team_waiting": "Ne pritje...",
     "create_team_play": "Fillo lojen",
+
+    "km_killed": "km të vrarë",
+    "km_knocked": "km të rrëzuar",
+    "km_message": "km mesazh",
 
     "report_reporting": "Duke Raportuar",
     "report_id": "ID e Raportit:",
@@ -270,6 +296,10 @@ export const ALBANIAN_TRANSLATIONS: TranslationMap = {
     "steelfang": "Steelfang",
     "ice_pick": "Kazëm Akulli",
     "seax": "Shpatë",
+    "crowbar": "hekur",
+    "sickle": "ferkë",
+    "fire_hatchet": "çekiç zjarri",
+    "falchion": "falshion",
 
     "mosin_nagant": "Mosin-Nagant",
     "radio": "Radio",
