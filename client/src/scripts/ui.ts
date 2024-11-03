@@ -72,6 +72,7 @@ export function resetPlayButtons(): void {
     $("#loading-text").text(getTranslatedString("loading_connecting"));
 
     const { maxTeamSize } = selectedRegion ?? regionInfo[Config.defaultRegion];
+
     const isSolo = maxTeamSize === TeamSize.Solo;
 
     for (
@@ -82,10 +83,12 @@ export function resetPlayButtons(): void {
                 [TeamSize.Squad, $("#btn-play-squad")]
             ]
         )
-    ) btn.toggleClass("locked", maxTeamSize !== size);
+    // stfu
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+    ) btn.toggleClass("locked", maxTeamSize !== undefined && maxTeamSize !== size);
 
     $("#team-option-btns").toggleClass("locked", isSolo);
-    $("#locked-msg").css("top", isSolo ? "225px" : "153px").show();
+    $("#locked-msg").css("top", isSolo ? "225px" : "153px").toggle(maxTeamSize !== undefined);
 }
 
 export async function setUpUI(game: Game): Promise<void> {
