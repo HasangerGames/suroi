@@ -267,7 +267,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             };
         });
 
-        const warehousetLayout = derive((id: number, obstacles: readonly BuildingObstacle[]) => {
+        const warehouseLayout = derive((id: number, obstacles: readonly BuildingObstacle[]) => {
             return {
                 idString: `warehouse_layout_${id}`,
                 name: "Warehouse Layout",
@@ -887,7 +887,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ]
             },
 
-            warehousetLayout([1, [
+            warehouseLayout([1, [
                 // top left
                 { idString: "ammo_crate", position: Vec.create(-19.53, -26.33) },
 
@@ -911,7 +911,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 { idString: "regular_crate", position: Vec.create(19.39, 36.48) }
             ]]),
 
-            warehousetLayout([2, [
+            warehouseLayout([2, [
                 // top left
                 { idString: "barrel", position: Vec.create(-20.34, -27.05) },
                 { idString: "grenade_box", position: Vec.create(-21.81, -19.82) },
@@ -939,7 +939,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 { idString: "regular_crate", position: Vec.create(19.39, 36.48) }
             ]]),
 
-            warehousetLayout([3, [
+            warehouseLayout([3, [
                 // top left
                 { idString: "barrel", position: Vec.create(-20.34, -26.33) },
 
