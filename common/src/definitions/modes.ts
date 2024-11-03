@@ -24,11 +24,11 @@ export type Mode = "normal" | "fall" | "halloween" | "winter";
 export const Modes: Record<Mode, ModeDefinition> = {
     normal: {
         colors: {
-            grass: "hsl(113, 42%, 42%)",
+            grass: "hsl(95, 41%, 38%)",
             water: "hsl(211, 63%, 42%)",
             border: "hsl(211, 63%, 30%)",
             beach: "hsl(40, 39%, 55%)",
-            riverBank: "hsl(33, 50%, 30%)",
+            riverBank: "hsl(34, 41%, 32%)",
             trail: "hsl(35, 50%, 40%)",
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
