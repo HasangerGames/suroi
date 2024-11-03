@@ -370,7 +370,7 @@ const perks = [
         type: PerkQualities.Negative,
 
         speedMod: 0.75,
-        noDrop: true,
+        noDrop: true
     },
     {
         idString: PerkIds.LacedStimulants,
