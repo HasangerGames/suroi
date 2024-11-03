@@ -503,18 +503,18 @@ export async function setUpUI(game: Game): Promise<void> {
 
         const getPlayerHTML = (p: CustomTeamPlayerInfo): string => {
             let badgeSrc;
-            if (p.badge) badgeSrc = `./img/game/${emoteIdStrings.includes(p.badge) ? "emotes" : "badges"}/${p.badge}.svg`;
+            if (p.badge) badgeSrc = `./img/game/shared/${emoteIdStrings.includes(p.badge) ? "emotes" : "badges"}/${p.badge}.svg`;
             return `
             <div class="create-team-player-container" data-id="${p.id}">
               <i class="fa-solid fa-crown"${p.isLeader ? "" : ' style="display: none"'}></i>
               <div class="skin">
-                <div class="skin-base" style="background-image: url('./img/game/skins/${p.skin}_base.svg')"></div>
-                <div class="skin-left-fist" style="background-image: url('./img/game/skins/${p.skin}_fist.svg')"></div>
-                <div class="skin-right-fist" style="background-image: url('./img/game/skins/${p.skin}_fist.svg')"></div>
+                <div class="skin-base" style="background-image: url('./img/game/shared/skins/${p.skin}_base.svg')"></div>
+                <div class="skin-left-fist" style="background-image: url('./img/game/shared/skins/${p.skin}_fist.svg')"></div>
+                <div class="skin-right-fist" style="background-image: url('./img/game/shared/skins/${p.skin}_fist.svg')"></div>
               </div>
               <div class="create-team-player-name-container">
                 <span class="create-team-player-name"${p.nameColor ? ` style="color: ${new Color(p.nameColor).toHex()}"` : ""};>${p.name}</span>
-                ${p.badge ? `<img class="create-team-player-badge" draggable="false" src=${badgeSrc ?? "./img/game/badges/${p.badge}.svg"} />` : ""}
+                ${p.badge ? `<img class="create-team-player-badge" draggable="false" src=${badgeSrc ?? "./img/game/shared/badges/${p.badge}.svg"} />` : ""}
               </div>
             </div>
             `;
@@ -948,12 +948,12 @@ export async function setUpUI(game: Game): Promise<void> {
     const updateSplashCustomize = (skinID: string): void => {
         base.css(
             "background-image",
-            `url("./img/game/skins/${skinID}_base.svg")`
+            `url("./img/game/shared/skins/${skinID}_base.svg")`
         );
 
         fists.css(
             "background-image",
-            `url("./img/game/skins/${skinID}_fist.svg")`
+            `url("./img/game/shared/skins/${skinID}_fist.svg")`
         );
     };
 
@@ -978,9 +978,9 @@ export async function setUpUI(game: Game): Promise<void> {
         const skinItem = skinUiCache[idString] = $<HTMLDivElement>(
             `<div id="skin-${idString}" class="skins-list-item-container${idString === currentSkin ? " selected" : ""}">
                 <div class="skin">
-                    <div class="skin-base" style="background-image: url('./img/game/skins/${idString}_base.svg')"></div>
-                    <div class="skin-left-fist" style="background-image: url('./img/game/skins/${idString}_fist.svg')"></div>
-                    <div class="skin-right-fist" style="background-image: url('./img/game/skins/${idString}_fist.svg')"></div>
+                    <div class="skin-base" style="background-image: url('./img/game/shared/skins/${idString}_base.svg')"></div>
+                    <div class="skin-left-fist" style="background-image: url('./img/game/shared/skins/${idString}_fist.svg')"></div>
+                    <div class="skin-right-fist" style="background-image: url('./img/game/shared/skins/${idString}_fist.svg')"></div>
                 </div>
                 <span class="skin-name">${getTranslatedString(idString)}</span>
             </div>`
@@ -1044,7 +1044,7 @@ export async function setUpUI(game: Game): Promise<void> {
             }
 
             // noinspection CssUnknownTarget
-            const emoteIdString = `./img/game/emotes/${emote.idString}.svg`;
+            const emoteIdString = `./img/game/shared/emotes/${emote.idString}.svg`;
             const emoteItem = $<HTMLDivElement>(
                 `<div id="emote-${emote.idString}" class="emotes-list-item-container">
                     <div class="emotes-list-item" style="background-image: url(${emoteIdString})"></div>
@@ -1070,7 +1070,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     emoteWheelUiCache[cvarName] ??= $(`#emote-wheel-container .emote-${cvarName}`)
                 ).css(
                     "background-image",
-                    `url("./img/game/emotes/${emote.idString}.svg")`
+                    `url("./img/game/shared/emotes/${emote.idString}.svg")`
                 );
             });
 
@@ -1086,7 +1086,7 @@ export async function setUpUI(game: Game): Promise<void> {
     function changeEmoteSlotImage(slot: typeof EMOTE_SLOTS[number], emote: ReferenceTo<EmoteDefinition>): JQuery<HTMLDivElement> {
         return (
             emoteWheelUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
-        ).css("background-image", emote ? `url("./img/game/emotes/${emote}.svg")` : "none");
+        ).css("background-image", emote ? `url("./img/game/shared/emotes/${emote}.svg")` : "none");
     }
 
     for (const slot of EMOTE_SLOTS) {
@@ -1303,7 +1303,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 const badgeItem = badgeUiCache[idString] = $<HTMLDivElement>(
                     `<div id="badge-${idString}" class="badges-list-item-container${idString === activeBadge ? " selected" : ""}">\
                         <div class="badges-list-item">\
-                            <div style="background-image: url('./img/game/${location}/${idString}.svg')"></div>\
+                            <div style="background-image: url('./img/game/shared/${location}/${idString}.svg')"></div>\
                         </div>\
                         <span class="badge-name">${getTranslatedString(`badge_${idString}`)}</span>\
                     </div>`
@@ -1861,7 +1861,7 @@ export async function setUpUI(game: Game): Promise<void> {
         Scopes.definitions.map(scope => {
             const ele = $<HTMLDivElement>(
                 `<div class="inventory-slot item-slot" id="${scope.idString}-slot" style="display: none;">
-                    <img class="item-image" src="./img/game/loot/${scope.idString}.svg" draggable="false">
+                    <img class="item-image" src="./img/game/shared/loot/${scope.idString}.svg" draggable="false">
                     <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
                 </div>`
             );
@@ -1900,7 +1900,7 @@ export async function setUpUI(game: Game): Promise<void> {
         HealingItems.definitions.map(item => {
             const ele = $<HTMLDivElement>(
                 html`<div class="inventory-slot item-slot active" id="${item.idString}-slot">
-                    <img class="item-image" src="./img/game/loot/${item.idString}.svg" draggable="false">
+                    <img class="item-image" src="./img/game/shared/loot/${item.idString}.svg" draggable="false">
                     <span class="item-count" id="${item.idString}-count">0</span>
                     <div class="item-tooltip">
                         ${getTranslatedString("tt_restores", {
@@ -1959,7 +1959,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
         const ele = $<HTMLDivElement>(
             `<div class="inventory-slot item-slot ammo-slot active" id="${ammo.idString}-slot">
-                <img class="item-image" src="./img/game/loot/${ammo.idString}.svg" draggable="false">
+                <img class="item-image" src="./img/game/shared/loot/${ammo.idString}.svg" draggable="false">
                 <span class="item-count" id="${ammo.idString}-count">0</span>
             </div>`
         );

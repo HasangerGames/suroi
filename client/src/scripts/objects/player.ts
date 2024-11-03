@@ -1191,7 +1191,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         if (def && def.level > 0) {
             container.children(".item-name").text(`Lvl. ${def.level}`);
-            container.children(".item-image").attr("src", `./img/game/loot/${def.idString}.svg`);
+            container.children(".item-image").attr("src", `./img/game/shared/loot/${def.idString}.svg`);
 
             let itemTooltip = getTranslatedString(def.idString);
             if (def.itemType === ItemType.Armor) {

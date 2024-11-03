@@ -6,6 +6,7 @@ import { type FSWatcher, type Plugin, type ResolvedConfig } from "vite";
 import readDirectory from "./utils/readDirectory.js";
 import { type CompilerOptions, createSpritesheets, type MultiResAtlasList } from "./utils/spritesheet.js";
 import { GameConstants } from "../../../common/src/constants";
+import { Mode, Modes } from "../../../common/src/definitions/modes";
 
 const PLUGIN_NAME = "vite-spritesheet-plugin";
 
@@ -22,10 +23,14 @@ const compilerOpts = {
     packerOptions: {}
 } satisfies CompilerOptions as CompilerOptions;
 
-const imageDirs = [
-    "public/img/game",
-    `public/img/modes/${GameConstants.modeName}`
-];
+const getImageDirs = (modeName: Mode | "shared", imageDirs: string[] = []): string[] => {
+    imageDirs.push(`public/img/game/${modeName}`);
+    return modeName === "shared"
+        ? imageDirs
+        : getImageDirs(Modes[modeName].inheritTexturesFrom ?? "shared", imageDirs);
+};
+
+const imageDirs = getImageDirs(GameConstants.modeName).reverse();
 
 async function buildSpritesheets(): Promise<MultiResAtlasList> {
     const fileMap = new Map<string, string>();
