@@ -11,7 +11,7 @@ const badge = createTemplate<BadgeDefinition>()((name: string, roles: string[] =
 }));
 
 export const Badges = ObjectDefinitions.create<BadgeDefinition>([
-    badge(["Developr", ["developr", "eipi", "pap", "error", "limenade"]]),
+    badge(["Developr", ["developr", "pap", "error", "limenade"]]),
     badge(["Dev Managr", ["solstice"]]),
     badge(["Designr", ["designr"]]),
     badge(["Lead Designr", ["lead_designr"]]),
@@ -19,8 +19,8 @@ export const Badges = ObjectDefinitions.create<BadgeDefinition>([
     badge(["Composr", ["composr"]]),
     badge(["Lead Composr", ["lead_composr"]]),
     badge(["Moderatr", ["moderatr"]]),
-    badge(["Administratr", ["administratr", "katie", "error"]]),
-    badge(["Youtubr", ["youtubr", "123op"]]),
+    badge(["Administratr", ["administratr", "error"]]),
+    badge(["Youtubr", ["youtubr"]]),
     badge(["Boostr", ["boostr"]]),
     badge(["Ownr", ["hasanger"]]),
     badge(["Bleh"]),
