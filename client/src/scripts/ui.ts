@@ -25,7 +25,6 @@ import { PIXI_SCALE, UI_DEBUG_MODE, EMOTE_SLOTS, MODE } from "./utils/constants"
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
 import { PerkIds, Perks } from "../../../common/src/definitions/perks";
-import { Modes } from "../../../common/src/definitions/modes";
 
 /*
     eslint-disable
