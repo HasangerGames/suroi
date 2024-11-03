@@ -119,9 +119,14 @@ if (isMainThread) {
             } else if (teamID) {
                 const team = customTeams.get(teamID);
                 if (team?.gameID !== undefined) {
-                    response = games[team.gameID]
-                        ? { success: true, gameID: team.gameID }
-                        : { success: false };
+                    if (Date.now() - team.lastGameIDUpdateTime < 10000) {
+                        const game = games[team.gameID];
+                        response = game && !game.stopped
+                            ? { success: true, gameID: team.gameID }
+                            : { success: false };
+                    } else {
+                        response = { success: false, message: "perma", reason: "suck it emmanuel macron" };
+                    }
                 } else {
                     response = { success: false };
                 }

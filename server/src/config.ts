@@ -21,9 +21,9 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "halloween",
+    map: "fall",
 
-    spawn: { mode: SpawnMode.Normal },
+    spawn: { mode: SpawnMode.Center },
 
     maxTeamSize: TeamSize.Solo,
 
@@ -38,25 +38,22 @@ export const Config = {
     plugins: [],
 
     roles: {
-        "developr": { password: "developr", isDev: true },
-        "designr": { password: "designr" },
-        "lead_designr": { password: "lead_designr" },
-        "vip_designr": { password: "vip_designr" },
-        "composr": { password: "composr" },
-        "lead_composr": { password: "lead_composr" },
-        "moderatr": { password: "moderatr" },
-        "administratr": { password: "administratr" },
-        "youtubr": { password: "youtubr" },
-        "boostr": { password: "boostr" },
+        developr: { password: "developr", isDev: true },
+        designr: { password: "designr" },
+        lead_designr: { password: "lead_designr" },
+        vip_designr: { password: "vip_designr" },
+        composr: { password: "composr" },
+        lead_composr: { password: "lead_composr" },
+        moderatr: { password: "moderatr" },
+        administratr: { password: "administratr" },
+        youtubr: { password: "youtubr" },
+        boostr: { password: "boostr" },
 
-        "hasanger": { password: "hasanger", isDev: true },
-        "katie": { password: "katie", isDev: true },
-        "eipi": { password: "eipi", isDev: true },
-        "pap": { password: "pap", isDev: true },
-        "error": { password: "error", isDev: true },
-        "limenade": { password: "limenade", isDev: true },
-        "123op": { password: "123op" },
-        "solstice": { password: "solstice", isDev: true }
+        hasanger: { password: "hasanger", isDev: true },
+        pap: { password: "pap", isDev: true },
+        error: { password: "error", isDev: true },
+        limenade: { password: "limenade", isDev: true },
+        solstice: { password: "solstice", isDev: true }
     },
 
     authServer: {

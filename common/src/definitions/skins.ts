@@ -46,12 +46,9 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
         return [
             withRole([["hasanger"], ["Hasanger",      0x640000]]),
             withRole([["limenade"], ["LimeNade",      0xffffff]]),
-            withRole([["katie"],    ["Katie",         0x7784f0]]),
             withRole([["solstice"], ["Dragonscale",   0x3f808d]]),
-            withRole([["eipi"],     ["eipi",          0x8040BF]]),
             withRole([["error"],    ["error",         0x1fc462]]),
             withRole([["pap"],      ["pap",           0x060647]]),
-            withRole([["123op"],    ["123OP",         0x0000ff]]),
             withRole([["developr"], ["Developr Swag", 0x007a7f]]),
             withRole([["designr"],  ["Designr Swag",  0x67cf00]]),
             withRole([["composr"],  ["Composr Swag",  0xffd101]]),

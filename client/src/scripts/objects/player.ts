@@ -1847,8 +1847,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     get bloodDecals(): Set<Particle> { return this._bloodDecals; }
 
     hitEffect(position: Vector, angle: number, sound?: string): void {
+        const randomVariation = randomBoolean() ? "1" : "2";
+        const hitSound = this.activeDisguise ? `${this.activeDisguise.material === "crate" ? "wood" : this.activeDisguise.material}_hit_${randomVariation}` : `player_hit_${randomVariation}`;
+
         this.game.soundManager.play(
-            sound ?? (randomBoolean() ? "player_hit_1" : "player_hit_2"),
+            sound ?? hitSound,
             {
                 position,
                 falloff: 0.2,
@@ -1856,8 +1859,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 layer: this.layer
             });
 
+        let particle = this.activeDisguise ? this.activeDisguise.frames.particle ?? `${this.activeDisguise.idString}_particle` : "blood_particle";
+
+        if (this.activeDisguise?.particleVariations) particle += `_${random(1, this.activeDisguise.particleVariations)}`;
+
         this.game.particleManager.spawnParticle({
-            frames: "blood_particle",
+            frames: particle,
             zIndex: ZIndexes.Players + 0.5,
             layer: this.layer,
             position,
