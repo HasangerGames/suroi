@@ -1364,7 +1364,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     destroy: 0.6
                 },
                 spawnMode: MapObjectSpawnMode.GrassAndSand,
-                hitbox: RectangleHitbox.fromRect(8.5, 8.5),
+                hitbox: RectangleHitbox.fromRect(8.49, 8.36),
                 rotationMode: RotationMode.Limited,
                 hasLoot: true,
                 frames: {
