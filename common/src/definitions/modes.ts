@@ -10,6 +10,7 @@ export interface ModeDefinition {
     readonly specialSounds?: string[]
     readonly defaultScope?: ReferenceTo<ScopeDefinition>
     readonly reskin?: string
+    readonly darkShaders?: boolean
     // will be multiplied by the bullet trail color
     readonly bulletTrailAdjust?: string
     readonly particleEffects?: {
@@ -65,6 +66,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
         },
         defaultScope: "2x_scope",
         specialMenuMusic: true,
+        darkShaders: true,
         reskin: "fall"
     },
     winter: {

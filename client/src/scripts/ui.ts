@@ -21,10 +21,11 @@ import { type Game } from "./game";
 import { news } from "./news/newsPosts";
 import { body, createDropdown } from "./uiHelpers";
 import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";
-import { PIXI_SCALE, UI_DEBUG_MODE, EMOTE_SLOTS } from "./utils/constants";
+import { PIXI_SCALE, UI_DEBUG_MODE, EMOTE_SLOTS, MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
 import { PerkIds, Perks } from "../../../common/src/definitions/perks";
+import { Modes } from "../../../common/src/definitions/modes";
 
 /*
     eslint-disable
@@ -1142,6 +1143,15 @@ export async function setUpUI(game: Game): Promise<void> {
     const crosshairImage = $<HTMLDivElement>("#crosshair-image");
     const crosshairControls = $<HTMLDivElement>("#crosshair-controls");
     const crosshairTargets = $<HTMLDivElement>("#crosshair-preview, #game");
+
+    // Darken canvas (halloween mode)
+    if (MODE.darkShaders) {
+        $("#game-canvas").css({
+            "filter": "brightness(0.65) saturate(0.85)",
+            "position": "relative",
+            "z-index": "-1"
+        });
+    }
 
     // Load crosshairs
     function loadCrosshair(): void {

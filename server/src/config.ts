@@ -21,9 +21,9 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "halloween",
+    map: "fall",
 
-    spawn: { mode: SpawnMode.Normal },
+    spawn: { mode: SpawnMode.Center },
 
     maxTeamSize: TeamSize.Solo,
 
