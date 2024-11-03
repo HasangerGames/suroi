@@ -1978,25 +1978,22 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 reflectBullets: true
             },
-            // placeholder copy pasted ahh definition (missing residue, will add later)
             {
                 idString: "fire_pit",
                 name: "Fire Pit",
-                material: "wood",
+                material: "stone",
                 health: 400,
                 scale: {
                     spawnMin: 1,
                     spawnMax: 1,
-                    destroy: 0.9
+                    destroy: 0.7
                 },
-                hideOnMap: true,
-                hitbox: new CircleHitbox(6.12),
+                hitbox: new CircleHitbox(6.35),
                 rotationMode: RotationMode.Full,
                 particleVariations: 2,
                 frames: {
                     particle: "fire_pit_particle"
                 },
-                zIndex: ZIndexes.ObstaclesLayer3,
                 noBulletCollision: true
             },
             {
