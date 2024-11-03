@@ -421,11 +421,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         this.inventory.addOrReplaceWeapon(2, "fists");
 
-        this.inventory.scope = "1x_scope";
         const defaultScope = Modes[GameConstants.modeName].defaultScope;
         if (defaultScope) {
             this.inventory.scope = defaultScope;
             this.inventory.items.setItem(defaultScope, 1);
+        } else {
+            this.inventory.scope = DEFAULT_SCOPE.idString;
         }
         this.effectiveScope = DEFAULT_SCOPE;
 
