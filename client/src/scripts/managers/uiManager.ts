@@ -8,7 +8,7 @@ import { emoteIdStrings, type EmoteDefinition } from "../../../../common/src/def
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { MapPings, type PlayerPing } from "../../../../common/src/definitions/mapPings";
-import { PerkIds, type PerkDefinition } from "../../../../common/src/definitions/perks";
+import { PerkCategories, PerkIds, type PerkDefinition } from "../../../../common/src/definitions/perks";
 import { DEFAULT_SCOPE, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { type GameOverData } from "../../../../common/src/packets/gameOverPacket";
 import { type KillFeedPacketData } from "../../../../common/src/packets/killFeedPacket";
@@ -898,29 +898,6 @@ export class UIManager {
         container.off("pointerdown");
     }
 
-    /* updatePerkSlot(perkDef: PerkDefinition, index: number): void {
-        const container = $(`#perk-slot-${index}`);
-
-        container.children(".item-tooltip").html(`<strong>${perkDef.name}</strong><br>${perkDef.description}`);
-        container.children(".item-image").attr("src", `./img/game/shared/perks/${perkDef.idString}.svg`);
-        container.css("visibility", this.perks.hasPerk(perkDef) ? "visible" : "hidden");
-
-        container.off("pointerdown");
-        container[0].addEventListener( // todo
-            "pointerdown",
-            (e: PointerEvent): void => {
-                e.stopImmediatePropagation();
-                if (e.button === 2 && perkDef && this.game.teamMode) {
-                    this.game.inputManager.addAction({
-                        type: InputActions.DropItem,
-                        item: perkDef
-                    });
-                    this.resetPerkSlot(index);
-                }
-            }
-        );
-    } */
-
     private readonly _perkSlots: Array<JQuery<HTMLDivElement> | undefined> = [];
     private readonly _animationTimeouts: Array<number | undefined> = [];
     updatePerkSlot(perkDef: PerkDefinition, index: number): void {
@@ -930,7 +907,7 @@ export class UIManager {
         const container = this._perkSlots[index] ??= $<HTMLDivElement>(`#perk-slot-${index}`);
         container.attr("data-idString", perkDef.idString);
         container.children(".item-tooltip").html(`<strong>${perkDef.name}</strong><br>${perkDef.description}`);
-        container.children(".item-image").attr("src", `./img/game/shared/perks/${perkDef.idString}.svg`);
+        container.children(".item-image").attr("src", `./img/game/${perkDef.category === PerkCategories.Halloween ? "halloween" : "fall"}/perks/${perkDef.idString}.svg`);
         container.css("visibility", this.perks.hasPerk(perkDef.idString) ? "visible" : "hidden");
 
         container.css("outline", !perkDef.noDrop ? "" : "none");

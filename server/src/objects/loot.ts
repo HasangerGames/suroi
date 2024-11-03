@@ -464,16 +464,16 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 const currentPerks = player.perks.asList();
                 // const perksLength = currentPerks.length;
 
-                const isHalloweenPerk = definition.categories.includes(PerkCategories.Halloween);
-                const isNormalPerk = definition.categories.includes(PerkCategories.Normal);
+                const isHalloweenPerk = definition.category === PerkCategories.Halloween;
+                const isNormalPerk = definition.category === PerkCategories.Normal;
 
                 // Variable to track which perk to remove
                 let perkToRemove = null;
 
                 if (isHalloweenPerk) {
-                    perkToRemove = currentPerks.find(perk => perk.categories.includes(PerkCategories.Halloween));
+                    perkToRemove = currentPerks.find(perk => perk.category === PerkCategories.Halloween);
                 } else if (isNormalPerk) {
-                    perkToRemove = currentPerks.find(perk => perk.categories.includes(PerkCategories.Normal));
+                    perkToRemove = currentPerks.find(perk => perk.category === PerkCategories.Normal);
                 }
 
                 // If a perk to remove has been identified, remove it
