@@ -27,6 +27,7 @@ export class Bullet extends BaseBullet {
     private _trailTicks = 0;
 
     private _lastParticleTrail = Date.now();
+    private _bulletWhizPlayed = false;
 
     constructor(game: Game, options: BulletOptions) {
         super(options);
@@ -102,6 +103,14 @@ export class Bullet extends BaseBullet {
                 this.dead = true;
                 break;
             }
+        }
+        if (
+            !this._bulletWhizPlayed
+            && !this.game.activePlayer?.bulletWhizHitbox.isPointInside(this.initialPosition)
+            && this.game.activePlayer?.bulletWhizHitbox.intersectsLine(this.initialPosition, this.position)
+        ) {
+            this.game.soundManager.play("swing");
+            this._bulletWhizPlayed = true;
         }
 
         if (!this.dead && !this._trailReachedMaxLength) {
