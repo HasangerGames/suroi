@@ -191,15 +191,12 @@ if (isMainThread) {
                 return;
             }
 
-            let isLeader: boolean;
             if (noTeamIdGiven) {
-                isLeader = false;
                 if (team.locked || team.players.length >= (maxTeamSize as number)) {
                     forbidden(res); // TODO "Team is locked" and "Team is full" messages
                     return;
                 }
             } else {
-                isLeader = true;
                 team = new CustomTeam();
                 customTeams.set(team.id, team);
 
@@ -252,7 +249,6 @@ if (isMainThread) {
                 {
                     player: new CustomTeamPlayer(
                         team,
-                        isLeader,
                         name,
                         skin,
                         badge,

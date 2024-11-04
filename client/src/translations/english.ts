@@ -262,6 +262,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "create_team": "Create Team",
     "create_team_autofill": "Auto Fill",
     "create_team_lock": "Lock Team",
+    "create_team_ready": "Ready",
     "create_team_waiting": "Waiting...",
     "create_team_play": "Start Game",
 

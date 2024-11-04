@@ -422,11 +422,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
         const params = new URLSearchParams();
 
-        const joiningTeam = this.id === "btn-join-team";
-        if (joiningTeam) {
-            ui.btnStartGame.addClass("btn-disabled").text(getTranslatedString("create_team_waiting"));
-            ui.createTeamToggles.addClass("disabled");
-
+        if (this.id === "btn-join-team") {
             // also rejects the empty string, but like who cares
             while (!teamID) {
                 teamID = prompt(getTranslatedString("msg_enter_team_code"));
@@ -451,9 +447,6 @@ export async function setUpUI(game: Game): Promise<void> {
             }
 
             params.set("teamID", teamID);
-        } else {
-            ui.btnStartGame.removeClass("btn-disabled").text(getTranslatedString("create_team_play"));
-            ui.createTeamToggles.removeClass("disabled");
         }
 
         params.set("name", game.console.getBuiltInCVar("cv_player_name"));
@@ -480,58 +473,47 @@ export async function setUpUI(game: Game): Promise<void> {
 
         teamSocket = new WebSocket(`${selectedRegion.mainAddress.replace("http", "ws")}/team?${params.toString()}`);
 
-        const getPlayerHTML = (p: CustomTeamPlayerInfo): string => {
-            let badgeSrc;
-            if (p.badge) badgeSrc = `./img/game/shared/${emoteIdStrings.includes(p.badge) ? "emotes" : "badges"}/${p.badge}.svg`;
-            return `
-            <div class="create-team-player-container" data-id="${p.id}">
-              <i class="fa-solid fa-crown"${p.isLeader ? "" : ' style="display: none"'}></i>
-              <div class="skin">
-                <div class="skin-base" style="background-image: url('./img/game/shared/skins/${p.skin}_base.svg')"></div>
-                <div class="skin-left-fist" style="background-image: url('./img/game/shared/skins/${p.skin}_fist.svg')"></div>
-                <div class="skin-right-fist" style="background-image: url('./img/game/shared/skins/${p.skin}_fist.svg')"></div>
-              </div>
-              <div class="create-team-player-name-container">
-                <span class="create-team-player-name"${p.nameColor ? ` style="color: ${new Color(p.nameColor).toHex()}"` : ""};>${p.name}</span>
-                ${p.badge ? `<img class="create-team-player-badge" draggable="false" src=${badgeSrc ?? "./img/game/shared/badges/${p.badge}.svg"} />` : ""}
-              </div>
-            </div>
-            `;
-        };
-
-        let playerID: number;
-
         teamSocket.onmessage = (message: MessageEvent<string>): void => {
             const data = JSON.parse(message.data) as CustomTeamMessage;
             switch (data.type) {
                 case CustomTeamMessages.Join: {
                     joinedTeam = true;
-                    playerID = data.id;
                     teamID = data.teamID;
                     window.location.hash = `#${teamID}`;
 
                     ui.createTeamUrl.val(`${window.location.origin}/?region=${game.console.getBuiltInCVar("cv_region")}#${teamID}`);
+
                     ui.createTeamAutoFill.prop("checked", data.autoFill);
                     ui.createTeamLock.prop("checked", data.locked);
-                    ui.createTeamPlayers.html(data.players.map(getPlayerHTML).join(""));
                     break;
                 }
-                case CustomTeamMessages.PlayerJoin: {
-                    ui.createTeamPlayers.append(getPlayerHTML(data));
-                    break;
-                }
-                case CustomTeamMessages.PlayerLeave: {
-                    ui.createTeamPlayers.find(`[data-id="${data.id}"]`).remove();
-                    if (data.newLeaderID === undefined) {
-                        break;
-                    }
-
-                    ui.createTeamPlayers.find(`[data-id="${data.newLeaderID}"] .fa-crown`).show();
-
-                    if (data.newLeaderID === playerID) {
-                        ui.btnStartGame.removeClass("btn-disabled").text(getTranslatedString("create_team_play"));
-                        ui.createTeamToggles.removeClass("disabled");
-                    }
+                case CustomTeamMessages.Update: {
+                    const { players, isLeader, ready } = data;
+                    ui.createTeamPlayers.html(
+                        players.map((p: CustomTeamPlayerInfo): string => {
+                            let badgeSrc;
+                            if (p.badge) badgeSrc = `./img/game/shared/${emoteIdStrings.includes(p.badge) ? "emotes" : "badges"}/${p.badge}.svg`;
+                            return `
+                            <div class="create-team-player-container">
+                                <i class="fa-solid fa-crown"${p.isLeader ? "" : ' style="display: none"'}></i>
+                                <i class="fa-regular fa-circle-check"${p.ready ? "" : ' style="display: none"'}></i>
+                                <div class="skin">
+                                    <div class="skin-base" style="background-image: url('./img/game/shared/skins/${p.skin}_base.svg')"></div>
+                                    <div class="skin-left-fist" style="background-image: url('./img/game/shared/skins/${p.skin}_fist.svg')"></div>
+                                    <div class="skin-right-fist" style="background-image: url('./img/game/shared/skins/${p.skin}_fist.svg')"></div>
+                                </div>
+                                <div class="create-team-player-name-container">
+                                    <span class="create-team-player-name"${p.nameColor ? ` style="color: ${new Color(p.nameColor).toHex()}"` : ""};>${p.name}</span>
+                                    ${p.badge ? `<img class="create-team-player-badge" draggable="false" src=${badgeSrc ?? "./img/game/shared/badges/${p.badge}.svg"} />` : ""}
+                                </div>
+                            </div>
+                            `;
+                        }).join("")
+                    );
+                    ui.createTeamToggles.toggleClass("disabled", !isLeader);
+                    ui.btnStartGame
+                        .toggleClass("btn-disabled", !isLeader && ready)
+                        .text(getTranslatedString(isLeader ? "create_team_play" : ready ? "create_team_waiting" : "create_team_ready"));
                     break;
                 }
                 case CustomTeamMessages.Settings: {

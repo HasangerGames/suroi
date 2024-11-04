@@ -85,8 +85,18 @@
                 // leader indicator
                 .fa-crown {
                     position: absolute;
+                    font-size: 24px;
                     top: 5px;
                     left: 5px;
+                }
+
+                // ready indicator
+                .fa-circle-check {
+                    position: absolute;
+                    font-size: 24px;
+                    color: limegreen;
+                    top: 5px;
+                    right: 5px;
                 }
 
                 .create-team-player-name-container {
