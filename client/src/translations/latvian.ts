@@ -13,12 +13,12 @@ export const LATVIAN_TRANSLATIONS: TranslationMap = {
     "msg_lost_team_connection": "Zaudēts savienojums ar komandu.",
     "msg_error_joining_team": "Kļūda pievienojoties komandai.<br>Varbūt tā neeksistē vai ir pilna.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_try_again": "Lūdzu, mēģiniet vēlreiz.",
-    "msg_warning": "Jūs esat brīdināts!",
-    "msg_warning_msg": "Moderatori jums ir izteikuši brīdinājumu par iemeslu: <reason>",
-    "msg_temp_ban": "Jums ir pagaidu liegums!",
-    "msg_temp_ban_msg": "Jums ir piemērots aizliegums iemeslu dēļ: <reason>",
-    "msg_perma_ban": "Jums ir mūžīgs liegums!",
-    "msg_perma_ban_msg": "Jums ir piemērots aizliegums iemeslu dēļ: <reason>",
+    "msg_punishment_warn": "Jūs esat brīdināts!",
+    "msg_punishment_warn_reason": "Moderatori jums ir izteikuši brīdinājumu par iemeslu: <reason>",
+    "msg_punishment_temp": "Jums ir pagaidu liegums!",
+    "msg_punishment_temp_reason": "Jums ir piemērots aizliegums iemeslu dēļ: <reason>",
+    "msg_punishment_perma": "Jums ir mūžīgs liegums!",
+    "msg_punishment_perma_reason": "Jums ir piemērots aizliegums iemeslu dēļ: <reason>",
     "msg_no_reason": "Nav norādīts iemesls.",
 
     "play_solo": "Spēlēt Solo",

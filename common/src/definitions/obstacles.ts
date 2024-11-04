@@ -1366,7 +1366,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     destroy: 0.6
                 },
                 spawnMode: MapObjectSpawnMode.GrassAndSand,
-                hitbox: RectangleHitbox.fromRect(8.5, 8.5),
+                hitbox: RectangleHitbox.fromRect(8.49, 8.36),
                 rotationMode: RotationMode.Limited,
                 hasLoot: true,
                 frames: {
@@ -4607,6 +4607,28 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     particle: "metal_particle"
                 }
             }
+            /* {
+                idString: "humvee",
+                name: "Humvee",
+                material: "metal_heavy",
+                health: 1000,
+                indestructible: true,
+                reflectBullets: true,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(17, 40, Vec.create(0, -0.4)), // Body
+                    RectangleHitbox.fromRect(20.85, 8, Vec.create(0, -14)), // Back wheels
+                    RectangleHitbox.fromRect(20.8, 7.5, Vec.create(0, 15.5)), // Front wheels
+                    RectangleHitbox.fromRect(2.5, 1, Vec.create(6.9, -20.5)), // Back exhaust
+                    RectangleHitbox.fromRect(3.6, 1, Vec.create(-4.15, 20.5)),
+                    RectangleHitbox.fromRect(3.6, 1, Vec.create(4.15, 20.5)),
+                    RectangleHitbox.fromRect(23.35, 0.9, Vec.create(0, 8.6)) // Front of hood
+                ),
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Never,
+                frames: {
+                    particle: "metal_particle"
+                }
+            }, */
         ] satisfies readonly Missing[]).map(
             o => {
                 const obj = o as Mutable<ObstacleDefinition>;

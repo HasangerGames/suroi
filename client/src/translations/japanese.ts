@@ -13,12 +13,12 @@ export const JAPANESE_TRANSLATIONS: TranslationMap = {
     "msg_lost_team_connection": "チームとの接続が失われました。",
     "msg_error_joining_team": "チームへの参加中にエラーが発生しました。<br>存在しないか、いっぱいである可能性があります。", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_try_again": "もう一度試してください。",
-    "msg_warning": "あなたは警告を受けました！",
-    "msg_warning_msg": "あなたは次の理由で警告されましたため: <reason>",
-    "msg_temp_ban": "あなたは一時的に禁止されました！",
-    "msg_temp_ban_msg": "あなたは次の理由で禁止されましたため: <reason>",
-    "msg_perma_ban": "あなたは永久に禁止されました！",
-    "msg_perma_ban_msg": "あなたは次の理由で禁止されましたため: <reason>",
+    "msg_punishment_warn": "あなたは警告を受けました！",
+    "msg_punishment_warn_reason": "あなたは次の理由で警告されましたため: <reason>",
+    "msg_punishment_temp": "あなたは一時的に禁止されました！",
+    "msg_punishment_temp_reason": "あなたは次の理由で禁止されましたため: <reason>",
+    "msg_punishment_perma": "あなたは永久に禁止されました！",
+    "msg_punishment_perma_reason": "あなたは次の理由で禁止されましたため: <reason>",
     "msg_no_reason": "理由は示さいませんでした。",
 
     "play_solo": "ソロをする",

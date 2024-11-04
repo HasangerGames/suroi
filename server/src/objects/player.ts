@@ -421,11 +421,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         this.inventory.addOrReplaceWeapon(2, "fists");
 
-        this.inventory.scope = "1x_scope";
         const defaultScope = Modes[GameConstants.modeName].defaultScope;
         if (defaultScope) {
             this.inventory.scope = defaultScope;
             this.inventory.items.setItem(defaultScope, 1);
+        } else {
+            this.inventory.scope = DEFAULT_SCOPE.idString;
         }
         this.effectiveScope = DEFAULT_SCOPE;
 
@@ -1748,7 +1749,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     this.perks.removePerk(perk);
 
                     const halloweenPerks = Perks.definitions.filter(perkDef => {
-                        return !perkDef.plumpkinGambleIgnore && perkDef.categories.includes(PerkCategories.Halloween);
+                        return !perkDef.plumpkinGambleIgnore && perkDef.category === PerkCategories.Halloween;
                     });
                     this.perks.addPerk(pickRandomInArray(halloweenPerks));
                     break;
@@ -2101,7 +2102,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         for (const perk of this.perks) {
             if (!perk.noDrop) {
                 this.game.addLoot(perk, position, layer);
-            } else if (perk.noDrop && perk.categories.includes(PerkCategories.Halloween)) {
+            } else if (perk.noDrop && perk.category === PerkCategories.Halloween) {
                 this.game.addLoot(PerkIds.PlumpkinGamble, position, layer);
             }
         }

@@ -13,12 +13,12 @@ export const CZECH_TRANSLATIONS: TranslationMap = {
     "msg_lost_team_connection": "Ztraceno spojení s týmem.",
     "msg_error_joining_team": "Chyba připojení k týmu.<br>Nemusí existovat nebo je plný.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_try_again": "Prosím zkuste znovu.",
-    "msg_warning": "Byli jste varováni!",
-    "msg_warning_msg": "Obdrželi jste varování od moderátorů pro důvod: <reason>",
-    "msg_temp_ban": "Byli jste dočasně zabanováni!",
-    "msg_temp_ban_msg": "Byli jste dočasně zabanováni pro důvod: <reason>",
-    "msg_perma_ban": "Jste permanentně zabanováni!",
-    "msg_perma_ban_msg": "Byli jste permanentně zabanováni pro důvod: <reason>",
+    "msg_punishment_warn": "Byli jste varováni!",
+    "msg_punishment_warn_reason": "Obdrželi jste varování od moderátorů pro důvod: <reason>",
+    "msg_punishment_temp": "Byli jste dočasně zabanováni!",
+    "msg_punishment_temp_reason": "Byli jste dočasně zabanováni pro důvod: <reason>",
+    "msg_punishment_perma": "Jste permanentně zabanováni!",
+    "msg_punishment_perma_reason": "Byli jste permanentně zabanováni pro důvod: <reason>",
     "msg_no_reason": "Důvod neuveden.",
 
     "play_solo": "Hrát solo",

@@ -5,11 +5,13 @@ export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "
 
 export interface ModeDefinition {
     readonly colors: Record<ColorKeys, string>
+    readonly inheritTexturesFrom?: Mode
     readonly specialMenuMusic?: boolean
     readonly ambience?: string
     readonly specialSounds?: string[]
     readonly defaultScope?: ReferenceTo<ScopeDefinition>
     readonly reskin?: string
+    readonly darkShaders?: boolean
     // will be multiplied by the bullet trail color
     readonly bulletTrailAdjust?: string
     readonly particleEffects?: {
@@ -23,11 +25,11 @@ export type Mode = "normal" | "fall" | "halloween" | "winter";
 export const Modes: Record<Mode, ModeDefinition> = {
     normal: {
         colors: {
-            grass: "hsl(113, 42%, 42%)",
+            grass: "hsl(95, 41%, 38%)",
             water: "hsl(211, 63%, 42%)",
             border: "hsl(211, 63%, 30%)",
             beach: "hsl(40, 39%, 55%)",
-            riverBank: "hsl(33, 50%, 30%)",
+            riverBank: "hsl(34, 41%, 32%)",
             trail: "hsl(35, 50%, 40%)",
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
@@ -63,8 +65,10 @@ export const Modes: Record<Mode, ModeDefinition> = {
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
+        inheritTexturesFrom: "fall",
         defaultScope: "2x_scope",
         specialMenuMusic: true,
+        darkShaders: true,
         reskin: "fall"
     },
     winter: {

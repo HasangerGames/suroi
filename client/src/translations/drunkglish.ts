@@ -13,12 +13,12 @@ export const DRUNKGLISH_TRANSLATIONS: TranslationMap = {
     "msg_lost_team_connection": "They're gone :sob:",
     "msg_error_joining_team": "Couldnnt joinndemm<br>Prolly full or smhth", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_try_again": "Fuck",
-    "msg_warning": "You got told to f off!",
-    "msg_warning_msg": "You have been told to f off for: <reason>",
-    "msg_temp_ban": "You have been temporarily f'd",
-    "msg_temp_ban_msg": "You have been f'd for: <reason>",
-    "msg_perma_ban": "LMAO",
-    "msg_perma_ban_msg": "Like this matters: <reason>",
+    "msg_punishment_warn": "You got told to f off!",
+    "msg_punishment_warn_reason": "You have been told to f off for: <reason>",
+    "msg_punishment_temp": "You have been temporarily f'd",
+    "msg_punishment_temp_reason": "You have been f'd for: <reason>",
+    "msg_punishment_perma": "LMAO",
+    "msg_punishment_perma_reason": "Like this matters: <reason>",
     "msg_no_reason": "get fucked.",
 
     "play_solo": "Lonely mfer",

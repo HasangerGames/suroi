@@ -127,7 +127,7 @@ export class CustomTeam {
     locked = false;
 
     gameID?: number;
-    lastGameIDUpdateTime = 0;
+    resetTimeout?: NodeJS.Timeout;
 
     constructor() {
         this.id = Array.from({ length: 4 }, () => CustomTeam._idChars.charAt(random(0, CustomTeam._idCharMax))).join("");
@@ -136,59 +136,32 @@ export class CustomTeam {
     addPlayer(player: CustomTeamPlayer): void {
         player.sendMessage({
             type: CustomTeamMessages.Join,
-            id: player.id,
             teamID: this.id,
             isLeader: player.isLeader,
             autoFill: this.autoFill,
-            locked: this.locked,
-            players: this.players.map(p => ({
-                id: p.id,
-                isLeader: p.isLeader,
-                name: p.name,
-                skin: p.skin,
-                badge: p.badge,
-                nameColor: p.nameColor
-            }))
+            locked: this.locked
         });
 
-        this._publishMessage({
-            type: CustomTeamMessages.PlayerJoin,
-            id: player.id,
-            isLeader: player.isLeader,
-            name: player.name,
-            skin: player.skin,
-            badge: player.badge,
-            nameColor: player.nameColor
-        }, this.players.filter(p => p !== player));
+        this._publishPlayerUpdate();
     }
 
     removePlayer(player: CustomTeamPlayer): void {
         removeFrom(this.players, player);
 
         if (!this.players.length) {
+            clearTimeout(this.resetTimeout);
             customTeams.delete(this.id);
             return;
         }
 
-        let newLeaderID: number | undefined;
-        if (player.isLeader) {
-            const newLeader = this.players[0];
-            newLeader.isLeader = true;
-            newLeaderID = newLeader.id;
-        }
-
-        this._publishMessage({
-            type: CustomTeamMessages.PlayerLeave,
-            id: player.id,
-            newLeaderID
-        });
+        this._publishPlayerUpdate();
     }
 
     async onMessage(player: CustomTeamPlayer, message: CustomTeamMessage): Promise<void> {
-        if (!player.isLeader) return; // Only leader can change settings or start game
-
         switch (message.type) {
             case CustomTeamMessages.Settings: {
+                if (!player.isLeader) break; // Only leader can change settings
+
                 if (message.autoFill !== undefined) this.autoFill = message.autoFill;
                 if (message.locked !== undefined) this.locked = message.locked;
 
@@ -200,19 +173,51 @@ export class CustomTeam {
                 break;
             }
             case CustomTeamMessages.Start: {
-                const result = await findGame();
-                if (result.success) {
-                    this.gameID = result.gameID;
-                    this.lastGameIDUpdateTime = Date.now();
-                    this._publishMessage({ type: CustomTeamMessages.Started });
+                if (player.isLeader) {
+                    const result = await findGame();
+                    if (result.success) {
+                        this.gameID = result.gameID;
+                        clearTimeout(this.resetTimeout);
+                        this.resetTimeout = setTimeout(() => this.gameID = undefined, 10000);
+
+                        for (const player of this.players) {
+                            player.ready = false;
+                        }
+
+                        this._publishMessage({ type: CustomTeamMessages.Started });
+                        this._publishPlayerUpdate();
+                    }
+                } else {
+                    player.ready = true;
+                    this._publishPlayerUpdate();
                 }
                 break;
             }
         }
     }
 
-    private _publishMessage(message: CustomTeamMessage, players: CustomTeamPlayer[] = this.players): void {
-        for (const player of players) {
+    private _publishPlayerUpdate(): void {
+        const players = this.players.map(p => ({
+            isLeader: p.isLeader,
+            ready: p.ready,
+            name: p.name,
+            skin: p.skin,
+            badge: p.badge,
+            nameColor: p.nameColor
+        }));
+
+        for (const player of this.players) {
+            player.sendMessage({
+                type: CustomTeamMessages.Update,
+                players,
+                isLeader: player.isLeader,
+                ready: player.ready
+            });
+        }
+    }
+
+    private _publishMessage(message: CustomTeamMessage): void {
+        for (const player of this.players) {
             player.sendMessage(message);
         }
     }
@@ -221,8 +226,9 @@ export class CustomTeam {
 export class CustomTeamPlayer {
     socket!: WebSocket<CustomTeamPlayerContainer>;
     team: CustomTeam;
-    id: number;
-    isLeader: boolean;
+    get id(): number { return this.team.players.indexOf(this); }
+    get isLeader(): boolean { return this.id === 0; }
+    ready: boolean;
     name: string;
     skin: string;
     badge?: string;
@@ -230,7 +236,6 @@ export class CustomTeamPlayer {
 
     constructor(
         team: CustomTeam,
-        isLeader: boolean,
         name: string,
         skin: string,
         badge?: string,
@@ -238,8 +243,7 @@ export class CustomTeamPlayer {
     ) {
         this.team = team;
         team.players.push(this);
-        this.id = team.players.indexOf(this);
-        this.isLeader = isLeader;
+        this.ready = false;
         this.name = name;
         this.skin = skin;
         this.badge = badge;

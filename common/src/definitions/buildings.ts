@@ -3,7 +3,7 @@ import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
 import { MapObjectSpawnMode, NullString, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
-import { randomBoolean, randomSign, randomVector } from "../utils/random";
+import { randomBoolean } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
 import { FlyoverPref, Materials, RotationMode, type ObstacleDefinition } from "./obstacles";
@@ -180,7 +180,6 @@ const randomContainer2 = {
 
 const warehouseObstacle = {
     regular_crate: 2,
-    barrel: 2,
     flint_crate: 1
 };
 
@@ -265,6 +264,15 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     : [
                         { table: "ground_loot", position: Vec.create(23.5, 14.4) }
                     ]
+            };
+        });
+
+        const warehouseLayout = derive((id: number, obstacles: readonly BuildingObstacle[]) => {
+            return {
+                idString: `warehouse_layout_${id}`,
+                name: "Warehouse Layout",
+                spawnHitbox: RectangleHitbox.fromRect(63.07, 114),
+                obstacles
             };
         });
 
@@ -878,6 +886,82 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "hazel_crate", position: Vec.create(0, 0) }
                 ]
             },
+
+            warehouseLayout([1, [
+                // top left
+                { idString: "ammo_crate", position: Vec.create(-19.53, -26.33) },
+
+                // top right
+                { idString: "box", position: Vec.create(22.08, -38.77) },
+                { idString: "box", position: Vec.create(17, -38) },
+                { idString: "box", position: Vec.create(20.47, -33) },
+                { idString: "super_barrel", position: Vec.create(20.13, -26.24) },
+
+                // center
+                { idString: "ammo_crate", position: Vec.create(-10, 0) },
+                { idString: "ammo_crate", position: Vec.create(10, 0) },
+                { idString: "regular_crate", position: Vec.create(0, 5) },
+                { idString: "regular_crate", position: Vec.create(0, -5) },
+
+                // bottom left
+                { idString: "barrel", position: Vec.create(-20.34, 27.05) },
+
+                // bottom right
+                { idString: "box", position: Vec.create(21.65, 28.5) },
+                { idString: "regular_crate", position: Vec.create(19.39, 36.48) }
+            ]]),
+
+            warehouseLayout([2, [
+                // top left
+                { idString: "barrel", position: Vec.create(-20.34, -27.05) },
+                { idString: "grenade_box", position: Vec.create(-21.81, -19.82) },
+
+                // top right
+                { idString: "regular_crate", position: Vec.create(19.39, -36.48) },
+                { idString: "super_barrel", position: Vec.create(20.13, -26.24) },
+
+                // center
+                { idString: "ammo_crate", position: Vec.create(-10, 0) },
+                { idString: "ammo_crate", position: Vec.create(10, 0) },
+                { idString: "barrel", position: Vec.create(0, 5) },
+                { idString: "box", position: Vec.create(-2.26, -3.25) },
+                { idString: "box", position: Vec.create(2.5, -7.02) },
+                { idString: "box", position: Vec.create(8.39, 8.04) },
+                { idString: "box", position: Vec.create(-8.39, 8.04) },
+
+                // bottom left
+                { idString: "ammo_crate", position: Vec.create(-19.53, 26.33) },
+                { idString: "box", position: Vec.create(-21.74, 17.98) },
+
+                // bottom right
+                { idString: "box", position: Vec.create(21.65, 28.5) },
+                { idString: "grenade_box", position: Vec.create(17.06, 23.3) },
+                { idString: "regular_crate", position: Vec.create(19.39, 36.48) }
+            ]]),
+
+            warehouseLayout([3, [
+                // top left
+                { idString: "barrel", position: Vec.create(-20.34, -26.33) },
+
+                // top right
+                { idString: "grenade_crate", position: Vec.create(20.42, -37.61) },
+                { idString: "barrel", position: Vec.create(20.13, -28.5) },
+
+                // center
+                { idString: "regular_crate", position: Vec.create(-10, 0) },
+                { idString: "regular_crate", position: Vec.create(10, 0) },
+                { idString: "ammo_crate", position: Vec.create(0, 5) },
+                { idString: "ammo_crate", position: Vec.create(0, -5) },
+
+                // bottom left
+                { idString: "super_barrel", position: Vec.create(-20.34, 27.05) },
+
+                // bottom right
+                { idString: "box", position: Vec.create(16.57, 38.75) },
+                { idString: "box", position: Vec.create(21.97, 33.38) },
+                { idString: "grenade_box", position: Vec.create(21.96, 38.75) }
+            ]]),
+
             {
                 idString: "warehouse",
                 name: "Warehouse",
@@ -885,71 +969,53 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 material: "metal_heavy",
                 particle: "metal_particle",
                 hitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(1.7, 70.6, Vec.create(-19.8, 0)),
-                    RectangleHitbox.fromRect(12, 1.7, Vec.create(-14.2, -34.5)),
-                    RectangleHitbox.fromRect(12, 1.7, Vec.create(-14.2, 34.5)),
-                    RectangleHitbox.fromRect(1.7, 70.6, Vec.create(19.8, 0)),
-                    RectangleHitbox.fromRect(12, 1.7, Vec.create(14.2, -34.5)),
-                    RectangleHitbox.fromRect(12, 1.7, Vec.create(14.2, 34.5))
+                    RectangleHitbox.fromRect(14.05, 1.97, Vec.create(-20.01, -43.01)),
+                    RectangleHitbox.fromRect(14.05, 1.97, Vec.create(20.01, -43.01)),
+                    RectangleHitbox.fromRect(14.05, 1.97, Vec.create(-20.01, 43.01)),
+                    RectangleHitbox.fromRect(14.05, 1.97, Vec.create(20.01, 43.01)),
+                    RectangleHitbox.fromRect(1.97, 87.84, Vec.create(-26, 0)),
+                    RectangleHitbox.fromRect(1.97, 87.84, Vec.create(26, 0))
                 ),
-                spawnHitbox: RectangleHitbox.fromRect(50, 92),
-                scopeHitbox: RectangleHitbox.fromRect(40, 70),
+                spawnHitbox: RectangleHitbox.fromRect(63.07, 114),
+                scopeHitbox: RectangleHitbox.fromRect(52.92, 89),
                 floorImages: [
                     {
                         key: "warehouse_floor_1",
-                        position: Vec.create(0, -22.5)
+                        position: Vec.create(0, -26.5)
                     },
                     {
                         key: "warehouse_floor_2",
-                        position: Vec.create(0, 22.3)
+                        position: Vec.create(0, 26.5)
                     }
                 ],
                 ceilingImages: [
                     {
                         key: "warehouse_ceiling_1",
-                        position: Vec.create(0, -17),
+                        position: Vec.create(0, -22.25),
                         scale: Vec.create(2, 2)
                     },
                     {
                         key: "warehouse_ceiling_2",
-                        position: Vec.create(0, 17),
+                        position: Vec.create(0, 22.25),
                         scale: Vec.create(2, 2)
                     }
                 ],
-                floors: [
-                    {
-                        type: FloorNames.Stone,
-                        hitbox: RectangleHitbox.fromRect(40, 88)
-                    }
-                ],
+                floors: [{
+                    type: FloorNames.Stone,
+                    hitbox: RectangleHitbox.fromRect(54.04, 105.96)
+                }],
                 obstacles: [
-
-                    // -----------------------------------------------------------------------
-                    // TEMP: Remove if halloween ends.
-                    // -----------------------------------------------------------------------
-                    { idString: "cobweb", position: Vec.create(14.16, -29.07), rotation: 3 },
-                    // -----------------------------------------------------------------------
-
-                    { idString: warehouseObstacle, position: Vec.create(14, -28.5) },
-                    { idString: "regular_crate", position: Vec.create(-14, -28.5) },
-                    { idString: "regular_crate", position: Vec.create(14, 28.5) },
-                    { idString: warehouseObstacle, position: Vec.create(-14, 28.5) },
-
-                    { idString: "ammo_crate", position: Vec.create(-14, 0) },
-                    { idString: "ammo_crate", position: Vec.create(14, 0) },
-
-                    { idString: { box: 9, grenade_box: 1 }, get position() { return randomVector(-16.6, -11.25, -14.93, -8.03); } },
-                    { idString: { box: 9, grenade_box: 1 }, get position() { return randomVector(-16.6, -11.25, 14.93, 8.03); } },
-                    { idString: { box: 9, grenade_box: 1 }, get position() { return randomVector(16.6, 11.25, -14.93, -8.03); } },
-                    { idString: { box: 9, grenade_box: 1 }, get position() { return randomVector(16.6, 11.25, 14.93, 8.03); } },
-                    { idString: { box: 9, grenade_box: 1 }, get position() { return Vec.create(16.15 * randomSign(), 20.97 * randomSign()); } }
-                ] as BuildingObstacle[],
-                lootSpawners: [
-                    {
-                        position: Vec.create(0, 0),
-                        table: "warehouse"
-                    }
-                ]
+                    { idString: warehouseObstacle, position: Vec.create(-19.39, -36.48) },
+                    { idString: warehouseObstacle, position: Vec.create(-19.39, 36.48) }
+                ],
+                subBuildings: [{
+                    idString: {
+                        warehouse_layout_1: 1,
+                        warehouse_layout_2: 1,
+                        warehouse_layout_3: 1
+                    },
+                    position: Vec.create(0, 0)
+                }]
             },
             port_warehouse(["red", 0x813131]),
             port_warehouse(["blue", 0x2e2e6a]),
@@ -1346,9 +1412,9 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // -----------------------------------------------------------------------
                     // TEMP: Remove if halloween ends.
                     // -----------------------------------------------------------------------
-                    { idString: "cobweb", position: Vec.create(25.64, -24.17), rotation: 3 },
-                    { idString: "jack_o_lantern", position: Vec.create(6.2, -36.5), rotation: 3 },
-                    { idString: "jack_o_lantern", position: Vec.create(27.2, -36.5), rotation: 3 },
+                    // { idString: "cobweb", position: Vec.create(25.64, -24.17), rotation: 3 },
+                    // { idString: "jack_o_lantern", position: Vec.create(6.2, -36.5), rotation: 3 },
+                    // { idString: "jack_o_lantern", position: Vec.create(27.2, -36.5), rotation: 3 },
                     // -----------------------------------------------------------------------
 
                     { idString: "house_wall_4", position: Vec.create(8.6, -18), rotation: 1 },
@@ -1538,9 +1604,9 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // -----------------------------------------------------------------------
                     // TEMP: Remove if halloween ends.
                     // -----------------------------------------------------------------------
-                    { idString: "cobweb", position: Vec.create(-26.19, 23.5), rotation: 1 },
-                    { idString: "jack_o_lantern", position: Vec.create(-3.3, -36.8), rotation: 3 },
-                    { idString: "jack_o_lantern", position: Vec.create(17.7, -36.8), rotation: 3 },
+                    // { idString: "cobweb", position: Vec.create(-26.19, 23.5), rotation: 1 },
+                    // { idString: "jack_o_lantern", position: Vec.create(-3.3, -36.8), rotation: 3 },
+                    // { idString: "jack_o_lantern", position: Vec.create(17.7, -36.8), rotation: 3 },
                     // -----------------------------------------------------------------------
 
                     { idString: "door", position: Vec.create(7.6, -29.6), rotation: 0 },
@@ -1654,10 +1720,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // -----------------------------------------------------------------------
                     // TEMP: Remove if halloween ends.
                     // -----------------------------------------------------------------------
-                    { idString: "cobweb", position: Vec.create(27.74, -24.95), rotation: 3 },
-                    { idString: "cobweb", position: Vec.create(-44.48, -25.06), rotation: 0 },
-                    { idString: "jack_o_lantern", position: Vec.create(-46.48, 35.06), rotation: -0.1 }, // cursed
-                    { idString: "jack_o_lantern", position: Vec.create(40.24, 24), rotation: -1 },
+                    // { idString: "cobweb", position: Vec.create(27.74, -24.95), rotation: 3 },
+                    // { idString: "cobweb", position: Vec.create(-44.48, -25.06), rotation: 0 },
+                    // { idString: "jack_o_lantern", position: Vec.create(-46.48, 35.06), rotation: -0.1 }, // cursed
+                    // { idString: "jack_o_lantern", position: Vec.create(40.24, 24), rotation: -1 },
                     // -----------------------------------------------------------------------
 
                     { idString: "window", position: Vec.create(32.99, -12.81), rotation: 0 },
@@ -4702,9 +4768,9 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // -----------------------------------------------------------------------
                     // TEMP: Remove if halloween ends.
                     // -----------------------------------------------------------------------
-                    { idString: "cobweb", position: Vec.create(-49.38, -35.17), rotation: 0 },
-                    { idString: "cobweb", position: Vec.create(27.33, 11.48), rotation: 2 },
-                    { idString: "cobweb", position: Vec.create(-49.38, -35.11), rotation: 0, layer: 2 },
+                    // { idString: "cobweb", position: Vec.create(-49.38, -35.17), rotation: 0 },
+                    // { idString: "cobweb", position: Vec.create(27.33, 11.48), rotation: 2 },
+                    // { idString: "cobweb", position: Vec.create(-49.38, -35.11), rotation: 0, layer: 2 },
                     // -----------------------------------------------------------------------
 
                     { idString: "barn_stair_walls", position: Vec.create(0, 0), rotation: 0 },
@@ -6136,8 +6202,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // { idString: "windowed_vault_door", position: Vec.create(24.88, -104.54), rotation: 0 }, disabled for halloween only
 
                     // halloween only.
-                    { idString: "cobweb", position: Vec.create(-72.69, -99.3), rotation: 0 },
-                    { idString: "cobweb", position: Vec.create(29.57, -122.53), rotation: 3 },
+                    // { idString: "cobweb", position: Vec.create(-72.69, -99.3), rotation: 0 },
+                    // { idString: "cobweb", position: Vec.create(29.57, -122.53), rotation: 3 },
 
                     { idString: "control_panel2", position: Vec.create(-12.74, -99.53), rotation: 0 },
                     { idString: "control_panel_small", position: Vec.create(-0.04, -81.91), rotation: 3 },

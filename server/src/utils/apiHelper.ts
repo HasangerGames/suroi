@@ -1,4 +1,4 @@
-interface IpCheckResponse {
+interface IPCheckResponse {
     flagged: boolean
     message: string
 }
@@ -13,7 +13,7 @@ export interface Punishment {
     readonly punishmentType: "warn" | "temp" | "perma"
 }
 
-class IpChecker {
+class IPChecker {
     private readonly baseUrl: string;
     private readonly apiKey: string;
 
@@ -31,11 +31,11 @@ class IpChecker {
      * Checks if the given IP is flagged by the API.
      * If any error occurs, it returns { flagged: false, message: 'IP is not a proxy/VPN' }
      * @param ip - The IP address to check
-     * @returns A promise that resolves to an IpCheckResponse
+     * @returns A promise that resolves to an IPCheckResponse
      */
-    async check(ip: string): Promise<IpCheckResponse> {
+    async check(ip: string): Promise<IPCheckResponse> {
         try {
-            this.validateIp(ip);
+            this.validateIP(ip);
             const url = `${this.baseUrl}/${ip}`;
 
             const headers = {
@@ -47,14 +47,10 @@ class IpChecker {
                 headers: headers
             });
 
-            return await this.handleResponse<IpCheckResponse>(response);
-        } catch (error: unknown) {
-        // If any error occurs, return that the IP is not a proxy/VPN
-            if (error instanceof Error) {
-                console.log(error.message);
-            } else {
-                console.log(String(error));
-            }
+            return await this._handleResponse<IPCheckResponse>(response);
+        } catch (e) {
+            // If any error occurs, return that the IP is not a proxy/VPN
+            console.error("Error checking IP. Details:", e);
             return {
                 flagged: false,
                 message: "IP is not a proxy/VPN"
@@ -66,7 +62,7 @@ class IpChecker {
      * Validates the IP address format.
      * @param ip - The IP address to validate
      */
-    private validateIp(ip: string): void {
+    private validateIP(ip: string): void {
         const ipRegex
         = /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;
         if (!ipRegex.test(ip)) {
@@ -80,7 +76,7 @@ class IpChecker {
      * @param response - The fetch Response object
      * @returns A promise that resolves to the parsed response data
      */
-    private async handleResponse<T>(response: Response): Promise<T> {
+    private async _handleResponse<T>(response: Response): Promise<T> {
         const contentType = response.headers.get("Content-Type");
         let data: T | string;
 
@@ -102,4 +98,4 @@ class IpChecker {
     }
 }
 
-export default IpChecker;
+export default IPChecker;

@@ -13,12 +13,12 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "msg_lost_team_connection": "Connexion à l'équipe perdue",
     "msg_error_joining_team": "Erreur en rejoignant l'équipe.<br>Elle n'existe pas ou est déja remplie.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE. I will move the br
     "msg_try_again": "Réessayez",
-    "msg_warning": "Vous avez reçu un avertissement!",
-    "msg_warning_msg": "Vous avez reçu un avertissement des modérateurs pour : <reason>",
-    "msg_temp_ban": "Vous avez été temporairement banni de suroi!",
-    "msg_temp_ban_msg": "Vous avez été banni pour : <reason>",
-    "msg_perma_ban": "Vous avez été banni!",
-    "msg_perma_ban_msg": "Vous avez été banni pour : <reason>",
+    "msg_punishment_warn": "Vous avez reçu un avertissement!",
+    "msg_punishment_warn_reason": "Vous avez reçu un avertissement des modérateurs pour : <reason>",
+    "msg_punishment_temp": "Vous avez été temporairement banni de suroi!",
+    "msg_punishment_temp_reason": "Vous avez été banni pour : <reason>",
+    "msg_punishment_perma": "Vous avez été banni!",
+    "msg_punishment_perma_reason": "Vous avez été banni pour : <reason>",
     "msg_no_reason": "Pas de raison donnée.",
 
     "play_solo": "Jouer Solo",

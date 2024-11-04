@@ -8,7 +8,7 @@ import { emoteIdStrings, type EmoteDefinition } from "../../../../common/src/def
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { MapPings, type PlayerPing } from "../../../../common/src/definitions/mapPings";
-import { PerkIds, type PerkDefinition } from "../../../../common/src/definitions/perks";
+import { PerkCategories, PerkIds, type PerkDefinition } from "../../../../common/src/definitions/perks";
 import { DEFAULT_SCOPE, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { type GameOverData } from "../../../../common/src/packets/gameOverPacket";
 import { type KillFeedPacketData } from "../../../../common/src/packets/killFeedPacket";
@@ -408,7 +408,7 @@ export class UIManager {
         const playerName = this.getPlayerName(packet.playerID);
         const playerBadge = this.getPlayerBadge(packet.playerID);
         const playerBadgeText = playerBadge
-            ? html`<img class="badge-icon" src="./img/game/${emoteIdStrings.includes(playerBadge.idString) ? "emotes" : "badges"}/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
+            ? html`<img class="badge-icon" src="./img/game/shared/${emoteIdStrings.includes(playerBadge.idString) ? "emotes" : "badges"}/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
             : "";
 
         gameOverText.html(
@@ -460,7 +460,7 @@ export class UIManager {
 
             this.ui.emoteSelectors[i].css(
                 "background-image",
-                definition ? `url("./img/game/${pingWheelActive ? "mapPings" : "emotes"}/${definition.idString}.svg")` : ""
+                definition ? `url("./img/game/shared/${pingWheelActive ? "mapPings" : "emotes"}/${definition.idString}.svg")` : ""
             );
         }
     }
@@ -499,7 +499,7 @@ export class UIManager {
 
             if (spectating) {
                 const badge = this.getPlayerBadge(id.id);
-                const badgeText = badge ? html`<img class="badge-icon" src="./img/game/${emoteIdStrings.includes(badge.idString) ? "emotes" : "badges"}/${badge.idString}.svg" alt="${badge.name} badge">` : "";
+                const badgeText = badge ? html`<img class="badge-icon" src="./img/game/shared/${emoteIdStrings.includes(badge.idString) ? "emotes" : "badges"}/${badge.idString}.svg" alt="${badge.name} badge">` : "";
 
                 this.ui.gameOverOverlay.fadeOut();
                 this.ui.spectatingMsgPlayer.html(this.getPlayerName(id.id) + badgeText);
@@ -842,7 +842,7 @@ export class UIManager {
                     frame += "_halloween";
                 }
 
-                const newSrc = `./img/game/weapons/${frame}.svg`;
+                const newSrc = `./img/game/shared/weapons/${frame}.svg`;
                 if (oldSrc !== newSrc) {
                     this._playSlotAnimation(container);
                     itemImage.attr("src", newSrc);
@@ -852,7 +852,7 @@ export class UIManager {
                     = isFists
                         ? this.skinID !== undefined && Skins.fromStringSafe(this.skinID)?.grassTint
                             ? `url("data:image/svg+xml,${encodeURIComponent(`<svg width="34" height="34" viewBox="0 0 8.996 8.996" xmlns="http://www.w3.org/2000/svg"><circle fill="${GHILLIE_TINT.toHex()}" stroke="${new Color(GHILLIE_TINT).multiply("#111").toHex()}" stroke-width="1.05833" cx="4.498" cy="4.498" r="3.969"/></svg>`)}")`
-                            : `url(./img/game/skins/${this.skinID ?? this.game.console.getBuiltInCVar("cv_loadout_skin")}_fist.svg)`
+                            : `url(./img/game/shared/skins/${this.skinID ?? this.game.console.getBuiltInCVar("cv_loadout_skin")}_fist.svg)`
                         : "none";
 
                 itemImage
@@ -898,29 +898,6 @@ export class UIManager {
         container.off("pointerdown");
     }
 
-    /* updatePerkSlot(perkDef: PerkDefinition, index: number): void {
-        const container = $(`#perk-slot-${index}`);
-
-        container.children(".item-tooltip").html(`<strong>${perkDef.name}</strong><br>${perkDef.description}`);
-        container.children(".item-image").attr("src", `./img/game/perks/${perkDef.idString}.svg`);
-        container.css("visibility", this.perks.hasPerk(perkDef) ? "visible" : "hidden");
-
-        container.off("pointerdown");
-        container[0].addEventListener( // todo
-            "pointerdown",
-            (e: PointerEvent): void => {
-                e.stopImmediatePropagation();
-                if (e.button === 2 && perkDef && this.game.teamMode) {
-                    this.game.inputManager.addAction({
-                        type: InputActions.DropItem,
-                        item: perkDef
-                    });
-                    this.resetPerkSlot(index);
-                }
-            }
-        );
-    } */
-
     private readonly _perkSlots: Array<JQuery<HTMLDivElement> | undefined> = [];
     private readonly _animationTimeouts: Array<number | undefined> = [];
     updatePerkSlot(perkDef: PerkDefinition, index: number): void {
@@ -930,7 +907,7 @@ export class UIManager {
         const container = this._perkSlots[index] ??= $<HTMLDivElement>(`#perk-slot-${index}`);
         container.attr("data-idString", perkDef.idString);
         container.children(".item-tooltip").html(`<strong>${perkDef.name}</strong><br>${perkDef.description}`);
-        container.children(".item-image").attr("src", `./img/game/perks/${perkDef.idString}.svg`);
+        container.children(".item-image").attr("src", `./img/game/${perkDef.category === PerkCategories.Halloween ? "halloween" : "fall"}/perks/${perkDef.idString}.svg`);
         container.css("visibility", this.perks.hasPerk(perkDef.idString) ? "visible" : "hidden");
 
         container.css("outline", !perkDef.noDrop ? "" : "none");
@@ -1246,7 +1223,7 @@ export class UIManager {
             return {
                 name: hasId ? this.getPlayerName(id) : "",
                 badgeText: badge
-                    ? html`<img class="badge-icon" src="./img/game/${emoteIdStrings.includes(badge.idString) ? "emotes" : "badges"}/${badge.idString}.svg" alt="${badge.name} badge">`
+                    ? html`<img class="badge-icon" src="./img/game/shared/${emoteIdStrings.includes(badge.idString) ? "emotes" : "badges"}/${badge.idString}.svg" alt="${badge.name} badge">`
                     : ""
             };
         };
@@ -1860,7 +1837,7 @@ class PlayerHealthUI {
 
         if (recalcIndicatorFrame) {
             const frame = `player_indicator${this._normalizedHealth.value === 0 ? "_dead" : this._downed.value ? "_downed" : ""}`;
-            const newSrc = `./img/game/player/${frame}.svg`;
+            const newSrc = `./img/game/shared/player/${frame}.svg`;
             if (this.teammateIndicator.attr("src") !== newSrc) {
                 this.teammateIndicator.attr("src", newSrc);
             }
@@ -1896,7 +1873,7 @@ class PlayerHealthUI {
             const teammate = this.game.playerNames.get(id);
 
             if (teammate?.badge) {
-                const src = `./img/game/${emoteIdStrings.includes(teammate.badge.idString) ? "emotes" : "badges"}/${teammate.badge.idString}.svg`;
+                const src = `./img/game/shared/${emoteIdStrings.includes(teammate.badge.idString) ? "emotes" : "badges"}/${teammate.badge.idString}.svg`;
 
                 if (this.badgeImage.attr("src") !== src) {
                     this.badgeImage
