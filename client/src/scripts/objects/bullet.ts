@@ -110,7 +110,7 @@ export class Bullet extends BaseBullet {
         if (this._playBulletWhiz) {
             const intersection = this.game.activePlayer?.bulletWhizHitbox.intersectsLine(this.initialPosition, this.position);
             if (intersection) {
-                this.game.soundManager.play(`bullet_whiz_${random(1, 8)}`, { position: intersection.point });
+                this.game.soundManager.play(`bullet_whiz_${random(1, 3)}`, { position: intersection.point });
                 this._playBulletWhiz = false;
             }
         }
