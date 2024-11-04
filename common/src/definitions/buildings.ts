@@ -5879,11 +5879,13 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "vibrant_bush", position: Vec.create(187.25, 173.39) },
                     { idString: "vibrant_bush", position: Vec.create(88.89, 135.27) },
                     { idString: "vibrant_bush", position: Vec.create(156.44, 65.25) },
-                    { idString: "vibrant_bush", position: Vec.create(95.86, -18.52) },
-                    { idString: "jack_o_lantern", position: Vec.create(24.07, 66.73), rotation: 0 },
-                    { idString: "jack_o_lantern", position: Vec.create(-0.54, 66.73), rotation: 0 },
-                    { idString: "jack_o_lantern", position: Vec.create(43.69, 84.06), rotation: 0 },
-                    { idString: "jack_o_lantern", position: Vec.create(43.69, 106.7), rotation: 0 }
+                    { idString: "vibrant_bush", position: Vec.create(95.86, -18.52) }
+
+                    // halloween only
+                    // { idString: "jack_o_lantern", position: Vec.create(24.07, 66.73) },
+                    // { idString: "jack_o_lantern", position: Vec.create(-0.54, 66.73) },
+                    // { idString: "jack_o_lantern", position: Vec.create(43.69, 84.06) },
+                    // { idString: "jack_o_lantern", position: Vec.create(43.69, 106.7) }
                 ],
                 subBuildings: [
                     { idString: "hay_shed_4", position: Vec.create(40.03, 146.55), orientation: 1 },
@@ -5909,15 +5911,15 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         key: "plumpkin_bunker_floor",
                         position: Vec.create(0, 0),
                         scale: Vec.create(1.506, 1.506)
-                    },
+                    }
 
                     // halloween only.
-                    {
-                        key: "windowed_vault_door_residue",
-                        position: Vec.create(24.88, -104.54),
-                        zIndex: ZIndexes.DeadObstacles,
-                        scale: Vec.create(0.9, 0.9)
-                    }
+                    // {
+                    //     key: "windowed_vault_door_residue",
+                    //     position: Vec.create(24.88, -104.54),
+                    //     zIndex: ZIndexes.DeadObstacles,
+                    //     scale: Vec.create(0.9, 0.9)
+                    // }
                 ],
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(2.01, 49.16, Vec.create(-89.3, 1.6)),
@@ -6199,7 +6201,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "bulletproof_window", position: Vec.create(-50.37, -104.85), rotation: 0 },
                     { idString: "bulletproof_window", position: Vec.create(-29.8, -104.85), rotation: 0 },
                     { idString: "bulletproof_window", position: Vec.create(4.32, -104.85), rotation: 0 },
-                    // { idString: "windowed_vault_door", position: Vec.create(24.88, -104.54), rotation: 0 }, disabled for halloween only
+                    { idString: "windowed_vault_door", position: Vec.create(24.88, -104.54), rotation: 2 }, // disabled for halloween only
 
                     // halloween only.
                     // { idString: "cobweb", position: Vec.create(-72.69, -99.3), rotation: 0 },
