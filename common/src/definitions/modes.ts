@@ -5,6 +5,7 @@ export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "
 
 export interface ModeDefinition {
     readonly colors: Record<ColorKeys, string>
+    readonly inheritTexturesFrom?: Mode
     readonly specialMenuMusic?: boolean
     readonly ambience?: string
     readonly specialSounds?: string[]
@@ -64,6 +65,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
+        inheritTexturesFrom: "fall",
         defaultScope: "2x_scope",
         specialMenuMusic: true,
         darkShaders: true,

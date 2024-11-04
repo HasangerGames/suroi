@@ -13,12 +13,12 @@ export const LITHUANIAN_TRANSLATIONS: TranslationMap = {
     "msg_lost_team_connection": "Prarasta ryšys su komanda.",
     "msg_error_joining_team": "Klaida jungiantis prie komandos.<br>Gali būti, kad ji neegzistuoja arba yra pilna.", // <br> čia yra HTML eilutės pertrauka. NEKEISKITE AR NEPERKELKITE.
     "msg_try_again": "Pabandykite dar kartą.",
-    "msg_warning": "Jūs buvote įspėti!",
-    "msg_warning_msg": "Moderatoriai jums pateikė įspėjimą dėl: <reason>",
-    "msg_temp_ban": "Jūs laikinai uždraustas!",
-    "msg_temp_ban_msg": "Jūsų draudimas priežastis: <reason>",
-    "msg_perma_ban": "Jūsų paskyra užblokuota visam laikui!",
-    "msg_perma_ban_msg": "Jūsų draudimas priežastis: <reason>",
+    "msg_punishment_warn": "Jūs buvote įspėti!",
+    "msg_punishment_warn_reason": "Moderatoriai jums pateikė įspėjimą dėl: <reason>",
+    "msg_punishment_temp": "Jūs laikinai uždraustas!",
+    "msg_punishment_temp_reason": "Jūsų draudimas priežastis: <reason>",
+    "msg_punishment_perma": "Jūsų paskyra užblokuota visam laikui!",
+    "msg_punishment_perma_reason": "Jūsų draudimas priežastis: <reason>",
     "msg_no_reason": "Priežasties nenurodyta.",
 
     "play_solo": "Žaisti vienas",

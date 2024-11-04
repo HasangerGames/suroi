@@ -614,7 +614,7 @@ const maps = {
                         ((item.itemType === ItemType.Melee || item.itemType === ItemType.Scope) && item.noDrop)
                         || ("ephemeral" in item && item.ephemeral)
                         || (item.itemType === ItemType.Backpack && item.level === 0)
-                        // || (item.itemType === ItemType.Perk && item.categories.includes(PerkCategories.Halloween))
+                        // || (item.itemType === ItemType.Perk && item.category === PerkCategories.Halloween)
                         || item.itemType === ItemType.Skin
                     ) continue;
 

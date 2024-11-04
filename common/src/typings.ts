@@ -8,23 +8,22 @@ export type GetGameResponse =
     } |
     {
         readonly success: false
-        readonly message?: "warn" | "temp" | "perma"
+        readonly message?: "warn" | "temp" | "perma" | "vpn"
         readonly reason?: string
         readonly reportID?: string
     };
 
 export enum CustomTeamMessages {
     Join,
-    PlayerJoin,
-    PlayerLeave,
+    Update,
     Settings,
     Start,
     Started
 }
 
 export interface CustomTeamPlayerInfo {
-    id: number
     isLeader?: boolean
+    ready: boolean
     name: string
     skin: string
     badge?: string
@@ -32,30 +31,24 @@ export interface CustomTeamPlayerInfo {
 }
 
 export type CustomTeamMessage =
-    {
+    | {
         type: CustomTeamMessages.Join
-        id: number
         teamID: string
         isLeader: boolean
         autoFill: boolean
         locked: boolean
+    }
+    | {
+        type: CustomTeamMessages.Update
         players: CustomTeamPlayerInfo[]
-    } |
-    (
-        {
-            type: CustomTeamMessages.PlayerJoin
-        } & CustomTeamPlayerInfo
-    ) |
-    {
-        type: CustomTeamMessages.PlayerLeave
-        id: number
-        newLeaderID?: number
-    } |
-    {
+        isLeader: boolean
+        ready: boolean
+    }
+    | {
         type: CustomTeamMessages.Settings
         autoFill?: boolean
         locked?: boolean
-    } |
-    {
+    }
+    | {
         type: CustomTeamMessages.Start | CustomTeamMessages.Started
     };

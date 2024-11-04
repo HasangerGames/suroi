@@ -4,11 +4,9 @@ import { Obstacles } from "../../../../common/src/definitions/obstacles";
 import { HitboxType, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
 import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { getTranslatedString } from "../../translations";
-import { MODE, PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
-import { GameConstants } from "../../../../common/src/constants";
+import { PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
 
 const textures: Record<string, Texture> = {};
-const reskinnedTextures: Record<string, Texture> = {};
 
 const loadingText = $("#loading-text");
 
@@ -31,10 +29,9 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
 
     let resolved = 0;
     const count = spritesheets.length;
-    const loader = loadSpritesheet(renderer);
 
     await Promise.all([
-        ...spritesheets.map(spritesheet => {
+        ...spritesheets.map(async spritesheet => {
             /**
              * this is defined via vite-spritesheet-plugin, so it is never nullish
              * @link `client/vite/vite-spritesheet-plugin/utils/spritesheet.ts:197`
@@ -42,24 +39,24 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const image = spritesheet.meta.image!;
 
-            return new Promise<void>(resolve => {
-                loader(spritesheet, image)
-                    .then(() => {
-                        const resolvedCount = ++resolved;
-                        const progress = `(${resolvedCount} / ${count})`;
+            console.log(`Loading spritesheet ${location.origin}/${image}`);
 
-                        console.log(`Atlas ${image} loaded ${progress}`);
-                        loadingText.text(getTranslatedString("loading_spritesheets", {
-                            progress
-                        }));
-                    })
-                    .catch(err => {
-                        ++resolved;
-                        console.error(`Atlas ${image} failed to load`);
-                        console.error(err);
-                    })
-                    .finally(resolve);
-            });
+            try {
+                const texture = await Assets.load<Texture>(image);
+                await renderer.prepare.upload(texture);
+                Object.assign(textures, await new Spritesheet(texture, spritesheet).parse());
+
+                const resolvedCount = ++resolved;
+                const progress = `(${resolvedCount} / ${count})`;
+
+                console.log(`Atlas ${image} loaded ${progress}`);
+                loadingText.text(getTranslatedString("loading_spritesheets", {
+                    progress
+                }));
+            } catch (e) {
+                ++resolved;
+                console.error(`Atlas ${image} failed to load. Details:`, e);
+            }
         }),
         ...Obstacles.definitions
             .filter(obj => obj.wall)
@@ -99,34 +96,13 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
     ]);
 }
 
-const loadSpritesheet = (renderer: Renderer) => async(data: SpritesheetData, path: string): Promise<void> => {
-    console.log(`Loading spritesheet ${location.origin}/${path}`);
-
-    await new Promise<void>(resolve => {
-        void Assets.load<Texture>(path).then(texture => {
-            void renderer.prepare.upload(texture);
-            void new Spritesheet(texture, data).parse().then(sheetTextures => {
-                for (const frame in sheetTextures) {
-                    textures[frame] = sheetTextures[frame];
-
-                    if (MODE.reskin && textures[frame].source.label.includes(GameConstants.modeName)) {
-                        reskinnedTextures[frame] = textures[frame];
-                    }
-                }
-
-                resolve();
-            });
-        });
-    });
-};
-
 export class SuroiSprite extends Sprite {
     static getTexture(frame: string): Texture {
         if (!(frame in textures)) {
             console.warn(`Texture not found: "${frame}"`);
             return textures._missing_texture;
         }
-        return (MODE.reskin && frame in reskinnedTextures) ? reskinnedTextures[frame] : textures[frame];
+        return textures[frame];
     }
 
     constructor(frame?: string) {

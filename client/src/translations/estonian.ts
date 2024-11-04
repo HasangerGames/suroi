@@ -13,12 +13,12 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
     "msg_lost_team_connection": "Ühendus tiimiga katkes.",
     "msg_error_joining_team": "Viga tiimiga liitumisel.<br>Seda ei pruugi olla olemas või see on täis.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_try_again": "Palun proovige uuesti.",
-    "msg_warning": "Teid on hoiatatud!",
-    "msg_warning_msg": "Te olete saanud mängu moderaatoritelt hoiatuse põhjusega: <reason>",
-    "msg_temp_ban": "Teil on ajutine Suroi mängimise keeld!",
-    "msg_temp_ban_msg": "Teile määrati ajutine keeld põhjusega: <reason>",
-    "msg_perma_ban": "Teil on püsiv Suroi mängimise keeld!",
-    "msg_perma_ban_msg": "Teile määrati püsiv keeld põhjusega: <reason>",
+    "msg_punishment_warn": "Teid on hoiatatud!",
+    "msg_punishment_warn_reason": "Te olete saanud mängu moderaatoritelt hoiatuse põhjusega: <reason>",
+    "msg_punishment_temp": "Teil on ajutine Suroi mängimise keeld!",
+    "msg_punishment_temp_reason": "Teile määrati ajutine keeld põhjusega: <reason>",
+    "msg_punishment_perma": "Teil on püsiv Suroi mängimise keeld!",
+    "msg_punishment_perma_reason": "Teile määrati püsiv keeld põhjusega: <reason>",
     "msg_no_reason": "Põhjust pole esitatud.",
 
     "play_solo": "Mängi Soolot",
