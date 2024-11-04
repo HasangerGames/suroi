@@ -59,3 +59,5 @@ export const SHOCKWAVE_EXPLOSION_MULTIPLIERS = Object.freeze({
     wavelength: 1,
     speed: 100
 });
+
+export const BULLET_WHIZ_SCALE = 5;
