@@ -13,12 +13,12 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "msg_lost_team_connection": "与队伍失去连接。",
     "msg_error_joining_team": "加入队伍失败。<br>队伍可能不存在或已满.", // <br>这里是一个HTML换行元素。不要触碰或移动。
     "msg_try_again": "请重试。",
-    "msg_warning": "你已被警告！",
-    "msg_warning_msg": "你已被管理员警告：<reason>",
-    "msg_temp_ban": "你已被暂时封禁！",
-    "msg_temp_ban_msg": "你已因此被暂时封禁：<reason>",
-    "msg_perma_ban": "你已被永久封禁！",
-    "msg_perma_ban_msg": "你已因此被永久封禁：<reason>",
+    "msg_punishment_warn": "你已被警告！",
+    "msg_punishment_warn_reason": "你已被管理员警告：<reason>",
+    "msg_punishment_temp": "你已被暂时封禁！",
+    "msg_punishment_temp_reason": "你已因此被暂时封禁：<reason>",
+    "msg_punishment_perma": "你已被永久封禁！",
+    "msg_punishment_perma_reason": "你已因此被永久封禁：<reason>",
     "msg_no_reason": "未提供原因。",
 
     "play_solo": "单人游戏",

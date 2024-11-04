@@ -8,7 +8,7 @@ export type GetGameResponse =
     } |
     {
         readonly success: false
-        readonly message?: "warn" | "temp" | "perma"
+        readonly message?: "warn" | "temp" | "perma" | "vpn"
         readonly reason?: string
         readonly reportID?: string
     };

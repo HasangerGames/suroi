@@ -25,7 +25,7 @@ export const Config = {
 
     spawn: { mode: SpawnMode.Center },
 
-    maxTeamSize: TeamSize.Solo,
+    maxTeamSize: TeamSize.Duo,
 
     maxPlayersPerGame: 70,
     maxGames: 5,

@@ -164,8 +164,7 @@ export async function findGame(): Promise<GetGameResponse> {
 let creatingID = -1;
 
 export async function newGame(id?: number): Promise<number> {
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises, no-async-promise-executor
-    return new Promise<number>(async resolve => {
+    return new Promise<number>(resolve => {
         if (creatingID !== -1) {
             resolve(creatingID);
         } else if (id !== undefined) {
@@ -179,13 +178,14 @@ export async function newGame(id?: number): Promise<number> {
                 game.sendMessage({ type: WorkerMessages.Reset });
             } else {
                 Logger.warn(`Game ${id} | Already exists`);
+                resolve(id);
             }
         } else {
             const maxGames = Config.maxGames;
             for (let i = 0; i < maxGames; i++) {
                 const game = games[i];
                 if (!game || game.stopped) {
-                    resolve(await newGame(i));
+                    void newGame(i).then(id => resolve(id));
                     return;
                 }
             }
@@ -266,6 +266,12 @@ if (!isMainThread) {
             }
 
             const searchParams = new URLSearchParams(req.getQuery());
+
+            // hack to prevent late respawning
+            if (game.gas.stage > 4) {
+                forbidden(res);
+                return;
+            }
 
             //
             // Ensure IP is allowed

@@ -13,12 +13,12 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
     "msg_lost_team_connection": "A csapathoz való csatlakozás elveszett.",
     "msg_error_joining_team": "Hiba a csapathoz csatlakozáskor.<br>Lehet hogy nem létezik, vagy már tele van.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_try_again": "Próbálkozz újra!",
-    "msg_warning": "Figyelmeztetve lettél!",
-    "msg_warning_msg": "Kaptál egy figyelmeztetést a moderátoroktól emiatt: <reason>",
-    "msg_temp_ban": "Ideiglenesen ki lettél tiltva!",
-    "msg_temp_ban_msg": "Ki lettél tiltva emiatt: <reason>",
-    "msg_perma_ban": "Véglegesen ki lettél tiltva!",
-    "msg_perma_ban_msg": "Ki lettél tiltva emiatt: <reason>",
+    "msg_punishment_warn": "Figyelmeztetve lettél!",
+    "msg_punishment_warn_reason": "Kaptál egy figyelmeztetést a moderátoroktól emiatt: <reason>",
+    "msg_punishment_temp": "Ideiglenesen ki lettél tiltva!",
+    "msg_punishment_temp_reason": "Ki lettél tiltva emiatt: <reason>",
+    "msg_punishment_perma": "Véglegesen ki lettél tiltva!",
+    "msg_punishment_perma_reason": "Ki lettél tiltva emiatt: <reason>",
     "msg_no_reason": "Nincs ok megadva.",
 
     "play_solo": "Játék Egyedül",

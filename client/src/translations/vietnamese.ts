@@ -13,12 +13,12 @@ export const VIETNAMESE_TRANSLATIONS: TranslationMap = {
     "msg_lost_team_connection": "Mất kết nối tới nhóm.",
     "msg_error_joining_team": "Lỗi gia nhập nhóm.<br>Nhóm đã nhập không tồn tại hoặc đã đầy.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_try_again": "Vui lòng thử lại.",
-    "msg_warning": "Bạn đã bị cảnh báo!",
-    "msg_warning_msg": "Bạn đã nhận được cảnh báo từ người điều hành trò chơi với lí do: <reason>",
-    "msg_temp_ban": "Bạn đã bị cấm chơi tạm thời.",
-    "msg_temp_ban_msg": "Bạn đã bị cấm chơi với lí do: <reason>",
-    "msg_perma_ban": "Bạn đã bị cấm chơi vĩnh viễn.",
-    "msg_perma_ban_msg": "Bạn đã bị cấm chơi với lí do: <reason>",
+    "msg_punishment_warn": "Bạn đã bị cảnh báo!",
+    "msg_punishment_warn_reason": "Bạn đã nhận được cảnh báo từ người điều hành trò chơi với lí do: <reason>",
+    "msg_punishment_temp": "Bạn đã bị cấm chơi tạm thời.",
+    "msg_punishment_temp_reason": "Bạn đã bị cấm chơi với lí do: <reason>",
+    "msg_punishment_perma": "Bạn đã bị cấm chơi vĩnh viễn.",
+    "msg_punishment_perma_reason": "Bạn đã bị cấm chơi với lí do: <reason>",
     "msg_no_reason": "Không có lý do nào được cung cấp.",
 
     "play_solo": "Chơi Solo",

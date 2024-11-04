@@ -17,13 +17,13 @@ import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./
 import { Logger } from "./utils/misc";
 import { cors, createServer, forbidden, getIP, textDecoder } from "./utils/serverHelpers";
 import { cleanUsername } from "./utils/misc";
-import IpChecker from "./utils/apiHelper";
+import IPChecker from "./utils/apiHelper";
 import { Punishment } from "./utils/apiHelper";
 
 let punishments: Punishment[] = [];
 
 const ipCheck = Config.protection?.ipChecker
-    ? new IpChecker(Config.protection.ipChecker.baseUrl, Config.protection.ipChecker.key)
+    ? new IPChecker(Config.protection.ipChecker.baseUrl, Config.protection.ipChecker.key)
     : undefined;
 
 const isVPN = Config.protection?.ipChecker
@@ -107,26 +107,22 @@ if (isMainThread) {
                     fetch(
                         `${protection.punishments.url}/punishments/${ip}`,
                         { headers: { "api-key": protection.punishments.password } }
-                    ).catch(e => console.error("Error acknowledging warning. Details: ", e));
+                    ).catch(e => console.error("Error acknowledging warning. Details:", e));
                 }
                 removePunishment(ip);
             }
             response = { success: false, message: punishment.punishmentType, reason: punishment.reason, reportID: punishment.reportId };
+        } else if (await isVPNCheck(ip)) {
+            response = { success: false, message: "vpn" };
         } else {
             const teamID = maxTeamSize !== TeamSize.Solo && new URLSearchParams(req.getQuery()).get("teamID"); // must be here or it causes uWS errors
-            if (await isVPNCheck(ip)) {
-                response = { success: false, message: "perma", reason: "VPN/proxy detected. To play the game, please disable it." };
-            } else if (teamID) {
+            if (teamID) {
                 const team = customTeams.get(teamID);
                 if (team?.gameID !== undefined) {
-                    if (Date.now() - team.lastGameIDUpdateTime < 10000) {
-                        const game = games[team.gameID];
-                        response = game && !game.stopped
-                            ? { success: true, gameID: team.gameID }
-                            : { success: false };
-                    } else {
-                        response = { success: false, message: "perma", reason: "suck it emmanuel macron" };
-                    }
+                    const game = games[team.gameID];
+                    response = game && !game.stopped
+                        ? { success: true, gameID: team.gameID }
+                        : { success: false };
                 } else {
                     response = { success: false };
                 }

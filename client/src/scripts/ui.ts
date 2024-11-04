@@ -368,46 +368,25 @@ export async function setUpUI(game: Game): Promise<void> {
                     // Check again because there is a small chance that the create-team-menu element won't hide.
                     if (createTeamMenu.css("display") !== "none") createTeamMenu.hide(); // what the if condition doin
                 } else {
-                    let showWarningModal = false;
-                    let title: string | undefined;
-                    const caseID = data.reportID || "No report ID provided.";
-                    let message: string;
-                    switch (data.message) {
-                        case "warn":
-                            showWarningModal = true;
-                            title = getTranslatedString("msg_warning");
-                            message = getTranslatedString("msg_warning_msg", { reason: data.reason ?? getTranslatedString("msg_no_reason") });
-                            break;
-                        case "temp":
-                            showWarningModal = true;
-                            title = getTranslatedString("msg_temp_ban");
-                            message = getTranslatedString("msg_temp_ban_msg", { reason: data.reason ?? getTranslatedString("msg_no_reason") });
-                            break;
-                        case "perma":
-                            showWarningModal = true;
-                            title = getTranslatedString("msg_perma_ban");
-                            message = getTranslatedString("msg_perma_ban_msg", { reason: data.reason ?? getTranslatedString("msg_no_reason") });
-                            break;
-                        default:
-                            message = html`
-                                ${getTranslatedString("msg_err_joining")}
-                                <br>
-                                ${getTranslatedString("msg_try_again")}
-                            `;
-                            break;
-                    }
+                    if (data.message !== undefined) {
+                        const reportID = data.reportID || "No report ID provided.";
+                        const message = getTranslatedString(`msg_punishment_${data.message}_reason`, { reason: data.reason ?? getTranslatedString("msg_no_reason") });
 
-                    if (showWarningModal) {
-                        ui.warningTitle.text(title ?? "");
-                        ui.warningText.html(`<span style="font-size:20px">Case ID: ${caseID ?? ""}</span><br>${message ?? ""}`);
+                        ui.warningTitle.text(getTranslatedString(`msg_punishment_${data.message}`));
+                        ui.warningText.html(`${data.message !== "vpn" ? `<span style="font-size:20px;margin-bottom:10px">Case ID: ${reportID}</span><br>` : ""}${message}`);
                         ui.warningAgreeOpts.toggle(data.message === "warn");
                         ui.warningAgreeCheckbox.prop("checked", false);
                         ui.warningModal.show();
                         ui.splashOptions.addClass("loading");
                     } else {
-                        ui.splashMsgText.html(message);
+                        ui.splashMsgText.html(html`
+                            ${getTranslatedString("msg_err_joining")}
+                            <br>
+                            ${getTranslatedString("msg_try_again")}
+                        `);
                         ui.splashMsg.show();
                     }
+
                     resetPlayButtons();
                 }
             }

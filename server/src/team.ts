@@ -127,7 +127,7 @@ export class CustomTeam {
     locked = false;
 
     gameID?: number;
-    lastGameIDUpdateTime = 0;
+    resetTimeout?: NodeJS.Timeout;
 
     constructor() {
         this.id = Array.from({ length: 4 }, () => CustomTeam._idChars.charAt(random(0, CustomTeam._idCharMax))).join("");
@@ -166,6 +166,7 @@ export class CustomTeam {
         removeFrom(this.players, player);
 
         if (!this.players.length) {
+            clearTimeout(this.resetTimeout);
             customTeams.delete(this.id);
             return;
         }
@@ -203,7 +204,8 @@ export class CustomTeam {
                 const result = await findGame();
                 if (result.success) {
                     this.gameID = result.gameID;
-                    this.lastGameIDUpdateTime = Date.now();
+                    clearTimeout(this.resetTimeout);
+                    this.resetTimeout = setTimeout(() => this.gameID = undefined, 10000);
                     this._publishMessage({ type: CustomTeamMessages.Started });
                 }
                 break;

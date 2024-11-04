@@ -13,12 +13,12 @@ export const GREEK_TRANSLATIONS: TranslationMap = {
     "msg_lost_team_connection": "Χάθηκε η σύνδεση στην ομάδα.",
     "msg_error_joining_team": "Σφάλμα σύνδεσης παιχνιδιού.<br>Μπορεί να μην υπάρχει ή να είναι γεμάτο.", // <br> here is an HTML break-line element. DO NOT TOUCH OR MOVE.
     "msg_try_again": "Παρακαλώ προσπαθήστε ξανά",
-    "msg_warning": "Έχετε προειδοποιηθεί!",
-    "msg_warning_msg": "Λάβατε μια προειδοποίηση από τους συντονιστές λόγω: <reason>",
-    "msg_temp_ban": "Έχετε αποκλειστεί προσωρινά!",
-    "msg_temp_ban_msg": "Έχετε αποκλειστεί προσωρινά λόγω: <reason>",
-    "msg_perma_ban": "Έχετε αποκλειστεί για πάντα!",
-    "msg_perma_ban_msg": "Έχετε αποκλειστεί οριστικά λόγω: <reason>",
+    "msg_punishment_warn": "Έχετε προειδοποιηθεί!",
+    "msg_punishment_warn_reason": "Λάβατε μια προειδοποίηση από τους συντονιστές λόγω: <reason>",
+    "msg_punishment_temp": "Έχετε αποκλειστεί προσωρινά!",
+    "msg_punishment_temp_reason": "Έχετε αποκλειστεί προσωρινά λόγω: <reason>",
+    "msg_punishment_perma": "Έχετε αποκλειστεί για πάντα!",
+    "msg_punishment_perma_reason": "Έχετε αποκλειστεί οριστικά λόγω: <reason>",
     "msg_no_reason": "Χωρίς λόγο",
 
     "play_solo": "Παίξε Μόνος",
