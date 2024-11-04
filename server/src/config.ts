@@ -23,9 +23,9 @@ export const Config = {
 
     map: "fall",
 
-    spawn: { mode: SpawnMode.Center },
+    spawn: { mode: SpawnMode.Normal },
 
-    maxTeamSize: TeamSize.Duo,
+    maxTeamSize: TeamSize.Solo,
 
     maxPlayersPerGame: 70,
     maxGames: 5,
