@@ -112,11 +112,11 @@ if (isMainThread) {
                 removePunishment(ip);
             }
             response = { success: false, message: punishment.punishmentType, reason: punishment.reason, reportID: punishment.reportId };
-        } else if (await isVPNCheck(ip)) {
-            response = { success: false, message: "vpn" };
         } else {
             const teamID = maxTeamSize !== TeamSize.Solo && new URLSearchParams(req.getQuery()).get("teamID"); // must be here or it causes uWS errors
-            if (teamID) {
+            if (await isVPNCheck(ip)) {
+                response = { success: false, message: "vpn" };
+            } else if (teamID) {
                 const team = customTeams.get(teamID);
                 if (team?.gameID !== undefined) {
                     const game = games[team.gameID];
