@@ -59,11 +59,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly hideOnMap: boolean
     readonly spawnMode: MapObjectSpawnMode
 
-    readonly bridgeSpawnOptions?: {
-        readonly minRiverWidth: number
-        readonly maxRiverWidth: number
-        readonly landHitbox: Hitbox
-    }
+    readonly bridgeHitbox?: Hitbox
 
     readonly obstacles: readonly BuildingObstacle[]
     readonly lootSpawners: readonly LootSpawner[]
@@ -3731,14 +3727,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     }).flat()
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(20, 62),
-                bridgeSpawnOptions: {
-                    minRiverWidth: 0,
-                    maxRiverWidth: 20,
-                    landHitbox: new GroupHitbox(
-                        RectangleHitbox.fromRect(20, 5, Vec.create(0, 28.5)),
-                        RectangleHitbox.fromRect(20, 5, Vec.create(0, -28.5))
-                    )
-                },
+                bridgeHitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(20, 5, Vec.create(0, 28.5)),
+                    RectangleHitbox.fromRect(20, 5, Vec.create(0, -28.5))
+                ),
                 floorImages: [
                     {
                         key: "small_bridge",
@@ -3788,14 +3780,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(5, 3.25, Vec.create(25.25, -70.65))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(105, 230),
-                bridgeSpawnOptions: {
-                    minRiverWidth: 20,
-                    maxRiverWidth: 100,
-                    landHitbox: new GroupHitbox(
-                        RectangleHitbox.fromRect(105, 45, Vec.create(0, 92.5)),
-                        RectangleHitbox.fromRect(105, 45, Vec.create(0, -92.5))
-                    )
-                },
+                bridgeHitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(105, 45, Vec.create(0, 92.5)),
+                    RectangleHitbox.fromRect(105, 45, Vec.create(0, -92.5))
+                ),
                 floorImages: [
                     { key: "large_bridge_railing", position: Vec.create(23.3, -38) },
                     { key: "large_bridge_railing", position: Vec.create(23.3, 35.3), rotation: Math.PI, scale: Vec.create(-1, 1) },
