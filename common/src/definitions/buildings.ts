@@ -5048,6 +5048,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { key: "gun_case_residue", position: Vec.create(-7.5, 12.4), zIndex: ZIndexes.Decals },
                     { key: "regular_crate_residue", position: Vec.create(-21.06, 0.29), zIndex: ZIndexes.Decals },
                     { key: "large_refinery_barrel_residue", position: Vec.create(6.43, 7.48), scale: Vec.create(0.8, 0.8), zIndex: ZIndexes.Decals },
+                    { key: "armory_vault_door_residue", position: Vec.create(-8.37, -1.59), zIndex: ZIndexes.Decals, rotation: 2 },
                     ...Array.from(
                         { length: 4 },
                         (_, i) => ({
@@ -5083,7 +5084,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "regular_crate", position: Vec.create(-29.77, 10.54) },
                     { idString: "box", position: Vec.create(-21.29, 12.33) },
                     { idString: "box", position: Vec.create(-17.88, 6.72) },
-                    { idString: "armory_damaged_vault_wall", position: Vec.create(-13.9, -2.1), rotation: 1 }
+                    { idString: "armory_damaged_vault_wall", position: Vec.create(-13.94, -2.1), rotation: 1 }
                 ],
                 lootSpawners: [
                     {
@@ -5231,7 +5232,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { key: "large_refinery_barrel_residue", position: Vec.create(-60.35, -31.87), zIndex: ZIndexes.Decals },
                     { key: "outhouse_residue", position: Vec.create(-60.35, -31.87), zIndex: ZIndexes.Decals },
                     { key: "large_refinery_barrel_residue", position: Vec.create(40, 50.33), zIndex: ZIndexes.Decals },
-                    { key: "regular_crate_residue", position: Vec.create(7.06, 30.07), zIndex: ZIndexes.Decals }
+                    { key: "regular_crate_residue", position: Vec.create(7.06, 30.07), zIndex: ZIndexes.Decals },
+                    { key: "large_refinery_barrel_residue", position: Vec.create(-5.81, 5.18), scale: Vec.create(0.8, 0.8), zIndex: ZIndexes.Decals }
                 ],
                 obstacles: [
                     { idString: "roadblock", position: Vec.create(-44.18, -59.93), rotation: 0 },
