@@ -1,9 +1,6 @@
-import type { TranslationMap } from "../translations";
+import { defineLanguage } from "../translations";
 
-export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
-    "name": "中文（简体）",
-    "flag": "🇨🇳",
-
+export default defineLanguage("中文（简体）", "🇨🇳", {
     "msg_rotate": "请将设备旋转至横向来获得更好的游戏体验。",
     "msg_loading": "连接中",
     "msg_err_joining": "加入游戏失败。",
@@ -357,4 +354,4 @@ export const CHINESE_SIMPLIFIED_TRANSLATIONS: TranslationMap = {
     "region_eu": "欧洲",
     "region_sa": "南美",
     "region_as": "亚洲"
-};
+});

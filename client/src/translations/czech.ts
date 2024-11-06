@@ -1,8 +1,6 @@
-import type { TranslationMap } from "../translations";
+import { defineLanguage } from "../translations";
 
-export const CZECH_TRANSLATIONS: TranslationMap = {
-    "name": "Čeština",
-    "flag": "🇨🇿",
+export default defineLanguage("Čeština", "🇨🇿", {
 
     "msg_rotate": "Pro lepší zážitek, otočte zařízení na šířku",
     "msg_loading": "Připojování...",
@@ -357,4 +355,4 @@ export const CZECH_TRANSLATIONS: TranslationMap = {
     "region_eu": "Evropa",
     "region_sa": "Jižní Amerika",
     "region_as": "Asie"
-};
+});

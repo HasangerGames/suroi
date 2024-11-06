@@ -1,9 +1,6 @@
-import type { TranslationMap } from "../translations";
+import { defineLanguage } from "../translations";
 
-export const JAPANESE_TRANSLATIONS: TranslationMap = {
-    "name": "日本語",
-    "flag": "🇯🇵",
-
+export default defineLanguage("日本語", "🇯🇵", {
     "msg_rotate": "より良い体験のために、デバイスを横向きに回転してください。",
     "msg_loading": "接続中",
     "msg_err_joining": "ゲームへの参加中にエラーが発生しました。",
@@ -357,4 +354,4 @@ export const JAPANESE_TRANSLATIONS: TranslationMap = {
     "region_eu": "ヨーロッパ",
     "region_sa": "南アメリカ",
     "region_as": "アジア"
-};
+});

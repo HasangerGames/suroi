@@ -3,33 +3,35 @@ import { Emotes } from "../../common/src/definitions/emotes";
 import { Loots } from "../../common/src/definitions/loots";
 import { type Game } from "./scripts/game";
 import { defaultClientCVars } from "./scripts/utils/console/defaultClientCVars";
-import { ALBANIAN_TRANSLATIONS } from "./translations/albanian";
-import { CHINESE_SIMPLIFIED_TRANSLATIONS } from "./translations/chinese_simplified";
-import { CZECH_TRANSLATIONS } from "./translations/czech";
-import { ENGLISH_TRANSLATIONS } from "./translations/english";
-import { ESTONIAN_TRANSLATIONS } from "./translations/estonian";
-import { FRENCH_TRANSLATIONS } from "./translations/french";
-import { GERMAN_TRANSLATIONS } from "./translations/german";
-import { GREEK_TRANSLATIONS } from "./translations/greek";
-import { HUNGARIAN_TRANSLATIONS } from "./translations/hungarian";
-import { JAPANESE_TRANSLATIONS } from "./translations/japanese";
-import { LATVIAN_TRANSLATIONS } from "./translations/latvian";
-import { LITHUANIAN_TRANSLATIONS } from "./translations/lithuanian";
-import { RUSSIAN_TRANSLATIONS } from "./translations/russian";
-import { TAMIL_TRANSLATIONS } from "./translations/tamil";
-import { TURKISH_TRANSLATIONS } from "./translations/turkısh";
-import { VIETNAMESE_TRANSLATIONS } from "./translations/vietnamese";
-import { CUTE_ENGWISH_TRANSLATIONS } from "./translations/cute_engwish";
-import { CANTONESE_TRANSLATIONS } from "./translations/cantonese";
-import { CHINESE_TRADITIONAL_TRANSLATIONS } from "./translations/chinese_traditional";
-import { ROMANIAN_TRANSLATIONS } from "./translations/romanian";
-import { DRUNKGLISH_TRANSLATIONS } from "./translations/drunkglish";
+import ALBANIAN_TRANSLATIONS from "./translations/albanian";
+import CHINESE_SIMPLIFIED_TRANSLATIONS from "./translations/chinese_simplified";
+import CZECH_TRANSLATIONS from "./translations/czech";
+import ENGLISH_TRANSLATIONS from "./translations/english";
+import ESTONIAN_TRANSLATIONS from "./translations/estonian";
+import FRENCH_TRANSLATIONS from "./translations/french";
+import GERMAN_TRANSLATIONS from "./translations/german";
+import GREEK_TRANSLATIONS from "./translations/greek";
+import HUNGARIAN_TRANSLATIONS from "./translations/hungarian";
+import JAPANESE_TRANSLATIONS from "./translations/japanese";
+import LATVIAN_TRANSLATIONS from "./translations/latvian";
+import LITHUANIAN_TRANSLATIONS from "./translations/lithuanian";
+import RUSSIAN_TRANSLATIONS from "./translations/russian";
+import TAMIL_TRANSLATIONS from "./translations/tamil";
+import TURKISH_TRANSLATIONS from "./translations/turkısh";
+import VIETNAMESE_TRANSLATIONS from "./translations/vietnamese";
+import CUTE_ENGWISH_TRANSLATIONS from "./translations/cute_engwish";
+import CANTONESE_TRANSLATIONS from "./translations/cantonese";
+import CHINESE_TRADITIONAL_TRANSLATIONS from "./translations/chinese_traditional";
+import ROMANIAN_TRANSLATIONS from "./translations/romanian";
+import DRUNKGLISH_TRANSLATIONS from "./translations/drunkglish";
 import { Numeric } from "../../common/src/utils/math";
 
 export type TranslationMap = Record<
     string,
     (string | ((replacements: Record<string, string>) => string))
 > & { readonly name: string, readonly flag: string };
+
+export type ValidTranslationKeys = Exclude<keyof typeof ENGLISH_TRANSLATIONS, "name" | "flag">;
 
 let defaultLanguage: string;
 let language: string;
@@ -94,7 +96,7 @@ export function initTranslation(game: Game): void {
     translateCurrentDOM();
 }
 
-export function getTranslatedString(key: string, replacements?: Record<string, string>): string {
+export function getTranslatedString(key: ValidTranslationKeys, replacements?: Record<string, string>): string {
     if (!setup) {
         console.error("Translation API not yet setup");
         return key;
@@ -182,7 +184,7 @@ function translateCurrentDOM(): void {
         const requestedTranslation = element.getAttribute("translation");
         if (!requestedTranslation) return;
 
-        const translatedString = getTranslatedString(requestedTranslation);
+        const translatedString = getTranslatedString(requestedTranslation as ValidTranslationKeys); // We pray
 
         element[
             element.getAttribute("use-html") === null
@@ -233,4 +235,16 @@ function translateCurrentDOM(): void {
             )
         );
     }
+}
+
+export function defineLanguage(
+    name: string,
+    flag: string,
+    content: Partial<Record<ValidTranslationKeys, string>>
+): TranslationMap {
+    return {
+        name,
+        flag,
+        ...content
+    };
 }

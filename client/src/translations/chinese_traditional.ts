@@ -1,9 +1,6 @@
-import type { TranslationMap } from "../translations";
+import { defineLanguage } from "../translations";
 
-export const CHINESE_TRADITIONAL_TRANSLATIONS: TranslationMap = {
-    "name": "中文（繁體）",
-    "flag": "🇹🇼",
-
+export default defineLanguage("中文（繁體）", "🇹🇼", {
     "msg_rotate": "請將設備旋轉至橫向來獲取更好的遊戲體驗。",
     "msg_loading": "連接中",
     "msg_err_joining": "加入遊戲時出錯。",
@@ -311,4 +308,4 @@ export const CHINESE_TRADITIONAL_TRANSLATIONS: TranslationMap = {
     "g17_scoped": "格洛克17（倍鏡）",
     "destroyer_of_worlds": "世界毀滅者",
     "revitalizer": "覆興者"
-};
+});

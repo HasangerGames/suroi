@@ -1,9 +1,6 @@
-import type { TranslationMap } from "../translations";
+import { defineLanguage } from "../translations";
 
-export const FRENCH_TRANSLATIONS: TranslationMap = {
-    "name": "Français",
-    "flag": "🇫🇷",
-
+export default defineLanguage("Français", "🇫🇷", {
     "msg_rotate": "Pour une meilleure expérience, passez en mode paysage.",
     "msg_loading": "Connexion",
     "msg_err_joining": "Erreur rencontrée en rejoignant la partie.",
@@ -349,4 +346,4 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "region_eu": "Europe",
     "region_sa": "Amérique du Sud",
     "region_as": "Asie"
-};
+});

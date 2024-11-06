@@ -1,6 +1,8 @@
 import type { TranslationMap } from "../translations";
 
-export const ENGLISH_TRANSLATIONS: TranslationMap = {
+/** WARNING: English translations are defined different from other languages because the other languages depend on the keys of this language
+    If you want to contribute translations for a new language, use other language files. */
+export default {
     "name": "English",
     "flag": "🇬🇧",
 
@@ -318,6 +320,8 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "seax": "Seax",
     "crowbar": "Crowbar",
     "sickle": "Sickle",
+    "falchion": "Falchion",
+    "fire_hatchet": "Fire Hatchet",
 
     "mosin_nagant": "Mosin-Nagant",
     "radio": "Radio",
@@ -329,6 +333,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "usas12": "USAS-12",
     "firework_launcher": "Firework Launcher",
     "destroyer_of_worlds": "Destroyer Of Worlds",
+    "deathray": "Deathray",
     "revitalizer": "Revitalizer",
     "g17_scoped": "G17 (Scoped)",
     "vss": "VSS",
@@ -337,6 +342,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "vepr12": "Vepr-12",
     "flues": "Flues",
     "cz75a": "CZ-75A",
+    "cz600": "CZ-600",
     "g19": "G19",
     "mp40": "MP40",
     "m1895": "M1895",
@@ -353,10 +359,12 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "m1_garand": "M1 Garand",
     "micro_uzi": "Micro Uzi",
     "m3k": "M3K",
+    "mg5": "MG5",
     "arx160": "ARX-160",
     "m16a4": "M16A4",
     "mg36": "MG-36",
     "mcx_spear": "MCX Spear",
+    "rsh12": "RSh-12",
 
     "frag_grenade": "Frag Grenade",
     "smoke_grenade": "Smoke Grenade",
@@ -371,4 +379,4 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "region_eu": "Europe",
     "region_sa": "South America",
     "region_as": "Asia"
-};
+} satisfies TranslationMap;

@@ -1,9 +1,6 @@
-import type { TranslationMap } from "../translations";
+import { defineLanguage } from "../translations";
 
-export const GREEK_TRANSLATIONS: TranslationMap = {
-    "name": "Ελληνικά",
-    "flag": "🇬🇷",
-
+export default defineLanguage("Ελληνικά", "🇬🇷", {
     "msg_rotate": "Για καλύτερη εμπειρία, περιστρέψτε τη συσκευή σας σε οριζόντιο προσανατολισμό.",
     "msg_loading": "Σύνδεση",
     "msg_err_joining": "Σφάλμα σύνδεσης",
@@ -351,4 +348,4 @@ export const GREEK_TRANSLATIONS: TranslationMap = {
     "region_eu": "Ευρώπη",
     "region_sa": "Νότια Αμερική",
     "region_as": "Ασία"
-};
+});

@@ -1,9 +1,6 @@
-import type { TranslationMap } from "../translations";
+import { defineLanguage } from "../translations";
 
-export const GERMAN_TRANSLATIONS: TranslationMap = {
-    "name": "Deutsch",
-    "flag": "🇩🇪",
-
+export default defineLanguage("Deutsch", "🇩🇪", {
     "msg_rotate": "Für ein besseres Erlebnis, drehe das Gerät in den Querformatmodus.",
     "msg_loading": "Verbindung wird hergestellt",
     "msg_err_joining": "Fehler beim Beitritt zum Spiel.",
@@ -279,4 +276,4 @@ export const GERMAN_TRANSLATIONS: TranslationMap = {
 
     // For dual guns
     "dual_template": "Doppel <gun>"
-};
+});

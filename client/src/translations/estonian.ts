@@ -1,9 +1,6 @@
-import type { TranslationMap } from "../translations";
+import { defineLanguage } from "../translations";
 
-export const ESTONIAN_TRANSLATIONS: TranslationMap = {
-    "name": "Eesti",
-    "flag": "🇪🇪",
-
+export default defineLanguage("Eesti", "🇪🇪", {
     "msg_rotate": "Paremaks mängimiskogemuseks palun hoidke seadet horisontaalselt.",
     "msg_loading": "Ühendumine",
     "msg_err_joining": "Viga mänguga ühinemisel.",
@@ -348,4 +345,4 @@ export const ESTONIAN_TRANSLATIONS: TranslationMap = {
     "region_eu": "Euroopa",
     "region_sa": "Lõuna-Ameerika",
     "region_as": "Aasia"
-};
+});

@@ -1,9 +1,6 @@
-import type { TranslationMap } from "../translations";
+import { defineLanguage } from "../translations";
 
-export const RUSSIAN_TRANSLATIONS: TranslationMap = {
-    "name": "Русский",
-    "flag": "🇷🇺",
-
+export default defineLanguage("Русский", "🇷🇺", {
     "msg_rotate": "Для наилучшего игрового опыта, переверните свое устройство.",
     "msg_loading": "Подключение",
     "msg_err_joining": "Ошибка при заходе в игру.",
@@ -26,7 +23,7 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "msg_better_item_equipped": "Уже экипирован предмет лучше",
     "msg_cannot_use_radio": "Нет связи в здании",
     "msg_radio_overused": "Радио сломалось из-за чрезмерного использования",
-    "enter_nickname": "Введите ваш ник",
+    // "enter_nickname": "Введите ваш ник",
 
     "play_solo": "Одиночный",
     "play_duo": "Напарники",
@@ -216,8 +213,8 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "kf_kl_killed": "<player> убил лидера по убийствам",
     "kf_kl_dead": "Лидер по убийствам умер, какая досада!",
     "kf_kl_suicide": "Лидер по убийствам покончил с собой!",
-    "kf_you_killed": "Вы убили <player>",
-    "kf_you_downed": "Вы повалили на землю <player>",
+    // "kf_you_killed": "Вы убили <player>",
+    // "kf_you_downed": "Вы повалили на землю <player>",
 
     // ------------------------------------------------------------------
     "finally": "наконец-то",
@@ -337,4 +334,4 @@ export const RUSSIAN_TRANSLATIONS: TranslationMap = {
     "g17_scoped": "G17 (с прицелом)",
     "death_ray": "Луч смерти",
     "radio": "Рация"
-};
+});

@@ -1,9 +1,6 @@
-import type { TranslationMap } from "../translations";
+import { defineLanguage } from "../translations";
 
-export const LITHUANIAN_TRANSLATIONS: TranslationMap = {
-    "name": "Lietuvių",
-    "flag": "🇱🇹",
-
+export default defineLanguage("Lietuvių", "🇱🇹", {
     "msg_rotate": "Geriau patirti, pasukite įrenginį į horizontalią padėtį.",
     "msg_loading": "Jungiamasi",
     "msg_err_joining": "Klaida jungiantis prie žaidimo.",
@@ -361,4 +358,4 @@ export const LITHUANIAN_TRANSLATIONS: TranslationMap = {
     "region_eu": "Europa",
     "region_sa": "Pietų Amerika",
     "region_as": "Azija"
-};
+});

@@ -1,9 +1,6 @@
-import type { TranslationMap } from "../translations";
+import { defineLanguage } from "../translations";
 
-export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
-    "name": "Magyar",
-    "flag": "🇭🇺",
-
+export default defineLanguage("Magyar", "🇭🇺", {
     "msg_rotate": "A jobb élmény érdekében, forgasd el eszközödet fekvő módba.",
     "msg_loading": "Csatlakozás",
     "msg_err_joining": "Hiba a játékhoz csatlakozáskor.",
@@ -351,4 +348,4 @@ export const HUNGARIAN_TRANSLATIONS: TranslationMap = {
     "region_eu": "Európa",
     "region_sa": "Dél-Amerika",
     "region_as": "Ázsia"
-};
+});

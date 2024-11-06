@@ -1,9 +1,6 @@
-import type { TranslationMap } from "../translations";
+import { defineLanguage } from "../translations";
 
-export const TURKISH_TRANSLATIONS: TranslationMap = {
-    "name": "Turkısh",
-    "flag": "🇹🇷",
-
+export default defineLanguage("Turkısh", "🇹🇷", {
     "msg_rotate": "Daha iyi bir deneyim için, lütfen cihazınızı yatay konuma döndürün.",
     "msg_loading": "Bağlanılıyor",
     "msg_spectating": "İzleniyor",
@@ -228,7 +225,7 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "themselves": "kendilerinin",
 
     "kf_message": "<player> <finally> <victim>'i <weapon> <with> <event>",
-    "kf_message_grammar": "<player> <finally> <victim> <weapon> <with> <event>", // used for special reason
+    // "kf_message_grammar": "<player> <finally> <victim> <weapon> <with> <event>", // used for special reason
     // ------------------------------------------------------------------
 
     "tt_restores": "<item> yeniler <amount> <type>",
@@ -348,4 +345,4 @@ export const TURKISH_TRANSLATIONS: TranslationMap = {
     "region_eu": "Avrupa",
     "region_sa": "Güney Amerika",
     "region_as": "Asya"
-};
+});

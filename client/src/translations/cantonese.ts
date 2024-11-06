@@ -1,9 +1,6 @@
-import type { TranslationMap } from "../translations";
+import { defineLanguage } from "../translations";
 
-export const CANTONESE_TRANSLATIONS: TranslationMap = {
-    "name": "廣東話(香港/澳門)",
-    "flag": "🇭🇰 🇲🇴",
-
+export default defineLanguage("廣東話(香港/澳門)", "🇭🇰 🇲🇴", {
     "msg_rotate": "請將設備調成橫向嚟提升你嘅遊戲體驗。",
     "msg_loading": "連接梗",
     "msg_err_joining": "加入出錯。",
@@ -351,4 +348,4 @@ export const CANTONESE_TRANSLATIONS: TranslationMap = {
     "region_eu": "歐洲",
     "region_sa": "南美",
     "region_as": "亞洲"
-};
+});

@@ -1,9 +1,6 @@
-import type { TranslationMap } from "../translations";
+import { defineLanguage } from "../translations";
 
-export const TAMIL_TRANSLATIONS: TranslationMap = {
-    "name": "தமிழ்",
-    "flag": "🇮🇳",
-
+export default defineLanguage("தமிழ்", "🇮🇳", {
     "msg_rotate": "நல்ல அனுபவத்திற்கு கருவியை கிடைமட்டமாக திருப்பவும்.",
     "msg_loading": "தொடர்பு கொல்கிறது",
     "msg_err_joining": "விளையாட்டில் சேர முடியவில்லை.",
@@ -346,4 +343,4 @@ export const TAMIL_TRANSLATIONS: TranslationMap = {
     "region_eu": "ஐரோப்பா",
     "region_sa": "தென் அமேரிக்கா",
     "region_as": "ஆசியா"
-};
+});

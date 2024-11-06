@@ -1,9 +1,6 @@
-import type { TranslationMap } from "../translations";
+import { defineLanguage } from "../translations";
 
-export const CUTE_ENGWISH_TRANSLATIONS: TranslationMap = {
-    "name": "Cute Engwish",
-    "flag": "🎀",
-
+export default defineLanguage("Cute Engwish", "🎀", {
     "msg_rotate": "Fow a bettew expewience, pwease wotate your device to wandscape. UwU",
     "msg_loading": "Connectwing >w<",
     "msg_err_joining": "Ewwow joining game. OwO",
@@ -311,4 +308,4 @@ export const CUTE_ENGWISH_TRANSLATIONS: TranslationMap = {
     "region_eu": "Euwope",
     "region_sa": "South Amewica",
     "region_as": "Asia"
-};
+});

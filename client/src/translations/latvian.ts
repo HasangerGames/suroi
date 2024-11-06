@@ -1,9 +1,6 @@
-import type { TranslationMap } from "../translations";
+import { defineLanguage } from "../translations";
 
-export const LATVIAN_TRANSLATIONS: TranslationMap = {
-    "name": "Latviešu",
-    "flag": "🇱🇻",
-
+export default defineLanguage("Latviešu", "🇱🇻", {
     "msg_rotate": "Labākai pieredzei, lūdzu, pagrieziet ierīci horizontāli .",
     "msg_loading": "Savienojas",
     "msg_err_joining": "Kļūda pievienojoties spēlei.",
@@ -354,4 +351,4 @@ export const LATVIAN_TRANSLATIONS: TranslationMap = {
     "region_eu": "Eiropa",
     "region_sa": "Dienvidamerika",
     "region_as": "Āzija"
-};
+});

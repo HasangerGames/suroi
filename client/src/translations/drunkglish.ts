@@ -1,9 +1,6 @@
-import type { TranslationMap } from "../translations";
+import { defineLanguage } from "../translations";
 
-export const DRUNKGLISH_TRANSLATIONS: TranslationMap = {
-    "name": "Alchoholism",
-    "flag": "🍺",
-
+export default defineLanguage("Alchoholism", "🍺", {
     "msg_rotate": "If aiuou wannanaa play betta do that rotate thing with your dddevicee",
     "msg_loading": "Tryna join the fucking game",
     "msg_err_joining": "ahhshiit it broke",
@@ -314,4 +311,4 @@ export const DRUNKGLISH_TRANSLATIONS: TranslationMap = {
     "region_eu": "Europe",
     "region_sa": "South America",
     "region_as": "Asia"
-};
+});

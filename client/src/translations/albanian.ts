@@ -1,9 +1,6 @@
-import type { TranslationMap } from "../translations";
+import { defineLanguage } from "../translations";
 
-export const ALBANIAN_TRANSLATIONS: TranslationMap = {
-    "name": "Shqip",
-    "flag": "🇦🇱",
-
+export default defineLanguage("Shqip", "🇦🇱", {
     "msg_rotate": "Për një eksperiencë më të mirë, ju lutem rrotulloni pajisjen tuaj.",
     "msg_loading": "Duke u lidhur",
     "msg_err_joining": "Gabime në hyrjen në lojë.",
@@ -293,4 +290,4 @@ export const ALBANIAN_TRANSLATIONS: TranslationMap = {
     "region_eu": "Europa",
     "region_sa": "Amerika e Jugut",
     "region_as": "Azia"
-};
+});

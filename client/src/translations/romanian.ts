@@ -1,9 +1,6 @@
-import type { TranslationMap } from "../translations";
+import { defineLanguage } from "../translations";
 
-export const ROMANIAN_TRANSLATIONS: TranslationMap = {
-    "name": "Română",
-    "flag": "🇷🇴",
-
+export default defineLanguage("Română", "🇷🇴", {
     "msg_rotate": "Pentru o experiență mai bună, vă rog  rotate your device to landscape.",
     "msg_loading": "Conectare",
     "msg_err_joining": "Error joining game.",
@@ -189,8 +186,8 @@ export const ROMANIAN_TRANSLATIONS: TranslationMap = {
 
     "kf_suicide_kill": "<player> sa sinucis",
     "kf_suicide_down": "<player> sa dat jos",
-    "kf_two_party_kill": "<player> l-a omorăt pe <victim>",
-    "kf_two_party_down": "<player> l-a dat jos pe <victim>",
+    // "kf_two_party_kill": "<player> l-a omorăt pe <victim>",
+    // "kf_two_party_down": "<player> l-a dat jos pe <victim>",
     "kf_bleed_out_kill": "<player> a sîngerat",
     "kf_bleed_out_down": "<player> a sîngerat non-letal",
     "kf_finished_off_kill": "<player> l-a terminat pe <victim>",
@@ -281,7 +278,7 @@ export const ROMANIAN_TRANSLATIONS: TranslationMap = {
     "firework_launcher": "Lansator De Artificii",
     "destroyer_of_worlds": "Destrugător De Lumi",
     "revitalizer": "Revitalizant",
-    "s_g17": "G17 (Scoped)",
+    "g17_scoped": "G17 (Scoped)",
     "vss": "VSS",
     "pp19": "PP-19",
     "vepr12": "Vepr-12",
@@ -293,7 +290,6 @@ export const ROMANIAN_TRANSLATIONS: TranslationMap = {
     "model_89": "Model 89",
     "negev": "Negev",
     "tango_51": "Tango 51",
-    "barrett": "Barrett M95",
     "stoner_63": "Stoner 63",
     "m1_garand": "M1 Garand",
 
@@ -310,4 +306,4 @@ export const ROMANIAN_TRANSLATIONS: TranslationMap = {
     "region_eu": "Europa",
     "region_sa": "America De Sud",
     "region_as": "Asia"
-};
+});

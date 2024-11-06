@@ -1,9 +1,6 @@
-import type { TranslationMap } from "../translations";
+import { defineLanguage } from "../translations";
 
-export const VIETNAMESE_TRANSLATIONS: TranslationMap = {
-    "name": "Tiếng Việt",
-    "flag": "🇻🇳",
-
+export default defineLanguage("Tiếng Việt", "🇻🇳", {
     "msg_rotate": "Để có trải nghiệm game tốt hơn, vui lòng xoay thiết bị của bạn sang ngang.",
     "msg_loading": "Đang Kết Nối",
     "msg_err_joining": "Lỗi khi tham gia trò chơi.",
@@ -356,4 +353,4 @@ export const VIETNAMESE_TRANSLATIONS: TranslationMap = {
     "region_eu": "Châu Âu",
     "region_sa": "Nam Mỹ",
     "region_as": "Châu Á"
-};
+});
