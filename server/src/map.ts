@@ -25,7 +25,7 @@ export class GameMap {
     readonly game: Game;
 
     private readonly mapDef: MapDefinition;
-    private readonly quadBuildings: { [key in 1 | 2 | 3 | 4]: string[] } = { 1: [], 2: [], 3: [], 4: [] };
+    private readonly quadBuildings: Record<1 | 2 | 3 | 4, string[]> = { 1: [], 2: [], 3: [], 4: [] };
     private readonly quadMajorBuildings: Array<1 | 2 | 3 | 4> = [];
     private readonly majorBuildingPositions: Vector[] = [];
 
