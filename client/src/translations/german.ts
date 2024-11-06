@@ -185,8 +185,8 @@ export default defineLanguage("Deutsch", "🇩🇪", {
 
     "kf_suicide_kill": "<player> hat Selbstmord begangen",
     "kf_suicide_down": "<player> hat sich selbst ausgeknockt",
-    "kf_two_party_kill": "<player> hat <victim> getötet",
-    "kf_two_party_down": "<player> hat <victim> ausgeknockt",
+    //"kf_two_party_kill": "<player> hat <victim> getötet",
+    //"kf_two_party_down": "<player> hat <victim> ausgeknockt",
     "kf_bleed_out_kill": "<player> ist verblutet",
     "kf_bleed_out_down": "<player> ist nicht tödlich verblutet",
     "kf_finished_off_kill": "<player> hat <victim> erledigt",

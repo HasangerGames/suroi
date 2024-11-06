@@ -185,8 +185,8 @@ export default defineLanguage("Shqip", "🇦🇱", {
 
     "kf_suicide_kill": "<player> u vetëvra",
     "kf_suicide_down": "<player> eleminoi veten",
-    "kf_two_party_kill": "<player> vrau <victim>",
-    "kf_two_party_down": "<player> eleminoi <victim>",
+    //"kf_two_party_kill": "<player> vrau <victim>",
+    //"kf_two_party_down": "<player> eleminoi <victim>",
     "kf_bleed_out_kill": "<player> iu derdh gjaku",
     "kf_bleed_out_down": "<player> iu derdh gjaku në mënyrë jo vdekjeprurëse",
     "kf_finished_off_kill": "<player> i mori jetën <victim>",

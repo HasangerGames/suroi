@@ -190,8 +190,8 @@ export default defineLanguage("Alchoholism", "🍺", {
 
     "kf_suicide_kill": "<player> made the right choice",
     "kf_suicide_down": "<player> talked about fight club",
-    "kf_two_party_kill": "<player> did horrible things to <victim>",
-    "kf_two_party_down": "<player> jerked off <victim>",
+    //"kf_two_party_kill": "<player> did horrible things to <victim>",
+    //"kf_two_party_down": "<player> jerked off <victim>",
     "kf_bleed_out_kill": "<player> L BOZO",
     "kf_bleed_out_down": "<player> how tf did you manage that",
     "kf_finished_off_kill": "<player> did smth <victim>",

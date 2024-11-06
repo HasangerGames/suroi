@@ -188,8 +188,8 @@ export default defineLanguage("廣東話(香港/澳門)", "🇭🇰 🇲🇴", {
 
     "kf_suicide_kill": "<player>諗唔開自殺咗",
     "kf_suicide_down": "<player>整到自己瞓低咗",
-    "kf_two_party_kill": "你嘅隊友<player>殺咗<victim>",
-    "kf_two_party_down": "你嘅隊友<player>Knockout咗<victim>",
+    //"kf_two_party_kill": "你嘅隊友<player>殺咗<victim>",
+    //"kf_two_party_down": "你嘅隊友<player>Knockout咗<victim>",
     "kf_bleed_out_kill": "<player>失血過多",
     "kf_bleed_out_down": "<player>非致命咁失血過多",
     "kf_finally_died": "<player>最終死了",

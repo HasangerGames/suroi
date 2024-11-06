@@ -224,7 +224,7 @@ export default defineLanguage("Eesti", "🇪🇪", {
     "themselves": "ise ennast",
 
     "kf_message": "<player> <finally> <event> <victim>`i <with> <weapon>",
-    "kf_message_grammar": "<player> <finally> <event> <victim> <with> <weapon>",
+    //"kf_message_grammar": "<player> <finally> <event> <victim> <with> <weapon>",
     // ------------------------------------------------------------------
 
     "tt_restores": "<item> taastab <amount> <type>",

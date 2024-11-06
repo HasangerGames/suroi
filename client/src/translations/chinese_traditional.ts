@@ -185,8 +185,8 @@ export default defineLanguage("中文（繁體）", "🇹🇼", {
 
     "kf_suicide_kill": "<player>自殺了",
     "kf_suicide_down": "<player>擊倒了自己",
-    "kf_two_party_kill": "<player>擊殺了<victim>",
-    "kf_two_party_down": "<player>擊倒了<victim>",
+    //"kf_two_party_kill": "<player>擊殺了<victim>",
+    //"kf_two_party_down": "<player>擊倒了<victim>",
     "kf_bleed_out_kill": "<player>失血過多",
     "kf_bleed_out_down": "<player>非致命地失血過多",
     "kf_finally_died": "<player>最終死了",

@@ -190,8 +190,8 @@ export default defineLanguage("Ελληνικά", "🇬🇷", {
 
     "kf_suicide_kill": "<player> αυτοκτόνησε",
     "kf_suicide_down": "Ο/Η <player> έβγαλε νοκ άουτ τον ευατό του/της",
-    "kf_two_party_kill": "Ο/Η <player> σκότωσε τον/την <victim>",
-    "kf_two_party_down": "Ο/Η <player> έβγαλε νοκ άουτ τον/την <victim>",
+    //"kf_two_party_kill": "Ο/Η <player> σκότωσε τον/την <victim>",
+    //"kf_two_party_down": "Ο/Η <player> έβγαλε νοκ άουτ τον/την <victim>",
     "kf_bleed_out_kill": "Ο/Η <player> πέθανε από αιμορραγία",
     "kf_bleed_out_down": "Ο/Η <player> μάτωσε μη-θανατηφόρα",
     "kf_finished_off_kill": "Ο/Η <player> αποτελείωσε τον/την <victim>",
