@@ -965,7 +965,7 @@ export class GameMap {
                 }
                 case MapObjectSpawnMode.RiverBank:
                 case MapObjectSpawnMode.Trail: {
-                    if (this.isInRiver(hitbox, position)) {
+                    if (this.isInRiver(hitbox)) {
                         collided = true;
                         break;
                     }
