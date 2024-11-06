@@ -312,7 +312,7 @@ const maps = {
             gold_rock: 1,
             loot_tree: 4,
             loot_barrel: 1,
-            flint_stone: 3,
+            flint_stone: 1,
             pumpkin: 200,
             large_pumpkin: 5,
             pebble: 110
