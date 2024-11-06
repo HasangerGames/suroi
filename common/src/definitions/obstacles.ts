@@ -3146,7 +3146,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             {
                 idString: "armory_damaged_vault_wall",
                 material: "stone",
-                hitbox: RectangleHitbox.fromRect(18, 2.05),
+                hitbox: RectangleHitbox.fromRect(15, 2.04),
                 health: 500,
                 noResidue: true,
                 hideOnMap: true,
@@ -3157,11 +3157,11 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 particleVariations: 2,
                 frames: {
                     particle: "rock_particle"
-                },
-                wall: {
+                }
+                /* wall: {
                     color: 0x606060,
                     borderColor: 0x262626
-                }
+                } */
             },
             {
                 idString: "small_refinery_barrel",

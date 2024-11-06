@@ -59,11 +59,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly hideOnMap: boolean
     readonly spawnMode: MapObjectSpawnMode
 
-    readonly bridgeSpawnOptions?: {
-        readonly minRiverWidth: number
-        readonly maxRiverWidth: number
-        readonly landHitbox: Hitbox
-    }
+    readonly bridgeHitbox?: Hitbox
 
     readonly obstacles: readonly BuildingObstacle[]
     readonly lootSpawners: readonly LootSpawner[]
@@ -3731,14 +3727,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     }).flat()
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(20, 62),
-                bridgeSpawnOptions: {
-                    minRiverWidth: 0,
-                    maxRiverWidth: 20,
-                    landHitbox: new GroupHitbox(
-                        RectangleHitbox.fromRect(20, 5, Vec.create(0, 28.5)),
-                        RectangleHitbox.fromRect(20, 5, Vec.create(0, -28.5))
-                    )
-                },
+                bridgeHitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(20, 5, Vec.create(0, 28.5)),
+                    RectangleHitbox.fromRect(20, 5, Vec.create(0, -28.5))
+                ),
                 floorImages: [
                     {
                         key: "small_bridge",
@@ -3788,14 +3780,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(5, 3.25, Vec.create(25.25, -70.65))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(105, 230),
-                bridgeSpawnOptions: {
-                    minRiverWidth: 20,
-                    maxRiverWidth: 100,
-                    landHitbox: new GroupHitbox(
-                        RectangleHitbox.fromRect(105, 45, Vec.create(0, 92.5)),
-                        RectangleHitbox.fromRect(105, 45, Vec.create(0, -92.5))
-                    )
-                },
+                bridgeHitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(105, 45, Vec.create(0, 92.5)),
+                    RectangleHitbox.fromRect(105, 45, Vec.create(0, -92.5))
+                ),
                 floorImages: [
                     { key: "large_bridge_railing", position: Vec.create(23.3, -38) },
                     { key: "large_bridge_railing", position: Vec.create(23.3, 35.3), rotation: Math.PI, scale: Vec.create(-1, 1) },
@@ -5060,6 +5048,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { key: "gun_case_residue", position: Vec.create(-7.5, 12.4), zIndex: ZIndexes.Decals },
                     { key: "regular_crate_residue", position: Vec.create(-21.06, 0.29), zIndex: ZIndexes.Decals },
                     { key: "large_refinery_barrel_residue", position: Vec.create(6.43, 7.48), scale: Vec.create(0.8, 0.8), zIndex: ZIndexes.Decals },
+                    { key: "armory_vault_door_residue", position: Vec.create(-8.37, -1.59), zIndex: ZIndexes.Decals, rotation: 2 },
                     ...Array.from(
                         { length: 4 },
                         (_, i) => ({
@@ -5095,7 +5084,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "regular_crate", position: Vec.create(-29.77, 10.54) },
                     { idString: "box", position: Vec.create(-21.29, 12.33) },
                     { idString: "box", position: Vec.create(-17.88, 6.72) },
-                    { idString: "armory_damaged_vault_wall", position: Vec.create(-13.9, -2.1), rotation: 1 }
+                    { idString: "armory_damaged_vault_wall", position: Vec.create(-13.94, -2.1), rotation: 1 }
                 ],
                 lootSpawners: [
                     {
@@ -5243,7 +5232,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { key: "large_refinery_barrel_residue", position: Vec.create(-60.35, -31.87), zIndex: ZIndexes.Decals },
                     { key: "outhouse_residue", position: Vec.create(-60.35, -31.87), zIndex: ZIndexes.Decals },
                     { key: "large_refinery_barrel_residue", position: Vec.create(40, 50.33), zIndex: ZIndexes.Decals },
-                    { key: "regular_crate_residue", position: Vec.create(7.06, 30.07), zIndex: ZIndexes.Decals }
+                    { key: "regular_crate_residue", position: Vec.create(7.06, 30.07), zIndex: ZIndexes.Decals },
+                    { key: "large_refinery_barrel_residue", position: Vec.create(-5.81, 5.18), scale: Vec.create(0.8, 0.8), zIndex: ZIndexes.Decals }
                 ],
                 obstacles: [
                     { idString: "roadblock", position: Vec.create(-44.18, -59.93), rotation: 0 },

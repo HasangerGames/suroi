@@ -500,9 +500,7 @@ export interface EventDataMap {
         /**
          * Specific type will be `{ readonly [K in (typeof item)["modifiers"]]: boolean }`
          */
-        readonly diff: {
-            readonly [K in Exclude<keyof PlayerModifiers, "on">]: boolean
-        }
+        readonly diff: Readonly<Record<Exclude<keyof PlayerModifiers, "on">, boolean>>
     }
 
     readonly obstacle_will_generate: {

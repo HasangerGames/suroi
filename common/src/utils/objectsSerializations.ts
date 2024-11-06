@@ -21,9 +21,7 @@ export interface Fullable<T> {
     full?: T
 }
 
-type BaseObjectsNetData = {
-    [K in ObjectCategory]: Fullable<object> | object
-};
+type BaseObjectsNetData = Record<ObjectCategory, Fullable<object> | object>;
 
 export type FullData<Cat extends ObjectCategory> = ObjectsNetData[Cat] & (ObjectsNetData[Cat] extends Fullable<infer S> ? { full: S } : object);
 

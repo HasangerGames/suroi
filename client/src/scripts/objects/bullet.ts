@@ -27,6 +27,7 @@ export class Bullet extends BaseBullet {
     private _trailTicks = 0;
 
     private _lastParticleTrail = Date.now();
+    private _playBulletWhiz: boolean;
 
     constructor(game: Game, options: BulletOptions) {
         super(options);
@@ -69,6 +70,9 @@ export class Bullet extends BaseBullet {
         this._image.tint = color;
         this.setLayer(this.layer);
 
+        // don't play bullet whiz if bullet originated within whiz hitbox
+        this._playBulletWhiz = !this.game.activePlayer?.bulletWhizHitbox.isPointInside(this.initialPosition);
+
         this.game.camera.addObject(this._image);
     }
 
@@ -101,6 +105,13 @@ export class Bullet extends BaseBullet {
 
                 this.dead = true;
                 break;
+            }
+        }
+        if (this._playBulletWhiz) {
+            const intersection = this.game.activePlayer?.bulletWhizHitbox.intersectsLine(this.initialPosition, this.position);
+            if (intersection) {
+                this.game.soundManager.play(`bullet_whiz_${random(1, 3)}`, { position: intersection.point });
+                this._playBulletWhiz = false;
             }
         }
 

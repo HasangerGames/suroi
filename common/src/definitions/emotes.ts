@@ -108,7 +108,8 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>([
         "RIP",
         "Leosmug",
         "Socks",
-        "Archimedes"
+        "Archimedes",
+        "awhhmahgawd"
     ].map(name => emote([name, EmoteCategory.Memes])),
     ...[
         "Question Mark",
