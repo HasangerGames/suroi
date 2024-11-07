@@ -35,7 +35,7 @@ File generated on ${new Date(Date.now()).toUTCString()}
   for (const [file, content] of Object.entries(languages).filter(([file, _]) => file !== "english.ts")) {
     const keys = Object.keys(content).filter(keyFilter)
 
-    let buffer = `## ${content.flag} ${content.name} (${file}) (${Math.round(100 * keys.length / validKeys.length)}%)\n\n`
+    let buffer = `## ${content.flag} ${content.name} (${file}) (${Math.round(100 * keys.length / validKeys.length)}% complete)\n\n`
     let flawless = true;
 
     for (const key of keys) {
