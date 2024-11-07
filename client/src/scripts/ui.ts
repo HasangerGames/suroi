@@ -136,34 +136,16 @@ export async function setUpUI(game: Game): Promise<void> {
 
     const languageFieldset = $("#select-language-container fieldset");
     for (const [language, languageInfo] of Object.entries(TRANSLATIONS.translations)) {
-        // Make sure we do not count the same values.
-        let filtered = Object.values(languageInfo);
+      languageFieldset.append(html`
+          <div>
+            <input type="radio" name="selected-language" id="language-${language}" value="${language}">
+            <label for="language-${language}">${languageInfo.flag} ${languageInfo.name} (${languageInfo.percentage})</label>
+          </div>
+      `);
 
-        const nonCountableStrings = Object.keys(TRANSLATIONS.translations.en);
-        nonCountableStrings.push("kf_message_grammar"); // because some languages have special grammar stuff (we do not count this special string)
-
-        if (!["en", "hp18"].includes(language)) {
-            for (const key of Object.keys(languageInfo)) {
-                // Do not count guns or same strings (which are guns most of the time)
-                if (languageInfo[key] === TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage][key] && nonCountableStrings.includes((languageInfo[key] as string))) {
-                    filtered = filtered.filter(translationString => {
-                        return translationString !== TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage][key];
-                    });
-                }
-            }
-        }
-
-        const percentage = (filtered.length - 2) / (Object.values(TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage]).length - 2);
-        languageFieldset.append(html`
-            <div>
-              <input type="radio" name="selected-language" id="language-${language}" value="${language}">
-              <label for="language-${language}">${languageInfo.flag} ${languageInfo.name} (${language === "den" ? "001" : language === "qen" ? "OwO" : languageInfo.name === "HP-18" ? "HP-18" : Math.ceil(percentage * 100)}%)</label>
-            </div>
-        `);
-
-        $<HTMLInputElement>(`#language-${language}`).on("click", () => {
-            game.console.setBuiltInCVar("cv_language", language);
-        }).prop("checked", game.console.getBuiltInCVar("cv_language") === language);
+      $<HTMLInputElement>(`#language-${language}`).on("click", () => {
+          game.console.setBuiltInCVar("cv_language", language);
+      }).prop("checked", game.console.getBuiltInCVar("cv_language") === language);
     }
 
     game.console.variables.addChangeListener("cv_language", () => location.reload());

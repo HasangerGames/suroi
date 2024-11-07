@@ -467,6 +467,7 @@ export class GameMap {
 
                 if (
                     this.occupiedBridgePositions.some(pos => Vec.equals(pos, position))
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     || this.isInRiver(buildingDef.bridgeHitbox!.transform(position, 1, bestOrientation))
                 ) return;
 
