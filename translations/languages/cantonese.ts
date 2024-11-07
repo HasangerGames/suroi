@@ -330,7 +330,6 @@ export default defineLanguage("廣東話(香港/澳門)", "🇭🇰 🇲🇴", {
     "negev": "Negev輕機槍",
     "mg5": "MG5輕機槍",
     "tango_51": "Tango 51狙擊槍",
-    "barrett_m95": "Barrett M95狙擊槍",
     "stoner_63": "Stoner 63輕機槍",
     "m1_garand": "M1 Garand卡賓槍",
 

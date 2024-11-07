@@ -33,10 +33,10 @@ File generated on ${new Date(Date.now()).toUTCString()}
 
   // HACK: Yeah sorry for hard coding english.ts
   for (const [file, content] of Object.entries(languages).filter(([file, _]) => file !== "english.ts")) {
-    let buffer = `## ${content.flag} ${content.name} (${file})\n\n`
-    let flawless = true;
-
     const keys = Object.keys(content).filter(keyFilter)
+
+    let buffer = `## ${content.flag} ${content.name} (${file}) (${Math.round(100 * keys.length / validKeys.length)}%)\n\n`
+    let flawless = true;
 
     for (const key of keys) {
       if (validKeys.find(k => k === key)) continue;

@@ -331,7 +331,6 @@ export default defineLanguage("日本語", "🇯🇵", {
     "negev": "Negev",
     "sr25": "SR-25",
     "tango_51": "Tango 51",
-    "barrett_m95": "Barrett M95",
     "stoner_63": "Stoner 63",
     "m1_garand": "M1 Garand",
     "micro_uzi": "Micro Uzi",

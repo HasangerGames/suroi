@@ -335,7 +335,6 @@ export default defineLanguage("Lietuvių", "🇱🇹", {
     "negev": "Negevas",
     "sr25": "SR-25",
     "tango_51": "Tango 51",
-    "barrett_m95": "Barreto M95",
     "stoner_63": "Stoner 63",
     "m1_garand": "M1 Garandas",
     "micro_uzi": "Mikro Uzi",

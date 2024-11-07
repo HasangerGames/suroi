@@ -1,8 +1,8 @@
 # Translation File Report
 
-File generated on Thu, 07 Nov 2024 00:59:24 GMT
+File generated on Thu, 07 Nov 2024 01:05:58 GMT
 
-## 🇦🇱 Shqip (albanian.ts)
+## 🇦🇱 Shqip (albanian.ts) (88%)
 
 - Key `msg_spectating` is not defined
 - Key `msg_enter_team_code` is not defined
@@ -35,9 +35,8 @@ File generated on Thu, 07 Nov 2024 00:59:24 GMT
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
-- Key `barrett_m95` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (cantonese.ts)
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (cantonese.ts) (93%)
 
 - Key `msg_error_joining_team` is not defined
 - Key `msg_punishment_vpn` is not defined
@@ -58,7 +57,7 @@ File generated on Thu, 07 Nov 2024 00:59:24 GMT
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇨🇳 中文（简体） (chinese_simplified.ts)
+## 🇨🇳 中文（简体） (chinese_simplified.ts) (94%)
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
@@ -75,7 +74,7 @@ File generated on Thu, 07 Nov 2024 00:59:24 GMT
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇹🇼 中文（繁體） (chinese_traditional.ts)
+## 🇹🇼 中文（繁體） (chinese_traditional.ts) (87%)
 
 - Key `msg_spectating` is not defined
 - Key `msg_enter_team_code` is not defined
@@ -111,7 +110,7 @@ File generated on Thu, 07 Nov 2024 00:59:24 GMT
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🎀 Cute Engwish (cute_engwish.ts)
+## 🎀 Cute Engwish (cute_engwish.ts) (92%)
 
 - Key `msg_spectating` is not defined
 - Key `msg_enter_team_code` is not defined
@@ -132,9 +131,8 @@ File generated on Thu, 07 Nov 2024 00:59:24 GMT
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
-- Key `barrett_m95` is not defined
 
-## 🇨🇿 Čeština (czech.ts)
+## 🇨🇿 Čeština (czech.ts) (94%)
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
@@ -151,7 +149,7 @@ File generated on Thu, 07 Nov 2024 00:59:24 GMT
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🍺 Alchoholism (drunkglish.ts)
+## 🍺 Alchoholism (drunkglish.ts) (90%)
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
@@ -180,7 +178,7 @@ File generated on Thu, 07 Nov 2024 00:59:24 GMT
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇪🇪 Eesti (estonian.ts)
+## 🇪🇪 Eesti (estonian.ts) (94%)
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
@@ -199,7 +197,7 @@ File generated on Thu, 07 Nov 2024 00:59:24 GMT
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇫🇷 Français (french.ts)
+## 🇫🇷 Français (french.ts) (92%)
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
@@ -221,7 +219,7 @@ File generated on Thu, 07 Nov 2024 00:59:24 GMT
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇩🇪 Deutsch (german.ts)
+## 🇩🇪 Deutsch (german.ts) (86%)
 
 - Key `msg_spectating` is not defined
 - Key `msg_enter_team_code` is not defined
@@ -254,14 +252,13 @@ File generated on Thu, 07 Nov 2024 00:59:24 GMT
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
-- Key `barrett_m95` is not defined
 - Key `region_dev` is not defined
 - Key `region_na` is not defined
 - Key `region_eu` is not defined
 - Key `region_sa` is not defined
 - Key `region_as` is not defined
 
-## 🇬🇷 Ελληνικά (greek.ts)
+## 🇬🇷 Ελληνικά (greek.ts) (94%)
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
@@ -281,7 +278,7 @@ File generated on Thu, 07 Nov 2024 00:59:24 GMT
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇭🇺 Magyar (hungarian.ts)
+## 🇭🇺 Magyar (hungarian.ts) (95%)
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
@@ -297,7 +294,7 @@ File generated on Thu, 07 Nov 2024 00:59:24 GMT
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇯🇵 日本語 (japanese.ts)
+## 🇯🇵 日本語 (japanese.ts) (94%)
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
@@ -314,7 +311,7 @@ File generated on Thu, 07 Nov 2024 00:59:24 GMT
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇱🇻 Latviešu (latvian.ts)
+## 🇱🇻 Latviešu (latvian.ts) (94%)
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
@@ -331,7 +328,7 @@ File generated on Thu, 07 Nov 2024 00:59:24 GMT
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇱🇹 Lietuvių (lithuanian.ts)
+## 🇱🇹 Lietuvių (lithuanian.ts) (94%)
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
@@ -348,7 +345,7 @@ File generated on Thu, 07 Nov 2024 00:59:24 GMT
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇷🇴 Română (romanian.ts)
+## 🇷🇴 Română (romanian.ts) (88%)
 
 - Key `msg_spectating` is not defined
 - Key `msg_enter_team_code` is not defined
@@ -379,9 +376,8 @@ File generated on Thu, 07 Nov 2024 00:59:24 GMT
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
-- Key `barrett_m95` is not defined
 
-## 🇷🇺 Русский (russian.ts)
+## 🇷🇺 Русский (russian.ts) (96%)
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
@@ -393,9 +389,8 @@ File generated on Thu, 07 Nov 2024 00:59:24 GMT
 - Key `kf_finished_off_down` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
-- Key `barrett_m95` is not defined
 
-## 🇮🇳 தமிழ் (tamil.ts)
+## 🇮🇳 தமிழ் (tamil.ts) (92%)
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
@@ -419,7 +414,7 @@ File generated on Thu, 07 Nov 2024 00:59:24 GMT
 - Key `create_team_waiting` is not defined
 - Key `deathray` is not defined
 
-## 🇹🇷 Turkısh (turkısh.ts)
+## 🇹🇷 Turkısh (turkısh.ts) (94%)
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
@@ -436,7 +431,7 @@ File generated on Thu, 07 Nov 2024 00:59:24 GMT
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇻🇳 Tiếng Việt (vietnamese.ts)
+## 🇻🇳 Tiếng Việt (vietnamese.ts) (94%)
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
