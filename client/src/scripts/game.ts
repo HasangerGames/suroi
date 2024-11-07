@@ -145,7 +145,7 @@ export class Game {
     readonly gasRender = new GasRender(PIXI_SCALE);
     readonly gas = new Gas(this);
 
-    readonly music: Sound;
+    music?: Sound;
 
     readonly tweens = new Set<Tween<unknown>>();
 
@@ -158,24 +158,28 @@ export class Game {
     }
 
     private static _instantiated = false;
-    constructor() {
+    constructor() {}
+
+    static async init() {
         if (Game._instantiated) {
             throw new Error("Class 'Game' has already been instantiated.");
         }
         Game._instantiated = true;
 
-        this.console.readFromLocalStorage();
-        initTranslation(this);
-        this.inputManager.setupInputs();
+        const game = new Game();
+
+        game.console.readFromLocalStorage();
+        await initTranslation(game);
+        game.inputManager.setupInputs();
 
         const initPixi = async(): Promise<void> => {
-            const renderMode = this.console.getBuiltInCVar("cv_renderer");
-            const renderRes = this.console.getBuiltInCVar("cv_renderer_res");
+            const renderMode = game.console.getBuiltInCVar("cv_renderer");
+            const renderRes = game.console.getBuiltInCVar("cv_renderer_res");
 
-            await this.pixi.init({
+            await game.pixi.init({
                 resizeTo: window,
                 background: COLORS.grass,
-                antialias: this.console.getBuiltInCVar("cv_antialias"),
+                antialias: game.console.getBuiltInCVar("cv_antialias"),
                 autoDensity: true,
                 preferWebGLVersion: renderMode === "webgl1" ? 1 : 2,
                 preference: renderMode === "webgpu" ? "webgpu" : "webgl",
@@ -192,17 +196,17 @@ export class Game {
                 }
             });
 
-            const pixi = this.pixi;
+            const pixi = game.pixi;
             await loadTextures(
                 pixi.renderer,
-                this.inputManager.isMobile
-                    ? this.console.getBuiltInCVar("mb_high_res_textures")
-                    : this.console.getBuiltInCVar("cv_high_res_textures")
+                game.inputManager.isMobile
+                    ? game.console.getBuiltInCVar("mb_high_res_textures")
+                    : game.console.getBuiltInCVar("cv_high_res_textures")
             );
 
             // HACK: the game ui covers the canvas
             // so send pointer events manually to make clicking to spectate players work
-            this.uiManager.ui.gameUi[0].addEventListener("pointerdown", e => {
+            game.uiManager.ui.gameUi[0].addEventListener("pointerdown", e => {
                 pixi.canvas.dispatchEvent(new PointerEvent("pointerdown", {
                     pointerId: e.pointerId,
                     button: e.button,
@@ -213,46 +217,47 @@ export class Game {
                 }));
             });
 
-            pixi.ticker.add(this.render.bind(this));
+            pixi.ticker.add(game.render.bind(this));
             pixi.stage.addChild(
-                this.camera.container,
-                this.map.container,
-                this.map.mask
+                game.camera.container,
+                game.map.container,
+                game.map.mask
             );
 
-            this.map.visible = !this.console.getBuiltInCVar("cv_minimap_minimized");
-            this.map.expanded = this.console.getBuiltInCVar("cv_map_expanded");
-            this.uiManager.ui.gameUi.toggle(this.console.getBuiltInCVar("cv_draw_hud"));
+            game.map.visible = !game.console.getBuiltInCVar("cv_minimap_minimized");
+            game.map.expanded = game.console.getBuiltInCVar("cv_map_expanded");
+            game.uiManager.ui.gameUi.toggle(game.console.getBuiltInCVar("cv_draw_hud"));
 
-            pixi.renderer.on("resize", () => this.resize());
-            this.resize();
+            pixi.renderer.on("resize", () => game.resize());
+            game.resize();
 
             setInterval(() => {
-                if (this.console.getBuiltInCVar("pf_show_fps")) {
-                    this.uiManager.debugReadouts.fps.text(`${Math.round(this.pixi.ticker.FPS)} fps`);
+                if (game.console.getBuiltInCVar("pf_show_fps")) {
+                    game.uiManager.debugReadouts.fps.text(`${Math.round(game.pixi.ticker.FPS)} fps`);
                 }
             }, 500);
         };
 
         void Promise.all([
             initPixi(),
-            setUpUI(this)
+            setUpUI(game)
         ]).then(() => {
             unlockPlayButtons();
             resetPlayButtons();
         });
 
-        setUpCommands(this);
-        this.inputManager.generateBindsConfigScreen();
+        setUpCommands(game);
+        game.inputManager.generateBindsConfigScreen();
 
-        this.music = sound.add("menu_music", {
-            url: `./audio/music/menu_music${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${GameConstants.modeName}` : ""}.mp3`,
+        game.music = sound.add("menu_music", {
+            url: `./audio/music/menu_music${game.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${GameConstants.modeName}` : ""}.mp3`,
             singleInstance: true,
             preload: true,
             autoPlay: true,
-            volume: this.console.getBuiltInCVar("cv_music_volume")
+            volume: game.console.getBuiltInCVar("cv_music_volume")
         });
-    }
+    return game;
+  }
 
     resize(): void {
         this.map.resize();

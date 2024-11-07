@@ -23,15 +23,16 @@ const keyFilter = (key: string) => (
 const ValidKeys = Object.keys(parse(readFileSync(LANGUAGES_DIRECTORY + REFERNCE_LANGUAGE + ".hjson", "utf8")))
   .filter(keyFilter)
 
-export type TranslationsManifest = Record<string, {
+export type TranslationManifest = {
   readonly name: string
   readonly flag: string
   readonly percentage: string
   /** Loading the language is required on client */
-  readonly mandatory: boolean
-  readonly no_resize: boolean
-  readonly no_space: boolean
-}>
+  readonly mandatory?: boolean
+  readonly no_resize?: boolean
+  readonly no_space?: boolean
+}
+export type TranslationsManifest = Record<string, TranslationManifest>
 
 export async function validateTranslations() {
   let reportBuffer = `# Translation File Reports
@@ -90,7 +91,7 @@ export async function buildTranslations() {
     }
     filePromises.push(writeFile(`../../client/public/translations/${language}.json`, JSON.stringify(content)));
   }
-  await Promise.all([...filePromises, writeFile("../../client/public/translations/manifest.json", JSON.stringify(manifest))])
+  await Promise.all([...filePromises, writeFile("../../client/src/translationsManifest.json", JSON.stringify(manifest))])
 }
 
 export async function buildTypings(keys: string[]) {
