@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Thu, 07 Nov 2024 04:30:02 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Thu, 07 Nov 2024 15:08:49 GMT
 
 ## 🇦🇱 Shqip (88% Complete) - ab.hjson
 
@@ -201,25 +201,26 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off_down` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
-## 🇭🇺 Magyar (95% Complete) - hu.hjson
+## 🇭🇺 Magyar (100% Complete) - hu.hjson
 
 ### Invalid Keys
 
+- Key `msg_warning` is not a valid key
+- Key `msg_warning_msg` is not a valid key
+- Key `msg_temp_ban` is not a valid key
+- Key `msg_temp_ban_msg` is not a valid key
+- Key `msg_perma_ban` is not a valid key
+- Key `msg_perma_ban_msg` is not a valid key
+- Key `barrett_m95` is not a valid key
 
 ### Undefined Keys
 
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `donate` is not defined
-- Key `settings_ambience_volume` is not defined
-- Key `settings_ambient_particles` is not defined
-- Key `msg_not_enough_space` is not defined
-- Key `msg_item_already_equipped` is not defined
-- Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
-- Key `create_team_ready` is not defined
-- Key `deathray` is not defined
+- Key `msg_punishment_warn` is not defined
+- Key `msg_punishment_warn_reason` is not defined
+- Key `msg_punishment_temp` is not defined
+- Key `msg_punishment_temp_reason` is not defined
+- Key `msg_punishment_perma` is not defined
+- Key `msg_punishment_perma_reason` is not defined
 ## 🇯🇵 日本語 (94% Complete) - jp.hjson
 
 ### Invalid Keys
