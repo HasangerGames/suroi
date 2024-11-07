@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "validate": "cd src/ && ts-node validate.ts",
-    "build": "cd src/ && ts-node processTranslations.ts"
+    "build": "cd src/ && ts-node build.ts",
+    "convert": "cd src/ && ts-node temporaryConversionScript.ts"
   },
   "keywords": [],
   "license": "GPL-3.0",

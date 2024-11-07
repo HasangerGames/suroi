@@ -1,3 +1,3 @@
-import { buildTranslations } from "./processTranslations";
+import { buildTranslations, validateTranslations } from "./processTranslations";
 
-buildTranslations()
+validateTranslations().then(buildTranslations)

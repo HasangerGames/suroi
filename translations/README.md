@@ -1,261 +1,494 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Thu, 07 Nov 2024 02:11:14 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Thu, 07 Nov 2024 02:48:42 GMT
 
-## 69 Test (0) - test.hjson
+## 🇦🇱 Shqip (88% Complete) - ab.hjson
 
 ### Invalid Keys
 
--Key `play_duos` is not a valid key
+
 ### Undefined Keys
 
-Key `msg_rotate` is not defined
-Key `msg_loading` is not defined
-Key `msg_err_joining` is not defined
-Key `msg_err_finding` is not defined
-Key `msg_spectating` is not defined
-Key `msg_enter_team_code` is not defined
-Key `msg_lost_team_connection` is not defined
-Key `msg_error_joining_team` is not defined
-Key `msg_try_again` is not defined
-Key `msg_punishment_warn` is not defined
-Key `msg_punishment_warn_reason` is not defined
-Key `msg_punishment_temp` is not defined
-Key `msg_punishment_temp_reason` is not defined
-Key `msg_punishment_perma` is not defined
-Key `msg_punishment_perma_reason` is not defined
-Key `msg_punishment_vpn` is not defined
-Key `msg_punishment_vpn_reason` is not defined
-Key `msg_no_reason` is not defined
-Key `play_solo` is not defined
-Key `play_duo` is not defined
-Key `play_squad` is not defined
-Key `join_team` is not defined
-Key `msg_locked_tooltip` is not defined
-Key `rules_and_tutorial` is not defined
-Key `news` is not defined
-Key `donate` is not defined
-Key `loadout` is not defined
-Key `settings` is not defined
-Key `fullscreen` is not defined
-Key `resume` is not defined
-Key `quit` is not defined
-Key `none` is not defined
-Key `copy` is not defined
-Key `copied` is not defined
-Key `health` is not defined
-Key `adrenaline` is not defined
-Key `settings_volume` is not defined
-Key `settings_keybinds` is not defined
-Key `settings_graphics` is not defined
-Key `settings_interface` is not defined
-Key `settings_save_load` is not defined
-Key `settings_mobile` is not defined
-Key `settings_require_reload` is not defined
-Key `settings_performance_warning` is not defined
-Key `settings_master_volume` is not defined
-Key `settings_sfx_volume` is not defined
-Key `settings_ambience_volume` is not defined
-Key `settings_music_volume` is not defined
-Key `settings_old_menu_music` is not defined
-Key `settings_render_mode` is not defined
-Key `settings_render_resolution` is not defined
-Key `settings_render_resolution_auto` is not defined
-Key `settings_hires_textures` is not defined
-Key `settings_cooler_graphics` is not defined
-Key `settings_ambient_particles` is not defined
-Key `settings_antialias` is not defined
-Key `settings_movement_smoothing` is not defined
-Key `settings_responsive_rotation` is not defined
-Key `settings_camera_shake` is not defined
-Key `settings_interface_scale` is not defined
-Key `settings_minimap_opacity` is not defined
-Key `settings_fs_map_opacity` is not defined
-Key `settings_hide_minimap` is not defined
-Key `settings_blur_splash` is not defined
-Key `settings_hide_rules` is not defined
-Key `settings_warn_before_leaving` is not defined
-Key `settings_show_fps` is not defined
-Key `settings_show_ping` is not defined
-Key `settings_show_coordinates` is not defined
-Key `settings_anon_names` is not defined
-Key `settings_hide_emotes` is not defined
-Key `settings_text_killfeed` is not defined
-Key `settings_colored_weapon_slots` is not defined
-Key `settings_scope_looping` is not defined
-Key `settings_draw_hud` is not defined
-Key `settings_autopickup` is not defined
-Key `settings_autopickup_dual_guns` is not defined
-Key `settings_load_settings` is not defined
-Key `settings_copy_settings` is not defined
-Key `settings_reset_settings` is not defined
-Key `settings_reload` is not defined
-Key `settings_mobile_controls` is not defined
-Key `settings_joystick_size` is not defined
-Key `settings_joystick_opacity` is not defined
-Key `loadout_skins` is not defined
-Key `loadout_emotes` is not defined
-Key `loadout_crosshairs` is not defined
-Key `loadout_badges` is not defined
-Key `loadout_special` is not defined
-Key `loadout_crosshairs_default` is not defined
-Key `loadout_crosshairs_size` is not defined
-Key `loadout_crosshairs_color` is not defined
-Key `loadout_crosshairs_stroke_size` is not defined
-Key `loadout_crosshairs_stroke_color` is not defined
-Key `emotes_category_People` is not defined
-Key `emotes_category_Text` is not defined
-Key `emotes_category_Memes` is not defined
-Key `emotes_category_Icons` is not defined
-Key `emotes_category_Misc` is not defined
-Key `featured_youtubr` is not defined
-Key `featured_streamr` is not defined
-Key `btn_report` is not defined
-Key `btn_spectate_kill_leader` is not defined
-Key `btn_spectate` is not defined
-Key `btn_play_again` is not defined
-Key `btn_menu` is not defined
-Key `msg_waiting_for_leader` is not defined
-Key `msg_you_died` is not defined
-Key `msg_player_died` is not defined
-Key `msg_win` is not defined
-Key `msg_your_rank` is not defined
-Key `msg_kills` is not defined
-Key `msg_not_enough_space` is not defined
-Key `msg_item_already_equipped` is not defined
-Key `msg_better_item_equipped` is not defined
-Key `msg_cannot_use_radio` is not defined
-Key `msg_radio_overused` is not defined
-Key `gas_waiting` is not defined
-Key `gas_advancing` is not defined
-Key `gas_inactive` is not defined
-Key `action_open_door` is not defined
-Key `action_close_door` is not defined
-Key `action_revive` is not defined
-Key `action_cancel` is not defined
-Key `action_reloading` is not defined
-Key `action_reviving` is not defined
-Key `action_being_revived` is not defined
-Key `action_gauze_use` is not defined
-Key `action_medikit_use` is not defined
-Key `action_cola_use` is not defined
-Key `action_tablets_use` is not defined
-Key `interact_airdrop_crate_locked` is not defined
-Key `interact_control_panel` is not defined
-Key `interact_headquarters_security_desk` is not defined
-Key `interact_generator` is not defined
-Key `interact_button` is not defined
-Key `interact_speaker` is not defined
-Key `loading_spritesheets` is not defined
-Key `loading_connecting` is not defined
-Key `loading_joining_game` is not defined
-Key `loading_fetching_data` is not defined
-Key `loading_finding_game` is not defined
-Key `keybind_clear_tooltip` is not defined
-Key `keybind_reset` is not defined
-Key `bindings_+up` is not defined
-Key `bindings_+down` is not defined
-Key `bindings_+left` is not defined
-Key `bindings_+right` is not defined
-Key `bindings_interact` is not defined
-Key `bindings_loot` is not defined
-Key `bindings_slot 0` is not defined
-Key `bindings_slot 1` is not defined
-Key `bindings_slot 2` is not defined
-Key `bindings_equip_or_cycle_throwables 1` is not defined
-Key `bindings_last_item` is not defined
-Key `bindings_other_weapon` is not defined
-Key `bindings_swap_gun_slots` is not defined
-Key `bindings_cycle_items -1` is not defined
-Key `bindings_cycle_items 1` is not defined
-Key `bindings_+attack` is not defined
-Key `bindings_drop` is not defined
-Key `bindings_reload` is not defined
-Key `bindings_explode_c4` is not defined
-Key `bindings_cycle_scopes -1` is not defined
-Key `bindings_cycle_scopes 1` is not defined
-Key `bindings_use_consumable gauze` is not defined
-Key `bindings_use_consumable medikit` is not defined
-Key `bindings_use_consumable cola` is not defined
-Key `bindings_use_consumable tablets` is not defined
-Key `bindings_cancel_action` is not defined
-Key `bindings_+view_map` is not defined
-Key `bindings_toggle_map` is not defined
-Key `bindings_toggle_minimap` is not defined
-Key `bindings_toggle_hud` is not defined
-Key `bindings_+emote_wheel` is not defined
-Key `bindings_+map_ping_wheel` is not defined
-Key `bindings_+map_ping` is not defined
-Key `bindings_toggle_console` is not defined
-Key `bindings_toggle_slot_lock` is not defined
-Key `kf_suicide_kill` is not defined
-Key `kf_suicide_down` is not defined
-Key `kf_bleed_out_kill` is not defined
-Key `kf_bleed_out_down` is not defined
-Key `kf_finished_off_kill` is not defined
-Key `kf_finished_off_down` is not defined
-Key `kf_finally_died` is not defined
-Key `kf_finally_ended_themselves` is not defined
-Key `kf_finally_killed` is not defined
-Key `kf_finally_down` is not defined
-Key `kf_gas_kill` is not defined
-Key `kf_gas_down` is not defined
-Key `kf_airdrop_kill` is not defined
-Key `kf_airdrop_down` is not defined
-Key `finally` is not defined
-Key `with` is not defined
-Key `you` is not defined
-Key `yourself` is not defined
-Key `km_killed` is not defined
-Key `km_knocked` is not defined
-Key `km_message` is not defined
-Key `kf_killed` is not defined
-Key `kf_knocked` is not defined
-Key `kf_finished_off` is not defined
-Key `themselves` is not defined
-Key `kf_message` is not defined
-Key `kf_kl_promotion` is not defined
-Key `kf_kl_killed` is not defined
-Key `kf_kl_dead` is not defined
-Key `kf_kl_suicide` is not defined
-Key `tt_restores` is not defined
-Key `tt_reduces` is not defined
-Key `go_kills` is not defined
-Key `go_damage_done` is not defined
-Key `go_damage_taken` is not defined
-Key `go_time_alive` is not defined
-Key `create_team` is not defined
-Key `create_team_autofill` is not defined
-Key `create_team_lock` is not defined
-Key `create_team_ready` is not defined
-Key `create_team_waiting` is not defined
-Key `create_team_play` is not defined
-Key `report_reporting` is not defined
-Key `report_id` is not defined
-Key `report_instructions` is not defined
-Key `languages` is not defined
-Key `gauze` is not defined
-Key `medikit` is not defined
-Key `cola` is not defined
-Key `tablets` is not defined
-Key `basic_vest` is not defined
-Key `regular_vest` is not defined
-Key `tactical_vest` is not defined
-Key `basic_helmet` is not defined
-Key `regular_helmet` is not defined
-Key `tactical_helmet` is not defined
-Key `bag` is not defined
-Key `basic_pack` is not defined
-Key `regular_pack` is not defined
-Key `tactical_pack` is not defined
-Key `1x_scope` is not defined
-Key `2x_scope` is not defined
-Key `4x_scope` is not defined
-Key `8x_scope` is not defined
-Key `15x_scope` is not defined
-Key `dual_template` is not defined
-Key `region_dev` is not defined
-Key `region_na` is not defined
-Key `region_eu` is not defined
-Key `region_sa` is not defined
-Key `region_as` is not defined
+- Key `msg_spectating` is not defined
+- Key `msg_enter_team_code` is not defined
+- Key `msg_lost_team_connection` is not defined
+- Key `msg_error_joining_team` is not defined
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `donate` is not defined
+- Key `copied` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `interact_speaker` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `finally` is not defined
+- Key `with` is not defined
+- Key `you` is not defined
+- Key `yourself` is not defined
+- Key `km_killed` is not defined
+- Key `km_knocked` is not defined
+- Key `km_message` is not defined
+- Key `kf_killed` is not defined
+- Key `kf_knocked` is not defined
+- Key `kf_finished_off` is not defined
+- Key `themselves` is not defined
+- Key `kf_message` is not defined
+- Key `create_team_ready` is not defined
+- Key `deathray` is not defined
+## 🇨🇿 Čeština (94% Complete) - cz.hjson
+
+### Invalid Keys
+
+
+### Undefined Keys
+
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `donate` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `interact_speaker` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `create_team_ready` is not defined
+- Key `deathray` is not defined
+## 🇩🇪 Deutsch (86% Complete) - de.hjson
+
+### Invalid Keys
+
+
+### Undefined Keys
+
+- Key `msg_spectating` is not defined
+- Key `msg_enter_team_code` is not defined
+- Key `msg_lost_team_connection` is not defined
+- Key `msg_error_joining_team` is not defined
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `donate` is not defined
+- Key `copied` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `interact_speaker` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `finally` is not defined
+- Key `with` is not defined
+- Key `you` is not defined
+- Key `yourself` is not defined
+- Key `km_killed` is not defined
+- Key `km_knocked` is not defined
+- Key `km_message` is not defined
+- Key `kf_killed` is not defined
+- Key `kf_knocked` is not defined
+- Key `kf_finished_off` is not defined
+- Key `themselves` is not defined
+- Key `kf_message` is not defined
+- Key `create_team_ready` is not defined
+- Key `deathray` is not defined
+- Key `region_dev` is not defined
+- Key `region_na` is not defined
+- Key `region_eu` is not defined
+- Key `region_sa` is not defined
+- Key `region_as` is not defined
+## 🇪🇪 Eesti (94% Complete) - et.hjson
+
+### Invalid Keys
+
+
+### Undefined Keys
+
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `donate` is not defined
+- Key `copied` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_cooler_graphics` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `interact_speaker` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `create_team_ready` is not defined
+- Key `deathray` is not defined
+## 🇫🇷 Français (92% Complete) - fr.hjson
+
+### Invalid Keys
+
+
+### Undefined Keys
+
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `donate` is not defined
+- Key `copied` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `interact_speaker` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `kf_kl_promotion` is not defined
+- Key `kf_kl_killed` is not defined
+- Key `kf_kl_dead` is not defined
+- Key `kf_kl_suicide` is not defined
+- Key `create_team_ready` is not defined
+- Key `deathray` is not defined
+## 🇬🇷 Ελληνικά (94% Complete) - gr.hjson
+
+### Invalid Keys
+
+
+### Undefined Keys
+
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `donate` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `settings_autopickup_dual_guns` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `interact_speaker` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `bindings_+map_ping` is not defined
+- Key `create_team_ready` is not defined
+- Key `deathray` is not defined
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (93% Complete) - hk_mo.hjson
+
+### Invalid Keys
+
+
+### Undefined Keys
+
+- Key `msg_error_joining_team` is not defined
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `donate` is not defined
+- Key `copied` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `interact_speaker` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `kf_finished_off_kill` is not defined
+- Key `kf_finished_off_down` is not defined
+- Key `create_team_ready` is not defined
+- Key `deathray` is not defined
+## 🇭🇺 Magyar (95% Complete) - hu.hjson
+
+### Invalid Keys
+
+
+### Undefined Keys
+
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `donate` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `create_team_ready` is not defined
+- Key `deathray` is not defined
+## 🇯🇵 日本語 (94% Complete) - jp.hjson
+
+### Invalid Keys
+
+
+### Undefined Keys
+
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `donate` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `interact_speaker` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `create_team_ready` is not defined
+- Key `deathray` is not defined
+## 🇱🇹 Lietuvių (94% Complete) - lt.hjson
+
+### Invalid Keys
+
+
+### Undefined Keys
+
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `donate` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `interact_speaker` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `create_team_ready` is not defined
+- Key `deathray` is not defined
+## 🇱🇻 Latviešu (94% Complete) - lv.hjson
+
+### Invalid Keys
+
+
+### Undefined Keys
+
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `donate` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `interact_speaker` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `create_team_ready` is not defined
+- Key `deathray` is not defined
+## 🎀 Cute Engwish (92% Complete) - qen.hjson
+
+### Invalid Keys
+
+
+### Undefined Keys
+
+- Key `msg_spectating` is not defined
+- Key `msg_enter_team_code` is not defined
+- Key `msg_lost_team_connection` is not defined
+- Key `msg_error_joining_team` is not defined
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `donate` is not defined
+- Key `copied` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `interact_speaker` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `create_team_ready` is not defined
+- Key `deathray` is not defined
+## 🇷🇴 Română (88% Complete) - ro.hjson
+
+### Invalid Keys
+
+
+### Undefined Keys
+
+- Key `msg_spectating` is not defined
+- Key `msg_enter_team_code` is not defined
+- Key `msg_lost_team_connection` is not defined
+- Key `msg_error_joining_team` is not defined
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `donate` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `interact_speaker` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `finally` is not defined
+- Key `with` is not defined
+- Key `you` is not defined
+- Key `yourself` is not defined
+- Key `km_killed` is not defined
+- Key `km_knocked` is not defined
+- Key `km_message` is not defined
+- Key `kf_killed` is not defined
+- Key `kf_knocked` is not defined
+- Key `kf_finished_off` is not defined
+- Key `themselves` is not defined
+- Key `kf_message` is not defined
+- Key `create_team_ready` is not defined
+## 🇷🇺 Русский (96% Complete) - ru.hjson
+
+### Invalid Keys
+
+
+### Undefined Keys
+
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `donate` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `kf_finished_off_kill` is not defined
+- Key `kf_finished_off_down` is not defined
+- Key `create_team_ready` is not defined
+- Key `deathray` is not defined
+## 🇮🇳 தமிழ் (92% Complete) - ta.hjson
+
+### Invalid Keys
+
+
+### Undefined Keys
+
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `news` is not defined
+- Key `donate` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `interact_airdrop_crate_locked` is not defined
+- Key `interact_control_panel` is not defined
+- Key `interact_headquarters_security_desk` is not defined
+- Key `interact_generator` is not defined
+- Key `interact_button` is not defined
+- Key `interact_speaker` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `create_team_ready` is not defined
+- Key `create_team_waiting` is not defined
+- Key `deathray` is not defined
+## 🇹🇷 Turkısh (94% Complete) - tr.hjson
+
+### Invalid Keys
+
+
+### Undefined Keys
+
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `donate` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `interact_speaker` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `create_team_ready` is not defined
+- Key `deathray` is not defined
+## 🇹🇼 中文（繁體） (87% Complete) - tw.hjson
+
+### Invalid Keys
+
+
+### Undefined Keys
+
+- Key `msg_spectating` is not defined
+- Key `msg_enter_team_code` is not defined
+- Key `msg_lost_team_connection` is not defined
+- Key `msg_error_joining_team` is not defined
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `donate` is not defined
+- Key `copied` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `interact_speaker` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `kf_finished_off_kill` is not defined
+- Key `kf_finished_off_down` is not defined
+- Key `finally` is not defined
+- Key `with` is not defined
+- Key `you` is not defined
+- Key `yourself` is not defined
+- Key `km_killed` is not defined
+- Key `km_knocked` is not defined
+- Key `km_message` is not defined
+- Key `kf_killed` is not defined
+- Key `kf_knocked` is not defined
+- Key `kf_finished_off` is not defined
+- Key `themselves` is not defined
+- Key `kf_message` is not defined
+- Key `create_team_ready` is not defined
+- Key `deathray` is not defined
+## 🇻🇳 Tiếng Việt (94% Complete) - vi.hjson
+
+### Invalid Keys
+
+
+### Undefined Keys
+
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `donate` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `interact_speaker` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `create_team_ready` is not defined
+- Key `deathray` is not defined
+## 🇨🇳 中文（简体） (94% Complete) - zh.hjson
+
+### Invalid Keys
+
+
+### Undefined Keys
+
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `donate` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `interact_speaker` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `create_team_ready` is not defined
+- Key `deathray` is not defined
