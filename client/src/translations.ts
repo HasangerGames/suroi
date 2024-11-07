@@ -4,8 +4,8 @@ import { Loots } from "../../common/src/definitions/loots";
 import { type Game } from "./scripts/game";
 import { defaultClientCVars } from "./scripts/utils/console/defaultClientCVars";
 import { Numeric } from "../../common/src/utils/math";
-import { type TranslationKeys } from "./typings/translations"
-import type { TranslationManifest, TranslationsManifest } from "../../translations/src/processTranslations"
+import { type TranslationKeys } from "./typings/translations";
+import type { TranslationManifest, TranslationsManifest } from "../../translations/src/processTranslations";
 import TRANSLATIONS_MANIFEST from "./translationsManifest.json";
 
 export type TranslationMap = Partial<Record<TranslationKeys, string>> & TranslationManifest;
@@ -26,7 +26,7 @@ export const TRANSLATIONS = {
             name: "HP-18",
             flag: "<img height=\"20\" src=\"./img/killfeed/hp18_killfeed.svg\" />",
             percentage: "HP-18%"
-        },
+        }
     }
 } as {
     get defaultLanguage(): string
@@ -42,7 +42,6 @@ export async function initTranslation(game: Game): Promise<void> {
         return;
     }
 
-
     setup = true;
 
     defaultLanguage = typeof defaultClientCVars.cv_language === "object"
@@ -52,19 +51,19 @@ export async function initTranslation(game: Game): Promise<void> {
     selectedLanguage = game.console.getBuiltInCVar("cv_language");
 
     const loadedLanguages = await Promise.all(Object.entries(TRANSLATIONS_MANIFEST as TranslationsManifest)
-      .filter(([language, content]) => content.mandatory || language === selectedLanguage || language === defaultLanguage)
-      .map(async ([language, _]) => [language, await (await fetch(`/translations/${language}.json`)).json()] as [string, TranslationMap]));
+        .filter(([language, content]) => content.mandatory || language === selectedLanguage || language === defaultLanguage)
+        .map(async([language, _]) => [language, await (await fetch(`/translations/${language}.json`)).json()] as [string, TranslationMap]));
 
     for (const [language, content] of loadedLanguages) {
-      TRANSLATIONS.translations[language] = {
-        ...(TRANSLATIONS_MANIFEST as TranslationsManifest)[language],
-        ...content
-      };
+        TRANSLATIONS.translations[language] = {
+            ...(TRANSLATIONS_MANIFEST as TranslationsManifest)[language],
+            ...content
+        };
     }
 
     Object.entries(TRANSLATIONS_MANIFEST as TranslationsManifest)
-      .filter(([language, content]) => !(content.mandatory || language === selectedLanguage || language === defaultLanguage))
-      .forEach(([language, content]) => TRANSLATIONS.translations[language] = content)
+        .filter(([language, content]) => !(content.mandatory || language === selectedLanguage || language === defaultLanguage))
+        .forEach(([language, content]) => TRANSLATIONS.translations[language] = content);
 
     translateCurrentDOM();
 }
@@ -91,7 +90,7 @@ export function getTranslatedString(key: TranslationKeys, replacements?: Record<
         foundTranslation = TRANSLATIONS.translations[selectedLanguage]?.[key]
         ?? TRANSLATIONS.translations[defaultLanguage]?.[key]
         ?? Loots.reify(key).name;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_) {
         foundTranslation = "no translation found";
     }

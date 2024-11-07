@@ -482,9 +482,9 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             );
         }
 
-        if (definition.bridgeSpawnOptions?.landHitbox) {
+        if (definition.bridgeHitbox) {
             drawHitbox(
-                definition.bridgeSpawnOptions.landHitbox.transform(this.position, 1, this.orientation),
+                definition.bridgeHitbox.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.landHitbox,
                 this.debugGraphics
             );
