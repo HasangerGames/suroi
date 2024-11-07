@@ -20,6 +20,8 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "msg_perma_ban": "Vous avez été banni!",
     "msg_perma_ban_msg": "Vous avez été banni pour : <reason>",
     "msg_no_reason": "Pas de raison donnée.",
+    "msg_punishment_vpn": "VPN/Proxy détécté!",
+    "msg_punishment_vpn_reason": "Pour rendre l'évasion de bans plus difficile, les VPN ou proxys ne sont pas autorisés. Veuillez les désactiver pour pouvoir jouer. Si vous pensez que ce message est dû à une erreur, ou voulez une exemption, veuillez contacter un admin du serveur discord (https://discord.suroi.io), ou envoyez un email à support@suroi.io.",
 
     "play_solo": "Solo",
     "play_duo": "Duos",
@@ -35,6 +37,8 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "quit": "Abandonner",
     "none": "Aucun",
     "copy": "Copier",
+    "donate": "Faire un don",
+    "copied": "Copié",
 
     "health": "vie",
     "adrenaline": "adrénaline",
@@ -126,6 +130,12 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "msg_your_rank": "Rang",
 
     "msg_kills": "Kills : <kills>",
+
+    
+    "msg_not_enough_space": "Pas assez d'espace!",
+    "msg_item_already_equipped": "Équipment déja possédé!",
+    "msg_better_item_equipped": "Meilleur équipment déja possédé!",
+    "msg_cannot_use_radio": "Impossible d'utiliser la radio en intérieurs!",
     "msg_radio_overused": "Trop d'utilisations! La radio s'est enrayée.",
 
     "gas_waiting": "Le gaz toxique avance dans <time>",
@@ -147,8 +157,9 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "interact_airdrop_crate_locked": "Ouvrir l'Airdrop",
     "interact_control_panel": "Activer le panneau de contrôle",
     "interact_headquarters_security_desk": "Activer le panneau de contrôle",
-    "interact_generator": "Activer le Générateur",
+    "interact_generator": "Faire tourner le Générateur",
     "interact_button": "Appuyer sur le bouton",
+    "interact_speaker": "Allumer l'enceinte",
 
     "loading_spritesheets": "Chargement des feuilles de sprites <progress>",
     "loading_connecting": "Connexion",
@@ -176,6 +187,7 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "bindings_+attack": "Utiliser l'arme",
     "bindings_drop": "Jeter l'arme équipée",
     "bindings_reload": "Recharger",
+    "bindings_explode_c4": "Faire exploser les C4",
     "bindings_cycle_scopes -1": "Viseur précédent",
     "bindings_cycle_scopes 1": "Viseur suivant",
     "bindings_use_consumable gauze": "Utiliser des bandages",
@@ -235,6 +247,12 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "kf_message": "<player> <finally> <event> <victim> <with> <weapon>",
     // ------------------------------------------------------------------
 
+    // Kill Leader stuff
+    "kf_kl_promotion": "<player> est devenu le Meilleur Tueur!",
+    "kf_kl_killed": "<player> a tué le Meilleur Tueur",
+    "kf_kl_dead": "Le Meilleur Tueur est mort!",
+    "kf_kl_suicide": "Le Meilleur Tueur s'est suicidé!",
+
     "tt_restores": "<item> : recouvre <amount> <type>",
     "tt_reduces": "<item> : atténue <percent>% des dégâts",
 
@@ -246,6 +264,7 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "create_team": "Créer son équipe",
     "create_team_autofill": "Remplissage auto",
     "create_team_lock": "Verrouiller l'équipe",
+    "create_team_ready": "Prêt",
     "create_team_waiting": "En attente...",
     "create_team_play": "Commencer une partie",
 
@@ -299,6 +318,8 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "seax": "Scramasaxe",
     "crowbar": "Pied de Biche",
     "sickle": "Serpe",
+    "falchion": "Fauchon",
+    "fire_hatchet": "Pulaski",
 
     "mosin_nagant": "Mosin-Nagant",
     "radio": "Radio",
@@ -306,7 +327,7 @@ export const FRENCH_TRANSLATIONS: TranslationMap = {
     "hp18": "HP-18",
     "acr": "ACR",
     "saf200": "SAF-200",
-    "death_ray": "Super Laser",
+    "deathray": "Super Laser",
     "usas12": "USAS-12",
     "firework_launcher": "Lance-Confetti",
     "destroyer_of_worlds": "Supernova",
