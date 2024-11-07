@@ -4,7 +4,7 @@ import { Guns, Melees, Throwables } from "@common/definitions";
 import { readdir, writeFile } from "fs/promises";
 
 (async () => {
-  const languageFiles = await readdir("../languages/");
+  const languageFiles = (await readdir("../languages/")).filter(file => file.endsWith(".ts"));
   let reportContents = `# Translation File Report
 
 File generated on ${new Date(Date.now()).toUTCString()}

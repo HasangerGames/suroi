@@ -4,7 +4,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "validate": "cd src/ && ts-node validateTranslations.ts",
+    "validate": "cd src/ && ts-node validate.ts",
     "build": "cd src/ && ts-node processTranslations.ts"
   },
   "keywords": [],
