@@ -2,6 +2,7 @@
   "name": "English"
   "flag": "🇬🇧"
   "mandatory": true // WARN: This should only be for English, as it should always load in the client
+  "no_resize": true
   "msg_rotate": "For a better experience, please rotate your device to landscape."
   "msg_loading": "Connecting"
   "msg_err_joining": "Error joining game."

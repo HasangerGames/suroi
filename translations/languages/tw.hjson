@@ -1,6 +1,7 @@
 {
   "name": "中文（繁體）"
   "flag": "🇹🇼"
+  "no_space": true
   "msg_rotate": "請將設備旋轉至橫向來獲取更好的遊戲體驗。"
   "msg_loading": "連接中"
   "msg_err_joining": "加入遊戲時出錯。"
