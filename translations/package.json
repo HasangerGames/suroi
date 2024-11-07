@@ -4,17 +4,14 @@
   "private": true,
   "main": "index.js",
   "scripts": {
+    "validate": "cd src/ && ts-node validateTranslations.ts"
   },
   "keywords": [],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@types/node": "^22.7.5",
-    "typescript": "^5.6.3"
-  },
-  "dependencies": {
-    "@damienvesper/bit-buffer": "^1.0.1",
-    "nanotimer": "^0.3.15",
+    "@types/node": "^22.8.7",
     "ts-node": "^10.9.2",
-    "ws": "^8.18.0"
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.6.3"
   }
 }
