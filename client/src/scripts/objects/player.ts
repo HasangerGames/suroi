@@ -27,7 +27,7 @@ import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { COLORS, DIFF_LAYER_HITBOX_OPACITY, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { BULLET_WHIZ_SCALE, COLORS, DIFF_LAYER_HITBOX_OPACITY, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
@@ -141,6 +141,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     private _hitbox = new CircleHitbox(GameConstants.player.radius);
     get hitbox(): CircleHitbox { return this._hitbox; }
+
+    private readonly _bulletWhizHitbox = new CircleHitbox(GameConstants.player.radius * BULLET_WHIZ_SCALE);
+    get bulletWhizHitbox(): CircleHitbox { return this._bulletWhizHitbox; }
 
     floorType: FloorNames = FloorNames.Grass;
 
@@ -369,6 +372,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         const oldPosition = Vec.clone(this.position);
         this.position = data.position;
         this._hitbox.position = this.position;
+        this._bulletWhizHitbox.position = this.position;
 
         this.rotation = data.rotation;
 

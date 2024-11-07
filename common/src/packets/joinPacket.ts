@@ -40,7 +40,7 @@ export const JoinPacket = createPacket("JoinPacket")<JoinPacketCreation, JoinPac
             name: stream.readPlayerName().replaceAll(/<[^>]+>/g, "").trim(), // Regex strips out HTML
             isMobile: stream.readBoolean(),
 
-            skin: Loots.readFromStream(stream),
+            skin: Loots.readFromStream(stream, true),
             badge: Badges.readOptional(stream),
 
             emotes: Array.from({ length: 6 }, () => Emotes.readOptional(stream))

@@ -510,11 +510,13 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
         );
     }
 
-    readFromStream<Specific extends Def = Def>(stream: BitStream): Specific {
+    readFromStream<Specific extends Def = Def>(stream: BitStream, errorOnInvalidID?: boolean): Specific {
         const id = stream.readBits(this.bitCount);
         const max = this.definitions.length - 1;
         if (id > max) {
-            console.warn(`ID out of range: ${id} (max: ${max})`);
+            const msg = `ID out of range: ${id} (max: ${max})`;
+            if (errorOnInvalidID) throw new RangeError(msg);
+            else console.warn(msg);
         }
 
         return this.definitions[id] as Specific;

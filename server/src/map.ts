@@ -25,7 +25,7 @@ export class GameMap {
     readonly game: Game;
 
     private readonly mapDef: MapDefinition;
-    private readonly quadBuildings: { [key in 1 | 2 | 3 | 4]: string[] } = { 1: [], 2: [], 3: [], 4: [] };
+    private readonly quadBuildings: Record<1 | 2 | 3 | 4, string[]> = { 1: [], 2: [], 3: [], 4: [] };
     private readonly quadMajorBuildings: Array<1 | 2 | 3 | 4> = [];
     private readonly majorBuildingPositions: Vector[] = [];
 
@@ -378,10 +378,10 @@ export class GameMap {
     }
 
     private _generateBuildings(definition: ReifiableDef<BuildingDefinition>, count: number): void {
-        definition = Buildings.reify(definition);
+        const buildingDef = Buildings.reify(definition);
 
-        if (!definition.bridgeSpawnOptions) {
-            const { idString, rotationMode } = definition;
+        if (!buildingDef.bridgeHitbox) {
+            const { idString, rotationMode } = buildingDef;
             const { majorBuildings = [], quadBuildingLimit = {} } = this.mapDef;
 
             let attempts = 0;
@@ -393,9 +393,9 @@ export class GameMap {
                 while (!validPositionFound && attempts < 100) {
                     orientation = GameMap.getRandomBuildingOrientation(rotationMode);
 
-                    position = this.getRandomPosition(definition.spawnHitbox, {
+                    position = this.getRandomPosition(buildingDef.spawnHitbox, {
                         orientation,
-                        spawnMode: definition.spawnMode,
+                        spawnMode: buildingDef.spawnMode,
                         orientationConsumer: (newOrientation: Orientation) => {
                             orientation = newOrientation;
                         },
@@ -438,19 +438,11 @@ export class GameMap {
                     Logger.warn(`Failed to place building ${idString} after ${attempts} attempts`);
                 }
 
-                if (position) this.generateBuilding(definition, position, orientation);
+                if (position) this.generateBuilding(buildingDef, position, orientation);
 
                 attempts = 0; // Reset attempts counter for the next building
             }
         } else {
-            const { bridgeSpawnOptions } = definition;
-            if (!bridgeSpawnOptions) {
-                Logger.warn("Attempting to spawn non-bridge building as a bridge");
-                return;
-            }
-
-            const { minRiverWidth, maxRiverWidth, landHitbox } = bridgeSpawnOptions;
-
             let spawnedCount = 0;
 
             const generateBridge = (river: River) => (start: number, end: number): void => {
@@ -475,18 +467,10 @@ export class GameMap {
 
                 if (
                     this.occupiedBridgePositions.some(pos => Vec.equals(pos, position))
-                    || !this.isInRiver(landHitbox.transform(position, 1, bestOrientation), position)
+                    || this.isInRiver(buildingDef.bridgeHitbox!.transform(position, 1, bestOrientation))
                 ) return;
 
-                // checks if the distance between this position and the new bridge's position is less than
-                // bridgeSpawnOptions.minRiverWidth HOPEFULLY fixes the spawn problems
-                if (
-                    this.occupiedBridgePositions.some(
-                        pos => (pos.x - position.x) ** 2 + (pos.y - position.y) ** 2 < bridgeSpawnOptions.minRiverWidth ** 2
-                    )
-                ) return;
-
-                const spawnHitbox = definition.spawnHitbox.transform(position, 1, bestOrientation);
+                const spawnHitbox = buildingDef.spawnHitbox.transform(position, 1, bestOrientation);
 
                 // checks if the bridge hitbox collides with another object and if so does not spawn it
                 for (const object of this.game.grid.intersectsHitbox(spawnHitbox)) {
@@ -497,16 +481,16 @@ export class GameMap {
                 }
 
                 this.occupiedBridgePositions.push(position);
-                this.generateBuilding(definition, position, bestOrientation);
+                this.generateBuilding(buildingDef, position, bestOrientation);
                 spawnedCount++;
             };
 
             this.terrain.rivers
-                .filter(({ width, isTrail }) => !isTrail && width >= minRiverWidth && width <= maxRiverWidth)
+                .filter(({ isTrail }) => !isTrail)
                 .map(generateBridge)
                 .forEach(generator => {
-                    generator(0.2, 0.4);
-                    generator(0.6, 0.8);
+                    generator(0.1, 0.4);
+                    generator(0.6, 0.9);
                 });
         }
     }
@@ -981,7 +965,7 @@ export class GameMap {
                 }
                 case MapObjectSpawnMode.RiverBank:
                 case MapObjectSpawnMode.Trail: {
-                    if (this.isInRiver(hitbox, position)) {
+                    if (this.isInRiver(hitbox)) {
                         collided = true;
                         break;
                     }
@@ -993,12 +977,9 @@ export class GameMap {
         return attempts < maxAttempts ? position : undefined;
     }
 
-    private isInRiver(hitbox: Hitbox, position: Vector): boolean {
+    private isInRiver(hitbox: Hitbox): boolean {
         for (const river of this.terrain.getRiversInHitbox(hitbox)) {
-            if (
-                river.waterHitbox?.isPointInside(position)
-                || river.waterHitbox?.collidesWith(hitbox)
-            ) {
+            if (river.waterHitbox?.collidesWith(hitbox)) {
                 return true;
             }
         }

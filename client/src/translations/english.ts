@@ -30,6 +30,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "msg_locked_tooltip": "The game switches between modes every 24 hours, as there aren't enough players for all of them.",
     "rules_and_tutorial": "Rules & Tutorial",
     "news": "News",
+    "donate": "Donate",
     "loadout": "Loadout",
     "settings": "Settings",
     "fullscreen": "Fullscreen",
