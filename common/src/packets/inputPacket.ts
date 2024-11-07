@@ -187,16 +187,16 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
                     slot = stream.readBits(2);
                     break;
                 case InputActions.DropItem:
-                    item = Loots.readFromStream<HealingItemDefinition | ScopeDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition | PerkDefinition>(stream);
+                    item = Loots.readFromStream<HealingItemDefinition | ScopeDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition | PerkDefinition>(stream, true);
                     break;
                 case InputActions.UseItem:
-                    item = Loots.readFromStream<HealingItemDefinition | ScopeDefinition>(stream);
+                    item = Loots.readFromStream<HealingItemDefinition | ScopeDefinition>(stream, true);
                     break;
                 case InputActions.Emote:
-                    emote = Emotes.readFromStream(stream);
+                    emote = Emotes.readFromStream(stream, true);
                     break;
                 case InputActions.MapPing:
-                    ping = MapPings.readFromStream(stream);
+                    ping = MapPings.readFromStream(stream, true);
                     position = stream.readPosition();
                     break;
             }
