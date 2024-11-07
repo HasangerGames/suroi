@@ -158,9 +158,8 @@ export class Game {
     }
 
     private static _instantiated = false;
-    constructor() {}
 
-    static async init() {
+    static async init(): Promise<Game> {
         if (Game._instantiated) {
             throw new Error("Class 'Game' has already been instantiated.");
         }
@@ -273,7 +272,9 @@ export class Game {
         this._socket.binaryType = "arraybuffer";
 
         this._socket.onopen = (): void => {
-            this.music.stop();
+            if (this.music) {
+                this.music.stop();
+            }
             this.gameStarted = true;
             this.gameOver = false;
             this.spectating = false;
@@ -530,8 +531,9 @@ export class Game {
             this.soundManager.stopAll();
 
             ui.splashUi.fadeIn(400, () => {
-                void this.music.play();
-
+                if (this.music) {
+                    void this.music.play();
+                }
                 ui.teamContainer.html("");
                 ui.actionContainer.hide();
                 ui.gameMenu.hide();

@@ -983,7 +983,7 @@ export function resolveStairInteraction(
 
 type NameGenerator<T extends string> = `${T}In` | `${T}Out` | `${T}InOut`;
 
-function generatePolynomialEasingTriplet<T extends string>(degree: number, type: T): { readonly [K in NameGenerator<T>]: (t: number) => number } {
+function generatePolynomialEasingTriplet<T extends string>(degree: number, type: T): Readonly<Record<NameGenerator<T>, (t: number) => number>> {
     const coeffCache = 2 ** (degree - 1);
 
     return Object.freeze({
@@ -992,7 +992,7 @@ function generatePolynomialEasingTriplet<T extends string>(degree: number, type:
         [`${type}InOut`]: (t: number) => t < 0.5
             ? coeffCache * t ** degree
             : 1 - (coeffCache * (1 - t) ** degree)
-    } as { [K in NameGenerator<T>]: (t: number) => number });
+    } as Record<NameGenerator<T>, (t: number) => number>);
 }
 
 export type EasingFunction = (t: number) => number;

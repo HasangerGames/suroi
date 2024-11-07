@@ -25,7 +25,7 @@ export class GameMap {
     readonly game: Game;
 
     private readonly mapDef: MapDefinition;
-    private readonly quadBuildings: { [key in 1 | 2 | 3 | 4]: string[] } = { 1: [], 2: [], 3: [], 4: [] };
+    private readonly quadBuildings: Record<1 | 2 | 3 | 4, string[]> = { 1: [], 2: [], 3: [], 4: [] };
     private readonly quadMajorBuildings: Array<1 | 2 | 3 | 4> = [];
     private readonly majorBuildingPositions: Vector[] = [];
 
@@ -467,6 +467,7 @@ export class GameMap {
 
                 if (
                     this.occupiedBridgePositions.some(pos => Vec.equals(pos, position))
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     || this.isInRiver(buildingDef.bridgeHitbox!.transform(position, 1, bestOrientation))
                 ) return;
 
