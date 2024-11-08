@@ -57,6 +57,7 @@ import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
 import { randomVector, randomFloat } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
+import type { TranslationKeys } from "../typings/translations";
 
 /* eslint-disable @stylistic/indent */
 
@@ -145,7 +146,7 @@ export class Game {
     readonly gasRender = new GasRender(PIXI_SCALE);
     readonly gas = new Gas(this);
 
-    music?: Sound;
+    music!: Sound;
 
     readonly tweens = new Set<Tween<unknown>>();
 
@@ -450,7 +451,7 @@ export class Game {
 
                 if (message !== undefined) {
                     const inventoryMsg = this.uiManager.ui.inventoryMsg;
-                    inventoryMsg.text(getTranslatedString(inventoryMessageMap[message])).fadeIn(250);
+                    inventoryMsg.text(getTranslatedString(inventoryMessageMap[message] as TranslationKeys)).fadeIn(250);
                     if (inventoryMessageMap[message] === inventoryMessageMap[4]) this.soundManager.play("metal_light_destroyed");
                     clearTimeout(this.inventoryMsgTimeout);
                     this.inventoryMsgTimeout = window.setTimeout(() => inventoryMsg.fadeOut(250), 2500);
@@ -996,15 +997,15 @@ export class Game {
                                             : getTranslatedString("action_close_door");
                                         break;
                                     case ObstacleSpecialRoles.Activatable:
-                                        text = getTranslatedString(`interact_${object.definition.idString}`);
+                                        text = getTranslatedString(`interact_${object.definition.idString}` as TranslationKeys);
                                         break;
                                 }
                                 break;
                             }
                             case object?.isLoot: {
                                 text = `${object.definition.idString.startsWith("dual_")
-                                    ? getTranslatedString("dual_template", { gun: getTranslatedString(object.definition.idString.slice("dual_".length)) })
-                                    : getTranslatedString(object.definition.idString)}${object.count > 1 ? ` (${object.count})` : ""}`;
+                                    ? getTranslatedString("dual_template", { gun: getTranslatedString(object.definition.idString.slice("dual_".length) as TranslationKeys) })
+                                    : getTranslatedString(object.definition.idString as TranslationKeys)}${object.count > 1 ? ` (${object.count})` : ""}`;
                                 break;
                             }
                             case object?.isPlayer: {

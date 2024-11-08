@@ -33,6 +33,7 @@ import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
+import type { TranslationKeys } from "../../typings/translations";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -758,7 +759,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this.healingParticlesEmitter.active = true;
                     if (this.isActivePlayer) {
                         uiManager.animateAction(
-                            getTranslatedString(`action_${itemDef.idString}_use`, { item: getTranslatedString(itemDef.idString) }),
+                            getTranslatedString(`action_${itemDef.idString}_use` as TranslationKeys, { item: getTranslatedString(itemDef.idString as TranslationKeys) }),
                             itemDef.useTime / this.game.uiManager.perks.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
                         );
                     }
@@ -1197,11 +1198,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             container.children(".item-name").text(`Lvl. ${def.level}`);
             container.children(".item-image").attr("src", `./img/game/shared/loot/${def.idString}.svg`);
 
-            let itemTooltip = getTranslatedString(def.idString);
+            let itemTooltip = getTranslatedString(def.idString as TranslationKeys);
             if (def.itemType === ItemType.Armor) {
                 // itemTooltip += `<br>Reduces ${def.damageReduction * 100}% damage`;
                 itemTooltip = getTranslatedString("tt_reduces", {
-                    item: `${getTranslatedString(def.idString)}<br>`,
+                    item: `${getTranslatedString(def.idString as TranslationKeys)}<br>`,
                     percent: (def.damageReduction * 100).toString()
                 });
             }

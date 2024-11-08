@@ -15,6 +15,7 @@ import { defaultBinds } from "../utils/console/defaultClientCVars";
 import { type GameSettings, type PossibleError } from "../utils/console/gameConsole";
 import { FORCE_MOBILE, PIXI_SCALE } from "../utils/constants";
 import { html } from "../utils/misc";
+import type { TranslationKeys } from "../../typings/translations";
 
 export class InputManager {
     readonly binds = new InputMapper();
@@ -595,7 +596,7 @@ export class InputManager {
 
             $("<div/>", {
                 class: "setting-title",
-                text: getTranslatedString(`bindings_${action}`)
+                text: getTranslatedString(`bindings_${action}` as TranslationKeys)
             }).appendTo(bindContainer);
 
             const actions = this.binds.getInputsBoundToAction(action);

@@ -25,6 +25,7 @@ import { PIXI_SCALE, UI_DEBUG_MODE, EMOTE_SLOTS, MODE } from "./utils/constants"
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
 import { PerkIds, Perks } from "../../../common/src/definitions/perks";
+import type { TranslationKeys } from "../typings/translations";
 
 /*
     eslint-disable
@@ -212,7 +213,7 @@ export async function setUpUI(game: Game): Promise<void> {
         serverList.append(
             regionUICache[regionID] = $<HTMLLIElement>(`
                 <li class="server-list-item" data-region="${regionID}">
-                    <span class="server-name">${getTranslatedString(`region_${regionID}`)}</span>
+                    <span class="server-name">${getTranslatedString(`region_${regionID}` as TranslationKeys)}</span>
                     <span style="margin-left: auto">
                       <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
                       <span class="server-player-count">-</span>
@@ -273,10 +274,10 @@ export async function setUpUI(game: Game): Promise<void> {
             game.console.setBuiltInCVar("cv_region", "");
         }
 
-        if (getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}`) === "region_") {
+        if (getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}` as TranslationKeys) === "region_") {
             serverName.text(selectedRegion.name); // this for now until we find a way to selectedRegion.id
         } else {
-            serverName.text(getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}`));
+            serverName.text(getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}` as TranslationKeys));
         }
         playerCount.text(selectedRegion.playerCount ?? "-");
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
@@ -925,7 +926,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     <div class="skin-left-fist" style="background-image: url('./img/game/shared/skins/${idString}_fist.svg')"></div>
                     <div class="skin-right-fist" style="background-image: url('./img/game/shared/skins/${idString}_fist.svg')"></div>
                 </div>
-                <span class="skin-name">${getTranslatedString(idString)}</span>
+                <span class="skin-name">${getTranslatedString(idString as TranslationKeys)}</span>
             </div>`
         );
 
@@ -981,7 +982,7 @@ export async function setUpUI(game: Game): Promise<void> {
             if (emote.isTeamEmote || emote.isWeaponEmote) continue;
 
             if (emote.category as number !== lastCategory) {
-                const categoryHeader = $<HTMLDivElement>(`<div class="emote-list-header">${getTranslatedString(`emotes_category_${EmoteCategory[emote.category]}`)}</div>`);
+                const categoryHeader = $<HTMLDivElement>(`<div class="emote-list-header">${getTranslatedString(`emotes_category_${EmoteCategory[emote.category]}` as TranslationKeys)}</div>`);
                 emoteList.append(categoryHeader);
                 lastCategory = emote.category;
             }
@@ -991,7 +992,7 @@ export async function setUpUI(game: Game): Promise<void> {
             const emoteItem = $<HTMLDivElement>(
                 `<div id="emote-${emote.idString}" class="emotes-list-item-container">
                     <div class="emotes-list-item" style="background-image: url(${emoteIdString})"></div>
-                    <span class="emote-name">${getTranslatedString(`emote_${emote.idString}`)}</span>
+                    <span class="emote-name">${getTranslatedString(`emote_${emote.idString}` as TranslationKeys)}</span>
                 </div>`
             );
 
@@ -1248,7 +1249,7 @@ export async function setUpUI(game: Game): Promise<void> {
                         <div class="badges-list-item">\
                             <div style="background-image: url('./img/game/shared/${location}/${idString}.svg')"></div>\
                         </div>\
-                        <span class="badge-name">${getTranslatedString(`badge_${idString}`)}</span>\
+                        <span class="badge-name">${getTranslatedString(`badge_${idString}` as TranslationKeys)}</span>\
                     </div>`
                 );
 
@@ -1847,7 +1848,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     <span class="item-count" id="${item.idString}-count">0</span>
                     <div class="item-tooltip">
                         ${getTranslatedString("tt_restores", {
-                            item: `${getTranslatedString(item.idString)}<br>`,
+                            item: `${getTranslatedString(item.idString as TranslationKeys)}<br>`,
                             amount: item.restoreAmount.toString(),
                             type: item.healType === HealType.Adrenaline
                                 ? getTranslatedString("adrenaline")
