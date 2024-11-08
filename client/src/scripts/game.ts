@@ -216,7 +216,7 @@ export class Game {
                 }));
             });
 
-            pixi.ticker.add(game.render.bind(this));
+            pixi.ticker.add(game.render.bind(game));
             pixi.stage.addChild(
                 game.camera.container,
                 game.map.container,
