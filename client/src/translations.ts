@@ -50,20 +50,26 @@ export async function initTranslation(game: Game): Promise<void> {
 
     selectedLanguage = game.console.getBuiltInCVar("cv_language");
 
-    const loadedLanguages = await Promise.all(Object.entries(TRANSLATIONS_MANIFEST as TranslationsManifest)
-        .filter(([language, content]) => content.mandatory || language === selectedLanguage || language === defaultLanguage)
-        .map(async([language, _]) => [language, await (await fetch(`/translations/${language}.json`)).json()] as [string, TranslationMap]));
+    const loadRightNow = (language: string, content: TranslationManifest): boolean => content.mandatory || language === selectedLanguage || language === defaultLanguage;
 
-    for (const [language, content] of loadedLanguages) {
+    for (
+        const [language, content] of await Promise.all(
+            Object.entries(TRANSLATIONS_MANIFEST as TranslationsManifest)
+                .map(
+                    async([language, content]): Promise<[string, TranslationMap]> => [
+                        language,
+                        loadRightNow(language, content)
+                            ? await (await fetch(`/translations/${language}.json`)).json()
+                            : content
+                    ]
+                )
+        )
+    ) {
         TRANSLATIONS.translations[language] = {
             ...(TRANSLATIONS_MANIFEST as TranslationsManifest)[language],
             ...content
         };
     }
-
-    Object.entries(TRANSLATIONS_MANIFEST as TranslationsManifest)
-        .filter(([language, content]) => !(content.mandatory || language === selectedLanguage || language === defaultLanguage))
-        .forEach(([language, content]) => TRANSLATIONS.translations[language] = content);
 
     translateCurrentDOM();
 }
@@ -90,14 +96,11 @@ export function getTranslatedString(key: TranslationKeys, replacements?: Record<
         foundTranslation = TRANSLATIONS.translations[selectedLanguage]?.[key]
         ?? TRANSLATIONS.translations[defaultLanguage]?.[key]
         ?? Loots.reify(key).name;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (_) {
-        foundTranslation = "no translation found";
+    } catch {
+        return key;
     }
 
-    if (foundTranslation === "no translation found") return key;
-
-    if (!replacements) {
+    if (replacements === undefined) {
         return foundTranslation;
     }
 
