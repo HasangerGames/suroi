@@ -792,7 +792,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
-                hitbox: new CircleHitbox(5.5),
+                hitbox: new CircleHitbox(3.5),
                 variations: 6
             }]),
 
@@ -806,7 +806,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
-                hitbox: new CircleHitbox(5.5),
+                hitbox: new CircleHitbox(2.5),
                 variations: 2,
                 allowFlyOver: FlyoverPref.Never,
                 zIndex: ZIndexes.ObstaclesLayer4
@@ -835,7 +835,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1.1,
                     destroy: 0.75
                 },
-                hitbox: new CircleHitbox(5.5),
+                hitbox: new CircleHitbox(2.5),
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
                 allowFlyOver: FlyoverPref.Never
@@ -849,7 +849,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1.1,
                     destroy: 0.75
                 },
-                hitbox: new CircleHitbox(5.5),
+                hitbox: new CircleHitbox(3.5),
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
                 variations: 2,
@@ -864,7 +864,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1.1,
                     destroy: 0.75
                 },
-                hitbox: new CircleHitbox(10),
+                hitbox: new CircleHitbox(10), // unchanged for now since still uses old textures
                 spawnHitbox: new CircleHitbox(15),
                 rotationMode: RotationMode.Full,
                 allowFlyOver: FlyoverPref.Never,
