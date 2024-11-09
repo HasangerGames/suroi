@@ -1,7 +1,7 @@
 import { DEFAULT_INVENTORY, GameConstants, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType } from "@common/constants";
 import { Ammos } from "@common/definitions/ammos";
 import { type BadgeDefinition } from "@common/definitions/badges";
-import { emoteIdStrings, type EmoteDefinition } from "@common/definitions/emotes";
+import { type EmoteDefinition } from "@common/definitions/emotes";
 import { type GunDefinition } from "@common/definitions/guns";
 import { Loots } from "@common/definitions/loots";
 import { MapPings, type PlayerPing } from "@common/definitions/mapPings";
@@ -409,7 +409,7 @@ export class UIManager {
         const playerName = this.getPlayerName(packet.playerID);
         const playerBadge = this.getPlayerBadge(packet.playerID);
         const playerBadgeText = playerBadge
-            ? html`<img class="badge-icon" src="./img/game/shared/${emoteIdStrings.includes(playerBadge.idString) ? "emotes" : "badges"}/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
+            ? html`<img class="badge-icon" src="./img/game/shared/badges/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
             : "";
 
         gameOverText.html(
@@ -500,7 +500,7 @@ export class UIManager {
 
             if (spectating) {
                 const badge = this.getPlayerBadge(id.id);
-                const badgeText = badge ? html`<img class="badge-icon" src="./img/game/shared/${emoteIdStrings.includes(badge.idString) ? "emotes" : "badges"}/${badge.idString}.svg" alt="${badge.name} badge">` : "";
+                const badgeText = badge ? html`<img class="badge-icon" src="./img/game/shared/badges/${badge.idString}.svg" alt="${badge.name} badge">` : "";
 
                 this.ui.gameOverOverlay.fadeOut();
                 this.ui.spectatingMsgPlayer.html(this.getPlayerName(id.id) + badgeText);
@@ -1224,7 +1224,7 @@ export class UIManager {
             return {
                 name: hasId ? this.getPlayerName(id) : "",
                 badgeText: badge
-                    ? html`<img class="badge-icon" src="./img/game/shared/${emoteIdStrings.includes(badge.idString) ? "emotes" : "badges"}/${badge.idString}.svg" alt="${badge.name} badge">`
+                    ? html`<img class="badge-icon" src="./img/game/shared/badges/${badge.idString}.svg" alt="${badge.name} badge">`
                     : ""
             };
         };
@@ -1874,7 +1874,7 @@ class PlayerHealthUI {
             const teammate = this.game.playerNames.get(id);
 
             if (teammate?.badge) {
-                const src = `./img/game/shared/${emoteIdStrings.includes(teammate.badge.idString) ? "emotes" : "badges"}/${teammate.badge.idString}.svg`;
+                const src = `./img/game/shared/badges/${teammate.badge.idString}.svg`;
 
                 if (this.badgeImage.attr("src") !== src) {
                     this.badgeImage

@@ -34,6 +34,7 @@ import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
+import type { AllowedEmoteSources } from "@common/packets/inputPacket";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -1275,7 +1276,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             && this.teamID === player.teamID;
     }
 
-    sendEmote(type: EmoteDefinition): void {
+    showEmote(type: AllowedEmoteSources): void {
         this.anims.emote?.kill();
         this.anims.emoteHide?.kill();
         this._emoteHideTimeout?.kill();
@@ -1288,7 +1289,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         );
         this.emote.image.setFrame(type.idString);
 
-        const isWeaponEmote = type.isWeaponEmote;
+        const isWeaponEmote = "itemType" in type;
 
         const container = this.emote.container;
         container.visible = true;

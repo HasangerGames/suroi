@@ -20,6 +20,7 @@ export interface SkinDefinition extends ItemDefinition {
 }
 
 export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
+    "Skins",
     {
         itemType: ItemType.Skin,
         noDrop: false,
@@ -60,7 +61,7 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ["Desert Camo",     0xdcc993],
                 ["Arctic Camo",     0xececec],
                 ["Bloodlust",       0x565656],
-                ["Tomato",          0xff0000],
+                ["Red Tomato",      0xff0000],
                 ["Greenhorn",       0x00ff00],
                 ["Blue Blood",      0x0000ff],
                 ["Silver Lining",   0xe1e1e1],
@@ -104,7 +105,7 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ["Coal",                  0x424242],
                 ["Henry's Little Helper", 0x059100],
                 ["Candy Cane",            0xf4f4f4],
-                ["Christmas Tree",        0x23883f],
+                ["Holiday Tree",          0x23883f],
                 ["Gingerbread",           0xb55c12],
                 ["Verified",              0x4790ff],
                 ["no kil pls",            0x6b6b6b],

@@ -792,7 +792,7 @@ export class Game {
             if (this.console.getBuiltInCVar("cv_hide_emotes")) break;
             const player = this.objects.get(emote.playerID);
             if (player?.isPlayer) {
-                player.sendEmote(emote.definition);
+                player.showEmote(emote.definition);
             } else {
                 console.warn(`Tried to emote on behalf of ${player === undefined ? "a non-existant player" : `a/an ${ObjectCategory[player.type]}`}`);
                 continue;

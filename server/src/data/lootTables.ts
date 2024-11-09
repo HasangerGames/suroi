@@ -822,7 +822,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "candy_cane", weight: 1 }
         ],
         special_winter_skins: [
-            { item: "christmas_tree", weight: 1 },
+            { item: "holiday_tree", weight: 1 },
             { item: "gingerbread", weight: 1 }
         ],
         viking_chest_guns: [

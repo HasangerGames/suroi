@@ -5,7 +5,7 @@ export interface BadgeDefinition extends ObjectDefinition {
 }
 
 const badge = createTemplate<BadgeDefinition>()((name: string, roles: string[] = []) => ({
-    idString: name.toLowerCase().replace(/ /g, "_"),
+    idString: `bdg_${name.toLowerCase().replace(/ /g, "_")}`,
     name,
     roles
 }));

@@ -443,11 +443,11 @@ export interface EventDataMap {
     }
     readonly player_will_emote: {
         readonly player: Player
-        readonly emote: EmoteDefinition
+        readonly emote: AllowedEmoteSources
     }
     readonly player_did_emote: {
         readonly player: Player
-        readonly emote: EmoteDefinition
+        readonly emote: AllowedEmoteSources
     }
     readonly player_will_map_ping: {
         readonly player: Player

@@ -8,6 +8,7 @@ import { sanitizeHTML } from "../misc";
 import { type Command } from "./commands";
 import { defaultBinds, defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
 import { Casters, ConVar, ConsoleVariables, flagBitfieldToInterface } from "./variables";
+import { Badges } from "@common/definitions/badges";
 
 const enum MessageType {
     Log = "log",
@@ -279,6 +280,13 @@ export class GameConsole {
                         }
                     )
                 );
+            }
+
+            // FIXME remove after one or two updates (transition code grace period)
+            const badge = this.variables.get.builtIn("cv_loadout_badge").value;
+            if (!Badges.hasString(badge) && !badge.startsWith("bdg_")) {
+                this.variables.set.builtIn("cv_loadout_badge", `bdg_${badge}`);
+                rewriteToLS = true;
             }
 
             if (config.binds) {

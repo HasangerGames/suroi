@@ -18,7 +18,7 @@ import { SyncedParticles, type SyncedParticleDefinition } from "@common/definiti
 import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
 import { DisconnectPacket } from "@common/packets/disconnectPacket";
 import { GameOverPacket, type GameOverData } from "@common/packets/gameOverPacket";
-import { type NoMobile, type PlayerInputData } from "@common/packets/inputPacket";
+import { type AllowedEmoteSources, type NoMobile, type PlayerInputData } from "@common/packets/inputPacket";
 import { createKillfeedMessage, KillFeedPacket, type ForEventType } from "@common/packets/killFeedPacket";
 import { type InputPacket } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
@@ -698,21 +698,25 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.spawnPosition = position;
     }
 
-    sendEmote(emote?: EmoteDefinition): void {
+    sendEmote(source?: AllowedEmoteSources): void {
         if (
-            emote
+            source !== undefined
             && !this.game.pluginManager.emit("player_will_emote", {
                 player: this,
-                emote
+                emote: source
             })
         ) {
-            if (emote.isTeamEmote && !this.game.teamMode) return;
+            if (
+                ("itemType" in source)
+                && (source.itemType === ItemType.Ammo || source.itemType === ItemType.Healing)
+                && !this.game.teamMode
+            ) return;
 
-            this.game.emotes.push(new Emote(emote, this));
+            this.game.emotes.push(new Emote(source, this));
 
             this.game.pluginManager.emit("player_did_emote", {
                 player: this,
-                emote
+                emote: source
             });
         }
     }
