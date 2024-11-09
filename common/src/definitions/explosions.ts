@@ -237,7 +237,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             },
             shrapnelCount: 13,
             ballistics: {
-                damage: 3,
+                damage: 2,
                 obstacleMultiplier: 1.5,
                 speed: 0.06,
                 range: 10,
@@ -267,7 +267,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             },
             shrapnelCount: 13,
             ballistics: {
-                damage: 3,
+                damage: 2,
                 obstacleMultiplier: 1.5,
                 speed: 0.06,
                 range: 10,

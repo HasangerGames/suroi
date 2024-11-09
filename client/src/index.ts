@@ -5,5 +5,5 @@ import { Game } from "./scripts/game";
 import "./scss/pages/client.scss";
 
 void (async() => {
-    new Game();
+    void Game.init();
 })();

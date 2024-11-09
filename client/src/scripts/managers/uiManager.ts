@@ -25,6 +25,7 @@ import { GHILLIE_TINT, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
 import { ClientPerkManager } from "./perkManager";
+import type { TranslationKeys } from "../../typings/translations";
 
 function safeRound(value: number): number {
     if (0 < value && value <= 1) return 1;
@@ -831,8 +832,8 @@ export class UIManager {
                     });
 
                 itemName.text(weapon.definition.idString.startsWith("dual_")
-                    ? getTranslatedString("dual_template", { gun: getTranslatedString(weapon.definition.idString.slice("dual_".length)) })
-                    : getTranslatedString(weapon.definition.idString));
+                    ? getTranslatedString("dual_template", { gun: getTranslatedString(weapon.definition.idString.slice("dual_".length) as TranslationKeys) })
+                    : getTranslatedString(weapon.definition.idString as TranslationKeys));
 
                 const isFists = weapon.definition.idString === "fists";
                 const oldSrc = itemImage.attr("src");
@@ -1277,7 +1278,7 @@ export class UIManager {
                             messageText = messageText.replaceAll("<span>", "<span style=\"display:contents;\">");
                         }
 
-                        const fullyQualifiedName = weaponPresent ? (getTranslatedString(weaponUsed.idString) === weaponUsed.idString ? weaponUsed.name : getTranslatedString(weaponUsed.idString)) : "";
+                        const fullyQualifiedName = weaponPresent ? (getTranslatedString(weaponUsed.idString as TranslationKeys) === weaponUsed.idString ? weaponUsed.name : getTranslatedString(weaponUsed.idString as TranslationKeys)) : "";
 
                         // special case for turkish
                         if (language === "tr") {
@@ -1334,7 +1335,7 @@ export class UIManager {
                                 break;
                             case KillfeedEventType.Suicide:
                                 // Turkish and Estonian special condition ('i shouldn't appear in these messages)
-                                killMessage = getTranslatedString(`kf_message${language === "tr" || language === "et" ? "_grammar" : ""}`, {
+                                killMessage = getTranslatedString(`kf_message${language === "tr" || language === "et" ? "_grammar" : ""}` as TranslationKeys, {
                                     player: victimText,
                                     finally: "",
                                     event: getTranslatedString(`kf_suicide_${severity === KillfeedEventSeverity.Down ? "down" : "kill"}`, { player: "" }),
@@ -1490,7 +1491,7 @@ export class UIManager {
                         if (attackerId === this.game.activePlayerID) {
                             const base = {
                                 victimName: victimText,
-                                weaponUsed: weaponPresent ? getTranslatedString(weaponUsed.idString) === weaponUsed.idString ? weaponUsed.name : getTranslatedString(weaponUsed.idString) : "",
+                                weaponUsed: weaponPresent ? getTranslatedString(weaponUsed.idString as TranslationKeys) === weaponUsed.idString ? weaponUsed.name : getTranslatedString(weaponUsed.idString as TranslationKeys) : "",
                                 type: eventType
                             };
 

@@ -33,6 +33,7 @@ import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
+import type { TranslationKeys } from "../../typings/translations";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -758,7 +759,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this.healingParticlesEmitter.active = true;
                     if (this.isActivePlayer) {
                         uiManager.animateAction(
-                            getTranslatedString(`action_${itemDef.idString}_use`, { item: getTranslatedString(itemDef.idString) }),
+                            getTranslatedString(`action_${itemDef.idString}_use` as TranslationKeys, { item: getTranslatedString(itemDef.idString as TranslationKeys) }),
                             itemDef.useTime / this.game.uiManager.perks.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
                         );
                     }
@@ -1197,11 +1198,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             container.children(".item-name").text(`Lvl. ${def.level}`);
             container.children(".item-image").attr("src", `./img/game/shared/loot/${def.idString}.svg`);
 
-            let itemTooltip = getTranslatedString(def.idString);
+            let itemTooltip = getTranslatedString(def.idString as TranslationKeys);
             if (def.itemType === ItemType.Armor) {
                 // itemTooltip += `<br>Reduces ${def.damageReduction * 100}% damage`;
                 itemTooltip = getTranslatedString("tt_reduces", {
-                    item: `${getTranslatedString(def.idString)}<br>`,
+                    item: `${getTranslatedString(def.idString as TranslationKeys)}<br>`,
                     percent: (def.damageReduction * 100).toString()
                 });
             }
@@ -1329,38 +1330,79 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                 const duration = weaponDef.fists.animationDuration;
 
-                if (!weaponDef.fists.randomFist || !altFist) {
-                    this.anims.leftFist = this.game.addTween({
-                        target: this.images.leftFist,
-                        to: { x: weaponDef.fists.useLeft.x, y: weaponDef.fists.useLeft.y },
-                        duration,
-                        ease: EaseFunctions.sineIn,
-                        yoyo: true
-                    });
-                }
+                if (weaponDef.rotationalAnimation) {
+                    const mysteryYConstant = -25;
 
-                if (altFist) {
-                    this.anims.rightFist = this.game.addTween({
-                        target: this.images.rightFist,
-                        to: { x: weaponDef.fists.useRight.x, y: weaponDef.fists.useRight.y },
-                        duration,
-                        ease: EaseFunctions.sineIn,
-                        yoyo: true
-                    });
-                }
+                    // i love math
+                    if (weaponDef.image?.useAngle) {
+                        this.anims.rightFist = this.game.addTween({
+                            target: this.images.rightFist,
+                            to: {
+                                y: mysteryYConstant,
+                                angle: -weaponDef.image.useAngle
+                            },
+                            duration,
+                            ease: EaseFunctions.sineIn,
+                            yoyo: true
+                        });
 
-                if (weaponDef.image !== undefined) {
-                    this.anims.weapon = this.game.addTween({
-                        target: this.images.weapon,
-                        to: {
-                            x: weaponDef.image.usePosition.x,
-                            y: weaponDef.image.usePosition.y,
-                            angle: weaponDef.image.useAngle
-                        },
-                        duration,
-                        ease: EaseFunctions.sineIn,
-                        yoyo: true
-                    });
+                        this.anims.leftFist = this.game.addTween({
+                            target: this.images.leftFist,
+                            to: {
+                                x: 0,
+                                y: mysteryYConstant * 2,
+                                angle: -weaponDef.image.useAngle
+                            },
+                            duration,
+                            ease: EaseFunctions.sineIn,
+                            yoyo: true
+                        });
+
+                        this.anims.weapon = this.game.addTween({
+                            target: this.images.weapon,
+                            to: {
+                                y: mysteryYConstant,
+                                angle: weaponDef.image.useAngle
+                            },
+                            duration,
+                            ease: EaseFunctions.sineIn,
+                            yoyo: true
+                        });
+                    }
+                } else {
+                    if (!weaponDef.fists.randomFist || !altFist) {
+                        this.anims.leftFist = this.game.addTween({
+                            target: this.images.leftFist,
+                            to: { x: weaponDef.fists.useLeft.x, y: weaponDef.fists.useLeft.y },
+                            duration,
+                            ease: EaseFunctions.sineIn,
+                            yoyo: true
+                        });
+                    }
+
+                    if (altFist) {
+                        this.anims.rightFist = this.game.addTween({
+                            target: this.images.rightFist,
+                            to: { x: weaponDef.fists.useRight.x, y: weaponDef.fists.useRight.y },
+                            duration,
+                            ease: EaseFunctions.sineIn,
+                            yoyo: true
+                        });
+                    }
+
+                    if (weaponDef.image !== undefined) {
+                        this.anims.weapon = this.game.addTween({
+                            target: this.images.weapon,
+                            to: {
+                                x: weaponDef.image.usePosition.x,
+                                y: weaponDef.image.usePosition.y,
+                                angle: weaponDef.image.useAngle
+                            },
+                            duration,
+                            ease: EaseFunctions.sineIn,
+                            yoyo: true
+                        });
+                    }
                 }
 
                 this.playSound(

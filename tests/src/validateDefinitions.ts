@@ -288,7 +288,7 @@ logger.indent("Validating map definitions", () => {
                             const def = Buildings.fromStringSafe(bridge);
                             if (def) {
                                 tester.assert(
-                                    def.bridgeSpawnOptions !== undefined,
+                                    def.bridgeHitbox !== undefined,
                                     `Map '${name}' specified building '${def.idString}' in its bridges, but said building is not a bridge`,
                                     errorPath2
                                 );
@@ -341,8 +341,8 @@ logger.indent("Validating map definitions", () => {
                             (
                                 (
                                     (
-                                        Buildings.fromStringSafe(building) ?? { bridgeSpawnOptions: null }
-                                    )?.bridgeSpawnOptions === undefined
+                                        Buildings.fromStringSafe(building) ?? { bridgeHitbox: null }
+                                    )?.bridgeHitbox === undefined
                                         ? tester.assertIsNaturalFiniteNumber
                                         : tester.assertIsNaturalNumber
                                 ) as (params: {
@@ -808,30 +808,6 @@ logger.indent("Validating building definitions", () => {
                     tester.createPath(errorPath, "ceiling hitbox"),
                     building.ceilingHitbox
                 );
-            }
-
-            if (building.bridgeSpawnOptions) {
-                const bridgeSpawnOptions = building.bridgeSpawnOptions;
-
-                logger.indent("Validating bride spawn options", () => {
-                    const errorPath2 = tester.createPath(errorPath, "bridge spawn options");
-
-                    validators.minMax(
-                        errorPath2,
-                        {
-                            min: bridgeSpawnOptions.minRiverWidth,
-                            max: bridgeSpawnOptions.maxRiverWidth
-                        },
-                        (errorPath, value) => {
-                            tester.assertIsRealNumber({
-                                value,
-                                errorPath
-                            });
-                        }
-                    );
-
-                    validators.hitbox(errorPath2, bridgeSpawnOptions.landHitbox);
-                });
             }
 
             const buildingObstacles = building.obstacles;
@@ -2240,8 +2216,10 @@ logger.indent("Validating melees", () => {
                 validators.vector(tester.createPath(errorPath2, "left"), fists.left);
                 validators.vector(tester.createPath(errorPath2, "right"), fists.right);
 
-                validators.vector(tester.createPath(errorPath2, "use left"), fists.useLeft);
-                validators.vector(tester.createPath(errorPath2, "use right"), fists.useRight);
+                if (!melee.rotationalAnimation) {
+                    validators.vector(tester.createPath(errorPath2, "use left"), fists.useLeft);
+                    validators.vector(tester.createPath(errorPath2, "use right"), fists.useRight);
+                }
             });
 
             if (melee.image) {
@@ -2250,7 +2228,7 @@ logger.indent("Validating melees", () => {
                     const errorPath2 = tester.createPath(errorPath, "image");
 
                     validators.vector(tester.createPath(errorPath2, "position"), image.position);
-                    validators.vector(tester.createPath(errorPath2, "use position"), image.usePosition);
+                    if (!melee.rotationalAnimation) validators.vector(tester.createPath(errorPath2, "use position"), image.usePosition);
 
                     tester.assertValidOrNPV({
                         obj: image,

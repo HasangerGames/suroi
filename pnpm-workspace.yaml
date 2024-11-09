@@ -3,4 +3,5 @@ packages:
   - 'common/'
   - 'client/'
   - 'tests/'
+  - 'translations/'
   - '!**dist/**'

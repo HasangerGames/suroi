@@ -207,8 +207,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
         this.container.scale.set(this.dead ? 1 : this.scale);
 
-        this.updateZIndex();
-
         if (isNew) {
             if (definition.glow !== undefined) {
                 const glow = definition.glow;
@@ -291,7 +289,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     this.image.setVisible(false);
                 } else {
                     this.image.setFrame(definition.frames.residue ?? `${definition.idString}_residue`);
-                    this.updateZIndex();
                 }
 
                 this.container.rotation = this.rotation;
@@ -331,6 +328,8 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             this._glow?.kill();
         }
 
+        this.updateZIndex();
+
         if (this._door === undefined) {
             this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
         }
@@ -369,6 +368,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 ? ZIndexes.UnderWaterDeadObstacles
                 : ZIndexes.DeadObstacles
             : this.definition.zIndex ?? ZIndexes.ObstaclesLayer1;
+
         this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, this.game.layer);
 
         // hides bunker doors on ground layer
