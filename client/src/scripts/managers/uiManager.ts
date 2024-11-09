@@ -516,6 +516,27 @@ export class UIManager {
             }
         }
 
+        if (minMax) {
+            this.maxHealth = minMax.maxHealth;
+            this.minAdrenaline = minMax.minAdrenaline;
+            this.maxAdrenaline = minMax.maxAdrenaline;
+
+            if (this.maxHealth === GameConstants.player.defaultHealth) {
+                this.ui.maxHealth.text("").hide();
+            } else {
+                this.ui.maxHealth.text(safeRound(this.maxHealth)).show();
+            }
+
+            if (
+                this.maxAdrenaline === GameConstants.player.maxAdrenaline
+                && this.minAdrenaline === 0
+            ) {
+                this.ui.minMaxAdren.text("").hide();
+            } else {
+                this.ui.minMaxAdren.text(`${this.minAdrenaline === 0 ? "" : `${safeRound(this.minAdrenaline)}/`}${safeRound(this.maxAdrenaline)}`).show();
+            }
+        }
+
         if (health !== undefined) {
             this.health = Numeric.remap(health, 0, 1, 0, this.maxHealth);
 
@@ -604,27 +625,6 @@ export class UIManager {
         }
 
         if (zoom) this.game.camera.zoom = zoom;
-
-        if (minMax) {
-            this.maxHealth = minMax.maxHealth;
-            this.minAdrenaline = minMax.minAdrenaline;
-            this.maxAdrenaline = minMax.maxAdrenaline;
-
-            if (this.maxHealth === GameConstants.player.defaultHealth) {
-                this.ui.maxHealth.text("").hide();
-            } else {
-                this.ui.maxHealth.text(safeRound(this.maxHealth)).show();
-            }
-
-            if (
-                this.maxAdrenaline === GameConstants.player.maxAdrenaline
-                && this.minAdrenaline === 0
-            ) {
-                this.ui.minMaxAdren.text("").hide();
-            } else {
-                this.ui.minMaxAdren.text(`${this.minAdrenaline === 0 ? "" : `${safeRound(this.minAdrenaline)}/`}${safeRound(this.maxAdrenaline)}`).show();
-            }
-        }
 
         if (adrenaline !== undefined) {
             this.adrenaline = Numeric.remap(adrenaline, 0, 1, this.minAdrenaline, this.maxAdrenaline);
