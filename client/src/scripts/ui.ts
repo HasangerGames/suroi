@@ -672,32 +672,32 @@ export async function setUpUI(game: Game): Promise<void> {
             link: "https://www.youtube.com/@123op."
         },
         {
-            name: "TEAMFIGHTER 27",
-            link: "https://www.youtube.com/@TEAMFIGHTER27"
+            name: "bruh button official",
+            link: "https://www.youtube.com/@bruhbuttonofficial4658"
         },
         {
-            name: "NAMERIO",
-            link: "https://www.youtube.com/@NAMERIO1"
+            name: "viper",
+            link: "https://www.youtube.com/channel/UCey8-fJfkF7UFYdWBcegzWA"
         },
         {
-            name: "AWMZ",
-            link: "https://www.youtube.com/@AWMZfn"
+            name: "IoSilverAway",
+            link: "https://www.youtube.com/@iosilveraway_19"
         },
         {
             name: "Ukraines dude",
             link: "https://www.youtube.com/@Ukrainesdude"
         },
         {
-            name: "monet",
-            link: "https://www.youtube.com/@stardust_737"
+            name: "Ash",
+            link: "https://www.youtube.com/@AshMyBoi"
         },
         {
             name: "Tuncres",
             link: "https://www.youtube.com/@Tuncres2022"
         },
         {
-            name: "silverdotware",
-            link: "https://www.youtube.com/@silverdotware"
+            name: "Данзан animations",
+            link: "https://www.youtube.com/@danzananimYT/videos"
         },
         {
             name: "Pablo_Fan_",
@@ -710,6 +710,38 @@ export async function setUpUI(game: Game): Promise<void> {
         {
             name: "GAMERIO",
             link: "https://www.youtube.com/@GAMERIO1"
+        },
+        {
+            name: "N00B.I0",
+            link: "https://www.youtube.com/@N00B.I0"
+        },
+        {
+            name: "Dablitter",
+            link: "https://www.youtube.com/@dablitter5719"
+        },
+        {
+            name: "DESTROYER [IHY]",
+            link: "https://www.youtube.com/@DESTROYERIHY"
+        },
+        {
+            name: "XxDreamCatcherxX Gaming",
+            link: "https://www.youtube.com/@XxDreamCatcherxXGaming2.0"
+        },
+        {
+            name: "[ATMOS]Bl00D",
+            link: "https://www.youtube.com/@TheRealATMOS"
+        },
+        {
+            name: "Tuncres",
+            link: "https://www.youtube.com/@Tuncres2022"
+        },
+        {
+            name: "this.is.gls_",
+            link: "https://www.youtube.com/@this.is.gls_"
+        },
+        {
+            name: "LeeMinHaiz",
+            link: "https://www.youtube.com/@LeeMinHaiz"
         }
     ];
     const youtuber = pickRandomInArray(youtubers);
