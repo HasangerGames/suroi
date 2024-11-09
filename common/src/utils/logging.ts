@@ -100,10 +100,23 @@ type Fonts = typeof FontStyles;
 type FontStyle = Fonts[keyof Fonts];
 
 const CSI = "\u001B";
-const CLOSING_CODE = `${CSI}[0m`;
 export function styleText(string: string, ...styles: Array<Colors[Channel][Color][Variant] | FontStyle>): string {
-    const opening = `${CSI}[${styles.join(";")}m`;
-    // replace the closing codes with this opening code
-    // so that styling is consistent
-    return `${opening}${string.replaceAll(CLOSING_CODE, opening)}${CLOSING_CODE}`;
+    return `${CSI}[${styles.join(";")}m${string}${CSI}[0m`;
 }
+
+export const Logger = {
+    log(...message: unknown[]): void {
+        const date = new Date();
+
+        console.log(
+            styleText(`[${date.toLocaleDateString("en-US")} ${date.toLocaleTimeString("en-US")}]`, ColorStyles.foreground.blue.bright),
+            ...message
+        );
+    },
+    warn(...message: unknown[]): void {
+        this.log(styleText("[WARNING]", ColorStyles.foreground.yellow.normal), ...message);
+    },
+    error(...message: unknown[]): void {
+        this.log(styleText("[ERROR]", ColorStyles.foreground.red.normal), ...message);
+    }
+};

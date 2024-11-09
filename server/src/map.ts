@@ -96,7 +96,7 @@ export class GameMap {
 
         this.seed = packet.seed = random(0, 2 ** 31);
 
-        Logger.log(`Game ${game.id} | Map seed: ${this.seed}`);
+        this.game.log(`Map seed: ${this.seed}`);
 
         this.width = packet.width = mapDef.width;
         this.height = packet.height = mapDef.height;
@@ -406,7 +406,7 @@ export class GameMap {
             }
 
             if (attempts >= 100 && !validPositionFound) {
-                Logger.warn("Failed to find valid position for clearing");
+                this.game.warn("Failed to find valid position for clearing");
                 continue;
             }
 
@@ -446,7 +446,7 @@ export class GameMap {
                     });
 
                     if (position === undefined) {
-                        Logger.warn(`Failed to find valid position for building ${idString}`);
+                        this.game.warn(`Failed to find valid position for building ${idString}`);
                         continue;
                     }
 
@@ -478,7 +478,7 @@ export class GameMap {
                 }
 
                 if (!validPositionFound && position === undefined) {
-                    Logger.warn(`Failed to place building ${idString} after ${attempts} attempts`);
+                    this.game.warn(`Failed to place building ${idString} after ${attempts} attempts`);
                 }
 
                 if (position !== undefined) this.generateBuilding(buildingDef, position, orientation);
@@ -680,7 +680,7 @@ export class GameMap {
             });
 
             if (!position) {
-                Logger.warn(`Failed to find valid position for obstacle ${def.idString}`);
+                this.game.warn(`Failed to find valid position for obstacle ${def.idString}`);
                 continue;
             }
 
@@ -780,7 +780,7 @@ export class GameMap {
             );
 
             if (!position) {
-                Logger.warn("Spawn position cannot be found");
+                this.game.warn("Spawn position cannot be found");
                 continue;
             }
 
@@ -810,7 +810,7 @@ export class GameMap {
             );
 
             if (!position) {
-                Logger.warn(`Failed to find valid position for loot generated from table '${table}'`);
+                this.game.warn(`Failed to find valid position for loot generated from table '${table}'`);
                 continue;
             }
 

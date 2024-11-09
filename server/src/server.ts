@@ -2,6 +2,7 @@ import { GameConstants, TeamSize } from "@common/constants";
 import { Badges } from "@common/definitions/badges";
 import { Skins } from "@common/definitions/skins";
 import { type GetGameResponse } from "@common/typings";
+import { ColorStyles, styleText } from "@common/utils/logging";
 import { Numeric } from "@common/utils/math";
 import { Cron } from "croner";
 import { existsSync, readFile, readFileSync, writeFile, writeFileSync } from "fs";
@@ -14,7 +15,8 @@ import { Config } from "./config";
 import { findGame, games, newGame, WorkerMessages } from "./gameManager";
 import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./team";
 import IPChecker, { Punishment } from "./utils/apiHelper";
-import { cleanUsername, Logger } from "./utils/misc";
+import { cleanUsername } from "./utils/misc";
+import { Logger } from "@common/utils/logging";
 import { cors, createServer, forbidden, getIP, textDecoder } from "./utils/serverHelpers";
 
 let punishments: Punishment[] = [];
@@ -63,6 +65,14 @@ function removePunishment(ip: string): void {
             }
         );
     }
+}
+
+export function serverLog(...message: unknown[]): void {
+    Logger.log(styleText("[Server]", ColorStyles.foreground.magenta.normal), ...message);
+}
+
+export function serverWarn(...message: unknown[]): void {
+    Logger.warn(styleText("[Server] [WARNING]", ColorStyles.foreground.yellow.normal), ...message);
 }
 
 let teamsCreated: Record<string, number> = {};
@@ -299,34 +309,24 @@ if (isMainThread) {
             player.team.removePlayer(player);
         }
     }).listen(Config.host, Config.port, (): void => {
-        console.log(
-            `
- _____ _   _______ _____ _____
-/  ___| | | | ___ \\  _  |_   _|
-\\ \`--.| | | | |_/ / | | | | |
- \`--. \\ | | |    /| | | | | |
-/\\__/ / |_| | |\\ \\\\ \\_/ /_| |_
-\\____/ \\___/\\_| \\_|\\___/ \\___/
-            `);
-
-        Logger.log(`Suroi Server v${version}`);
-        Logger.log(`Listening on ${Config.host}:${Config.port}`);
-        Logger.log("Press Ctrl+C to exit.");
+        serverLog(`Suroi Server v${version}`);
+        serverLog(`Listening on ${Config.host}:${Config.port}`);
+        serverLog("Press Ctrl+C to exit.");
 
         void newGame(0);
 
         setInterval(() => {
             const memoryUsage = process.memoryUsage().rss;
 
-            let perfString = `Server | Memory usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`;
+            let perfString = `Mem usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`;
 
             // windows L
             if (os.platform() !== "win32") {
                 const load = os.loadavg().join("%, ");
-                perfString += ` | Load (1m, 5m, 15m): ${load}%`;
+                perfString += ` | CPU usage (1m, 5m, 15m): ${load}%`;
             }
 
-            Logger.log(perfString);
+            serverLog(perfString);
         }, 60000);
 
         const teamSize = Config.maxTeamSize;
@@ -339,7 +339,7 @@ if (isMainThread) {
                 }
 
                 const humanReadableTeamSizes = [undefined, "solos", "duos", "trios", "squads"];
-                Logger.log(`Switching to ${humanReadableTeamSizes[maxTeamSize] ?? `team size ${maxTeamSize}`}`);
+                serverLog(`Switching to ${humanReadableTeamSizes[maxTeamSize] ?? `team size ${maxTeamSize}`}`);
             });
         }
 

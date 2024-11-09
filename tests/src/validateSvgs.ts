@@ -1,7 +1,7 @@
 import * as svgParser from "svg-parser";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { ColorStyles, styleText } from "@common/utils/ansiColoring";
+import { ColorStyles, styleText } from "@common/utils/logging";
 
 const MAX_SIZES: Record<string, number> = {
     buildings: 300_000,

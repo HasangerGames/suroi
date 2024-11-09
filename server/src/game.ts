@@ -24,6 +24,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { type WebSocket } from "uWebSockets.js";
 import { parentPort } from "worker_threads";
 
+import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import { Config, SpawnMode } from "./config";
 import { MapName, Maps } from "./data/maps";
 import { WorkerMessages, type GameData, type WorkerMessage } from "./gameManager";
@@ -46,7 +47,7 @@ import { PluginManager } from "./pluginManager";
 import { Team } from "./team";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
-import { cleanUsername, Logger, removeFrom } from "./utils/misc";
+import { cleanUsername, removeFrom } from "./utils/misc";
 
 /*
     eslint-disable
@@ -241,10 +242,22 @@ export class Game implements GameData {
         this.setGameData({ allowJoin: true });
 
         this.pluginManager.emit("game_created", this);
-        Logger.log(`Game ${this.id} | Created in ${Date.now() - this._start} ms`);
+        this.log(`Created in ${Date.now() - this._start} ms`);
 
         // Start the tick loop
         this.tick();
+    }
+
+    log(...message: unknown[]): void {
+        Logger.log(styleText(`[Game ${this.id}]`, ColorStyles.foreground.green.normal), ...message);
+    }
+
+    warn(...message: unknown[]): void {
+        Logger.log(styleText(`[Game ${this.id}] [WARNING]`, ColorStyles.foreground.yellow.normal), ...message);
+    }
+
+    error(...message: unknown[]): void {
+        Logger.log(styleText(`[Game ${this.id}] [ERROR]`, ColorStyles.foreground.red.normal), ...message);
     }
 
     onMessage(stream: SuroiByteStream, player: Player): void {
@@ -444,7 +457,7 @@ export class Game implements GameData {
             // End the game in 1 second
             this.addTimeout(() => {
                 this.setGameData({ stopped: true });
-                Logger.log(`Game ${this.id} | Ended`);
+                this.log("Ended");
             }, 1000);
         }
 
@@ -461,7 +474,7 @@ export class Game implements GameData {
         if (this._tickTimes.length >= 200) {
             const mspt = Statistics.average(this._tickTimes);
             const stddev = Statistics.stddev(this._tickTimes);
-            Logger.log(`Game ${this.id} | ms/tick: ${mspt.toFixed(2)} ± ${stddev.toFixed(2)} | Load: ${((mspt / this.idealDt) * 100).toFixed(1)}%`);
+            this.log(`ms/tick: ${mspt.toFixed(2)} ± ${stddev.toFixed(2)} | Load: ${((mspt / this.idealDt) * 100).toFixed(1)}%`);
             this._tickTimes.length = 0;
         }
 
@@ -488,7 +501,7 @@ export class Game implements GameData {
         if (!this.allowJoin) return; // means a new game has already been created by this game
 
         parentPort?.postMessage({ type: WorkerMessages.CreateNewGame });
-        Logger.log(`Game ${this.id} | Attempting to create new game`);
+        this.log("Attempting to create new game");
         this.setGameData({ allowJoin: false });
     }
 
@@ -746,7 +759,7 @@ export class Game implements GameData {
             }, 3000);
         }
 
-        Logger.log(`Game ${this.id} | "${player.name}" joined`);
+        this.log(`"${player.name}" joined`);
         // AccessLog to store usernames for this connection
         if (Config.protection?.punishments) {
             const username = player.name;
@@ -768,6 +781,8 @@ export class Game implements GameData {
     }
 
     removePlayer(player: Player): void {
+        this.log(`"${player.name}" left`);
+
         if (player === this.killLeader) {
             this.killLeaderDisconnected(player);
         }

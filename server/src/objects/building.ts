@@ -169,7 +169,7 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
     solvePuzzle(): void {
         const puzzle = this._puzzle;
         if (!puzzle) {
-            Logger.warn("Attempting to solve puzzle when no puzzle is present");
+            this.game.warn("Attempting to solve puzzle when no puzzle is present");
             return;
         }
 
@@ -207,7 +207,7 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
 
     resetPuzzle(): void {
         if (!this._puzzle) {
-            Logger.warn("Attempting to reset puzzle when no puzzle is present");
+            this.game.warn("Attempting to reset puzzle when no puzzle is present");
             return;
         }
         this._puzzle.inputOrder = [];
