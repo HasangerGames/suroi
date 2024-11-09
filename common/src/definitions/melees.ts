@@ -11,6 +11,7 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     readonly stonePiercing?: boolean
     readonly swingSound: string
     readonly stopSound?: string
+    readonly rotationalAnimation?: boolean
     readonly radius: number
     readonly offset: Vector
     readonly cooldown: number
@@ -125,6 +126,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             idString: "hatchet",
             name: "Hatchet",
             damage: 45,
+            rotationalAnimation: true,
             obstacleMultiplier: 2,
             piercingMultiplier: 1.5,
             radius: 2,
@@ -134,13 +136,10 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             fists: {
                 animationDuration: 150,
                 left: Vec.create(40, -25),
-                right: Vec.create(40, 15),
-                useLeft: Vec.create(35, -35),
-                useRight: Vec.create(75, -20)
+                right: Vec.create(40, 15)
             },
             image: {
                 position: Vec.create(42, 20),
-                usePosition: Vec.create(80, -25),
                 angle: 135,
                 useAngle: 65,
                 lootScale: 0.6
@@ -150,6 +149,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             idString: "fire_hatchet",
             name: "Fire Hatchet",
             damage: 50,
+            rotationalAnimation: true,
             obstacleMultiplier: 2,
             piercingMultiplier: 2,
             radius: 2.05,
@@ -159,13 +159,10 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             fists: {
                 animationDuration: 150,
                 left: Vec.create(40, -25),
-                right: Vec.create(40, 15),
-                useLeft: Vec.create(35, -35),
-                useRight: Vec.create(75, -20)
+                right: Vec.create(40, 15)
             },
             image: {
                 position: Vec.create(42, 20),
-                usePosition: Vec.create(80, -25),
                 angle: 135,
                 useAngle: 65,
                 lootScale: 0.7
@@ -249,6 +246,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             idString: "maul",
             name: "Maul",
             damage: 54,
+            rotationalAnimation: true,
             swingSound: "heavy_swing",
             obstacleMultiplier: 2,
             stonePiercing: true,
@@ -259,13 +257,10 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             fists: {
                 animationDuration: 150,
                 left: Vec.create(40, -25),
-                right: Vec.create(40, 15),
-                useLeft: Vec.create(35, -35),
-                useRight: Vec.create(75, -20)
+                right: Vec.create(40, 15)
             },
             image: {
                 position: Vec.create(40, 20),
-                usePosition: Vec.create(80, -25),
                 angle: 135,
                 useAngle: 65,
                 lootScale: 0.6
