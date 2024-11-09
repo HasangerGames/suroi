@@ -291,7 +291,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     this.image.setVisible(false);
                 } else {
                     this.image.setFrame(definition.frames.residue ?? `${definition.idString}_residue`);
-                    this.updateZIndex();
                 }
 
                 this.container.rotation = this.rotation;
