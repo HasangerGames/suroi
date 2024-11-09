@@ -1,4 +1,5 @@
 import { sound, type Sound } from "@pixi/sound";
+import $ from "jquery";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
 import { GameConstants, InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize, ZIndexes } from "../../../common/src/constants";
@@ -891,6 +892,9 @@ export class Game {
             bind?: string
         } = {};
 
+        // keep image thingy around to consult (and therefore lazily change) src
+        let detonateBindIcon: JQuery<HTMLImageElement> | undefined;
+
         return () => {
             if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
             this.inputManager.update();
@@ -1121,6 +1125,7 @@ export class Game {
             }
 
             // funny detonate button stuff
+            const detonateKey = this.uiManager.ui.detonateKey;
             if (!this.inputManager.isMobile) {
                 const boomBind: string | undefined = this.inputManager.binds.getInputsBoundToAction("explode_c4")[0];
 
@@ -1130,17 +1135,29 @@ export class Game {
                     if (boomBind !== undefined) {
                         const bindImg = InputManager.getIconFromInputName(boomBind);
 
+                        detonateKey.show();
+
                         if (bindImg === undefined) {
-                            this.uiManager.ui.detonateKey.show().text(boomBind ?? "");
+                            detonateKey.text(boomBind ?? "");
+                            if (detonateBindIcon !== undefined) {
+                                detonateKey.empty();
+                                detonateBindIcon = undefined;
+                            }
                         } else {
-                            this.uiManager.ui.detonateKey.show().html(`<img src="${bindImg}" alt="${boomBind}"/>`);
+                            if (detonateBindIcon === undefined) {
+                                detonateKey.children().add(detonateBindIcon = $(`<img src="${bindImg}" alt=${boomBind} />`));
+                            }
+
+                            if (detonateBindIcon.attr("src") !== bindImg) {
+                                detonateBindIcon.attr("src", bindImg);
+                            }
                         }
                     } else {
-                        this.uiManager.ui.detonateKey.hide();
+                        detonateKey.hide();
                     }
                 }
             } else {
-                this.uiManager.ui.detonateKey.hide();
+                detonateKey.hide();
             }
         };
     })();
