@@ -1,9 +1,9 @@
+import { GasState } from "@common/constants";
+import { type UpdatePacketDataOut } from "@common/packets/updatePacket";
+import { Numeric } from "@common/utils/math";
+import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Graphics } from "pixi.js";
-import { GasState } from "../../../../common/src/constants";
-import type { UpdatePacketDataOut } from "../../../../common/src/packets/updatePacket";
-import { Numeric } from "../../../../common/src/utils/math";
-import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
 import { COLORS, UI_DEBUG_MODE } from "../utils/constants";

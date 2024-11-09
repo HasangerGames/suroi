@@ -1,10 +1,11 @@
 import { type BitStream } from "@damienvesper/bit-buffer";
-import { DEFAULT_INVENTORY, GameConstants, Layer, type GasState, type ObjectCategory } from "../constants";
+import { DEFAULT_INVENTORY, GameConstants, Layer, ObjectCategory, type GasState } from "../constants";
 import { Badges, type BadgeDefinition } from "../definitions/badges";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
 import { Loots, type WeaponDefinition } from "../definitions/loots";
 import { MapPings, type MapPing, type PlayerPing } from "../definitions/mapPings";
+import { Perks, type PerkDefinition } from "../definitions/perks";
 import { Scopes, type ScopeDefinition } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
 import { type Mutable } from "../utils/misc";
@@ -12,7 +13,6 @@ import { ObjectSerializations, type FullData, type ObjectsNetData } from "../uti
 import { OBJECT_ID_BITS, type SuroiBitStream } from "../utils/suroiBitStream";
 import { Vec, type Vector } from "../utils/vector";
 import { createPacket } from "./packet";
-import { Perks, type PerkDefinition } from "../definitions/perks";
 
 interface ObjectFullData {
     readonly id: number

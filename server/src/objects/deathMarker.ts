@@ -1,7 +1,6 @@
 import { ObjectCategory } from "@common/constants";
-import { type FullData } from "@common/utils/objectsSerializations";
-
 import { RectangleHitbox } from "@common/utils/hitbox";
+import { type FullData } from "@common/utils/objectsSerializations";
 import { BaseGameObject } from "./gameObject";
 import { type Player } from "./player";
 

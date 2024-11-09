@@ -1,13 +1,12 @@
 import { AnimationType, GameConstants, PlayerActions } from "@common/constants";
 import { HealType, type HealingItemDefinition } from "@common/definitions/healingItems";
 import { Loots } from "@common/definitions/loots";
-import { type Timeout } from "@common/utils/misc";
-import { type ReifiableDef } from "@common/utils/objectDefinitions";
-
-import { type Player } from "../objects/player";
-import { type GunItem } from "./gunItem";
 import { PerkIds } from "@common/definitions/perks";
 import { Numeric } from "@common/utils/math";
+import { type Timeout } from "@common/utils/misc";
+import { type ReifiableDef } from "@common/utils/objectDefinitions";
+import { type Player } from "../objects/player";
+import { type GunItem } from "./gunItem";
 
 export abstract class Action {
     readonly player: Player;

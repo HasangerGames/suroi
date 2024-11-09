@@ -13,7 +13,7 @@ export type GetGameResponse =
         readonly reportID?: string
     };
 
-export enum CustomTeamMessages {
+export const enum CustomTeamMessages {
     Join,
     Update,
     Settings,

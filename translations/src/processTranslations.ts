@@ -1,7 +1,9 @@
 import { readFile, writeFile } from "node:fs/promises";
+import { Guns } from "@common/definitions/guns";
+import { Melees } from "@common/definitions/melees";
+import { Throwables } from "@common/definitions/throwables";
 import { parse } from "hjson";
 import { readdirSync, readFileSync } from "node:fs";
-import { Guns, Melees, Throwables } from "@common/definitions";
 
 export const REFERNCE_LANGUAGE = "en";
 

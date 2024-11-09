@@ -1,18 +1,17 @@
 import { Layer, ObjectCategory } from "@common/constants";
 import { FlyoverPref } from "@common/definitions/obstacles";
+import { PerkIds } from "@common/definitions/perks";
 import { type ThrowableDefinition } from "@common/definitions/throwables";
 import { CircleHitbox, Hitbox, HitboxType, RectangleHitbox, type GroupHitbox } from "@common/utils/hitbox";
 import { Angle, Collision, Numeric } from "@common/utils/math";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
-
 import { type Game } from "../game";
 import { type ThrowableItem } from "../inventory/throwableItem";
 import { Building } from "./building";
 import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
-import { PerkIds } from "@common/definitions/perks";
 
 const enum Drag {
     Normal = 0.001,

@@ -7,7 +7,6 @@ import { type SDeepMutable } from "@common/utils/misc";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { random, randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-
 import { type Game } from "../game";
 import { BaseGameObject } from "./gameObject";
 

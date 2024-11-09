@@ -1,11 +1,9 @@
-import { type WebSocket } from "uWebSockets.js";
-import { parentPort } from "worker_threads";
-
 import { GameConstants, KillfeedMessageType, Layer, ObjectCategory, TeamSize } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { PerkIds, Perks } from "@common/definitions/perks";
 import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "@common/definitions/syncedParticles";
 import { type ThrowableDefinition } from "@common/definitions/throwables";
 import { PlayerInputPacket } from "@common/packets/inputPacket";
@@ -24,8 +22,9 @@ import { ItemType, MapObjectSpawnMode, type ReifiableDef } from "@common/utils/o
 import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "@common/utils/random";
 import { OBJECT_ID_BITS, SuroiBitStream } from "@common/utils/suroiBitStream";
 import { Vec, type Vector } from "@common/utils/vector";
+import { type WebSocket } from "uWebSockets.js";
+import { parentPort } from "worker_threads";
 
-import { PerkIds, Perks } from "@common/definitions/perks";
 import { Config, SpawnMode } from "./config";
 import { MapName, Maps } from "./data/maps";
 import { WorkerMessages, type GameData, type WorkerMessage } from "./gameManager";

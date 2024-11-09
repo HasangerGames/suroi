@@ -1,9 +1,8 @@
-import pkg from "../../package.json";
-
 import { svelte } from "@sveltejs/vite-plugin-svelte";
-import { resolve } from "path";
+import path, { resolve } from "path";
 import { splitVendorChunkPlugin, type UserConfig } from "vite";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
+import pkg from "../../package.json";
 import { spritesheet } from "./vite-spritesheet-plugin/spritesheet-plugin";
 
 const config: UserConfig = {
@@ -39,6 +38,12 @@ const config: UserConfig = {
             scss: {
                 api: "modern-compiler"
             }
+        }
+    },
+
+    resolve: {
+        alias: {
+            "@common": path.resolve(__dirname, "../../common/src")
         }
     },
 

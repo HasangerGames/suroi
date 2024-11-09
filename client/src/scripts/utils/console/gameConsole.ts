@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
+import { Numeric } from "@common/utils/math";
+import { Stack } from "@common/utils/misc";
 import $ from "jquery";
-import { Numeric } from "../../../../../common/src/utils/math";
-import { Stack } from "../../../../../common/src/utils/misc";
 import { type Game } from "../../game";
-import type { CompiledAction, CompiledTuple } from "../../managers/inputManager";
+import { type CompiledAction, type CompiledTuple } from "../../managers/inputManager";
 import { sanitizeHTML } from "../misc";
 import { type Command } from "./commands";
 import { defaultBinds, defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";

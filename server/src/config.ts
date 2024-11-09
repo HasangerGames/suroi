@@ -1,17 +1,16 @@
 import { Layer, TeamSize } from "@common/constants";
 import { type Vector } from "@common/utils/vector";
-
 import { type Maps } from "./data/maps";
 import { type Game } from "./game";
 import { type GamePlugin } from "./pluginManager";
 
-export enum SpawnMode {
+export const enum SpawnMode {
     Normal,
     Radius,
     Fixed,
     Center
 }
-export enum GasMode {
+export const enum GasMode {
     Normal,
     Debug,
     Disabled

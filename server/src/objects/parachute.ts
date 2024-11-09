@@ -3,7 +3,6 @@ import { CircleHitbox } from "@common/utils/hitbox";
 import { Angle, Numeric } from "@common/utils/math";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { type Vector } from "@common/utils/vector";
-
 import { type Airdrop, type Game } from "../game";
 import { BaseGameObject } from "./gameObject";
 

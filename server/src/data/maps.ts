@@ -1,6 +1,6 @@
 import { Layer } from "@common/constants";
-import { Guns } from "@common/definitions";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
+import { Guns } from "@common/definitions/guns";
 import { Loots } from "@common/definitions/loots";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { Orientation, type Variation } from "@common/typings";

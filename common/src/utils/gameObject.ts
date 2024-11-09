@@ -1,12 +1,14 @@
 import { ObjectCategory, type Layer } from "../constants";
-import type { LootDefinition, SyncedParticleDefinition, ThrowableDefinition } from "../definitions";
-import type { BuildingDefinition } from "../definitions/buildings";
-import type { DecalDefinition } from "../definitions/decals";
-import type { ObstacleDefinition } from "../definitions/obstacles";
-import type { Orientation } from "../typings";
-import type { CircleHitbox } from "./hitbox";
-import type { AbstractConstructor, Constructor, GetEnumMemberName } from "./misc";
-import type { Vector } from "./vector";
+import { type BuildingDefinition } from "../definitions/buildings";
+import { type DecalDefinition } from "../definitions/decals";
+import { type LootDefinition } from "../definitions/loots";
+import { type ObstacleDefinition } from "../definitions/obstacles";
+import { type SyncedParticleDefinition } from "../definitions/syncedParticles";
+import { type ThrowableDefinition } from "../definitions/throwables";
+import { type Orientation } from "../typings";
+import { type CircleHitbox } from "./hitbox";
+import { type AbstractConstructor, type Constructor, type GetEnumMemberName } from "./misc";
+import { type Vector } from "./vector";
 
 export type BaseGameObject = InstanceType<ReturnType<typeof makeGameObjectTemplate>>;
 

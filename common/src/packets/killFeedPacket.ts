@@ -1,8 +1,8 @@
 import { KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType } from "../constants";
-import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
-import { Guns, type GunDefinition } from "../definitions/guns";
-import { Melees, type MeleeDefinition } from "../definitions/melees";
-import { Throwables, type ThrowableDefinition } from "../definitions/throwables";
+import { type ExplosionDefinition } from "../definitions/explosions";
+import { type GunDefinition } from "../definitions/guns";
+import { type MeleeDefinition } from "../definitions/melees";
+import { type ThrowableDefinition } from "../definitions/throwables";
 import { type DeepMutable, type Mutable } from "../utils/misc";
 import { ObjectDefinitions } from "../utils/objectDefinitions";
 import { calculateEnumPacketBits } from "../utils/suroiBitStream";

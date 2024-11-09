@@ -1,5 +1,6 @@
 import { ObjectCategory } from "@common/constants";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { PerkIds } from "@common/definitions/perks";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { equalLayer } from "@common/utils/layer";
@@ -12,10 +13,9 @@ import { type Game } from "../game";
 import { InventoryItem } from "../inventory/inventoryItem";
 import { getRandomIDString } from "../utils/misc";
 import { type Building } from "./building";
-import type { Bullet } from "./bullet";
+import { type Bullet } from "./bullet";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { type Player } from "./player";
-import { PerkIds } from "@common/definitions/perks";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override readonly fullAllocBytes = 8;

@@ -1,34 +1,37 @@
+import { GameConstants, InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize, ZIndexes } from "@common/constants";
+import { ArmorType } from "@common/definitions/armors";
+import { Badges, type BadgeDefinition } from "@common/definitions/badges";
+import { Emotes } from "@common/definitions/emotes";
+import { type DualGunNarrowing } from "@common/definitions/guns";
+import { Loots } from "@common/definitions/loots";
+import { Scopes } from "@common/definitions/scopes";
+import { DisconnectPacket } from "@common/packets/disconnectPacket";
+import { GameOverPacket } from "@common/packets/gameOverPacket";
+import { JoinedPacket, type JoinedPacketData } from "@common/packets/joinedPacket";
+import { JoinPacket, type JoinPacketCreation } from "@common/packets/joinPacket";
+import { KillFeedPacket } from "@common/packets/killFeedPacket";
+import { MapPacket } from "@common/packets/mapPacket";
+import { type InputPacket, type OutputPacket } from "@common/packets/packet";
+import { PacketStream } from "@common/packets/packetStream";
+import { PickupPacket } from "@common/packets/pickupPacket";
+import { PingPacket } from "@common/packets/pingPacket";
+import { ReportPacket } from "@common/packets/reportPacket";
+import { UpdatePacket, type UpdatePacketDataOut } from "@common/packets/updatePacket";
+import { CircleHitbox } from "@common/utils/hitbox";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
+import { EaseFunctions, Geometry } from "@common/utils/math";
+import { Timeout } from "@common/utils/misc";
+import { ItemType, ObstacleSpecialRoles } from "@common/utils/objectDefinitions";
+import { ObjectPool } from "@common/utils/objectPool";
+import { type ObjectsNetData } from "@common/utils/objectsSerializations";
+import { randomFloat, randomVector } from "@common/utils/random";
+import { Vec, type Vector } from "@common/utils/vector";
 import { sound, type Sound } from "@pixi/sound";
 import $ from "jquery";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
-import { GameConstants, InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize, ZIndexes } from "../../../common/src/constants";
-import { ArmorType } from "../../../common/src/definitions/armors";
-import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
-import { Emotes } from "../../../common/src/definitions/emotes";
-import { type DualGunNarrowing } from "../../../common/src/definitions/guns";
-import { Loots } from "../../../common/src/definitions/loots";
-import { Scopes } from "../../../common/src/definitions/scopes";
-import { DisconnectPacket } from "../../../common/src/packets/disconnectPacket";
-import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
-import { JoinedPacket, type JoinedPacketData } from "../../../common/src/packets/joinedPacket";
-import { JoinPacket, type JoinPacketCreation } from "../../../common/src/packets/joinPacket";
-import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
-import { MapPacket } from "../../../common/src/packets/mapPacket";
-import { type InputPacket, type OutputPacket } from "../../../common/src/packets/packet";
-import { PacketStream } from "../../../common/src/packets/packetStream";
-import { PickupPacket } from "../../../common/src/packets/pickupPacket";
-import { PingPacket } from "../../../common/src/packets/pingPacket";
-import { ReportPacket } from "../../../common/src/packets/reportPacket";
-import { UpdatePacket, type UpdatePacketDataOut } from "../../../common/src/packets/updatePacket";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { adjacentOrEqualLayer } from "../../../common/src/utils/layer";
-import { EaseFunctions, Geometry } from "../../../common/src/utils/math";
-import { Timeout } from "../../../common/src/utils/misc";
-import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
-import { ObjectPool } from "../../../common/src/utils/objectPool";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { getTranslatedString, initTranslation } from "../translations";
+import { type TranslationKeys } from "../typings/translations";
 import { InputManager } from "./managers/inputManager";
 import { GameSound, SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
@@ -53,12 +56,9 @@ import { autoPickup, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, u
 import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
-import { COLORS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE, EMOTE_SLOTS } from "./utils/constants";
+import { COLORS, EMOTE_SLOTS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
-import { randomVector, randomFloat } from "../../../common/src/utils/random";
-import { Vec, type Vector } from "../../../common/src/utils/vector";
-import type { TranslationKeys } from "../typings/translations";
 
 /* eslint-disable @stylistic/indent */
 
@@ -257,8 +257,8 @@ export class Game {
             autoPlay: true,
             volume: game.console.getBuiltInCVar("cv_music_volume")
         });
-    return game;
-  }
+        return game;
+    }
 
     resize(): void {
         this.map.resize();

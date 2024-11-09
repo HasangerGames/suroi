@@ -1,12 +1,12 @@
-import { Badges } from "../../common/src/definitions/badges";
-import { Emotes } from "../../common/src/definitions/emotes";
-import { Loots } from "../../common/src/definitions/loots";
+import { Badges } from "@common/definitions/badges";
+import { Emotes } from "@common/definitions/emotes";
+import { Loots } from "@common/definitions/loots";
+import { Numeric } from "@common/utils/math";
+import type { TranslationManifest, TranslationsManifest } from "../../translations/src/processTranslations";
 import { type Game } from "./scripts/game";
 import { defaultClientCVars } from "./scripts/utils/console/defaultClientCVars";
-import { Numeric } from "../../common/src/utils/math";
-import { type TranslationKeys } from "./typings/translations";
-import type { TranslationManifest, TranslationsManifest } from "../../translations/src/processTranslations";
 import TRANSLATIONS_MANIFEST from "./translationsManifest.json";
+import { type TranslationKeys } from "./typings/translations";
 
 export type TranslationMap = Partial<Record<TranslationKeys, string>> & TranslationManifest;
 

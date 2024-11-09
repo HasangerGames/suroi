@@ -1,10 +1,10 @@
-import { Layer, ZIndexes } from "../../../../common/src/constants";
-import { type ExplosionDefinition } from "../../../../common/src/definitions/explosions";
-import { adjacentOrEqualLayer, getEffectiveZIndex } from "../../../../common/src/utils/layer";
-import { EaseFunctions } from "../../../../common/src/utils/math";
-import { randomFloat, randomPointInsideCircle } from "../../../../common/src/utils/random";
-import { FloorTypes } from "../../../../common/src/utils/terrain";
-import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { Layer, ZIndexes } from "@common/constants";
+import { type ExplosionDefinition } from "@common/definitions/explosions";
+import { adjacentOrEqualLayer, getEffectiveZIndex } from "@common/utils/layer";
+import { EaseFunctions } from "@common/utils/math";
+import { randomFloat, randomPointInsideCircle } from "@common/utils/random";
+import { FloorTypes } from "@common/utils/terrain";
+import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { SHOCKWAVE_EXPLOSION_MULTIPLIERS } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";

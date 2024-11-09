@@ -1,4 +1,4 @@
-import { ExtendedMap, type Result, type ResultRes } from "../../../../../common/src/utils/misc";
+import { ExtendedMap, type Result, type ResultRes } from "@common/utils/misc";
 import { type Game } from "../../game";
 import { stringify } from "../misc";
 import { CVarCasters, defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
@@ -9,7 +9,7 @@ import { type GameConsole, type GameSettings, type PossibleError, type Stringabl
 // Basically, use a bitfield when all flags are known,
 // and use the `Partial`-ized interface when "unset" is a possibility
 
-export enum CVarFlagsEnum {
+export const enum CVarFlagsEnum {
     archive = 1 >> 0,
     readonly = 1 >> 1,
     cheat = 1 >> 2,

@@ -1,16 +1,14 @@
-import type { InventoryMessages, Layer } from "@common/constants";
-import type { LootDefinition } from "@common/definitions";
-import type { BuildingDefinition } from "@common/definitions/buildings";
-import { EmoteDefinition } from "@common/definitions/emotes";
+import { type InventoryMessages, type Layer } from "@common/constants";
+import { type BuildingDefinition } from "@common/definitions/buildings";
+import type { LootDefinition } from "@common/definitions/loots";
 import { type PlayerPing } from "@common/definitions/mapPings";
-import type { ObstacleDefinition } from "@common/definitions/obstacles";
-import { type PlayerInputData } from "@common/packets/inputPacket";
-import type { JoinPacketData } from "@common/packets/joinPacket";
-import type { Orientation, Variation } from "@common/typings";
+import { type ObstacleDefinition } from "@common/definitions/obstacles";
+import { type AllowedEmoteSources, type PlayerInputData } from "@common/packets/inputPacket";
+import { type JoinPacketData } from "@common/packets/joinPacket";
+import { Variation, type Orientation } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
-import type { PlayerModifiers } from "@common/utils/objectDefinitions";
+import { type PlayerModifiers } from "@common/utils/objectDefinitions";
 import { Vector } from "@common/utils/vector";
-
 import { Config } from "./config";
 import { Airdrop, Game } from "./game";
 import { type InventoryItem } from "./inventory/inventoryItem";

@@ -5,13 +5,14 @@ import { Buildings, type BuildingDefinition } from "../definitions/buildings";
 import { Decals, type DecalDefinition } from "../definitions/decals";
 import { type HealingItemDefinition } from "../definitions/healingItems";
 import { Loots, type LootDefinition, type WeaponDefinition } from "../definitions/loots";
-import { Obstacles, type ObstacleDefinition } from "../definitions/obstacles";
+import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions/obstacles";
 import { Skins, type SkinDefinition } from "../definitions/skins";
 import { SyncedParticles, type SyncedParticleDefinition } from "../definitions/syncedParticles";
 import { type ThrowableDefinition } from "../definitions/throwables";
 import { type Orientation, type Variation } from "../typings";
-import { type Mutable } from "./misc";
 import { calculateEnumPacketBits, type SuroiBitStream } from "./suroiBitStream";
+import { Angle, halfπ } from "./math";
+import { type Mutable, type SDeepMutable } from "./misc";
 import { type Vector } from "./vector";
 
 const ANIMATION_TYPE_BITS = calculateEnumPacketBits(AnimationType);

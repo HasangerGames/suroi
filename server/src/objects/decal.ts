@@ -4,7 +4,6 @@ import { type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { randomRotation } from "@common/utils/random";
 import { type Vector } from "@common/utils/vector";
-
 import { type Game } from "../game";
 import { BaseGameObject } from "./gameObject";
 

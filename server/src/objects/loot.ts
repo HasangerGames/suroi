@@ -1,7 +1,8 @@
 import { GameConstants, InventoryMessages, ObjectCategory, PlayerActions } from "@common/constants";
-import type { GunDefinition } from "@common/definitions";
 import { ArmorType } from "@common/definitions/armors";
+import { type GunDefinition } from "@common/definitions/guns";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
+import { PerkCategories } from "@common/definitions/perks";
 import { PickupPacket } from "@common/packets/pickupPacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
@@ -15,7 +16,6 @@ import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { BaseGameObject } from "./gameObject";
 import { type Player } from "./player";
-import { PerkCategories } from "@common/definitions/perks";
 
 export type DataMap = Record<ItemType, unknown> & {
     [ItemType.Gun]: {
