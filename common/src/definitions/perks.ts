@@ -142,7 +142,7 @@ const perks = [
 
         // all multiplicative
         waterSpeedMod: (1 / 0.7) * 1.3,
-        smokeSpeedMod: 1.2
+        smokeSpeedMod: 1.3
     },
     {
         idString: PerkIds.Toploaded,
@@ -177,8 +177,8 @@ const perks = [
         description: "Melee weapons make you move faster when equipped, and deal more damage.",
         category: PerkCategories.Normal,
 
-        speedMod: 1.3, // multiplicative
-        damageMod: 1.3 // multiplicative
+        speedMod: 1.2, // multiplicative
+        damageMod: 1.2 // multiplicative
     },
     {
         idString: PerkIds.CloseQuartersCombat,
@@ -186,9 +186,9 @@ const perks = [
         description: "Weapons do more damage and reload faster at close range.",
         category: PerkCategories.Normal,
 
-        cutoff: 60,
-        reloadMod: 1.2, // divide
-        damageMod: 1.1 // multiplicative
+        cutoff: 50,
+        reloadMod: 1.3, // divide
+        damageMod: 1.2 // multiplicative
     },
     {
         idString: PerkIds.LowProfile,
@@ -197,7 +197,7 @@ const perks = [
         category: PerkCategories.Normal,
 
         sizeMod: 0.8, // multiplicative
-        explosionMod: 0.7 // multiplicative
+        explosionMod: 0.5 // multiplicative
     },
 
     //
