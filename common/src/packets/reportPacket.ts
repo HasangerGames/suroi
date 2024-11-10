@@ -6,15 +6,15 @@ export type ReportPacketData = {
 };
 
 export const ReportPacket = createPacket("ReportPacket")<ReportPacketData>({
-    serialize(stream, data) {
-        stream.writePlayerName(data.playerName);
-        stream.writeASCIIString(data.reportID, 8);
+    serialize(strm, data) {
+        strm.writePlayerName(data.playerName)
+            .writeString(8, data.reportID);
     },
 
     deserialize(stream) {
         return {
             playerName: stream.readPlayerName(),
-            reportID: stream.readASCIIString(8)
+            reportID: stream.readString(8)
         };
     }
 });

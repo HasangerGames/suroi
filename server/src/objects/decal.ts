@@ -8,8 +8,8 @@ import { type Game } from "../game";
 import { BaseGameObject } from "./gameObject";
 
 export class Decal extends BaseGameObject.derive(ObjectCategory.Decal) {
-    override readonly fullAllocBytes = 4;
-    override readonly partialAllocBytes = 4;
+    override readonly fullAllocBytes = 1;
+    override readonly partialAllocBytes = 12;
 
     declare hitbox?: undefined;
 

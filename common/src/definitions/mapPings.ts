@@ -29,6 +29,7 @@ export type PlayerPing = MapPingDefinition & { readonly isPlayerPing: true };
 export type MapPing = MapPingDefinition & { readonly isPlayerPing?: false };
 
 export const MapPings = ObjectDefinitions.withDefault<MapPingDefinition>()(
+    "MapPings",
     {
         ignoreExpiration: false
     },

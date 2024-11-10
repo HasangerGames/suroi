@@ -36,8 +36,8 @@ export type DataMap = Record<ItemType, unknown> & {
 export type ItemData<Def extends LootDefinition = LootDefinition> = DataMap[Def["itemType"]];
 
 export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameObject.derive(ObjectCategory.Loot) {
-    override readonly fullAllocBytes = 8;
-    override readonly partialAllocBytes = 4;
+    override readonly fullAllocBytes = 4;
+    override readonly partialAllocBytes = 8;
 
     declare readonly hitbox: CircleHitbox;
 

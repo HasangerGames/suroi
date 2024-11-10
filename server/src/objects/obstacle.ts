@@ -18,8 +18,8 @@ import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { type Player } from "./player";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
-    override readonly fullAllocBytes = 8;
-    override readonly partialAllocBytes = 4;
+    override readonly fullAllocBytes = 10;
+    override readonly partialAllocBytes = 6;
     override readonly damageable = true;
 
     health: number;

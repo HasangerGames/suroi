@@ -11,12 +11,11 @@ import { type DeepMutable, type DeepRequired, type Timeout } from "@common/utils
 import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { randomFloat, randomPointInsideCircle } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-
-import type { ItemData } from "../objects/loot";
+import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
+import { getPatterningShape } from "../utils/misc";
 import { ReloadAction } from "./action";
 import { InventoryItem } from "./inventoryItem";
-import { getPatterningShape } from "../utils/misc";
 
 /**
  * A class representing a firearm

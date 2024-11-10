@@ -1,17 +1,17 @@
-import { type BitStream } from "@damienvesper/bit-buffer";
-import { DEFAULT_INVENTORY, GameConstants, Layer, ObjectCategory, type GasState } from "../constants";
+import { Constants, DEFAULT_INVENTORY, Derived, itemKeys, itemKeysLength, Layer, ObjectCategory, type GasState } from "../constants";
 import { Badges, type BadgeDefinition } from "../definitions/badges";
-import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
 import { Loots, type WeaponDefinition } from "../definitions/loots";
 import { MapPings, type MapPing, type PlayerPing } from "../definitions/mapPings";
 import { Perks, type PerkDefinition } from "../definitions/perks";
 import { Scopes, type ScopeDefinition } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
-import { type Mutable } from "../utils/misc";
+import { GlobalRegistrar } from "../utils/definitionRegistry";
+import { type Mutable, type SDeepMutable } from "../utils/misc";
 import { ObjectSerializations, type FullData, type ObjectsNetData } from "../utils/objectsSerializations";
-import { OBJECT_ID_BITS, type SuroiBitStream } from "../utils/suroiBitStream";
+import { type SuroiByteStream } from "../utils/suroiByteStream";
 import { Vec, type Vector } from "../utils/vector";
+import type { AllowedEmoteSources } from "./inputPacket";
 import { createPacket } from "./packet";
 
 interface ObjectFullData {
@@ -26,276 +26,416 @@ interface ObjectPartialData {
     readonly data: ObjectsNetData[ObjectCategory]
 }
 
-const [serializePlayerData, deserializePlayerData] = (() => {
-    const generateReadWritePair = <T, Stream extends BitStream = BitStream>(
-        writer: (val: Exclude<T, undefined>, stream: Stream) => void,
-        reader: (stream: Stream) => T
-    ): {
-        readonly write: (stream: Stream, val: T | undefined) => void
-        readonly read: (stream: Stream) => T | undefined
-    } => ({
-        write: (stream: Stream, val: T | undefined): void => {
-            const present = val !== undefined;
-            stream.writeBoolean(present);
+function serializePlayerData(
+    strm: SuroiByteStream,
+    {
+        minMax,
+        health,
+        adrenaline,
+        zoom,
+        layer,
+        id,
+        teammates,
+        inventory,
+        lockedSlots,
+        items,
+        activeC4s,
+        perks
+    }: PlayerData
+): void {
+    /* eslint-disable @stylistic/no-multi-spaces */
+    const hasMinMax      = minMax !== undefined;
+    const hasHealth      = health !== undefined;
+    const hasAdrenaline  = adrenaline !== undefined;
+    const hasZoom        = zoom !== undefined;
+    const hasLayer       = layer !== undefined;
+    const hasId          = id !== undefined;
+    const hasTeammates   = teammates !== undefined;
+    const hasInventory   = inventory !== undefined;
+    const hasLockedSlots = lockedSlots !== undefined;
+    const hasItems       = items !== undefined;
+    const hasActiveC4s   = activeC4s !== undefined;
+    const hasPerks       = perks !== undefined;
+    /* eslint-enable @stylistic/no-multi-spaces */
 
-            if (present) {
-                writer(val as Exclude<T, undefined>, stream);
+    strm.writeBooleanGroup2(
+        hasMinMax,
+        hasHealth,
+        hasAdrenaline,
+        hasZoom,
+        hasLayer,
+        hasId,
+        hasTeammates,
+        hasInventory,
+        hasLockedSlots,
+        hasItems,
+        hasActiveC4s,
+        hasPerks
+    );
+
+    if (hasMinMax) {
+        const { maxHealth, minAdrenaline, maxAdrenaline } = minMax;
+        strm.writeFloat32(maxHealth)
+            .writeFloat32(minAdrenaline)
+            .writeFloat32(maxAdrenaline);
+    }
+
+    if (hasHealth) {
+        strm.writeFloat(health, 0, 1, 2);
+    }
+
+    if (hasAdrenaline) {
+        strm.writeFloat(adrenaline, 0, 1, 2);
+    }
+
+    if (hasZoom) {
+        strm.writeUint8(zoom);
+    }
+
+    if (hasLayer) {
+        strm.writeLayer(layer);
+    }
+
+    if (hasId) {
+        const { id: targetId, spectating } = id;
+        strm.writeUint8(spectating ? -1 : 0)
+            .writeObjectId(targetId);
+    }
+
+    if (hasTeammates) {
+        strm.writeArray(
+            teammates,
+            ({
+                id,
+                position,
+                normalizedHealth,
+                downed,
+                disconnected
+            }) => {
+                strm.writeUint8(
+                    (downed ? 2 : 0) + (disconnected ? 1 : 0)
+                )
+                    .writeObjectId(id)
+                    .writePosition(position ?? Vec.create(0, 0))
+                    .writeFloat(normalizedHealth, 0, 1, 1);
+            },
+            1
+        );
+    }
+
+    if (hasInventory) {
+        const { activeWeaponIndex, weapons = [] } = inventory;
+
+        /*
+            activeWeaponIndex is 2 bits
+            4 weapon slots, each takes up to 2 bits (2 booleans), for a total of 8 bits
+            alright well, we'll just write the activeWeaponIndex as-is (can't pack
+            it with anything else) and write the 8 booleans in a group
+        */
+
+        strm.writeUint8(activeWeaponIndex)
+            .writeBooleanGroup(
+                weapons[0] !== undefined,
+                weapons[1] !== undefined,
+                weapons[2] !== undefined,
+                weapons[3] !== undefined,
+                weapons[0]?.count !== undefined,
+                weapons[1]?.count !== undefined,
+                weapons[2]?.count !== undefined,
+                weapons[3]?.count !== undefined
+            );
+
+        for (let i = 0; i < 4; i++) {
+            const weapon = weapons[i];
+            if (weapon === undefined) continue;
+
+            const { definition, count, stats } = weapon;
+            Loots.writeToStream(strm, definition);
+
+            if (count !== undefined) {
+                strm.writeUint8(count);
             }
-        },
-        read: stream => {
-            if (stream.readBoolean()) return reader(stream);
+
+            if (definition.killstreak) {
+                strm.writeUint8(stats?.kills ?? 0);
+            }
         }
-    });
+    }
 
-    const minMax = generateReadWritePair<PlayerData["minMax"]>(
-        ({ maxHealth, minAdrenaline, maxAdrenaline }, stream) => {
-            stream.writeFloat32(maxHealth);
-            stream.writeFloat32(minAdrenaline);
-            stream.writeFloat32(maxAdrenaline);
-        },
-        stream => ({
-            maxHealth: stream.readFloat32(),
-            minAdrenaline: stream.readFloat32(),
-            maxAdrenaline: stream.readFloat32()
-        })
-    );
+    if (hasLockedSlots) {
+        strm.writeUint8(lockedSlots);
+    }
 
-    const health = generateReadWritePair<PlayerData["health"], SuroiBitStream>(
-        (health, stream) => stream.writeFloat(health, 0, 1, 12),
-        stream => stream.readFloat(0, 1, 12)
-    );
+    if (hasItems) {
+        const { items: invItems, scope } = items;
+        /*
+            we have here an unknown amount of booleans
+            so we'll write them in chunks of 8
 
-    const adrenaline = generateReadWritePair<PlayerData["adrenaline"], SuroiBitStream>(
-        (adrenaline, stream) => stream.writeFloat(adrenaline, 0, 1, 12),
-        stream => stream.readFloat(0, 1, 12)
-    );
+            in essence, we'll first write a bitfield
+            indicating which keys have non-zero counts,
+            and then we'll write said non-zero counts
 
-    const zoom = generateReadWritePair<PlayerData["zoom"]>(
-        (zoom, stream) => stream.writeUint8(zoom),
-        stream => stream.readUint8()
-    );
+            for example, consider this inventory:
+            { a: 3, b: 0, c: 4, d: 6, e: 0 }
 
-    const layer = generateReadWritePair<PlayerData["layer"]>(
-        (layer, stream) => stream.writeUint8(layer),
-        stream => stream.readUint8()
-    );
+            there are only five items, so 3 of the bits are
+            unused. the first portion would write 0000 1101,
+            with the first three bits never being used. the reason
+            it's reversed is because we start with 2**0, then move
+            to 2**1, and so on. this makes deserialization easier.
 
-    const id = generateReadWritePair<PlayerData["id"], SuroiBitStream>(
-        ({ id, spectating }, stream) => {
-            stream.writeObjectID(id);
-            stream.writeBoolean(spectating);
-        },
-        stream => ({
-            id: stream.readObjectID(),
-            spectating: stream.readBoolean()
-        })
-    );
+            to be explicit, the association is (with 'x' = don't care):
+            0 0 0 0 1 1 0 1
+            |___| | | | | |
+              x   e d c b a
 
-    const teammates = generateReadWritePair<PlayerData["teammates"], SuroiBitStream>(
-        (teammates, stream) => {
-            stream.writeArray(teammates, 2, player => {
-                stream.writeObjectID(player.id);
-                stream.writePosition(player.position ?? Vec.create(0, 0));
-                stream.writeFloat(player.normalizedHealth, 0, 1, 8);
-                stream.writeBoolean(player.downed);
-                stream.writeBoolean(player.disconnected);
-            });
-        },
-        stream => stream.readAndCreateArray(2, () => ({
-            id: stream.readObjectID(),
-            position: stream.readPosition(),
-            normalizedHealth: stream.readFloat(0, 1, 8),
-            downed: stream.readBoolean(),
-            disconnected: stream.readBoolean()
-        }))
-    );
+            after writing this, we write all the non-zero counts, giving
+            0000 0000 0000 0011 (a)
+            0000 0000 0000 0100 (c)
+            0000 0000 0000 0110 (d)
+            (16 bits are used because the old api used 9)
 
-    const inventory = generateReadWritePair<PlayerData["inventory"]>(
-        ({ activeWeaponIndex, weapons }, stream) => {
-            stream.writeBits(activeWeaponIndex, 2);
+            thus resulting in a payload of
+            00001101000000000000001100000000000001000000000000000110
+        */
 
-            for (const weapon of weapons ?? []) {
-                stream.writeBoolean(weapon !== undefined);
+        const nonNullCounts: number[] = [];
 
-                if (weapon !== undefined) {
-                    const { definition, count, stats } = weapon;
-                    Loots.writeToStream(stream, definition);
-
-                    const hasCount = count !== undefined;
-                    stream.writeBoolean(hasCount);
-                    if (hasCount) {
-                        stream.writeUint8(count);
-                    }
-
-                    if (definition.killstreak) {
-                        // we pray that these nna's are correct at runtime
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        stream.writeUint8(stats!.kills!);
-                    }
-                }
+        let itemPresent = 0;
+        let itemIdx = 0;
+        while (itemIdx < itemKeysLength) {
+            for (
+                let i = 0;
+                i < 8 && itemIdx < itemKeysLength;
+                i++, itemIdx++
+            ) {
+                const count = invItems[itemKeys[itemIdx]];
+                if (count <= 0) continue;
+                itemPresent += 2 ** i;
+                nonNullCounts.push(count);
             }
-        },
-        stream => ({
-            activeWeaponIndex: stream.readBits(2),
+
+            // write this byte
+            strm.writeUint8(itemPresent);
+            // reset
+            itemPresent = 0;
+        }
+
+        // now write all the non-zero counts
+        for (const count of nonNullCounts) {
+            // old api used 9 bits
+            strm.writeUint16(count);
+        }
+
+        Scopes.writeToStream(strm, scope);
+    }
+
+    if (hasActiveC4s) {
+        // lol ok
+        strm.writeUint8(activeC4s ? -1 : 0);
+    }
+
+    if (hasPerks) {
+        let bitfield = perks.asBitfield();
+
+        /*
+            let n = Perks.definitions.length;
+            this is a bit field, so there are n bits to write => ceil(n / 8) bytes to write
+        */
+        const bytes = Math.ceil(Perks.definitions.length / 8);
+        for (let i = 0; i < bytes; i++) {
+            // now write the bitfield in chunks of 8
+            strm.writeUint8(bitfield); // no need to do '& 255', only the 8 LSB's are taken anyways
+            bitfield >>= 8;
+        }
+    }
+}
+
+function deserializePlayerData(strm: SuroiByteStream): PlayerData {
+    const [
+        hasMinMax,
+        hasHealth,
+        hasAdrenaline,
+        hasZoom,
+        hasLayer,
+        hasId,
+        hasTeammates,
+        hasInventory,
+        hasLockedSlots,
+        hasItems,
+        hasActiveC4s,
+        hasPerks
+    ] = strm.readBooleanGroup2();
+
+    const data: SDeepMutable<PlayerData> = {};
+
+    if (hasMinMax) {
+        data.minMax = {
+            maxHealth: strm.readFloat32(),
+            minAdrenaline: strm.readFloat32(),
+            maxAdrenaline: strm.readFloat32()
+        };
+    }
+
+    if (hasHealth) {
+        data.health = strm.readFloat(0, 1, 2);
+    }
+
+    if (hasAdrenaline) {
+        data.adrenaline = strm.readFloat(0, 1, 2);
+    }
+
+    if (hasZoom) {
+        data.zoom = strm.readUint8();
+    }
+
+    if (hasLayer) {
+        data.layer = strm.readLayer();
+    }
+
+    if (hasId) {
+        data.id = {
+            spectating: strm.readUint8() !== 0,
+            id: strm.readObjectId()
+        };
+    }
+
+    if (hasTeammates) {
+        data.teammates = strm.readArray(
+            () => {
+                const status = strm.readUint8();
+                return {
+                    id: strm.readObjectId(),
+                    position: strm.readPosition(),
+                    normalizedHealth: strm.readFloat(0, 1, 1),
+                    downed: (status & 2) !== 0,
+                    disconnected: (status & 1) !== 0
+                };
+            },
+            1
+        );
+    }
+
+    if (hasInventory) {
+        const activeWeaponIndex = strm.readUint8();
+        const slotData = strm.readBooleanGroup();
+
+        data.inventory = {
+            activeWeaponIndex,
             weapons: Array.from(
-                { length: GameConstants.player.maxWeapons },
-                () => {
-                    if (!stream.readBoolean()) return;
+                { length: 4 },
+                (_, i) => {
+                    if (!slotData[i]) return;
 
-                    const definition = Loots.readFromStream<WeaponDefinition>(stream);
+                    const definition = Loots.readFromStream<WeaponDefinition>(strm);
 
-                    return ({
+                    return {
                         definition,
-                        count: stream.readBoolean() ? stream.readUint8() : undefined,
+                        count: slotData[i + 4] ? strm.readUint8() : undefined,
                         stats: {
-                            kills: definition.killstreak ? stream.readUint8() : undefined
+                            kills: definition.killstreak ? strm.readUint8() : undefined
                         }
-                    });
+                    };
                 }
             )
-        })
-    );
+        };
+    }
 
-    const slotLocks = generateReadWritePair<PlayerData["lockedSlots"]>(
-        (lockedSlots, stream) => stream.writeBits(lockedSlots, GameConstants.player.maxWeapons),
-        stream => stream.readBits(GameConstants.player.maxWeapons)
-    );
+    if (hasLockedSlots) {
+        data.lockedSlots = strm.readUint8();
+    }
 
-    const items = generateReadWritePair<PlayerData["items"]>(
-        ({ items, scope }, stream) => {
-            for (const item in DEFAULT_INVENTORY) {
-                const count = items[item];
+    if (hasItems) {
+        /*
+            let's work backwards with the inventory given as
+            example in the serialization portion's comment.
+            as a reminder, the payload in the stream is
+            0000 1101 0000 0000 0000 0011 0000 0000 0000 0100 0000 0000 0000 0110,
+            and the 5 items that exist are a, b, c, d, and e.
 
-                stream.writeBoolean(count > 0);
+            we call readBooleanGroup to succinctly read a byte and convert it to
+            a bitfield. thus we obtain 0000 1101, and from that, checkIndices contains
+            0, 2, and 3 after the while loop is done
 
-                if (count > 0) {
-                    stream.writeBits(count, 9);
+            we then consult the keys at those indices and associate the 16-bit
+            integer count from the stream to that item's count, giving
+
+            0 -> item 'a' -> 0000 0000 0000 0011 -> 3
+            2 -> item 'c' -> 0000 0000 0000 0100 -> 4
+            3 -> item 'd' -> 0000 0000 0000 0110 -> 6
+
+            and for the other keys, we put 0
+            thus our inventory is { a: 3, b: 0, c: 4, d: 6, e: 0 }
+            which matches the inventory we started with on the server. ta-da!
+        */
+
+        const checkIndices = new Set<number>();
+        let itemIdx = 0;
+        while (itemIdx < itemKeysLength) {
+            // read 8 booleans at once
+            const group = strm.readBooleanGroup();
+            for (
+                let i = 0;
+                i < 8 && itemIdx < itemKeysLength;
+                i++, itemIdx++
+            ) {
+                if (group[i]) {
+                    checkIndices.add(itemIdx);
                 }
             }
-
-            Scopes.writeToStream(stream, scope);
-        },
-        stream => {
-            const items: typeof DEFAULT_INVENTORY = {};
-
-            for (const item in DEFAULT_INVENTORY) {
-                items[item] = stream.readBoolean() ? stream.readBits(9) : 0;
-            }
-
-            return {
-                items,
-                scope: Scopes.readFromStream(stream)
-            };
         }
-    );
 
-    const activeC4s = generateReadWritePair<PlayerData["activeC4s"]>(
-        (activeC4s, stream) => stream.writeBoolean(activeC4s),
-        stream => stream.readBoolean()
-    );
-
-    const perks = generateReadWritePair<PlayerData["perks"]>(
-        (perks, stream) => {
-            /*
-                note: will break once perk count exceeds 30
-                (bit-buffer relies on js' bitwise operators,
-                which convert values to signed 32-bit integers)
-            */
-
-            const list = perks.asList();
-            const perkCount = list.length;
-
-            const useList = perkCount <= Perks.bitfieldCutoff;
-            stream.writeBoolean(useList);
-            if (useList) {
-                stream.writeBits(perkCount, Perks.bitCount);
-                for (const perk of list) {
-                    Perks.writeToStream(stream, perk);
-                }
-            } else {
-                stream.writeBits(perks.asBitfield(), Perks.definitions.length);
-            }
-        },
-        stream => {
-            if (stream.readBoolean()) {
-                const count = stream.readBits(Perks.bitCount);
-
-                let bitfield = 0;
-                const list: PerkDefinition[] = [];
-                for (let i = 0; i < count; i++) {
-                    bitfield += 1 << Perks.idStringToNumber[
-                        (list[i] = Perks.readFromStream(stream)).idString
-                    ];
-                }
-
-                return {
-                    asBitfield: () => bitfield,
-                    asList: () => list
-                };
-            }
-
-            const bitfield = stream.readBits(Perks.definitions.length);
-            let list: PerkDefinition[] | undefined;
-            return {
-                asBitfield: () => bitfield,
-                asList: () => list ??= Perks.definitions.filter((_, i) => (bitfield & (1 << i)) !== 0)
-            };
+        const items: typeof DEFAULT_INVENTORY = {};
+        for (let i = 0; i < itemKeysLength; i++) {
+            items[itemKeys[i]] = checkIndices.has(i) ? strm.readUint16() : 0;
         }
-    );
 
-    return [
-        (stream: SuroiBitStream, data: PlayerData): void => {
-            minMax.write(stream, data.minMax);
-            health.write(stream, data.health);
-            adrenaline.write(stream, data.adrenaline);
-            zoom.write(stream, data.zoom);
-            layer.write(stream, data.layer);
-            id.write(stream, data.id);
-            teammates.write(stream, data.teammates);
-            inventory.write(stream, data.inventory);
-            slotLocks.write(stream, data.lockedSlots);
-            items.write(stream, data.items);
-            activeC4s.write(stream, data.activeC4s);
-            perks.write(stream, data.perks);
-        },
+        data.items = {
+            items,
+            scope: Scopes.readFromStream(strm)
+        };
+    }
 
-        (stream: SuroiBitStream): PlayerData => {
-            return {
-                minMax: minMax.read(stream),
-                health: health.read(stream),
-                adrenaline: adrenaline.read(stream),
-                zoom: zoom.read(stream),
-                layer: layer.read(stream),
-                id: id.read(stream),
-                teammates: teammates.read(stream),
-                inventory: inventory.read(stream),
-                lockedSlots: slotLocks.read(stream),
-                items: items.read(stream),
-                activeC4s: activeC4s.read(stream),
-                perks: perks.read(stream)
-            };
+    if (hasActiveC4s) {
+        data.activeC4s = strm.readUint8() !== 0;
+    }
+
+    if (hasPerks) {
+        const bytes = Math.ceil(Perks.definitions.length / 8);
+
+        let bitfield = 0;
+        for (let i = 0; i < bytes; i++) {
+            // append new chunks "leftwards"
+            bitfield += strm.readUint8() << (8 * i);
         }
-    ];
-})();
 
-const UpdateFlags = Object.freeze({
-    PlayerData: 1 << 0,
-    DeletedObjects: 1 << 1,
-    FullObjects: 1 << 2,
-    PartialObjects: 1 << 3,
-    Bullets: 1 << 4,
-    Explosions: 1 << 5,
-    Emotes: 1 << 6,
-    Gas: 1 << 7,
-    GasPercentage: 1 << 8,
-    NewPlayers: 1 << 9,
-    DeletedPlayers: 1 << 10,
-    AliveCount: 1 << 11,
-    Planes: 1 << 12,
-    MapPings: 1 << 13
-});
+        let list: PerkDefinition[] | undefined;
+        data.perks = {
+            asBitfield: () => bitfield,
+            asList: () => [...(list ??= Perks.definitions.filter((_, i) => (bitfield & (1 << i)) !== 0))]
+        };
+    }
 
-const UPDATE_FLAGS_BITS = Object.keys(UpdateFlags).length;
+    return data;
+}
+
+const enum UpdateFlags {
+    PlayerData = 1 << 0,
+    DeletedObjects = 1 << 1,
+    FullObjects = 1 << 2,
+    PartialObjects = 1 << 3,
+    Bullets = 1 << 4,
+    Explosions = 1 << 5,
+    Emotes = 1 << 6,
+    Gas = 1 << 7,
+    GasPercentage = 1 << 8,
+    NewPlayers = 1 << 9,
+    DeletedPlayers = 1 << 10,
+    AliveCount = 1 << 11,
+    Planes = 1 << 12,
+    MapPings = 1 << 13
+}
 
 export type MapPingSerialization = {
     readonly position: Vector
@@ -317,7 +457,7 @@ export type ExplosionSerialization = {
 };
 
 export type EmoteSerialization = {
-    readonly definition: EmoteDefinition
+    readonly definition: AllowedEmoteSources
     readonly playerID: number
 };
 
@@ -404,12 +544,12 @@ export type UpdatePacketDataCommon = {
 export type ServerOnly = {
     readonly bullets?: readonly BaseBullet[]
     readonly fullObjectsCache: ReadonlyArray<{
-        get partialStream(): SuroiBitStream
-        get fullStream(): SuroiBitStream
+        get partialStream(): SuroiByteStream
+        get fullStream(): SuroiByteStream
     }>
 
     readonly partialObjectsCache: ReadonlyArray<{
-        get partialStream(): SuroiBitStream
+        get partialStream(): SuroiByteStream
     }>
 };
 
@@ -429,242 +569,278 @@ export type UpdatePacketDataIn = UpdatePacketDataCommon & ServerOnly;
 export type UpdatePacketDataOut = UpdatePacketDataCommon & ClientOnly;
 
 export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, UpdatePacketDataOut>({
-    serialize(stream, data) {
+    serialize(strm, data) {
         let flags = 0;
         // save the current index to write flags later
-        const flagsIdx = stream.index;
-        stream.writeBits(flags, UPDATE_FLAGS_BITS);
+        const flagsIdx = strm.index;
+        strm.writeUint16(0);
 
         if (data.playerData) {
             if (Object.keys(data.playerData).length > 0) {
-                serializePlayerData(stream, data.playerData);
+                serializePlayerData(strm, data.playerData);
                 flags |= UpdateFlags.PlayerData;
             }
         }
 
         if (data.deletedObjects?.length) {
-            stream.writeArray(data.deletedObjects, OBJECT_ID_BITS, id => {
-                stream.writeObjectID(id);
-            });
+            strm.writeArray(
+                data.deletedObjects,
+                id => {
+                    strm.writeObjectId(id);
+                },
+                2
+            );
             flags |= UpdateFlags.DeletedObjects;
         }
 
         if (data.fullObjectsCache?.length) {
-            stream.writeAlignToNextByte();
-            stream.writeArray(data.fullObjectsCache, 16, object => {
-                stream.writeBytes(object.partialStream, 0, object.partialStream.byteIndex);
-                stream.writeBytes(object.fullStream, 0, object.fullStream.byteIndex);
-            });
+            strm.writeArray(
+                data.fullObjectsCache,
+                object => {
+                    strm.writeStream(object.partialStream)
+                        .writeStream(object.fullStream);
+                },
+                2
+            );
             flags |= UpdateFlags.FullObjects;
         }
 
         if (data.partialObjectsCache?.length) {
-            stream.writeAlignToNextByte();
-            stream.writeArray(data.partialObjectsCache, 16, object => {
-                stream.writeBytes(object.partialStream, 0, object.partialStream.byteIndex);
-            });
+            strm.writeArray(
+                data.partialObjectsCache,
+                object => {
+                    strm.writeStream(object.partialStream);
+                },
+                2
+            );
             flags |= UpdateFlags.PartialObjects;
         }
 
         if (data.bullets?.length) {
-            stream.writeArray(data.bullets, 8, bullet => {
-                bullet.serialize(stream);
-            });
+            strm.writeArray(
+                data.bullets,
+                bullet => { bullet.serialize(strm); },
+                1
+            );
             flags |= UpdateFlags.Bullets;
         }
 
         if (data.explosions?.length) {
-            stream.writeArray(data.explosions, 8, explosion => {
-                Explosions.writeToStream(stream, explosion.definition);
-                stream.writePosition(explosion.position);
-                stream.writeInt8(explosion.layer);
-            });
+            strm.writeArray(
+                data.explosions,
+                explosion => {
+                    Explosions.writeToStream(strm, explosion.definition);
+                    strm.writePosition(explosion.position)
+                        .writeLayer(explosion.layer);
+                },
+                1
+            );
             flags |= UpdateFlags.Explosions;
         }
 
         if (data.emotes?.length) {
-            stream.writeArray(data.emotes, 8, emote => {
-                Emotes.writeToStream(stream, emote.definition);
-                stream.writeObjectID(emote.playerID);
-            });
+            strm.writeArray(
+                data.emotes,
+                emote => {
+                    GlobalRegistrar.writeToStream(strm, emote.definition);
+                    strm.writeObjectId(emote.playerID);
+                },
+                1
+            );
             flags |= UpdateFlags.Emotes;
         }
 
         if (data.gas) {
             const gas = data.gas;
-            stream.writeBits(gas.state, 2);
-            stream.writeBits(gas.currentDuration, 7);
-            stream.writePosition(gas.oldPosition);
-            stream.writePosition(gas.newPosition);
-            stream.writeFloat(gas.oldRadius, 0, 2048, 16);
-            stream.writeFloat(gas.newRadius, 0, 2048, 16);
+            strm.writeUint8(gas.state)
+                .writeUint8(gas.currentDuration)
+                .writePosition(gas.oldPosition)
+                .writePosition(gas.newPosition)
+                .writeFloat(gas.oldRadius, 0, 2048, 2)
+                .writeFloat(gas.newRadius, 0, 2048, 2);
             flags |= UpdateFlags.Gas;
         }
 
         if (data.gasProgress !== undefined) {
-            stream.writeFloat(data.gasProgress, 0, 1, 16);
+            strm.writeFloat(data.gasProgress, 0, 1, 2);
             flags |= UpdateFlags.GasPercentage;
         }
 
         if (data.newPlayers?.length) {
-            stream.writeArray(data.newPlayers, 8, player => {
-                stream.writeObjectID(player.id);
-                stream.writePlayerName(player.name);
-                stream.writeBoolean(player.hasColor);
-                if (player.hasColor) stream.writeBits(player.nameColor, 24);
+            strm.writeArray(
+                data.newPlayers,
+                player => {
+                    const hasColor = player.hasColor;
+                    const hasBadge = player.badge !== undefined;
+                    strm.writeObjectId(player.id)
+                        .writePlayerName(player.name)
+                        .writeUint8(
+                            (hasColor ? 2 : 0) + (hasBadge ? 1 : 0)
+                        );
 
-                Badges.writeOptional(stream, player.badge);
-            });
+                    if (hasColor) {
+                        strm.writeUint24(player.nameColor);
+                    }
+
+                    if (hasBadge) {
+                        Badges.writeToStream(strm, player.badge);
+                    }
+                },
+                1
+            );
             flags |= UpdateFlags.NewPlayers;
         }
 
         if (data.deletedPlayers?.length) {
-            stream.writeArray(data.deletedPlayers, 8, id => {
-                stream.writeObjectID(id);
-            });
+            strm.writeArray(
+                data.deletedPlayers,
+                id => { strm.writeObjectId(id); },
+                1
+            );
             flags |= UpdateFlags.DeletedPlayers;
         }
 
         if (data.aliveCount !== undefined) {
-            stream.writeUint8(data.aliveCount);
+            strm.writeUint8(data.aliveCount);
             flags |= UpdateFlags.AliveCount;
         }
 
         if (data.planes?.length) {
-            stream.writeArray(data.planes, 4, plane => {
-                stream.writeVector(
-                    plane.position,
-                    -GameConstants.maxPosition,
-                    -GameConstants.maxPosition,
-                    GameConstants.maxPosition * 2,
-                    GameConstants.maxPosition * 2,
-                    24);
-                stream.writeRotation(plane.direction, 16);
-            });
+            strm.writeArray(
+                data.planes,
+                plane => {
+                    strm.writeVector(
+                        plane.position,
+                        -Constants.MAX_POSITION,
+                        -Constants.MAX_POSITION,
+                        Derived.DOUBLE_MAX_POS,
+                        Derived.DOUBLE_MAX_POS,
+                        3
+                    );
+                    strm.writeRotation2(plane.direction);
+                },
+                1
+            );
             flags |= UpdateFlags.Planes;
         }
 
         if (data.mapPings?.length) {
-            stream.writeArray(data.mapPings, 4, ping => {
-                MapPings.writeToStream(stream, ping.definition);
-                stream.writePosition(ping.position);
-                if (ping.definition.isPlayerPing) {
-                    stream.writeObjectID((ping as PlayerPingSerialization).playerId);
-                }
-            });
+            strm.writeArray(
+                data.mapPings,
+                ping => {
+                    MapPings.writeToStream(strm, ping.definition);
+                    strm.writePosition(ping.position);
+                    if (ping.definition.isPlayerPing) {
+                        strm.writeObjectId((ping as PlayerPingSerialization).playerId);
+                    }
+                },
+                1
+            );
             flags |= UpdateFlags.MapPings;
         }
 
-        const idx = stream.index;
-        stream.index = flagsIdx;
-        stream.writeBits(flags, UPDATE_FLAGS_BITS);
+        const idx = strm.index;
+        strm.index = flagsIdx;
+        strm.writeUint16(flags);
         // restore steam index
-        stream.index = idx;
+        strm.index = idx;
     },
 
     deserialize(stream) {
         const data = {} as Mutable<UpdatePacketDataOut>;
 
-        const flags = stream.readBits(UPDATE_FLAGS_BITS);
+        const flags = stream.readUint16();
 
         if (flags & UpdateFlags.PlayerData) {
             data.playerData = deserializePlayerData(stream);
         }
 
         if (flags & UpdateFlags.DeletedObjects) {
-            data.deletedObjects = stream.readAndCreateArray(OBJECT_ID_BITS, () => stream.readObjectID());
+            data.deletedObjects = stream.readArray(() => stream.readObjectId(), 2);
         }
 
         if (flags & UpdateFlags.FullObjects) {
-            stream.readAlignToNextByte();
-
-            data.fullDirtyObjects = stream.readAndCreateArray(16, () => {
-                const id = stream.readObjectID();
+            data.fullDirtyObjects = stream.readArray(() => {
+                const id = stream.readObjectId();
                 const type = stream.readObjectType();
 
-                const partialData = ObjectSerializations[type].deserializePartial(stream);
-                stream.readAlignToNextByte();
-                const fullData = ObjectSerializations[type].deserializeFull(stream);
-                stream.readAlignToNextByte();
-
+                const serializers = ObjectSerializations[type];
                 return {
                     id,
                     type,
                     data: {
-                        ...partialData,
-                        full: fullData
+                        ...serializers.deserializePartial(stream),
+                        full: serializers.deserializeFull(stream)
                     } as ObjectsNetData[typeof type]
                 };
-            });
+            }, 2);
         }
 
         if (flags & UpdateFlags.PartialObjects) {
-            stream.readAlignToNextByte();
-
-            data.partialDirtyObjects = stream.readAndCreateArray(16, () => {
-                const id = stream.readObjectID();
+            data.partialDirtyObjects = stream.readArray(() => {
+                const id = stream.readObjectId();
                 const type = stream.readObjectType();
-                const data = ObjectSerializations[type].deserializePartial(stream);
-                stream.readAlignToNextByte();
-
-                return { id, type, data };
-            });
+                return {
+                    id,
+                    type,
+                    data: ObjectSerializations[type].deserializePartial(stream)
+                };
+            }, 2);
         }
 
         if (flags & UpdateFlags.Bullets) {
-            data.deserializedBullets = stream.readAndCreateArray(8, () => BaseBullet.deserialize(stream));
+            data.deserializedBullets = stream.readArray(() => BaseBullet.deserialize(stream), 1);
         }
 
         if (flags & UpdateFlags.Explosions) {
-            data.explosions = stream.readAndCreateArray(8, () => ({
+            data.explosions = stream.readArray(() => ({
                 definition: Explosions.readFromStream(stream),
                 position: stream.readPosition(),
-                layer: stream.readInt8()
-            }));
+                layer: stream.readLayer()
+            }), 1);
         }
 
         if (flags & UpdateFlags.Emotes) {
-            data.emotes = stream.readAndCreateArray(8, () => ({
-                definition: Emotes.readFromStream(stream),
-                playerID: stream.readObjectID()
-            }));
+            data.emotes = stream.readArray(() => ({
+                definition: GlobalRegistrar.readFromStream(stream),
+                playerID: stream.readObjectId()
+            }), 1);
         }
 
         if (flags & UpdateFlags.Gas) {
             data.gas = {
-                state: stream.readBits(2),
-                currentDuration: stream.readBits(7),
+                state: stream.readUint8(),
+                currentDuration: stream.readUint8(),
                 oldPosition: stream.readPosition(),
                 newPosition: stream.readPosition(),
-                oldRadius: stream.readFloat(0, 2048, 16),
-                newRadius: stream.readFloat(0, 2048, 16)
+                oldRadius: stream.readFloat(0, 2048, 2),
+                newRadius: stream.readFloat(0, 2048, 2)
             };
         }
 
         if (flags & UpdateFlags.GasPercentage) {
-            data.gasProgress = stream.readFloat(0, 1, 16);
+            data.gasProgress = stream.readFloat(0, 1, 2);
         }
 
         if (flags & UpdateFlags.NewPlayers) {
-            data.newPlayers = stream.readAndCreateArray(8, () => {
-                const id = stream.readObjectID();
+            data.newPlayers = stream.readArray(() => {
+                const id = stream.readObjectId();
                 const name = stream.readPlayerName();
-                const hasColor = stream.readBoolean();
+                const decorations = stream.readUint8();
+                const hasColor = (decorations & 2) !== 0;
 
                 return {
                     id,
                     name,
                     hasColor,
-                    nameColor: hasColor ? stream.readBits(24) : undefined,
-                    badge: Badges.readOptional(stream)
+                    nameColor: hasColor ? stream.readUint24() : undefined,
+                    badge: (decorations & 1) !== 0 ? Badges.readFromStream(stream) : undefined
                 } as (UpdatePacketDataCommon["newPlayers"] & object)[number];
-            });
+            }, 1);
         }
 
         if (flags & UpdateFlags.DeletedPlayers) {
-            data.deletedPlayers = stream.readAndCreateArray(8, () => {
-                return stream.readObjectID();
-            });
+            data.deletedPlayers = stream.readArray(() => stream.readObjectId(), 1);
         }
 
         if (flags & UpdateFlags.AliveCount) {
@@ -672,30 +848,28 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
         }
 
         if (flags & UpdateFlags.Planes) {
-            data.planes = stream.readAndCreateArray(4, () => {
-                const position = stream.readVector(
-                    -GameConstants.maxPosition,
-                    -GameConstants.maxPosition,
-                    GameConstants.maxPosition * 2,
-                    GameConstants.maxPosition * 2,
-                    24
-                );
-                const direction = stream.readRotation(16);
-
-                return { position, direction };
-            });
+            data.planes = stream.readArray(() => ({
+                position: stream.readVector(
+                    -Constants.MAX_POSITION,
+                    -Constants.MAX_POSITION,
+                    Derived.DOUBLE_MAX_POS,
+                    Derived.DOUBLE_MAX_POS,
+                    3
+                ),
+                direction: stream.readRotation2()
+            }), 1);
         }
 
         if (flags & UpdateFlags.MapPings) {
-            data.mapPings = stream.readAndCreateArray(4, () => {
+            data.mapPings = stream.readArray(() => {
                 const definition = MapPings.readFromStream(stream);
 
                 return {
                     definition,
                     position: stream.readPosition(),
-                    ...(definition.isPlayerPing ? { playerId: stream.readObjectID() } : {})
+                    ...(definition.isPlayerPing ? { playerId: stream.readObjectId() } : {})
                 } as MapPingSerialization;
-            });
+            }, 1);
         }
 
         return data as UpdatePacketDataOut;

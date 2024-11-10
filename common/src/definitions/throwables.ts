@@ -67,6 +67,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
 });
 
 export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
+    "Throwables",
     {
         itemType: ItemType.Throwable,
         speedMultiplier: 0.92,

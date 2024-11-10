@@ -223,6 +223,7 @@ const ContainerWallTints = {
 };
 
 export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
+    "Buildings",
     {
         hideOnMap: false,
         spawnMode: MapObjectSpawnMode.Grass,

@@ -19,6 +19,7 @@ export enum ArmorType {
 }
 
 export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
+    "Armors",
     {
         itemType: ItemType.Armor,
         noDrop: false

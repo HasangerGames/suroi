@@ -13,6 +13,7 @@ export interface DecalDefinition extends ObjectDefinition {
 }
 
 export const Decals = ObjectDefinitions.withDefault<DecalDefinition>()(
+    "Decals",
     {
         scale: 1,
         rotationMode: RotationMode.Limited

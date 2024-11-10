@@ -122,10 +122,6 @@ importers:
         version: 1.1.8(vite@5.4.10(@types/node@22.9.0)(sass@1.80.6))
 
   common:
-    dependencies:
-      '@damienvesper/bit-buffer':
-        specifier: ^1.0.1
-        version: 1.0.1
     devDependencies:
       '@types/node':
         specifier: ^22.7.5
@@ -133,9 +129,6 @@ importers:
 
   server:
     dependencies:
-      '@damienvesper/bit-buffer':
-        specifier: ^1.0.1
-        version: 1.0.1
       croner:
         specifier: ^8.1.2
         version: 8.1.2
@@ -185,9 +178,6 @@ importers:
 
   tests:
     dependencies:
-      '@damienvesper/bit-buffer':
-        specifier: ^1.0.1
-        version: 1.0.1
       nanotimer:
         specifier: ^0.3.15
         version: 0.3.15
@@ -666,10 +656,6 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       postcss: ^8.4
-
-  '@damienvesper/bit-buffer@1.0.1':
-    resolution: {integrity: sha512-9sRpqNevbCxTmI05mBA3WdaAB4P467XP7aiA/zwOZtWdAS90wIuokeZz9hrUgQlUUKAC4f5+/zqrblV6XdlnLA==}
-    engines: {node: '>=18.8.0', pnpm: '>=8.6.0'}
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -3771,8 +3757,6 @@ snapshots:
   '@csstools/utilities@2.0.0(postcss@8.4.47)':
     dependencies:
       postcss: 8.4.47
-
-  '@damienvesper/bit-buffer@1.0.1': {}
 
   '@esbuild/aix-ppc64@0.21.5':
     optional: true

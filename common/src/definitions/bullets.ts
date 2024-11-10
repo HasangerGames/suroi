@@ -28,6 +28,7 @@ const saturatedBulletColors: Record<string, number> = {
 };
 
 export const Bullets = ObjectDefinitions.withDefault<BulletDefinition>()(
+    "Bullets",
     defaultBulletTemplate,
     () => [
         ...Guns.definitions,

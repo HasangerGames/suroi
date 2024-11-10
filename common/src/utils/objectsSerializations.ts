@@ -10,13 +10,10 @@ import { Skins, type SkinDefinition } from "../definitions/skins";
 import { SyncedParticles, type SyncedParticleDefinition } from "../definitions/syncedParticles";
 import { type ThrowableDefinition } from "../definitions/throwables";
 import { type Orientation, type Variation } from "../typings";
-import { calculateEnumPacketBits, type SuroiBitStream } from "./suroiBitStream";
 import { Angle, halfπ } from "./math";
 import { type Mutable, type SDeepMutable } from "./misc";
+import { type SuroiByteStream } from "./suroiByteStream";
 import { type Vector } from "./vector";
-
-const ANIMATION_TYPE_BITS = calculateEnumPacketBits(AnimationType);
-const PLAYER_ACTIONS_BITS = calculateEnumPacketBits(PlayerActions);
 
 export interface Fullable<T> {
     full?: T
@@ -171,10 +168,10 @@ export interface ObjectsNetData extends BaseObjectsNetData {
 }
 
 interface ObjectSerialization<T extends ObjectCategory> {
-    serializePartial: (stream: SuroiBitStream, data: ObjectsNetData[T]) => void
-    serializeFull: (stream: SuroiBitStream, data: FullData<T>) => void
-    deserializePartial: (stream: SuroiBitStream) => ObjectsNetData[T]
-    deserializeFull: (stream: SuroiBitStream) => FullDeserializationType<T>
+    serializePartial: (stream: SuroiByteStream, data: ObjectsNetData[T]) => void
+    serializeFull: (stream: SuroiByteStream, data: FullData<T>) => void
+    deserializePartial: (stream: SuroiByteStream) => ObjectsNetData[T]
+    deserializeFull: (stream: SuroiByteStream) => FullDeserializationType<T>
 }
 
 export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<K> } = {
@@ -184,21 +181,37 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     [ObjectCategory.Player]: {
         serializePartial(stream, { position, rotation, animation, action }): void {
             stream.writePosition(position);
-            stream.writeRotation(rotation, 16);
+            stream.writeRotation2(rotation);
+
+            /*
+                4 bits for animation, 2 for action
+                each has a "dirty" bit, and that makes 8
+
+                our setup will be
+                Nnnn nccC
+
+                N: animation dirty
+                n: animation
+                c: action
+                C: action dirty
+            */
 
             const animationDirty = animation !== undefined;
-            stream.writeBoolean(animationDirty);
+            const actionDirty = action !== undefined;
+
+            let actAnim = (animationDirty ? 128 : 0) + (actionDirty ? 1 : 0);
             if (animationDirty) {
-                stream.writeBits(animation, ANIMATION_TYPE_BITS);
+                actAnim += animation << 3;
             }
 
-            const actionDirty = action !== undefined;
-            stream.writeBoolean(actionDirty);
             if (actionDirty) {
-                stream.writeBits(action.type, PLAYER_ACTIONS_BITS);
-                if (action.item) {
-                    Loots.writeToStream(stream, action.item);
-                }
+                actAnim += action.type << 1;
+            }
+
+            stream.writeUint8(actAnim);
+
+            if (actionDirty && action.item !== undefined) {
+                Loots.writeToStream(stream, action.item);
             }
         },
         serializeFull(
@@ -221,65 +234,94 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             } }
         ): void {
             stream.writeLayer(layer);
-            stream.writeBoolean(dead);
-            stream.writeBoolean(downed);
-            stream.writeBoolean(beingRevived);
+            const hasSizeMod = sizeMod !== undefined;
+            const hasHelmet = helmet !== undefined;
+            const hasVest = vest !== undefined;
+            const hasDisguise = activeDisguise !== undefined;
+
+            stream.writeBooleanGroup2(
+                dead,
+                downed,
+                beingRevived,
+                invulnerable,
+                hasSizeMod,
+                halloweenThrowableSkin,
+                hasHelmet,
+                hasVest,
+                hasDisguise
+            );
             stream.writeUint8(teamID);
-            stream.writeBoolean(invulnerable);
             Loots.writeToStream(stream, activeItem);
 
-            stream.writeBoolean(sizeMod !== undefined);
-            if (sizeMod !== undefined) {
-                stream.writeFloat(sizeMod, 0, 4, 8);
+            if (hasSizeMod) {
+                stream.writeFloat(sizeMod, 0, 4, 1);
             }
 
             Skins.writeToStream(stream, skin);
 
-            Armors.writeOptional(stream, helmet);
-            Armors.writeOptional(stream, vest);
+            if (hasHelmet) Armors.writeToStream(stream, helmet);
+            if (hasVest) Armors.writeToStream(stream, vest);
             Backpacks.writeToStream(stream, backpack);
 
-            stream.writeBoolean(halloweenThrowableSkin);
-            Obstacles.writeOptional(stream, activeDisguise);
+            if (hasDisguise) Obstacles.writeToStream(stream, activeDisguise);
         },
         deserializePartial(stream) {
             const data: Mutable<ObjectsNetData[ObjectCategory.Player]> = {
                 position: stream.readPosition(),
-                rotation: stream.readRotation(16),
-                animation: stream.readBoolean() ? stream.readBits(ANIMATION_TYPE_BITS) : undefined
+                rotation: stream.readRotation2()
             };
 
-            if (stream.readBoolean()) { // action dirty
-                const action: Mutable<NonNullable<ObjectsNetData[ObjectCategory.Player]["action"]>> = {
-                    type: stream.readBits(PLAYER_ACTIONS_BITS),
-                    item: undefined as HealingItemDefinition | undefined
-                };
+            // see serialization comment
+            const actAnim = stream.readUint8();
+            const hasAnimation = (actAnim & 128) !== 0;
+            const hasAction = (actAnim & 1) !== 0;
 
-                if (action.type === PlayerActions.UseItem) {
-                    action.item = Loots.readFromStream(stream);
+            data.animation = hasAnimation ? (actAnim >> 3) & 15 : undefined;
+
+            const action: PlayerActions | undefined = hasAction ? (actAnim >> 1) & 3 : undefined;
+            if (action !== undefined) {
+                const act = {
+                    type: action
+                } as Mutable<NonNullable<ObjectsNetData[ObjectCategory.Player]["action"]>>;
+
+                if (action === PlayerActions.UseItem) {
+                    act.item = Loots.readFromStream<HealingItemDefinition>(stream);
                 }
 
-                data.action = action;
+                data.action = act;
             }
 
             return data;
         },
         deserializeFull(stream) {
+            const layer = stream.readLayer();
+            const [
+                dead,
+                downed,
+                beingRevived,
+                invulnerable,
+                hasSizeMod,
+                halloweenThrowableSkin,
+                hasHelmet,
+                hasVest,
+                hasDisguise
+            ] = stream.readBooleanGroup2();
+
             return {
-                layer: stream.readLayer(),
-                dead: stream.readBoolean(),
-                downed: stream.readBoolean(),
-                beingRevived: stream.readBoolean(),
+                layer,
+                dead,
+                downed,
+                beingRevived,
+                invulnerable,
+                halloweenThrowableSkin,
                 teamID: stream.readUint8(),
-                invulnerable: stream.readBoolean(),
                 activeItem: Loots.readFromStream(stream),
-                sizeMod: stream.readBoolean() ? stream.readFloat(0, 4, 8) : undefined,
+                sizeMod: hasSizeMod ? stream.readFloat(0, 4, 1) : undefined,
                 skin: Skins.readFromStream(stream),
-                helmet: Armors.readOptional(stream),
-                vest: Armors.readOptional(stream),
+                helmet: hasHelmet ? Armors.readFromStream(stream) : undefined,
+                vest: hasVest ? Armors.readFromStream(stream) : undefined,
                 backpack: Backpacks.readFromStream(stream),
-                halloweenThrowableSkin: stream.readBoolean(),
-                activeDisguise: Obstacles.readOptional(stream)
+                activeDisguise: hasDisguise ? Obstacles.readFromStream(stream) : undefined
             };
         }
     },
@@ -288,61 +330,222 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     //
     [ObjectCategory.Obstacle]: {
         serializePartial(stream, data): void {
+            stream.writeBooleanGroup(
+                data.dead,
+                data.playMaterialDestroyedSound
+            );
             stream.writeScale(data.scale);
-            stream.writeBoolean(data.dead);
-            stream.writeBoolean(data.playMaterialDestroyedSound);
         },
-        serializeFull(stream, { full }): void {
-            Obstacles.writeToStream(stream, full.definition);
+        serializeFull(
+            stream,
+            {
+                full: {
+                    position,
+                    definition,
+                    rotation,
+                    door,
+                    activated,
+                    detectedMetal,
+                    variation,
+                    layer
+                }
+            }
+        ): void {
+            Obstacles.writeToStream(stream, definition);
 
-            stream.writePosition(full.position);
-            stream.writeObstacleRotation(full.rotation.rotation, full.definition.rotationMode);
-            stream.writeLayer(full.layer);
-            if (full.definition.variations !== undefined && full.variation !== undefined) {
-                // if the unserialized form is present, the serialized form should also be present
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                stream.writeBits(full.variation, full.definition.variationBits!);
+            stream.writePosition(position);
+            stream.writeLayer(layer);
+
+            /*
+                here we're condensing stuff to try and minimize deadspace
+                this is really peak tryharding
+                we have:
+                - a rotation
+                - a variation (maybe)
+                possibly one of:
+                    - door stuff
+                    - activation stuff
+                    - detector stuff stuff
+            */
+
+            // variations leave at least 5 vacant bits, which is enough for the rest of our data
+            let obstacleData = 0;
+            if (definition.variations !== undefined && variation !== undefined) {
+                // variation being undefined is equivalent to it being 0
+
+                // make the variation stuff take up the MSBs, leaving the LSBs for the other stuff
+                obstacleData += variation << (8 - definition.variationBits);
+                /*
+                    for example, variation = 3, variationBits = 3
+                    we then have 0110 0000
+                    the 5 least-significant bits are free for use
+                */
             }
 
-            if (full.definition.isDoor && full.door) {
-                stream.writeBits(full.door.offset, 2);
-                stream.writeBoolean(full.door.locked);
-            } else if (full.definition.isActivatable) {
-                stream.writeBoolean(full.activated ?? false);
-            } else if (full.definition.detector) {
-                stream.writeBoolean(full.detectedMetal ?? false);
+            if (definition.isDoor && door) {
+                // 3 bits
+                obstacleData += door.offset * 2 + (door.locked ? 1 : 0);
+                //                            ^ shift left by one
+
+                // will result in something like 0110 0101
+                // or more generally, xxx00xxx
+            } else if (definition.isActivatable) {
+                // 1 bit
+                obstacleData += activated ? 1 : 0;
+                // will result in something like xxx0000x
+            } else if (definition.detector) {
+                // 1 bit
+                obstacleData += detectedMetal ? 1 : 0;
+                // will result in something like xxx0000x
+            }
+
+            /*
+                what remains is the door/activation/detector stuff
+                door stuff is 3 bits, the other two are 1 bit
+                thus, we conclude that obstacleData will never exceed 6 bits
+
+                RotationMode.Full takes a clean 2 bytes, so it's not of a concern
+                Limited and Binary take 2 and 1 respectively
+
+                thus we see that if the mode is limited or binary, we can fit
+                the rotation and the data in a single 8-bit number
+
+                for example, with variation 3 over 3 bits,
+                and door offset of 2 and locked
+
+                we get
+                0 1 1 0 0 1 0 1
+                |___|     |_| |
+                |          | locked
+                variation  |
+                        offset
+
+                the two middle bits are free to use
+            */
+
+            switch (definition.rotationMode) {
+                case RotationMode.Full: {
+                    // rotation doesn't leave any deadspace, so we write
+                    // it and the data
+
+                    // to make deserialization easier though, always write
+                    // the obstacle data first
+                    stream.writeUint8(obstacleData);
+                    stream.writeRotation(rotation.rotation);
+                    break;
+                }
+                case RotationMode.Limited:
+                case RotationMode.Binary: {
+                    stream.writeUint8(obstacleData + (rotation.rotation << 3));
+                    // shift into correct position with a << 3
+                    break;
+                }
+                case RotationMode.None: {
+                    // there may be no rotation data, but there's still variation data and
+                    // all the other thingies
+                    stream.writeUint8(obstacleData);
+                    break;
+                }
             }
         },
         deserializePartial(stream) {
-            const data: ObjectsNetData[ObjectCategory.Obstacle] = {
+            const [
+                dead,
+                playMaterialDestroyedSound
+            ] = stream.readBooleanGroup();
+
+            return {
                 scale: stream.readScale(),
-                dead: stream.readBoolean(),
-                playMaterialDestroyedSound: stream.readBoolean()
+                dead,
+                playMaterialDestroyedSound
             };
-            return data;
         },
         deserializeFull(stream) {
             const definition = Obstacles.readFromStream(stream);
 
-            const data: Mutable<ObjectsNetData[ObjectCategory.Obstacle]["full"]> = {
+            const data: SDeepMutable<NonNullable<ObjectsNetData[ObjectCategory.Obstacle]["full"]>> = {
                 definition,
                 position: stream.readPosition(),
-                rotation: stream.readObstacleRotation(definition.rotationMode),
                 layer: stream.readLayer(),
-                // serialized & unserialized co-defined
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                variation: definition.variations ? stream.readBits(definition.variationBits!) as Variation : undefined
+                rotation: {
+                    orientation: 0,
+                    rotation: 0
+                }
             };
+
+            // see the comments in serializeFull to understand what's going on
+            // "safe" version
+            /*
+            switch (definition.rotationMode) {
+                case RotationMode.Full: {
+                    data.rotation.rotation = stream.readRotation();
+                    break;
+                }
+                case RotationMode.Limited:
+                case RotationMode.Binary: {
+                    data.rotation.orientation = stread.readUint8() as Orientation;
+                    data.rotation.rotation = definition.rotationMode === RotationMode.Binary
+                        ? orientation * halfπ // sus
+                        : -Angle.normalize(orientation) * halfπ;
+                    break;
+                }
+                // case RotationMode.None: {
+                //     break;
+                // }
+            }
+
+            if (definition.variations !== undefined && variation !== undefined) {
+                data.variation = stream.readUint8();
+            }
+
+            if (definition.isDoor && door) {
+                const door = stream.readUint8();
+                data.door = {
+                    offset: (door >> 1) & 3,
+                    locked: (door & 1) === 1
+                };
+            } else if (definition.isActivatable) {
+                data.activated = stream.readUint8() !== 0;
+            } else if (definition.detector) {
+                data.detectedMetal = stream.readUint8() !== 0;
+            }
+            */
+            const obstacleData = stream.readUint8();
+            if (definition.variations !== undefined) {
+                const bits = 8 - definition.variationBits;
+                data.variation = (obstacleData & (0xFF - (2 ** bits - 1))) >> bits as Variation;
+                //                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ mask the most significant bits
+            }
 
             if (definition.isDoor) {
                 data.door = {
-                    offset: stream.readBits(2),
-                    locked: stream.readBoolean()
+                    offset: (obstacleData >> 1) & 3,
+                    locked: (obstacleData & 1) === 1
                 };
             } else if (definition.isActivatable) {
-                data.activated = stream.readBoolean();
+                data.activated = (obstacleData & 1) === 1;
             } else if (definition.detector) {
-                data.detectedMetal = stream.readBoolean();
+                data.detectedMetal = (obstacleData & 1) === 1;
+            }
+
+            switch (definition.rotationMode) {
+                case RotationMode.Full: {
+                    data.rotation.rotation = stream.readRotation();
+                    break;
+                }
+                case RotationMode.Limited:
+                case RotationMode.Binary: {
+                    const orientation = (obstacleData & 0b11000) / 8 as Orientation;
+
+                    data.rotation.orientation = orientation;
+                    data.rotation.rotation = definition.rotationMode === RotationMode.Binary
+                        ? orientation * halfπ // sus
+                        : -Angle.normalize(orientation) * halfπ;
+                    break;
+                }
+                // case RotationMode.None: {
+                //     break;
+                // }
             }
             return data;
         }
@@ -357,8 +560,15 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         },
         serializeFull(stream, { full }): void {
             Loots.writeToStream(stream, full.definition);
-            stream.writeBits(full.count, 9);
-            stream.writeBoolean(full.isNew);
+            /*
+                package 'isNew' and 'count' in a single 16-bit
+                integer—the first bit will be for isNew, the other
+                15 will be for the count
+            */
+            stream.writeUint16(
+                (full.isNew ? 32768 : 0) + full.count
+                //            ^^^^^ 1 << 15
+            );
         },
         deserializePartial(stream) {
             return {
@@ -367,10 +577,12 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             };
         },
         deserializeFull(stream) {
+            const definition = Loots.readFromStream(stream);
+            const amount = stream.readUint16();
             return {
-                definition: Loots.readFromStream(stream),
-                count: stream.readBits(9),
-                isNew: stream.readBoolean()
+                definition,
+                count: amount & 32767, // mask out the MSB
+                isNew: (amount & 32768) !== 0 // extract the MSB
             };
         }
     },
@@ -381,21 +593,16 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         serializePartial(stream, data): void {
             stream.writePosition(data.position);
             stream.writeLayer(data.layer);
-            stream.writeBoolean(data.isNew);
-            stream.writeObjectID(data.playerID);
+            stream.writeUint8(data.isNew ? -1 : 0);
+            stream.writeObjectId(data.playerID);
         },
         serializeFull(): void { /* death markers have no full serialization */ },
         deserializePartial(stream) {
-            const position = stream.readPosition();
-            const layer = stream.readLayer();
-            const isNew = stream.readBoolean();
-            const playerID = stream.readObjectID();
-
             return {
-                position,
-                layer,
-                isNew,
-                playerID
+                position: stream.readPosition(),
+                layer: stream.readLayer(),
+                isNew: stream.readUint8() !== 0,
+                playerID: stream.readObjectId()
             };
         },
         deserializeFull() { /* death markers have no full serialization */ }
@@ -405,27 +612,34 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     //
     [ObjectCategory.Building]: {
         serializePartial(stream, data): void {
-            stream.writeBoolean(data.dead);
-            stream.writeBoolean(!!data.puzzle);
-            if (data.puzzle) {
-                stream.writeBoolean(data.puzzle.solved);
-                stream.writeBoolean(data.puzzle.errorSeq);
-            }
+            stream.writeBooleanGroup(
+                data.dead,
+                data.puzzle !== undefined,
+                // for now, this is okay, since the space isn't being used
+                // up anyways—if space is needed in the future, then
+                // these two booleans can be booted off
+                data.puzzle?.solved,
+                data.puzzle?.errorSeq
+            );
             stream.writeLayer(data.layer);
         },
         serializeFull(stream, { full }): void {
             Buildings.writeToStream(stream, full.definition);
             stream.writePosition(full.position);
-            stream.writeBits(full.orientation, 2);
+            stream.writeUint8(full.orientation);
         },
         deserializePartial(stream) {
+            const [
+                dead,
+                hasPuzzle,
+                solved,
+                errorSeq
+            ] = stream.readBooleanGroup();
+
             return {
-                dead: stream.readBoolean(),
-                puzzle: stream.readBoolean() // is puzzle
-                    ? {
-                        solved: stream.readBoolean(),
-                        errorSeq: stream.readBoolean()
-                    }
+                dead,
+                puzzle: hasPuzzle
+                    ? { solved, errorSeq }
                     : undefined,
                 layer: stream.readLayer()
             };
@@ -434,7 +648,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             return {
                 definition: Buildings.readFromStream(stream),
                 position: stream.readPosition(),
-                orientation: stream.readBits(2) as Orientation
+                orientation: stream.readUint8() as Orientation
             };
         }
     },
@@ -462,14 +676,14 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     },
     [ObjectCategory.Parachute]: {
         serializePartial(stream, data) {
-            stream.writeFloat(data.height, 0, 1, 8);
+            stream.writeFloat(data.height, 0, 1, 1);
         },
         serializeFull(stream, { full }) {
             stream.writePosition(full.position);
         },
         deserializePartial(stream) {
             return {
-                height: stream.readFloat(0, 1, 8)
+                height: stream.readFloat(0, 1, 1)
             };
         },
         deserializeFull(stream) {
@@ -480,96 +694,111 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             };
         }
     },
-    [ObjectCategory.ThrowableProjectile]: {
-        serializePartial(stream, data) {
-            stream.writePosition(data.position);
-            stream.writeRotation(data.rotation, 16);
-            stream.writeLayer(data.layer);
-            stream.writeBoolean(data.airborne);
-            stream.writeBoolean(data.activated);
-        },
-        serializeFull(stream, { full }) {
-            Loots.writeToStream(stream, full.definition);
-            stream.writeBoolean(full.halloweenSkin);
-        },
-        deserializePartial(stream) {
-            return {
-                position: stream.readPosition(),
-                rotation: stream.readRotation(16),
-                layer: stream.readLayer(),
-                airborne: stream.readBoolean(),
-                activated: stream.readBoolean()
-            };
-        },
-        deserializeFull(stream) {
-            return {
-                definition: Loots.readFromStream(stream),
-                halloweenSkin: stream.readBoolean()
-            };
-        }
-    },
     [ObjectCategory.SyncedParticle]: {
         serializePartial(stream, data) {
             const { position, rotation, layer, scale, alpha } = data;
 
             stream.writePosition(position);
-            stream.writeRotation(rotation, 8);
+            stream.writeRotation2(rotation);
             stream.writeLayer(layer);
-
             const writeScale = scale !== undefined;
-            stream.writeBoolean(writeScale);
+            const writeAlpha = alpha !== undefined;
+            stream.writeBooleanGroup(
+                writeScale,
+                writeAlpha
+            );
+
             if (writeScale) {
                 stream.writeScale(scale);
             }
 
-            const writeAlpha = alpha !== undefined;
-            stream.writeBoolean(writeAlpha);
             if (writeAlpha) {
-                stream.writeFloat(alpha, 0, 1, 8);
+                stream.writeFloat(alpha, 0, 1, 1);
             }
         },
         serializeFull(stream, { full }) {
             SyncedParticles.writeToStream(stream, full.definition);
+            const { variant, creatorID } = full;
+            const hasCreatorId = creatorID !== undefined;
 
-            const variant = full.variant;
-            stream.writeBoolean(variant !== undefined);
-            if (variant !== undefined) {
-                // serialized & deserialized co-defined
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                stream.writeBits(variant, full.definition.variationBits!);
+            // similar to obstacles, dedicate up to 3 bits to the variant, and then
+            // add in the 'hasCreatorId' boolean as a 4th bit
+            let data = hasCreatorId ? 1 : 0;
+            if (full.definition.variations !== undefined && variant !== undefined) {
+                data += variant * 2;
+                //                ^ leave the LSB alone
             }
+            stream.writeUint8(data);
 
-            const creatorID = full.creatorID;
-            stream.writeBoolean(creatorID !== undefined);
-            if (creatorID !== undefined) {
-                stream.writeObjectID(creatorID);
+            if (hasCreatorId) {
+                stream.writeObjectId(creatorID);
             }
         },
         deserializePartial(stream) {
             const data: Mutable<ObjectsNetData[ObjectCategory.SyncedParticle]> = {
                 position: stream.readPosition(),
-                rotation: stream.readRotation(8),
+                rotation: stream.readRotation2(),
                 layer: stream.readLayer()
             };
 
-            if (stream.readBoolean()) { // scale
+            const [
+                hasScale,
+                hasAlpha
+            ] = stream.readBooleanGroup();
+
+            if (hasScale) {
                 data.scale = stream.readScale();
             }
 
-            if (stream.readBoolean()) { // alpha
-                data.alpha = stream.readFloat(0, 1, 8);
+            if (hasAlpha) {
+                data.alpha = stream.readFloat(0, 1, 1);
             }
 
             return data;
         },
         deserializeFull(stream) {
             const definition = SyncedParticles.readFromStream(stream);
+            const data = stream.readUint8();
+
             return {
                 definition,
-                // we're assuming that the serialized form is already present if this method is being called
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                variant: stream.readBoolean() ? stream.readBits(definition.variationBits!) as Variation : undefined,
-                creatorID: stream.readBoolean() ? stream.readObjectID() : undefined
+                variant: definition.variations !== undefined ? (data >> 1) as Variation : undefined,
+                creatorID: (data % 1) !== 0 ? stream.readObjectId() : undefined
+            };
+        }
+    },
+    [ObjectCategory.ThrowableProjectile]: {
+        serializePartial(strm, data) {
+            strm.writeBooleanGroup(
+                data.airborne,
+                data.activated
+            )
+                .writePosition(data.position)
+                .writeRotation2(data.rotation)
+                .writeLayer(data.layer);
+        },
+        serializeFull(stream, { full }) {
+            Loots.writeToStream(stream, full.definition);
+            stream.writeUint8(full.halloweenSkin ? -1 : 0);
+        },
+        deserializePartial(stream) {
+            const [
+                airborne,
+                activated
+            ] = stream.readBooleanGroup();
+
+            return {
+                position: stream.readPosition(),
+                rotation: stream.readRotation2(),
+                layer: stream.readLayer(),
+                airborne,
+                activated
+            };
+        },
+        deserializeFull(stream) {
+            return {
+                definition: Loots.readFromStream(stream),
+                halloweenSkin: stream.readUint8() !== 0
             };
         }
     }

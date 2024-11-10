@@ -1,10 +1,10 @@
 import { Layers, TentTints, ZIndexes } from "../constants";
 import { type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
-import type { DeepPartial, GetEnumMemberName, Mutable } from "../utils/misc";
+import { type DeepPartial, type GetEnumMemberName, type Mutable } from "../utils/misc";
 import { MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
-import type { GunDefinition } from "./guns";
+import { type GunDefinition } from "./guns";
 import { type LootDefinition } from "./loots";
 import { type SyncedParticleSpawnerDefinition } from "./syncedParticles";
 
@@ -82,8 +82,6 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly spawnHitbox?: Hitbox
     readonly noCollisions: boolean
     readonly rotationMode: RotationMode // for obstacles with a role, this cannot be RotationMode.Full
-    readonly variations?: Exclude<Variation, 0>
-    readonly variationBits?: number
     readonly particleVariations?: number
     readonly zIndex?: ZIndexes
     /**
@@ -143,7 +141,15 @@ type RawObstacleDefinition = ObjectDefinition & {
         readonly maxRange?: number
         readonly falloff?: number
     }
-} & ObstacleRoleMixin;
+} & ObstacleRoleMixin & VariationMixin;
+
+export type VariationMixin = {
+    readonly variations: Exclude<Variation, 0>
+    readonly variationBits: number
+} | {
+    readonly variations?: never
+    readonly variationBits?: never
+};
 
 export type DoorMixin = {
     readonly role: ObstacleSpecialRoles.Door
@@ -403,6 +409,7 @@ const defaultObstacle: DeepPartial<RawObstacleDefinition> = {
 } satisfies DeepPartial<RawObstacleDefinition>;
 
 export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
+    "Obstacles",
     defaultObstacle,
     ([derive, , , _missingType]) => {
         type Missing = typeof _missingType;

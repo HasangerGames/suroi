@@ -19,8 +19,8 @@ const enum Drag {
 }
 
 export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.ThrowableProjectile) {
-    override readonly fullAllocBytes = 16;
-    override readonly partialAllocBytes = 4;
+    override readonly fullAllocBytes = 4;
+    override readonly partialAllocBytes = 12;
 
     private health?: number;
 

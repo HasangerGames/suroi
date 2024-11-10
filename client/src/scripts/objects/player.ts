@@ -1561,7 +1561,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             case AnimationType.GunFireAlt:
             case AnimationType.LastShot: {
                 if (this.activeItem.itemType !== ItemType.Gun) {
-                    console.warn(`Attempted to play gun animation (${AnimationType[anim]}) with non-gun item '${this.activeItem.idString}'`);
+                    const name = ({
+                        [AnimationType.GunFire]: "GunFire",
+                        [AnimationType.GunFireAlt]: "GunFireAlt",
+                        [AnimationType.LastShot]: "LastShot"
+                    })[anim];
+                    console.warn(`Attempted to play gun animation (${name}) with non-gun item '${this.activeItem.idString}'`);
                     return;
                 }
                 const weaponDef = this.activeItem;

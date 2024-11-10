@@ -32,7 +32,7 @@ import { ExtendedMap, type SDeepMutable, type SMutable, type Timeout } from "@co
 import { defaultModifiers, ItemType, type EventModifiers, type ExtendedWearerAttributes, type PlayerModifiers, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray, randomPointInsideCircle, weightedRandom } from "@common/utils/random";
-import { SuroiBitStream } from "@common/utils/suroiBitStream";
+import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { randomBytes } from "crypto";
@@ -75,7 +75,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private static readonly baseHitbox = new CircleHitbox(GameConstants.player.radius);
 
     override readonly fullAllocBytes = 16;
-    override readonly partialAllocBytes = 4;
+    override readonly partialAllocBytes = 12;
     override readonly damageable = true;
 
     private _hitbox: CircleHitbox;
@@ -1121,7 +1121,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     private _firstPacket = true;
 
-    private readonly _packetStream = new PacketStream(SuroiBitStream.alloc(1 << 16));
+    private readonly _packetStream = new PacketStream(new SuroiByteStream(new ArrayBuffer(1 << 16)));
 
     /**
      * Calculate visible objects, check team, and send packets

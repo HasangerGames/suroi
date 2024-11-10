@@ -21,7 +21,7 @@ const emote = createTemplate<EmoteDefinition>()((name: string, category: EmoteCa
     category
 }));
 
-export const Emotes = ObjectDefinitions.create<EmoteDefinition>([
+export const Emotes = ObjectDefinitions.create<EmoteDefinition>("Emotes", [
     ...[
         "Happy Face",
         "Sad Face",

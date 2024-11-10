@@ -98,6 +98,7 @@ export interface SyncedParticleSpawnerDefinition {
 }
 
 export const SyncedParticles = ObjectDefinitions.withDefault<SyncedParticleDefinition>()(
+    "SyncedParticles",
     {
         scale: 1,
         alpha: 1,

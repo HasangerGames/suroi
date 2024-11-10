@@ -1,4 +1,4 @@
-import { type SuroiBitStream } from "../utils/suroiBitStream";
+import { type SuroiByteStream } from "../utils/suroiByteStream";
 
 /*
     eslint-disable
@@ -17,12 +17,12 @@ import { type SuroiBitStream } from "../utils/suroiBitStream";
 export type PacketTemplate<Input = unknown, Output = Input> = (new (...args: never[]) => InputPacket<Input> & OutputPacket<Output>) & {
     readonly name: string // === Function.name
     create(value: Input): InputPacket<Input>
-    read(stream: SuroiBitStream): OutputPacket<Output>
+    read(stream: SuroiByteStream): OutputPacket<Output>
 };
 
 export type InputPacket<Input = unknown> = {
     readonly input: Input
-    serialize(stream: SuroiBitStream): void
+    serialize(stream: SuroiByteStream): void
 };
 
 export type OutputPacket<Output = unknown> = {
@@ -36,8 +36,8 @@ export type Packet<Input = never, Output = unknown> = {
 export function createPacket<const Name extends string = string>(name: Name) {
     return <const Input, const Output = Input>(
         { serialize, deserialize }: {
-            serialize: (stream: SuroiBitStream, value: Input) => void
-            deserialize: (stream: SuroiBitStream) => Output
+            serialize: (stream: SuroiByteStream, value: Input) => void
+            deserialize: (stream: SuroiByteStream) => Output
         }
     ) => {
         let constructing = false;
@@ -50,7 +50,7 @@ export function createPacket<const Name extends string = string>(name: Name) {
                     return inst;
                 }
 
-                static read(stream: SuroiBitStream) {
+                static read(stream: SuroiByteStream) {
                     constructing = true;
                     const inst = new this(deserialize(stream));
                     constructing = false;
@@ -67,7 +67,7 @@ export function createPacket<const Name extends string = string>(name: Name) {
                     }
                 }
 
-                serialize(stream: SuroiBitStream): void { serialize(stream, this.input); }
+                serialize(stream: SuroiByteStream): void { serialize(stream, this.input); }
             }
         }[name];
 
