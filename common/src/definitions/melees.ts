@@ -358,16 +358,14 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             radius: 2.8,
             offset: Vec.create(5.4, -0.5),
             cooldown: 420,
+            rotationalAnimation: true,
             fists: {
                 animationDuration: 150,
                 left: Vec.create(40, -30),
-                right: Vec.create(40, 10),
-                useLeft: Vec.create(33, -36),
-                useRight: Vec.create(68, -20)
+                right: Vec.create(40, 10)
             },
             image: {
                 position: Vec.create(47, 25),
-                usePosition: Vec.create(85, -25),
                 angle: 130,
                 useAngle: 65,
                 lootScale: 0.6
