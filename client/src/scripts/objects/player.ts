@@ -1335,6 +1335,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                     // i love math
                     if (weaponDef.image?.useAngle) {
+                        const forceX = weaponDef.image.xConstant ?? weaponDef.image.position.x;
+
                         this.anims.rightFist = this.game.addTween({
                             target: this.images.rightFist,
                             to: {
@@ -1361,6 +1363,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         this.anims.weapon = this.game.addTween({
                             target: this.images.weapon,
                             to: {
+                                x: forceX,
                                 y: mysteryYConstant,
                                 angle: weaponDef.image.useAngle
                             },

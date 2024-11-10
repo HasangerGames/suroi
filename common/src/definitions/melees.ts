@@ -29,6 +29,7 @@ export interface MeleeDefinition extends InventoryItemDefinition {
         readonly zIndex: number
         readonly angle?: number
         readonly useAngle?: number
+        readonly xConstant?: number
         readonly lootScale?: number
         readonly separateWorldImage?: boolean
         readonly animated?: boolean
@@ -407,19 +408,18 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             offset: Vec.create(7.2, 0.5),
             piercingMultiplier: 0.95,
             cooldown: 450,
+            rotationalAnimation: true,
             fists: {
-                animationDuration: 200,
+                animationDuration: 150,
                 left: Vec.create(38, -35),
-                right: Vec.create(38.5, 41),
-                useLeft: Vec.create(38, -35),
-                useRight: Vec.create(80, 20)
+                right: Vec.create(43.5, 41.5)
             },
             image: {
-                position: Vec.create(40, 102),
-                usePosition: Vec.create(150, 11),
-                angle: 130,
+                position: Vec.create(5, 90),
+                angle: 170,
                 useAngle: 25,
-                lootScale: 0.6
+                lootScale: 0.6,
+                xConstant: 108 // for world image
             }
         },
         {
