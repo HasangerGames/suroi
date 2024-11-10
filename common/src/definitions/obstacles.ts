@@ -2813,7 +2813,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hideOnMap: true,
                 hitbox: RectangleHitbox.fromRect(1.8, 9.4),
                 zIndex: ZIndexes.ObstaclesLayer2,
-                allowFlyover: FlyoverPref.Never,
+                allowFlyover: FlyoverPref.Always,
                 rotationMode: RotationMode.Limited,
                 role: ObstacleSpecialRoles.Window
             },
