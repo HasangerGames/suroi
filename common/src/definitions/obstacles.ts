@@ -3124,7 +3124,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             innerConcreteWall([3, RectangleHitbox.fromRect(39.14, 1.9)]),
             innerConcreteWall([4, RectangleHitbox.fromRect(47.14, 1.9)]),
             {
-                idString: "armory_damaged_vault_wall",
+                idString: "bombed_armory_vault_wall",
                 material: "stone",
                 hitbox: RectangleHitbox.fromRect(15, 2.04),
                 health: 500,

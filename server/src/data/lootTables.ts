@@ -443,7 +443,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         plumpkin_bunker_skin: [
             { item: "pumpkified", weight: 1 }
         ],
-        armory_damaged_skin: [
+        bombed_armory_skin: [
             { item: "one_at_nsd", weight: 1 }
         ],
         airdrop_crate: [

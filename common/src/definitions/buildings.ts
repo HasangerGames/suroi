@@ -4837,7 +4837,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ]
             },
             {
-                idString: "armory_barracks_damaged",
+                idString: "bombed_armory_barracks",
                 name: "Armory Barracks",
                 material: "stone",
                 particle: "rock_particle",
@@ -4915,7 +4915,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ]
             },
             {
-                idString: "armory_center_damaged",
+                idString: "bombed_armory_center",
                 name: "Armory Center",
                 material: "stone",
                 particle: "rock_particle",
@@ -5002,7 +5002,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ]
             },
             {
-                idString: "armory_vault_damaged",
+                idString: "bombed_armory_vault",
                 name: "Armory Vault",
                 material: "stone",
                 particle: "rock_particle",
@@ -5084,7 +5084,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "regular_crate", position: Vec.create(-29.77, 10.54) },
                     { idString: "box", position: Vec.create(-21.29, 12.33) },
                     { idString: "box", position: Vec.create(-17.88, 6.72) },
-                    { idString: "armory_damaged_vault_wall", position: Vec.create(-13.94, -2.1), rotation: 1 }
+                    { idString: "bombed_armory_vault_wall", position: Vec.create(-13.94, -2.1), rotation: 1 }
                 ],
                 lootSpawners: [
                     {
@@ -5098,14 +5098,14 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ]
             },
             {
-                idString: "armory_damaged",
-                name: "Armory (Damaged)",
+                idString: "bombed_armory",
+                name: "Bombed Armory",
                 spawnHitbox: RectangleHitbox.fromRect(160, 176),
                 spawnMode: MapObjectSpawnMode.GrassAndSand,
                 subBuildings: [
-                    { idString: "armory_barracks_damaged", position: Vec.create(-41.31, 27.86) },
-                    { idString: "armory_center_damaged", position: Vec.create(55.4, 15.07) },
-                    { idString: "armory_vault_damaged", position: Vec.create(-35.03, -58.37) },
+                    { idString: "bombed_armory_barracks", position: Vec.create(-41.31, 27.86) },
+                    { idString: "bombed_armory_center", position: Vec.create(55.4, 15.07) },
+                    { idString: "bombed_armory_vault", position: Vec.create(-35.03, -58.37) },
                     { idString: "outhouse", position: Vec.create(-60.9, -65.63), orientation: 2 }
                 ],
                 groundGraphics: [
@@ -5360,7 +5360,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         position: Vec.create(33.86, -46.16)
                     },
                     {
-                        table: "armory_damaged_skin",
+                        table: "bombed_armory_skin",
                         position: Vec.create(33.86, -45.6)
                     },
                     {

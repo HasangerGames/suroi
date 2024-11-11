@@ -252,7 +252,7 @@ const maps = {
             tugboat_red: 1,
             tugboat_white: 7,
             lodge: 1,
-            armory_damaged: 1,
+            bombed_armory: 1,
             barn: 3,
             green_house: 2,
             warehouse: 4,
@@ -272,7 +272,7 @@ const maps = {
             tent_5: 1,
             outhouse: 10
         },
-        majorBuildings: ["armory_damaged", "lodge", "plumpkin_bunker"],
+        majorBuildings: ["bombed_armory", "lodge", "plumpkin_bunker"],
         quadBuildingLimit: {
             barn: 1,
             outhouse: 3,
@@ -280,7 +280,7 @@ const maps = {
             green_house: 1,
             red_house_v2: 1,
             warehouse: 2,
-            armory_damaged: 1,
+            bombed_armory: 1,
             lodge: 1,
             tent_1: 1,
             tent_2: 1,
@@ -408,7 +408,7 @@ const maps = {
             tugboat_red: 1,
             tugboat_white: 7,
             lodge: 1,
-            armory_damaged: 1,
+            bombed_armory: 1,
             barn: 2,
             green_house: 4,
             warehouse: 4,
@@ -428,7 +428,7 @@ const maps = {
             tent_5: 1,
             outhouse: 10
         },
-        majorBuildings: ["armory_damaged", "lodge", "plumpkin_bunker"],
+        majorBuildings: ["bombed_armory", "lodge", "plumpkin_bunker"],
         quadBuildingLimit: {
             barn: 1,
             outhouse: 3,
@@ -436,7 +436,7 @@ const maps = {
             red_house_v2: 1,
             green_house: 2,
             warehouse: 2,
-            armory_damaged: 1,
+            bombed_armory: 1,
             lodge: 1,
             tent_1: 1,
             tent_2: 1,
