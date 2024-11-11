@@ -1,6 +1,6 @@
+import { GameConstants, Layer } from "@common/constants";
+import { Modes, type ColorKeys } from "@common/definitions/modes";
 import { Color } from "pixi.js";
-import { GameConstants, Layer } from "../../../../common/src/constants";
-import { Modes, type ColorKeys } from "../../../../common/src/definitions/modes";
 
 export const FORCE_MOBILE = false;
 export const UI_DEBUG_MODE = false;

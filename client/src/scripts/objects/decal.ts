@@ -1,7 +1,7 @@
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { type DecalDefinition } from "../../../../common/src/definitions/decals";
-import { getEffectiveZIndex } from "../../../../common/src/utils/layer";
-import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { ObjectCategory, ZIndexes } from "@common/constants";
+import { type DecalDefinition } from "@common/definitions/decals";
+import { getEffectiveZIndex } from "@common/utils/layer";
+import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";

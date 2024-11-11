@@ -13,21 +13,39 @@ export type JoinedPacketData = {
 
 export const JoinedPacket = createPacket("JoinedPacket")<JoinedPacketData>({
     serialize(stream, data) {
-        stream.writeBits(data.maxTeamSize, 3);
+        stream.writeUint8(data.maxTeamSize);
         if (data.maxTeamSize !== TeamSize.Solo) {
             stream.writeUint8(data.teamID);
         }
 
-        for (const emote of data.emotes) {
-            Emotes.writeOptional(stream, emote);
+        const { emotes } = data;
+
+        stream.writeBooleanGroup(
+            emotes[0] !== undefined,
+            emotes[1] !== undefined,
+            emotes[2] !== undefined,
+            emotes[3] !== undefined,
+            emotes[4] !== undefined,
+            emotes[5] !== undefined
+        );
+
+        for (let i = 0; i < 6; i++) {
+            const emote = emotes[i];
+            if (emote !== undefined) {
+                Emotes.writeToStream(stream, emote);
+            }
         }
     },
     deserialize(stream) {
-        const maxTeamSize: TeamSize = stream.readBits(3);
+        const maxTeamSize: TeamSize = stream.readUint8();
+        const teamID = maxTeamSize !== TeamSize.Solo ? stream.readUint8() : undefined;
+
+        const emoteSlots = stream.readBooleanGroup();
+
         return {
             maxTeamSize,
-            ...(maxTeamSize !== TeamSize.Solo ? { teamID: stream.readUint8() } : {}),
-            emotes: Array.from({ length: 6 }, () => Emotes.readOptional(stream))
+            teamID,
+            emotes: Array.from({ length: 6 }, (_, i) => emoteSlots[i] ? Emotes.readFromStream(stream) : undefined)
         } as JoinedPacketData;
     }
 });

@@ -2,12 +2,11 @@ import { ObjectCategory } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { type Orientation } from "@common/typings";
 import { type Hitbox } from "@common/utils/hitbox";
+import { Angle } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { type Vector } from "@common/utils/vector";
-
-import { Angle } from "@common/utils/math";
 import { type Game } from "../game";
 import { Logger } from "../utils/misc";
 import { BaseGameObject } from "./gameObject";
@@ -15,7 +14,7 @@ import { type Obstacle } from "./obstacle";
 
 export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
     override readonly fullAllocBytes = 8;
-    override readonly partialAllocBytes = 4;
+    override readonly partialAllocBytes = 6;
 
     readonly definition: BuildingDefinition;
 

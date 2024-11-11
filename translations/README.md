@@ -1,11 +1,10 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Thu, 07 Nov 2024 15:08:49 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Fri, 08 Nov 2024 20:12:42 GMT
 
 ## 🇦🇱 Shqip (88% Complete) - ab.hjson
 
-### Invalid Keys
-
+### (No Invalid Keys)
 
 ### Undefined Keys
 
@@ -40,10 +39,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
+
 ## 🇨🇿 Čeština (94% Complete) - cz.hjson
 
-### Invalid Keys
-
+### (No Invalid Keys)
 
 ### Undefined Keys
 
@@ -61,10 +60,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
+
 ## 🇩🇪 Deutsch (86% Complete) - de.hjson
 
-### Invalid Keys
-
+### (No Invalid Keys)
 
 ### Undefined Keys
 
@@ -104,10 +103,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_eu` is not defined
 - Key `region_sa` is not defined
 - Key `region_as` is not defined
+
 ## 🇪🇪 Eesti (94% Complete) - et.hjson
 
-### Invalid Keys
-
+### (No Invalid Keys)
 
 ### Undefined Keys
 
@@ -127,10 +126,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
+
 ## 🇫🇷 Français (92% Complete) - fr.hjson
 
-### Invalid Keys
-
+### (No Invalid Keys)
 
 ### Undefined Keys
 
@@ -153,10 +152,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_kl_suicide` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
+
 ## 🇬🇷 Ελληνικά (94% Complete) - gr.hjson
 
-### Invalid Keys
-
+### (No Invalid Keys)
 
 ### Undefined Keys
 
@@ -176,10 +175,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_+map_ping` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
+
 ## 🇭🇰 🇲🇴 廣東話(香港/澳門) (93% Complete) - hk_mo.hjson
 
-### Invalid Keys
-
+### (No Invalid Keys)
 
 ### Undefined Keys
 
@@ -201,6 +200,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off_down` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
+
 ## 🇭🇺 Magyar (100% Complete) - hu.hjson
 
 ### Invalid Keys
@@ -221,10 +221,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_temp_reason` is not defined
 - Key `msg_punishment_perma` is not defined
 - Key `msg_punishment_perma_reason` is not defined
+
 ## 🇯🇵 日本語 (94% Complete) - jp.hjson
 
-### Invalid Keys
-
+### (No Invalid Keys)
 
 ### Undefined Keys
 
@@ -242,10 +242,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
+
 ## 🇱🇹 Lietuvių (94% Complete) - lt.hjson
 
-### Invalid Keys
-
+### (No Invalid Keys)
 
 ### Undefined Keys
 
@@ -263,10 +263,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
+
 ## 🇱🇻 Latviešu (94% Complete) - lv.hjson
 
-### Invalid Keys
-
+### (No Invalid Keys)
 
 ### Undefined Keys
 
@@ -284,10 +284,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
+
 ## 🎀 Cute Engwish (92% Complete) - qen.hjson
 
-### Invalid Keys
-
+### (No Invalid Keys)
 
 ### Undefined Keys
 
@@ -310,10 +310,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
+
 ## 🇷🇴 Română (88% Complete) - ro.hjson
 
-### Invalid Keys
-
+### (No Invalid Keys)
 
 ### Undefined Keys
 
@@ -346,10 +346,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
+
 ## 🇷🇺 Русский (96% Complete) - ru.hjson
 
-### Invalid Keys
-
+### (No Invalid Keys)
 
 ### Undefined Keys
 
@@ -362,10 +362,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off_down` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
+
 ## 🇮🇳 தமிழ் (92% Complete) - ta.hjson
 
-### Invalid Keys
-
+### (No Invalid Keys)
 
 ### Undefined Keys
 
@@ -390,10 +390,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `create_team_waiting` is not defined
 - Key `deathray` is not defined
+
 ## 🇹🇷 Turkısh (94% Complete) - tr.hjson
 
-### Invalid Keys
-
+### (No Invalid Keys)
 
 ### Undefined Keys
 
@@ -411,10 +411,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
+
 ## 🇹🇼 中文（繁體） (87% Complete) - tw.hjson
 
-### Invalid Keys
-
+### (No Invalid Keys)
 
 ### Undefined Keys
 
@@ -451,10 +451,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
+
 ## 🇻🇳 Tiếng Việt (94% Complete) - vi.hjson
 
-### Invalid Keys
-
+### (No Invalid Keys)
 
 ### Undefined Keys
 
@@ -472,10 +472,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
+
 ## 🇨🇳 中文（简体） (94% Complete) - zh.hjson
 
-### Invalid Keys
-
+### (No Invalid Keys)
 
 ### Undefined Keys
 
@@ -493,3 +493,4 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
+

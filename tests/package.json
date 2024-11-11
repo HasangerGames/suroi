@@ -27,7 +27,6 @@
     "typescript": "^5.6.3"
   },
   "dependencies": {
-    "@damienvesper/bit-buffer": "^1.0.1",
     "nanotimer": "^0.3.15",
     "ts-node": "^10.9.2",
     "ws": "^8.18.0"

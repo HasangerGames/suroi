@@ -1,30 +1,31 @@
+import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "@common/constants";
+import { Ammos } from "@common/definitions/ammos";
+import { type ArmorDefinition } from "@common/definitions/armors";
+import { type BackpackDefinition } from "@common/definitions/backpacks";
+import type { EmoteDefinition } from "@common/definitions/emotes";
+import { Explosions } from "@common/definitions/explosions";
+import { Guns, type GunDefinition, type SingleGunNarrowing } from "@common/definitions/guns";
+import { HealType, type HealingItemDefinition } from "@common/definitions/healingItems";
+import { Loots, type WeaponDefinition } from "@common/definitions/loots";
+import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "@common/definitions/melees";
+import { type ObstacleDefinition } from "@common/definitions/obstacles";
+import { PerkData, PerkIds } from "@common/definitions/perks";
+import { Skins, type SkinDefinition } from "@common/definitions/skins";
+import { SpectatePacket } from "@common/packets/spectatePacket";
+import { CircleHitbox } from "@common/utils/hitbox";
+import { adjacentOrEqualLayer, getEffectiveZIndex } from "@common/utils/layer";
+import { Angle, EaseFunctions, Geometry, Numeric } from "@common/utils/math";
+import { type Timeout } from "@common/utils/misc";
+import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { type ObjectsNetData } from "@common/utils/objectsSerializations";
+import { random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "@common/utils/random";
+import { FloorNames, FloorTypes } from "@common/utils/terrain";
+import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { DashLine } from "pixi-dashed-line";
 import { Container, Graphics, Text, TilingSprite } from "pixi.js";
-import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
-import { Explosions } from "../../../../common/src/definitions";
-import { Ammos } from "../../../../common/src/definitions/ammos";
-import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
-import { Backpacks, type BackpackDefinition } from "../../../../common/src/definitions/backpacks";
-import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
-import { Guns, type GunDefinition, type SingleGunNarrowing } from "../../../../common/src/definitions/guns";
-import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
-import { Loots, type WeaponDefinition } from "../../../../common/src/definitions/loots";
-import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "../../../../common/src/definitions/melees";
-import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
-import { PerkData, PerkIds } from "../../../../common/src/definitions/perks";
-import { Skins, type SkinDefinition } from "../../../../common/src/definitions/skins";
-import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
-import { CircleHitbox } from "../../../../common/src/utils/hitbox";
-import { adjacentOrEqualLayer, getEffectiveZIndex } from "../../../../common/src/utils/layer";
-import { Angle, EaseFunctions, Geometry, Numeric } from "../../../../common/src/utils/math";
-import { type Timeout } from "../../../../common/src/utils/misc";
-import { ItemType, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
-import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "../../../../common/src/utils/random";
-import { FloorNames, FloorTypes } from "../../../../common/src/utils/terrain";
-import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { getTranslatedString } from "../../translations";
+import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
 import { BULLET_WHIZ_SCALE, COLORS, DIFF_LAYER_HITBOX_OPACITY, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
@@ -33,7 +34,7 @@ import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
-import type { TranslationKeys } from "../../typings/translations";
+import type { AllowedEmoteSources } from "@common/packets/inputPacket";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -282,7 +283,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         const initialRotation = this.rotation + Math.PI / 2;
         const casings = reference.casingParticles.filter(c => (c.on ?? "fire") === filterBy) as NonNullable<SingleGunNarrowing["casingParticles"]>;
 
-        if (!casings.length) return;
+        if (casings.length === 0) return;
 
         for (const casingSpec of casings) {
             const position = Vec.scale(casingSpec.position, this.sizeMod);
@@ -332,8 +333,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             },
                             rotation: {
                                 start: initialRotation,
-                                end: initialRotation + Math.sign(displacement.y) * spinAmount
-                                //                    ^^^^^^^^^^ make casings spin clockwise or counterclockwise depending on which way they're flying
+                                end: initialRotation + (
+                                    Math.sign(displacement.y) || (randomSign() * randomFloat(0, 0.3))
+                                //  ^^^^^^^^^ make casings spin clockwise or counterclockwise
+                                //            depending on which way they're flying
+                                ) * spinAmount
                             },
                             speed: Vec.rotate(
                                 Vec.addComponent(
@@ -365,9 +369,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Player], isNew = false): void {
-        const { uiManager } = this.game;
+        const game = this.game;
+        const { uiManager } = game;
 
-        const previousLayer: Layer = this.layer;
+        const previousLayer = this.layer;
 
         // Position and rotation
         const oldPosition = Vec.clone(this.position);
@@ -377,34 +382,34 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         this.rotation = data.rotation;
 
-        const noMovementSmoothing = !this.game.console.getBuiltInCVar("cv_movement_smoothing");
+        const noMovementSmoothing = !game.console.getBuiltInCVar("cv_movement_smoothing");
 
         if (noMovementSmoothing || isNew) this.container.rotation = this.rotation;
 
         if (this.isActivePlayer) {
-            this.game.soundManager.position = this.position;
-            this.game.map.setPosition(this.position);
+            game.soundManager.position = this.position;
+            game.map.setPosition(this.position);
 
-            if (noMovementSmoothing) this.game.camera.position = toPixiCoords(this.position);
+            if (noMovementSmoothing) game.camera.position = toPixiCoords(this.position);
 
-            if (this.game.console.getBuiltInCVar("pf_show_pos")) {
+            if (game.console.getBuiltInCVar("pf_show_pos")) {
                 uiManager.debugReadouts.pos.text(
                     `X: ${this.position.x.toFixed(2)} Y: ${this.position.y.toFixed(2)} Z: ${this.layer}`
                 );
             }
         }
 
-        const floorType = this.game.map.terrain.getFloor(this.position, this.layer);
+        const floorType = game.map.terrain.getFloor(this.position, this.layer);
 
         const doOverlay = FloorTypes[floorType].overlay;
-        const layerChanged = previousLayer !== this.layer || this.game.activePlayer?.layer !== this.layer || isNew;
+        const layerChanged = previousLayer !== this.layer || game.activePlayer?.layer !== this.layer || isNew;
         let updateContainerZIndex = isNew || FloorTypes[this.floorType].overlay !== doOverlay || layerChanged;
 
         if (floorType !== this.floorType) {
             if (doOverlay) this.images.waterOverlay.setVisible(true);
 
             this.anims.waterOverlay?.kill();
-            this.anims.waterOverlay = this.game.addTween(
+            this.anims.waterOverlay = game.addTween(
                 {
                     target: this.images.waterOverlay,
                     to: {
@@ -453,7 +458,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     };
 
                     // outer
-                    this.game.particleManager.spawnParticle({
+                    game.particleManager.spawnParticle({
                         ...options,
                         scale: {
                             start: randomFloat(0.45, 0.55),
@@ -466,7 +471,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     });
 
                     // inner
-                    this.game.particleManager.spawnParticle({
+                    game.particleManager.spawnParticle({
                         ...options,
                         scale: {
                             start: randomFloat(0.15, 0.35),
@@ -481,12 +486,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
         }
 
-        if (isNew || !this.game.console.getBuiltInCVar("cv_movement_smoothing")) {
+        if (isNew || !game.console.getBuiltInCVar("cv_movement_smoothing")) {
             this.container.position.copyFrom(toPixiCoords(this.position));
             this.disguiseContainer.position.copyFrom(toPixiCoords(this.position));
             this.emote.container.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, -175)));
             this.teammateName?.container.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, 95)));
-            if (this.isActivePlayer) this.game.uiManager.resetPerkSlots();
+            if (this.isActivePlayer) game.uiManager.resetPerkSlots();
         }
 
         if (data.animation !== undefined) {
@@ -498,18 +503,35 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.updateGrenadePreview();
 
         if (data.full) {
-            const full = data.full;
+            const {
+                full: {
+                    layer,
+                    dead,
+                    downed,
+                    beingRevived,
+                    teamID,
+                    invulnerable,
+                    activeItem,
+                    sizeMod,
+                    skin,
+                    helmet,
+                    vest,
+                    backpack,
+                    halloweenThrowableSkin,
+                    activeDisguise
+                }
+            } = data;
 
-            const layerChange = this.isActivePlayer && (this.layer !== full.layer || isNew);
-            this.layer = full.layer;
-            if (layerChange) this.game.changeLayer(this.layer);
+            const layerChange = this.isActivePlayer && (this.layer !== layer || isNew);
+            this.layer = layer;
+            if (layerChange) game.changeLayer(this.layer);
 
-            this.container.visible = !full.dead;
+            this.container.visible = !dead;
             this.disguiseContainer.visible = this.container.visible;
 
             const hadSkin = this.halloweenThrowableSkin;
             if (
-                hadSkin !== (this.halloweenThrowableSkin = full.halloweenThrowableSkin)
+                hadSkin !== (this.halloweenThrowableSkin = halloweenThrowableSkin)
                 && this.activeItem.itemType === ItemType.Throwable
                 && !this.activeItem.noSkin
             ) {
@@ -518,12 +540,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             // Blood particles on death (cooler graphics only)
             if (
-                this.game.console.getBuiltInCVar("cv_cooler_graphics")
+                game.console.getBuiltInCVar("cv_cooler_graphics")
                 && !isNew
-                && this.dead !== full.dead
-                && full.dead
+                && !this.dead
+                && dead
             ) {
-                this.game.particleManager.spawnParticles(random(15, 30), () => ({
+                game.particleManager.spawnParticles(random(15, 30), () => ({
                     frames: "blood_particle",
                     lifetime: random(1000, 3000),
                     position: this.position,
@@ -541,18 +563,18 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }));
             }
 
-            this.dead = full.dead;
+            this.dead = dead;
 
             // this.layer = data.layer; - why assign again?
 
-            this.teamID = data.full.teamID;
+            this.teamID = teamID;
             if (
                 !this.isActivePlayer
                 && !this.teammateName
                 && !this.dead
-                && this.teamID === this.game.teamID
+                && this.teamID === game.teamID
             ) {
-                const name = this.game.playerNames.get(this.id);
+                const name = game.playerNames.get(this.id);
                 this.teammateName = {
                     text: new Text({
                         text: uiManager.getRawPlayerName(this.id),
@@ -588,22 +610,22 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     container.addChild(badge);
                 }
 
-                container.zIndex = getEffectiveZIndex(ZIndexes.DeathMarkers, this.game.layer, this.game.layer);
-                this.game.camera.addObject(container);
+                container.zIndex = getEffectiveZIndex(ZIndexes.DeathMarkers, game.layer, game.layer);
+                game.camera.addObject(container);
             }
 
-            this.container.alpha = full.invulnerable ? 0.5 : 1;
+            this.container.alpha = invulnerable ? 0.5 : 1;
 
-            if (this.downed !== full.downed) {
-                this.downed = full.downed;
+            if (this.downed !== downed) {
+                this.downed = downed;
                 updateContainerZIndex = true;
                 this.updateFistsPosition(false);
                 this.updateWeapon(isNew);
                 this.updateEquipment();
             }
 
-            if (this.beingRevived !== full.beingRevived) {
-                this.beingRevived = full.beingRevived;
+            if (this.beingRevived !== beingRevived) {
+                this.beingRevived = beingRevived;
 
                 if (this.isActivePlayer) {
                     // somewhat an abuse of that system, but dedicating an
@@ -628,15 +650,15 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             if (this.dead) {
-                if (this.isActivePlayer) this.game.uiManager.resetPerkSlots();
+                if (this.isActivePlayer) uiManager.resetPerkSlots();
                 if (this.teammateName !== undefined) this.teammateName.container.visible = false;
             }
 
             this._oldItem = this.activeItem;
-            const itemDirty = this.activeItem !== full.activeItem;
-            this.activeItem = full.activeItem;
+            const itemDirty = this.activeItem !== activeItem;
+            this.activeItem = activeItem;
 
-            const skinID = full.skin.idString;
+            const skinID = skin.idString;
             if (this.isActivePlayer) {
                 uiManager.skinID = skinID;
                 uiManager.updateWeapons();
@@ -663,21 +685,22 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 ?.setFrame(`${skinID}_fist`)
                 .setTint(tint);
 
-            if (full.sizeMod !== undefined) {
-                this.sizeMod = this.container.scale = full.sizeMod;
-                this._hitbox = new CircleHitbox(GameConstants.player.radius * full.sizeMod, this._hitbox.position);
+            if (sizeMod !== undefined) {
+                this.sizeMod = this.container.scale = sizeMod;
+                this._hitbox = new CircleHitbox(GameConstants.player.radius * sizeMod, this._hitbox.position);
             }
 
             const { hideEquipment, helmetLevel, vestLevel, backpackLevel } = this;
 
             this.hideEquipment = skinDef.hideEquipment;
 
-            this.helmetLevel = (this.equipment.helmet = full.helmet)?.level ?? 0;
-            this.vestLevel = (this.equipment.vest = full.vest)?.level ?? 0;
-            this.backpackLevel = (this.equipment.backpack = full.backpack).level;
+            this.helmetLevel = (this.equipment.helmet = helmet)?.level ?? 0;
+            this.vestLevel = (this.equipment.vest = vest)?.level ?? 0;
+            this.backpackLevel = (this.equipment.backpack = backpack).level;
 
-            const backpack = Backpacks.definitions.find(pack => pack.level === this.backpackLevel);
-            const backpackTint = skinDef.backpackTint ?? backpack?.defaultTint ?? 0xffffff;
+            const backpackTint = skinDef.backpackTint
+                ?? this.equipment.backpack?.defaultTint
+                ?? 0xffffff;
 
             this.images.backpack.setTint(backpackTint);
 
@@ -696,7 +719,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             const oldDisguise = this.activeDisguise;
-            if (oldDisguise !== (this.activeDisguise = full.activeDisguise)) {
+            if (oldDisguise !== (this.activeDisguise = activeDisguise)) {
                 const def = this.activeDisguise;
                 if (def !== undefined) {
                     this.images.disguiseSprite.setVisible(true);
@@ -740,7 +763,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                     this.spawnCasingParticles("reload", false);
 
-                    const { weapons, activeWeaponIndex } = this.game.uiManager.inventory;
+                    const { weapons, activeWeaponIndex } = uiManager.inventory;
                     const reloadFullClip = weaponDef.reloadFullOnEmpty && (weapons[activeWeaponIndex]?.count ?? 0) <= 0;
 
                     actionSoundName = `${weaponDef.idString}_reload${reloadFullClip ? "_full" : ""}`;
@@ -760,7 +783,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     if (this.isActivePlayer) {
                         uiManager.animateAction(
                             getTranslatedString(`action_${itemDef.idString}_use` as TranslationKeys, { item: getTranslatedString(itemDef.idString as TranslationKeys) }),
-                            itemDef.useTime / this.game.uiManager.perks.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
+                            itemDef.useTime / uiManager.perks.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
                         );
                     }
                     break;
@@ -769,7 +792,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     if (this.isActivePlayer) {
                         uiManager.animateAction(
                             getTranslatedString("action_reviving"),
-                            GameConstants.player.reviveTime / this.game.uiManager.perks.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
+                            GameConstants.player.reviveTime / uiManager.perks.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
                         );
                     }
                     break;
@@ -782,7 +805,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     {
                         falloff: 0.6,
                         maxRange: 48,
-                        speed: this.game.uiManager.perks.hasPerk(PerkIds.FieldMedic) && actionSoundName === action.item?.idString ? PerkData[PerkIds.FieldMedic].usageMod : 1
+                        speed: game.uiManager.perks.hasPerk(PerkIds.FieldMedic) && actionSoundName === action.item?.idString ? PerkData[PerkIds.FieldMedic].usageMod : 1
                     }
                 );
             }
@@ -792,8 +815,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         }
 
         if (this.isActivePlayer && layerChanged && HITBOX_DEBUG_MODE) {
-            this.game.addTimeout(() => {
-                for (const object of this.game.objects) {
+            game.addTimeout(() => {
+                for (const object of game.objects) {
                     object.updateDebugGraphics();
                 }
             }, 0);
@@ -1253,7 +1276,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             && this.teamID === player.teamID;
     }
 
-    sendEmote(type: EmoteDefinition): void {
+    showEmote(type: AllowedEmoteSources): void {
         this.anims.emote?.kill();
         this.anims.emoteHide?.kill();
         this._emoteHideTimeout?.kill();
@@ -1266,7 +1289,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         );
         this.emote.image.setFrame(type.idString);
 
-        const isWeaponEmote = type.isWeaponEmote;
+        const isWeaponEmote = "itemType" in type;
 
         const container = this.emote.container;
         container.visible = true;
@@ -1538,7 +1561,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             case AnimationType.GunFireAlt:
             case AnimationType.LastShot: {
                 if (this.activeItem.itemType !== ItemType.Gun) {
-                    console.warn(`Attempted to play gun animation (${AnimationType[anim]}) with non-gun item '${this.activeItem.idString}'`);
+                    const name = ({
+                        [AnimationType.GunFire]: "GunFire",
+                        [AnimationType.GunFireAlt]: "GunFireAlt",
+                        [AnimationType.LastShot]: "LastShot"
+                    })[anim];
+                    console.warn(`Attempted to play gun animation (${name}) with non-gun item '${this.activeItem.idString}'`);
                     return;
                 }
                 const weaponDef = this.activeItem;

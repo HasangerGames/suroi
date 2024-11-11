@@ -1,6 +1,6 @@
 import { Layer } from "@common/constants";
-import { Guns } from "@common/definitions";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
+import { Guns } from "@common/definitions/guns";
 import { Loots } from "@common/definitions/loots";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { Orientation, type Variation } from "@common/typings";
@@ -14,6 +14,7 @@ import { type GunItem } from "../inventory/gunItem";
 import { GameMap } from "../map";
 import { Player, type PlayerContainer } from "../objects/player";
 import { getLootFromTable, LootTables } from "./lootTables";
+import { PerkCategories } from "@common/definitions/perks";
 
 export interface RiverDefinition {
     readonly minAmount: number
@@ -614,7 +615,7 @@ const maps = {
                         ((item.itemType === ItemType.Melee || item.itemType === ItemType.Scope) && item.noDrop)
                         || ("ephemeral" in item && item.ephemeral)
                         || (item.itemType === ItemType.Backpack && item.level === 0)
-                        // || (item.itemType === ItemType.Perk && item.category === PerkCategories.Halloween)
+                        || (item.itemType === ItemType.Perk && item.category === PerkCategories.Halloween)
                         || item.itemType === ItemType.Skin
                     ) continue;
 

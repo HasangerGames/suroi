@@ -6,9 +6,8 @@ import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Numeric } from "@common/utils/math";
 import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
-
 import { type CollidableGameObject } from "../objects/gameObject";
-import type { ItemData } from "../objects/loot";
+import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import { InventoryItem } from "./inventoryItem";
 

@@ -67,6 +67,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
 });
 
 export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
+    "Throwables",
     {
         itemType: ItemType.Throwable,
         speedMultiplier: 0.92,
@@ -213,7 +214,7 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
             detonation: {
                 explosion: "c4_explosion",
                 particles: {
-                    type: "c4",
+                    type: "c4_WHY_IS_THIS_A_FUCKING_SYNCED_PARTICLE",
                     count: 8,
                     spawnRadius: 2
                 }

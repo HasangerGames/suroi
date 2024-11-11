@@ -1,9 +1,9 @@
-import { Layer } from "../../../../common/src/constants";
-// import { equalLayer, isGroundLayer } from "../../../../common/src/utils/layer";
-import { Numeric } from "../../../../common/src/utils/math";
-import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { Layer } from "@common/constants";
+// import { equalLayer, isGroundLayer } from "@common/utils/layer";
+import { Numeric } from "@common/utils/math";
+import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
-import { MODE/* , SOUND_FILTER_FOR_LAYERS */ } from "../utils/constants";
+import { MODE /* , SOUND_FILTER_FOR_LAYERS */ } from "../utils/constants";
 // add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
 import * as PixiSound from "@pixi/sound";
 

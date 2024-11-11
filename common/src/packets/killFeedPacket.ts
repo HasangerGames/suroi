@@ -1,23 +1,16 @@
 import { KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType } from "../constants";
-import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
-import { Guns, type GunDefinition } from "../definitions/guns";
-import { Melees, type MeleeDefinition } from "../definitions/melees";
-import { Throwables, type ThrowableDefinition } from "../definitions/throwables";
+import { type ExplosionDefinition } from "../definitions/explosions";
+import { type GunDefinition } from "../definitions/guns";
+import { type MeleeDefinition } from "../definitions/melees";
+import { type ThrowableDefinition } from "../definitions/throwables";
+import { GlobalRegistrar } from "../utils/definitionRegistry";
 import { type DeepMutable, type Mutable } from "../utils/misc";
-import { ObjectDefinitions } from "../utils/objectDefinitions";
-import { calculateEnumPacketBits } from "../utils/suroiBitStream";
 import { createPacket } from "./packet";
-
-const KILLFEED_MESSAGE_TYPE_BITS = calculateEnumPacketBits(KillfeedMessageType);
-const KILLFEED_EVENT_TYPE_BITS = calculateEnumPacketBits(KillfeedEventType);
-const KILLFEED_EVENT_SEVERITY_BITS = calculateEnumPacketBits(KillfeedEventSeverity);
 
 export type KillDamageSources = GunDefinition
     | MeleeDefinition
     | ThrowableDefinition
     | ExplosionDefinition;
-
-const damageSourcesDefinitions = ObjectDefinitions.create<KillDamageSources>([...Guns, ...Melees, ...Throwables, ...Explosions]);
 
 /**
  * {@link KillfeedEventType}s that allow an attacker to be specified
@@ -326,28 +319,55 @@ const factories = Object.freeze({
 
 export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>({
     serialize(stream, data) {
-        stream.writeBits(data.messageType, KILLFEED_MESSAGE_TYPE_BITS);
+        // messageType is 2 bits. we put them as the LSB, and everything else takes
+        // up the 6 other bits
+        let kfData = data.messageType;
+
+        // save the index of this state so we can come back and write the kfData later
+        // this leads to simpler code structure
+        const kfDataIndex = stream.index;
+        stream.writeUint8(0);
 
         switch (data.messageType) {
             case KillfeedMessageType.DeathOrDown: {
-                stream.writeObjectID(data.victimId);
+                /*
+                    for this message type, kfData has the following format:
+                    w s a e e e m m
+                    | | | |___| |_|
+                    | | |   |    |
+                    | | |   |    messageType
+                    | | |   |
+                    | | | eventType
+                    | | |
+                    | | hasAttacker
+                    | |
+                    | severity
+                    |
+                    weaponUsed
+                */
+                stream.writeObjectId(data.victimId);
 
-                stream.writeBits(data.eventType, KILLFEED_EVENT_TYPE_BITS);
+                // eventType is 3 bits, make it take up the next 3 LSB
+                kfData += data.eventType << 2;
                 if (hasAttackerData(data)) {
                     const hasAttacker = data.attackerId !== undefined;
-                    stream.writeBoolean(hasAttacker);
+                    // next LSB is the 6th one (000e eemm, with 'e' for event type and 'm' for message type)
+                    kfData += hasAttacker ? 32 : 0;
                     if (hasAttacker) {
-                        stream.writeObjectID(data.attackerId);
+                        stream.writeObjectId(data.attackerId);
                         stream.writeUint8(data.attackerKills);
                     }
                 }
-                stream.writeBits(data.severity, KILLFEED_EVENT_SEVERITY_BITS);
+                // the 6th LSB is off-limits (used by thing above)
+                // use the 7th LSB for this (severity is effectively a boolean)
+                kfData += data.severity ? 64 : 0;
 
                 const weaponWasUsed = !noWeaponData(data) && data.weaponUsed !== undefined;
 
-                stream.writeBoolean(weaponWasUsed);
+                // and our last bit is for this
+                kfData += weaponWasUsed ? 128 : 0;
                 if (weaponWasUsed) {
-                    damageSourcesDefinitions.writeToStream(stream, data.weaponUsed);
+                    GlobalRegistrar.writeToStream(stream, data.weaponUsed);
                     if ("killstreak" in data.weaponUsed && data.weaponUsed.killstreak) {
                         if (data.killstreak === undefined) {
                             console.error(`Killfeed packet with weapon '${data.weaponUsed.idString}' is missing a killstreak amount, but weapon schema in question mandates it`);
@@ -361,9 +381,11 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
             }
 
             case KillfeedMessageType.KillLeaderAssigned:
-                stream.writeObjectID(data.victimId);
+                // 1 bit -> put it as the MSB
+                // here the format is just h000 00mm, with 'h' as hideFromKillfeed and 'm' as messageType
+                kfData += (data.hideFromKillfeed ?? false) ? 128 : 0;
+                stream.writeObjectId(data.victimId);
                 stream.writeUint8(data.attackerKills);
-                stream.writeBoolean(data.hideFromKillfeed ?? false);
                 break;
 
             case KillfeedMessageType.KillLeaderUpdated:
@@ -371,39 +393,56 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
                 break;
 
             case KillfeedMessageType.KillLeaderDeadOrDisconnected:
-                stream.writeObjectID(data.victimId);
-                stream.writeObjectID(data.attackerId);
-                stream.writeBoolean(data.disconnected ?? false);
+                // 1 bit -> put it as the MSB
+                // here the format is just d000 00mm, with 'd' as disconnected and 'm' as messageType
+                kfData += (data.disconnected ?? false) ? 128 : 0;
+                stream.writeObjectId(data.victimId);
+                stream.writeObjectId(data.attackerId);
                 break;
         }
+
+        // now we go back to our saved index
+        const curIndex = stream.index;
+        stream.index = kfDataIndex;
+
+        // write our stuff
+        stream.writeUint8(kfData);
+
+        // and skip back forwards to where we were
+        stream.index = curIndex;
     },
 
     deserialize(stream) {
+        const kfData = stream.readUint8();
+        const messageType = (kfData & 3) as KillfeedMessageType;
+
         const data = {
-            messageType: stream.readBits(KILLFEED_MESSAGE_TYPE_BITS)
+            messageType
         } as DeepMutable<KillFeedPacketData>;
 
         switch (data.messageType) {
             case KillfeedMessageType.DeathOrDown: {
-                data.victimId = stream.readObjectID();
-                data.eventType = stream.readBits(KILLFEED_EVENT_TYPE_BITS);
+                // see the comments in the serialization method to
+                // understand the format and what's going on
+                data.victimId = stream.readObjectId();
+                data.eventType = (kfData & 0b11100) >> 2;
 
                 if (
                     hasAttackerData(data)
-                    && stream.readBoolean() // attacker present
+                    && ((kfData & 32) !== 0) // attacker present
                 ) {
-                    data.attackerId = stream.readObjectID();
+                    data.attackerId = stream.readObjectId();
                     (data as KillFeedPacketData & { attackerKills: number }).attackerKills = stream.readUint8();
                 }
-                data.severity = stream.readBits(KILLFEED_EVENT_SEVERITY_BITS);
+                data.severity = (kfData >> 6) & 1;
 
-                if (stream.readBoolean()) { // used a weapon
+                if ((kfData & 128) !== 0) { // used a weapon
                     type WithWeapon = KillFeedPacketData & {
                         weaponUsed: KillDamageSources
                         killstreak?: number
                     };
 
-                    const weaponUsed = (data as WithWeapon).weaponUsed = damageSourcesDefinitions.readFromStream(stream);
+                    const weaponUsed = (data as WithWeapon).weaponUsed = GlobalRegistrar.readFromStream(stream);
 
                     if ("killstreak" in weaponUsed && weaponUsed.killstreak) {
                         (data as WithWeapon).killstreak = stream.readUint8();
@@ -413,9 +452,9 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
             }
 
             case KillfeedMessageType.KillLeaderAssigned:
-                data.victimId = stream.readObjectID();
+                data.victimId = stream.readObjectId();
                 data.attackerKills = stream.readUint8();
-                data.hideFromKillfeed = stream.readBoolean();
+                data.hideFromKillfeed = (kfData & 128) !== 0;
                 break;
 
             case KillfeedMessageType.KillLeaderUpdated:
@@ -423,9 +462,9 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
                 break;
 
             case KillfeedMessageType.KillLeaderDeadOrDisconnected:
-                data.victimId = stream.readObjectID();
-                data.attackerId = stream.readObjectID();
-                data.disconnected = stream.readBoolean();
+                data.victimId = stream.readObjectId();
+                data.attackerId = stream.readObjectId();
+                data.disconnected = (kfData & 128) !== 0;
                 break;
         }
 

@@ -101,8 +101,8 @@ export async function createSpritesheets(paths: readonly string[], options: Comp
 
     const images: readonly PackerRectData[] = results.filter(x => x.status === "fulfilled").map(({ value }) => value);
     const errors = results.filter(x => x.status === "rejected").map(({ reason }) => reason as unknown);
-    if (errors.length) {
-        // @ts-expect-error ts doesn't know AggregateError is a thing for some reason
+    if (errors.length !== 0) {
+        console.error(errors);
         throw new AggregateError(errors);
     }
 
@@ -118,7 +118,7 @@ export async function createSpritesheets(paths: readonly string[], options: Comp
             }
         );
 
-        console.log(`Adding ${length} images to packer`);
+        writeFromStart(`Adding ${length} images to packer`);
         for (const image of images) {
             packer.add(
                 image.image.width * resolution,
@@ -126,6 +126,8 @@ export async function createSpritesheets(paths: readonly string[], options: Comp
                 image
             );
         }
+        writeFromStart(`Added ${length} images to packer`);
+        console.log("");
 
         const atlases: AtlasList = [];
 
@@ -188,9 +190,10 @@ export async function createSpritesheets(paths: readonly string[], options: Comp
                 prevLength = str.length;
             }
 
-            writeFromStart("Creating buffer & hash".padEnd(prevLength, " "));
+            writeFromStart("Creating buffer".padEnd(prevLength, " "));
             const buffer = canvas.toBuffer(`image/${options.outputFormat}` as "image/png");
 
+            writeFromStart("Creating hash".padEnd(prevLength, " "));
             const hash = createHash("sha1").update(buffer).digest("hex").slice(0, 8);
 
             json.meta.image = `${options.outDir}/${options.name}-${hash}@${resolution}x.${options.outputFormat}`;

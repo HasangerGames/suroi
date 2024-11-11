@@ -1,5 +1,5 @@
+import { Numeric } from "@common/utils/math";
 import { Container } from "pixi.js";
-import { Numeric } from "../../../../common/src/utils/math";
 import { type Game } from "../game";
 
 export class Tween<T> {

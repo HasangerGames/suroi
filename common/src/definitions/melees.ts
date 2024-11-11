@@ -43,6 +43,7 @@ export const DEFAULT_HAND_RIGGING = Object.freeze({
 }) as InventoryItemDefinition["fists"] & object;
 
 export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
+    "Melees",
     {
         itemType: ItemType.Melee,
         noDrop: false,

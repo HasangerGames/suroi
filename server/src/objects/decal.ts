@@ -4,13 +4,12 @@ import { type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { randomRotation } from "@common/utils/random";
 import { type Vector } from "@common/utils/vector";
-
 import { type Game } from "../game";
 import { BaseGameObject } from "./gameObject";
 
 export class Decal extends BaseGameObject.derive(ObjectCategory.Decal) {
-    override readonly fullAllocBytes = 4;
-    override readonly partialAllocBytes = 4;
+    override readonly fullAllocBytes = 1;
+    override readonly partialAllocBytes = 12;
 
     declare hitbox?: undefined;
 

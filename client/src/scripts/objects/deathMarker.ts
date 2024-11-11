@@ -1,13 +1,13 @@
+import { ObjectCategory, ZIndexes } from "@common/constants";
+import { type BadgeDefinition } from "@common/definitions/badges";
+import { getEffectiveZIndex } from "@common/utils/layer";
+import { type ObjectsNetData } from "@common/utils/objectsSerializations";
+import { Vec, type Vector } from "@common/utils/vector";
 import { Text, type Container } from "pixi.js";
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { type BadgeDefinition } from "../../../../common/src/definitions/badges";
-import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
-import { getEffectiveZIndex } from "../../../../common/src/utils/layer";
 
 export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
     playerName!: string;

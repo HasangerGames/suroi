@@ -12,7 +12,6 @@ import { MapObjectSpawnMode, NullString, type ReferenceTo, type ReifiableDef } f
 import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
 import { River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
-
 import { Config } from "./config";
 import { getLootFromTable } from "./data/lootTables";
 import { MapDefinition, MapName, Maps, ObstacleClump, RiverDefinition } from "./data/maps";
@@ -402,7 +401,7 @@ export class GameMap {
                         maxAttempts: 400
                     });
 
-                    if (!position) {
+                    if (position === undefined) {
                         Logger.warn(`Failed to find valid position for building ${idString}`);
                         continue;
                     }
@@ -438,7 +437,7 @@ export class GameMap {
                     Logger.warn(`Failed to place building ${idString} after ${attempts} attempts`);
                 }
 
-                if (position) this.generateBuilding(buildingDef, position, orientation);
+                if (position !== undefined) this.generateBuilding(buildingDef, position, orientation);
 
                 attempts = 0; // Reset attempts counter for the next building
             }
@@ -668,7 +667,7 @@ export class GameMap {
         layer ??= 0;
 
         scale ??= randomFloat(def.scale?.spawnMin ?? 1, def.scale?.spawnMax ?? 1);
-        if (variation === undefined && def.variations) {
+        if (variation === undefined && def.variations !== undefined) {
             variation = random(0, def.variations - 1) as Variation;
         }
 

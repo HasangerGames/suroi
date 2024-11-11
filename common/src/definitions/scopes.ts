@@ -7,6 +7,7 @@ export interface ScopeDefinition extends ItemDefinition {
 }
 
 export const Scopes = ObjectDefinitions.withDefault<ScopeDefinition>()(
+    "Scopes",
     {
         itemType: ItemType.Scope,
         noDrop: false,

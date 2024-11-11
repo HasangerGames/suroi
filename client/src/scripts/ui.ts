@@ -1,30 +1,30 @@
+import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "@common/constants";
+import { Ammos, type AmmoDefinition } from "@common/definitions/ammos";
+import { type ArmorDefinition } from "@common/definitions/armors";
+import { Badges, type BadgeDefinition } from "@common/definitions/badges";
+import { EmoteCategory, Emotes, type EmoteDefinition } from "@common/definitions/emotes";
+import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/healingItems";
+import { PerkIds, Perks } from "@common/definitions/perks";
+import { Scopes, type ScopeDefinition } from "@common/definitions/scopes";
+import { Skins, type SkinDefinition } from "@common/definitions/skins";
+import { SpectatePacket } from "@common/packets/spectatePacket";
+import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "@common/typings";
+import { ExtendedMap } from "@common/utils/misc";
+import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { pickRandomInArray } from "@common/utils/random";
+import { Vec, type Vector } from "@common/utils/vector";
 import { sound } from "@pixi/sound";
 import $ from "jquery";
 import { Color, isMobile, isWebGPUSupported } from "pixi.js";
-import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "../../../common/src/constants";
-import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos";
-import type { ArmorDefinition } from "../../../common/src/definitions/armors";
-import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
-import { EmoteCategory, Emotes, emoteIdStrings, type EmoteDefinition } from "../../../common/src/definitions/emotes";
-import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
-import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
-import { Skins, type SkinDefinition } from "../../../common/src/definitions/skins";
-import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
-import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "../../../common/src/typings";
-import { ExtendedMap } from "../../../common/src/utils/misc";
-import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
-import { pickRandomInArray } from "../../../common/src/utils/random";
-import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { TRANSLATIONS, getTranslatedString } from "../translations";
 import { Config, type ServerInfo } from "./config";
 import { type Game } from "./game";
 import { news } from "./news/newsPosts";
 import { body, createDropdown } from "./uiHelpers";
 import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";
-import { PIXI_SCALE, UI_DEBUG_MODE, EMOTE_SLOTS, MODE } from "./utils/constants";
+import { EMOTE_SLOTS, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
-import { PerkIds, Perks } from "../../../common/src/definitions/perks";
 import type { TranslationKeys } from "../typings/translations";
 
 /*
@@ -473,25 +473,30 @@ export async function setUpUI(game: Game): Promise<void> {
                 case CustomTeamMessages.Update: {
                     const { players, isLeader, ready } = data;
                     ui.createTeamPlayers.html(
-                        players.map((p: CustomTeamPlayerInfo): string => {
-                            let badgeSrc;
-                            if (p.badge) badgeSrc = `./img/game/shared/${emoteIdStrings.includes(p.badge) ? "emotes" : "badges"}/${p.badge}.svg`;
-                            return `
-                            <div class="create-team-player-container">
-                                <i class="fa-solid fa-crown"${p.isLeader ? "" : ' style="display: none"'}></i>
-                                <i class="fa-regular fa-circle-check"${p.ready ? "" : ' style="display: none"'}></i>
-                                <div class="skin">
-                                    <div class="skin-base" style="background-image: url('./img/game/shared/skins/${p.skin}_base.svg')"></div>
-                                    <div class="skin-left-fist" style="background-image: url('./img/game/shared/skins/${p.skin}_fist.svg')"></div>
-                                    <div class="skin-right-fist" style="background-image: url('./img/game/shared/skins/${p.skin}_fist.svg')"></div>
+                        players.map(
+                            ({
+                                isLeader,
+                                ready,
+                                name,
+                                skin,
+                                badge,
+                                nameColor
+                            }: CustomTeamPlayerInfo): string => `
+                                <div class="create-team-player-container">
+                                    <i class="fa-solid fa-crown"${isLeader ? "" : ' style="display: none"'}></i>
+                                    <i class="fa-regular fa-circle-check"${ready ? "" : ' style="display: none"'}></i>
+                                    <div class="skin">
+                                        <div class="skin-base" style="background-image: url('./img/game/shared/skins/${skin}_base.svg')"></div>
+                                        <div class="skin-left-fist" style="background-image: url('./img/game/shared/skins/${skin}_fist.svg')"></div>
+                                        <div class="skin-right-fist" style="background-image: url('./img/game/shared/skins/${skin}_fist.svg')"></div>
+                                    </div>
+                                    <div class="create-team-player-name-container">
+                                        <span class="create-team-player-name"${nameColor ? ` style="color: ${new Color(nameColor).toHex()}"` : ""};>${name}</span>
+                                        ${badge ? `<img class="create-team-player-badge" draggable="false" src="./img/game/shared/badge/${badge}.svg" />` : ""}
+                                    </div>
                                 </div>
-                                <div class="create-team-player-name-container">
-                                    <span class="create-team-player-name"${p.nameColor ? ` style="color: ${new Color(p.nameColor).toHex()}"` : ""};>${p.name}</span>
-                                    ${p.badge ? `<img class="create-team-player-badge" draggable="false" src=${badgeSrc ?? "./img/game/shared/badges/${p.badge}.svg"} />` : ""}
-                                </div>
-                            </div>
-                            `;
-                        }).join("")
+                                `
+                        ).join("")
                     );
                     ui.createTeamToggles.toggleClass("disabled", !isLeader);
                     ui.btnStartGame
@@ -1008,23 +1013,21 @@ export async function setUpUI(game: Game): Promise<void> {
             return a.category - b.category;
         });
 
-        let lastCategory = -1;
+        let lastCategory: EmoteCategory | undefined;
 
         for (const emote of emotes) {
-            if (emote.isTeamEmote || emote.isWeaponEmote) continue;
-
-            if (emote.category as number !== lastCategory) {
+            if (emote.category !== lastCategory) {
                 const categoryHeader = $<HTMLDivElement>(`<div class="emote-list-header">${getTranslatedString(`emotes_category_${EmoteCategory[emote.category]}` as TranslationKeys)}</div>`);
                 emoteList.append(categoryHeader);
                 lastCategory = emote.category;
             }
 
+            const idString = emote.idString;
             // noinspection CssUnknownTarget
-            const emoteIdString = `./img/game/shared/emotes/${emote.idString}.svg`;
             const emoteItem = $<HTMLDivElement>(
-                `<div id="emote-${emote.idString}" class="emotes-list-item-container">
-                    <div class="emotes-list-item" style="background-image: url(${emoteIdString})"></div>
-                    <span class="emote-name">${getTranslatedString(`emote_${emote.idString}` as TranslationKeys)}</span>
+                `<div id="emote-${idString}" class="emotes-list-item-container">
+                    <div class="emotes-list-item" style="background-image: url(./img/game/shared/emotes/${idString}.svg)"></div>
+                    <span class="emote-name">${getTranslatedString(`emote_${idString}` as TranslationKeys)}</span>
                 </div>`
             );
 
@@ -1273,13 +1276,12 @@ export async function setUpUI(game: Game): Promise<void> {
 
         $("#badges-list").append(
             noBadgeItem,
-            ...allowedBadges.map(({ idString, name }) => {
-                const location = emoteIdStrings.includes(idString) ? "emotes" : "badges";
+            ...allowedBadges.map(({ idString }) => {
                 // noinspection CssUnknownTarget
                 const badgeItem = badgeUiCache[idString] = $<HTMLDivElement>(
                     `<div id="badge-${idString}" class="badges-list-item-container${idString === activeBadge ? " selected" : ""}">\
                         <div class="badges-list-item">\
-                            <div style="background-image: url('./img/game/shared/${location}/${idString}.svg')"></div>\
+                            <div style="background-image: url('./img/game/shared/badges/${idString}.svg')"></div>\
                         </div>\
                         <span class="badge-name">${getTranslatedString(`badge_${idString}` as TranslationKeys)}</span>\
                     </div>`
@@ -1901,7 +1903,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     if (inputManager.pingWheelActive) {
                         inputManager.addAction({
                             type: InputActions.Emote,
-                            emote: Emotes.fromString(item.idString)
+                            emote: HealingItems.fromString(item.idString)
                         });
                     } else {
                         inputManager.addAction({
@@ -1942,7 +1944,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
         ammoContainers[`${ammo.hideUnlessPresent}`].append(ele);
 
-        ele[0].addEventListener("pointerup", (e: PointerEvent): void => {
+        ele[0].addEventListener("pointerup", (): void => {
             clearTimeout(dropTimer);
         });
 
@@ -1955,7 +1957,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 if (inputManager.pingWheelActive) {
                     inputManager.addAction({
                         type: InputActions.Emote,
-                        emote: Emotes.fromString(ammo.idString)
+                        emote: Ammos.fromString(ammo.idString)
                     });
                 }
 

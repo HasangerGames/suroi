@@ -1,10 +1,10 @@
 import { GameConstants } from "@common/constants";
-import { Skins } from "@common/definitions";
 import { Obstacles } from "@common/definitions/obstacles";
 import { PerkData, PerkIds, type PerkDefinition } from "@common/definitions/perks";
+import { Skins } from "@common/definitions/skins";
 import { PerkManager } from "@common/utils/perkManager";
 import { weightedRandom } from "@common/utils/random";
-import { type Player } from "../objects";
+import { type Player } from "../objects/player";
 import { GunItem } from "./gunItem";
 
 export type UpdatablePerkDefinition = PerkDefinition & { readonly updateInterval: number };

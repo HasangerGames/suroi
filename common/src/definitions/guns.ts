@@ -223,6 +223,7 @@ const defaultGun = {
 } satisfies DeepPartial<GunDefinition> as DeepPartial<GunDefinition>;
 
 export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
+    "Guns",
     defaultGun,
     () => {
         return ([

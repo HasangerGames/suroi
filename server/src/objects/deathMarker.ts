@@ -1,13 +1,12 @@
 import { ObjectCategory } from "@common/constants";
-import { type FullData } from "@common/utils/objectsSerializations";
-
 import { RectangleHitbox } from "@common/utils/hitbox";
+import { type FullData } from "@common/utils/objectsSerializations";
 import { BaseGameObject } from "./gameObject";
 import { type Player } from "./player";
 
 export class DeathMarker extends BaseGameObject.derive(ObjectCategory.DeathMarker) {
-    override readonly fullAllocBytes = 8;
-    override readonly partialAllocBytes = 4;
+    override readonly fullAllocBytes = 1;
+    override readonly partialAllocBytes = 12;
     override readonly hitbox: RectangleHitbox;
 
     readonly player: Player;

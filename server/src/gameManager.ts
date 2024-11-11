@@ -1,17 +1,15 @@
-import { isMainThread, parentPort, Worker, workerData } from "node:worker_threads";
-
+import { TeamSize } from "@common/constants";
 import { type GetGameResponse } from "@common/typings";
-
+import { Numeric } from "@common/utils/math";
+import { SuroiByteStream } from "@common/utils/suroiByteStream";
+import { isMainThread, parentPort, Worker, workerData } from "node:worker_threads";
+import { WebSocket } from "uWebSockets.js";
 import { Config } from "./config";
+import { Game } from "./game";
+import { PlayerContainer } from "./objects/player";
 import { maxTeamSize } from "./server";
 import { Logger } from "./utils/misc";
-import { Game } from "./game";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
-import { Numeric } from "@common/utils/math";
-import { TeamSize } from "@common/constants";
-import { PlayerContainer } from "./objects/player";
-import { WebSocket } from "uWebSockets.js";
-import { SuroiBitStream } from "@common/utils/suroiBitStream";
 
 export interface WorkerInitData {
     readonly id: number
@@ -348,7 +346,7 @@ if (!isMainThread) {
          * @param message The message to handle.
          */
         message(socket: WebSocket<PlayerContainer>, message) {
-            const stream = new SuroiBitStream(message);
+            const stream = new SuroiByteStream(message);
             try {
                 const player = socket.getUserData().player;
                 if (player === undefined) return;
