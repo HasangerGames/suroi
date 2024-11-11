@@ -131,7 +131,7 @@ export class GameContainer {
 
 export async function findGame(): Promise<GetGameResponse> {
     let gameID: number;
-    let eligibleGames = games.filter((g?: GameContainer): g is GameContainer => !!g && !g.over && g.allowJoin);
+    let eligibleGames = games.filter((g?: GameContainer): g is GameContainer => !!g && g.allowJoin && !g.over);
 
     // Attempt to create a new game if one isn't available
     if (!eligibleGames.length) {
@@ -141,6 +141,10 @@ export async function findGame(): Promise<GetGameResponse> {
         } else {
             eligibleGames = games.filter((g?: GameContainer): g is GameContainer => !!g && !g.over);
         }
+    }
+
+    if (!eligibleGames.length) {
+        return { success: false };
     }
 
     gameID = eligibleGames
