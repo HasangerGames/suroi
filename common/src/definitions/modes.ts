@@ -5,12 +5,11 @@ export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "
 
 export interface ModeDefinition {
     readonly colors: Record<ColorKeys, string>
-    readonly inheritTexturesFrom?: Mode
     readonly specialMenuMusic?: boolean
+    readonly spriteSheets: string[],
     readonly ambience?: string
     readonly specialSounds?: string[]
     readonly defaultScope?: ReferenceTo<ScopeDefinition>
-    readonly reskin?: string
     readonly darkShaders?: boolean
     // will be multiplied by the bullet trail color
     readonly bulletTrailAdjust?: string
@@ -18,11 +17,16 @@ export interface ModeDefinition {
         readonly frames: string | string[]
         readonly tint?: number
     }
+    readonly buttonCss?: {
+        icon: string,
+        color: string,
+        shadowColor: string
+    }
 }
 
-export type Mode = "normal" | "fall" | "halloween" | "winter";
+export type Mode = keyof typeof Modes;
 
-export const Modes: Record<Mode, ModeDefinition> = {
+export const Modes = {
     normal: {
         colors: {
             grass: "hsl(95, 41%, 38%)",
@@ -34,7 +38,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
-        reskin: "normal"
+        spriteSheets: ["shared", "normal"]
     },
     fall: {
         colors: {
@@ -49,9 +53,14 @@ export const Modes: Record<Mode, ModeDefinition> = {
         },
         ambience: "wind_ambience",
         defaultScope: "2x_scope",
-        reskin: "fall",
         particleEffects: {
             frames: ["leaf_particle_1", "leaf_particle_2", "leaf_particle_3"]
+        },
+        spriteSheets: ["shared", "fall"],
+        buttonCss: {
+            color: "#72742f",
+            shadowColor: "#535421",
+            icon: "./img/game/fall/obstacles/mini_plumpkin.svg"
         }
     },
     halloween: {
@@ -65,11 +74,10 @@ export const Modes: Record<Mode, ModeDefinition> = {
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
-        inheritTexturesFrom: "fall",
         defaultScope: "2x_scope",
         specialMenuMusic: true,
         darkShaders: true,
-        reskin: "fall"
+        spriteSheets: ["shared", "fall", "halloween"]
     },
     winter: {
         colors: {
@@ -86,7 +94,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
         specialSounds: [
             "airdrop_plane"
         ],
-        reskin: "winter",
-        bulletTrailAdjust: "hsl(0, 50%, 80%)"
+        bulletTrailAdjust: "hsl(0, 50%, 80%)",
+        spriteSheets: ["shared", "winter"]
     }
-};
+} satisfies Record<string, ModeDefinition>;

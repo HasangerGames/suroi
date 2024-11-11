@@ -4,6 +4,7 @@ import { type Vector } from "@common/utils/vector";
 import { type Maps } from "./data/maps";
 import { type Game } from "./game";
 import { type GamePlugin } from "./pluginManager";
+import type { Mode } from "@common/definitions/modes";
 
 export enum SpawnMode {
     Normal,
@@ -21,7 +22,8 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "fall",
+    map: "normal",
+    mode: "normal",
 
     spawn: { mode: SpawnMode.Normal },
 
@@ -88,6 +90,12 @@ export interface ConfigType {
      * Parameters can also be specified for certain maps, separated by colons (e.g. `singleObstacle:rock`)
      */
     readonly map: `${keyof typeof Maps}${string}`
+
+    /**
+     * The game mode. Must be a valid value from the modes definitions (`common/src/definitions/modes.ts`).
+     * Example: `"fall"` for fall mode or `"halloween"` for halloween mode
+     */
+    readonly mode: Mode
 
     /**
      * There are 4 spawn modes: `Normal`, `Radius`, `Fixed`, and `Center`.

@@ -88,6 +88,7 @@ if (isMainThread) {
                 maxTeamSize,
 
                 nextSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
+                mode: Config.mode,
                 protocolVersion: GameConstants.protocolVersion
             }));
     }).get("/api/getGame", async(res, req) => {
