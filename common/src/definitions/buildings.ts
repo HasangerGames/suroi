@@ -6183,9 +6183,9 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // lab
                     { idString: "pumpkin", position: Vec.create(-47.26, -117.89), rotation: 0 },
                     { idString: "pumpkin", position: Vec.create(-53.98, -114.99), rotation: 0 },
-                    { idString: "mini_plumpkin", position: Vec.create(-34.18, -111.23), rotation: 0 },
-                    { idString: "mini_plumpkin", position: Vec.create(-26.74, -114.57), rotation: 0 },
-                    { idString: "mini_plumpkin", position: Vec.create(-31.39, -120.37), rotation: 0 },
+                    { idString: "baby_plumpkin", position: Vec.create(-34.18, -111.23), rotation: 0 },
+                    { idString: "baby_plumpkin", position: Vec.create(-26.74, -114.57), rotation: 0 },
+                    { idString: "baby_plumpkin", position: Vec.create(-31.39, -120.37), rotation: 0 },
                     { idString: "plumpkin", position: Vec.create(3.67, -115.06), rotation: 0 },
                     { idString: "diseased_plumpkin", position: Vec.create(24.92, -114.04), rotation: 0 },
                     { idString: "bulletproof_window", position: Vec.create(-50.37, -104.85), rotation: 0 },

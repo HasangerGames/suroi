@@ -344,7 +344,7 @@ const perks = [
             oak_leaf_pile: 1,
             hay_bale: 1,
 
-            mini_plumpkin: 0.01,
+            baby_plumpkin: 0.01,
             plumpkin: 0.01,
             diseased_plumpkin: 0.01
         },

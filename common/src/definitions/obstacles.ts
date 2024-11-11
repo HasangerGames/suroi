@@ -1069,8 +1069,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 }
             },
             {
-                idString: "mini_plumpkin",
-                name: "Mini Plumpkin",
+                idString: "baby_plumpkin",
+                name: "Baby Plumpkin",
                 material: "pumpkin",
                 health: 100,
                 scale: {
