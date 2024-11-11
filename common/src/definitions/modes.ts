@@ -6,7 +6,7 @@ export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "
 export interface ModeDefinition {
     readonly colors: Record<ColorKeys, string>
     readonly specialMenuMusic?: boolean
-    readonly spriteSheets: string[],
+    readonly spriteSheets: SpritesheetNames[],
     readonly ambience?: string
     readonly specialSounds?: string[]
     readonly defaultScope?: ReferenceTo<ScopeDefinition>
@@ -25,6 +25,8 @@ export interface ModeDefinition {
 }
 
 export type Mode = keyof typeof Modes;
+
+export type SpritesheetNames = "shared" | "normal" | "fall" | "halloween" | "birthday" | "winter";
 
 export const Modes = {
     normal: {

@@ -6,7 +6,7 @@ import { type FSWatcher, type Plugin, type ResolvedConfig } from "vite";
 import readDirectory from "./utils/readDirectory.js";
 import { type CompilerOptions, createSpritesheets, type MultiResAtlasList } from "./utils/spritesheet.js";
 import { GameConstants } from "../../../common/src/constants";
-import { Mode, Modes } from "../../../common/src/definitions/modes";
+import { type Mode, Modes, type SpritesheetNames } from "../../../common/src/definitions/modes";
 
 const PLUGIN_NAME = "vite-spritesheet-plugin";
 
@@ -67,9 +67,12 @@ export function spritesheet(): Plugin[] {
     let atlases: MultiResAtlasList;
 
     const exportedAtlases: {
-        low: SpritesheetData[]
-        high: SpritesheetData[]
-    } = { low: [], high: [] };
+        low: Partial<Record<SpritesheetNames, SpritesheetData[]>>,
+        high: Partial<Record<SpritesheetNames, SpritesheetData[]>>
+    } = {
+        low: {},
+        high: {}
+    }
 
     const load = (id: string): string | undefined => {
         switch (id) {
