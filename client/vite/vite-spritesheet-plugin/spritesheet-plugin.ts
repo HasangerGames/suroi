@@ -4,7 +4,7 @@ import path, { resolve } from "path";
 import { type SpritesheetData } from "pixi.js";
 import { type FSWatcher, type Plugin, type ResolvedConfig } from "vite";
 import readDirectory from "./utils/readDirectory.js";
-import { type CompilerOptions, createSpritesheets, type MultiResAtlasList } from "./utils/spritesheet.js";
+import { type CompilerOptions, createSpritesheets, type MultiResAtlasList, type ModesAtlasList } from "./utils/spritesheet.js";
 import { GameConstants } from "../../../common/src/constants";
 import { type Mode, Modes, type SpritesheetNames } from "../../../common/src/definitions/modes";
 
@@ -23,28 +23,20 @@ const compilerOpts = {
     packerOptions: {}
 } satisfies CompilerOptions as CompilerOptions;
 
-const getImageDirs = (modeName: Mode | "shared", imageDirs: string[] = []): string[] => {
-    imageDirs.push(`public/img/game/${modeName}`);
-    return modeName === "shared"
-        ? imageDirs
-        : getImageDirs(Modes[modeName].inheritTexturesFrom ?? "shared", imageDirs);
-};
-
-const imageDirs = getImageDirs(GameConstants.modeName).reverse();
-
-async function buildSpritesheets(): Promise<MultiResAtlasList> {
-    const fileMap = new Map<string, string>();
-
-    // Maps have unique keys.
-    // Since the filename is used as the key, and mode sprites are added to the map after the common sprites,
-    // this method allows mode sprites to override common sprites with the same filename.
-    for (const imagePath of imageDirs.map(dir => readDirectory(dir).filter(x => imagesMatcher.match(x))).flat()) {
-        fileMap.set(imagePath.slice(imagePath.lastIndexOf(path.sep)), imagePath);
-    }
-
-    console.log("Building spritesheets...");
-
-    return await createSpritesheets([...fileMap.values()], compilerOpts);
+async function buildSpritesheets(): Promise<ModesAtlasList> {
+    return Object.fromEntries(await Promise.all(Object.entries(Modes).map(async ([mode, definition]) => {
+        // Maps have unique keys.
+        // Since the filename is used as the key, and mode sprites are added to the map after the common sprites,
+        // this method allows mode sprites to override common sprites with the same filename.
+        const fileMap = new Map<string, string>();
+        for (const imagePath of definition.spriteSheets
+            .map(dir => readDirectory(`public/img/game/${dir}`).filter(x => imagesMatcher.match(x))).flat()
+        ) {
+            fileMap.set(imagePath.slice(imagePath.lastIndexOf(path.sep)), imagePath)
+        }
+        console.log(`Building spritesheets for mode \`${mode}\``)
+        return [mode, createSpritesheets([...fileMap.values()], compilerOpts)]
+    })));
 }
 
 const highResVirtualModuleId = "virtual:spritesheets-jsons-high-res";

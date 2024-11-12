@@ -3,6 +3,7 @@ import { createHash } from "crypto";
 import { type IOption, MaxRectsPacker } from "maxrects-packer";
 import path from "path";
 import { type SpritesheetData } from "pixi.js";
+import type { Mode } from "../../../../common/src/definitions/modes";
 
 export const supportedFormats = ["png", "jpeg"] as const;
 
@@ -51,6 +52,8 @@ export interface CompilerOptions {
 export type AtlasList = Array<{ readonly json: SpritesheetData, readonly image: Buffer }>;
 
 export type MultiResAtlasList = { readonly low: AtlasList, readonly high: AtlasList };
+
+export type ModesAtlasList = Record<Mode, MultiResAtlasList>
 
 /**
  * Pack images spritesheets.
