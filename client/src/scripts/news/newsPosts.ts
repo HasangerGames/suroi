@@ -5,7 +5,9 @@ export const news: NewsPost[] = [
         date: 1731370468000,
         author: "HAZEL",
         title: "Empty Baskets",
-        content: "Harvest comes to a close and Classic mode returns to the island, but more is soon to come. We will be holding a <strong>closed beta test for accounts</strong> in the not-so-distant future, so stay tuned to official Suroi channels for information on how to participate."
+        content: `Harvest comes to a close and Classic mode returns to the island, but more is soon to come. We will be holding a <strong>closed beta test for accounts</strong> in the not-so-distant future, so stay tuned to official Suroi channels for information on how to participate.
+
+<br><a href="/rules">The rules</a> have been updated. Please take the time to read them.`
     },
     {
         date: 1730689557000,
