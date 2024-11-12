@@ -2,7 +2,7 @@
   "name": "Suroi - 2D Battle Royale",
   "short_name": "Suroi",
   "description": "Open-source 2D battle royale game inspired by surviv.io.",
-  "background_color": "#49993e",
+  "background_color": "#5b8939",
   "start_url": ".",
   "display": "fullscreen",
   "orientation": "landscape",
