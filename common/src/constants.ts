@@ -221,7 +221,7 @@ export const enum PlayerActions {
     Revive
 }
 
-export const enum KillfeedEventType {
+export enum KillfeedEventType {
     Suicide,
     NormalTwoParty,
     FinishedOff,
