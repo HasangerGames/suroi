@@ -1,20 +1,20 @@
+import { Layer, Layers, ObjectCategory, ZIndexes } from "@common/constants";
+import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { type Orientation, type Variation } from "@common/typings";
+import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { adjacentOrEqualLayer, equivLayer, getEffectiveZIndex } from "@common/utils/layer";
+import { Angle, EaseFunctions, Numeric, calculateDoorHitboxes } from "@common/utils/math";
+import { type Timeout } from "@common/utils/misc";
+import { ObstacleSpecialRoles } from "@common/utils/objectDefinitions";
+import { type ObjectsNetData } from "@common/utils/objectsSerializations";
+import { random, randomBoolean, randomFloat, randomRotation } from "@common/utils/random";
+import { Vec, type Vector } from "@common/utils/vector";
 import { Graphics } from "pixi.js";
-import { Layer, Layers, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { MaterialSounds, type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
-import { type Orientation, type Variation } from "../../../../common/src/typings";
-import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
-import { adjacentOrEqualLayer, equivLayer, getEffectiveZIndex } from "../../../../common/src/utils/layer";
-import { Angle, EaseFunctions, Numeric, calculateDoorHitboxes } from "../../../../common/src/utils/math";
-import type { Timeout } from "../../../../common/src/utils/misc";
-import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
-import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { random, randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
-import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import type { Tween } from "../utils/tween";
+import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { type Particle, type ParticleEmitter, type ParticleOptions } from "./particles";
 import { type Player } from "./player";
@@ -207,8 +207,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
         this.container.scale.set(this.dead ? 1 : this.scale);
 
-        this.updateZIndex();
-
         if (isNew) {
             if (definition.glow !== undefined) {
                 const glow = definition.glow;
@@ -291,7 +289,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     this.image.setVisible(false);
                 } else {
                     this.image.setFrame(definition.frames.residue ?? `${definition.idString}_residue`);
-                    this.updateZIndex();
                 }
 
                 this.container.rotation = this.rotation;
@@ -331,6 +328,8 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             this._glow?.kill();
         }
 
+        this.updateZIndex();
+
         if (this._door === undefined) {
             this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
         }
@@ -369,6 +368,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 ? ZIndexes.UnderWaterDeadObstacles
                 : ZIndexes.DeadObstacles
             : this.definition.zIndex ?? ZIndexes.ObstaclesLayer1;
+
         this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, this.game.layer);
 
         // hides bunker doors on ground layer

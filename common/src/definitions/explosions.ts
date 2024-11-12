@@ -26,6 +26,7 @@ export interface ExplosionDefinition extends ObjectDefinition {
 }
 
 export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
+    "Explosions",
     { ballistics: defaultBulletTemplate },
     () => [
         {

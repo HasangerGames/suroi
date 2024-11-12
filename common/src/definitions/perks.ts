@@ -142,7 +142,7 @@ const perks = [
 
         // all multiplicative
         waterSpeedMod: (1 / 0.7) * 1.3,
-        smokeSpeedMod: 1.2
+        smokeSpeedMod: 1.3
     },
     {
         idString: PerkIds.Toploaded,
@@ -177,8 +177,8 @@ const perks = [
         description: "Melee weapons make you move faster when equipped, and deal more damage.",
         category: PerkCategories.Normal,
 
-        speedMod: 1.3, // multiplicative
-        damageMod: 1.3 // multiplicative
+        speedMod: 1.2, // multiplicative
+        damageMod: 1.2 // multiplicative
     },
     {
         idString: PerkIds.CloseQuartersCombat,
@@ -186,9 +186,9 @@ const perks = [
         description: "Weapons do more damage and reload faster at close range.",
         category: PerkCategories.Normal,
 
-        cutoff: 60,
-        reloadMod: 1.2, // divide
-        damageMod: 1.1 // multiplicative
+        cutoff: 50,
+        reloadMod: 1.3, // divide
+        damageMod: 1.2 // multiplicative
     },
     {
         idString: PerkIds.LowProfile,
@@ -197,7 +197,7 @@ const perks = [
         category: PerkCategories.Normal,
 
         sizeMod: 0.8, // multiplicative
-        explosionMod: 0.7 // multiplicative
+        explosionMod: 0.5 // multiplicative
     },
 
     //
@@ -344,7 +344,7 @@ const perks = [
             oak_leaf_pile: 1,
             hay_bale: 1,
 
-            mini_plumpkin: 0.01,
+            baby_plumpkin: 0.01,
             plumpkin: 0.01,
             diseased_plumpkin: 0.01
         },
@@ -420,36 +420,22 @@ export type PerkNames = ReferenceTo<PerkDefinition>;
 class PerkDefinitions extends ObjectDefinitions<PerkDefinition> {
     readonly defaults: readonly PerkDefinition[];
 
-    /**
-     *  There are two ways to write a set of perks to the
-     *  stream: either as a bitfield, or by writing the number
-     *  of perks and then each perk's id.
-     *
-     *  Let's say there are `n` total perks. (`Perks.definitions.length === n`)\
-     *  Let the bit count therefore be `b`. (`ceil(log2(n)) === b === Perks.bitCount`)
-     *
-     *  Writing a bitfield will always take `n` bits.\
-     *  Writing the number of perks followed by the perks' ids will take `b • (x + 1)` bits,
-     *  where `x` is the number of perks being sent.
-     *
-     *  Thus, we land on an optimization problem—when is one method better than another.
-     *  The solution is pretty easy—solving for `x` in `n ≤ b(x + 1)` gives `x ≤ (n / b) - 1`.
-     *  We write a boolean to the stream to indicate which method we're using, and our
-     *  new cutoff is `x ≤ n / b`.
-     *
-     * Since `n / b` is a constant, we store it in this attribute
-     *
-     * [Source](https://www.desmos.com/calculator/llvgo1v32i)
-     */
-    readonly bitfieldCutoff: number;
-
-    // forward as public
-    declare readonly idStringToNumber: Readonly<Record<PerkNames, number>>;
+    readonly idStringToNumber: Readonly<Record<PerkNames, number>>;
 
     constructor(definitions: ReadonlyArray<GetMissing<BasicPerk, typeof defaultTemplate>>) {
-        super(definitions as ReadonlyArray<RawDefinition<PerkDefinition>>, defaultTemplate as DeepPartial<PerkDefinition>);
+        super(
+            "Perks",
+            definitions as ReadonlyArray<RawDefinition<PerkDefinition>>,
+            defaultTemplate as DeepPartial<PerkDefinition>
+        );
 
-        this.bitfieldCutoff = ~~(this.bitCount / this.definitions.length);
+        this.idStringToNumber = {} as Record<PerkNames, number>;
+        for (let i = 0, defLength = this.definitions.length; i < defLength; i++) {
+            const idString = this.definitions[i].idString;
+
+            // @ts-expect-error init code
+            this.idStringToNumber[idString] = i;
+        }
 
         this.defaults = this.definitions.filter(({ giveByDefault }) => giveByDefault);
     }

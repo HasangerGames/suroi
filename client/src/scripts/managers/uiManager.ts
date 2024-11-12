@@ -1,23 +1,24 @@
+import { DEFAULT_INVENTORY, GameConstants, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType } from "@common/constants";
+import { Ammos } from "@common/definitions/ammos";
+import { type BadgeDefinition } from "@common/definitions/badges";
+import { type EmoteDefinition } from "@common/definitions/emotes";
+import { type GunDefinition } from "@common/definitions/guns";
+import { Loots } from "@common/definitions/loots";
+import { MapPings, type PlayerPing } from "@common/definitions/mapPings";
+import { PerkCategories, PerkIds, type PerkDefinition } from "@common/definitions/perks";
+import { DEFAULT_SCOPE, type ScopeDefinition } from "@common/definitions/scopes";
+import { Skins } from "@common/definitions/skins";
+import { type GameOverData } from "@common/packets/gameOverPacket";
+import { type KillFeedPacketData } from "@common/packets/killFeedPacket";
+import { type PlayerData } from "@common/packets/updatePacket";
+import { Numeric } from "@common/utils/math";
+import { ExtendedMap, freezeDeep } from "@common/utils/misc";
+import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Color } from "pixi.js";
-import { DEFAULT_INVENTORY, GameConstants, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType } from "../../../../common/src/constants";
-import { Skins } from "../../../../common/src/definitions";
-import { Ammos } from "../../../../common/src/definitions/ammos";
-import { type BadgeDefinition } from "../../../../common/src/definitions/badges";
-import { emoteIdStrings, type EmoteDefinition } from "../../../../common/src/definitions/emotes";
-import { type GunDefinition } from "../../../../common/src/definitions/guns";
-import { Loots } from "../../../../common/src/definitions/loots";
-import { MapPings, type PlayerPing } from "../../../../common/src/definitions/mapPings";
-import { PerkCategories, PerkIds, type PerkDefinition } from "../../../../common/src/definitions/perks";
-import { DEFAULT_SCOPE, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
-import { type GameOverData } from "../../../../common/src/packets/gameOverPacket";
-import { type KillFeedPacketData } from "../../../../common/src/packets/killFeedPacket";
-import { type PlayerData } from "../../../../common/src/packets/updatePacket";
-import { Numeric } from "../../../../common/src/utils/math";
-import { ExtendedMap, freezeDeep } from "../../../../common/src/utils/misc";
-import { ItemType, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
-import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { getTranslatedString, NO_SPACE_LANGUAGES } from "../../translations";
+import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
 import { type GameObject } from "../objects/gameObject";
 import { Player } from "../objects/player";
@@ -269,7 +270,7 @@ export class UIManager {
         closeCreateTeam: $<HTMLButtonElement>("#close-create-team"),
 
         c4Button: $<HTMLButtonElement>("#c4-detonate-btn"),
-        detonateKey: $<HTMLButtonElement>("#detonate-key"),
+        detonateKey: $<HTMLDivElement>("#detonate-key"),
 
         inventoryMsg: $<HTMLSpanElement>("#inventory-message")
     });
@@ -408,7 +409,7 @@ export class UIManager {
         const playerName = this.getPlayerName(packet.playerID);
         const playerBadge = this.getPlayerBadge(packet.playerID);
         const playerBadgeText = playerBadge
-            ? html`<img class="badge-icon" src="./img/game/shared/${emoteIdStrings.includes(playerBadge.idString) ? "emotes" : "badges"}/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
+            ? html`<img class="badge-icon" src="./img/game/shared/badges/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
             : "";
 
         gameOverText.html(
@@ -499,7 +500,7 @@ export class UIManager {
 
             if (spectating) {
                 const badge = this.getPlayerBadge(id.id);
-                const badgeText = badge ? html`<img class="badge-icon" src="./img/game/shared/${emoteIdStrings.includes(badge.idString) ? "emotes" : "badges"}/${badge.idString}.svg" alt="${badge.name} badge">` : "";
+                const badgeText = badge ? html`<img class="badge-icon" src="./img/game/shared/badges/${badge.idString}.svg" alt="${badge.name} badge">` : "";
 
                 this.ui.gameOverOverlay.fadeOut();
                 this.ui.spectatingMsgPlayer.html(this.getPlayerName(id.id) + badgeText);
@@ -512,6 +513,27 @@ export class UIManager {
                 this.ui.emoteButton.toggle(!spectating);
                 this.ui.pingToggle.toggle(!spectating);
                 this.ui.menuButton.toggle(!spectating);
+            }
+        }
+
+        if (minMax) {
+            this.maxHealth = minMax.maxHealth;
+            this.minAdrenaline = minMax.minAdrenaline;
+            this.maxAdrenaline = minMax.maxAdrenaline;
+
+            if (this.maxHealth === GameConstants.player.defaultHealth) {
+                this.ui.maxHealth.text("").hide();
+            } else {
+                this.ui.maxHealth.text(safeRound(this.maxHealth)).show();
+            }
+
+            if (
+                this.maxAdrenaline === GameConstants.player.maxAdrenaline
+                && this.minAdrenaline === 0
+            ) {
+                this.ui.minMaxAdren.text("").hide();
+            } else {
+                this.ui.minMaxAdren.text(`${this.minAdrenaline === 0 ? "" : `${safeRound(this.minAdrenaline)}/`}${safeRound(this.maxAdrenaline)}`).show();
             }
         }
 
@@ -603,27 +625,6 @@ export class UIManager {
         }
 
         if (zoom) this.game.camera.zoom = zoom;
-
-        if (minMax) {
-            this.maxHealth = minMax.maxHealth;
-            this.minAdrenaline = minMax.minAdrenaline;
-            this.maxAdrenaline = minMax.maxAdrenaline;
-
-            if (this.maxHealth === GameConstants.player.defaultHealth) {
-                this.ui.maxHealth.text("").hide();
-            } else {
-                this.ui.maxHealth.text(safeRound(this.maxHealth)).show();
-            }
-
-            if (
-                this.maxAdrenaline === GameConstants.player.maxAdrenaline
-                && this.minAdrenaline === 0
-            ) {
-                this.ui.minMaxAdren.text("").hide();
-            } else {
-                this.ui.minMaxAdren.text(`${this.minAdrenaline === 0 ? "" : `${safeRound(this.minAdrenaline)}/`}${safeRound(this.maxAdrenaline)}`).show();
-            }
-        }
 
         if (adrenaline !== undefined) {
             this.adrenaline = Numeric.remap(adrenaline, 0, 1, this.minAdrenaline, this.maxAdrenaline);
@@ -831,8 +832,8 @@ export class UIManager {
                     });
 
                 itemName.text(weapon.definition.idString.startsWith("dual_")
-                    ? getTranslatedString("dual_template", { gun: getTranslatedString(weapon.definition.idString.slice("dual_".length)) })
-                    : getTranslatedString(weapon.definition.idString));
+                    ? getTranslatedString("dual_template", { gun: getTranslatedString(weapon.definition.idString.slice("dual_".length) as TranslationKeys) })
+                    : getTranslatedString(weapon.definition.idString as TranslationKeys));
 
                 const isFists = weapon.definition.idString === "fists";
                 const oldSrc = itemImage.attr("src");
@@ -1223,7 +1224,7 @@ export class UIManager {
             return {
                 name: hasId ? this.getPlayerName(id) : "",
                 badgeText: badge
-                    ? html`<img class="badge-icon" src="./img/game/shared/${emoteIdStrings.includes(badge.idString) ? "emotes" : "badges"}/${badge.idString}.svg" alt="${badge.name} badge">`
+                    ? html`<img class="badge-icon" src="./img/game/shared/badges/${badge.idString}.svg" alt="${badge.name} badge">`
                     : ""
             };
         };
@@ -1277,7 +1278,7 @@ export class UIManager {
                             messageText = messageText.replaceAll("<span>", "<span style=\"display:contents;\">");
                         }
 
-                        const fullyQualifiedName = weaponPresent ? (getTranslatedString(weaponUsed.idString) === weaponUsed.idString ? weaponUsed.name : getTranslatedString(weaponUsed.idString)) : "";
+                        const fullyQualifiedName = weaponPresent ? (getTranslatedString(weaponUsed.idString as TranslationKeys) === weaponUsed.idString ? weaponUsed.name : getTranslatedString(weaponUsed.idString as TranslationKeys)) : "";
 
                         // special case for turkish
                         if (language === "tr") {
@@ -1334,7 +1335,7 @@ export class UIManager {
                                 break;
                             case KillfeedEventType.Suicide:
                                 // Turkish and Estonian special condition ('i shouldn't appear in these messages)
-                                killMessage = getTranslatedString(`kf_message${language === "tr" || language === "et" ? "_grammar" : ""}`, {
+                                killMessage = getTranslatedString(`kf_message${language === "tr" || language === "et" ? "_grammar" : ""}` as TranslationKeys, {
                                     player: victimText,
                                     finally: "",
                                     event: getTranslatedString(`kf_suicide_${severity === KillfeedEventSeverity.Down ? "down" : "kill"}`, { player: "" }),
@@ -1490,7 +1491,7 @@ export class UIManager {
                         if (attackerId === this.game.activePlayerID) {
                             const base = {
                                 victimName: victimText,
-                                weaponUsed: weaponPresent ? getTranslatedString(weaponUsed.idString) === weaponUsed.idString ? weaponUsed.name : getTranslatedString(weaponUsed.idString) : "",
+                                weaponUsed: weaponPresent ? getTranslatedString(weaponUsed.idString as TranslationKeys) === weaponUsed.idString ? weaponUsed.name : getTranslatedString(weaponUsed.idString as TranslationKeys) : "",
                                 type: eventType
                             };
 
@@ -1873,7 +1874,7 @@ class PlayerHealthUI {
             const teammate = this.game.playerNames.get(id);
 
             if (teammate?.badge) {
-                const src = `./img/game/shared/${emoteIdStrings.includes(teammate.badge.idString) ? "emotes" : "badges"}/${teammate.badge.idString}.svg`;
+                const src = `./img/game/shared/badges/${teammate.badge.idString}.svg`;
 
                 if (this.badgeImage.attr("src") !== src) {
                     this.badgeImage

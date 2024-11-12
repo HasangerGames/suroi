@@ -15,22 +15,21 @@ export type GameOverData = {
 });
 
 export const GameOverPacket = createPacket("GameOverPacket")<GameOverData>({
-    serialize(stream, data) {
-        stream.writeBoolean(data.won);
-        if (!data.won) stream.writeBits(data.rank, 7);
-        stream.writeObjectID(data.playerID);
-        stream.writeUint8(data.kills);
-        stream.writeUint16(data.damageDone);
-        stream.writeUint16(data.damageTaken);
-        stream.writeUint16(data.timeAlive);
+    serialize(strm, data) {
+        strm.writeUint8(data.rank)
+            .writeObjectId(data.playerID)
+            .writeUint8(data.kills)
+            .writeUint16(data.damageDone)
+            .writeUint16(data.damageTaken)
+            .writeUint16(data.timeAlive);
     },
 
     deserialize(stream) {
-        const won = stream.readBoolean();
+        const rank = stream.readUint8();
         return {
-            won,
-            rank: won ? 1 as const : stream.readBits(7),
-            playerID: stream.readObjectID(),
+            won: rank === 1,
+            rank,
+            playerID: stream.readObjectId(),
             kills: stream.readUint8(),
             damageDone: stream.readUint16(),
             damageTaken: stream.readUint16(),

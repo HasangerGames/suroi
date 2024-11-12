@@ -21,6 +21,7 @@ export interface AmmoDefinition extends ItemDefinition {
 }
 
 export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
+    "Ammos",
     {
         itemType: ItemType.Ammo,
         noDrop: false,

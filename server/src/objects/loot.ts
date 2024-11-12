@@ -1,7 +1,8 @@
 import { GameConstants, InventoryMessages, ObjectCategory, PlayerActions } from "@common/constants";
-import type { GunDefinition } from "@common/definitions";
 import { ArmorType } from "@common/definitions/armors";
+import { type GunDefinition } from "@common/definitions/guns";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
+import { PerkCategories } from "@common/definitions/perks";
 import { PickupPacket } from "@common/packets/pickupPacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
@@ -15,7 +16,6 @@ import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { BaseGameObject } from "./gameObject";
 import { type Player } from "./player";
-import { PerkCategories } from "@common/definitions/perks";
 
 export type DataMap = Record<ItemType, unknown> & {
     [ItemType.Gun]: {
@@ -36,8 +36,8 @@ export type DataMap = Record<ItemType, unknown> & {
 export type ItemData<Def extends LootDefinition = LootDefinition> = DataMap[Def["itemType"]];
 
 export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameObject.derive(ObjectCategory.Loot) {
-    override readonly fullAllocBytes = 8;
-    override readonly partialAllocBytes = 4;
+    override readonly fullAllocBytes = 4;
+    override readonly partialAllocBytes = 8;
 
     declare readonly hitbox: CircleHitbox;
 

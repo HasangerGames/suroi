@@ -1,8 +1,8 @@
-import { ObjectCategory } from "../../../../common/src/constants";
-import { type SyncedParticleDefinition } from "../../../../common/src/definitions/syncedParticles";
-import { getEffectiveZIndex } from "../../../../common/src/utils/layer";
-import { Numeric } from "../../../../common/src/utils/math";
-import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { ObjectCategory } from "@common/constants";
+import { type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
+import { getEffectiveZIndex } from "@common/utils/layer";
+import { Numeric } from "@common/utils/math";
+import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { type Game } from "../game";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";

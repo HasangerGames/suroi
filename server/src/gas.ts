@@ -4,7 +4,6 @@ import { Geometry, Numeric } from "@common/utils/math";
 import { MapObjectSpawnMode } from "@common/utils/objectDefinitions";
 import { randomBoolean, randomPointInsideCircle } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-
 import { Config, GasMode } from "./config";
 import { GasStages } from "./data/gasStages";
 import { type Game } from "./game";

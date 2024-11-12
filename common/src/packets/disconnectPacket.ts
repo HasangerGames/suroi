@@ -6,12 +6,12 @@ export type DisconnectData = {
 
 export const DisconnectPacket = createPacket("DisconnectPacket")<DisconnectData>({
     serialize(stream, data) {
-        stream.writeASCIIString(data.reason);
+        stream.writeString(64, data.reason);
     },
 
     deserialize(stream) {
         return {
-            reason: stream.readASCIIString()
+            reason: stream.readString(64)
         };
     }
 });

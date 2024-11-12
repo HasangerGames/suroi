@@ -1,4 +1,4 @@
-import type { TeamSize } from "../../../common/src/constants";
+import { type TeamSize } from "@common/constants";
 
 export const Config = {
     regions: {

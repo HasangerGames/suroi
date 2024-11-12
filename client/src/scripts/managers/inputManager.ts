@@ -1,20 +1,21 @@
+import { GameConstants, InputActions } from "@common/constants";
+import { type WeaponDefinition } from "@common/definitions/loots";
+import { Scopes } from "@common/definitions/scopes";
+import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
+import { areDifferent, PlayerInputPacket, type InputAction, type PlayerInputData, type SimpleInputActions } from "@common/packets/inputPacket";
+import { Angle, Geometry, Numeric } from "@common/utils/math";
+import { ItemType, type ItemDefinition } from "@common/utils/objectDefinitions";
+import { Vec } from "@common/utils/vector";
 import $ from "jquery";
 import nipplejs, { type JoystickOutputData } from "nipplejs";
 import { isMobile } from "pixi.js";
-import { GameConstants, InputActions } from "../../../../common/src/constants";
-import { type WeaponDefinition } from "../../../../common/src/definitions/loots";
-import { Scopes } from "../../../../common/src/definitions/scopes";
-import { Throwables, type ThrowableDefinition } from "../../../../common/src/definitions/throwables";
-import { areDifferent, PlayerInputPacket, type InputAction, type PlayerInputData, type SimpleInputActions } from "../../../../common/src/packets/inputPacket";
-import { Angle, Geometry, Numeric } from "../../../../common/src/utils/math";
-import { ItemType, type ItemDefinition } from "../../../../common/src/utils/objectDefinitions";
-import { Vec } from "../../../../common/src/utils/vector";
 import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
 import { defaultBinds } from "../utils/console/defaultClientCVars";
 import { type GameSettings, type PossibleError } from "../utils/console/gameConsole";
 import { FORCE_MOBILE, PIXI_SCALE } from "../utils/constants";
 import { html } from "../utils/misc";
+import type { TranslationKeys } from "../../typings/translations";
 
 export class InputManager {
     readonly binds = new InputMapper();
@@ -595,7 +596,7 @@ export class InputManager {
 
             $("<div/>", {
                 class: "setting-title",
-                text: getTranslatedString(`bindings_${action}`)
+                text: getTranslatedString(`bindings_${action}` as TranslationKeys)
             }).appendTo(bindContainer);
 
             const actions = this.binds.getInputsBoundToAction(action);

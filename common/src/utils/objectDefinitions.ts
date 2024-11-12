@@ -1,8 +1,8 @@
-import { type BitStream } from "@damienvesper/bit-buffer";
 import { type ZIndexes } from "../constants";
 import { type ExplosionDefinition } from "../definitions/explosions";
+import { type ByteStream } from "./byteStream";
+import { GlobalRegistrar } from "./definitionRegistry";
 import { mergeDeep, type DeepPartial } from "./misc";
-import { type SuroiBitStream } from "./suroiBitStream";
 import { type Vector } from "./vector";
 
 /*
@@ -350,6 +350,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
             // helper type, don't overwrite
             Missing extends DeepPartial<Def> = GetMissing<Def, Default>
         >(
+            name: string,
             defaultValue: Default,
             creationCallback: (
                 [
@@ -390,6 +391,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
             > = createTemplate<Missing>().bind(null, defaultTemplate);
 
             return new ObjectDefinitions<Def>(
+                name,
                 creationCallback([derive, inheritFrom, createTemplate<Missing>(), undefined as any]) as ReadonlyArray<RawDefinition<Def>>,
                 defaultValue
             );
@@ -397,15 +399,11 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
     }
 
     static create<Def extends ObjectDefinition>(
+        name: string,
         defs: ReadonlyArray<RawDefinition<Def>>
     ): ObjectDefinitions<Def> {
-        return new ObjectDefinitions(defs);
+        return new ObjectDefinitions(name, defs);
     }
-
-    /**
-     * How many bits are needed to identify a given object belonging to this definition set
-     */
-    readonly bitCount: number;
 
     /**
      * Internal collection storing the definitions
@@ -415,66 +413,66 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
     /**
      * A private mapping between identification strings and the index in the definition array
      */
-    protected readonly idStringToNumber: Readonly<Record<string, number>> = Object.create(null) as Record<string, number>;
+    protected readonly idStringToDef: Readonly<Record<string, Def>> = Object.create(null) as Record<string, Def>;
     // yes this is intentional, because we use 'in' somewhere else—don't want things like __proto__ creating false results
 
+    /**
+     * @param defs An array of definitions
+     * @param defaultTemplate The default template to apply to all of them
+     */
     protected constructor(
+        readonly name: string,
         defs: ReadonlyArray<RawDefinition<Def>>,
-        defaultTemplate?: DeepPartial<Def>
+        defaultTemplate?: DeepPartial<Def>,
+        noRegister = false
     ) {
-        this.bitCount = Math.ceil(Math.log2(defs.length));
-
-        this.definitions = defs.map(
-            def => (
-                function withTrace(
-                    def: RawDefinition<DeepPartial<Def>>,
-                    ...trace: readonly string[]
-                ): Def {
-                    if (!(inheritFrom in def)) {
-                        return defaultTemplate === undefined
-                            ? def as Def
-                            : mergeDeep<Def>(
-                                {} as Def,
-                                defaultTemplate,
-                                def
-                            );
-                    }
-
-                    return mergeDeep<Def>(
+        function withTrace(
+            def: RawDefinition<DeepPartial<Def>>,
+            ...trace: readonly string[]
+        ): Def {
+            if (!(inheritFrom in def)) {
+                return defaultTemplate === undefined
+                    ? def as Def
+                    : mergeDeep<Def>(
                         {} as Def,
-                        defaultTemplate ?? {},
-                        ...([def[inheritFrom]].flat() as ReadonlyArray<ReferenceTo<Def>>)
-                            .map(targetName => {
-                                const target = defs.find(def => def.idString === targetName);
-                                if (!target) {
-                                    throw new DefinitionInheritanceInitError(
-                                        `Definition '${def.idString}' was configured to inherit from inexistent definition '${targetName}'`
-                                    );
-                                }
-
-                                if (trace.includes(targetName)) {
-                                    throw new DefinitionInheritanceInitError(
-                                        `Circular dependency found: ${[...trace, targetName].join(" -> ")}`
-                                    );
-                                }
-
-                                return withTrace(target, ...trace, target.idString);
-                            }),
+                        defaultTemplate,
                         def
                     );
-                }
-            )(def, def.idString)
-        );
-
-        for (let i = 0, defLength = this.definitions.length; i < defLength; i++) {
-            const idString = this.definitions[i].idString;
-
-            if (idString in this.idStringToNumber) {
-                throw new Error(`Duplicated idString: ${idString}`);
             }
 
+            return mergeDeep<Def>(
+                {} as Def,
+                defaultTemplate ?? {},
+                ...([def[inheritFrom]].flat() as ReadonlyArray<ReferenceTo<Def>>)
+                    .map(targetName => {
+                        const target = defs.find(def => def.idString === targetName);
+                        if (!target) {
+                            throw new DefinitionInheritanceInitError(
+                                `Definition '${def.idString}' was configured to inherit from inexistent definition '${targetName}'`
+                            );
+                        }
+
+                        if (trace.includes(targetName)) {
+                            throw new DefinitionInheritanceInitError(
+                                `Circular dependency found: ${[...trace, targetName].join(" -> ")}`
+                            );
+                        }
+
+                        return withTrace(target, ...trace, target.idString);
+                    }),
+                def
+            );
+        }
+
+        this.definitions = defs.map(def => {
+            const obj = withTrace(def, def.idString);
             // @ts-expect-error init code
-            this.idStringToNumber[idString] = i;
+            this.idStringToDef[def.idString] = obj;
+            return obj;
+        });
+
+        if (!noRegister) {
+            GlobalRegistrar.register(this);
         }
     }
 
@@ -484,55 +482,41 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
             : type as U;
     }
 
-    fromString<U extends Def = Def>(idString: ReferenceTo<U>): U {
-        return this.fromStringSafe(idString) ?? (() => {
-            throw new ReferenceError(`Unknown idString '${idString}'`);
-        })();
+    fromString<Spec extends Def = Def>(idString: ReferenceTo<Spec>): Spec {
+        const def = this.idStringToDef[idString] as Spec | undefined;
+        if (def === undefined) {
+            throw new ReferenceError(`Unknown idString '${idString}' for this schema`);
+        }
+
+        return def;
     }
 
-    fromStringSafe<U extends Def = Def>(idString: ReferenceTo<U>): U | undefined {
-        const id = this.idStringToNumber[idString];
-        if (id === undefined) return undefined;
-
-        return this.definitions[id] as U;
+    fromStringSafe<Spec extends Def = Def>(idString: ReferenceTo<Spec>): Spec | undefined {
+        return this.idStringToDef[idString] as Spec | undefined;
     }
 
     hasString(idString: string): boolean {
-        return idString in this.idStringToNumber;
+        return idString in this.idStringToDef;
     }
 
-    writeToStream(stream: BitStream, type: ReifiableDef<Def>): void {
-        stream.writeBits(
-            this.idStringToNumber[
-                typeof type === "string" ? type : type.idString
-            ],
-            this.bitCount
-        );
+    /**
+     * Convenience method for clarity purposes—proxy for {@link GlobalRegistrar.writeToStream}
+     */
+    writeToStream<S extends ByteStream>(stream: S, def: ReifiableDef<Def>): S {
+        return GlobalRegistrar.writeToStream(stream, def);
     }
 
-    readFromStream<Specific extends Def = Def>(stream: BitStream, errorOnInvalidID?: boolean): Specific {
-        const id = stream.readBits(this.bitCount);
-        const max = this.definitions.length - 1;
-        if (id > max) {
-            const msg = `ID out of range: ${id} (max: ${max})`;
-            if (errorOnInvalidID) throw new RangeError(msg);
-            else console.warn(msg);
+    /**
+     * Convenience method for clarity purposes—proxy for {@link GlobalRegistrar.readFromStream}
+     */
+    readFromStream<Specific extends Def = Def>(stream: ByteStream): Specific {
+        // safety: uncomment for debugging
+        const obj = GlobalRegistrar.readFromStream<Specific>(stream);
+        if (!(obj?.idString in this.idStringToDef)) {
+            console.error(`Definition with idString '${obj?.idString}' does not belong to this schema ('${this.name}')`);
         }
-
-        return this.definitions[id] as Specific;
-    }
-
-    writeOptional(stream: BitStream, type?: ReifiableDef<Def>): void {
-        const isPresent = type !== undefined;
-
-        stream.writeBoolean(isPresent);
-        if (isPresent) this.writeToStream(stream, type);
-    }
-
-    readOptional<U extends Def = Def>(stream: SuroiBitStream): U | undefined {
-        return stream.readBoolean()
-            ? this.readFromStream<U>(stream)
-            : undefined;
+        return obj;
+        return GlobalRegistrar.readFromStream(stream);
     }
 
     [Symbol.iterator](): Iterator<Def> {
@@ -553,7 +537,7 @@ export interface ObjectDefinition {
 /**
  * Semantically equivalent to `string`, this type is more to convey an intent
  */
-export type ReferenceTo<T extends ObjectDefinition = ObjectDefinition> = T["idString"];
+export type ReferenceTo<T extends ObjectDefinition> = T["idString"];
 
 /**
  * Either a normal reference or an object whose keys are random options and whose values are corresponding weights

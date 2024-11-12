@@ -1,9 +1,17 @@
 import { GameConstants } from "@common/constants";
-import { Ammos, Armors, Backpacks, Buildings, Guns, HealingItems, Melees, Scopes, Skins, Throwables } from "@common/definitions";
-import type { BuildingDefinition } from "@common/definitions/buildings";
+import { Ammos } from "@common/definitions/ammos";
+import { Armors } from "@common/definitions/armors";
+import { Backpacks } from "@common/definitions/backpacks";
+import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
+import { Guns } from "@common/definitions/guns";
+import { HealingItems } from "@common/definitions/healingItems";
 import { Loots, type LootDefForType, type LootDefinition } from "@common/definitions/loots";
-import { Obstacles, ObstacleDefinition } from "@common/definitions/obstacles";
+import { Melees } from "@common/definitions/melees";
+import { ObstacleDefinition, Obstacles } from "@common/definitions/obstacles";
 import { PerkIds, Perks } from "@common/definitions/perks";
+import { Scopes } from "@common/definitions/scopes";
+import { Skins } from "@common/definitions/skins";
+import { Throwables } from "@common/definitions/throwables";
 import { isArray } from "@common/utils/misc";
 import { ItemType, NullString, type ObjectDefinition, type ObjectDefinitions, type ReferenceOrRandom, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, weightedRandom } from "@common/utils/random";
@@ -443,7 +451,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         plumpkin_bunker_skin: [
             { item: "pumpkified", weight: 1 }
         ],
-        armory_damaged_skin: [
+        bombed_armory_skin: [
             { item: "one_at_nsd", weight: 1 }
         ],
         airdrop_crate: [
@@ -814,7 +822,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "candy_cane", weight: 1 }
         ],
         special_winter_skins: [
-            { item: "christmas_tree", weight: 1 },
+            { item: "holiday_tree", weight: 1 },
             { item: "gingerbread", weight: 1 }
         ],
         viking_chest_guns: [

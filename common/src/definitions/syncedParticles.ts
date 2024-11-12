@@ -98,6 +98,7 @@ export interface SyncedParticleSpawnerDefinition {
 }
 
 export const SyncedParticles = ObjectDefinitions.withDefault<SyncedParticleDefinition>()(
+    "SyncedParticles",
     {
         scale: 1,
         alpha: 1,
@@ -227,7 +228,7 @@ export const SyncedParticles = ObjectDefinitions.withDefault<SyncedParticleDefin
                 }
             ),
             {
-                idString: "c4",
+                idString: "c4_WHY_IS_THIS_A_FUCKING_SYNCED_PARTICLE",
                 scale: {
                     start: {
                         min: 0.5,

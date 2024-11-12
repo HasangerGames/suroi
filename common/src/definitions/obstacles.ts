@@ -1,10 +1,10 @@
 import { Layers, TentTints, ZIndexes } from "../constants";
 import { type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
-import type { DeepPartial, GetEnumMemberName, Mutable } from "../utils/misc";
+import { type DeepPartial, type GetEnumMemberName, type Mutable } from "../utils/misc";
 import { MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
-import type { GunDefinition } from "./guns";
+import { type GunDefinition } from "./guns";
 import { type LootDefinition } from "./loots";
 import { type SyncedParticleSpawnerDefinition } from "./syncedParticles";
 
@@ -82,8 +82,6 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly spawnHitbox?: Hitbox
     readonly noCollisions: boolean
     readonly rotationMode: RotationMode // for obstacles with a role, this cannot be RotationMode.Full
-    readonly variations?: Exclude<Variation, 0>
-    readonly variationBits?: number
     readonly particleVariations?: number
     readonly zIndex?: ZIndexes
     /**
@@ -143,7 +141,15 @@ type RawObstacleDefinition = ObjectDefinition & {
         readonly maxRange?: number
         readonly falloff?: number
     }
-} & ObstacleRoleMixin;
+} & ObstacleRoleMixin & VariationMixin;
+
+export type VariationMixin = {
+    readonly variations: Exclude<Variation, 0>
+    readonly variationBits: number
+} | {
+    readonly variations?: never
+    readonly variationBits?: never
+};
 
 export type DoorMixin = {
     readonly role: ObstacleSpecialRoles.Door
@@ -318,6 +324,8 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     clearing_boulder_particle_1:   { base: "stone_particle_1", tint: 0x5a5a5a },
     clearing_boulder_particle_2:   { base: "stone_particle_2", tint: 0x5a5a5a },
     sandbags_particle:             { base: "stone_particle_2", tint: 0xd59d4e },
+    fire_pit_particle_1:           { base: "stone_particle_1", tint: 0x5b4f3e },
+    fire_pit_particle_2:           { base: "stone_particle_2", tint: 0x5b4f3e },
     porta_potty_door_particle:     { base: "plastic_particle", tint: 0xf5f9fd },
     porta_potty_toilet_particle:   { base: "plastic_particle", tint: 0x5e5e5e },
     porta_potty_wall_particle:     { base: "plastic_particle", tint: 0x1c71d8 },
@@ -403,6 +411,7 @@ const defaultObstacle: DeepPartial<RawObstacleDefinition> = {
 } satisfies DeepPartial<RawObstacleDefinition>;
 
 export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
+    "Obstacles",
     defaultObstacle,
     ([derive, , , _missingType]) => {
         type Missing = typeof _missingType;
@@ -790,7 +799,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
-                hitbox: new CircleHitbox(5.5),
+                hitbox: new CircleHitbox(3.5),
                 variations: 6
             }]),
 
@@ -804,7 +813,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
-                hitbox: new CircleHitbox(5.5),
+                hitbox: new CircleHitbox(2.5),
                 variations: 2,
                 allowFlyOver: FlyoverPref.Never,
                 zIndex: ZIndexes.ObstaclesLayer4
@@ -833,7 +842,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1.1,
                     destroy: 0.75
                 },
-                hitbox: new CircleHitbox(5.5),
+                hitbox: new CircleHitbox(2.5),
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
                 allowFlyOver: FlyoverPref.Never
@@ -847,7 +856,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1.1,
                     destroy: 0.75
                 },
-                hitbox: new CircleHitbox(5.5),
+                hitbox: new CircleHitbox(3.5),
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
                 variations: 2,
@@ -862,7 +871,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1.1,
                     destroy: 0.75
                 },
-                hitbox: new CircleHitbox(10),
+                hitbox: new CircleHitbox(10), // unchanged for now since still uses old textures
                 spawnHitbox: new CircleHitbox(15),
                 rotationMode: RotationMode.Full,
                 allowFlyOver: FlyoverPref.Never,
@@ -1069,8 +1078,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 }
             },
             {
-                idString: "mini_plumpkin",
-                name: "Mini Plumpkin",
+                idString: "baby_plumpkin",
+                name: "Baby Plumpkin",
                 material: "pumpkin",
                 health: 100,
                 scale: {
@@ -1977,6 +1986,24 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 reflectBullets: true
             },
             {
+                idString: "fire_pit",
+                name: "Fire Pit",
+                material: "stone",
+                health: 400,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.7
+                },
+                hitbox: new CircleHitbox(6.35),
+                rotationMode: RotationMode.Full,
+                particleVariations: 2,
+                frames: {
+                    particle: "fire_pit_particle"
+                },
+                noBulletCollision: true
+            },
+            {
                 idString: "speaker",
                 name: "Speaker",
                 material: "iron",
@@ -2813,7 +2840,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hideOnMap: true,
                 hitbox: RectangleHitbox.fromRect(1.8, 9.4),
                 zIndex: ZIndexes.ObstaclesLayer2,
-                allowFlyover: FlyoverPref.Never,
+                allowFlyover: FlyoverPref.Always,
                 rotationMode: RotationMode.Limited,
                 role: ObstacleSpecialRoles.Window
             },
@@ -3124,7 +3151,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             innerConcreteWall([3, RectangleHitbox.fromRect(39.14, 1.9)]),
             innerConcreteWall([4, RectangleHitbox.fromRect(47.14, 1.9)]),
             {
-                idString: "armory_damaged_vault_wall",
+                idString: "bombed_armory_vault_wall",
                 material: "stone",
                 hitbox: RectangleHitbox.fromRect(15, 2.04),
                 health: 500,

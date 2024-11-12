@@ -223,6 +223,7 @@ const defaultGun = {
 } satisfies DeepPartial<GunDefinition> as DeepPartial<GunDefinition>;
 
 export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
+    "Guns",
     defaultGun,
     () => {
         return ([
@@ -1277,10 +1278,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoSpawnAmount: 10,
                 capacity: 2,
                 reloadTime: 2.6,
-                fireDelay: 175,
+                fireDelay: 250,
                 switchDelay: 250,
-                recoilMultiplier: 0.8,
-                recoilDuration: 100,
+                recoilMultiplier: 0.5,
+                recoilDuration: 550,
                 fireMode: FireMode.Single,
                 bulletCount: 10,
                 shotSpread: 11,

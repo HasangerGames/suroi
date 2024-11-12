@@ -6,7 +6,22 @@ import { Throwables } from "./definitions/throwables";
 import { freezeDeep } from "./utils/misc";
 import { ItemType } from "./utils/objectDefinitions";
 
-export const DEFAULT_INVENTORY: Record<string, number> = {};
+export const enum Constants {
+    MAX_POSITION = 1924,
+    MIN_OBJECT_SCALE = 0.15,
+    MAX_OBJECT_SCALE = 3,
+    PLAYER_NAME_MAX_LENGTH = 16
+}
+
+/* eslint-disable @typescript-eslint/prefer-literal-enum-member */
+// the point of "derived" is to have them not be hardcoded
+
+export const enum Derived {
+    OBJECT_SCALE_DIFF = Constants.MAX_OBJECT_SCALE - Constants.MIN_OBJECT_SCALE,
+    DOUBLE_MAX_POS = 2 * Constants.MAX_POSITION
+}
+
+export const DEFAULT_INVENTORY: Record<string, number> = Object.create(null) as Record<string, number>;
 
 for (const item of [...HealingItems, ...Ammos, ...Scopes, ...Throwables]) {
     let amount = 0;
@@ -21,14 +36,17 @@ for (const item of [...HealingItems, ...Ammos, ...Scopes, ...Throwables]) {
 
 Object.freeze(DEFAULT_INVENTORY);
 
+export const itemKeys: readonly string[] = Object.keys(DEFAULT_INVENTORY);
+export const itemKeysLength = itemKeys.length;
+
 const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType.Melee, ItemType.Throwable] as const);
 export const GameConstants = freezeDeep({
     // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
     // or a new item is added to a definition list
-    protocolVersion: 34,
+    protocolVersion: 35,
     gridSize: 32,
-    maxPosition: 1924,
-    modeName: "fall" satisfies Mode as Mode,
+    maxPosition: Constants.MAX_POSITION,
+    modeName: "normal" satisfies Mode as Mode,
     player: {
         radius: 2.25,
         baseSpeed: 0.02655,
@@ -36,7 +54,7 @@ export const GameConstants = freezeDeep({
         maxAdrenaline: 100,
         inventorySlotTypings,
         maxWeapons: inventorySlotTypings.length,
-        nameMaxLength: 16,
+        nameMaxLength: Constants.PLAYER_NAME_MAX_LENGTH,
         defaultName: "Player",
         defaultSkin: "hazel_jumpsuit",
         killLeaderMinKills: 3,
@@ -136,7 +154,7 @@ export enum ObjectCategory {
     SyncedParticle
 }
 
-export enum AnimationType {
+export const enum AnimationType {
     None,
     Melee,
     Downed,
@@ -149,7 +167,7 @@ export enum AnimationType {
     Revive
 }
 
-export enum KillfeedMessageType {
+export const enum KillfeedMessageType {
     DeathOrDown,
     KillLeaderAssigned,
     KillLeaderDeadOrDisconnected,
@@ -168,7 +186,7 @@ export const enum FireMode {
     Auto
 }
 
-export enum InputActions {
+export const enum InputActions {
     EquipItem,
     EquipLastItem,
     DropWeapon,
@@ -187,7 +205,7 @@ export enum InputActions {
     ExplodeC4
 }
 
-export enum SpectateActions {
+export const enum SpectateActions {
     BeginSpectating,
     SpectatePrevious,
     SpectateNext,
@@ -196,7 +214,7 @@ export enum SpectateActions {
     Report
 }
 
-export enum PlayerActions {
+export const enum PlayerActions {
     None,
     Reload,
     UseItem,
@@ -213,7 +231,7 @@ export enum KillfeedEventType {
     Airdrop
 }
 
-export enum KillfeedEventSeverity {
+export const enum KillfeedEventSeverity {
     Kill,
     Down
 }

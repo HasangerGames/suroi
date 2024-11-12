@@ -9,15 +9,51 @@ export interface RulesPost {
 export const rules: RulesPost[] = [
     {
         date: 1718044800000,
-        author: "Error",
+        author: "hasanger",
         title: "Rules",
-        content: "By playing Suroi, you agree to abide by the following rules. Breaking the rules may result in a ban.",
-        longContent: `<ul>
-  <li><strong>No teaming in solo.</strong> Allying with other solo players for extended periods of time is not allowed.</li>
-  <li><strong>No hacking.</strong> The use of scripts, plugins, extensions, etc. to modify the game in order to gain an advantage over opponents is strictly forbidden. An advantage is anything that reveals information that would not be available to a normal player or anything that automates player actions.</li>
-  <li><strong>No inappropriate usernames.</strong> Our blocklists are very lenient, but some words or phrases are still blocked. Trying to evade filters for these specific words will incur consequences.</li>
-  <li><strong>No presence in cheat related servers.</strong> Attempting to "minimod" or "go undercover" in any cheat related servers is strictly prohibited and will get your discord, as well as your connection <strong>banned.</strong></li>
-</ul>`
+        content: "By playing Suroi, you agree to follow these rules. Failure to do so will result in a ban, as outlined below.",
+        longContent: `
+        <br>
+        <h2>No hacking!</h2>
+        Hacking refers to the use of any game modifications or external software that might provide a competitive advantage, including but not limited to: aimbot, melee lock, visual assists, ESP, and exploiting glitches.
+        <ul>
+          <li>1st offense: 30 day ban</li>
+          <li>2nd offense: Permanent ban</li>
+        </ul>
+        If you discover an exploit or vulnerability, please report it to the admins on the Discord server, or email support@suroi.io. You will not be banned unless you abuse it or tell others about it.
+
+        <br><br>
+
+        <h2>No teaming!</h2>
+        Teaming is defined as helping another player who is not on your team.<br>
+        This can include not attacking them, giving them items, helping them kill other players, and spamming positive emotes.
+        <ul>
+          <li>1st offense: Warning</li>
+          <li>2nd offense: 24 hour ban</li>
+          <li>3rd offense: 7 day ban</li>
+          <li>4th offense: Permanent ban</li>
+        </ul>
+        Teaming with a hacker will result in a permanent ban.
+
+        <br><br>
+
+        <h2>No inappropriate usernames!</h2>
+        Usernames containing slurs and other hateful language are prohibited.
+        <ul>
+          <li>1st offense: Warning</li>
+          <li>2nd offense: 7 day ban</li>
+          <li>3rd offense: Permanent ban</li>
+          <ul>
+            <li>We have filters in place to block certain words. Attempting to bypass these filters by using special characters will result in an immediate ban.</li>
+            <li>If you use a name that advertises hacks, you will be permanently banned.</li>
+          </ul>
+        </ul>
+
+        <br>
+
+        <h2>VPN/proxy policy</h2>
+        To make ban evasion more difficult, VPNs and proxies are blocked. If you need one to play the game, you can request an exemption by contacting the admins on the Discord server, or emailing support@suroi.io.
+        `
     },
     {
         date: 1690908230000,
@@ -28,7 +64,7 @@ export const rules: RulesPost[] = [
 <p>Movement - WASD or Arrow Keys</p>
 <p>Aim - Mouse</p>
 <p>Attack - Left-Click</p>
-<p>Change Weapons - 1 through 3 or Scroll Wheel</p>
+<p>Change Weapons - 1 through 4 or Scroll Wheel</p>
 <p>Pickup/Loot/Interact/Revive - F</p>
 <p>Reload - R</p>
 <p>Use Healing Item - Left-Click on item or 7 through 0</p>

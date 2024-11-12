@@ -1,6 +1,6 @@
 {
   "name": "suroi",
-  "version": "0.21.4",
+  "version": "0.21.5",
   "description": "An open-source 2D battle royale game inspired by surviv.io",
   "private": true,
   "scripts": {
@@ -22,7 +22,7 @@
     "lint:ci": "eslint . --max-warnings 0",
     "validateDefinitions": "cd tests && pnpm run build && pnpm validateDefinitions",
     "sanity-check": "pnpm lint:check && pnpm typecheck && pnpm validateDefinitions",
-    "full-reinstall": "rm -r node_modules pnpm-lock.yaml client/node_modules server/node_modules common/node_modules tests/node_modules && pnpm install"
+    "full-reinstall": "rm -r node_modules pnpm-lock.yaml client/node_modules server/node_modules common/node_modules tests/node_modules translations/node_modules && pnpm install"
   },
   "engines": {
     "node": ">=20.0.0",

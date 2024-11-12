@@ -1,9 +1,9 @@
-import { Layer } from "../../../../common/src/constants";
-import { TintedParticles } from "../../../../common/src/definitions/obstacles";
-import { getEffectiveZIndex } from "../../../../common/src/utils/layer";
-import { Numeric } from "../../../../common/src/utils/math";
-import { random, randomRotation } from "../../../../common/src/utils/random";
-import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { Layer } from "@common/constants";
+import { TintedParticles } from "@common/definitions/obstacles";
+import { getEffectiveZIndex } from "@common/utils/layer";
+import { Numeric } from "@common/utils/math";
+import { random, randomRotation } from "@common/utils/random";
+import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 

@@ -7,7 +7,6 @@ import { type SDeepMutable } from "@common/utils/misc";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { random, randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-
 import { type Game } from "../game";
 import { BaseGameObject } from "./gameObject";
 
@@ -45,8 +44,8 @@ interface InternalAnimation<T> {
 }
 
 export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedParticle) {
-    override readonly fullAllocBytes = 16;
-    override readonly partialAllocBytes = 8;
+    override readonly fullAllocBytes = 4;
+    override readonly partialAllocBytes = 14;
     override readonly hitbox?: CircleHitbox | undefined;
 
     alpha: number;

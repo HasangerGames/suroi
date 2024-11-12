@@ -5,7 +5,7 @@ import { type Hitbox } from "./hitbox";
 import { adjacentOrEqualLayer, equivLayer } from "./layer";
 import { Geometry, Numeric } from "./math";
 import { type ReifiableDef } from "./objectDefinitions";
-import { type SuroiBitStream } from "./suroiBitStream";
+import type { SuroiByteStream } from "./suroiByteStream";
 import { Vec, type Vector } from "./vector";
 
 export interface BulletOptions {
@@ -171,18 +171,45 @@ export class BaseBullet {
         return collisions;
     }
 
-    serialize(stream: SuroiBitStream): void {
+    serialize(stream: SuroiByteStream): void {
         Bullets.writeToStream(stream, this.definition);
         stream.writePosition(this.initialPosition);
-        stream.writeRotation(this.rotation, 16);
+        stream.writeRotation2(this.rotation);
         stream.writeLayer(this.layer);
         stream.writeFloat(this.rangeVariance, 0, 1, 4);
-        stream.writeBits(this.reflectionCount, 2);
-        stream.writeObjectID(this.sourceID);
+        stream.writeUint8(this.reflectionCount);
+        stream.writeObjectId(this.sourceID);
+
+        // don't care about damage
+        // don't care about dtc
+        const {
+            speed,
+            range,
+            tracer: {
+                opacity,
+                width,
+                length
+            } = {}
+        } = this.modifiers ?? {};
 
         const hasMods = this.modifiers !== undefined;
+        const speedMod = speed !== undefined;
+        const rangeMod = range !== undefined;
+        const traceOpacityMod = opacity !== undefined;
+        const traceWidthMod = width !== undefined;
+        const traceLengthMod = length !== undefined;
 
-        stream.writeBoolean(hasMods);
+        stream.writeBooleanGroup(
+            hasMods,
+            speedMod,
+            rangeMod,
+            traceOpacityMod,
+            traceWidthMod,
+            traceLengthMod,
+            this.saturate,
+            this.thin
+        );
+
         if (hasMods) {
             /*
                 some overrides aren't sent for performance, space, and security
@@ -190,67 +217,53 @@ export class BaseBullet {
                 those three reasons
             */
 
-            // don't care about damage
-            // don't care about dtc
-            const {
-                speed,
-                range,
-                tracer: {
-                    opacity,
-                    width,
-                    length
-                } = {}
-            } = this.modifiers;
-
-            const speedMod = speed !== undefined;
-            stream.writeBoolean(speedMod);
             if (speedMod) {
-                stream.writeFloat(speed, 0, 4, 8);
+                stream.writeFloat(speed, 0, 4, 1);
             }
 
-            const rangeMod = range !== undefined;
-            stream.writeBoolean(rangeMod);
             if (rangeMod) {
-                stream.writeFloat(range, 0, 4, 8);
+                stream.writeFloat(range, 0, 4, 1);
             }
 
-            const traceOpacityMod = opacity !== undefined;
-            stream.writeBoolean(traceOpacityMod);
             if (traceOpacityMod) {
-                stream.writeFloat(opacity, 0, 4, 8);
+                stream.writeFloat(opacity, 0, 4, 1);
             }
 
-            const traceWidthMod = width !== undefined;
-            stream.writeBoolean(traceWidthMod);
             if (traceWidthMod) {
-                stream.writeFloat(width, 0, 4, 8);
+                stream.writeFloat(width, 0, 4, 1);
             }
 
-            const traceLengthMod = length !== undefined;
-            stream.writeBoolean(traceLengthMod);
             if (traceLengthMod) {
-                stream.writeFloat(length, 0, 4, 8);
+                stream.writeFloat(length, 0, 4, 1);
             }
         }
 
-        stream.writeBoolean(this.saturate);
-        stream.writeBoolean(this.thin);
-
         if (this.definition.allowRangeOverride) {
-            stream.writeFloat(this.maxDistance, 0, this.definition.range * (this.modifiers?.range ?? 1), 16);
+            stream.writeFloat(this.maxDistance, 0, this.definition.range * (this.modifiers?.range ?? 1), 2);
         }
     }
 
-    static deserialize(stream: SuroiBitStream): BulletOptions {
+    static deserialize(stream: SuroiByteStream): BulletOptions {
         const source = Bullets.readFromStream(stream);
         const position = stream.readPosition();
-        const rotation = stream.readRotation(16);
+        const rotation = stream.readRotation2();
         const layer = stream.readLayer();
         const variance = stream.readFloat(0, 1, 4);
-        const reflectionCount = stream.readBits(2);
-        const sourceID = stream.readObjectID();
+        const reflectionCount = stream.readUint8();
+        const sourceID = stream.readObjectId();
 
-        const modifiers = stream.readBoolean()
+        const [
+            hasMods,
+            speedMod,
+            rangeMod,
+            traceOpacityMod,
+            traceWidthMod,
+            traceLengthMod,
+            saturate,
+            thin
+        ] = stream.readBooleanGroup();
+
+        const modifiers = hasMods
             ? {
                 get damage(): number {
                     console.warn("damage modifier is not sent to the client; accessing it is a mistake");
@@ -260,20 +273,17 @@ export class BaseBullet {
                     console.warn("dtc modifier is not sent to the client; accessing it is a mistake");
                     return 1;
                 },
-                speed: stream.readBoolean() ? stream.readFloat(0, 4, 8) : undefined,
-                range: stream.readBoolean() ? stream.readFloat(0, 4, 8) : undefined,
+                speed: speedMod ? stream.readFloat(0, 4, 1) : undefined,
+                range: rangeMod ? stream.readFloat(0, 4, 1) : undefined,
                 tracer: {
-                    opacity: stream.readBoolean() ? stream.readFloat(0, 4, 8) : undefined,
-                    width: stream.readBoolean() ? stream.readFloat(0, 4, 8) : undefined,
-                    length: stream.readBoolean() ? stream.readFloat(0, 4, 8) : undefined
+                    opacity: traceOpacityMod ? stream.readFloat(0, 4, 1) : undefined,
+                    width: traceWidthMod ? stream.readFloat(0, 4, 1) : undefined,
+                    length: traceLengthMod ? stream.readFloat(0, 4, 1) : undefined
                 }
             }
             : undefined;
 
-        const saturate = stream.readBoolean();
-        const thin = stream.readBoolean();
-
-        const rangeOverride = source.allowRangeOverride ? stream.readFloat(0, source.range * (modifiers?.range ?? 1), 16) : undefined;
+        const rangeOverride = source.allowRangeOverride ? stream.readFloat(0, source.range * (modifiers?.range ?? 1), 2) : undefined;
 
         return {
             source,

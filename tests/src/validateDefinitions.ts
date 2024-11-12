@@ -2216,8 +2216,10 @@ logger.indent("Validating melees", () => {
                 validators.vector(tester.createPath(errorPath2, "left"), fists.left);
                 validators.vector(tester.createPath(errorPath2, "right"), fists.right);
 
-                validators.vector(tester.createPath(errorPath2, "use left"), fists.useLeft);
-                validators.vector(tester.createPath(errorPath2, "use right"), fists.useRight);
+                if (!melee.rotationalAnimation) {
+                    validators.vector(tester.createPath(errorPath2, "use left"), fists.useLeft);
+                    validators.vector(tester.createPath(errorPath2, "use right"), fists.useRight);
+                }
             });
 
             if (melee.image) {
@@ -2226,7 +2228,7 @@ logger.indent("Validating melees", () => {
                     const errorPath2 = tester.createPath(errorPath, "image");
 
                     validators.vector(tester.createPath(errorPath2, "position"), image.position);
-                    validators.vector(tester.createPath(errorPath2, "use position"), image.usePosition);
+                    if (!melee.rotationalAnimation) validators.vector(tester.createPath(errorPath2, "use position"), image.usePosition);
 
                     tester.assertValidOrNPV({
                         obj: image,
