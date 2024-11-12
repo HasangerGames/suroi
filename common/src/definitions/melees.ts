@@ -224,24 +224,23 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             name: "Sickle",
             damage: 33,
             swingSound: "soft_swing",
-            obstacleMultiplier: 1.15,
+            obstacleMultiplier: 1.3,
             radius: 2.7,
             offset: Vec.create(4, 0),
             cooldown: 400,
+            rotationalAnimation: true,
             //  fireMode: FireMode.Auto, - todo
             fists: {
-                animationDuration: 200,
+                animationDuration: 165,
                 left: Vec.create(38, -35),
-                right: Vec.create(45, 35),
-                useLeft: Vec.create(38, -35),
-                useRight: Vec.create(70, 20)
+                right: Vec.create(45, 35)
             },
             image: {
-                position: Vec.create(61, 67),
-                usePosition: Vec.create(99, -5),
-                angle: 120,
-                useAngle: 5,
-                lootScale: 0.85
+                position: Vec.create(62, 64),
+                angle: 102,
+                useAngle: 42,
+                lootScale: 0.85,
+                xConstant: 85
             }
         },
         {
