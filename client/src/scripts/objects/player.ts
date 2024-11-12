@@ -2,7 +2,6 @@ import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, Play
 import { Ammos } from "@common/definitions/ammos";
 import { type ArmorDefinition } from "@common/definitions/armors";
 import { type BackpackDefinition } from "@common/definitions/backpacks";
-import type { EmoteDefinition } from "@common/definitions/emotes";
 import { Explosions } from "@common/definitions/explosions";
 import { Guns, type GunDefinition, type SingleGunNarrowing } from "@common/definitions/guns";
 import { HealType, type HealingItemDefinition } from "@common/definitions/healingItems";

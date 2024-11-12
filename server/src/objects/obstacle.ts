@@ -200,7 +200,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 })
             ) return;
 
-            if (!this.definition.isWindow) this.collidable = false;
+            if (!this.definition.isWindow || this.definition.noCollisionAfterDestroyed) this.collidable = false;
 
             this.scale = definition.scale?.spawnMin ?? 1;
 
