@@ -324,6 +324,8 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     clearing_boulder_particle_1:   { base: "stone_particle_1", tint: 0x5a5a5a },
     clearing_boulder_particle_2:   { base: "stone_particle_2", tint: 0x5a5a5a },
     sandbags_particle:             { base: "stone_particle_2", tint: 0xd59d4e },
+    fire_pit_particle_1:           { base: "stone_particle_1", tint: 0x5b4f3e },
+    fire_pit_particle_2:           { base: "stone_particle_2", tint: 0x5b4f3e },
     porta_potty_door_particle:     { base: "plastic_particle", tint: 0xf5f9fd },
     porta_potty_toilet_particle:   { base: "plastic_particle", tint: 0x5e5e5e },
     porta_potty_wall_particle:     { base: "plastic_particle", tint: 0x1c71d8 },
@@ -797,7 +799,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
-                hitbox: new CircleHitbox(5.5),
+                hitbox: new CircleHitbox(3.5),
                 variations: 6
             }]),
 
@@ -811,7 +813,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
-                hitbox: new CircleHitbox(5.5),
+                hitbox: new CircleHitbox(2.5),
                 variations: 2,
                 allowFlyOver: FlyoverPref.Never,
                 zIndex: ZIndexes.ObstaclesLayer4
@@ -840,7 +842,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1.1,
                     destroy: 0.75
                 },
-                hitbox: new CircleHitbox(5.5),
+                hitbox: new CircleHitbox(2.5),
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
                 allowFlyOver: FlyoverPref.Never
@@ -854,7 +856,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1.1,
                     destroy: 0.75
                 },
-                hitbox: new CircleHitbox(5.5),
+                hitbox: new CircleHitbox(3.5),
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
                 variations: 2,
@@ -869,7 +871,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1.1,
                     destroy: 0.75
                 },
-                hitbox: new CircleHitbox(10),
+                hitbox: new CircleHitbox(10), // unchanged for now since still uses old textures
                 spawnHitbox: new CircleHitbox(15),
                 rotationMode: RotationMode.Full,
                 allowFlyOver: FlyoverPref.Never,
@@ -1982,6 +1984,24 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     residue: "stove_residue"
                 },
                 reflectBullets: true
+            },
+            {
+                idString: "fire_pit",
+                name: "Fire Pit",
+                material: "stone",
+                health: 400,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.7
+                },
+                hitbox: new CircleHitbox(6.35),
+                rotationMode: RotationMode.Full,
+                particleVariations: 2,
+                frames: {
+                    particle: "fire_pit_particle"
+                },
+                noBulletCollision: true
             },
             {
                 idString: "speaker",
