@@ -81,6 +81,7 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly hitbox: Hitbox
     readonly spawnHitbox?: Hitbox
     readonly noCollisions: boolean
+    readonly noCollisionAfterDestroyed?: boolean
     readonly rotationMode: RotationMode // for obstacles with a role, this cannot be RotationMode.Full
     readonly particleVariations?: number
     readonly zIndex?: ZIndexes
@@ -3862,6 +3863,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     destroy: 0.95
                 },
                 hideOnMap: true,
+                noCollisionAfterDestroyed: true,
                 hitbox: RectangleHitbox.fromRect(13.8, 1.5),
                 zIndex: ZIndexes.ObstaclesLayer2,
                 allowFlyover: FlyoverPref.Never,

@@ -3,7 +3,6 @@ import { type ExplosionDefinition } from "@common/definitions/explosions";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { PerkIds, Perks } from "@common/definitions/perks";
 import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "@common/definitions/syncedParticles";
 import { type ThrowableDefinition } from "@common/definitions/throwables";
 import { PlayerInputPacket } from "@common/packets/inputPacket";
