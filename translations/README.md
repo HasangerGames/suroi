@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Wed, 13 Nov 2024 00:27:39 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Wed, 13 Nov 2024 01:22:55 GMT
 
 ## 🇦🇱 Shqip (88% Complete) - ab.hjson
 
@@ -473,12 +473,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
 
-### (No Invalid Keys)
+### Invalid Keys
+
+- Key `developr_vest` is not a valid key
 
 ### Undefined Keys
 
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `msg_radio_overused` is not defined
+- Key `deathray` is not defined
 
