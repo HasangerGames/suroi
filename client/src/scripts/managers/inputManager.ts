@@ -346,38 +346,41 @@ export class InputManager {
         const ticker = new Ticker();
         ticker.add(() => {
             const gamepads = navigator.getGamepads();
-            if (gamepads[0]) {
-                const leftJoystickMoving = gamepads[0].axes[0] !== 0 || gamepads[0].axes[1] !== 0;
-                const rightJoystickMoving = gamepads[0].axes[2] !== 0 || gamepads[0].axes[3] !== 0;
-                // const rightJoystickDistance = Math.sqrt(gamepads[0].axes[2] * gamepads[0].axes[2] + gamepads[0].axes[3] * gamepads[0].axes[3]);
-                // distance formula for stuff like throwables, USAS-12, and M590M
-                if (leftJoystickMoving) {
-                    const movementAngle = Math.atan2(gamepads[0].axes[1], gamepads[0].axes[0]);
-                    this.movementAngle = movementAngle;
-                    this.movement.moving = true;
-                    // note: movement.moving only works on mobile
-                    if (!rightJoystickMoving) {
-                        this.rotation = movementAngle;
-                        this.turning = true;
-                        if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && game.activePlayer) {
-                            game.activePlayer.container.rotation = this.rotation;
-                            this.turning = true;
-                        }
-                        if (!game.activePlayer) return;
-                        game.activePlayer.images.aimTrail.alpha = 0;
-                    }
-                } else {
-                    this.movement.moving = false;
-                }
-
-                if (rightJoystickMoving) {
-                    this.rotation = Math.atan2(gamepads[0].axes[3], gamepads[0].axes[2]);
+            if (!gamepads[0]) return;
+            const leftJoystickX = gamepads[0].axes[0];
+            const leftJoystickY = gamepads[0].axes[1];
+            const rightJoystickX = gamepads[0].axes[2];
+            const rightJoystickY = gamepads[0].axes[3];
+            const leftJoystickMoving = leftJoystickX !== 0 || leftJoystickY !== 0;
+            const rightJoystickMoving = rightJoystickX !== 0 || rightJoystickY !== 0;
+            // const rightJoystickDistance = Math.sqrt(gamepads[0].axes[2] * gamepads[0].axes[2] + gamepads[0].axes[3] * gamepads[0].axes[3]);
+            // distance formula for stuff like throwables, USAS-12, and M590M
+            if (leftJoystickMoving) {
+                const movementAngle = Math.atan2(leftJoystickY, leftJoystickX);
+                this.movementAngle = movementAngle;
+                this.movement.moving = true;
+                // note: movement.moving only works on mobile
+                if (!rightJoystickMoving) {
+                    this.rotation = movementAngle;
                     this.turning = true;
-
                     if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && game.activePlayer) {
                         game.activePlayer.container.rotation = this.rotation;
-                        game.activePlayer.images.aimTrail.alpha = 1;
+                        this.turning = true;
                     }
+                    if (!game.activePlayer) return;
+                    game.activePlayer.images.aimTrail.alpha = 0;
+                }
+            } else {
+                this.movement.moving = false;
+            }
+
+            if (rightJoystickMoving) {
+                this.rotation = Math.atan2(rightJoystickY, rightJoystickX);
+                this.turning = true;
+
+                if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && game.activePlayer) {
+                    game.activePlayer.container.rotation = this.rotation;
+                    game.activePlayer.images.aimTrail.alpha = 1;
                 }
             }
         });
