@@ -8,7 +8,7 @@ import { ItemType, type ItemDefinition } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
 import $ from "jquery";
 import nipplejs, { type JoystickOutputData } from "nipplejs";
-import * as PIXI from "pixi.js";
+import { Ticker } from "pixi.js";
 import { isMobile } from "pixi.js";
 import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
@@ -343,8 +343,7 @@ export class InputManager {
                 shootOnRelease = false;
             });
         }
-        const ticker = new PIXI.Ticker();
-        ticker.stop();
+        const ticker = new Ticker();
         ticker.add(() => {
             const gamepads = navigator.getGamepads();
             if (gamepads[0]) {
@@ -360,13 +359,12 @@ export class InputManager {
                     if (!rightJoystickMoving) {
                         this.rotation = movementAngle;
                         this.turning = true;
-                        const activePlayer = game.activePlayer;
                         if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && game.activePlayer) {
                             game.activePlayer.container.rotation = this.rotation;
                             this.turning = true;
                         }
-                        if (!activePlayer) return;
-                        activePlayer.images.aimTrail.alpha = 0;
+                        if (!game.activePlayer) return;
+                        game.activePlayer.images.aimTrail.alpha = 0;
                     }
                 } else {
                     this.movement.moving = false;
@@ -375,14 +373,11 @@ export class InputManager {
                 if (rightJoystickMoving) {
                     this.rotation = Math.atan2(gamepads[0].axes[3], gamepads[0].axes[2]);
                     this.turning = true;
-                    const activePlayer = game.activePlayer;
 
-                    if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && activePlayer) {
+                    if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && game.activePlayer) {
                         game.activePlayer.container.rotation = this.rotation;
+                        game.activePlayer.images.aimTrail.alpha = 1;
                     }
-
-                    if (!activePlayer) return;
-                    activePlayer.images.aimTrail.alpha = 1;
                 }
             }
         });
