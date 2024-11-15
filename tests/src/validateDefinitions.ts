@@ -796,13 +796,6 @@ logger.indent("Validating building definitions", () => {
                 building.spawnHitbox
             );
 
-            if (building.scopeHitbox) {
-                validators.hitbox(
-                    tester.createPath(errorPath, "scope hitbox"),
-                    building.scopeHitbox
-                );
-            }
-
             if (building.ceilingHitbox) {
                 validators.hitbox(
                     tester.createPath(errorPath, "ceiling hitbox"),

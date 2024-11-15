@@ -61,8 +61,8 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
         this.hitbox = this.definition.hitbox?.transform(this.position, 1, orientation);
         this.collidable = this.damageable = !!this.definition.hitbox;
 
-        if (this.definition.scopeHitbox !== undefined) {
-            this.scopeHitbox = this.definition.scopeHitbox.transform(this.position, 1, orientation);
+        if (this.definition.ceilingHitbox !== undefined && this.definition.ceilingScopeEffect) {
+            this.scopeHitbox = this.definition.ceilingHitbox.transform(this.position, 1, orientation);
         }
 
         if (this.definition.puzzle) {
