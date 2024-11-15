@@ -118,6 +118,8 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         this._activated = true;
         this.setDirty();
         setTimeout(() => {
+            if (this.dead) return;
+
             this.game.removeProjectile(this);
 
             const { explosion } = this.definition.detonation;
