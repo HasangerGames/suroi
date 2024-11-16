@@ -107,6 +107,7 @@ export class Team {
         }
     }
 
+    // Team color indexes must be checked and updated in order not to have duplicates.
     getNextAvailableColorIndex(): number {
         const existingIndexes = this.players.map(player => player.colorIndex);
         let newIndex = 0;

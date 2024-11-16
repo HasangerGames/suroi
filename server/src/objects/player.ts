@@ -89,7 +89,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     activeDisguise?: ObstacleDefinition;
 
     teamID?: number;
-    colorIndex = 0;
+    colorIndex = 0; // Assigned in the team.ts file.
 
     readonly loadout: {
         badge?: BadgeDefinition
@@ -2235,7 +2235,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.downed = true;
         this.action?.cancel();
         this.activeItem.stopUse();
-        this.health = 1;
+        this.health = 100;
         this.adrenaline = this.minAdrenaline;
         this.setDirty();
         this._team?.setDirty();
