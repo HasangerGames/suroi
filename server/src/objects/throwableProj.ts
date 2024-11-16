@@ -91,6 +91,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
 
         this.halloweenSkin = this.source.owner.perks.hasPerk(PerkIds.PlumpkinBomb);
 
+        // Colored Teammate C4s
         this.tintIndex = this.source.owner.colorIndex;
         if (this.source.owner.teamID) this.throwerTeamID = this.source.owner.teamID;
 
