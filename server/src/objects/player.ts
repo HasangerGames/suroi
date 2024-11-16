@@ -1134,7 +1134,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const player = this.spectating ?? this;
         if (this.spectating) {
             this.layer = this.spectating.layer;
-            if (this.spectating.team) this.colorIndex = this.spectating.colorIndex;
+            this.colorIndex = this.spectating.colorIndex;
         }
         const game = this.game;
 

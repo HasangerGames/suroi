@@ -155,7 +155,7 @@ export class UIManager {
             return teammate.id === id;
         });
 
-        const colorIndex = teammate ? teammate.colorIndex : undefined;
+        const colorIndex = teammate ? teammate.colorIndex : (this.game.teamMode ? undefined : 0);
         return colorIndex;
     }
 
