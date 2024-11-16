@@ -2,7 +2,7 @@ import { Layers, TentTints, ZIndexes } from "../constants";
 import { type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial, type GetEnumMemberName, type Mutable } from "../utils/misc";
-import { inheritFrom, MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
+import { MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type ObjectDefinition, type RawDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { type GunDefinition } from "./guns";
 import { type LootDefinition } from "./loots";
@@ -414,7 +414,7 @@ const defaultObstacle: DeepPartial<RawObstacleDefinition> = {
 export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
     "Obstacles",
     defaultObstacle,
-    ([derive, , , _missingType]) => {
+    ([derive, inheritFrom, , _missingType]) => {
         type Missing = typeof _missingType;
 
         const tree = derive(
@@ -790,22 +790,31 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             }
         }));
 
-        const snowVariant = derive(
-            (
-                props: {
-                    readonly idString: string
-                    readonly variations?: Exclude<Variation, 0>
-                }
-            ) => ({
-                [inheritFrom]: props.idString,
-                idString: `${props.idString}_snow`,
-                variations: props.variations,
-                frames: {
-                    particle: `${props.idString}_particle`,
-                    residue: `${props.idString}_residue`
-                }
+        const withWinterVariation = (
+            ...defs: ReadonlyArray<
+                Missing | [
+                    base: Missing,
+                    variants?: Exclude<Variation, 0>
+                ]
+            >
+        ): Array<Missing | RawDefinition<Missing>> => defs.flatMap(
+            arg => {
+                const [base, variants] = Array.isArray(arg) ? arg : [arg];
+
+                return [
+                    base,
+                    {
+                        [inheritFrom]: base.idString,
+                        idString: `${base.idString}_snow`,
+                        variations: variants,
+                        frames: {
+                            particle: `${base.idString}_particle`,
+                            residue: `${base.idString}_residue`
+                        }
+                    }
+                ];
             }
-            ));
+        );
 
         return ([
             tree([{
@@ -897,29 +906,31 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hasLoot: true
             }]),
 
-            {
-                idString: "oil_tank",
-                name: "Oil Tank",
-                material: "metal_heavy",
-                health: 1000,
-                indestructible: true,
-                hitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(16.8, 13.6),
-                    RectangleHitbox.fromRect(26, 2),
-                    new CircleHitbox(5, Vec.create(-8, 1.8)),
-                    new CircleHitbox(5, Vec.create(-8, -1.8)),
-                    new CircleHitbox(5, Vec.create(8, 1.8)),
-                    new CircleHitbox(5, Vec.create(8, -1.8))
-                ),
-                spawnHitbox: RectangleHitbox.fromRect(28, 18),
-                rotationMode: RotationMode.Limited,
-                allowFlyover: FlyoverPref.Never,
-                noResidue: true,
-                frames: {
-                    particle: "metal_particle"
-                },
-                reflectBullets: true
-            },
+            ...withWinterVariation([
+                {
+                    idString: "oil_tank",
+                    name: "Oil Tank",
+                    material: "metal_heavy",
+                    health: 1000,
+                    indestructible: true,
+                    hitbox: new GroupHitbox(
+                        RectangleHitbox.fromRect(16.8, 13.6),
+                        RectangleHitbox.fromRect(26, 2),
+                        new CircleHitbox(5, Vec.create(-8, 1.8)),
+                        new CircleHitbox(5, Vec.create(-8, -1.8)),
+                        new CircleHitbox(5, Vec.create(8, 1.8)),
+                        new CircleHitbox(5, Vec.create(8, -1.8))
+                    ),
+                    spawnHitbox: RectangleHitbox.fromRect(28, 18),
+                    rotationMode: RotationMode.Limited,
+                    allowFlyover: FlyoverPref.Never,
+                    noResidue: true,
+                    frames: {
+                        particle: "metal_particle"
+                    },
+                    reflectBullets: true
+                }, 2
+            ]),
 
             {
                 idString: "stump",
@@ -1325,32 +1336,40 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     particle: "leaf_particle_3"
                 }
             },
-            crate(
-                {
-                    idString: "regular_crate",
-                    name: "Regular Crate",
-                    rotationMode: RotationMode.Binary,
-                    frames: {
-                        particle: "crate_particle",
-                        residue: "regular_crate_residue"
-                    }
-                }
-            ),
-            crate(
-                {
-                    idString: "flint_crate",
-                    name: "Flint Crate",
-                    rotationMode: RotationMode.None,
-                    hideOnMap: true
-                }
-            ),
-            crate(
-                {
-                    idString: "aegis_crate",
-                    name: "AEGIS Crate",
-                    rotationMode: RotationMode.None,
-                    hideOnMap: true
-                }
+            ...withWinterVariation(
+                [
+                    crate(
+                        {
+                            idString: "regular_crate",
+                            name: "Regular Crate",
+                            rotationMode: RotationMode.Binary,
+                            frames: {
+                                particle: "crate_particle",
+                                residue: "regular_crate_residue"
+                            }
+                        }
+                    ), 6
+                ],
+                [
+                    crate(
+                        {
+                            idString: "flint_crate",
+                            name: "Flint Crate",
+                            rotationMode: RotationMode.None,
+                            hideOnMap: true
+                        }
+                    ), 6
+                ],
+                [
+                    crate(
+                        {
+                            idString: "aegis_crate",
+                            name: "AEGIS Crate",
+                            rotationMode: RotationMode.None,
+                            hideOnMap: true
+                        }
+                    ), 6
+                ]
             ),
             crate(
                 {
@@ -4614,11 +4633,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 frames: {
                     particle: "metal_particle"
                 }
-            },
-            snowVariant([{
-                idString: "flint_crate",
-                variations: 6
-            }])
+            }
             /* {
                 idString: "humvee",
                 name: "Humvee",
