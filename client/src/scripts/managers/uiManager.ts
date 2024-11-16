@@ -1728,7 +1728,7 @@ class PlayerHealthUI {
 
     constructor(game: Game, data?: UpdateDataType) {
         this.game = game;
-        this.container = $<HTMLDivElement>('<div class="teammate-container"></div>');
+        this.container = $<HTMLDivElement>(`<div class="teammate-container" data-id="${this.id}"></div>`);
         this.svgContainer = $<SVGElement>('<svg class="teammate-health-indicator" width="48" height="48" xmlns="http://www.w3.org/2000/svg"></svg>');
 
         // HACK wrapping in <svg> is necessary to ensure that it's interpreted as an actual svg circle and not… whatever it'd try to interpret it as otherwise
@@ -1820,10 +1820,16 @@ class PlayerHealthUI {
 
             if (this._position.dirty && this._position.value) {
                 if ((indicator = teammateIndicators.get(id)) === undefined) {
+                    const teammate = this.game.uiManager.teammates.find(teammate => {
+                        return teammate.id === id;
+                    });
+
+                    const color = TEAMMATE_COLORS[teammate ? teammate.colorIndex : this._colorIndex.value];
+
                     teammateIndicators.set(
                         id,
                         indicator = new SuroiSprite("player_indicator")
-                            .setTint(TEAMMATE_COLORS[this._colorIndex.value])
+                            .setTint(color)
                     );
                     this.game.map.teammateIndicatorContainer.addChild(indicator);
                 }
@@ -1846,7 +1852,11 @@ class PlayerHealthUI {
         }
 
         if (this._colorIndex.dirty) {
-            const color = TEAMMATE_COLORS[this._colorIndex.value];
+            const teammate = this.game.uiManager.teammates.find(teammate => {
+                return teammate.id === id;
+            });
+
+            const color = TEAMMATE_COLORS[teammate ? teammate.colorIndex : this._colorIndex.value];
 
             this.indicatorContainer.css(
                 "background-color",

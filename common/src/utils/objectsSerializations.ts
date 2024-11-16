@@ -148,6 +148,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
         readonly full?: {
             readonly definition: ThrowableDefinition
             readonly halloweenSkin: boolean
+            readonly tintIndex: number
         }
     }
     //
@@ -780,6 +781,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         serializeFull(stream, { full }) {
             Loots.writeToStream(stream, full.definition);
             stream.writeUint8(full.halloweenSkin ? -1 : 0);
+            stream.writeUint8(full.tintIndex);
         },
         deserializePartial(stream) {
             const [
@@ -798,7 +800,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         deserializeFull(stream) {
             return {
                 definition: Loots.readFromStream(stream),
-                halloweenSkin: stream.readUint8() !== 0
+                halloweenSkin: stream.readUint8() !== 0,
+                tintIndex: stream.readUint8()
             };
         }
     }

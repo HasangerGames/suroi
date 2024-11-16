@@ -22,9 +22,9 @@ export const Config = {
 
     map: "normal",
 
-    spawn: { mode: SpawnMode.Normal },
+    spawn: { mode: SpawnMode.Center },
 
-    maxTeamSize: TeamSize.Solo,
+    maxTeamSize: TeamSize.Squad,
 
     maxPlayersPerGame: 70,
     maxGames: 5,
