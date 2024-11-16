@@ -12,6 +12,7 @@ import { type ThrowableItem } from "../inventory/throwableItem";
 import { Building } from "./building";
 import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
+import { equalLayer } from "@common/utils/layer";
 
 const enum Drag {
     Normal = 0.001,
@@ -443,7 +444,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         // nna could be used here, but there's a cleaner way to get rid of undefined with the optional chain below, so lol
         const hitbox = object.hitbox;
 
-        if (!hitbox?.collidesWith(this.hitbox)) return;
+        if (!hitbox?.collidesWith(this.hitbox) || !equalLayer(this.layer, object.layer)) return;
 
         const handleCircle = (hitbox: CircleHitbox): void => {
             const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, hitbox.position, hitbox.radius);
