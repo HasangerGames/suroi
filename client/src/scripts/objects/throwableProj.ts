@@ -58,7 +58,7 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
             const tintIndex = data.full.tintIndex;
 
             // Tint the C4 if it's a teammate's one, based on their position color on the team.
-            if (this.game.teamMode && this.game.teamID === throwerTeamID) {
+            if (this.game.teamMode && this.game.teamID === throwerTeamID && this.definition.c4) {
                 this.image.setTint(TEAMMATE_COLORS[tintIndex]);
             }
         }
