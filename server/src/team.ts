@@ -24,7 +24,9 @@ export class Team {
     }
 
     addPlayer(player: Player): void {
+        player.colorIndex = this.getNextAvailableColorIndex();
         this._indexMapping.set(player, this._players.push(player) - 1);
+        this.setDirty();
     }
 
     removePlayer(player: Player): boolean {
@@ -92,6 +94,7 @@ export class Team {
             for (const [player, mapped] of this._indexMapping.entries()) { // refresh mapping
                 if (mapped <= index) continue;
                 this._indexMapping.set(player, mapped - 1);
+                this.reassignColorIndexes();
             }
         }
 
@@ -102,6 +105,21 @@ export class Team {
         for (const player of this.players) {
             player.dirty.teammates = true;
         }
+    }
+
+    getNextAvailableColorIndex(): number {
+        const existingIndexes = this.players.map(player => player.colorIndex);
+        let newIndex = 0;
+        while (existingIndexes.includes(newIndex)) {
+            newIndex++;
+        }
+        return newIndex;
+    }
+
+    reassignColorIndexes(): void {
+        this.players.forEach((player, index) => {
+            player.colorIndex = index;
+        });
     }
 
     hasLivingPlayers(): boolean {

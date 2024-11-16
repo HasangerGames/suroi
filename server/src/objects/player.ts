@@ -417,8 +417,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this._team = team;
             this.teamID = team.id;
 
+            team.reassignColorIndexes();
             team.addPlayer(this);
-            this.colorIndex = team.players.length - 1;
             team.setDirty();
         }
 
@@ -1134,7 +1134,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const player = this.spectating ?? this;
         if (this.spectating) {
             this.layer = this.spectating.layer;
-            this.colorIndex = this.spectating.colorIndex;
         }
         const game = this.game;
 
