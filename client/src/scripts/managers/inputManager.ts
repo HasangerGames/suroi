@@ -348,7 +348,6 @@ export class InputManager {
             const gamepads = navigator.getGamepads();
             if (!gamepads[0]) return;
             this.joystickSensitivity = game.console.getBuiltInCVar("cv_joystick_sensitivity");
-            console.log(this.joystickSensitivity);
             const leftJoystickX = gamepads[0].axes[0];
             const leftJoystickY = gamepads[0].axes[1];
             const rightJoystickX = gamepads[0].axes[2];
