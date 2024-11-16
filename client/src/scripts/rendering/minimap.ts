@@ -756,11 +756,7 @@ export class MapPing {
         this.color = definition.color;
 
         if (definition.isPlayerPing && playerId) {
-            const teammate = game.uiManager.teammates.find(teammate_ => {
-                return teammate_.id === playerId;
-            });
-
-            this.color = TEAMMATE_COLORS[teammate ? teammate.colorIndex : game.uiManager.teammates.findIndex(({ id }) => id === playerId)].toHex();
+            this.color = TEAMMATE_COLORS[this.game.uiManager.getTeammateColorIndex(playerId) ?? game.uiManager.teammates.findIndex(({ id }) => id === playerId)];
         }
 
         this.mapImage = new SuroiSprite(definition.idString)
