@@ -657,7 +657,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     hitEffect(position: Vector, angle: number): void {
         if (this.definition.noHitEffect) return;
 
-        this.hitSound?.stop();
+        if (!this.definition.hitSoundVariations) this.hitSound?.stop();
 
         const { material } = this.definition;
         this.hitSound = this.game.soundManager.play(
