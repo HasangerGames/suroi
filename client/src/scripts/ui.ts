@@ -1481,10 +1481,17 @@ export async function setUpUI(game: Game): Promise<void> {
 
     // Controller settings
     addSliderListener(
-        "#slider-joystick-sensitivity",
-        "cv_joystick_sensitivity",
+        "#slider-left-joystick-sensitivity",
+        "cv_left_joystick_sensitivity",
         value => {
-        inputManager.joystickSensitivity = value;
+        inputManager.leftJoystickSensitivity = value;
+        }
+    );
+    addSliderListener(
+        "#slider-right-joystick-sensitivity",
+        "cv_right_joystick_sensitivity",
+        value => {
+        inputManager.rightJoystickSensitivity = value;
         }
     );
     addCheckboxListener("#switch-controller-joysticks", "cv_switch_controller_joysticks");

@@ -35,7 +35,8 @@ export const CVarCasters = Object.freeze({
     cv_sfx_volume: Casters.toNumber,
     cv_ambience_volume: Casters.toNumber,
     cv_music_volume: Casters.toNumber,
-    cv_joystick_sensitivity: Casters.toNumber,
+    cv_left_joystick_sensitivity: Casters.toNumber,
+    cv_right_joystick_sensitivity: Casters.toNumber,
 
     cv_switch_controller_joysticks: Casters.toBoolean,
     cv_loop_scope_selection: Casters.toBoolean,
@@ -147,7 +148,8 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_sfx_volume: 1,
     cv_ambience_volume: 1,
     cv_music_volume: 1,
-    cv_joystick_sensitivity: 0,
+    cv_left_joystick_sensitivity: 0,
+    cv_right_joystick_sensitivity: 0,
 
     cv_switch_controller_joysticks: false,
     cv_loop_scope_selection: false,

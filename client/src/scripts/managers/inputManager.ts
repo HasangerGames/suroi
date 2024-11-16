@@ -35,7 +35,8 @@ export class InputManager {
     // and inputManager assumes all keys of `movement` are booleans
     movementAngle = 0;
     controllerConnected = false;
-    joystickSensitivity = 0;
+    leftJoystickSensitivity = 0;
+    rightJoystickSensitivity = 0;
     mouseX = 0;
     mouseY = 0;
 
@@ -349,13 +350,14 @@ export class InputManager {
             const gamepads = navigator.getGamepads();
             if (!gamepads[0]) return;
             $("#tab-controller").show();
-            this.joystickSensitivity = game.console.getBuiltInCVar("cv_joystick_sensitivity");
+            this.leftJoystickSensitivity = game.console.getBuiltInCVar("cv_left_joystick_sensitivity");
+            this.rightJoystickSensitivity = game.console.getBuiltInCVar("cv_right_joystick_sensitivity");
             const leftJoystickX = gamepads[0].axes[0];
             const leftJoystickY = gamepads[0].axes[1];
             const rightJoystickX = gamepads[0].axes[2];
             const rightJoystickY = gamepads[0].axes[3];
-            const leftJoystickMoving = Math.abs(leftJoystickX) > this.joystickSensitivity || Math.abs(leftJoystickY) > this.joystickSensitivity;
-            const rightJoystickMoving = Math.abs(rightJoystickX) > this.joystickSensitivity || Math.abs(rightJoystickY) > this.joystickSensitivity;
+            const leftJoystickMoving = Math.abs(leftJoystickX) > this.leftJoystickSensitivity || Math.abs(leftJoystickY) > this.leftJoystickSensitivity;
+            const rightJoystickMoving = Math.abs(rightJoystickX) > this.rightJoystickSensitivity || Math.abs(rightJoystickY) > this.rightJoystickSensitivity;
             // const rightJoystickDistance = Math.sqrt(gamepads[0].axes[2] * gamepads[0].axes[2] + gamepads[0].axes[3] * gamepads[0].axes[3]);
             // distance formula for stuff like throwables, USAS-12, and M590M
             let movementJoystickMoving = leftJoystickMoving;
