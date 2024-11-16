@@ -54,9 +54,10 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
 
             this.image.setFrame(`${def.animation.liveImage}${this.halloweenSkin && !def.noSkin ? "_halloween" : ""}`);
 
+            const throwerTeamID = data.throwerTeamID;
             const tintIndex = data.full.tintIndex;
 
-            if (this.game.teamMode) this.image.setTint(TEAMMATE_COLORS[tintIndex]);
+            if (this.game.teamMode && this.game.teamID === throwerTeamID) this.image.setTint(TEAMMATE_COLORS[tintIndex]);
         }
 
         if (data.activated && this._definition?.animation.activatedImage) {

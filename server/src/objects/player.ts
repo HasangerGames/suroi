@@ -448,7 +448,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._hitbox = Player.baseHitbox.transform(position);
 
         this.inventory.addOrReplaceWeapon(2, "fists");
-        this.inventory.addOrReplaceWeapon(3, "c4");
 
         const defaultScope = Modes[GameConstants.modeName].defaultScope;
         if (defaultScope) {
