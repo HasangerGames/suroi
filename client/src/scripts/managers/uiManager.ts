@@ -1728,7 +1728,7 @@ class PlayerHealthUI {
 
     constructor(game: Game, data?: UpdateDataType) {
         this.game = game;
-        this.container = $<HTMLDivElement>(`<div class="teammate-container" data-id="${this.id}"></div>`);
+        this.container = $<HTMLDivElement>('<div class="teammate-container"></div>');
         this.svgContainer = $<SVGElement>('<svg class="teammate-health-indicator" width="48" height="48" xmlns="http://www.w3.org/2000/svg"></svg>');
 
         // HACK wrapping in <svg> is necessary to ensure that it's interpreted as an actual svg circle and not… whatever it'd try to interpret it as otherwise
