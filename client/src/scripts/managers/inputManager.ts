@@ -34,6 +34,7 @@ export class InputManager {
     // had to put it here because it's not a boolean
     // and inputManager assumes all keys of `movement` are booleans
     movementAngle = 0;
+    controllerConnected = false;
     joystickSensitivity = 0;
     mouseX = 0;
     mouseY = 0;
@@ -347,6 +348,7 @@ export class InputManager {
         ticker.add(() => {
             const gamepads = navigator.getGamepads();
             if (!gamepads[0]) return;
+            $("#tab-controller").show();
             this.joystickSensitivity = game.console.getBuiltInCVar("cv_joystick_sensitivity");
             const leftJoystickX = gamepads[0].axes[0];
             const leftJoystickY = gamepads[0].axes[1];
