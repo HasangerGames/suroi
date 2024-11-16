@@ -356,12 +356,26 @@ export class InputManager {
             const rightJoystickMoving = Math.abs(rightJoystickX) > this.joystickSensitivity || Math.abs(rightJoystickY) > this.joystickSensitivity;
             // const rightJoystickDistance = Math.sqrt(gamepads[0].axes[2] * gamepads[0].axes[2] + gamepads[0].axes[3] * gamepads[0].axes[3]);
             // distance formula for stuff like throwables, USAS-12, and M590M
-            if (leftJoystickMoving) {
-                const movementAngle = Math.atan2(leftJoystickY, leftJoystickX);
+            let movementJoystickMoving = leftJoystickMoving;
+            let aimJoystickMoving = rightJoystickMoving;
+            let movementJoystickX = leftJoystickX;
+            let movementJoystickY = leftJoystickY;
+            let aimJoystickX = rightJoystickX;
+            let aimJoystickY = rightJoystickY;
+            if (game.console.getBuiltInCVar("cv_switch_controller_joysticks")) {
+                movementJoystickMoving = rightJoystickMoving;
+                aimJoystickMoving = leftJoystickMoving;
+                movementJoystickX = rightJoystickX;
+                movementJoystickY = rightJoystickY;
+                aimJoystickX = leftJoystickX;
+                aimJoystickY = leftJoystickY;
+            }
+            if (movementJoystickMoving) {
+                const movementAngle = Math.atan2(movementJoystickY, movementJoystickX);
                 this.movementAngle = movementAngle;
                 this.movement.moving = true;
                 // note: movement.moving only works on mobile
-                if (!rightJoystickMoving) {
+                if (!aimJoystickMoving) {
                     this.rotation = movementAngle;
                     this.turning = true;
                     if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && game.activePlayer) {
@@ -375,8 +389,8 @@ export class InputManager {
                 this.movement.moving = false;
             }
 
-            if (rightJoystickMoving) {
-                this.rotation = Math.atan2(rightJoystickY, rightJoystickX);
+            if (aimJoystickMoving) {
+                this.rotation = Math.atan2(aimJoystickY, aimJoystickX);
                 this.turning = true;
 
                 if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && game.activePlayer) {

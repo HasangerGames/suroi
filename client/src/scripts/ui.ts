@@ -1487,6 +1487,7 @@ export async function setUpUI(game: Game): Promise<void> {
         inputManager.joystickSensitivity = value;
         }
     );
+    addCheckboxListener("#switch-controller-joysticks", "cv_switch_controller_joysticks");
 
     // Camera shake
     addCheckboxListener("#toggle-camera-shake", "cv_camera_shake_fx");
