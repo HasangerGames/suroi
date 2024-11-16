@@ -346,64 +346,70 @@ export class InputManager {
             });
         }
         const ticker = new Ticker();
-        ticker.add(() => {
-            const gamepads = navigator.getGamepads();
-            if (!gamepads[0]) return;
-            $("#tab-controller").show();
-            this.leftJoystickSensitivity = game.console.getBuiltInCVar("cv_left_joystick_sensitivity");
-            this.rightJoystickSensitivity = game.console.getBuiltInCVar("cv_right_joystick_sensitivity");
-            const leftJoystickX = gamepads[0].axes[0];
-            const leftJoystickY = gamepads[0].axes[1];
-            const rightJoystickX = gamepads[0].axes[2];
-            const rightJoystickY = gamepads[0].axes[3];
-            const leftJoystickMoving = Math.abs(leftJoystickX) > this.leftJoystickSensitivity || Math.abs(leftJoystickY) > this.leftJoystickSensitivity;
-            const rightJoystickMoving = Math.abs(rightJoystickX) > this.rightJoystickSensitivity || Math.abs(rightJoystickY) > this.rightJoystickSensitivity;
-            // const rightJoystickDistance = Math.sqrt(gamepads[0].axes[2] * gamepads[0].axes[2] + gamepads[0].axes[3] * gamepads[0].axes[3]);
-            // distance formula for stuff like throwables, USAS-12, and M590M
-            let movementJoystickMoving = leftJoystickMoving;
-            let aimJoystickMoving = rightJoystickMoving;
-            let movementJoystickX = leftJoystickX;
-            let movementJoystickY = leftJoystickY;
-            let aimJoystickX = rightJoystickX;
-            let aimJoystickY = rightJoystickY;
-            if (game.console.getBuiltInCVar("cv_switch_controller_joysticks")) {
-                movementJoystickMoving = rightJoystickMoving;
-                aimJoystickMoving = leftJoystickMoving;
-                movementJoystickX = rightJoystickX;
-                movementJoystickY = rightJoystickY;
-                aimJoystickX = leftJoystickX;
-                aimJoystickY = leftJoystickY;
-            }
-            if (movementJoystickMoving) {
-                const movementAngle = Math.atan2(movementJoystickY, movementJoystickX);
-                this.movementAngle = movementAngle;
-                this.movement.moving = true;
-                // note: movement.moving only works on mobile
-                if (!aimJoystickMoving) {
-                    this.rotation = movementAngle;
+        window.addEventListener("gamepadconnected", () => {
+            ticker.add(() => {
+                const gamepads = navigator.getGamepads();
+                if (!gamepads[0]) return;
+                $("#tab-controller").show();
+                this.leftJoystickSensitivity = game.console.getBuiltInCVar("cv_left_joystick_sensitivity");
+                this.rightJoystickSensitivity = game.console.getBuiltInCVar("cv_right_joystick_sensitivity");
+                const leftJoystickX = gamepads[0].axes[0];
+                const leftJoystickY = gamepads[0].axes[1];
+                const rightJoystickX = gamepads[0].axes[2];
+                const rightJoystickY = gamepads[0].axes[3];
+                const leftJoystickMoving = Math.abs(leftJoystickX) > this.leftJoystickSensitivity || Math.abs(leftJoystickY) > this.leftJoystickSensitivity;
+                const rightJoystickMoving = Math.abs(rightJoystickX) > this.rightJoystickSensitivity || Math.abs(rightJoystickY) > this.rightJoystickSensitivity;
+                // const rightJoystickDistance = Math.sqrt(gamepads[0].axes[2] * gamepads[0].axes[2] + gamepads[0].axes[3] * gamepads[0].axes[3]);
+                // distance formula for stuff like throwables, USAS-12, and M590M
+                let movementJoystickMoving = leftJoystickMoving;
+                let aimJoystickMoving = rightJoystickMoving;
+                let movementJoystickX = leftJoystickX;
+                let movementJoystickY = leftJoystickY;
+                let aimJoystickX = rightJoystickX;
+                let aimJoystickY = rightJoystickY;
+                if (game.console.getBuiltInCVar("cv_switch_controller_joysticks")) {
+                    movementJoystickMoving = rightJoystickMoving;
+                    aimJoystickMoving = leftJoystickMoving;
+                    movementJoystickX = rightJoystickX;
+                    movementJoystickY = rightJoystickY;
+                    aimJoystickX = leftJoystickX;
+                    aimJoystickY = leftJoystickY;
+                }
+                if (movementJoystickMoving) {
+                    const movementAngle = Math.atan2(movementJoystickY, movementJoystickX);
+                    this.movementAngle = movementAngle;
+                    this.movement.moving = true;
+                    // note: movement.moving only works on mobile
+                    if (!aimJoystickMoving) {
+                        this.rotation = movementAngle;
+                        this.turning = true;
+                        if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && game.activePlayer) {
+                            game.activePlayer.container.rotation = this.rotation;
+                            this.turning = true;
+                        }
+                        if (!game.activePlayer) return;
+                        game.activePlayer.images.aimTrail.alpha = 0;
+                    }
+                } else {
+                    this.movement.moving = false;
+                }
+
+                if (aimJoystickMoving) {
+                    this.rotation = Math.atan2(aimJoystickY, aimJoystickX);
                     this.turning = true;
+
                     if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && game.activePlayer) {
                         game.activePlayer.container.rotation = this.rotation;
-                        this.turning = true;
+                        game.activePlayer.images.aimTrail.alpha = 1;
                     }
-                    if (!game.activePlayer) return;
-                    game.activePlayer.images.aimTrail.alpha = 0;
                 }
-            } else {
-                this.movement.moving = false;
-            }
-
-            if (aimJoystickMoving) {
-                this.rotation = Math.atan2(aimJoystickY, aimJoystickX);
-                this.turning = true;
-
-                if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && game.activePlayer) {
-                    game.activePlayer.container.rotation = this.rotation;
-                    game.activePlayer.images.aimTrail.alpha = 1;
-                }
-            }
+            });
+            ticker.start();
         });
-        ticker.start();
+        window.addEventListener("gamepaddisconnected", () => {
+            $("#tab-controller").hide();
+            if (ticker) ticker.stop();
+        });
     }
 
     private handleInputEvent(down: boolean, event: KeyboardEvent | MouseEvent | WheelEvent): void {
