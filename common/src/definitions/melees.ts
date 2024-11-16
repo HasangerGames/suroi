@@ -2,7 +2,7 @@ import { FireMode } from "../constants";
 import { ItemType, ObjectDefinitions, type InventoryItemDefinition } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 
-export interface MeleeDefinition extends InventoryItemDefinition {
+export type MeleeDefinition = InventoryItemDefinition & {
     readonly itemType: ItemType.Melee
 
     readonly damage: number
@@ -11,7 +11,6 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     readonly stonePiercing?: boolean
     readonly swingSound: string
     readonly stopSound?: string
-    readonly rotationalAnimation?: boolean
     readonly radius: number
     readonly offset: Vector
     readonly cooldown: number
@@ -19,8 +18,6 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     readonly fists: InventoryItemDefinition["fists"] & {
         readonly animationDuration: number
         readonly randomFist?: boolean
-        readonly useLeft: Vector
-        readonly useRight: Vector
     }
     readonly image?: {
         readonly position: Vector
@@ -35,7 +32,15 @@ export interface MeleeDefinition extends InventoryItemDefinition {
         readonly animated?: boolean
     }
     readonly fireMode: FireMode
-}
+} & ({
+    readonly rotationalAnimation: true
+} | {
+    readonly rotationalAnimation?: false
+    readonly fists: {
+        readonly useLeft: Vector
+        readonly useRight: Vector
+    }
+});
 
 export const DEFAULT_HAND_RIGGING = Object.freeze({
     left: Vec.create(38, -35),
