@@ -645,7 +645,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             },
             {
                 idString: "pp19",
-                name: "PP-19",
+                name: "PP-19 Vityaz",
                 ammoType: "9mm",
                 ammoSpawnAmount: 90,
                 capacity: 30,
@@ -1693,7 +1693,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             // designated marksman rifles
             {
                 idString: "vss",
-                name: "VSS",
+                name: "VSS Vintorez",
                 ammoType: "9mm",
                 ammoSpawnAmount: 60,
                 capacity: 20,
