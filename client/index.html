@@ -680,6 +680,7 @@
       <div class="tab-bar" id="settings-tab-bar">
         <button class="tab active" id="tab-volume"><i class="fa-solid fa-volume-high"></i><span translation="settings_volume"></span></button>
         <button class="tab" id="tab-keybinds"><i class="fa-solid fa-keyboard"></i><span translation="settings_keybinds"></span></button>
+        <button class="tab" id="tab-controller"><i class="fa-solid fa-gamepad"></i><span>Controller</span></button>
         <button class="tab" id="tab-graphics"><i class="fa-solid fa-display"></i><span translation="settings_graphics"></span></button>
         <button class="tab" id="tab-interface"><i class="fa-solid fa-list"></i><span translation="settings_interface"></span></button>
         <button class="tab" id="tab-import-export"><i class="fa-solid fa-file-export"></i><span translation="settings_save_load"></span></button>
@@ -724,6 +725,21 @@
           <p style="color: red"><i translation="settings_require_reload"></i></p>
         </div>
         <div class="tab-content" id="tab-keybinds-content" style="display: none">
+        </div>
+        <div class="tab-content active" id="tab-controller-content">
+          <div class="modal-item">
+            <label>
+              <span class="setting-title">Joystick sensitivity</span>
+              <span class="range-input-value"></span>
+              <input type="range" max="0.5" min="0" id="slider-joystick-sensitivity" step="0.1" value="0">
+            </label>
+          </div>
+          <div class="modal-item checkbox-setting">
+            <label>
+              <span class="setting-title"><span>Switch controller joysticks</span><i></i></span>
+              <input type="checkbox" id="switch-controller-joysticks">
+            </label>
+          </div>
         </div>
         <div class="tab-content" id="tab-graphics-content" style="display: none">
           <div class="modal-item select-setting">
