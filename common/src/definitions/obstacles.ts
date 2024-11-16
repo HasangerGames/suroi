@@ -2,7 +2,7 @@ import { Layers, TentTints, ZIndexes } from "../constants";
 import { type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial, type GetEnumMemberName, type Mutable } from "../utils/misc";
-import { MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
+import { inheritFrom, MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { type GunDefinition } from "./guns";
 import { type LootDefinition } from "./loots";
@@ -436,6 +436,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     readonly hasLoot?: boolean
                 }
             ) => ({
+
                 idString: props.name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
                 material: "tree",
                 health: props.health,
@@ -788,6 +789,23 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 residue: "barrel_residue"
             }
         }));
+
+        const snowVariant = derive(
+            (
+                props: {
+                    readonly idString: string
+                    readonly variations?: Exclude<Variation, 0>
+                }
+            ) => ({
+                [inheritFrom]: props.idString,
+                idString: `${props.idString}_snow`,
+                variations: props.variations,
+                frames: {
+                    particle: `${props.idString}_particle`,
+                    residue: `${props.idString}_residue`
+                }
+            }
+            ));
 
         return ([
             tree([{
@@ -4596,7 +4614,11 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 frames: {
                     particle: "metal_particle"
                 }
-            }
+            },
+            snowVariant([{
+                idString: "flint_crate",
+                variations: 6
+            }])
             /* {
                 idString: "humvee",
                 name: "Humvee",
