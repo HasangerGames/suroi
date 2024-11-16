@@ -4152,7 +4152,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "headquarters_main_desk", position: Vec.create(-10.7, -49.5), rotation: 0 },
                     { idString: "headquarters_cafeteria_table", position: Vec.create(45, -82), rotation: 0 },
                     { idString: "headquarters_sinks", position: Vec.create(1, 1.5), rotation: 0 },
-                    { idString: "headquarters_alarm_barriers", position: Vec.create(1, 2), rotation: 0 },
 
                     // i have fully given up at this point
                     { idString: "hq_second_floor_collider_hack", position: Vec.create(0, 0), rotation: 0, layer: 2 },

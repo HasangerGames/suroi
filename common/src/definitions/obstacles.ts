@@ -1235,10 +1235,12 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 name: "Detector Walls",
                 material: "iron",
                 health: 1000,
+                reflectBullets: true,
                 indestructible: true,
-                noBulletCollision: true,
-                hitbox: RectangleHitbox.fromRect(0, 0),
-                noCollisions: true,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(1, 9.1, Vec.create(4, 0)),
+                    RectangleHitbox.fromRect(1, 9, Vec.create(-3.9, 0.1))
+                ),
                 noResidue: true,
                 rotationMode: RotationMode.Limited,
                 frames: {
@@ -4333,27 +4335,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 particleVariations: 2,
                 frames: {
                     particle: "rock_particle"
-                }
-            },
-            {
-                idString: "headquarters_alarm_barriers",
-                name: "Headquarters Alarm Barriers",
-                material: "metal_heavy",
-                health: 1000,
-                hideOnMap: true,
-                indestructible: true,
-                reflectBullets: true,
-                hitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(1, 9, Vec.create(-32.1, 23.5)),
-                    RectangleHitbox.fromRect(1, 8.5, Vec.create(-39.5, 23.5)),
-                    RectangleHitbox.fromRect(1, 9, Vec.create(-22.1, 23.5)),
-                    RectangleHitbox.fromRect(1, 8.5, Vec.create(-29.55, 23.5))
-                ),
-                rotationMode: RotationMode.Limited,
-                allowFlyover: FlyoverPref.Always,
-                invisible: true,
-                frames: {
-                    particle: "metal_particle"
                 }
             },
             {
