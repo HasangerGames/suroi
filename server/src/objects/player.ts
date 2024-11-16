@@ -89,6 +89,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     activeDisguise?: ObstacleDefinition;
 
     teamID?: number;
+    colorIndex = 0;
 
     readonly loadout: {
         badge?: BadgeDefinition
@@ -417,6 +418,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.teamID = team.id;
 
             team.addPlayer(this);
+            this.colorIndex = team.players.length - 1;
             team.setDirty();
         }
 
@@ -446,6 +448,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._hitbox = Player.baseHitbox.transform(position);
 
         this.inventory.addOrReplaceWeapon(2, "fists");
+        this.inventory.addOrReplaceWeapon(3, "c4");
 
         const defaultScope = Modes[GameConstants.modeName].defaultScope;
         if (defaultScope) {
@@ -1132,6 +1135,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const player = this.spectating ?? this;
         if (this.spectating) {
             this.layer = this.spectating.layer;
+            if (this.spectating.team) this.colorIndex = this.spectating.colorIndex;
         }
         const game = this.game;
 
@@ -1239,7 +1243,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             ),
             ...(
                 player.dirty.teammates || forceInclude
-                    ? { teammates: player._team?.players.filter(p => p.id !== player.id) ?? [] }
+                    ? { teammates: player._team?.players ?? [] }
                     : {}
             ),
             ...(
@@ -2233,7 +2237,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.downed = true;
         this.action?.cancel();
         this.activeItem.stopUse();
-        this.health = 100;
+        this.health = 1;
         this.adrenaline = this.minAdrenaline;
         this.setDirty();
         this._team?.setDirty();

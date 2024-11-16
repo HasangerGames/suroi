@@ -31,6 +31,8 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
 
     private _velocity = Vec.create(0, 0);
 
+    tintIndex = 0;
+
     get velocity(): Vector { return this._velocity; }
     set velocity(velocity: Partial<Vector>) {
         this._velocity.x = velocity.x ?? this._velocity.x;
@@ -87,6 +89,8 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         this.hitbox = new CircleHitbox(radius ?? 1, position);
 
         this.halloweenSkin = this.source.owner.perks.hasPerk(PerkIds.PlumpkinBomb);
+
+        this.tintIndex = this.source.owner.colorIndex;
 
         for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
             this.handleCollision(object);
@@ -531,7 +535,8 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             activated: this._activated,
             full: {
                 definition: this.definition,
-                halloweenSkin: this.halloweenSkin
+                halloweenSkin: this.halloweenSkin,
+                tintIndex: this.tintIndex
             }
         };
     }
