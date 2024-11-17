@@ -347,16 +347,16 @@ export class InputManager {
         }
         const ticker = new Ticker();
         window.addEventListener("gamepadconnected", () => {
-            ticker.add(() => {
-                const gamepads = navigator.getGamepads();
-                if (!gamepads[0]) return;
+            ticker.add(async() => {
+                const controller = navigator.getGamepads()[0];
+                if (!controller) return;
                 $("#tab-controller").show();
                 this.leftJoystickSensitivity = game.console.getBuiltInCVar("cv_left_joystick_sensitivity");
                 this.rightJoystickSensitivity = game.console.getBuiltInCVar("cv_right_joystick_sensitivity");
-                const leftJoystickX = gamepads[0].axes[0];
-                const leftJoystickY = gamepads[0].axes[1];
-                const rightJoystickX = gamepads[0].axes[2];
-                const rightJoystickY = gamepads[0].axes[3];
+                const leftJoystickX = controller.axes[0];
+                const leftJoystickY = controller.axes[1];
+                const rightJoystickX = controller.axes[2];
+                const rightJoystickY = controller.axes[3];
                 const leftJoystickMoving = Math.abs(leftJoystickX) > this.leftJoystickSensitivity || Math.abs(leftJoystickY) > this.leftJoystickSensitivity;
                 const rightJoystickMoving = Math.abs(rightJoystickX) > this.rightJoystickSensitivity || Math.abs(rightJoystickY) > this.rightJoystickSensitivity;
                 // const rightJoystickDistance = Math.sqrt(gamepads[0].axes[2] * gamepads[0].axes[2] + gamepads[0].axes[3] * gamepads[0].axes[3]);
@@ -375,6 +375,22 @@ export class InputManager {
                     aimJoystickX = leftJoystickX;
                     aimJoystickY = leftJoystickY;
                 }
+                if (controller.buttons[0].pressed) this.addAction(InputActions.Interact);
+                if (controller.buttons[2].pressed) this.addAction(InputActions.Cancel);
+                if (controller.buttons[6].pressed) this.addAction(InputActions.Reload);
+                if (controller.buttons[7].pressed) {
+                    this.attacking = true;
+                    if (game.console.getBuiltInCVar("cv_controller_vibration")) {
+                        if (game.activePlayer?.activeItem.itemType === ItemType.Gun && !game.activePlayer.dead) {
+                            await controller.vibrationActuator.playEffect("dual-rumble", {
+                                startDelay: 0,
+                                duration: 10,
+                                weakMagnitude: 1.0,
+                                strongMagnitude: 1.0
+                            });
+                        }
+                    }
+                } else this.attacking = false;
                 if (movementJoystickMoving) {
                     const movementAngle = Math.atan2(movementJoystickY, movementJoystickX);
                     this.movementAngle = movementAngle;

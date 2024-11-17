@@ -1495,6 +1495,7 @@ export async function setUpUI(game: Game): Promise<void> {
         }
     );
     addCheckboxListener("#switch-controller-joysticks", "cv_switch_controller_joysticks");
+    addCheckboxListener("#controller-vibration", "cv_controller_vibration");
 
     // Camera shake
     addCheckboxListener("#toggle-camera-shake", "cv_camera_shake_fx");
