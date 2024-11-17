@@ -808,8 +808,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                         idString: `${base.idString}_snow`,
                         variations: variants,
                         frames: {
-                            particle: `${base.idString}_particle`,
-                            residue: `${base.idString}_residue`
+                            particle: base.frames?.particle ?? `${base.idString}_residue`,
+                            residue: base.frames?.residue ?? `${base.idString}_residue`
                         },
                         lootTable: (base.hasLoot || base.spawnWithLoot) ? (base.lootTable ?? base.idString) : undefined
                     }
@@ -1208,23 +1208,25 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 zIndex: ZIndexes.ObstaclesLayer4
 
             },
-            {
-                idString: "flint_stone",
-                name: "Flint Stone",
-                material: "stone",
-                health: 200,
-                impenetrable: true,
-                hasLoot: true,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.5
-                },
-                spawnMode: MapObjectSpawnMode.GrassAndSand,
-                hitbox: RectangleHitbox.fromRect(6.1, 6.1),
-                rotationMode: RotationMode.None,
-                particleVariations: 2
-            },
+            ...withWinterVariation([
+                {
+                    idString: "flint_stone",
+                    name: "Flint Stone",
+                    material: "stone",
+                    health: 200,
+                    impenetrable: true,
+                    hasLoot: true,
+                    scale: {
+                        spawnMin: 1,
+                        spawnMax: 1,
+                        destroy: 0.5
+                    },
+                    spawnMode: MapObjectSpawnMode.GrassAndSand,
+                    hitbox: RectangleHitbox.fromRect(6.1, 6.1),
+                    rotationMode: RotationMode.None,
+                    particleVariations: 2
+                }
+            ]),
             {
                 idString: "bush",
                 name: "Bush",
@@ -1370,16 +1372,18 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                             hideOnMap: true
                         }
                     ), 6
+                ],
+                [
+                    crate(
+                        {
+                            idString: "grenade_crate",
+                            name: "Grenade Crate",
+                            hitbox: RectangleHitbox.fromRect(6.5, 6.3),
+                            rotationMode: RotationMode.None,
+                            allowFlyover: FlyoverPref.Always
+                        }
+                    ) // more snow variants coming soon
                 ]
-            ),
-            crate(
-                {
-                    idString: "grenade_crate",
-                    name: "Grenade Crate",
-                    hitbox: RectangleHitbox.fromRect(6.5, 6.3),
-                    rotationMode: RotationMode.None,
-                    allowFlyover: FlyoverPref.Always
-                }
             ),
             crate(
                 {
@@ -1589,42 +1593,46 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 additionalDestroySounds: ["smoke_grenade"]
             },
-            {
-                idString: "barrel",
-                name: "Barrel",
-                material: "metal_light",
-                health: 160,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.5
-                },
-                spawnMode: MapObjectSpawnMode.GrassAndSand,
+            ...withWinterVariation([
+                {
+                    idString: "barrel",
+                    name: "Barrel",
+                    material: "metal_light",
+                    health: 160,
+                    scale: {
+                        spawnMin: 1,
+                        spawnMax: 1,
+                        destroy: 0.5
+                    },
+                    spawnMode: MapObjectSpawnMode.GrassAndSand,
 
-                hitbox: new CircleHitbox(3.75),
-                rotationMode: RotationMode.Full,
-                explosion: "barrel_explosion",
-                frames: {
-                    particle: "metal_particle"
-                },
-                reflectBullets: true
-            },
-            {
-                idString: "super_barrel",
-                name: "Super Barrel",
-                material: "metal_light",
-                health: 240,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.5
-                },
-                spawnMode: MapObjectSpawnMode.GrassAndSand,
-                hitbox: new CircleHitbox(3.75),
-                rotationMode: RotationMode.Full,
-                explosion: "super_barrel_explosion",
-                reflectBullets: true
-            },
+                    hitbox: new CircleHitbox(3.75),
+                    rotationMode: RotationMode.Full,
+                    explosion: "barrel_explosion",
+                    frames: {
+                        particle: "metal_particle"
+                    },
+                    reflectBullets: true
+                }, 3
+            ],
+            [
+                {
+                    idString: "super_barrel",
+                    name: "Super Barrel",
+                    material: "metal_light",
+                    health: 240,
+                    scale: {
+                        spawnMin: 1,
+                        spawnMax: 1,
+                        destroy: 0.5
+                    },
+                    spawnMode: MapObjectSpawnMode.GrassAndSand,
+                    hitbox: new CircleHitbox(3.75),
+                    rotationMode: RotationMode.Full,
+                    explosion: "super_barrel_explosion",
+                    reflectBullets: true
+                }, 3
+            ]),
             {
                 idString: "loot_barrel",
                 name: "Loot Barrel",
