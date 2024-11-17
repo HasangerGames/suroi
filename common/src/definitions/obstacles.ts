@@ -810,7 +810,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                         frames: {
                             particle: `${base.idString}_particle`,
                             residue: `${base.idString}_residue`
-                        }
+                        },
+                        lootTable: (base.hasLoot || base.spawnWithLoot) ? (base.lootTable ?? base.idString) : undefined
                     }
                 ];
             }
@@ -3433,27 +3434,30 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 hitbox: RectangleHitbox.fromRect(12.5, 5)
             },
-            {
-                idString: "generator",
-                name: "Generator",
-                material: "metal_heavy",
-                health: 200,
-                indestructible: true,
-                reflectBullets: true,
-                rotationMode: RotationMode.Limited,
-                frames: {
-                    particle: "super_barrel_particle"
-                },
-                role: ObstacleSpecialRoles.Activatable,
-                sound: {
-                    name: "generator_starting",
-                    maxRange: 412,
-                    falloff: 2
-                },
-                emitParticles: true,
-                requiredItem: "gas_can",
-                hitbox: RectangleHitbox.fromRect(9, 7)
-            },
+            ...withWinterVariation([
+                {
+                    idString: "generator",
+                    name: "Generator",
+                    material: "metal_heavy",
+                    health: 200,
+                    indestructible: true,
+                    reflectBullets: true,
+                    rotationMode: RotationMode.Limited,
+                    frames: {
+                        particle: "super_barrel_particle"
+                    },
+                    role: ObstacleSpecialRoles.Activatable,
+                    sound: {
+                        name: "generator_starting",
+                        maxRange: 412,
+                        falloff: 2
+                    },
+                    emitParticles: true,
+                    requiredItem: "gas_can",
+                    hitbox: RectangleHitbox.fromRect(9, 7)
+                }
+            ]),
+
             {
                 idString: "ship_oil_tank",
                 name: "Ship Oil Tank",
@@ -3464,20 +3468,22 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 allowFlyover: FlyoverPref.Never,
                 hitbox: RectangleHitbox.fromRect(28, 14)
             },
-            {
-                idString: "forklift",
-                name: "Forklift",
-                material: "metal_heavy",
-                health: 1000,
-                indestructible: true,
-                reflectBullets: true,
-                hitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(8.15, 17.3, Vec.create(0, -3.8)),
-                    RectangleHitbox.fromRect(9.45, 10.6, Vec.create(0, -4.9))
-                ),
-                zIndex: ZIndexes.ObstaclesLayer1 - 2,
-                rotationMode: RotationMode.Limited
-            },
+            ...withWinterVariation([
+                {
+                    idString: "forklift",
+                    name: "Forklift",
+                    material: "metal_heavy",
+                    health: 1000,
+                    indestructible: true,
+                    reflectBullets: true,
+                    hitbox: new GroupHitbox(
+                        RectangleHitbox.fromRect(8.15, 17.3, Vec.create(0, -3.8)),
+                        RectangleHitbox.fromRect(9.45, 10.6, Vec.create(0, -4.9))
+                    ),
+                    zIndex: ZIndexes.ObstaclesLayer1 - 2,
+                    rotationMode: RotationMode.Limited
+                }
+            ]),
             {
                 idString: "pallet",
                 name: "Pallet",
@@ -3685,15 +3691,17 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     particle: "metal_particle"
                 }
             },
-            {
-                idString: "sandbags",
-                name: "Sandbags",
-                material: "sand",
-                health: 1000,
-                indestructible: true,
-                hitbox: RectangleHitbox.fromRect(13.1, 7.7),
-                rotationMode: RotationMode.Limited
-            },
+            ...withWinterVariation([
+                {
+                    idString: "sandbags",
+                    name: "Sandbags",
+                    material: "sand",
+                    health: 1000,
+                    indestructible: true,
+                    hitbox: RectangleHitbox.fromRect(13.1, 7.7),
+                    rotationMode: RotationMode.Limited
+                }
+            ]),
             {
                 idString: "gun_locker",
                 name: "Gun Locker",
