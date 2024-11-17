@@ -1382,7 +1382,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                             rotationMode: RotationMode.None,
                             allowFlyover: FlyoverPref.Always
                         }
-                    ) // more snow variants coming soon
+                    ), 3
                 ]
             ),
             crate(
@@ -1561,38 +1561,40 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     residue: "box_residue"
                 }
             },
-            {
-                idString: "tear_gas_crate",
-                name: "Tear Gas Crate",
-                material: "crate",
-                health: 100,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.6
-                },
-                spawnMode: MapObjectSpawnMode.GrassAndSand,
-                hitbox: RectangleHitbox.fromRect(9.15, 6.3),
-                rotationMode: RotationMode.Limited,
-                allowFlyover: FlyoverPref.Always,
-                frames: {
-                    particle: "crate_particle",
-                    residue: "regular_crate_residue"
-                },
-                particlesOnDestroy: {
-                    type: "tear_gas_particle",
-                    count: 10,
-                    deployAnimation: {
-                        duration: 4000,
-                        staggering: {
-                            delay: 300,
-                            initialAmount: 2
-                        }
+            ...withWinterVariation([
+                {
+                    idString: "tear_gas_crate",
+                    name: "Tear Gas Crate",
+                    material: "crate",
+                    health: 100,
+                    scale: {
+                        spawnMin: 1,
+                        spawnMax: 1,
+                        destroy: 0.6
                     },
-                    spawnRadius: 15
-                },
-                additionalDestroySounds: ["smoke_grenade"]
-            },
+                    spawnMode: MapObjectSpawnMode.GrassAndSand,
+                    hitbox: RectangleHitbox.fromRect(9.15, 6.3),
+                    rotationMode: RotationMode.Limited,
+                    allowFlyover: FlyoverPref.Always,
+                    frames: {
+                        particle: "crate_particle",
+                        residue: "regular_crate_residue"
+                    },
+                    particlesOnDestroy: {
+                        type: "tear_gas_particle",
+                        count: 10,
+                        deployAnimation: {
+                            duration: 4000,
+                            staggering: {
+                                delay: 300,
+                                initialAmount: 2
+                            }
+                        },
+                        spawnRadius: 15
+                    },
+                    additionalDestroySounds: ["smoke_grenade"]
+                }
+            ]),
             ...withWinterVariation([
                 {
                     idString: "barrel",
@@ -4010,25 +4012,27 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 rotationMode: RotationMode.Limited,
                 zIndex: ZIndexes.BuildingsFloor
             },
-            {
-                idString: "grenade_box",
-                name: "Grenade Box",
-                material: "cardboard",
-                health: 60,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.8
-                },
-                hitbox: RectangleHitbox.fromRect(4.4, 4.4),
-                rotationMode: RotationMode.Limited,
-                zIndex: ZIndexes.ObstaclesLayer2,
-                hasLoot: true,
-                frames: {
-                    particle: "box_particle",
-                    residue: "box_residue"
-                }
-            },
+            ...withWinterVariation([
+                {
+                    idString: "grenade_box",
+                    name: "Grenade Box",
+                    material: "cardboard",
+                    health: 60,
+                    scale: {
+                        spawnMin: 1,
+                        spawnMax: 1,
+                        destroy: 0.8
+                    },
+                    hitbox: RectangleHitbox.fromRect(4.4, 4.4),
+                    rotationMode: RotationMode.Limited,
+                    zIndex: ZIndexes.ObstaclesLayer2,
+                    hasLoot: true,
+                    frames: {
+                        particle: "box_particle",
+                        residue: "box_residue"
+                    }
+                }, 2
+            ]),
             {
                 idString: "lily_pad",
                 name: "Lily Pad",
