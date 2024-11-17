@@ -809,7 +809,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                         variations: variants,
                         frames: {
                             particle: base.frames?.particle ?? `${base.idString}_particle`,
-                            residue: base.frames?.residue ?? `${base.idString}_residue`
+                            residue: base.noResidue ? undefined : base.frames?.residue ?? `${base.idString}_residue`
                         },
                         lootTable: (base.hasLoot || base.spawnWithLoot) ? (base.lootTable ?? base.idString) : undefined
                     }
