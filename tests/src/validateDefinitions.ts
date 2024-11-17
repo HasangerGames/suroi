@@ -2191,7 +2191,7 @@ logger.indent("Validating melees", () => {
 
             logger.indent("Validating fists", () => {
                 const errorPath2 = tester.createPath(errorPath, "fists");
-                const fists = melee.fists;
+                const { fists, rotationalAnimation } = melee;
 
                 tester.assertIsPositiveReal({
                     obj: fists,
@@ -2209,7 +2209,7 @@ logger.indent("Validating melees", () => {
                 validators.vector(tester.createPath(errorPath2, "left"), fists.left);
                 validators.vector(tester.createPath(errorPath2, "right"), fists.right);
 
-                if (!melee.rotationalAnimation) {
+                if (!rotationalAnimation) {
                     validators.vector(tester.createPath(errorPath2, "use left"), fists.useLeft);
                     validators.vector(tester.createPath(errorPath2, "use right"), fists.useRight);
                 }
