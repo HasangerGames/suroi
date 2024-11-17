@@ -18,6 +18,8 @@ export type MeleeDefinition = InventoryItemDefinition & {
     readonly fists: InventoryItemDefinition["fists"] & {
         readonly animationDuration: number
         readonly randomFist?: boolean
+        readonly useLeft: Vector
+        readonly useRight: Vector
     }
     readonly image?: {
         readonly position: Vector
@@ -36,10 +38,6 @@ export type MeleeDefinition = InventoryItemDefinition & {
     readonly rotationalAnimation: true
 } | {
     readonly rotationalAnimation?: false
-    readonly fists: {
-        readonly useLeft: Vector
-        readonly useRight: Vector
-    }
 });
 
 export const DEFAULT_HAND_RIGGING = Object.freeze({
