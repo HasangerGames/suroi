@@ -46,7 +46,7 @@ export const GameConstants = freezeDeep({
     protocolVersion: 36,
     gridSize: 32,
     maxPosition: Constants.MAX_POSITION,
-    modeName: "winter" satisfies Mode as Mode,
+    modeName: "normal" satisfies Mode as Mode,
     player: {
         radius: 2.25,
         baseSpeed: 0.02655,
