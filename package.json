@@ -34,13 +34,13 @@
   ],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@eslint/js": "^9.14.0",
+    "@eslint/js": "^9.15.0",
     "@stylistic/eslint-plugin": "^2.10.1",
     "@types/eslint__js": "^8.42.3",
-    "@types/node": "^22.8.7",
-    "eslint": "^9.14.0",
+    "@types/node": "^22.9.0",
+    "eslint": "^9.15.0",
     "typescript": "^5.6.3",
-    "typescript-eslint": "^8.12.2"
+    "typescript-eslint": "^8.14.0"
   },
   "packageManager": "pnpm@9.5.0+sha512.140036830124618d624a2187b50d04289d5a087f326c9edfc0ccd733d76c4f52c3a313d4fc148794a2a9d81553016004e6742e8cf850670268a7387fc220c903"
 }
