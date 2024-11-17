@@ -269,16 +269,10 @@ if (!isMainThread) {
 
             const searchParams = new URLSearchParams(req.getQuery());
 
-            // hack to prevent late respawning
-            if (game.gas.stage > 4) {
-                forbidden(res);
-                return;
-            }
-
             //
             // Ensure IP is allowed
             //
-            if ((allowedIPs.get(ip) ?? Infinity) < game.now) {
+            if ((allowedIPs.get(ip) ?? 0) < game.now) {
                 forbidden(res);
                 return;
             }
