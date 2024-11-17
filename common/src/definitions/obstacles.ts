@@ -2198,46 +2198,50 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     particle: "window_particle"
                 }
             },
-            {
-                idString: "dumpster",
-                name: "Dumpster",
-                material: "iron",
-                reflectBullets: true,
-                hasLoot: true,
-                health: 300,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.9
-                },
-                hitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(6.5, 12.5, Vec.create(0.2, 0)),
-                    RectangleHitbox.fromRect(5.8, 0.8, Vec.create(0.25, 6.4)),
-                    RectangleHitbox.fromRect(5.8, 0.8, Vec.create(0.25, -6.4))
-                ),
-                rotationMode: RotationMode.Limited,
-                allowFlyover: FlyoverPref.Always
-            },
-            {
-                idString: "trash_bag",
-                name: "Trash Bag",
-                material: "trash_bag",
-                health: 70,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.9
-                },
-                hitbox: new CircleHitbox(2.2),
-                rotationMode: RotationMode.Full,
-                allowFlyover: FlyoverPref.Always,
-                hasLoot: true,
-                lootTable: "trash",
-                frames: {
-                    particle: "flint_stone_particle"
-                },
-                particleVariations: 2
-            },
+            ...withWinterVariation([
+                {
+                    idString: "dumpster",
+                    name: "Dumpster",
+                    material: "iron",
+                    reflectBullets: true,
+                    hasLoot: true,
+                    health: 300,
+                    scale: {
+                        spawnMin: 1,
+                        spawnMax: 1,
+                        destroy: 0.9
+                    },
+                    hitbox: new GroupHitbox(
+                        RectangleHitbox.fromRect(6.5, 12.5, Vec.create(0.2, 0)),
+                        RectangleHitbox.fromRect(5.8, 0.8, Vec.create(0.25, 6.4)),
+                        RectangleHitbox.fromRect(5.8, 0.8, Vec.create(0.25, -6.4))
+                    ),
+                    rotationMode: RotationMode.Limited,
+                    allowFlyover: FlyoverPref.Always
+                }, 2
+            ],
+            [
+                {
+                    idString: "trash_bag",
+                    name: "Trash Bag",
+                    material: "trash_bag",
+                    health: 70,
+                    scale: {
+                        spawnMin: 1,
+                        spawnMax: 1,
+                        destroy: 0.9
+                    },
+                    hitbox: new CircleHitbox(2.2),
+                    rotationMode: RotationMode.Full,
+                    allowFlyover: FlyoverPref.Always,
+                    hasLoot: true,
+                    lootTable: "trash",
+                    frames: {
+                        particle: "flint_stone_particle"
+                    },
+                    particleVariations: 2
+                }
+            ]),
             {
                 idString: "hay_bale",
                 name: "Hay Bale",
