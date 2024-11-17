@@ -20,9 +20,9 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "singleObstacle:barrel_snow",
+    map: "normal",
 
-    spawn: { mode: SpawnMode.Center },
+    spawn: { mode: SpawnMode.Normal },
 
     maxTeamSize: TeamSize.Solo,
 

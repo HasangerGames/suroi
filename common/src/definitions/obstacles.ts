@@ -808,7 +808,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                         idString: `${base.idString}_snow`,
                         variations: variants,
                         frames: {
-                            particle: base.frames?.particle ?? `${base.idString}_residue`,
+                            particle: base.frames?.particle ?? `${base.idString}_particle`,
                             residue: base.frames?.residue ?? `${base.idString}_residue`
                         },
                         lootTable: (base.hasLoot || base.spawnWithLoot) ? (base.lootTable ?? base.idString) : undefined
