@@ -286,8 +286,6 @@ export class GameMap {
 
             const pos = Vec.add(lastPoint, Vec.fromPolar(angle, randomGenerator.getInt(30, 80)));
 
-            if (!bounds.isPointInside(pos)) break;
-
             // end the river if it collides with another river
             let collided = false;
             for (const river of rivers) {
@@ -305,6 +303,14 @@ export class GameMap {
                 if (collided) break;
             }
             if (collided) break;
+
+            if (!bounds.isPointInside(pos)) {
+                riverPoints[i] = Vec.create(
+                    Numeric.clamp(pos.x, bounds.min.x, bounds.max.x),
+                    Numeric.clamp(pos.y, bounds.min.y, bounds.max.y)
+                );
+                break;
+            }
 
             riverPoints[i] = pos;
         }
