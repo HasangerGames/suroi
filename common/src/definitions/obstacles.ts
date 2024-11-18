@@ -1758,22 +1758,24 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 allowFlyover: FlyoverPref.Never,
                 hasLoot: true
             },
-            {
-                idString: "box",
-                name: "Box",
-                material: "cardboard",
-                health: 60,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.8
-                },
-                hitbox: RectangleHitbox.fromRect(4.4, 4.4),
-                rotationMode: RotationMode.Limited,
-                variations: 3,
-                zIndex: ZIndexes.ObstaclesLayer2,
-                hasLoot: true
-            },
+            ...withWinterVariation([
+                {
+                    idString: "box",
+                    name: "Box",
+                    material: "cardboard",
+                    health: 60,
+                    scale: {
+                        spawnMin: 1,
+                        spawnMax: 1,
+                        destroy: 0.8
+                    },
+                    hitbox: RectangleHitbox.fromRect(4.4, 4.4),
+                    rotationMode: RotationMode.Limited,
+                    variations: 3,
+                    zIndex: ZIndexes.ObstaclesLayer2,
+                    hasLoot: true
+                }
+            ]),
             {
                 idString: "hq_large_cart",
                 name: "Large Cart",
@@ -3761,21 +3763,23 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 allowFlyover: FlyoverPref.Always,
                 hasLoot: true
             },
-            {
-                idString: "cooler",
-                name: "Cooler",
-                material: "wood",
-                health: 100,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.7
-                },
-                hitbox: RectangleHitbox.fromRect(8.3, 4.73),
-                rotationMode: RotationMode.Limited,
-                allowFlyover: FlyoverPref.Always,
-                hasLoot: true
-            },
+            ...withWinterVariation([
+                {
+                    idString: "cooler",
+                    name: "Cooler",
+                    material: "wood",
+                    health: 100,
+                    scale: {
+                        spawnMin: 1,
+                        spawnMax: 1,
+                        destroy: 0.7
+                    },
+                    hitbox: RectangleHitbox.fromRect(8.3, 4.73),
+                    rotationMode: RotationMode.Limited,
+                    allowFlyover: FlyoverPref.Always,
+                    hasLoot: true
+                }
+            ]),
             {
                 idString: "m1117",
                 name: "M1117",
