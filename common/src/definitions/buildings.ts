@@ -2624,7 +2624,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "barrel", position: Vec.create(-62, 23) },
                     { idString: "aegis_crate", position: Vec.create(-59, -32.25) },
                     { idString: "grenade_crate", position: Vec.create(-50, -35) },
-                    { idString: "flint_crate", position: Vec.create(-17.5, -35) },
+                    { idString: "aegis_crate", position: Vec.create(-17.5, -35) },
                     { idString: "barrel", position: Vec.create(-8.5, -36) },
                     { idString: "regular_crate", position: Vec.create(1, 24) },
                     { idString: "super_barrel", position: Vec.create(11, 24) },
