@@ -367,6 +367,7 @@ export class InputManager {
                 let movementJoystickY = leftJoystickY;
                 let aimJoystickX = rightJoystickX;
                 let aimJoystickY = rightJoystickY;
+                const joystickInfo = document.getElementById("controller-joystick-info");
                 if (game.console.getBuiltInCVar("cv_switch_controller_joysticks")) {
                     movementJoystickMoving = rightJoystickMoving;
                     aimJoystickMoving = leftJoystickMoving;
@@ -374,7 +375,8 @@ export class InputManager {
                     movementJoystickY = rightJoystickY;
                     aimJoystickX = leftJoystickX;
                     aimJoystickY = leftJoystickY;
-                }
+                    if (joystickInfo) joystickInfo.textContent = "Right joystick moves, Left joystick aims";
+                } else if (joystickInfo) joystickInfo.textContent = "Left joystick moves, Right joystick aims";
                 if (controller.buttons[0].pressed) this.addAction(InputActions.Interact);
                 if (controller.buttons[2].pressed) this.addAction(InputActions.Cancel);
                 if (controller.buttons[6].pressed) this.addAction(InputActions.Reload);
