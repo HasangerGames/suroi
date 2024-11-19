@@ -729,10 +729,6 @@ export async function setUpUI(game: Game): Promise<void> {
             link: "https://www.youtube.com/@DESTROYERIHY"
         },
         {
-            name: "XxDreamCatcherxX Gaming",
-            link: "https://www.youtube.com/@XxDreamCatcherxXGaming2.0"
-        },
-        {
             name: "[ATMOS]Bl00D",
             link: "https://www.youtube.com/@TheRealATMOS"
         },
