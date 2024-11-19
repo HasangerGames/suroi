@@ -274,10 +274,11 @@ export async function setUpUI(game: Game): Promise<void> {
             game.console.setBuiltInCVar("cv_region", "");
         }
 
-        if (getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}` as TranslationKeys) === "region_") {
+        const region = getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}` as TranslationKeys);
+        if (region === "region_") {
             serverName.text(selectedRegion.name); // this for now until we find a way to selectedRegion.id
         } else {
-            serverName.text(getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}` as TranslationKeys));
+            serverName.text(region);
         }
         playerCount.text(selectedRegion.playerCount ?? "-");
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
@@ -1013,8 +1014,13 @@ export async function setUpUI(game: Game): Promise<void> {
 
         for (const emote of emotes) {
             if (emote.category !== lastCategory) {
-                const categoryHeader = $<HTMLDivElement>(`<div class="emote-list-header">${getTranslatedString(`emotes_category_${EmoteCategory[emote.category]}` as TranslationKeys)}</div>`);
-                emoteList.append(categoryHeader);
+                emoteList.append(
+                    $<HTMLDivElement>(
+                        `<div class="emote-list-header">${
+                            getTranslatedString(`emotes_category_${EmoteCategory[emote.category]}` as TranslationKeys)
+                        }</div>`
+                    )
+                );
                 lastCategory = emote.category;
             }
 

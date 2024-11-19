@@ -840,15 +840,20 @@ export class UIManager {
                         "color": ""
                     });
 
-                itemName.text(weapon.definition.idString.startsWith("dual_")
-                    ? getTranslatedString("dual_template", { gun: getTranslatedString(weapon.definition.idString.slice("dual_".length) as TranslationKeys) })
-                    : getTranslatedString(weapon.definition.idString as TranslationKeys));
+                itemName.text(
+                    definition.itemType === ItemType.Gun && definition.isDual
+                        ? getTranslatedString(
+                            "dual_template",
+                            { gun: getTranslatedString(definition.singleVariant as TranslationKeys) }
+                        )
+                        : getTranslatedString(definition.idString as TranslationKeys)
+                );
 
-                const isFists = weapon.definition.idString === "fists";
+                const isFists = definition.idString === "fists";
                 const oldSrc = itemImage.attr("src");
 
-                let frame = weapon.definition.idString;
-                if (this.perks.hasPerk(PerkIds.PlumpkinBomb) && weapon.definition.itemType === ItemType.Throwable && !weapon.definition.noSkin) {
+                let frame = definition.idString;
+                if (this.perks.hasPerk(PerkIds.PlumpkinBomb) && definition.itemType === ItemType.Throwable && !definition.noSkin) {
                     frame += "_halloween";
                 }
 
@@ -1125,37 +1130,6 @@ export class UIManager {
             };
         });
     }
-    /* Womp Womp
-    private static readonly _killfeedEventDescription = freezeDeep<Record<KillfeedEventType, Record<KillfeedEventSeverity, string>>>({
-        [KillfeedEventType.Suicide]: {
-            [KillfeedEventSeverity.Kill]: "committed suicide",
-            [KillfeedEventSeverity.Down]: "knocked themselves out"
-        },
-        [KillfeedEventType.NormalTwoParty]: {
-            [KillfeedEventSeverity.Kill]: "killed",
-            [KillfeedEventSeverity.Down]: "knocked out"
-        },
-        [KillfeedEventType.BleedOut]: {
-            [KillfeedEventSeverity.Kill]: "bled out",
-            [KillfeedEventSeverity.Down]: "bled out non-lethally" // should be impossible
-        },
-        [KillfeedEventType.FinishedOff]: {
-            [KillfeedEventSeverity.Kill]: "finished off",
-            [KillfeedEventSeverity.Down]: "gently finished off" // should be impossible
-        },
-        [KillfeedEventType.FinallyKilled]: {
-            [KillfeedEventSeverity.Kill]: "finally killed",
-            [KillfeedEventSeverity.Down]: "finally knocked out" // should be impossible
-        },
-        [KillfeedEventType.Gas]: {
-            [KillfeedEventSeverity.Kill]: "died to",
-            [KillfeedEventSeverity.Down]: "was knocked out by"
-        },
-        [KillfeedEventType.Airdrop]: {
-            [KillfeedEventSeverity.Kill]: "was fatally crushed",
-            [KillfeedEventSeverity.Down]: "was knocked out"
-        }
-    }); */
 
     private static readonly _killModalEventDescription = freezeDeep<Record<KillfeedEventType, Record<KillfeedEventSeverity, (victim: string, weaponUsed: string) => string>>>({
         [KillfeedEventType.Suicide]: {
@@ -1280,14 +1254,17 @@ export class UIManager {
 
                         let useSpecialSentence = false;
 
-                        // const description = UIManager._killfeedEventDescription[eventType][severity];
-
                         // Remove spaces if chinese/japanese language.
                         if (NO_SPACE_LANGUAGES.includes(language) && messageText) {
                             messageText = messageText.replaceAll("<span>", "<span style=\"display:contents;\">");
                         }
 
-                        const fullyQualifiedName = weaponPresent ? (getTranslatedString(weaponUsed.idString as TranslationKeys) === weaponUsed.idString ? weaponUsed.name : getTranslatedString(weaponUsed.idString as TranslationKeys)) : "";
+                        let weaponName: string | undefined;
+                        const fullyQualifiedName = weaponPresent
+                            ? (weaponName = getTranslatedString(weaponUsed.idString as TranslationKeys)) === weaponUsed.idString
+                                ? weaponUsed.name
+                                : weaponName
+                            : "";
 
                         // special case for turkish
                         if (language === "tr") {
@@ -1498,9 +1475,14 @@ export class UIManager {
                         classes.push("kill-feed-item-killer");
 
                         if (attackerId === this.game.activePlayerID) {
+                            let weaponName: string | undefined;
                             const base = {
                                 victimName: victimText,
-                                weaponUsed: weaponPresent ? getTranslatedString(weaponUsed.idString as TranslationKeys) === weaponUsed.idString ? weaponUsed.name : getTranslatedString(weaponUsed.idString as TranslationKeys) : "",
+                                weaponUsed: weaponPresent
+                                    ? (weaponName = getTranslatedString(weaponUsed.idString as TranslationKeys)) === weaponUsed.idString
+                                        ? weaponUsed.name
+                                        : weaponName
+                                    : "",
                                 type: eventType
                             };
 

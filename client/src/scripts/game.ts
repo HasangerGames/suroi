@@ -442,18 +442,14 @@ export class Game {
             case packet instanceof PickupPacket: {
                 const { output: { message, item } } = packet;
 
-                const inventoryMessageMap = {
-                    [InventoryMessages.NotEnoughSpace]: "msg_not_enough_space",
-                    [InventoryMessages.ItemAlreadyEquipped]: "msg_item_already_equipped",
-                    [InventoryMessages.BetterItemEquipped]: "msg_better_item_equipped",
-                    [InventoryMessages.CannotUseRadio]: "msg_cannot_use_radio",
-                    [InventoryMessages.RadioOverused]: "msg_radio_overused"
-                };
-
                 if (message !== undefined) {
                     const inventoryMsg = this.uiManager.ui.inventoryMsg;
-                    inventoryMsg.text(getTranslatedString(inventoryMessageMap[message] as TranslationKeys)).fadeIn(250);
-                    if (inventoryMessageMap[message] === inventoryMessageMap[4]) this.soundManager.play("metal_light_destroyed");
+
+                    inventoryMsg.text(getTranslatedString(this._inventoryMessageMap[message])).fadeIn(250);
+                    if (message === InventoryMessages.RadioOverused) {
+                        this.soundManager.play("metal_light_destroyed");
+                    }
+
                     clearTimeout(this.inventoryMsgTimeout);
                     this.inventoryMsgTimeout = window.setTimeout(() => inventoryMsg.fadeOut(250), 2500);
                 } else if (item !== undefined) {
@@ -487,6 +483,8 @@ export class Game {
                     }
 
                     this.soundManager.play(soundID);
+                } else {
+                    console.warn("Unexpected PickupPacket with neither message nor item");
                 }
                 break;
             }
@@ -495,6 +493,14 @@ export class Game {
                 break;
         }
     }
+
+    private readonly _inventoryMessageMap: Record<InventoryMessages, TranslationKeys> = {
+        [InventoryMessages.NotEnoughSpace]: "msg_not_enough_space",
+        [InventoryMessages.ItemAlreadyEquipped]: "msg_item_already_equipped",
+        [InventoryMessages.BetterItemEquipped]: "msg_better_item_equipped",
+        [InventoryMessages.CannotUseRadio]: "msg_cannot_use_radio",
+        [InventoryMessages.RadioOverused]: "msg_radio_overused"
+    };
 
     startGame(packet: JoinedPacketData): void {
         // Sound which notifies the player that the
@@ -1007,9 +1013,15 @@ export class Game {
                                 break;
                             }
                             case object?.isLoot: {
-                                text = `${object.definition.idString.startsWith("dual_")
-                                    ? getTranslatedString("dual_template", { gun: getTranslatedString(object.definition.idString.slice("dual_".length) as TranslationKeys) })
-                                    : getTranslatedString(object.definition.idString as TranslationKeys)}${object.count > 1 ? ` (${object.count})` : ""}`;
+                                const definition = object.definition;
+                                const itemName = definition.itemType === ItemType.Gun && definition.isDual
+                                    ? getTranslatedString(
+                                        "dual_template",
+                                        { gun: getTranslatedString(definition.singleVariant as TranslationKeys) }
+                                    )
+                                    : getTranslatedString(definition.idString as TranslationKeys);
+
+                                text = `${itemName}${object.count > 1 ? ` (${object.count})` : ""}`;
                                 break;
                             }
                             case object?.isPlayer: {

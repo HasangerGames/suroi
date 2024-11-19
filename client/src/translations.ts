@@ -2,7 +2,7 @@ import { Badges } from "@common/definitions/badges";
 import { Emotes } from "@common/definitions/emotes";
 import { Loots } from "@common/definitions/loots";
 import { Numeric } from "@common/utils/math";
-import type { TranslationManifest, TranslationsManifest } from "../../translations/src/processTranslations";
+import { type TranslationManifest, type TranslationsManifest } from "../../translations/src/processTranslations";
 import { type Game } from "./scripts/game";
 import { defaultClientCVars } from "./scripts/utils/console/defaultClientCVars";
 import TRANSLATIONS_MANIFEST from "./translationsManifest.json";
@@ -13,7 +13,10 @@ export type TranslationMap = Partial<Record<TranslationKeys, string>> & Translat
 let defaultLanguage: string;
 let selectedLanguage: string;
 
-export const TRANSLATIONS = {
+export const TRANSLATIONS: {
+    get defaultLanguage(): string
+    readonly translations: Record<string, TranslationMap>
+} = {
     get defaultLanguage(): string {
         if (!setup) {
             throw new Error("Translation API not yet setup");
@@ -28,9 +31,6 @@ export const TRANSLATIONS = {
             percentage: "HP-18%"
         }
     }
-} as {
-    get defaultLanguage(): string
-    translations: Record<string, TranslationMap>
 };
 
 export const NO_SPACE_LANGUAGES = ["zh", "tw", "hk_mo", "jp"];
@@ -100,11 +100,7 @@ export function getTranslatedString(key: TranslationKeys, replacements?: Record<
         return key;
     }
 
-    if (replacements === undefined) {
-        return foundTranslation;
-    }
-
-    for (const [search, replace] of Object.entries(replacements)) {
+    for (const [search, replace] of Object.entries(replacements ?? {})) {
         foundTranslation = foundTranslation.replaceAll(`<${search}>`, replace);
     }
 

@@ -18,6 +18,9 @@ export function isObject(item: unknown): item is Record<string, unknown> {
     return (item && typeof item === "object" && !Array.isArray(item)) as boolean;
 }
 
+/**
+ * Patched version of `Array.isArray` that correctly narrows types when used on `readonly` arrays
+ */
 // again, variance => use any on an array type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isArray = Array.isArray as (x: any) => x is readonly any[];
