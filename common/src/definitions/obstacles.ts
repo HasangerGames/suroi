@@ -3748,21 +3748,23 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: RectangleHitbox.fromRect(1, 10),
                 rotationMode: RotationMode.Limited
             },
-            {
-                idString: "gun_case",
-                name: "Gun Case",
-                material: "wood",
-                health: 100,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.7
-                },
-                hitbox: RectangleHitbox.fromRect(10.19, 4.76),
-                rotationMode: RotationMode.Limited,
-                allowFlyover: FlyoverPref.Always,
-                hasLoot: true
-            },
+            ...withWinterVariation([
+                {
+                    idString: "gun_case",
+                    name: "Gun Case",
+                    material: "wood",
+                    health: 100,
+                    scale: {
+                        spawnMin: 1,
+                        spawnMax: 1,
+                        destroy: 0.7
+                    },
+                    hitbox: RectangleHitbox.fromRect(10.19, 4.76),
+                    rotationMode: RotationMode.Limited,
+                    allowFlyover: FlyoverPref.Always,
+                    hasLoot: true
+                }, 3
+            ]),
             ...withWinterVariation([
                 {
                     idString: "cooler",
@@ -3831,29 +3833,31 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 allowFlyover: FlyoverPref.Always,
                 hasLoot: true
             },
-            {
-                idString: "fire_hatchet_case",
-                name: "Fire Hatchet Case",
-                material: "appliance",
-                health: 180,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.8
-                },
-                hasLoot: true,
-                hitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(10.5, 4.5, Vec.create(-0.1, -0.1)),
-                    RectangleHitbox.fromRect(0.55, 5.95, Vec.create(-4.15, 0)),
-                    RectangleHitbox.fromRect(0.55, 5.95, Vec.create(3.15, 0))
-                ),
-                rotationMode: RotationMode.Limited,
-                allowFlyover: FlyoverPref.Never,
-                frames: {
-                    particle: "super_barrel_particle"
-                },
-                reflectBullets: true
-            },
+            ...withWinterVariation([
+                {
+                    idString: "fire_hatchet_case",
+                    name: "Fire Hatchet Case",
+                    material: "appliance",
+                    health: 180,
+                    scale: {
+                        spawnMin: 1,
+                        spawnMax: 1,
+                        destroy: 0.8
+                    },
+                    hasLoot: true,
+                    hitbox: new GroupHitbox(
+                        RectangleHitbox.fromRect(10.5, 4.5, Vec.create(-0.1, -0.1)),
+                        RectangleHitbox.fromRect(0.55, 5.95, Vec.create(-4.15, 0)),
+                        RectangleHitbox.fromRect(0.55, 5.95, Vec.create(3.15, 0))
+                    ),
+                    rotationMode: RotationMode.Limited,
+                    allowFlyover: FlyoverPref.Never,
+                    frames: {
+                        particle: "super_barrel_particle"
+                    },
+                    reflectBullets: true
+                }
+            ]),
             {
                 idString: "button",
                 name: "Button",
