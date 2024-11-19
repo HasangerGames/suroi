@@ -409,9 +409,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         { idString: "pole", position: Vec.create(0, 0) },
                         { idString: `tent_wall_${id}`, position: Vec.create(0, -8), rotation: 0 },
                         { idString: `tent_wall_${id}`, position: Vec.create(0, 8), rotation: 2 },
-                        { idString: "box", position: Vec.create(0, 5) },
-                        { idString: "box", position: Vec.create(-7, 5) },
-                        { idString: "box", position: Vec.create(7, 5) }
+                        { idString: "gun_case", position: Vec.create(0, 5), rotation: 2 },
                     ]
                     : [
                         { idString: "pole", position: Vec.create(0, 0) },
