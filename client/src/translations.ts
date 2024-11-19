@@ -2,7 +2,7 @@ import { Badges } from "@common/definitions/badges";
 import { Emotes } from "@common/definitions/emotes";
 import { Loots } from "@common/definitions/loots";
 import { Numeric } from "@common/utils/math";
-import { type TranslationManifest, type TranslationsManifest } from "../../translations/src/processTranslations";
+import type { TranslationManifest, TranslationsManifest } from "../../translations/src/processTranslations";
 import { type Game } from "./scripts/game";
 import { defaultClientCVars } from "./scripts/utils/console/defaultClientCVars";
 import TRANSLATIONS_MANIFEST from "./translationsManifest.json";
