@@ -10,12 +10,12 @@ import $ from "jquery";
 import nipplejs, { type JoystickOutputData } from "nipplejs";
 import { isMobile } from "pixi.js";
 import { getTranslatedString } from "../../translations";
+import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
 import { defaultBinds } from "../utils/console/defaultClientCVars";
 import { type GameSettings, type PossibleError } from "../utils/console/gameConsole";
 import { FORCE_MOBILE, PIXI_SCALE } from "../utils/constants";
 import { html } from "../utils/misc";
-import type { TranslationKeys } from "../../typings/translations";
 
 export class InputManager {
     readonly binds = new InputMapper();
@@ -450,6 +450,13 @@ export class InputManager {
                 }
             } else {
                 if (typeof query === "string") {
+                    /*
+                        corollary: queries starting with a group don't get modified
+                        thus, if you do `bind W "(+up)"`, pressing W will call "(+up)",
+                        but so too wll releasing W
+                        this is not true if you do `bind W +up`. here, the query does start
+                        with +, thus the command -up is invoked when W is released
+                    */
                     if (query.startsWith("+")) { // Invertible action
                         query = query.replace("+", "-");
                     } else continue; // If the action isn't invertible, then we do nothing

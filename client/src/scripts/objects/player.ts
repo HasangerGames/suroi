@@ -781,7 +781,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this.healingParticlesEmitter.active = true;
                     if (this.isActivePlayer) {
                         uiManager.animateAction(
-                            getTranslatedString(`action_${itemDef.idString}_use` as TranslationKeys, { item: getTranslatedString(itemDef.idString as TranslationKeys) }),
+                            getTranslatedString(
+                                `action_${itemDef.idString}_use` as TranslationKeys,
+                                { item: getTranslatedString(itemDef.idString as TranslationKeys) }
+                            ),
                             itemDef.useTime / uiManager.perks.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
                         );
                     }
@@ -1222,7 +1225,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             let itemTooltip = getTranslatedString(def.idString as TranslationKeys);
             if (def.itemType === ItemType.Armor) {
-                // itemTooltip += `<br>Reduces ${def.damageReduction * 100}% damage`;
                 itemTooltip = getTranslatedString("tt_reduces", {
                     item: `${getTranslatedString(def.idString as TranslationKeys)}<br>`,
                     percent: (def.damageReduction * 100).toString()
@@ -1235,7 +1237,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         container[0].addEventListener(
             "pointerdown",
-            (e: PointerEvent): void => {
+            e => {
                 e.stopImmediatePropagation();
                 if (e.button === 2 && def && this.game.teamMode) {
                     this.game.inputManager.addAction({
