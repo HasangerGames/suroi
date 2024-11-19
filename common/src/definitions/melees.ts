@@ -2,7 +2,7 @@ import { FireMode } from "../constants";
 import { ItemType, ObjectDefinitions, type InventoryItemDefinition } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 
-export interface MeleeDefinition extends InventoryItemDefinition {
+export type MeleeDefinition = InventoryItemDefinition & {
     readonly itemType: ItemType.Melee
 
     readonly damage: number
@@ -11,7 +11,6 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     readonly stonePiercing?: boolean
     readonly swingSound: string
     readonly stopSound?: string
-    readonly rotationalAnimation?: boolean
     readonly radius: number
     readonly offset: Vector
     readonly cooldown: number
@@ -35,7 +34,11 @@ export interface MeleeDefinition extends InventoryItemDefinition {
         readonly animated?: boolean
     }
     readonly fireMode: FireMode
-}
+} & ({
+    readonly rotationalAnimation: true
+} | {
+    readonly rotationalAnimation?: false
+});
 
 export const DEFAULT_HAND_RIGGING = Object.freeze({
     left: Vec.create(38, -35),
@@ -224,24 +227,23 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             name: "Sickle",
             damage: 33,
             swingSound: "soft_swing",
-            obstacleMultiplier: 1.15,
+            obstacleMultiplier: 1.3,
             radius: 2.7,
             offset: Vec.create(4, 0),
             cooldown: 400,
+            rotationalAnimation: true,
             //  fireMode: FireMode.Auto, - todo
             fists: {
-                animationDuration: 200,
+                animationDuration: 165,
                 left: Vec.create(38, -35),
-                right: Vec.create(45, 35),
-                useLeft: Vec.create(38, -35),
-                useRight: Vec.create(70, 20)
+                right: Vec.create(45, 35)
             },
             image: {
-                position: Vec.create(61, 67),
-                usePosition: Vec.create(99, -5),
-                angle: 120,
-                useAngle: 5,
-                lootScale: 0.85
+                position: Vec.create(62, 64),
+                angle: 102,
+                useAngle: 42,
+                lootScale: 0.85,
+                xConstant: 85
             }
         },
         {

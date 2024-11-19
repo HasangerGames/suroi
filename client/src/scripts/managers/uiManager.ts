@@ -150,6 +150,15 @@ export class UIManager {
         }
     }
 
+    getTeammateColorIndex(id: number): number | undefined {
+        const teammate = this.game.uiManager.teammates.find(teammate => {
+            return teammate.id === id;
+        });
+
+        const colorIndex = teammate ? teammate.colorIndex : (this.game.teamMode ? undefined : 0);
+        return colorIndex;
+    }
+
     readonly ui = Object.freeze({
         loadingText: $<HTMLDivElement>("#loading-text"),
 
@@ -1820,10 +1829,12 @@ class PlayerHealthUI {
 
             if (this._position.dirty && this._position.value) {
                 if ((indicator = teammateIndicators.get(id)) === undefined) {
+                    const color = TEAMMATE_COLORS[this.game.uiManager.getTeammateColorIndex(id) ?? this._colorIndex.value];
+
                     teammateIndicators.set(
                         id,
                         indicator = new SuroiSprite("player_indicator")
-                            .setTint(TEAMMATE_COLORS[this._colorIndex.value])
+                            .setTint(color)
                     );
                     this.game.map.teammateIndicatorContainer.addChild(indicator);
                 }
@@ -1846,7 +1857,7 @@ class PlayerHealthUI {
         }
 
         if (this._colorIndex.dirty) {
-            const color = TEAMMATE_COLORS[this._colorIndex.value];
+            const color = TEAMMATE_COLORS[this.game.uiManager.getTeammateColorIndex(id) ?? this._colorIndex.value];
 
             this.indicatorContainer.css(
                 "background-color",

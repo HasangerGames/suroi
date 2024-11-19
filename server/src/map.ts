@@ -304,9 +304,15 @@ export class GameMap {
             }
             if (collided) break;
 
-            riverPoints[i] = pos;
+            if (!bounds.isPointInside(pos)) {
+                riverPoints[i] = Vec.create(
+                    Numeric.clamp(pos.x, bounds.min.x, bounds.max.x),
+                    Numeric.clamp(pos.y, bounds.min.y, bounds.max.y)
+                );
+                break;
+            }
 
-            if (!bounds.isPointInside(pos)) break;
+            riverPoints[i] = pos;
         }
         if (riverPoints.length < 20 || riverPoints.length > 59) return false;
 

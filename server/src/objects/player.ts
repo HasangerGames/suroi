@@ -89,6 +89,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     activeDisguise?: ObstacleDefinition;
 
     teamID?: number;
+    colorIndex = 0; // Assigned in the team.ts file.
 
     readonly loadout: {
         badge?: BadgeDefinition
@@ -416,6 +417,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this._team = team;
             this.teamID = team.id;
 
+            team.reassignColorIndexes();
             team.addPlayer(this);
             team.setDirty();
         }
@@ -1239,7 +1241,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             ),
             ...(
                 player.dirty.teammates || forceInclude
-                    ? { teammates: player._team?.players.filter(p => p.id !== player.id) ?? [] }
+                    ? { teammates: player._team?.players ?? [] }
                     : {}
             ),
             ...(

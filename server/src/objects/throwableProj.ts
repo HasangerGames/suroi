@@ -12,6 +12,7 @@ import { type ThrowableItem } from "../inventory/throwableItem";
 import { Building } from "./building";
 import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
+import { equalLayer } from "@common/utils/layer";
 
 const enum Drag {
     Normal = 0.001,
@@ -29,6 +30,9 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
     declare readonly hitbox: CircleHitbox;
 
     private _velocity = Vec.create(0, 0);
+
+    tintIndex = 0;
+    throwerTeamID = 0;
 
     get velocity(): Vector { return this._velocity; }
     set velocity(velocity: Partial<Vector>) {
@@ -87,6 +91,10 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
 
         this.halloweenSkin = this.source.owner.perks.hasPerk(PerkIds.PlumpkinBomb);
 
+        // Colored Teammate C4s
+        this.tintIndex = this.source.owner.colorIndex;
+        if (this.source.owner.teamID) this.throwerTeamID = this.source.owner.teamID;
+
         for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
             this.handleCollision(object);
         }
@@ -118,6 +126,8 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         this._activated = true;
         this.setDirty();
         setTimeout(() => {
+            if (this.dead) return;
+
             this.game.removeProjectile(this);
 
             const { explosion } = this.definition.detonation;
@@ -441,7 +451,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         // nna could be used here, but there's a cleaner way to get rid of undefined with the optional chain below, so lol
         const hitbox = object.hitbox;
 
-        if (!hitbox?.collidesWith(this.hitbox)) return;
+        if (!hitbox?.collidesWith(this.hitbox) || !equalLayer(this.layer, object.layer)) return;
 
         const handleCircle = (hitbox: CircleHitbox): void => {
             const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, hitbox.position, hitbox.radius);
@@ -526,9 +536,11 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             layer: this.layer,
             airborne: this._airborne,
             activated: this._activated,
+            throwerTeamID: this.throwerTeamID,
             full: {
                 definition: this.definition,
-                halloweenSkin: this.halloweenSkin
+                halloweenSkin: this.halloweenSkin,
+                tintIndex: this.tintIndex
             }
         };
     }
