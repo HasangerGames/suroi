@@ -3577,20 +3577,22 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 noCollisions: true
             },
             // --------------------------------------------
-            {
-                idString: "bollard",
-                name: "Bollard",
-                material: "metal_heavy",
-                health: 1000,
-                indestructible: true,
-                reflectBullets: true,
-                hitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(8.2, 9.2, Vec.create(-0.36, 0)),
-                    new CircleHitbox(3.45, Vec.create(1, 0))
-                ),
-                rotationMode: RotationMode.Limited,
-                allowFlyover: FlyoverPref.Always
-            },
+            ...withWinterVariation([
+                {
+                    idString: "bollard",
+                    name: "Bollard",
+                    material: "metal_heavy",
+                    health: 1000,
+                    indestructible: true,
+                    reflectBullets: true,
+                    hitbox: new GroupHitbox(
+                        RectangleHitbox.fromRect(8.2, 9.2, Vec.create(-0.36, 0)),
+                        new CircleHitbox(3.45, Vec.create(1, 0))
+                    ),
+                    rotationMode: RotationMode.Limited,
+                    allowFlyover: FlyoverPref.Always
+                }, 2
+            ]),
             {
                 idString: "barrier",
                 name: "Barrier",
