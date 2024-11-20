@@ -4573,7 +4573,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "fridge", position: Vec.create(6.5, -13), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
                     { idString: "small_bed", position: Vec.create(16, -8.5), rotation: 0 },
                     { idString: "small_drawer", position: Vec.create(16, 3.3), lootSpawnOffset: Vec.create(-2, 0), rotation: 3 },
-                    { idString: "aegis_crate", position: Vec.create(15, 11.5), lootSpawnOffset: Vec.create(-2, -2) }
+                    { idString: "flint_crate", position: Vec.create(15, 11.5), lootSpawnOffset: Vec.create(-2, -2) }
                 ],
                 lootSpawners: [
                     { table: "ground_loot", position: Vec.create(0, -0.5) }
