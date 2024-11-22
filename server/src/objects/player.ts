@@ -603,11 +603,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 inventory.replaceWeapon(slot, chosenItem, force);
                 (this.activeItem as GunItem).ammo = capacity;
+                this.sendEmote(Guns.fromString(chosenItem.idString));
                 break;
             }
 
             case ItemType.Melee: {
                 inventory.replaceWeapon(slot, chosenItem, force);
+                this.sendEmote(Melees.fromString(chosenItem.idString));
                 break;
             }
 
@@ -645,6 +647,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 this.dirty.weapons = true;
                 this.dirty.items = true;
+                this.sendEmote(Throwables.fromString(chosenItem.idString));
                 break;
             }
         }
