@@ -1290,7 +1290,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         );
         this.emote.image.setFrame(type.idString);
 
-        const isWeaponEmote = "itemType" in type;
+        const isItemEmote = "itemType" in type;
+        const isHealingOrAmmoEmote = isItemEmote && [ItemType.Healing, ItemType.Ammo].includes(type.itemType);
 
         const container = this.emote.container;
         container.visible = true;
@@ -1302,7 +1303,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             backgroundFrame = `loot_background_gun_${Guns.fromStringSafe(type.idString)?.ammoType}`;
         }
 
-        this.emote.image.setScale(isWeaponEmote ? 0.7 : 1);
+        this.emote.image.setScale(isItemEmote && !isHealingOrAmmoEmote ? 0.7 : 1);
         this.emote.background.setFrame(backgroundFrame);
 
         this.anims.emote = this.game.addTween({
@@ -1336,7 +1337,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this._emoteHideTimeout = undefined;
                 }
             });
-        }, isWeaponEmote ? 2000 : 4000);
+        }, isItemEmote ? 2000 : 4000);
     }
 
     playAnimation(anim: AnimationType): void {
