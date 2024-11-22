@@ -3247,26 +3247,28 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     residue: "barrel_residue"
                 }
             },
-            {
-                idString: "large_refinery_barrel",
-                name: "Large Refinery Barrel",
-                material: "metal_heavy",
-                health: 3500,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.5
-                },
-                hitbox: new CircleHitbox(17.15),
-                rotationMode: RotationMode.Full,
-                allowFlyover: FlyoverPref.Never,
-                explosion: "large_refinery_barrel_explosion",
-                reflectBullets: true,
-                zIndex: ZIndexes.ObstaclesLayer5,
-                frames: {
-                    particle: "metal_particle"
+            ...withWinterVariation([
+                {
+                    idString: "large_refinery_barrel",
+                    name: "Large Refinery Barrel",
+                    material: "metal_heavy",
+                    health: 3500,
+                    scale: {
+                        spawnMin: 1,
+                        spawnMax: 1,
+                        destroy: 0.5
+                    },
+                    hitbox: new CircleHitbox(17.15),
+                    rotationMode: RotationMode.Full,
+                    allowFlyover: FlyoverPref.Never,
+                    explosion: "large_refinery_barrel_explosion",
+                    reflectBullets: true,
+                    zIndex: ZIndexes.ObstaclesLayer5,
+                    frames: {
+                        particle: "metal_particle"
+                    }
                 }
-            },
+            ]),
             {
                 idString: "smokestack",
                 name: "Smokestack",
@@ -3904,25 +3906,27 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     residue: "sink_residue"
                 }
             }),
-            {
-                idString: "tire",
-                name: "Tire",
-                material: "stone",
-                health: 200,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.8
-                },
-                hitbox: RectangleHitbox.fromRect(3.47, 8.35),
-                rotationMode: RotationMode.Limited,
-                zIndex: ZIndexes.BuildingsFloor - 1,
-                noResidue: true,
-                frames: {
-                    particle: "flint_stone_particle"
-                },
-                particleVariations: 2
-            },
+            ...withWinterVariation([
+                {
+                    idString: "tire",
+                    name: "Tire",
+                    material: "stone",
+                    health: 200,
+                    scale: {
+                        spawnMin: 1,
+                        spawnMax: 1,
+                        destroy: 0.8
+                    },
+                    hitbox: RectangleHitbox.fromRect(3.47, 8.35),
+                    rotationMode: RotationMode.Limited,
+                    zIndex: ZIndexes.BuildingsFloor - 1,
+                    noResidue: true,
+                    frames: {
+                        particle: "flint_stone_particle"
+                    },
+                    particleVariations: 2
+                }, 2
+            ]),
             {
                 idString: "mobile_home_window",
                 name: "Mobile Home Window",
