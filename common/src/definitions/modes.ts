@@ -87,6 +87,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
             "airdrop_plane"
         ],
         reskin: "winter",
+        inheritTexturesFrom: "normal",
         bulletTrailAdjust: "hsl(0, 50%, 80%)"
     }
 };
