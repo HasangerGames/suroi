@@ -3695,6 +3695,26 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hasLoot: true
             },
             {
+                idString: "poinsettia",
+                name: "Poinsettia",
+                material: "porcelain",
+                health: 100,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.95
+                },
+                hitbox: new CircleHitbox(1.9),
+                rotationMode: RotationMode.Full,
+                allowFlyover: FlyoverPref.Always,
+                zIndex: ZIndexes.ObstaclesLayer3,
+                hasLoot: true,
+                lootTable: "potted_plant",
+                frames: {
+                    particle: "potted_plant_particle"
+                }
+            },
+            {
                 idString: "trash_can",
                 name: "Trash Can",
                 material: "appliance",
