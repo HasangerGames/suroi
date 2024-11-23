@@ -957,6 +957,43 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 { idString: "grenade_box", position: Vec.create(21.96, 38.75) }
             ]]),
 
+            warehouseLayout([4, [
+                // top left
+                { idString: "barrel", position: Vec.create(-19.39, -26.33) },
+
+                // top right
+                { idString: "ammo_crate", position: Vec.create(19.39, -36.48) },
+
+                // center
+                { idString: "super_barrel", position: Vec.create(0, 0) },
+
+                { idString: "box", position: Vec.create(-7.84, -1.9) },
+                { idString: "box", position: Vec.create(-12.28, 2.68) },
+                { idString: "pallet", position: Vec.create(-10.21, 0.18), rotation: 1 },
+
+                { idString: "pallet", position: Vec.create(10.21, 0.18), rotation: 1 },
+                { idString: "grenade_crate", position: Vec.create(11.43, -2.41) },
+                { idString: "box", position: Vec.create(7.84, 3.5) },
+
+                { idString: "regular_crate", position: Vec.create(0, 10) },
+
+                { idString: "pallet", position: Vec.create(0, -10), rotation: 0 },
+                { idString: "box", position: Vec.create(-2.32, -12.17) },
+                { idString: "grenade_box", position: Vec.create(-0.36, -7.65) },
+                { idString: "box", position: Vec.create(2.79, -12.25) },
+
+                // sides
+                { idString: "ammo_crate", position: Vec.create(19.7, 0) },
+                { idString: "ammo_crate", position: Vec.create(-19.7, 0) },
+
+                // bottom right
+                { idString: "barrel", position: Vec.create(19.39, 36.48) },
+                { idString: "pallet", position: Vec.create(19.53, 26.04), rotation: 1 },
+                { idString: "box", position: Vec.create(21.19, 23.6) },
+                { idString: "grenade_box", position: Vec.create(17.61, 28.33) }
+
+            ]]),
+
             {
                 idString: "warehouse",
                 name: "Warehouse",
@@ -1007,7 +1044,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     idString: {
                         warehouse_layout_1: 1,
                         warehouse_layout_2: 1,
-                        warehouse_layout_3: 1
+                        warehouse_layout_3: 1,
+                        warehouse_layout_4: 1
                     },
                     position: Vec.create(0, 0)
                 }]
@@ -1793,8 +1831,20 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             ]]),
 
             blueHouseVaultLayout([5, [
-                { idString: "box", position: Vec.create(14, 10.5) },
-                { idString: "bookshelf", position: Vec.create(16, 16), rotation: 0 }
+                { idString: "box", position: Vec.create(11.97, 9.53) },
+                { idString: "bookshelf", position: Vec.create(15.85, 17.01), rotation: 0 }
+            ]]),
+
+            blueHouseVaultLayout([6, [
+                { idString: "grenade_crate", position: Vec.create(13.4, 10.5) },
+                { idString: "box", position: Vec.create(19.25, 9.3) },
+                { idString: "box", position: Vec.create(12.71, 16.6) }
+            ]]),
+
+            blueHouseVaultLayout([7, [
+                { idString: "melee_crate", position: Vec.create(13.4, 10.5) },
+                { idString: "box", position: Vec.create(19.25, 9.3) },
+                { idString: "box", position: Vec.create(12.71, 16.6) }
             ]]),
             // -------------------------------------------------------------------------
 
@@ -1951,7 +2001,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                             //  blue_house_vault_layout_2: 3, // TODO: add on v0.19.1 and rework layout
                             blue_house_vault_layout_3: 1,
                             blue_house_vault_layout_4: 1,
-                            blue_house_vault_layout_5: 1
+                            blue_house_vault_layout_5: 1,
+                            blue_house_vault_layout_6: 1,
+                            blue_house_vault_layout_7: 0.5
+
                         },
                         position: Vec.create(0, 0)
                     }
@@ -2829,8 +2882,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "trailer", position: Vec.create(40, 40), rotation: 3 },
 
                     // next to red warehouse
-                    { idString: "dumpster", position: Vec.create(-7, -62), rotation: 1 },
-                    { idString: "dumpster", position: Vec.create(-22, -62), rotation: 1 },
+                    { idString: "dumpster", position: Vec.create(-7, -62), rotation: 3 },
+                    { idString: "dumpster", position: Vec.create(-22, -62), rotation: 3 },
 
                     // The main entrance
                     { idString: "barrier", position: Vec.create(-124, -10), rotation: 0 },
