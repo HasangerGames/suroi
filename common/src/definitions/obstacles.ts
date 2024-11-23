@@ -82,6 +82,7 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly spawnHitbox?: Hitbox
     readonly noCollisions: boolean
     readonly noCollisionAfterDestroyed?: boolean
+    readonly pallet?: boolean
     readonly rotationMode: RotationMode // for obstacles with a role, this cannot be RotationMode.Full
     readonly particleVariations?: number
     readonly zIndex?: ZIndexes
@@ -3508,16 +3509,18 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 material: "wood",
                 health: 120,
                 indestructible: true,
-                hitbox: RectangleHitbox.fromRect(0, 0),
+                hitbox: RectangleHitbox.fromRect(10.1, 9),
                 zIndex: ZIndexes.ObstaclesLayer1 - 1,
                 rotationMode: RotationMode.Limited,
                 allowFlyover: FlyoverPref.Always,
                 frames: {
-                    particle: "crate_particle"
+                    particle: "crate_particle",
+                    residue: "regular_crate_residue"
                 },
                 noCollisions: true,
                 noMeleeCollision: true,
-                noBulletCollision: true
+                noBulletCollision: true,
+                pallet: true
             },
 
             // --------------------------------------------
