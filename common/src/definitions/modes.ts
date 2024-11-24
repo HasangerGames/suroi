@@ -18,6 +18,7 @@ export interface ModeDefinition {
     readonly particleEffects?: {
         readonly frames: string | string[]
         readonly tint?: number
+        readonly gravity?: boolean
     }
     readonly specialLogo?: boolean
     readonly specialPlayButtons?: boolean
@@ -103,7 +104,8 @@ export const Modes: Record<Mode, ModeDefinition> = {
         inheritTexturesFrom: "normal",
         bulletTrailAdjust: "hsl(0, 50%, 80%)",
         particleEffects: {
-            frames: ["snow_particle"]
+            frames: ["snow_particle"],
+            gravity: true
         },
         specialLogo: true,
         specialPlayButtons: true,

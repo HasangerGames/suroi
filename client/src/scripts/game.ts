@@ -323,7 +323,7 @@ export class Game {
 
             if (particleEffects !== undefined) {
                 const This = this;
-                const containsSnowParticles = particleEffects.frames.includes("snow_particle");
+                const gravityOn = particleEffects.gravity;
                 this.particleManager.addEmitter(
                     {
                         delay: 1000,
@@ -338,7 +338,7 @@ export class Game {
                                 const { x, y } = player.position;
                                 return randomVector(x - width, x + width, y - height, y + height);
                             },
-                            speed: randomVector(-10, 10, containsSnowParticles ? 10 : -10, 10),
+                            speed: randomVector(-10, 10, gravityOn ? 10 : -10, 10),
                             lifetime: randomFloat(12000, 50000),
                             zIndex: Number.MAX_SAFE_INTEGER - 5,
                             alpha: {
