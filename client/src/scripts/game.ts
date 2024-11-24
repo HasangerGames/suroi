@@ -1,4 +1,4 @@
-import { GameConstants, InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize, ZIndexes } from "@common/constants";
+import { GameConstants, InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize } from "@common/constants";
 import { ArmorType } from "@common/definitions/armors";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { Emotes } from "@common/definitions/emotes";
@@ -323,6 +323,7 @@ export class Game {
 
             if (particleEffects !== undefined) {
                 const This = this;
+                const containsSnowParticles = particleEffects.frames.includes("snow_particle");
                 this.particleManager.addEmitter(
                     {
                         delay: 1000,
@@ -337,9 +338,9 @@ export class Game {
                                 const { x, y } = player.position;
                                 return randomVector(x - width, x + width, y - height, y + height);
                             },
-                            speed: randomVector(-10, 10, -10, 10),
+                            speed: randomVector(-10, 10, containsSnowParticles ? 10 : -10, 10),
                             lifetime: randomFloat(12000, 50000),
-                            zIndex: ZIndexes.BuildingsCeiling,
+                            zIndex: Number.MAX_SAFE_INTEGER - 5,
                             alpha: {
                                 start: 0.7,
                                 end: 0
