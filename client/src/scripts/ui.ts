@@ -112,7 +112,6 @@ export async function setUpUI(game: Game): Promise<void> {
                     <img class="btn-icon" width="26" height="26" src=${MODE.modeLogoImage}>
                     <span style="margin-left: ${(buttonIndex > 0 ? "20px;" : "0")}" translation="${translationString}">${getTranslatedString(translationString as TranslationKeys)}</span>
                 `);
-                button.children("span").html();
             }
         }
     }
