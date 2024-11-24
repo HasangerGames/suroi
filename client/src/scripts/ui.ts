@@ -95,7 +95,27 @@ export function resetPlayButtons(): void {
 export async function setUpUI(game: Game): Promise<void> {
     const { inputManager, uiManager: { ui } } = game;
 
+    // Change the menu based on the mode.
     if (MODE.specialLogo) $("#splash-logo").children("img").attr("src", `./img/logos/suroi_beta_${MODE.idString}.svg`);
+    if (MODE.specialPlayButtons) {
+        const playButtons = [$("#btn-play-solo"), $("#btn-play-duo"), $("#btn-play-squad")];
+        for (let buttonIndex = 0; buttonIndex < playButtons.length; buttonIndex++) {
+            const button = playButtons[buttonIndex];
+
+            button.addClass(`event-${MODE.idString}`);
+
+            // Mode Logo
+            if (MODE.modeLogoImage) {
+                const translationString = `play_${["solo", "duo", "squad"][buttonIndex]}`;
+
+                button.html(`
+                    <img class="btn-icon" width="26" height="26" src=${MODE.modeLogoImage}>
+                    <span style="margin-left: ${(buttonIndex > 0 ? "20px;" : "0")}" translation="${translationString}">${getTranslatedString(translationString as TranslationKeys)}</span>
+                `);
+                button.children("span").html();
+            }
+        }
+    }
 
     if (UI_DEBUG_MODE) {
         // Kill message
