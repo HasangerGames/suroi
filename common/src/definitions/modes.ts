@@ -4,9 +4,11 @@ import { ScopeDefinition } from "./scopes";
 export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "trail" | "gas" | "void";
 
 export interface ModeDefinition {
+    readonly idString: string
     readonly colors: Record<ColorKeys, string>
     readonly inheritTexturesFrom?: Mode
     readonly specialMenuMusic?: boolean
+    readonly specialLogo?: boolean
     readonly ambience?: string
     readonly specialSounds?: string[]
     readonly defaultScope?: ReferenceTo<ScopeDefinition>
@@ -24,6 +26,7 @@ export type Mode = "normal" | "fall" | "halloween" | "winter";
 
 export const Modes: Record<Mode, ModeDefinition> = {
     normal: {
+        idString: "normal",
         colors: {
             grass: "hsl(95, 41%, 38%)",
             water: "hsl(211, 63%, 42%)",
@@ -37,6 +40,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
         reskin: "normal"
     },
     fall: {
+        idString: "fall",
         colors: {
             grass: "hsl(62, 42%, 32%)",
             water: "hsl(211, 63%, 42%)",
@@ -55,6 +59,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
         }
     },
     halloween: {
+        idString: "halloween",
         colors: {
             grass: "hsl(65, 100%, 12%)",
             water: "hsl(4, 100%, 14%)",
@@ -72,6 +77,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
         reskin: "fall"
     },
     winter: {
+        idString: "winter",
         colors: {
             grass: "hsl(210, 18%, 82%)",
             water: "hsl(211, 63%, 42%)",
@@ -83,11 +89,15 @@ export const Modes: Record<Mode, ModeDefinition> = {
             void: "hsl(25, 80%, 6%)"
         },
         specialMenuMusic: true,
+        specialLogo: true,
         specialSounds: [
             "airdrop_plane"
         ],
         reskin: "winter",
         inheritTexturesFrom: "normal",
-        bulletTrailAdjust: "hsl(0, 50%, 80%)"
+        bulletTrailAdjust: "hsl(0, 50%, 80%)",
+        particleEffects: {
+            frames: ["snow_particle"]
+        }
     }
 };

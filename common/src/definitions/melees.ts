@@ -15,6 +15,7 @@ export type MeleeDefinition = InventoryItemDefinition & {
     readonly offset: Vector
     readonly cooldown: number
     readonly maxTargets: number
+    readonly reskins?: string[]
     readonly fists: InventoryItemDefinition["fists"] & {
         readonly animationDuration: number
         readonly randomFist?: boolean
@@ -198,7 +199,8 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 angle: 190,
                 useAngle: 40,
                 lootScale: 0.65
-            }
+            },
+            reskins: ["winter"]
         },
         {
             idString: "kbar",
@@ -246,7 +248,8 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 useAngle: 42,
                 lootScale: 0.85,
                 xConstant: 85
-            }
+            },
+            reskins: ["winter"]
         },
         {
             idString: "maul",

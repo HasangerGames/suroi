@@ -95,6 +95,8 @@ export function resetPlayButtons(): void {
 export async function setUpUI(game: Game): Promise<void> {
     const { inputManager, uiManager: { ui } } = game;
 
+    if (MODE.specialLogo) $("#splash-logo").children("img").attr("src", `./img/logos/suroi_beta_${MODE.idString}.svg`);
+
     if (UI_DEBUG_MODE) {
         // Kill message
         ui.killMsgHeader.text("Kills: 7");
