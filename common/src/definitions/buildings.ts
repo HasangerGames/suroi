@@ -3947,25 +3947,25 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 obstacles: [
                     { idString: "bunker_entrance", position: Vec.create(-10, -16), rotation: 0 },
 
-                    { idString: "sandbags", position: Vec.create(18.42, -27.15), rotation: 0 },
-                    { idString: "sandbags", position: Vec.create(25.28, -15.7), rotation: 1 },
-                    { idString: "flint_crate", position: Vec.create(15, -17) },
-                    { idString: "barrel", position: Vec.create(15, -7.5), rotation: 1 },
-                    { idString: "super_barrel", position: Vec.create(5, -17), rotation: 1 },
+                    { idString: "sandbags_snow", position: Vec.create(18.42, -27.15), rotation: 0 },
+                    { idString: "sandbags_snow", position: Vec.create(25.28, -15.7), rotation: 1 },
+                    { idString: "flint_crate_snow", position: Vec.create(15, -17) },
+                    { idString: "barrel_snow", position: Vec.create(15, -7.5), rotation: 1 },
+                    { idString: "super_barrel_snow", position: Vec.create(5, -17), rotation: 1 },
 
-                    { idString: "sandbags", position: Vec.create(-5.5, 7.94), rotation: 1 },
-                    { idString: "sandbags", position: Vec.create(0.72, 19.15), rotation: 0 },
-                    { idString: "cooler", position: Vec.create(2.28, 8.42), rotation: 1 },
+                    { idString: "sandbags_snow", position: Vec.create(-5.5, 7.94), rotation: 1 },
+                    { idString: "sandbags_snow", position: Vec.create(0.72, 19.15), rotation: 0 },
+                    { idString: "cooler_snow", position: Vec.create(2.28, 8.42), rotation: 1 },
 
-                    { idString: "box", position: Vec.create(16.66, 9.9) },
-                    { idString: "box", position: Vec.create(13.45, 16.63) },
-                    { idString: "box", position: Vec.create(19.13, 16.54) },
-                    { idString: "box", position: Vec.create(-20.5, -15.28) },
-                    { idString: "box", position: Vec.create(-25.19, -10.4) },
+                    { idString: "box_snow", position: Vec.create(16.66, 9.9) },
+                    { idString: "box_snow", position: Vec.create(13.45, 16.63) },
+                    { idString: "box_snow", position: Vec.create(19.13, 16.54) },
+                    { idString: "box_snow", position: Vec.create(-20.5, -15.28) },
+                    { idString: "box_snow", position: Vec.create(-25.19, -10.4) },
 
-                    { idString: "regular_crate", position: Vec.create(-17.34, 6.54) },
-                    { idString: "regular_crate", position: Vec.create(-16.5, 17.85) },
-                    { idString: "regular_crate", position: Vec.create(-24.02, -23.2) },
+                    { idString: "regular_crate_snow", position: Vec.create(-17.34, 6.54) },
+                    { idString: "regular_crate_snow", position: Vec.create(-16.5, 17.85) },
+                    { idString: "regular_crate_snow", position: Vec.create(-24.02, -23.2) },
 
                     { idString: "roadblock", position: Vec.create(-10.07, -29.04), rotation: 1 },
 
