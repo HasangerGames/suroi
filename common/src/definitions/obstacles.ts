@@ -1775,7 +1775,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     variations: 3,
                     zIndex: ZIndexes.ObstaclesLayer2,
                     hasLoot: true
-                }
+                }, 3
             ]),
             {
                 idString: "hq_large_cart",

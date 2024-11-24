@@ -522,6 +522,130 @@ const maps = {
             { name: "Darkwood", position: Vec.create(0.5, 0.65) }
         ]
     },
+    winter: {
+        width: 1632,
+        height: 1632,
+        oceanSize: 128,
+        beachSize: 32,
+        rivers: {
+            minAmount: 2,
+            maxAmount: 3,
+            maxWideAmount: 1,
+            wideChance: 0.35,
+            minWidth: 12,
+            maxWidth: 18,
+            minWideWidth: 25,
+            maxWideWidth: 30
+        },
+        buildings: {
+            large_bridge: 2,
+            small_bridge: Infinity,
+            port_complex: 1,
+            sea_traffic_control: 1,
+            tugboat_red: 1,
+            tugboat_white: 5,
+            armory: 1,
+            headquarters: 1,
+            small_bunker: 1,
+            refinery: 1,
+            warehouse: 5,
+            // firework_warehouse: 1, // birthday mode
+            green_house: 3,
+            blue_house: 3,
+            red_house: 3,
+            red_house_v2: 3,
+            construction_site: 1,
+            mobile_home: 10,
+            porta_potty: 12,
+            container_3: 2,
+            container_4: 2,
+            container_5: 2,
+            container_6: 2,
+            container_7: 1,
+            container_8: 2,
+            container_9: 1,
+            container_10: 2
+        },
+        majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
+        quadBuildingLimit: {
+            red_house: 1,
+            red_house_v2: 1,
+            warehouse: 2,
+            green_house: 1,
+            blue_house: 1,
+            mobile_home: 3,
+            porta_potty: 3,
+            construction_site: 1
+        },
+        obstacles: {
+            oil_tank_snow: 12,
+            christmas_tree: 1, // winter mode
+            oak_tree: 100,
+            birch_tree: 20,
+            pine_tree: 10,
+            loot_tree: 1,
+            regular_crate_snow: 160,
+            flint_crate_snow: 5,
+            aegis_crate_snow: 5,
+            grenade_crate_snow: 35,
+            rock: 150,
+            river_chest: 1,
+            river_rock: 45,
+            bush: 110,
+            // birthday_cake: 100, // birthday mode
+            blueberry_bush: 30,
+            barrel_snow: 80,
+            viking_chest: 1,
+            super_barrel_snow: 30,
+            melee_crate: 1,
+            gold_rock: 1,
+            loot_barrel: 1,
+            flint_stone_snow: 1
+        },
+        obstacleClumps: [
+            {
+                clumpAmount: 100,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["oak_tree"],
+                    radius: 12
+                }
+            },
+            {
+                clumpAmount: 25,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["birch_tree"],
+                    radius: 12
+                }
+            },
+            {
+                clumpAmount: 4,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["pine_tree"],
+                    radius: 12
+                }
+            }
+        ],
+        loots: {
+            ground_loot: 60
+        },
+        places: [
+            { name: "Banana", position: Vec.create(0.23, 0.2) },
+            { name: "Takedown", position: Vec.create(0.23, 0.8) },
+            { name: "Lavlandet", position: Vec.create(0.75, 0.2) },
+            { name: "Noskin Narrows", position: Vec.create(0.72, 0.8) },
+            { name: "Mt. Sanger", position: Vec.create(0.5, 0.35) },
+            { name: "Deepwood", position: Vec.create(0.5, 0.65) }
+        ]
+    },
     debug: {
         width: 1620,
         height: 1620,
