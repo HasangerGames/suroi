@@ -1131,7 +1131,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     rightZIndex: 4,
                     animationDuration: 100
                 },
-                image: { position: Vec.create(67, 0) },
+                image: { position: Vec.create(80, 0) },
                 casingParticles: [
                     {
                         position: Vec.create(4, 0.45)
