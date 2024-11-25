@@ -808,7 +808,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     base,
                     {
                         [inheritFrom]: base.idString,
-                        idString: `${base.idString}_snow`,
+                        idString: `${base.idString}_winter`,
                         variations: variants,
                         frames: {
                             particle: base.frames?.particle ?? `${base.idString}_particle`,

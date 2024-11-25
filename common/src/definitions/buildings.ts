@@ -20,7 +20,7 @@ interface BuildingObstacle {
     readonly puzzlePiece?: string | boolean
     readonly locked?: boolean
     readonly activated?: boolean
-    readonly reskinDuringWinter?: boolean
+    readonly reskin?: boolean
 }
 
 interface LootSpawner {
@@ -3948,25 +3948,25 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 obstacles: [
                     { idString: "bunker_entrance", position: Vec.create(-10, -16), rotation: 0 },
 
-                    { idString: "sandbags", position: Vec.create(18.42, -27.15), rotation: 0, reskinDuringWinter: true },
-                    { idString: "sandbags", position: Vec.create(25.28, -15.7), rotation: 1, reskinDuringWinter: true },
-                    { idString: "flint_crate", position: Vec.create(15, -17), reskinDuringWinter: true },
-                    { idString: "barrel", position: Vec.create(15, -7.5), rotation: 1, reskinDuringWinter: true },
-                    { idString: "super_barrel", position: Vec.create(5, -17), rotation: 1, reskinDuringWinter: true },
+                    { idString: "sandbags", position: Vec.create(18.42, -27.15), rotation: 0, reskin: true },
+                    { idString: "sandbags", position: Vec.create(25.28, -15.7), rotation: 1, reskin: true },
+                    { idString: "flint_crate", position: Vec.create(15, -17), reskin: true },
+                    { idString: "barrel", position: Vec.create(15, -7.5), rotation: 1, reskin: true },
+                    { idString: "super_barrel", position: Vec.create(5, -17), rotation: 1, reskin: true },
 
-                    { idString: "sandbags", position: Vec.create(-5.5, 7.94), rotation: 1, reskinDuringWinter: true },
-                    { idString: "sandbags", position: Vec.create(0.72, 19.15), rotation: 0, reskinDuringWinter: true },
-                    { idString: "cooler", position: Vec.create(2.28, 8.42), rotation: 1, reskinDuringWinter: true },
+                    { idString: "sandbags", position: Vec.create(-5.5, 7.94), rotation: 1, reskin: true },
+                    { idString: "sandbags", position: Vec.create(0.72, 19.15), rotation: 0, reskin: true },
+                    { idString: "cooler", position: Vec.create(2.28, 8.42), rotation: 1, reskin: true },
 
-                    { idString: "box", position: Vec.create(16.66, 9.9), reskinDuringWinter: true },
-                    { idString: "box", position: Vec.create(13.45, 16.63), reskinDuringWinter: true },
-                    { idString: "box", position: Vec.create(19.13, 16.54), reskinDuringWinter: true },
-                    { idString: "box", position: Vec.create(-20.5, -15.28), reskinDuringWinter: true },
-                    { idString: "box", position: Vec.create(-25.19, -10.4), reskinDuringWinter: true },
+                    { idString: "box", position: Vec.create(16.66, 9.9), reskin: true },
+                    { idString: "box", position: Vec.create(13.45, 16.63), reskin: true },
+                    { idString: "box", position: Vec.create(19.13, 16.54), reskin: true },
+                    { idString: "box", position: Vec.create(-20.5, -15.28), reskin: true },
+                    { idString: "box", position: Vec.create(-25.19, -10.4), reskin: true },
 
-                    { idString: "regular_crate", position: Vec.create(-17.34, 6.54), reskinDuringWinter: true },
-                    { idString: "regular_crate", position: Vec.create(-16.5, 17.85), reskinDuringWinter: true },
-                    { idString: "regular_crate", position: Vec.create(-24.02, -23.2), reskinDuringWinter: true },
+                    { idString: "regular_crate", position: Vec.create(-17.34, 6.54), reskin: true },
+                    { idString: "regular_crate", position: Vec.create(-16.5, 17.85), reskin: true },
+                    { idString: "regular_crate", position: Vec.create(-24.02, -23.2), reskin: true },
 
                     { idString: "roadblock", position: Vec.create(-10.07, -29.04), rotation: 1 },
 
@@ -4245,8 +4245,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "window", position: Vec.create(18.5, 36.75), rotation: 1 },
                     { idString: "window", position: Vec.create(41.6, 36.75), rotation: 1 },
                     { idString: "window", position: Vec.create(70.7, -6), rotation: 0 },
-                    { idString: "dumpster", position: Vec.create(-63, -54.1), rotation: 2, reskinDuringWinter: true },
-                    { idString: "trash_bag", position: Vec.create(-69.5, -57.3), reskinDuringWinter: true },
+                    { idString: "dumpster", position: Vec.create(-63, -54.1), rotation: 2, reskin: true },
+                    { idString: "trash_bag", position: Vec.create(-69.5, -57.3), reskin: true },
 
                     // office room
                     { idString: "hq_desk_left", position: Vec.create(-8, -17.3), rotation: 0 },
