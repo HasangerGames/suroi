@@ -358,6 +358,15 @@ export class InputManager {
                         document.querySelectorAll(".controller-select").forEach(el => el.classList.remove("selected"));
                         element.classList.add("selected");
                         x = selectedController;
+                        const newController = navigator.getGamepads()[x];
+                        if (newController) {
+                            void newController.vibrationActuator.playEffect("dual-rumble", {
+                                startDelay: 0,
+                                duration: 500,
+                                weakMagnitude: 1.0,
+                                strongMagnitude: 1.0
+                            });
+                        }
                     });
                 });
                 this.leftJoystickSensitivity = game.console.getBuiltInCVar("cv_left_joystick_sensitivity");
