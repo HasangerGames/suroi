@@ -578,29 +578,29 @@ const maps = {
             construction_site: 1
         },
         obstacles: {
-            oil_tank_snow: 12,
+            oil_tank_winter: 12,
             christmas_tree: 1, // winter mode
             oak_tree: 100,
             birch_tree: 20,
             pine_tree: 10,
             loot_tree: 1,
-            regular_crate_snow: 160,
-            flint_crate_snow: 5,
-            aegis_crate_snow: 5,
-            grenade_crate_snow: 35,
+            regular_crate_winter: 160,
+            flint_crate_winter: 5,
+            aegis_crate_winter: 5,
+            grenade_crate_winter: 35,
             rock: 150,
             river_chest: 1,
             river_rock: 45,
             bush: 110,
             // birthday_cake: 100, // birthday mode
             blueberry_bush: 30,
-            barrel_snow: 80,
+            barrel_winter: 80,
             viking_chest: 1,
-            super_barrel_snow: 30,
+            super_barrel_winter: 30,
             melee_crate: 1,
             gold_rock: 1,
             loot_barrel: 1,
-            flint_stone_snow: 1
+            flint_stone_winter: 1
         },
         obstacleClumps: [
             {
