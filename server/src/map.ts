@@ -526,11 +526,14 @@ export class GameMap {
         const building = new Building(this.game, definition, Vec.clone(position), orientation, layer);
 
         for (const obstacleData of definition.obstacles) {
-            const idString = getRandomIDString<
+            let idString = getRandomIDString<
                 ObstacleDefinition,
                 ReferenceTo<ObstacleDefinition> | typeof NullString
             >(obstacleData.idString);
             if (idString === NullString) continue;
+            if (obstacleData.reskinDuringWinter && GameConstants.modeName === "winter") {
+                idString = `${idString}_snow`;
+            }
 
             const obstacleDef = Obstacles.fromString(idString);
             let obstacleRotation = obstacleData.rotation ?? GameMap.getRandomRotation(obstacleDef.rotationMode);
