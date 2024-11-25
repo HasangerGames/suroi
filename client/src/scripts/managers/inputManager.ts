@@ -347,10 +347,19 @@ export class InputManager {
         }
         const ticker = new Ticker();
         window.addEventListener("gamepadconnected", () => {
+            let x = 0;
             ticker.add(async() => {
-                const controller = navigator.getGamepads()[0];
+                const controller = navigator.getGamepads()[x];
                 if (!controller) return;
                 $("#tab-controller").show();
+                document.querySelectorAll(".controller-select").forEach(element => {
+                    const selectedController = parseInt(element.id.split("-")[2]);
+                    element.addEventListener("click", () => {
+                        document.querySelectorAll(".controller-select").forEach(el => el.classList.remove("selected"));
+                        element.classList.add("selected");
+                        x = selectedController;
+                    });
+                });
                 this.leftJoystickSensitivity = game.console.getBuiltInCVar("cv_left_joystick_sensitivity");
                 this.rightJoystickSensitivity = game.console.getBuiltInCVar("cv_right_joystick_sensitivity");
                 const leftJoystickX = controller.axes[0];
