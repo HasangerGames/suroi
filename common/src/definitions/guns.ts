@@ -1126,7 +1126,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 moveSpread: 8,
                 length: 7.53,
                 fists: {
-                    left: Vec.create(95, -4),
+                    left: Vec.create(100, -4),
                     right: Vec.create(40, 0),
                     rightZIndex: 4,
                     animationDuration: 100
@@ -1134,7 +1134,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 image: { position: Vec.create(80, 0) },
                 casingParticles: [
                     {
-                        position: Vec.create(4, 0.45)
+                        position: Vec.create(3.75, 0.45)
                     }
                 ],
                 gasParticles: gasParticlePresets.automatic,
