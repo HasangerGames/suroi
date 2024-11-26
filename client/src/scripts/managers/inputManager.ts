@@ -354,6 +354,9 @@ export class InputManager {
                 $("#tab-controller").show();
                 document.querySelectorAll(".controller-select").forEach(element => {
                     const selectedController = parseInt(element.id.split("-")[2]);
+                    if (navigator.getGamepads()[selectedController]) {
+                        $(`#controller-select-${selectedController}`).show();
+                    } else $(`#controller-select-${selectedController}`).hide();
                     element.addEventListener("click", () => {
                         document.querySelectorAll(".controller-select").forEach(el => el.classList.remove("selected"));
                         element.classList.add("selected");
