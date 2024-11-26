@@ -112,9 +112,6 @@ export const Modes: Record<Mode, ModeDefinition> = {
         modeLogoImage: "./img/game/shared/weapons/ice_pick.svg"
     }
 };
-export const ModeReskins: Record<Mode, string> = {
-    normal: "",
-    fall: "",
-    halloween: "",
+export const ObstacleModeVariations: Partial<Record<Mode, string>> = {
     winter: "_winter"
 };

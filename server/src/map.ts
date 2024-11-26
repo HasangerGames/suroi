@@ -1,7 +1,7 @@
 import { GameConstants, Layer, ObjectCategory } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { Modes, ModeReskins } from "@common/definitions/modes";
+import { ObstacleModeVariations } from "@common/definitions/modes";
 import { MapPacket, type MapPacketData } from "@common/packets/mapPacket";
 import { PacketStream } from "@common/packets/packetStream";
 import { type Orientation, type Variation } from "@common/typings";
@@ -533,8 +533,8 @@ export class GameMap {
             >(obstacleData.idString);
             if (idString === NullString) continue;
             const gameMode = GameConstants.modeName;
-            if (obstacleData.reskin && Modes[gameMode].reskin) {
-                idString = `${idString}${ModeReskins[gameMode]}`;
+            if (obstacleData.reskin) {
+                idString = `${idString}${ObstacleModeVariations[gameMode] ?? ""}`;
             }
 
             const obstacleDef = Obstacles.fromString(idString);
