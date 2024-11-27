@@ -273,28 +273,35 @@ export class InputManager {
             const size = game.console.getBuiltInCVar("mb_joystick_size");
             const transparency = game.console.getBuiltInCVar("mb_joystick_transparency");
 
-            const leftJoyStick = nipplejs.create({
+            const leftJoystick = nipplejs.create({
                 zone: $("#left-joystick-container")[0],
                 size,
                 color: `rgba(255, 255, 255, ${transparency})`
             });
 
-            const rightJoyStick = nipplejs.create({
+            const rightJoystick = nipplejs.create({
                 zone: $("#right-joystick-container")[0],
                 size,
                 color: `rgba(255, 255, 255, ${transparency})`
             });
-
-            let rightJoyStickUsed = false;
+            let movementJoystick = leftJoystick;
+            let aimJoystick = rightJoystick;
+            const mbJoystickInfo = document.getElementById("mb-joystick-info");
+            if (game.console.getBuiltInCVar("mb_switch_joysticks")) {
+                movementJoystick = rightJoystick;
+                aimJoystick = leftJoystick;
+                if (mbJoystickInfo) mbJoystickInfo.textContent = "Right joystick moves, Left joystick aims";
+            } else if (mbJoystickInfo) mbJoystickInfo.textContent = "Left joystick moves, Right joystick aims";
+            let aimJoystickUsed = false;
             let shootOnRelease = false;
 
-            leftJoyStick.on("move", (_, data: JoystickOutputData) => {
+            movementJoystick.on("move", (_, data: JoystickOutputData) => {
                 const movementAngle = -Math.atan2(data.vector.y, data.vector.x);
 
                 this.movementAngle = movementAngle;
                 this.movement.moving = true;
 
-                if (!rightJoyStickUsed && !shootOnRelease) {
+                if (!aimJoystickUsed && !shootOnRelease) {
                     this.rotation = movementAngle;
                     this.turning = true;
                     if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && game.activePlayer) {
@@ -303,12 +310,12 @@ export class InputManager {
                 }
             });
 
-            leftJoyStick.on("end", () => {
+            movementJoystick.on("end", () => {
                 this.movement.moving = false;
             });
 
-            rightJoyStick.on("move", (_, data) => {
-                rightJoyStickUsed = true;
+            aimJoystick.on("move", (_, data) => {
+                aimJoystickUsed = true;
                 this.rotation = -Math.atan2(data.vector.y, data.vector.x);
                 this.turning = true;
                 const activePlayer = game.activePlayer;
@@ -334,8 +341,8 @@ export class InputManager {
                 }
             });
 
-            rightJoyStick.on("end", () => {
-                rightJoyStickUsed = false;
+            aimJoystick.on("end", () => {
+                aimJoystickUsed = false;
                 if (game.activePlayer) game.activePlayer.images.aimTrail.alpha = 0;
                 this.attacking = shootOnRelease;
                 this.resetAttacking = true;
