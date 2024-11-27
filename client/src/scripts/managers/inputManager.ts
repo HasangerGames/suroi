@@ -355,7 +355,7 @@ export class InputManager {
                 document.querySelectorAll(".controller-select").forEach(element => {
                     const selectedController = parseInt(element.id.split("-")[2]);
                     if (navigator.getGamepads()[selectedController]) {
-                        $(`#controller-select-${selectedController}`).show();
+                        $(`#controller-select-${selectedController}`).css("display", "flex");
                     } else $(`#controller-select-${selectedController}`).hide();
                     element.addEventListener("click", () => {
                         document.querySelectorAll(".controller-select").forEach(el => el.classList.remove("selected"));
@@ -371,6 +371,23 @@ export class InputManager {
                             strongMagnitude: 1.0
                         });
                     });
+                });
+                document.querySelectorAll(".controller-select").forEach((controllerSelect, index) => {
+                    const controller = navigator.getGamepads()[index];
+                    if (controller) {
+                        let imgSrc = "./img/misc/other_controller.svg";
+                        if (controller.id.includes("045e")) {
+                            imgSrc = "./img/misc/xbox_controller.svg";
+                        } else if (controller.id.includes("0ce")) {
+                            imgSrc = "./img/misc/ps5_controller.svg";
+                        } else if (controller.id.includes("054c") && !controller.id.includes("0ce")) {
+                            imgSrc = "./img/misc/ps4_controller.svg";
+                        } else if (controller.id.includes("057e")) {
+                            imgSrc = "./img/misc/joycon_controller.svg";
+                        }
+                        (document.getElementById(`controller-img-${index}`) as HTMLImageElement).src = imgSrc;
+                        (document.getElementById(`controller-id-${index}`) as HTMLDivElement).textContent = controller.id.split("(")[0].trim();
+                    }
                 });
                 this.leftJoystickSensitivity = game.console.getBuiltInCVar("cv_left_joystick_sensitivity");
                 this.rightJoystickSensitivity = game.console.getBuiltInCVar("cv_right_joystick_sensitivity");
@@ -404,7 +421,7 @@ export class InputManager {
                 if (controller.buttons[7].pressed) {
                     this.attacking = true;
                     if (game.console.getBuiltInCVar("cv_controller_vibration")) {
-                        if (game.activePlayer?.activeItem.itemType === ItemType.Gun && !game.activePlayer.dead) {
+                        if (game.activePlayer?.activeItem.itemType === ItemType.Gun && !game.activePlayer.dead && !game.activePlayer.downed) {
                             await controller.vibrationActuator.playEffect("dual-rumble", {
                                 startDelay: 0,
                                 duration: 10,

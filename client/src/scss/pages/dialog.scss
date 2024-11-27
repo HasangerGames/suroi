@@ -788,6 +788,7 @@
     
     .controller-select {
         display: none;
+        flex-direction: column;
         width: 160px;
         height: 100px;
         background-color: hsl(230, 7%, 25%);
@@ -798,7 +799,20 @@
         &.selected {
             border-color: palette.$orange;
         }
-      }
+    }
+
+    .controller-select-text {
+        width: 75px;
+        margin-left: -60px;
+        color: red;
+        font-size: 13px;
+        text-align: left;
+    }
+
+    .controller-select-img {
+        margin-top: -50px;
+         margin-left: 90px;
+    }
 
     .modal-item {
 
