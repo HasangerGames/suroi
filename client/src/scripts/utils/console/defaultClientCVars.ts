@@ -90,6 +90,7 @@ export const CVarCasters = Object.freeze({
     mb_controls_enabled: Casters.toBoolean,
     mb_joystick_size: Casters.toNumber,
     mb_joystick_transparency: Casters.toNumber,
+    mb_switch_joysticks: Casters.toBoolean,
     mb_high_res_textures: Casters.toBoolean,
 
     dv_password: Casters.toString,
@@ -214,6 +215,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     pf_show_ping: false,
     pf_show_pos: false,
 
+    mb_switch_joysticks: false,
     mb_controls_enabled: true,
     mb_joystick_size: 150,
     mb_joystick_transparency: 0.8,
