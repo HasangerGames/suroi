@@ -597,7 +597,7 @@ const maps = {
             barrel_winter: 80,
             viking_chest: 1,
             super_barrel_winter: 30,
-            melee_crate: 1,
+            melee_crate_winter: 1,
             gold_rock: 1,
             loot_barrel: 1,
             flint_stone_winter: 1
