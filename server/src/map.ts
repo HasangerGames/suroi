@@ -533,7 +533,7 @@ export class GameMap {
             >(obstacleData.idString);
             if (idString === NullString) continue;
             const gameMode = GameConstants.modeName;
-            if (obstacleData.reskin) {
+            if (obstacleData.modeVariant) {
                 idString = `${idString}${ObstacleModeVariations[gameMode] ?? ""}`;
             }
 

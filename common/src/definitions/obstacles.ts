@@ -1386,16 +1386,18 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                             allowFlyover: FlyoverPref.Always
                         }
                     ), 3
+                ],
+                [
+                    crate(
+                        {
+                            idString: "melee_crate",
+                            name: "Melee Crate",
+                            hitbox: RectangleHitbox.fromRect(6.5, 6.3),
+                            rotationMode: RotationMode.None,
+                            allowFlyover: FlyoverPref.Always
+                        }
+                    )
                 ]
-            ),
-            crate(
-                {
-                    idString: "melee_crate",
-                    name: "Melee Crate",
-                    hitbox: RectangleHitbox.fromRect(6.5, 6.3),
-                    rotationMode: RotationMode.None,
-                    allowFlyover: FlyoverPref.Always
-                }
             ),
             crate(
                 {
