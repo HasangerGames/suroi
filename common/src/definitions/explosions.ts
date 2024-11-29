@@ -219,6 +219,34 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             }
         },
         {
+            idString: "propane_tank_explosion",
+            name: "Propane Tank",
+            damage: 80,
+            obstacleMultiplier: 1,
+            radius: {
+                min: 5,
+                max: 15
+            },
+            cameraShake: {
+                duration: 250,
+                intensity: 20
+            },
+            animation: {
+                duration: 1000,
+                tint: 0xb08b3f,
+                scale: 1.5
+            },
+            shrapnelCount: 8,
+            ballistics: {
+                damage: 2,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                range: 20,
+                rangeVariance: 1,
+                shrapnel: true
+            }
+        },
+        {
             idString: "usas_explosion",
             name: "USAS-12",
             damage: 40,

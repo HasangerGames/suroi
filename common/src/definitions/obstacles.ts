@@ -285,6 +285,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     metal_particle:                { base: "metal_particle_1", tint: 0x5f5f5f },
     metal_column_particle:         { base: "metal_particle_1", tint: 0x8f8f8f },
     super_barrel_particle:         { base: "metal_particle_1", tint: 0xce2b29 },
+    propane_tank_particle:         { base: "metal_particle_1", tint: 0xb08b3f },
     dumpster_particle:             { base: "metal_particle_1", tint: 0x3c7033 },
     washing_machine_particle:      { base: "metal_particle_1", tint: 0xcccccc },
     tv_particle:                   { base: "metal_particle_1", tint: 0x333333 },
@@ -1669,6 +1670,26 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     reflectBullets: true
                 }, 3
             ]),
+            {
+                idString: "propane_tank",
+                name: "Propane Tank",
+                material: "metal_light",
+                health: 80,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.95
+                },
+                reflectBullets: true,
+                hitbox: new CircleHitbox(2.5),
+                rotationMode: RotationMode.Full,
+                allowFlyover: FlyoverPref.Always,
+                explosion: "propane_tank_explosion",
+                frames: {
+                    particle: "propane_tank_particle",
+                    residue: "explosion_decal"
+                }
+            },
             {
                 idString: "loot_barrel",
                 name: "Loot Barrel",
