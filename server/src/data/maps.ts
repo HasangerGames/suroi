@@ -138,8 +138,8 @@ const maps = {
         },
         obstacles: {
             oil_tank: 12,
-            // christmas_tree: 1, // winter mode
-            oak_tree: 100,
+            oak_tree: 10,
+            small_oak_tree: 100,
             birch_tree: 20,
             pine_tree: 10,
             loot_tree: 1,
@@ -169,7 +169,7 @@ const maps = {
                     minAmount: 2,
                     maxAmount: 3,
                     jitter: 5,
-                    obstacles: ["oak_tree"],
+                    obstacles: ["small_oak_tree"],
                     radius: 12
                 }
             },
@@ -289,7 +289,8 @@ const maps = {
             tent_4: 1
         },
         obstacles: {
-            oak_tree: 250,
+            oak_tree: 230,
+            small_oak_tree: 50,
             birch_tree: 25,
             maple_tree: 70,
             pine_tree: 95,
@@ -326,6 +327,16 @@ const maps = {
                     maxAmount: 3,
                     jitter: 5,
                     obstacles: ["oak_tree"],
+                    radius: 12
+                }
+            },
+            {
+                clumpAmount: 15,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["small_oak_tree"],
                     radius: 12
                 }
             },
@@ -445,7 +456,8 @@ const maps = {
             tent_4: 1
         },
         obstacles: {
-            oak_tree: 140,
+            oak_tree: 40,
+            small_oak_tree: 100,
             birch_tree: 60,
             maple_tree: 50,
             pine_tree: 80,
@@ -580,7 +592,7 @@ const maps = {
         obstacles: {
             oil_tank_winter: 12,
             christmas_tree: 1, // winter mode
-            oak_tree: 100,
+            oak_tree: 110,
             birch_tree: 20,
             pine_tree: 10,
             loot_tree: 1,
