@@ -437,6 +437,11 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     readonly zIndex?: ZIndexes
                     readonly allowFlyOver?: FlyoverPref
                     readonly hasLoot?: boolean
+                    readonly frames?: {
+                        readonly base?: string
+                        readonly particle?: string
+                        readonly residue?: string
+                    }
                 }
             ) => ({
 
@@ -455,7 +460,12 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: props.hitbox,
                 zIndex: props.zIndex ?? ZIndexes.ObstaclesLayer5,
                 hasLoot: props.hasLoot ?? false,
-                allowFlyover: props.allowFlyOver ?? FlyoverPref.Sometimes
+                allowFlyover: props.allowFlyOver ?? FlyoverPref.Sometimes,
+                frames: {
+                    base: props.frames?.base,
+                    particle: props.frames?.particle,
+                    residue: props.frames?.residue
+                }
             })
         );
 
@@ -833,6 +843,25 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 rotationMode: RotationMode.Full,
                 hitbox: new CircleHitbox(3.5),
                 variations: 6
+            }]),
+
+            tree([{
+                name: "Small Oak Tree",
+                health: 180,
+                scaleProps: {
+                    spawnMin: 0.9,
+                    spawnMax: 1.2,
+                    destroy: 0.75
+                },
+                spawnHitbox: new CircleHitbox(8.5),
+                rotationMode: RotationMode.Full,
+                hitbox: new CircleHitbox(3.5),
+                variations: 3,
+                zIndex: ZIndexes.ObstaclesLayer4,
+                frames: {
+                    particle: "oak_tree_particle",
+                    residue: "oak_tree_residue"
+                }
             }]),
 
             tree([{
