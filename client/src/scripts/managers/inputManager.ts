@@ -276,13 +276,25 @@ export class InputManager {
             const leftJoyStick = nipplejs.create({
                 zone: $("#left-joystick-container")[0],
                 size,
-                color: `rgba(255, 255, 255, ${transparency})`
+                color: `rgba(255, 255, 255, ${transparency})`,
+                ...(game.console.getBuiltInCVar("mb_joystick_lock")
+                    ? {
+                        position: { top: "50%", left: "25%" },
+                        mode: "static"
+                    }
+                    : {})
             });
 
             const rightJoyStick = nipplejs.create({
                 zone: $("#right-joystick-container")[0],
                 size,
-                color: `rgba(255, 255, 255, ${transparency})`
+                color: `rgba(255, 255, 255, ${transparency})`,
+                ...(game.console.getBuiltInCVar("mb_joystick_lock")
+                    ? {
+                        position: { top: "50%", right: "-25%" },
+                        mode: "static"
+                    }
+                    : {})
             });
 
             let rightJoyStickUsed = false;
