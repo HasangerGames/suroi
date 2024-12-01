@@ -62,7 +62,8 @@ export const GameConstants = freezeDeep({
         reviveTime: 8,
         maxReviveDist: 5,
         bleedOutDPMs: 0.002, // === 2 dps
-        maxPerkCount: 1
+        maxPerkCount: 1,
+        mapPingCooldown: 500 // ms
     },
     gas: {
         damageScaleFactor: 0.005, // Extra damage, linear per distance unit into the gas

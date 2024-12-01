@@ -91,6 +91,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     teamID?: number;
     colorIndex = 0; // Assigned in the team.ts file.
 
+    // Rate Limiting: Team Pings.
+    lastMapPingTime = 0;
+
     readonly loadout: {
         badge?: BadgeDefinition
         skin: SkinDefinition
@@ -727,6 +730,18 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     sendMapPing(ping: PlayerPing, position: Vector): void {
+        // -----------------------------------------------------------------
+        // Rate Limiting: Team Pings.
+        // -----------------------------------------------------------------
+        const elapsedTime = this.game.now - this.lastMapPingTime;
+
+        if (elapsedTime < GameConstants.player.mapPingCooldown) {
+            return;
+        }
+
+        this.lastMapPingTime = this.game.now;
+        // -----------------------------------------------------------------
+
         if (
             this.game.pluginManager.emit("player_will_map_ping", {
                 player: this,
