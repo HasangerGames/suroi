@@ -41,6 +41,9 @@ importers:
       colord:
         specifier: ^2.9.3
         version: 2.9.3
+      fontfaceobserver:
+        specifier: ^2.3.0
+        version: 2.3.0
       jquery:
         specifier: ^3.7.1
         version: 3.7.1
@@ -63,6 +66,9 @@ importers:
       '@tsconfig/svelte':
         specifier: ^5.0.4
         version: 5.0.4
+      '@types/fontfaceobserver':
+        specifier: ^2.1.3
+        version: 2.1.3
       '@types/jquery':
         specifier: ^3.5.32
         version: 3.5.32
@@ -1319,6 +1325,9 @@ packages:
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
 
+  '@types/fontfaceobserver@2.1.3':
+    resolution: {integrity: sha512-AewfFg9iUfoUZ4EfKxhBaEuzY2TUS+Hm0vXWMPcJRY7C4wC9XtW20lPVYHTcWVZYq1uthCEa5APl7RAX7jr2Xg==}
+
   '@types/graceful-fs@4.1.9':
     resolution: {integrity: sha512-olP3sd1qOEe5dXTSaFvQG+02VdRXcdytWLAZsAq1PecU8uqQAhkrnbli7DagjtXKW/Bl7YJbUsa8MPcuc8LHEQ==}
 
@@ -1966,6 +1975,9 @@ packages:
 
   flatted@3.3.2:
     resolution: {integrity: sha512-AiwGJM8YcNOaobumgtng+6NHuOqC3A7MixFeDafM3X9cIUM+xUXoS5Vfgf+OihAYe20fxqNM9yPBXJzRtZ/4eA==}
+
+  fontfaceobserver@2.3.0:
+    resolution: {integrity: sha512-6FPvD/IVyT4ZlNe7Wcn5Fb/4ChigpucKYSvD6a+0iMoLn2inpo711eyIcKjmDtE5XNcgAkSH9uN/nfAeZzHEfg==}
 
   fraction.js@4.3.7:
     resolution: {integrity: sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==}
@@ -4433,6 +4445,8 @@ snapshots:
 
   '@types/estree@1.0.6': {}
 
+  '@types/fontfaceobserver@2.1.3': {}
+
   '@types/graceful-fs@4.1.9':
     dependencies:
       '@types/node': 22.10.2
@@ -5148,6 +5162,8 @@ snapshots:
       keyv: 4.5.4
 
   flatted@3.3.2: {}
+
+  fontfaceobserver@2.3.0: {}
 
   fraction.js@4.3.7: {}
 
