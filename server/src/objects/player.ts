@@ -2186,7 +2186,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 if (
                     def.noDrop
                     || ("ephemeral" in def && def.ephemeral)
-                    || def.idString === Modes[GameConstants.modeName].defaultScope
+                    || def.idString === this.game.mode.defaultScope
                 ) continue;
 
                 if (def.itemType === ItemType.Ammo && count !== Infinity) {

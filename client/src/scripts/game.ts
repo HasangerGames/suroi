@@ -310,6 +310,7 @@ export class Game {
 
         void Promise.all([
             initPixi(),
+            game.soundManager.loadSounds(game),
             setUpUI(game)
         ]).then(() => {
             unlockPlayButtons();
@@ -601,7 +602,9 @@ export class Game {
         const ui = this.uiManager.ui;
 
         return await new Promise(resolve => {
+            ui.gameMenu.fadeOut(250);
             ui.splashOptions.addClass("loading");
+            ui.loaderText.text("");
 
             this.soundManager.stopAll();
 
@@ -611,7 +614,6 @@ export class Game {
                 }
                 ui.teamContainer.html("");
                 ui.actionContainer.hide();
-                ui.gameMenu.hide();
                 ui.gameOverOverlay.hide();
                 ui.canvas.removeClass("active");
                 ui.killLeaderLeader.text(getTranslatedString("msg_waiting_for_leader"));

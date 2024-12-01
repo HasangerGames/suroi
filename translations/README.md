@@ -1,8 +1,8 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Mon, 06 Jan 2025 19:29:40 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Tue, 14 Jan 2025 19:16:02 GMT
 
-## 🇦🇱 Shqip (88% Complete) - ab.hjson
+## 🇦🇱 Shqip (87% Complete) - ab.hjson
 
 ### (No Invalid Keys)
 
@@ -23,6 +23,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_cannot_use_radio` is not defined
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `finally` is not defined
 - Key `with` is not defined
@@ -49,6 +51,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `create_team_share` is not defined
 
 ## 🇨🇿 Čeština (92% Complete) - cz.hjson
@@ -74,6 +78,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_cannot_use_radio` is not defined
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_share` is not defined
@@ -87,18 +93,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `create_team_share` is not defined
 
-## 🇪🇸 Español (99% Complete) - es.hjson
+## 🇪🇸 Español (98% Complete) - es.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `wiki` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `create_team_share` is not defined
 
-## 🇪🇪 eesti (99% Complete) - et.hjson
+## 🇪🇪 eesti (98% Complete) - et.hjson
 
 ### Invalid Keys
 
@@ -107,6 +117,8 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `wiki` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `create_team_share` is not defined
 
 ## 🇫🇮 suomi (97% Complete) - fi.hjson
@@ -121,6 +133,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `create_team_share` is not defined
 
 ## 🇫🇷 Français (97% Complete) - fr.hjson
@@ -135,6 +149,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `create_team_share` is not defined
 
 ## 🇬🇷 Ελληνικά (98% Complete) - gr.hjson
@@ -146,9 +162,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `create_team_share` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (91% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (90% Complete) - hk_mo.hjson
 
 ### (No Invalid Keys)
 
@@ -173,13 +191,15 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_cannot_use_radio` is not defined
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_share` is not defined
 
-## 🇭🇺 Magyar (99% Complete) - hu.hjson
+## 🇭🇺 Magyar (98% Complete) - hu.hjson
 
 ### Invalid Keys
 
@@ -189,6 +209,8 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `wiki` is not defined
 - Key `settings_haptics` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `create_team_share` is not defined
 
 ## 🇮🇹 Italiano (88% Complete) - it.hjson
@@ -231,6 +253,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `interact_headquarters_security_desk` is not defined
 - Key `interact_speaker` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
@@ -261,6 +285,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_cannot_use_radio` is not defined
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_share` is not defined
@@ -288,6 +314,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_cannot_use_radio` is not defined
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_share` is not defined
@@ -315,6 +343,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_cannot_use_radio` is not defined
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_share` is not defined
@@ -331,9 +361,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `create_team_share` is not defined
 
-## 🎀 Cute Engwish (90% Complete) - qen.hjson
+## 🎀 Cute Engwish (89% Complete) - qen.hjson
 
 ### (No Invalid Keys)
 
@@ -361,12 +393,14 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_cannot_use_radio` is not defined
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_share` is not defined
 - Key `m16a4` is not defined
 
-## 🇷🇴 Română (86% Complete) - ro.hjson
+## 🇷🇴 Română (85% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
@@ -393,6 +427,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_cannot_use_radio` is not defined
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `finally` is not defined
 - Key `with` is not defined
@@ -410,13 +446,15 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_share` is not defined
 - Key `m16a4` is not defined
 
-## 🇷🇺 Русский (99% Complete) - ru.hjson
+## 🇷🇺 Русский (98% Complete) - ru.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `wiki` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `create_team_share` is not defined
 - Key `m16a4` is not defined
 
@@ -445,11 +483,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `interact_headquarters_security_desk` is not defined
 - Key `interact_speaker` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_share` is not defined
 
-## 🇹🇷 Turkısh (98% Complete) - tr.hjson
+## 🇹🇷 Turkısh (97% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -462,6 +502,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `create_team_share` is not defined
 
 ## 🇹🇼 中文（繁體） (84% Complete) - tw.hjson
@@ -492,6 +534,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_cannot_use_radio` is not defined
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
@@ -511,7 +555,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_share` is not defined
 - Key `m16a4` is not defined
 
-## 🇻🇳 Tiếng Việt (98% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (97% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -524,9 +568,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_ambient_particles` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `create_team_share` is not defined
 
-## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (98% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -535,5 +581,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `wiki` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
 - Key `create_team_share` is not defined
 

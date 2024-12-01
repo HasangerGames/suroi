@@ -1,4 +1,3 @@
-import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "@common/constants";
 import { Ammos, type AmmoDefinition } from "@common/definitions/ammos";
 import { type ArmorDefinition } from "@common/definitions/armors";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
@@ -9,7 +8,6 @@ import { PerkIds, Perks } from "@common/definitions/perks";
 import { Scopes, type ScopeDefinition } from "@common/definitions/scopes";
 import { Skins, type SkinDefinition } from "@common/definitions/skins";
 import { SpectatePacket } from "@common/packets/spectatePacket";
-import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { pickRandomInArray } from "@common/utils/random";
@@ -27,6 +25,8 @@ import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaul
 import { EMOTE_SLOTS, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
+import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "@common/constants";
+import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "@common/typings";
 
 /*
     eslint-disable
@@ -73,8 +73,7 @@ export function resetPlayButtons(): void {
     if (buttonsLocked) return;
 
     $("#splash-options").removeClass("loading");
-    $("#loading-text").text("");
-    // $("#btn-cancel-finding-game").css("display", "none");
+    $("#loader-text").text("");
 
     const { maxTeamSize } = selectedRegion ?? regionInfo[Config.defaultRegion];
 
@@ -118,7 +117,7 @@ export async function fetchServerData(game: Game): Promise<void> {
         );
     }
 
-    ui.loadingText.text(getTranslatedString("loading_fetching_data"));
+    ui.loaderText.text(getTranslatedString("loading_fetching_data"));
     const regionPromises = Object.entries(regionMap).map(async([_, [regionID, region]]) => {
         const listItem = regionUICache[regionID];
 
@@ -346,7 +345,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
         game.connecting = true;
         ui.splashOptions.addClass("loading");
-        ui.loadingText.text(getTranslatedString("loading_finding_game"));
+        ui.loaderText.text(getTranslatedString("loading_finding_game"));
         // ui.cancelFindingGame.css("display", "");
 
         const target = selectedRegion;
@@ -441,7 +440,7 @@ export async function setUpUI(game: Game): Promise<void> {
         lastPlayButtonClickTime = now;
 
         ui.splashOptions.addClass("loading");
-        ui.loadingText.text(getTranslatedString("loading_connecting"));
+        ui.loaderText.text(getTranslatedString("loading_connecting"));
 
         const params = new URLSearchParams();
 
@@ -933,7 +932,7 @@ export async function setUpUI(game: Game): Promise<void> {
         sendSpectatePacket(SpectateActions.SpectateNext);
     });
 
-    $<HTMLButtonElement>("#btn-resume-game").on("click", () => gameMenu.hide());
+    $<HTMLButtonElement>("#btn-resume-game").on("click", () => gameMenu.fadeOut(250));
     $<HTMLButtonElement>("#btn-fullscreen").on("click", () => {
         requestFullscreen();
         ui.gameMenu.hide();
@@ -943,7 +942,7 @@ export async function setUpUI(game: Game): Promise<void> {
         if (e.key === "Escape") {
             if (ui.canvas.hasClass("active") && !game.console.isOpen) {
                 gameMenu.fadeToggle(250);
-                settingsMenu.hide();
+                settingsMenu.fadeOut(250);
             }
             game.console.isOpen = false;
         }
@@ -956,14 +955,12 @@ export async function setUpUI(game: Game): Promise<void> {
     });
 
     $<HTMLButtonElement>("#btn-settings-game").on("click", () => {
-        gameMenu.hide();
+        gameMenu.fadeOut(250);
         settingsMenu.fadeToggle(250);
         settingsMenu.addClass("in-game");
     });
 
-    $<HTMLButtonElement>("#close-settings").on("click", () => {
-        settingsMenu.fadeOut(250);
-    });
+    $<HTMLButtonElement>("#close-settings").on("click", () => settingsMenu.fadeOut(250));
 
     const customizeMenu = $<HTMLButtonElement>("#customize-menu");
     $<HTMLButtonElement>("#btn-customize").on("click", () => {

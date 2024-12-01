@@ -283,6 +283,7 @@ if (!isMainThread) {
             // Ensure IP is allowed
             //
             if ((allowedIPs.get(ip) ?? 0) < game.now) {
+                console.log("forbidden to due unallowed IP");
                 forbidden(res);
                 return;
             }

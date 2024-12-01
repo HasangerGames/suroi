@@ -1,6 +1,6 @@
 import { GameConstants, TeamSize } from "@common/constants";
 import { Badges } from "@common/definitions/badges";
-import { Mode, Modes } from "@common/definitions/modes";
+import { Mode } from "@common/definitions/modes";
 import { Skins } from "@common/definitions/skins";
 import { type GetGameResponse } from "@common/typings";
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
@@ -13,7 +13,6 @@ import { type WebSocket } from "uWebSockets.js";
 import { isMainThread } from "worker_threads";
 import { version } from "../../package.json";
 import { Config } from "./config";
-import { MapName, Maps } from "./data/maps";
 import { findGame, games, newGame, WorkerMessages } from "./gameManager";
 import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./team";
 import IPChecker, { Punishment } from "./utils/apiHelper";
@@ -147,10 +146,10 @@ if (isMainThread) {
             } else {
                 response = await findGame();
             }
+        }
 
-            if (response.success) {
-                await games[response.gameID]?.allowIP(ip);
-            }
+        if (response.success) {
+            await games[response.gameID]?.allowIP(ip);
         }
 
         if (!aborted) {

@@ -157,7 +157,6 @@ export class SoundManager {
 
         this.sfxVolume = game.console.getBuiltInCVar("cv_sfx_volume");
         this.ambienceVolume = game.console.getBuiltInCVar("cv_ambience_volume");
-        this.loadSounds(game);
     }
 
     play(name: string, options?: Partial<SoundOptions>): GameSound {
@@ -192,7 +191,7 @@ export class SoundManager {
         PixiSound.sound.stopAll();
     }
 
-    loadSounds({ mode, modeName }: Game): void {
+    async loadSounds({ mode, modeName }: Game): Promise<void> {
         for (const path in import.meta.glob(["/public/audio/sfx/**/*.mp3", "/public/audio/ambience/**/*.mp3"])) {
             /**
              * For some reason, PIXI will call the `loaded` callback twice
