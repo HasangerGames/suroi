@@ -11,7 +11,7 @@ import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorS
 import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
 import { COLORS, DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
-import { SuroiSprite, drawGroundGraphics, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { SuroiSprite, drawGroundGraphics, drawHitbox, setOnSpritesheetsLoaded, spritesheetsLoaded, toPixiCoords } from "../utils/pixi";
 import { GasRender } from "./gas";
 import FontFaceObserver from "fontfaceobserver";
 
@@ -254,6 +254,10 @@ export class Minimap {
         terrainGraphics.fill(COLORS.border);
 
         this.game.camera.addObject(terrainGraphics);
+
+        if (!spritesheetsLoaded) {
+            await new Promise(resolve => setOnSpritesheetsLoaded(resolve));
+        }
 
         // Draw the minimap objects
         const mapRender = new Container();

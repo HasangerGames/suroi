@@ -3,13 +3,19 @@ import { HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Assets, Container, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
-import { getTranslatedString } from "../../translations";
 import { PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
 import { type Mode } from "@common/definitions/modes";
 
 const textures: Record<string, Texture> = {};
 
-const loadingText = $("#loading-text");
+export let spritesheetsLoaded = false;
+
+let onSpritesheetsLoaded: ((value: unknown) => void) | undefined;
+export function setOnSpritesheetsLoaded(callback: (value: unknown) => void): void {
+    onSpritesheetsLoaded = callback;
+}
+
+export let unloadedSprites: Map<SuroiSprite, string> | undefined;
 
 export async function loadTextures(modeName: Mode, renderer: Renderer, highResolution: boolean): Promise<void> {
     // If device doesn't support 4096x4096 textures, force low resolution textures since they are 2048x2048
@@ -53,9 +59,21 @@ export async function loadTextures(modeName: Mode, renderer: Renderer, highResol
                 const progress = `(${resolvedCount} / ${count})`;
 
                 console.log(`Atlas ${image} loaded ${progress}`);
-                loadingText.text(getTranslatedString("loading_spritesheets", {
-                    progress
-                }));
+
+                if (unloadedSprites) {
+                    for (const [sprite, frame] of unloadedSprites.entries()) {
+                        if (!(frame in textures)) continue;
+
+                        sprite.setFrame(frame, true);
+                        unloadedSprites.delete(sprite);
+                    }
+                    if (!unloadedSprites.size) unloadedSprites = undefined;
+                }
+
+                if (resolvedCount === count) {
+                    spritesheetsLoaded = true;
+                    onSpritesheetsLoaded?.(undefined);
+                }
             } catch (e) {
                 ++resolved;
                 console.error(`Atlas ${image} failed to load. Details:`, e);
@@ -198,13 +216,23 @@ export class SuroiSprite extends Sprite {
     }
 
     constructor(frame?: string) {
-        super(frame ? SuroiSprite.getTexture(frame) : undefined);
+        super(spritesheetsLoaded && frame ? SuroiSprite.getTexture(frame) : undefined);
+        if (!spritesheetsLoaded && frame) {
+            (unloadedSprites ??= new Map<SuroiSprite, string>()).set(this, frame);
+        }
 
         this.anchor.set(0.5);
         this.setPos(0, 0);
     }
 
-    setFrame(frame: string): this {
+    setFrame(frame: string, force?: boolean): this {
+        if (!spritesheetsLoaded && !force) {
+            // @ts-expect-error technically this shouldn't be undefined, but there isn't a way around it so
+            this.texture = undefined;
+            (unloadedSprites ??= new Map<SuroiSprite, string>()).set(this, frame);
+            return this;
+        }
+
         this.texture = SuroiSprite.getTexture(frame);
         return this;
     }
