@@ -64,7 +64,7 @@ export async function loadTextures(modeName: Mode, renderer: Renderer, highResol
                     for (const [sprite, frame] of unloadedSprites.entries()) {
                         if (!(frame in textures)) continue;
 
-                        sprite.setFrame(frame, true);
+                        if (!sprite.destroyed) sprite.setFrame(frame, true);
                         unloadedSprites.delete(sprite);
                     }
                     if (!unloadedSprites.size) unloadedSprites = undefined;
