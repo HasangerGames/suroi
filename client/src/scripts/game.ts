@@ -342,7 +342,7 @@ export class Game {
                             lifetime: randomFloat(12000, 50000),
                             zIndex: Number.MAX_SAFE_INTEGER - 5,
                             alpha: {
-                                start: 0.7,
+                                start: this.layer === Layer.Ground ? 0.7 : 0,
                                 end: 0
                             },
                             rotation: {
