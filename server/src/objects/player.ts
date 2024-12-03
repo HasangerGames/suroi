@@ -91,8 +91,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     teamID?: number;
     colorIndex = 0; // Assigned in the team.ts file.
 
-    // Rate Limiting: Team Pings.
-    lastMapPingTime = 0;
+    // Rate Limiting: Team Pings & Emotes.
+    emoteCount = 0;
+    lastRateLimitUpdate = 0;
+    blockEmoting = false;
 
     readonly loadout: {
         badge?: BadgeDefinition
@@ -706,7 +708,37 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.spawnPosition = position;
     }
 
+    // --------------------------------------------------------------------------------
+    // Rate Limiting: Team Pings & Emotes.
+    // --------------------------------------------------------------------------------
+    rateLimitCheck(): boolean {
+        if (this.blockEmoting) return false;
+
+        this.emoteCount++;
+
+        // After constantly spamming more than 5 emotes, block for 5 seconds.
+        if (this.emoteCount > GameConstants.player.rateLimitPunishmentTrigger) {
+            this.blockEmoting = true;
+            this.setDirty();
+            this.game.addTimeout(() => {
+                this.blockEmoting = false;
+                this.setDirty();
+                this.emoteCount = 0;
+            }, GameConstants.player.emotePunishmentTime);
+            return false;
+        }
+
+        return true;
+    }
+    // --------------------------------------------------------------------------------
+
     sendEmote(source?: AllowedEmoteSources): void {
+        // -------------------------------------
+        // Rate Limiting: Team Pings & Emotes.
+        // -------------------------------------
+        if (!this.rateLimitCheck()) return;
+        // -------------------------------------
+
         if (
             source !== undefined
             && !this.game.pluginManager.emit("player_will_emote", {
@@ -730,17 +762,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     sendMapPing(ping: PlayerPing, position: Vector): void {
-        // -----------------------------------------------------------------
-        // Rate Limiting: Team Pings.
-        // -----------------------------------------------------------------
-        const elapsedTime = this.game.now - this.lastMapPingTime;
-
-        if (elapsedTime < GameConstants.player.mapPingCooldown) {
-            return;
-        }
-
-        this.lastMapPingTime = this.game.now;
-        // -----------------------------------------------------------------
+        // -------------------------------------
+        // Rate Limiting: Team Pings & Emotes.
+        // -------------------------------------
+        if (!this.rateLimitCheck()) return;
+        // -------------------------------------
 
         if (
             this.game.pluginManager.emit("player_will_map_ping", {
@@ -803,6 +829,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
 
             movement = Vec.create(x, y);
+        }
+
+        // Rate Limiting: Team Pings & Emotes
+        if (this.emoteCount > 0 && !this.blockEmoting && (this.game.now - this.lastRateLimitUpdate > GameConstants.player.rateLimitInterval)) {
+            this.emoteCount--;
+            this.lastRateLimitUpdate = this.game.now;
         }
 
         // Perks
@@ -2503,7 +2535,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 vest: this.inventory.vest,
                 backpack: this.inventory.backpack,
                 halloweenThrowableSkin: this.halloweenThrowableSkin,
-                activeDisguise: this.activeDisguise
+                activeDisguise: this.activeDisguise,
+                blockEmoting: this.blockEmoting
             }
         };
 

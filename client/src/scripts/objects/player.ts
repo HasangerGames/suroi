@@ -517,7 +517,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     vest,
                     backpack,
                     halloweenThrowableSkin,
-                    activeDisguise
+                    activeDisguise,
+                    blockEmoting
                 }
             } = data;
 
@@ -728,6 +729,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
                 updateContainerZIndex = true;
             }
+
+            // Rate Limiting: Team Pings & Emotes
+            this.game.uiManager.ui.emoteWheel.css("opacity", blockEmoting ? "0.5" : "");
         }
 
         if (updateContainerZIndex) this.updateZIndex();
