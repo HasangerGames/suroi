@@ -360,6 +360,9 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     metal_auto_door_particle:      { base: "metal_particle_1", tint: 0x404040 },
     red_metal_auto_door_particle:  { base: "metal_particle_1", tint: 0x401a1a },
     blue_metal_auto_door_particle: { base: "metal_particle_1", tint: 0x1a1a40 },
+    green_gift_particle:           { base: "toilet_particle",  tint: 0x377130 },
+    red_gift_particle:             { base: "toilet_particle",  tint: 0x962626 },
+    blue_gift_particle:            { base: "toilet_particle",  tint: 0x264b96 },
 
     pumpkin_particle:              { base: "pumpkin_particle_base", tint: 0xff8c01 },
     plumpkin_particle:             { base: "pumpkin_particle_base", tint: 0x8a4c70 },
@@ -803,6 +806,27 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 residue: "barrel_residue"
             }
         }));
+        const gift = derive(
+            (
+                color: "red" | "green" | "blue"
+            ) => ({
+                idString: `${color}_gift`,
+                name: `${color.charAt(0).toUpperCase() + color.slice(1)} Gift`,
+                material: "cardboard",
+                hideOnMap: true,
+                health: 60,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.8
+                },
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Never,
+                hitbox: RectangleHitbox.fromRect(4.4, 4.4),
+                zIndex: ZIndexes.ObstaclesLayer2,
+                hasLoot: true
+            })
+        );
 
         const withWinterVariation = (
             ...defs: ReadonlyArray<
@@ -1831,6 +1855,9 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     hasLoot: true
                 }, 3
             ]),
+            gift(["red"]),
+            gift(["green"]),
+            gift(["blue"]),
             {
                 idString: "hq_large_cart",
                 name: "Large Cart",
