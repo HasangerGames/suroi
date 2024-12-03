@@ -569,14 +569,14 @@ const maps = {
             construction_site: 1,
             mobile_home: 10,
             porta_potty: 12,
-            container_3: 2,
-            container_4: 2,
-            container_5: 2,
-            container_6: 2,
+            container_3: 3,
+            container_4: 3,
+            container_5: 3,
+            container_6: 3,
             container_7: 1,
             container_8: 2,
             container_9: 1,
-            container_10: 2
+            container_10: 3
         },
         majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
         quadBuildingLimit: {

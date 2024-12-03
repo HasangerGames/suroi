@@ -1,4 +1,4 @@
-import { Layers, TentTints, ZIndexes } from "../constants";
+import { GameConstants, Layers, TentTints, ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
@@ -288,6 +288,119 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             let spawnHitbox: Hitbox;
             let upperCeilingImage;
             let lowerCeilingImage;
+
+            const snowDecalDefinitions = {
+                closed: [
+                    {
+                        key: "snow_decal_container_closed_1",
+                        position: Vec.create(-2.5, -9.08)
+                    },
+                    {
+                        key: "snow_decal_container_closed_2",
+                        position: Vec.create(4.4, -6.5)
+                    },
+                    {
+                        key: "container_snow_cover_patch",
+                        position: Vec.create(-6.7, -7),
+                        tint: tint,
+                        rotation: Math.PI / 2,
+                        scale: Vec.create(1.5, 1)
+                    },
+                    {
+                        key: "container_snow_cover_patch",
+                        position: Vec.create(-1.9, -13.525),
+                        tint: tint,
+                        rotation: Math.PI,
+                        scale: Vec.create(1.1, 1)
+                    },
+                    {
+                        key: "container_snow_cover_patch",
+                        position: Vec.create(6.65, -7),
+                        tint: tint,
+                        rotation: Math.PI / 2,
+                        scale: Vec.create(1.5, 1)
+                    }
+                ],
+                open1: [
+                    {
+                        key: "snow_decal_container_open1_1",
+                        position: Vec.create(3.5, 8.5),
+                        rotation: Math.PI
+                    },
+                    {
+                        key: "snow_decal_container_open1_2",
+                        position: Vec.create(3.25, -8.5)
+                    },
+                    {
+                        key: "container_snow_cover_patch",
+                        position: Vec.create(6.7, -8),
+                        tint: tint,
+                        rotation: Math.PI / 2,
+                        scale: Vec.create(1.25, 1.25)
+                    },
+                    {
+                        key: "container_snow_cover_patch",
+                        position: Vec.create(1, -13.6),
+                        tint: tint,
+                        rotation: Math.PI,
+                        scale: Vec.create(1.25, 1.25)
+                    },
+                    {
+                        key: "container_snow_cover_patch",
+                        position: Vec.create(6.7, 8),
+                        tint: tint,
+                        rotation: Math.PI / 2,
+                        scale: Vec.create(1.25, 1.25)
+                    },
+                    {
+                        key: "container_snow_cover_patch",
+                        position: Vec.create(5.9, 13.65),
+                        tint: tint,
+                        rotation: Math.PI,
+                        scale: Vec.create(0.25, 1.4)
+                    },
+                    {
+                        key: "container_snow_cover_patch",
+                        position: Vec.create(4.5, 13),
+                        tint: tint,
+                        rotation: 45,
+                        scale: Vec.create(0.2125, 1.1)
+                    },
+                    {
+                        key: "container_snow_cover_patch",
+                        position: Vec.create(0, 12.4),
+                        tint: tint,
+                        rotation: Math.PI,
+                        scale: Vec.create(0.95, 1.4)
+                    }
+                ],
+                open2: [
+                    {
+                        key: "snow_decal_container_closed_2",
+                        position: Vec.create(4.4, -6.5)
+                    },
+                    {
+                        key: "snow_decal_container_open2_1",
+                        position: Vec.create(-5, 2.5),
+                        rotation: Math.PI
+                    },
+                    {
+                        key: "container_snow_cover_patch",
+                        position: Vec.create(-6.7, 4.5),
+                        tint: tint,
+                        rotation: Math.PI / 2,
+                        scale: Vec.create(1.5, 1)
+                    },
+                    {
+                        key: "container_snow_cover_patch",
+                        position: Vec.create(6.65, -7),
+                        tint: tint,
+                        rotation: Math.PI / 2,
+                        scale: Vec.create(1.5, 1)
+                    }
+                ]
+            };
+
             switch (open) {
                 case "open2":
                     hitbox = new GroupHitbox(
@@ -325,7 +438,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     break;
             }
 
-            const closed = open === "closed";
+            const closed = open === "closed"; // <-- tf?
 
             return {
                 idString: `container_${id}`,
@@ -355,7 +468,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         position: Vec.create(0, 6.98),
                         rotation: Math.PI,
                         tint
-                    }
+                    },
+                    ...(GameConstants.modeName === "winter" ? snowDecalDefinitions[open] : [])
                 ],
                 floors: [{
                     type: FloorNames.Metal,
