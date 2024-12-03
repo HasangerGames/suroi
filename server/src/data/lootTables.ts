@@ -903,7 +903,27 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { item: PerkIds.LowProfile, weight: 1 },
                 { item: PerkIds.Berserker, weight: 1 }
             ]
-        }
+        },
+        red_gift: [
+            { item: "model_37", weight: 0.4 },
+            { item: "m3k", weight: 0.3 },
+            { item: "flues", weight: 0.25 },
+            { item: "vepr12", weight: 0.05 }
+        ],
+        blue_gift: [
+            { item: "arx160", weight: 0.5 },
+            { item: "lewis_gun", weight: 0.4 },
+            { item: "mosin_nagant", weight: 0.05 },
+            { item: "sr25", weight: 0.04 },
+            { item: "m1_garand", weight: 0.01 }
+        ],
+        green_gift: [
+            { item: "m16a4", weight: 0.5 },
+            { item: "cz600", weight: 0.35 },
+            { item: "mg36", weight: 0.1 },
+            { item: "mini14", weight: 0.04 },
+            { item: "negev", weight: 0.01 }
+        ]
     },
 
     halloween: {
