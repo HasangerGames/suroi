@@ -3,7 +3,7 @@ import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
 import { MapObjectSpawnMode, NullString, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
-import { randomBoolean } from "../utils/random";
+import { pickRandomInArray, randomBoolean } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
 import { FlyoverPref, Materials, RotationMode, type ObstacleDefinition } from "./obstacles";
@@ -290,90 +290,188 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             let lowerCeilingImage;
 
             const snowDecalDefinitions = {
-                closed: [
-                    {
-                        key: "snow_decal_container_closed_1",
-                        position: Vec.create(-2.5, -9.08)
-                    },
-                    {
-                        key: "snow_decal_container_closed_2",
-                        position: Vec.create(4.4, -6.5)
-                    },
-                    {
-                        key: "container_snow_cover_patch",
-                        position: Vec.create(-6.7, -7),
-                        tint: tint,
-                        rotation: Math.PI / 2,
-                        scale: Vec.create(1.5, 1)
-                    },
-                    {
-                        key: "container_snow_cover_patch",
-                        position: Vec.create(-1.9, -13.525),
-                        tint: tint,
-                        rotation: Math.PI,
-                        scale: Vec.create(1.1, 1)
-                    },
-                    {
-                        key: "container_snow_cover_patch",
-                        position: Vec.create(6.65, -7),
-                        tint: tint,
-                        rotation: Math.PI / 2,
-                        scale: Vec.create(1.5, 1)
-                    }
-                ],
-                open1: [
-                    {
-                        key: "snow_decal_container_open1_1",
-                        position: Vec.create(3.5, 8.5),
-                        rotation: Math.PI
-                    },
-                    {
-                        key: "snow_decal_container_open1_2",
-                        position: Vec.create(3.25, -8.5)
-                    },
-                    {
-                        key: "container_snow_cover_patch",
-                        position: Vec.create(6.7, -8),
-                        tint: tint,
-                        rotation: Math.PI / 2,
-                        scale: Vec.create(1.25, 1.25)
-                    },
-                    {
-                        key: "container_snow_cover_patch",
-                        position: Vec.create(1, -13.6),
-                        tint: tint,
-                        rotation: Math.PI,
-                        scale: Vec.create(1.25, 1.25)
-                    },
-                    {
-                        key: "container_snow_cover_patch",
-                        position: Vec.create(6.7, 8),
-                        tint: tint,
-                        rotation: Math.PI / 2,
-                        scale: Vec.create(1.25, 1.25)
-                    },
-                    {
-                        key: "container_snow_cover_patch",
-                        position: Vec.create(5.9, 13.65),
-                        tint: tint,
-                        rotation: Math.PI,
-                        scale: Vec.create(0.25, 1.4)
-                    },
-                    {
-                        key: "container_snow_cover_patch",
-                        position: Vec.create(4.5, 13),
-                        tint: tint,
-                        rotation: 45,
-                        scale: Vec.create(0.2125, 1.1)
-                    },
-                    {
-                        key: "container_snow_cover_patch",
-                        position: Vec.create(0, 12.4),
-                        tint: tint,
-                        rotation: Math.PI,
-                        scale: Vec.create(0.95, 1.4)
-                    }
-                ],
+                closed: pickRandomInArray([
+                    [
+                        {
+                            key: "snow_decal_container_closed_1",
+                            position: Vec.create(-2.5, -9.08)
+                        },
+                        {
+                            key: "snow_decal_container_closed_2",
+                            position: Vec.create(4.4, -6.5)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(-6.7, -7),
+                            tint: tint,
+                            rotation: Math.PI / 2,
+                            scale: Vec.create(1.5, 1)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(-1.9, -13.525),
+                            tint: tint,
+                            rotation: Math.PI,
+                            scale: Vec.create(1.1, 1)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(6.65, -7),
+                            tint: tint,
+                            rotation: Math.PI / 2,
+                            scale: Vec.create(1.5, 1)
+                        }
+                    ],
+                    [
+                        {
+                            key: "snow_decal_container_closed_2",
+                            position: Vec.create(-4.4, -6.5),
+                            rotation: Math.PI
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(-6.7, -7),
+                            tint: tint,
+                            rotation: Math.PI / 2,
+                            scale: Vec.create(1.5, 1)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(-1.9, -13.525),
+                            tint: tint,
+                            rotation: Math.PI,
+                            scale: Vec.create(1.1, 1)
+                        },
+                        {
+                            key: "snow_decal_container_open1_2",
+                            position: Vec.create(1.8, 10),
+                            rotation: Math.PI / 2
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(6.6, 7),
+                            tint: tint,
+                            rotation: Math.PI / 2,
+                            scale: Vec.create(1.5, 1)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(1.8, 13.525),
+                            tint: tint,
+                            rotation: Math.PI,
+                            scale: Vec.create(1.1, 1)
+                        }
+                    ]
+                ]),
+                open1: pickRandomInArray([
+                    [
+                        {
+                            key: "snow_decal_container_open1_1",
+                            position: Vec.create(3.5, 8.5),
+                            rotation: Math.PI
+                        },
+                        {
+                            key: "snow_decal_container_open1_2",
+                            position: Vec.create(3.25, -8.5)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(6.7, -8),
+                            tint: tint,
+                            rotation: Math.PI / 2,
+                            scale: Vec.create(1.25, 1.25)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(1, -13.6),
+                            tint: tint,
+                            rotation: Math.PI,
+                            scale: Vec.create(1.25, 1.25)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(6.7, 8),
+                            tint: tint,
+                            rotation: Math.PI / 2,
+                            scale: Vec.create(1.25, 1.25)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(5.9, 13.65),
+                            tint: tint,
+                            rotation: Math.PI,
+                            scale: Vec.create(0.25, 1.4)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(4.5, 13),
+                            tint: tint,
+                            rotation: 45,
+                            scale: Vec.create(0.2125, 1.1)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(0, 12.4),
+                            tint: tint,
+                            rotation: Math.PI,
+                            scale: Vec.create(0.95, 1.4)
+                        }
+                    ],
+                    [
+                        {
+                            key: "snow_decal_container_open1_1",
+                            position: Vec.create(3.5, 8.5),
+                            rotation: Math.PI
+                        },
+                        {
+                            key: "snow_decal_container_open1_2",
+                            position: Vec.create(-2, -10),
+                            rotation: -Math.PI / 2
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(-6.7, -8),
+                            tint: tint,
+                            rotation: Math.PI / 2,
+                            scale: Vec.create(1.25, 1.25)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(-1, -13.6),
+                            tint: tint,
+                            rotation: Math.PI,
+                            scale: Vec.create(1.25, 1.25)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(6.7, 8),
+                            tint: tint,
+                            rotation: Math.PI / 2,
+                            scale: Vec.create(1.25, 1.25)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(5.9, 13.65),
+                            tint: tint,
+                            rotation: Math.PI,
+                            scale: Vec.create(0.25, 1.4)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(4.5, 13),
+                            tint: tint,
+                            rotation: 45,
+                            scale: Vec.create(0.2125, 1.1)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(0, 12.4),
+                            tint: tint,
+                            rotation: Math.PI,
+                            scale: Vec.create(0.95, 1.4)
+                        }
+                    ]
+                ]),
                 open2: [
                     {
                         key: "snow_decal_container_closed_2",
@@ -2971,69 +3069,71 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ],
                 obstacles: [
                     // Parking lot
-                    { idString: "regular_crate", position: Vec.create(67.36, 58.18) },
+                    { idString: "regular_crate", position: Vec.create(67.36, 58.18), modeVariant: true },
 
-                    { idString: "forklift", position: Vec.create(95, 64), rotation: 1 },
+                    { idString: "forklift", position: Vec.create(95, 64), rotation: 1, modeVariant: true },
                     { idString: "pallet", position: Vec.create(107.5, 64), rotation: 1 },
-                    { idString: "barrel", position: Vec.create(107.5, 64) },
+                    { idString: "barrel", position: Vec.create(107.5, 64), modeVariant: true },
 
                     { idString: "trailer", position: Vec.create(100, 84), rotation: 3 },
                     { idString: "truck", position: Vec.create(72, 84), rotation: 3 },
 
-                    { idString: "regular_crate", position: Vec.create(120, 110) },
+                    { idString: "regular_crate", position: Vec.create(120, 110), modeVariant: true },
                     { idString: { regular_crate: 3, grenade_crate: 1 }, position: Vec.create(110, 115) },
 
-                    { idString: "box", position: Vec.create(87, 123) },
-                    { idString: "box", position: Vec.create(92, 120) },
-                    { idString: "box", position: Vec.create(85, 117) },
-                    { idString: "box", position: Vec.create(92, 114) },
+                    { idString: "box", position: Vec.create(87, 123), modeVariant: true },
+                    { idString: "box", position: Vec.create(92, 120), modeVariant: true },
+                    { idString: "box", position: Vec.create(85, 117), modeVariant: true },
+                    { idString: "box", position: Vec.create(92, 114), modeVariant: true },
 
-                    { idString: "forklift", position: Vec.create(90, 102.5), rotation: 1 },
+                    { idString: "forklift", position: Vec.create(90, 102.5), rotation: 1, modeVariant: true },
                     { idString: "pallet", position: Vec.create(100, 102.5), rotation: 1 },
-                    { idString: "regular_crate", position: Vec.create(100, 102.5) },
+                    { idString: "regular_crate", position: Vec.create(100, 102.5), modeVariant: true },
 
                     // Above red warehouse
                     { idString: "truck", position: Vec.create(12.5, 40), rotation: 3 },
                     { idString: "trailer", position: Vec.create(40, 40), rotation: 3 },
 
                     // next to red warehouse
-                    { idString: "dumpster", position: Vec.create(-7, -62), rotation: 3 },
-                    { idString: "dumpster", position: Vec.create(-22, -62), rotation: 3 },
+                    { idString: "dumpster", position: Vec.create(-7, -62), rotation: 3, modeVariant: true },
+                    { idString: "dumpster", position: Vec.create(-22, -62), rotation: 3, modeVariant: true },
 
                     // The main entrance
                     { idString: "barrier", position: Vec.create(-124, -10), rotation: 0 },
 
                     // Secret loot area sort of
-                    { idString: "sandbags", position: Vec.create(-144, 65), rotation: 1 },
-                    { idString: "sandbags", position: Vec.create(-132, 60), rotation: 2 },
+                    { idString: "sandbags", position: Vec.create(-144, 65), rotation: 1, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(-132, 60), rotation: 2, modeVariant: true },
 
-                    { idString: "super_barrel", position: Vec.create(-137, 75) },
-                    { idString: "barrel", position: Vec.create(-147, 80) },
+                    { idString: "super_barrel", position: Vec.create(-137, 75), modeVariant: true },
+                    { idString: "barrel", position: Vec.create(-147, 80), modeVariant: true },
 
-                    { idString: "super_barrel", position: Vec.create(-134, 90) },
-                    { idString: "barrel", position: Vec.create(-126, 85) },
+                    { idString: "super_barrel", position: Vec.create(-134, 90), modeVariant: true },
+                    { idString: "barrel", position: Vec.create(-126, 85), modeVariant: true },
 
                     {
                         idString: {
                             aegis_crate: 1,
                             flint_crate: 1
                         },
-                        position: Vec.create(-126, 100)
+                        position: Vec.create(-126, 100),
+                        modeVariant: true
                     },
                     {
                         idString: {
                             aegis_crate: 1,
                             flint_crate: 1
                         },
-                        position: Vec.create(-136, 105)
+                        position: Vec.create(-136, 105),
+                        modeVariant: true
                     },
 
-                    { idString: "sandbags", position: Vec.create(-132, 117), rotation: 2 },
-                    { idString: "barrel", position: Vec.create(-145, 117) },
+                    { idString: "sandbags", position: Vec.create(-132, 117), rotation: 2, modeVariant: true },
+                    { idString: "barrel", position: Vec.create(-145, 117), modeVariant: true },
 
                     // Top left corner above group 3 of the port.
-                    { idString: "grenade_crate", position: Vec.create(-124, -120) },
-                    { idString: { regular_crate: 3, grenade_crate: 1 }, position: Vec.create(-135, -125) },
+                    { idString: "grenade_crate", position: Vec.create(-124, -120), modeVariant: true },
+                    { idString: { regular_crate: 3, grenade_crate: 1 }, position: Vec.create(-135, -125), modeVariant: true },
                     {
                         idString: {
                             regular_crate: 2,
@@ -3041,40 +3141,42 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                             aegis_crate: 1
                         },
                         position: Vec.create(-140, -115),
-                        rotation: 1
+                        rotation: 1,
+                        modeVariant: true
                     },
 
-                    { idString: "barrel", position: Vec.create(-142, -95) },
-                    { idString: "super_barrel", position: Vec.create(-147, -87) },
+                    { idString: "barrel", position: Vec.create(-142, -95), modeVariant: true },
+                    { idString: "super_barrel", position: Vec.create(-147, -87), modeVariant: true },
 
-                    { idString: "regular_crate", position: Vec.create(54.57, -72.34) },
+                    { idString: "regular_crate", position: Vec.create(54.57, -72.34), modeVariant: true },
 
                     // Below Blue Warehouse
-                    { idString: "forklift", position: Vec.create(-60, -55), rotation: 1 },
+                    { idString: "forklift", position: Vec.create(-60, -55), rotation: 1, modeVariant: true },
                     { idString: "pallet", position: Vec.create(-50, -55), rotation: 1 },
 
-                    { idString: { flint_crate: 1, regular_crate: 1 }, position: Vec.create(-75, -45) },
-                    { idString: "flint_crate", position: Vec.create(-50, -55) },
+                    { idString: { flint_crate: 1, regular_crate: 1 }, position: Vec.create(-75, -45), modeVariant: true },
+                    { idString: "flint_crate", position: Vec.create(-50, -55), modeVariant: true },
 
                     // Top right corner above crane of the port
-                    { idString: { regular_crate: 3, grenade_crate: 1 }, position: Vec.create(108, -110) },
-                    { idString: "regular_crate", position: Vec.create(97, -100) },
-                    { idString: "grenade_crate", position: Vec.create(99, -90) },
-                    { idString: "forklift", position: Vec.create(110, -95), rotation: 2 },
+                    { idString: { regular_crate: 3, grenade_crate: 1 }, position: Vec.create(108, -110), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(97, -100), modeVariant: true },
+                    { idString: "grenade_crate", position: Vec.create(99, -90), modeVariant: true },
+                    { idString: "forklift", position: Vec.create(110, -95), rotation: 2, modeVariant: true },
                     { idString: "pallet", position: Vec.create(110, -107.5), rotation: 2 },
-                    { idString: "box", position: Vec.create(115.28, -104.85) },
-                    { idString: { barrel: 2, super_barrel: 1 }, position: Vec.create(93.77, -72.33) },
-                    { idString: { barrel: 2, super_barrel: 1 }, position: Vec.create(75.38, -68.72) },
+                    { idString: "box", position: Vec.create(115.28, -104.85), modeVariant: true },
+                    { idString: { barrel: 2, super_barrel: 1 }, position: Vec.create(93.77, -72.33), modeVariant: true },
+                    { idString: { barrel: 2, super_barrel: 1 }, position: Vec.create(75.38, -68.72), modeVariant: true },
 
-                    { idString: "aegis_crate", position: Vec.create(54.48, -118.9) },
-                    { idString: { aegis_crate: 1, regular_crate: 1 }, position: Vec.create(64.96, -123.57) },
+                    { idString: "aegis_crate", position: Vec.create(54.48, -118.9), modeVariant: true },
+                    { idString: { aegis_crate: 1, regular_crate: 1 }, position: Vec.create(64.96, -123.57), modeVariant: true },
 
                     ...(() => Array.from(
                         { length: 5 },
                         (_, i) => ({
                             idString: "bollard",
                             position: Vec.create(140.4, 50 - (41.5 * i)),
-                            rotation: 0
+                            rotation: 0,
+                            modeVariant: true
                         })
                     ))(),
 
@@ -3843,12 +3945,12 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { type: FloorNames.Stone, hitbox: RectangleHitbox.fromRect(10.5, 5.2, Vec.create(-1.7, 28.2)) }
                 ],
                 obstacles: [
-                    { idString: "sandbags", position: Vec.create(-16.79, 33.53), rotation: 1 },
-                    { idString: "sandbags", position: Vec.create(-16.79, 47.1), rotation: 1 },
-                    { idString: "sandbags", position: Vec.create(-14.15, 58.27), rotation: 2 },
-                    { idString: "barrel", position: Vec.create(-7.67, 47.77) },
-                    { idString: "barrel", position: Vec.create(14.07, 42) },
-                    { idString: "regular_crate", position: Vec.create(11.03, 32.15) },
+                    { idString: "sandbags", position: Vec.create(-16.79, 33.53), rotation: 1, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(-16.79, 47.1), rotation: 1, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(-14.15, 58.27), rotation: 2, modeVariant: true },
+                    { idString: "barrel", position: Vec.create(-7.67, 47.77), modeVariant: true },
+                    { idString: "barrel", position: Vec.create(14.07, 42), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(11.03, 32.15), modeVariant: true },
                     { idString: "door", position: Vec.create(-1.35, 25.19), rotation: 0 },
                     { idString: "gun_case", position: Vec.create(-13.41, 20.92), rotation: 2 },
                     { idString: "large_drawer", position: Vec.create(13.83, 1.1), rotation: 3 },
