@@ -363,6 +363,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     green_gift_particle:           { base: "toilet_particle",  tint: 0x377130 },
     red_gift_particle:             { base: "toilet_particle",  tint: 0x962626 },
     blue_gift_particle:            { base: "toilet_particle",  tint: 0x264b96 },
+    purple_gift_particle:          { base: "toilet_particle",  tint: 0x692d69 },
 
     pumpkin_particle:              { base: "pumpkin_particle_base", tint: 0xff8c01 },
     plumpkin_particle:             { base: "pumpkin_particle_base", tint: 0x8a4c70 },
@@ -808,7 +809,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
         }));
         const gift = derive(
             (
-                color: "red" | "green" | "blue"
+                color: "red" | "green" | "blue" | "purple"
             ) => ({
                 idString: `${color}_gift`,
                 name: `${color.charAt(0).toUpperCase() + color.slice(1)} Gift`,
@@ -949,21 +950,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 allowFlyOver: FlyoverPref.Never
             }]),
 
-            tree([{
-                name: "Christmas Tree",
-                health: 720,
-                scaleProps: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.75
-                },
-                hitbox: new CircleHitbox(10), // unchanged for now since still uses old textures
-                spawnHitbox: new CircleHitbox(15),
-                rotationMode: RotationMode.Full,
-                allowFlyOver: FlyoverPref.Never,
-                hasLoot: true
-            }]),
-
             ...withWinterVariation([
                 {
                     idString: "oil_tank",
@@ -989,6 +975,33 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     reflectBullets: true
                 }, 2
             ]),
+
+            {
+                idString: "christmas_tree",
+                name: "Christmas Tree",
+                material: "tree",
+                health: 720,
+                scale: {
+                    spawnMin: 0.9,
+                    spawnMax: 1.1,
+                    destroy: 0.75
+                },
+                hitbox: new CircleHitbox(10),
+                spawnHitbox: new CircleHitbox(15),
+                rotationMode: RotationMode.Full,
+                zIndex: ZIndexes.ObstaclesLayer4,
+                allowFlyover: FlyoverPref.Never,
+                hasLoot: true,
+                glow: {
+                    tint: 0xffff00,
+                    scale: 1.5,
+                    alpha: 0.8,
+                    scaleAnim: {
+                        to: 2,
+                        duration: 1e3
+                    }
+                }
+            },
 
             {
                 idString: "stump",
@@ -1858,6 +1871,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             gift(["red"]),
             gift(["green"]),
             gift(["blue"]),
+            gift(["purple"]),
             {
                 idString: "hq_large_cart",
                 name: "Large Cart",
@@ -3966,6 +3980,29 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     reflectBullets: true
                 }
             ]),
+            {
+                idString: "ice_pick_case",
+                name: "Ice Pick Case",
+                material: "iron",
+                health: 180,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.8
+                },
+                hasLoot: true,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(10.5, 4.5, Vec.create(-0.1, -0.1)),
+                    RectangleHitbox.fromRect(0.55, 5.95, Vec.create(-4, 0)),
+                    RectangleHitbox.fromRect(0.55, 5.95, Vec.create(4, 0))
+                ),
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Never,
+                frames: {
+                    particle: "toilet_particle"
+                },
+                reflectBullets: true
+            },
             {
                 idString: "button",
                 name: "Button",
