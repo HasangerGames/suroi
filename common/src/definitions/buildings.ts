@@ -158,6 +158,18 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly rotationMode: RotationMode.Limited | RotationMode.Binary | RotationMode.None
 }
 
+/* const randomGift = {
+    red_gift: 1,
+    green_gift: 1,
+    blue_gift: 1,
+    purple_gift: 0.1
+};
+
+const randomCelebrationWinterTree = {
+    oak_tree: 1,
+    birch_tree: 1
+} */
+
 const randomContainer1 = {
     container_1: 1,
     container_2: 2,
@@ -4090,39 +4102,39 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // North End of Bridge
                     { idString: "barrel", position: Vec.create(-17.5, -80), rotation: 0 },
 
-                    { idString: "sandbags", position: Vec.create(25, -80), rotation: 0 },
-                    { idString: "sandbags", position: Vec.create(36, -82.5), rotation: 1 },
-                    { idString: "sandbags", position: Vec.create(36, -96.5), rotation: 1 },
+                    { idString: "sandbags", position: Vec.create(25, -80), rotation: 0, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(36, -82.5), rotation: 1, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(36, -96.5), rotation: 1, modeVariant: true },
 
-                    { idString: "grenade_crate", position: Vec.create(27.5, -88.5) },
+                    { idString: "grenade_crate", position: Vec.create(27.5, -88.5), modeVariant: true },
 
                     // North-Center of the Bridge
-                    { idString: "regular_crate", position: Vec.create(13.5, -55), rotation: 1 },
-                    { idString: "barrel", position: Vec.create(4, -51), rotation: 1 },
-                    { idString: "gun_case", position: Vec.create(13.5, -47), rotation: 2 },
-                    { idString: "sandbags", position: Vec.create(12.5, -40), rotation: 2 },
-                    { idString: "aegis_crate", position: Vec.create(14.5, -30.5) },
+                    { idString: "regular_crate", position: Vec.create(13.5, -55), rotation: 1, modeVariant: true },
+                    { idString: "barrel", position: Vec.create(4, -51), rotation: 1, modeVariant: true },
+                    { idString: "gun_case", position: Vec.create(13.5, -47), rotation: 2, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(12.5, -40), rotation: 2, modeVariant: true },
+                    { idString: "aegis_crate", position: Vec.create(14.5, -30.5), modeVariant: true },
 
                     // Center of the Bridge
                     { idString: "m1117", position: Vec.create(-8.5, -4), rotation: 0, variation: 1 },
-                    { idString: "regular_crate", position: Vec.create(7, -20), rotation: 0 },
-                    { idString: "gun_case", position: Vec.create(14, 10), rotation: 0 },
+                    { idString: "regular_crate", position: Vec.create(7, -20), rotation: 0, modeVariant: true },
+                    { idString: "gun_case", position: Vec.create(14, 10), rotation: 0, modeVariant: true },
 
                     // South-Center of the Bridge
-                    { idString: "gun_case", position: Vec.create(6, 26), rotation: 3 },
+                    { idString: "gun_case", position: Vec.create(6, 26), rotation: 3, modeVariant: true },
                     { idString: "ammo_crate", position: Vec.create(14, 26) },
-                    { idString: "sandbags", position: Vec.create(12.5, 35.5), rotation: 2 },
-                    { idString: "barrel", position: Vec.create(15.5, 43.5), rotation: 2 },
+                    { idString: "sandbags", position: Vec.create(12.5, 35.5), rotation: 2, modeVariant: true },
+                    { idString: "barrel", position: Vec.create(15.5, 43.5), rotation: 2, modeVariant: true },
                     { idString: "tear_gas_crate", position: Vec.create(15.5, 52.5), rotation: 1 },
 
                     // South End of the Bridge
-                    { idString: "barrel", position: Vec.create(17.5, 80), rotation: 0 },
+                    { idString: "barrel", position: Vec.create(17.5, 80), rotation: 0, modeVariant: true },
 
-                    { idString: "sandbags", position: Vec.create(-25, 77), rotation: 0 },
-                    { idString: "sandbags", position: Vec.create(-36, 79.5), rotation: 1 },
-                    { idString: "sandbags", position: Vec.create(-36, 93.5), rotation: 1 },
+                    { idString: "sandbags", position: Vec.create(-25, 77), rotation: 0, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(-36, 79.5), rotation: 1, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(-36, 93.5), rotation: 1, modeVariant: true },
 
-                    { idString: "grenade_crate", position: Vec.create(-27.5, 85.5) }
+                    { idString: "grenade_crate", position: Vec.create(-27.5, 85.5), modeVariant: true }
                 ],
                 lootSpawners: [],
                 subBuildings: [
@@ -6630,6 +6642,57 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     position: Vec.create(-67.67, 85.03)
                 }]
             }
+
+            // TODO
+            /* {
+                idString: "celebration_place",
+                name: "Celebration Place",
+                spawnHitbox: RectangleHitbox.fromRect(140, 140, Vec.create(0, -1)),
+                obstacles: [
+                    { idString: "christmas_tree", position: Vec.create(0, 0) },
+                    { idString: "ice_pick_case", position: Vec.create(52.08, -61.06), rotation: 0 },
+                    { idString: randomCelebrationWinterTree, position: Vec.create(-50.54, 48.28) },
+                    { idString: randomCelebrationWinterTree, position: Vec.create(-37.08, -57.53) },
+                    { idString: randomGift, position: Vec.create(-59.15, -32.31) },
+                    { idString: "regular_crate", position: Vec.create(4.36, -51.25) },
+                    { idString: "regular_crate", position: Vec.create(26.85, 51.81) },
+                    { idString: "regular_crate", position: Vec.create(38.6, 38.14) },
+                    { idString: randomCelebrationWinterTree, position: Vec.create(52.37, 59) },
+                    { idString: randomCelebrationWinterTree, position: Vec.create(-50.8, 11.4) },
+                    { idString: randomCelebrationWinterTree, position: Vec.create(51.28, -5.09) },
+                    ...pickRandomInArray([
+                        [
+                            { idString: randomGift, position: Vec.create(-8.77, -8.43) },
+                            { idString: randomGift, position: Vec.create(8.77, -8.43) },
+                            { idString: randomGift, position: Vec.create(-8.77, 8.43) },
+                            { idString: randomGift, position: Vec.create(8.77, 8.43) },
+                            { idString: randomGift, position: Vec.create(-12, 0) },
+                            { idString: randomGift, position: Vec.create(12, 0) },
+                        ],
+                        [
+                            { idString: randomGift, position: Vec.create(-12, 0) },
+                            { idString: randomGift, position: Vec.create(12, 0) },
+                            { idString: randomGift, position: Vec.create(0, -12) },
+                            { idString: randomGift, position: Vec.create(0, 12) },
+                        ],
+                        [
+                            { idString: randomGift, position: Vec.create(-9.85, -10.12) },
+                            { idString: randomGift, position: Vec.create(9.85, -10.12) },
+                            { idString: randomGift, position: Vec.create(-9.85, 10.12) },
+                            { idString: randomGift, position: Vec.create(9.85, 10.12) },
+                        ]
+                    ])
+                ],
+                subBuildings: [
+                    { idString: "shed", position: Vec.create(50, -50) },
+                    { idString: {
+                        container_3: 1,
+                        container_4: 1,
+                        container_5: 1,
+                        container_6: 1
+                    }, position: Vec.create(30, -50), orientation: 1 }
+                ]
+            } */
         ] satisfies Missing[];
     }
 );

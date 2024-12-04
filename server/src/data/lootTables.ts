@@ -555,6 +555,9 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         fire_hatchet_case: [
             { item: "fire_hatchet", weight: 1 }
         ],
+        ice_pick_case: [
+            { item: "ice_pick", weight: 1 }
+        ],
         confetti_grenade_box: {
             min: 1,
             max: 2,
@@ -905,24 +908,59 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             ]
         },
         red_gift: [
-            { item: "model_37", weight: 0.4 },
-            { item: "m3k", weight: 0.3 },
-            { item: "flues", weight: 0.25 },
-            { item: "vepr12", weight: 0.05 }
+            [
+                { item: "model_37", weight: 0.4 },
+                { item: "m3k", weight: 0.3 },
+                { item: "flues", weight: 0.25 },
+                { item: "vepr12", weight: 0.05 }
+            ],
+            [
+                { table: "special_winter_skins", weight: 0.25 },
+                { table: "winter_skins", weight: 0.25 },
+                { item: NullString, weight: 1 }
+            ]
         ],
         blue_gift: [
-            { item: "arx160", weight: 0.5 },
-            { item: "lewis_gun", weight: 0.4 },
-            { item: "mosin_nagant", weight: 0.05 },
-            { item: "sr25", weight: 0.04 },
-            { item: "m1_garand", weight: 0.01 }
+            [
+                { item: "arx160", weight: 0.5 },
+                { item: "lewis_gun", weight: 0.4 },
+                { item: "mosin_nagant", weight: 0.05 },
+                { item: "sr25", weight: 0.04 },
+                { item: "m1_garand", weight: 0.01 }
+            ],
+            [
+                { table: "special_winter_skins", weight: 0.25 },
+                { table: "winter_skins", weight: 0.25 },
+                { item: NullString, weight: 1 }
+            ]
         ],
         green_gift: [
-            { item: "m16a4", weight: 0.5 },
-            { item: "cz600", weight: 0.35 },
-            { item: "mg36", weight: 0.1 },
-            { item: "mini14", weight: 0.04 },
-            { item: "negev", weight: 0.01 }
+            [
+                { item: "m16a4", weight: 0.5 },
+                { item: "cz600", weight: 0.35 },
+                { item: "mg36", weight: 0.1 },
+                { item: "mini14", weight: 0.04 },
+                { item: "negev", weight: 0.01 }
+            ],
+            [
+                { table: "special_winter_skins", weight: 0.25 },
+                { table: "winter_skins", weight: 0.25 },
+                { item: NullString, weight: 1 }
+            ]
+        ],
+        purple_gift: [
+            [
+                { item: "radio", weight: 0.5 },
+                { item: "firework_launcher", weight: 0.1 },
+                { item: "vepr12", weight: 0.1 },
+                { item: "m1_garand", weight: 0.1 },
+                { item: "mg36", weight: 0.1 }
+            ],
+            [
+                { table: "special_winter_skins", weight: 0.25 },
+                { table: "winter_skins", weight: 0.25 },
+                { item: NullString, weight: 1 }
+            ]
         ]
     },
 
@@ -1250,6 +1288,29 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "kbar", weight: 2 },
             { item: "baseball_bat", weight: 2 },
             { item: "gas_can", weight: 0 } // somewhat hack in order to make the gas can obtainable through mini plumpkins
+        ]
+    },
+
+    winter: {
+        ammo_crate: [
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "ammo", weight: 1 }],
+            [
+                { item: NullString, weight: 1 },
+                { item: "firework_rocket", count: 3, weight: 0.5 },
+                { item: "50cal", count: 20, weight: 0.7 },
+                { item: "338lap", count: 6, weight: 0.2 },
+                { item: "curadell", weight: 0.1 }
+            ]
+        ],
+
+        airdrop_skins: [
+            { item: NullString, weight: 1 },
+            { item: "sky", weight: 0.5 },
+            { item: "coal", weight: 1 },
+            { item: "henrys_little_helper", weight: 1 },
+            { item: "ghillie_suit", weight: 0.1 },
+            { item: "basic_outfit", weight: 0.001 }
         ]
     },
 

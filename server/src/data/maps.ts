@@ -560,8 +560,8 @@ const maps = {
             headquarters: 1,
             small_bunker: 1,
             refinery: 1,
-            warehouse: 5,
-            // firework_warehouse: 1, // birthday mode
+            warehouse: 4,
+            //  celebration_place: 1, - TODO
             green_house: 3,
             blue_house: 3,
             red_house: 3,
@@ -591,7 +591,6 @@ const maps = {
         },
         obstacles: {
             oil_tank_winter: 12,
-            christmas_tree: 1, // winter mode
             oak_tree: 110,
             birch_tree: 20,
             pine_tree: 10,
