@@ -561,24 +561,24 @@ const maps = {
             small_bunker: 1,
             refinery: 1,
             warehouse: 4,
-            //  celebration_place: 1, - TODO
+            celebration_place: 1,
             green_house: 3,
             blue_house: 3,
             red_house: 3,
             red_house_v2: 3,
             construction_site: 1,
-            mobile_home: 10,
+            mobile_home: 8,
             porta_potty: 12,
-            container_3: 3,
-            container_4: 3,
-            container_5: 3,
-            container_6: 3,
+            container_3: 2,
+            container_4: 2,
+            container_5: 2,
+            container_6: 2,
             container_7: 1,
             container_8: 2,
             container_9: 1,
             container_10: 3
         },
-        majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
+        majorBuildings: ["armory", "refinery", "port_complex", "headquarters", "celebration_place"],
         quadBuildingLimit: {
             red_house: 1,
             red_house_v2: 1,
@@ -615,7 +615,7 @@ const maps = {
         },
         obstacleClumps: [
             {
-                clumpAmount: 100,
+                clumpAmount: 90,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
