@@ -1,5 +1,5 @@
 import { defaultBulletTemplate } from "../constants";
-import { ObjectDefinitions, type BaseBulletDefinition, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { inheritFrom, ObjectDefinitions, type BaseBulletDefinition, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { type DecalDefinition } from "./decals";
 
 export interface ExplosionDefinition extends ObjectDefinition {
@@ -369,6 +369,17 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             },
             sound: "firework_rocket_explode",
             decal: "explosion_decal"
+        },
+        {
+            [inheritFrom]: "confetti_grenade_explosion",
+            name: "Coal",
+            ballistics: {
+                range: 10,
+                tracer: {
+                    color: 0x000000
+                }
+            },
+            sound: "firework_rocket_explode"
         },
         {
             name: "Frag Grenade",

@@ -596,6 +596,7 @@ const maps = {
             pine_tree: 10,
             loot_tree: 1,
             regular_crate_winter: 160,
+            frozen_crate: 10,
             flint_crate_winter: 5,
             aegis_crate_winter: 5,
             grenade_crate_winter: 35,

@@ -105,6 +105,10 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                         multiplier *= definition.piercingMultiplier !== undefined && closestObject.definition.impenetrable
                             ? definition.piercingMultiplier
                             : definition.obstacleMultiplier;
+
+                        if (closestObject.definition.material === "ice" && definition.iceMultiplier) {
+                            multiplier *= definition.iceMultiplier;
+                        }
                     }
 
                     if (closestObject.isThrowableProjectile) {

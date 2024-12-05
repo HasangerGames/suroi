@@ -368,7 +368,7 @@ export class GameMap {
                 }
                 attempts++;
             }
-            if (attempts >= 100) {
+            if (attempts >= 100 && !validPositionFound) {
                 Logger.warn("Failed to find valid position for clearing");
                 continue;
             }
