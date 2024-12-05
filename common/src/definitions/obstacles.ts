@@ -265,7 +265,8 @@ export const Materials = [
     "fence",
     "iron",
     "piano",
-    "trash_bag"
+    "trash_bag",
+    "ice"
 ] as const;
 
 export const MaterialSounds: Record<string, { hit?: string, destroyed?: string }> = {
@@ -360,10 +361,12 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     metal_auto_door_particle:      { base: "metal_particle_1", tint: 0x404040 },
     red_metal_auto_door_particle:  { base: "metal_particle_1", tint: 0x401a1a },
     blue_metal_auto_door_particle: { base: "metal_particle_1", tint: 0x1a1a40 },
-    green_gift_particle:           { base: "toilet_particle",  tint: 0x377130 },
+
     red_gift_particle:             { base: "toilet_particle",  tint: 0x962626 },
+    green_gift_particle:           { base: "toilet_particle",  tint: 0x377130 },
     blue_gift_particle:            { base: "toilet_particle",  tint: 0x264b96 },
     purple_gift_particle:          { base: "toilet_particle",  tint: 0x692d69 },
+    black_gift_particle:           { base: "toilet_particle",  tint: 0x1b1b1b },
 
     pumpkin_particle:              { base: "pumpkin_particle_base", tint: 0xff8c01 },
     plumpkin_particle:             { base: "pumpkin_particle_base", tint: 0x8a4c70 },
@@ -809,7 +812,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
         }));
         const gift = derive(
             (
-                color: "red" | "green" | "blue" | "purple"
+                color: "red" | "green" | "blue" | "purple" | "black",
+                explode = false
             ) => ({
                 idString: `${color}_gift`,
                 name: `${color.charAt(0).toUpperCase() + color.slice(1)} Gift`,
@@ -825,7 +829,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 allowFlyover: FlyoverPref.Never,
                 hitbox: RectangleHitbox.fromRect(4.4, 4.4),
                 zIndex: ZIndexes.ObstaclesLayer2,
-                hasLoot: true
+                hasLoot: true,
+                explosion: explode ? "coal_explosion" : undefined
             })
         );
 
@@ -1479,6 +1484,18 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 }
             ),
             {
+                [inheritFrom]: "regular_crate",
+                idString: "frozen_crate",
+                name: "Frozen Crate",
+                material: "ice",
+                health: 1000,
+                frames: {
+                    residue: "regular_crate_residue",
+                    particle: "window_particle"
+                },
+                hideOnMap: true
+            },
+            {
                 idString: "ammo_crate",
                 name: "Ammo Crate",
                 material: "cardboard",
@@ -1872,6 +1889,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             gift(["green"]),
             gift(["blue"]),
             gift(["purple"]),
+            gift(["black", true]),
             {
                 idString: "hq_large_cart",
                 name: "Large Cart",

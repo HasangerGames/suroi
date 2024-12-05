@@ -162,6 +162,7 @@ const randomGift = {
     red_gift: 1,
     green_gift: 1,
     blue_gift: 1,
+    black_gift: 0.25,
     purple_gift: 0.1
 };
 
@@ -1497,25 +1498,30 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     {
                         idString: "oil_tank",
                         position: Vec.create(-38, 73),
-                        rotation: 0
+                        rotation: 0,
+                        modeVariant: true
                     },
                     {
                         idString: "barrel",
                         position: Vec.create(-20.5, 77.5),
-                        rotation: 0
+                        rotation: 0,
+                        modeVariant: true
                     },
                     {
                         idString: "barrel",
                         position: Vec.create(-21.5, 67),
-                        rotation: 0
+                        rotation: 0,
+                        modeVariant: true
                     },
                     {
                         idString: "regular_crate",
-                        position: Vec.create(-46.5, 45.5)
+                        position: Vec.create(-46.5, 45.5),
+                        modeVariant: true
                     },
                     {
                         idString: "regular_crate",
-                        position: Vec.create(-36, 48)
+                        position: Vec.create(-36, 48),
+                        modeVariant: true
                     },
                     // Bottom right
                     {
@@ -1528,65 +1534,80 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     },
                     {
                         idString: "regular_crate",
-                        position: Vec.create(69, 62)
+                        position: Vec.create(69, 62),
+                        modeVariant: true
                     },
                     {
                         idString: "aegis_crate",
-                        position: Vec.create(64, 75)
+                        position: Vec.create(64, 75),
+                        modeVariant: true
                     },
                     {
                         idString: "aegis_crate",
-                        position: Vec.create(77, 73)
+                        position: Vec.create(77, 73),
+                        modeVariant: true
                     },
                     {
                         idString: "barrel",
-                        position: Vec.create(117.5, 77.5)
+                        position: Vec.create(117.5, 77.5),
+                        modeVariant: true
                     },
                     {
                         idString: "regular_crate",
-                        position: Vec.create(117, 40)
+                        position: Vec.create(117, 40),
+                        modeVariant: true
                     },
                     {
                         idString: "super_barrel",
-                        position: Vec.create(27.5, 39)
+                        position: Vec.create(27.5, 39),
+                        modeVariant: true
                     },
                     {
                         idString: "barrel",
-                        position: Vec.create(-10, 0)
+                        position: Vec.create(-10, 0),
+                        modeVariant: true
                     },
                     // Top right
                     {
                         idString: "oil_tank",
                         position: Vec.create(113, -25),
-                        rotation: 1
+                        rotation: 1,
+                        modeVariant: true
                     },
                     {
                         idString: "barrel",
-                        position: Vec.create(117.5, -7)
+                        position: Vec.create(117.5, -7),
+                        modeVariant: true
                     },
                     {
                         idString: "regular_crate",
-                        position: Vec.create(95, -33)
+                        position: Vec.create(95, -33),
+                        modeVariant: true
                     },
                     {
                         idString: "aegis_crate",
-                        position: Vec.create(76.25, -33.5)
+                        position: Vec.create(76.25, -33.5),
+                        modeVariant: true
                     },
                     {
                         idString: "super_barrel",
-                        position: Vec.create(85.25, -33.5)
+                        position: Vec.create(85.25, -33.5),
+                        modeVariant: true
                     },
                     {
                         idString: { barrel: 1, super_barrel: 1 },
-                        position: Vec.create(83, -25)
+                        position: Vec.create(83, -25),
+                        modeVariant: true
                     },
                     {
                         idString: "super_barrel",
-                        position: Vec.create(75, -23)
+                        position: Vec.create(75, -23),
+                        modeVariant: true
                     },
                     {
                         idString: "regular_crate",
-                        position: Vec.create(76.25, -12)
+                        position: Vec.create(76.25, -12),
+                        modeVariant: true
                     },
                     //
                     // Inner walls
@@ -6681,6 +6702,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: randomBarrel, position: Vec.create(-65.99, -14.17), modeVariant: true },
                     { idString: "office_chair", position: Vec.create(38.01, 15.69), rotation: 0 },
                     { idString: "fire_pit", position: Vec.create(44.73, -6.19) },
+                    { idString: { frozen_crate: 1, regular_crate_winter: 1 }, position: Vec.create(0.4, -32.01) },
 
                     // Hidden gift
                     { idString: randomGift, position: Vec.create(-67.1, -32.45) },

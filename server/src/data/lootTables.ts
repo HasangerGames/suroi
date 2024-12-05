@@ -190,6 +190,18 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { table: "special_healing_items", weight: 0.15 }
             ]
         },
+        frozen_crate: [
+            [
+                { table: "airdrop_guns", weight: 0.5 },
+                { table: "special_guns", weight: 1 }
+            ],
+            [{ table: "special_winter_skins", weight: 1 }],
+            [{ table: "airdrop_healing_items", weight: 0.5 }],
+            [
+                { item: NullString, weight: 0.5 },
+                { table: "special_equipment", weight: 0.5 }
+            ]
+        ],
         dumpster: {
             min: 1,
             max: 2,
@@ -556,7 +568,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "fire_hatchet", weight: 1 }
         ],
         ice_pick_case: [
-            { item: "ice_pick", weight: 1 }
+            [{ item: "ice_pick", weight: 1 }],
+            [{ item: "light_choco", weight: 1 }]
         ],
         confetti_grenade_box: {
             min: 1,
@@ -820,12 +833,14 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "peppermint", weight: 1 },
             { item: "spearmint", weight: 1 },
             { item: "coal", weight: 1 },
-            { item: "henrys_little_helper", weight: 1 },
-            { item: "candy_cane", weight: 1 }
+            { item: "candy_cane", weight: 1 },
+            { item: "henrys_little_helper", weight: 0.25 }
         ],
         special_winter_skins: [
             { item: "holiday_tree", weight: 1 },
-            { item: "gingerbread", weight: 1 }
+            { item: "gingerbread", weight: 1 },
+            { item: "henrys_little_helper", weight: 1 },
+            { item: "light_choco", weight: 1 }
         ],
         viking_chest_guns: [
             { item: "arx160", weight: 1 },
@@ -926,7 +941,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { item: "lewis_gun", weight: 0.4 },
                 { item: "mosin_nagant", weight: 0.05 },
                 { item: "sr25", weight: 0.04 },
-                { item: "m1_garand", weight: 0.01 }
+                { item: "m1_garand", weight: 0.01 },
+                { item: "mg5", weight: 0.01 }
             ],
             [
                 { table: "special_winter_skins", weight: 0.25 },
@@ -953,11 +969,24 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { item: "model_89", weight: 0.5 },
                 { item: "tango_51", weight: 0.2 },
                 { item: "pp19", weight: 0.2 },
-                { item: "mg5", weight: 0.1 }
+                { item: "mg5", weight: 0.1 },
+                { item: "rsh12", weight: 0.15 }
             ],
             [
                 { table: "special_winter_skins", weight: 0.25 },
                 { table: "winter_skins", weight: 0.25 },
+                { item: NullString, weight: 1 }
+            ]
+        ],
+        black_gift: [
+            [
+                { item: NullString, weight: 0.25 },
+                { item: "deagle", weight: 0.25 },
+                { item: "rsh12", weight: 0.25 },
+                { item: "vks", weight: 0.25 }
+            ],
+            [
+                { item: "coal", weight: 1 },
                 { item: NullString, weight: 1 }
             ]
         ]

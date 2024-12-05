@@ -9,6 +9,7 @@ export type MeleeDefinition = InventoryItemDefinition & {
     readonly obstacleMultiplier: number
     readonly piercingMultiplier?: number // If it does less dmg vs pierceable objects than it would vs a normal one
     readonly stonePiercing?: boolean
+    readonly iceMultiplier?: number
     readonly swingSound: string
     readonly stopSound?: string
     readonly radius: number
@@ -255,6 +256,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             idString: "maul",
             name: "Maul",
             damage: 54,
+            iceMultiplier: 5,
             rotationalAnimation: true,
             swingSound: "heavy_swing",
             obstacleMultiplier: 2,
@@ -363,6 +365,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             damage: 35,
             obstacleMultiplier: 1.9,
             piercingMultiplier: 1,
+            iceMultiplier: 5,
             radius: 2.8,
             offset: Vec.create(5.4, -0.5),
             cooldown: 420,
