@@ -158,7 +158,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly rotationMode: RotationMode.Limited | RotationMode.Binary | RotationMode.None
 }
 
-/* const randomGift = {
+const randomGift = {
     red_gift: 1,
     green_gift: 1,
     blue_gift: 1,
@@ -167,8 +167,9 @@ export interface BuildingDefinition extends ObjectDefinition {
 
 const randomCelebrationWinterTree = {
     oak_tree: 1,
-    birch_tree: 1
-} */
+    birch_tree: 1,
+    pine_tree: 0.9
+};
 
 const randomContainer1 = {
     container_1: 1,
@@ -2184,9 +2185,9 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "door", position: Vec.create(-29, 22.6), rotation: 2 },
 
                     // outside part
-                    { idString: "barrel", position: Vec.create(-7, 29) },
+                    { idString: "barrel", position: Vec.create(-7, 29), modeVariant: true },
                     { idString: { box: 1, trash_bag: 0.6 }, position: Vec.create(25, 27) },
-                    { idString: "box", position: Vec.create(19, 28.5) },
+                    { idString: "box", position: Vec.create(19, 28.5), modeVariant: true },
 
                     // top right
                     { idString: "house_wall_6", position: Vec.create(7.5, -21.5), rotation: 1 },
@@ -6641,25 +6642,50 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     key: "plumpkin_bunker_vault_ceiling",
                     position: Vec.create(-67.67, 85.03)
                 }]
-            }
+            },
 
-            // TODO
-            /* {
+            {
                 idString: "celebration_place",
                 name: "Celebration Place",
-                spawnHitbox: RectangleHitbox.fromRect(140, 140, Vec.create(0, -1)),
+                spawnHitbox: RectangleHitbox.fromRect(150, 75, Vec.create(0, -1)),
+                floorImages: [
+                    {
+                        key: "snow_decal_2",
+                        zIndex: ZIndexes.Decals,
+                        position: Vec.create(-40, -10),
+                        rotation: Math.PI / 2
+                    },
+                    {
+                        key: "snow_decal_3",
+                        zIndex: ZIndexes.Decals,
+                        position: Vec.create(30, 20),
+                        rotation: Math.PI
+                    },
+                    {
+                        key: "snow_decal_1",
+                        zIndex: ZIndexes.Decals,
+                        position: Vec.create(30, -20),
+                        rotation: Math.PI / 2
+                    }
+                ],
                 obstacles: [
                     { idString: "christmas_tree", position: Vec.create(0, 0) },
-                    { idString: "ice_pick_case", position: Vec.create(52.08, -61.06), rotation: 0 },
-                    { idString: randomCelebrationWinterTree, position: Vec.create(-50.54, 48.28) },
-                    { idString: randomCelebrationWinterTree, position: Vec.create(-37.08, -57.53) },
-                    { idString: randomGift, position: Vec.create(-59.15, -32.31) },
-                    { idString: "regular_crate", position: Vec.create(4.36, -51.25) },
-                    { idString: "regular_crate", position: Vec.create(26.85, 51.81) },
-                    { idString: "regular_crate", position: Vec.create(38.6, 38.14) },
-                    { idString: randomCelebrationWinterTree, position: Vec.create(52.37, 59) },
-                    { idString: randomCelebrationWinterTree, position: Vec.create(-50.8, 11.4) },
-                    { idString: randomCelebrationWinterTree, position: Vec.create(51.28, -5.09) },
+                    { idString: "ice_pick_case", position: Vec.create(65.8, 24.41), rotation: 3 },
+                    { idString: "regular_crate", position: Vec.create(64.3, -10.79), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(51.78, -23.32), modeVariant: true },
+                    { idString: randomCelebrationWinterTree, position: Vec.create(-60.37, 23.31) },
+                    { idString: randomCelebrationWinterTree, position: Vec.create(-56.15, 0.58) },
+                    { idString: "pine_tree", position: Vec.create(54.24, -12.53) },
+                    { idString: "box", position: Vec.create(-44.79, 21.76), modeVariant: true },
+                    { idString: "box", position: Vec.create(-40.17, 15.6), modeVariant: true },
+                    { idString: randomBarrel, position: Vec.create(-65.99, -14.17), modeVariant: true },
+                    { idString: "office_chair", position: Vec.create(38.01, 15.69), rotation: 0 },
+                    { idString: "fire_pit", position: Vec.create(44.73, -6.19) },
+
+                    // Hidden gift
+                    { idString: randomGift, position: Vec.create(-67.1, -32.45) },
+
+                    // Around the christmas tree (gift placements)
                     ...pickRandomInArray([
                         [
                             { idString: randomGift, position: Vec.create(-8.77, -8.43) },
@@ -6667,32 +6693,32 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                             { idString: randomGift, position: Vec.create(-8.77, 8.43) },
                             { idString: randomGift, position: Vec.create(8.77, 8.43) },
                             { idString: randomGift, position: Vec.create(-12, 0) },
-                            { idString: randomGift, position: Vec.create(12, 0) },
+                            { idString: randomGift, position: Vec.create(12, 0) }
                         ],
                         [
                             { idString: randomGift, position: Vec.create(-12, 0) },
                             { idString: randomGift, position: Vec.create(12, 0) },
                             { idString: randomGift, position: Vec.create(0, -12) },
-                            { idString: randomGift, position: Vec.create(0, 12) },
+                            { idString: randomGift, position: Vec.create(0, 12) }
                         ],
                         [
                             { idString: randomGift, position: Vec.create(-9.85, -10.12) },
                             { idString: randomGift, position: Vec.create(9.85, -10.12) },
                             { idString: randomGift, position: Vec.create(-9.85, 10.12) },
-                            { idString: randomGift, position: Vec.create(9.85, 10.12) },
+                            { idString: randomGift, position: Vec.create(9.85, 10.12) }
                         ]
                     ])
                 ],
                 subBuildings: [
-                    { idString: "shed", position: Vec.create(50, -50) },
+                    { idString: "shed", position: Vec.create(22, -55), orientation: 3 },
                     { idString: {
                         container_3: 1,
                         container_4: 1,
                         container_5: 1,
                         container_6: 1
-                    }, position: Vec.create(30, -50), orientation: 1 }
+                    }, position: Vec.create(30, -58), orientation: 1 }
                 ]
-            } */
+            }
         ] satisfies Missing[];
     }
 );

@@ -1307,6 +1307,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         airdrop_skins: [
             { item: NullString, weight: 1 },
             { item: "sky", weight: 0.5 },
+            { item: "light_choco", weight: 0.7 },
             { item: "coal", weight: 1 },
             { item: "henrys_little_helper", weight: 1 },
             { item: "ghillie_suit", weight: 0.1 },

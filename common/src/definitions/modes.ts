@@ -109,7 +109,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
         },
         specialLogo: true,
         specialPlayButtons: true,
-        modeLogoImage: "./img/game/winter/obstacles/airdrop_crate_locked.svg"
+        modeLogoImage: "./img/game/winter/obstacles/red_gift.svg"
     }
 };
 export const ObstacleModeVariations: Partial<Record<Mode, string>> = {
