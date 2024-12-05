@@ -950,11 +950,10 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         ],
         purple_gift: [
             [
-                { item: "radio", weight: 0.5 },
-                { item: "firework_launcher", weight: 0.1 },
-                { item: "vepr12", weight: 0.1 },
-                { item: "m1_garand", weight: 0.1 },
-                { item: "mg36", weight: 0.1 }
+                { item: "model_89", weight: 0.5 },
+                { item: "tango_51", weight: 0.2 },
+                { item: "pp19", weight: 0.2 },
+                { item: "mg5", weight: 0.1 }
             ],
             [
                 { table: "special_winter_skins", weight: 0.25 },
