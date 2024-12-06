@@ -71,6 +71,7 @@ export function resetPlayButtons(): void {
 
     $("#splash-options").removeClass("loading");
     $("#loading-text").text(getTranslatedString("loading_connecting"));
+   // $("#btn-cancel-finding-game").css("display", "none");
 
     const { maxTeamSize } = selectedRegion ?? regionInfo[Config.defaultRegion];
 
@@ -331,6 +332,7 @@ export async function setUpUI(game: Game): Promise<void> {
     const joinGame = (): void => {
         ui.splashOptions.addClass("loading");
         ui.loadingText.text(getTranslatedString("loading_finding_game"));
+        // ui.cancelFindingGame.css("display", "");
         // shouldn't happen
         if (selectedRegion === undefined) return;
 
@@ -585,6 +587,11 @@ export async function setUpUI(game: Game): Promise<void> {
         teamSocket = undefined;
         socket?.close();
     });
+
+    // TODO
+   /* ui.cancelFindingGame.on("click", () => {
+        game.disconnect();
+    }); */
 
     const copyUrl = $<HTMLButtonElement>("#btn-copy-team-url");
     const hideUrl = $<HTMLButtonElement>("#btn-hide-team-url");
