@@ -23,9 +23,9 @@
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="1"
      showgrid="false"
-     inkscape:zoom="4.5364584"
-     inkscape:cx="7.4948334"
-     inkscape:cy="24.358209"
+     inkscape:zoom="12.831042"
+     inkscape:cx="10.833103"
+     inkscape:cy="19.094318"
      inkscape:window-width="1920"
      inkscape:window-height="1001"
      inkscape:window-x="-9"
@@ -46,25 +46,33 @@
        fy="21.431248"
        r="4.4979167"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(4.0955086,0,0,1,-96.604192,-25.929163)" />
+       gradientTransform="matrix(4.0955086,0,0,1,-96.836755,-17.178595)" />
     <linearGradient
        inkscape:collect="always"
        id="linearGradient3564">
       <stop
-         style="stop-color:#00ffff;stop-opacity:1;"
+         style="stop-color:#00a5a5;stop-opacity:1;"
          offset="0"
          id="stop3560" />
       <stop
-         style="stop-color:#0000ff;stop-opacity:1;"
+         style="stop-color:#007a8b;stop-opacity:1;"
+         offset="0.44847605"
+         id="stop1" />
+      <stop
+         style="stop-color:#310909;stop-opacity:1;"
+         offset="0.72423804"
+         id="stop6" />
+      <stop
+         style="stop-color:#00001a;stop-opacity:1;"
          offset="1"
          id="stop3562" />
     </linearGradient>
   </defs>
   <circle
-     style="fill:url(#radialGradient7366);fill-opacity:1;stroke:#000053;stroke-width:1.05833;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     style="fill:url(#radialGradient7366);fill-opacity:1;stroke:#000000;stroke-width:1.05833;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
      id="path292"
-     cy="-4.4979153"
-     cx="-4.4979153"
-     transform="scale(-1)"
+     cy="4.2526531"
+     cx="-4.7304783"
+     transform="rotate(-93.044772)"
      r="3.96875" />
 </svg>
