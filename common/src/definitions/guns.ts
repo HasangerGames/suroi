@@ -2108,9 +2108,11 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     }
                 }
             },
+            // only dev weapons below this point
             {
                 idString: "g17_scoped",
                 name: "G17 (scoped)",
+                devItem: true,
                 ammoType: "bb",
                 fireDelay: 35,
                 switchDelay: 250,
@@ -2156,11 +2158,11 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 } */
                 // justice for dual s_g17 when™
             },
-            // only dev weapons below this point
             {
                 idString: "death_ray",
                 name: "Death Ray",
                 ammoType: "power_cell",
+                devItem: true,
                 capacity: 1,
                 reloadTime: 1.4,
                 fireDelay: 40,
@@ -2198,6 +2200,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 idString: "destroyer_of_worlds",
                 name: "Destroyer Of Worlds",
                 ammoType: "50cal",
+                devItem: true,
                 ammoSpawnAmount: 255,
                 capacity: 255,
                 extendedCapacity: 1, // womp womp
@@ -2259,6 +2262,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 [inheritFrom]: "model_37",
                 idString: "revitalizer",
                 name: "Revitalizer",
+                devItem: true,
                 killstreak: true,
                 consistentPatterning: true,
                 jitterRadius: 0,
