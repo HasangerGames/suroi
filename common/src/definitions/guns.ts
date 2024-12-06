@@ -2262,7 +2262,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 [inheritFrom]: "model_37",
                 idString: "revitalizer",
                 name: "Revitalizer",
-                devItem: true,
+                // devItem: true,
                 killstreak: true,
                 consistentPatterning: true,
                 jitterRadius: 0,
