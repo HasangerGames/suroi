@@ -20,7 +20,7 @@ export const Badges = ObjectDefinitions.create<BadgeDefinition>("Badges", [
     badge(["Lead Composr", ["lead_composr"]]),
     badge(["Moderatr", ["moderatr"]]),
     badge(["Administratr", ["administratr", "error"]]),
-    badge(["Youtubr", ["youtubr"]]),
+    badge(["Content Creatr", ["content_creatr"]]),
     badge(["Boostr", ["boostr"]]),
     badge(["Ownr", ["hasanger"]]),
     badge(["Bleh"]),

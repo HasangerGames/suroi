@@ -45,7 +45,7 @@ export const Config = {
         lead_composr: { password: "lead_composr" },
         moderatr: { password: "moderatr" },
         administratr: { password: "administratr" },
-        youtubr: { password: "youtubr" },
+        content_creatr: { password: "content_creatr" },
         boostr: { password: "boostr" },
 
         hasanger: { password: "hasanger", isDev: true },
