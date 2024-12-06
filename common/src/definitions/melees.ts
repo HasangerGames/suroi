@@ -280,6 +280,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
         {
             idString: "steelfang",
             name: "Steelfang",
+            devItem: true,
             damage: 40,
             noDrop: true,
             stonePiercing: true,
@@ -334,6 +335,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
         {
             idString: "heap_sword",
             name: "HE-AP sword",
+            devItem: true,
             damage: 75,
             obstacleMultiplier: 2.5,
             piercingMultiplier: 1,
@@ -434,6 +436,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
         {
             idString: "chainsaw",
             name: "Chain Saw",
+            devItem: true,
             damage: 25,
             fireMode: FireMode.Auto,
             obstacleMultiplier: 2,

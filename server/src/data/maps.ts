@@ -753,6 +753,7 @@ const maps = {
                         || (item.itemType === ItemType.Backpack && item.level === 0)
                         || (item.itemType === ItemType.Perk && item.category === PerkCategories.Halloween)
                         || item.itemType === ItemType.Skin
+                        || item.devItem
                     ) continue;
 
                     game.addLoot(item, itemPos, 0, { count: countMap[item.itemType] ?? 1, pushVel: 0, jitterSpawn: false });
