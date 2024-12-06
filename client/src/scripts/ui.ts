@@ -1906,18 +1906,25 @@ export async function setUpUI(game: Game): Promise<void> {
 
     $<HTMLDivElement>("#healing-items-container").append(
         HealingItems.definitions.map(item => {
+            let healingItemString = getTranslatedString("tt_restores", {
+                item: `${getTranslatedString(item.idString as TranslationKeys)}<br>`,
+                amount: item.restoreAmount.toString(),
+                type: item.healType === HealType.Adrenaline
+                    ? getTranslatedString("adrenaline")
+                    : getTranslatedString("health")
+            });
+
+            const actualToolTip = healingItemString.split("<br> ");
+            const itemName = actualToolTip[0];
+            const itemDescription = actualToolTip[1].charAt(0).toUpperCase() + actualToolTip[1].slice(1);
+            healingItemString = `<b>${itemName}</b><br>${itemDescription}`;
+
             const ele = $<HTMLDivElement>(
                 html`<div class="inventory-slot item-slot active" id="${item.idString}-slot">
                     <img class="item-image" src="./img/game/shared/loot/${item.idString}.svg" draggable="false">
                     <span class="item-count" id="${item.idString}-count">0</span>
                     <div class="item-tooltip">
-                        ${getTranslatedString("tt_restores", {
-                            item: `${getTranslatedString(item.idString as TranslationKeys)}<br>`,
-                            amount: item.restoreAmount.toString(),
-                            type: item.healType === HealType.Adrenaline
-                                ? getTranslatedString("adrenaline")
-                                : getTranslatedString("health")
-                        })}
+                        ${healingItemString}
                     </div>
                 </div>`
             );

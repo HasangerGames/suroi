@@ -1234,6 +1234,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     percent: (def.damageReduction * 100).toString()
                 });
             }
+
+            if (def.itemType !== ItemType.Backpack) {
+                const actualToolTip = itemTooltip.split("<br> ");
+                const itemName = actualToolTip[0];
+                const itemDescription = actualToolTip[1].charAt(0).toUpperCase() + actualToolTip[1].slice(1);
+                itemTooltip = `<b>${itemName}</b><br>${itemDescription}`;
+            }
+
             container.children(".item-tooltip").html(itemTooltip);
         }
 
