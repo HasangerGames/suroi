@@ -1385,17 +1385,19 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             yoyo: true
                         });
 
-                        this.anims.leftFist = this.game.addTween({
-                            target: this.images.leftFist,
-                            to: {
-                                x: 0,
-                                y: mysteryYConstant * 2,
-                                angle: -weaponDef.image.useAngle
-                            },
-                            duration,
-                            ease: EaseFunctions.sineIn,
-                            yoyo: true
-                        });
+                        if (!weaponDef.fists.noLeftFistMovement) {
+                            this.anims.leftFist = this.game.addTween({
+                                target: this.images.leftFist,
+                                to: {
+                                    x: 0,
+                                    y: mysteryYConstant * 2,
+                                    angle: -weaponDef.image.useAngle
+                                },
+                                duration,
+                                ease: EaseFunctions.sineIn,
+                                yoyo: true
+                            });
+                        }
 
                         this.anims.weapon = this.game.addTween({
                             target: this.images.weapon,
