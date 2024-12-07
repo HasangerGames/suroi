@@ -977,8 +977,8 @@ export async function setUpUI(game: Game): Promise<void> {
         updateSplashCustomize(idString);
     }
 
-    for (const { idString, hideFromLoadout, roleRequired } of Skins) {
-        if (hideFromLoadout || (roleRequired ?? role) !== role) continue;
+    for (const { idString, hideFromLoadout, rolesRequired } of Skins) {
+        if (hideFromLoadout || !(rolesRequired ?? [role]).includes(role)) continue;
 
         // noinspection CssUnknownTarget
         const skinItem = skinUiCache[idString] = $<HTMLDivElement>(

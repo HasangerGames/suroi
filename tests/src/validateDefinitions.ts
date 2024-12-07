@@ -2681,14 +2681,19 @@ logger.indent("Validating skins", () => {
                 validators.color(tester.createPath(errorPath, "backpack tint"), skin.backpackTint);
             }
 
-            if (skin.roleRequired !== undefined) {
-                tester.assertReferenceExistsObject({
-                    obj: skin,
-                    field: "roleRequired",
-                    collection: Config.roles,
-                    collectionName: "roles",
-                    baseErrorPath: errorPath
-                });
+            if (skin.rolesRequired !== undefined) {
+                tester.runTestOnArray(
+                    skin.rolesRequired,
+                    (role, errorPath) => {
+                        tester.assertReferenceExistsObject({
+                            value: role,
+                            collection: Config.roles,
+                            collectionName: "roles",
+                            errorPath
+                        });
+                    },
+                    errorPath
+                );
             }
         });
     }
