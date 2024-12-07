@@ -27,7 +27,7 @@ const config = {
 };
 
 const skins: ReadonlyArray<ReferenceTo<SkinDefinition>> = Skins.definitions
-    .filter(({ hideFromLoadout, roleRequired }) => !hideFromLoadout && !roleRequired)
+    .filter(({ hideFromLoadout, rolesRequired }) => !hideFromLoadout && !rolesRequired)
     .map(({ idString }) => idString);
 
 const emotes: EmoteDefinition[] = Emotes.definitions

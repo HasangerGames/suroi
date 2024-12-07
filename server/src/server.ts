@@ -231,8 +231,8 @@ if (isMainThread) {
             }
 
             // Validate skin
-            const roleRequired = Skins.fromStringSafe(skin)?.roleRequired;
-            if (roleRequired && roleRequired !== role) {
+            const rolesRequired = Skins.fromStringSafe(skin)?.rolesRequired;
+            if (rolesRequired && !rolesRequired.includes(role)) {
                 skin = GameConstants.player.defaultSkin;
             }
 
