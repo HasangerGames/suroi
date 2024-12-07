@@ -42,11 +42,12 @@ export const Config = {
         lead_designr: { password: "lead_designr" },
         vip_designr: { password: "vip_designr" },
         composr: { password: "composr" },
+        sound_designr: { password: "sound_designr" },
         lead_composr: { password: "lead_composr" },
         moderatr: { password: "moderatr" },
         administratr: { password: "administratr" },
         content_creatr: { password: "content_creatr" },
-        boostr: { password: "boostr" },
+        donatr: { password: "donatr" },
 
         hasanger: { password: "hasanger", isDev: true },
         pap: { password: "pap", isDev: true },
