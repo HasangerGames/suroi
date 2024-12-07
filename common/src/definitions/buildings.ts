@@ -3571,7 +3571,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 particleVariations: 2,
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(2.09, 36, Vec.create(36.03, -2)),
-                    RectangleHitbox.fromRect(2.09, 11.67, Vec.create(-13.96, -15.16)),
+                    RectangleHitbox.fromRect(2.09, 11.67, Vec.create(-13.96, -15.1)),
                     RectangleHitbox.fromRect(13.4, 2.09, Vec.create(30.37, 16.52)),
                     RectangleHitbox.fromRect(74.12, 2.09, Vec.create(0.01, -20.98)),
                     RectangleHitbox.fromRect(2.09, 11.07, Vec.create(-13.96, 10.47)),
