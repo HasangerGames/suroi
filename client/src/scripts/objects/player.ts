@@ -1752,8 +1752,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     frame += "_halloween";
                 }
 
-                projImage.setFrame(frame);
                 this.updateFistsPosition(false);
+                projImage.setFrame(frame);
 
                 this.anims.leftFist = this.game.addTween({
                     target: this.images.leftFist,
