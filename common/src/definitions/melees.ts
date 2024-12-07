@@ -20,6 +20,7 @@ export type MeleeDefinition = InventoryItemDefinition & {
     readonly fists: InventoryItemDefinition["fists"] & {
         readonly animationDuration: number
         readonly randomFist?: boolean
+        readonly noLeftFistMovement?: boolean
     }
     readonly image?: {
         readonly position: Vector
@@ -239,9 +240,10 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             rotationalAnimation: true,
             //  fireMode: FireMode.Auto, - todo
             fists: {
-                animationDuration: 165,
-                left: Vec.create(38, -35),
-                right: Vec.create(45, 35)
+                animationDuration: 150,
+                left: Vec.create(29, -39),
+                right: Vec.create(44, 35),
+                noLeftFistMovement: true
             },
             image: {
                 position: Vec.create(62, 64),
