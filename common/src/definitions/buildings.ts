@@ -827,12 +827,12 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(10, 8.7, Vec.create(89.9, -46)) }
             ],
             obstacles: [
-                { idString: "tire", position: Vec.create(111.28, 5.18), rotation: 0 },
-                { idString: "tire", position: Vec.create(111.4, 14.57), rotation: 0 },
-                { idString: "tire", position: Vec.create(111.4, 24.17), rotation: 0 },
-                { idString: "tire", position: Vec.create(71.55, 24.17), rotation: 0 },
-                { idString: "tire", position: Vec.create(71.5, 14.57), rotation: 0 },
-                { idString: "tire", position: Vec.create(71.45, 5.12), rotation: 0 },
+                { idString: "tire", position: Vec.create(111.28, 5.18), rotation: 0, modeVariant: true },
+                { idString: "tire", position: Vec.create(111.4, 14.57), rotation: 0, modeVariant: true },
+                { idString: "tire", position: Vec.create(111.4, 24.17), rotation: 0, modeVariant: true },
+                { idString: "tire", position: Vec.create(71.55, 24.17), rotation: 0, modeVariant: true },
+                { idString: "tire", position: Vec.create(71.5, 14.57), rotation: 0, modeVariant: true },
+                { idString: "tire", position: Vec.create(71.45, 5.12), rotation: 0, modeVariant: true },
                 { idString: "regular_crate", position: Vec.create(81.48, -37.36), modeVariant: true },
                 { idString: "regular_crate", position: Vec.create(101.49, -11.45), modeVariant: true },
                 { idString: "grenade_crate", position: Vec.create(102.3, -38.43), modeVariant: true },
@@ -3959,15 +3959,15 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "door", position: Vec.create(4.5, 8.45), rotation: 2 },
                     { idString: "mobile_home_wall_4", position: Vec.create(15.5, 8.45), rotation: 0 },
                     { idString: "mobile_home_wall_2", position: Vec.create(-10.5, 8.45), rotation: 0 },
-                    { idString: "tire", position: Vec.create(-24.25, 4.85), rotation: 0 },
+                    { idString: "tire", position: Vec.create(-24.25, 4.85), rotation: 0, modeVariant: true },
                     { idString: "small_bed", position: Vec.create(16.8, -1), rotation: 0 },
                     { idString: "mobile_home_window", position: Vec.create(-6.6, -10.5), rotation: 0 },
                     { idString: "mobile_home_wall_1", position: Vec.create(-17.25, -10.5), rotation: 0 },
                     { idString: "mobile_home_wall_2", position: Vec.create(21.7, -1), rotation: 1 },
                     { idString: "mobile_home_wall_2", position: Vec.create(-21.7, -1), rotation: 1 },
                     { idString: "mobile_home_wall_3", position: Vec.create(10.6, -10.5), rotation: 0 },
-                    { idString: "box", position: Vec.create(25.7, -3.5), rotation: 0 },
-                    { idString: "box", position: Vec.create(27.5, 1.55), rotation: 0 }
+                    { idString: "box", position: Vec.create(25.7, -3.5), modeVariant: true },
+                    { idString: "box", position: Vec.create(27.5, 1.55), modeVariant: true }
                 ]
             },
             tugboat(["red", "lux_crate"]),
@@ -6736,6 +6736,12 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "office_chair", position: Vec.create(38.01, 15.69), rotation: 0 },
                     { idString: "fire_pit", position: Vec.create(44.73, -6.19) },
                     { idString: { frozen_crate: 1, regular_crate_winter: 1 }, position: Vec.create(0.4, -32.01) },
+
+                    { idString: randomCelebrationWinterTree, position: Vec.create(22.07, 31.78) },
+                    { idString: "tire", position: Vec.create(-18.57, 35.62), rotation: 0, modeVariant: true },
+                    { idString: "tire", position: Vec.create(-16.03, 29.06), rotation: 1, modeVariant: true },
+                    { idString: "tire", position: Vec.create(66.7, 7.47), rotation: 3, modeVariant: true },
+                    { idString: "box", position: Vec.create(-13.6, 34.06), modeVariant: true },
 
                     // Hidden gift
                     { idString: randomGift, position: Vec.create(-67.1, -32.45) },
