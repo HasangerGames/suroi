@@ -2830,6 +2830,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     new CircleHitbox(0.8, Vec.create(-2.4, -2.4))
                 ),
                 rotationMode: RotationMode.Limited,
+                zIndex: ZIndexes.ObstaclesLayer4,
                 frames: {
                     particle: "couch_part_particle",
                     residue: "brown_couch_part_residue"
