@@ -903,6 +903,12 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                             scale: Vec.create(1.5, 1.5)
                         },
                         {
+                            key: "snow_decal_2",
+                            position: Vec.create(12, -39),
+                            scale: Vec.create(1.5, 1.5),
+                            rotation: Math.PI / 2
+                        },
+                        {
                             key: "snow_decal_3",
                             position: Vec.create(-15, 33),
                             scale: Vec.create(2, 2),
@@ -925,6 +931,22 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                             position: Vec.create(17.5, -52.25),
                             scale: Vec.create(2, 2),
                             rotation: -Math.PI / 2
+                        },
+                        {
+                            key: "port_warehouse_snow_decal_4",
+                            position: Vec.create(-23, -20),
+                            scale: Vec.create(2, 2)
+                        },
+                        {
+                            key: "port_warehouse_snow_decal_5",
+                            position: Vec.create(22.8, -20),
+                            scale: Vec.create(2, 2)
+                        },
+                        {
+                            key: "port_warehouse_snow_decal_1",
+                            position: Vec.create(-23.5, 58.6),
+                            scale: Vec.create(2, 2),
+                            rotation: Math.PI
                         }
                     ]
                     : [])
