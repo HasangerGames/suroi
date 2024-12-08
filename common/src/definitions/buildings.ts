@@ -894,7 +894,40 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     position: Vec.create(0, 0),
                     tint,
                     scale: Vec.create(2.01, 2.05)
-                }
+                },
+                ...(GameConstants.modeName === "winter"
+                    ? [
+                        {
+                            key: "snow_decal_1",
+                            position: Vec.create(5, 0),
+                            scale: Vec.create(1.5, 1.5)
+                        },
+                        {
+                            key: "snow_decal_3",
+                            position: Vec.create(-15, 33),
+                            scale: Vec.create(2, 2),
+                            rotation: Math.PI
+                        },
+                        {
+                            key: "port_warehouse_snow_decal_1",
+                            position: Vec.create(-28.5, -53.7),
+                            scale: Vec.create(2, 2),
+                            rotation: -Math.PI / 2
+                        },
+                        {
+                            key: "port_warehouse_snow_decal_2",
+                            position: Vec.create(13.1, 53.5),
+                            rotation: Math.PI,
+                            scale: Vec.create(2, 2)
+                        },
+                        {
+                            key: "port_warehouse_snow_decal_3",
+                            position: Vec.create(17.5, -52.25),
+                            scale: Vec.create(2, 2),
+                            rotation: -Math.PI / 2
+                        }
+                    ]
+                    : [])
             ],
             obstacles: [
                 { idString: "super_barrel", position: Vec.create(-10, -52) },
