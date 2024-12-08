@@ -1581,7 +1581,9 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // Bottom right
                     {
                         idString: "large_refinery_barrel",
-                        position: Vec.create(45.5, 59.1)
+                        position: Vec.create(45.5, 59.1),
+                        modeVariant: true
+                        //           ^^^^ One large refinery barrel is a mode variant and the other is a reskin. This ensures they will never use the same texture.
                     },
                     {
                         idString: "large_refinery_barrel",
@@ -4202,7 +4204,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "ammo_crate", position: Vec.create(14, 26) },
                     { idString: "sandbags", position: Vec.create(12.5, 35.5), rotation: 2, modeVariant: true },
                     { idString: "barrel", position: Vec.create(15.5, 43.5), rotation: 2, modeVariant: true },
-                    { idString: "tear_gas_crate", position: Vec.create(15.5, 52.5), rotation: 1 },
+                    { idString: "tear_gas_crate", position: Vec.create(15.5, 52.5), rotation: 1, modeVariant: true },
 
                     // South End of the Bridge
                     { idString: "barrel", position: Vec.create(17.5, 80), rotation: 0, modeVariant: true },
@@ -6724,26 +6726,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 idString: "celebration_place",
                 name: "Celebration Place",
                 spawnHitbox: RectangleHitbox.fromRect(150, 75, Vec.create(0, -1)),
-                floorImages: [
-                    {
-                        key: "snow_decal_2",
-                        zIndex: ZIndexes.Decals,
-                        position: Vec.create(-40, -10),
-                        rotation: Math.PI / 2
-                    },
-                    {
-                        key: "snow_decal_3",
-                        zIndex: ZIndexes.Decals,
-                        position: Vec.create(30, 20),
-                        rotation: Math.PI
-                    },
-                    {
-                        key: "snow_decal_1",
-                        zIndex: ZIndexes.Decals,
-                        position: Vec.create(30, -20),
-                        rotation: Math.PI / 2
-                    }
-                ],
                 obstacles: [
                     { idString: "christmas_tree", position: Vec.create(0, 0) },
                     { idString: "ice_pick_case", position: Vec.create(65.8, 24.41), rotation: 3 },
@@ -6756,14 +6738,11 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "box", position: Vec.create(-40.17, 15.6), modeVariant: true },
                     { idString: randomBarrel, position: Vec.create(-65.99, -14.17), modeVariant: true },
                     { idString: "office_chair", position: Vec.create(38.01, 15.69), rotation: 0 },
-                    { idString: "fire_pit", position: Vec.create(44.73, -6.19) },
+                    { idString: "fire_pit", position: Vec.create(35.73, -6.19) },
                     { idString: { frozen_crate: 1, regular_crate_winter: 1 }, position: Vec.create(0.4, -32.01) },
 
                     { idString: randomCelebrationWinterTree, position: Vec.create(22.07, 31.78) },
-                    { idString: "tire", position: Vec.create(-18.57, 35.62), rotation: 0, modeVariant: true },
-                    { idString: "tire", position: Vec.create(-16.03, 29.06), rotation: 1, modeVariant: true },
-                    { idString: "tire", position: Vec.create(66.7, 7.47), rotation: 3, modeVariant: true },
-                    { idString: "box", position: Vec.create(-13.6, 34.06), modeVariant: true },
+                    { idString: "box", position: Vec.create(13.6, 34.06), modeVariant: true },
 
                     // Hidden gift
                     { idString: randomGift, position: Vec.create(-67.1, -32.45) },

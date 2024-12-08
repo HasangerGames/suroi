@@ -2167,8 +2167,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 particleVariations: 2,
                 frames: {
                     particle: "fire_pit_particle"
-                },
-                noBulletCollision: true
+                }
             },
             {
                 idString: "speaker",
