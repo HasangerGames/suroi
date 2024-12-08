@@ -368,6 +368,7 @@ export class GameMap {
                 }
                 attempts++;
             }
+
             if (attempts >= 100 && !validPositionFound) {
                 Logger.warn("Failed to find valid position for clearing");
                 continue;
@@ -440,7 +441,7 @@ export class GameMap {
                     validPositionFound = true;
                 }
 
-                if (!validPositionFound) {
+                if (!validPositionFound && position === undefined) {
                     Logger.warn(`Failed to place building ${idString} after ${attempts} attempts`);
                 }
 

@@ -70,6 +70,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             name: "Fists",
             damage: 20,
             obstacleMultiplier: 1,
+            iceMultiplier: 0.01,
             radius: 1.5,
             offset: Vec.create(2.5, 0),
             cooldown: 250,
@@ -211,6 +212,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             damage: 25,
             obstacleMultiplier: 1.25,
             radius: 2.7,
+            iceMultiplier: 0.1,
             offset: Vec.create(3.1, 0.9),
             cooldown: 225,
             fists: {
