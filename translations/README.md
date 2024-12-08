@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Mon, 11 Nov 2024 23:57:58 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Sun, 08 Dec 2024 10:50:23 GMT
 
 ## 🇦🇱 Shqip (88% Complete) - ab.hjson
 
@@ -203,24 +203,9 @@ This file is a report of all errors and missing keys in the translation files of
 
 ## 🇭🇺 Magyar (100% Complete) - hu.hjson
 
-### Invalid Keys
+### (No Invalid Keys)
 
-- Key `msg_warning` is not a valid key
-- Key `msg_warning_msg` is not a valid key
-- Key `msg_temp_ban` is not a valid key
-- Key `msg_temp_ban_msg` is not a valid key
-- Key `msg_perma_ban` is not a valid key
-- Key `msg_perma_ban_msg` is not a valid key
-- Key `barrett_m95` is not a valid key
-
-### Undefined Keys
-
-- Key `msg_punishment_warn` is not defined
-- Key `msg_punishment_warn_reason` is not defined
-- Key `msg_punishment_temp` is not defined
-- Key `msg_punishment_temp_reason` is not defined
-- Key `msg_punishment_perma` is not defined
-- Key `msg_punishment_perma_reason` is not defined
+### (No Undefined Keys)
 
 ## 🇯🇵 日本語 (94% Complete) - jp.hjson
 
