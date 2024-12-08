@@ -1652,6 +1652,46 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }
             },
             {
+                idString: "rgs",
+                name: "RGS",
+                ammoType: "556mm",
+                ammoSpawnAmount: 30,
+                capacity: 10,
+                reloadTime: 2.6,
+                fireDelay: 600,
+                switchDelay: 600,
+                recoilMultiplier: 0.6,
+                recoilDuration: 600,
+                fireMode: FireMode.Single,
+                shotSpread: 0.5,
+                moveSpread: 2,
+                length: 8.35,
+                shootOnRelease: true,
+                fists: {
+                    left: Vec.create(115, -4),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(90, 3.5) },
+                casingParticles: [{
+                    position: Vec.create(5, 0.4),
+                    ejectionDelay: 250
+                }],
+                gasParticles: gasParticlePresets.rifle,
+                ballistics: {
+                    damage: 65,
+                    obstacleMultiplier: 1,
+                    speed: 0.33,
+                    range: 270,
+                    tracer: {
+                        width: 1.1,
+                        length: 1.7
+                    },
+                    lastShotFX: true
+                }
+            },
+            {
                 idString: "vks",
                 name: "VKS Vykhlop",
                 ammoType: "50cal",
@@ -1954,6 +1994,43 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     tracer: {
                         length: 1.2
                     }
+                }
+            },
+            {
+                idString: "blr",
+                name: "BLR",
+                ammoType: "556mm",
+                ammoSpawnAmount: 20,
+                capacity: 5,
+                reloadTime: 2.6,
+                fireDelay: 350,
+                switchDelay: 400,
+                recoilMultiplier: 0.8,
+                recoilDuration: 300,
+                fireMode: FireMode.Single,
+                shotSpread: 2,
+                moveSpread: 5,
+                length: 7.7,
+                fists: {
+                    left: Vec.create(105, 3),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(85, 0) },
+                casingParticles: [{
+                    position: Vec.create(4.2, 0.4)
+                }],
+                gasParticles: gasParticlePresets.rifle,
+                ballistics: {
+                    damage: 35,
+                    obstacleMultiplier: 1,
+                    speed: 0.28,
+                    range: 200,
+                    tracer: {
+                        length: 1.3
+                    },
+                    lastShotFX: true
                 }
             },
             {
