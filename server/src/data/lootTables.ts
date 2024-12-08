@@ -259,7 +259,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             ]
         ],
         lux_crate: [
-            [{ item: "cz600", weight: 1 }],
+            [{ item: "rgs", weight: 1 }],
             [{ table: "scopes", weight: 1 }]
         ],
         gold_rock: [
