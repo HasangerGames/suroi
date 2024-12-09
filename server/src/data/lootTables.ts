@@ -973,8 +973,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { item: "model_89", weight: 0.5 },
                 { item: "tango_51", weight: 0.2 },
                 { item: "pp19", weight: 0.2 },
-                { item: "mg5", weight: 0.1 },
-                { item: "rsh12", weight: 0.15 }
+                { item: "mg5", weight: 0.1 }
             ],
             [
                 { table: "special_winter_skins", weight: 0.25 },
@@ -985,8 +984,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         black_gift: [
             [
                 { item: NullString, weight: 0.25 },
-                { item: "deagle", weight: 0.25 },
-                { item: "rsh12", weight: 0.25 },
+                { item: "deagle", weight: 0.5 },
                 { item: "vks", weight: 0.25 }
             ],
             [
