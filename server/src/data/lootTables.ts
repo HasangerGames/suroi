@@ -1425,8 +1425,10 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         ],
         lux_crate: [
             [
-                { item: "vks", weight: 1 },
-                { item: "tango_51", weight: 1 }
+                { item: "vks", weight: 0.3 },
+                { item: "tango_51", weight: 0.3 },
+                { item: "rgs", weight: 0.3 },
+                { item: "l115a1", weight: 0.1 }
             ],
             [{ table: "special_scopes", weight: 1 }]
         ],
@@ -1448,11 +1450,12 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             max: 2,
             loot: [
                 // 65% chance for one of these
-                { item: "model_37", weight: 0.13 },
-                { item: "m3k", weight: 0.13 },
-                { item: "cz600", weight: 0.13 },
-                { item: "flues", weight: 0.13 },
-                { item: "dual_m1895", weight: 0.13 },
+                { item: "model_37", weight: 0.1083 },
+                { item: "m3k", weight: 0.1083 },
+                { item: "cz600", weight: 0.1083 },
+                { item: "flues", weight: 0.1083 },
+                { item: "dual_m1895", weight: 0.1083 },
+                { item: "blr", weight: 0.1083 },
 
                 // 20% chance for one of these
                 { item: "sr25", weight: 0.066 },
@@ -1460,8 +1463,9 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { item: "mosin_nagant", weight: 0.066 },
 
                 // 10% chance for one of these
-                { item: "rsh12", weight: 0.05 },
-                { item: "vepr12", weight: 0.05 },
+                { item: "rsh12", weight: 0.03 },
+                { item: "vepr12", weight: 0.03 },
+                { item: "rgs", weight: 0.03 },
 
                 // 5% chance for one of these
                 { item: "tango_51", weight: 0.01 },
@@ -1478,15 +1482,16 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "hp18", weight: 0.166 },
             { item: "sks", weight: 0.166 },
 
-            // 30% chance for one of these
-            { item: "dt11", weight: 0.15 },
-            { item: "model_37", weight: 0.15 },
+            // 28% chance for one of these
+            { item: "dt11", weight: 0.14 },
+            { item: "model_37", weight: 0.14 },
 
-            // 14% chance for one of these
-            { item: "m3k", weight: 0.035 },
-            { item: "cz600", weight: 0.035 },
-            { item: "flues", weight: 0.035 },
-            { item: "dual_m1895", weight: 0.035 },
+            // 16% chance for one of these
+            { item: "m3k", weight: 0.032 },
+            { item: "cz600", weight: 0.032 },
+            { item: "flues", weight: 0.032 },
+            { item: "dual_m1895", weight: 0.032 },
+            { item: "blr", weight: 0.032 },
 
             // 4% chance for one of these
             { item: "sr25", weight: 0.0133 },
@@ -1510,10 +1515,11 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "model_37", weight: 0.16 },
 
             // 37% chance for one of these
-            { item: "dual_m1895", weight: 0.0925 },
-            { item: "m3k", weight: 0.0925 },
-            { item: "cz600", weight: 0.0925 },
-            { item: "flues", weight: 0.0925 },
+            { item: "dual_m1895", weight: 0.074 },
+            { item: "m3k", weight: 0.074 },
+            { item: "cz600", weight: 0.074 },
+            { item: "flues", weight: 0.074 },
+            { item: "blr", weight: 0.074 },
 
             // 15% chance for one of these (L unlucky)
             { item: "sks", weight: 0.075 },
@@ -1580,9 +1586,10 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "flues", weight: 0.1166 },
 
             // 40% chance for one of these
-            { item: "mini14", weight: 0.133 },
-            { item: "sr25", weight: 0.133 },
-            { item: "mosin_nagant", weight: 0.133 },
+            { item: "mini14", weight: 0.1 },
+            { item: "sr25", weight: 0.1 },
+            { item: "mosin_nagant", weight: 0.1 },
+            { item: "rgs", weight: 0.1 },
 
             // 10% chance for one of these
             { item: "m590m", weight: 0.033 },
@@ -1603,9 +1610,10 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "flues", weight: 0.2 },
 
             // 20% chance for one of these
-            { item: "mini14", weight: 0.066 },
-            { item: "sr25", weight: 0.066 },
-            { item: "mosin_nagant", weight: 0.066 },
+            { item: "mini14", weight: 0.05 },
+            { item: "sr25", weight: 0.05 },
+            { item: "mosin_nagant", weight: 0.05 },
+            { item: "rgs", weight: 0.05 },
 
             // 15% chance for one of these
             { item: "rsh12", weight: 0.03 },

@@ -1495,25 +1495,27 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 hideOnMap: true
             },
-            {
-                idString: "ammo_crate",
-                name: "Ammo Crate",
-                material: "cardboard",
-                health: 160,
-                impenetrable: true,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.6
-                },
-                spawnMode: MapObjectSpawnMode.GrassAndSand,
-                hitbox: RectangleHitbox.fromRect(8.49, 8.36),
-                rotationMode: RotationMode.Limited,
-                hasLoot: true,
-                frames: {
-                    particle: "crate_particle"
-                }
-            },
+            ...withWinterVariation([
+                {
+                    idString: "ammo_crate",
+                    name: "Ammo Crate",
+                    material: "cardboard",
+                    health: 160,
+                    impenetrable: true,
+                    scale: {
+                        spawnMin: 1,
+                        spawnMax: 1,
+                        destroy: 0.6
+                    },
+                    spawnMode: MapObjectSpawnMode.GrassAndSand,
+                    hitbox: RectangleHitbox.fromRect(8.49, 8.36),
+                    rotationMode: RotationMode.Limited,
+                    hasLoot: true,
+                    frames: {
+                        particle: "crate_particle"
+                    }
+                }, 2
+            ]),
             {
                 idString: "hq_desk_left",
                 name: "Headquarters Desk",
@@ -4001,7 +4003,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             {
                 idString: "ice_pick_case",
                 name: "Ice Pick Case",
-                material: "iron",
+                material: "wood",
                 health: 180,
                 scale: {
                     spawnMin: 1,
@@ -4011,15 +4013,14 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hasLoot: true,
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(10.5, 4.5, Vec.create(-0.1, -0.1)),
-                    RectangleHitbox.fromRect(0.55, 5.95, Vec.create(-4, 0)),
-                    RectangleHitbox.fromRect(0.55, 5.95, Vec.create(4, 0))
+                    RectangleHitbox.fromRect(0.55, 5.95, Vec.create(-3.7, 0)),
+                    RectangleHitbox.fromRect(0.55, 5.95, Vec.create(3.7, 0))
                 ),
                 rotationMode: RotationMode.Limited,
                 allowFlyover: FlyoverPref.Never,
                 frames: {
-                    particle: "toilet_particle"
-                },
-                reflectBullets: true
+                    particle: "crate_particle"
+                }
             },
             {
                 idString: "button",
