@@ -3855,7 +3855,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "sandbags", position: Vec.create(31.6, -36.18), rotation: 0, modeVariant: true },
                     { idString: "sandbags", position: Vec.create(30.66, -70.69), rotation: 0, modeVariant: true },
                     { idString: "sandbags", position: Vec.create(18.54, -67.73), rotation: 1, modeVariant: true },
-                    { idString: "m1117", position: Vec.create(48.93, -53.75), rotation: 0, variation: 0 }, // modeVariant: true
+                    { idString: "m1117", position: Vec.create(48.93, -53.75), rotation: 0, variation: 0 },
                     { idString: "gun_case", position: Vec.create(30.66, -28.84), rotation: 0, modeVariant: true },
                     { idString: "gun_case", position: Vec.create(63.16, -36.39), rotation: 1, modeVariant: true },
                     { idString: "gun_case", position: Vec.create(19.48, 36.69), rotation: 0, modeVariant: true },
@@ -3863,7 +3863,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "tear_gas_crate", position: Vec.create(33.06, -62.76), rotation: 0, modeVariant: true },
                     { idString: "grenade_crate", position: Vec.create(-55.29, 78.02), modeVariant: true },
                     { idString: "grenade_crate", position: Vec.create(69.81, -34.24), modeVariant: true },
-                    { idString: "ammo_crate", position: Vec.create(50.07, -20.07), rotation: 0 }, // , modeVariant: true
+                    { idString: "ammo_crate", position: Vec.create(50.07, -20.07), rotation: 0, modeVariant: true },
                     { idString: "barrier", position: Vec.create(13.91, 70.32), rotation: 1 },
 
                     { idString: "fence", position: Vec.create(70.5, -83.93), rotation: 0 },
@@ -4201,7 +4201,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
 
                     // South-Center of the Bridge
                     { idString: "gun_case", position: Vec.create(6, 26), rotation: 3, modeVariant: true },
-                    { idString: "ammo_crate", position: Vec.create(14, 26) },
+                    { idString: "ammo_crate", position: Vec.create(14, 26), modeVariant: true },
                     { idString: "sandbags", position: Vec.create(12.5, 35.5), rotation: 2, modeVariant: true },
                     { idString: "barrel", position: Vec.create(15.5, 43.5), rotation: 2, modeVariant: true },
                     { idString: "tear_gas_crate", position: Vec.create(15.5, 52.5), rotation: 1, modeVariant: true },

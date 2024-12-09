@@ -58,6 +58,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
         killstreak: false,
         speedMultiplier: 1,
         swingSound: "swing",
+        iceMultiplier: 0.01,
         maxTargets: 1,
         image: {
             zIndex: 1
@@ -163,6 +164,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             rotationalAnimation: true,
             obstacleMultiplier: 2,
             piercingMultiplier: 2,
+            iceMultiplier: 5,
             radius: 2.05,
             swingSound: "heavy_swing",
             offset: Vec.create(5.4, -0.5),
