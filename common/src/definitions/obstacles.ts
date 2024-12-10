@@ -1489,6 +1489,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 name: "Frozen Crate",
                 material: "ice",
                 health: 1000,
+                variations: 2,
                 frames: {
                     residue: "regular_crate_residue",
                     particle: "window_particle"
