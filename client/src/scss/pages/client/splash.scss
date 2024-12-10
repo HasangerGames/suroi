@@ -756,9 +756,9 @@
 }
 
 .event-winter {
-    background-color: #a4a4a4;
-    border-bottom: 2px solid #828282;
-    box-shadow: inset 0 -2px #828282;
+    background-color: #dcdcdc;
+    border-bottom: 2px solid #c2c1c1;
+    box-shadow: inset 0 -2px #c2c1c1;
     animation: mode-winter-color 4s linear infinite;
 }
 
@@ -786,19 +786,19 @@
 
 @keyframes mode-winter-color {
     0% {
-        background-color: #a4a4a4;
-        border-bottom: 2px solid #828282;
-        box-shadow: inset 0 -2px #828282;
+        background-color: #dcdcdc;
+        border-bottom: 2px solid #c2c1c1;
+        box-shadow: inset 0 -2px #c2c1c1;
     }
     50% {
-        background-color: #737272;
-        border-bottom: 2px solid #595858;
-        box-shadow: inset 0 -2px #595858;
+        background-color: #aaa8a8;
+        border-bottom: 2px solid rgb(134, 133, 133);
+        box-shadow: inset 0 -2px rgb(134, 133, 133);
     }
     100% {
-        background-color: #a4a4a4;
-        border-bottom: 2px solid #828282;
-        box-shadow: inset 0 -2px #828282;
+        background-color: #dcdcdc;
+        border-bottom: 2px solid #c2c1c1;
+        box-shadow: inset 0 -2px #c2c1c1;
     }
 }
 
