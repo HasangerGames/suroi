@@ -193,6 +193,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         frozen_crate: [
             [
                 { table: "airdrop_guns", weight: 0.5 },
+                //      { item: "firework_launcher", weight: 0.25 },
                 { table: "river_chest_guns", weight: 1 }
             ],
             [
@@ -573,7 +574,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         ],
         ice_pick_case: [
             [{ item: "ice_pick", weight: 1 }],
-            [{ item: "light_choco", weight: 1 }]
+            [{ item: "frosty", weight: 1 }]
         ],
         confetti_grenade_box: {
             min: 1,

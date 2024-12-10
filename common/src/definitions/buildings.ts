@@ -6740,12 +6740,17 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "office_chair", position: Vec.create(38.01, 15.69), rotation: 0 },
                     { idString: "fire_pit", position: Vec.create(35.73, -6.19) },
                     { idString: { frozen_crate: 1, regular_crate_winter: 1 }, position: Vec.create(0.4, -32.01) },
+                    { idString: { frozen_crate: 0.25, regular_crate_winter: 1, grenade_crate_winter: 0.5, barrel_winter: 0.5 }, position: Vec.create(-27.8, 29.06) },
+                    { idString: "blueberry_bush", position: Vec.create(67.77, -31.64) },
+                    { idString: "bush", position: Vec.create(-23.21, -25.42) },
+                    { idString: { frozen_crate: 0.25, regular_crate_winter: 1, box_winter: 0.5 }, position: Vec.create(-66.54, 10.5) },
 
                     { idString: randomCelebrationWinterTree, position: Vec.create(22.07, 31.78) },
                     { idString: "box", position: Vec.create(13.6, 34.06), modeVariant: true },
 
-                    // Hidden gift
+                    // Hidden gift(s)
                     { idString: randomGift, position: Vec.create(-67.1, -32.45) },
+                    { idString: randomGift, position: Vec.create(49.29, -7.59) },
 
                     // Around the christmas tree (gift placements)
                     ...pickRandomInArray([

@@ -111,6 +111,7 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ["Holiday Tree",          0x23883f],
                 ["Gingerbread",           0xb55c12],
                 ["Light Choco",           0xffd99e],
+                ["Frosty",                0xa2f3ff],
                 ["Verified",              0x4790ff],
                 ["no kil pls",            0x6b6b6b],
                 ["Stardust",              0x16448b],
