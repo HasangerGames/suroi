@@ -2,6 +2,21 @@ import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
+        date: 1733860825281,
+        author: "HAZEL",
+        title: "Cold Steel",
+        content: `
+        Winter has arrived on the island, bringing the festive spirit of the season and two new guns with it.
+        <br><br>Normal mode now has a frosty reskin for all assets and new presents that drop weapons, many of which can be found arranged under an outdoor Christmas tree. The <b>Ice Pick</b> also makes a return along with a new high-value <b>Frozen Crate</b> to use it on, although bullets and certain other melee weapons will work... eventually.
+      
+        <br><br>Exclusive to Harvest, the <b>BLR</b> is a brand new uncommon <b>5.56mm DMR</b> with a 5 round magazine, high damage, and moderate overall stats that rewards careful aim instead of blind spam.
+        <br><br>The <b>RGS sniper rifle</b> has replaced the CZ-600 in the Red Tugboat, boasting a <b>ten round</b> magazine and overall improved stats from its predecessor while being chambered in the same caliber but unable to be found anywhere else in Classic mode. In Harvest mode, it can also be found in airdrops, River and Viking crates, and the gun lockers.
+        <br><br>The <b>Lewis Gun</b> has received a major overhaul, boasting a faster fire rate, decreased movement penalties, and a more fairly sized sprite to make it less of a pain in combat. 
+        
+        <br><br>Weekly rotating modes will begin on <b>Sunday, December 15th at 8PM EST</b>. Mode rotations <b>will be adjusted in the future as needed and in response to community feedback</b>.
+        `
+    },
+    {
         date: 1731370468000,
         author: "HAZEL",
         title: "Empty Baskets",
