@@ -326,7 +326,7 @@ export class Game {
                 const gravityOn = particleEffects.gravity;
                 this.particleManager.addEmitter(
                     {
-                        delay: 1000,
+                        delay: particleEffects.delay,
                         active: this.console.getBuiltInCVar("cv_ambient_particles"),
                         spawnOptions: () => ({
                             frames: particleEffects.frames,

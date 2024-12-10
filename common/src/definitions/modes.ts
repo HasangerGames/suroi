@@ -17,6 +17,7 @@ export interface ModeDefinition {
     readonly bulletTrailAdjust?: string
     readonly particleEffects?: {
         readonly frames: string | string[]
+        readonly delay: number
         readonly tint?: number
         readonly gravity?: boolean
     }
@@ -58,7 +59,8 @@ export const Modes: Record<Mode, ModeDefinition> = {
         defaultScope: "2x_scope",
         reskin: "fall",
         particleEffects: {
-            frames: ["leaf_particle_1", "leaf_particle_2", "leaf_particle_3"]
+            frames: ["leaf_particle_1", "leaf_particle_2", "leaf_particle_3"],
+            delay: 1000
         },
         specialPlayButtons: true,
         modeLogoImage: "./img/game/fall/obstacles/baby_plumpkin.svg"
@@ -106,6 +108,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
         bulletTrailAdjust: "hsl(0, 50%, 80%)",
         particleEffects: {
             frames: ["snow_particle"],
+            delay: 800,
             gravity: true
         },
         specialLogo: true,
