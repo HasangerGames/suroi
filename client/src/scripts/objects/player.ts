@@ -43,6 +43,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     meleeStopSound?: GameSound;
     meleeAttackCounter = 0;
 
+    blockEmoting = false;
+
     private activeDisguise?: ObstacleDefinition;
     private readonly disguiseContainer: Container;
     halloweenThrowableSkin = false;
@@ -731,7 +733,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             // Rate Limiting: Team Pings & Emotes
-            this.game.uiManager.ui.emoteWheel.css("opacity", blockEmoting ? "0.5" : "");
+            this.blockEmoting = blockEmoting;
+            this.game.uiManager.ui.emoteWheel.css("opacity", this.blockEmoting ? "0.5" : "");
         }
 
         if (updateContainerZIndex) this.updateZIndex();

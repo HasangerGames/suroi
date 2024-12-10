@@ -63,7 +63,7 @@ export const GameConstants = freezeDeep({
         maxReviveDist: 5,
         bleedOutDPMs: 0.002, // === 2 dps
         maxPerkCount: 1,
-        rateLimitPunishmentTrigger: 5,
+        rateLimitPunishmentTrigger: 10,
         emotePunishmentTime: 5000, // ms
         rateLimitInterval: 1000
     },
