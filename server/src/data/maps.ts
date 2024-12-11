@@ -591,9 +591,9 @@ const maps = {
         },
         obstacles: {
             oil_tank_winter: 12,
-            oak_tree: 110,
+            oak_tree: 40,
             birch_tree: 20,
-            pine_tree: 10,
+            pine_tree: 90,
             loot_tree: 1,
             regular_crate_winter: 160,
             frozen_crate: 10,
@@ -616,7 +616,7 @@ const maps = {
         },
         obstacleClumps: [
             {
-                clumpAmount: 90,
+                clumpAmount: 25,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
@@ -636,7 +636,7 @@ const maps = {
                 }
             },
             {
-                clumpAmount: 4,
+                clumpAmount: 65,
                 clump: {
                     minAmount: 2,
                     maxAmount: 3,
