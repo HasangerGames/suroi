@@ -59,6 +59,7 @@ import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, EMOTE_SLOTS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
+import { EmoteWheelManager } from "./managers/emoteWheelManager.ts";
 
 /* eslint-disable @stylistic/indent */
 
@@ -143,6 +144,7 @@ export class Game {
     readonly console = new GameConsole(this);
     readonly inputManager = new InputManager(this);
     readonly soundManager = new SoundManager(this);
+    readonly emoteManager = new EmoteWheelManager(this);
 
     readonly gasRender = new GasRender(PIXI_SCALE);
     readonly gas = new Gas(this);
@@ -222,8 +224,12 @@ export class Game {
             pixi.stage.addChild(
                 game.camera.container,
                 game.map.container,
-                game.map.mask
+                game.map.mask,
+                game.emoteManager.container
             );
+
+            game.emoteManager.init();
+            game.emoteManager.setupSlots();
 
             game.map.visible = !game.console.getBuiltInCVar("cv_minimap_minimized");
             game.map.expanded = game.console.getBuiltInCVar("cv_map_expanded");
@@ -665,6 +671,8 @@ export class Game {
         for (const plane of this.planes) plane.update();
 
         this.camera.update();
+
+        this.emoteManager.update();
     }
 
     private _lastUpdateTime = 0;

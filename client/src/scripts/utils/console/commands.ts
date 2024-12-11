@@ -743,51 +743,10 @@ export function setUpCommands(game: Game): void {
     Command.createInvertiblePair(
         "emote_wheel",
         function() {
-            if (
-                game.console.getBuiltInCVar("cv_hide_emotes")
-                || this.gameOver
-                || this.inputManager.emoteWheelActive
-            ) return;
-            const { mouseX, mouseY } = this.inputManager;
-
-            const scale = this.console.getBuiltInCVar("cv_ui_scale");
-
-            if (!this.inputManager.pingWheelMinimap) {
-                this.inputManager.pingWheelPosition = Vec.clone(this.inputManager.gameMousePosition);
-            }
-
-            this.uiManager.ui.emoteWheel
-                .css("left", `${mouseX / scale}px`)
-                .css("top", `${mouseY / scale}px`)
-                .css("background-image", 'url("./img/misc/emote_wheel.svg")')
-                .show();
-            this.inputManager.emoteWheelActive = true;
-            this.inputManager.emoteWheelPosition = Vec.create(mouseX, mouseY);
+          game.emoteManager.show()
         },
-        function() {
-            if (!this.inputManager.emoteWheelActive) return;
-
-            this.inputManager.emoteWheelActive = false;
-            this.inputManager.pingWheelMinimap = false;
-
-            this.uiManager.ui.emoteWheel.hide();
-
-            if (this.inputManager.selectedEmote === undefined) return;
-
-            const emote = this.uiManager.emotes[this.inputManager.selectedEmote];
-            if (emote && !this.inputManager.pingWheelActive) {
-                this.inputManager.addAction({
-                    type: InputActions.Emote,
-                    emote
-                });
-            } else if (this.inputManager.pingWheelActive) {
-                this.inputManager.addAction({
-                    type: InputActions.MapPing,
-                    ping: this.uiManager.mapPings[this.inputManager.selectedEmote],
-                    position: this.inputManager.pingWheelPosition
-                });
-            }
-            this.inputManager.selectedEmote = undefined;
+        function () {
+          game.emoteManager.close()
         },
         game,
         {
