@@ -6723,8 +6723,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             },
 
             {
-                idString: "celebration_place",
-                name: "Celebration Place",
+                idString: "christmas_camp",
+                name: "Christmas Camp",
                 spawnHitbox: RectangleHitbox.fromRect(150, 75, Vec.create(0, -1)),
                 obstacles: [
                     { idString: "christmas_tree", position: Vec.create(0, 0) },

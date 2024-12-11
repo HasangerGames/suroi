@@ -561,7 +561,7 @@ const maps = {
             small_bunker: 1,
             refinery: 1,
             warehouse: 4,
-            celebration_place: 1,
+            christmas_camp: 1,
             green_house: 3,
             blue_house: 3,
             red_house: 3,
@@ -578,7 +578,7 @@ const maps = {
             container_9: 1,
             container_10: 3
         },
-        majorBuildings: ["armory", "refinery", "port_complex", "headquarters", "celebration_place"],
+        majorBuildings: ["armory", "refinery", "port_complex", "headquarters", "christmas_camp"],
         quadBuildingLimit: {
             red_house: 1,
             red_house_v2: 1,
