@@ -1,8 +1,11 @@
 import { type Image, createCanvas, loadImage } from "canvas";
 import { createHash } from "crypto";
+import { writeFile } from "fs/promises";
 import { type IOption, MaxRectsPacker } from "maxrects-packer";
 import path from "path";
 import { type SpritesheetData } from "pixi.js";
+import { CacheData, cacheDir } from "../spritesheet-plugin";
+import { writeFileSync, writeSync } from "fs";
 
 export const supportedFormats = ["png", "jpeg"] as const;
 
@@ -48,7 +51,7 @@ export interface CompilerOptions {
     packerOptions: Omit<IOption, "allowRotation">
 }
 
-export type AtlasList = Array<{ readonly json: SpritesheetData, readonly image: Buffer }>;
+export type AtlasList = Array<{ readonly json: SpritesheetData, readonly image: Buffer, readonly cacheName?: string }>;
 
 export type MultiResAtlasList = { readonly low: AtlasList, readonly high: AtlasList };
 
@@ -57,7 +60,8 @@ export type MultiResAtlasList = { readonly low: AtlasList, readonly high: AtlasL
  * @param paths List of paths to the images.
  * @param options Options passed to the packer.
  */
-export async function createSpritesheets(paths: readonly string[], options: CompilerOptions): Promise<MultiResAtlasList> {
+export async function createSpritesheets(pathMap: Map<string, { lastModified: number, path: string }>, options: CompilerOptions): Promise<MultiResAtlasList> {
+    const paths = Array.from(pathMap.values(), v => v.path);
     if (paths.length === 0) throw new Error("No file given.");
 
     if (!supportedFormats.includes(options.outputFormat)) {
@@ -198,9 +202,15 @@ export async function createSpritesheets(paths: readonly string[], options: Comp
 
             json.meta.image = `${options.outDir}/${options.name}-${hash}@${resolution}x.${options.outputFormat}`;
 
+            writeFromStart("Caching data".padEnd(prevLength, " "));
+            const cacheName = `${options.name}-${hash}@${resolution}x`
+            writeFileSync(path.join(cacheDir, cacheName + ".json"), JSON.stringify(json));
+            writeFileSync(path.join(cacheDir, cacheName + "." + options.outputFormat), buffer)
+
             atlases.push({
                 json,
-                image: buffer
+                image: buffer,
+                cacheName 
             });
             const str = `${++bins} / ${binCount} bins done`;
             writeFromStart(str.padEnd(prevLength = max(prevLength, 22), " "));
@@ -216,6 +226,17 @@ export async function createSpritesheets(paths: readonly string[], options: Comp
         low: createSheet(0.5),
         high: createSheet(1)
     };
+    
+    const cacheData: CacheData = {
+      lastModified: Date.now(),
+      fileMap: Object.fromEntries(Array.from(pathMap.entries(), ([name, data]) => [name.slice(1), data.path])),
+      atlasFiles: {
+        low: sheets.low.map(s => s.cacheName ?? ""),
+        high: sheets.high.map(s => s.cacheName ?? "")
+      }
+    }
+
+    writeFileSync(path.join(cacheDir, "data.json"), JSON.stringify(cacheData));
 
     console.log(`Finished building spritesheets in ${Math.round(performance.now() - start) / 1000}s`);
 

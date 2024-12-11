@@ -1,5 +1,6 @@
 # Build
 dist/
+.spritesheet-cache
 
 # Node
 node_modules/
