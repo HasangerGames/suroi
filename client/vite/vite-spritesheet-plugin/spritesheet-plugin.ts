@@ -14,13 +14,13 @@ const PLUGIN_NAME = "vite-spritesheet-plugin";
 
 export const cacheDir = ".spritesheet-cache";
 export type CacheData = {
-  lastModified: number,
-  fileMap: Record<string, string>,
-  atlasFiles: {
-    low: string[],
-    high: string[]
-  }
-}
+    lastModified: number
+    fileMap: Record<string, string>
+    atlasFiles: {
+        low: string[]
+        high: string[]
+    }
+};
 
 const defaultGlob = "**/*.{png,gif,jpg,bmp,tiff,svg}";
 const imagesMatcher = new Minimatch(defaultGlob);
@@ -51,49 +51,49 @@ async function buildSpritesheets(): Promise<MultiResAtlasList> {
     // Since the filename is used as the key, and mode sprites are added to the map after the common sprites,
     // this method allows mode sprites to override common sprites with the same filename.
     for (const imagePath of imageDirs.map(dir => readDirectory(dir).filter(x => imagesMatcher.match(x))).flat()) {
-      const imageFileInfo = await stat(imagePath);
-      const { mtime, ctime } = imageFileInfo;
-      fileMap.set(imagePath.slice(imagePath.lastIndexOf(path.sep)), {
-        path: imagePath,
-        lastModified: Math.max(mtime.getTime(), ctime.getTime())
-      });
+        const imageFileInfo = await stat(imagePath);
+        const { mtime, ctime } = imageFileInfo;
+        fileMap.set(imagePath.slice(imagePath.lastIndexOf(path.sep)), {
+            path: imagePath,
+            lastModified: Math.max(mtime.getTime(), ctime.getTime())
+        });
     }
 
     let isCached = true;
     if (!existsSync(cacheDir)) {
-      await mkdir(cacheDir);
-      isCached = false;
+        await mkdir(cacheDir);
+        isCached = false;
     }
     if (!existsSync(path.join(cacheDir, "data.json"))) isCached = false;
 
     const cacheData: CacheData = existsSync(path.join(cacheDir, "data.json"))
-      ? JSON.parse(await readFile(path.join(cacheDir, "data.json"), "utf8"))
-      : {
-        lastModified: Date.now(),
-        fileMap: {},
-        atlasFiles: {
-          low: [],
-          high: []
-        }
-      }
+        ? JSON.parse(await readFile(path.join(cacheDir, "data.json"), "utf8"))
+        : {
+            lastModified: Date.now(),
+            fileMap: {},
+            atlasFiles: {
+                low: [],
+                high: []
+            }
+        };
 
     if (Array.from(fileMap.values()).find(f => f.lastModified > cacheData.lastModified)) isCached = false;
 
-    if (Object.entries(cacheData.fileMap).find(([ name, path ]) => fileMap.get(name)?.path === path)) isCached = false;
-    if (Array.from(fileMap.entries()).find(([ name, data ]) => data.path === cacheData.fileMap[name])) isCached = false;
+    if (Object.entries(cacheData.fileMap).find(([name, path]) => fileMap.get(name)?.path === path)) isCached = false;
+    if (Array.from(fileMap.entries()).find(([name, data]) => data.path === cacheData.fileMap[name])) isCached = false;
 
     if (isCached) {
-      console.log("Spritesheets are cached! Skipping build.")
-      return {
-        low: await Promise.all(cacheData.atlasFiles.low.map(async file => ({
-          json: JSON.parse(await readFile(path.join(cacheDir, file + ".json"), "utf8")) as SpritesheetData,
-          image: await readFile(path.join(cacheDir, file + ".png"))
-        }))),
-        high: await Promise.all(cacheData.atlasFiles.high.map(async file => ({
-          json: JSON.parse(await readFile(path.join(cacheDir, file + ".json"), "utf8")) as SpritesheetData,
-          image: await readFile(path.join(cacheDir, file + ".png"))
-        }))),
-      }
+        console.log("Spritesheets are cached! Skipping build.");
+        return {
+            low: await Promise.all(cacheData.atlasFiles.low.map(async file => ({
+                json: JSON.parse(await readFile(path.join(cacheDir, `${file}.json`), "utf8")) as SpritesheetData,
+                image: await readFile(path.join(cacheDir, `${file}.png`))
+            }))),
+            high: await Promise.all(cacheData.atlasFiles.high.map(async file => ({
+                json: JSON.parse(await readFile(path.join(cacheDir, `${file}.json`), "utf8")) as SpritesheetData,
+                image: await readFile(path.join(cacheDir, `${file}.png`))
+            })))
+        };
     }
 
     console.log("Building spritesheets...");
