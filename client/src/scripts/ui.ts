@@ -380,7 +380,7 @@ export async function setUpUI(game: Game): Promise<void> {
                         const message = getTranslatedString(`msg_punishment_${data.message}_reason`, { reason: data.reason ?? getTranslatedString("msg_no_reason") });
 
                         ui.warningTitle.text(getTranslatedString(`msg_punishment_${data.message}`));
-                        ui.warningText.html(`${data.message !== "vpn" ? `<span style="font-size:20px;margin-bottom:10px">Case ID: ${reportID}</span><br>` : ""}${message}`);
+                        ui.warningText.html(`${data.message !== "vpn" ? `<span class="case-id">Case ID: ${reportID}</span><br><br><br>` : ""}${message}`);
                         ui.warningAgreeOpts.toggle(data.message === "warn");
                         ui.warningAgreeCheckbox.prop("checked", false);
                         ui.warningModal.show();

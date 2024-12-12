@@ -10,6 +10,23 @@
     max-width: 500px;
 }
 
+#warning-modal {
+    text-align: center;
+    border: 2.5px solid rgba(0, 0, 0, 0.3);
+    text-shadow: 2px 2px 0 black;
+
+    #warning-modal-title {
+        color: rgb(236, 57, 57);
+        text-align: center;
+        margin-top: 0;
+    }
+
+    .case-id {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+}
+
 #reporting-name {
     margin-left: 5px;
 }
