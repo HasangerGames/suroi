@@ -1,11 +1,10 @@
 import { type Image, createCanvas, loadImage } from "canvas";
 import { createHash } from "crypto";
-import { writeFile } from "fs/promises";
 import { type IOption, MaxRectsPacker } from "maxrects-packer";
 import path from "path";
 import { type SpritesheetData } from "pixi.js";
 import { CacheData, cacheDir } from "../spritesheet-plugin";
-import { writeFileSync, writeSync } from "fs";
+import { writeFileSync } from "fs";
 
 export const supportedFormats = ["png", "jpeg"] as const;
 
