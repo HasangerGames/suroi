@@ -256,7 +256,6 @@
         top: 160px;
         transform: scale(55%);
         transform-origin: 0% 0%;
-
         @media screen and (min-width: variables.$screen_large) {
             flex-direction: column;
             left: 240px;
@@ -264,13 +263,7 @@
         }
     }
 
-    @media screen and (min-width: variables.$screen_large) {
-        flex-direction: column;
-        left: 240px;
-        top: 20px;
-    }
-
-    @media screen and (max-height: 600px) and (max-width: variables.$screen-large) {
+    @media screen and (max-height: 465px) and (max-width: variables.$screen-large) {
         flex-direction: row;
         left: 145px;
         top: 106px;
@@ -288,7 +281,7 @@
         position: relative;
         width: max-content;
 
-        @media screen and (max-height: 600px) and (max-width: variables.$screen-large) {
+        @media screen and (max-height: 465px) and (max-width: variables.$screen-large) {
             padding: 7px;
         }
 
@@ -345,7 +338,7 @@
             width: 30px;
         }
 
-        @media screen and (max-height: 600px) and (max-width: variables.$screen-large) {
+        @media screen and (max-height: 465px) and (max-width: variables.$screen-large) {
             .teammate-name,
             .teammate-badge {
                 display: none;
