@@ -1412,7 +1412,9 @@ export async function setUpUI(game: Game): Promise<void> {
     );
 
     const toggleClass = (elem: JQuery, className: string, bool: boolean): void => {
-        bool ? elem.addClass(className) : elem.removeClass(className);
+        if (bool) {
+            elem.addClass(className);
+        } else elem.removeClass(className);
     };
 
     const crosshairColor = $<HTMLInputElement>("#crosshair-color-picker");

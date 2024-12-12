@@ -66,6 +66,7 @@ async function buildSpritesheets(): Promise<MultiResAtlasList> {
     }
     if (!existsSync(path.join(cacheDir, "data.json"))) isCached = false;
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const cacheData: CacheData = existsSync(path.join(cacheDir, "data.json"))
         ? JSON.parse(await readFile(path.join(cacheDir, "data.json"), "utf8"))
         : {
