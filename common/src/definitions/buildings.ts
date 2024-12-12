@@ -2264,7 +2264,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
 
                     // outside part
                     { idString: "barrel", position: Vec.create(-7, 29), modeVariant: true },
-                    { idString: { box: 1, trash_bag: 0.6 }, position: Vec.create(25, 27) },
+                    { idString: { box: 1, trash_bag: 0.6 }, position: Vec.create(25, 27), modeVariant: true },
                     { idString: "box", position: Vec.create(19, 28.5), modeVariant: true },
 
                     // top right
@@ -4179,7 +4179,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ],
                 obstacles: [
                     // North End of Bridge
-                    { idString: "barrel", position: Vec.create(-17.5, -80), rotation: 0 },
+                    { idString: "barrel", position: Vec.create(-17.5, -80), rotation: 0, modeVariant: true },
 
                     { idString: "sandbags", position: Vec.create(25, -80), rotation: 0, modeVariant: true },
                     { idString: "sandbags", position: Vec.create(36, -82.5), rotation: 1, modeVariant: true },
