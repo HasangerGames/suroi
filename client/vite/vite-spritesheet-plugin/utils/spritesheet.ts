@@ -203,14 +203,14 @@ export async function createSpritesheets(pathMap: Map<string, { lastModified: nu
             json.meta.image = `${options.outDir}/${options.name}-${hash}@${resolution}x.${options.outputFormat}`;
 
             writeFromStart("Caching data".padEnd(prevLength, " "));
-            const cacheName = `${options.name}-${hash}@${resolution}x`
-            writeFileSync(path.join(cacheDir, cacheName + ".json"), JSON.stringify(json));
-            writeFileSync(path.join(cacheDir, cacheName + "." + options.outputFormat), buffer)
+            const cacheName = `${options.name}-${hash}@${resolution}x`;
+            writeFileSync(path.join(cacheDir, `${cacheName}.json`), JSON.stringify(json));
+            writeFileSync(path.join(cacheDir, `${cacheName}.${options.outputFormat}`), buffer);
 
             atlases.push({
                 json,
                 image: buffer,
-                cacheName 
+                cacheName
             });
             const str = `${++bins} / ${binCount} bins done`;
             writeFromStart(str.padEnd(prevLength = max(prevLength, 22), " "));
@@ -226,15 +226,15 @@ export async function createSpritesheets(pathMap: Map<string, { lastModified: nu
         low: createSheet(0.5),
         high: createSheet(1)
     };
-    
+
     const cacheData: CacheData = {
-      lastModified: Date.now(),
-      fileMap: Object.fromEntries(Array.from(pathMap.entries(), ([name, data]) => [name.slice(1), data.path])),
-      atlasFiles: {
-        low: sheets.low.map(s => s.cacheName ?? ""),
-        high: sheets.high.map(s => s.cacheName ?? "")
-      }
-    }
+        lastModified: Date.now(),
+        fileMap: Object.fromEntries(Array.from(pathMap.entries(), ([name, data]) => [name.slice(1), data.path])),
+        atlasFiles: {
+            low: sheets.low.map(s => s.cacheName ?? ""),
+            high: sheets.high.map(s => s.cacheName ?? "")
+        }
+    };
 
     writeFileSync(path.join(cacheDir, "data.json"), JSON.stringify(cacheData));
 

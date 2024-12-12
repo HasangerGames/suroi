@@ -253,9 +253,15 @@
 
     @media screen and (max-height: 800px) {
         flex-direction: column;
-        top: 250px;
+        top: 160px;
         transform: scale(55%);
         transform-origin: 0% 0%;
+
+        @media screen and (min-width: variables.$screen_large) {
+            flex-direction: column;
+            left: 240px;
+            top: 20px;
+        }
     }
 
     @media screen and (min-width: variables.$screen_large) {
@@ -1034,6 +1040,10 @@
 
 #gas-and-debug {
     margin-left: 5px;
+
+    .hidden-prop {
+        visibility: hidden;
+    }
 }
 
 #gas-msg {
