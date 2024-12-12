@@ -21,6 +21,7 @@
   "msg_punishment_vpn": "VPN/proxy detected!"
   "msg_punishment_vpn_reason": "To make ban evasion more difficult, VPNs and proxies are not allowed. Please disable your VPN/proxy to play the game. If you believe this message is in error or would like to request an exemption, please contact an admin on the Discord server (https://discord.suroi.io), or email support@suroi.io."
   "msg_no_reason": "No reason provided."
+  "msg_punishment_warn_agreement": "I acknowledge this warning and will not repeat the offense."
   "play_solo": "Play Solo"
   "play_duo": "Play Duos"
   "play_squad": "Play Squads"
