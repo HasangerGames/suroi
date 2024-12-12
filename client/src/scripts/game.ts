@@ -59,7 +59,8 @@ import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, EMOTE_SLOTS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
-import { EmoteWheelManager } from "./managers/emoteWheelManager.ts";
+import { EmoteWheelManager, PlayerPingWheelManager } from "./managers/emoteWheelManager.ts";
+import { MapPings } from "@common/definitions/mapPings";
 
 /* eslint-disable @stylistic/indent */
 
@@ -145,6 +146,7 @@ export class Game {
     readonly inputManager = new InputManager(this);
     readonly soundManager = new SoundManager(this);
     readonly emoteManager = new EmoteWheelManager(this);
+    readonly pingManager = new PlayerPingWheelManager(this);
 
     readonly gasRender = new GasRender(PIXI_SCALE);
     readonly gas = new Gas(this);
@@ -225,10 +227,14 @@ export class Game {
                 game.camera.container,
                 game.map.container,
                 game.map.mask,
-                game.emoteManager.container
+                game.emoteManager.container,
+                game.pingManager.container
             );
 
             game.emoteManager.init();
+            game.emoteManager.emotes = Emotes.definitions.slice(0, 12)
+            game.emoteManager.setupSlots();
+            game.pingManager.init();
             game.emoteManager.setupSlots();
 
             game.map.visible = !game.console.getBuiltInCVar("cv_minimap_minimized");
@@ -673,6 +679,7 @@ export class Game {
         this.camera.update();
 
         this.emoteManager.update();
+        this.pingManager.update();
     }
 
     private _lastUpdateTime = 0;

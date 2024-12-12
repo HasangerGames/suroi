@@ -766,12 +766,10 @@ export function setUpCommands(game: Game): void {
     Command.createInvertiblePair(
         "map_ping_wheel",
         function() {
-            this.inputManager.pingWheelActive = true;
-            this.uiManager.updateEmoteWheel();
+            this.pingManager.show();
         },
         function() {
-            this.inputManager.pingWheelActive = false;
-            this.uiManager.updateEmoteWheel();
+            this.pingManager.close();
         },
         game,
         {
