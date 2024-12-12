@@ -1,4 +1,4 @@
-import { type ColorSource, Container, Graphics } from "pixi.js";
+import { Color, type ColorSource, Container, Graphics } from "pixi.js";
 import { Game } from "../game.ts";
 import { SuroiSprite } from "../utils/pixi.ts";
 import { Emotes, type EmoteDefinition } from "@common/definitions/emotes.js";
@@ -15,13 +15,13 @@ export class EmoteWheelManager {
   container: Container = new Container();
 
   static readonly COLORS = {
-    background: { h: 0, s: 0, l: 0.7, a: 0.5 },
-    stroke: 0x222222,
-    selection: 0xff0000
+    background: new Color({ h: 0, s: 0, l: 30, a: 0.8 }),
+    stroke: new Color({ h: 0, s: 0, l: 50 }),
+    selection: 0xff7500
   } satisfies Record<string, ColorSource>;
   static readonly DIMENSIONS = {
-    outerRingRadius: 150,
-    innerRingRadius: 40,
+    outerRingRadius: 130,
+    innerRingRadius: 30,
     padding: 10,
     emotePadding: 5,
     strokeWidthSmall: 3,
@@ -59,7 +59,7 @@ export class EmoteWheelManager {
       .stroke({ width: 3, color: EmoteWheelManager.COLORS.stroke })
 
     this.closeGraphics
-      .circle(0, 0, 40)
+      .circle(0, 0, EmoteWheelManager.DIMENSIONS.innerRingRadius)
       .stroke({ width: EmoteWheelManager.DIMENSIONS.strokeWidthSmall, color: EmoteWheelManager.COLORS.selection })
 
     this.closeGraphics.visible = false;
@@ -74,6 +74,8 @@ export class EmoteWheelManager {
       this.closeGraphics,
       this.emoteSlotSprites
     );
+
+    this.container.visible = false;
   }
 
   /**
@@ -124,8 +126,8 @@ export class EmoteWheelManager {
     }
 
     this.selectionGraphics
-      .arc(0, 0, 40, -this._slotAngle / 2, this._slotAngle / 2)
-      .arc(0, 0, 150, this._slotAngle / 2, -this._slotAngle / 2, true)
+      .arc(0, 0, EmoteWheelManager.DIMENSIONS.innerRingRadius, -this._slotAngle / 2, this._slotAngle / 2)
+      .arc(0, 0, EmoteWheelManager.DIMENSIONS.outerRingRadius, this._slotAngle / 2, -this._slotAngle / 2, true)
       .closePath()
       .stroke({ width: 5, color: EmoteWheelManager.COLORS.selection })
   }
@@ -156,6 +158,9 @@ export class EmoteWheelManager {
   }
 
 
+  /**
+   * Sends an emote packet
+   */
   emitEmote(emote: string) {
     this.game.inputManager.addAction({
       type: InputActions.Emote,
@@ -172,17 +177,20 @@ export class EmoteWheelManager {
     const dist = Vec.sub(Vec.create(mouseX, mouseY),
                         this.container.position);
     const len = Vec.length(dist);
-    this.closeGraphics.visible = len <= 40;
-    this.selectionGraphics.visible = len > 40;
+    this.closeGraphics.visible = len <= EmoteWheelManager.DIMENSIONS.innerRingRadius;
+    this.selectionGraphics.visible = len > EmoteWheelManager.DIMENSIONS.innerRingRadius;
     const selectionIndex = Math.round(Vec.direction(dist) / this._slotAngle)
-    if (len <= 40) this.selection = null;
-    if (len > 40) this.selection = selectionIndex
+    if (len <= EmoteWheelManager.DIMENSIONS.innerRingRadius) this.selection = null;
+    if (len > EmoteWheelManager.DIMENSIONS.innerRingRadius) this.selection = selectionIndex
     this.selectionGraphics.rotation = selectionIndex * this._slotAngle;
   }
 }
 
+/**
+ * The map ping wheel manager
+ */
 export class PlayerPingWheelManager extends EmoteWheelManager{
-  override emotes = MapPings.definitions;
+  override emotes = MapPings.definitions.filter(p => p.isPlayerPing);
 
   override emitEmote(ping: string) {
     this.game.inputManager.addAction({

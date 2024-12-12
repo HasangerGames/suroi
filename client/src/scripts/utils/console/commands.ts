@@ -766,10 +766,10 @@ export function setUpCommands(game: Game): void {
     Command.createInvertiblePair(
         "map_ping_wheel",
         function() {
-            this.pingManager.show();
+            game.pingManager.show();
         },
         function() {
-            this.pingManager.close();
+            game.pingManager.close();
         },
         game,
         {
