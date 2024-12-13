@@ -3170,7 +3170,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "truck", position: Vec.create(72, 84), rotation: 3 },
 
                     { idString: "regular_crate", position: Vec.create(120, 110), modeVariant: true },
-                    { idString: { regular_crate: 3, grenade_crate: 1 }, position: Vec.create(110, 115) },
+                    { idString: { regular_crate: 3, grenade_crate: 1 }, position: Vec.create(110, 115), modeVariant: true },
 
                     { idString: "box", position: Vec.create(87, 123), modeVariant: true },
                     { idString: "box", position: Vec.create(92, 120), modeVariant: true },
