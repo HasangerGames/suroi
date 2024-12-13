@@ -1,8 +1,8 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Mon, 11 Nov 2024 23:57:58 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Fri, 13 Dec 2024 18:41:03 GMT
 
-## 🇦🇱 Shqip (88% Complete) - ab.hjson
+## 🇦🇱 Shqip (87% Complete) - ab.hjson
 
 ### (No Invalid Keys)
 
@@ -14,6 +14,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_error_joining_team` is not defined
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
@@ -48,6 +49,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
@@ -61,7 +63,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇩🇪 Deutsch (86% Complete) - de.hjson
+## 🇩🇪 Deutsch (85% Complete) - de.hjson
 
 ### (No Invalid Keys)
 
@@ -73,6 +75,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_error_joining_team` is not defined
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
@@ -104,7 +107,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_sa` is not defined
 - Key `region_as` is not defined
 
-## 🇪🇪 Eesti (94% Complete) - et.hjson
+## 🇪🇪 Eesti (93% Complete) - et.hjson
 
 ### (No Invalid Keys)
 
@@ -112,6 +115,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
@@ -135,6 +139,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
@@ -153,7 +158,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇬🇷 Ελληνικά (94% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (93% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
@@ -161,6 +166,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
@@ -176,7 +182,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (93% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (92% Complete) - hk_mo.hjson
 
 ### (No Invalid Keys)
 
@@ -185,6 +191,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_error_joining_team` is not defined
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
@@ -221,6 +228,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_temp_reason` is not defined
 - Key `msg_punishment_perma` is not defined
 - Key `msg_punishment_perma_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
 
 ## 🇯🇵 日本語 (94% Complete) - jp.hjson
 
@@ -230,6 +238,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
@@ -251,6 +260,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
@@ -272,6 +282,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
@@ -297,6 +308,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_error_joining_team` is not defined
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
@@ -323,6 +335,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_error_joining_team` is not defined
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
@@ -355,6 +368,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
@@ -363,7 +377,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇮🇳 தமிழ் (92% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (91% Complete) - ta.hjson
 
 ### (No Invalid Keys)
 
@@ -371,6 +385,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
 - Key `news` is not defined
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
@@ -399,6 +414,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
@@ -424,6 +440,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_error_joining_team` is not defined
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
@@ -460,6 +477,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
@@ -481,6 +499,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
