@@ -14,7 +14,7 @@ export interface SkinDefinition extends ItemDefinition {
     readonly grassTint: boolean
     readonly backpackTint?: number
     readonly hideEquipment: boolean
-    readonly roleRequired?: string
+    readonly rolesRequired?: string[]
     readonly hideBlood: boolean
     readonly noSwap?: boolean
 }
@@ -40,19 +40,22 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
             hideFromLoadout: true
         });
 
-        const withRole = createTemplate(skin, (role: string) => ({
-            roleRequired: role
+        const withRole = createTemplate(skin, (roles: string[]) => ({
+            rolesRequired: roles
         }));
 
         return [
-            withRole([["hasanger"], ["Hasanger",      0x640000]]),
-            withRole([["limenade"], ["LimeNade",      0xffffff]]),
-            withRole([["solstice"], ["Dragonscale",   0x3f808d]]),
-            withRole([["error"],    ["error",         0x1fc462]]),
-            withRole([["pap"],      ["pap",           0x060647]]),
-            withRole([["developr"], ["Developr Swag", 0x007a7f]]),
-            withRole([["designr"],  ["Designr Swag",  0x67cf00]]),
-            withRole([["composr"],  ["Composr Swag",  0xffd101]]),
+            // Dev funny skins
+            withRole([[["hasanger"]], ["Hasanger",      0x640000]]),
+            withRole([[["limenade"]], ["LimeNade",      0xffffff]]),
+            withRole([[["solstice"]], ["Dragonscale",   0x3f808d]]),
+            withRole([[["error"]],    ["error",         0x1fc462]]),
+            withRole([[["pap"]],      ["pap",           0x00366b]]),
+
+            // Role skins
+            withRole([[["developr", "pap", "error", "limenade"]],                ["Developr Swag", 0x007a7f]]),
+            withRole([[["designr", "solstice", "vip_designr", "lead_designr"]],  ["Designr Swag",  0x67cf00]]),
+            withRole([[["composr", "lead_composr"]],                             ["Composr Swag",  0xffd101]]),
             ...([
                 ["HAZEL Jumpsuit",  0xb4a894],
                 ["The Amateur",     0x9b8767],
@@ -107,6 +110,8 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ["Candy Cane",            0xf4f4f4],
                 ["Holiday Tree",          0x23883f],
                 ["Gingerbread",           0xb55c12],
+                ["Light Choco",           0xffd99e],
+                ["Frosty",                0xa2f3ff],
                 ["Verified",              0x4790ff],
                 ["no kil pls",            0x6b6b6b],
                 ["Stardust",              0x16448b],

@@ -1,4 +1,4 @@
-import { Layer } from "../constants";
+import { GameConstants, Layer } from "../constants";
 import { PolygonHitbox, RectangleHitbox, type Hitbox } from "./hitbox";
 import { Collision, Numeric } from "./math";
 import { SeededRandom } from "./random";
@@ -204,7 +204,8 @@ export class Terrain {
                 floor = FloorNames.Sand;
 
                 if (this.grassHitbox.isPointInside(position)) {
-                    floor = FloorNames.Grass;
+                    // adding a property wont work for some reason in the mode def
+                    floor = GameConstants.modeName === "winter" ? FloorNames.Sand : FloorNames.Grass;
                 }
             }
         }

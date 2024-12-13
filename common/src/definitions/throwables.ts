@@ -108,6 +108,7 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
                 liveImage: "proj_frag",
                 leverImage: "proj_frag_lever",
                 cook: {
+                    cookingImage: "proj_frag_nopin",
                     leftFist: Vec.create(2.5, 0),
                     rightFist: Vec.create(-0.5, 2.15)
                 },
@@ -193,6 +194,7 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
                 liveImage: "proj_confetti",
                 leverImage: "proj_frag_lever",
                 cook: {
+                    cookingImage: "proj_confetti_nopin",
                     leftFist: Vec.create(2.5, 0),
                     rightFist: Vec.create(-0.5, 2.15)
                 },
@@ -212,12 +214,7 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
                 angle: 60
             },
             detonation: {
-                explosion: "c4_explosion",
-                particles: {
-                    type: "c4_WHY_IS_THIS_A_FUCKING_SYNCED_PARTICLE",
-                    count: 8,
-                    spawnRadius: 2
-                }
+                explosion: "c4_explosion"
             },
             animation: {
                 liveImage: "proj_c4",

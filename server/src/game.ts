@@ -691,7 +691,7 @@ export class Game implements GameData {
         if (
             skin.itemType === ItemType.Skin
             && !skin.hideFromLoadout
-            && ((skin.roleRequired ?? player.role) === player.role)
+            && ((skin.rolesRequired ?? [player.role]).includes(player.role))
         ) {
             player.loadout.skin = skin;
         }

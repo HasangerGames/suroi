@@ -55,6 +55,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly backpack: BackpackDefinition
             readonly halloweenThrowableSkin: boolean
             readonly activeDisguise?: ObstacleDefinition
+            readonly blockEmoting: boolean
         }
     }
     //
@@ -145,9 +146,12 @@ export interface ObjectsNetData extends BaseObjectsNetData {
         readonly layer: Layer
         readonly airborne: boolean
         readonly activated: boolean
+        readonly throwerTeamID: number
+
         readonly full?: {
             readonly definition: ThrowableDefinition
             readonly halloweenSkin: boolean
+            readonly tintIndex: number
         }
     }
     //
@@ -230,7 +234,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 vest,
                 backpack,
                 halloweenThrowableSkin,
-                activeDisguise
+                activeDisguise,
+                blockEmoting
             } }
         ): void {
             stream.writeLayer(layer);
@@ -248,7 +253,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 halloweenThrowableSkin,
                 hasHelmet,
                 hasVest,
-                hasDisguise
+                hasDisguise,
+                blockEmoting
             );
             stream.writeUint8(teamID);
             Loots.writeToStream(stream, activeItem);
@@ -304,7 +310,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 halloweenThrowableSkin,
                 hasHelmet,
                 hasVest,
-                hasDisguise
+                hasDisguise,
+                blockEmoting
             ] = stream.readBooleanGroup2();
 
             return {
@@ -321,7 +328,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 helmet: hasHelmet ? Armors.readFromStream(stream) : undefined,
                 vest: hasVest ? Armors.readFromStream(stream) : undefined,
                 backpack: Backpacks.readFromStream(stream),
-                activeDisguise: hasDisguise ? Obstacles.readFromStream(stream) : undefined
+                activeDisguise: hasDisguise ? Obstacles.readFromStream(stream) : undefined,
+                blockEmoting
             };
         }
     },
@@ -775,11 +783,13 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             )
                 .writePosition(data.position)
                 .writeRotation2(data.rotation)
-                .writeLayer(data.layer);
+                .writeLayer(data.layer)
+                .writeUint8(data.throwerTeamID);
         },
         serializeFull(stream, { full }) {
             Loots.writeToStream(stream, full.definition);
             stream.writeUint8(full.halloweenSkin ? -1 : 0);
+            stream.writeUint8(full.tintIndex);
         },
         deserializePartial(stream) {
             const [
@@ -792,13 +802,15 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 rotation: stream.readRotation2(),
                 layer: stream.readLayer(),
                 airborne,
-                activated
+                activated,
+                throwerTeamID: stream.readUint8()
             };
         },
         deserializeFull(stream) {
             return {
                 definition: Loots.readFromStream(stream),
-                halloweenSkin: stream.readUint8() !== 0
+                halloweenSkin: stream.readUint8() !== 0,
+                tintIndex: stream.readUint8()
             };
         }
     }

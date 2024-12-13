@@ -1692,7 +1692,8 @@ export class GameConsole {
          */
         const resolveArgParts = (parts: ParsedCommand["args"][number]["arg"]): [isConst: boolean, value: string] => {
             let isConst = true;
-            const value = parts.reduce<string>( // <- do not inline, has side-effects
+            //    vvvvv -> do not inline, has side-effects
+            const value = parts.reduce<string>(
                 (acc, cur) => {
                     if (cur.type === "raw") return acc + cur.content;
 

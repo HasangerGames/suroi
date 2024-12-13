@@ -43,6 +43,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     meleeStopSound?: GameSound;
     meleeAttackCounter = 0;
 
+    blockEmoting = false;
+
     private activeDisguise?: ObstacleDefinition;
     private readonly disguiseContainer: Container;
     halloweenThrowableSkin = false;
@@ -517,7 +519,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     vest,
                     backpack,
                     halloweenThrowableSkin,
-                    activeDisguise
+                    activeDisguise,
+                    blockEmoting
                 }
             } = data;
 
@@ -728,6 +731,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
                 updateContainerZIndex = true;
             }
+
+            // Rate Limiting: Team Pings & Emotes
+            this.blockEmoting = blockEmoting;
+            this.game.uiManager.ui.emoteWheel.css("opacity", this.blockEmoting ? "0.5" : "");
         }
 
         if (updateContainerZIndex) this.updateZIndex();
@@ -781,7 +788,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this.healingParticlesEmitter.active = true;
                     if (this.isActivePlayer) {
                         uiManager.animateAction(
-                            getTranslatedString(`action_${itemDef.idString}_use` as TranslationKeys, { item: getTranslatedString(itemDef.idString as TranslationKeys) }),
+                            getTranslatedString(
+                                `action_${itemDef.idString}_use` as TranslationKeys,
+                                { item: getTranslatedString(itemDef.idString as TranslationKeys) }
+                            ),
                             itemDef.useTime / uiManager.perks.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
                         );
                     }
@@ -1222,12 +1232,19 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             let itemTooltip = getTranslatedString(def.idString as TranslationKeys);
             if (def.itemType === ItemType.Armor) {
-                // itemTooltip += `<br>Reduces ${def.damageReduction * 100}% damage`;
                 itemTooltip = getTranslatedString("tt_reduces", {
                     item: `${getTranslatedString(def.idString as TranslationKeys)}<br>`,
                     percent: (def.damageReduction * 100).toString()
                 });
             }
+
+            if (def.itemType !== ItemType.Backpack) {
+                const actualToolTip = itemTooltip.split("<br> ");
+                const itemName = actualToolTip[0];
+                const itemDescription = actualToolTip[1].charAt(0).toUpperCase() + actualToolTip[1].slice(1);
+                itemTooltip = `<b>${itemName}</b><br>${itemDescription}`;
+            }
+
             container.children(".item-tooltip").html(itemTooltip);
         }
 
@@ -1235,7 +1252,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         container[0].addEventListener(
             "pointerdown",
-            (e: PointerEvent): void => {
+            e => {
                 e.stopImmediatePropagation();
                 if (e.button === 2 && def && this.game.teamMode) {
                     this.game.inputManager.addAction({
@@ -1288,7 +1305,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         );
         this.emote.image.setFrame(type.idString);
 
-        const isWeaponEmote = "itemType" in type;
+        const isItemEmote = "itemType" in type;
+        const isHealingOrAmmoEmote = isItemEmote && [ItemType.Healing, ItemType.Ammo].includes(type.itemType);
 
         const container = this.emote.container;
         container.visible = true;
@@ -1300,7 +1318,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             backgroundFrame = `loot_background_gun_${Guns.fromStringSafe(type.idString)?.ammoType}`;
         }
 
-        this.emote.image.setScale(isWeaponEmote ? 0.7 : 1);
+        this.emote.image.setScale(isItemEmote && !isHealingOrAmmoEmote ? 0.7 : 1);
         this.emote.background.setFrame(backgroundFrame);
 
         this.anims.emote = this.game.addTween({
@@ -1334,7 +1352,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this._emoteHideTimeout = undefined;
                 }
             });
-        }, isWeaponEmote ? 2000 : 4000);
+        }, isItemEmote ? 2000 : 4000);
     }
 
     playAnimation(anim: AnimationType): void {
@@ -1370,17 +1388,19 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             yoyo: true
                         });
 
-                        this.anims.leftFist = this.game.addTween({
-                            target: this.images.leftFist,
-                            to: {
-                                x: 0,
-                                y: mysteryYConstant * 2,
-                                angle: -weaponDef.image.useAngle
-                            },
-                            duration,
-                            ease: EaseFunctions.sineIn,
-                            yoyo: true
-                        });
+                        if (!weaponDef.fists.noLeftFistMovement) {
+                            this.anims.leftFist = this.game.addTween({
+                                target: this.images.leftFist,
+                                to: {
+                                    x: 0,
+                                    y: mysteryYConstant * 2,
+                                    angle: -weaponDef.image.useAngle
+                                },
+                                duration,
+                                ease: EaseFunctions.sineIn,
+                                yoyo: true
+                            });
+                        }
 
                         this.anims.weapon = this.game.addTween({
                             target: this.images.weapon,
@@ -1735,8 +1755,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     frame += "_halloween";
                 }
 
-                projImage.setFrame(frame);
                 this.updateFistsPosition(false);
+                projImage.setFrame(frame);
 
                 this.anims.leftFist = this.game.addTween({
                     target: this.images.leftFist,

@@ -20,7 +20,7 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "normal",
+    map: "winter",
 
     spawn: { mode: SpawnMode.Normal },
 
@@ -41,12 +41,13 @@ export const Config = {
         designr: { password: "designr" },
         lead_designr: { password: "lead_designr" },
         vip_designr: { password: "vip_designr" },
-        composr: { password: "composr" },
         lead_composr: { password: "lead_composr" },
+        composr: { password: "composr" },
+        sound_designr: { password: "sound_designr" },
         moderatr: { password: "moderatr" },
         administratr: { password: "administratr" },
-        youtubr: { password: "youtubr" },
-        boostr: { password: "boostr" },
+        content_creatr: { password: "content_creatr" },
+        donatr: { password: "donatr" },
 
         hasanger: { password: "hasanger", isDev: true },
         pap: { password: "pap", isDev: true },

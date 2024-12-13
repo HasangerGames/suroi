@@ -22,7 +22,7 @@ import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
 import { type GameObject } from "../objects/gameObject";
 import { Player } from "../objects/player";
-import { GHILLIE_TINT, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
+import { GHILLIE_TINT, MODE, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
 import { ClientPerkManager } from "./perkManager";
@@ -150,8 +150,18 @@ export class UIManager {
         }
     }
 
+    getTeammateColorIndex(id: number): number | undefined {
+        const teammate = this.game.uiManager.teammates.find(teammate => {
+            return teammate.id === id;
+        });
+
+        const colorIndex = teammate ? teammate.colorIndex : (this.game.teamMode ? undefined : 0);
+        return colorIndex;
+    }
+
     readonly ui = Object.freeze({
         loadingText: $<HTMLDivElement>("#loading-text"),
+        // cancelFindingGame: $<HTMLButtonElement>("#btn-cancel-finding-game"),
 
         ammoCounterContainer: $<HTMLDivElement>("#weapon-ammo-container"),
         activeAmmo: $<HTMLSpanElement>("#weapon-clip-ammo-count"),
@@ -831,19 +841,25 @@ export class UIManager {
                         "color": ""
                     });
 
-                itemName.text(weapon.definition.idString.startsWith("dual_")
-                    ? getTranslatedString("dual_template", { gun: getTranslatedString(weapon.definition.idString.slice("dual_".length) as TranslationKeys) })
-                    : getTranslatedString(weapon.definition.idString as TranslationKeys));
+                itemName.text(
+                    definition.itemType === ItemType.Gun && definition.isDual
+                        ? getTranslatedString(
+                            "dual_template",
+                            { gun: getTranslatedString(definition.singleVariant as TranslationKeys) }
+                        )
+                        : getTranslatedString(definition.idString as TranslationKeys)
+                );
 
-                const isFists = weapon.definition.idString === "fists";
+                const isFists = definition.idString === "fists";
                 const oldSrc = itemImage.attr("src");
 
-                let frame = weapon.definition.idString;
-                if (this.perks.hasPerk(PerkIds.PlumpkinBomb) && weapon.definition.itemType === ItemType.Throwable && !weapon.definition.noSkin) {
+                let frame = definition.idString;
+                if (this.perks.hasPerk(PerkIds.PlumpkinBomb) && definition.itemType === ItemType.Throwable && !definition.noSkin) {
                     frame += "_halloween";
                 }
 
-                const newSrc = `./img/game/shared/weapons/${frame}.svg`;
+                const location = definition.itemType === ItemType.Melee && definition.reskins?.includes(MODE.idString) ? MODE.idString : "shared";
+                const newSrc = `./img/game/${location}/weapons/${frame}.svg`;
                 if (oldSrc !== newSrc) {
                     this._playSlotAnimation(container);
                     itemImage.attr("src", newSrc);
@@ -1116,37 +1132,6 @@ export class UIManager {
             };
         });
     }
-    /* Womp Womp
-    private static readonly _killfeedEventDescription = freezeDeep<Record<KillfeedEventType, Record<KillfeedEventSeverity, string>>>({
-        [KillfeedEventType.Suicide]: {
-            [KillfeedEventSeverity.Kill]: "committed suicide",
-            [KillfeedEventSeverity.Down]: "knocked themselves out"
-        },
-        [KillfeedEventType.NormalTwoParty]: {
-            [KillfeedEventSeverity.Kill]: "killed",
-            [KillfeedEventSeverity.Down]: "knocked out"
-        },
-        [KillfeedEventType.BleedOut]: {
-            [KillfeedEventSeverity.Kill]: "bled out",
-            [KillfeedEventSeverity.Down]: "bled out non-lethally" // should be impossible
-        },
-        [KillfeedEventType.FinishedOff]: {
-            [KillfeedEventSeverity.Kill]: "finished off",
-            [KillfeedEventSeverity.Down]: "gently finished off" // should be impossible
-        },
-        [KillfeedEventType.FinallyKilled]: {
-            [KillfeedEventSeverity.Kill]: "finally killed",
-            [KillfeedEventSeverity.Down]: "finally knocked out" // should be impossible
-        },
-        [KillfeedEventType.Gas]: {
-            [KillfeedEventSeverity.Kill]: "died to",
-            [KillfeedEventSeverity.Down]: "was knocked out by"
-        },
-        [KillfeedEventType.Airdrop]: {
-            [KillfeedEventSeverity.Kill]: "was fatally crushed",
-            [KillfeedEventSeverity.Down]: "was knocked out"
-        }
-    }); */
 
     private static readonly _killModalEventDescription = freezeDeep<Record<KillfeedEventType, Record<KillfeedEventSeverity, (victim: string, weaponUsed: string) => string>>>({
         [KillfeedEventType.Suicide]: {
@@ -1271,14 +1256,17 @@ export class UIManager {
 
                         let useSpecialSentence = false;
 
-                        // const description = UIManager._killfeedEventDescription[eventType][severity];
-
                         // Remove spaces if chinese/japanese language.
                         if (NO_SPACE_LANGUAGES.includes(language) && messageText) {
                             messageText = messageText.replaceAll("<span>", "<span style=\"display:contents;\">");
                         }
 
-                        const fullyQualifiedName = weaponPresent ? (getTranslatedString(weaponUsed.idString as TranslationKeys) === weaponUsed.idString ? weaponUsed.name : getTranslatedString(weaponUsed.idString as TranslationKeys)) : "";
+                        let weaponName: string | undefined;
+                        const fullyQualifiedName = weaponPresent
+                            ? (weaponName = getTranslatedString(weaponUsed.idString as TranslationKeys)) === weaponUsed.idString
+                                ? weaponUsed.name
+                                : weaponName
+                            : "";
 
                         // special case for turkish
                         if (language === "tr") {
@@ -1489,9 +1477,14 @@ export class UIManager {
                         classes.push("kill-feed-item-killer");
 
                         if (attackerId === this.game.activePlayerID) {
+                            let weaponName: string | undefined;
                             const base = {
                                 victimName: victimText,
-                                weaponUsed: weaponPresent ? getTranslatedString(weaponUsed.idString as TranslationKeys) === weaponUsed.idString ? weaponUsed.name : getTranslatedString(weaponUsed.idString as TranslationKeys) : "",
+                                weaponUsed: weaponPresent
+                                    ? (weaponName = getTranslatedString(weaponUsed.idString as TranslationKeys)) === weaponUsed.idString
+                                        ? weaponUsed.name
+                                        : weaponName
+                                    : "",
                                 type: eventType
                             };
 
@@ -1820,10 +1813,12 @@ class PlayerHealthUI {
 
             if (this._position.dirty && this._position.value) {
                 if ((indicator = teammateIndicators.get(id)) === undefined) {
+                    const color = TEAMMATE_COLORS[this.game.uiManager.getTeammateColorIndex(id) ?? this._colorIndex.value];
+
                     teammateIndicators.set(
                         id,
                         indicator = new SuroiSprite("player_indicator")
-                            .setTint(TEAMMATE_COLORS[this._colorIndex.value])
+                            .setTint(color)
                     );
                     this.game.map.teammateIndicatorContainer.addChild(indicator);
                 }
@@ -1846,7 +1841,7 @@ class PlayerHealthUI {
         }
 
         if (this._colorIndex.dirty) {
-            const color = TEAMMATE_COLORS[this._colorIndex.value];
+            const color = TEAMMATE_COLORS[this.game.uiManager.getTeammateColorIndex(id) ?? this._colorIndex.value];
 
             this.indicatorContainer.css(
                 "background-color",

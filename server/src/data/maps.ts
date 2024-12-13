@@ -138,8 +138,8 @@ const maps = {
         },
         obstacles: {
             oil_tank: 12,
-            // christmas_tree: 1, // winter mode
-            oak_tree: 100,
+            oak_tree: 10,
+            small_oak_tree: 100,
             birch_tree: 20,
             pine_tree: 10,
             loot_tree: 1,
@@ -169,7 +169,7 @@ const maps = {
                     minAmount: 2,
                     maxAmount: 3,
                     jitter: 5,
-                    obstacles: ["oak_tree"],
+                    obstacles: ["small_oak_tree"],
                     radius: 12
                 }
             },
@@ -289,7 +289,8 @@ const maps = {
             tent_4: 1
         },
         obstacles: {
-            oak_tree: 250,
+            oak_tree: 230,
+            small_oak_tree: 50,
             birch_tree: 25,
             maple_tree: 70,
             pine_tree: 95,
@@ -326,6 +327,16 @@ const maps = {
                     maxAmount: 3,
                     jitter: 5,
                     obstacles: ["oak_tree"],
+                    radius: 12
+                }
+            },
+            {
+                clumpAmount: 15,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["small_oak_tree"],
                     radius: 12
                 }
             },
@@ -445,7 +456,8 @@ const maps = {
             tent_4: 1
         },
         obstacles: {
-            oak_tree: 140,
+            oak_tree: 40,
+            small_oak_tree: 100,
             birch_tree: 60,
             maple_tree: 50,
             pine_tree: 80,
@@ -520,6 +532,130 @@ const maps = {
             { name: "Haunted Hollow", position: Vec.create(0.72, 0.8) },
             { name: "Mt. Fang", position: Vec.create(0.5, 0.35) },
             { name: "Darkwood", position: Vec.create(0.5, 0.65) }
+        ]
+    },
+    winter: {
+        width: 1632,
+        height: 1632,
+        oceanSize: 128,
+        beachSize: 32,
+        rivers: {
+            minAmount: 2,
+            maxAmount: 3,
+            maxWideAmount: 1,
+            wideChance: 0.35,
+            minWidth: 12,
+            maxWidth: 18,
+            minWideWidth: 25,
+            maxWideWidth: 30
+        },
+        buildings: {
+            large_bridge: 2,
+            small_bridge: Infinity,
+            port_complex: 1,
+            sea_traffic_control: 1,
+            tugboat_red: 1,
+            tugboat_white: 5,
+            armory: 1,
+            headquarters: 1,
+            small_bunker: 1,
+            refinery: 1,
+            warehouse: 4,
+            christmas_camp: 1,
+            green_house: 3,
+            blue_house: 3,
+            red_house: 3,
+            red_house_v2: 3,
+            construction_site: 1,
+            mobile_home: 8,
+            porta_potty: 12,
+            container_3: 2,
+            container_4: 2,
+            container_5: 2,
+            container_6: 2,
+            container_7: 1,
+            container_8: 2,
+            container_9: 1,
+            container_10: 3
+        },
+        majorBuildings: ["armory", "refinery", "port_complex", "headquarters", "christmas_camp"],
+        quadBuildingLimit: {
+            red_house: 1,
+            red_house_v2: 1,
+            warehouse: 2,
+            green_house: 1,
+            blue_house: 1,
+            mobile_home: 3,
+            porta_potty: 3,
+            construction_site: 1
+        },
+        obstacles: {
+            oil_tank_winter: 12,
+            oak_tree: 40,
+            birch_tree: 20,
+            pine_tree: 90,
+            loot_tree: 1,
+            regular_crate_winter: 160,
+            frozen_crate: 10,
+            flint_crate_winter: 5,
+            aegis_crate_winter: 5,
+            grenade_crate_winter: 35,
+            rock: 150,
+            river_chest: 1,
+            river_rock: 45,
+            bush: 110,
+            // birthday_cake: 100, // birthday mode
+            blueberry_bush: 30,
+            barrel_winter: 80,
+            viking_chest: 1,
+            super_barrel_winter: 30,
+            melee_crate_winter: 1,
+            gold_rock: 1,
+            loot_barrel: 1,
+            flint_stone_winter: 1
+        },
+        obstacleClumps: [
+            {
+                clumpAmount: 25,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["oak_tree"],
+                    radius: 12
+                }
+            },
+            {
+                clumpAmount: 25,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["birch_tree"],
+                    radius: 12
+                }
+            },
+            {
+                clumpAmount: 65,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["pine_tree"],
+                    radius: 12
+                }
+            }
+        ],
+        loots: {
+            ground_loot: 60
+        },
+        places: [
+            { name: "Banana", position: Vec.create(0.23, 0.2) },
+            { name: "Takedown", position: Vec.create(0.23, 0.8) },
+            { name: "Lavlandet", position: Vec.create(0.75, 0.2) },
+            { name: "Noskin Narrows", position: Vec.create(0.72, 0.8) },
+            { name: "Mt. Sanger", position: Vec.create(0.5, 0.35) },
+            { name: "Deepwood", position: Vec.create(0.5, 0.65) }
         ]
     },
     debug: {
@@ -617,6 +753,7 @@ const maps = {
                         || (item.itemType === ItemType.Backpack && item.level === 0)
                         || (item.itemType === ItemType.Perk && item.category === PerkCategories.Halloween)
                         || item.itemType === ItemType.Skin
+                        || item.devItem
                     ) continue;
 
                     game.addLoot(item, itemPos, 0, { count: countMap[item.itemType] ?? 1, pushVel: 0, jitterSpawn: false });

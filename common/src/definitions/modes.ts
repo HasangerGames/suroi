@@ -4,6 +4,7 @@ import { ScopeDefinition } from "./scopes";
 export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "trail" | "gas" | "void";
 
 export interface ModeDefinition {
+    readonly idString: string
     readonly colors: Record<ColorKeys, string>
     readonly inheritTexturesFrom?: Mode
     readonly specialMenuMusic?: boolean
@@ -16,14 +17,20 @@ export interface ModeDefinition {
     readonly bulletTrailAdjust?: string
     readonly particleEffects?: {
         readonly frames: string | string[]
+        readonly delay: number
         readonly tint?: number
+        readonly gravity?: boolean
     }
+    readonly specialLogo?: boolean
+    readonly specialPlayButtons?: boolean
+    readonly modeLogoImage?: string
 }
 
 export type Mode = "normal" | "fall" | "halloween" | "winter";
 
 export const Modes: Record<Mode, ModeDefinition> = {
     normal: {
+        idString: "normal",
         colors: {
             grass: "hsl(95, 41%, 38%)",
             water: "hsl(211, 63%, 42%)",
@@ -37,6 +44,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
         reskin: "normal"
     },
     fall: {
+        idString: "fall",
         colors: {
             grass: "hsl(62, 42%, 32%)",
             water: "hsl(211, 63%, 42%)",
@@ -51,10 +59,14 @@ export const Modes: Record<Mode, ModeDefinition> = {
         defaultScope: "2x_scope",
         reskin: "fall",
         particleEffects: {
-            frames: ["leaf_particle_1", "leaf_particle_2", "leaf_particle_3"]
-        }
+            frames: ["leaf_particle_1", "leaf_particle_2", "leaf_particle_3"],
+            delay: 1000
+        },
+        specialPlayButtons: true,
+        modeLogoImage: "./img/game/fall/obstacles/baby_plumpkin.svg"
     },
     halloween: {
+        idString: "halloween",
         colors: {
             grass: "hsl(65, 100%, 12%)",
             water: "hsl(4, 100%, 14%)",
@@ -69,9 +81,13 @@ export const Modes: Record<Mode, ModeDefinition> = {
         defaultScope: "2x_scope",
         specialMenuMusic: true,
         darkShaders: true,
-        reskin: "fall"
+        reskin: "fall",
+        specialLogo: true,
+        specialPlayButtons: true,
+        modeLogoImage: "./img/game/halloween/obstacles/jack_o_lantern.svg"
     },
     winter: {
+        idString: "winter",
         colors: {
             grass: "hsl(210, 18%, 82%)",
             water: "hsl(211, 63%, 42%)",
@@ -87,6 +103,19 @@ export const Modes: Record<Mode, ModeDefinition> = {
             "airdrop_plane"
         ],
         reskin: "winter",
-        bulletTrailAdjust: "hsl(0, 50%, 80%)"
+        ambience: "snowstorm",
+        inheritTexturesFrom: "normal",
+        bulletTrailAdjust: "hsl(0, 50%, 80%)",
+        particleEffects: {
+            frames: ["snow_particle"],
+            delay: 800,
+            gravity: true
+        },
+        specialLogo: true,
+        specialPlayButtons: true,
+        modeLogoImage: "./img/game/winter/obstacles/red_gift.svg"
     }
+};
+export const ObstacleModeVariations: Partial<Record<Mode, string>> = {
+    winter: "_winter"
 };

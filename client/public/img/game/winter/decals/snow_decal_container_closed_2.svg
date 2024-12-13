@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="91.802284"
+   height="245.72598"
+   viewBox="0 0 24.289354 65.015"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="snow_decal_container_closed_2.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="2.0283687"
+     inkscape:cx="83.564689"
+     inkscape:cy="134.83742"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Στρώση 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-79.639582,-83.950217)">
+    <path
+       style="fill:#c9d1d9;fill-opacity:1;fill-rule:evenodd;stroke:#a2a5c0;stroke-width:3.175;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="m 103.22315,85.372195 c -13.073307,6.488817 -16.059378,11.962746 -12.517752,25.180275 2.71,9.9944 -9.478316,11.14055 -9.478316,20.83905 0,12.3591 13.027173,13.21144 21.815168,16.06374"
+       id="path10"
+       sodipodi:nodetypes="cccc" />
+  </g>
+</svg>

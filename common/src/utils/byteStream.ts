@@ -399,7 +399,7 @@ export class ByteStream {
      * Reads an angle in radians over two bytes, with the angle falling inside `[-π, π]`
      * @returns A float guaranteed to be finite, not `NaN`, and falling within `[-π, π]`
      *
-     * Impl. note: inlined and optimized version of the expression: `() => readFloat(-π, π, 2)`
+     * Impl. note: inlined and optimized version of the expression: `() => readFloat(-π, π, 1)`
      */
     readRotation(): number {
         return τ * (this.readUint8() / 255 - 0.5);
@@ -409,7 +409,7 @@ export class ByteStream {
      * Writes an angle in radians over one byte, with the angle falling inside `[-π, π]`
      * @param value The angle to write. Undefined behavior occurs if this value is not inside `[-π, π]`
      *
-     * Impl. note: inlined and optimized version of the expression: `value => writeFloat(value, -π, π, 1)`
+     * Impl. note: inlined and optimized version of the expression: `value => writeFloat(value, -π, π, 2)`
      */
     writeRotation2(value: number): this {
         return this.writeUint16((value / τ + 0.5) * 65535 + 0.5);

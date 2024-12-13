@@ -1,4 +1,4 @@
-import { Layer, Layers, ObjectCategory, ZIndexes } from "@common/constants";
+import { GameConstants, Layer, Layers, ObjectCategory, ZIndexes } from "@common/constants";
 import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
@@ -169,6 +169,19 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         } as ParticleOptions);
 
                         texture = "airdrop_crate_unlocking";
+
+                        if (GameConstants.modeName === "winter") {
+                            this.game.particleManager.spawnParticles(1, () => ({
+                                frames: "airdrop_particle_4",
+                                position: this.hitbox.randomPoint(),
+                                ...options(7, 9)
+                            } as ParticleOptions));
+                            this.game.particleManager.spawnParticles(2, () => ({
+                                frames: "airdrop_particle_5",
+                                position: this.hitbox.randomPoint(),
+                                ...options(4, 9)
+                            } as ParticleOptions));
+                        }
 
                         this.addTimeout(() => {
                             this.game.particleManager.spawnParticles(2, () => ({
@@ -657,7 +670,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     hitEffect(position: Vector, angle: number): void {
         if (this.definition.noHitEffect) return;
 
-        this.hitSound?.stop();
+        if (!this.definition.hitSoundVariations) this.hitSound?.stop();
 
         const { material } = this.definition;
         this.hitSound = this.game.soundManager.play(

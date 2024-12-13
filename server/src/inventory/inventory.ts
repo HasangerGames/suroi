@@ -610,11 +610,13 @@ export class Inventory {
                 switch (definition.armorType) {
                     case ArmorType.Helmet: {
                         if (!this.helmet) return;
+                        if (this.helmet.level !== definition.level) return;
                         this.helmet = undefined;
                         break;
                     }
                     case ArmorType.Vest: {
                         if (!this.vest) return;
+                        if (this.vest.level !== definition.level) return;
                         this.vest = undefined;
                         break;
                     }

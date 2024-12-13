@@ -110,14 +110,16 @@ function serializePlayerData(
                 position,
                 normalizedHealth,
                 downed,
-                disconnected
+                disconnected,
+                colorIndex
             }) => {
                 strm.writeUint8(
                     (downed ? 2 : 0) + (disconnected ? 1 : 0)
                 )
                     .writeObjectId(id)
                     .writePosition(position ?? Vec.create(0, 0))
-                    .writeFloat(normalizedHealth, 0, 1, 1);
+                    .writeFloat(normalizedHealth, 0, 1, 1)
+                    .writeUint8(colorIndex);
             },
             1
         );
@@ -310,7 +312,8 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
                     position: strm.readPosition(),
                     normalizedHealth: strm.readFloat(0, 1, 1),
                     downed: (status & 2) !== 0,
-                    disconnected: (status & 1) !== 0
+                    disconnected: (status & 1) !== 0,
+                    colorIndex: strm.readUint8()
                 };
             },
             1
@@ -486,6 +489,7 @@ export type PlayerData = {
         readonly normalizedHealth: number
         readonly downed: boolean
         readonly disconnected: boolean
+        readonly colorIndex: number
     }>
     readonly inventory?: {
         readonly activeWeaponIndex: number

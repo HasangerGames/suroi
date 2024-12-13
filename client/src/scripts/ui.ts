@@ -71,6 +71,7 @@ export function resetPlayButtons(): void {
 
     $("#splash-options").removeClass("loading");
     $("#loading-text").text(getTranslatedString("loading_connecting"));
+   // $("#btn-cancel-finding-game").css("display", "none");
 
     const { maxTeamSize } = selectedRegion ?? regionInfo[Config.defaultRegion];
 
@@ -94,6 +95,27 @@ export function resetPlayButtons(): void {
 
 export async function setUpUI(game: Game): Promise<void> {
     const { inputManager, uiManager: { ui } } = game;
+
+    // Change the menu based on the mode.
+    if (MODE.specialLogo) $("#splash-logo").children("img").attr("src", `./img/logos/suroi_beta_${MODE.idString}.svg`);
+    if (MODE.specialPlayButtons) {
+        const playButtons = [$("#btn-play-solo"), $("#btn-play-duo"), $("#btn-play-squad")];
+        for (let buttonIndex = 0; buttonIndex < playButtons.length; buttonIndex++) {
+            const button = playButtons[buttonIndex];
+
+            button.addClass(`event-${MODE.idString}`);
+
+            // Mode Logo
+            if (MODE.modeLogoImage) {
+                const translationString = `play_${["solo", "duo", "squad"][buttonIndex]}`;
+
+                button.html(`
+                    <img class="btn-icon" width="26" height="26" src=${MODE.modeLogoImage}>
+                    <span style="margin-left: ${(buttonIndex > 0 ? "20px;" : "0")}" translation="${translationString}">${getTranslatedString(translationString as TranslationKeys)}</span>
+                `);
+            }
+        }
+    }
 
     if (UI_DEBUG_MODE) {
         // Kill message
@@ -274,10 +296,11 @@ export async function setUpUI(game: Game): Promise<void> {
             game.console.setBuiltInCVar("cv_region", "");
         }
 
-        if (getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}` as TranslationKeys) === "region_") {
+        const region = getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}` as TranslationKeys);
+        if (region === "region_") {
             serverName.text(selectedRegion.name); // this for now until we find a way to selectedRegion.id
         } else {
-            serverName.text(getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}` as TranslationKeys));
+            serverName.text(region);
         }
         playerCount.text(selectedRegion.playerCount ?? "-");
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
@@ -309,6 +332,7 @@ export async function setUpUI(game: Game): Promise<void> {
     const joinGame = (): void => {
         ui.splashOptions.addClass("loading");
         ui.loadingText.text(getTranslatedString("loading_finding_game"));
+        // ui.cancelFindingGame.css("display", "");
         // shouldn't happen
         if (selectedRegion === undefined) return;
 
@@ -564,6 +588,11 @@ export async function setUpUI(game: Game): Promise<void> {
         socket?.close();
     });
 
+    // TODO
+   /* ui.cancelFindingGame.on("click", () => {
+        game.disconnect();
+    }); */
+
     const copyUrl = $<HTMLButtonElement>("#btn-copy-team-url");
     const hideUrl = $<HTMLButtonElement>("#btn-hide-team-url");
 
@@ -727,10 +756,6 @@ export async function setUpUI(game: Game): Promise<void> {
         {
             name: "DESTROYER [IHY]",
             link: "https://www.youtube.com/@DESTROYERIHY"
-        },
-        {
-            name: "XxDreamCatcherxX Gaming",
-            link: "https://www.youtube.com/@XxDreamCatcherxXGaming2.0"
         },
         {
             name: "[ATMOS]Bl00D",
@@ -952,8 +977,8 @@ export async function setUpUI(game: Game): Promise<void> {
         updateSplashCustomize(idString);
     }
 
-    for (const { idString, hideFromLoadout, roleRequired } of Skins) {
-        if (hideFromLoadout || (roleRequired ?? role) !== role) continue;
+    for (const { idString, hideFromLoadout, rolesRequired } of Skins) {
+        if (hideFromLoadout || !(rolesRequired ?? [role]).includes(role)) continue;
 
         // noinspection CssUnknownTarget
         const skinItem = skinUiCache[idString] = $<HTMLDivElement>(
@@ -1017,8 +1042,13 @@ export async function setUpUI(game: Game): Promise<void> {
 
         for (const emote of emotes) {
             if (emote.category !== lastCategory) {
-                const categoryHeader = $<HTMLDivElement>(`<div class="emote-list-header">${getTranslatedString(`emotes_category_${EmoteCategory[emote.category]}` as TranslationKeys)}</div>`);
-                emoteList.append(categoryHeader);
+                emoteList.append(
+                    $<HTMLDivElement>(
+                        `<div class="emote-list-header">${
+                            getTranslatedString(`emotes_category_${EmoteCategory[emote.category]}` as TranslationKeys)
+                        }</div>`
+                    )
+                );
                 lastCategory = emote.category;
             }
 
@@ -1876,18 +1906,25 @@ export async function setUpUI(game: Game): Promise<void> {
 
     $<HTMLDivElement>("#healing-items-container").append(
         HealingItems.definitions.map(item => {
+            let healingItemString = getTranslatedString("tt_restores", {
+                item: `${getTranslatedString(item.idString as TranslationKeys)}<br>`,
+                amount: item.restoreAmount.toString(),
+                type: item.healType === HealType.Adrenaline
+                    ? getTranslatedString("adrenaline")
+                    : getTranslatedString("health")
+            });
+
+            const actualToolTip = healingItemString.split("<br> ");
+            const itemName = actualToolTip[0];
+            const itemDescription = actualToolTip[1].charAt(0).toUpperCase() + actualToolTip[1].slice(1);
+            healingItemString = `<b>${itemName}</b><br>${itemDescription}`;
+
             const ele = $<HTMLDivElement>(
                 html`<div class="inventory-slot item-slot active" id="${item.idString}-slot">
                     <img class="item-image" src="./img/game/shared/loot/${item.idString}.svg" draggable="false">
                     <span class="item-count" id="${item.idString}-count">0</span>
                     <div class="item-tooltip">
-                        ${getTranslatedString("tt_restores", {
-                            item: `${getTranslatedString(item.idString as TranslationKeys)}<br>`,
-                            amount: item.restoreAmount.toString(),
-                            type: item.healType === HealType.Adrenaline
-                                ? getTranslatedString("adrenaline")
-                                : getTranslatedString("health")
-                        })}
+                        ${healingItemString}
                     </div>
                 </div>`
             );

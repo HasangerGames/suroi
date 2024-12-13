@@ -2,25 +2,25 @@ import { FireMode } from "../constants";
 import { ItemType, ObjectDefinitions, type InventoryItemDefinition } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 
-export interface MeleeDefinition extends InventoryItemDefinition {
+export type MeleeDefinition = InventoryItemDefinition & {
     readonly itemType: ItemType.Melee
 
     readonly damage: number
     readonly obstacleMultiplier: number
     readonly piercingMultiplier?: number // If it does less dmg vs pierceable objects than it would vs a normal one
     readonly stonePiercing?: boolean
+    readonly iceMultiplier?: number
     readonly swingSound: string
     readonly stopSound?: string
-    readonly rotationalAnimation?: boolean
     readonly radius: number
     readonly offset: Vector
     readonly cooldown: number
     readonly maxTargets: number
+    readonly reskins?: string[]
     readonly fists: InventoryItemDefinition["fists"] & {
         readonly animationDuration: number
         readonly randomFist?: boolean
-        readonly useLeft: Vector
-        readonly useRight: Vector
+        readonly noLeftFistMovement?: boolean
     }
     readonly image?: {
         readonly position: Vector
@@ -35,7 +35,15 @@ export interface MeleeDefinition extends InventoryItemDefinition {
         readonly animated?: boolean
     }
     readonly fireMode: FireMode
-}
+} & ({
+    readonly rotationalAnimation: true
+} | {
+    readonly rotationalAnimation?: false
+    readonly fists: {
+        readonly useLeft: Vector
+        readonly useRight: Vector
+    }
+});
 
 export const DEFAULT_HAND_RIGGING = Object.freeze({
     left: Vec.create(38, -35),
@@ -50,6 +58,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
         killstreak: false,
         speedMultiplier: 1,
         swingSound: "swing",
+        iceMultiplier: 0.01,
         maxTargets: 1,
         image: {
             zIndex: 1
@@ -62,6 +71,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             name: "Fists",
             damage: 20,
             obstacleMultiplier: 1,
+            iceMultiplier: 0.01,
             radius: 1.5,
             offset: Vec.create(2.5, 0),
             cooldown: 250,
@@ -154,6 +164,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             rotationalAnimation: true,
             obstacleMultiplier: 2,
             piercingMultiplier: 2,
+            iceMultiplier: 5,
             radius: 2.05,
             swingSound: "heavy_swing",
             offset: Vec.create(5.4, -0.5),
@@ -193,7 +204,8 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 angle: 190,
                 useAngle: 40,
                 lootScale: 0.65
-            }
+            },
+            reskins: ["winter"]
         },
         {
             idString: "kbar",
@@ -202,6 +214,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             damage: 25,
             obstacleMultiplier: 1.25,
             radius: 2.7,
+            iceMultiplier: 0.1,
             offset: Vec.create(3.1, 0.9),
             cooldown: 225,
             fists: {
@@ -231,9 +244,10 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             rotationalAnimation: true,
             //  fireMode: FireMode.Auto, - todo
             fists: {
-                animationDuration: 165,
-                left: Vec.create(38, -35),
-                right: Vec.create(45, 35)
+                animationDuration: 150,
+                left: Vec.create(29, -39),
+                right: Vec.create(44, 35),
+                noLeftFistMovement: true
             },
             image: {
                 position: Vec.create(62, 64),
@@ -241,12 +255,14 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 useAngle: 42,
                 lootScale: 0.85,
                 xConstant: 85
-            }
+            },
+            reskins: ["winter"]
         },
         {
             idString: "maul",
             name: "Maul",
             damage: 54,
+            iceMultiplier: 5,
             rotationalAnimation: true,
             swingSound: "heavy_swing",
             obstacleMultiplier: 2,
@@ -270,6 +286,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
         {
             idString: "steelfang",
             name: "Steelfang",
+            devItem: true,
             damage: 40,
             noDrop: true,
             stonePiercing: true,
@@ -324,6 +341,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
         {
             idString: "heap_sword",
             name: "HE-AP sword",
+            devItem: true,
             damage: 75,
             obstacleMultiplier: 2.5,
             piercingMultiplier: 1,
@@ -355,6 +373,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             damage: 35,
             obstacleMultiplier: 1.9,
             piercingMultiplier: 1,
+            iceMultiplier: 5,
             radius: 2.8,
             offset: Vec.create(5.4, -0.5),
             cooldown: 420,
@@ -423,6 +442,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
         {
             idString: "chainsaw",
             name: "Chain Saw",
+            devItem: true,
             damage: 25,
             fireMode: FireMode.Auto,
             obstacleMultiplier: 2,

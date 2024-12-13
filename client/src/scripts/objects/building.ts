@@ -300,7 +300,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
             this.hitbox = definition.hitbox?.transform(this.position, 1, this.orientation);
             this.damageable = !!definition.hitbox;
-            this.ceilingHitbox = (definition.scopeHitbox ?? definition.ceilingHitbox)?.transform(this.position, 1, this.orientation);
+            this.ceilingHitbox = definition.ceilingHitbox?.transform(this.position, 1, this.orientation);
         }
 
         const definition = this.definition;
@@ -450,15 +450,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             );
         }
 
-        if (this.ceilingHitbox) {
-            drawHitbox(
-                this.ceilingHitbox,
-                HITBOX_COLORS.buildingScopeCeiling,
-                this.debugGraphics,
-                this.layer
-            );
-        }
-
         drawHitbox(
             definition.spawnHitbox.transform(this.position, 1, this.orientation),
             HITBOX_COLORS.spawnHitbox,
@@ -466,10 +457,10 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             alpha
         );
 
-        if (definition.scopeHitbox) {
+        if (definition.ceilingHitbox) {
             drawHitbox(
-                definition.scopeHitbox.transform(this.position, 1, this.orientation),
-                HITBOX_COLORS.buildingZoomCeiling,
+                definition.ceilingHitbox.transform(this.position, 1, this.orientation),
+                definition.ceilingScopeEffect ? HITBOX_COLORS.buildingZoomCeiling : HITBOX_COLORS.buildingScopeCeiling,
                 this.debugGraphics
             );
         }
