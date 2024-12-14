@@ -1,24 +1,17 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 14 Dec 2024 12:38:32 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 14 Dec 2024 19:49:53 GMT
 
-## 🇦🇱 Shqip (87% Complete) - ab.hjson
+## 🇦🇱 Shqip (90% Complete) - ab.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
-- Key `msg_spectating` is not defined
-- Key `msg_enter_team_code` is not defined
-- Key `msg_lost_team_connection` is not defined
-- Key `msg_error_joining_team` is not defined
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
-- Key `copied` is not defined
-- Key `settings_ambience_volume` is not defined
-- Key `settings_ambient_particles` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -38,6 +31,19 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off` is not defined
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
+- Key `create_team_ready` is not defined
+- Key `deathray` is not defined
+
+## 🇧🇷 Português (Brasil) (98% Complete) - br.hjson
+
+### (No Invalid Keys)
+
+### Undefined Keys
+
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
+- Key `donate` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
@@ -317,22 +323,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇷🇺 Русский (96% Complete) - ru.hjson
+## 🇷🇺 Русский (100% Complete) - ru.hjson
 
 ### (No Invalid Keys)
 
-### Undefined Keys
-
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `msg_punishment_warn_agreement` is not defined
-- Key `donate` is not defined
-- Key `settings_ambience_volume` is not defined
-- Key `settings_ambient_particles` is not defined
-- Key `kf_finished_off_kill` is not defined
-- Key `kf_finished_off_down` is not defined
-- Key `create_team_ready` is not defined
-- Key `deathray` is not defined
+### (No Undefined Keys)
 
 ## 🇮🇳 தமிழ் (91% Complete) - ta.hjson
 
