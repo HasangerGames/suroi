@@ -18,6 +18,9 @@
   "msg_punishment_perma": "Você foi permanentemente banido!"
   "msg_punishment_perma_reason": "Você foi banido pelo motivo: <reason>"
   "msg_no_reason": "Nenhuma razão fornecida."
+  "msg_punishment_vpn": "VPN/proxy detectado!"
+  "msg_punishment_vpn_reason": "Para dificultar a evasão de bans, VPNs e proxies não são permitidos. Por favor, desative seu VPN/proxy para jogar o jogo. Se você acredita que esta mensagem é um erro ou deseja solicitar uma exceção, entre em contato com um administrador no servidor do Discord (https://discord.suroi.io), ou envie um e-mail para support@suroi.io."
+  "msg_punishment_warn_agreement": "Reconheço este aviso e não repetirei a infração"
 
   "play_solo": "Jogar Solo"
   "play_duo": "Jogar Duplas"
@@ -26,6 +29,7 @@
   "msg_locked_tooltip": "O jogo alterna entre os modos a cada 24 horas, pois não há jogadores suficientes para todos."
   "rules_and_tutorial": "Regras & Tutorial"
   "news": "Notícias"
+  "donate": "Doar"
   "loadout": "Equipamento"
   "settings": "Configurações"
   "fullscreen": "Tela cheia"
@@ -252,6 +256,7 @@
   "create_team_lock": "Travar Equipe"
   "create_team_waiting": "Esperando..."
   "create_team_play": "Iniciar Jogo"
+  "create_team_ready": "Pronto"
 
   "report_reporting": "Reportando"
   "report_id": "ID do Reporte:"
@@ -330,6 +335,7 @@
   "m16a4": "M16A4"
   "mg36": "MG-36"
   "mcx_spear": "MCX Spear"
+  "deathray": "Raio da Morte"
 
   "frag_grenade": "Granada de Fragmentação"
   "smoke_grenade": "Granada de Fumaça"

@@ -785,7 +785,7 @@ export async function setUpUI(game: Game): Promise<void> {
     ];
     const streamer = pickRandomInArray(streamers);
     $("#twitch-featured-name").text(streamer.name);
-    $("#twitch-featured-content").attr("data-href", streamer.link).removeAttr("target");
+    $("#twitch-featured-content").attr("href", streamer.link).removeAttr("target");
 
     const toggleRotateMessage = (): JQuery =>
         $("#splash-rotate-message").toggle(

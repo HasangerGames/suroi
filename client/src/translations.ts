@@ -1,5 +1,4 @@
 import { Badges } from "@common/definitions/badges";
-import { Emotes } from "@common/definitions/emotes";
 import { Loots } from "@common/definitions/loots";
 import { Numeric } from "@common/utils/math";
 import type { TranslationManifest, TranslationsManifest } from "../../translations/src/processTranslations";
@@ -7,6 +6,7 @@ import { type Game } from "./scripts/game";
 import { defaultClientCVars } from "./scripts/utils/console/defaultClientCVars";
 import TRANSLATIONS_MANIFEST from "./translationsManifest.json";
 import { type TranslationKeys } from "./typings/translations";
+import { Emotes } from "@common/definitions/emotes";
 
 export type TranslationMap = Partial<Record<TranslationKeys, string>> & TranslationManifest;
 
@@ -83,12 +83,8 @@ export function getTranslatedString(key: TranslationKeys, replacements?: Record<
     // Easter egg language
     if (selectedLanguage === "hp18") return "HP-18";
 
-    if (key.startsWith("emote_")) {
-        return Emotes.reify(key.slice("emote_".length)).name;
-    }
-
     if (key.startsWith("badge_")) {
-        return Badges.reify(key.slice("badge_".length)).name;
+        key = Badges.reify(key.slice("badge_".length)).idString.replace("bdg_", "badge_") as TranslationKeys;
     }
 
     let foundTranslation: string;
@@ -97,6 +93,12 @@ export function getTranslatedString(key: TranslationKeys, replacements?: Record<
         ?? TRANSLATIONS.translations[defaultLanguage]?.[key]
         ?? Loots.reify(key).name;
     } catch {
+        if (key.startsWith("emote_")) {
+            return Emotes.reify(key.slice("emote_".length)).name as TranslationKeys;
+        }
+        if (key.startsWith("badge_")) {
+            return Badges.reify(`bdg_${key.slice("badge_".length)}`).name as TranslationKeys;
+        }
         return key;
     }
 
