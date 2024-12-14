@@ -352,6 +352,14 @@
         </div>-->
       </div>
       <div>
+      <!-- Language stuff -->
+      <div id="language-dropdown" class="dropdown">
+        <button class="btn btn-darken btn-secondary" id="btn-language">
+          <specialI class="fa-solid fa-globe"></specialI>
+          <txt translation="languages"></txt>
+          <i class="fa-solid fa-caret-down"></i></button>
+        <div id="languages-selector" class="dropdown-content persistent-scrollbar"></div>
+      </div>
         <div id="splash-backlinks">
           <a href="./changelog/" target="_blank" rel="noopener noreferrer"
             >v%VITE_APP_VERSION%</a
@@ -361,13 +369,6 @@
           <button class="btn btn-primary btn-donate" style="width: auto; height:auto;" onclick="window.open('https://ko-fi.com/suroi')">
             <i class="fa-solid fa-heart"></i>&nbsp;
             <span translation="donate"></span>
-          </button>
-          <button
-            class="btn btn-darken btn-secondary"
-            id="btn-language"
-            style="margin-left:7px;"
-          >
-            <i class="fa-solid fa-earth-americas"></i>
           </button>
           <button
             style="display: none"
