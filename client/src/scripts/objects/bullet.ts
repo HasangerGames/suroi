@@ -1,7 +1,7 @@
 import { Layer, ObjectCategory, ZIndexes } from "@common/constants";
 import { BaseBullet, type BulletOptions } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";
-import { getEffectiveZIndex, isVisibleFromLayer } from "@common/utils/layer";
+import { adjacentOrEqualLayer, getEffectiveZIndex, isVisibleFromLayer } from "@common/utils/layer";
 import { Geometry, Numeric, resolveStairInteraction } from "@common/utils/math";
 import { random, randomFloat, randomRotation } from "@common/utils/random";
 import { Vec } from "@common/utils/vector";
@@ -109,7 +109,7 @@ export class Bullet extends BaseBullet {
         }
         if (this._playBulletWhiz) {
             const intersection = this.game.activePlayer?.bulletWhizHitbox.intersectsLine(this.initialPosition, this.position);
-            if (intersection) {
+            if (intersection && this.game.layer !== undefined && adjacentOrEqualLayer(this.layer, this.game.layer)) {
                 this.game.soundManager.play(`bullet_whiz_${random(1, 3)}`, { position: intersection.point });
                 this._playBulletWhiz = false;
             }
