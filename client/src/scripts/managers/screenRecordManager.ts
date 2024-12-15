@@ -1,4 +1,5 @@
 import type { Game } from "../game";
+import $ from "jquery";
 
 export type StreamMode
   = "canvas"
@@ -13,6 +14,9 @@ export class ScreenRecordManager {
   startedTime: number = 0;
   recording = false;
   initialized = false;
+  recordingPill = $("#recording-pill");
+  recordingTime = $("#recording-time");
+  recordingStop = $("#stop-recording-button");
 
   constructor(public game: Game) {
     this.streamMode = game.console.getBuiltInCVar("cv_record_mode");
@@ -52,6 +56,7 @@ export class ScreenRecordManager {
       this.recording = true;
       this.startedTime = Date.now();
       console.log("Begin recording video")
+      this.recordingPill.css("display", "")
     })
 
     this.mediaRecorder.addEventListener("stop", async (event) => {
@@ -61,6 +66,11 @@ export class ScreenRecordManager {
       this.recording = false;
       console.log(`Video length: ${Date.now() - this.startedTime}ms`)
       console.log(`Video size: ${this.videoSize}bytes`)
+      this.recordingPill.css("display", "none")
+    });
+
+    this.recordingStop.on("click", () => {
+      this.endRecording();
     });
   }
 
@@ -71,5 +81,12 @@ export class ScreenRecordManager {
 
   endRecording() {
     this.mediaRecorder?.stop();
+  }
+
+  update() {
+    if (this.recording) {
+      const duration = Date.now() - this.startedTime;
+      this.recordingTime.text(`${Math.floor(duration / 60000)}:${(Math.floor(duration / 1000) % 60).toString().padStart(2, "0")}`)
+    }
   }
 }

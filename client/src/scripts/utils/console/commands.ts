@@ -1874,8 +1874,8 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "screen_record",
         function() {
-            if (game.screenRecordManager.recording) game.screenRecordManager.endRecording();
-            else game.screenRecordManager.beginRecording();
+            if (game.screenRecordManager?.recording) game.screenRecordManager?.endRecording();
+            else game.screenRecordManager?.beginRecording();
         },
         game,
         {

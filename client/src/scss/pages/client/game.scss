@@ -1053,6 +1053,26 @@
     }
 }
 
+#recording-pill {
+    color: red;
+    background: palette.$bg;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.6));
+
+    #stop-recording-button {
+        color: red;
+        border: none;
+        outline: none;
+        background: none;
+        padding: none;
+        margin: none;
+    }
+}
+
 #inventory-message {
     position: absolute;
     top: calc(60% + 100px);

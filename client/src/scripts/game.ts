@@ -144,7 +144,7 @@ export class Game {
     readonly console = new GameConsole(this);
     readonly inputManager = new InputManager(this);
     readonly soundManager = new SoundManager(this);
-    readonly screenRecordManager = new ScreenRecordManager(this);
+    screenRecordManager?: ScreenRecordManager; 
 
     readonly gasRender = new GasRender(PIXI_SCALE);
     readonly gas = new Gas(this);
@@ -258,6 +258,8 @@ export class Game {
             autoPlay: true,
             volume: game.console.getBuiltInCVar("cv_music_volume")
         });
+
+        game.screenRecordManager = new ScreenRecordManager(game);
         
         if (game.screenRecordManager.streamMode === "canvas") await game.screenRecordManager.init();
 
@@ -671,6 +673,8 @@ export class Game {
         for (const plane of this.planes) plane.update();
 
         this.camera.update();
+
+        this.screenRecordManager.update();
     }
 
     private _lastUpdateTime = 0;

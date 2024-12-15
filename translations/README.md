@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Sun, 15 Dec 2024 21:45:35 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Sun, 15 Dec 2024 22:38:40 GMT
 
 ## 🇦🇱 Shqip (90% Complete) - ab.hjson
 
@@ -12,6 +12,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `recording` is not defined
 - Key `settings_record_mode` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
@@ -34,12 +35,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇧🇷 Português (Brasil) (100% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (99% Complete) - br.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `recording` is not defined
 - Key `settings_record_mode` is not defined
 
 ## 🇨🇿 Čeština (94% Complete) - cz.hjson
@@ -52,6 +54,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_mode` is not defined
@@ -78,6 +81,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `recording` is not defined
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
@@ -252,6 +256,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_mode` is not defined
@@ -288,6 +293,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `recording` is not defined
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_cooler_graphics` is not defined
@@ -309,14 +315,16 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `recording` is not defined
 - Key `settings_record_mode` is not defined
 
-## 🇬🇷 Ελληνικά (100% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (99% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `recording` is not defined
 - Key `settings_record_mode` is not defined
 
 ## 🇭🇰 🇲🇴 廣東話(香港/澳門) (92% Complete) - hk_mo.hjson
@@ -330,6 +338,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `recording` is not defined
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
@@ -345,12 +354,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off_down` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇭🇺 Magyar (100% Complete) - hu.hjson
+## 🇭🇺 Magyar (99% Complete) - hu.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `recording` is not defined
 - Key `settings_record_mode` is not defined
 
 ## 🇯🇵 日本語 (94% Complete) - jp.hjson
@@ -363,6 +373,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_mode` is not defined
@@ -385,6 +396,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_mode` is not defined
@@ -407,6 +419,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_mode` is not defined
@@ -426,6 +439,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `recording` is not defined
 - Key `settings_record_mode` is not defined
 
 ## 🎀 Cute Engwish (92% Complete) - qen.hjson
@@ -444,6 +458,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `recording` is not defined
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
@@ -457,7 +472,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇷🇴 Română (88% Complete) - ro.hjson
+## 🇷🇴 Română (87% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
@@ -471,6 +486,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_mode` is not defined
@@ -495,12 +511,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇷🇺 Русский (100% Complete) - ru.hjson
+## 🇷🇺 Русский (99% Complete) - ru.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `recording` is not defined
 - Key `settings_record_mode` is not defined
 
 ## 🇮🇳 தமிழ் (93% Complete) - ta.hjson
@@ -514,6 +531,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `news` is not defined
 - Key `donate` is not defined
+- Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_mode` is not defined
@@ -527,15 +545,16 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇹🇷 Turkısh (100% Complete) - tr.hjson
+## 🇹🇷 Turkısh (99% Complete) - tr.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `recording` is not defined
 - Key `settings_record_mode` is not defined
 
-## 🇹🇼 中文（繁體） (87% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (86% Complete) - tw.hjson
 
 ### (No Invalid Keys)
 
@@ -549,6 +568,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `recording` is not defined
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
@@ -586,6 +606,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_mode` is not defined
@@ -598,7 +619,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -607,5 +628,6 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `recording` is not defined
 - Key `settings_record_mode` is not defined
 
