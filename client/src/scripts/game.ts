@@ -259,7 +259,7 @@ export class Game {
             volume: game.console.getBuiltInCVar("cv_music_volume")
         });
         
-        await game.screenRecordManager.init();
+        if (game.screenRecordManager.streamMode === "canvas") await game.screenRecordManager.init();
 
         return game;
     }

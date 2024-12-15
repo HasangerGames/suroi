@@ -12,10 +12,12 @@ export class ScreenRecordManager {
   videoSize: number = 0;
   startedTime: number = 0;
   recording = false;
+  initialized = false;
 
   constructor(public game: Game) {}
 
   async init() {
+    this.initialized = true;
     switch (this.streamMode) {
       case "canvas": {
         this.captureStream = this.game.pixi.canvas.captureStream(24);
@@ -53,6 +55,7 @@ export class ScreenRecordManager {
   }
 
   beginRecording() {
+    if (this.streamMode === "navigator" && !this.initialized) this.init();
     this.mediaRecorder?.start();
     this.startedTime = Date.now();
     this.recording = true;
