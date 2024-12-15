@@ -150,11 +150,12 @@ export async function setUpUI(game: Game): Promise<void> {
 
     const languageFieldset = $("#languages-selector");
     for (const [language, languageInfo] of Object.entries(TRANSLATIONS.translations)) {
-      languageFieldset.append(html`
-           <a id="language-${language}" ${game.console.getBuiltInCVar("cv_language") === language ? 'class="selected"' : ""}>
-              ${languageInfo.flag} <strong>${languageInfo.name}</strong> [${languageInfo.percentage}]
+        const isSelected = game.console.getBuiltInCVar("cv_language") === language;
+        languageFieldset.append(html`
+           <a id="language-${language}" ${isSelected ? 'class="selected"' : ""}>
+              ${languageInfo.flag} <strong>${languageInfo.name}</strong> [${!isSelected ? TRANSLATIONS.translations[language].percentage : languageInfo.percentage}]
            </a>
-      `);
+        `);
 
       $(`#language-${language}`).on("click", () => {
         game.console.setBuiltInCVar("cv_language", language);
@@ -507,7 +508,7 @@ export async function setUpUI(game: Game): Promise<void> {
                                     </div>
                                     <div class="create-team-player-name-container">
                                         <span class="create-team-player-name"${nameColor ? ` style="color: ${new Color(nameColor).toHex()}"` : ""};>${name}</span>
-                                        ${badge ? `<img class="create-team-player-badge" draggable="false" src="./img/game/shared/badges/${badge}.svg" />` : ""}
+                                        ${![undefined, "bdg_"].includes(badge) ? `<img class="create-team-player-badge" draggable="false" src="./img/game/shared/badges/${badge}.svg" />` : ""}
                                     </div>
                                 </div>
                                 `

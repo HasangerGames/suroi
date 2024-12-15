@@ -93,7 +93,7 @@ export async function buildTranslations(): Promise<void> {
             mandatory: Boolean(content.mandatory),
             no_resize: Boolean(content.no_resize),
             no_space: Boolean(content.no_space),
-            percentage: `${Math.round(100 * Object.keys(content).filter(keyFilter).length / ValidKeys.length)}%`
+            percentage: content.percentage ?? `${Math.round(100 * Object.keys(content).filter(keyFilter).length / ValidKeys.length)}%`
         };
 
         filePromises.push(writeFile(`../../client/public/translations/${language}.json`, JSON.stringify(content)));

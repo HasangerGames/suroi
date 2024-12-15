@@ -245,8 +245,16 @@
     // For mobile
     @media screen and (max-width: variables.$screen_large) {
 
+        transform: scale(55%);
+        top: 0;
+        right: -20px;
+
         .dropdown-content {
             height: 300px;
+        }
+
+        @media screen and (max-height: variables.$screen_large) {
+            right: -40px;
         }
     }
 }

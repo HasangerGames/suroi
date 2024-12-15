@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 14 Dec 2024 20:34:39 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Sun, 15 Dec 2024 12:39:41 GMT
 
 ## 🇦🇱 Shqip (90% Complete) - ab.hjson
 
@@ -32,7 +32,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
-- Key `deathray` is not defined
 
 ## 🇧🇷 Português (Brasil) (100% Complete) - br.hjson
 
@@ -60,9 +59,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
-- Key `deathray` is not defined
 
-## 🇩🇪 Deutsch (85% Complete) - de.hjson
+## 🇩🇪 Deutsch (86% Complete) - de.hjson
 
 ### (No Invalid Keys)
 
@@ -99,18 +97,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
-- Key `deathray` is not defined
 - Key `region_dev` is not defined
 - Key `region_na` is not defined
 - Key `region_eu` is not defined
 - Key `region_sa` is not defined
 - Key `region_as` is not defined
 
-## 🍺 Alchoholism (18+) (142% Complete) - den.hjson
+## 🍺 Alchoholism (18+) (143% Complete) - den.hjson
 
 ### Invalid Keys
 
-- Key `emote_translations` is not a valid key
+- Key `percentage` is not a valid key
 - Key `emote_happy_face` is not a valid key
 - Key `emote_sad_face` is not a valid key
 - Key `emote_thumbs_up` is not a valid key
@@ -274,9 +271,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off` is not defined
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
-- Key `deathray` is not defined
 
-## 🇪🇪 Eesti (93% Complete) - et.hjson
+## 🇪🇪 Eesti (94% Complete) - et.hjson
 
 ### (No Invalid Keys)
 
@@ -298,7 +294,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
-- Key `deathray` is not defined
 
 ## 🇫🇷 Français (100% Complete) - fr.hjson
 
@@ -314,7 +309,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### (No Undefined Keys)
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (92% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (93% Complete) - hk_mo.hjson
 
 ### (No Invalid Keys)
 
@@ -338,15 +333,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
 - Key `create_team_ready` is not defined
-- Key `deathray` is not defined
 
 ## 🇭🇺 Magyar (100% Complete) - hu.hjson
 
 ### (No Invalid Keys)
 
-### Undefined Keys
-
-- Key `msg_punishment_warn_agreement` is not defined
+### (No Undefined Keys)
 
 ## 🇯🇵 日本語 (94% Complete) - jp.hjson
 
@@ -368,7 +360,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
-- Key `deathray` is not defined
 
 ## 🇱🇹 Lietuvių (94% Complete) - lt.hjson
 
@@ -390,7 +381,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
-- Key `deathray` is not defined
 
 ## 🇱🇻 Latviešu (94% Complete) - lv.hjson
 
@@ -412,7 +402,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
-- Key `deathray` is not defined
 
 ## 🇵🇱 Polski (100% Complete) - pl.hjson
 
@@ -422,9 +411,11 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_warn_agreement` is not defined
 
-## 🎀 Cute Engwish (92% Complete) - qen.hjson
+## 🎀 Cute Engwish (93% Complete) - qen.hjson
 
-### (No Invalid Keys)
+### Invalid Keys
+
+- Key `percentage` is not a valid key
 
 ### Undefined Keys
 
@@ -447,7 +438,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
-- Key `deathray` is not defined
 
 ## 🇷🇴 Română (88% Complete) - ro.hjson
 
@@ -492,7 +482,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### (No Undefined Keys)
 
-## 🇮🇳 தமிழ் (91% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (94% Complete) - ta.hjson
 
 ### (No Invalid Keys)
 
@@ -510,16 +500,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_better_item_equipped` is not defined
 - Key `msg_cannot_use_radio` is not defined
 - Key `msg_radio_overused` is not defined
-- Key `interact_airdrop_crate_locked` is not defined
-- Key `interact_control_panel` is not defined
 - Key `interact_headquarters_security_desk` is not defined
-- Key `interact_generator` is not defined
-- Key `interact_button` is not defined
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
-- Key `create_team_waiting` is not defined
-- Key `deathray` is not defined
 
 ## 🇹🇷 Turkısh (100% Complete) - tr.hjson
 
@@ -566,7 +550,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
-- Key `deathray` is not defined
 
 ## 🇻🇳 Tiếng Việt (94% Complete) - vi.hjson
 
@@ -588,7 +571,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
-- Key `deathray` is not defined
 
 ## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
 
@@ -599,5 +581,4 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
-- Key `deathray` is not defined
 
