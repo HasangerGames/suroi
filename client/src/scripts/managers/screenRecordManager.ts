@@ -1,6 +1,11 @@
 import type { Game } from "../game";
 
+export type StreamMode
+  = "canvas"
+  | "navigator"
+
 export class ScreenRecordManager {
+  streamMode: StreamMode = "navigator";
   captureStream?: MediaStream;
   mediaRecorder?: MediaRecorder;
   videoData: Blob[] = [];
@@ -11,7 +16,24 @@ export class ScreenRecordManager {
   constructor(public game: Game) {}
 
   async init() {
-    this.captureStream = this.game.pixi.canvas.captureStream(24);
+    switch (this.streamMode) {
+      case "canvas": {
+        this.captureStream = this.game.pixi.canvas.captureStream(24);
+        break;
+      }
+      case "navigator": {
+        this.captureStream = await navigator.mediaDevices.getDisplayMedia({
+          audio: true,
+          video: {
+            displaySurface: "browser"
+          },
+          // @ts-expect-error @types/web does not have this yet
+          preferCurrentTab: true,
+          surfaceSwitching: "exclude"
+        });
+        break;
+      }
+    }
     this.mediaRecorder = new MediaRecorder(this.captureStream);
 
     this.mediaRecorder.addEventListener("dataavailable", (event) => {
