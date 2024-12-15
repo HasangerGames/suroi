@@ -121,6 +121,10 @@
   "action_medikit_use": "<item> பயன்படுத்தபடுகிறது"
   "action_cola_use": "<item> குடிக்கப்படுகிறது"
   "action_tablets_use": "<item> முழுங்கபடுகிறது"
+  "interact_airdrop_crate_locked": "காற்றுபெட்டியை திற",
+  "interact_control_panel": "கன்ட்ரோல் பேனலை இயக்கு",
+  "interact_generator": "ஜெனரேடரை இயக்கு",
+  "interact_button": "பட்டனை அழுத்து",
   "loading_spritesheets": "Spritesheet பதிவிறக்கப்படுகிறது: <progress>"
   "loading_connecting": "தொடர்பு கொள்கிறது"
   "loading_joining_game": "விளையாட்டிள் சேர்கிறது"
@@ -202,6 +206,7 @@
   "create_team_autofill": "தானாக செலுத்து"
   "create_team_lock": "குழுமத்தை பூட்டு"
   "create_team_play": "விளையாட்டை ஆரம்பி"
+  "create_team_waiting": "காத்திறு...",
   "report_reporting": "புகார் எண்:"
   "report_id": "புகார் என்:"
   "report_instructions": "\n      <p><strong>இங்குள்ள குறியீடுகளை நங்கு கவனிக்கவும். </strong>அல்லது, உன்னுடயை புகார் நிறாகறிக்கபடும்.</p>\n      <h4>புகாரளிப்பது எப்படி</h4>\n      <ol>\n        <li><a href=\"https://discord.suroi.io\">Discord.</a> சர்வரில் சேரவும்</li>\n        <li><a href=\"https://discord.com/channels/1077043833621184563/1135288369526607973\">#cheater-reports</a> சானலிற்கு செல்லவும்</li>\n        <li>அங்குள்ள முதன்மையான பதிப்பிளுள்ள புகார் விதிமுறைகளை நன்கு படிக்கவும்.</li>\n        <li>உன் புகாரை அங்கு பதிப்பாக செலுத்தவும்.</li>\n      </ol>"
