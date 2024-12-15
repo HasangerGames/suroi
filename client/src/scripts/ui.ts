@@ -1579,6 +1579,12 @@ export async function setUpUI(game: Game): Promise<void> {
     });
     renderResSelect.value = game.console.getBuiltInCVar("cv_renderer_res");
 
+    const recordSelect = $<HTMLSelectElement>("#record-mode-select")[0];
+    recordSelect.addEventListener("input", () => {
+        game.console.setBuiltInCVar("cv_record_mode", recordSelect.value as unknown as "navigator" | "canvas");
+    });
+    recordSelect.value = game.console.getBuiltInCVar("cv_record_mode");
+
     // High resolution toggle
     $("#toggle-high-res").parent().parent().toggle(!inputManager.isMobile);
     addCheckboxListener("#toggle-high-res", "cv_high_res_textures");

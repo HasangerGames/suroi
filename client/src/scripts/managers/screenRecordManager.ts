@@ -5,7 +5,7 @@ export type StreamMode
   | "navigator"
 
 export class ScreenRecordManager {
-  streamMode: StreamMode = "navigator";
+  streamMode: StreamMode;
   captureStream?: MediaStream;
   mediaRecorder?: MediaRecorder;
   videoData: Blob[] = [];
@@ -14,7 +14,10 @@ export class ScreenRecordManager {
   recording = false;
   initialized = false;
 
-  constructor(public game: Game) {}
+  constructor(public game: Game) {
+    this.streamMode = game.console.getBuiltInCVar("cv_record_mode");
+    console.log(this.streamMode)
+  }
 
   async init() {
     this.initialized = true;
@@ -41,28 +44,32 @@ export class ScreenRecordManager {
     this.mediaRecorder.addEventListener("dataavailable", (event) => {
       this.videoData.push(event.data);
       this.videoSize += event.data.size;
-      console.log(`Video length: ${Date.now() - this.startedTime}ms`)
-      console.log(`Video size: ${this.videoSize}bytes`)
+    });
+
+    this.mediaRecorder.addEventListener("start", () => {
+      this.videoData = [];
+      this.videoSize = 0;
+      this.recording = true;
+      this.startedTime = Date.now();
+      console.log("Begin recording video")
     })
 
     this.mediaRecorder.addEventListener("stop", async (event) => {
       const blob = new Blob(this.videoData, { type: "video/mp4" });
       const url = URL.createObjectURL(blob);
-      window.open(url, "_blank")
-      this.videoData = [];
-      this.videoSize = 0;
+      window.open(url, "_blank");
+      this.recording = false;
+      console.log(`Video length: ${Date.now() - this.startedTime}ms`)
+      console.log(`Video size: ${this.videoSize}bytes`)
     });
   }
 
-  beginRecording() {
-    if (this.streamMode === "navigator" && !this.initialized) this.init();
+  async beginRecording() {
+    if (!this.initialized) await this.init();
     this.mediaRecorder?.start();
-    this.startedTime = Date.now();
-    this.recording = true;
   }
 
   endRecording() {
     this.mediaRecorder?.stop();
-    this.recording = false;
   }
 }
