@@ -1871,6 +1871,21 @@ export function setUpCommands(game: Game): void {
         }
     );
 
+    Command.createCommand(
+        "screen_record",
+        function() {
+            if (game.screenRecordManager.recording) game.screenRecordManager.endRecording();
+            else game.screenRecordManager.beginRecording();
+        },
+        game,
+        {
+            short: "Use the screen recorder",
+            long: "If the screen recorder is not recording, begin recording. If the screen recorder is recording, stop recording",
+            allowOnlyWhenGameStarted: true,
+            signatures: [{ args: [], noexcept: false }]
+        }
+    )
+
     gameConsole.handleQuery(`
         alias +map_ping "+emote_wheel; +map_ping_wheel" & alias -map_ping "-emote_wheel; -map_ping_wheel";\
         alias toggle_minimap "toggle cv_minimap_minimized";\

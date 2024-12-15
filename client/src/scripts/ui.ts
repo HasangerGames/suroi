@@ -1473,6 +1473,7 @@ export async function setUpUI(game: Game): Promise<void> {
         "#slider-music-volume",
         "cv_music_volume",
         value => {
+            if (!game.music) return;
             game.music.volume = value;
         }
     );

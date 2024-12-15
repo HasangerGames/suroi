@@ -59,6 +59,7 @@ import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, EMOTE_SLOTS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
+import { ScreenRecordManager } from "./managers/screenRecordManager";
 
 /* eslint-disable @stylistic/indent */
 
@@ -143,6 +144,7 @@ export class Game {
     readonly console = new GameConsole(this);
     readonly inputManager = new InputManager(this);
     readonly soundManager = new SoundManager(this);
+    readonly screenRecordManager = new ScreenRecordManager(this);
 
     readonly gasRender = new GasRender(PIXI_SCALE);
     readonly gas = new Gas(this);
@@ -239,13 +241,12 @@ export class Game {
             }, 500);
         };
 
-        void Promise.all([
+        await Promise.all([
             initPixi(),
             setUpUI(game)
-        ]).then(() => {
-            unlockPlayButtons();
-            resetPlayButtons();
-        });
+        ]);
+        unlockPlayButtons();
+        resetPlayButtons();
 
         setUpCommands(game);
         game.inputManager.generateBindsConfigScreen();
@@ -257,6 +258,9 @@ export class Game {
             autoPlay: true,
             volume: game.console.getBuiltInCVar("cv_music_volume")
         });
+        
+        await game.screenRecordManager.init();
+
         return game;
     }
 
