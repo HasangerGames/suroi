@@ -9,7 +9,6 @@ import { SpectatePacket } from "@common/packets/spectatePacket";
 import { Numeric } from "@common/utils/math";
 import { handleResult, type Result } from "@common/utils/misc";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
-import { Vec } from "@common/utils/vector";
 import { Rectangle, RendererType, Sprite, VERSION } from "pixi.js";
 import { Config, type ServerInfo } from "../../config";
 import { type Game } from "../../game";
@@ -742,12 +741,8 @@ export function setUpCommands(game: Game): void {
 
     Command.createInvertiblePair(
         "emote_wheel",
-        function() {
-          game.emoteManager.show()
-        },
-        function () {
-          game.emoteManager.close()
-        },
+        function() { game.emoteManager.show(); },
+        function() { game.emoteManager.close(); },
         game,
         {
             short: "Opens the emote wheel",
@@ -764,13 +759,9 @@ export function setUpCommands(game: Game): void {
     );
 
     Command.createInvertiblePair(
-        "map_ping_wheel",
-        function() {
-            game.pingManager.show();
-        },
-        function() {
-            game.pingManager.close();
-        },
+        "map_ping",
+        function() { game.pingManager.show(); },
+        function() { game.pingManager.close(); },
         game,
         {
             short: "Enables the emote wheel's ping mode",
