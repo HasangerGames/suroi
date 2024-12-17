@@ -26,6 +26,7 @@ export function formatDate(seconds: number): string {
 }
 
 export function stringify(val: unknown): string {
+    /* eslint-disable */
     switch (typeof val) {
         case "string":
         case "number":
@@ -36,6 +37,7 @@ export function stringify(val: unknown): string {
         case "symbol": return val.toString();
         case "function": return `function ${val.name}(${Array.from({ length: val.length }, (_, i) => `arg${i}`).join(", ")}) -> any`;
     }
+    /* eslint-enable */
 }
 
 export function html(a: TemplateStringsArray, ...b: ReadonlyArray<string | number | bigint | null | undefined>): string {
