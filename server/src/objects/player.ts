@@ -108,7 +108,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private _team?: Team;
     get team(): Team | undefined { return this._team; }
 
-    set team(value: Team) {
+    set team(value: Team | undefined) {
         if (!this.game.teamMode) {
             console.warn("Trying to set a player's team while the game isn't in team mode");
             return;
