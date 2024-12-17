@@ -173,11 +173,12 @@ export class EmoteWheelManager {
    */
     update(): void {
         if (!this.open) return;
+        const isRateLimited = this.game.activePlayer?.blockEmoting;
         const { mouseX, mouseY } = this.game.inputManager;
         const dist = Vec.sub(Vec.create(mouseX, mouseY), this.container.position);
         const len = Vec.length(dist);
-        this.closeGraphics.visible = len <= EmoteWheelManager.DIMENSIONS.innerRingRadius;
-        this.selectionGraphics.visible = len > EmoteWheelManager.DIMENSIONS.innerRingRadius;
+        this.closeGraphics.visible = (len <= EmoteWheelManager.DIMENSIONS.innerRingRadius && !isRateLimited);
+        this.selectionGraphics.visible = (len > EmoteWheelManager.DIMENSIONS.innerRingRadius && !isRateLimited);
         const selectionIndex = Math.round(Vec.direction(dist) / this._slotAngle);
         if (len <= EmoteWheelManager.DIMENSIONS.innerRingRadius) this.selection = null;
         if (len > EmoteWheelManager.DIMENSIONS.innerRingRadius) this.selection = selectionIndex;

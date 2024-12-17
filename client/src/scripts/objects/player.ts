@@ -734,7 +734,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             // Rate Limiting: Team Pings & Emotes
             this.blockEmoting = blockEmoting;
-            this.game.uiManager.ui.emoteWheel.css("opacity", this.blockEmoting ? "0.5" : "");
+            this.game.emoteManager.container.alpha = this.blockEmoting ? 0.5 : 1;
+            this.game.pingManager.container.alpha = this.blockEmoting ? 0.5 : 1;
         }
 
         if (updateContainerZIndex) this.updateZIndex();
