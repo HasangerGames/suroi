@@ -453,11 +453,11 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             offset: Vec.create(6.8, 0.5),
             cooldown: 0,
             fists: {
-                animationDuration: 200,
+                animationDuration: 0,
                 left: Vec.create(61, 10),
                 right: Vec.create(35, 70),
-                useLeft: Vec.create(61, 10),
-                useRight: Vec.create(35, 70)
+                useLeft: Vec.create(57, 10),
+                useRight: Vec.create(31, 70)
             },
             image: {
                 position: Vec.create(106, 27),
