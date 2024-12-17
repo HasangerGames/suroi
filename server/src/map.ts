@@ -472,13 +472,14 @@ export class GameMap {
                 }
                 const position = river.getPosition(bestPosition);
 
+                const spawnHitbox = buildingDef.spawnHitbox.transform(position, 1, bestOrientation);
+
                 if (
                     this.occupiedBridgePositions.some(pos => Vec.equals(pos, position))
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    || this.isInRiver(buildingDef.bridgeHitbox!.transform(position, 1, bestOrientation))
+                    || (this.isInRiver(buildingDef.bridgeHitbox!.transform(position, 1, bestOrientation)))
+                    || (spawnHitbox.collidesWith(this.beachHitbox))
                 ) return;
-
-                const spawnHitbox = buildingDef.spawnHitbox.transform(position, 1, bestOrientation);
 
                 // checks if the bridge hitbox collides with another object and if so does not spawn it
                 for (const object of this.game.grid.intersectsHitbox(spawnHitbox)) {

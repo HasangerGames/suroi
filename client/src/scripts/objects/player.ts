@@ -1345,7 +1345,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this._emoteHideTimeout = undefined;
                 }
             });
-        }, isItemEmote ? 2000 : 4000);
+        }, 2000);
     }
 
     playAnimation(anim: AnimationType): void {
