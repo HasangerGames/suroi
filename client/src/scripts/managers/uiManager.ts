@@ -100,7 +100,8 @@ export class UIManager {
         return this.getRawPlayerNameNullish(id) ?? "[Unknown Player]";
     }
 
-    getPlayerName(id: number): string {
+    getPlayerData(id: number): { name: string, badge: BadgeDefinition | undefined } {
+        // Name
         const element = $<HTMLSpanElement>("<span>");
         const player = this.game.playerNames.get(id) ?? this._teammateDataCache.get(id);
 
@@ -113,27 +114,23 @@ export class UIManager {
         element.text(name);
 
         // what in the jquery is this
-        return element.prop("outerHTML") as string;
-    }
+        const playerName = element.prop("outerHTML") as string;
 
-    getPlayerBadge(id: number): BadgeDefinition | undefined {
-        if (this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
-            return;
-        }
+        // Badge
+        let playerBadge: BadgeDefinition | undefined = undefined;
 
-        const player = this.game.playerNames.get(id) ?? this._teammateDataCache.get(id);
-
-        switch (true) {
-            case this.game.console.getBuiltInCVar("cv_anonymize_player_names"): {
-                return;
-            }
-            case player === undefined: {
-                console.warn(`Unknown player name with id ${id}`); return;
-            }
-            default: {
-                return player.badge;
+        if (!this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
+            if (player !== undefined) {
+                playerBadge = player.badge;
+            } else {
+                console.warn(`Unknown player name with id ${id}`);
             }
         }
+
+        return {
+            name: playerName,
+            badge: playerBadge
+        };
     }
 
     static getHealthColor(normalizedHealth: number, downed?: boolean): string {
@@ -416,8 +413,8 @@ export class UIManager {
 
         chickenDinner.toggle(packet.won);
 
-        const playerName = this.getPlayerName(packet.playerID);
-        const playerBadge = this.getPlayerBadge(packet.playerID);
+        const playerName = this.getPlayerData(packet.playerID).name;
+        const playerBadge = this.getPlayerData(packet.playerID).badge;
         const playerBadgeText = playerBadge
             ? html`<img class="badge-icon" src="./img/game/shared/badges/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
             : "";
@@ -427,7 +424,7 @@ export class UIManager {
                 ? getTranslatedString("msg_win")
                 : (this.game.spectating
                     ? getTranslatedString("msg_player_died", {
-                        player: this.getPlayerName(packet.playerID)
+                        player: playerName
                     })
                     : getTranslatedString("msg_you_died"))
         );
@@ -509,11 +506,12 @@ export class UIManager {
             this.game.spectating = spectating;
 
             if (spectating) {
-                const badge = this.getPlayerBadge(id.id);
+                const playerName = this.getPlayerData(id.id).name;
+                const badge = this.getPlayerData(id.id).badge;
                 const badgeText = badge ? html`<img class="badge-icon" src="./img/game/shared/badges/${badge.idString}.svg" alt="${badge.name} badge">` : "";
 
                 this.ui.gameOverOverlay.fadeOut();
-                this.ui.spectatingMsgPlayer.html(this.getPlayerName(id.id) + badgeText);
+                this.ui.spectatingMsgPlayer.html(playerName + badgeText);
             }
             this.ui.spectatingContainer.toggle(spectating && this.ui.spectatingOptions.hasClass("fa-eye-slash"));
             this.ui.spectatingMsg.toggle(spectating);
@@ -1204,10 +1202,10 @@ export class UIManager {
 
         const getNameAndBadge = (id?: number): { readonly name: string, readonly badgeText: string } => {
             const hasId = id !== undefined;
-            const badge = hasId ? this.getPlayerBadge(id) : undefined;
+            const badge = hasId ? this.getPlayerData(id).badge : undefined;
 
             return {
-                name: hasId ? this.getPlayerName(id) : "",
+                name: hasId ? this.getPlayerData(id).name : "",
                 badgeText: badge
                     ? html`<img class="badge-icon" src="./img/game/shared/badges/${badge.idString}.svg" alt="${badge.name} badge">`
                     : ""
