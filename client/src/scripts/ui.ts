@@ -1037,7 +1037,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
         let lastCategory: EmoteCategory | undefined;
 
-        function updateInGameEmoteWheel() {
+        function updateInGameEmoteWheel(): void {
             const directions = ["right", "bottom", "left", "top"];
             game.emoteManager.emotes = directions.map(direction => Emotes.fromString(game.console.getBuiltInCVar(`cv_loadout_${direction}_emote`)));
             game.emoteManager.setupSlots();

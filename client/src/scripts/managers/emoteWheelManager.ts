@@ -1,7 +1,7 @@
 import { Color, type ColorSource, Container, Graphics } from "pixi.js";
-import { Game } from "../game.ts";
-import { SuroiSprite } from "../utils/pixi.ts";
-import { Emotes, type EmoteDefinition } from "@common/definitions/emotes.js";
+import { Game } from "../game";
+import { SuroiSprite } from "../utils/pixi";
+import { Emotes } from "@common/definitions/emotes.js";
 import { Vec } from "@common/utils/vector.js";
 import { TAU } from "@common/utils/math.js";
 import { InputActions } from "@common/constants.js";
@@ -51,7 +51,7 @@ export class EmoteWheelManager {
     /**
    * Initializes the emote wheel
    */
-    init() {
+    init(): void {
         this.backgroundGraphics
             .circle(0, 0, EmoteWheelManager.DIMENSIONS.outerRingRadius)
             .fill({ color: EmoteWheelManager.COLORS.background })
@@ -82,7 +82,7 @@ export class EmoteWheelManager {
     /**
    * Set up slot related graphics in the emote wheel
    */
-    setupSlots() {
+    setupSlots(): void {
         this.tickGraphics.clear();
         this.selectionGraphics.clear();
         this.emoteSlotSprites.removeChildren();
@@ -136,7 +136,7 @@ export class EmoteWheelManager {
     /**
    * Shows and mounts the emote wheel
    */
-    show() {
+    show(): void {
         if (this.open) return;
         this.container.visible = true;
         this.open = true;
@@ -147,7 +147,7 @@ export class EmoteWheelManager {
     /**
    * Closes the emote wheel and attempt to send emote
    */
-    close() {
+    close(): void {
         this.container.visible = false;
         this.open = false;
 
@@ -161,7 +161,7 @@ export class EmoteWheelManager {
     /**
    * Sends an emote packet
    */
-    emitEmote(emote: string) {
+    emitEmote(emote: string): void {
         this.game.inputManager.addAction({
             type: InputActions.Emote,
             emote: Emotes.reify(emote)
@@ -171,7 +171,7 @@ export class EmoteWheelManager {
     /**
    * Frame update for the emote wheel
    */
-    update() {
+    update(): void {
         if (!this.open) return;
         const { mouseX, mouseY } = this.game.inputManager;
         const dist = Vec.sub(Vec.create(mouseX, mouseY), this.container.position);
@@ -185,10 +185,10 @@ export class EmoteWheelManager {
 
         this.closeIcon
             .clear()
-            .moveTo(-11.5, -11)
-            .lineTo(11.5, 14)
-            .moveTo(11.5, -11)
-            .lineTo(-11.5, 14)
+            .moveTo(-11.5, -11.5)
+            .lineTo(11.5, 13.5)
+            .moveTo(11.5, -11.5)
+            .lineTo(-11.5, 13.5)
             .stroke({ width: 3.5, color: this.closeGraphics.visible ? EmoteWheelManager.COLORS.selection : EmoteWheelManager.COLORS.stroke });
     }
 }
@@ -199,7 +199,7 @@ export class EmoteWheelManager {
 export class PlayerPingWheelManager extends EmoteWheelManager {
     override emotes = MapPings.definitions.filter(p => p.isPlayerPing);
 
-    override emitEmote(ping: string) {
+    override emitEmote(ping: string): void {
         this.game.inputManager.addAction({
             type: InputActions.MapPing,
             ping: MapPings.reify(ping),

@@ -59,8 +59,7 @@ import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, EMOTE_SLOTS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
-import { EmoteWheelManager, PlayerPingWheelManager } from "./managers/emoteWheelManager.ts";
-import { MapPings } from "@common/definitions/mapPings";
+import { EmoteWheelManager, PlayerPingWheelManager } from "./managers/emoteWheelManager";
 
 /* eslint-disable @stylistic/indent */
 
