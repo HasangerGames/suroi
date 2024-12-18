@@ -1,7 +1,5 @@
-import { isArray, Stack } from "@common/utils/misc";
-import { type CompiledAction, type CompiledTuple } from "../../managers/inputManager";
-import type { Command } from "./commands";
-import { type GameConsole, type Stringable } from "./gameConsole";
+import { Stack } from "@common/utils/misc";
+import { type GameConsole } from "./gameConsole";
 
 /**
  * General error type for console-related affairs
@@ -888,34 +886,6 @@ function makeArgsResolver(gameConsole: GameConsole) {
     };
 };
 
-/* eslint-disable @typescript-eslint/unified-signatures */
-// split for clarity (different parameter names)
-
-function makeCompiledAction(cb: () => boolean, original: string): CompiledAction;
-function makeCompiledAction(cb: () => boolean, name: string, args: Readonly<ParsedCommand["args"]>): CompiledAction;
-function makeCompiledAction(
-    cb: () => boolean,
-    name: string,
-    args?: Readonly<ParsedCommand["args"]>
-): CompiledAction {
-    if (args === undefined) {
-        // @ts-expect-error init code
-        (cb as CompiledAction).original = name;
-    } else {
-        // @ts-expect-error init code
-        (cb as CompiledAction).original = `${name}${args.length
-            ? ` ${
-                args.map(v => v.arg.map(p => p.content).join(""))
-                    .map(v => v.includes(" ") ? `"${v.replace(/"/g, "\\\"\\")}"` : v)
-                    .join(" ")
-            }`
-            : ""
-        }`;
-    }
-
-    return cb as CompiledAction;
-};
-
 /**
  * Evaluates a console query in the form of a string
  * @param query The query to evaluate
@@ -1098,681 +1068,713 @@ export function evalQuery(
     return !error;
 }
 
-/**
- * Similar in spirit to {@linkcode ParserNode}. Used to maintain structure of a compiled unit
- * as it's being created
- *
- * The intent is to take the ParserNode representing the query (aka parameter `query`), and
- * then walk it to compile each node, creating a CompilerNode at each step; at the end, we
- * can then walk this new tree (whose structure mirrors the original query) and compile *that*
- * by taking note of each node's chaining
- */
-interface CompilerNode {
-    /**
-     * This node's chaining type with respect to its ancestor. A corollary of this
-     * is that the head's chaining type is ignored
-     */
-    readonly chaining: ChainingTypes
-    /**
-     * The actual compiled function
-     */
-    fn: CompiledAction | CompiledTuple
-    /**
-     * The next node in the chain
-     */
-    next?: CompilerNode
-    /**
-     * The node representing the next logical group in the chain. `CompilerNode.next` is equivalent
-     * to `ParserNode.cmd.next`, `CompilerNode.nextGroup` is equivalent to `ParserNode.next`
-     */
-    nextGroup?: CompilerNode
-}
-
-const _compilerCache_ = new Map<ParserNode, CompiledAction | CompiledTuple>();
-
-/**
- * Compiles a console query in the form of a string
- * @param input The query to compile
- * @param options.compileHint A hint on how the parser should compile the given query. Compiling a query
- *                            creates a faster-to-execute version, at a small execution time and memory
- *                            penalty. For queries entered by-hand into the console, this tradeoff is
- *                            usually not worth it, since the queries are unlikely to be repeated; inversely,
- *                            for queries bound to inputs, the tradeoff is almost always worth it.
- *                            - `never`:  Never generate a compiled version of this query. If you do not
- *                                        intend to consult the `compiled` field of this function's return
- *                                        value (or generally do not care about this function's return value),
- *                                        you should use this.
- *                            - `normal`: Only compile this query if it is sufficiently simple. "Simple" is up
- *                                        to the parser to define, but usually, a query which is composed of a
- *                                        single invocation (whether a command, alias, or variable access/assignment)
- *                                        is considered "simple". This is the default option.
- *                            - `always`: Always generate a compiled version of this query. Self-explanatory.
- * @param options.onlyCompileForward Whether to only compile the given query. By default, the compiler will also
- *                                   compile the query's inverse, if it exists. Setting this to `true` disables
- *                                   this behavior
- * @param options.lookupPolicy How console entities referenced in the query should be dereferenced when compiling
- *                             said query.
- *                             - `static`:       Perform all lookups right now (aka when this function is called). This means that
- *                                               the compiled query is faster, but that it cannot adapt to the creation or removal
- *                                               of entities. It also introduces a divergence in behavior, since an interpreted query
- *                                               would perform its lookup at execution time.
- *                             - `semi-dynamic`: Perform all lookups right now, but include existence checks in the compiled function.
- *                                               This means that the addition or removal of an entity will change the behavior of the
- *                                               compiled function, but that changing an entity for a identically-named one will not.
- *                             - `dynamic`:      Perform all lookups when the compiled function is called. Induces a speed penalty,
- *                                               but allows the query to remain flexible. This is the default, and is how an
- *                                               interpreted query would function. This lookup policy allows memoizing the function,
- *                                               while the other two do not.
- * @returns A compiled version of the given query. If a tuple is returned, then its second element is the
- *          compiled version of the inverse query
- */
-export function compileQuery<const B extends boolean | undefined>(
-    gameConsole: GameConsole,
-    input: string,
-    options: {
-        compileHint?: "never" | "normal" | "always"
-        onlyCompileForward?: B
-        lookupPolicy?: "static" | "semi-dynamic" | "dynamic"
-    } = {
-        compileHint: "normal",
-        lookupPolicy: "dynamic"
-    }
-): B extends true ? CompiledAction : CompiledAction | CompiledTuple {
-    const { onlyCompileForward, lookupPolicy = "dynamic" } = options;
-
-    // It's okay to "abusively" call this, since it's a memoized function anyways
-    const query = extractCommandsAndArgs(input);
-
-    /**
-     * For dynamic lookup queries, we can memoize their results, so
-     * let's try to fetch one from the cache
-     */
-    const cached = _compilerCache_.get(query);
-    if (lookupPolicy === "dynamic" && cached !== undefined) {
-        if (onlyCompileForward) {
-            // We only want the forward one? No problem
-            return isArray(cached)
-                ? cached[0]
-                : cached;
-        } else if (isArray(cached)) {
-            // Otherwise, we can only return the cached result if it's a tuple
-            return cached as B extends true ? CompiledAction : CompiledAction | CompiledTuple; // this assertion should be useless but weh
-        }
-        // Otherwise, what we have is a compiled action, but what we want is the compiled action and the compiled inverse
-        // Fallthrough to normal execution…
-        // TODO in such a case, reuse the cached action only, and only compile the inverse
-    }
-
-    /**
-     * Modified `CompilerNode` type used for construction
-     */
-    type GCompilerNode = Omit<CompilerNode, "fn" | "next" | "nextGroup"> & {
-        fn?: CompilerNode["fn"]
-        next?: GCompilerNode
-        nextGroup?: GCompilerNode
-    };
-
-    /**
-     * The head of the compiler tree. Should have the same structure as the query tree
-     */
-    const compiled: GCompilerNode = {
-        chaining: ChainingTypes.Always // ignored anyway
-    };
-    /**
-     * Reference to the current compiler node we're dealing with
-     */
-    let currentCompilerNode: GCompilerNode = compiled;
-
-    /**
-     * Reference to the current parser node being processed. A value of `undefined`
-     * signifies that we're done with the query and that no more processing is to be done
-     */
-    let currentNode: ParserNode | undefined = query;
-    /**
-     * Plays a similar role to the `groupAnchors` stack used in the parser, that being
-     * to keep track of where we should jump to after finishing the compilation of a command
-     * group. Unlike the parser's version, this stores the node where compilation should resume,
-     * not the node preceding it
-     */
-    const groupAnchors = new Stack<[ParserNode, GCompilerNode]>();
-
-    /*
-        Being a translator and not an executor, the logic here is a bit different from in evalQuery.
-        In evalQuery, we're worried about the execution semantics in-real-time, which is why we
-        do things like conditionally jumping around.
-        In other words, we walk the tree and choose branches based on the result of the current node's
-        processing (concretely, whether evaluating the query returned an error).
-
-        Here though, we don't care (and actually, can't conclude) about conditions, so we just
-        translate the whole parser tree, and integrate the conditional mechanisms into the final compiled
-        product.
-    */
-
-    /**
-     * If the current node has a `next` reference, it and a newly-created GCompilerNode
-     * are pushed onto the `groupAnchors` stack
-     *
-     * If it does exist, then that's because this node's `cmd`
-     * is actually a command group, and we need the `next` node
-     * to know where to jump to once we're done executing the group
-     */
-    const pushGroupAnchorIfPresent = (): void => {
-        if (currentNode?.next !== undefined) {
-            groupAnchors.push([
-                currentNode.next,
-                currentCompilerNode.nextGroup = { chaining: currentNode.next.chaining }
-            ]);
-        }
-    };
-
-    /**
-     * Jumps to the node located at the top of the `groupAnchors` stack. This method
-     * mutates `currentNode` and `currentCompilerNode`
-     * @returns Whether a jump has been attempted; in other words, if there was a
-     *          node to pop off of the stack
-     */
-    const jumpToPoppedAnchorIfPresent = (): boolean => {
-        const doJump = groupAnchors.has();
-
-        if (doJump) {
-            [currentNode, currentCompilerNode] = groupAnchors.pop();
-        }
-
-        return doJump;
-    };
-
-    /**
-     * Steps to the next node that should be processed. This method is
-     * sensitive to groupings and the state of the nodes it operates on, so
-     * this is not simply a `currentNode = currentNode.next` operation
-     */
-    const stepForward = (): void => {
-        /*
-            Is there no "next" command? (in other words, is there no command after this one?)
-        */
-        if (currentNode?.cmd?.next === undefined) {
-            /*
-               Reaching the last command of the current group means that
-               we should either jump out of the group or that we're at the
-               end of the query
-            */
-            if (jumpToPoppedAnchorIfPresent()) {
-                // If we tried to jump out of a group, then there's nothing left to do
-                // (regardless of success or not)
-                return;
-            }
-
-            // But if we didn't, then we conclude that we're at the end of the query
-            currentNode = undefined;
-            return;
-        }
-
-        // Create the next compiler node
-        currentCompilerNode = currentCompilerNode.next = {
-            chaining: currentNode.cmd.next.chaining
-        };
-        // Jump to the next node
-        // Unlike evalQuery, we do so unconditionally because the conditional chaining is handled elsewhere.
-        // Right now, we kinda just wanna visit every node
-        currentNode = currentNode.cmd.next;
-
-        if (currentNode === undefined) {
-            /*
-               If the jump was unsuccessful, then we try to exit out
-               of any group we might happen to be in. This is for cases
-               like `a & (b & c); d`—if the jump from `b` to `c` fails,
-               then we should jump out to `d`, whose node would be present
-               on the stack at that moment
-            */
-            jumpToPoppedAnchorIfPresent();
-        } else {
-            /*
-               If we did jump to another node, then try to push a new group
-               anchor onto the stack, if there's one.
-               See `pushGroupAnchorIfPresent`'s comment
-            */
-            pushGroupAnchorIfPresent();
-        }
-    };
-
-    const compiler = makePiecewiseCompilers(gameConsole, options)[lookupPolicy];
-
-    /*
-        Handles cases like `(a & b); c`, where we need to add a group anchor immediately
-    */
-    pushGroupAnchorIfPresent();
-
-    let iterationCount = 0;
-    while (currentNode !== undefined) {
-        if (++iterationCount === 1e3) {
-            console.warn("1000 iterations of query compiling; possible infinite loop");
-        }
-
-        currentCompilerNode.fn = compiler(currentNode.cmd);
-        stepForward();
-    }
-
-    /*
-        The code above was responsible for translating the parser/query tree to a compiler tree—the code
-        below is responsible for generating the function that walks it. In this sense, the compiler
-        tree is IR (intermediate representation)
-
-        If anyone can find a way to execute the IR in a way that doesn't involve walking
-        the entire IR tree (or at least, doing so in a faster way), they are free to implement
-        it and submit a pull request
-    */
-
-    /**
-     * Compiles an IR tree to a JS function
-     * @param root The root of the IR tree. The tree is never modified, neither during assembly nor during execution
-     */
-    const compileIR = (root: CompilerNode) => (): boolean => {
-        /**
-         * The current node we're processing
-         */
-        let currentNode: CompilerNode | undefined = root;
-        /**
-         * Whether the previous invocation triggered an error
-         */
-        let error = false;
-
-        /**
-         * Similar to the parser and interpreter pipelines, we keep a stack of
-         * nodes to jump to after finishing some group's parsing
-         */
-        const groupAnchors = new Stack<CompilerNode>();
-
-        do {
-            const fn = isArray(currentNode.fn)
-                ? currentNode.fn[0]
-                : currentNode.fn;
-
-            const jumpSuccess: boolean = ({
-                [ChainingTypes.Always]: true,
-                [ChainingTypes.IfPass]: !error,
-                [ChainingTypes.IfFail]: error
-            })[currentNode.chaining];
-
-            // If the jump succeeded, take the error value as returned by the function
-            // If not, reset the error flag
-            error = jumpSuccess && fn();
-
-            // nextGroup being present indicates that this is some sort of group
-            // Therefore, we wanna save a point to jump to after this group's completion
-            if (currentNode.nextGroup !== undefined) {
-                groupAnchors.push(currentNode.nextGroup);
-            }
-
-            if (jumpSuccess) {
-                // If our jump earlier succeeded, then we try to take the next command
-                if ((currentNode = currentNode.next) === undefined && groupAnchors.has()) {
-                    // If no such command exists, then we see if we have a node on the stack
-                    // to jump to; if not, then the loop will finish
-                    currentNode = groupAnchors.pop();
-                }
-                continue;
-            }
-
-            // If the jump didn't succeed, then we should try to jump out to the next node on the stack
-            currentNode = groupAnchors.has()
-                ? groupAnchors.pop()
-                : undefined;
-        } while (currentNode !== undefined);
-
-        return error;
-    };
-
-    const execute = makeCompiledAction(
-        compileIR(compiled as CompilerNode), // safety: all the optional members (aka fn) have
-        input                                // definitely been assigned at this point
-    );
-
-    type Return = B extends true ? CompiledAction : CompiledAction | CompiledTuple;
-    let out: Return;
-    // Conditions to not compile an inverse:
-    if (
-        onlyCompileForward                                     // the flag has explicitly been set
-        || compiled.nextGroup !== undefined                    // the query starts with a group (like "(a; b) & c")
-        || typeof (compiled as CompilerNode).fn === "function" // the first node isn't a tuple (and therefore doesn't correspond to an invertible action)
-    ) {
-        out = execute as Return;
-    } else {
-        // Otherwise, we can clone the first node, change its fn to be the original's inverse, and compile that
-        const moddedHead = {
-            ...compiled, // critically, the next pointer is identical; but that's okay, since nothing is modifying the tree
-            fn: (compiled.fn as CompiledTuple)[1]
-        } as CompilerNode;
-
-        out = [
-            execute,
-            makeCompiledAction(
-                compileIR(moddedHead),
-                input.replace("+", "-")
-            )
-        ] as unknown as Return;
-        // safety: B is false | undefined here
-    }
-
-    if (lookupPolicy === "dynamic") {
-        _compilerCache_.set(query, out);
-    }
-
-    return out;
-}
-
-type PieceCompiler = (
-    cmd: ParsedCommand
-) => CompiledAction | CompiledTuple;
-
-type PiecewiseCompilers = Record<"static" | "semi-dynamic" | "dynamic", PieceCompiler>;
-
-function makePiecewiseCompilers(
-    gameConsole: GameConsole,
-    options: {
-        compileHint?: "never" | "normal" | "always"
-        onlyCompileForward?: boolean
-        lookupPolicy?: "static" | "semi-dynamic" | "dynamic"
-    } = {
-        compileHint: "normal",
-        lookupPolicy: "dynamic"
-    }
-): PiecewiseCompilers {
-    const { /* compileHint = "normal", */ onlyCompileForward } = options;
-
-    const resolveArgs = makeArgsResolver(gameConsole);
-
-    let argsCache: readonly string[] | undefined;
-    const makeDynDis = ({ name, args }: { name: string, args: Readonly<ParsedCommand["args"]> }) => (): boolean => {
-        const cmd = gameConsole.commands.get(name);
-        if (cmd !== undefined) {
-            let trueArgs: readonly string[];
-            if (argsCache === undefined) {
-                const [isConst, resolved] = resolveArgs(args);
-                trueArgs = resolved;
-                if (isConst) argsCache = trueArgs;
-            } else {
-                trueArgs = argsCache;
-            }
-
-            const res = cmd.run(trueArgs);
-            const isError = typeof res === "object";
-            if (isError) {
-                gameConsole.error.raw(`${res.err}`);
-            }
-            return isError;
-        }
-
-        const alias = gameConsole.aliases.get(name);
-        if (alias !== undefined) {
-            return compileQuery(
-                gameConsole,
-                alias,
-                { compileHint: "always", onlyCompileForward: true, lookupPolicy: "static" }
-            )();
-        }
-
-        const cvar = gameConsole.variables.get(name);
-        if (cvar) {
-            if (args.length) {
-                return compileQuery(
-                    gameConsole,
-                    `assign ${name} ${resolveArgs(args)[1].join(" ")}`,
-                    { compileHint: "always", onlyCompileForward: true, lookupPolicy: "static" }
-                )();
-            } else {
-                gameConsole.log(`${cvar.name} = ${cvar.value}`);
-                return false;
-            }
-        }
-
-        gameConsole.error(`Unknown console entity '${name}'`);
-        return true;
-    };
-
-    return {
-        static({ name, args }) {
-            const cmd = gameConsole.commands.get(name);
-            if (cmd !== undefined) {
-                const [isConst, trueArgs] = resolveArgs(args);
-
-                const compileCmd = (
-                    cmd: Command<boolean, Stringable>
-                ): CompiledAction => {
-                    const executor = (
-                        args.length === 0
-                            ? cmd.executor.bind(gameConsole.game)
-                            : isConst
-                                ? cmd.run.bind(cmd, trueArgs)         // args are constant, we "lock them in" cuz we won't need to reevaluate them
-                                : () => cmd.run(resolveArgs(args)[1]) // args aren't constant, we need to redo our resolution in case a CVar has changed
-                    );
-
-                    return makeCompiledAction(
-                        () => {
-                            const result = executor();
-
-                            const errorRaised = typeof result === "object";
-                            if (errorRaised) {
-                                gameConsole.error.raw(`${result.err}`);
-                            }
-
-                            return errorRaised;
-                        },
-                        name, args
-                    );
-                };
-
-                const compiled = compileCmd(cmd);
-
-                return cmd.inverse && !onlyCompileForward
-                    ? [compiled, compileCmd(cmd.inverse)]
-                    : compiled;
-            }
-
-            const alias = gameConsole.aliases.get(name);
-            if (alias !== undefined) {
-                const inverseAlias = !onlyCompileForward && name.startsWith("+")
-                    ? gameConsole.aliases.get(name.replace("+", "-"))
-                    : undefined;
-                /*
-                    If we have an inverse alias, then we consult that inverse's query in order to
-                    compile this alias' inverse; we don't just take this alias' query and invert it,
-                    because that isn't sound. For example, consider these two aliases:
-
-                    alias +foo "echo abc"
-                    alias -foo "disconnect"
-
-                    There is no way to derive -foo's query just by looking at +foo's query; it would
-                    be a mistake to invert +foo's query and assume that it is -foo's query.
-                */
-
-                const compiled = compileQuery(
-                    gameConsole,
-                    alias,
-                    { ...options, onlyCompileForward: true }
-                );
-
-                return inverseAlias !== undefined // the 'onlyCompileForward' is included in this check, no need to repeat it
-                    ? [
-                        compiled,
-                        compileQuery(
-                            gameConsole,
-                            inverseAlias,
-                            { ...options, onlyCompileForward: true }
-                        )
-                    ]
-                    : compiled;
-            }
-
-            const cvar = gameConsole.variables.get(name);
-            if (cvar) {
-                if (args.length) {
-                    return compileQuery(
-                        gameConsole,
-                        `assign ${name} ${resolveArgs(args)[1].join(" ")}`,
-                        { ...options, onlyCompileForward: true }
-                    );
-                } else {
-                    return makeCompiledAction(
-                        () => {
-                            gameConsole.log(`${cvar.name} = ${cvar.value}`);
-                            return false;
-                        },
-                        name, args
-                    );
-                }
-            }
-
-            return makeCompiledAction(
-                () => {
-                    gameConsole.error(`Unknown console entity '${name}'`);
-                    return true;
-                },
-                name, args
-            );
-        },
-
-        "semi-dynamic"(parsedCmd) {
-            const { name, args } = parsedCmd;
-            const dynDis = makeDynDis(parsedCmd);
-
-            const cmd = gameConsole.commands.get(name);
-            if (cmd !== undefined) {
-                const [isConst, trueArgs] = resolveArgs(args);
-
-                const compileCmd = (
-                    cmd: Command<boolean, Stringable>
-                ): CompiledAction => {
-                    const executor = (
-                        args.length === 0
-                            ? cmd.executor.bind(gameConsole.game)
-                            : isConst
-                                ? cmd.run.bind(cmd, trueArgs)         // args are constant, we "lock them in" cuz we won't need to reevaluate them
-                                : () => cmd.run(resolveArgs(args)[1]) // args aren't constant, we need to redo our resolution in case a CVar has changed
-                    );
-
-                    return makeCompiledAction(
-                        () => {
-                            if (!gameConsole.commands.has(name)) {
-                                // Command no longer exists -> invoke dynamic dispatch
-                                return dynDis();
-                            }
-
-                            const result = executor();
-
-                            const errorRaised = typeof result === "object";
-                            if (errorRaised) {
-                                gameConsole.error.raw(`${result.err}`);
-                            }
-
-                            return errorRaised;
-                        },
-                        name, args
-                    );
-                };
-
-                const compiled = compileCmd(cmd);
-
-                return cmd.inverse && !onlyCompileForward
-                    ? [compiled, compileCmd(cmd.inverse)]
-                    : compiled;
-            }
-
-            const alias = gameConsole.aliases.get(name);
-            if (alias !== undefined) {
-                const inverseAlias = !onlyCompileForward && name.startsWith("+")
-                    ? gameConsole.aliases.get(name.replace("+", "-"))
-                    : undefined;
-
-                const compilerOut = compileQuery(
-                    gameConsole,
-                    alias,
-                    { ...options, onlyCompileForward: true }
-                );
-
-                const compiled = makeCompiledAction(
-                    (): boolean => gameConsole.aliases.has(name)
-                        ? compilerOut()
-                        : dynDis(), // Alias no longer exists -> invoke dynamic dispatch
-                    name, args
-                );
-
-                return inverseAlias !== undefined // the 'onlyCompileForward' is included in this check, no need to repeat it
-                    ? [
-                        compiled,
-                        (() => {
-                            const compiledInverse = compileQuery(
-                                gameConsole,
-                                inverseAlias,
-                                { ...options, onlyCompileForward: true }
-                            );
-
-                            let inverseDis: (() => boolean) | undefined;
-
-                            return makeCompiledAction(
-                                () => gameConsole.aliases.has(inverseAlias)
-                                    ? compiledInverse()
-                                    : (
-                                        inverseDis ??= makeDynDis({ name: inverseAlias, args: [] /* aliases have no arguments */ })
-                                    )(),
-                                inverseAlias, args
-                            );
-                        })()
-                    ]
-                    : compiled;
-            }
-
-            const cvar = gameConsole.variables.get(name);
-            if (cvar) {
-                if (args.length) {
-                    const compiled = compileQuery(
-                        gameConsole,
-                        `assign ${name} ${resolveArgs(args)[1].join(" ")}`,
-                        { ...options, onlyCompileForward: true }
-                    );
-
-                    return makeCompiledAction(
-                        () => gameConsole.variables.has(name)
-                            ? compiled()
-                            : dynDis(),
-                        name, args
-                    );
-                } else {
-                    return makeCompiledAction(
-                        () => {
-                            if (gameConsole.variables.has(name)) {
-                                gameConsole.log(`${cvar.name} = ${cvar.value}`);
-                                return false;
-                            }
-
-                            return dynDis();
-                        },
-                        name, args
-                    );
-                }
-            }
-
-            return makeCompiledAction(
-                () => {
-                    if (
-                        !gameConsole.commands.has(name)
-                        && !gameConsole.aliases.has(name)
-                        && !gameConsole.variables.has(name)
-                    ) {
-                        gameConsole.error(`Unknown console entity '${name}'`);
-                        return true;
-                    }
-
-                    return dynDis();
-                },
-                name, args
-            );
-        },
-
-        dynamic(cmd) {
-            return makeCompiledAction(
-                makeDynDis(cmd),
-                cmd.name, cmd.args
-            );
-        }
-    };
-}
+// !-------------------------------------------------!
+// ! experimental compiler code for future reference !
+// !-------------------------------------------------!
+
+// /* eslint-disable @typescript-eslint/unified-signatures */
+// // split for clarity (different parameter names)
+
+// function makeCompiledAction(cb: () => boolean, original: string): CompiledAction;
+// function makeCompiledAction(cb: () => boolean, name: string, args: Readonly<ParsedCommand["args"]>): CompiledAction;
+// function makeCompiledAction(
+//     cb: () => boolean,
+//     name: string,
+//     args?: Readonly<ParsedCommand["args"]>
+// ): CompiledAction {
+//     if (args === undefined) {
+//         // @ts-expect-error init code
+//         (cb as CompiledAction).original = name;
+//     } else {
+//         // @ts-expect-error init code
+//         (cb as CompiledAction).original = `${name}${args.length
+//             ? ` ${
+//                 args.map(v => v.arg.map(p => p.content).join(""))
+//                     .map(v => v.includes(" ") ? `"${v.replace(/"/g, "\\\"\\")}"` : v)
+//                     .join(" ")
+//             }`
+//             : ""
+//         }`;
+//     }
+
+//     return cb as CompiledAction;
+// };
+
+// /**
+//  * Similar in spirit to {@linkcode ParserNode}. Used to maintain structure of a compiled unit
+//  * as it's being created
+//  *
+//  * The intent is to take the ParserNode representing the query (aka parameter `query`), and
+//  * then walk it to compile each node, creating a CompilerNode at each step; at the end, we
+//  * can then walk this new tree (whose structure mirrors the original query) and compile *that*
+//  * by taking note of each node's chaining
+//  */
+// interface CompilerNode {
+//     /**
+//      * This node's chaining type with respect to its ancestor. A corollary of this
+//      * is that the head's chaining type is ignored
+//      */
+//     readonly chaining: ChainingTypes
+//     /**
+//      * The actual compiled function
+//      */
+//     fn: CompiledAction | CompiledTuple
+//     /**
+//      * The next node in the chain
+//      */
+//     next?: CompilerNode
+//     /**
+//      * The node representing the next logical group in the chain. `CompilerNode.next` is equivalent
+//      * to `ParserNode.cmd.next`, `CompilerNode.nextGroup` is equivalent to `ParserNode.next`
+//      */
+//     nextGroup?: CompilerNode
+// }
+
+// const _compilerCache_ = new Map<ParserNode, CompiledAction | CompiledTuple>();
+
+// /**
+//  * Compiles a console query in the form of a string
+//  * @param input The query to compile
+//  * @param options.compileHint A hint on how the parser should compile the given query. Compiling a query
+//  *                            creates a faster-to-execute version, at a small execution time and memory
+//  *                            penalty. For queries entered by-hand into the console, this tradeoff is
+//  *                            usually not worth it, since the queries are unlikely to be repeated; inversely,
+//  *                            for queries bound to inputs, the tradeoff is almost always worth it.
+//  *                            - `never`:  Never generate a compiled version of this query. If you do not
+//  *                                        intend to consult the `compiled` field of this function's return
+//  *                                        value (or generally do not care about this function's return value),
+//  *                                        you should use this.
+//  *                            - `normal`: Only compile this query if it is sufficiently simple. "Simple" is up
+//  *                                        to the parser to define, but usually, a query which is composed of a
+//  *                                        single invocation (whether a command, alias, or variable access/assignment)
+//  *                                        is considered "simple". This is the default option.
+//  *                            - `always`: Always generate a compiled version of this query. Self-explanatory.
+//  * @param options.onlyCompileForward Whether to only compile the given query. By default, the compiler will also
+//  *                                   compile the query's inverse, if it exists. Setting this to `true` disables
+//  *                                   this behavior
+//  * @param options.lookupPolicy How console entities referenced in the query should be dereferenced when compiling
+//  *                             said query.
+//  *                             - `static`:       Perform all lookups right now (aka when this function is called). This means that
+//  *                                               the compiled query is faster, but that it cannot adapt to the creation or removal
+//  *                                               of entities. It also introduces a divergence in behavior, since an interpreted query
+//  *                                               would perform its lookup at execution time.
+//  *                             - `semi-dynamic`: Perform all lookups right now, but include existence checks in the compiled function.
+//  *                                               This means that the addition or removal of an entity will change the behavior of the
+//  *                                               compiled function, but that changing an entity for a identically-named one will not.
+//  *                             - `dynamic`:      Perform all lookups when the compiled function is called. Induces a speed penalty,
+//  *                                               but allows the query to remain flexible. This is the default, and is how an
+//  *                                               interpreted query would function. This lookup policy allows memoizing the function,
+//  *                                               while the other two do not.
+//  * @returns A compiled version of the given query. If a tuple is returned, then its second element is the
+//  *          compiled version of the inverse query
+//  */
+// export function compileQuery<const B extends boolean | undefined>(
+//     gameConsole: GameConsole,
+//     input: string,
+//     options: {
+//         compileHint?: "never" | "normal" | "always"
+//         onlyCompileForward?: B
+//         lookupPolicy?: "static" | "semi-dynamic" | "dynamic"
+//     } = {
+//         compileHint: "normal",
+//         lookupPolicy: "dynamic"
+//     }
+// ): B extends true ? CompiledAction : CompiledAction | CompiledTuple {
+//     const { onlyCompileForward, lookupPolicy = "dynamic" } = options;
+
+//     // It's okay to "abusively" call this, since it's a memoized function anyways
+//     const query = extractCommandsAndArgs(input);
+
+//     /**
+//      * For dynamic lookup queries, we can memoize their results, so
+//      * let's try to fetch one from the cache
+//      */
+//     const cached = _compilerCache_.get(query);
+//     if (lookupPolicy === "dynamic" && cached !== undefined) {
+//         if (onlyCompileForward) {
+//             // We only want the forward one? No problem
+//             return isArray(cached)
+//                 ? cached[0]
+//                 : cached;
+//         } else if (isArray(cached)) {
+//             // Otherwise, we can only return the cached result if it's a tuple
+//             return cached as B extends true ? CompiledAction : CompiledAction | CompiledTuple; // this assertion should be useless but weh
+//         }
+//         // Otherwise, what we have is a compiled action, but what we want is the compiled action and the compiled inverse
+//         // Fallthrough to normal execution…
+//         // TODO in such a case, reuse the cached action only, and only compile the inverse
+//     }
+
+//     /**
+//      * Modified `CompilerNode` type used for construction
+//      */
+//     type GCompilerNode = Omit<CompilerNode, "fn" | "next" | "nextGroup"> & {
+//         fn?: CompilerNode["fn"]
+//         next?: GCompilerNode
+//         nextGroup?: GCompilerNode
+//     };
+
+//     /**
+//      * The head of the compiler tree. Should have the same structure as the query tree
+//      */
+//     const compiled: GCompilerNode = {
+//         chaining: ChainingTypes.Always // ignored anyway
+//     };
+//     /**
+//      * Reference to the current compiler node we're dealing with
+//      */
+//     let currentCompilerNode: GCompilerNode = compiled;
+
+//     /**
+//      * Reference to the current parser node being processed. A value of `undefined`
+//      * signifies that we're done with the query and that no more processing is to be done
+//      */
+//     let currentNode: ParserNode | undefined = query;
+//     /**
+//      * Plays a similar role to the `groupAnchors` stack used in the parser, that being
+//      * to keep track of where we should jump to after finishing the compilation of a command
+//      * group. Unlike the parser's version, this stores the node where compilation should resume,
+//      * not the node preceding it
+//      */
+//     const groupAnchors = new Stack<[ParserNode, GCompilerNode]>();
+
+//     /*
+//         Being a translator and not an executor, the logic here is a bit different from in evalQuery.
+//         In evalQuery, we're worried about the execution semantics in-real-time, which is why we
+//         do things like conditionally jumping around.
+//         In other words, we walk the tree and choose branches based on the result of the current node's
+//         processing (concretely, whether evaluating the query returned an error).
+
+//         Here though, we don't care (and actually, can't conclude) about conditions, so we just
+//         translate the whole parser tree, and integrate the conditional mechanisms into the final compiled
+//         product.
+//     */
+
+//     /**
+//      * If the current node has a `next` reference, it and a newly-created GCompilerNode
+//      * are pushed onto the `groupAnchors` stack
+//      *
+//      * If it does exist, then that's because this node's `cmd`
+//      * is actually a command group, and we need the `next` node
+//      * to know where to jump to once we're done executing the group
+//      */
+//     const pushGroupAnchorIfPresent = (): void => {
+//         if (currentNode?.next !== undefined) {
+//             groupAnchors.push([
+//                 currentNode.next,
+//                 currentCompilerNode.nextGroup = { chaining: currentNode.next.chaining }
+//             ]);
+//         }
+//     };
+
+//     /**
+//      * Jumps to the node located at the top of the `groupAnchors` stack. This method
+//      * mutates `currentNode` and `currentCompilerNode`
+//      * @returns Whether a jump has been attempted; in other words, if there was a
+//      *          node to pop off of the stack
+//      */
+//     const jumpToPoppedAnchorIfPresent = (): boolean => {
+//         const doJump = groupAnchors.has();
+
+//         if (doJump) {
+//             [currentNode, currentCompilerNode] = groupAnchors.pop();
+//         }
+
+//         return doJump;
+//     };
+
+//     /**
+//      * Steps to the next node that should be processed. This method is
+//      * sensitive to groupings and the state of the nodes it operates on, so
+//      * this is not simply a `currentNode = currentNode.next` operation
+//      */
+//     const stepForward = (): void => {
+//         /*
+//             Is there no "next" command? (in other words, is there no command after this one?)
+//         */
+//         if (currentNode?.cmd?.next === undefined) {
+//             /*
+//                Reaching the last command of the current group means that
+//                we should either jump out of the group or that we're at the
+//                end of the query
+//             */
+//             if (jumpToPoppedAnchorIfPresent()) {
+//                 // If we tried to jump out of a group, then there's nothing left to do
+//                 // (regardless of success or not)
+//                 return;
+//             }
+
+//             // But if we didn't, then we conclude that we're at the end of the query
+//             currentNode = undefined;
+//             return;
+//         }
+
+//         // Create the next compiler node
+//         currentCompilerNode = currentCompilerNode.next = {
+//             chaining: currentNode.cmd.next.chaining
+//         };
+//         // Jump to the next node
+//         // Unlike evalQuery, we do so unconditionally because the conditional chaining is handled elsewhere.
+//         // Right now, we kinda just wanna visit every node
+//         currentNode = currentNode.cmd.next;
+
+//         if (currentNode === undefined) {
+//             /*
+//                If the jump was unsuccessful, then we try to exit out
+//                of any group we might happen to be in. This is for cases
+//                like `a & (b & c); d`—if the jump from `b` to `c` fails,
+//                then we should jump out to `d`, whose node would be present
+//                on the stack at that moment
+//             */
+//             jumpToPoppedAnchorIfPresent();
+//         } else {
+//             /*
+//                If we did jump to another node, then try to push a new group
+//                anchor onto the stack, if there's one.
+//                See `pushGroupAnchorIfPresent`'s comment
+//             */
+//             pushGroupAnchorIfPresent();
+//         }
+//     };
+
+//     const compiler = makePiecewiseCompilers(gameConsole, options)[lookupPolicy];
+
+//     /*
+//         Handles cases like `(a & b); c`, where we need to add a group anchor immediately
+//     */
+//     pushGroupAnchorIfPresent();
+
+//     let iterationCount = 0;
+//     while (currentNode !== undefined) {
+//         if (++iterationCount === 1e3) {
+//             console.warn("1000 iterations of query compiling; possible infinite loop");
+//         }
+
+//         currentCompilerNode.fn = compiler(currentNode.cmd);
+//         stepForward();
+//     }
+
+//     /*
+//         The code above was responsible for translating the parser/query tree to a compiler tree—the code
+//         below is responsible for generating the function that walks it. In this sense, the compiler
+//         tree is IR (intermediate representation)
+
+//         If anyone can find a way to execute the IR in a way that doesn't involve walking
+//         the entire IR tree (or at least, doing so in a faster way), they are free to implement
+//         it and submit a pull request
+//     */
+
+//     /**
+//      * Compiles an IR tree to a JS function
+//      * @param root The root of the IR tree. The tree is never modified, neither during assembly nor during execution
+//      */
+//     const compileIR = (root: CompilerNode) => (): boolean => {
+//         /**
+//          * The current node we're processing
+//          */
+//         let currentNode: CompilerNode | undefined = root;
+//         /**
+//          * Whether the previous invocation triggered an error
+//          */
+//         let error = false;
+
+//         /**
+//          * Similar to the parser and interpreter pipelines, we keep a stack of
+//          * nodes to jump to after finishing some group's parsing
+//          */
+//         const groupAnchors = new Stack<CompilerNode>();
+
+//         do {
+//             const fn = isArray(currentNode.fn)
+//                 ? currentNode.fn[0]
+//                 : currentNode.fn;
+
+//             const jumpSuccess: boolean = ({
+//                 [ChainingTypes.Always]: true,
+//                 [ChainingTypes.IfPass]: !error,
+//                 [ChainingTypes.IfFail]: error
+//             })[currentNode.chaining];
+
+//             // If the jump succeeded, take the error value as returned by the function
+//             // If not, reset the error flag
+//             error = jumpSuccess && fn();
+
+//             // nextGroup being present indicates that this is some sort of group
+//             // Therefore, we wanna save a point to jump to after this group's completion
+//             if (currentNode.nextGroup !== undefined) {
+//                 groupAnchors.push(currentNode.nextGroup);
+//             }
+
+//             if (jumpSuccess) {
+//                 // If our jump earlier succeeded, then we try to take the next command
+//                 if ((currentNode = currentNode.next) === undefined && groupAnchors.has()) {
+//                     // If no such command exists, then we see if we have a node on the stack
+//                     // to jump to; if not, then the loop will finish
+//                     currentNode = groupAnchors.pop();
+//                 }
+//                 continue;
+//             }
+
+//             // If the jump didn't succeed, then we should try to jump out to the next node on the stack
+//             currentNode = groupAnchors.has()
+//                 ? groupAnchors.pop()
+//                 : undefined;
+//         } while (currentNode !== undefined);
+
+//         return error;
+//     };
+
+//     const execute = makeCompiledAction(
+//         compileIR(compiled as CompilerNode), // safety: all the optional members (aka fn) have
+//         input                                // definitely been assigned at this point
+//     );
+
+//     type Return = B extends true ? CompiledAction : CompiledAction | CompiledTuple;
+//     let out: Return;
+//     // Conditions to not compile an inverse:
+//     if (
+//         onlyCompileForward                                     // the flag has explicitly been set
+//         || compiled.nextGroup !== undefined                    // the query starts with a group (like "(a; b) & c")
+//         || typeof (compiled as CompilerNode).fn === "function" // the first node isn't a tuple (and therefore doesn't correspond to an invertible action)
+//     ) {
+//         out = execute as Return;
+//     } else {
+//         // Otherwise, we can clone the first node, change its fn to be the original's inverse, and compile that
+//         const moddedHead = {
+//             ...compiled, // critically, the next pointer is identical; but that's okay, since nothing is modifying the tree
+//             fn: (compiled.fn as CompiledTuple)[1]
+//         } as CompilerNode;
+
+//         out = [
+//             execute,
+//             makeCompiledAction(
+//                 compileIR(moddedHead),
+//                 input.replace("+", "-")
+//             )
+//         ] as unknown as Return;
+//         // safety: B is false | undefined here
+//     }
+
+//     if (lookupPolicy === "dynamic") {
+//         _compilerCache_.set(query, out);
+//     }
+
+//     return out;
+// }
+
+// type PieceCompiler = (
+//     cmd: ParsedCommand
+// ) => CompiledAction | CompiledTuple;
+
+// type PiecewiseCompilers = Record<"static" | "semi-dynamic" | "dynamic", PieceCompiler>;
+
+// function makePiecewiseCompilers(
+//     gameConsole: GameConsole,
+//     options: {
+//         compileHint?: "never" | "normal" | "always"
+//         onlyCompileForward?: boolean
+//         lookupPolicy?: "static" | "semi-dynamic" | "dynamic"
+//     } = {
+//         compileHint: "normal",
+//         lookupPolicy: "dynamic"
+//     }
+// ): PiecewiseCompilers {
+//     const { /* compileHint = "normal", */ onlyCompileForward } = options;
+
+//     const resolveArgs = makeArgsResolver(gameConsole);
+
+//     let argsCache: readonly string[] | undefined;
+//     const makeDynDis = ({ name, args }: { name: string, args: Readonly<ParsedCommand["args"]> }) => (): boolean => {
+//         const cmd = gameConsole.commands.get(name);
+//         if (cmd !== undefined) {
+//             let trueArgs: readonly string[];
+//             if (argsCache === undefined) {
+//                 const [isConst, resolved] = resolveArgs(args);
+//                 trueArgs = resolved;
+//                 if (isConst) argsCache = trueArgs;
+//             } else {
+//                 trueArgs = argsCache;
+//             }
+
+//             const res = cmd.run(trueArgs);
+//             const isError = typeof res === "object";
+//             if (isError) {
+//                 gameConsole.error.raw(`${res.err}`);
+//             }
+//             return isError;
+//         }
+
+//         const alias = gameConsole.aliases.get(name);
+//         if (alias !== undefined) {
+//             return compileQuery(
+//                 gameConsole,
+//                 alias,
+//                 { compileHint: "always", onlyCompileForward: true, lookupPolicy: "static" }
+//             )();
+//         }
+
+//         const cvar = gameConsole.variables.get(name);
+//         if (cvar) {
+//             if (args.length) {
+//                 return compileQuery(
+//                     gameConsole,
+//                     `assign ${name} ${resolveArgs(args)[1].join(" ")}`,
+//                     { compileHint: "always", onlyCompileForward: true, lookupPolicy: "static" }
+//                 )();
+//             } else {
+//                 gameConsole.log(`${cvar.name} = ${cvar.value}`);
+//                 return false;
+//             }
+//         }
+
+//         gameConsole.error(`Unknown console entity '${name}'`);
+//         return true;
+//     };
+
+//     return {
+//         static({ name, args }) {
+//             const cmd = gameConsole.commands.get(name);
+//             if (cmd !== undefined) {
+//                 const [isConst, trueArgs] = resolveArgs(args);
+
+//                 const compileCmd = (
+//                     cmd: Command<boolean, Stringable>
+//                 ): CompiledAction => {
+//                     const executor = (
+//                         args.length === 0
+//                             ? cmd.executor.bind(gameConsole.game)
+//                             : isConst
+//                                 ? cmd.run.bind(cmd, trueArgs)         // args are constant, we "lock them in" cuz we won't need to reevaluate them
+//                                 : () => cmd.run(resolveArgs(args)[1]) // args aren't constant, we need to redo our resolution in case a CVar has changed
+//                     );
+
+//                     return makeCompiledAction(
+//                         () => {
+//                             const result = executor();
+
+//                             const errorRaised = typeof result === "object";
+//                             if (errorRaised) {
+//                                 gameConsole.error.raw(`${result.err}`);
+//                             }
+
+//                             return errorRaised;
+//                         },
+//                         name, args
+//                     );
+//                 };
+
+//                 const compiled = compileCmd(cmd);
+
+//                 return cmd.inverse && !onlyCompileForward
+//                     ? [compiled, compileCmd(cmd.inverse)]
+//                     : compiled;
+//             }
+
+//             const alias = gameConsole.aliases.get(name);
+//             if (alias !== undefined) {
+//                 const inverseAlias = !onlyCompileForward && name.startsWith("+")
+//                     ? gameConsole.aliases.get(name.replace("+", "-"))
+//                     : undefined;
+//                 /*
+//                     If we have an inverse alias, then we consult that inverse's query in order to
+//                     compile this alias' inverse; we don't just take this alias' query and invert it,
+//                     because that isn't sound. For example, consider these two aliases:
+
+//                     alias +foo "echo abc"
+//                     alias -foo "disconnect"
+
+//                     There is no way to derive -foo's query just by looking at +foo's query; it would
+//                     be a mistake to invert +foo's query and assume that it is -foo's query.
+//                 */
+
+//                 const compiled = compileQuery(
+//                     gameConsole,
+//                     alias,
+//                     { ...options, onlyCompileForward: true }
+//                 );
+
+//                 return inverseAlias !== undefined // the 'onlyCompileForward' is included in this check, no need to repeat it
+//                     ? [
+//                         compiled,
+//                         compileQuery(
+//                             gameConsole,
+//                             inverseAlias,
+//                             { ...options, onlyCompileForward: true }
+//                         )
+//                     ]
+//                     : compiled;
+//             }
+
+//             const cvar = gameConsole.variables.get(name);
+//             if (cvar) {
+//                 if (args.length) {
+//                     return compileQuery(
+//                         gameConsole,
+//                         `assign ${name} ${resolveArgs(args)[1].join(" ")}`,
+//                         { ...options, onlyCompileForward: true }
+//                     );
+//                 } else {
+//                     return makeCompiledAction(
+//                         () => {
+//                             gameConsole.log(`${cvar.name} = ${cvar.value}`);
+//                             return false;
+//                         },
+//                         name, args
+//                     );
+//                 }
+//             }
+
+//             return makeCompiledAction(
+//                 () => {
+//                     gameConsole.error(`Unknown console entity '${name}'`);
+//                     return true;
+//                 },
+//                 name, args
+//             );
+//         },
+
+//         "semi-dynamic"(parsedCmd) {
+//             const { name, args } = parsedCmd;
+//             const dynDis = makeDynDis(parsedCmd);
+
+//             const cmd = gameConsole.commands.get(name);
+//             if (cmd !== undefined) {
+//                 const [isConst, trueArgs] = resolveArgs(args);
+
+//                 const compileCmd = (
+//                     cmd: Command<boolean, Stringable>
+//                 ): CompiledAction => {
+//                     const executor = (
+//                         args.length === 0
+//                             ? cmd.executor.bind(gameConsole.game)
+//                             : isConst
+//                                 ? cmd.run.bind(cmd, trueArgs)         // args are constant, we "lock them in" cuz we won't need to reevaluate them
+//                                 : () => cmd.run(resolveArgs(args)[1]) // args aren't constant, we need to redo our resolution in case a CVar has changed
+//                     );
+
+//                     return makeCompiledAction(
+//                         () => {
+//                             if (!gameConsole.commands.has(name)) {
+//                                 // Command no longer exists -> invoke dynamic dispatch
+//                                 return dynDis();
+//                             }
+
+//                             const result = executor();
+
+//                             const errorRaised = typeof result === "object";
+//                             if (errorRaised) {
+//                                 gameConsole.error.raw(`${result.err}`);
+//                             }
+
+//                             return errorRaised;
+//                         },
+//                         name, args
+//                     );
+//                 };
+
+//                 const compiled = compileCmd(cmd);
+
+//                 return cmd.inverse && !onlyCompileForward
+//                     ? [compiled, compileCmd(cmd.inverse)]
+//                     : compiled;
+//             }
+
+//             const alias = gameConsole.aliases.get(name);
+//             if (alias !== undefined) {
+//                 const inverseAlias = !onlyCompileForward && name.startsWith("+")
+//                     ? gameConsole.aliases.get(name.replace("+", "-"))
+//                     : undefined;
+
+//                 const compilerOut = compileQuery(
+//                     gameConsole,
+//                     alias,
+//                     { ...options, onlyCompileForward: true }
+//                 );
+
+//                 const compiled = makeCompiledAction(
+//                     (): boolean => gameConsole.aliases.has(name)
+//                         ? compilerOut()
+//                         : dynDis(), // Alias no longer exists -> invoke dynamic dispatch
+//                     name, args
+//                 );
+
+//                 return inverseAlias !== undefined // the 'onlyCompileForward' is included in this check, no need to repeat it
+//                     ? [
+//                         compiled,
+//                         (() => {
+//                             const compiledInverse = compileQuery(
+//                                 gameConsole,
+//                                 inverseAlias,
+//                                 { ...options, onlyCompileForward: true }
+//                             );
+
+//                             let inverseDis: (() => boolean) | undefined;
+
+//                             return makeCompiledAction(
+//                                 () => gameConsole.aliases.has(inverseAlias)
+//                                     ? compiledInverse()
+//                                     : (
+//                                         inverseDis ??= makeDynDis({ name: inverseAlias, args: [] /* aliases have no arguments */ })
+//                                     )(),
+//                                 inverseAlias, args
+//                             );
+//                         })()
+//                     ]
+//                     : compiled;
+//             }
+
+//             const cvar = gameConsole.variables.get(name);
+//             if (cvar) {
+//                 if (args.length) {
+//                     const compiled = compileQuery(
+//                         gameConsole,
+//                         `assign ${name} ${resolveArgs(args)[1].join(" ")}`,
+//                         { ...options, onlyCompileForward: true }
+//                     );
+
+//                     return makeCompiledAction(
+//                         () => gameConsole.variables.has(name)
+//                             ? compiled()
+//                             : dynDis(),
+//                         name, args
+//                     );
+//                 } else {
+//                     return makeCompiledAction(
+//                         () => {
+//                             if (gameConsole.variables.has(name)) {
+//                                 gameConsole.log(`${cvar.name} = ${cvar.value}`);
+//                                 return false;
+//                             }
+
+//                             return dynDis();
+//                         },
+//                         name, args
+//                     );
+//                 }
+//             }
+
+//             return makeCompiledAction(
+//                 () => {
+//                     if (
+//                         !gameConsole.commands.has(name)
+//                         && !gameConsole.aliases.has(name)
+//                         && !gameConsole.variables.has(name)
+//                     ) {
+//                         gameConsole.error(`Unknown console entity '${name}'`);
+//                         return true;
+//                     }
+
+//                     return dynDis();
+//                 },
+//                 name, args
+//             );
+//         },
+
+//         dynamic(cmd) {
+//             return makeCompiledAction(
+//                 makeDynDis(cmd),
+//                 cmd.name, cmd.args
+//             );
+//         }
+//     };
+// }
