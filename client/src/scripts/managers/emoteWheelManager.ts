@@ -162,7 +162,10 @@ export class EmoteWheelManager {
    * Sends an emote packet
    */
     emitEmote(emote: string): void {
-        this.game.inputManager.addAction({
+        const { inputManager } = this.game;
+
+        if (inputManager.pingWheelActive) return;
+        inputManager.addAction({
             type: InputActions.Emote,
             emote: Emotes.reify(emote)
         });
@@ -201,10 +204,13 @@ export class PlayerPingWheelManager extends EmoteWheelManager {
     override emotes = MapPings.definitions.filter(p => p.isPlayerPing);
 
     override emitEmote(ping: string): void {
-        this.game.inputManager.addAction({
+        const { inputManager } = this.game;
+
+        if (!inputManager.pingWheelActive) return;
+        inputManager.addAction({
             type: InputActions.MapPing,
             ping: MapPings.reify(ping),
-            position: this.game.inputManager.gameMousePosition
+            position: inputManager.pingWheelPosition
         });
     }
 }

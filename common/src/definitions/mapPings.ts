@@ -56,10 +56,10 @@ export const MapPings = ObjectDefinitions.withDefault<MapPingDefinition>()(
 
         return [
             gamePingFactory(["airdrop_ping", 0x00ffff], { ignoreExpiration: true }),
-            playerPingFactory(["warning_ping"]),
             playerPingFactory(["arrow_ping"], { ignoreExpiration: true }),
             playerPingFactory(["gift_ping"]),
-            playerPingFactory(["heal_ping"])
+            playerPingFactory(["heal_ping"]),
+            playerPingFactory(["warning_ping"])
         ];
     }
 );

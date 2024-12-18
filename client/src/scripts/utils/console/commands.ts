@@ -17,6 +17,7 @@ import { COLORS } from "../constants";
 import { sanitizeHTML, stringify } from "../misc";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
+import { Vec } from "@common/utils/vector";
 
 export type CommandExecutor<ErrorType> = (
     this: Game,
@@ -741,8 +742,40 @@ export function setUpCommands(game: Game): void {
 
     Command.createInvertiblePair(
         "emote_wheel",
-        function() { game.emoteManager.show(); },
-        function() { game.emoteManager.close(); },
+        function() {
+            const { inputManager, pingManager, emoteManager } = game;
+
+            if (
+                game.console.getBuiltInCVar("cv_hide_emotes")
+                || game.gameOver
+                || inputManager.emoteWheelActive
+            ) return;
+
+            inputManager.emoteWheelActive = true;
+
+            if (!inputManager.pingWheelMinimap) {
+                inputManager.pingWheelPosition = Vec.clone(inputManager.gameMousePosition);
+            }
+
+            if (inputManager.pingWheelActive) {
+                pingManager.show();
+                emoteManager.close();
+            } else {
+                emoteManager.show();
+                pingManager.close();
+            }
+        },
+        function() {
+            const { inputManager, pingManager, emoteManager } = game;
+
+            if (!inputManager.emoteWheelActive) return;
+
+            inputManager.emoteWheelActive = false;
+            inputManager.pingWheelMinimap = false;
+
+            pingManager.close();
+            emoteManager.close();
+        },
         game,
         {
             short: "Opens the emote wheel",
@@ -760,8 +793,16 @@ export function setUpCommands(game: Game): void {
 
     Command.createInvertiblePair(
         "map_ping",
-        function() { game.pingManager.show(); },
-        function() { game.pingManager.close(); },
+        function() {
+            const { inputManager, uiManager } = game;
+            inputManager.pingWheelActive = true;
+            uiManager.updateEmoteWheel();
+        },
+        function() {
+            const { inputManager, uiManager } = game;
+            inputManager.pingWheelActive = false;
+            uiManager.updateEmoteWheel();
+        },
         game,
         {
             short: "Enables the emote wheel's ping mode",
