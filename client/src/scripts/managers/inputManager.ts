@@ -849,7 +849,7 @@ export class InputManager {
     }
 }
 
-export type CompiledAction = (() => void) & { readonly original: string };
+export type CompiledAction = (() => boolean) & { readonly original: string };
 export type CompiledTuple = readonly [CompiledAction, CompiledAction];
 
 class InputMapper {
