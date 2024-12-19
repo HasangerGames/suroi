@@ -522,7 +522,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Burst,
                 shotSpread: 3,
                 moveSpread: 4,
-                length: 5.95,
+                length: 6.1,
                 fists: {
                     left: Vec.create(95, -3),
                     right: Vec.create(40, 0),
@@ -556,18 +556,18 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Auto,
                 shotSpread: 9,
                 moveSpread: 19,
-                length: 5.8,
+                length: 5,
                 fists: {
-                    left: Vec.create(85, -6),
+                    left: Vec.create(65, -3),
                     right: Vec.create(40, 0),
                     rightZIndex: 4,
                     animationDuration: 100
                 },
                 casingParticles: [{
-                    position: Vec.create(3.5, 0.4)
+                    position: Vec.create(3.2, 0.4)
                 }],
                 gasParticles: gasParticlePresets.automatic,
-                image: { position: Vec.create(80, 0) },
+                image: { position: Vec.create(65, 0) },
                 ballistics: {
                     damage: 7.75,
                     obstacleMultiplier: 1,
@@ -599,7 +599,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 },
                 image: { position: Vec.create(76, -3) },
                 casingParticles: [{
-                    position: Vec.create(4, 0.4)
+                    position: Vec.create(4.7, 0)
                 }],
                 gasParticles: gasParticlePresets.automatic,
                 ballistics: {
