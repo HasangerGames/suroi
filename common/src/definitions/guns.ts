@@ -1272,6 +1272,46 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }
             },
             {
+               idString: "g_hp18",
+                name: "Golden HP-18",
+                ammoType: "12g",
+                ammoSpawnAmount: 10,
+                capacity: 4,
+                extendedCapacity: 8,
+                reloadTime: 0.25,
+                shotsPerReload: 1,
+                fireDelay: 200,
+                switchDelay: 400,
+                recoilMultiplier: 0.4,
+                recoilDuration: 400,
+                fireMode: FireMode.Single,
+                bulletCount: 20,
+                shotSpread: 20,
+                moveSpread: 24,
+                jitterRadius: 1.75,
+                length: 8,
+                fists: {
+                    left: Vec.create(120, -1),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(100, 0) },
+                casingParticles: [{
+                    position: Vec.create(4, 0.6)
+                }],
+                gasParticles: gasParticlePresets.shotgun,
+                ballistics: {
+                    damage: 5,
+                    obstacleMultiplier: 0.5,
+                    speed: 0.20,
+                    range: 60,
+                    tracer: {
+                        length: 0.5
+                    }
+                }
+            },
+            {
                 idString: "flues",
                 name: "Flues",
                 ammoType: "12g",
