@@ -69,12 +69,13 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
         {
             idString: "fists",
             name: "Fists",
-            damage: 20,
+            damage: 1,
+            fireMode: FireMode.Auto,
             obstacleMultiplier: 1,
             iceMultiplier: 0.01,
             radius: 1.5,
             offset: Vec.create(2.5, 0),
-            cooldown: 250,
+            cooldown: 1,
             noDrop: true,
             fists: {
                 animationDuration: 125,
