@@ -57,10 +57,10 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 }
             ),
             helmet(
-                ["Tactical"],
+                ["GODLIKE"],
                 {
-                    level: 3,
-                    damageReduction: 0.2
+                    level: 100,
+                    damageReduction: 1
                 }
             ),
 
@@ -84,10 +84,10 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 }
             ),
             vest(
-                ["Tactical"],
+                ["GOD LIKE"],
                 {
-                    level: 3,
-                    damageReduction: 0.45,
+                    level: 100,
+                    damageReduction: 1,
                     color: 0x0d0d0d
                 }
             ),
