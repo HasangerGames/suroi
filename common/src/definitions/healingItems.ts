@@ -36,29 +36,29 @@ export const HealingItems = ObjectDefinitions.withDefault<HealingItemDefinition>
             healing(
                 ["Gauze"],
                 {
-                    restoreAmount: 15,
-                    useTime: 3
+                    restoreAmount: 10,
+                    useTime: 0.1
                 }
             ),
             healing(
                 ["Medikit"],
                 {
                     restoreAmount: 100,
-                    useTime: 6
+                    useTime: 0.1
                 }
             ),
             adren(
                 ["Cola"],
                 {
-                    restoreAmount: 25,
-                    useTime: 3
+                    restoreAmount: 50,
+                    useTime: 0.1
                 }
             ),
             adren(
                 ["Tablets"],
                 {
-                    restoreAmount: 50,
-                    useTime: 5
+                    restoreAmount: 100,
+                    useTime: 0.1
                 }
             )
         ];
