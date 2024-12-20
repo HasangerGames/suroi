@@ -308,11 +308,11 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "Firework Launcher",
-            damage: 97,
-            obstacleMultiplier: 1,
+            damage: 100,
+            obstacleMultiplier: 10,
             radius: {
-                min: 9,
-                max: 19
+                min: 20,
+                max: 20
             },
             cameraShake: {
                 duration: 160,
@@ -323,12 +323,12 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
                 tint: 0xA04412,
                 scale: 0.8
             },
-            shrapnelCount: 17,
+            shrapnelCount: 20,
             ballistics: {
                 damage: 3,
-                obstacleMultiplier: 1.5,
-                speed: 0.06,
-                range: 10,
+                obstacleMultiplier: 20,
+                speed: 1,
+                range: 50,
                 rangeVariance: 1,
                 shrapnel: true,
                 tracer: {
@@ -440,15 +440,15 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "C4",
-            damage: 150,
+            damage: 1000,
             obstacleMultiplier: 1.15,
             radius: {
-                min: 10,
-                max: 25
+                min: 50,
+                max: 50
             },
             cameraShake: {
                 duration: 200,
-                intensity: 30
+                intensity: 100
             },
             animation: {
                 duration: 1000,
