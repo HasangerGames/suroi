@@ -1,9 +1,11 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { Guns } from "@common/definitions/guns";
+import { Melees } from "@common/definitions/melees";
+import { Throwables } from "@common/definitions/throwables";
 import { parse } from "hjson";
 import { readdirSync, readFileSync } from "node:fs";
-import { Guns, Melees, Throwables } from "@common/definitions";
+import { readFile, writeFile } from "node:fs/promises";
 
-export const REFERNCE_LANGUAGE = "en";
+export const REFERENCE_LANGUAGE = "en";
 
 export const LANGUAGES_DIRECTORY = "../languages/";
 
@@ -20,8 +22,7 @@ const keyFilter = (key: string): boolean => (
     && !Throwables.hasString(key)
 );
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-const ValidKeys = Object.keys(parse(readFileSync(`${LANGUAGES_DIRECTORY + REFERNCE_LANGUAGE}.hjson`, "utf8")))
+const ValidKeys: readonly string[] = Object.keys(parse(readFileSync(`${LANGUAGES_DIRECTORY + REFERENCE_LANGUAGE}.hjson`, "utf8")) as Record<string, unknown>)
     .filter(keyFilter);
 
 export type TranslationManifest = {
@@ -42,27 +43,29 @@ This file is a report of all errors and missing keys in the translation files of
 
 `;
 
-    const parsedFiles = await Promise.all(files.filter(file => file !== `${REFERNCE_LANGUAGE}.hjson`)
-        .map(async file => [file, parse(await readFile(LANGUAGES_DIRECTORY + file, "utf8"))] as [string, Record<string, string>]));
-
-    for (const [filename, content] of parsedFiles) {
+    for (
+        const [filename, content] of await Promise.all(
+            files.filter(file => file !== `${REFERENCE_LANGUAGE}.hjson`)
+                .map(
+                    async(file): Promise<[string, Record<string, string>]> => [file, parse(await readFile(LANGUAGES_DIRECTORY + file, "utf8"))]
+                )
+        )
+    ) {
         const keys = Object.keys(content).filter(keyFilter);
 
         let languageReportBuffer = `## ${content.flag} ${content.name} (${Math.round(100 * keys.length / ValidKeys.length)}% Complete) - ${filename}\n\n`;
 
         // Find invalid keys
-        languageReportBuffer += "### Invalid Keys\n\n";
-        for (const key of keys) {
-            if (ValidKeys.includes(key)) continue;
-            languageReportBuffer += `- Key \`${key}\` is not a valid key\n`;
-        }
+        const invalidKeys = keys.filter(k => !ValidKeys.includes(k)).map(key => `- Key \`${key}\` is not a valid key`).join("\n");
+        if (invalidKeys.length > 0) {
+            languageReportBuffer += `### Invalid Keys\n\n${invalidKeys}\n\n`;
+        } else { languageReportBuffer += "### (No Invalid Keys)\n\n"; }
 
         // Find undefined keys
-        languageReportBuffer += "\n### Undefined Keys\n\n";
-        for (const validKey of ValidKeys) {
-            if (keys.includes(validKey)) continue;
-            languageReportBuffer += `- Key \`${validKey}\` is not defined\n`;
-        }
+        const undefinedKeys = ValidKeys.filter(k => !keys.includes(k)).map(key => `- Key \`${key}\` is not defined`).join("\n");
+        if (undefinedKeys.length > 0) {
+            languageReportBuffer += `### Undefined Keys\n\n${undefinedKeys}\n\n`;
+        } else { languageReportBuffer += "### (No Undefined Keys)\n\n"; }
 
         reportBuffer += languageReportBuffer;
     }
@@ -74,10 +77,11 @@ This file is a report of all errors and missing keys in the translation files of
 export async function buildTranslations(): Promise<void> {
     const languages: Record<string, Record<string, string>> = {};
 
-    await Promise.all(files.map(async file => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        languages[file.slice(0, -".hjson".length)] = parse(await readFile(LANGUAGES_DIRECTORY + file, "utf8"));
-    }));
+    await Promise.all(
+        files.map(async file => {
+            languages[file.slice(0, -".hjson".length)] = parse(await readFile(LANGUAGES_DIRECTORY + file, "utf8")) as Record<string, string>;
+        })
+    );
 
     const manifest: TranslationsManifest = {};
 
@@ -89,22 +93,27 @@ export async function buildTranslations(): Promise<void> {
             mandatory: Boolean(content.mandatory),
             no_resize: Boolean(content.no_resize),
             no_space: Boolean(content.no_space),
-            percentage: `${Math.round(100 * Object.keys(content).filter(keyFilter).length / ValidKeys.length)}%`
+            percentage: content.percentage ?? `${Math.round(100 * Object.keys(content).filter(keyFilter).length / ValidKeys.length)}%`
         };
+
         filePromises.push(writeFile(`../../client/public/translations/${language}.json`, JSON.stringify(content)));
     }
-    await Promise.all([...filePromises, writeFile("../../client/src/translationsManifest.json", JSON.stringify(manifest))]);
+
+    await Promise.all([
+        ...filePromises,
+        writeFile("../../client/src/translationsManifest.json", JSON.stringify(manifest))
+    ]);
 }
 
-export async function buildTypings(keys: string[]): Promise<void> {
+export async function buildTypings(keys: readonly string[]): Promise<void> {
     let buffer = `// WARN: DO NOT EDIT THIS FILE! THIS FILE WAS GENERATED ON ${new Date(Date.now()).toUTCString()}\n`;
     buffer += "/* eslint-disable */\n";
     buffer += "export type TranslationKeys=";
     buffer += [
         ...keys,
-        ...Guns.definitions.map(gun => gun.idString),
-        ...Melees.definitions.map(melee => melee.idString),
-        ...Throwables.definitions.map(throwable => throwable.idString)
+        ...Guns.definitions.map(({ idString }) => idString),
+        ...Melees.definitions.map(({ idString }) => idString),
+        ...Throwables.definitions.map(({ idString }) => idString)
     ].map(key => `"${key}"`).join("|");
     buffer += ";";
 

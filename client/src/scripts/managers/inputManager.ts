@@ -1,21 +1,21 @@
+import { GameConstants, InputActions } from "@common/constants";
+import { type WeaponDefinition } from "@common/definitions/loots";
+import { Scopes } from "@common/definitions/scopes";
+import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
+import { areDifferent, PlayerInputPacket, type InputAction, type PlayerInputData, type SimpleInputActions } from "@common/packets/inputPacket";
+import { Angle, Geometry, Numeric } from "@common/utils/math";
+import { ItemType, type ItemDefinition } from "@common/utils/objectDefinitions";
+import { Vec } from "@common/utils/vector";
 import $ from "jquery";
 import nipplejs, { type JoystickOutputData } from "nipplejs";
 import { isMobile } from "pixi.js";
-import { GameConstants, InputActions } from "../../../../common/src/constants";
-import { type WeaponDefinition } from "../../../../common/src/definitions/loots";
-import { Scopes } from "../../../../common/src/definitions/scopes";
-import { Throwables, type ThrowableDefinition } from "../../../../common/src/definitions/throwables";
-import { areDifferent, PlayerInputPacket, type InputAction, type PlayerInputData, type SimpleInputActions } from "../../../../common/src/packets/inputPacket";
-import { Angle, Geometry, Numeric } from "../../../../common/src/utils/math";
-import { ItemType, type ItemDefinition } from "../../../../common/src/utils/objectDefinitions";
-import { Vec } from "../../../../common/src/utils/vector";
 import { getTranslatedString } from "../../translations";
+import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
 import { defaultBinds } from "../utils/console/defaultClientCVars";
 import { type GameSettings, type PossibleError } from "../utils/console/gameConsole";
 import { FORCE_MOBILE, PIXI_SCALE } from "../utils/constants";
 import { html } from "../utils/misc";
-import type { TranslationKeys } from "../../typings/translations";
 
 export class InputManager {
     readonly binds = new InputMapper();
@@ -229,7 +229,7 @@ export class InputManager {
 
             if (this.emoteWheelActive) {
                 const mousePosition = Vec.create(e.clientX, e.clientY);
-                if (Geometry.distanceSquared(this.emoteWheelPosition, mousePosition) > 500) {
+                if (Geometry.distanceSquared(this.emoteWheelPosition, mousePosition) > 500 && this.game.activePlayer && !this.game.activePlayer.blockEmoting) {
                     const angle = Angle.betweenPoints(this.emoteWheelPosition, mousePosition);
                     let slotName: string | undefined;
                     if (SECOND_EMOTE_ANGLE <= angle && angle <= FOURTH_EMOTE_ANGLE) {
@@ -450,6 +450,13 @@ export class InputManager {
                 }
             } else {
                 if (typeof query === "string") {
+                    /*
+                        corollary: queries starting with a group don't get modified
+                        thus, if you do `bind W "(+up)"`, pressing W will call "(+up)",
+                        but so too wll releasing W
+                        this is not true if you do `bind W +up`. here, the query does start
+                        with +, thus the command -up is invoked when W is released
+                    */
                     if (query.startsWith("+")) { // Invertible action
                         query = query.replace("+", "-");
                     } else continue; // If the action isn't invertible, then we do nothing
@@ -718,7 +725,7 @@ export class InputManager {
     }
 }
 
-export type CompiledAction = (() => void) & { readonly original: string };
+export type CompiledAction = (() => boolean) & { readonly original: string };
 export type CompiledTuple = readonly [CompiledAction, CompiledAction];
 
 class InputMapper {

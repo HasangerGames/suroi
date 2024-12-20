@@ -2,7 +2,7 @@ import { KillfeedEventType, Layer, ObjectCategory } from "@common/constants";
 import { makeGameObjectTemplate } from "@common/utils/gameObject";
 import { type Hitbox } from "@common/utils/hitbox";
 import { ObjectSerializations, type FullData } from "@common/utils/objectsSerializations";
-import { SuroiBitStream } from "@common/utils/suroiBitStream";
+import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
@@ -71,11 +71,11 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
 
     abstract hitbox?: Hitbox;
 
-    private _fullStream?: SuroiBitStream | undefined;
-    get fullStream(): SuroiBitStream { return this._fullStream ??= SuroiBitStream.alloc(this.fullAllocBytes * 8); }
+    private _fullStream?: SuroiByteStream | undefined;
+    get fullStream(): SuroiByteStream { return this._fullStream ??= new SuroiByteStream(new ArrayBuffer(this.fullAllocBytes)); }
 
-    private _partialStream?: SuroiBitStream | undefined;
-    get partialStream(): SuroiBitStream { return this._partialStream ??= SuroiBitStream.alloc(this.partialAllocBytes * 8); }
+    private _partialStream?: SuroiByteStream | undefined;
+    get partialStream(): SuroiByteStream { return this._partialStream ??= new SuroiByteStream(new ArrayBuffer(this.partialAllocBytes)); }
 
     constructor(game: Game, position: Vector) {
         super();
@@ -91,18 +91,16 @@ export abstract class BaseGameObject<Cat extends ObjectCategory = ObjectCategory
         const stream = this.fullStream;
         stream.index = 0;
         ObjectSerializations[this.type].serializeFull(stream, this.data);
-        stream.writeAlignToNextByte();
     }
 
     serializePartial(): void {
         const stream = this.partialStream;
         stream.index = 0;
 
-        stream.writeObjectID(this.id);
+        stream.writeObjectId(this.id);
         stream.writeObjectType(this.type);
 
         ObjectSerializations[this.type].serializePartial(stream, this.data);
-        stream.writeAlignToNextByte();
     }
 
     /**

@@ -10,7 +10,7 @@ import { type InputPacket, type OutputPacket } from "../../common/src/packets/pa
 import { PacketStream } from "../../common/src/packets/packetStream";
 import { UpdatePacket } from "../../common/src/packets/updatePacket";
 import { type GetGameResponse } from "../../common/src/typings";
-import { Geometry, π } from "../../common/src/utils/math";
+import { Geometry, π, τ } from "../../common/src/utils/math";
 import { ItemType, type ReferenceTo } from "../../common/src/utils/objectDefinitions";
 import { type FullData } from "../../common/src/utils/objectsSerializations";
 import { pickRandomInArray, random, randomBoolean, randomFloat, randomSign } from "../../common/src/utils/random";
@@ -21,13 +21,13 @@ console.log("start");
 const config = {
     mainAddress: "http://127.0.0.1:8000",
     gameAddress: "ws://127.0.0.1:800<ID>",
-    botCount: 100,
+    botCount: 79,
     joinDelay: 100,
-    rejoinOnDeath: true
+    rejoinOnDeath: false
 };
 
 const skins: ReadonlyArray<ReferenceTo<SkinDefinition>> = Skins.definitions
-    .filter(({ hideFromLoadout, roleRequired }) => !hideFromLoadout && !roleRequired)
+    .filter(({ hideFromLoadout, rolesRequired }) => !hideFromLoadout && !rolesRequired)
     .map(({ idString }) => idString);
 
 const emotes: EmoteDefinition[] = Emotes.definitions
@@ -106,8 +106,7 @@ class Bot {
                     const packet = stream.deserializeServerPacket();
                     if (packet === undefined) break;
                     this.onPacket(packet);
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                } catch (e) { continue; }
+                } catch (e) { console.error(e); continue; }
             }
         };
     }
@@ -116,7 +115,7 @@ class Bot {
         const updatePosition = (data: FullData<ObjectCategory>, object: Bot, id: number): void => {
             const { position } = data as FullData<ObjectCategory.Player>;
 
-            if (!position) return;
+            if (position === undefined) return;
 
             object.position.x = position.x;
             object.position.y = position.y;
@@ -215,7 +214,7 @@ class Bot {
             this["admin he doing it sideways"]
             && (
                 target = [...objects.entries()]
-                    .filter((([id, bot]) => id !== this._serverId && bot !== undefined) as (entry: [number, Bot | undefined]) => entry is [number, Bot])
+                    .filter((([id, bot]) => id !== this._serverId && bot !== undefined && !bot._disconnected && bot._connected) as (entry: [number, Bot | undefined]) => entry is [number, Bot])
                     .sort(
                         ([, a], [, b]) => Geometry.distanceSquared(this.position, a.position) - Geometry.distanceSquared(this.position, b.position)
                     )[0]?.[1].position
@@ -227,7 +226,7 @@ class Bot {
             this._angle += this._angularSpeed;
         }
 
-        if (this._angle > π) this._angle = -π + (this._angle - π);
+        if (this._angle > π) this._angle -= τ;
 
         const actions: InputAction[] = [];
         if (this._emote) {

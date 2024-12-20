@@ -5,9 +5,8 @@ import { Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
-
 import { type Game } from "../game";
-import type { ItemData } from "../objects/loot";
+import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import { type ThrowableProjectile } from "../objects/throwableProj";
 import { CountableInventoryItem } from "./inventoryItem";

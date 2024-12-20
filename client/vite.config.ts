@@ -1,13 +1,10 @@
-import pkg from "../package.json";
-
-import { defineConfig } from "vite";
-
-import prodConfig from "./vite/vite.prod";
-import devConfig from "./vite/vite.dev";
-
 import { existsSync, rmSync } from "fs";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
+import { defineConfig } from "vite";
+import pkg from "../package.json";
+import devConfig from "./vite/vite.dev";
+import prodConfig from "./vite/vite.prod";
 
 const DIRNAME = dirname(fileURLToPath(import.meta.url));
 export default defineConfig(({ command, mode }) => {

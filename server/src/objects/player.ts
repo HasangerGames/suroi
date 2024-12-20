@@ -1,8 +1,30 @@
 import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, Layer, ObjectCategory, PlayerActions, SpectateActions } from "@common/constants";
-import { Ammos, Armors, ArmorType, Backpacks, DEFAULT_SCOPE, Emotes, Guns, HealingItems, Loots, Melees, Scopes, Throwables, type BadgeDefinition, type EmoteDefinition, type GunDefinition, type MeleeDefinition, type PlayerPing, type ScopeDefinition, type SkinDefinition, type SyncedParticleDefinition, type ThrowableDefinition, type WeaponDefinition } from "@common/definitions";
+import { Ammos } from "@common/definitions/ammos";
+import { Armors, ArmorType } from "@common/definitions/armors";
+import { Backpacks } from "@common/definitions/backpacks";
+import { type BadgeDefinition } from "@common/definitions/badges";
+import { Emotes, type EmoteDefinition } from "@common/definitions/emotes";
+import { Guns, type GunDefinition } from "@common/definitions/guns";
+import { HealingItems } from "@common/definitions/healingItems";
+import { Loots, type WeaponDefinition } from "@common/definitions/loots";
+import { type PlayerPing } from "@common/definitions/mapPings";
+import { Melees, type MeleeDefinition } from "@common/definitions/melees";
+import { Modes } from "@common/definitions/modes";
+import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { PerkCategories, PerkIds, Perks, type PerkDefinition, type PerkNames } from "@common/definitions/perks";
-import { DisconnectPacket, GameOverPacket, KillFeedPacket, NoMobile, PacketStream, PlayerInputData, ReportPacket, SpectatePacketData, UpdatePacket, type ForEventType, type GameOverData, type InputPacket, type PlayerData, type UpdatePacketDataCommon, type UpdatePacketDataIn } from "@common/packets";
-import { createKillfeedMessage } from "@common/packets/killFeedPacket";
+import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/scopes";
+import { type SkinDefinition } from "@common/definitions/skins";
+import { SyncedParticles, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
+import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
+import { DisconnectPacket } from "@common/packets/disconnectPacket";
+import { GameOverPacket, type GameOverData } from "@common/packets/gameOverPacket";
+import { type AllowedEmoteSources, type NoMobile, type PlayerInputData } from "@common/packets/inputPacket";
+import { createKillfeedMessage, KillFeedPacket, type ForEventType } from "@common/packets/killFeedPacket";
+import { type InputPacket } from "@common/packets/packet";
+import { PacketStream } from "@common/packets/packetStream";
+import { ReportPacket } from "@common/packets/reportPacket";
+import { type SpectatePacketData } from "@common/packets/spectatePacket";
+import { UpdatePacket, type PlayerData, type UpdatePacketDataCommon, type UpdatePacketDataIn } from "@common/packets/updatePacket";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
 import { Collision, EaseFunctions, Geometry, Numeric } from "@common/utils/math";
@@ -10,12 +32,11 @@ import { ExtendedMap, type SDeepMutable, type SMutable, type Timeout } from "@co
 import { defaultModifiers, ItemType, type EventModifiers, type ExtendedWearerAttributes, type PlayerModifiers, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray, randomPointInsideCircle, weightedRandom } from "@common/utils/random";
-import { SuroiBitStream } from "@common/utils/suroiBitStream";
+import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { randomBytes } from "crypto";
 import { type WebSocket } from "uWebSockets.js";
-import { BaseGameObject, DamageParams, DeathMarker, Emote, Explosion, Loot, SyncedParticle, ThrowableProjectile, type GameObject, type Obstacle } from ".";
 import { Config } from "../config";
 import { SpawnableLoots } from "../data/lootTables";
 import { type Game } from "../game";
@@ -28,9 +49,14 @@ import { ServerPerkManager, UpdatablePerkDefinition } from "../inventory/perkMan
 import { ThrowableItem } from "../inventory/throwableItem";
 import { type Team } from "../team";
 import { removeFrom } from "../utils/misc";
-import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { SyncedParticles } from "@common/definitions/syncedParticles";
-import { Modes } from "@common/definitions/modes";
+import { DeathMarker } from "./deathMarker";
+import { Emote } from "./emote";
+import { Explosion } from "./explosion";
+import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject";
+import { type Loot } from "./loot";
+import { type Obstacle } from "./obstacle";
+import { type SyncedParticle } from "./syncedParticle";
+import { type ThrowableProjectile } from "./throwableProj";
 
 export interface PlayerContainer {
     readonly teamID?: string
@@ -49,7 +75,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private static readonly baseHitbox = new CircleHitbox(GameConstants.player.radius);
 
     override readonly fullAllocBytes = 16;
-    override readonly partialAllocBytes = 4;
+    override readonly partialAllocBytes = 12;
     override readonly damageable = true;
 
     private _hitbox: CircleHitbox;
@@ -63,6 +89,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     activeDisguise?: ObstacleDefinition;
 
     teamID?: number;
+    colorIndex = 0; // Assigned in the team.ts file.
+
+    // Rate Limiting: Team Pings & Emotes.
+    emoteCount = 0;
+    lastRateLimitUpdate = 0;
+    blockEmoting = false;
 
     readonly loadout: {
         badge?: BadgeDefinition
@@ -76,7 +108,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private _team?: Team;
     get team(): Team | undefined { return this._team; }
 
-    set team(value: Team) {
+    set team(value: Team | undefined) {
         if (!this.game.teamMode) {
             console.warn("Trying to set a player's team while the game isn't in team mode");
             return;
@@ -390,6 +422,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this._team = team;
             this.teamID = team.id;
 
+            team.reassignColorIndexes();
             team.addPlayer(this);
             team.setDirty();
         }
@@ -575,11 +608,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 inventory.replaceWeapon(slot, chosenItem, force);
                 (this.activeItem as GunItem).ammo = capacity;
+                this.sendEmote(Guns.fromString(chosenItem.idString));
                 break;
             }
 
             case ItemType.Melee: {
                 inventory.replaceWeapon(slot, chosenItem, force);
+                this.sendEmote(Melees.fromString(chosenItem.idString));
                 break;
             }
 
@@ -617,6 +652,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 this.dirty.weapons = true;
                 this.dirty.items = true;
+                this.sendEmote(Throwables.fromString(chosenItem.idString));
                 break;
             }
         }
@@ -672,26 +708,66 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.spawnPosition = position;
     }
 
-    sendEmote(emote?: EmoteDefinition): void {
+    // --------------------------------------------------------------------------------
+    // Rate Limiting: Team Pings & Emotes.
+    // --------------------------------------------------------------------------------
+    rateLimitCheck(): boolean {
+        if (this.blockEmoting) return false;
+
+        this.emoteCount++;
+
+        // After constantly spamming more than 5 emotes, block for 5 seconds.
+        if (this.emoteCount > GameConstants.player.rateLimitPunishmentTrigger) {
+            this.blockEmoting = true;
+            this.setDirty();
+            this.game.addTimeout(() => {
+                this.blockEmoting = false;
+                this.setDirty();
+                this.emoteCount = 0;
+            }, GameConstants.player.emotePunishmentTime);
+            return false;
+        }
+
+        return true;
+    }
+    // --------------------------------------------------------------------------------
+
+    sendEmote(source?: AllowedEmoteSources): void {
+        // -------------------------------------
+        // Rate Limiting: Team Pings & Emotes.
+        // -------------------------------------
+        if (!this.rateLimitCheck()) return;
+        // -------------------------------------
+
         if (
-            emote
+            source !== undefined
             && !this.game.pluginManager.emit("player_will_emote", {
                 player: this,
-                emote
+                emote: source
             })
         ) {
-            if (emote.isTeamEmote && !this.game.teamMode) return;
+            if (
+                ("itemType" in source)
+                && (source.itemType === ItemType.Ammo || source.itemType === ItemType.Healing)
+                && !this.game.teamMode
+            ) return;
 
-            this.game.emotes.push(new Emote(emote, this));
+            this.game.emotes.push(new Emote(source, this));
 
             this.game.pluginManager.emit("player_did_emote", {
                 player: this,
-                emote
+                emote: source
             });
         }
     }
 
     sendMapPing(ping: PlayerPing, position: Vector): void {
+        // -------------------------------------
+        // Rate Limiting: Team Pings & Emotes.
+        // -------------------------------------
+        if (!this.rateLimitCheck()) return;
+        // -------------------------------------
+
         if (
             this.game.pluginManager.emit("player_will_map_ping", {
                 player: this,
@@ -753,6 +829,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
 
             movement = Vec.create(x, y);
+        }
+
+        // Rate Limiting: Team Pings & Emotes
+        if (this.emoteCount > 0 && !this.blockEmoting && (this.game.now - this.lastRateLimitUpdate > GameConstants.player.rateLimitInterval)) {
+            this.emoteCount--;
+            this.lastRateLimitUpdate = this.game.now;
         }
 
         // Perks
@@ -1091,7 +1173,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     private _firstPacket = true;
 
-    private readonly _packetStream = new PacketStream(SuroiBitStream.alloc(1 << 16));
+    private readonly _packetStream = new PacketStream(new SuroiByteStream(new ArrayBuffer(1 << 16)));
 
     /**
      * Calculate visible objects, check team, and send packets
@@ -1209,7 +1291,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             ),
             ...(
                 player.dirty.teammates || forceInclude
-                    ? { teammates: player._team?.players.filter(p => p.id !== player.id) ?? [] }
+                    ? { teammates: player._team?.players ?? [] }
                     : {}
             ),
             ...(
@@ -2453,7 +2535,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 vest: this.inventory.vest,
                 backpack: this.inventory.backpack,
                 halloweenThrowableSkin: this.halloweenThrowableSkin,
-                activeDisguise: this.activeDisguise
+                activeDisguise: this.activeDisguise,
+                blockEmoting: this.blockEmoting
             }
         };
 

@@ -1,24 +1,21 @@
+import { GameConstants, TeamSize } from "@common/constants";
+import { Badges } from "@common/definitions/badges";
+import { Skins } from "@common/definitions/skins";
+import { type GetGameResponse } from "@common/typings";
+import { Numeric } from "@common/utils/math";
 import { Cron } from "croner";
 import { existsSync, readFile, readFileSync, writeFile, writeFileSync } from "fs";
 import { URLSearchParams } from "node:url";
 import os from "os";
 import { type WebSocket } from "uWebSockets.js";
 import { isMainThread } from "worker_threads";
-
-import { GameConstants, TeamSize } from "@common/constants";
-import { Badges, Skins } from "@common/definitions";
-import { type GetGameResponse } from "@common/typings";
-import { Numeric } from "@common/utils/math";
-
 import { version } from "../../package.json";
 import { Config } from "./config";
 import { findGame, games, newGame, WorkerMessages } from "./gameManager";
 import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./team";
-import { Logger } from "./utils/misc";
+import IPChecker, { Punishment } from "./utils/apiHelper";
+import { cleanUsername, Logger } from "./utils/misc";
 import { cors, createServer, forbidden, getIP, textDecoder } from "./utils/serverHelpers";
-import { cleanUsername } from "./utils/misc";
-import IPChecker from "./utils/apiHelper";
-import { Punishment } from "./utils/apiHelper";
 
 let punishments: Punishment[] = [];
 
@@ -235,8 +232,8 @@ if (isMainThread) {
             }
 
             // Validate skin
-            const roleRequired = Skins.fromStringSafe(skin)?.roleRequired;
-            if (roleRequired && roleRequired !== role) {
+            const rolesRequired = Skins.fromStringSafe(skin)?.rolesRequired;
+            if (rolesRequired && !rolesRequired.includes(role)) {
                 skin = GameConstants.player.defaultSkin;
             }
 

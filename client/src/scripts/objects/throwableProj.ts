@@ -1,15 +1,15 @@
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import type { ThrowableDefinition } from "../../../../common/src/definitions";
-import { CircleHitbox } from "../../../../common/src/utils/hitbox";
-import { getEffectiveZIndex } from "../../../../common/src/utils/layer";
-import { Numeric, PI } from "../../../../common/src/utils/math";
-import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { randomBoolean, randomFloat } from "../../../../common/src/utils/random";
-import { FloorNames, FloorTypes } from "../../../../common/src/utils/terrain";
-import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { ObjectCategory, ZIndexes } from "@common/constants";
+import { type ThrowableDefinition } from "@common/definitions/throwables";
+import { CircleHitbox } from "@common/utils/hitbox";
+import { getEffectiveZIndex } from "@common/utils/layer";
+import { Numeric, PI } from "@common/utils/math";
+import { type ObjectsNetData } from "@common/utils/objectsSerializations";
+import { randomBoolean, randomFloat } from "@common/utils/random";
+import { FloorNames, FloorTypes } from "@common/utils/terrain";
+import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
-import type { GameSound } from "../managers/soundManager";
-import { COLORS, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
+import { type GameSound } from "../managers/soundManager";
+import { COLORS, HITBOX_COLORS, HITBOX_DEBUG_MODE, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
@@ -53,6 +53,14 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
             this.halloweenSkin = data.full.halloweenSkin;
 
             this.image.setFrame(`${def.animation.liveImage}${this.halloweenSkin && !def.noSkin ? "_halloween" : ""}`);
+
+            const throwerTeamID = data.throwerTeamID;
+            const tintIndex = data.full.tintIndex;
+
+            // Tint the C4 if it's a teammate's one, based on their position color on the team.
+            if (this.game.teamMode && this.game.teamID === throwerTeamID && this.definition.c4) {
+                this.image.setTint(TEAMMATE_COLORS[tintIndex]);
+            }
         }
 
         if (data.activated && this._definition?.animation.activatedImage) {

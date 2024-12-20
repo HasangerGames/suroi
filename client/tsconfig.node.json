@@ -5,7 +5,10 @@
     "composite": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
-    "strict": true
+    "strict": true,
+    "paths": {
+      "@common/*": ["../common/src/*"]
+    }
   },
   "include": [
     "vite.config.ts",

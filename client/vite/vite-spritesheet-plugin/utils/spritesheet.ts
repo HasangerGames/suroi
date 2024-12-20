@@ -1,9 +1,11 @@
 import { type Image, createCanvas, loadImage } from "canvas";
 import { createHash } from "crypto";
+import { writeFileSync } from "fs";
 import { type IOption, MaxRectsPacker } from "maxrects-packer";
 import path from "path";
 import { type SpritesheetData } from "pixi.js";
 import type { Mode } from "../../../../common/src/definitions/modes";
+import { CacheData, cacheDir } from "../spritesheet-plugin";
 
 export const supportedFormats = ["png", "jpeg"] as const;
 
@@ -49,18 +51,19 @@ export interface CompilerOptions {
     packerOptions: Omit<IOption, "allowRotation">
 }
 
-export type AtlasList = Array<{ readonly json: SpritesheetData, readonly image: Buffer }>;
+export type AtlasList = Array<{ readonly json: SpritesheetData, readonly image: Buffer, readonly cacheName?: string }>;
 
 export type MultiResAtlasList = { readonly low: AtlasList, readonly high: AtlasList };
 
-export type ModesAtlasList = Record<Mode, MultiResAtlasList>
+export type ModesAtlasList = Record<Mode, MultiResAtlasList>;
 
 /**
  * Pack images spritesheets.
  * @param paths List of paths to the images.
  * @param options Options passed to the packer.
  */
-export async function createSpritesheets(paths: readonly string[], options: CompilerOptions): Promise<MultiResAtlasList> {
+export async function createSpritesheets(pathMap: Map<string, { lastModified: number, path: string }>, options: CompilerOptions): Promise<MultiResAtlasList> {
+    const paths = Array.from(pathMap.values(), v => v.path);
     if (paths.length === 0) throw new Error("No file given.");
 
     if (!supportedFormats.includes(options.outputFormat)) {
@@ -104,8 +107,8 @@ export async function createSpritesheets(paths: readonly string[], options: Comp
 
     const images: readonly PackerRectData[] = results.filter(x => x.status === "fulfilled").map(({ value }) => value);
     const errors = results.filter(x => x.status === "rejected").map(({ reason }) => reason as unknown);
-    if (errors.length) {
-        // @ts-expect-error ts doesn't know AggregateError is a thing for some reason
+    if (errors.length !== 0) {
+        console.error(errors);
         throw new AggregateError(errors);
     }
 
@@ -121,7 +124,7 @@ export async function createSpritesheets(paths: readonly string[], options: Comp
             }
         );
 
-        console.log(`Adding ${length} images to packer`);
+        writeFromStart(`Adding ${length} images to packer`);
         for (const image of images) {
             packer.add(
                 image.image.width * resolution,
@@ -129,6 +132,8 @@ export async function createSpritesheets(paths: readonly string[], options: Comp
                 image
             );
         }
+        writeFromStart(`Added ${length} images to packer`);
+        console.log("");
 
         const atlases: AtlasList = [];
 
@@ -191,16 +196,23 @@ export async function createSpritesheets(paths: readonly string[], options: Comp
                 prevLength = str.length;
             }
 
-            writeFromStart("Creating buffer & hash".padEnd(prevLength, " "));
+            writeFromStart("Creating buffer".padEnd(prevLength, " "));
             const buffer = canvas.toBuffer(`image/${options.outputFormat}` as "image/png");
 
+            writeFromStart("Creating hash".padEnd(prevLength, " "));
             const hash = createHash("sha1").update(buffer).digest("hex").slice(0, 8);
 
             json.meta.image = `${options.outDir}/${options.name}-${hash}@${resolution}x.${options.outputFormat}`;
 
+            writeFromStart("Caching data".padEnd(prevLength, " "));
+            const cacheName = `${options.name}-${hash}@${resolution}x`;
+            writeFileSync(path.join(cacheDir, `${cacheName}.json`), JSON.stringify(json));
+            writeFileSync(path.join(cacheDir, `${cacheName}.${options.outputFormat}`), buffer);
+
             atlases.push({
                 json,
-                image: buffer
+                image: buffer,
+                cacheName
             });
             const str = `${++bins} / ${binCount} bins done`;
             writeFromStart(str.padEnd(prevLength = max(prevLength, 22), " "));
@@ -216,6 +228,17 @@ export async function createSpritesheets(paths: readonly string[], options: Comp
         low: createSheet(0.5),
         high: createSheet(1)
     };
+
+    const cacheData: CacheData = {
+        lastModified: Date.now(),
+        fileMap: Object.fromEntries(Array.from(pathMap.entries(), ([name, data]) => [name.slice(1), data.path])),
+        atlasFiles: {
+            low: sheets.low.map(s => s.cacheName ?? ""),
+            high: sheets.high.map(s => s.cacheName ?? "")
+        }
+    };
+
+    writeFileSync(path.join(cacheDir, "data.json"), JSON.stringify(cacheData));
 
     console.log(`Finished building spritesheets in ${Math.round(performance.now() - start) / 1000}s`);
 

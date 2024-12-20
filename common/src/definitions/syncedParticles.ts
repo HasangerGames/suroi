@@ -98,6 +98,7 @@ export interface SyncedParticleSpawnerDefinition {
 }
 
 export const SyncedParticles = ObjectDefinitions.withDefault<SyncedParticleDefinition>()(
+    "SyncedParticles",
     {
         scale: 1,
         alpha: 1,
@@ -225,41 +226,7 @@ export const SyncedParticles = ObjectDefinitions.withDefault<SyncedParticleDefin
                     },
                     hitbox: new CircleHitbox(5)
                 }
-            ),
-            {
-                idString: "c4",
-                scale: {
-                    start: {
-                        min: 0.5,
-                        max: 1
-                    },
-                    end: {
-                        min: 0.1,
-                        max: 0.7
-                    }
-                },
-                angularVelocity: {
-                    min: -0.001,
-                    max: 0.001
-                },
-                velocity: {
-                    min: {
-                        x: -0.002,
-                        y: -0.002
-                    },
-                    max: {
-                        x: 0.002,
-                        y: 0.002
-                    }
-                },
-                lifetime: {
-                    mean: 500,
-                    deviation: 0
-                },
-                frame: "metal_particle_1",
-                tint: 0x5f5f5f,
-                zIndex: ZIndexes.ObstaclesLayer1
-            }
+            )
         ];
     }
 );

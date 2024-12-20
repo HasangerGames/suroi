@@ -1,9 +1,8 @@
 import { Loots, type LootDefinition, type WeaponDefinition } from "@common/definitions/loots";
-import { defaultModifiers, type ItemType, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
-
-import { type Player } from "../objects/player";
 import { Numeric } from "@common/utils/math";
-import type { ItemData } from "../objects/loot";
+import { defaultModifiers, type ItemType, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
+import { type ItemData } from "../objects/loot";
+import { type Player } from "../objects/player";
 
 /**
  * Represents some item in the player's inventory *that can be equipped*

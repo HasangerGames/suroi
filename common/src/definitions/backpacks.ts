@@ -11,6 +11,7 @@ export interface BackpackDefinition extends ItemDefinition {
 }
 
 export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
+    "Backpacks",
     {
         itemType: ItemType.Backpack,
         noDrop: false,

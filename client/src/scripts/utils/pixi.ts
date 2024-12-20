@@ -1,8 +1,8 @@
+import { Obstacles } from "@common/definitions/obstacles";
+import { HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Assets, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
-import { Obstacles } from "../../../../common/src/definitions/obstacles";
-import { HitboxType, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
-import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { getTranslatedString } from "../../translations";
 import { PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
 

@@ -1,5 +1,5 @@
 import { Perks, type PerkDefinition, type PerkNames } from "../definitions/perks";
-import type { PerkCollection } from "../packets/updatePacket";
+import { type PerkCollection } from "../packets/updatePacket";
 
 export class PerkManager implements PerkCollection {
     // this is a bitfield

@@ -1,5 +1,5 @@
 import { defaultBulletTemplate } from "../constants";
-import { ObjectDefinitions, type BaseBulletDefinition, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { inheritFrom, ObjectDefinitions, type BaseBulletDefinition, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { type DecalDefinition } from "./decals";
 
 export interface ExplosionDefinition extends ObjectDefinition {
@@ -26,6 +26,7 @@ export interface ExplosionDefinition extends ObjectDefinition {
 }
 
 export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
+    "Explosions",
     { ballistics: defaultBulletTemplate },
     () => [
         {
@@ -218,6 +219,34 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             }
         },
         {
+            idString: "propane_tank_explosion",
+            name: "Propane Tank",
+            damage: 80,
+            obstacleMultiplier: 1,
+            radius: {
+                min: 5,
+                max: 15
+            },
+            cameraShake: {
+                duration: 250,
+                intensity: 20
+            },
+            animation: {
+                duration: 1000,
+                tint: 0xb08b3f,
+                scale: 1.5
+            },
+            shrapnelCount: 8,
+            ballistics: {
+                damage: 2,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                range: 20,
+                rangeVariance: 1,
+                shrapnel: true
+            }
+        },
+        {
             idString: "usas_explosion",
             name: "USAS-12",
             damage: 40,
@@ -340,6 +369,17 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             },
             sound: "firework_rocket_explode",
             decal: "explosion_decal"
+        },
+        {
+            [inheritFrom]: "confetti_grenade_explosion",
+            name: "Coal",
+            ballistics: {
+                range: 10,
+                tracer: {
+                    color: 0x000000
+                }
+            },
+            sound: "firework_rocket_explode"
         },
         {
             name: "Frag Grenade",

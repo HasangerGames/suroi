@@ -1,9 +1,9 @@
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { Numeric } from "../../../../common/src/utils/math";
-import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { randomFloat, randomPointInsideCircle } from "../../../../common/src/utils/random";
-import { FloorNames, FloorTypes } from "../../../../common/src/utils/terrain";
-import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { ObjectCategory, ZIndexes } from "@common/constants";
+import { Numeric } from "@common/utils/math";
+import { type ObjectsNetData } from "@common/utils/objectsSerializations";
+import { randomFloat, randomPointInsideCircle } from "@common/utils/random";
+import { FloorNames, FloorTypes } from "@common/utils/terrain";
+import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";

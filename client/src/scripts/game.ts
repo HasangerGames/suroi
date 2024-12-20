@@ -1,33 +1,37 @@
+import { GameConstants, InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize } from "@common/constants";
+import { ArmorType } from "@common/definitions/armors";
+import { Badges, type BadgeDefinition } from "@common/definitions/badges";
+import { Emotes } from "@common/definitions/emotes";
+import { type DualGunNarrowing } from "@common/definitions/guns";
+import { Loots } from "@common/definitions/loots";
+import { Scopes } from "@common/definitions/scopes";
+import { DisconnectPacket } from "@common/packets/disconnectPacket";
+import { GameOverPacket } from "@common/packets/gameOverPacket";
+import { JoinedPacket, type JoinedPacketData } from "@common/packets/joinedPacket";
+import { JoinPacket, type JoinPacketCreation } from "@common/packets/joinPacket";
+import { KillFeedPacket } from "@common/packets/killFeedPacket";
+import { MapPacket } from "@common/packets/mapPacket";
+import { type InputPacket, type OutputPacket } from "@common/packets/packet";
+import { PacketStream } from "@common/packets/packetStream";
+import { PickupPacket } from "@common/packets/pickupPacket";
+import { PingPacket } from "@common/packets/pingPacket";
+import { ReportPacket } from "@common/packets/reportPacket";
+import { UpdatePacket, type UpdatePacketDataOut } from "@common/packets/updatePacket";
+import { CircleHitbox } from "@common/utils/hitbox";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
+import { EaseFunctions, Geometry } from "@common/utils/math";
+import { Timeout } from "@common/utils/misc";
+import { ItemType, ObstacleSpecialRoles } from "@common/utils/objectDefinitions";
+import { ObjectPool } from "@common/utils/objectPool";
+import { type ObjectsNetData } from "@common/utils/objectsSerializations";
+import { randomFloat, randomVector } from "@common/utils/random";
+import { Vec, type Vector } from "@common/utils/vector";
 import { sound, type Sound } from "@pixi/sound";
+import $ from "jquery";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
-import { GameConstants, InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize, ZIndexes } from "../../../common/src/constants";
-import { ArmorType } from "../../../common/src/definitions/armors";
-import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
-import { Emotes } from "../../../common/src/definitions/emotes";
-import { type DualGunNarrowing } from "../../../common/src/definitions/guns";
-import { Loots } from "../../../common/src/definitions/loots";
-import { Scopes } from "../../../common/src/definitions/scopes";
-import { DisconnectPacket } from "../../../common/src/packets/disconnectPacket";
-import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
-import { JoinedPacket, type JoinedPacketData } from "../../../common/src/packets/joinedPacket";
-import { JoinPacket, type JoinPacketCreation } from "../../../common/src/packets/joinPacket";
-import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
-import { MapPacket } from "../../../common/src/packets/mapPacket";
-import { type InputPacket, type OutputPacket } from "../../../common/src/packets/packet";
-import { PacketStream } from "../../../common/src/packets/packetStream";
-import { PickupPacket } from "../../../common/src/packets/pickupPacket";
-import { PingPacket } from "../../../common/src/packets/pingPacket";
-import { ReportPacket } from "../../../common/src/packets/reportPacket";
-import { UpdatePacket, type UpdatePacketDataOut } from "../../../common/src/packets/updatePacket";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { adjacentOrEqualLayer } from "../../../common/src/utils/layer";
-import { EaseFunctions, Geometry } from "../../../common/src/utils/math";
-import { Timeout } from "../../../common/src/utils/misc";
-import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
-import { ObjectPool } from "../../../common/src/utils/objectPool";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { getTranslatedString, initTranslation } from "../translations";
+import { type TranslationKeys } from "../typings/translations";
 import { InputManager } from "./managers/inputManager";
 import { GameSound, SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
@@ -52,12 +56,9 @@ import { autoPickup, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, u
 import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
-import { COLORS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE, EMOTE_SLOTS } from "./utils/constants";
+import { COLORS, EMOTE_SLOTS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
-import { randomVector, randomFloat } from "../../../common/src/utils/random";
-import { Vec, type Vector } from "../../../common/src/utils/vector";
-import type { TranslationKeys } from "../typings/translations";
 
 /* eslint-disable @stylistic/indent */
 
@@ -256,8 +257,8 @@ export class Game {
             autoPlay: true,
             volume: game.console.getBuiltInCVar("cv_music_volume")
         });
-    return game;
-  }
+        return game;
+    }
 
     resize(): void {
         this.map.resize();
@@ -322,9 +323,10 @@ export class Game {
 
             if (particleEffects !== undefined) {
                 const This = this;
+                const gravityOn = particleEffects.gravity;
                 this.particleManager.addEmitter(
                     {
-                        delay: 1000,
+                        delay: particleEffects.delay,
                         active: this.console.getBuiltInCVar("cv_ambient_particles"),
                         spawnOptions: () => ({
                             frames: particleEffects.frames,
@@ -336,11 +338,11 @@ export class Game {
                                 const { x, y } = player.position;
                                 return randomVector(x - width, x + width, y - height, y + height);
                             },
-                            speed: randomVector(-10, 10, -10, 10),
+                            speed: randomVector(-10, 10, gravityOn ? 10 : -10, 10),
                             lifetime: randomFloat(12000, 50000),
-                            zIndex: ZIndexes.BuildingsCeiling,
+                            zIndex: Number.MAX_SAFE_INTEGER - 5,
                             alpha: {
-                                start: 0.7,
+                                start: this.layer === Layer.Ground ? 0.7 : 0,
                                 end: 0
                             },
                             rotation: {
@@ -441,18 +443,14 @@ export class Game {
             case packet instanceof PickupPacket: {
                 const { output: { message, item } } = packet;
 
-                const inventoryMessageMap = {
-                    [InventoryMessages.NotEnoughSpace]: "msg_not_enough_space",
-                    [InventoryMessages.ItemAlreadyEquipped]: "msg_item_already_equipped",
-                    [InventoryMessages.BetterItemEquipped]: "msg_better_item_equipped",
-                    [InventoryMessages.CannotUseRadio]: "msg_cannot_use_radio",
-                    [InventoryMessages.RadioOverused]: "msg_radio_overused"
-                };
-
                 if (message !== undefined) {
                     const inventoryMsg = this.uiManager.ui.inventoryMsg;
-                    inventoryMsg.text(getTranslatedString(inventoryMessageMap[message] as TranslationKeys)).fadeIn(250);
-                    if (inventoryMessageMap[message] === inventoryMessageMap[4]) this.soundManager.play("metal_light_destroyed");
+
+                    inventoryMsg.text(getTranslatedString(this._inventoryMessageMap[message])).fadeIn(250);
+                    if (message === InventoryMessages.RadioOverused) {
+                        this.soundManager.play("metal_light_destroyed");
+                    }
+
                     clearTimeout(this.inventoryMsgTimeout);
                     this.inventoryMsgTimeout = window.setTimeout(() => inventoryMsg.fadeOut(250), 2500);
                 } else if (item !== undefined) {
@@ -486,6 +484,8 @@ export class Game {
                     }
 
                     this.soundManager.play(soundID);
+                } else {
+                    console.warn("Unexpected PickupPacket with neither message nor item");
                 }
                 break;
             }
@@ -494,6 +494,14 @@ export class Game {
                 break;
         }
     }
+
+    private readonly _inventoryMessageMap: Record<InventoryMessages, TranslationKeys> = {
+        [InventoryMessages.NotEnoughSpace]: "msg_not_enough_space",
+        [InventoryMessages.ItemAlreadyEquipped]: "msg_item_already_equipped",
+        [InventoryMessages.BetterItemEquipped]: "msg_better_item_equipped",
+        [InventoryMessages.CannotUseRadio]: "msg_cannot_use_radio",
+        [InventoryMessages.RadioOverused]: "msg_radio_overused"
+    };
 
     startGame(packet: JoinedPacketData): void {
         // Sound which notifies the player that the
@@ -791,7 +799,7 @@ export class Game {
             if (this.console.getBuiltInCVar("cv_hide_emotes")) break;
             const player = this.objects.get(emote.playerID);
             if (player?.isPlayer) {
-                player.sendEmote(emote.definition);
+                player.showEmote(emote.definition);
             } else {
                 console.warn(`Tried to emote on behalf of ${player === undefined ? "a non-existant player" : `a/an ${ObjectCategory[player.type]}`}`);
                 continue;
@@ -890,6 +898,9 @@ export class Game {
         const funnyDetonateButtonCache: {
             bind?: string
         } = {};
+
+        // keep image thingy around to consult (and therefore lazily change) src
+        let detonateBindIcon: JQuery<HTMLImageElement> | undefined;
 
         return () => {
             if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
@@ -1003,9 +1014,15 @@ export class Game {
                                 break;
                             }
                             case object?.isLoot: {
-                                text = `${object.definition.idString.startsWith("dual_")
-                                    ? getTranslatedString("dual_template", { gun: getTranslatedString(object.definition.idString.slice("dual_".length) as TranslationKeys) })
-                                    : getTranslatedString(object.definition.idString as TranslationKeys)}${object.count > 1 ? ` (${object.count})` : ""}`;
+                                const definition = object.definition;
+                                const itemName = definition.itemType === ItemType.Gun && definition.isDual
+                                    ? getTranslatedString(
+                                        "dual_template",
+                                        { gun: getTranslatedString(definition.singleVariant as TranslationKeys) }
+                                    )
+                                    : getTranslatedString(definition.idString as TranslationKeys);
+
+                                text = `${itemName}${object.count > 1 ? ` (${object.count})` : ""}`;
                                 break;
                             }
                             case object?.isPlayer: {
@@ -1044,11 +1061,13 @@ export class Game {
                     }
 
                     if (
-                        !player.downed
-                        && (!object?.isObstacle
+                        (!object?.isObstacle
                             || !object.definition.isActivatable
                             || !object.definition.noInteractMessage)
-                    ) interactMsg.show();
+                    ) {
+                        interactMsg.show();
+                        if (player.downed && (object?.isLoot || (object?.isObstacle && object.definition.noInteractMessage))) interactMsg.hide();
+                    }
                 } else {
                     interactMsg.hide();
                 }
@@ -1121,6 +1140,7 @@ export class Game {
             }
 
             // funny detonate button stuff
+            const detonateKey = this.uiManager.ui.detonateKey;
             if (!this.inputManager.isMobile) {
                 const boomBind: string | undefined = this.inputManager.binds.getInputsBoundToAction("explode_c4")[0];
 
@@ -1130,17 +1150,29 @@ export class Game {
                     if (boomBind !== undefined) {
                         const bindImg = InputManager.getIconFromInputName(boomBind);
 
+                        detonateKey.show();
+
                         if (bindImg === undefined) {
-                            this.uiManager.ui.detonateKey.show().text(boomBind ?? "");
+                            detonateKey.text(boomBind ?? "");
+                            if (detonateBindIcon !== undefined) {
+                                detonateKey.empty();
+                                detonateBindIcon = undefined;
+                            }
                         } else {
-                            this.uiManager.ui.detonateKey.show().html(`<img src="${bindImg}" alt="${boomBind}"/>`);
+                            if (detonateBindIcon === undefined) {
+                                detonateKey.children().add(detonateBindIcon = $(`<img src="${bindImg}" alt=${boomBind} />`));
+                            }
+
+                            if (detonateBindIcon.attr("src") !== bindImg) {
+                                detonateBindIcon.attr("src", bindImg);
+                            }
                         }
                     } else {
-                        this.uiManager.ui.detonateKey.hide();
+                        detonateKey.hide();
                     }
                 }
             } else {
-                this.uiManager.ui.detonateKey.hide();
+                detonateKey.hide();
             }
         };
     })();

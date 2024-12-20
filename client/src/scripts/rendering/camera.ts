@@ -1,9 +1,9 @@
+import { DEFAULT_SCOPE } from "@common/definitions/scopes";
+import { EaseFunctions, Numeric } from "@common/utils/math";
+import { randomPointInsideCircle } from "@common/utils/random";
+import { Vec, type Vector } from "@common/utils/vector";
 import { ShockwaveFilter } from "pixi-filters";
 import { Container, type Application } from "pixi.js";
-import { DEFAULT_SCOPE } from "../../../../common/src/definitions/scopes";
-import { EaseFunctions, Numeric } from "../../../../common/src/utils/math";
-import { randomPointInsideCircle } from "../../../../common/src/utils/random";
-import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite } from "../utils/pixi";

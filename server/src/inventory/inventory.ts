@@ -10,8 +10,7 @@ import { Throwables, type ThrowableDefinition } from "@common/definitions/throwa
 import { Numeric } from "@common/utils/math";
 import { ExtendedMap, type AbstractConstructor, type Timeout } from "@common/utils/misc";
 import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
-
-import type { ItemData } from "../objects/loot";
+import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import { HealingAction } from "./action";
 import { GunItem } from "./gunItem";
@@ -611,11 +610,13 @@ export class Inventory {
                 switch (definition.armorType) {
                     case ArmorType.Helmet: {
                         if (!this.helmet) return;
+                        if (this.helmet.level !== definition.level) return;
                         this.helmet = undefined;
                         break;
                     }
                     case ArmorType.Vest: {
                         if (!this.vest) return;
+                        if (this.vest.level !== definition.level) return;
                         this.vest = undefined;
                         break;
                     }

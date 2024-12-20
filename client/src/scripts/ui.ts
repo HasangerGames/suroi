@@ -1,30 +1,30 @@
+import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "@common/constants";
+import { Ammos, type AmmoDefinition } from "@common/definitions/ammos";
+import { type ArmorDefinition } from "@common/definitions/armors";
+import { Badges, type BadgeDefinition } from "@common/definitions/badges";
+import { EmoteCategory, Emotes, type EmoteDefinition } from "@common/definitions/emotes";
+import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/healingItems";
+import { PerkIds, Perks } from "@common/definitions/perks";
+import { Scopes, type ScopeDefinition } from "@common/definitions/scopes";
+import { Skins, type SkinDefinition } from "@common/definitions/skins";
+import { SpectatePacket } from "@common/packets/spectatePacket";
+import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "@common/typings";
+import { ExtendedMap } from "@common/utils/misc";
+import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { pickRandomInArray } from "@common/utils/random";
+import { Vec, type Vector } from "@common/utils/vector";
 import { sound } from "@pixi/sound";
 import $ from "jquery";
 import { Color, isMobile, isWebGPUSupported } from "pixi.js";
-import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "../../../common/src/constants";
-import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos";
-import type { ArmorDefinition } from "../../../common/src/definitions/armors";
-import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
-import { EmoteCategory, Emotes, emoteIdStrings, type EmoteDefinition } from "../../../common/src/definitions/emotes";
-import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
-import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
-import { Skins, type SkinDefinition } from "../../../common/src/definitions/skins";
-import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
-import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "../../../common/src/typings";
-import { ExtendedMap } from "../../../common/src/utils/misc";
-import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
-import { pickRandomInArray } from "../../../common/src/utils/random";
-import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { TRANSLATIONS, getTranslatedString } from "../translations";
 import { Config, type ServerInfo } from "./config";
 import { type Game } from "./game";
 import { news } from "./news/newsPosts";
 import { body, createDropdown } from "./uiHelpers";
 import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";
-import { PIXI_SCALE, UI_DEBUG_MODE, EMOTE_SLOTS, MODE } from "./utils/constants";
+import { EMOTE_SLOTS, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
-import { PerkIds, Perks } from "../../../common/src/definitions/perks";
 import type { TranslationKeys } from "../typings/translations";
 
 /*
@@ -71,6 +71,7 @@ export function resetPlayButtons(): void {
 
     $("#splash-options").removeClass("loading");
     $("#loading-text").text(getTranslatedString("loading_connecting"));
+   // $("#btn-cancel-finding-game").css("display", "none");
 
     const { maxTeamSize } = selectedRegion ?? regionInfo[Config.defaultRegion];
 
@@ -94,6 +95,27 @@ export function resetPlayButtons(): void {
 
 export async function setUpUI(game: Game): Promise<void> {
     const { inputManager, uiManager: { ui } } = game;
+
+    // Change the menu based on the mode.
+    if (MODE.specialLogo) $("#splash-logo").children("img").attr("src", `./img/logos/suroi_beta_${MODE.idString}.svg`);
+    if (MODE.specialPlayButtons) {
+        const playButtons = [$("#btn-play-solo"), $("#btn-play-duo"), $("#btn-play-squad")];
+        for (let buttonIndex = 0; buttonIndex < playButtons.length; buttonIndex++) {
+            const button = playButtons[buttonIndex];
+
+            button.addClass(`event-${MODE.idString}`);
+
+            // Mode Logo
+            if (MODE.modeLogoImage) {
+                const translationString = `play_${["solo", "duo", "squad"][buttonIndex]}`;
+
+                button.html(`
+                    <img class="btn-icon" width="26" height="26" src=${MODE.modeLogoImage}>
+                    <span style="margin-left: ${(buttonIndex > 0 ? "20px;" : "0")}" translation="${translationString}">${getTranslatedString(translationString as TranslationKeys)}</span>
+                `);
+            }
+        }
+    }
 
     if (UI_DEBUG_MODE) {
         // Kill message
@@ -126,27 +148,18 @@ export async function setUpUI(game: Game): Promise<void> {
         }
     }
 
-    const languageMenu = $("#select-language-menu");
-    $("#btn-language").on("click", () => {
-        languageMenu.css("display", "");
-    });
-
-    $("#close-select-language").on("click", () => {
-        $("#select-language-menu").css("display", "none");
-    });
-
-    const languageFieldset = $("#select-language-container fieldset");
+    const languageFieldset = $("#languages-selector");
     for (const [language, languageInfo] of Object.entries(TRANSLATIONS.translations)) {
-      languageFieldset.append(html`
-          <div>
-            <input type="radio" name="selected-language" id="language-${language}" value="${language}">
-            <label for="language-${language}">${languageInfo.flag} ${languageInfo.name} (${languageInfo.percentage})</label>
-          </div>
-      `);
+        const isSelected = game.console.getBuiltInCVar("cv_language") === language;
+        languageFieldset.append(html`
+           <a id="language-${language}" ${isSelected ? 'class="selected"' : ""}>
+              ${languageInfo.flag} <strong>${languageInfo.name}</strong> [${!isSelected ? TRANSLATIONS.translations[language].percentage : languageInfo.percentage}]
+           </a>
+        `);
 
-      $<HTMLInputElement>(`#language-${language}`).on("click", () => {
-          game.console.setBuiltInCVar("cv_language", language);
-      }).prop("checked", game.console.getBuiltInCVar("cv_language") === language);
+      $(`#language-${language}`).on("click", () => {
+        game.console.setBuiltInCVar("cv_language", language);
+    });
     }
 
     game.console.variables.addChangeListener("cv_language", () => location.reload());
@@ -182,6 +195,7 @@ export async function setUpUI(game: Game): Promise<void> {
     ui.newsPosts.html(newsText);
 
     // createDropdown("#splash-more");
+    createDropdown("#language-dropdown");
 
     ui.lockedInfo.on("click", () => ui.lockedTooltip.fadeToggle(250));
 
@@ -274,10 +288,11 @@ export async function setUpUI(game: Game): Promise<void> {
             game.console.setBuiltInCVar("cv_region", "");
         }
 
-        if (getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}` as TranslationKeys) === "region_") {
+        const region = getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}` as TranslationKeys);
+        if (region === "region_") {
             serverName.text(selectedRegion.name); // this for now until we find a way to selectedRegion.id
         } else {
-            serverName.text(getTranslatedString(`region_${game.console.getBuiltInCVar("cv_region")}` as TranslationKeys));
+            serverName.text(region);
         }
         playerCount.text(selectedRegion.playerCount ?? "-");
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
@@ -309,6 +324,7 @@ export async function setUpUI(game: Game): Promise<void> {
     const joinGame = (): void => {
         ui.splashOptions.addClass("loading");
         ui.loadingText.text(getTranslatedString("loading_finding_game"));
+        // ui.cancelFindingGame.css("display", "");
         // shouldn't happen
         if (selectedRegion === undefined) return;
 
@@ -356,7 +372,7 @@ export async function setUpUI(game: Game): Promise<void> {
                         const message = getTranslatedString(`msg_punishment_${data.message}_reason`, { reason: data.reason ?? getTranslatedString("msg_no_reason") });
 
                         ui.warningTitle.text(getTranslatedString(`msg_punishment_${data.message}`));
-                        ui.warningText.html(`${data.message !== "vpn" ? `<span style="font-size:20px;margin-bottom:10px">Case ID: ${reportID}</span><br>` : ""}${message}`);
+                        ui.warningText.html(`${data.message !== "vpn" ? `<span class="case-id">Case ID: ${reportID}</span><br><br><br>` : ""}${message}`);
                         ui.warningAgreeOpts.toggle(data.message === "warn");
                         ui.warningAgreeCheckbox.prop("checked", false);
                         ui.warningModal.show();
@@ -473,25 +489,30 @@ export async function setUpUI(game: Game): Promise<void> {
                 case CustomTeamMessages.Update: {
                     const { players, isLeader, ready } = data;
                     ui.createTeamPlayers.html(
-                        players.map((p: CustomTeamPlayerInfo): string => {
-                            let badgeSrc;
-                            if (p.badge) badgeSrc = `./img/game/shared/${emoteIdStrings.includes(p.badge) ? "emotes" : "badges"}/${p.badge}.svg`;
-                            return `
-                            <div class="create-team-player-container">
-                                <i class="fa-solid fa-crown"${p.isLeader ? "" : ' style="display: none"'}></i>
-                                <i class="fa-regular fa-circle-check"${p.ready ? "" : ' style="display: none"'}></i>
-                                <div class="skin">
-                                    <div class="skin-base" style="background-image: url('./img/game/shared/skins/${p.skin}_base.svg')"></div>
-                                    <div class="skin-left-fist" style="background-image: url('./img/game/shared/skins/${p.skin}_fist.svg')"></div>
-                                    <div class="skin-right-fist" style="background-image: url('./img/game/shared/skins/${p.skin}_fist.svg')"></div>
+                        players.map(
+                            ({
+                                isLeader,
+                                ready,
+                                name,
+                                skin,
+                                badge,
+                                nameColor
+                            }: CustomTeamPlayerInfo): string => `
+                                <div class="create-team-player-container">
+                                    <i class="fa-solid fa-crown"${isLeader ? "" : ' style="display: none"'}></i>
+                                    <i class="fa-regular fa-circle-check"${ready ? "" : ' style="display: none"'}></i>
+                                    <div class="skin">
+                                        <div class="skin-base" style="background-image: url('./img/game/shared/skins/${skin}_base.svg')"></div>
+                                        <div class="skin-left-fist" style="background-image: url('./img/game/shared/skins/${skin}_fist.svg')"></div>
+                                        <div class="skin-right-fist" style="background-image: url('./img/game/shared/skins/${skin}_fist.svg')"></div>
+                                    </div>
+                                    <div class="create-team-player-name-container">
+                                        <span class="create-team-player-name"${nameColor ? ` style="color: ${new Color(nameColor).toHex()}"` : ""};>${name}</span>
+                                        ${![undefined, "bdg_"].includes(badge) ? `<img class="create-team-player-badge" draggable="false" src="./img/game/shared/badges/${badge}.svg" />` : ""}
+                                    </div>
                                 </div>
-                                <div class="create-team-player-name-container">
-                                    <span class="create-team-player-name"${p.nameColor ? ` style="color: ${new Color(p.nameColor).toHex()}"` : ""};>${p.name}</span>
-                                    ${p.badge ? `<img class="create-team-player-badge" draggable="false" src=${badgeSrc ?? "./img/game/shared/badges/${p.badge}.svg"} />` : ""}
-                                </div>
-                            </div>
-                            `;
-                        }).join("")
+                                `
+                        ).join("")
                     );
                     ui.createTeamToggles.toggleClass("disabled", !isLeader);
                     ui.btnStartGame
@@ -558,6 +579,11 @@ export async function setUpUI(game: Game): Promise<void> {
         teamSocket = undefined;
         socket?.close();
     });
+
+    // TODO
+   /* ui.cancelFindingGame.on("click", () => {
+        game.disconnect();
+    }); */
 
     const copyUrl = $<HTMLButtonElement>("#btn-copy-team-url");
     const hideUrl = $<HTMLButtonElement>("#btn-hide-team-url");
@@ -724,10 +750,6 @@ export async function setUpUI(game: Game): Promise<void> {
             link: "https://www.youtube.com/@DESTROYERIHY"
         },
         {
-            name: "XxDreamCatcherxX Gaming",
-            link: "https://www.youtube.com/@XxDreamCatcherxXGaming2.0"
-        },
-        {
             name: "[ATMOS]Bl00D",
             link: "https://www.youtube.com/@TheRealATMOS"
         },
@@ -764,7 +786,7 @@ export async function setUpUI(game: Game): Promise<void> {
     ];
     const streamer = pickRandomInArray(streamers);
     $("#twitch-featured-name").text(streamer.name);
-    $("#twitch-featured-content").attr("data-href", streamer.link).removeAttr("target");
+    $("#twitch-featured-content").attr("href", streamer.link).removeAttr("target");
 
     const toggleRotateMessage = (): JQuery =>
         $("#splash-rotate-message").toggle(
@@ -947,8 +969,8 @@ export async function setUpUI(game: Game): Promise<void> {
         updateSplashCustomize(idString);
     }
 
-    for (const { idString, hideFromLoadout, roleRequired } of Skins) {
-        if (hideFromLoadout || (roleRequired ?? role) !== role) continue;
+    for (const { idString, hideFromLoadout, rolesRequired } of Skins) {
+        if (hideFromLoadout || !(rolesRequired ?? [role]).includes(role)) continue;
 
         // noinspection CssUnknownTarget
         const skinItem = skinUiCache[idString] = $<HTMLDivElement>(
@@ -1008,23 +1030,26 @@ export async function setUpUI(game: Game): Promise<void> {
             return a.category - b.category;
         });
 
-        let lastCategory = -1;
+        let lastCategory: EmoteCategory | undefined;
 
         for (const emote of emotes) {
-            if (emote.isTeamEmote || emote.isWeaponEmote) continue;
-
-            if (emote.category as number !== lastCategory) {
-                const categoryHeader = $<HTMLDivElement>(`<div class="emote-list-header">${getTranslatedString(`emotes_category_${EmoteCategory[emote.category]}` as TranslationKeys)}</div>`);
-                emoteList.append(categoryHeader);
+            if (emote.category !== lastCategory) {
+                emoteList.append(
+                    $<HTMLDivElement>(
+                        `<div class="emote-list-header">${
+                            getTranslatedString(`emotes_category_${EmoteCategory[emote.category]}` as TranslationKeys)
+                        }</div>`
+                    )
+                );
                 lastCategory = emote.category;
             }
 
+            const idString = emote.idString;
             // noinspection CssUnknownTarget
-            const emoteIdString = `./img/game/shared/emotes/${emote.idString}.svg`;
             const emoteItem = $<HTMLDivElement>(
-                `<div id="emote-${emote.idString}" class="emotes-list-item-container">
-                    <div class="emotes-list-item" style="background-image: url(${emoteIdString})"></div>
-                    <span class="emote-name">${getTranslatedString(`emote_${emote.idString}` as TranslationKeys)}</span>
+                `<div id="emote-${idString}" class="emotes-list-item-container">
+                    <div class="emotes-list-item" style="background-image: url(./img/game/shared/emotes/${idString}.svg)"></div>
+                    <span class="emote-name">${getTranslatedString(`emote_${idString}` as TranslationKeys)}</span>
                 </div>`
             );
 
@@ -1273,13 +1298,12 @@ export async function setUpUI(game: Game): Promise<void> {
 
         $("#badges-list").append(
             noBadgeItem,
-            ...allowedBadges.map(({ idString, name }) => {
-                const location = emoteIdStrings.includes(idString) ? "emotes" : "badges";
+            ...allowedBadges.map(({ idString }) => {
                 // noinspection CssUnknownTarget
                 const badgeItem = badgeUiCache[idString] = $<HTMLDivElement>(
                     `<div id="badge-${idString}" class="badges-list-item-container${idString === activeBadge ? " selected" : ""}">\
                         <div class="badges-list-item">\
-                            <div style="background-image: url('./img/game/shared/${location}/${idString}.svg')"></div>\
+                            <div style="background-image: url('./img/game/shared/badges/${idString}.svg')"></div>\
                         </div>\
                         <span class="badge-name">${getTranslatedString(`badge_${idString}` as TranslationKeys)}</span>\
                     </div>`
@@ -1378,6 +1402,12 @@ export async function setUpUI(game: Game): Promise<void> {
         "cv_crosshair_stroke_size",
         loadCrosshair
     );
+
+    const toggleClass = (elem: JQuery, className: string, bool: boolean): void => {
+        if (bool) {
+            elem.addClass(className);
+        } else elem.removeClass(className);
+    };
 
     const crosshairColor = $<HTMLInputElement>("#crosshair-color-picker");
 
@@ -1484,12 +1514,13 @@ export async function setUpUI(game: Game): Promise<void> {
     for (const prop of ["fps", "ping", "pos"] as const) {
         const debugReadout = game.uiManager.debugReadouts[prop];
 
-        debugReadout.toggle(game.console.getBuiltInCVar(`pf_show_${prop}`));
+        // toggleClass is sadly depreciated.
+        toggleClass(debugReadout, "hidden-prop", !game.console.getBuiltInCVar(`pf_show_${prop}`));
 
         addCheckboxListener(
             `#toggle-${prop}`,
             `pf_show_${prop}`,
-            value => debugReadout.toggle(value)
+            value => toggleClass(debugReadout, "hidden-prop", !value)
         );
     }
 
@@ -1880,7 +1911,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     <span class="item-count" id="${item.idString}-count">0</span>
                     <div class="item-tooltip">
                         ${getTranslatedString("tt_restores", {
-                            item: `${getTranslatedString(item.idString as TranslationKeys)}<br>`,
+                            item: `<b>${getTranslatedString(item.idString as TranslationKeys)}</b><br>`,
                             amount: item.restoreAmount.toString(),
                             type: item.healType === HealType.Adrenaline
                                 ? getTranslatedString("adrenaline")
@@ -1901,7 +1932,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     if (inputManager.pingWheelActive) {
                         inputManager.addAction({
                             type: InputActions.Emote,
-                            emote: Emotes.fromString(item.idString)
+                            emote: HealingItems.fromString(item.idString)
                         });
                     } else {
                         inputManager.addAction({
@@ -1942,7 +1973,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
         ammoContainers[`${ammo.hideUnlessPresent}`].append(ele);
 
-        ele[0].addEventListener("pointerup", (e: PointerEvent): void => {
+        ele[0].addEventListener("pointerup", (): void => {
             clearTimeout(dropTimer);
         });
 
@@ -1955,7 +1986,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 if (inputManager.pingWheelActive) {
                     inputManager.addAction({
                         type: InputActions.Emote,
-                        emote: Emotes.fromString(ammo.idString)
+                        emote: Ammos.fromString(ammo.idString)
                     });
                 }
 

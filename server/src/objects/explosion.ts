@@ -8,9 +8,9 @@ import { type ReifiableDef } from "@common/utils/objectDefinitions";
 import { randomRotation } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
-import type { GunItem } from "../inventory/gunItem";
-import type { MeleeItem } from "../inventory/meleeItem";
-import type { ThrowableItem } from "../inventory/throwableItem";
+import { type GunItem } from "../inventory/gunItem";
+import { type MeleeItem } from "../inventory/meleeItem";
+import { type ThrowableItem } from "../inventory/throwableItem";
 import { Building } from "./building";
 import { Decal } from "./decal";
 import { type GameObject } from "./gameObject";
@@ -95,6 +95,12 @@ export class Explosion {
                             source: this.source,
                             weaponUsed: this
                         });
+
+                        // Destroy pallets
+                        if (object.isObstacle && object.definition.pallet) {
+                            object.dead = true;
+                            object.setDirty();
+                        }
                     }
 
                     if ((isLoot || isThrowableProjectile) && adjacentOrEqualLayer(object.layer, this.layer)) {

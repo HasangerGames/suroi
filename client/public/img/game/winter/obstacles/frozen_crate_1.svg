@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="185"
+   height="185"
+   viewBox="0 0 48.947917 48.947917"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="frozen_crate.svg"
+   inkscape:export-filename="drawing.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="true"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="3.9999998"
+     inkscape:cx="61.375003"
+     inkscape:cy="84.125004"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g865"
+     inkscape:pageshadow="0"
+     showguides="false"
+     units="px" />
+  <defs
+     id="defs2">
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect69"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect71"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect77"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect31-1-7-7-6"
+       is_visible="true"
+       lpeversion="1.3"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false"
+       uniform="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect33-0-4-3"
+       is_visible="true"
+       lpeversion="1.3"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false"
+       uniform="false" />
+    <mask
+       id="a"
+       width="60"
+       height="60"
+       x="-30"
+       y="-30"
+       maskUnits="userSpaceOnUse">
+      <path
+         fill="#ffffff"
+         d="M -27,-27 H 27 V 27 H -27 Z"
+         id="path907" />
+      <path
+         d="m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4"
+         id="path909" />
+      <circle
+         cy="-15"
+         r="10.5"
+         id="circle911"
+         cx="0" />
+      <g
+         transform="rotate(120)"
+         id="g917">
+        <path
+           d="m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4"
+           id="path913" />
+        <circle
+           cy="-15"
+           r="10.5"
+           id="circle915"
+           cx="0" />
+      </g>
+      <g
+         transform="rotate(-120)"
+         id="g923">
+        <path
+           d="m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4"
+           id="path919" />
+        <circle
+           cy="-15"
+           r="10.5"
+           id="circle921"
+           cx="0" />
+      </g>
+      <circle
+         r="3"
+         id="circle925"
+         cx="0"
+         cy="0" />
+    </mask>
+    <clipPath
+       id="b">
+      <circle
+         cy="-15"
+         r="9.5"
+         id="circle900"
+         cx="0" />
+      <circle
+         cy="-15"
+         r="9.5"
+         transform="rotate(120)"
+         id="circle902"
+         cx="0" />
+      <circle
+         cy="-15"
+         r="9.5"
+         transform="rotate(-120)"
+         id="circle904"
+         cx="0" />
+    </clipPath>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g865"
+       transform="matrix(1.9616501,0,0,1.9616501,4.1209673e-4,4.1209673e-4)">
+      <g
+         id="g66566"
+         transform="rotate(90,12.476,12.476)">
+        <rect
+           style="fill:#674b24;fill-opacity:1;stroke:none;stroke-width:0.798207;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect66532"
+           width="16.9"
+           height="16.9"
+           x="4"
+           y="4" />
+        <path
+           id="path66542"
+           style="fill:#9e7437;stroke-width:0;stroke-linecap:round"
+           d="M 0.49998583,0.49998698 V 24.452013 H 24.452014 V 0.49998698 Z M 4.5410828,4.541084 H 20.410916 V 20.410916 H 4.5410828 Z" />
+        <rect
+           style="fill:none;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect66544"
+           width="16.9"
+           height="16.9"
+           x="4"
+           y="4" />
+        <rect
+           style="fill:none;fill-opacity:1;stroke:#3f2e16;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect66554"
+           width="15.870146"
+           height="15.870145"
+           x="4.540925"
+           y="4.5409274" />
+        <rect
+           style="fill:none;fill-opacity:1;stroke:#3f2e16;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect66556"
+           width="23.952419"
+           height="23.952419"
+           x="0.49978992"
+           y="0.49978992" />
+        <path
+           style="fill:none;stroke:#3f2e16;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="m 20.411072,4.5409274 h 4"
+           id="path66558" />
+        <path
+           style="fill:none;stroke:#3f2e16;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="m 20.411072,20.411072 h 4"
+           id="path66560" />
+        <path
+           style="fill:none;stroke:#3f2e16;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M 0.54092503,20.411072 H 4.540925"
+           id="path66562" />
+        <path
+           style="fill:none;stroke:#3f2e16;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M 0.54092503,4.5409274 H 4.540925"
+           id="path66564" />
+      </g>
+      <g
+         id="g958"
+         transform="matrix(0.29352477,0,0,0.30386953,11.175947,11.922178)"
+         style="fill:#332a00;fill-opacity:1;stroke:none;stroke-opacity:1">
+        <g
+           id="g2312"
+           transform="matrix(0.95833334,0,0,0.95833334,0.90047659,-1.8798139)"
+           style="fill:#332a00;fill-opacity:1;stroke:none;stroke-opacity:1">
+          <g
+             mask="url(#a)"
+             id="g936"
+             style="fill:#332a00;fill-opacity:1;stroke:none;stroke-opacity:1"
+             transform="matrix(0.97854222,0,0,0.97853768,4,4.6909786)">
+            <circle
+               cy="-11"
+               r="15"
+               id="circle930"
+               style="fill:#332a00;fill-opacity:1;stroke:none;stroke-opacity:1"
+               cx="0" />
+            <circle
+               cy="-11"
+               r="15"
+               transform="rotate(120)"
+               id="circle932"
+               style="fill:#332a00;fill-opacity:1;stroke:none;stroke-opacity:1"
+               cx="0" />
+            <circle
+               cy="-11"
+               r="15"
+               transform="rotate(-120)"
+               id="circle934"
+               style="fill:#332a00;fill-opacity:1;stroke:none;stroke-opacity:1"
+               cx="0" />
+          </g>
+          <circle
+             r="11.75"
+             fill="none"
+             stroke="#000"
+             stroke-width="3.5"
+             clip-path="url(#b)"
+             id="circle938"
+             style="fill:#332a00;fill-opacity:1;stroke:none;stroke-opacity:1"
+             cx="0"
+             cy="0"
+             transform="matrix(0.97854222,0,0,0.97853768,4,4.6909786)" />
+        </g>
+      </g>
+      <g
+         id="g1">
+        <path
+           id="rect62437-8"
+           style="opacity:0.7;fill:#b2d1f0;fill-opacity:1;stroke:#4a95dd;stroke-width:0.999985;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M 0.50160515,0.50056868 V 13.932516 C 6.3868127,14.482844 -0.44794374,12.2269 4.5250241,8.6775419 4.9455425,8.3831775 10.488218,11.24934 10.957293,11.040867 10.525986,9.2383757 15.862604,1.6371475 16.958236,0.50056868 Z m 0,19.66044832 v 4.291979 L 8.1319996,24.500683 8.8688069,19.88776 C 9.1274513,19.31293 6.4377346,19.957993 5.9661171,18.371586 5.402409,16.475408 0.50160515,19.980834 0.50160515,20.161017 Z"
+           sodipodi:nodetypes="ccccccccccsc" />
+        <path
+           id="rect62437-8-3"
+           style="opacity:0.7;fill:#b2d1f0;fill-opacity:1;stroke:#4a95dd;stroke-width:0.999985;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M 24.452137,4.7347785 V 0.44279949 l -4.769201,0.0715264 1.475514,4.12544661 3.361126,1.3426241 z"
+           sodipodi:nodetypes="cccccc" />
+        <path
+           id="rect62437-8-4"
+           style="opacity:0.7;fill:#b2d1f0;fill-opacity:1;stroke:#4a95dd;stroke-width:0.999985;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M 24.433258,24.449874 V 11.017927 c -0.785186,-0.07342 -3.256833,-3.0291142 -3.766746,-2.6119572 -2.390791,1.0252485 -2.438091,0.9460084 -3.614484,3.7018372 -1.481871,1.755233 -4.137799,2.258234 -2.556454,5.833667 0.643056,1.453955 -1.454849,3.040586 -2.131783,6.5084 z"
+           sodipodi:nodetypes="ccccscc" />
+      </g>
+    </g>
+  </g>
+</svg>

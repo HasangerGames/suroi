@@ -6,9 +6,8 @@ import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Numeric } from "@common/utils/math";
 import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
-
 import { type CollidableGameObject } from "../objects/gameObject";
-import type { ItemData } from "../objects/loot";
+import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import { InventoryItem } from "./inventoryItem";
 
@@ -106,6 +105,10 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                         multiplier *= definition.piercingMultiplier !== undefined && closestObject.definition.impenetrable
                             ? definition.piercingMultiplier
                             : definition.obstacleMultiplier;
+
+                        if (closestObject.definition.material === "ice" && definition.iceMultiplier) {
+                            multiplier *= definition.iceMultiplier;
+                        }
                     }
 
                     if (closestObject.isThrowableProjectile) {

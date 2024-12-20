@@ -1,6 +1,7 @@
 import { GameConstants, Layer, ObjectCategory } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { ObstacleModeVariations } from "@common/definitions/modes";
 import { MapPacket, type MapPacketData } from "@common/packets/mapPacket";
 import { PacketStream } from "@common/packets/packetStream";
 import { type Orientation, type Variation } from "@common/typings";
@@ -12,7 +13,6 @@ import { MapObjectSpawnMode, NullString, type ReferenceTo, type ReifiableDef } f
 import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
 import { River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
-
 import { Config } from "./config";
 import { getLootFromTable } from "./data/lootTables";
 import { MapDefinition, MapName, Maps, ObstacleClump, RiverDefinition } from "./data/maps";
@@ -305,9 +305,15 @@ export class GameMap {
             }
             if (collided) break;
 
-            riverPoints[i] = pos;
+            if (!bounds.isPointInside(pos)) {
+                riverPoints[i] = Vec.create(
+                    Numeric.clamp(pos.x, bounds.min.x, bounds.max.x),
+                    Numeric.clamp(pos.y, bounds.min.y, bounds.max.y)
+                );
+                break;
+            }
 
-            if (!bounds.isPointInside(pos)) break;
+            riverPoints[i] = pos;
         }
         if (riverPoints.length < 20 || riverPoints.length > 59) return false;
 
@@ -362,7 +368,8 @@ export class GameMap {
                 }
                 attempts++;
             }
-            if (attempts >= 100) {
+
+            if (attempts >= 100 && !validPositionFound) {
                 Logger.warn("Failed to find valid position for clearing");
                 continue;
             }
@@ -402,7 +409,7 @@ export class GameMap {
                         maxAttempts: 400
                     });
 
-                    if (!position) {
+                    if (position === undefined) {
                         Logger.warn(`Failed to find valid position for building ${idString}`);
                         continue;
                     }
@@ -434,11 +441,11 @@ export class GameMap {
                     validPositionFound = true;
                 }
 
-                if (!validPositionFound) {
+                if (!validPositionFound && position === undefined) {
                     Logger.warn(`Failed to place building ${idString} after ${attempts} attempts`);
                 }
 
-                if (position) this.generateBuilding(buildingDef, position, orientation);
+                if (position !== undefined) this.generateBuilding(buildingDef, position, orientation);
 
                 attempts = 0; // Reset attempts counter for the next building
             }
@@ -465,13 +472,14 @@ export class GameMap {
                 }
                 const position = river.getPosition(bestPosition);
 
+                const spawnHitbox = buildingDef.spawnHitbox.transform(position, 1, bestOrientation);
+
                 if (
                     this.occupiedBridgePositions.some(pos => Vec.equals(pos, position))
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    || this.isInRiver(buildingDef.bridgeHitbox!.transform(position, 1, bestOrientation))
+                    || (this.isInRiver(buildingDef.bridgeHitbox!.transform(position, 1, bestOrientation)))
+                    || (spawnHitbox.collidesWith(this.beachHitbox))
                 ) return;
-
-                const spawnHitbox = buildingDef.spawnHitbox.transform(position, 1, bestOrientation);
 
                 // checks if the bridge hitbox collides with another object and if so does not spawn it
                 for (const object of this.game.grid.intersectsHitbox(spawnHitbox)) {
@@ -521,11 +529,15 @@ export class GameMap {
         const building = new Building(this.game, definition, Vec.clone(position), orientation, layer);
 
         for (const obstacleData of definition.obstacles) {
-            const idString = getRandomIDString<
+            let idString = getRandomIDString<
                 ObstacleDefinition,
                 ReferenceTo<ObstacleDefinition> | typeof NullString
             >(obstacleData.idString);
             if (idString === NullString) continue;
+            const gameMode = GameConstants.modeName;
+            if (obstacleData.modeVariant) {
+                idString = `${idString}${ObstacleModeVariations[gameMode] ?? ""}`;
+            }
 
             const obstacleDef = Obstacles.fromString(idString);
             let obstacleRotation = obstacleData.rotation ?? GameMap.getRandomRotation(obstacleDef.rotationMode);
@@ -668,7 +680,7 @@ export class GameMap {
         layer ??= 0;
 
         scale ??= randomFloat(def.scale?.spawnMin ?? 1, def.scale?.spawnMax ?? 1);
-        if (variation === undefined && def.variations) {
+        if (variation === undefined && def.variations !== undefined) {
             variation = random(0, def.variations - 1) as Variation;
         }
 

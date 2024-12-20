@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="355.68802"
+   height="42.131992"
+   viewBox="0 0 94.10912 11.147424"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="bombed_armory_vault_wall.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="px"
+     inkscape:zoom="1.4752918"
+     inkscape:cx="119.63735"
+     inkscape:cy="-0.33891601"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g33393" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-82.178626,-152.79465)">
+    <g
+       id="g33393"
+       transform="matrix(1,0,0,1.0001372,4430.5271,1341.4546)">
+      <g
+         id="g6"
+         transform="matrix(0,1.1045153,-1,0,-3603.2203,-1995.5129)">
+        <rect
+           style="fill:#262626;fill-opacity:1;stroke-width:8.183;stroke-linecap:square;stop-color:#000000"
+           id="rect33389-4"
+           width="10.091208"
+           height="93.218079"
+           x="-740.74292"
+           y="-744.43573"
+           ry="0"
+           transform="rotate(180,6.4380125e-6,-2.0165394e-6)" />
+        <rect
+           style="display:inline;fill:#606060;fill-opacity:1;stroke-width:0.276951;paint-order:markers stroke fill;stop-color:#000000"
+           id="rect33391-8"
+           width="5.6462426"
+           height="94.109123"
+           x="-738.5304"
+           y="-745.12817"
+           ry="0"
+           rx="0"
+           transform="scale(-1)" />
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,7 +1,7 @@
-import { GameConstants, Layer } from "../../../../common/src/constants";
-import { adjacentOrEqualLayer } from "../../../../common/src/utils/layer";
-import { Geometry } from "../../../../common/src/utils/math";
-import { Vec, type Vector } from "../../../../common/src/utils/vector";
+import { GameConstants, Layer } from "@common/constants";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
+import { Geometry } from "@common/utils/math";
+import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
 import { PIXI_SCALE } from "../utils/constants";

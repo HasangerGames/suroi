@@ -223,6 +223,7 @@ const defaultGun = {
 } satisfies DeepPartial<GunDefinition> as DeepPartial<GunDefinition>;
 
 export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
+    "Guns",
     defaultGun,
     () => {
         return ([
@@ -636,7 +637,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 gasParticles: gasParticlePresets.automatic,
                 image: { position: Vec.create(80, 0) },
                 ballistics: {
-                    damage: 10,
+                    damage: 9,
                     obstacleMultiplier: 1,
                     speed: 0.27,
                     range: 100
@@ -644,7 +645,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             },
             {
                 idString: "pp19",
-                name: "PP-19",
+                name: "PP-19 Vityaz",
                 ammoType: "9mm",
                 ammoSpawnAmount: 90,
                 capacity: 30,
@@ -756,7 +757,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 idString: "m16a4",
                 name: "M16A4",
                 ammoType: "556mm",
-                ammoSpawnAmount: 90,
+                ammoSpawnAmount: 80,
                 capacity: 20,
                 extendedCapacity: 30,
                 reloadTime: 2.2,
@@ -905,30 +906,30 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 capacity: 47,
                 extendedCapacity: 97,
                 reloadTime: 3.4,
-                fireDelay: 120,
+                fireDelay: 115,
                 switchDelay: 400,
-                speedMultiplier: 0.8,
-                recoilMultiplier: 0.65,
+                speedMultiplier: 0.825,
+                recoilMultiplier: 0.7, // also test out 6.75
                 recoilDuration: 200,
                 fireMode: FireMode.Auto,
-                shotSpread: 2,
-                moveSpread: 9,
-                length: 11.8,
+                shotSpread: 3.5,
+                moveSpread: 7.5, // also test out 6.5, 7, 8
+                length: 9.47,
                 fists: {
-                    left: Vec.create(140, -10),
+                    left: Vec.create(120, -8),
                     right: Vec.create(40, 0),
                     rightZIndex: 4,
                     animationDuration: 100
                 },
-                image: { position: Vec.create(120, 0) },
+                image: { position: Vec.create(100, 0) },
                 casingParticles: [{
                     frame: "casing_30-06",
-                    position: Vec.create(4.7, 1.6)
+                    position: Vec.create(3.3, 0.6)
                 }],
                 gasParticles: gasParticlePresets.automatic,
                 ballistics: {
-                    damage: 16,
-                    obstacleMultiplier: 2.5,
+                    damage: 16.5,
+                    obstacleMultiplier: 2,
                     speed: 0.3,
                     range: 180,
                     tracer: {
@@ -1112,7 +1113,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 idString: "mg36",
                 name: "MG36",
                 ammoType: "556mm",
-                ammoSpawnAmount: 120,
+                ammoSpawnAmount: 100,
                 capacity: 50,
                 extendedCapacity: 100,
                 reloadTime: 2.75,
@@ -1278,9 +1279,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 capacity: 2,
                 reloadTime: 2.6,
                 fireDelay: 250,
-                switchDelay: 500,
+                switchDelay: 250,
                 recoilMultiplier: 0.5,
-                recoilDuration: 400,
+                recoilDuration: 550,
                 fireMode: FireMode.Single,
                 bulletCount: 10,
                 shotSpread: 11,
@@ -1651,6 +1652,46 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }
             },
             {
+                idString: "rgs",
+                name: "RGS",
+                ammoType: "556mm",
+                ammoSpawnAmount: 30,
+                capacity: 10,
+                reloadTime: 2.6,
+                fireDelay: 600,
+                switchDelay: 600,
+                recoilMultiplier: 0.6,
+                recoilDuration: 600,
+                fireMode: FireMode.Single,
+                shotSpread: 0.5,
+                moveSpread: 2,
+                length: 8.35,
+                shootOnRelease: true,
+                fists: {
+                    left: Vec.create(115, -4),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(90, 3.5) },
+                casingParticles: [{
+                    position: Vec.create(5, 0.4),
+                    ejectionDelay: 250
+                }],
+                gasParticles: gasParticlePresets.rifle,
+                ballistics: {
+                    damage: 65,
+                    obstacleMultiplier: 1,
+                    speed: 0.33,
+                    range: 270,
+                    tracer: {
+                        width: 1.1,
+                        length: 1.7
+                    },
+                    lastShotFX: true
+                }
+            },
+            {
                 idString: "vks",
                 name: "VKS Vykhlop",
                 ammoType: "50cal",
@@ -1692,7 +1733,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             // designated marksman rifles
             {
                 idString: "vss",
-                name: "VSS",
+                name: "VSS Vintorez",
                 ammoType: "9mm",
                 ammoSpawnAmount: 60,
                 capacity: 20,
@@ -1956,6 +1997,43 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }
             },
             {
+                idString: "blr",
+                name: "BLR",
+                ammoType: "556mm",
+                ammoSpawnAmount: 20,
+                capacity: 5,
+                reloadTime: 2.6,
+                fireDelay: 350,
+                switchDelay: 400,
+                recoilMultiplier: 0.8,
+                recoilDuration: 300,
+                fireMode: FireMode.Single,
+                shotSpread: 2,
+                moveSpread: 5,
+                length: 7.7,
+                fists: {
+                    left: Vec.create(105, 3),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(85, 0) },
+                casingParticles: [{
+                    position: Vec.create(4.2, 0.4)
+                }],
+                gasParticles: gasParticlePresets.rifle,
+                ballistics: {
+                    damage: 40,
+                    obstacleMultiplier: 1,
+                    speed: 0.28,
+                    range: 200,
+                    tracer: {
+                        length: 1.3
+                    },
+                    lastShotFX: true
+                }
+            },
+            {
                 idString: "mk18",
                 name: "Mk-18 Mjölnir",
                 ammoType: "338lap",
@@ -2107,9 +2185,11 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     }
                 }
             },
+            // only dev weapons below this point
             {
                 idString: "g17_scoped",
                 name: "G17 (scoped)",
+                devItem: true,
                 ammoType: "bb",
                 fireDelay: 35,
                 switchDelay: 250,
@@ -2155,11 +2235,11 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 } */
                 // justice for dual s_g17 when™
             },
-            // only dev weapons below this point
             {
                 idString: "death_ray",
                 name: "Death Ray",
                 ammoType: "power_cell",
+                devItem: true,
                 capacity: 1,
                 reloadTime: 1.4,
                 fireDelay: 40,
@@ -2197,6 +2277,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 idString: "destroyer_of_worlds",
                 name: "Destroyer Of Worlds",
                 ammoType: "50cal",
+                devItem: true,
                 ammoSpawnAmount: 255,
                 capacity: 255,
                 extendedCapacity: 1, // womp womp
@@ -2258,6 +2339,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 [inheritFrom]: "model_37",
                 idString: "revitalizer",
                 name: "Revitalizer",
+                // devItem: true,
                 killstreak: true,
                 consistentPatterning: true,
                 jitterRadius: 0,

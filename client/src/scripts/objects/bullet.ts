@@ -1,13 +1,13 @@
+import { Layer, ObjectCategory, ZIndexes } from "@common/constants";
+import { BaseBullet, type BulletOptions } from "@common/utils/baseBullet";
+import { RectangleHitbox } from "@common/utils/hitbox";
+import { adjacentOrEqualLayer, getEffectiveZIndex, isVisibleFromLayer } from "@common/utils/layer";
+import { Geometry, Numeric, resolveStairInteraction } from "@common/utils/math";
+import { random, randomFloat, randomRotation } from "@common/utils/random";
+import { Vec } from "@common/utils/vector";
+import { colord } from "colord";
 import { BloomFilter } from "pixi-filters";
 import { Color } from "pixi.js";
-import { colord } from "colord";
-import { Layer, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
-import { RectangleHitbox } from "../../../../common/src/utils/hitbox";
-import { getEffectiveZIndex, isVisibleFromLayer } from "../../../../common/src/utils/layer";
-import { Geometry, Numeric, resolveStairInteraction } from "../../../../common/src/utils/math";
-import { random, randomFloat, randomRotation } from "../../../../common/src/utils/random";
-import { Vec } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
@@ -109,7 +109,7 @@ export class Bullet extends BaseBullet {
         }
         if (this._playBulletWhiz) {
             const intersection = this.game.activePlayer?.bulletWhizHitbox.intersectsLine(this.initialPosition, this.position);
-            if (intersection) {
+            if (intersection && this.game.layer !== undefined && adjacentOrEqualLayer(this.layer, this.game.layer)) {
                 this.game.soundManager.play(`bullet_whiz_${random(1, 3)}`, { position: intersection.point });
                 this._playBulletWhiz = false;
             }

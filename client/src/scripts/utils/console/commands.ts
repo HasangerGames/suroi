@@ -1,16 +1,16 @@
 // noinspection JSConstantReassignment
+import { GameConstants, InputActions, SpectateActions, TeamSize } from "@common/constants";
+import { HealingItems, type HealingItemDefinition } from "@common/definitions/healingItems";
+import { Loots } from "@common/definitions/loots";
+import { Scopes, type ScopeDefinition } from "@common/definitions/scopes";
+import { Throwables } from "@common/definitions/throwables";
+import { type InputAction } from "@common/packets/inputPacket";
+import { SpectatePacket } from "@common/packets/spectatePacket";
+import { Numeric } from "@common/utils/math";
+import { handleResult, type Result } from "@common/utils/misc";
+import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { Vec } from "@common/utils/vector";
 import { Rectangle, RendererType, Sprite, VERSION } from "pixi.js";
-import { GameConstants, InputActions, SpectateActions, TeamSize } from "../../../../../common/src/constants";
-import { HealingItems, type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
-import { Loots } from "../../../../../common/src/definitions/loots";
-import { Scopes, type ScopeDefinition } from "../../../../../common/src/definitions/scopes";
-import { Throwables } from "../../../../../common/src/definitions/throwables";
-import { type InputAction } from "../../../../../common/src/packets/inputPacket";
-import { SpectatePacket } from "../../../../../common/src/packets/spectatePacket";
-import { Numeric } from "../../../../../common/src/utils/math";
-import { handleResult, type Result } from "../../../../../common/src/utils/misc";
-import { ItemType, type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions";
-import { Vec } from "../../../../../common/src/utils/vector";
 import { Config, type ServerInfo } from "../../config";
 import { type Game } from "../../game";
 import { type CompiledAction, type CompiledTuple, type InputManager } from "../../managers/inputManager";
@@ -49,14 +49,12 @@ export class Command<
     ErrorType extends Stringable = never
 > {
     private readonly _name: string;
-    get name(): string {
-        return this._name;
-    }
+    get name(): string { return this._name; }
 
     private readonly _executor: CommandExecutor<ErrorType>;
     get executor(): CommandExecutor<ErrorType> { return this._executor; }
 
-    run(args: Array<string | undefined> = []): PossibleError<ErrorType> {
+    run(args: ReadonlyArray<string | undefined> = []): PossibleError<ErrorType> {
         if (!this._info.allowOnlyWhenGameStarted || this._game.gameStarted) {
             return this._executor.call(this._game, ...args) as PossibleError<ErrorType>;
         }

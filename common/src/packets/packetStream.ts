@@ -1,4 +1,4 @@
-import { SuroiBitStream } from "../utils/suroiBitStream";
+import { SuroiByteStream } from "../utils/suroiByteStream";
 import { DisconnectPacket } from "./disconnectPacket";
 import { GameOverPacket } from "./gameOverPacket";
 import { PlayerInputPacket } from "./inputPacket";
@@ -17,13 +17,11 @@ class PacketRegister {
     private _nextTypeId = 0;
     readonly typeToId = new Map<PacketTemplate, number>();
     readonly idToTemplate: PacketTemplate[] = [];
-    readonly bits: number;
 
     constructor(...packets: PacketTemplate[]) {
         for (const packet of packets) {
             this._register(packet);
         }
-        this.bits = Math.ceil(Math.log2(this._nextTypeId));
     }
 
     private _register(packet: PacketTemplate): void {
@@ -59,11 +57,11 @@ export const ServerToClientPackets = new PacketRegister(
 );
 
 export class PacketStream {
-    stream: SuroiBitStream;
+    readonly stream: SuroiByteStream;
 
-    constructor(source: SuroiBitStream | ArrayBuffer) {
+    constructor(source: SuroiByteStream | ArrayBuffer) {
         if (source instanceof ArrayBuffer) {
-            this.stream = new SuroiBitStream(source);
+            this.stream = new SuroiByteStream(source);
         } else {
             this.stream = source;
         }
@@ -86,11 +84,8 @@ export class PacketStream {
     }
 
     private _deserializePacket(register: PacketRegister): OutputPacket | undefined {
-        if (this.stream.length - this.stream.byteIndex * 8 >= 1) {
-            const id = this.stream.readBits(register.bits);
-            const packet = register.idToTemplate[id].read(this.stream);
-            this.stream.readAlignToNextByte();
-            return packet;
+        if (this.stream.buffer.byteLength > this.stream.index) {
+            return register.idToTemplate[this.stream.readUint8()].read(this.stream);
         }
         return undefined;
     }
@@ -102,12 +97,11 @@ export class PacketStream {
             throw new Error(`Unknown packet type: ${name}, did you forget to register it?`);
         }
 
-        this.stream.writeBits(type, register.bits);
+        this.stream.writeUint8(type);
         packet.serialize(this.stream);
-        this.stream.writeAlignToNextByte();
     }
 
     getBuffer(): ArrayBuffer {
-        return this.stream.buffer.slice(0, this.stream.byteIndex);
+        return this.stream.buffer.slice(0, this.stream.index);
     }
 }

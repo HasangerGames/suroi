@@ -13,6 +13,7 @@ export enum HealType {
 }
 
 export const HealingItems = ObjectDefinitions.withDefault<HealingItemDefinition>()(
+    "HealingItems",
     {
         itemType: ItemType.Healing,
         noDrop: false

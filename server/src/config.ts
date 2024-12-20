@@ -1,18 +1,17 @@
 import { Layer, TeamSize } from "@common/constants";
 import { type Vector } from "@common/utils/vector";
-
 import { type Maps } from "./data/maps";
 import { type Game } from "./game";
 import { type GamePlugin } from "./pluginManager";
 import type { Mode } from "@common/definitions/modes";
 
-export enum SpawnMode {
+export const enum SpawnMode {
     Normal,
     Radius,
     Fixed,
     Center
 }
-export enum GasMode {
+export const enum GasMode {
     Normal,
     Debug,
     Disabled
@@ -44,12 +43,13 @@ export const Config = {
         designr: { password: "designr" },
         lead_designr: { password: "lead_designr" },
         vip_designr: { password: "vip_designr" },
-        composr: { password: "composr" },
         lead_composr: { password: "lead_composr" },
+        composr: { password: "composr" },
+        sound_designr: { password: "sound_designr" },
         moderatr: { password: "moderatr" },
         administratr: { password: "administratr" },
-        youtubr: { password: "youtubr" },
-        boostr: { password: "boostr" },
+        content_creatr: { password: "content_creatr" },
+        donatr: { password: "donatr" },
 
         hasanger: { password: "hasanger", isDev: true },
         pap: { password: "pap", isDev: true },

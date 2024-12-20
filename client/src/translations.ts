@@ -1,19 +1,22 @@
-import { Badges } from "../../common/src/definitions/badges";
-import { Emotes } from "../../common/src/definitions/emotes";
-import { Loots } from "../../common/src/definitions/loots";
+import { Badges } from "@common/definitions/badges";
+import { Loots } from "@common/definitions/loots";
+import { Numeric } from "@common/utils/math";
+import type { TranslationManifest, TranslationsManifest } from "../../translations/src/processTranslations";
 import { type Game } from "./scripts/game";
 import { defaultClientCVars } from "./scripts/utils/console/defaultClientCVars";
-import { Numeric } from "../../common/src/utils/math";
-import { type TranslationKeys } from "./typings/translations";
-import type { TranslationManifest, TranslationsManifest } from "../../translations/src/processTranslations";
 import TRANSLATIONS_MANIFEST from "./translationsManifest.json";
+import { type TranslationKeys } from "./typings/translations";
+import { Emotes } from "@common/definitions/emotes";
 
 export type TranslationMap = Partial<Record<TranslationKeys, string>> & TranslationManifest;
 
 let defaultLanguage: string;
 let selectedLanguage: string;
 
-export const TRANSLATIONS = {
+export const TRANSLATIONS: {
+    get defaultLanguage(): string
+    readonly translations: Record<string, TranslationMap>
+} = {
     get defaultLanguage(): string {
         if (!setup) {
             throw new Error("Translation API not yet setup");
@@ -24,13 +27,10 @@ export const TRANSLATIONS = {
     translations: {
         hp18: {
             name: "HP-18",
-            flag: "<img height=\"20\" src=\"./img/killfeed/hp18_killfeed.svg\" />",
+            flag: "<img height=\"20\" src=\"./img/game/shared/weapons/hp18.svg\" />",
             percentage: "HP-18%"
         }
     }
-} as {
-    get defaultLanguage(): string
-    translations: Record<string, TranslationMap>
 };
 
 export const NO_SPACE_LANGUAGES = ["zh", "tw", "hk_mo", "jp"];
@@ -50,20 +50,26 @@ export async function initTranslation(game: Game): Promise<void> {
 
     selectedLanguage = game.console.getBuiltInCVar("cv_language");
 
-    const loadedLanguages = await Promise.all(Object.entries(TRANSLATIONS_MANIFEST as TranslationsManifest)
-        .filter(([language, content]) => content.mandatory || language === selectedLanguage || language === defaultLanguage)
-        .map(async([language, _]) => [language, await (await fetch(`/translations/${language}.json`)).json()] as [string, TranslationMap]));
+    const loadRightNow = (language: string, content: TranslationManifest): boolean => content.mandatory || language === selectedLanguage || language === defaultLanguage;
 
-    for (const [language, content] of loadedLanguages) {
+    for (
+        const [language, content] of await Promise.all(
+            Object.entries(TRANSLATIONS_MANIFEST as TranslationsManifest)
+                .map(
+                    async([language, content]): Promise<[string, TranslationMap]> => [
+                        language,
+                        loadRightNow(language, content)
+                            ? await (await fetch(`/translations/${language}.json`)).json()
+                            : content
+                    ]
+                )
+        )
+    ) {
         TRANSLATIONS.translations[language] = {
             ...(TRANSLATIONS_MANIFEST as TranslationsManifest)[language],
             ...content
         };
     }
-
-    Object.entries(TRANSLATIONS_MANIFEST as TranslationsManifest)
-        .filter(([language, content]) => !(content.mandatory || language === selectedLanguage || language === defaultLanguage))
-        .forEach(([language, content]) => TRANSLATIONS.translations[language] = content);
 
     translateCurrentDOM();
 }
@@ -77,12 +83,8 @@ export function getTranslatedString(key: TranslationKeys, replacements?: Record<
     // Easter egg language
     if (selectedLanguage === "hp18") return "HP-18";
 
-    if (key.startsWith("emote_")) {
-        return Emotes.reify(key.slice("emote_".length)).name;
-    }
-
     if (key.startsWith("badge_")) {
-        return Badges.reify(key.slice("badge_".length)).name;
+        key = Badges.reify(key.slice("badge_".length)).idString.replace("bdg_", "badge_") as TranslationKeys;
     }
 
     let foundTranslation: string;
@@ -90,18 +92,17 @@ export function getTranslatedString(key: TranslationKeys, replacements?: Record<
         foundTranslation = TRANSLATIONS.translations[selectedLanguage]?.[key]
         ?? TRANSLATIONS.translations[defaultLanguage]?.[key]
         ?? Loots.reify(key).name;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (_) {
-        foundTranslation = "no translation found";
+    } catch {
+        if (key.startsWith("emote_")) {
+            return Emotes.reify(key.slice("emote_".length)).name as TranslationKeys;
+        }
+        if (key.startsWith("badge_")) {
+            return Badges.reify(`bdg_${key.slice("badge_".length)}`).name as TranslationKeys;
+        }
+        return key;
     }
 
-    if (foundTranslation === "no translation found") return key;
-
-    if (!replacements) {
-        return foundTranslation;
-    }
-
-    for (const [search, replace] of Object.entries(replacements)) {
+    for (const [search, replace] of Object.entries(replacements ?? {})) {
         foundTranslation = foundTranslation.replaceAll(`<${search}>`, replace);
     }
 

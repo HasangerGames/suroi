@@ -8,7 +8,7 @@ export interface RulesPost {
 
 export const rules: RulesPost[] = [
     {
-        date: 1718044800000,
+        date: 1731370468000,
         author: "hasanger",
         title: "Rules",
         content: "By playing Suroi, you agree to follow these rules. Failure to do so will result in a ban, as outlined below.",

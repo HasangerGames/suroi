@@ -1,13 +1,12 @@
 import { Layer, ObjectCategory } from "@common/constants";
 import { type Hitbox } from "@common/utils/hitbox";
+import { adjacentOrEquivLayer } from "@common/utils/layer";
 import { Numeric } from "@common/utils/math";
 import { ObjectPool } from "@common/utils/objectPool";
 import { Vec, type Vector } from "@common/utils/vector";
-
 import { type Game } from "../game";
 import { type GameObject, type ObjectMapping } from "../objects/gameObject";
 import { Logger } from "./misc";
-import { adjacentOrEquivLayer } from "@common/utils/layer";
 
 /**
  * A Grid to filter collision detection of game objects

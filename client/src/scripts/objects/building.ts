@@ -1,14 +1,14 @@
+import { ObjectCategory, ZIndexes } from "@common/constants";
+import { type BuildingDefinition } from "@common/definitions/buildings";
+import { MaterialSounds } from "@common/definitions/obstacles";
+import { type Orientation } from "@common/typings";
+import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { equivLayer, getEffectiveZIndex, isGroundLayer } from "@common/utils/layer";
+import { Angle, Collision, EaseFunctions, Numeric, type CollisionResponse } from "@common/utils/math";
+import { type ObjectsNetData } from "@common/utils/objectsSerializations";
+import { randomBoolean, randomFloat, randomRotation } from "@common/utils/random";
+import { Vec, type Vector } from "@common/utils/vector";
 import { Container, Graphics } from "pixi.js";
-import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
-import { MaterialSounds } from "../../../../common/src/definitions/obstacles";
-import { type Orientation } from "../../../../common/src/typings";
-import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../../../common/src/utils/hitbox";
-import { equivLayer, getEffectiveZIndex, isGroundLayer } from "../../../../common/src/utils/layer";
-import { Angle, Collision, EaseFunctions, Numeric, type CollisionResponse } from "../../../../common/src/utils/math";
-import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
-import { Vec, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
@@ -300,7 +300,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
             this.hitbox = definition.hitbox?.transform(this.position, 1, this.orientation);
             this.damageable = !!definition.hitbox;
-            this.ceilingHitbox = (definition.scopeHitbox ?? definition.ceilingHitbox)?.transform(this.position, 1, this.orientation);
+            this.ceilingHitbox = definition.ceilingHitbox?.transform(this.position, 1, this.orientation);
         }
 
         const definition = this.definition;
@@ -450,15 +450,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             );
         }
 
-        if (this.ceilingHitbox) {
-            drawHitbox(
-                this.ceilingHitbox,
-                HITBOX_COLORS.buildingScopeCeiling,
-                this.debugGraphics,
-                this.layer
-            );
-        }
-
         drawHitbox(
             definition.spawnHitbox.transform(this.position, 1, this.orientation),
             HITBOX_COLORS.spawnHitbox,
@@ -466,10 +457,10 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             alpha
         );
 
-        if (definition.scopeHitbox) {
+        if (definition.ceilingHitbox) {
             drawHitbox(
-                definition.scopeHitbox.transform(this.position, 1, this.orientation),
-                HITBOX_COLORS.buildingZoomCeiling,
+                definition.ceilingHitbox.transform(this.position, 1, this.orientation),
+                definition.ceilingScopeEffect ? HITBOX_COLORS.buildingZoomCeiling : HITBOX_COLORS.buildingScopeCeiling,
                 this.debugGraphics
             );
         }
