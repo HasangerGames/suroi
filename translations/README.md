@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 21 Dec 2024 12:54:33 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 21 Dec 2024 21:16:53 GMT
 
 ## 🇦🇱 Shqip (90% Complete) - ab.hjson
 
@@ -103,28 +103,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_sa` is not defined
 - Key `region_as` is not defined
 
-## 🇪🇪 Eesti (94% Complete) - et.hjson
+## 🇪🇪 Eesti (100% Complete) - et.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
-- Key `donate` is not defined
-- Key `copied` is not defined
-- Key `settings_ambience_volume` is not defined
-- Key `settings_cooler_graphics` is not defined
-- Key `settings_ambient_particles` is not defined
-- Key `msg_not_enough_space` is not defined
-- Key `msg_item_already_equipped` is not defined
-- Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
-- Key `interact_speaker` is not defined
-- Key `bindings_explode_c4` is not defined
-- Key `create_team_ready` is not defined
 
 ## 🇫🇷 Français (100% Complete) - fr.hjson
 
