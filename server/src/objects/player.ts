@@ -2078,7 +2078,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 if (source === this) {
                     message.eventType(
                         wasDowned
-                            ? KillfeedEventType.FinishedOff
+                            ? (wasDowned && source.id === this.id ? KillfeedEventType.Suicide : KillfeedEventType.FinishedOff)
                             : KillfeedEventType.Suicide
                     ).weaponUsed(weaponUsed?.definition);
                 } else {
