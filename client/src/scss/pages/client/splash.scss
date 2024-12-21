@@ -762,7 +762,6 @@
     animation: mode-winter-color 4s linear infinite;
 }
 
-
 .event-fall {
     background-color: #72742f;
     border-bottom: 2px solid #535421;
@@ -775,13 +774,6 @@
     border-bottom: 2px solid #450b0b;
     box-shadow: inset 0 -2px #450b0b;
     animation: mode-halloween-color 4s linear infinite;
-}
-
-.event-fall {
-    background-color: #72742f;
-    border-bottom: 2px solid #535421;
-    box-shadow: inset 0 -2px #535421;
-    animation: mode-fall-color 4s linear infinite;
 }
 
 @keyframes mode-winter-color {
