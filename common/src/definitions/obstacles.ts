@@ -452,7 +452,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     }
                 }
             ) => ({
-
+                name: props.name,
                 idString: props.name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
                 material: "tree",
                 health: props.health,
