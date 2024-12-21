@@ -57,6 +57,9 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     hitbox!: Hitbox;
     orientation: Orientation = 0;
 
+    mountSpriteInitalized = false;
+    mountSprite: SuroiSprite | undefined;
+
     hitSound?: GameSound;
 
     notOnCoolDown = true;
@@ -88,6 +91,23 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             this.orientation = full.rotation.orientation;
             this.layer = full.layer;
             this.variation = full.variation;
+
+            if (definition.gunMount && !this.mountSpriteInitalized) {
+                this.mountSprite = new SuroiSprite()
+                    .setFrame(definition.gunMount.weapon)
+                    .setScale(1.15)
+                    .setPos(0, 10);
+
+                if (definition.gunMount.type === "melee") {
+                    this.mountSprite.scale.set(-0.95, -0.95);
+                    this.mountSprite
+                        .setPos(-12.5, 7)
+                        .setRotation(Math.PI / 4);
+                }
+
+                this.container.addChild(this.mountSprite);
+                this.mountSpriteInitalized = true;
+            }
 
             if (this.definition.detector && full.detectedMetal && this.notOnCoolDown) {
                 this.game.soundManager.play("detection", {
@@ -284,6 +304,11 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         // Change the texture of the obstacle and play a sound when it's destroyed
         if (!this.dead && data.dead) {
             this.dead = true;
+
+            if (this.mountSprite !== undefined) {
+                this.mountSprite.setVisible(false);
+            }
+
             if (!isNew && !("replaceWith" in definition && definition.replaceWith) && !definition.noDestroyEffect) {
                 const playSound = (name: string): void => {
                     this.playSound(name, {
@@ -698,6 +723,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     override destroy(): void {
         super.destroy();
         this.image.destroy();
+        this.mountSprite?.destroy();
         this.doorMask?.destroy();
         this.smokeEmitter?.destroy();
         this._glow?.kill();
