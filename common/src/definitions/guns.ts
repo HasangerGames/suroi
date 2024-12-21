@@ -1176,7 +1176,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 },
                 image: { position: Vec.create(90, 5) },
                 casingParticles: [{
-                    frame: "casing_12ga_fléchette",
+                    frame: "casing_12ga_flechette",
                     position: Vec.create(4, 0.6)
                 }],
                 gasParticles: gasParticlePresets.shotgun,
@@ -1430,7 +1430,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 },
                 image: { position: Vec.create(85, 0) },
                 casingParticles: [{
-                    frame: "casing_12ga_fléchette",
+                    frame: "casing_12ga_flechette",
                     position: Vec.create(4.5, 0.6),
                     count: 2,
                     velocity: {
