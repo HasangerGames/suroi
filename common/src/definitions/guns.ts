@@ -938,6 +938,43 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     }
                 }
             },
+            
+
+            {
+                idString: "BAR",
+                name: "BAR M1918",
+                ammoType: "762mm",
+                ammoSpawnAmount: 80,
+                capacity: 20,
+                extendedCapacity: 40,
+                reloadTime: 2.0,
+                fireDelay: 75,
+                switchDelay: 300,
+                recoilMultiplier: 0.65,
+                recoilDuration: 150,
+                fireMode: FireMode.Auto,
+                shotSpread: 2,
+                moveSpread: 6,
+                length: 8.55,
+                fists: {
+                    left: Vec.create(120, -2),
+                    right: Vec.create(45, 0),
+                    rightZIndex: 4,
+                    animationDuration: 90
+                },
+                image: { position: Vec.create(90, 2) },
+                casingParticles: [{
+                    frame: "casing_762x39mm",
+                    position: Vec.create(4, 0.4)
+                }],
+                gasParticles: gasParticlePresets.automatic,
+                ballistics: {
+                    damage: 23,
+                    obstacleMultiplier: 2.0,
+                    speed: 0.36,
+                    range: 190
+                }
+            },
             {
                 idString: "stoner_63",
                 name: "Stoner 63",
