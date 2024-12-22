@@ -645,6 +645,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "saf200", weight: 1.5 },
             { item: "cz75a", weight: 1.5 },
             { item: "hp18", weight: 1.25 },
+            { item: "BAR M1918", weight: 1.25},
             { item: "micro_uzi", weight: 1 },
             { item: "ak47", weight: 1 },
             { item: "model_37", weight: 0.95 },
@@ -715,6 +716,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "micro_uzi", weight: 1.25 },
             { item: "ak47", weight: 1.1 },
             { item: "aug", weight: 1.05 },
+            { item: "BAR M1918", weight: 1.05},
             { item: "hp18", weight: 1 },
             { item: "mp40", weight: 1 },
             { item: "sks", weight: 1 },
@@ -832,7 +834,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "mk18", weight: 0.5 },
             { item: "l115a1", weight: 0.5 },
             { item: "dual_rsh12", weight: 0.5 },
-            { item: "g19", weight: 0.0005 }
+        
         ],
         winter_skins: [
             { item: "peppermint", weight: 1 },
@@ -851,6 +853,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "arx160", weight: 1 },
             { item: "m16a4", weight: 1 },
             { item: "m3k", weight: 1 },
+            { item: "BAR M1918", weight: 1},
             { item: "flues", weight: 0.9 },
             { item: "mini14", weight: 0.75 },
             { item: "sr25", weight: 0.75 },
@@ -872,6 +875,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         ],
         river_chest_guns: [
             { item: "m16a4", weight: 1 },
+            { item: "BAR M1918", weight: 1}, 
             { item: "cz600", weight: 0.75 },
             { item: "mini14", weight: 0.75 },
             { item: "mcx_spear", weight: 0.55 },
@@ -943,6 +947,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         blue_gift: [
             [
                 { item: "arx160", weight: 0.5 },
+                { item: "BAR M1918", weight: 0.5}, 
                 { item: "lewis_gun", weight: 0.4 },
                 { item: "mosin_nagant", weight: 0.05 },
                 { item: "sr25", weight: 0.04 },
