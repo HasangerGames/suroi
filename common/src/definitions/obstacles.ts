@@ -874,7 +874,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
 
         return ([
             tree([{
-                name: "Oak Tree",
+                name: "Large Oak Tree",
                 health: 180,
                 scaleProps: {
                     spawnMin: 0.9,
@@ -884,7 +884,11 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
                 hitbox: new CircleHitbox(3.5),
-                variations: 6
+                variations: 6,
+                frames: {
+                    particle: "oak_tree_particle",
+                    residue: "oak_tree_residue"
+                }
             }]),
 
             tree([{
