@@ -95,7 +95,16 @@ export interface ConfigType {
      * The game mode. Must be a valid value from the modes definitions (`common/src/definitions/modes.ts`).
      * Example: `"fall"` for fall mode or `"halloween"` for halloween mode
      */
-    readonly mode: Mode
+    readonly mode: Mode | {
+        /**
+        * The duration between switches. Must be a cron pattern.
+        */
+        readonly switchSchedule: string
+        /**
+        * The modes to switch between.
+        */
+        readonly rotation: Mode[]
+    }
 
     /**
      * There are 4 spawn modes: `Normal`, `Radius`, `Fixed`, and `Center`.

@@ -70,9 +70,16 @@ let teamsCreated: Record<string, number> = {};
 export const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
 
 export let maxTeamSize = typeof Config.maxTeamSize === "number" ? Config.maxTeamSize : Config.maxTeamSize.rotation[0];
+
 let teamSizeRotationIndex = 0;
 
 let maxTeamSizeSwitchCron: Cron | undefined;
+
+let mode = typeof Config.mode === "string" ? Config.mode : Config.mode.rotation[0];
+
+let modeRotationIndex = 0;
+
+let modeSwitchCron: Cron | undefined;
 
 if (isMainThread) {
     // Initialize the server
@@ -333,6 +340,13 @@ if (isMainThread) {
 
                 const humanReadableTeamSizes = [undefined, "solos", "duos", "trios", "squads"];
                 Logger.log(`Switching to ${humanReadableTeamSizes[maxTeamSize] ?? `team size ${maxTeamSize}`}`);
+            });
+        }
+
+        const _mode = Config.mode;
+        if (typeof _mode !== "string") {
+            modeSwitchCron = Cron(_mode.switchSchedule, () => {
+                mode = _mode.rotation[modeRotationIndex = (modeRotationIndex + 1) % _mode.rotation.length];
             });
         }
 
