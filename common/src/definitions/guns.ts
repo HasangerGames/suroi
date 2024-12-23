@@ -1965,7 +1965,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 reloadTime: 0.4,
                 shotsPerReload: 2,
                 reloadFullOnEmpty: true,
-                fullReloadTime: 3.2,
+                fullReloadTime: 2.4,
                 fireDelay: 180,
                 switchDelay: 400,
                 recoilMultiplier: 0.8,
