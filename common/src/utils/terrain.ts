@@ -62,6 +62,14 @@ function jaggedRectangle(
     const topRight = Vec.create(hitbox.max.x, hitbox.min.y);
     const bottomRight = Vec.clone(hitbox.max);
     const bottomLeft = Vec.create(hitbox.min.x, hitbox.max.y);
+    if (variation === 0) {
+        return [
+            topLeft,
+            topRight,
+            bottomRight,
+            bottomLeft
+        ];
+    }
 
     const points: Vector[] = [];
 
@@ -132,7 +140,6 @@ export class Terrain {
         const random = new SeededRandom(seed);
 
         const spacing = 16;
-        const variation = 8;
 
         const beachRect = this.groundRect = new RectangleHitbox(
             Vec.create(oceanSize, oceanSize),
@@ -144,8 +151,8 @@ export class Terrain {
             Vec.create(width - beachPadding, height - beachPadding)
         );
 
-        this.beachHitbox = new PolygonHitbox(jaggedRectangle(beachRect, spacing, variation, random));
-        this.grassHitbox = new PolygonHitbox(jaggedRectangle(grassRect, spacing, variation, random));
+        this.beachHitbox = new PolygonHitbox(jaggedRectangle(beachRect, spacing, Numeric.min(8, 2 * oceanSize), random));
+        this.grassHitbox = new PolygonHitbox(jaggedRectangle(grassRect, spacing, Numeric.min(8, 2 * beachSize), random));
 
         this.rivers = rivers;
 

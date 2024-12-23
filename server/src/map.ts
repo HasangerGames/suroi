@@ -106,8 +106,8 @@ export class GameMap {
         this.mapDef = mapDef;
 
         // + 8 to account for the jagged points
-        const beachPadding = this._beachPadding = mapDef.oceanSize + mapDef.beachSize + 8;
-        const oceanSize = this.oceanSize + 8;
+        const beachPadding = this._beachPadding = mapDef.oceanSize + mapDef.beachSize + Numeric.min(mapDef.oceanSize + mapDef.beachSize, 8);
+        const oceanSize = mapDef.oceanSize + Numeric.min(mapDef.oceanSize, 8);
 
         this.beachHitbox = new GroupHitbox(
             new RectangleHitbox(
