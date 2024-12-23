@@ -2060,7 +2060,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 gasParticles: gasParticlePresets.rifle,
                 capacity: 5,
                 extendedCapacity: 10,
-                reloadTime: 3.8,
+                reloadTime: 2.6,
                 ballistics: {
                     damage: 90,
                     obstacleMultiplier: 1.5,
