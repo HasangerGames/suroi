@@ -566,8 +566,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "deagle", weight: 1 },
             { item: "rsh12", weight: 0.5 },
             { item: "dual_deagle", weight: 0.05 },
-            { item: "dual_rsh12", weight: 0.025 },
-            { item: "g19", weight: 0.0005 }
+            { item: "dual_rsh12", weight: 0.025 }
+            
         ],
         fire_hatchet_case: [
             { item: "fire_hatchet", weight: 1 }
@@ -1219,7 +1219,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "l115a1", weight: 1 },
             { item: "mk18", weight: 1 },
             { item: "m1_garand", weight: 0.5 },
-            { item: "g19", weight: 0.0001 }
+            
         ],
         viking_chest_guns: [
             // 35% chance for one of these
@@ -1396,8 +1396,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         briefcase: [
             { item: "usas12", weight: 1 },
             { item: "mk18", weight: 0.2 },
-            { item: "l115a1", weight: 0.2 },
-            { item: "g19", weight: 0.0001 }
+            { item: "l115a1", weight: 0.2 }
+            
         ],
         ammo_crate: [
             [{ table: "ammo", weight: 1 }],
@@ -1577,7 +1577,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "l115a1", weight: 1 },
             { item: "mk18", weight: 1 },
             { item: "m1_garand", weight: 0.5 },
-            { item: "g19", weight: 0.0001 }
+            
         ],
         viking_chest_guns: [
             // 35% chance for one of these
