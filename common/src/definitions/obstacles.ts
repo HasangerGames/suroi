@@ -103,6 +103,10 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly hitSoundVariations?: number
     readonly noInteractMessage?: boolean
     readonly weaponSwap?: boolean
+    readonly gunMount?: {
+        readonly type: "gun" | "melee"
+        readonly weapon: string
+    }
 
     readonly frames: {
         readonly base?: string
@@ -452,7 +456,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     }
                 }
             ) => ({
-
+                name: props.name,
                 idString: props.name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
                 material: "tree",
                 health: props.health,
@@ -751,11 +755,12 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             })
         );
 
-        const gunMount = derive((gunID: ReferenceTo<GunDefinition>) => ({
+        const gunMount = derive((gunID: ReferenceTo<GunDefinition>, weaponType: "gun" | "melee", useSvg = false) => ({
             idString: `gun_mount_${gunID}`,
             name: "Gun Mount",
             material: "wood",
             health: 60,
+            hideOnMap: true,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
@@ -772,7 +777,13 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             frames: {
                 particle: "furniture_particle",
                 residue: "gun_mount_residue"
-            }
+            },
+            gunMount: !useSvg
+                ? {
+                    type: weaponType,
+                    weapon: `${gunID}${weaponType === "gun" ? "_world" : ""}`
+                }
+                : undefined
         } as const));
 
         const kitchenUnit = derive((id: string) => ({
@@ -3442,19 +3453,19 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     particle: "metal_particle"
                 }
             },
-            gunMount(["mcx_spear"]),
-            gunMount(["stoner_63"]),
-            gunMount(["mini14"]),
-            gunMount(["hp18"]),
-            gunMount(["m590m"]),
-            gunMount(["maul"], {
+            gunMount(["mcx_spear", "gun"]),
+            gunMount(["stoner_63", "gun"]),
+            gunMount(["mini14", "gun"]),
+            gunMount(["hp18", "gun"]),
+            gunMount(["m590m", "gun"]),
+            gunMount(["maul", "melee"], {
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(5.05, 1, Vec.create(0, -1.3)),
                     RectangleHitbox.fromRect(0.8, 3, Vec.create(-1.55, 0.35)),
                     RectangleHitbox.fromRect(0.8, 3, Vec.create(1.55, 0.35))
                 )
             }),
-            gunMount(["dual_rsh12"], {
+            gunMount(["dual_rsh12", "gun", true], {
                 frames: {
                     particle: "gun_mount_dual_rsh12_particle",
                     residue: "gun_mount_dual_rsh12_residue"
