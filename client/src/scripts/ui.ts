@@ -1507,6 +1507,24 @@ export async function setUpUI(game: Game): Promise<void> {
     // Old menu music
     addCheckboxListener("#toggle-old-music", "cv_use_old_menu_music");
 
+    // Controller settings
+    addSliderListener(
+        "#slider-left-joystick-sensitivity",
+        "cv_left_joystick_sensitivity",
+        value => {
+        inputManager.leftJoystickSensitivity = value;
+        }
+    );
+    addSliderListener(
+        "#slider-right-joystick-sensitivity",
+        "cv_right_joystick_sensitivity",
+        value => {
+        inputManager.rightJoystickSensitivity = value;
+        }
+    );
+    addCheckboxListener("#switch-controller-joysticks", "cv_switch_controller_joysticks");
+    addCheckboxListener("#controller-vibration", "cv_controller_vibration");
+
     // Camera shake
     addCheckboxListener("#toggle-camera-shake", "cv_camera_shake_fx");
 

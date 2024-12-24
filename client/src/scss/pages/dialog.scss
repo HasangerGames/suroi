@@ -791,6 +791,40 @@
             color: red;
         }
     }
+    .controller-select-container {
+        display: flex; 
+        gap: 15px; 
+        flex-wrap: wrap; 
+        width: 335px;
+    }
+    
+    .controller-select {
+        display: none;
+        flex-direction: column;
+        width: 160px;
+        height: 100px;
+        background-color: hsl(230, 7%, 25%);
+        border-radius: 10px;
+        border: 3px solid transparent;
+        box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+        text-align: center;
+        &.selected {
+            border-color: palette.$orange;
+        }
+    }
+
+    .controller-select-text {
+        width: 75px;
+        margin-left: -60px;
+        color: red;
+        font-size: 13px;
+        text-align: left;
+    }
+
+    .controller-select-img {
+        margin-top: -50px;
+         margin-left: 90px;
+    }
 
     .modal-item {
 

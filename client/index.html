@@ -695,6 +695,7 @@
       <div class="tab-bar" id="settings-tab-bar">
         <button class="tab active" id="tab-volume"><i class="fa-solid fa-volume-high"></i><span translation="settings_volume"></span></button>
         <button class="tab" id="tab-keybinds"><i class="fa-solid fa-keyboard"></i><span translation="settings_keybinds"></span></button>
+        <button class="tab" id="tab-controller" style="display: none"><i class="fa-solid fa-gamepad" ></i><span>Controller</span ></button>
         <button class="tab" id="tab-graphics"><i class="fa-solid fa-display"></i><span translation="settings_graphics"></span></button>
         <button class="tab" id="tab-interface"><i class="fa-solid fa-list"></i><span translation="settings_interface" use-html></span></button>
         <button class="tab" id="tab-import-export"><i class="fa-solid fa-file-export"></i><span translation="settings_save_load"></span></button>
@@ -739,6 +740,57 @@
           <p style="color: red"><i translation="settings_require_reload"></i></p>
         </div>
         <div class="tab-content" id="tab-keybinds-content" style="display: none">
+        </div>
+        <div class="tab-content" id="tab-controller-content" style="display: none">
+          <div class="controller-select-container" id="controller-select-container">
+            <div class="controller-select selected" id="controller-select-0" style="display: block; align-items: center;">
+              <center class="setting-title">Controller 1</center>
+              <span class="controller-select-text" id="controller-id-0"></span>
+              <img class="controller-select-img" src="./img/misc/other_controller.svg" width="60" id="controller-img-0">
+            </div>
+            <div class="controller-select" id="controller-select-1">
+              <center class="setting-title">Controller 2</center>
+              <span class="controller-select-text" style="margin-left: 5px" id="controller-id-1"></span>
+              <img class="controller-select-img" src="./img/misc/other_controller.svg" width="60" id="controller-img-1">
+            </div>
+            <div class="controller-select" id="controller-select-2">
+              <center class="setting-title">Controller 3</center>
+              <span class="controller-select-text" id="controller-id-2"></span>
+              <img class="controller-select-img" src="./img/misc/other_controller.svg" width="60" id="controller-img-2">
+            </div>
+            <div class="controller-select" id="controller-select-3">
+              <center class="setting-title">Controller 4</center>
+              <span class="controller-select-text" style="margin-left: 5px" id="controller-id-3"></span>
+              <img class="controller-select-img" src="./img/misc/other_controller.svg" width="60" id="controller-img-3">
+            </div>
+          </div>
+          <div class="modal-item">
+            <label>
+              <span class="setting-title">Left joystick sensitivity</span>
+              <span class="range-input-value"></span>
+              <input type="range" max="0.9" min="0" id="slider-left-joystick-sensitivity" step="0.01" value="0">
+            </label>
+          </div>
+          <div class="modal-item">
+            <label>
+              <span class="setting-title">Right joystick sensitivity</span>
+              <span class="range-input-value"></span>
+              <input type="range" max="0.9" min="0" id="slider-right-joystick-sensitivity" step="0.01" value="0">
+            </label>
+          </div>
+          <div class="modal-item checkbox-setting">
+            <label>
+              <span class="setting-title"><span>Switch controller joysticks</span></span>
+              <input type="checkbox" id="switch-controller-joysticks">
+            </label>
+          </div>
+          <p style="color: red;" id="controller-joystick-info"><i>Left joystick moves, Right joystick aims</i></p>
+          <div class="modal-item checkbox-setting">
+            <label>
+              <span class="setting-title"><span>Vibration</span><i></i></span>
+              <input type="checkbox" id="controller-vibration">
+            </label>
+          </div>
         </div>
         <div class="tab-content" id="tab-graphics-content" style="display: none">
           <div class="modal-item select-setting">

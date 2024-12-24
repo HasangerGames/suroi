@@ -8,6 +8,7 @@ import { ItemType, type ItemDefinition } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
 import $ from "jquery";
 import nipplejs, { type JoystickOutputData } from "nipplejs";
+import { Ticker } from "pixi.js";
 import { isMobile } from "pixi.js";
 import { getTranslatedString } from "../../translations";
 import { type TranslationKeys } from "../../typings/translations";
@@ -33,7 +34,9 @@ export class InputManager {
     // had to put it here because it's not a boolean
     // and inputManager assumes all keys of `movement` are booleans
     movementAngle = 0;
-
+    controllerConnected = false;
+    leftJoystickSensitivity = 0;
+    rightJoystickSensitivity = 0;
     mouseX = 0;
     mouseY = 0;
 
@@ -342,6 +345,159 @@ export class InputManager {
                 shootOnRelease = false;
             });
         }
+        const ticker = new Ticker();
+        window.addEventListener("gamepadconnected", () => {
+            let x = 0;
+            let LBpressed = false;
+            let RBpressed = false;
+            ticker.add(async() => {
+                const controller = navigator.getGamepads()[x];
+                if (!controller) return;
+                $("#tab-controller").show();
+                document.querySelectorAll(".controller-select").forEach(element => {
+                    const selectedController = parseInt(element.id.split("-")[2]);
+                    if (navigator.getGamepads()[selectedController]) {
+                        $(`#controller-select-${selectedController}`).css("display", "flex");
+                    } else $(`#controller-select-${selectedController}`).hide();
+                    element.addEventListener("click", () => {
+                        document.querySelectorAll(".controller-select").forEach(el => el.classList.remove("selected"));
+                        element.classList.add("selected");
+                        if (x === selectedController) return;
+                        x = selectedController;
+                        const newController = navigator.getGamepads()[x];
+                        if (!newController) return;
+                        void newController.vibrationActuator.playEffect("dual-rumble", {
+                            startDelay: 0,
+                            duration: 500,
+                            weakMagnitude: 1.0,
+                            strongMagnitude: 1.0
+                        });
+                    });
+                });
+                document.querySelectorAll(".controller-select").forEach((controllerSelect, index) => {
+                    const controller = navigator.getGamepads()[index];
+                    if (controller) {
+                        let imgSrc = "./img/misc/other_controller.svg";
+                        if (controller.id.includes("045e")) {
+                            imgSrc = "./img/misc/xbox_controller.svg";
+                        } else if (controller.id.includes("0ce")) {
+                            imgSrc = "./img/misc/ps5_controller.svg";
+                        } else if (controller.id.includes("054c") && !controller.id.includes("0ce")) {
+                            imgSrc = "./img/misc/ps4_controller.svg";
+                        } else if (controller.id.includes("057e")) {
+                            imgSrc = "./img/misc/joycon_controller.svg";
+                        }
+                        (document.getElementById(`controller-img-${index}`) as HTMLImageElement).src = imgSrc;
+                        (document.getElementById(`controller-id-${index}`) as HTMLDivElement).textContent = controller.id.split("(")[0].trim();
+                    }
+                });
+                this.leftJoystickSensitivity = game.console.getBuiltInCVar("cv_left_joystick_sensitivity");
+                this.rightJoystickSensitivity = game.console.getBuiltInCVar("cv_right_joystick_sensitivity");
+                const leftJoystickX = controller.axes[0];
+                const leftJoystickY = controller.axes[1];
+                const rightJoystickX = controller.axes[2];
+                const rightJoystickY = controller.axes[3];
+                const leftJoystickMoving = Math.abs(leftJoystickX) > this.leftJoystickSensitivity || Math.abs(leftJoystickY) > this.leftJoystickSensitivity;
+                const rightJoystickMoving = Math.abs(rightJoystickX) > this.rightJoystickSensitivity || Math.abs(rightJoystickY) > this.rightJoystickSensitivity;
+                // const rightJoystickDistance = Math.sqrt(gamepads[0].axes[2] * gamepads[0].axes[2] + gamepads[0].axes[3] * gamepads[0].axes[3]);
+                // distance formula for stuff like throwables, USAS-12, and M590M
+                let movementJoystickMoving = leftJoystickMoving;
+                let aimJoystickMoving = rightJoystickMoving;
+                let movementJoystickX = leftJoystickX;
+                let movementJoystickY = leftJoystickY;
+                let aimJoystickX = rightJoystickX;
+                let aimJoystickY = rightJoystickY;
+                const joystickInfo = document.getElementById("controller-joystick-info");
+                if (game.console.getBuiltInCVar("cv_switch_controller_joysticks")) {
+                    movementJoystickMoving = rightJoystickMoving;
+                    aimJoystickMoving = leftJoystickMoving;
+                    movementJoystickX = rightJoystickX;
+                    movementJoystickY = rightJoystickY;
+                    aimJoystickX = leftJoystickX;
+                    aimJoystickY = leftJoystickY;
+                    if (joystickInfo) joystickInfo.textContent = "Right joystick moves, Left joystick aims";
+                } else if (joystickInfo) joystickInfo.textContent = "Left joystick moves, Right joystick aims";
+
+                const inventory = this.game.uiManager.inventory;
+                const cycle = (offset: number): void => {
+                    let index = Numeric.absMod(
+                        inventory.activeWeaponIndex + offset,
+                        GameConstants.player.maxWeapons
+                    );
+                    let iterationCount = 0;
+                    while (!inventory.weapons[index]) {
+                        index = Numeric.absMod(index + offset, GameConstants.player.maxWeapons);
+                        if (++iterationCount > 100) {
+                            index = inventory.activeWeaponIndex;
+                            break;
+                        }
+                    }
+
+                    this.addAction({
+                        type: InputActions.EquipItem,
+                        slot: index
+                    });
+                };
+
+                if (controller.buttons[0].pressed) this.addAction(InputActions.Interact);
+                if (controller.buttons[2].pressed) this.addAction(InputActions.Cancel);
+                if (controller.buttons[4].pressed && !LBpressed) {
+                    cycle(-1); LBpressed = true;
+                } else if (!controller.buttons[4].pressed) LBpressed = false;
+
+                if (controller.buttons[5].pressed && !RBpressed) {
+                    cycle(1); RBpressed = true;
+                } else if (!controller.buttons[5].pressed) RBpressed = false;
+
+                if (controller.buttons[6].pressed) this.addAction(InputActions.Reload);
+                if (controller.buttons[7].pressed) {
+                    this.attacking = true;
+                    if (game.console.getBuiltInCVar("cv_controller_vibration")) {
+                        if (game.activePlayer?.activeItem.itemType === ItemType.Gun && !game.activePlayer.dead && !game.activePlayer.downed) {
+                            await controller.vibrationActuator.playEffect("dual-rumble", {
+                                startDelay: 0,
+                                duration: 10,
+                                weakMagnitude: 1.0,
+                                strongMagnitude: 1.0
+                            });
+                        }
+                    }
+                } else this.attacking = false;
+                if (movementJoystickMoving) {
+                    const movementAngle = Math.atan2(movementJoystickY, movementJoystickX);
+                    this.movementAngle = movementAngle;
+                    this.movement.moving = true;
+                    // note: movement.moving only works on mobile
+                    if (!aimJoystickMoving) {
+                        this.rotation = movementAngle;
+                        this.turning = true;
+                        if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && game.activePlayer) {
+                            game.activePlayer.container.rotation = this.rotation;
+                            this.turning = true;
+                        }
+                        if (!game.activePlayer) return;
+                        game.activePlayer.images.aimTrail.alpha = 0;
+                    }
+                } else {
+                    this.movement.moving = false;
+                }
+
+                if (aimJoystickMoving) {
+                    this.rotation = Math.atan2(aimJoystickY, aimJoystickX);
+                    this.turning = true;
+
+                    if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && game.activePlayer) {
+                        game.activePlayer.container.rotation = this.rotation;
+                        game.activePlayer.images.aimTrail.alpha = 1;
+                    }
+                }
+            });
+            ticker.start();
+        });
+        window.addEventListener("gamepaddisconnected", () => {
+            $("#tab-controller").hide();
+            if (ticker) ticker.stop();
+        });
     }
 
     private handleInputEvent(down: boolean, event: KeyboardEvent | MouseEvent | WheelEvent): void {
