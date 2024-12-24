@@ -1998,7 +1998,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             },
             {
                 idString: "blr",
-                name: "BLR",
+                name: "BLR 556",
                 ammoType: "556mm",
                 ammoSpawnAmount: 20,
                 capacity: 5,
