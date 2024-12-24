@@ -198,6 +198,7 @@
   "kf_finished_off": "işini bitirdi"
   "themselves": "kendilerinin"
   "kf_message": "<player> <finally> <victim>'i <weapon> <with> <event>"
+  "kf_message_grammar": "<player> <finally> <victim> <weapon> <with> <event>"
   "tt_restores": "<item> yeniler <amount> <type>"
   "tt_reduces": "<item> azaltır <percent>% damage"
   "go_kills": "Öldürmeler:"
