@@ -502,7 +502,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     reloadTime: 4.2
                 }
             },
-            // sub-machine guns
+            // submachine guns
             {
                 idString: "saf200",
                 name: "SAF-200",
@@ -680,7 +680,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     }
                 }
             },
-            // assult rifles
+            // assault rifles
             {
                 idString: "ak47",
                 name: "AK-47",
