@@ -138,7 +138,7 @@ const maps = {
         },
         obstacles: {
             oil_tank: 12,
-            large_oak_tree: 10,
+            oak_tree: 10,
             small_oak_tree: 100,
             birch_tree: 20,
             pine_tree: 10,
@@ -289,7 +289,7 @@ const maps = {
             tent_4: 1
         },
         obstacles: {
-            large_oak_tree: 230,
+            oak_tree: 230,
             small_oak_tree: 50,
             birch_tree: 25,
             maple_tree: 70,
@@ -326,7 +326,7 @@ const maps = {
                     minAmount: 2,
                     maxAmount: 3,
                     jitter: 5,
-                    obstacles: ["large_oak_tree"],
+                    obstacles: ["oak_tree"],
                     radius: 12
                 }
             },
@@ -456,7 +456,7 @@ const maps = {
             tent_4: 1
         },
         obstacles: {
-            large_oak_tree: 40,
+            oak_tree: 40,
             small_oak_tree: 100,
             birch_tree: 60,
             maple_tree: 50,
@@ -497,7 +497,7 @@ const maps = {
                     minAmount: 2,
                     maxAmount: 3,
                     jitter: 5,
-                    obstacles: ["large_oak_tree"],
+                    obstacles: ["oak_tree"],
                     radius: 12
                 }
             },
@@ -591,7 +591,7 @@ const maps = {
         },
         obstacles: {
             oil_tank_winter: 12,
-            large_oak_tree: 40,
+            oak_tree: 40,
             birch_tree: 20,
             pine_tree: 90,
             loot_tree: 1,
@@ -621,7 +621,7 @@ const maps = {
                     minAmount: 2,
                     maxAmount: 3,
                     jitter: 5,
-                    obstacles: ["large_oak_tree"],
+                    obstacles: ["oak_tree"],
                     radius: 12
                 }
             },
@@ -778,7 +778,7 @@ const maps = {
                 { id: "barrel", pos: Vec.create(25, 25) },
                 { id: "rock", pos: Vec.create(80, 10) },
                 { id: "rock", pos: Vec.create(60, 15) },
-                { id: "large_oak_tree", pos: Vec.create(20, 70) },
+                { id: "oak_tree", pos: Vec.create(20, 70) },
                 { id: "oil_tank", pos: Vec.create(140, 25) },
                 { id: "birch_tree", pos: Vec.create(120, 50) }
             ];
@@ -802,7 +802,7 @@ const maps = {
 
             // Generate random obstacles around the center
             const randomObstacles: MapDefinition["obstacles"] = {
-                large_oak_tree: 50,
+                oak_tree: 50,
                 rock: 50,
                 bush: 20,
                 birch_tree: 5,
@@ -1001,7 +1001,7 @@ const maps = {
 
             const obstacles = {
                 oil_tank: 5,
-                large_oak_tree: 40,
+                oak_tree: 40,
                 birch_tree: 40,
                 box: 50,
                 pine_tree: 30,
