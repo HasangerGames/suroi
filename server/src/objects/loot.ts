@@ -135,6 +135,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 (object.isObstacle || object.isBuilding)
                 && object.collidable
                 && object.hitbox?.collidesWith(this.hitbox)
+                && adjacentOrEqualLayer(this.layer, object.layer)
             ) {
                 if (object.isObstacle && object.definition.isStair) {
                     object.handleStairInteraction(this);
@@ -147,6 +148,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 object.isLoot
                 && object !== this
                 && object.hitbox.collidesWith(this.hitbox)
+                && adjacentOrEqualLayer(this.layer, object.layer)
             ) {
                 const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, object.position, object.hitbox.radius);
                 if (collision) {
