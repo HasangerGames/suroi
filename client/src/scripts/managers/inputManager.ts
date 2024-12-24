@@ -348,6 +348,8 @@ export class InputManager {
         const ticker = new Ticker();
         window.addEventListener("gamepadconnected", () => {
             let x = 0;
+            let LBpressed = false;
+            let RBpressed = false;
             ticker.add(async() => {
                 const controller = navigator.getGamepads()[x];
                 if (!controller) return;
@@ -415,8 +417,38 @@ export class InputManager {
                     aimJoystickY = leftJoystickY;
                     if (joystickInfo) joystickInfo.textContent = "Right joystick moves, Left joystick aims";
                 } else if (joystickInfo) joystickInfo.textContent = "Left joystick moves, Right joystick aims";
+
+                const inventory = this.game.uiManager.inventory;
+                const cycle = (offset: number): void => {
+                    let index = Numeric.absMod(
+                        inventory.activeWeaponIndex + offset,
+                        GameConstants.player.maxWeapons
+                    );
+                    let iterationCount = 0;
+                    while (!inventory.weapons[index]) {
+                        index = Numeric.absMod(index + offset, GameConstants.player.maxWeapons);
+                        if (++iterationCount > 100) {
+                            index = inventory.activeWeaponIndex;
+                            break;
+                        }
+                    }
+
+                    this.addAction({
+                        type: InputActions.EquipItem,
+                        slot: index
+                    });
+                };
+
                 if (controller.buttons[0].pressed) this.addAction(InputActions.Interact);
                 if (controller.buttons[2].pressed) this.addAction(InputActions.Cancel);
+                if (controller.buttons[4].pressed && !LBpressed) {
+                    cycle(-1); LBpressed = true;
+                } else if (!controller.buttons[4].pressed) LBpressed = false;
+
+                if (controller.buttons[5].pressed && !RBpressed) {
+                    cycle(1); RBpressed = true;
+                } else if (!controller.buttons[5].pressed) RBpressed = false;
+
                 if (controller.buttons[6].pressed) this.addAction(InputActions.Reload);
                 if (controller.buttons[7].pressed) {
                     this.attacking = true;
