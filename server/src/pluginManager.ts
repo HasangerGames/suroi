@@ -628,7 +628,7 @@ type EventData<Key extends EventTypes> = [
     )
 ];
 
-export type EventHandler<Ev extends EventTypes = EventTypes> = (...[data, cancel]: [...ArgsFor<Ev>, ...EventData<Ev>]) => void;
+export type EventHandler<Ev extends EventTypes = EventTypes> = (...[data, event]: [...ArgsFor<Ev>, ...EventData<Ev>]) => void;
 
 type EventHandlers = {
     [K in EventTypes]?: Array<EventHandler<K>>
@@ -637,7 +637,7 @@ type EventHandlers = {
 // basically file-scoped access to an emit method
 const pluginDispatchers = new ExtendedMap<
     GamePlugin,
-    <Ev extends EventTypes = EventTypes>(eventType: Ev, ...[data, cancel]: [...ArgsFor<Ev>, ...EventData<Ev>]) => void
+    <Ev extends EventTypes = EventTypes>(eventType: Ev, ...[data, event]: [...ArgsFor<Ev>, ...EventData<Ev>]) => void
 >();
 
 export abstract class GamePlugin {
