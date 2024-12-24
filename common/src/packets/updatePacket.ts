@@ -40,7 +40,8 @@ function serializePlayerData(
         lockedSlots,
         items,
         activeC4s,
-        perks
+        perks,
+        teamID
     }: PlayerData
 ): void {
     /* eslint-disable @stylistic/no-multi-spaces */
@@ -56,6 +57,7 @@ function serializePlayerData(
     const hasItems       = items !== undefined;
     const hasActiveC4s   = activeC4s !== undefined;
     const hasPerks       = perks !== undefined;
+    const hasTeamID      = teamID !== undefined;
     /* eslint-enable @stylistic/no-multi-spaces */
 
     strm.writeBooleanGroup2(
@@ -70,7 +72,8 @@ function serializePlayerData(
         hasLockedSlots,
         hasItems,
         hasActiveC4s,
-        hasPerks
+        hasPerks,
+        hasTeamID
     );
 
     if (hasMinMax) {
@@ -252,6 +255,10 @@ function serializePlayerData(
             bitfield >>= 8;
         }
     }
+
+    if (hasTeamID) {
+        strm.writeUint8(teamID);
+    }
 }
 
 function deserializePlayerData(strm: SuroiByteStream): PlayerData {
@@ -267,7 +274,8 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         hasLockedSlots,
         hasItems,
         hasActiveC4s,
-        hasPerks
+        hasPerks,
+        hasTeamID
     ] = strm.readBooleanGroup2();
 
     const data: SDeepMutable<PlayerData> = {};
@@ -420,6 +428,10 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         };
     }
 
+    if (hasTeamID) {
+        data.teamID = strm.readUint8();
+    }
+
     return data;
 }
 
@@ -508,6 +520,7 @@ export type PlayerData = {
     }
     readonly activeC4s?: boolean
     readonly perks?: PerkCollection
+    readonly teamID?: number
 };
 
 export type UpdatePacketDataCommon = {

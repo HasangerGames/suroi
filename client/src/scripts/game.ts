@@ -699,6 +699,10 @@ export class Game {
         if (playerData) {
             this.uiManager.updateUI(playerData);
             this.uiManager.updateWeaponSlots(); // to load reskins
+
+            if (this.spectating && playerData.teamID !== undefined && playerData.id !== undefined) {
+                this.teamID = playerData.teamID;
+            }
         }
 
         for (const deletedPlayerId of updateData.deletedPlayers ?? []) {

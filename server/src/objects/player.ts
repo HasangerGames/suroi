@@ -260,7 +260,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         zoom: true,
         layer: true,
         activeC4s: true,
-        perks: true
+        perks: true,
+        teamID: true
     };
 
     readonly inventory = new Inventory(this);
@@ -1341,6 +1342,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 player.dirty.perks || forceInclude
                     ? { perks: this.perks }
                     : {}
+            ),
+            ...(
+                player.dirty.teamID || forceInclude
+                    ? { teamID: player.teamID }
+                    : {}
             )
         };
 
@@ -1594,6 +1600,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         if (toSpectate === undefined) return;
+
+        if (this.game.teamMode) {
+            this.teamID = toSpectate.teamID;
+            this.setDirty();
+        }
 
         this.spectating?.spectators.delete(this);
         this.updateObjects = true;

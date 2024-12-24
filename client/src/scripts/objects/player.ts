@@ -570,11 +570,16 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             // this.layer = data.layer; - why assign again?
 
             this.teamID = teamID;
-            if (
-                !this.isActivePlayer
-                && !this.teammateName
-                && !this.dead
-                && this.teamID === game.teamID
+
+            const teammateIDs = [];
+            for (const teammate of uiManager.teammates) teammateIDs.push(teammate.id);
+
+            if (this.game.teamMode && (
+                (!this.isActivePlayer
+                    && !this.teammateName
+                    && !this.dead
+                    && this.teamID === game.teamID)
+                || (this.game.spectating && !this.dead && this.teamID === game.teamID && !this.teammateName))
             ) {
                 const name = game.playerNames.get(this.id);
                 this.teammateName = {
