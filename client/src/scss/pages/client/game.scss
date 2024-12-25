@@ -1928,17 +1928,16 @@
 
         i {
             color: palette.$orange;
-            transform: translate(0%, 80%) rotate(15deg);
-            font-size: 120px;
+            transform: translate(0%, 60%);
+            font-size: 160px;
             position: absolute;
-            opacity: 0.25;
+            z-index: -1;
 
             @media screen and (max-width: variables.$screen-large) {
                 @media screen and (max-height: variables.$screen_medium) {
-                    transform: translate(0%, 50%) rotate(15deg);
+                    transform: translate(0%, 50%);
                     font-size: 120px;
                     position: absolute;
-                    opacity: 0.25;
                 }
             }
         }
@@ -1956,6 +1955,10 @@
         padding: 0;
         position: relative;
         bottom: 20px;
+
+        .game-over-player-name {
+            font-size: 20px;
+        }
     }
 }
 

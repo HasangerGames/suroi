@@ -12,6 +12,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -34,11 +36,14 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇧🇷 Português (Brasil) (100% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (99% Complete) - br.hjson
 
 ### (No Invalid Keys)
 
-### (No Undefined Keys)
+### Undefined Keys
+
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
 
 ## 🇨🇿 Čeština (94% Complete) - cz.hjson
 
@@ -52,6 +57,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -78,6 +85,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -113,23 +122,28 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `msg_punishment_warn_agreement` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
 
-## 🇫🇮 suomi (100% Complete) - fi.hjson
-
-### (No Invalid Keys)
-
-### Undefined Keys
-
-- Key `msg_punishment_warn_agreement` is not defined
-
-## 🇫🇷 Français (100% Complete) - fr.hjson
+## 🇫🇮 suomi (99% Complete) - fi.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
+
+## 🇫🇷 Français (99% Complete) - fr.hjson
+
+### (No Invalid Keys)
+
+### Undefined Keys
+
+- Key `msg_punishment_warn_agreement` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
 
 ## 🇬🇷 Ελληνικά (100% Complete) - gr.hjson
 
@@ -137,7 +151,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### (No Undefined Keys)
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (93% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (92% Complete) - hk_mo.hjson
 
 ### (No Invalid Keys)
 
@@ -151,6 +165,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -221,6 +237,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -242,6 +260,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -263,6 +283,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -272,13 +294,15 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇵🇱 Polski (100% Complete) - pl.hjson
+## 🇵🇱 Polski (99% Complete) - pl.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
 
 ## 🎀 Cute Engwish (92% Complete) - qen.hjson
 
@@ -299,6 +323,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -309,7 +335,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇷🇴 Română (88% Complete) - ro.hjson
+## 🇷🇴 Română (87% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
@@ -325,6 +351,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -347,7 +375,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇷🇺 Русский (100% Complete) - ru.hjson
+## 🇷🇺 Русский (99% Complete) - ru.hjson
 
 ### (No Invalid Keys)
 
@@ -355,7 +383,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `m16a4` is not defined
 
-## 🇮🇳 தமிழ் (94% Complete) - ta.hjson
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
+
+## 🇮🇳 தமிழ் (93% Complete) - ta.hjson
 
 ### (No Invalid Keys)
 
@@ -368,6 +399,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -384,9 +417,12 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `kf_message_grammar` is not a valid key
 
-### (No Undefined Keys)
+### Undefined Keys
 
-## 🇹🇼 中文（繁體） (87% Complete) - tw.hjson
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
+
+## 🇹🇼 中文（繁體） (86% Complete) - tw.hjson
 
 ### (No Invalid Keys)
 
@@ -403,6 +439,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -427,7 +465,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇻🇳 Tiếng Việt (100% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (99% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -437,8 +475,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
 
-## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -447,4 +487,6 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
 

@@ -20,6 +20,8 @@
   "msg_punishment_vpn_reason": "Hogy a kitiltásokat nehezebb legyen megkerülni, a VPN-ek és proxyk használata le van tiltva. Kérlek kapcsold ki a VPN-edet/proxydat, hogy tudjál játszani a játékkal! Ha szükséged van rájuk, hogy játszhass a játékkal, kérlek vedd fel a kapcsolatot egy adminnal a Discord-szerveren (https://discord.suroi.io), vagy üzenj a következő email-címre: support@suroi.io!"
   "msg_no_reason": "Nincs ok megadva."
   "msg_punishment_warn_agreement": "Megértettem ezt a figyelmeztetést, és nem fogom megismételni vétkemet!"
+  "msg_your_team_eliminated": "A csapatod el lett pusztítva."
+  "msg_the_team_eliminated": "A csapat el lett pusztítva."
   "play_solo": "Játék Egyedül"
   "play_duo": "Játék Ketten"
   "play_squad": "Játék Négyen"

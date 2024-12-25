@@ -21,6 +21,7 @@
   "msg_punishment_vpn": "VPN või proxy tuvastatud."
   "msg_punishment_vpn_reason": "Selleks, et sohki tegemise põhjusel määratud karistusest (st. ajutine või püsiv mängimise keeld) kõvale hoidumist ära hoida ja mitte lubada sohki tegijatel korduvalt erinevaid IP-aadresse kasutada rohkema kahju tegemise eesmärgil, ei ole VPNid ja proxyd Surois lubatud. Et Suroi mängimist jätkata, lülitage enda VPN või proxy välja. Kui te arvate, et see on viga või soovite erandit, võtke Suroi Discordi serveris (https://discord.suroi.io) ühendust mõne moderaatoriga või kirjutage e-kiri aadressile support@suroi.io."
   "msg_no_reason": "Põhjust pole esitatud."
+  "msg_punishment_warn_agreement": "Ma sain hoiatusest aru ja ei korda oma viga."
   "play_solo": "Mängi Üksinda"
   "play_duo": "Mängi Kahekesi"
   "play_squad": "Mängi Neljakesi"
