@@ -596,7 +596,7 @@ export interface EventDataMap {
     readonly game_end: Game
 }
 
-type EventTypes = keyof typeof Events;
+export type EventTypes = keyof typeof Events;
 
 type ArgsFor<Key extends EventTypes> = [EventDataMap[Key]] extends [never] ? [] : [EventDataMap[Key]];
 type EventData<Key extends EventTypes> = [
