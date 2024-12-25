@@ -1926,6 +1926,23 @@
         font-size: 25px;
         gap: 5px;
 
+        i {
+            color: palette.$orange;
+            transform: translate(0%, 80%) rotate(15deg);
+            font-size: 120px;
+            position: absolute;
+            opacity: 0.25;
+
+            @media screen and (max-width: variables.$screen-large) {
+                @media screen and (max-height: variables.$screen_medium) {
+                    transform: translate(0%, 50%) rotate(15deg);
+                    font-size: 120px;
+                    position: absolute;
+                    opacity: 0.25;
+                }
+            }
+        }
+
         img {
             vertical-align: middle;
             width: 22px;

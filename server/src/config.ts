@@ -20,11 +20,11 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "arena",
+    map: "winter",
 
     spawn: { mode: SpawnMode.Normal },
 
-    maxTeamSize: TeamSize.Squad,
+    maxTeamSize: TeamSize.Solo,
 
     maxPlayersPerGame: 80,
     maxGames: 5,

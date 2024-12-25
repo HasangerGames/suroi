@@ -420,8 +420,21 @@ export class UIManager {
 
         chickenDinner.toggle(packet.won);
 
+        const medal = this.game.teamMode ? "<i class=\"fa-solid fa-medal\"></i>" : "";
+        let bestKills = packet.teammates[0].kills;
+        let medalAssigned = false;
+
+        for (let i = 0; i < packet.numberTeammates; i++) {
+            if (bestKills < packet.teammates[i].kills) {
+                bestKills = packet.teammates[i].kills;
+            }
+        }
+
         for (let i = 0; i < packet.numberTeammates; i++) {
             const teammateID = packet.teammates[i].playerID;
+            const wonMedal = bestKills === packet.teammates[i].kills && bestKills !== 0 && !medalAssigned;
+
+            if (wonMedal) medalAssigned = true;
 
             gameOverText.html(
                 packet.won
@@ -439,10 +452,8 @@ export class UIManager {
                 ? html`<img class="badge-icon" src="./img/game/shared/badges/${teammateBadge.idString}.svg" alt="${teammateBadge.name} badge">`
                 : "";
 
-            console.log(teammateBadgeText);
-
             const card = html` <div class="game-over-screen">
-                <h1 class="game-over-player-name" class="modal-item">${teammateName + teammateBadgeText}</h1>
+                <h1 class="game-over-player-name" class="modal-item">${(wonMedal ? medal : "") + teammateName + teammateBadgeText}</h1>
                 <div class="modal-item game-over-stats">
                   <div class="stat">
                     <span class="stat-name" translation="go_kills">Kills:</span>
