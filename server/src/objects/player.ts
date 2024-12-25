@@ -17,7 +17,7 @@ import { type SkinDefinition } from "@common/definitions/skins";
 import { SyncedParticles, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
 import { DisconnectPacket } from "@common/packets/disconnectPacket";
-import { GameOverPacket, type GameOverData } from "@common/packets/gameOverPacket";
+import { GameOverPacket, TeammateGameOverData, type GameOverData } from "@common/packets/gameOverPacket";
 import { type AllowedEmoteSources, type NoMobile, type PlayerInputData } from "@common/packets/inputPacket";
 import { createKillfeedMessage, KillFeedPacket, type ForEventType } from "@common/packets/killFeedPacket";
 import { type InputPacket } from "@common/packets/packet";
@@ -2228,9 +2228,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         for (const c4 of this.c4s) {
             c4.damage({ amount: Infinity });
         }
-        
+
         if (this.team) {
-            if(this.team.hasLivingPlayers()) {
+            if (this.team.hasLivingPlayers()) {
                 this.spectating?.spectators.delete(this);
                 this.updateObjects = true;
                 this.startedSpectating = true;
@@ -2340,15 +2340,15 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     sendGameOverPacket(won = false): void {
-        const teammates: any = [];
+        const teammates: TeammateGameOverData[] = [];
         let packet;
         if (this.team && !this.team?.hasLivingPlayers()) {
-            for (let i = 0; i < this.team.players.length; i++) {
-                const playerID = this.team.players[i].id;
-                const kills = this.team.players[i].kills;
-                const damageDone = this.team.players[i].damageDone;
-                const damageTaken = this.team.players[i].damageTaken;
-                const timeAlive = this.game.now - this.team.players[i].joinTime / 1000;
+            for (const player of this.team.players) {
+                const playerID = player.id;
+                const kills = player.kills;
+                const damageDone = player.damageDone;
+                const damageTaken = player.damageTaken;
+                const timeAlive = this.game.now - player.joinTime / 1000;
                 teammates.push({
                     playerID,
                     kills,

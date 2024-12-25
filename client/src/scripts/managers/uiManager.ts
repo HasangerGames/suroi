@@ -226,11 +226,11 @@ export class UIManager {
         gameOverOverlay: $<HTMLDivElement>("#game-over-overlay"),
         gameOverPlayerCards: $<HTMLDivElement>("#player-game-over-cards"),
         gameOverText: $<HTMLHeadingElement>("#game-over-text"),
-        gameOverPlayerName: $<HTMLHeadingElement>("#game-over-player-name"),
+        /* gameOverPlayerName: $<HTMLHeadingElement>("#game-over-player-name"),
         gameOverKills: $<HTMLSpanElement>("#game-over-kills"),
         gameOverDamageDone: $<HTMLSpanElement>("#game-over-damage-done"),
         gameOverDamageTaken: $<HTMLSpanElement>("#game-over-damage-taken"),
-        gameOverTime: $<HTMLSpanElement>("#game-over-time"),
+        gameOverTime: $<HTMLSpanElement>("#game-over-time"), */
         gameOverRank: $<HTMLSpanElement>("#game-over-rank"),
         chickenDinner: $<HTMLImageElement>("#chicken-dinner"),
 
@@ -400,12 +400,12 @@ export class UIManager {
             gameOverPlayerCards,
             chickenDinner,
             gameOverText,
-            gameOverRank,
-            gameOverPlayerName,
+            gameOverRank
+            /* gameOverPlayerName,
             gameOverKills,
             gameOverDamageDone,
             gameOverDamageTaken,
-            gameOverTime
+            gameOverTime */
         } = this.ui;
 
         game.gameOver = true;

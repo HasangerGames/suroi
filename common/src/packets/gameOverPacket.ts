@@ -17,6 +17,14 @@ export type GameOverData = {
     readonly rank: number
 });
 
+export interface TeammateGameOverData {
+    playerID: number
+    kills: number
+    damageDone: number
+    damageTaken: number
+    timeAlive: number
+}
+
 export const GameOverPacket = createPacket("GameOverPacket")<GameOverData>({
     serialize(strm, data) {
         strm.writeUint8(data.numberTeammates);
@@ -33,7 +41,7 @@ export const GameOverPacket = createPacket("GameOverPacket")<GameOverData>({
     deserialize(stream) {
         const numberTeammates = stream.readUint8();
         const rank = stream.readUint8();
-        const teammates: any = [];
+        const teammates: TeammateGameOverData[] = [];
         for (let i = 0; i < numberTeammates; i++) {
             const playerID = stream.readObjectId();
             const kills = stream.readUint8();
