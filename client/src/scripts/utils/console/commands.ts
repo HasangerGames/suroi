@@ -799,9 +799,11 @@ export function setUpCommands(game: Game): void {
             uiManager.updateEmoteWheel();
         },
         function() {
-            const { inputManager, uiManager } = game;
+            const { inputManager, uiManager, pingManager, emoteManager } = game;
             inputManager.pingWheelActive = false;
             uiManager.updateEmoteWheel();
+            emoteManager.selection = null;
+            pingManager.close();
         },
         game,
         {
