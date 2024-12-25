@@ -570,9 +570,6 @@ export class Game {
                 map.teammateIndicators.clear();
                 map.teammateIndicatorContainer.removeChildren();
 
-                // Clear game over player cards.
-                this.uiManager.ui.gameOverPlayerCards.empty();
-
                 this.playerNames.clear();
                 this._timeouts.clear();
 

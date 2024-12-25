@@ -1919,6 +1919,21 @@
     display: flex;
     gap: 20px;
 
+    .game-over-player-name {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 25px;
+        gap: 5px;
+
+        img {
+            vertical-align: middle;
+            width: 22px;
+            height: 22px;
+            margin: 0;
+        }
+    }
+
     @media screen and (max-width: variables.$screen_large) {
         transform: scale(0.6);
         padding: 0;

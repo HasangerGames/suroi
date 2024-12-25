@@ -387,6 +387,7 @@ export class UIManager {
 
         this.ui.interactMsg.hide();
         this.ui.spectatingContainer.hide();
+        this.ui.gameOverPlayerCards.empty();
 
         game.activePlayer?.actionSound?.stop();
 
@@ -441,7 +442,7 @@ export class UIManager {
             console.log(teammateBadgeText);
 
             const card = html` <div class="game-over-screen">
-                <h1 id="game-over-player-name" class="modal-item">${teammateName + teammateBadgeText}</h1>
+                <h1 class="game-over-player-name" class="modal-item">${teammateName + teammateBadgeText}</h1>
                 <div class="modal-item game-over-stats">
                   <div class="stat">
                     <span class="stat-name" translation="go_kills">Kills:</span>

@@ -96,6 +96,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     lastRateLimitUpdate = 0;
     blockEmoting = false;
 
+    initializedSpecialSpectatingCase = false;
+
     readonly loadout: {
         badge?: BadgeDefinition
         skin: SkinDefinition
@@ -454,7 +456,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._hitbox = Player.baseHitbox.transform(position);
 
         this.inventory.addOrReplaceWeapon(2, "fists");
-        this.inventory.addOrReplaceWeapon(3, "c4");
 
         const defaultScope = Modes[GameConstants.modeName].defaultScope;
         if (defaultScope) {
@@ -1606,6 +1607,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         if (toSpectate === undefined) return;
+        if (this.spectating !== undefined && !this.initializedSpecialSpectatingCase) {
+            toSpectate = this.spectating;
+            this.initializedSpecialSpectatingCase = true;
+        }
 
         if (this.game.teamMode) {
             this.teamID = toSpectate.teamID;
