@@ -102,14 +102,28 @@ export const Events = {
      * Emitted on the first tick that a player is attacking (more
      * formally, on the first tick where a player is attacking
      * following a tick where the player was not attacking)
+     *
+     * Cancelling this event causes the active item's `useItem` method
+     * not to be called, and the `startedAttacking` will not be cleared.
+     * This means that next tick, the player will still be considered as
+     * "starting to attack", and this event will be fired again. If this
+     * is undesirable, the event handler can manually set the flag to
+     * false.
      */
-    player_start_attacking: makeEvent(),
+    player_start_attacking: makeEvent(true),
     /**
      * Emitted on the first tick that a player stops attacking
      * (more formally, on the first tick where a player is not
      * attacking following a tick where the player was attacking)
+     *
+     * Cancelling this event causes the active item's `stopUse` method
+     * not to be called, and the `stoppedAttacking` will not be cleared.
+     * This means that next tick, the player will still be considered as
+     * "starting to attack", and this event will be fired again. If this
+     * is undesirable, the event handler can manually set the flag to
+     * false.
      */
-    player_stop_attacking: makeEvent(),
+    player_stop_attacking: makeEvent(true),
     /**
      * Emitted every time an {@link InputPacket} is received.
      * All side-effects from inputs will have already occurred

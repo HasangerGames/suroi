@@ -1059,16 +1059,18 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         // Shoot gun/use item
         if (this.startedAttacking) {
-            this.game.pluginManager.emit("player_start_attacking", this);
-            this.startedAttacking = false;
-            this.disableInvulnerability();
-            this.activeItem.useItem();
+            if (this.game.pluginManager.emit("player_start_attacking", this) === undefined) {
+                this.startedAttacking = false;
+                this.disableInvulnerability();
+                this.activeItem.useItem();
+            }
         }
 
         if (this.stoppedAttacking) {
-            this.game.pluginManager.emit("player_stop_attacking", this);
-            this.stoppedAttacking = false;
-            this.activeItem.stopUse();
+            if (this.game.pluginManager.emit("player_stop_attacking", this) === undefined) {
+                this.stoppedAttacking = false;
+                this.activeItem.stopUse();
+            }
         }
 
         // Gas damage
