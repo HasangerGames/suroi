@@ -700,6 +700,13 @@ export class Minimap {
     }
 
     addMapPing(data: PingSerialization): void {
+        if (this.game.inputManager.isMobile) {
+            this.game.inputManager.emoteWheelActive = false;
+            this.game.uiManager.ui.emoteButton
+                .removeClass("btn-alert")
+                .addClass("btn-primary");
+        }
+
         const { position, definition } = data;
         const playerId = definition.isPlayerPing ? (data as PlayerPingSerialization).playerId : undefined;
 

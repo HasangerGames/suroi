@@ -2061,7 +2061,7 @@ export async function setUpUI(game: Game): Promise<void> {
         ui.spectatingContainer.css({
             width: "150px",
             position: "fixed",
-            top: "10%",
+            top: "15%",
             left: "5rem"
         });
 
@@ -2171,7 +2171,18 @@ export async function setUpUI(game: Game): Promise<void> {
         $("#mobile-options").show();
 
         ui.menuButton.on("click", () => ui.gameMenu.toggle());
-        ui.emoteButton.on("click", () => ui.emoteWheel.show());
+
+        ui.emoteButton.on("click", () => {
+            const { emoteWheelActive } = inputManager;
+
+            inputManager.emoteWheelActive = !emoteWheelActive;
+
+            ui.emoteButton
+                .toggleClass("btn-alert", !emoteWheelActive)
+                .toggleClass("btn-primary", emoteWheelActive);
+
+            game.uiManager.ui.emoteWheel.show();
+        });
 
         ui.pingToggle.on("click", () => {
             inputManager.pingWheelActive = !inputManager.pingWheelActive;
