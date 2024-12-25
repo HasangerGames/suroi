@@ -454,6 +454,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._hitbox = Player.baseHitbox.transform(position);
 
         this.inventory.addOrReplaceWeapon(2, "fists");
+        this.inventory.addOrReplaceWeapon(3, "c4");
 
         const defaultScope = Modes[GameConstants.modeName].defaultScope;
         if (defaultScope) {
@@ -2227,9 +2228,19 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         for (const c4 of this.c4s) {
             c4.damage({ amount: Infinity });
         }
+        
+        if (this.team) {
+            if(this.team.hasLivingPlayers()) {
+                this.spectating?.spectators.delete(this);
+                this.updateObjects = true;
+                this.startedSpectating = true;
+                this.spectating = this.team.getLivingPlayers()[0];
+                this.team.getLivingPlayers()[0].spectators.add(this);
+                this.spectating = this.team.getLivingPlayers()[0];
+            }
+        }
 
-        // Send game over to dead player
-        if (!this.disconnected) {
+        if (!this.disconnected && this.spectating === undefined) {
             this.sendGameOverPacket();
         }
 
@@ -2329,7 +2340,52 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     sendGameOverPacket(won = false): void {
-        const packet = GameOverPacket.create({
+        const teammates: any = [];
+        let packet;
+        if (this.team && !this.team?.hasLivingPlayers()) {
+            for (let i = 0; i < this.team.players.length; i++) {
+                const playerID = this.team.players[i].id;
+                const kills = this.team.players[i].kills;
+                const damageDone = this.team.players[i].damageDone;
+                const damageTaken = this.team.players[i].damageTaken;
+                const timeAlive = this.game.now - this.team.players[i].joinTime / 1000;
+                teammates.push({
+                    playerID,
+                    kills,
+                    damageDone,
+                    damageTaken,
+                    timeAlive
+                });
+            }
+
+            packet = GameOverPacket.create({
+                won,
+                rank: won ? 1 as const : this.game.aliveCount + 1,
+                numberTeammates: teammates.length,
+                teammates: teammates
+            } as GameOverData);
+        } else {
+            const playerID = this.id;
+            const kills = this.kills;
+            const damageDone = this.damageDone;
+            const damageTaken = this.damageTaken;
+            const timeAlive = this.game.now - this.joinTime / 1000;
+            teammates.push({
+                playerID,
+                kills,
+                damageDone,
+                damageTaken,
+                timeAlive
+            });
+            packet = GameOverPacket.create({
+                won,
+                rank: won ? 1 as const : this.game.aliveCount + 1,
+                numberTeammates: 1,
+                teammates: teammates
+            } as GameOverData);
+        }
+
+        /* const packet = GameOverPacket.create({
             won,
             playerID: this.id,
             kills: this.kills,
@@ -2338,6 +2394,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             timeAlive: (this.game.now - this.joinTime) / 1000,
             rank: won ? 1 as const : this.game.aliveCount + 1
         } as GameOverData);
+         */
 
         this.sendPacket(packet);
 

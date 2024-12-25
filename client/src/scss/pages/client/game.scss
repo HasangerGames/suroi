@@ -1903,7 +1903,31 @@
     }
 }
 
-#game-over-screen {
+#game-over-buttons-holder {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+
+    @media screen and (max-width: variables.$screen_large) {
+        transform: scale(0.6);
+        position: relative;
+        bottom: 50px;
+    }
+}
+
+#player-game-over-cards {
+    display: flex;
+    gap: 20px;
+
+    @media screen and (max-width: variables.$screen_large) {
+        transform: scale(0.6);
+        padding: 0;
+        position: relative;
+        bottom: 20px;
+    }
+}
+
+.game-over-screen {
     text-align: center;
 
     background: rgba(0, 0, 0, 0.6);
@@ -1926,7 +1950,7 @@
         margin-bottom: 5px;
     }
 
-    #game-over-stats {
+    .game-over-stats {
         width: 250px;
         margin: auto;
         padding: 16px 20px 16px 20px;

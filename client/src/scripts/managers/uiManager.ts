@@ -224,6 +224,7 @@ export class UIManager {
         joystickContainer: $<HTMLDivElement>("#joysticks-containers"),
 
         gameOverOverlay: $<HTMLDivElement>("#game-over-overlay"),
+        gameOverPlayerCards: $<HTMLDivElement>("#player-game-over-cards"),
         gameOverText: $<HTMLHeadingElement>("#game-over-text"),
         gameOverPlayerName: $<HTMLHeadingElement>("#game-over-player-name"),
         gameOverKills: $<HTMLSpanElement>("#game-over-kills"),
@@ -396,6 +397,7 @@ export class UIManager {
 
         const {
             gameOverOverlay,
+            gameOverPlayerCards,
             chickenDinner,
             gameOverText,
             gameOverRank,
@@ -417,28 +419,51 @@ export class UIManager {
 
         chickenDinner.toggle(packet.won);
 
-        const playerName = this.getPlayerData(packet.playerID).name;
-        const playerBadge = this.getPlayerData(packet.playerID).badge;
-        const playerBadgeText = playerBadge
-            ? html`<img class="badge-icon" src="./img/game/shared/badges/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
-            : "";
+        for (let i = 0; i < packet.numberTeammates; i++) {
+            const teammateID = packet.teammates[i].playerID;
 
-        gameOverText.html(
-            packet.won
-                ? getTranslatedString("msg_win")
-                : (this.game.spectating
-                    ? getTranslatedString("msg_player_died", {
-                        player: playerName
-                    })
-                    : getTranslatedString("msg_you_died"))
-        );
+            gameOverText.html(
+                packet.won
+                    ? getTranslatedString("msg_win")
+                    : (this.game.spectating
+                        ? getTranslatedString("msg_player_died", {
+                            player: this.getPlayerData(packet.teammates[i].playerID).name
+                        })
+                        : getTranslatedString("msg_you_died"))
+            );
 
-        gameOverPlayerName.html(playerName + playerBadgeText);
+            const teammateName = this.getPlayerData(teammateID).name;
+            const teammateBadge = this.getPlayerData(teammateID).badge;
+            const teammateBadgeText = teammateBadge
+                ? html`<img class="badge-icon" src="./img/game/shared/badges/${teammateBadge.idString}.svg" alt="${teammateBadge.name} badge">`
+                : "";
 
-        gameOverKills.text(packet.kills);
-        gameOverDamageDone.text(packet.damageDone);
-        gameOverDamageTaken.text(packet.damageTaken);
-        gameOverTime.text(formatDate(packet.timeAlive));
+            console.log(teammateBadgeText);
+
+            const card = html` <div class="game-over-screen">
+                <h1 id="game-over-player-name" class="modal-item">${teammateName + teammateBadgeText}</h1>
+                <div class="modal-item game-over-stats">
+                  <div class="stat">
+                    <span class="stat-name" translation="go_kills">Kills:</span>
+                    <span class="stat-value">${packet.teammates[i].kills}</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-name" translation="go_damage_done">Damage done:</span>
+                    <span class="stat-value">${packet.teammates[i].damageDone}</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-name" translation="go_damage_taken">Damage taken:</span>
+                    <span class="stat-value">${packet.teammates[i].damageTaken}</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-name" translation="go_time_alive">Time alive:</span>
+                    <span class="stat-value">${formatDate(packet.teammates[i].timeAlive)}</span>
+                  </div>
+                </div>
+              </div>`;
+
+            gameOverPlayerCards.append(card);
+        }
 
         if (packet.won) void game.music.play();
 
