@@ -2347,7 +2347,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     sendGameOverPacket(won = false): void {
         const teammates: TeammateGameOverData[] = [];
         let packet;
-        if (this.team && !this.team?.hasLivingPlayers()) {
+        if (this.team) {
             for (const player of this.team.players) {
                 const playerID = player.id;
                 const kills = player.kills;
