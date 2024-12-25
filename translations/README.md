@@ -120,10 +120,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `kf_message_grammar` is not a valid key
 
-### Undefined Keys
-
-- Key `msg_your_team_eliminated` is not defined
-- Key `msg_the_team_eliminated` is not defined
+### (No Undefined Keys)
 
 ## 🇫🇮 suomi (99% Complete) - fi.hjson
 
@@ -375,7 +372,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇷🇺 Русский (99% Complete) - ru.hjson
+## 🇷🇺 Русский (100% Complete) - ru.hjson
 
 ### (No Invalid Keys)
 

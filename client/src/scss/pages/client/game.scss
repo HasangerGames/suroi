@@ -1839,6 +1839,12 @@
     height: 100%;
     z-index: 1003;
 
+    #btn-menu,
+    #btn-play-again,
+    #btn-spectate {
+        width: 150px;
+    }
+
     background: rgba(0, 0, 0, 0.4);
     @include variables.text-shadow;
 
@@ -1928,14 +1934,15 @@
 
         i {
             color: palette.$orange;
-            transform: translate(0%, 60%);
+            transform: translate(0%, 60%) rotate(10deg);
             font-size: 160px;
             position: absolute;
             z-index: -1;
+            opacity: 0.5;
 
             @media screen and (max-width: variables.$screen-large) {
                 @media screen and (max-height: variables.$screen_medium) {
-                    transform: translate(0%, 50%);
+                    transform: translate(0%, 50%) rotate(10deg);
                     font-size: 120px;
                     position: absolute;
                 }
