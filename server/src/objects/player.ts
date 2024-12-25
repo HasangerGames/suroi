@@ -2240,7 +2240,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
-        if (!this.disconnected && this.spectating === undefined) {
+        if (!this.disconnected) {
             this.sendGameOverPacket();
         }
 
@@ -2348,7 +2348,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 const kills = player.kills;
                 const damageDone = player.damageDone;
                 const damageTaken = player.damageTaken;
-                const timeAlive = this.game.now - player.joinTime / 1000;
+                const timeAlive = (this.game.now - player.joinTime) / 1000;
                 teammates.push({
                     playerID,
                     kills,
