@@ -420,21 +420,83 @@ export class UIManager {
 
         chickenDinner.toggle(packet.won);
 
-        const medal = this.game.teamMode ? "<i class=\"fa-solid fa-medal\"></i>" : "";
-        let bestKills = packet.teammates[0].kills;
-        let medalAssigned = false;
+        const medals = {
+            kills: {
+                id: "kills",
+                assigned: false
+            },
+            damageDone: {
+                id: "skull",
+                assigned: false
+            },
+            damageTaken: {
+                id: "shield",
+                assigned: false
+            }
+        };
 
-        for (let i = 0; i < packet.numberTeammates; i++) {
-            if (bestKills < packet.teammates[i].kills) {
-                bestKills = packet.teammates[i].kills;
+        let bestKills = packet.teammates[0].kills,
+            bestDamageDone = packet.teammates[0].damageDone,
+            bestDamageTaken = packet.teammates[0].damageTaken,
+            wonMedal = false,
+            medal = "",
+            medalType = "";
+
+        if (this.game.teamMode) {
+            for (let i = 0; i < packet.numberTeammates; i++) {
+                if (bestKills < packet.teammates[i].kills) {
+                    bestKills = packet.teammates[i].kills;
+                }
+
+                if (bestDamageDone < packet.teammates[i].damageDone) {
+                    bestDamageDone = packet.teammates[i].damageDone;
+                }
+
+                if (bestDamageTaken < packet.teammates[i].damageTaken) {
+                    bestDamageTaken = packet.teammates[i].damageTaken;
+                }
             }
         }
 
         for (let i = 0; i < packet.numberTeammates; i++) {
             const teammateID = packet.teammates[i].playerID;
-            const wonMedal = bestKills === packet.teammates[i].kills && bestKills !== 0 && !medalAssigned;
 
-            if (wonMedal) medalAssigned = true;
+            if (this.game.teamMode) {
+                const killsMedal = bestKills === packet.teammates[i].kills && bestKills >= 10 && !medals.kills.assigned;
+                const damageDoneMedal = bestDamageDone === packet.teammates[i].damageDone && bestDamageDone >= 1000 && !medals.damageDone.assigned;
+                const damageTakenMedal = bestDamageTaken === packet.teammates[i].damageTaken && bestDamageTaken >= 1000 && !medals.damageTaken.assigned;
+
+                wonMedal = (
+                    // Kills (More than 10 kills + most kills on team)
+                    killsMedal
+                    // Damage Dealt/Done (Must be more than 1000)
+                    || damageDoneMedal
+                    // Damage Taken (Must be more than 1000)
+                    || damageTakenMedal
+                );
+
+                if (wonMedal) {
+                    switch (true) {
+                        case killsMedal: {
+                            medalType = medals.kills.id;
+                            medals.kills.assigned = true;
+                            break;
+                        }
+                        case damageDoneMedal: {
+                            medalType = medals.damageDone.id;
+                            medals.damageDone.assigned = true;
+                            break;
+                        }
+                        case damageTakenMedal: {
+                            medalType = medals.damageTaken.id;
+                            medals.damageTaken.assigned = true;
+                            break;
+                        }
+                    }
+
+                    medal = `<img class="medal" src="./img/misc/medal_${medalType}.svg"/>`;
+                }
+            }
 
             gameOverText.html(
                 packet.won

@@ -1932,18 +1932,20 @@
         font-size: 25px;
         gap: 5px;
 
-        i {
-            color: palette.$orange;
-            transform: translate(0%, 60%) rotate(10deg);
-            font-size: 160px;
+        .medal {
+            pointer-events: none;
+            transform: translate(0%, 50%) rotate(15deg);
+            width: 200px;
+            height: 200px;
             position: absolute;
             z-index: -1;
-            opacity: 0.5;
+            opacity: 0.95;
 
             @media screen and (max-width: variables.$screen-large) {
                 @media screen and (max-height: variables.$screen_medium) {
-                    transform: translate(0%, 50%) rotate(10deg);
-                    font-size: 120px;
+                    transform: translate(0%, 45%) rotate(15deg);
+                    width: 150px;
+                    height: 150px;
                     position: absolute;
                 }
             }
