@@ -141,6 +141,7 @@ function adjustFontSize(element: HTMLElement): void {
     }
 
     element.style.fontSize = `${fontSize}px`;
+    element.style.verticalAlign = "middle";
 }
 
 function translateCurrentDOM(): void {

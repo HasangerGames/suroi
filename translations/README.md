@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Tue, 31 Dec 2024 13:57:11 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Thu, 26 Dec 2024 19:12:49 GMT
 
 ## 🇦🇱 Shqip (90% Complete) - ab.hjson
 
@@ -68,7 +68,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇩🇪 Deutsch (85% Complete) - de.hjson
+## 🇩🇪 Deutsch (100% Complete) - de.hjson
 
 ### (No Invalid Keys)
 
