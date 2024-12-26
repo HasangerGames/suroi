@@ -819,7 +819,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     {
                         falloff: 0.6,
                         maxRange: 48,
-                        speed: game.uiManager.perks.hasPerk(PerkIds.FieldMedic) && actionSoundName === action.item?.idString ? PerkData[PerkIds.FieldMedic].usageMod : 1
+                        speed: game.uiManager.perks.hasItem(PerkIds.FieldMedic) && actionSoundName === action.item?.idString ? PerkData[PerkIds.FieldMedic].usageMod : 1
                     }
                 );
             }
@@ -848,7 +848,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         ) {
             // prediction for impact point is basically just done by yoinking sever
             // code and plopping it client-side lol
-            if (this.game.uiManager.perks.hasPerk(PerkIds.DemoExpert)) {
+            if (this.game.uiManager.perks.hasItem(PerkIds.DemoExpert)) {
                 if (this.grenadeImpactPreview === undefined) {
                     this.grenadeImpactPreview = new Graphics();
                     this.grenadeImpactPreview.zIndex = 999;

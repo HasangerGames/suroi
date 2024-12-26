@@ -1,6 +1,5 @@
 import type { PerkDefinition } from "@common/definitions/perks";
-import type { PerkCollection } from "@common/packets/updatePacket";
-import { PerkManager } from "@common/utils/perkManager";
+import { PerkManager, type PerkCollection } from "@common/utils/perkManager";
 import type { Game } from "../game";
 
 export class ClientPerkManager extends PerkManager {
@@ -9,6 +8,6 @@ export class ClientPerkManager extends PerkManager {
     }
 
     overwrite(perks: PerkCollection): void {
-        this._perks = perks.asBitfield();
+        this._items = perks.asBitfield();
     }
 }

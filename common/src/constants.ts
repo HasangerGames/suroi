@@ -1,6 +1,6 @@
 import { Ammos } from "./definitions/ammos";
 import { HealingItems } from "./definitions/healingItems";
-import { Mode } from "./definitions/modes";
+import { type Mode } from "./definitions/modes";
 import { Scopes } from "./definitions/scopes";
 import { Throwables } from "./definitions/throwables";
 import { freezeDeep } from "./utils/misc";

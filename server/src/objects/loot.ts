@@ -483,11 +483,11 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                     if (!perkToRemove.noDrop) {
                         createNewItem({ type: perkToRemove, count: 1 });
                     }
-                    player.perks.removePerk(perkToRemove);
+                    player.perks.removeItem(perkToRemove);
                 }
 
                 // Add the new perk
-                player.perks.addPerk(definition);
+                player.perks.addItem(definition);
                 player.updateAndApplyModifiers();
                 break;
             }

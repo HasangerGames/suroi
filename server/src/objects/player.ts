@@ -565,7 +565,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     swapWeaponRandomly(itemOrSlot: InventoryItem | number = this.activeItem, force = false): void {
-        if (this.perks.hasPerk(PerkIds.Lycanthropy)) return; // womp womp
+        if (this.perks.hasItem(PerkIds.Lycanthropy)) return; // womp womp
 
         let slot = itemOrSlot === this.activeItem
             ? this.activeItemIndex
@@ -839,67 +839,67 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         // Perks
-        if (this.perkUpdateMap) {
+        if (this.perkUpdateMap !== undefined) {
             for (const [perk, lastUpdated] of this.perkUpdateMap.entries()) {
-                if (this.game.now - lastUpdated > perk.updateInterval) {
-                    this.perkUpdateMap.set(perk, this.game.now);
-                    // ! evil starts here
-                    switch (perk.idString) {
-                        case PerkIds.Bloodthirst: {
-                            this.piercingDamage({
-                                amount: perk.healthLoss
-                            });
-                            break;
-                        }
-                        case PerkIds.BabyPlumpkinPie: {
-                            this.swapWeaponRandomly(undefined, true);
-                            break;
-                        }
-                        case PerkIds.TornPockets: {
-                            const items = this.inventory.items;
-                            const candidates = new Set(Ammos.definitions.filter(({ ephemeral }) => !ephemeral).map(({ idString }) => idString));
+                if (this.game.now - lastUpdated <= perk.updateInterval) continue;
 
-                            const counts = Object.entries(items.asRecord()).filter(
-                                ([str, count]) => Ammos.hasString(str) && candidates.has(str) && count !== 0
-                            );
-
-                            // no ammo at all
-                            if (counts.length === 0) break;
-
-                            const chosenAmmo = Ammos.fromString(
-                                weightedRandom(
-                                    counts.map(([str]) => str),
-                                    counts.map(([, cnt]) => cnt)
-                                )
-                            );
-
-                            const amountToDrop = Numeric.min(
-                                this.inventory.items.getItem(chosenAmmo.idString),
-                                perk.dropCount
-                            );
-
-                            this.game.addLoot(chosenAmmo, this.position, this.layer, { count: amountToDrop })
-                                ?.push(this.rotation + Math.PI, 0.025);
-                            items.decrementItem(chosenAmmo.idString, amountToDrop);
-                            this.dirty.items = true;
-                            break;
-                        }
-                        case PerkIds.RottenPlumpkin: {
-                            this.sendEmote(Emotes.fromStringSafe(perk.emote));
-                            this.piercingDamage({
-                                amount: perk.healthLoss
-                            });
-                            this.adrenaline -= this.adrenaline * (perk.adrenLoss / 100);
-                            break;
-                        }
-                        case PerkIds.Shrouded: {
-                            this.game.addSyncedParticle(SyncedParticles.fromString("shrouded_particle"), this.position, this.layer, this.id)
-                                .setTarget(randomPointInsideCircle(this.position, 5), 1000, EaseFunctions.circOut);
-                            break;
-                        }
+                this.perkUpdateMap.set(perk, this.game.now);
+                // ! evil starts here
+                switch (perk.idString) {
+                    case PerkIds.Bloodthirst: {
+                        this.piercingDamage({
+                            amount: perk.healthLoss
+                        });
+                        break;
                     }
-                    // ! evil ends here
+                    case PerkIds.BabyPlumpkinPie: {
+                        this.swapWeaponRandomly(undefined, true);
+                        break;
+                    }
+                    case PerkIds.TornPockets: {
+                        const items = this.inventory.items;
+                        const candidates = new Set(Ammos.definitions.filter(({ ephemeral }) => !ephemeral).map(({ idString }) => idString));
+
+                        const counts = Object.entries(items.asRecord()).filter(
+                            ([str, count]) => Ammos.hasString(str) && candidates.has(str) && count !== 0
+                        );
+
+                        // no ammo at all
+                        if (counts.length === 0) break;
+
+                        const chosenAmmo = Ammos.fromString(
+                            weightedRandom(
+                                counts.map(([str]) => str),
+                                counts.map(([, cnt]) => cnt)
+                            )
+                        );
+
+                        const amountToDrop = Numeric.min(
+                            this.inventory.items.getItem(chosenAmmo.idString),
+                            perk.dropCount
+                        );
+
+                        this.game.addLoot(chosenAmmo, this.position, this.layer, { count: amountToDrop })
+                            ?.push(this.rotation + Math.PI, 0.025);
+                        items.decrementItem(chosenAmmo.idString, amountToDrop);
+                        this.dirty.items = true;
+                        break;
+                    }
+                    case PerkIds.RottenPlumpkin: {
+                        this.sendEmote(Emotes.fromStringSafe(perk.emote));
+                        this.piercingDamage({
+                            amount: perk.healthLoss
+                        });
+                        this.adrenaline -= this.adrenaline * (perk.adrenLoss / 100);
+                        break;
+                    }
+                    case PerkIds.Shrouded: {
+                        this.game.addSyncedParticle(SyncedParticles.fromString("shrouded_particle"), this.position, this.layer, this.id)
+                            .setTarget(randomPointInsideCircle(this.position, 5), 1000, EaseFunctions.circOut);
+                        break;
+                    }
                 }
+                // ! evil ends here
             }
         }
 
@@ -1469,7 +1469,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     hasPerk(perk: PerkNames | PerkDefinition): boolean {
-        return this.perks.hasPerk(perk);
+        return this.perks.hasItem(perk);
     }
 
     ifPerkPresent<Name extends PerkNames>(
@@ -1841,12 +1841,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         for (const perk of this.perks) {
             switch (perk.idString) {
                 case PerkIds.PlumpkinGamble: { // AW DANG IT
-                    this.perks.removePerk(perk);
+                    this.perks.removeItem(perk);
 
                     const halloweenPerks = Perks.definitions.filter(perkDef => {
                         return !perkDef.plumpkinGambleIgnore && perkDef.category === PerkCategories.Halloween;
                     });
-                    this.perks.addPerk(pickRandomInArray(halloweenPerks));
+                    this.perks.addItem(pickRandomInArray(halloweenPerks));
                     break;
                 }
                 case PerkIds.Lycanthropy: {
@@ -2451,7 +2451,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                             (isLoot || (type === InputActions.Interact && isInteractable))
                             && object.hitbox?.collidesWith(detectionHitbox)
                             && adjacentOrEqualLayer(this.layer, object.layer)
-                            && !(isLoot && [ItemType.Throwable, ItemType.Gun].includes(object.definition.itemType) && this.perks.hasPerk(PerkIds.Lycanthropy))
+                            && !(isLoot && [ItemType.Throwable, ItemType.Gun].includes(object.definition.itemType) && this.perks.hasItem(PerkIds.Lycanthropy))
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
                             if (isInteractable) {

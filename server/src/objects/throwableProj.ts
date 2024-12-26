@@ -89,7 +89,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         this._spawnTime = this.game.now;
         this.hitbox = new CircleHitbox(radius ?? 1, position);
 
-        this.halloweenSkin = this.source.owner.perks.hasPerk(PerkIds.PlumpkinBomb);
+        this.halloweenSkin = this.source.owner.perks.hasItem(PerkIds.PlumpkinBomb);
 
         // Colored Teammate C4s
         this.tintIndex = this.source.owner.colorIndex;

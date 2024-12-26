@@ -214,7 +214,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             if (
                 source instanceof BaseGameObject
                 && source.isPlayer
-                && source.perks.hasPerk(PerkIds.PlumpkinBomb)
+                && source.perks.hasItem(PerkIds.PlumpkinBomb)
                 && definition.material === "pumpkin"
             ) {
                 this.playMaterialDestroyedSound = false;
