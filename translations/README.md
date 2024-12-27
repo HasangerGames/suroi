@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Thu, 26 Dec 2024 19:12:49 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Fri, 27 Dec 2024 19:43:53 GMT
 
 ## 🇦🇱 Shqip (90% Complete) - ab.hjson
 
@@ -113,6 +113,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_eu` is not defined
 - Key `region_sa` is not defined
 - Key `region_as` is not defined
+
+## 🇪🇸 Español (100% Complete) - es.hjson
+
+### (No Invalid Keys)
+
+### (No Undefined Keys)
 
 ## 🇪🇪 eesti (100% Complete) - et.hjson
 
