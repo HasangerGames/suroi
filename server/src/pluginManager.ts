@@ -672,7 +672,7 @@ export abstract class GamePlugin {
                     } catch (e) {
                         console.error(
                             `While dispatching event '${eventType}', listener at index ${i}`
-                            + `(source: ${this.constructor.name} threw an error (provided below):`
+                            + ` (source: ${this.constructor.name}) threw an error (provided below):`
                         );
                         console.error(e);
                     }
