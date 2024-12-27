@@ -2374,7 +2374,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             const kills = this.kills;
             const damageDone = this.damageDone;
             const damageTaken = this.damageTaken;
-            const timeAlive = this.game.now - this.joinTime / 1000;
+            const timeAlive = (this.game.now - this.joinTime) / 1000;
             teammates.push({
                 playerID,
                 kills,
