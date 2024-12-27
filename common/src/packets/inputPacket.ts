@@ -6,7 +6,7 @@ import { type EmoteDefinition } from "../definitions/emotes";
 import { type HealingItemDefinition } from "../definitions/healingItems";
 import { Loots, type WeaponDefinition } from "../definitions/loots";
 import { type MapPingDefinition, MapPings, type PlayerPing } from "../definitions/mapPings";
-import { PerkDefinition } from "../definitions/perks";
+import { type PerkDefinition } from "../definitions/perks";
 import { type ScopeDefinition } from "../definitions/scopes";
 import { type ThrowableDefinition } from "../definitions/throwables";
 import { GlobalRegistrar } from "../utils/definitionRegistry";

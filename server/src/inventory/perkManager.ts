@@ -24,10 +24,10 @@ export class ServerPerkManager extends PerkManager {
      * @param perk The perk to add
      * @returns Whether the perk was already present (and thus nothing has changed)
      */
-    override addPerk(perk: PerkDefinition): boolean {
+    override addItem(perk: PerkDefinition): boolean {
         const idString = perk.idString;
         const owner = this.owner;
-        const absent = super.addPerk(perk);
+        const absent = super.addItem(perk);
 
         if ("updateInterval" in perk) {
             (owner.perkUpdateMap ??= new Map<UpdatablePerkDefinition, number>())
@@ -109,7 +109,7 @@ export class ServerPerkManager extends PerkManager {
      * @returns Whether the perk was present (and therefore removed, as opposed
      * to not being removed due to not being present to begin with)
      */
-    override removePerk(perk: PerkDefinition): boolean {
+    override removeItem(perk: PerkDefinition): boolean {
         const idString = perk.idString;
         const owner = this.owner;
 
@@ -117,7 +117,7 @@ export class ServerPerkManager extends PerkManager {
             owner.perkUpdateMap?.delete(perk as UpdatablePerkDefinition);
         }
 
-        const has = super.removePerk(perk);
+        const has = super.removeItem(perk);
 
         if (has) {
             // ! evil starts here

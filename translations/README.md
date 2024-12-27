@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 21 Dec 2024 21:16:53 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Tue, 24 Dec 2024 20:49:54 GMT
 
 ## 🇦🇱 Shqip (90% Complete) - ab.hjson
 
@@ -103,7 +103,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_sa` is not defined
 - Key `region_as` is not defined
 
-## 🇪🇪 Eesti (100% Complete) - et.hjson
+## 🇪🇪 eesti (100% Complete) - et.hjson
+
+### Invalid Keys
+
+- Key `kf_message_grammar` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_punishment_warn_agreement` is not defined
+
+## 🇫🇮 suomi (100% Complete) - fi.hjson
 
 ### (No Invalid Keys)
 
@@ -323,7 +333,9 @@ This file is a report of all errors and missing keys in the translation files of
 
 ## 🇹🇷 Turkısh (100% Complete) - tr.hjson
 
-### (No Invalid Keys)
+### Invalid Keys
+
+- Key `kf_message_grammar` is not a valid key
 
 ### (No Undefined Keys)
 

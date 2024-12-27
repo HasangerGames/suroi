@@ -102,14 +102,28 @@ export const Events = {
      * Emitted on the first tick that a player is attacking (more
      * formally, on the first tick where a player is attacking
      * following a tick where the player was not attacking)
+     *
+     * Cancelling this event causes the active item's `useItem` method
+     * not to be called, and the `startedAttacking` will not be cleared.
+     * This means that next tick, the player will still be considered as
+     * "starting to attack", and this event will be fired again. If this
+     * is undesirable, the event handler can manually set the flag to
+     * false.
      */
-    player_start_attacking: makeEvent(),
+    player_start_attacking: makeEvent(true),
     /**
      * Emitted on the first tick that a player stops attacking
      * (more formally, on the first tick where a player is not
      * attacking following a tick where the player was attacking)
+     *
+     * Cancelling this event causes the active item's `stopUse` method
+     * not to be called, and the `stoppedAttacking` will not be cleared.
+     * This means that next tick, the player will still be considered as
+     * "starting to attack", and this event will be fired again. If this
+     * is undesirable, the event handler can manually set the flag to
+     * false.
      */
-    player_stop_attacking: makeEvent(),
+    player_stop_attacking: makeEvent(true),
     /**
      * Emitted every time an {@link InputPacket} is received.
      * All side-effects from inputs will have already occurred
@@ -596,7 +610,7 @@ export interface EventDataMap {
     readonly game_end: Game
 }
 
-type EventTypes = keyof typeof Events;
+export type EventTypes = keyof typeof Events;
 
 type ArgsFor<Key extends EventTypes> = [EventDataMap[Key]] extends [never] ? [] : [EventDataMap[Key]];
 type EventData<Key extends EventTypes> = [
@@ -628,7 +642,7 @@ type EventData<Key extends EventTypes> = [
     )
 ];
 
-export type EventHandler<Ev extends EventTypes = EventTypes> = (...[data, cancel]: [...ArgsFor<Ev>, ...EventData<Ev>]) => void;
+export type EventHandler<Ev extends EventTypes = EventTypes> = (...[data, event]: [...ArgsFor<Ev>, ...EventData<Ev>]) => void;
 
 type EventHandlers = {
     [K in EventTypes]?: Array<EventHandler<K>>
@@ -637,7 +651,7 @@ type EventHandlers = {
 // basically file-scoped access to an emit method
 const pluginDispatchers = new ExtendedMap<
     GamePlugin,
-    <Ev extends EventTypes = EventTypes>(eventType: Ev, ...[data, cancel]: [...ArgsFor<Ev>, ...EventData<Ev>]) => void
+    <Ev extends EventTypes = EventTypes>(eventType: Ev, ...[data, event]: [...ArgsFor<Ev>, ...EventData<Ev>]) => void
 >();
 
 export abstract class GamePlugin {
@@ -658,7 +672,7 @@ export abstract class GamePlugin {
                     } catch (e) {
                         console.error(
                             `While dispatching event '${eventType}', listener at index ${i}`
-                            + `(source: ${this.constructor.name} threw an error (provided below):`
+                            + ` (source: ${this.constructor.name}) threw an error (provided below):`
                         );
                         console.error(e);
                     }

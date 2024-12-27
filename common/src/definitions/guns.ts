@@ -502,7 +502,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     reloadTime: 4.2
                 }
             },
-            // sub-machine guns
+            // submachine guns
             {
                 idString: "saf200",
                 name: "SAF-200",
@@ -680,7 +680,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     }
                 }
             },
-            // assult rifles
+            // assault rifles
             {
                 idString: "ak47",
                 name: "AK-47",
@@ -1965,7 +1965,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 reloadTime: 0.4,
                 shotsPerReload: 2,
                 reloadFullOnEmpty: true,
-                fullReloadTime: 3.2,
+                fullReloadTime: 2.4,
                 fireDelay: 180,
                 switchDelay: 400,
                 recoilMultiplier: 0.8,
@@ -1998,7 +1998,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             },
             {
                 idString: "blr",
-                name: "BLR",
+                name: "BLR 556",
                 ammoType: "556mm",
                 ammoSpawnAmount: 20,
                 capacity: 5,

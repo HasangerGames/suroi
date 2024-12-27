@@ -212,6 +212,9 @@ export class InputManager {
 
         $("#emote-wheel > .button-center").on("click", () => {
             this.emoteWheelActive = false;
+            this.game.uiManager.ui.emoteButton
+                .removeClass("btn-alert")
+                .addClass("btn-primary");
             this.selectedEmote = undefined;
             this.pingWheelMinimap = false;
             $("#emote-wheel").hide();

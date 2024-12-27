@@ -235,9 +235,7 @@ export class Game implements GameData {
 
         const { width, height } = Maps[Config.map.split(":")[0] as MapName];
         this.grid = new Grid(this, width, height);
-
         this.map = new GameMap(this, Config.map);
-
         this.gas = new Gas(this);
 
         this.setGameData({ allowJoin: true });
@@ -758,8 +756,6 @@ export class Game implements GameData {
                         },
                         body: `{ "username": "${username}" }`
                     }
-                    // you fuckin stupid or smth?
-
                 ).catch(console.error);
             }
         }
@@ -844,7 +840,7 @@ export class Game implements GameData {
             readonly jitterSpawn?: boolean
             readonly data?: ItemData<Def>
         } = {}
-    ): Loot | undefined {
+    ): Loot<Def> | undefined {
         const args = {
             position,
             layer,

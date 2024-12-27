@@ -980,6 +980,7 @@
         align-items: center;
         justify-content: center;
         width: 40px !important;
+        height: 40px !important;
     }
 }
 
@@ -2014,26 +2015,26 @@
         width: 50px;
     }
 
-    #btn-game-menu {
-        font-size: 16px;
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
-    }
-
+    #btn-game-menu,
+    #btn-toggle-ping,
     #btn-emotes {
-        border-radius: 0;
-        height: 34px;
-        img {
-            width: 18px;
-            position: relative;
-            bottom: 5px;
-        }
-    }
+        font-size: 20px;
+        height: auto;
+        width: 37px;
 
-    #btn-toggle-ping {
-        font-size: 16px;
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
+        border-radius: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        margin: 5px;
+        border: none;
+
+        img {
+            width: 21px;
+            pointer-events: none;
+            vertical-align: middle;
+        }
     }
 }
 

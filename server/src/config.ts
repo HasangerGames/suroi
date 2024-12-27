@@ -28,7 +28,7 @@ export const Config = {
 
     maxTeamSize: TeamSize.Solo,
 
-    maxPlayersPerGame: 70,
+    maxPlayersPerGame: 80,
     maxGames: 5,
     gameJoinTime: 60,
 
@@ -239,7 +239,7 @@ export interface ConfigType {
         /**
          * If a player's username matches one of the regexes in this array, it will be replaced with the default username.
          */
-        readonly usernameFilters?: RegExp[]
+        readonly usernameFilters?: readonly RegExp[]
 
         /**
          * If specified, the proxycheck.io API will be used to detect and block VPNs and proxies.

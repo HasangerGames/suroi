@@ -214,7 +214,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             if (
                 source instanceof BaseGameObject
                 && source.isPlayer
-                && source.perks.hasPerk(PerkIds.PlumpkinBomb)
+                && source.perks.hasItem(PerkIds.PlumpkinBomb)
                 && definition.material === "pumpkin"
             ) {
                 this.playMaterialDestroyedSound = false;
@@ -290,7 +290,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 )
             ) || (
                 this.definition.isActivatable === true
-                && (player?.activeItemDefinition.idString === this.definition.requiredItem || !this.definition.requiredItem)
+                && (this.definition.requiredItem === undefined || player?.activeItemDefinition.idString === this.definition.requiredItem)
                 && !this.activated
             )
         );
@@ -316,12 +316,12 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
     interact(player?: Player): void {
         if (
-            (player && !this.canInteract(player))
-            && !this.door?.locked
-            && !this.game.pluginManager.emit("obstacle_will_interact", {
+            (player !== undefined && !this.canInteract(player))
+            || this.door?.locked === true
+            || this.game.pluginManager.emit("obstacle_will_interact", {
                 obstacle: this,
                 player
-            })
+            }) !== undefined
         ) return;
 
         const definition = this.definition;
@@ -329,7 +329,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         switch (definition.role) {
             case ObstacleSpecialRoles.Door: {
                 // optional chaining not required but makes both eslint and tsc happy
-                if (!(this.door?.isOpen && definition.openOnce) && !this.door?.locked) {
+                if (!(this.door?.isOpen && definition.openOnce)) {
                     this.toggleDoor(player);
                 }
                 break;
@@ -367,11 +367,11 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             }
         }
 
-        this.game.pluginManager.emit("obstacle_will_interact", {
+        this.setDirty();
+        this.game.pluginManager.emit("obstacle_did_interact", {
             obstacle: this,
             player
         });
-        this.setDirty();
     }
 
     toggleDoor(player?: Player): void {

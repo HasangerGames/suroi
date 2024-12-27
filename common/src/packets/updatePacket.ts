@@ -9,6 +9,7 @@ import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
 import { GlobalRegistrar } from "../utils/definitionRegistry";
 import { type Mutable, type SDeepMutable } from "../utils/misc";
 import { ObjectSerializations, type FullData, type ObjectsNetData } from "../utils/objectsSerializations";
+import type { PerkCollection } from "../utils/perkManager";
 import { type SuroiByteStream } from "../utils/suroiByteStream";
 import { Vec, type Vector } from "../utils/vector";
 import type { AllowedEmoteSources } from "./inputPacket";
@@ -40,7 +41,8 @@ function serializePlayerData(
         lockedSlots,
         items,
         activeC4s,
-        perks
+        perks,
+        teamID
     }: PlayerData
 ): void {
     /* eslint-disable @stylistic/no-multi-spaces */
@@ -56,6 +58,7 @@ function serializePlayerData(
     const hasItems       = items !== undefined;
     const hasActiveC4s   = activeC4s !== undefined;
     const hasPerks       = perks !== undefined;
+    const hasTeamID      = teamID !== undefined;
     /* eslint-enable @stylistic/no-multi-spaces */
 
     strm.writeBooleanGroup2(
@@ -70,7 +73,8 @@ function serializePlayerData(
         hasLockedSlots,
         hasItems,
         hasActiveC4s,
-        hasPerks
+        hasPerks,
+        hasTeamID
     );
 
     if (hasMinMax) {
@@ -252,6 +256,10 @@ function serializePlayerData(
             bitfield >>= 8;
         }
     }
+
+    if (hasTeamID) {
+        strm.writeUint8(teamID);
+    }
 }
 
 function deserializePlayerData(strm: SuroiByteStream): PlayerData {
@@ -267,7 +275,8 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         hasLockedSlots,
         hasItems,
         hasActiveC4s,
-        hasPerks
+        hasPerks,
+        hasTeamID
     ] = strm.readBooleanGroup2();
 
     const data: SDeepMutable<PlayerData> = {};
@@ -420,6 +429,10 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         };
     }
 
+    if (hasTeamID) {
+        data.teamID = strm.readUint8();
+    }
+
     return data;
 }
 
@@ -464,11 +477,6 @@ export type EmoteSerialization = {
     readonly playerID: number
 };
 
-export interface PerkCollection {
-    asBitfield(): number
-    asList(): PerkDefinition[]
-}
-
 export type PlayerData = {
     readonly minMax?: {
         readonly maxHealth: number
@@ -508,6 +516,7 @@ export type PlayerData = {
     }
     readonly activeC4s?: boolean
     readonly perks?: PerkCollection
+    readonly teamID?: number
 };
 
 export type UpdatePacketDataCommon = {

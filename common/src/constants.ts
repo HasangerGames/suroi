@@ -1,6 +1,6 @@
 import { Ammos } from "./definitions/ammos";
 import { HealingItems } from "./definitions/healingItems";
-import { Mode } from "./definitions/modes";
+import { type Mode } from "./definitions/modes";
 import { Scopes } from "./definitions/scopes";
 import { Throwables } from "./definitions/throwables";
 import { freezeDeep } from "./utils/misc";
@@ -43,7 +43,7 @@ const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType
 export const GameConstants = freezeDeep({
     // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
     // or a new item is added to a definition list
-    protocolVersion: 38,
+    protocolVersion: 42,
     gridSize: 32,
     maxPosition: Constants.MAX_POSITION,
     modeName: "winter" satisfies Mode as Mode,

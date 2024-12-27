@@ -2,7 +2,7 @@ import { GameConstants, InventoryMessages, ObjectCategory, PlayerActions } from 
 import { ArmorType } from "@common/definitions/armors";
 import { type GunDefinition } from "@common/definitions/guns";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
-import { PerkCategories } from "@common/definitions/perks";
+import { PerkCategories, type PerkDefinition } from "@common/definitions/perks";
 import { PickupPacket } from "@common/packets/pickupPacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
@@ -135,6 +135,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 (object.isObstacle || object.isBuilding)
                 && object.collidable
                 && object.hitbox?.collidesWith(this.hitbox)
+                && adjacentOrEqualLayer(this.layer, object.layer)
             ) {
                 if (object.isObstacle && object.definition.isStair) {
                     object.handleStairInteraction(this);
@@ -147,6 +148,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 object.isLoot
                 && object !== this
                 && object.hitbox.collidesWith(this.hitbox)
+                && adjacentOrEqualLayer(this.layer, object.layer)
             ) {
                 const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, object.position, object.hitbox.radius);
                 if (collision) {
@@ -268,7 +270,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 loot: this,
                 canPickup,
                 player
-            })
+            }) !== undefined
         ) return;
 
         const createNewItem = <D extends LootDefinition = Def>(
@@ -468,7 +470,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 const isNormalPerk = definition.category === PerkCategories.Normal;
 
                 // Variable to track which perk to remove
-                let perkToRemove = null;
+                let perkToRemove: PerkDefinition | undefined;
 
                 if (isHalloweenPerk) {
                     perkToRemove = currentPerks.find(perk => perk.category === PerkCategories.Halloween);
@@ -477,15 +479,15 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 }
 
                 // If a perk to remove has been identified, remove it
-                if (perkToRemove) {
+                if (perkToRemove !== undefined) {
                     if (!perkToRemove.noDrop) {
                         createNewItem({ type: perkToRemove, count: 1 });
                     }
-                    player.perks.removePerk(perkToRemove);
+                    player.perks.removeItem(perkToRemove);
                 }
 
                 // Add the new perk
-                player.perks.addPerk(definition);
+                player.perks.addItem(definition);
                 player.updateAndApplyModifiers();
                 break;
             }

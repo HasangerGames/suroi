@@ -1,5 +1,5 @@
-import { ReferenceTo } from "../utils/objectDefinitions";
-import { ScopeDefinition } from "./scopes";
+import { type ReferenceTo } from "../utils/objectDefinitions";
+import { type ScopeDefinition } from "./scopes";
 
 export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "trail" | "gas" | "void";
 

@@ -1,4 +1,4 @@
-import { GameConstants } from "@common/constants";
+import { Constants, GameConstants } from "@common/constants";
 import { ColorStyles, styleText } from "@common/utils/ansiColoring";
 import { halfπ, τ } from "@common/utils/math";
 import { NullString, type ObjectDefinition, type ReferenceTo } from "@common/utils/objectDefinitions";
@@ -27,7 +27,9 @@ function internalLog(...message: string[]): void {
 export function cleanUsername(name?: string | null): string {
     return (
         !name?.length
-        || name.length > 16
+        // this rule is stupid
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+        || name.length > Constants.PLAYER_NAME_MAX_LENGTH
         || Config.protection?.usernameFilters?.some((regex: RegExp) => regex.test(name))
         || /[^\x20-\x7E]/g.test(name) // extended ASCII chars
     )
