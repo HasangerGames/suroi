@@ -28,7 +28,8 @@ export const TRANSLATIONS: {
         hp18: {
             name: "HP-18",
             flag: "<img height=\"20\" src=\"./img/game/shared/weapons/hp18.svg\" />",
-            percentage: "HP-18%"
+            percentage: "HP-18%",
+            no_resize: true
         }
     }
 };
@@ -163,7 +164,7 @@ function translateCurrentDOM(): void {
         if (
             (element.classList.contains("btn") || element.parentElement?.classList.contains("btn") || element.parentElement?.classList.contains("tab"))
             && translatedString.length >= 10
-            && !["en", "hp18"].includes(selectedLanguage) // <- why? (because we do not want text measurements on English or HP-18)
+            && !TRANSLATIONS.translations[selectedLanguage].no_resize
         ) {
             adjustFontSize(element);
         }

@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Tue, 24 Dec 2024 20:49:54 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 28 Dec 2024 10:32:29 GMT
 
 ## 🇦🇱 Shqip (90% Complete) - ab.hjson
 
@@ -32,6 +32,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
+- Key `m16a4` is not defined
 
 ## 🇧🇷 Português (Brasil) (100% Complete) - br.hjson
 
@@ -60,7 +61,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇩🇪 Deutsch (86% Complete) - de.hjson
+## 🇩🇪 Deutsch (85% Complete) - de.hjson
 
 ### (No Invalid Keys)
 
@@ -97,6 +98,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
+- Key `m16a4` is not defined
 - Key `region_dev` is not defined
 - Key `region_na` is not defined
 - Key `region_eu` is not defined
@@ -237,7 +239,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_warn_agreement` is not defined
 
-## 🎀 Cute Engwish (93% Complete) - qen.hjson
+## 🎀 Cute Engwish (92% Complete) - qen.hjson
 
 ### Invalid Keys
 
@@ -264,6 +266,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
+- Key `m16a4` is not defined
 
 ## 🇷🇴 Română (88% Complete) - ro.hjson
 
@@ -301,12 +304,15 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
+- Key `m16a4` is not defined
 
 ## 🇷🇺 Русский (100% Complete) - ru.hjson
 
 ### (No Invalid Keys)
 
-### (No Undefined Keys)
+### Undefined Keys
+
+- Key `m16a4` is not defined
 
 ## 🇮🇳 தமிழ் (94% Complete) - ta.hjson
 
@@ -378,6 +384,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
+- Key `m16a4` is not defined
 
 ## 🇻🇳 Tiếng Việt (100% Complete) - vi.hjson
 
