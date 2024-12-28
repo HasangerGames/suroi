@@ -130,6 +130,11 @@ export interface ConfigType {
     }
 
     /**
+     * Whether to start the game as soon as joining (debug feature, also disables winning when 1 player is remaining for obvious reasons).
+     */
+    readonly startImmediately?: boolean
+
+    /**
      * The maximum number of players allowed to join a game.
      */
     readonly maxPlayersPerGame: number
