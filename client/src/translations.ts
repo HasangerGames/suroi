@@ -33,8 +33,6 @@ export const TRANSLATIONS: {
     }
 };
 
-export const NO_SPACE_LANGUAGES = ["zh", "tw", "hk_mo", "jp"];
-
 let setup = false;
 export async function initTranslation(game: Game): Promise<void> {
     if (setup) {

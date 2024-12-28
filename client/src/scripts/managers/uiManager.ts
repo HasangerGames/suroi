@@ -17,7 +17,7 @@ import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Color } from "pixi.js";
-import { getTranslatedString, NO_SPACE_LANGUAGES } from "../../translations";
+import { getTranslatedString, TRANSLATIONS } from "../../translations";
 import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
 import { type GameObject } from "../objects/gameObject";
@@ -1255,7 +1255,7 @@ export class UIManager {
                         let useSpecialSentence = false;
 
                         // Remove spaces if chinese/japanese language.
-                        if (NO_SPACE_LANGUAGES.includes(language) && messageText) {
+                        if (TRANSLATIONS.translations[language].no_space && messageText) {
                             messageText = messageText.replaceAll("<span>", "<span style=\"display:contents;\">");
                         }
 
@@ -1614,7 +1614,7 @@ export class UIManager {
         }
 
         // Disable spaces in chinese languages.
-        if (NO_SPACE_LANGUAGES.includes(this.game.console.getBuiltInCVar("cv_language"))) {
+        if (TRANSLATIONS.translations[(this.game.console.getBuiltInCVar("cv_language"))].no_space) {
             classes.push("no-spaces");
         }
 
