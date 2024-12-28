@@ -1966,7 +1966,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 idString: "sks",
                 name: "SKS",
                 ammoType: "762mm",
-                ammoSpawnAmount: 30,
+                ammoSpawnAmount: 60,
                 capacity: 10,
                 extendedCapacity: 20,
                 reloadTime: 0.4,
