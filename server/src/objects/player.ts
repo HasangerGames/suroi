@@ -1138,7 +1138,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         for (const door of this.game.grid.intersectsHitbox(new CircleHitbox(10, this.position), this.layer)) {
             if (
-                !door?.isObstacle
+                door.dead
+                || !door?.isObstacle
                 || !door.definition.isDoor
                 || !door.definition.automatic
                 || door.door?.isOpen
@@ -1163,7 +1164,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         const closeDoors = (): void => {
             if (openedDoors.every(obj => Geometry.distanceSquared(obj.position, this.position) >= 100)) {
-                for (const door of openedDoors) door.interact();
+                for (const door of openedDoors) {
+                    if (!door.dead) door.interact();
+                }
             } else {
                 this.game.addTimeout(closeDoors, 1000);
             }
