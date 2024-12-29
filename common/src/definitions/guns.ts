@@ -237,8 +237,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 recoilMultiplier: 0.8,
                 recoilDuration: 90,
                 fireMode: FireMode.Single,
-                shotSpread: 5,
-                moveSpread: 10,
+                shotSpread: 4,
+                moveSpread: 8,
                 length: 4.8,
                 fists: {
                     left: Vec.create(40, 0),
@@ -264,14 +264,14 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ballistics: {
                     damage: 13,
                     obstacleMultiplier: 1,
-                    speed: 0.16,
+                    speed: 0.22,
                     range: 120
                 },
                 dual: {
                     leftRightOffset: 1.3,
                     fireDelay: 75,
-                    shotSpread: 7,
-                    moveSpread: 15,
+                    shotSpread: 6,
+                    moveSpread: 13,
                     capacity: 30,
                     extendedCapacity: 48,
                     reloadTime: 2.9
@@ -314,7 +314,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ballistics: {
                     damage: 9,
                     obstacleMultiplier: 1,
-                    speed: 0.16,
+                    speed: 0.18,
                     range: 70
                 },
                 dual: {
