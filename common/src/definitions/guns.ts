@@ -1515,12 +1515,12 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 length: 8.5,
                 shootOnRelease: true,
                 fists: {
-                    left: Vec.create(120, -4),
+                    left: Vec.create(100, 0),
                     right: Vec.create(40, 0),
                     rightZIndex: 4,
                     animationDuration: 100
                 },
-                image: { position: Vec.create(86.5, 3) },
+                image: { position: Vec.create(86.5, 2.7) },
                 casingParticles: [{
                     frame: "casing_762x54mmR",
                     position: Vec.create(4, 0.6),
