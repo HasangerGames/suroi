@@ -37,7 +37,7 @@ export const GasStages: GasStage[] = [
         state: GasState.Waiting,
         duration: 60,
         oldRadius: 0.55,
-        newRadius: 0.38,
+        newRadius: 0.43,
         dps: 2,
         summonAirdrop: true
     },
@@ -45,62 +45,62 @@ export const GasStages: GasStage[] = [
         state: GasState.Advancing,
         duration: 20,
         oldRadius: 0.55,
-        newRadius: 0.38,
+        newRadius: 0.43,
         dps: 2
     },
     // Zone 2 closed, 2 min 40 seconds
     {
         state: GasState.Waiting,
         duration: 45,
-        oldRadius: 0.38,
-        newRadius: 0.29,
+        oldRadius: 0.43,
+        newRadius: 0.32,
         dps: 4
     },
     {
         state: GasState.Advancing,
         duration: 15,
-        oldRadius: 0.38,
-        newRadius: 0.29,
+        oldRadius: 0.43,
+        newRadius: 0.32,
         dps: 4
     },
     // Zone 3 closed, 3 min 40 seconds
     {
         state: GasState.Waiting,
         duration: 45,
-        oldRadius: 0.29,
-        newRadius: 0.18,
+        oldRadius: 0.32,
+        newRadius: 0.2,
         dps: 6,
         summonAirdrop: true
     },
     {
         state: GasState.Advancing,
         duration: 15,
-        oldRadius: 0.29,
-        newRadius: 0.18,
+        oldRadius: 0.32,
+        newRadius: 0.2,
         dps: 6
     },
     // Zone 4 closed, 4 min 40 seconds
     {
         state: GasState.Waiting,
         duration: 45,
-        oldRadius: 0.18,
+        oldRadius: 0.2,
         newRadius: 0.09,
         dps: 10
     },
     {
         state: GasState.Advancing,
         duration: 15,
-        oldRadius: 0.18,
+        oldRadius: 0.2,
         newRadius: 0.09,
         dps: 10
     },
     // Zone 5 closed, 5 min 40 seconds
     {
         state: GasState.Waiting,
-        duration: 30,
+        duration: 20,
         oldRadius: 0.09,
         newRadius: 0,
-        dps: 3.5,
+        dps: 20,
         summonAirdrop: true
     },
     {
@@ -110,7 +110,7 @@ export const GasStages: GasStage[] = [
         newRadius: 0,
         dps: 20
     },
-    // Final Zone Closed, 7 min 10 seconds
+    // Final Zone Closed, 7 min
     {
         state: GasState.Waiting,
         duration: 0,

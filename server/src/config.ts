@@ -18,6 +18,8 @@ export const Config = {
 
     gas: { mode: GasMode.Normal },
 
+    // startImmediately: true,
+
     tps: 40,
 
     plugins: [],
