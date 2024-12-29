@@ -1205,14 +1205,14 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 moveSpread: 14,
                 jitterRadius: 1.25,
                 bulletCount: 10,
-                length: 7.25,
+                length: 8.37,
                 fists: {
                     left: Vec.create(122, -3),
                     right: Vec.create(45, 0),
                     rightZIndex: 4,
                     animationDuration: 100
                 },
-                image: { position: Vec.create(75, 0) },
+                image: { position: Vec.create(97, 0) },
                 casingParticles: [{
                     position: Vec.create(4, 0.6),
                     ejectionDelay: 450,
