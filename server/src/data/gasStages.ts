@@ -37,7 +37,7 @@ export const GasStages: GasStage[] = [
         state: GasState.Waiting,
         duration: 60,
         oldRadius: 0.55,
-        newRadius: 0.41,
+        newRadius: 0.38,
         dps: 2,
         summonAirdrop: true
     },
@@ -45,37 +45,37 @@ export const GasStages: GasStage[] = [
         state: GasState.Advancing,
         duration: 20,
         oldRadius: 0.55,
-        newRadius: 0.41,
+        newRadius: 0.38,
         dps: 2
     },
     // Zone 2 closed, 2 min 40 seconds
     {
         state: GasState.Waiting,
         duration: 45,
-        oldRadius: 0.41,
-        newRadius: 0.31,
+        oldRadius: 0.38,
+        newRadius: 0.29,
         dps: 4
     },
     {
         state: GasState.Advancing,
         duration: 15,
-        oldRadius: 0.41,
-        newRadius: 0.31,
+        oldRadius: 0.38,
+        newRadius: 0.29,
         dps: 4
     },
     // Zone 3 closed, 3 min 40 seconds
     {
         state: GasState.Waiting,
         duration: 45,
-        oldRadius: 0.31,
-        newRadius: 0.17,
+        oldRadius: 0.29,
+        newRadius: 0.18,
         dps: 6,
         summonAirdrop: true
     },
     {
         state: GasState.Advancing,
         duration: 15,
-        oldRadius: 0.31,
+        oldRadius: 0.29,
         newRadius: 0.18,
         dps: 6
     },
