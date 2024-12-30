@@ -1634,6 +1634,7 @@ export async function setUpUI(game: Game): Promise<void> {
     addCheckboxListener("#toggle-mobile-controls", "mb_controls_enabled");
     addSliderListener("#slider-joystick-size", "mb_joystick_size");
     addSliderListener("#slider-joystick-transparency", "mb_joystick_transparency");
+    addCheckboxListener("#toggle-haptics", "mb_haptics");
     addCheckboxListener("#toggle-high-res-mobile", "mb_high_res_textures");
 
     function updateUiScale(): void {
