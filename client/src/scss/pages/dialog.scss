@@ -122,7 +122,7 @@
                     margin: 10px 5px 0 5px;
 
                     .create-team-player-name {
-                        font-size: 20px;
+                        font-size: 18px;
                         font-weight: bold;
                         @include variables.text-shadow;
                     }
@@ -130,7 +130,8 @@
                     .create-team-player-badge {
                         display: inline-block;
                         height: 24px;
-                        margin-left: 5px;
+                        margin-left: 2.5px;
+                        vertical-align: middle;
                     }
                 }
             }
@@ -318,6 +319,8 @@
             width: 90px;
             height: 90px;
             transform: rotate(90deg);
+            background-size: 90px;
+            background-repeat: no-repeat;
         }
 
         .skin-left-fist,
@@ -327,6 +330,8 @@
             width: 34px;
             height: 34px;
             transform: rotate(90deg);
+            background-size: 34px;
+            background-repeat: no-repeat;
         }
 
         .skin-right-fist {

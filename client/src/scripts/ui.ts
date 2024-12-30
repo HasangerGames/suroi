@@ -26,6 +26,7 @@ import { EMOTE_SLOTS, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants"
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
 import type { TranslationKeys } from "../typings/translations";
+import { renderSkin } from "./utils/pixi";
 
 /*
     eslint-disable
@@ -502,9 +503,9 @@ export async function setUpUI(game: Game): Promise<void> {
                                     <i class="fa-solid fa-crown"${isLeader ? "" : ' style="display: none"'}></i>
                                     <i class="fa-regular fa-circle-check"${ready ? "" : ' style="display: none"'}></i>
                                     <div class="skin">
-                                        <div class="skin-base" style="background-image: url('./img/game/shared/skins/${skin}_base.svg')"></div>
-                                        <div class="skin-left-fist" style="background-image: url('./img/game/shared/skins/${skin}_fist.svg')"></div>
-                                        <div class="skin-right-fist" style="background-image: url('./img/game/shared/skins/${skin}_fist.svg')"></div>
+                                        <div class="skin-base" style="background-image:  url(${game.uiManager.renderedSkinsCache[skin].base})"></div>
+                                        <div class="skin-left-fist" style="background-image: url(${game.uiManager.renderedSkinsCache[skin].fist})"></div>
+                                        <div class="skin-right-fist" style="background-image: url(${game.uiManager.renderedSkinsCache[skin].fist})"></div>
                                     </div>
                                     <div class="create-team-player-name-container">
                                         <span class="create-team-player-name"${nameColor ? ` style="color: ${new Color(nameColor).toHex()}"` : ""};>${name}</span>
@@ -943,20 +944,20 @@ export async function setUpUI(game: Game): Promise<void> {
     const base = $<HTMLDivElement>("#skin-base");
     const fists = $<HTMLDivElement>("#skin-left-fist, #skin-right-fist");
 
-    const updateSplashCustomize = (skinID: string): void => {
+    const updateSplashCustomize = async(skinID: string): Promise<void> => {
+        const renderedSkin = await renderSkin(game.pixi.renderer, Skins.reify(skinID));
         base.css(
             "background-image",
-            `url("./img/game/shared/skins/${skinID}_base.svg")`
+            `url("${renderedSkin.base}")`
         );
-
         fists.css(
             "background-image",
-            `url("./img/game/shared/skins/${skinID}_fist.svg")`
+            `url("${renderedSkin.fist}")`
         );
     };
 
     const currentSkin = game.console.getBuiltInCVar("cv_loadout_skin");
-    updateSplashCustomize(currentSkin);
+    void updateSplashCustomize(currentSkin);
     const skinList = $<HTMLDivElement>("#skins-list");
 
     const skinUiCache: Record<ReferenceTo<SkinDefinition>, JQuery<HTMLDivElement>> = {};
@@ -966,19 +967,23 @@ export async function setUpUI(game: Game): Promise<void> {
             .siblings()
             .removeClass("selected");
 
-        updateSplashCustomize(idString);
+        void updateSplashCustomize(idString);
     }
 
     for (const { idString, hideFromLoadout, rolesRequired } of Skins) {
+        // We load every skin, to render the fists in the game "fists" ui.
+        const renderedSkin = await renderSkin(game.pixi.renderer, Skins.reify(idString));
+        game.uiManager.renderedSkinsCache[idString] = renderedSkin;
+
         if (hideFromLoadout || !(rolesRequired ?? [role]).includes(role)) continue;
 
         // noinspection CssUnknownTarget
         const skinItem = skinUiCache[idString] = $<HTMLDivElement>(
             `<div id="skin-${idString}" class="skins-list-item-container${idString === currentSkin ? " selected" : ""}">
                 <div class="skin">
-                    <div class="skin-base" style="background-image: url('./img/game/shared/skins/${idString}_base.svg')"></div>
-                    <div class="skin-left-fist" style="background-image: url('./img/game/shared/skins/${idString}_fist.svg')"></div>
-                    <div class="skin-right-fist" style="background-image: url('./img/game/shared/skins/${idString}_fist.svg')"></div>
+                    <div class="skin-base" style="background-image: url('${renderedSkin.base}')"></div>
+                    <div class="skin-left-fist" style="background-image: url('${renderedSkin.fist}')"></div>
+                    <div class="skin-right-fist" style="background-image: url('${renderedSkin.fist}')"></div>
                 </div>
                 <span class="skin-name">${getTranslatedString(idString as TranslationKeys)}</span>
             </div>`
@@ -1473,7 +1478,7 @@ export async function setUpUI(game: Game): Promise<void> {
         "#slider-music-volume",
         "cv_music_volume",
         value => {
-            game.music.volume = value;
+            if (game.music) { game.music.volume = value; }
         }
     );
 

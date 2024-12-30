@@ -2,9 +2,10 @@ import { Obstacles } from "@common/definitions/obstacles";
 import { HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
-import { Assets, Container, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
+import { Assets, Color, Container, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
 import { getTranslatedString } from "../../translations";
-import { PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
+import { COLORS, PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
+import { type ImageLayer, type SkinDefinition } from "@common/definitions/skins";
 
 const textures: Record<string, Texture> = {};
 
@@ -333,4 +334,58 @@ export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSourc
     graphics.stroke();
 
     return graphics;
+}
+
+export function setupSkinLayer(container: Container, layers: ImageLayer[], tint?: Color): void {
+    container
+        .removeChildren()
+        .forEach(child => child.destroy());
+
+    for (const layer of layers) {
+        const sprite = new SuroiSprite(layer.frame)
+            .setTint(layer.tint ?? 0xffffff)
+            .setVPos(layer.position ?? Vec.create(0, 0))
+            .setRotation(layer.rotation ?? 0)
+            .setAlpha(layer.alpha ?? 1);
+
+        if (layer.scale) sprite.scale.set(layer.scale.x, layer.scale.y);
+
+        if (tint) {
+            const layerColor = new Color(sprite.tint);
+            const tintedColor = layerColor.multiply(tint);
+            sprite.setTint(tintedColor);
+        }
+
+        container.addChild(sprite);
+    }
+}
+
+export async function renderSkin(renderer: Renderer, skin: SkinDefinition): Promise<{ base: string, fist: string }> {
+    const base = new Container();
+    const fist = new Container();
+
+    const SKIN_SIZE = 90;
+    const FIST_SIZE = 34;
+
+    const baseMask = new Graphics()
+        .rect(-SKIN_SIZE / 2, -SKIN_SIZE / 2, SKIN_SIZE, SKIN_SIZE)
+        .fill({ color: 0xffffff });
+
+    const fistMask = new Graphics()
+        .rect(-FIST_SIZE / 2, -FIST_SIZE / 2, FIST_SIZE, FIST_SIZE)
+        .fill({ color: 0xffffff });
+
+    setupSkinLayer(base, skin.baseLayers, skin.grassTint ? COLORS.grass : undefined);
+    setupSkinLayer(fist, skin.fistLayers, skin.grassTint ? COLORS.grass : undefined);
+
+    base.mask = baseMask;
+    fist.mask = fistMask;
+
+    base.addChild(baseMask);
+    fist.addChild(fistMask);
+
+    return {
+        base: await renderer.extract.base64(base),
+        fist: await renderer.extract.base64(fist)
+    };
 }

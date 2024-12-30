@@ -22,7 +22,7 @@ import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
 import { type GameObject } from "../objects/gameObject";
 import { Player } from "../objects/player";
-import { GHILLIE_TINT, MODE, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
+import { MODE, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
 import { ClientPerkManager } from "./perkManager";
@@ -31,6 +31,8 @@ function safeRound(value: number): number {
     if (0 < value && value <= 1) return 1;
     return Math.round(value);
 }
+
+type SkinRendererCache = Record<string, Record<string, string>>;
 
 /**
  * This class manages the game UI
@@ -42,6 +44,8 @@ export class UIManager {
     private maxAdrenaline = GameConstants.player.maxAdrenaline;
     private minAdrenaline = 0;
     private adrenaline = 0;
+
+    renderedSkinsCache: SkinRendererCache = {};
 
     readonly inventory: {
         activeWeaponIndex: number
@@ -863,11 +867,11 @@ export class UIManager {
                     itemImage.attr("src", newSrc);
                 }
 
+                const skinID = Skins.fromString(this.skinID ?? this.game.console.getBuiltInCVar("cv_loadout_skin")).idString;
+
                 const backgroundImage
                     = isFists
-                        ? this.skinID !== undefined && Skins.fromStringSafe(this.skinID)?.grassTint
-                            ? `url("data:image/svg+xml,${encodeURIComponent(`<svg width="34" height="34" viewBox="0 0 8.996 8.996" xmlns="http://www.w3.org/2000/svg"><circle fill="${GHILLIE_TINT.toHex()}" stroke="${new Color(GHILLIE_TINT).multiply("#111").toHex()}" stroke-width="1.05833" cx="4.498" cy="4.498" r="3.969"/></svg>`)}")`
-                            : `url(./img/game/shared/skins/${this.skinID ?? this.game.console.getBuiltInCVar("cv_loadout_skin")}_fist.svg)`
+                        ? `url("${this.renderedSkinsCache[skinID].fist}")`
                         : "none";
 
                 itemImage
