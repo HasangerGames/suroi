@@ -36,6 +36,8 @@ export const Config = {
 
     plugins: [],
 
+    disableLobbyClearing: true,
+
     roles: {
         developr: { password: "developr", isDev: true },
         designr: { password: "designr" },
