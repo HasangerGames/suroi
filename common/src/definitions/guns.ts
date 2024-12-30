@@ -2263,13 +2263,13 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 shotSpread: 0.15,
                 moveSpread: 0.1,
                 killstreak: true,
-                length: 8.7,
+                length: 8.4,
                 fists: {
-                    left: Vec.create(135, -6),
-                    right: Vec.create(75, 0),
+                    left: Vec.create(130, -3),
+                    right: Vec.create(60, 0),
                     animationDuration: 100
                 },
-                image: { position: Vec.create(90, 0) },
+                image: { position: Vec.create(87, 1) },
                 noMuzzleFlash: true,
                 casingParticles: [{
                     position: Vec.create(4.5, 0.6),
@@ -2356,11 +2356,11 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 killstreak: true,
                 consistentPatterning: true,
                 jitterRadius: 0,
-                image: { position: Vec.create(75, 0) },
+                image: { position: Vec.create(78, 0) },
                 fists: {
                     left: Vec.create(112, -3)
                 },
-                length: 7.28,
+                length: 6.88,
                 wearerAttributes: {
                     passive: {
                         maxHealth: 0.51,
