@@ -1,8 +1,8 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Fri, 27 Dec 2024 19:43:53 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Tue, 31 Dec 2024 21:17:51 GMT
 
-## 🇦🇱 Shqip (90% Complete) - ab.hjson
+## 🇦🇱 Shqip (89% Complete) - ab.hjson
 
 ### (No Invalid Keys)
 
@@ -72,47 +72,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### (No Invalid Keys)
 
-### Undefined Keys
-
-- Key `msg_spectating` is not defined
-- Key `msg_enter_team_code` is not defined
-- Key `msg_lost_team_connection` is not defined
-- Key `msg_error_joining_team` is not defined
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `msg_punishment_warn_agreement` is not defined
-- Key `donate` is not defined
-- Key `copied` is not defined
-- Key `settings_ambience_volume` is not defined
-- Key `settings_ambient_particles` is not defined
-- Key `msg_your_team_eliminated` is not defined
-- Key `msg_the_team_eliminated` is not defined
-- Key `msg_not_enough_space` is not defined
-- Key `msg_item_already_equipped` is not defined
-- Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
-- Key `interact_speaker` is not defined
-- Key `bindings_explode_c4` is not defined
-- Key `finally` is not defined
-- Key `with` is not defined
-- Key `you` is not defined
-- Key `yourself` is not defined
-- Key `km_killed` is not defined
-- Key `km_knocked` is not defined
-- Key `km_message` is not defined
-- Key `kf_killed` is not defined
-- Key `kf_knocked` is not defined
-- Key `kf_finished_off` is not defined
-- Key `themselves` is not defined
-- Key `kf_message` is not defined
-- Key `create_team_ready` is not defined
-- Key `m16a4` is not defined
-- Key `region_dev` is not defined
-- Key `region_na` is not defined
-- Key `region_eu` is not defined
-- Key `region_sa` is not defined
-- Key `region_as` is not defined
+### (No Undefined Keys)
 
 ## 🇪🇸 Español (100% Complete) - es.hjson
 
@@ -187,7 +147,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### (No Undefined Keys)
 
-## 🇮🇹 Italiano (94% Complete) - it.hjson
+## 🇮🇹 Italiano (93% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -215,6 +175,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -385,9 +347,6 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `m16a4` is not defined
-
-- Key `msg_your_team_eliminated` is not defined
-- Key `msg_the_team_eliminated` is not defined
 
 ## 🇮🇳 தமிழ் (93% Complete) - ta.hjson
 
