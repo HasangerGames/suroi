@@ -203,7 +203,7 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 baseLayers: [
                     { frame: "plain_base", tint: "#ffffff" },
                     { frame: "plain_base_gradient", tint: "#6b976b", rotation: -1 * Math.PI / 4 },
-                    { frame: "plain_base_gradient", tint: "#f052ff", alpha: 0.5, rotation: -5 * Math.PI / 4 }
+                    { frame: "plain_base_gradient", tint: "#f052ff", alpha: 0.4, rotation: -5 * Math.PI / 4 }
                 ],
                 fistLayers: [
                     { frame: "plain_fist", tint: "#f052ff" },
