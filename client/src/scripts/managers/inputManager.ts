@@ -345,6 +345,36 @@ export class InputManager {
                 shootOnRelease = false;
             });
         }
+        // Gyro stuff
+        const inv = this.game.uiManager.inventory;
+        const swap = (x: number): void => {
+            let y = Numeric.absMod(inv.activeWeaponIndex + x, 4);
+            let iteration = 0;
+            while (!inv.weapons[y]) {
+                y = Numeric.absMod(y + x, 4);
+                if (iteration++ > 5) {
+                    y = inv.activeWeaponIndex;
+                    break;
+                }
+            }
+            this.addAction({
+                type: InputActions.EquipItem,
+                slot: y
+            });
+        };
+        let a = false;
+        let b = false;
+        window.addEventListener("deviceorientation", gyro => {
+            // It would be impossible to send the DeviceOrientation event but lack the beta property
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const angle = gyro.beta!;
+            a = (angle <= -12.5)
+                ? (a ? a : swap(-1), true)
+                : false;
+            b = (angle >= 12.5)
+                ? (b ? b : swap(1), true)
+                : false;
+        });
     }
 
     private handleInputEvent(down: boolean, event: KeyboardEvent | MouseEvent | WheelEvent): void {
