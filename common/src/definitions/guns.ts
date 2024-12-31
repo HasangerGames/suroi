@@ -270,8 +270,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 dual: {
                     leftRightOffset: 1.3,
                     fireDelay: 75,
-                    shotSpread: 6,
-                    moveSpread: 13,
+                    shotSpread: 5,
+                    moveSpread: 10,
                     capacity: 30,
                     extendedCapacity: 48,
                     reloadTime: 2.9
@@ -320,8 +320,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 dual: {
                     leftRightOffset: 1.3,
                     fireDelay: 30,
-                    shotSpread: 14,
-                    moveSpread: 25,
+                    shotSpread: 8,
+                    moveSpread: 14,
                     capacity: 32,
                     extendedCapacity: 52,
                     reloadTime: 3.7
@@ -377,8 +377,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 dual: {
                     leftRightOffset: 1.3,
                     fireDelay: 187.5,
-                    shotSpread: 3,
-                    moveSpread: 6,
+                    shotSpread: 2,
+                    moveSpread: 5,
                     capacity: 14,
                     reloadTime: 4
                 }
@@ -432,8 +432,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     ammoSpawnAmount: 84,
                     leftRightOffset: 1.4,
                     fireDelay: 115,
-                    shotSpread: 5,
-                    moveSpread: 9.5,
+                    shotSpread: 3,
+                    moveSpread: 7,
                     capacity: 14,
                     extendedCapacity: 18,
                     reloadTime: 3.8
@@ -496,8 +496,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     leftRightOffset: 1.3,
                     ammoSpawnAmount: 60,
                     fireDelay: 200,
-                    shotSpread: 7,
-                    moveSpread: 11,
+                    shotSpread: 4,
+                    moveSpread: 8,
                     capacity: 10,
                     reloadTime: 4.2
                 }
