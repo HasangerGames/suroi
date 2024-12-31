@@ -774,13 +774,13 @@ export function setUpCommands(game: Game): void {
         game,
         {
             short: "Enables the emote wheel's ping mode",
-            long: "When invoked, the emote wheel will switch from triggering emotes to triggering map pings",
+            long: "When invoked, the map ping wheel will be opened, allowing the user to pick a map ping",
             allowOnlyWhenGameStarted: true,
             signatures: [{ args: [], noexcept: true }]
         },
         {
             short: "Disables the emote wheel's ping mode",
-            long: "When invoked, the emote wheel will revert back to trigger emotes",
+            long: "When invoked, the map ping wheel will be closed, and if a map ping has been selected, it will be displayed",
             allowOnlyWhenGameStarted: true,
             signatures: [{ args: [], noexcept: true }]
         }
@@ -1829,7 +1829,6 @@ export function setUpCommands(game: Game): void {
     );
 
     gameConsole.handleQuery(`
-        alias +map_ping "+emote_wheel; +map_ping_wheel" & alias -map_ping "-emote_wheel; -map_ping_wheel";\
         alias toggle_minimap "toggle cv_minimap_minimized";\
         alias toggle_hud "toggle cv_draw_hud";\
         alias toggle_map "toggle cv_map_expanded";\
