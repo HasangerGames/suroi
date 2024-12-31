@@ -1037,6 +1037,14 @@ export async function setUpUI(game: Game): Promise<void> {
 
         let lastCategory: EmoteCategory | undefined;
 
+        function updateInGameEmoteWheel() {
+            const directions = ["right", "bottom", "left", "top"]
+            game.emoteManager.emotes = directions.map(direction => Emotes.fromString(game.console.getBuiltInCVar(`cv_loadout_${direction}_emote`)));
+            game.emoteManager.setupSlots();
+        }
+
+        updateInGameEmoteWheel();
+
         for (const emote of emotes) {
             if (emote.category !== lastCategory) {
                 emoteList.append(
@@ -1067,6 +1075,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 ).show();
 
                 game.console.setBuiltInCVar(`cv_loadout_${cvarName}_emote`, emote.idString);
+                updateInGameEmoteWheel();
 
                 emoteItem.addClass("selected")
                     .siblings()

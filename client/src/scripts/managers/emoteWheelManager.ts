@@ -84,6 +84,7 @@ export class EmoteWheelManager {
   setupSlots() {
     this.tickGraphics.clear();
     this.selectionGraphics.clear();
+    this.emoteSlotSprites.removeChildren();
 
     this._slotAngle = TAU / this.emotes.length
 

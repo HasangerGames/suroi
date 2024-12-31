@@ -232,8 +232,6 @@ export class Game {
             );
 
             game.emoteManager.init();
-            game.emoteManager.emotes = Emotes.definitions.slice(0, 12)
-            game.emoteManager.setupSlots();
             game.pingManager.init();
             game.emoteManager.setupSlots();
 
