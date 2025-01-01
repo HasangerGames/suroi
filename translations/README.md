@@ -1,8 +1,8 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Wed, 01 Jan 2025 03:19:20 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Wed, 01 Jan 2025 18:36:35 GMT
 
-## 🇦🇱 Shqip (90% Complete) - ab.hjson
+## 🇦🇱 Shqip (89% Complete) - ab.hjson
 
 ### (No Invalid Keys)
 
@@ -12,6 +12,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
@@ -35,12 +36,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇧🇷 Português (Brasil) (100% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (99% Complete) - br.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 
 ## 🇨🇿 Čeština (94% Complete) - cz.hjson
@@ -55,6 +57,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
@@ -82,6 +85,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
@@ -110,7 +114,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_sa` is not defined
 - Key `region_as` is not defined
 
-## 🇪🇪 eesti (100% Complete) - et.hjson
+## 🇪🇪 eesti (99% Complete) - et.hjson
 
 ### Invalid Keys
 
@@ -119,6 +123,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 
 ## 🇫🇮 suomi (99% Complete) - fi.hjson
@@ -128,6 +133,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 
 ## 🇫🇷 Français (99% Complete) - fr.hjson
@@ -137,14 +143,16 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 
-## 🇬🇷 Ελληνικά (100% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (99% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 
 ## 🇭🇰 🇲🇴 廣東話(香港/澳門) (92% Complete) - hk_mo.hjson
@@ -161,6 +169,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
@@ -173,15 +182,16 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off_down` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇭🇺 Magyar (100% Complete) - hu.hjson
+## 🇭🇺 Magyar (99% Complete) - hu.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 
-## 🇮🇹 Italiano (94% Complete) - it.hjson
+## 🇮🇹 Italiano (93% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -209,6 +219,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
@@ -235,6 +246,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
@@ -257,6 +269,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
@@ -279,6 +292,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
@@ -296,6 +310,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 
 ## 🎀 Cute Engwish (92% Complete) - qen.hjson
@@ -317,6 +332,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
@@ -344,6 +360,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
@@ -373,6 +390,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `m16a4` is not defined
 
@@ -389,6 +407,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
@@ -408,6 +427,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 
 ## 🇹🇼 中文（繁體） (86% Complete) - tw.hjson
@@ -427,6 +447,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
@@ -462,9 +483,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 
-## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -473,5 +495,6 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 
