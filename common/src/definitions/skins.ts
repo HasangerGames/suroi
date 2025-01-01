@@ -160,9 +160,9 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
             // --------------------------------------------------------------------------------
 
             ...([
-                //  NAME             BASE       GRAD      FIST       GRADFIST   STROKE    BACKPACK
+                //  NAME             BASE       GRAD      FIST      GRADFIST   STROKE    BACKPACK
                 ["Algae",         "#00e0e3", "#00e312", "#65e1e3", "#70e379", "#082b0b", "#00e0e3"],
-                ["Twilight Zone", "#8304cd", "#2ab0fe", "#7a48cb", "#6faeff", "#141428", "#2bb0fe"],
+                ["Twilight Zone", "#8304cd", "#2ab0fe", "#7a48cb", "#70aeff", "#141428", "#2bb0fe"],
                 ["Bubblegum",     "#ea94ff", "#ff9e9e", "#ea94ff", "#ff9e9e", "#290000", "#ea94ff"]
             ] satisfies Array<[string, string, string, string, string, string, string]>).map(gradient),
 
