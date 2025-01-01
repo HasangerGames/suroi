@@ -2225,7 +2225,7 @@ export async function setUpUI(game: Game): Promise<void> {
             )
             .siblings(".range-input-value")
             .text(
-                element.id === "slider-joystick-transparency"
+                element.id !== "slider-joystick-size" && element.id !== "slider-gyro-angle"
                     ? `${Math.round(value * 100)}%`
                     : value
             );
