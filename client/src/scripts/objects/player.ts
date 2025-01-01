@@ -92,8 +92,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         readonly body: Container
         readonly leftFist: Container
         readonly rightFist: Container
-        readonly leftLeg?: SuroiSprite
-        readonly rightLeg?: SuroiSprite
+        readonly leftLeg?: Container
+        readonly rightLeg?: Container
         readonly backpack: SuroiSprite
         readonly helmet: SuroiSprite
         readonly weapon: SuroiSprite
@@ -125,8 +125,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         leftFist?: Tween<Container>
         rightFist?: Tween<Container>
-        leftLeg?: Tween<SuroiSprite>
-        rightLeg?: Tween<SuroiSprite>
+        leftLeg?: Tween<Container>
+        rightLeg?: Tween<Container>
         weapon?: Tween<SuroiSprite>
         pin?: Tween<SuroiSprite>
         muzzleFlashFade?: Tween<SuroiSprite>
@@ -165,8 +165,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             body: new Container(),
             leftFist: new Container(),
             rightFist: new Container(),
-            leftLeg: game.teamMode ? new SuroiSprite().setPos(-35, 26).setZIndex(-1) : undefined,
-            rightLeg: game.teamMode ? new SuroiSprite().setPos(-35, -26).setZIndex(-1) : undefined,
+            leftLeg: game.teamMode ? new Container() : undefined,
+            rightLeg: game.teamMode ? new Container() : undefined,
             backpack: new SuroiSprite().setPos(-35, 0).setVisible(false).setZIndex(-1),
             helmet: new SuroiSprite().setPos(-8, 0).setVisible(false).setZIndex(6),
             weapon: new SuroiSprite().setZIndex(3),
@@ -183,7 +183,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.body,
             this.images.leftFist,
             this.images.rightFist,
-            ...(game.teamMode ? [this.images.leftLeg, this.images.rightLeg] as readonly SuroiSprite[] : []),
+            ...(game.teamMode ? [this.images.leftLeg, this.images.rightLeg] as readonly Container[] : []),
             this.images.backpack,
             this.images.helmet,
             this.images.weapon,
@@ -680,12 +680,16 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             setupSkinLayer(body, skinDef.baseLayers, grassTint);
             setupSkinLayer(leftFist, skinDef.fistLayers, grassTint);
             setupSkinLayer(rightFist, skinDef.fistLayers, grassTint);
-            leftLeg
-                ?.setFrame(`${skinID}_fist`)
-                .setTint(grassTint ?? 0xffffff);
-            rightLeg
-                ?.setFrame(`${skinID}_fist`)
-                .setTint(grassTint ?? 0xffffff);
+
+            if (leftLeg !== undefined && rightLeg !== undefined) {
+                leftLeg.position.set(-35, 26);
+                rightLeg.position.set(-35, -26);
+
+                leftLeg.zIndex = rightLeg.zIndex = -1;
+
+                setupSkinLayer(leftLeg, skinDef.fistLayers, grassTint);
+                setupSkinLayer(rightLeg, skinDef.fistLayers, grassTint);
+            }
 
             if (sizeMod !== undefined) {
                 this.sizeMod = this.container.scale = sizeMod;
@@ -1028,14 +1032,15 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.anims.rightFist?.kill();
         this.anims.weapon?.kill();
 
-        this.images.leftLeg?.setVisible(this.downed);
-        this.images.rightLeg?.setVisible(this.downed);
+        if (this.images.leftLeg && this.images.rightLeg) {
+            this.images.leftLeg.visible = this.images.rightLeg.visible = this.downed;
+        }
 
         if (this.downed) {
             this.images.leftFist.position.set(38, -35);
             this.images.rightFist.position.set(38, 35);
-            this.images.leftLeg?.setPos(-35, 26);
-            this.images.rightLeg?.setPos(-35, -26);
+            this.images.leftLeg?.position.set(-35, 26);
+            this.images.rightLeg?.position.set(-35, -26);
             return;
         }
 
