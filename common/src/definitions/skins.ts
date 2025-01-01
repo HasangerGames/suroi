@@ -160,10 +160,22 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
             // --------------------------------------------------------------------------------
 
             ...([
+                //  NAME             BASE       GRAD      FIST       GRADFIST   STROKE    BACKPACK
                 ["Algae",         "#00e0e3", "#00e312", "#65e1e3", "#70e379", "#082b0b", "#00e0e3"],
-                ["Twilight Zone", "#2bb0fe", "#8304cd", "#6faeff", "#7c49cc", "#141428", "#2bb0fe"],
                 ["Bubblegum",     "#ea94ff", "#ff9e9e", "#ea94ff", "#ff9e9e", "#290000", "#ea94ff"]
             ] satisfies Array<[string, string, string, string, string, string, string]>).map(gradient),
+
+            skin(["Twilight Zone", "#2bb0fe"], {
+                baseLayers: [
+                    { frame: "plain_base", tint: "#2bb0fe" },
+                    { frame: "plain_base_gradient", tint: "#8304cd", rotation: 3 * Math.PI / 2 }
+                ],
+                fistLayers: [
+                    { frame: "plain_fist", tint: "#6faeff" },
+                    { frame: "plain_fist_gradient", tint: "#7c49cc", rotation: Math.PI / 2 },
+                    { frame: "plain_fist_stroke", tint: "#141428" }
+                ]
+            }),
 
             skin(["Sunrise", "#495f8c"], {
                 baseLayers: [
