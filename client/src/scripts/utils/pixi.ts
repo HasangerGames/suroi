@@ -384,8 +384,49 @@ export async function renderSkin(renderer: Renderer, skin: SkinDefinition): Prom
     base.addChild(baseMask);
     fist.addChild(fistMask);
 
+    const baseCanvas = renderer.extract.canvas(base);
+    const fistCanvas = renderer.extract.canvas(fist);
+
+    if (!baseCanvas) {
+        throw new Error("[renderSkin]: Failed to extract base canvas.");
+    }
+
+    if (!fistCanvas) {
+        throw new Error("[renderSkin]: Failed to extract fist canvas.");
+    }
+
+    const baseBlobUrl = await new Promise<string>((resolve, reject) => {
+        if (baseCanvas.toBlob) {
+            baseCanvas.toBlob(blob => {
+                if (blob) {
+                    const url = URL.createObjectURL(blob);
+                    resolve(url);
+                } else {
+                    reject(new Error("[renderSkin]: Failed to convert base canvas to Blob."));
+                }
+            }, "image/png");
+        } else {
+            reject(new Error("[renderSkin]: toBlob method is not available on base canvas."));
+        }
+    });
+
+    const fistBlobUrl = await new Promise<string>((resolve, reject) => {
+        if (fistCanvas.toBlob) {
+            fistCanvas.toBlob(blob => {
+                if (blob) {
+                    const url = URL.createObjectURL(blob);
+                    resolve(url);
+                } else {
+                    reject(new Error("[renderSkin]: Failed to convert fist canvas to Blob."));
+                }
+            }, "image/png");
+        } else {
+            reject(new Error("[renderSkin]: toBlob method is not available on fist canvas."));
+        }
+    });
+
     return {
-        base: await renderer.extract.base64(base),
-        fist: await renderer.extract.base64(fist)
+        base: baseBlobUrl,
+        fist: fistBlobUrl
     };
 }
