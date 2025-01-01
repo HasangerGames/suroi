@@ -1880,30 +1880,35 @@
         }
     }
 
-    #game-over-rank-container {
-        font-size: 30px;
-        text-align: center;
-        font-weight: bold;
-        padding: 5px 15px 5px 15px;
-        border-bottom: 2px solid rgba(255, 255, 255, 0.5);
-        width: max-content;
-        margin: 5px auto 15px auto;
+    #game-over-rank-and-team-kills-holder {
+        display: flex;
 
-        @media screen and (max-width: variables.$screen_large) {
-            margin: 0 auto 10px auto;
-            font-size: 15px;
-        }
-
-        #game-over-rank {
-            margin-left: 10px;
-            font-size: 35px;
-
-            &.won {
-                color: palette.$orange;
-            }
+        #game-over-rank-container,
+        #game-over-team-kills-container {
+            font-size: 30px;
+            text-align: center;
+            font-weight: bold;
+            padding: 5px 15px 5px 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+            width: max-content;
+            margin: 5px auto 15px auto;
 
             @media screen and (max-width: variables.$screen_large) {
-                font-size: 17px;
+                margin: 0 auto 10px auto;
+                font-size: 15px;
+            }
+
+            #game-over-rank {
+                margin-left: 10px;
+                font-size: 35px;
+
+                &.won {
+                    color: palette.$orange;
+                }
+
+                @media screen and (max-width: variables.$screen_large) {
+                    font-size: 17px;
+                }
             }
         }
     }

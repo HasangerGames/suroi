@@ -232,6 +232,8 @@ export class UIManager {
         gameOverDamageTaken: $<HTMLSpanElement>("#game-over-damage-taken"),
         gameOverTime: $<HTMLSpanElement>("#game-over-time"), */
         gameOverRank: $<HTMLSpanElement>("#game-over-rank"),
+        gameOverTeamKillsContainer: $<HTMLDivElement>("#game-over-team-kills-container"),
+        gameOverTeamKills: $<HTMLSpanElement>("#game-over-team-kills"),
         chickenDinner: $<HTMLImageElement>("#chicken-dinner"),
 
         killMsgModal: $<HTMLDivElement>("#kill-msg"),
@@ -401,7 +403,9 @@ export class UIManager {
             gameOverPlayerCards,
             chickenDinner,
             gameOverText,
-            gameOverRank
+            gameOverRank,
+            gameOverTeamKills,
+            gameOverTeamKillsContainer
             /* gameOverPlayerName,
             gameOverKills,
             gameOverDamageDone,
@@ -436,6 +440,7 @@ export class UIManager {
         };
 
         let bestKills = packet.teammates[0].kills,
+            totalKills = 0,
             bestDamageDone = packet.teammates[0].damageDone,
             bestDamageTaken = packet.teammates[0].damageTaken,
             wonMedal = false,
@@ -496,6 +501,8 @@ export class UIManager {
 
                     medal = `<img class="medal" src="./img/misc/medal_${medalType}.svg"/>`;
                 }
+
+                totalKills += packet.teammates[i].kills;
             }
 
             gameOverText.html(
@@ -541,7 +548,13 @@ export class UIManager {
             gameOverPlayerCards.append(card);
         }
 
-        if (packet.won) void game.music.play();
+        if (packet.won) {
+            void game.music.play();
+            if (this.game.teamMode) {
+                gameOverTeamKills.text(getTranslatedString("msg_kills", { kills: JSON.stringify(totalKills) }));
+                gameOverTeamKillsContainer.toggle(packet.numberTeammates > 1);
+            }
+        }
 
         this.gameOverScreenTimeout = window.setTimeout(() => gameOverOverlay.fadeIn(500), 500);
 
