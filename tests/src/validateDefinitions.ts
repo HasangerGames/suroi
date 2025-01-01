@@ -2677,8 +2677,8 @@ logger.indent("Validating skins", () => {
         logger.indent(`Validating skin '${skin.idString}'`, () => {
             const errorPath = tester.createPath("skins", `skin '${skin.idString}'`);
 
-            if (skin.backpackTint !== undefined) {
-                validators.color(tester.createPath(errorPath, "backpack tint"), skin.backpackTint);
+            if (skin.backpackTint !== undefined && skin.backpackTint.length === 7) {
+                validators.color(tester.createPath(errorPath, "backpack tint"), `#${skin.backpackTint.slice(1)}`);
             }
 
             if (skin.rolesRequired !== undefined) {

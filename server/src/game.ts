@@ -421,6 +421,7 @@ export class Game implements GameData {
         if (
             this._started
             && !this.over
+            && !Config.startImmediately
             && (
                 this.teamMode
                     ? this.aliveCount <= (this.maxTeamSize as number) && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
@@ -728,7 +729,7 @@ export class Game implements GameData {
         this.addTimeout(() => { player.disableInvulnerability(); }, 5000);
 
         if (
-            (this.teamMode ? this.teams.size : this.aliveCount) > 1
+            (this.teamMode ? this.teams.size : this.aliveCount) > (Config.startImmediately ? 0 : 1)
             && !this._started
             && this.startTimeout === undefined
         ) {

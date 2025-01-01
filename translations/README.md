@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Tue, 24 Dec 2024 20:49:54 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Tue, 31 Dec 2024 13:57:11 GMT
 
 ## 🇦🇱 Shqip (90% Complete) - ab.hjson
 
@@ -32,6 +32,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
+- Key `m16a4` is not defined
 
 ## 🇧🇷 Português (Brasil) (100% Complete) - br.hjson
 
@@ -60,7 +61,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇩🇪 Deutsch (86% Complete) - de.hjson
+## 🇩🇪 Deutsch (85% Complete) - de.hjson
 
 ### (No Invalid Keys)
 
@@ -97,6 +98,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
+- Key `m16a4` is not defined
 - Key `region_dev` is not defined
 - Key `region_na` is not defined
 - Key `region_eu` is not defined
@@ -165,6 +167,47 @@ This file is a report of all errors and missing keys in the translation files of
 ### (No Invalid Keys)
 
 ### (No Undefined Keys)
+
+## 🇮🇹 Italiano (94% Complete) - it.hjson
+
+### Invalid Keys
+
+- Key `msg_warning` is not a valid key
+- Key `msg_warning_msg` is not a valid key
+- Key `msg_temp_ban` is not a valid key
+- Key `msg_temp_ban_msg` is not a valid key
+- Key `msg_perma_ban` is not a valid key
+- Key `msg_perma_ban_msg` is not a valid key
+- Key `saf_200` is not a valid key
+- Key `desstroyer_of_worlds` is not a valid key
+- Key `s_g17` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_punishment_warn` is not defined
+- Key `msg_punishment_warn_reason` is not defined
+- Key `msg_punishment_temp` is not defined
+- Key `msg_punishment_temp_reason` is not defined
+- Key `msg_punishment_perma` is not defined
+- Key `msg_punishment_perma_reason` is not defined
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
+- Key `donate` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `interact_headquarters_security_desk` is not defined
+- Key `interact_speaker` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `kf_finished_off_kill` is not defined
+- Key `kf_finished_off_down` is not defined
+- Key `create_team_ready` is not defined
+- Key `m16a4` is not defined
 
 ## 🇯🇵 日本語 (94% Complete) - jp.hjson
 
@@ -237,7 +280,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_warn_agreement` is not defined
 
-## 🎀 Cute Engwish (93% Complete) - qen.hjson
+## 🎀 Cute Engwish (92% Complete) - qen.hjson
 
 ### Invalid Keys
 
@@ -264,6 +307,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
+- Key `m16a4` is not defined
 
 ## 🇷🇴 Română (88% Complete) - ro.hjson
 
@@ -301,12 +345,15 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
+- Key `m16a4` is not defined
 
 ## 🇷🇺 Русский (100% Complete) - ru.hjson
 
 ### (No Invalid Keys)
 
-### (No Undefined Keys)
+### Undefined Keys
+
+- Key `m16a4` is not defined
 
 ## 🇮🇳 தமிழ் (94% Complete) - ta.hjson
 
@@ -378,6 +425,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
+- Key `m16a4` is not defined
 
 ## 🇻🇳 Tiếng Việt (100% Complete) - vi.hjson
 

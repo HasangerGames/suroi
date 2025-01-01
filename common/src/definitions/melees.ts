@@ -235,16 +235,16 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
         {
             idString: "sickle",
             name: "Sickle",
-            damage: 33,
+            damage: 24,
             swingSound: "soft_swing",
             obstacleMultiplier: 1.3,
             radius: 2.7,
             offset: Vec.create(4, 0),
-            cooldown: 400,
+            cooldown: 175,
             rotationalAnimation: true,
             //  fireMode: FireMode.Auto, - todo
             fists: {
-                animationDuration: 150,
+                animationDuration: 70,
                 left: Vec.create(29, -39),
                 right: Vec.create(44, 35),
                 noLeftFistMovement: true

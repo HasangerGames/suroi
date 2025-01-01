@@ -239,13 +239,11 @@ export class Game {
             }, 500);
         };
 
-        void Promise.all([
-            initPixi(),
-            setUpUI(game)
-        ]).then(() => {
-            unlockPlayButtons();
-            resetPlayButtons();
-        });
+        await initPixi();
+        await setUpUI(game);
+
+ unlockPlayButtons();
+        resetPlayButtons();
 
         setUpCommands(game);
         game.inputManager.generateBindsConfigScreen();

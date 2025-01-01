@@ -38,13 +38,13 @@ export const Config = {
 
     plugins: [],
 
+    disableLobbyClearing: true,
+
     roles: {
         developr: { password: "developr", isDev: true },
         designr: { password: "designr" },
         lead_designr: { password: "lead_designr" },
         vip_designr: { password: "vip_designr" },
-        lead_composr: { password: "lead_composr" },
-        composr: { password: "composr" },
         sound_designr: { password: "sound_designr" },
         moderatr: { password: "moderatr" },
         administratr: { password: "administratr" },
@@ -55,7 +55,8 @@ export const Config = {
         pap: { password: "pap", isDev: true },
         error: { password: "error", isDev: true },
         limenade: { password: "limenade", isDev: true },
-        solstice: { password: "solstice", isDev: true }
+        solstice: { password: "solstice", isDev: true },
+        zedaes: { password: "zedaes" }
     },
 
     authServer: {
@@ -145,6 +146,11 @@ export interface ConfigType {
          */
         readonly rotation: TeamSize[]
     }
+
+    /**
+     * Whether to start the game as soon as joining (debug feature, also disables winning when 1 player is remaining for obvious reasons).
+     */
+    readonly startImmediately?: boolean
 
     /**
      * The maximum number of players allowed to join a game.
