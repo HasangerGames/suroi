@@ -160,22 +160,11 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
             // --------------------------------------------------------------------------------
 
             ...([
-                //  NAME             BASE       GRAD      FIST       GRADFIST   STROKE    BACKPACK
-                ["Algae",         "#00e0e3", "#00e312", "#65e1e3", "#70e379", "#082b0b", "#00e0e3"],
-                ["Bubblegum",     "#ea94ff", "#ff9e9e", "#ea94ff", "#ff9e9e", "#290000", "#ea94ff"]
+                //  NAME             BASE       GRAD      FIST      GRADFIST   STROKE    BACKPACK
+                ["Algae",         "#00e613", "#00e2e6", "#6ee278", "#64e0e3", "#082b0b", "#00e0e3"],
+                ["Twilight Zone", "#8304cd", "#2ab0fe", "#7a48cb", "#70aeff", "#151529", "#2bb0fe"],
+                ["Bubblegum",     "#ff9e9e", "#ea94ff", "#ff9e9e", "#ea94ff", "#290000", "#ea94ff"]
             ] satisfies Array<[string, string, string, string, string, string, string]>).map(gradient),
-
-            skin(["Twilight Zone", "#2bb0fe"], {
-                baseLayers: [
-                    { frame: "plain_base", tint: "#2bb0fe" },
-                    { frame: "plain_base_gradient", tint: "#8304cd", rotation: 3 * Math.PI / 2 }
-                ],
-                fistLayers: [
-                    { frame: "plain_fist", tint: "#6faeff" },
-                    { frame: "plain_fist_gradient", tint: "#7c49cc", rotation: Math.PI / 2 },
-                    { frame: "plain_fist_stroke", tint: "#141428" }
-                ]
-            }),
 
             skin(["Sunrise", "#495f8c"], {
                 baseLayers: [
@@ -224,7 +213,6 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ]
             }),
 
-            // cum skin
             skin(["Silver Lining", "#e1e1e1"], {
                 baseLayers: [
                     { frame: "plain_base", tint: "#d8d8d8" },
