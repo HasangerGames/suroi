@@ -102,13 +102,5 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>("Emotes", [
         "real",
         "fake",
         "Colon Three"
-    ].map(name => emote([name, EmoteCategory.Text])),
-    ...[
-        "Monkey",
-        "Carrot",
-        "Tomato",
-        "Egg",
-        "Squid",
-        "Penguin"
-    ].map(name => emote([name, EmoteCategory.Misc]))
+    ].map(name => emote([name, EmoteCategory.Text]))
 ]);
