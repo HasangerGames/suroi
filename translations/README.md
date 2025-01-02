@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Wed, 01 Jan 2025 23:37:24 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Thu, 02 Jan 2025 14:20:53 GMT
 
 ## 🇦🇱 Shqip (89% Complete) - ab.hjson
 
@@ -563,14 +563,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇷🇺 Русский (99% Complete) - ru.hjson
+## 🇷🇺 Русский (100% Complete) - ru.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
-- Key `settings_gyro_angle` is not defined
-- Key `settings_haptics` is not defined
 - Key `m16a4` is not defined
 
 ## 🇮🇳 தமிழ் (93% Complete) - ta.hjson

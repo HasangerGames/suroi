@@ -114,7 +114,8 @@
     "settings_mobile_controls": "Включить мобильные настройки"
     "settings_joystick_size": "Размер джойстика"
     "settings_joystick_opacity": "Прозрачность джойстика"
-
+    "settings_gyro_angle": "Угол наклона устройства для быстрой смены оружия"
+    "settings_haptics": "Вибрации устройства"
 
     "loadout_skins": "Скины"
     "loadout_emotes": "Эмоции"
