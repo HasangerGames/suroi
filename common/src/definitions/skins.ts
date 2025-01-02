@@ -174,7 +174,7 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ],
                 fistLayers: [
                     { frame: "plain_fist", tint: "#f06c48" },
-                    { frame: "plain_fist_gradient", tint: "#495f8c", alpha: 0.9, rotation: -Math.PI / 2 },
+                    { frame: "plain_fist_gradient", tint: "#4a608c", alpha: 0.9, rotation: -Math.PI / 2 },
                     { frame: "plain_fist_gradient", tint: "#f19341", alpha: 0.7, rotation: Math.PI / 2 },
                     { frame: "plain_fist_stroke", tint: "#191919" }
                 ]
