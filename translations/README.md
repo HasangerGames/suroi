@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Thu, 02 Jan 2025 17:23:25 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Thu, 02 Jan 2025 20:53:34 GMT
 
 ## 🇦🇱 Shqip (89% Complete) - ab.hjson
 
@@ -190,7 +190,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `settings_haptics` is not defined
 
-## 🇮🇹 Italiano (93% Complete) - it.hjson
+## 🇮🇹 Italiano (90% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -312,11 +312,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 
-## 🎀 Cute Engwish (92% Complete) - qen.hjson
+## 🎀 Cute Engwish (91% Complete) - qen.hjson
 
-### Invalid Keys
-
-- Key `percentage` is not a valid key
+### (No Invalid Keys)
 
 ### Undefined Keys
 
@@ -416,7 +414,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇹🇷 Turkısh (100% Complete) - tr.hjson
+## 🇹🇷 Turkısh (99% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -470,7 +468,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇻🇳 Tiếng Việt (99% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (98% Complete) - vi.hjson
 
 ### Invalid Keys
 

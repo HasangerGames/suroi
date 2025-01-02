@@ -11,12 +11,10 @@ export const LANGUAGES_DIRECTORY = "../languages/";
 
 const files = readdirSync(LANGUAGES_DIRECTORY).filter(file => file.endsWith(".hjson"));
 
+const metadataKeys = ["name", "flag", "mandatory", "no_space", "no_resize", "percentage"];
+
 const keyFilter = (key: string): boolean => (
-    key !== "name"
-    && key !== "flag"
-    && key !== "mandatory"
-    && key !== "no_space"
-    && key !== "no_resize"
+    !metadataKeys.includes(key)
     && !Guns.hasString(key)
     && !Melees.hasString(key)
     && !Throwables.hasString(key)
@@ -24,6 +22,10 @@ const keyFilter = (key: string): boolean => (
 
 const ValidKeys: readonly string[] = Object.keys(parse(readFileSync(`${LANGUAGES_DIRECTORY + REFERENCE_LANGUAGE}.hjson`, "utf8")) as Record<string, unknown>)
     .filter(keyFilter);
+
+function calculateValidRatio(keys: string[]): number {
+    return keys.filter(key => ValidKeys.includes(key)).length / ValidKeys.length;
+}
 
 export type TranslationManifest = {
     readonly name: string
@@ -53,7 +55,7 @@ This file is a report of all errors and missing keys in the translation files of
     ) {
         const keys = Object.keys(content).filter(keyFilter);
 
-        let languageReportBuffer = `## ${content.flag} ${content.name} (${Math.round(100 * keys.length / ValidKeys.length)}% Complete) - ${filename}\n\n`;
+        let languageReportBuffer = `## ${content.flag} ${content.name} (${Math.round(100 * calculateValidRatio(keys))}% Complete) - ${filename}\n\n`;
 
         // Find invalid keys
         const invalidKeys = keys.filter(k => !ValidKeys.includes(k)).map(key => `- Key \`${key}\` is not a valid key`).join("\n");
@@ -93,7 +95,7 @@ export async function buildTranslations(): Promise<void> {
             mandatory: Boolean(content.mandatory),
             no_resize: Boolean(content.no_resize),
             no_space: Boolean(content.no_space),
-            percentage: content.percentage ?? `${Math.round(100 * Object.keys(content).filter(keyFilter).length / ValidKeys.length)}%`
+            percentage: content.percentage ?? `${Math.round(100 * calculateValidRatio(Object.keys(content)))}%`
         };
 
         filePromises.push(writeFile(`../../client/public/translations/${language}.json`, JSON.stringify(content)));
