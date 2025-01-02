@@ -73,7 +73,7 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
     }
 
     if (game.console.getBuiltInCVar("mb_haptics") && isMobile.any) {
-        navigator?.vibrate(
+        navigator.vibrate?.(
             definition.animation.duration * 0.75
         );
     }
