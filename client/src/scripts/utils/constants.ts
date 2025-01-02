@@ -38,6 +38,8 @@ export const COLORS = (Object.keys(MODE.colors) as ColorKeys[])
         {} as Record<ColorKeys, Color>
     );
 
+export const GHILLIE_TINT = COLORS.grass.multiply(new Color("hsl(0, 0%, 99%)"));
+
 export const TEAMMATE_COLORS = [
     new Color("#00ffff"),
     new Color("#ff00ff"),

@@ -7,8 +7,8 @@
    viewBox="0 0 8.9958334 8.9958334"
    version="1.1"
    id="svg5"
-   sodipodi:docname="plain_fist_gradient.svg"
-   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
+   sodipodi:docname="mango_fist.svg"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -23,45 +23,44 @@
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="1"
      showgrid="false"
-     inkscape:zoom="17.596851"
-     inkscape:cx="7.9559689"
-     inkscape:cy="14.434401"
-     inkscape:window-width="1920"
-     inkscape:window-height="1008"
+     inkscape:zoom="11.313708"
+     inkscape:cx="12.374369"
+     inkscape:cy="12.551145"
+     inkscape:window-width="2560"
+     inkscape:window-height="1372"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg5"
-     inkscape:showpageshadow="2"
-     inkscape:deskcolor="#d1d1d1" />
+     inkscape:current-layer="svg5" />
   <defs
      id="defs2">
     <linearGradient
-       id="linearGradient1"
-       inkscape:collect="always">
+       inkscape:collect="always"
+       id="linearGradient847">
       <stop
-         style="stop-color:#ffffff;stop-opacity:0;"
+         style="stop-color:#00c300;stop-opacity:1"
          offset="0"
-         id="stop2" />
+         id="stop843" />
       <stop
-         style="stop-color:#ffffff;stop-opacity:1;"
+         style="stop-color:#ff7c00;stop-opacity:1"
          offset="1"
-         id="stop1" />
+         id="stop845" />
     </linearGradient>
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient1"
-       id="linearGradient2"
-       x1="0.52916527"
+       xlink:href="#linearGradient847"
+       id="linearGradient849"
+       x1="2.3841858e-07"
        y1="4.4979153"
-       x2="8.4666653"
+       x2="8.9958303"
        y2="4.4979153"
        gradientUnits="userSpaceOnUse" />
   </defs>
   <circle
-     style="fill:url(#linearGradient2);fill-opacity:1;stroke:#00000000;stroke-width:1.05833;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     style="fill:url(#linearGradient849);fill-opacity:1;stroke:#021f00;stroke-width:1.05833;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
      id="path292"
      cx="4.4979153"
      cy="4.4979153"
-     r="3.96875" />
+     r="3.96875"
+     transform="matrix(0,1,1,0,0,0)" />
 </svg>
