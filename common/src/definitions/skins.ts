@@ -168,12 +168,12 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
 
             skin(["Sunrise", "#4a608c"], {
                 baseLayers: [
-                    { frame: "plain_base", tint: "#f06c48" },
+                    { frame: "plain_base", tint: "#f06c47" },
                     { frame: "plain_base_gradient", tint: "#4a608c", alpha: 0.9, rotation: -5 * Math.PI / 4 },
                     { frame: "plain_base_gradient", tint: "#f19341", alpha: 0.7, rotation: -1 * Math.PI / 4 }
                 ],
                 fistLayers: [
-                    { frame: "plain_fist", tint: "#f06c48" },
+                    { frame: "plain_fist", tint: "#f06c47" },
                     { frame: "plain_fist_gradient", tint: "#4a608c", alpha: 0.9, rotation: -Math.PI / 2 },
                     { frame: "plain_fist_gradient", tint: "#f19341", alpha: 0.7, rotation: Math.PI / 2 },
                     { frame: "plain_fist_stroke", tint: "#1a1a1a" }
