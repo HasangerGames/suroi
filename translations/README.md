@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Thu, 02 Jan 2025 14:20:53 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Thu, 02 Jan 2025 14:23:13 GMT
 
 ## 🇦🇱 Shqip (89% Complete) - ab.hjson
 
@@ -361,13 +361,14 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off_down` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇭🇺 Magyar (99% Complete) - hu.hjson
+## 🇭🇺 Magyar (100% Complete) - hu.hjson
 
-### (No Invalid Keys)
+### Invalid Keys
+
+- Key `setting_haptics` is not a valid key
 
 ### Undefined Keys
 
-- Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 
 ## 🇮🇹 Italiano (93% Complete) - it.hjson

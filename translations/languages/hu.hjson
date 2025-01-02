@@ -85,6 +85,8 @@
   "settings_mobile_controls": "Mobil vezérlők engedélyezése"
   "settings_joystick_size": "Joystick méret"
   "settings_joystick_opacity": "Joystick átlátszatlanság"
+  "settings_gyro_angle": "Az eszköz eldönt. szöge fegyver váltáshoz"
+  "setting_haptics": "Rezgések"
   "loadout_skins": "Kinézetek"
   "loadout_emotes": "Emote-ok"
   "loadout_crosshairs": "Célkeresztek"
