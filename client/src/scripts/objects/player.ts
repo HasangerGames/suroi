@@ -9,7 +9,7 @@ import { Loots, type WeaponDefinition } from "@common/definitions/loots";
 import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "@common/definitions/melees";
 import { type ObstacleDefinition } from "@common/definitions/obstacles";
 import { PerkData, PerkIds } from "@common/definitions/perks";
-import { Skins, type ImageLayer, type SkinDefinition } from "@common/definitions/skins";
+import { Skins, type SkinDefinition } from "@common/definitions/skins";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, getEffectiveZIndex } from "@common/utils/layer";
@@ -368,7 +368,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
         }
     }
-
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Player], isNew = false): void {
         const game = this.game;
