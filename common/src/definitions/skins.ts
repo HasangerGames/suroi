@@ -166,10 +166,10 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ["Bubblegum",     "#ff9e9e", "#ea94ff", "#ff9e9e", "#ea94ff", "#290000", "#ea94ff"]
             ] satisfies Array<[string, string, string, string, string, string, string]>).map(gradient),
 
-            skin(["Sunrise", "#495f8c"], {
+            skin(["Sunrise", "#4a608c"], {
                 baseLayers: [
                     { frame: "plain_base", tint: "#f06c48" },
-                    { frame: "plain_base_gradient", tint: "#495f8c", alpha: 0.9, rotation: -5 * Math.PI / 4 },
+                    { frame: "plain_base_gradient", tint: "#4a608c", alpha: 0.9, rotation: -5 * Math.PI / 4 },
                     { frame: "plain_base_gradient", tint: "#f19341", alpha: 0.7, rotation: -1 * Math.PI / 4 }
                 ],
                 fistLayers: [
