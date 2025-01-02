@@ -229,7 +229,7 @@ export class Minimap {
         }
     }
 
-    renderMap(): void {
+    async renderMap(): Promise<void> {
         // Draw the terrain graphics
         const terrainGraphics = this.terrainGraphics;
         terrainGraphics.clear();
@@ -457,7 +457,7 @@ export class Minimap {
             }
         }
 
-        this.renderMap();
+        void this.renderMap();
         this.resize();
     }
 
