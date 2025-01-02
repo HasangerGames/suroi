@@ -2,7 +2,7 @@ import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
-        date: 1735701584000,
+        date: 1735793234000,
         author: "HAZEL",
         title: "Out With The Old",
         content: `Happy New Year! To celebrate, we're releasing the first of several overhaul updates for Suroi. The world sprite of every gun in the game has been replaced with high quality variants, and the length, art, and names of several weapons have been updated. Dual pistols have had their spread penalty removed. The game has also been switched to Harvest mode.<br><br>
