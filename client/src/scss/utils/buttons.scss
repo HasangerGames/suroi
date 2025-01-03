@@ -1,4 +1,5 @@
 @use "../palette.scss";
+@use "../variables.scss";
 
 .btn {
   display: block;
@@ -89,14 +90,22 @@
   box-shadow: inset 0 -2px palette.$success;
 }
 
+.btn-kofi {
+  background: palette.$kofi;
+  border-bottom: 2px solid palette.$kofi_bg;
+  box-shadow: inset 0 -2px palette.$kofi_bg;
+
+  img {
+    @include variables.drop-shadow;
+  }
+}
+
 // Socials
 .btn-social {
   display: inline-block;
 
   height: 45px;
   width: 45px;
-
-  margin: 4px 0;
 
   font-size: large;
 
@@ -118,12 +127,20 @@
 .btn-instagram {
   background-image: url("/img/socials/instagram.svg");
   background-color: palette.$instagram;
+  background-position-y: calc(50% - 2px);
+  box-shadow: inset 0 -4px palette.$instagram_bg;
+}
+
+.btn-instagram {
+  background-image: url("/img/socials/instagram.svg");
+  background-color: palette.$instagram;
   box-shadow: inset 0 -4px palette.$instagram_bg;
 }
 
 .btn-reddit {
   background-image: url("/img/socials/reddit.svg");
   background-color: palette.$reddit;
+  background-position-y: calc(50% - 1px);
   box-shadow: inset 0 -4px palette.$reddit_bg;
 }
 
@@ -136,25 +153,31 @@
 .btn-youtube {
   background-image: url("/img/socials/youtube.svg");
   background-color: palette.$youtube;
+  background-position-y: calc(50% - 2px);
   box-shadow: inset 0 -4px palette.$youtube_bg;
 }
 
 .btn-github {
   background-image: url("/img/socials/github.svg");
   background-color: palette.$github;
+  background-position-y: calc(50% - 1px);
   box-shadow: inset 0 -4px palette.$github_bg;
 }
 
 .btn-wiki {
-  background-image: url("/img/socials/wiki.svg");
   background-color: palette.$orange;
   box-shadow: inset 0 -4px palette.$orange_bg;
-  padding: 0;
+}
+
+.btn-kofi, .btn-wiki {
+  height: 45px;
   display: flex;
-  span {
-    color: white;
-    font-weight: 800;
-    margin: auto;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  &:hover {
+    text-decoration: none;
   }
 }
 
