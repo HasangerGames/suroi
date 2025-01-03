@@ -129,7 +129,9 @@ class Bot {
         switch (true) {
             case packet instanceof GameOverPacket: {
                 const { output } = packet;
-                console.log(`Bot ${this.id} ${output.won ? "won" : "died"} | kills: ${output.kills} | rank: ${output.rank}`);
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                const kills = output.teammates.find(teammate => { teammate.playerID === this.id; })?.kills;
+                console.log(`Bot ${this.id} ${output.won ? "won" : "died"} | kills: ${kills} | rank: ${output.rank}`);
                 this._disconnected = true;
                 this._connected = false;
                 this._ws.close();

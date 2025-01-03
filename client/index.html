@@ -586,52 +586,38 @@
           <div id="game-over-top-screen">
             <img id="chicken-dinner" src="./img/game/shared/emotes/chicken_dinner.svg" />
             <h1 id="game-over-text" class="modal-item" translation="msg_you_died"></h1>
-            <div id="game-over-rank-container">
-              <span translation="msg_your_rank"></span>
-              <span id="game-over-rank" class="modal-item"></span>
+            <div id="game-over-rank-and-team-kills-holder">
+              <div id="game-over-rank-container">
+                <span translation="msg_your_rank"></span>
+                <span id="game-over-rank" class="modal-item"></span>
+              </div>
+              <div id="game-over-team-kills-container">
+                <span id="game-over-team-kills" translation="msg_kills"></span>
+              </div>
             </div>
           </div>
-          <div id="game-over-screen">
-            <h1 id="game-over-player-name" class="modal-item">Player</h1>
-            <div class="modal-item" id="game-over-stats">
-              <div class="stat">
-                <span class="stat-name" translation="go_kills">Kills:</span>
-                <span class="stat-value" id="game-over-kills"></span>
-              </div>
-              <div class="stat">
-                <span class="stat-name" translation="go_damage_done">Damage done:</span>
-                <span class="stat-value" id="game-over-damage-done"></span>
-              </div>
-              <div class="stat">
-                <span class="stat-name" translation="go_damage_taken">Damage taken:</span>
-                <span class="stat-value" id="game-over-damage-taken"></span>
-              </div>
-              <div class="stat">
-                <span class="stat-name" translation="go_time_alive">Time alive:</span>
-                <span class="stat-value" id="game-over-time"></span>
-              </div>
-            </div>
-            <div class="modal-item">
+          <!-- PLAYER  GAME OVER CARDS -->
+          <div id="player-game-over-cards"></div>
+          <div class="modal-item" id="game-over-buttons-holder">
+            <button
+              class="btn btn-lg btn-darken btn-primary"
+              id="btn-play-again"
+              translation="btn_play_again"
+            >
+            </button>
+            <div style="display: flex; gap: 8px">
               <button
                 class="btn btn-lg btn-darken btn-primary"
-                id="btn-play-again"
-                translation="btn_play_again"
+                id="btn-spectate"
+                translation="btn_spectate"
               >
               </button>
-              <div style="display: flex; gap: 8px">
-                <button
-                  class="btn btn-lg btn-darken btn-primary"
-                  id="btn-spectate"
-                  translation="btn_spectate"
-                >
-                </button>
-                <button
-                  class="btn btn-lg btn-darken btn-secondary"
-                  id="btn-menu"
-                  translation="btn_menu"
-                >
-                </button>
-              </div>
+              <button
+                class="btn btn-lg btn-darken btn-secondary"
+                id="btn-menu"
+                translation="btn_menu"
+              >
+              </button>
             </div>
           </div>
         </div>

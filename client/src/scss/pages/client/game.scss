@@ -1839,6 +1839,12 @@
     height: 100%;
     z-index: 1003;
 
+    #btn-menu,
+    #btn-play-again,
+    #btn-spectate {
+        width: 150px;
+    }
+
     background: rgba(0, 0, 0, 0.4);
     @include variables.text-shadow;
 
@@ -1874,36 +1880,103 @@
         }
     }
 
-    #game-over-rank-container {
-        font-size: 30px;
-        text-align: center;
-        font-weight: bold;
-        padding: 5px 15px 5px 15px;
-        border-bottom: 2px solid rgba(255, 255, 255, 0.5);
-        width: max-content;
-        margin: 5px auto 15px auto;
+    #game-over-rank-and-team-kills-holder {
+        display: flex;
 
-        @media screen and (max-width: variables.$screen_large) {
-            margin: 0 auto 10px auto;
-            font-size: 15px;
-        }
-
-        #game-over-rank {
-            margin-left: 10px;
-            font-size: 35px;
-
-            &.won {
-                color: palette.$orange;
-            }
+        #game-over-rank-container,
+        #game-over-team-kills-container {
+            font-size: 30px;
+            text-align: center;
+            font-weight: bold;
+            padding: 5px 15px 5px 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+            width: max-content;
+            margin: 5px auto 15px auto;
 
             @media screen and (max-width: variables.$screen_large) {
-                font-size: 17px;
+                margin: 0 auto 10px auto;
+                font-size: 15px;
+            }
+
+            #game-over-rank {
+                margin-left: 10px;
+                font-size: 35px;
+
+                &.won {
+                    color: palette.$orange;
+                }
+
+                @media screen and (max-width: variables.$screen_large) {
+                    font-size: 17px;
+                }
             }
         }
     }
 }
 
-#game-over-screen {
+#game-over-buttons-holder {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+
+    @media screen and (max-width: variables.$screen_large) {
+        transform: scale(0.6);
+        position: relative;
+        bottom: 50px;
+    }
+}
+
+#player-game-over-cards {
+    display: flex;
+    gap: 20px;
+
+    .game-over-player-name {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 25px;
+        gap: 5px;
+
+        .medal {
+            pointer-events: none;
+            transform: translate(0%, 50%) rotate(15deg);
+            width: 200px;
+            height: 200px;
+            position: absolute;
+            z-index: -1;
+            opacity: 0.95;
+
+            @media screen and (max-width: variables.$screen-large) {
+                @media screen and (max-height: variables.$screen_medium) {
+                    transform: translate(0%, 45%) rotate(15deg);
+                    width: 150px;
+                    height: 150px;
+                    position: absolute;
+                }
+            }
+        }
+
+        img {
+            vertical-align: middle;
+            width: 22px;
+            height: 22px;
+            margin: 0;
+        }
+    }
+
+    @media screen and (max-width: variables.$screen_large) {
+        transform: scale(0.6);
+        padding: 0;
+        position: relative;
+        bottom: 20px;
+
+        .game-over-player-name {
+            font-size: 20px;
+        }
+    }
+}
+
+.game-over-screen {
     text-align: center;
 
     background: rgba(0, 0, 0, 0.6);
@@ -1926,7 +1999,7 @@
         margin-bottom: 5px;
     }
 
-    #game-over-stats {
+    .game-over-stats {
         width: 250px;
         margin: auto;
         padding: 16px 20px 16px 20px;

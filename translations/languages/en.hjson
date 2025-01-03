@@ -115,6 +115,8 @@
   "btn_menu": "Menu"
   "msg_waiting_for_leader": "Waiting for leader"
   "msg_you_died": "You died."
+  "msg_your_team_eliminated": "Your team was eliminated."
+  "msg_the_team_eliminated": "The team was eliminated."
   "msg_player_died": "<player> died."
   "msg_win": "Winner winner chicken dinner!"
   "msg_your_rank": "Rank"
