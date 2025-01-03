@@ -1,8 +1,8 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Fri, 03 Jan 2025 19:42:27 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Fri, 03 Jan 2025 20:06:54 GMT
 
-## 🇦🇱 Shqip (89% Complete) - ab.hjson
+## 🇦🇱 Shqip (88% Complete) - ab.hjson
 
 ### (No Invalid Keys)
 
@@ -12,6 +12,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `wiki` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -42,10 +45,11 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `wiki` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 
-## 🇨🇿 Čeština (94% Complete) - cz.hjson
+## 🇨🇿 Čeština (93% Complete) - cz.hjson
 
 ### (No Invalid Keys)
 
@@ -55,8 +59,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `wiki` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -68,17 +75,25 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇩🇪 Deutsch (100% Complete) - de.hjson
+## 🇩🇪 Deutsch (99% Complete) - de.hjson
 
 ### (No Invalid Keys)
 
-### (No Undefined Keys)
+### Undefined Keys
 
-## 🇪🇸 Español (100% Complete) - es.hjson
+- Key `wiki` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_haptics` is not defined
+
+## 🇪🇸 Español (99% Complete) - es.hjson
 
 ### (No Invalid Keys)
 
-### (No Undefined Keys)
+### Undefined Keys
+
+- Key `wiki` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_haptics` is not defined
 
 ## 🇪🇪 eesti (100% Complete) - et.hjson
 
@@ -86,35 +101,47 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `kf_message_grammar` is not a valid key
 
-### (No Undefined Keys)
+### Undefined Keys
 
-## 🇫🇮 suomi (99% Complete) - fi.hjson
+- Key `wiki` is not defined
+
+## 🇫🇮 suomi (98% Complete) - fi.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `wiki` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 
-## 🇫🇷 Français (99% Complete) - fr.hjson
+## 🇫🇷 Français (98% Complete) - fr.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `wiki` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 
-## 🇬🇷 Ελληνικά (100% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (99% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
-### (No Undefined Keys)
+### Undefined Keys
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (92% Complete) - hk_mo.hjson
+- Key `wiki` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_haptics` is not defined
+
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (91% Complete) - hk_mo.hjson
 
 ### (No Invalid Keys)
 
@@ -125,9 +152,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `wiki` is not defined
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -141,13 +171,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off_down` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇭🇺 Magyar (100% Complete) - hu.hjson
+## 🇭🇺 Magyar (99% Complete) - hu.hjson
 
-### (No Invalid Keys)
+### Invalid Keys
 
-### (No Undefined Keys)
+- Key `setting_haptics` is not a valid key
 
-## 🇮🇹 Italiano (93% Complete) - it.hjson
+### Undefined Keys
+
+- Key `wiki` is not defined
+- Key `settings_haptics` is not defined
+
+## 🇮🇹 Italiano (89% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -173,8 +208,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `wiki` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -190,7 +228,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇯🇵 日本語 (94% Complete) - jp.hjson
+## 🇯🇵 日本語 (93% Complete) - jp.hjson
 
 ### (No Invalid Keys)
 
@@ -200,8 +238,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `wiki` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -213,7 +254,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇱🇹 Lietuvių (94% Complete) - lt.hjson
+## 🇱🇹 Lietuvių (93% Complete) - lt.hjson
 
 ### (No Invalid Keys)
 
@@ -223,8 +264,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `wiki` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -236,7 +280,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇱🇻 Latviešu (94% Complete) - lv.hjson
+## 🇱🇻 Latviešu (93% Complete) - lv.hjson
 
 ### (No Invalid Keys)
 
@@ -246,8 +290,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `wiki` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -259,21 +306,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇵🇱 Polski (99% Complete) - pl.hjson
+## 🇵🇱 Polski (98% Complete) - pl.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `wiki` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 
-## 🎀 Cute Engwish (92% Complete) - qen.hjson
+## 🎀 Cute Engwish (90% Complete) - qen.hjson
 
-### Invalid Keys
-
-- Key `percentage` is not a valid key
+### (No Invalid Keys)
 
 ### Undefined Keys
 
@@ -285,9 +333,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `wiki` is not defined
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -300,7 +351,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇷🇴 Română (87% Complete) - ro.hjson
+## 🇷🇴 Română (86% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
@@ -314,8 +365,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `wiki` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -340,15 +394,16 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇷🇺 Русский (100% Complete) - ru.hjson
+## 🇷🇺 Русский (99% Complete) - ru.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `wiki` is not defined
 - Key `m16a4` is not defined
 
-## 🇮🇳 தமிழ் (93% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (92% Complete) - ta.hjson
 
 ### (No Invalid Keys)
 
@@ -359,8 +414,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `news` is not defined
 - Key `donate` is not defined
+- Key `wiki` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -373,7 +431,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇹🇷 Turkısh (100% Complete) - tr.hjson
+## 🇹🇷 Turkısh (98% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -381,10 +439,13 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `wiki` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 
-## 🇹🇼 中文（繁體） (86% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (85% Complete) - tw.hjson
 
 ### (No Invalid Keys)
 
@@ -398,9 +459,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `wiki` is not defined
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -427,7 +491,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇻🇳 Tiếng Việt (99% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (98% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -436,11 +500,12 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `wiki` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 
-## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (98% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -449,6 +514,9 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `wiki` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 

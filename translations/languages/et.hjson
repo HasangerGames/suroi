@@ -88,6 +88,8 @@
   "settings_mobile_controls": "Käivita mobiilseadme juhtimisskeem"
   "settings_joystick_size": "Juhtkangi suurus"
   "settings_joystick_opacity": "Juhtkangi läbipaistvus"
+  "settings_gyro_angle": "Relva vahetuse kaldenurk"
+  "settings_haptics": "Vibratsioon"
   "loadout_skins": "Riietus"
   "loadout_emotes": "Emotikonid"
   "loadout_crosshairs": "Niitristikud"

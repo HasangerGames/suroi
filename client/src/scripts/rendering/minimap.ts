@@ -13,6 +13,7 @@ import { type Game } from "../game";
 import { COLORS, DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, drawGroundGraphics, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GasRender } from "./gas";
+import FontFaceObserver from "fontfaceobserver";
 
 export class Minimap {
     private _expanded = false;
@@ -228,7 +229,7 @@ export class Minimap {
         }
     }
 
-    renderMap(): void {
+    async renderMap(): Promise<void> {
         // Draw the terrain graphics
         const terrainGraphics = this.terrainGraphics;
         terrainGraphics.clear();
@@ -340,6 +341,9 @@ export class Minimap {
             children: true,
             texture: false
         });
+
+        // Wait for font to load
+        await new FontFaceObserver("Inter", { weight: 600 }).load();
 
         // Add the places
         this.placesContainer.removeChildren();
@@ -453,7 +457,7 @@ export class Minimap {
             }
         }
 
-        this.renderMap();
+        void this.renderMap();
         this.resize();
     }
 

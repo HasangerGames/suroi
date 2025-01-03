@@ -95,6 +95,8 @@
   "settings_mobile_controls": "Ativar controles móveis"
   "settings_joystick_size": "Tamanho do joystick"
   "settings_joystick_opacity": "Opacidade do joystick"
+  "settings_gyro_angle":"Ângulo de troca de arma"
+  "settings_haptics":"Sensações táteis"
 
   "loadout_skins": "Aparências"
   "loadout_emotes": "Emotes"
@@ -333,7 +335,7 @@
   "m3k": "M3K"
   "arx160": "ARX-160"
   "m16a4": "M16A4"
-  "mg36": "MG-36"
+  "mg36": "MG36"
   "mcx_spear": "MCX Spear"
 
   "frag_grenade": "Granada de Fragmentação"

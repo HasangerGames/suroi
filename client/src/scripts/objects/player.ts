@@ -27,8 +27,8 @@ import { getTranslatedString } from "../../translations";
 import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { BULLET_WHIZ_SCALE, COLORS, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
-import { drawHitbox, setupSkinLayer, SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { BULLET_WHIZ_SCALE, COLORS, DIFF_LAYER_HITBOX_OPACITY, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
@@ -89,9 +89,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     readonly images: {
         readonly aimTrail: TilingSprite
         readonly vest: SuroiSprite
-        readonly body: Container
-        readonly leftFist: Container
-        readonly rightFist: Container
+        readonly body: SuroiSprite
+        readonly leftFist: SuroiSprite
+        readonly rightFist: SuroiSprite
         readonly leftLeg?: SuroiSprite
         readonly rightLeg?: SuroiSprite
         readonly backpack: SuroiSprite
@@ -123,8 +123,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         emote?: Tween<Container>
         emoteHide?: Tween<Container>
 
-        leftFist?: Tween<Container>
-        rightFist?: Tween<Container>
+        leftFist?: Tween<SuroiSprite>
+        rightFist?: Tween<SuroiSprite>
         leftLeg?: Tween<SuroiSprite>
         rightLeg?: Tween<SuroiSprite>
         weapon?: Tween<SuroiSprite>
@@ -162,9 +162,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.images = {
             aimTrail: new TilingSprite({ texture: SuroiSprite.getTexture("aimTrail"), width: 20, height: 6000 }),
             vest: new SuroiSprite().setVisible(false),
-            body: new Container(),
-            leftFist: new Container(),
-            rightFist: new Container(),
+            body: new SuroiSprite(),
+            leftFist: new SuroiSprite(),
+            rightFist: new SuroiSprite(),
             leftLeg: game.teamMode ? new SuroiSprite().setPos(-35, 26).setZIndex(-1) : undefined,
             rightLeg: game.teamMode ? new SuroiSprite().setPos(-35, -26).setZIndex(-1) : undefined,
             backpack: new SuroiSprite().setPos(-35, 0).setVisible(false).setZIndex(-1),
@@ -672,20 +672,25 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
             this._skin = skinID;
             const skinDef = Loots.fromString<SkinDefinition>(skinID);
+            const tint = skinDef.grassTint ? GHILLIE_TINT : 0xffffff;
 
             const { body, leftFist, rightFist, leftLeg, rightLeg } = this.images;
 
-            const grassTint = skin.grassTint ? COLORS.grass : undefined;
-
-            setupSkinLayer(body, skinDef.baseLayers, grassTint);
-            setupSkinLayer(leftFist, skinDef.fistLayers, grassTint);
-            setupSkinLayer(rightFist, skinDef.fistLayers, grassTint);
+            body
+                .setFrame(`${skinID}_base`)
+                .setTint(tint);
+            leftFist
+                .setFrame(`${skinID}_fist`)
+                .setTint(tint);
+            rightFist
+                .setFrame(`${skinID}_fist`)
+                .setTint(tint);
             leftLeg
                 ?.setFrame(`${skinID}_fist`)
-                .setTint(grassTint ?? 0xffffff);
+                .setTint(tint);
             rightLeg
                 ?.setFrame(`${skinID}_fist`)
-                .setTint(grassTint ?? 0xffffff);
+                .setTint(tint);
 
             if (sizeMod !== undefined) {
                 this.sizeMod = this.container.scale = sizeMod;
@@ -1032,8 +1037,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.images.rightLeg?.setVisible(this.downed);
 
         if (this.downed) {
-            this.images.leftFist.position.set(38, -35);
-            this.images.rightFist.position.set(38, 35);
+            this.images.leftFist.setPos(38, -35);
+            this.images.rightFist.setPos(38, 35);
             this.images.leftLeg?.setPos(-35, 26);
             this.images.rightLeg?.setPos(-35, -26);
             return;
@@ -1067,8 +1072,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
             });
         } else {
-            this.images.leftFist.position.set(fists.left.x, fists.left.y - offset);
-            this.images.rightFist.position.set(fists.right.x, fists.right.y + offset);
+            this.images.leftFist.setPos(fists.left.x, fists.left.y - offset);
+            this.images.rightFist.setPos(fists.right.x, fists.right.y + offset);
         }
 
         if (reference.image) {
@@ -1089,8 +1094,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.weapon.setVisible(false);
             this.images.altWeapon.setVisible(false);
             this.images.muzzleFlash.setVisible(false);
-            this.images.leftFist.zIndex = -1;
-            this.images.rightFist.zIndex = -1;
+            this.images.leftFist.setZIndex(-1);
+            this.images.rightFist.setZIndex(-1);
             this.container.sortChildren();
             return;
         }
@@ -1138,24 +1143,24 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         switch (weaponDef.itemType) {
             case ItemType.Gun: {
-                this.images.rightFist.zIndex = (fists as SingleGunNarrowing["fists"]).rightZIndex;
-                this.images.leftFist.zIndex = (fists as SingleGunNarrowing["fists"]).leftZIndex;
+                this.images.rightFist.setZIndex((fists as SingleGunNarrowing["fists"]).rightZIndex);
+                this.images.leftFist.setZIndex((fists as SingleGunNarrowing["fists"]).leftZIndex);
                 this.images.weapon.setZIndex(image?.zIndex ?? 2);
                 this.images.altWeapon.setZIndex(2);
-                this.images.body.zIndex = 3;
+                this.images.body.setZIndex(3);
                 break;
             }
             case ItemType.Melee: {
-                this.images.leftFist.zIndex = 4;
-                this.images.rightFist.zIndex = 4;
-                this.images.body.zIndex = 2;
+                this.images.leftFist.setZIndex(4);
+                this.images.rightFist.setZIndex(4);
+                this.images.body.setZIndex(2);
                 this.images.weapon.setZIndex(reference.image?.zIndex ?? 1);
                 break;
             }
             case ItemType.Throwable: {
-                this.images.leftFist.zIndex = 4;
-                this.images.rightFist.zIndex = 4;
-                this.images.body.zIndex = 2;
+                this.images.leftFist.setZIndex(4);
+                this.images.rightFist.setZIndex(4);
+                this.images.body.setZIndex(2);
                 this.images.weapon.setZIndex(reference.image?.zIndex ?? 5);
                 break;
             }
@@ -1916,8 +1921,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.images.weapon.setVisible(false);
                 this.images.altWeapon.setVisible(false);
                 this.images.muzzleFlash.setVisible(false);
-                this.images.leftFist.zIndex = 4;
-                this.images.rightFist.zIndex = 4;
+                this.images.leftFist.setZIndex(4);
+                this.images.rightFist.setZIndex(4);
                 this.anims.leftFist = this.game.addTween({
                     target: this.images.leftFist,
                     to: Vec.create(28, -45),

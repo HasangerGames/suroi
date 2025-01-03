@@ -38,7 +38,7 @@
       rel="icon"
       type="image/svg+xml"
       sizes="any"
-      href="./img/logos/suroi_small.svg"
+      href="./img/logos/suroi_favicon.svg"
     />
 
     <link
@@ -231,53 +231,70 @@
             </div>
           </div>
           <div id="splash-socials">
-            <a
-              href="https://discord.suroi.io"
-              rel="noopener noreferrer"
-              class="btn btn-darken btn-social btn-discord"
-              target="_blank"
-            ></a>
-            <a
-              href="https://reddit.com/r/suroigame"
-              rel="noopener noreferrer"
-              class="btn btn-darken btn-social btn-reddit"
-              target="_blank"
-            ></a>
-            <a
-              href="https://twitter.com/suroigame"
-              rel="noopener noreferrer"
-              class="btn btn-darken btn-social btn-twitter"
-              target="_blank"
-            ></a>
-            <a
-              href="https://www.youtube.com/@suroigame"
-              rel="noopener noreferrer"
-              class="btn btn-darken btn-social btn-youtube"
-              target="_blank"
-            ></a>
-            <a
-              href="https://github.com/HasangerGames/suroi"
-              rel="noopener noreferrer"
-              class="btn btn-darken btn-social btn-github"
-              target="_blank"
-            ></a>
-            <a
-              href="https://wiki.suroi.io"
-              rel="noopener noreferrer"
-              class="btn btn-darken btn-social btn-wiki"
-              target="_blank"
-            ></a>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px">
+              <a
+                href="https://discord.suroi.io"
+                rel="noopener noreferrer"
+                class="btn btn-darken btn-social btn-discord"
+                target="_blank"
+              ></a>
+              <a
+                href="https://reddit.com/r/suroigame"
+                rel="noopener noreferrer"
+                class="btn btn-darken btn-social btn-reddit"
+                target="_blank"
+              ></a>
+              <a
+                href="https://bsky.app/profile/suroigame.bsky.social"
+                rel="noopener noreferrer"
+                class="btn btn-darken btn-social btn-bsky"
+                target="_blank"
+              ></a>
+              <a
+                href="https://instagram.com/suroigame"
+                rel="noopener noreferrer"
+                class="btn btn-darken btn-social btn-instagram"
+                target="_blank"
+              ></a>
+              <a
+                href="https://www.youtube.com/@suroigame"
+                rel="noopener noreferrer"
+                class="btn btn-darken btn-social btn-youtube"
+                target="_blank"
+              ></a>
+              <a
+                href="https://github.com/HasangerGames/suroi"
+                rel="noopener noreferrer"
+                class="btn btn-darken btn-social btn-github"
+                target="_blank"
+              ></a>
+            </div>
+            <div style="display: flex; flex-direction: column; width: 346px; gap: 8px">
+              <a class="btn btn-darken btn-wiki" href="https://wiki.suroi.io" target="_blank">
+                <img src="img/socials/wiki.svg" width="32">
+                <span translation="wiki" style="font-size: 20px; color: white"></span>
+              </a>
+              <a class="btn btn-darken btn-kofi" href="https://ko-fi.com/suroi" target="_blank">
+                <img src="img/socials/kofi.svg" width="32">
+                <span translation="donate" style="font-size: 20px; color: white"></span>
+              </a>
+            </div>
           </div>
         </div>
         <div id="splash-customize">
           <div id="skin-container">
-            <div id="skin-base"><div id="btn-customize">
-              <i class="fa-solid fa-shirt"></i>
-            </div></div>
+            <div id="skin-base"></div>
             <div id="skin-left-fist"></div>
             <div id="skin-right-fist"></div>
           </div>
           <div style="display: flex; flex-direction: row; gap: 15px">
+            <button
+              class="btn btn-lg btn-darken btn-primary"
+              id="btn-customize"
+            >
+              <i class="fa-solid fa-shirt"></i>
+              <span translation="loadout"></span>
+            </button>
             <button
               class="btn btn-lg btn-darken btn-secondary"
               id="btn-settings"
@@ -361,17 +378,7 @@
           >
         </div>
         <div id="splash-settings">
-          <button class="btn btn-primary btn-donate" style="width: auto; height:auto;" onclick="window.open('https://ko-fi.com/suroi')">
-            <i class="fa-solid fa-heart"></i>&nbsp;
-            <span translation="donate"></span>
-          </button>
-          <button
-            style="display: none"
-            class="btn btn-darken btn-secondary"
-            id="btn-volume"
-          >
-            <i class="fa-solid fa-volume-high"></i>
-          </button>
+
         </div>
       </div>
     </div>
@@ -947,10 +954,23 @@
               <input type="range" max="1" min="0.1" id="slider-joystick-transparency" step="0.1">
             </label>
           </div>
+          <div class="modal-item">
+            <label>
+              <span class="setting-title" translation="settings_gyro_angle"></span>
+              <span class="range-input-value"></span>
+              <input type="range" max="45" min="0" id="slider-gyro-angle" step="1">
+            </label>
+          </div>
           <div class="modal-item checkbox-setting">
             <label>
               <span class="setting-title" translation="settings_autopickup"></span>
               <input type="checkbox" id="toggle-auto-pickup">
+            </label>
+          </div>
+          <div class="modal-item checkbox-setting">
+            <label>
+              <span class="setting-title" translation="settings_haptics"></span>
+              <input type="checkbox" id="toggle-haptics">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
