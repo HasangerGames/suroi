@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Fri, 03 Jan 2025 00:13:45 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Fri, 03 Jan 2025 00:15:43 GMT
 
 ## 🇦🇱 Shqip (89% Complete) - ab.hjson
 
@@ -465,7 +465,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇻🇳 Tiếng Việt (98% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (99% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -475,8 +475,6 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `settings_ambient_particles` is not defined
-- Key `settings_gyro_angle` is not defined
-- Key `settings_haptics` is not defined
 
 ## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
 

@@ -84,6 +84,8 @@
   "settings_mobile_controls": "Bật điều khiển điện thoại"
   "settings_joystick_size": "Kích cỡ joystick"
   "settings_joystick_opacity": "Độ mờ joystick"
+  "settings_gyro_angle": "Góc chuyển vũ khí"
+  "settings_haptics": "Rung"
   "loadout_skins": "Skins"
   "loadout_emotes": "Emotes"
   "loadout_crosshairs": "Tâm"
