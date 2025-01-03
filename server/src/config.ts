@@ -45,6 +45,8 @@ export const Config = {
         designr: { password: "designr" },
         lead_designr: { password: "lead_designr" },
         vip_designr: { password: "vip_designr" },
+        lead_composr: { password: "lead_composr" },
+        composr: { password: "composr" },
         sound_designr: { password: "sound_designr" },
         moderatr: { password: "moderatr" },
         administratr: { password: "administratr" },
@@ -55,8 +57,7 @@ export const Config = {
         pap: { password: "pap", isDev: true },
         error: { password: "error", isDev: true },
         limenade: { password: "limenade", isDev: true },
-        solstice: { password: "solstice", isDev: true },
-        zedaes: { password: "zedaes" }
+        solstice: { password: "solstice", isDev: true }
     },
 
     authServer: {

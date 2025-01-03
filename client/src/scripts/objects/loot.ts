@@ -9,28 +9,21 @@ import { ItemType, LootRadius } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
-import { COLORS, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
-import { Player } from "./player";
-import { setupSkinLayer } from "../utils/pixi";
-import { Container } from "pixi.js";
+import { type Player } from "./player";
 
 export class Loot extends GameObject.derive(ObjectCategory.Loot) {
     definition!: LootDefinition;
 
     readonly images: {
         readonly background: SuroiSprite
-    } & ({
-        readonly type: "item"
         readonly item: SuroiSprite
-    } | {
-        readonly type: "skin"
-        readonly skinBase: Container
-        readonly skinFistLeft: Container
-        readonly skinFistRight: Container
-    });
+        readonly skinFistLeft: SuroiSprite
+        readonly skinFistRight: SuroiSprite
+    };
 
     private _count = 0;
     get count(): number { return this._count; }
@@ -42,21 +35,12 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Loot]) {
         super(game, id);
 
-        if (data.full && data.full.definition.itemType === ItemType.Skin) {
-            this.images = {
-                type: "skin",
-                background: new SuroiSprite(),
-                skinBase: new Container(),
-                skinFistLeft: new Container(),
-                skinFistRight: new Container()
-            };
-        } else {
-            this.images = {
-                type: "item",
-                background: new SuroiSprite(),
-                item: new SuroiSprite()
-            };
-        }
+        this.images = {
+            background: new SuroiSprite(),
+            item: new SuroiSprite(),
+            skinFistLeft: new SuroiSprite(),
+            skinFistRight: new SuroiSprite()
+        };
 
         this.layer = data.layer;
 
@@ -68,33 +52,36 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
             const definition = this.definition = data.full.definition;
             const itemType = definition.itemType;
 
-            this.container.addChild(this.images.background);
+            this.container.addChild(this.images.background, this.images.item);
 
-            if (itemType === ItemType.Skin && this.images.type === "skin") {
-                const { skinBase, skinFistRight, skinFistLeft } = this.images;
-                const grassTint = definition.grassTint ? COLORS.grass : undefined;
+            if (itemType === ItemType.Skin) {
+                this.images.item
+                    .setFrame(`${this.definition.idString}_base`)
+                    .setPos(0, -3)
+                    .setScale(0.65)
+                    .setAngle(90);
 
-                setupSkinLayer(skinBase, definition.baseLayers, grassTint);
-                skinBase.position.set(0, -3);
+                const skinFist = `${this.definition.idString}_fist`;
+                this.images.skinFistLeft
+                    .setFrame(skinFist)
+                    .setPos(22, 20)
+                    .setScale(0.65)
+                    .setAngle(90);
+                this.images.skinFistRight
+                    .setFrame(skinFist)
+                    .setPos(-22, 20)
+                    .setScale(0.65)
+                    .setAngle(90);
 
-                setupSkinLayer(skinFistLeft, definition.fistLayers, grassTint);
-                setupSkinLayer(skinFistRight, definition.fistLayers, grassTint);
-                skinFistLeft.position.set(22, 20);
-                skinFistRight.position.set(-22, 20);
+                if (definition.grassTint) {
+                    this.images.item.setTint(GHILLIE_TINT);
+                    this.images.skinFistLeft.setTint(GHILLIE_TINT);
+                    this.images.skinFistRight.setTint(GHILLIE_TINT);
+                }
 
-                skinBase.scale.set(0.65);
-                skinFistLeft.scale.set(0.65);
-                skinFistRight.scale.set(0.65);
-
-                // Degrees skill issue
-                skinBase.angle = 90;
-                skinFistLeft.angle = 90;
-                skinFistRight.angle = 90;
-
-                this.container.addChild(this.images.skinBase, this.images.skinFistLeft, this.images.skinFistRight);
-            } else if (this.images.type === "item") {
+                this.container.addChild(this.images.skinFistLeft, this.images.skinFistRight);
+            } else {
                 this.images.item.setFrame(definition.idString);
-                this.container.addChild(this.images.item);
             }
 
             // Set the loot texture based on the type
@@ -102,7 +89,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
             switch (itemType) {
                 case ItemType.Gun: {
                     backgroundTexture = `loot_background_gun_${definition.ammoType}`;
-                    if (this.images.type === "item") this.images.item.scale.set(0.85);
+                    this.images.item.scale.set(0.85);
                     break;
                 }
                 //
@@ -111,7 +98,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                 case ItemType.Melee: {
                     backgroundTexture = "loot_background_melee";
                     const imageScale = definition.image?.lootScale;
-                    if (this.images.type === "item" && imageScale !== undefined) this.images.item.scale.set(imageScale);
+                    if (imageScale !== undefined) this.images.item.scale.set(imageScale);
                     break;
                 }
                 case ItemType.Healing: {
@@ -147,11 +134,11 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
             this.hitbox = new CircleHitbox(LootRadius[itemType]);
 
             /*
-              Infinity is serialized as 0 in the bit stream
-              0 isn't a valid count value on the server
-              thus
-              If we receive 0 here, it must mean the count on
-              the server is Infinity (or NaN lol) (or a decimal number, lmao)
+                Infinity is serialized as 0 in the bit stream
+                0 isn't a valid count value on the server
+                thus
+                If we receive 0 here, it must mean the count on
+                the server is Infinity (or NaN lol) (or a decimal number, lmao)
             */
             this._count = data.full.count || Infinity;
 
@@ -202,16 +189,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
     destroy(): void {
         super.destroy();
         this.images.background.destroy();
-        switch (this.images.type) {
-            case "item":
-                this.images.item.destroy();
-                break;
-            case "skin":
-                this.images.skinBase.destroy();
-                this.images.skinFistLeft.destroy();
-                this.images.skinFistRight.destroy();
-                break;
-        }
+        this.images.item.destroy();
         this.animation?.kill();
     }
 

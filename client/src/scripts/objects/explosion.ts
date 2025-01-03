@@ -8,6 +8,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { SHOCKWAVE_EXPLOSION_MULTIPLIERS } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { isMobile } from "pixi.js";
 
 export function explosion(game: Game, definition: ExplosionDefinition, position: Vector, layer: Layer): void {
     const pixiPos = toPixiCoords(position);
@@ -68,6 +69,12 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
             definition.cameraShake.intensity * SHOCKWAVE_EXPLOSION_MULTIPLIERS.amplitude,
             definition.radius.min * 100 * SHOCKWAVE_EXPLOSION_MULTIPLIERS.wavelength,
             definition.ballistics.speed * SHOCKWAVE_EXPLOSION_MULTIPLIERS.speed
+        );
+    }
+
+    if (game.console.getBuiltInCVar("mb_haptics") && isMobile.any) {
+        navigator.vibrate?.(
+            definition.animation.duration * 0.75
         );
     }
 

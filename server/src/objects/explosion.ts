@@ -2,7 +2,6 @@ import { Layer } from "@common/constants";
 import { Explosions, type ExplosionDefinition } from "@common/definitions/explosions";
 import { PerkIds } from "@common/definitions/perks";
 import { CircleHitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Angle, Geometry } from "@common/utils/math";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
 import { randomRotation } from "@common/utils/random";
@@ -36,7 +35,7 @@ export class Explosion {
 
     explode(): void {
         // List of all near objects
-        const objects = this.game.grid.intersectsHitbox(new CircleHitbox(this.definition.radius.max * 2, this.position));
+        const objects = this.game.grid.intersectsHitbox(new CircleHitbox(this.definition.radius.max * 2, this.position), this.layer);
         const damagedObjects = new Set<number>();
 
         for (let angle = -Math.PI; angle < Math.PI; angle += 0.1) {
@@ -85,7 +84,7 @@ export class Explosion {
                     damagedObjects.add(object.id);
                     const dist = Math.sqrt(collision.squareDistance);
 
-                    if ((isPlayer || isObstacle || isBuilding) && adjacentOrEqualLayer(object.layer, this.layer)) {
+                    if (isPlayer || isObstacle || isBuilding) {
                         object.damage({
                             amount: this.damageMod * this.definition.damage
                                 * (isObstacle ? this.definition.obstacleMultiplier : 1)
@@ -103,7 +102,7 @@ export class Explosion {
                         }
                     }
 
-                    if ((isLoot || isThrowableProjectile) && adjacentOrEqualLayer(object.layer, this.layer)) {
+                    if (isLoot || isThrowableProjectile) {
                         if (isThrowableProjectile) object.damage({ amount: this.definition.damage });
 
                         const multiplier = isThrowableProjectile ? 0.002 : 0.01;

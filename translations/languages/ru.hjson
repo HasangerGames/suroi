@@ -29,7 +29,8 @@
     "msg_better_item_equipped": "Уже экипирован предмет лучше"
     "msg_cannot_use_radio": "Нет связи в здании"
     "msg_radio_overused": "Радио сломалось у вас в руках!"
-
+    "msg_your_team_eliminated": "Ваш отряд был ликвидирован."
+    "msg_the_team_eliminated": "Этот отряд уничтожили."
 
     "msg_waiting_for_leader": "Ожидание лидера"
     "msg_you_died": "Вы померли."
@@ -114,7 +115,8 @@
     "settings_mobile_controls": "Включить мобильные настройки"
     "settings_joystick_size": "Размер джойстика"
     "settings_joystick_opacity": "Прозрачность джойстика"
-
+    "settings_gyro_angle": "Угол наклона устройства для быстрой смены оружия"
+    "settings_haptics": "Вибрации устройства"
 
     "loadout_skins": "Скины"
     "loadout_emotes": "Эмоции"
