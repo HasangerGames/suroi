@@ -1542,7 +1542,6 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "m1_garand", weight: 0.002 }
         ],
         airdrop_guns: [
-            { item: "sr25", weight: 1.5 },
             { item: "m590m", weight: 1 },
             { item: "rsh12", weight: 1 },
             { item: "vepr12", weight: 1 },

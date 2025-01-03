@@ -17,7 +17,7 @@ import { type SkinDefinition } from "@common/definitions/skins";
 import { SyncedParticles, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
 import { DisconnectPacket } from "@common/packets/disconnectPacket";
-import { GameOverPacket, type GameOverData } from "@common/packets/gameOverPacket";
+import { GameOverPacket, TeammateGameOverData, type GameOverData } from "@common/packets/gameOverPacket";
 import { type AllowedEmoteSources, type NoMobile, type PlayerInputData } from "@common/packets/inputPacket";
 import { createKillfeedMessage, KillFeedPacket, type ForEventType } from "@common/packets/killFeedPacket";
 import { type InputPacket } from "@common/packets/packet";
@@ -95,6 +95,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     emoteCount = 0;
     lastRateLimitUpdate = 0;
     blockEmoting = false;
+
+    initializedSpecialSpectatingCase = false;
 
     readonly loadout: {
         badge?: BadgeDefinition
@@ -1605,6 +1607,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         if (toSpectate === undefined) return;
+        if (this.spectating !== undefined && !this.initializedSpecialSpectatingCase) {
+            toSpectate = this.spectating;
+            this.initializedSpecialSpectatingCase = true;
+        }
 
         if (this.game.teamMode) {
             this.teamID = toSpectate.teamID;
@@ -2228,7 +2234,17 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             c4.damage({ amount: Infinity });
         }
 
-        // Send game over to dead player
+        if (this.team) {
+            if (this.team.hasLivingPlayers()) {
+                this.spectating?.spectators.delete(this);
+                this.updateObjects = true;
+                this.startedSpectating = true;
+                this.spectating = this.team.getLivingPlayers()[0];
+                this.team.getLivingPlayers()[0].spectators.add(this);
+                this.spectating = this.team.getLivingPlayers()[0];
+            }
+        }
+
         if (!this.disconnected) {
             this.sendGameOverPacket();
         }
@@ -2329,7 +2345,52 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     sendGameOverPacket(won = false): void {
-        const packet = GameOverPacket.create({
+        const teammates: TeammateGameOverData[] = [];
+        let packet;
+        if (this.team) {
+            for (const player of this.team.players) {
+                const playerID = player.id;
+                const kills = player.kills;
+                const damageDone = player.damageDone;
+                const damageTaken = player.damageTaken;
+                const timeAlive = (this.game.now - player.joinTime) / 1000;
+                teammates.push({
+                    playerID,
+                    kills,
+                    damageDone,
+                    damageTaken,
+                    timeAlive
+                });
+            }
+
+            packet = GameOverPacket.create({
+                won,
+                rank: won ? 1 as const : this.game.aliveCount + 1,
+                numberTeammates: teammates.length,
+                teammates: teammates
+            } as GameOverData);
+        } else {
+            const playerID = this.id;
+            const kills = this.kills;
+            const damageDone = this.damageDone;
+            const damageTaken = this.damageTaken;
+            const timeAlive = (this.game.now - this.joinTime) / 1000;
+            teammates.push({
+                playerID,
+                kills,
+                damageDone,
+                damageTaken,
+                timeAlive
+            });
+            packet = GameOverPacket.create({
+                won,
+                rank: won ? 1 as const : this.game.aliveCount + 1,
+                numberTeammates: 1,
+                teammates: teammates
+            } as GameOverData);
+        }
+
+        /* const packet = GameOverPacket.create({
             won,
             playerID: this.id,
             kills: this.kills,
@@ -2338,6 +2399,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             timeAlive: (this.game.now - this.joinTime) / 1000,
             rank: won ? 1 as const : this.game.aliveCount + 1
         } as GameOverData);
+         */
 
         this.sendPacket(packet);
 
