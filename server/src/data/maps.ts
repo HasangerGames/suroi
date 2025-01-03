@@ -25,6 +25,19 @@ export interface RiverDefinition {
     readonly maxWidth: number
     readonly minWideWidth: number
     readonly maxWideWidth: number
+    /**
+     * The number is the amount of the specified obstacle each river will have
+     * Multiplied by the river width and amount of nodes and divided by a magic number (500)
+     * (division done so the numbers here don't need to be too small / decimals)
+     * so its kinda of a "density" of obstacles inside a river
+     * a better way would be to calculate the polygon area of the river
+     * but that's slower and we don't need to be that accurate
+     *
+     * NOTE: obstacles in this object still need `River` or `Trail` spawn mode
+     * for river obstacles that have a fixed amount per game (like river chests)
+     * you should use `MapDefinition.obstacles`
+     */
+    readonly obstacles: Record<ReferenceTo<ObstacleDefinition>, number>
 }
 
 export interface MapDefinition {
@@ -94,7 +107,11 @@ const maps = {
             minWidth: 12,
             maxWidth: 18,
             minWideWidth: 25,
-            maxWideWidth: 30
+            maxWideWidth: 30,
+            obstacles: {
+                river_rock: 16,
+                lily_pad: 6
+            }
         },
         buildings: {
             large_bridge: 2,
@@ -149,10 +166,8 @@ const maps = {
             grenade_crate: 35,
             rock: 150,
             river_chest: 1,
-            river_rock: 45,
             bush: 110,
             // birthday_cake: 100, // birthday mode
-            lily_pad: 20,
             blueberry_bush: 30,
             barrel: 80,
             viking_chest: 1,
@@ -219,7 +234,11 @@ const maps = {
             maxWidth: 18,
             minWideWidth: 25,
             maxWideWidth: 28,
-            maxWideAmount: 1
+            maxWideAmount: 1,
+            obstacles: {
+                river_rock: 16,
+                lily_pad: 6
+            }
         },
         trails: {
             minAmount: 2,
@@ -229,7 +248,10 @@ const maps = {
             maxWidth: 4,
             minWideWidth: 3,
             maxWideWidth: 5,
-            maxWideAmount: 1
+            maxWideAmount: 1,
+            obstacles: {
+                pebble: 300
+            }
         },
         clearings: {
             minWidth: 200,
@@ -303,10 +325,8 @@ const maps = {
             rock: 220,
             clearing_boulder: 15,
             river_chest: 1,
-            river_rock: 60,
             vibrant_bush: 200,
             oak_leaf_pile: 200,
-            lily_pad: 50,
             barrel: 90,
             viking_chest: 1,
             super_barrel: 35,
@@ -316,8 +336,7 @@ const maps = {
             loot_barrel: 1,
             flint_stone: 1,
             pumpkin: 200,
-            large_pumpkin: 5,
-            pebble: 110
+            large_pumpkin: 5
         },
         obstacleClumps: [
             {
@@ -386,7 +405,11 @@ const maps = {
             maxWidth: 18,
             minWideWidth: 25,
             maxWideWidth: 28,
-            maxWideAmount: 1
+            maxWideAmount: 1,
+            obstacles: {
+                river_rock: 16,
+                lily_pad: 6
+            }
         },
         trails: {
             minAmount: 4,
@@ -396,7 +419,10 @@ const maps = {
             maxWidth: 4,
             minWideWidth: 3,
             maxWideWidth: 5,
-            maxWideAmount: 1
+            maxWideAmount: 1,
+            obstacles: {
+                pebble: 300
+            }
         },
         clearings: {
             minWidth: 200,
@@ -472,10 +498,8 @@ const maps = {
             rock: 220,
             clearing_boulder: 15,
             river_chest: 1,
-            river_rock: 60,
             vibrant_bush: 200,
             oak_leaf_pile: 200,
-            lily_pad: 50,
             barrel: 90,
             jack_o_lantern: 75,
             viking_chest: 1,
@@ -487,8 +511,7 @@ const maps = {
             flint_stone: 3,
             pumpkin: 300,
             large_pumpkin: 40,
-            plumpkin: 5,
-            pebble: 110
+            plumpkin: 5
         },
         obstacleClumps: [
             {
@@ -547,7 +570,10 @@ const maps = {
             minWidth: 12,
             maxWidth: 18,
             minWideWidth: 25,
-            maxWideWidth: 30
+            maxWideWidth: 30,
+            obstacles: {
+                river_rock: 16
+            }
         },
         buildings: {
             large_bridge: 2,
@@ -602,7 +628,6 @@ const maps = {
             grenade_crate_winter: 35,
             rock: 150,
             river_chest: 1,
-            river_rock: 45,
             bush: 110,
             // birthday_cake: 100, // birthday mode
             blueberry_bush: 30,
