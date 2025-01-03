@@ -2239,9 +2239,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.spectating?.spectators.delete(this);
                 this.updateObjects = true;
                 this.startedSpectating = true;
-                this.spectating = this.team.getLivingPlayers()[0];
-                this.team.getLivingPlayers()[0].spectators.add(this);
-                this.spectating = this.team.getLivingPlayers()[0];
+                const toSpectate = this.team.getLivingPlayers()[0];
+                toSpectate.spectators.add(this);
+                this.spectating = toSpectate;
             }
         }
 
@@ -2347,7 +2347,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     sendGameOverPacket(won = false): void {
         const teammates: TeammateGameOverData[] = [];
         let packet;
-        if (this.team) {
+        if (this.team && (this.game.teamMode && this.spectating === undefined)) {
             for (const player of this.team.players) {
                 const playerID = player.id;
                 const kills = player.kills;
