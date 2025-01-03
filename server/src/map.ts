@@ -148,6 +148,13 @@ export class GameMap {
             rivers
         );
 
+        if (mapDef.rivers) {
+            this._generateRiverObstacles(mapDef.rivers, false);
+        }
+        if (mapDef.trails) {
+            this._generateRiverObstacles(mapDef.trails, true);
+        }
+
         this._generateClearings(mapDef.clearings);
 
         Object.entries(mapDef.buildings ?? {}).forEach(([building, count]) => this._generateBuildings(building, count));
@@ -337,6 +344,35 @@ export class GameMap {
             return 3;
         } else {
             return 4;
+        }
+    }
+
+    private _generateRiverObstacles(riverDef: RiverDefinition, onTrails: boolean): void {
+        for (const river of this.terrain.rivers) {
+            if (onTrails !== river.isTrail) continue;
+            for (const obstacle in riverDef.obstacles) {
+                const amount = riverDef.obstacles[obstacle] * river.width * river.points.length / 500;
+
+                const definition = Obstacles.reify(obstacle);
+
+                const hitbox = definition.spawnHitbox ?? definition.hitbox;
+
+                for (let i = 0; i < amount; i++) {
+                    const position = this.getRandomPosition(hitbox, {
+                        getPosition: () => {
+                            return river.getRandomPosition(
+                                definition.spawnMode === MapObjectSpawnMode.Trail
+                            );
+                        },
+                        spawnMode: definition.spawnMode,
+                        ignoreClearings: true
+                    });
+
+                    if (position) {
+                        this.generateObstacle(definition, position);
+                    }
+                }
+            }
         }
     }
 
@@ -838,11 +874,7 @@ export class GameMap {
                 // TODO: evenly distribute objects based on river size
                 case MapObjectSpawnMode.River: {
                     // rivers that aren't trails must have a waterHitbox
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    return () => pickRandomInArray(this.terrain.rivers.filter(({ isTrail }) => !isTrail))?.waterHitbox!.randomPoint();
-                }
-                case MapObjectSpawnMode.RiverBank: {
-                    return () => pickRandomInArray(this.terrain.rivers.filter(({ isTrail }) => !isTrail)).bankHitbox.randomPoint();
+                    return () => pickRandomInArray(this.terrain.rivers.filter(({ isTrail }) => !isTrail))?.getRandomPosition();
                 }
                 case MapObjectSpawnMode.Beach: {
                     return () => {
@@ -870,7 +902,7 @@ export class GameMap {
                     };
                 }
                 case MapObjectSpawnMode.Trail: {
-                    return () => pickRandomInArray(this.terrain.rivers.filter(({ isTrail }) => isTrail)).bankHitbox.randomPoint();
+                    return () => pickRandomInArray(this.terrain.rivers.filter(({ isTrail }) => isTrail)).getRandomPosition(true);
                 }
             }
         })();
@@ -964,9 +996,10 @@ export class GameMap {
                                 Vec.addComponent(position, radius, 0)
                             ]
                         ) {
-                            for (const river of this.terrain.getRiversInHitbox(hitbox)) {
-                                if (!river.waterHitbox?.isPointInside(point)) {
-                                    collided = true;
+                            collided = true;
+                            for (const river of this.terrain.getRiversInHitbox(hitbox, true)) {
+                                if (river.waterHitbox?.isPointInside(point)) {
+                                    collided = false;
                                     break;
                                 }
                             }
@@ -976,7 +1009,6 @@ export class GameMap {
                     // TODO add code for other hitbox types
                     break;
                 }
-                case MapObjectSpawnMode.RiverBank:
                 case MapObjectSpawnMode.Trail: {
                     if (this.isInRiver(hitbox)) {
                         collided = true;
