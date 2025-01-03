@@ -545,6 +545,7 @@ export class UIManager {
         }
 
         if (packet.won) {
+            gameOverTeamKillsContainer.toggle(false);
             void game.music.play();
             if (this.game.teamMode) {
                 gameOverTeamKills.text(getTranslatedString("msg_kills", { kills: JSON.stringify(totalKills) }));
