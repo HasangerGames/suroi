@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Fri, 03 Jan 2025 20:06:54 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Fri, 03 Jan 2025 23:33:51 GMT
 
 ## 🇦🇱 Shqip (88% Complete) - ab.hjson
 
@@ -85,15 +85,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 
-## 🇪🇸 Español (99% Complete) - es.hjson
+## 🇪🇸 Español (100% Complete) - es.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `wiki` is not defined
-- Key `settings_gyro_angle` is not defined
-- Key `settings_haptics` is not defined
 
 ## 🇪🇪 eesti (100% Complete) - et.hjson
 

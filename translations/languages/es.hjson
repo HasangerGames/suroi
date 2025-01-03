@@ -88,6 +88,8 @@
   "settings_mobile_controls": "Habilitar Controles Móviles"
   "settings_joystick_size": "Tamaño del Controlador"
   "settings_joystick_opacity": "Opacidad del Controlador"
+  "settings_gyro_angle":"Ángulo Giroscópico de Cambio",
+  "settings_haptics":"Háptica"
   "loadout_skins": "Disfraces"
   "loadout_emotes": "Gestos"
   "loadout_crosshairs": "Cruzes"
