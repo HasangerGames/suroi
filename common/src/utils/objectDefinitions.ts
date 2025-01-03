@@ -574,7 +574,6 @@ export enum MapObjectSpawnMode {
      * Grass, beach and river banks.
      */
     GrassAndSand,
-    RiverBank,
     River,
     Beach,
     Trail
