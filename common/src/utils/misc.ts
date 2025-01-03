@@ -278,6 +278,59 @@ export function freezeDeep<T>(object: T): DeepReadonly<T> {
     return object as DeepReadonly<T>;
 }
 
+// skull
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type PrimitiveKey = keyof any;
+
+export function splitArray<In, Narrow extends In>(target: In[], predicate: (ele: In, index: number, array: In[]) => ele is Narrow): {
+    true: Narrow[]
+    false: Array<Exclude<In, Narrow>>
+};
+export function splitArray<In, const Out extends PrimitiveKey>(target: In[], predicate: (ele: In, index: number, array: In[]) => Out): Record<Out, In[]>;
+/**
+ * Splits an array into two subarrays based on a predicate. If `Out` is not assignable to `string | number | symbol`, use {@link groupArray} instead
+ * @param target The array to split
+ * @param predicate A function deciding which subarray to put each element in
+ * @returns The two subarrays
+ */
+export function splitArray<In, const Out extends PrimitiveKey>(target: In[], predicate: (ele: In, index: number, array: In[]) => Out): Record<Out, In[]> {
+    const length = target.length;
+    const obj = Object.create(null) as Record<PrimitiveKey, In[]>;
+
+    for (let i = 0; i < length; i++) {
+        const ele = target[i];
+        (obj[predicate(ele, i, target)] ??= []).push(ele);
+    }
+
+    return obj;
+}
+
+/**
+ * Groups an array's elements based on the result of a picker function. If `Out` is assignable to `string | number | symbol`, favor the use
+ * of {@link splitArray} instead
+ * @param target The array to split
+ * @param picker A function deciding which subarray to put each element in
+ * @returns The two subarrays
+ */
+export function groupArray<In, Out>(target: In[], picker: (ele: In, index: number, array: In[]) => Out): Map<Out, In[]> {
+    const length = target.length;
+    const map = new Map<Out, In[]>();
+
+    for (let i = 0; i < length; i++) {
+        const ele = target[i];
+        const key = picker(ele, i, target);
+        if (map.has(key)) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            map.get(key)!.push(ele);
+            continue;
+        }
+
+        map.set(key, [ele]);
+    }
+
+    return map;
+}
+
 export class Timeout {
     callback: () => void;
     end: number;
