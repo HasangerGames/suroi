@@ -1,30 +1,20 @@
 import { createHash } from "crypto";
-import { writeFileSync } from "fs";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { type IOption, MaxRectsPacker } from "maxrects-packer";
 import path from "path";
 import { type SpritesheetData } from "pixi.js";
-import type { Mode } from "../../../../common/src/definitions/modes";
+import type { Mode, SpritesheetNames } from "../../../../common/src/definitions/modes";
 import { CacheData, cacheDir } from "../spritesheet-plugin";
 import { readFileSync, writeFileSync } from "fs";
 import { Resvg } from "@resvg/resvg-js";
 import { imageSize } from "image-size";
 
-export const supportedFormats = ["png", "jpeg"] as const;
-
 export interface CompilerOptions {
-    /**
-    * Format of the output image
-    * @default "png"
-    */
-    outputFormat: typeof supportedFormats[number]
-
     /**
      * Output directory
      * @default "atlases"
      */
     outDir: string
-
-    name: string
 
     /**
     * Added pixels between sprites (can prevent pixels leaking to adjacent sprite)
@@ -55,22 +45,21 @@ export interface CompilerOptions {
 
 export type AtlasList = Array<{ readonly json: SpritesheetData, readonly image: Buffer, readonly cacheName?: string }>;
 
-export type MultiResAtlasList = { readonly low: AtlasList, readonly high: AtlasList };
-
-export type ModesAtlasList = Record<Mode, MultiResAtlasList>;
+export type MultiAtlasList = Record<SpritesheetNames, { readonly low: AtlasList, readonly high: AtlasList }>;
 
 /**
  * Pack images spritesheets.
+ * @param name Name of the spritesheet.
  * @param paths List of paths to the images.
  * @param options Options passed to the packer.
  */
-export async function createSpritesheets(pathMap: Map<string, { lastModified: number, path: string }>, options: CompilerOptions): Promise<MultiResAtlasList> {
-    const paths = Array.from(pathMap.values(), v => v.path);
+export async function createSpritesheets(
+    name: string,
+    fileMap: Record<string, number>,
+    options: CompilerOptions
+): Promise<{ readonly low: AtlasList, readonly high: AtlasList }> {
+    const paths = Object.keys(fileMap);
     if (paths.length === 0) throw new Error("No file given.");
-
-    if (!supportedFormats.includes(options.outputFormat)) {
-        throw new Error(`outputFormat should only be one of ${JSON.stringify(supportedFormats)}, but "${options.outputFormat}" was given.`);
-    }
 
     interface PackerRectData {
         readonly image: {
@@ -96,29 +85,27 @@ export async function createSpritesheets(pathMap: Map<string, { lastModified: nu
 
     process.stdout.write(`Loading ${length} images...\n`);
     const results = (await Promise.allSettled(
-        paths.map(
-            async path => {
-                const str = `Loading images: ${(++resolved).toString().padStart(digits, " ")} / ${length} ('${path.slice(path.lastIndexOf(sep) + 1)}')`;
-                writeFromStart(str.padEnd(max(str.length, prevLength), " "));
-                prevLength = str.length;
+        paths.map(async path => {
+            const str = `Loading images: ${(++resolved).toString().padStart(digits, " ")} / ${length} ('${path.slice(path.lastIndexOf(sep) + 1)}')`;
+            writeFromStart(str.padEnd(max(str.length, prevLength), " "));
+            prevLength = str.length;
 
-                const imageBuffer = readFileSync(path);
+            const imageBuffer = readFileSync(path);
 
-                const dimensions = imageSize(imageBuffer);
+            const { width, height } = imageSize(imageBuffer);
 
-                if (!dimensions.width || !dimensions.height) throw new Error(`Image ${path} has no dimensions information`);
+            if (!width || !height) throw new Error(`Image ${path} has no dimensions information`);
 
-                return {
-                    image: {
-                        data: imageBuffer,
-                        width: dimensions.width,
-                        height: dimensions.height,
-                        fileType: path.split(".").at(-1) ?? ""
-                    },
-                    path
-                } satisfies PackerRectData;
-            }
-        )
+            return {
+                image: {
+                    data: imageBuffer,
+                    width,
+                    height,
+                    fileType: path.split(".").at(-1) ?? ""
+                },
+                path
+            } satisfies PackerRectData;
+        })
     ));
     writeFromStart(`Loaded ${length} images`.padEnd(prevLength, " "));
     console.log();
@@ -226,12 +213,13 @@ export async function createSpritesheets(pathMap: Map<string, { lastModified: nu
             writeFromStart("Creating hash".padEnd(prevLength, " "));
             const hash = createHash("sha1").update(buffer).digest("hex").slice(0, 8);
 
-            json.meta.image = `${options.outDir}/${options.name}-${hash}@${resolution}x.${options.outputFormat}`;
+            json.meta.image = `${options.outDir}/${name}-${hash}@${resolution}x.png`;
 
             writeFromStart("Caching data".padEnd(prevLength, " "));
-            const cacheName = `${options.name}-${hash}@${resolution}x`;
-            writeFileSync(path.join(cacheDir, `${cacheName}.json`), JSON.stringify(json));
-            writeFileSync(path.join(cacheDir, `${cacheName}.${options.outputFormat}`), buffer);
+
+            const cacheName = `${name}-${hash}@${resolution}x`;
+            writeFileSync(path.join(atlasCacheDir, `${cacheName}.json`), JSON.stringify(json));
+            writeFileSync(path.join(atlasCacheDir, `${cacheName}.png`), buffer);
 
             atlases.push({
                 json,
@@ -248,6 +236,9 @@ export async function createSpritesheets(pathMap: Map<string, { lastModified: nu
         return atlases;
     }
 
+    const atlasCacheDir = path.join(cacheDir, name);
+    if (!existsSync(atlasCacheDir)) mkdirSync(atlasCacheDir);
+
     const sheets = {
         low: createSheet(0.5),
         high: createSheet(1)
@@ -255,14 +246,14 @@ export async function createSpritesheets(pathMap: Map<string, { lastModified: nu
 
     const cacheData: CacheData = {
         lastModified: Date.now(),
-        fileMap: Object.fromEntries(Array.from(pathMap.entries(), ([name, data]) => [name.slice(1), data.path])),
+        fileMap,
         atlasFiles: {
             low: sheets.low.map(s => s.cacheName ?? ""),
             high: sheets.high.map(s => s.cacheName ?? "")
         }
     };
 
-    writeFileSync(path.join(cacheDir, "data.json"), JSON.stringify(cacheData));
+    writeFileSync(path.join(atlasCacheDir, "data.json"), JSON.stringify(cacheData));
 
     console.log(`Finished building spritesheets in ${Math.round(performance.now() - start) / 1000}s`);
 

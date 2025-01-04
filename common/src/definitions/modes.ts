@@ -3,6 +3,10 @@ import { type ScopeDefinition } from "./scopes";
 
 export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "trail" | "gas" | "void";
 
+export type Mode = "normal" | "fall" | "halloween" | "birthday" | "winter";
+
+export type SpritesheetNames = Mode | "shared";
+
 export interface ModeDefinition {
     readonly colors: Record<ColorKeys, string>
     readonly spriteSheets: SpritesheetNames[]
@@ -20,21 +24,12 @@ export interface ModeDefinition {
         readonly tint?: number
         readonly gravity?: boolean
     }
-    readonly buttonCss?: {
-        icon: string
-        color: string
-        shadowColor: string
-    }
     readonly specialLogo?: boolean
     readonly specialPlayButtons?: boolean
     readonly modeLogoImage?: string
 }
 
-export type Mode = keyof typeof Modes;
-
-export type SpritesheetNames = "shared" | "normal" | "fall" | "halloween" | "birthday" | "winter";
-
-export const Modes = {
+export const Modes: Record<Mode, ModeDefinition> = {
     normal: {
         colors: {
             grass: "hsl(95, 41%, 38%)",
@@ -68,11 +63,6 @@ export const Modes = {
             delay: 1000
         },
         spriteSheets: ["shared", "fall"],
-        buttonCss: {
-            color: "#72742f",
-            shadowColor: "#535421",
-            icon: "./img/game/fall/obstacles/mini_plumpkin.svg"
-        },
         specialPlayButtons: true,
         modeLogoImage: "./img/game/fall/obstacles/baby_plumpkin.svg"
     },
@@ -96,6 +86,19 @@ export const Modes = {
         specialLogo: true,
         specialPlayButtons: true,
         modeLogoImage: "./img/game/halloween/obstacles/jack_o_lantern.svg"
+    },
+    birthday: { // copy of normal
+        colors: {
+            grass: "hsl(95, 41%, 38%)",
+            water: "hsl(211, 63%, 42%)",
+            border: "hsl(211, 63%, 30%)",
+            beach: "hsl(40, 39%, 55%)",
+            riverBank: "hsl(34, 41%, 32%)",
+            trail: "hsl(35, 50%, 40%)",
+            gas: "hsla(17, 100%, 50%, 0.55)",
+            void: "hsl(25, 80%, 6%)"
+        },
+        spriteSheets: ["shared", "normal"]
     },
     winter: {
         colors: {
@@ -123,7 +126,7 @@ export const Modes = {
         specialPlayButtons: true,
         modeLogoImage: "./img/game/winter/obstacles/red_gift.svg"
     }
-} satisfies Record<string, ModeDefinition>;
+};
 
 export const ObstacleModeVariations: Partial<Record<Mode, string>> = {
     winter: "_winter"

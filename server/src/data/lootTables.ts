@@ -16,6 +16,7 @@ import { isArray } from "@common/utils/misc";
 import { ItemType, NullString, type ObjectDefinition, type ObjectDefinitions, type ReferenceOrRandom, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, weightedRandom } from "@common/utils/random";
 import { Maps } from "./maps";
+import { Mode } from "@common/definitions/modes";
 
 export type WeightedItem =
     (
@@ -131,7 +132,7 @@ function getLoot(items: WeightedItem[], noDuplicates?: boolean): LootItem[] {
     return loot;
 }
 
-export const LootTables: Record<string, Record<string, LootTable>> = {
+export const LootTables: Record<Mode, Record<string, LootTable>> = {
     normal: {
         ground_loot: [
             { table: "equipment", weight: 1 },
