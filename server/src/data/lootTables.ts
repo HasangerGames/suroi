@@ -1394,10 +1394,11 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ item: "frag_grenade", count: 3, weight: 1 }]
         ],
         briefcase: [
-            { item: "usas12", weight: 1 },
+            { item: "usas12", weight: 0.5 },
+            { item: "m1_garand", weight: 0.5 },
             { item: "mk18", weight: 0.2 },
             { item: "l115a1", weight: 0.2 },
-            { item: "g19", weight: 0.0001 }
+            { item: "g19", weight: 0.01 }
         ],
         ammo_crate: [
             [{ table: "ammo", weight: 1 }],
@@ -1572,11 +1573,11 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         ],
         gold_airdrop_guns: [
             { item: "dual_rsh12", weight: 1 },
-            { item: "usas12", weight: 1 },
+            { item: "m1_garand", weight: 1 },
             { item: "l115a1", weight: 1 },
             { item: "mk18", weight: 1 },
-            { item: "m1_garand", weight: 0.5 },
-            { item: "g19", weight: 0.0001 }
+            { item: "usas12", weight: 0.5 },
+            { item: "g19", weight: 0.02 }
         ],
         viking_chest_guns: [
             // 35% chance for one of these
