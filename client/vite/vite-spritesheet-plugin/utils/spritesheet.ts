@@ -1,11 +1,10 @@
+import { createCanvas, Image, loadImage } from "canvas";
 import { createHash } from "crypto";
+import { writeFileSync } from "fs";
 import { type IOption, MaxRectsPacker } from "maxrects-packer";
 import path from "path";
 import { type SpritesheetData } from "pixi.js";
 import { CacheData, cacheDir } from "../spritesheet-plugin";
-import { readFileSync, writeFileSync } from "fs";
-import { Resvg } from "@resvg/resvg-js";
-import { imageSize } from "image-size";
 
 export const supportedFormats = ["png", "jpeg"] as const;
 
@@ -69,12 +68,7 @@ export async function createSpritesheets(pathMap: Map<string, { lastModified: nu
     }
 
     interface PackerRectData {
-        readonly image: {
-            data: Buffer
-            width: number
-            height: number
-            fileType: string
-        }
+        readonly image: Image
         readonly path: string
     }
 
@@ -98,19 +92,8 @@ export async function createSpritesheets(pathMap: Map<string, { lastModified: nu
                 writeFromStart(str.padEnd(max(str.length, prevLength), " "));
                 prevLength = str.length;
 
-                const imageBuffer = readFileSync(path);
-
-                const dimensions = imageSize(imageBuffer);
-
-                if (!dimensions.width || !dimensions.height) throw new Error(`Image ${path} has no dimensions information`);
-
                 return {
-                    image: {
-                        data: imageBuffer,
-                        width: dimensions.width,
-                        height: dimensions.height,
-                        fileType: path.split(".").at(-1) ?? ""
-                    },
+                    image: await loadImage(path),
                     path
                 } satisfies PackerRectData;
             }
@@ -141,8 +124,8 @@ export async function createSpritesheets(pathMap: Map<string, { lastModified: nu
         writeFromStart(`Adding ${length} images to packer`);
         for (const image of images) {
             packer.add(
-                image.image.width * resolution,
-                image.image.height * resolution,
+                image.image.naturalWidth * resolution,
+                image.image.naturalHeight * resolution,
                 image
             );
         }
@@ -155,7 +138,8 @@ export async function createSpritesheets(pathMap: Map<string, { lastModified: nu
         console.log(`Parsing ${binCount} bins...`);
         let bins = 0;
         for (const bin of packer.bins) {
-            let binSVG = `<svg viewBox="0 0 ${bin.width} ${bin.height}" xmlns="http://www.w3.org/2000/svg">`;
+            const canvas = createCanvas(bin.width, bin.height);
+            const ctx = canvas.getContext("2d");
 
             const json: SpritesheetData = {
                 meta: {
@@ -173,14 +157,10 @@ export async function createSpritesheets(pathMap: Map<string, { lastModified: nu
             const digits = Math.ceil(Math.log10(rects));
             let parsed = 0;
             writeFromStart(`Parsing ${rects} rects`);
-            let maskId = 0;
             for (const rect of bin.rects) {
                 const data = rect.data as PackerRectData;
 
-                const dataUrl = `data:image/${data.image.fileType + (data.image.fileType === "svg" ? "+xml" : "")};base64,${data.image.data.toString("base64")}`;
-
-                binSVG += `<mask id="mask${maskId}"><rect fill="white" x="${rect.x}" y="${rect.y}" width="${rect.width}" height="${rect.height}" /></mask>`;
-                binSVG += `<image mask="url(#mask${maskId})" x="${rect.x}" y="${rect.y}" width="${rect.width}" height="${rect.height}" href="${dataUrl}" />`;
+                ctx.drawImage(data.image, rect.x, rect.y, rect.width, rect.height);
 
                 const sourceParts = data.path.split(path.sep);
 
@@ -210,14 +190,10 @@ export async function createSpritesheets(pathMap: Map<string, { lastModified: nu
                 const str = `Parsed ${(++parsed).toString().padStart(digits, " ")} / ${rects} rects`;
                 writeFromStart(str.padEnd(max(str.length, prevLength), " "));
                 prevLength = str.length;
-
-                maskId++;
             }
 
-            binSVG += "</svg>";
-
             writeFromStart("Creating buffer".padEnd(prevLength, " "));
-            const buffer = new Resvg(binSVG).render().asPng();
+            const buffer = canvas.toBuffer("image/png");
 
             writeFromStart("Creating hash".padEnd(prevLength, " "));
             const hash = createHash("sha1").update(buffer).digest("hex").slice(0, 8);
