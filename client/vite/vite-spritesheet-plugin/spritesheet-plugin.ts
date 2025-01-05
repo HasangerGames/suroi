@@ -210,7 +210,7 @@ export function spritesheet(): Plugin[] {
                     }
 
                     files.clear();
-                    for (const sheet of Object.values(atlases).map(sheets => [...sheets.low, ...sheets.high]).flat()) {
+                    for (const sheet of getSheets()) {
                         // consistently assigned in ./spritesheet.ts in function `createSheet` (in function `createSpritesheets`)
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         files.set(sheet.json.meta.image!, sheet.image);

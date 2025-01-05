@@ -5,6 +5,7 @@ import $ from "jquery";
 import { Assets, Container, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
 import { getTranslatedString } from "../../translations";
 import { PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
+import { GameConstants } from "@common/constants";
 
 const textures: Record<string, Texture> = {};
 
@@ -21,11 +22,16 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
 
     // we pray
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const spritesheets: SpritesheetData[] = highResolution
+    const atlases: Record<string, SpritesheetData[]> = highResolution
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         ? (await import("virtual:spritesheets-jsons-high-res")).atlases
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         : (await import("virtual:spritesheets-jsons-low-res")).atlases;
+
+    const spritesheets = [
+        ...atlases.shared,
+        ...atlases[GameConstants.modeName]
+    ];
 
     let resolved = 0;
     const count = spritesheets.length;
