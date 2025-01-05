@@ -127,7 +127,8 @@ const maps = {
             warehouse: 5,
             // firework_warehouse: 1, // birthday mode
             green_house: 3,
-            blue_house: 3,
+            blue_house: 2,
+            blue_house_special: 1,
             red_house: 3,
             red_house_v2: 3,
             construction_site: 1,
@@ -151,7 +152,8 @@ const maps = {
             blue_house: 1,
             mobile_home: 3,
             porta_potty: 3,
-            construction_site: 1
+            construction_site: 1,
+            blue_house_special: 1
         },
         obstacles: {
             oil_tank: 12,
@@ -589,7 +591,8 @@ const maps = {
             warehouse: 4,
             christmas_camp: 1,
             green_house: 3,
-            blue_house: 3,
+            blue_house: 2,
+            blue_house_special: 1,
             red_house: 3,
             red_house_v2: 3,
             construction_site: 1,
@@ -613,7 +616,8 @@ const maps = {
             blue_house: 1,
             mobile_home: 3,
             porta_potty: 3,
-            construction_site: 1
+            construction_site: 1,
+            blue_house_special: 1
         },
         obstacles: {
             oil_tank_winter: 12,

@@ -471,6 +471,13 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         bombed_armory_skin: [
             { item: "one_at_nsd", weight: 1 }
         ],
+        rsh_case_single: [
+            { item: "rsh12", weight: 1 },
+            { item: "firework_rocket", weight: 0.005 }
+        ],
+        rsh_case_dual: [
+            { item: "dual_rsh12", weight: 1 }
+        ],
         airdrop_crate: [
             [{ table: "airdrop_equipment", weight: 1 }],
             [{ table: "airdrop_scopes", weight: 1 }],

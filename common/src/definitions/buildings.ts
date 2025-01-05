@@ -2,7 +2,7 @@ import { GameConstants, Layers, TentTints, ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
-import { MapObjectSpawnMode, NullString, ObjectDefinitions, type ObjectDefinition, type RawDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
+import { inheritFrom, MapObjectSpawnMode, NullString, ObjectDefinitions, type ObjectDefinition, type RawDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { pickRandomInArray, randomBoolean } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
@@ -2113,15 +2113,15 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 { idString: "box", position: Vec.create(14, 15.5) }
             ]]),
 
-            /* blueHouseVaultLayout([2,
+            blueHouseVaultLayout([2,
                 [
-                    { idString: "blue_house_stair", position: Vec.create(16, 14), layer: -1, rotation: 0 },
-                    { idString: "blue_house_stair_walls", position: Vec.create(16, 14), layer: -1, rotation: 0 }
+                    { idString: "blue_house_stair", position: Vec.create(17, 14.5), layer: -1, rotation: 0 },
+                    { idString: "blue_house_stair_walls", position: Vec.create(15, 7), rotation: 0 }
                 ],
                 [
-                    { idString: "blue_house_basement", position: Vec.create(-2, 14), orientation: 0, layer: -2 }
+                    { idString: "blue_house_basement", position: Vec.create(1.5, 4.25), layer: -2 }
                 ]
-            ]), */ // TODO: add on v0.19.1 and rework layout
+            ]),
 
             blueHouseVaultLayout([3, [
                 { idString: "box", position: Vec.create(12.5, 10.5) },
@@ -2152,38 +2152,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             ]]),
             // -------------------------------------------------------------------------
 
-            /*  {
-                idString: "blue_house_basement",
-                name: "Blue House Basement",
-                reflectBullets: true,
-                material: "metal_heavy",
-                particle: "metal_particle",
-                hitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(48, 1.7, Vec.create(0, -6)),
-                    RectangleHitbox.fromRect(48, 1.7, Vec.create(0, 6)),
-                    RectangleHitbox.fromRect(1.7, 11, Vec.create(-23, 0))
-                ),
-                spawnHitbox: RectangleHitbox.fromRect(50.5, 16, Vec.create(0, 0)),
-                ceilingHitbox: RectangleHitbox.fromRect(48, 10.1),
-                floorImages: [
-                    {
-                        key: "blue_house_basement",
-                        position: Vec.create(0, 0),
-                        scale: Vec.create(2, 2)
-                    }
-                ],
-                floors: [
-                    {
-                        type: FloorNames.Stone,
-                        hitbox: RectangleHitbox.fromRect(47, 10.1)
-                    }
-                ],
-                obstacles: [
-                    { idString: { aegis_crate: 1, flint_crate: 1 }, position: Vec.create(-17, 0) },
-                    { idString: "box", position: Vec.create(-7, -2.1) },
-                    { idString: "box", position: Vec.create(2, 2.2) }
-                ]
-            }, */ // TODO: add on v0.19.1 and rework layout
             {
                 idString: "blue_house",
                 name: "Blue House",
@@ -2302,7 +2270,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     {
                         idString: {
                             blue_house_vault_layout_1: 1,
-                            //  blue_house_vault_layout_2: 3, // TODO: add on v0.19.1 and rework layout
                             blue_house_vault_layout_3: 1,
                             blue_house_vault_layout_4: 1,
                             blue_house_vault_layout_5: 1,
@@ -2312,6 +2279,14 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         },
                         position: Vec.create(0, 0)
                     }
+                ]
+            },
+            {
+                [inheritFrom]: "blue_house",
+                idString: "blue_house_special",
+                subBuildings: [
+                    { idString: "blue_house_vault", position: Vec.create(-14.1, 20.5), orientation: 1 },
+                    { idString: "blue_house_vault_layout_2", position: Vec.create(0, 0) }
                 ]
             },
             {
@@ -2333,6 +2308,99 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     key: "blue_house_vault_ceiling",
                     position: Vec.create(1, -0.1)
                 }]
+            },
+            {
+                idString: "blue_house_basement",
+                name: "Blue House Basement",
+                reflectBullets: true,
+                material: "metal_heavy",
+                particle: "metal_particle",
+                ceilingHitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(40.5, 58, Vec.create(-11.28, -0.5)),
+                    RectangleHitbox.fromRect(63.25, 28.5, Vec.create(0, -15.45)),
+                    RectangleHitbox.fromRect(11, 11, Vec.create(14, 10))
+                ),
+                hitbox: new GroupHitbox(
+                    // WALL.
+                    RectangleHitbox.fromRect(66.5, 1.8, Vec.create(0, -30.35)),
+                    RectangleHitbox.fromRect(1.8, 61, Vec.create(-32.35, -0.5)),
+                    RectangleHitbox.fromRect(44, 1.8, Vec.create(-11.25, 29.05)),
+                    RectangleHitbox.fromRect(1.8, 14.1, Vec.create(9.8, 22.25)),
+                    RectangleHitbox.fromRect(1.8125, 24.35, Vec.create(9.8, -6.75)),
+                    RectangleHitbox.fromRect(1.75, 31.25, Vec.create(32.4, -15)),
+                    RectangleHitbox.fromRect(22.5, 1.8, Vec.create(21, -0.25)),
+
+                    // weird ahh rounded columns
+                    RectangleHitbox.fromRect(3.5, 3.5, Vec.create(-14.23, 7.15)),
+                    RectangleHitbox.fromRect(3.5, 3.5, Vec.create(-14.23, -7.99)),
+
+                    // stair walls
+                    RectangleHitbox.fromRect(11, 1.8, Vec.create(14.5, 4.6)),
+                    RectangleHitbox.fromRect(11, 1.8, Vec.create(14.5, 16))
+                ),
+                spawnHitbox: RectangleHitbox.fromRect(75, 70),
+                floors: [{
+                    type: FloorNames.Wood,
+                    hitbox: new GroupHitbox(
+                        RectangleHitbox.fromRect(40.5, 58, Vec.create(-11.28, -0.5)),
+                        RectangleHitbox.fromRect(63.25, 28.5, Vec.create(0, -15.45))
+                    )
+                },
+                {
+                    type: FloorNames.Metal,
+                    hitbox: RectangleHitbox.fromRect(11, 11, Vec.create(14.25, 10)),
+                    layer: -1
+                },
+                {
+                    type: FloorNames.Metal,
+                    hitbox: RectangleHitbox.fromRect(11, 11, Vec.create(14, 10))
+                }],
+                floorImages: [
+                    {
+                        key: "blue_house_basement_top",
+                        position: Vec.create(0, -15.3)
+                    },
+                    {
+                        key: "blue_house_basement_bottom",
+                        position: Vec.create(-11.28, 15.3)
+                    },
+                    {
+                        key: "blue_house_basement_stairs",
+                        position: Vec.create(15.25, 10.35)
+                    }
+                ],
+                obstacles: [
+                    { idString: "metal_door", position: Vec.create(9.8, -23.8), rotation: 3 },
+                    { idString: randomBarrel, position: Vec.create(4.61, 23.69) },
+                    { idString: "ammo_crate", position: Vec.create(-4.66, 22.71) },
+                    { idString: "small_table", position: Vec.create(-24.96, 23.6), rotation: 1 },
+                    { idString: "chair", position: Vec.create(-25.08, 19.79), rotation: 2 },
+                    { idString: "box", position: Vec.create(-16.32, 25.26) },
+                    { idString: { box: 1, grenade_box: 0.25 }, position: Vec.create(-12.02, 20.6) },
+                    { idString: { box: 1, grenade_box: 0.1 }, position: Vec.create(5.83, 3.69) },
+                    { idString: "box", position: Vec.create(0.95, 2.37) },
+                    { idString: "bunk_bed", position: Vec.create(3.25, -9.57), rotation: 0 },
+                    { idString: "door", position: Vec.create(-25.97, -7.85), rotation: 0 },
+                    { idString: "house_wall_18", position: Vec.create(-18.75, -7.85), rotation: 0 },
+                    { idString: "house_wall_19", position: Vec.create(-14.23, -19.58), rotation: 1 },
+                    { idString: randomToilet, position: Vec.create(-27.5, -24.65), rotation: 0 },
+                    { idString: "small_drawer", position: Vec.create(-19.26, -25.16), rotation: 0 },
+                    { idString: "trash_can", position: Vec.create(-18.15, -11.85) },
+                    { idString: "regular_crate", position: Vec.create(15.98, -14.35) },
+                    { idString: "regular_crate", position: Vec.create(26.33, -6.41) },
+                    { idString: "barrel", position: Vec.create(26.65, -15.28) },
+                    { idString: { box: 1, grenade_box: 0.25 }, position: Vec.create(28.49, -26.58) },
+                    { idString: "potted_plant", position: Vec.create(-8.84, -25.32) },
+                    {
+                        // rest in peace, BFR. This was your place.
+                        idString: {
+                            rsh_case_single: 1,
+                            rsh_case_dual: 0.1
+                        },
+                        position: Vec.create(15.93, -5.14),
+                        rotation: 0
+                    }
+                ]
             },
             {
                 idString: "crane",
@@ -6053,7 +6121,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "lodge_wall_3", position: Vec.create(21.15, -29.96), rotation: 1 },
                     { idString: "small_drawer", position: Vec.create(25.85, -30.78), rotation: 0 },
                     { idString: "sink2", position: Vec.create(33.52, -30.95), rotation: 0 },
-                    { idString: { toilet: 1, used_toilet: 1 }, position: Vec.create(41.73, -30.27), rotation: 0 },
+                    { idString: randomToilet, position: Vec.create(41.73, -30.27), rotation: 0 },
                     { idString: "bathtub", position: Vec.create(38.2, -9.99), rotation: 0 },
                     { idString: "trash_can", position: Vec.create(25.61, -8.19), rotation: 0 },
 
