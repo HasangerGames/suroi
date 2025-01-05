@@ -41,9 +41,14 @@ export interface CompilerOptions {
     packerOptions: Omit<IOption, "allowRotation">
 }
 
-export type AtlasList = Array<{ readonly json: SpritesheetData, readonly image: Buffer, readonly cacheName?: string }>;
+export type Atlas = { readonly json: SpritesheetData, readonly image: Buffer, readonly cacheName?: string };
 
-export type MultiAtlasList = Record<SpritesheetNames, { readonly low: AtlasList, readonly high: AtlasList }>;
+export type MultiAtlasList = Record<SpritesheetNames, { readonly low: Atlas[], readonly high: Atlas[] }>;
+
+interface PackerRectData {
+    readonly image: Image
+    readonly path: string
+}
 
 /**
  * Pack images spritesheets.
@@ -55,52 +60,26 @@ export async function createSpritesheets(
     name: string,
     fileMap: Record<string, number>,
     options: CompilerOptions
-): Promise<{ readonly low: AtlasList, readonly high: AtlasList }> {
+): Promise<{ readonly low: Atlas[], readonly high: Atlas[] }> {
     const paths = Object.keys(fileMap);
     if (paths.length === 0) throw new Error("No file given.");
 
-    interface PackerRectData {
-        readonly image: Image
-        readonly path: string
-    }
-
-    const start = performance.now();
-
-    const length = paths.length;
-    let resolved = 0;
-    let prevLength = 0;
-    const max = (a: number, b: number): number => a > b ? a : b;
-    const digits = Math.ceil(Math.log10(length));
-
-    const writeFromStart = (str: string): boolean => process.stdout.write(`\r${str}`);
-
-    const sep = path.sep;
-
-    process.stdout.write(`Loading ${length} images...\n`);
-    const results = (await Promise.allSettled(
-        paths.map(async path => {
-            const str = `Loading images: ${(++resolved).toString().padStart(digits, " ")} / ${length} ('${path.slice(path.lastIndexOf(sep) + 1)}')`;
-            writeFromStart(str.padEnd(max(str.length, prevLength), " "));
-            prevLength = str.length;
-
-            return {
-                image: await loadImage(path),
-                path
-            } satisfies PackerRectData;
-        })
-    ));
-    writeFromStart(`Loaded ${length} images`.padEnd(prevLength, " "));
-    console.log();
+    const results = await Promise.allSettled(
+        paths.map(async path => ({
+            image: await loadImage(path),
+            path
+        } satisfies PackerRectData))
+    );
 
     const images: readonly PackerRectData[] = results.filter(x => x.status === "fulfilled").map(({ value }) => value);
     const errors = results.filter(x => x.status === "rejected").map(({ reason }) => reason as unknown);
     if (errors.length !== 0) {
         console.error(errors);
+        // @ts-expect-error ts doesn't know what an AggregateError is for some reason
         throw new AggregateError(errors);
     }
 
-    function createSheet(resolution: number): AtlasList {
-        console.log(`Building spritesheet @ ${resolution}x...`);
+    function createSheet(resolution: number): Atlas[] {
         const packer = new MaxRectsPacker(
             options.maximumSize * resolution,
             options.maximumSize * resolution,
@@ -111,7 +90,6 @@ export async function createSpritesheets(
             }
         );
 
-        writeFromStart(`Adding ${length} images to packer`);
         for (const image of images) {
             packer.add(
                 image.image.width * resolution,
@@ -119,14 +97,9 @@ export async function createSpritesheets(
                 image
             );
         }
-        writeFromStart(`Added ${length} images to packer`);
-        console.log("");
 
-        const atlases: AtlasList = [];
+        const atlases: Atlas[] = [];
 
-        const binCount = packer.bins.length;
-        console.log(`Parsing ${binCount} bins...`);
-        let bins = 0;
         for (const bin of packer.bins) {
             const canvas = new Canvas(bin.width, bin.height);
             const ctx = canvas.getContext("2d");
@@ -143,23 +116,16 @@ export async function createSpritesheets(
                 frames: {}
             };
 
-            const rects = bin.rects.length;
-            const digits = Math.ceil(Math.log10(rects));
-            let parsed = 0;
-            writeFromStart(`Parsing ${rects} rects`);
-            let maskId = 0;
             for (const rect of bin.rects) {
                 const data = rect.data as PackerRectData;
 
                 ctx.drawImage(data.image, rect.x, rect.y, rect.width, rect.height);
 
-                const sourceParts = data.path.split(path.sep);
-
                 /**
                  * there is _probably_ a file name
                  */
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                let name = sourceParts.at(-1)!;
+                let name = data.path.split(path.sep).at(-1)!;
 
                 if (options.removeExtensions) {
                     name = name.split(".").slice(0, -1).join("");
@@ -177,23 +143,14 @@ export async function createSpritesheets(
                         h: rect.height
                     }
                 };
-
-                const str = `Parsed ${(++parsed).toString().padStart(digits, " ")} / ${rects} rects`;
-                writeFromStart(str.padEnd(max(str.length, prevLength), " "));
-                prevLength = str.length;
             }
 
-            writeFromStart("Creating buffer".padEnd(prevLength, " "));
             const buffer = canvas.toBufferSync("png");
 
-            writeFromStart("Creating hash".padEnd(prevLength, " "));
             const hash = createHash("sha1").update(buffer).digest("hex").slice(0, 8);
-
-            json.meta.image = `${options.outDir}/${name}-${hash}@${resolution}x.png`;
-
-            writeFromStart("Caching data".padEnd(prevLength, " "));
-
             const cacheName = `${name}-${hash}@${resolution}x`;
+            json.meta.image = `${options.outDir}/${cacheName}.png`;
+
             writeFileSync(path.join(atlasCacheDir, `${cacheName}.json`), JSON.stringify(json));
             writeFileSync(path.join(atlasCacheDir, `${cacheName}.png`), buffer);
 
@@ -202,12 +159,7 @@ export async function createSpritesheets(
                 image: buffer,
                 cacheName
             });
-            const str = `${++bins} / ${binCount} bins done`;
-            writeFromStart(str.padEnd(prevLength = max(prevLength, 22), " "));
-            prevLength = str.length;
         }
-
-        console.log(`\nBuilt spritesheet @ ${resolution}x\n`);
 
         return atlases;
     }
@@ -228,10 +180,7 @@ export async function createSpritesheets(
             high: sheets.high.map(s => s.cacheName ?? "")
         }
     };
-
     writeFileSync(path.join(atlasCacheDir, "data.json"), JSON.stringify(cacheData));
-
-    console.log(`Finished building spritesheet "${name}" in ${Math.round(performance.now() - start) / 1000}s`);
 
     return sheets;
 }

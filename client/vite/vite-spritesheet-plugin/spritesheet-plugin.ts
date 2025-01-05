@@ -7,22 +7,11 @@ import { type SpritesheetData } from "pixi.js";
 import { type FSWatcher, type Plugin, type ResolvedConfig } from "vite";
 import { Modes, SpritesheetNames } from "../../../common/src/definitions/modes";
 import readDirectory from "./utils/readDirectory.js";
-import { AtlasList, type CompilerOptions, createSpritesheets, MultiAtlasList } from "./utils/spritesheet.js";
+import { Atlas, type CompilerOptions, createSpritesheets, MultiAtlasList } from "./utils/spritesheet.js";
 
 const PLUGIN_NAME = "vite-spritesheet-plugin";
 
-export const cacheDir = ".spritesheet-cache";
-export interface CacheData {
-    lastModified: number
-    fileMap: Record<string, number>
-    atlasFiles: {
-        low: string[]
-        high: string[]
-    }
-}
-
-const defaultGlob = "**/*.{png,gif,jpg,bmp,tiff,svg}";
-const imagesMatcher = new Minimatch(defaultGlob);
+const imagesMatcher = new Minimatch("**/*.{png,gif,jpg,bmp,tiff,svg}");
 
 const compilerOpts = {
     outDir: "atlases",
@@ -34,20 +23,33 @@ const compilerOpts = {
 
 const atlases: Partial<MultiAtlasList> = {};
 
-const noCache = !existsSync(cacheDir);
-if (noCache) mkdirSync(cacheDir);
+export const cacheDir = ".spritesheet-cache";
+if (!existsSync(cacheDir)) {
+    mkdirSync(cacheDir);
+}
+
+export interface CacheData {
+    lastModified: number
+    fileMap: Record<string, number>
+    atlasFiles: {
+        low: string[]
+        high: string[]
+    }
+}
 
 const cache: Partial<Record<SpritesheetNames, CacheData>> = {};
 
 const atlasIDs = ["shared", ...Object.keys(Modes)] as SpritesheetNames[];
-const foldersToWatch = atlasIDs.map(id => `public/img/game/${id}`);
 
 async function buildSpritesheets(): Promise<void> {
-    for (const atlasID of atlasIDs) {
+    let builtCount = 0;
+    const totalCount = atlasIDs.length;
+    console.log(`Building ${totalCount} spritesheets...`);
+    const start = performance.now();
+
+    await Promise.all(atlasIDs.map(async atlasID => {
         const files = readDirectory(`public/img/game/${atlasID}`)
             .filter(x => imagesMatcher.match(x));
-
-        console.log(`Building spritesheet "${atlasID}" (${files.length} files)...`);
 
         const fileMap: Record<string, number> = files.reduce((fileMap, file) => {
             const { mtime, ctime } = statSync(file);
@@ -76,9 +78,9 @@ async function buildSpritesheets(): Promise<void> {
 
         const cacheData = cache[atlasID] ??= getCacheData();
         if (cacheData) {
-            console.log(`Spritesheet "${atlasID}" is cached! Skipping build.`);
+            console.log(`Spritesheet "${atlasID}" is cached, skipping (${++builtCount}/${totalCount})`);
 
-            const loadFromCache = async(files: string[]): Promise<AtlasList> => Promise.all(
+            const loadFromCache = async(files: string[]): Promise<Atlas[]> => Promise.all(
                 files.map(async file => ({
                     json: JSON.parse(await readFile(path.join(cacheDir, atlasID, `${file}.json`), "utf8")) as SpritesheetData,
                     image: await readFile(path.join(cacheDir, atlasID, `${file}.png`))
@@ -92,8 +94,11 @@ async function buildSpritesheets(): Promise<void> {
             };
         } else {
             atlases[atlasID] = await createSpritesheets(atlasID, fileMap, compilerOpts);
+            console.log(`Built spritesheet "${atlasID}" (${++builtCount}/${totalCount})`);
         }
-    }
+    }));
+
+    console.log(`Finished building spritesheets in ${Math.round(performance.now() - start) / 1000}s`);
 }
 
 const highResVirtualModuleId = "virtual:spritesheets-jsons-high-res";
@@ -128,6 +133,8 @@ export function spritesheet(): Plugin[] {
         }
     };
 
+    const getSheets = (): Atlas[] => Object.values(atlases).flatMap(sheets => [...sheets.low, ...sheets.high]);
+
     let buildTimeout: NodeJS.Timeout | undefined;
 
     return [
@@ -138,12 +145,20 @@ export function spritesheet(): Plugin[] {
                 await buildSpritesheets();
 
                 for (const atlasId in atlases) {
+                    // seriously eslint stfu
+                    /*
+                        eslint-disable
+                        @typescript-eslint/no-unsafe-assignment,
+                        @typescript-eslint/no-unsafe-call,
+                        @typescript-eslint/no-unsafe-member-access,
+                        @typescript-eslint/no-unsafe-return
+                    */
                     exportedAtlases.high[atlasId] = atlases[atlasId].high.map(sheet => sheet.json);
                     exportedAtlases.low[atlasId] = atlases[atlasId].low.map(sheet => sheet.json);
                 }
             },
             generateBundle() {
-                for (const sheet of Object.values(atlases).map(sheets => [...sheets.low, ...sheets.high]).flat()) {
+                for (const sheet of getSheets()) {
                     this.emitFile({
                         type: "asset",
                         fileName: sheet.json.meta.image,
@@ -175,7 +190,7 @@ export function spritesheet(): Plugin[] {
                     }, 500);
                 }
 
-                watcher = watch(foldersToWatch.map(pattern => path.resolve(pattern, defaultGlob)), {
+                watcher = watch("public/img/game", {
                     cwd: config.root,
                     ignoreInitial: true
                 })
@@ -195,13 +210,10 @@ export function spritesheet(): Plugin[] {
                     }
 
                     files.clear();
-                    for (const atlasId in atlases) {
-                        const sheets = atlases[atlasId];
-                        for (const sheet of [...sheets.low, ...sheets.high]) {
-                            // consistently assigned in ./spritesheet.ts in function `createSheet` (in function `createSpritesheets`)
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                            files.set(sheet.json.meta.image!, sheet.image);
-                        }
+                    for (const sheet of Object.values(atlases).map(sheets => [...sheets.low, ...sheets.high]).flat()) {
+                        // consistently assigned in ./spritesheet.ts in function `createSheet` (in function `createSpritesheets`)
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        files.set(sheet.json.meta.image!, sheet.image);
                     }
                 }
                 await buildSheets();
@@ -213,10 +225,7 @@ export function spritesheet(): Plugin[] {
                         const file = files.get(req.originalUrl.slice(1));
                         if (file === undefined) return next();
 
-                        res.writeHead(200, {
-                            "Content-Type": `image/${compilerOpts.outputFormat}`
-                        });
-
+                        res.writeHead(200, { "Content-Type": "image/png" });
                         res.end(file);
                     });
                 };
