@@ -390,7 +390,7 @@ export class Stack<T> implements DeepCloneable<Stack<T>>, Cloneable<Stack<T>> {
      */
     pop(): T {
         const head = this._head;
-        if (!head) throw new Error("Empty stack");
+        if (head === undefined) throw new Error("Empty stack");
 
         const value = head.value;
         this._head = head.next;
@@ -403,7 +403,7 @@ export class Stack<T> implements DeepCloneable<Stack<T>>, Cloneable<Stack<T>> {
      * @throws {Error} If the stack is empty
      */
     peek(): T {
-        if (!this._head) throw new Error("Empty stack");
+        if (this._head === undefined) throw new Error("Empty stack");
 
         return this._head.value;
     }
@@ -414,7 +414,7 @@ export class Stack<T> implements DeepCloneable<Stack<T>>, Cloneable<Stack<T>> {
      * `pop` and `peek` are guaranteed to throw an error
      */
     has(): boolean {
-        return !!this._head;
+        return this._head !== undefined;
     }
 
     /**
@@ -427,9 +427,7 @@ export class Stack<T> implements DeepCloneable<Stack<T>>, Cloneable<Stack<T>> {
         let current: LinkedList<T> | undefined = this._head;
         let currentClone: LinkedList<T> | undefined;
         while (current !== undefined) {
-            const node = deep
-                ? { value: cloneDeep(current.value) }
-                : current;
+            const node = { value: deep ? cloneDeep(current.value) : current.value };
 
             currentClone = currentClone
                 ? currentClone.next = node
@@ -478,7 +476,7 @@ export class Queue<T> implements DeepCloneable<Queue<T>>, Cloneable<Queue<T>> {
     enqueue(value: T): void {
         const node = { value };
 
-        if (!this._tail) {
+        if (this._tail === undefined) {
             this._tail = this._head = node;
             return;
         }
@@ -492,7 +490,7 @@ export class Queue<T> implements DeepCloneable<Queue<T>>, Cloneable<Queue<T>> {
      * @throws {Error} If the queue is empty
      */
     dequeue(): T {
-        if (!this._head) throw new Error("Empty queue");
+        if (this._head === undefined) throw new Error("Empty queue");
 
         const value = this._head.value;
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -507,7 +505,7 @@ export class Queue<T> implements DeepCloneable<Queue<T>>, Cloneable<Queue<T>> {
      * @throws {Error} If the queue is empty
      */
     peek(): T {
-        if (!this._head) throw new Error("Empty queue");
+        if (this._head === undefined) throw new Error("Empty queue");
 
         return this._head.value;
     }
@@ -518,7 +516,7 @@ export class Queue<T> implements DeepCloneable<Queue<T>>, Cloneable<Queue<T>> {
      * `dequeue` and `peek` are guaranteed to throw an error
      */
     has(): boolean {
-        return !!this._head;
+        return this._head !== undefined;
     }
 
     /**
@@ -531,7 +529,7 @@ export class Queue<T> implements DeepCloneable<Queue<T>>, Cloneable<Queue<T>> {
         let current: LinkedList<T> | undefined = this._head;
         let currentClone: LinkedList<T> | undefined;
         while (current !== undefined) {
-            const node = { value: cloneDeep(current.value) };
+            const node = { value: deep ? cloneDeep(current.value) : current.value };
 
             currentClone = currentClone
                 ? currentClone.next = node
