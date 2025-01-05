@@ -4866,13 +4866,13 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     particle: "metal_particle"
                 }
             }, */
-        ] satisfies readonly Missing[]).map(
+        ] satisfies ReadonlyArray<RawDefinition<Missing>>).map(
             o => {
                 const obj = o as Mutable<ObstacleDefinition>;
                 if (o.role !== undefined) obj[`is${ObstacleSpecialRoles[o.role] as keyof typeof ObstacleSpecialRoles}`] = true;
                 if (o.variations !== undefined) obj.variationBits = Math.ceil(Math.log2(o.variations));
                 return o;
             }
-        ) as readonly Missing[];
+        ) satisfies ReadonlyArray<RawDefinition<Missing>>;
     }
 );

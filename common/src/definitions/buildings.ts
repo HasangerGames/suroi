@@ -2,7 +2,7 @@ import { GameConstants, Layers, TentTints, ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
-import { MapObjectSpawnMode, NullString, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
+import { MapObjectSpawnMode, NullString, ObjectDefinitions, type ObjectDefinition, type RawDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { pickRandomInArray, randomBoolean } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
@@ -6786,6 +6786,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     }, position: Vec.create(30, -58), orientation: 1 }
                 ]
             }
-        ] satisfies Missing[];
+        ] satisfies ReadonlyArray<RawDefinition<Missing>>;
     }
 );
