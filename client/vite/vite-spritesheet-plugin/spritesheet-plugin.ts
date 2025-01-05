@@ -1,10 +1,10 @@
-import { watch } from "chokidar";
+import { FSWatcher, watch } from "chokidar";
 import { existsSync, mkdirSync, readFileSync, statSync } from "fs";
 import { readFile } from "fs/promises";
 import { Minimatch } from "minimatch";
 import path from "path";
 import { type SpritesheetData } from "pixi.js";
-import { type FSWatcher, type Plugin, type ResolvedConfig } from "vite";
+import { type Plugin, type ResolvedConfig } from "vite";
 import { Modes, SpritesheetNames } from "../../../common/src/definitions/modes";
 import readDirectory from "./utils/readDirectory.js";
 import { Atlas, type CompilerOptions, createSpritesheets, MultiAtlasList } from "./utils/spritesheet.js";
@@ -61,7 +61,7 @@ async function buildSpritesheets(): Promise<void> {
             const dataFile = path.join(cacheDir, atlasID, "data.json");
             if (!existsSync(dataFile)) return;
 
-            const cacheData = JSON.parse(readFileSync(dataFile, "utf8")) as CacheData;
+            const cacheData = cache[atlasID] ?? JSON.parse(readFileSync(dataFile, "utf8")) as CacheData;
 
             const paths = Object.keys(fileMap);
             const cachedPaths = Object.keys(cacheData.fileMap);
@@ -76,7 +76,7 @@ async function buildSpritesheets(): Promise<void> {
             return cacheData;
         };
 
-        const cacheData = cache[atlasID] ??= getCacheData();
+        const cacheData = getCacheData();
         if (cacheData) {
             console.log(`Spritesheet "${atlasID}" is cached, skipping (${++builtCount}/${totalCount})`);
 
