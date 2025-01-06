@@ -39,7 +39,7 @@ export class GameSound {
     readonly dynamic: boolean;
     readonly ambient: boolean;
 
-    get volume(): number { return this.ambient ? this.manager.ambienceVolume : this.manager.sfxVolume; }
+    volume: number;
 
     instance?: PixiSound.IMediaInstance;
     readonly stereoFilter: PixiSound.filters.StereoFilter;
@@ -59,6 +59,7 @@ export class GameSound {
         this.ambient = options.ambient;
         this.onEnd = options.onEnd;
         this.stereoFilter = new PixiSound.filters.StereoFilter(0);
+        this.volume = this.ambient ? this.manager.ambienceVolume : this.manager.sfxVolume;
         // this.reverbFilter = new PixiSound.filters.ReverbFilter(1, 20);
 
         if (!PixiSound.sound.exists(name)) {

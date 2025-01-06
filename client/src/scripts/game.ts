@@ -829,6 +829,7 @@ export class Game {
     }
 
     backgroundTween?: Tween<unknown>;
+    volumeTween?: Tween<GameSound>;
 
     changeLayer(layer: Layer): void {
         for (const object of this.objects) {
@@ -851,7 +852,13 @@ export class Game {
             duration: LAYER_TRANSITION_DELAY
         });
 
-        this.ambience?.setPaused(layer < Layer.Ground);
+        if (this.ambience) {
+            this.volumeTween = this.addTween({
+                target: this.ambience,
+                to: { volume: layer < Layer.Ground ? 0 : this.soundManager.ambienceVolume },
+                duration: 2000
+            });
+        };
     }
 
     // yes this might seem evil. but the two local variables really only need to
