@@ -720,22 +720,19 @@ export class Game {
                 )(this, id, data);
                 this.objects.add(_object);
 
-                // Layer Transition: We pray that this works lmao
+                // Layer Transition
                 if (_object.layer !== (this.layer ?? Layer.Ground)) {
                     _object.container.alpha = 0;
 
-                    // Yes, we need to do this specifically for building ceilings as well.
-                    if (_object.isBuilding) {
-                        _object.ceilingVisible = false;
-                        _object.ceilingContainer.alpha = 0;
-                        _object.toggleCeiling(LAYER_TRANSITION_DELAY);
-                    }
-
-                    this.addTween({
+                    _object.layerTween?.kill();
+                    _object.layerTween = this.addTween({
                         target: _object.container,
                         to: { alpha: 1 },
                         duration: LAYER_TRANSITION_DELAY,
-                        ease: EaseFunctions.sineIn
+                        ease: EaseFunctions.sineIn,
+                        onComplete: () => {
+                            _object.layerTween = undefined;
+                        }
                     });
                 }
             } else {
@@ -760,27 +757,18 @@ export class Game {
                 continue;
             }
 
-            // Layer Transition: We pray that this works lmao
+            // Layer Transition
             if (object.layer !== (this.layer ?? Layer.Ground)) {
                 object.container.alpha = 1;
 
-                // Yes, we need to do this specifically for building ceilings as well.
-                if (object.isBuilding && object.ceilingVisible) {
-                    object.ceilingContainer.alpha = 1;
-                    this.addTween({
-                        target: object.ceilingContainer,
-                        to: { alpha: 0 },
-                        duration: LAYER_TRANSITION_DELAY,
-                        ease: EaseFunctions.sineOut
-                    });
-                }
-
-                this.addTween({
+                object.layerTween?.kill();
+                object.layerTween = this.addTween({
                     target: object.container,
                     to: { alpha: 0 },
                     duration: LAYER_TRANSITION_DELAY,
                     ease: EaseFunctions.sineOut,
                     onComplete: () => {
+                        object.layerTween = undefined;
                         object.destroy();
                         this.objects.delete(object);
                     }

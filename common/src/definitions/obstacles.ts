@@ -4341,9 +4341,22 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 rotationMode: RotationMode.Limited
             },
             {
+                idString: "blue_house_stair_walls",
+                name: "Blue House Stair Walls",
+                material: "metal_heavy",
+                health: 1000,
+                indestructible: true,
+                invisible: true,
+                hitbox: RectangleHitbox.fromRect(13, 4),
+                frames: {
+                    particle: "metal_particle"
+                },
+                rotationMode: RotationMode.Limited
+            },
+            {
                 idString: "blue_house_stair",
                 name: "Blue House Stair",
-                material: "metal_light",
+                material: "metal_heavy",
                 health: 1000,
                 indestructible: true,
                 role: ObstacleSpecialRoles.Stair,
@@ -4356,20 +4369,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 frames: {
                     particle: "metal_particle"
                 },
-                rotationMode: RotationMode.Limited
-            },
-            {
-                idString: "blue_house_stair_walls",
-                name: "Blue House Stair Walls",
-                material: "metal_heavy",
-                health: 1000,
-                indestructible: true,
-                invisible: true,
-                hitbox: RectangleHitbox.fromRect(13, 4),
-                frames: {
-                    particle: "metal_particle"
-                },
-                rotationMode: RotationMode.Limited
+                rotationMode: RotationMode.Limited,
+                zIndex: ZIndexes.BuildingsFloor
             },
             {
                 idString: "hq_stair",
@@ -4422,24 +4423,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     low: 0
                 },
                 hitbox: RectangleHitbox.fromRect(11.55, 25.5),
-                frames: {
-                    particle: "metal_particle"
-                },
-                rotationMode: RotationMode.Limited,
-                zIndex: ZIndexes.BuildingsFloor
-            },
-            {
-                idString: "fire_exit_stair",
-                name: "Fire Exit Stair",
-                material: "metal_heavy",
-                health: 1000,
-                indestructible: true,
-                role: ObstacleSpecialRoles.Stair,
-                activeEdges: {
-                    high: 0,
-                    low: 2
-                },
-                hitbox: RectangleHitbox.fromRect(13.8, 27.8),
                 frames: {
                     particle: "metal_particle"
                 },

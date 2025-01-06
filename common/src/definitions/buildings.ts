@@ -2400,7 +2400,19 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         position: Vec.create(15.93, -5.14),
                         rotation: 0
                     }
-                ]
+                ],
+                subBuildings: [{ idString: "blue_house_basement_ceiling", position: Vec.create(0, 0) }]
+            },
+            {
+                idString: "blue_house_basement_ceiling",
+                name: "blue house basement ceiling",
+                spawnHitbox: RectangleHitbox.fromRect(21.5, 28.9, Vec.create(21, -15.3)),
+                ceilingHitbox: RectangleHitbox.fromRect(21.5, 28.9, Vec.create(21, -15.3)),
+                ceilingImages: [{
+                    key: "blue_house_vault_ceiling",
+                    position: Vec.create(21, -15.3),
+                    scale: Vec.create(1.58, 1.25)
+                }]
             },
             {
                 idString: "crane",
