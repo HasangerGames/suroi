@@ -10,7 +10,6 @@ import { type Game } from "../game";
 import { type GameSound, type SoundOptions } from "../managers/soundManager";
 import { HITBOX_DEBUG_MODE } from "../utils/constants";
 import { toPixiCoords } from "../utils/pixi";
-import type { Tween } from "../utils/tween";
 
 export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> extends makeGameObjectTemplate() {
     id: number;
@@ -21,7 +20,6 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
     destroyed = false;
 
     layer: Layer = Layer.Ground;
-    layerTween?: Tween<Container>;
 
     debugGraphics!: Graphics;
 

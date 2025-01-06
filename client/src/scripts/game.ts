@@ -28,7 +28,7 @@ import { randomFloat, randomVector } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { sound, type Sound } from "@pixi/sound";
 import $ from "jquery";
-import { Application, Color } from "pixi.js";
+import { Application, Color, Container } from "pixi.js";
 import "pixi.js/prepare";
 import { getTranslatedString, initTranslation } from "../translations";
 import { type TranslationKeys } from "../typings/translations";
@@ -100,6 +100,8 @@ export class Game {
     readonly planes = new Set<Plane>();
 
     ambience?: GameSound;
+
+    layerTween?: Tween<Container>;
 
     readonly spinningImages = new Map<SuroiSprite, number>();
 
@@ -724,14 +726,13 @@ export class Game {
                 if (_object.layer !== (this.layer ?? Layer.Ground)) {
                     _object.container.alpha = 0;
 
-                    _object.layerTween?.kill();
-                    _object.layerTween = this.addTween({
+                    this.layerTween = this.addTween({
                         target: _object.container,
                         to: { alpha: 1 },
                         duration: LAYER_TRANSITION_DELAY,
                         ease: EaseFunctions.sineIn,
                         onComplete: () => {
-                            _object.layerTween = undefined;
+                            this.layerTween = undefined;
                         }
                     });
                 }
@@ -761,14 +762,13 @@ export class Game {
             if (object.layer !== (this.layer ?? Layer.Ground)) {
                 object.container.alpha = 1;
 
-                object.layerTween?.kill();
-                object.layerTween = this.addTween({
+                this.layerTween = this.addTween({
                     target: object.container,
                     to: { alpha: 0 },
                     duration: LAYER_TRANSITION_DELAY,
                     ease: EaseFunctions.sineOut,
                     onComplete: () => {
-                        object.layerTween = undefined;
+                        this.layerTween = undefined;
                         object.destroy();
                         this.objects.delete(object);
                     }
