@@ -2,7 +2,10 @@ import { Numeric } from "@common/utils/math";
 import { Container } from "pixi.js";
 import { type Game } from "../game";
 
-export class Tween<T> {
+/**
+ * @template T Covariant
+ */
+export class Tween<T extends object> {
     readonly game: Game;
 
     startTime = Date.now();

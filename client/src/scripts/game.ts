@@ -151,7 +151,7 @@ export class Game {
 
     music!: Sound;
 
-    readonly tweens = new Set<Tween<unknown>>();
+    readonly tweens = new Set<Tween<object>>();
 
     private readonly _timeouts = new Set<Timeout>();
 
@@ -817,18 +817,18 @@ export class Game {
         this.tick();
     }
 
-    addTween<T>(config: ConstructorParameters<typeof Tween<T>>[1]): Tween<T> {
+    addTween<T extends object>(config: ConstructorParameters<typeof Tween<T>>[1]): Tween<T> {
         const tween = new Tween(this, config);
 
         this.tweens.add(tween);
         return tween;
     }
 
-    removeTween(tween: Tween<unknown>): void {
+    removeTween(tween: Tween<object>): void {
         this.tweens.delete(tween);
     }
 
-    backgroundTween?: Tween<unknown>;
+    backgroundTween?: Tween<{ readonly r: number, readonly g: number, readonly b: number }>;
     volumeTween?: Tween<GameSound>;
 
     changeLayer(layer: Layer): void {
@@ -849,14 +849,31 @@ export class Game {
             onUpdate: () => {
                 this.pixi.renderer.background.color = new Color(color);
             },
-            duration: LAYER_TRANSITION_DELAY
+            duration: LAYER_TRANSITION_DELAY,
+            onComplete: () => { this.backgroundTween = undefined; }
         });
 
-        if (this.ambience) {
+        if (this.ambience !== undefined) {
+            this.volumeTween?.kill();
+
+            let target = 1; // if, somehow, the switch fails to assign a value
+
+            switch (true) {
+                // above ground—play as normal
+                case layer >= Layer.Ground: target = 1; break;
+
+                // stairway leading down to bunker—half volume
+                case layer === Layer.ToBasement1: target = 0.5; break;
+
+                // below ground—very muted
+                case layer <= Layer.Basement1: target = 0.15; break;
+            }
+
             this.volumeTween = this.addTween({
                 target: this.ambience,
-                to: { volume: layer < Layer.Ground ? 0 : this.soundManager.ambienceVolume },
-                duration: 2000
+                to: { volume: target },
+                duration: 2000,
+                onComplete: () => { this.volumeTween = undefined; }
             });
         };
     }
