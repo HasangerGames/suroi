@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" id="svg2604" width="120.13" height="17.9" viewBox="0 0 120.13 17.9">
+  <defs>
+    <style>.cls-8{stroke:#191615;stroke-width:3px;stroke-linecap:round;stroke-miterlimit:3.87}.cls-13{fill:#6e6963}.cls-8{fill:none}</style>
+  </defs>
+  <g id="layer1">
+    <g id="g214">
+      <path id="path195" d="M98.03 4.2h5.1c.2 0 .3.4.3.9v7.6c0 .5-.2.9-.3.9h-5.1z" style="fill: rgb(61, 59, 56); stroke-width: 3px; stroke-linecap: round; fill-rule: evenodd; stroke-miterlimit: 3.87; stroke: rgb(167, 119, 0);"/>
+      <path id="path196" d="M98.02 4.02c0-.81-.3-1.51-.6-1.51H64.73v13.1h32.69c.3 0 .6-.71.6-1.51z" style="stroke-width: 3px; fill-rule: evenodd; stroke-miterlimit: 3.87; stroke-linecap: square; fill: rgb(67, 64, 61); stroke: rgb(167, 119, 0);"/>
+      <path id="path197" d="M117.83 5.9c0 .4-.6.8-1.4.8s-1.4-.3-1.4-.8c0-.4.6-.8 1.4-.8s1.4.3 1.4.8Z" class="cls-8"/>
+      <path id="path198" d="M116.43 10.7c.83 0 1.45-.73 1.45-1.66s-.62-1.66-1.45-1.66-1.45.73-1.45 1.66.62 1.66 1.45 1.66Z" class="cls-8"/>
+      <path id="path199" d="M117.83 12c0 .4-.6.8-1.4.8s-1.4-.3-1.4-.8c0-.4.6-.8 1.4-.8s1.4.4 1.4.8Z" class="cls-8"/>
+      <path id="path200" d="M118.33 4.4h-6.1l-1.1.4h-46.4v8.3h46.4l1.1.4h6.1c.2 0 .3-.4.3-.9V5.2c0-.4-.1-.8-.3-.8Zm-.5 1.5c0 .4-.6.8-1.4.8s-1.4-.3-1.4-.8c0-.4.6-.8 1.4-.8s1.4.3 1.4.8Zm-1.4 4.6c.8 0 1.4-.7 1.4-1.6s-.6-1.6-1.4-1.6-1.4.7-1.4 1.6.6 1.6 1.4 1.6Zm0 2.3c.8 0 1.4-.3 1.4-.8 0-.4-.6-.8-1.4-.8s-1.4.3-1.4.8c0 .4.6.8 1.4.8Z" style="stroke-linecap: round; fill-rule: evenodd; stroke-miterlimit: 3.87; stroke-width: 1.5px; fill: rgb(255, 181, 0); stroke: rgb(167, 119, 0);"/>
+      <path id="path201" d="M1.5 5.06c0-.66.3-1.23.6-1.23h1.01v10.35H2.1c-.3 0-.6-.58-.6-1.23z" style="stroke-width: 3px; stroke-linecap: round; fill-rule: evenodd; stroke-miterlimit: 3.87; fill: rgb(65, 59, 53); stroke: rgb(81, 43, 0);"/>
+      <path id="rect201" d="M3.15 3.82H5v10.36H3.15z" style="stroke-width: 3px; stroke-miterlimit: 7.47; stroke-linecap: square; fill: rgb(138, 89, 41); stroke: rgb(81, 43, 0);"/>
+      <path id="rect202" d="M4.83 3.82h30.03v10.35H4.83z" style="stroke-width: 3px; stroke-miterlimit: 7.47; stroke-linecap: square; stroke: rgb(81, 43, 0); fill: rgb(110, 59, 0);"/>
+      <path id="rect203" d="M7.65 3.82h21.36v10.35H7.65z" style="stroke-width: 3px; stroke-miterlimit: 7.47; stroke-linecap: square; fill: rgb(110, 59, 0); stroke: rgb(81, 43, 0);"/>
+      <path id="path203" d="M40.73 2.2h-5.8c-.1 0-.2.3-.2.6V15c0 .3.1.6.2.6h5.8c.1 0 .2-.3.2-.6V2.8c0-.3-.1-.6-.2-.6Z" style="stroke-width: 3px; stroke-linecap: round; fill-rule: evenodd; stroke-miterlimit: 7.47; fill: rgb(255, 181, 0); stroke: rgb(167, 119, 0);"/>
+      <path id="path204" d="M40.63 1.5h23.9c.1 0 .2.3.2.6v13.7c0 .3-.1.6-.2.6-8.71-.12-16.12-.03-23.9 0-.1 0-.2-.3-.2-.6V2.1c0-.3.1-.6.2-.6Z" style="stroke-width: 3px; stroke-linecap: round; fill-rule: evenodd; stroke-miterlimit: 7.47; fill: rgb(255, 181, 0); stroke: rgb(167, 119, 0);"/>
+      <rect id="rect204" width="18.4" height="8.3" x="45.03" y="4.8" rx=".58" ry=".58" style="fill: rgb(81, 43, 0);"/>
+      <path id="rect206" d="M47.23 4.8h1.9v8.3h-1.9z" class="cls-13" style="fill: rgb(110, 59, 0);"/>
+      <path id="rect207" d="M51.03 4.8h2v8.3h-2z" class="cls-13" style="fill: rgb(110, 59, 0);"/>
+      <path id="rect208" d="M54.93 4.8h2.2v8.3h-2.2z" class="cls-13" style="fill: rgb(110, 59, 0);"/>
+      <path id="rect209" d="M59.1 4.8h1.92v8.3H59.1z" class="cls-13" style="fill: rgb(110, 59, 0);"/>
+      <path id="rect210" d="M62.63 4.8h.8v8.3h-.8z" style="fill:#484541"/>
+      <path id="rect211" d="M105.93 7.6h4.8v2.81h-4.8z" style="fill: rgb(255, 181, 0);"/>
+      <path id="rect212" d="M107.25 8.3h2.12v1.4h-2.12z" style="fill:#d92f2f"/>
+      <path id="rect213" d="M105.93 6.1h4.8v5.8h-4.8z" class="cls-8" style="stroke: rgb(167, 119, 0);"/>
+      <path id="path213" d="M112.23 4.4h6.1c.2 0 .3.4.3.9v7.4c0 .5-.2.9-.3.9h-6.1l-1.1-.4h-46.4V4.9h46.4z" class="cls-8" style="stroke: rgb(167, 119, 0);"/>
+      <rect id="rect214" width="16.78" height="8.3" x="45.75" y="4.8" class="cls-8" rx=".34" ry=".34" style="stroke: rgb(167, 119, 0);"/>
+    </g>
+  </g>
+</svg>
