@@ -1496,6 +1496,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "sr25", weight: 0.0133 },
             { item: "mini14", weight: 0.0133 },
             { item: "mosin_nagant", weight: 0.0133 },
+            { item: "ghp18", weight: 0.0133 },
 
             // 2% chance for one of these
             { item: "tango_51", weight: 0.0066 },
@@ -1523,6 +1524,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             // 15% chance for one of these (L unlucky)
             { item: "sks", weight: 0.075 },
             { item: "hp18", weight: 0.075 },
+            { item: "ghp18", weight: 0.075 },
 
             // 10% chance for one of these
             { item: "sr25", weight: 0.033 },
