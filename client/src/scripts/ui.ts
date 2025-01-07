@@ -71,7 +71,7 @@ export function resetPlayButtons(): void {
 
     $("#splash-options").removeClass("loading");
     $("#loading-text").text(getTranslatedString("loading_connecting"));
-   // $("#btn-cancel-finding-game").css("display", "none");
+    // $("#btn-cancel-finding-game").css("display", "none");
 
     const { maxTeamSize } = selectedRegion ?? regionInfo[Config.defaultRegion];
 
@@ -85,8 +85,8 @@ export function resetPlayButtons(): void {
                 [TeamSize.Squad, $("#btn-play-squad")]
             ]
         )
-    // stfu
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+        // stfu
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     ) btn.toggleClass("locked", maxTeamSize !== undefined && maxTeamSize !== size);
 
     $("#team-option-btns").toggleClass("locked", isSolo);
@@ -157,9 +157,9 @@ export async function setUpUI(game: Game): Promise<void> {
            </a>
         `);
 
-      $(`#language-${language}`).on("click", () => {
-        game.console.setBuiltInCVar("cv_language", language);
-    });
+        $(`#language-${language}`).on("click", () => {
+            game.console.setBuiltInCVar("cv_language", language);
+        });
     }
 
     game.console.variables.addChangeListener("cv_language", () => location.reload());
@@ -581,9 +581,9 @@ export async function setUpUI(game: Game): Promise<void> {
     });
 
     // TODO
-   /* ui.cancelFindingGame.on("click", () => {
-        game.disconnect();
-    }); */
+    /* ui.cancelFindingGame.on("click", () => {
+         game.disconnect();
+     }); */
 
     const copyUrl = $<HTMLButtonElement>("#btn-copy-team-url");
     const hideUrl = $<HTMLButtonElement>("#btn-hide-team-url");
@@ -886,7 +886,7 @@ export async function setUpUI(game: Game): Promise<void> {
     });
 
     ui.btnReport.on("click", () => {
-            sendSpectatePacket(SpectateActions.Report);
+        sendSpectatePacket(SpectateActions.Report);
     });
     ui.spectateNext.on("click", () => {
         sendSpectatePacket(SpectateActions.SpectateNext);
@@ -1036,8 +1036,7 @@ export async function setUpUI(game: Game): Promise<void> {
             if (emote.category !== lastCategory) {
                 emoteList.append(
                     $<HTMLDivElement>(
-                        `<div class="emote-list-header">${
-                            getTranslatedString(`emotes_category_${EmoteCategory[emote.category]}` as TranslationKeys)
+                        `<div class="emote-list-header">${getTranslatedString(`emotes_category_${EmoteCategory[emote.category]}` as TranslationKeys)
                         }</div>`
                     )
                 );
@@ -1305,7 +1304,7 @@ export async function setUpUI(game: Game): Promise<void> {
                         <div class="badges-list-item">\
                             <div style="background-image: url('./img/game/shared/badges/${idString}.svg')"></div>\
                         </div>\
-                        <span class="badge-name">${getTranslatedString(`badge_${idString}` as TranslationKeys)}</span>\
+                        <span class="badge-name">${getTranslatedString(idString as TranslationKeys)}</span>\
                     </div>`
                 );
 
@@ -1746,7 +1745,7 @@ export async function setUpUI(game: Game): Promise<void> {
             localStorage.setItem("suroi_config", input);
             alert("Settings loaded successfully.");
             window.location.reload();
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (_) {
             error();
         }
@@ -1913,12 +1912,12 @@ export async function setUpUI(game: Game): Promise<void> {
                     <span class="item-count" id="${item.idString}-count">0</span>
                     <div class="item-tooltip">
                         ${getTranslatedString("tt_restores", {
-                            item: `<b>${getTranslatedString(item.idString as TranslationKeys)}</b><br>`,
-                            amount: item.restoreAmount.toString(),
-                            type: item.healType === HealType.Adrenaline
-                                ? getTranslatedString("adrenaline")
-                                : getTranslatedString("health")
-                        })}
+                    item: `<b>${getTranslatedString(item.idString as TranslationKeys)}</b><br>`,
+                    amount: item.restoreAmount.toString(),
+                    type: item.healType === HealType.Adrenaline
+                        ? getTranslatedString("adrenaline")
+                        : getTranslatedString("health")
+                })}
                     </div>
                 </div>`
             );

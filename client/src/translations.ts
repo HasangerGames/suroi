@@ -86,20 +86,23 @@ export function getTranslatedString(key: TranslationKeys, replacements?: Record<
         key = Badges.reify(key.slice("badge_".length)).idString.replace("bdg_", "badge_") as TranslationKeys;
     }
 
-    let foundTranslation: string;
-    try {
-        foundTranslation = TRANSLATIONS.translations[selectedLanguage]?.[key]
-        ?? TRANSLATIONS.translations[defaultLanguage]?.[key]
-        ?? Loots.reify(key).name;
-    } catch {
-        if (key.startsWith("emote_")) {
-            return Emotes.reify(key.slice("emote_".length)).name as TranslationKeys;
-        }
-        if (key.startsWith("badge_")) {
-            return Badges.reify(`bdg_${key.slice("badge_".length)}`).name as TranslationKeys;
-        }
+    const languageData = TRANSLATIONS.translations[selectedLanguage];
+    const defaultLanguageData = TRANSLATIONS.translations[defaultLanguage];
+
+    if (!languageData) {
+        console.error(`Language ${selectedLanguage} does not exist`);
         return key;
     }
+
+    let foundTranslation: string | undefined;
+    foundTranslation = languageData[key];
+    foundTranslation ??= defaultLanguageData[key];
+    foundTranslation ??= Loots.fromStringSafe(key)?.name;
+
+    foundTranslation ??= key.startsWith("emote_") ? Emotes.fromStringSafe(key.slice("emote_".length))?.name : undefined;
+    foundTranslation ??= key.startsWith("bdg_") ? Badges.fromStringSafe(key)?.name : undefined;
+
+    foundTranslation ??= key;
 
     for (const [search, replace] of Object.entries(replacements ?? {})) {
         foundTranslation = foundTranslation.replaceAll(`<${search}>`, replace);
