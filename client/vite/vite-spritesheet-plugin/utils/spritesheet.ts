@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { type IOption, MaxRectsPacker } from "maxrects-packer";
 import path from "path";
 import { type SpritesheetData } from "pixi.js";
-import { Canvas, Image, loadImage } from "skia-canvas";
+import { Canvas } from "skia-canvas";
 import type { SpritesheetNames } from "../../../../common/src/definitions/modes";
 import { CacheData, cacheDir } from "../spritesheet-plugin";
 
@@ -92,8 +92,8 @@ export async function createSpritesheets(
 
         for (const image of images) {
             packer.add(
-                image.image.width * resolution,
-                image.image.height * resolution,
+                image.image.naturalWidth * resolution,
+                image.image.naturalHeight * resolution,
                 image
             );
         }

@@ -432,6 +432,10 @@ export class UIManager {
             damageTaken: {
                 id: "shield",
                 assigned: false
+            },
+            youdidit: {
+                id: "youdidit"
+                //  assigned: false
             }
         };
 
@@ -466,6 +470,7 @@ export class UIManager {
                 const killsMedal = bestKills === packet.teammates[i].kills && bestKills >= 10 && !medals.kills.assigned;
                 const damageDoneMedal = bestDamageDone === packet.teammates[i].damageDone && bestDamageDone >= 1000 && !medals.damageDone.assigned;
                 const damageTakenMedal = bestDamageTaken === packet.teammates[i].damageTaken && bestDamageTaken >= 1000 && !medals.damageTaken.assigned;
+                const wellDone = packet.teammates[i].kills === 0 && packet.teammates[i].damageDone === 0;
 
                 wonMedal = (
                     // Kills (More than 10 kills + most kills on team)
@@ -474,10 +479,16 @@ export class UIManager {
                     || damageDoneMedal
                     // Damage Taken (Must be more than 1000)
                     || damageTakenMedal
+                    // you did it
+                    || wellDone
                 );
 
                 if (wonMedal) {
                     switch (true) {
+                        case wellDone: {
+                            medalType = medals.youdidit.id;
+                            break;
+                        }
                         case killsMedal: {
                             medalType = medals.kills.id;
                             medals.kills.assigned = true;
@@ -546,10 +557,14 @@ export class UIManager {
 
         if (packet.won) {
             void game.music.play();
-            if (this.game.teamMode) {
+            if (this.game.teamMode && packet.numberTeammates > 1) {
                 gameOverTeamKills.text(getTranslatedString("msg_kills", { kills: JSON.stringify(totalKills) }));
-                gameOverTeamKillsContainer.toggle(packet.numberTeammates > 1);
+                gameOverTeamKillsContainer.toggle(true);
+            } else {
+                gameOverTeamKillsContainer.toggle(false);
             }
+        } else {
+            gameOverTeamKillsContainer.toggle(false);
         }
 
         this.gameOverScreenTimeout = window.setTimeout(() => gameOverOverlay.fadeIn(500), 500);

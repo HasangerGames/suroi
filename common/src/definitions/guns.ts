@@ -1660,7 +1660,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             },
             {
                 idString: "rgs",
-                name: "RGS",
+                name: "RG Scout",
                 ammoType: "556mm",
                 ammoSpawnAmount: 30,
                 capacity: 10,
