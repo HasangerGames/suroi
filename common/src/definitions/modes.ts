@@ -98,7 +98,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
-        spriteSheets: ["shared", "normal"]
+        spriteSheets: ["shared", "normal", "birthday"]
     },
     winter: {
         colors: {
@@ -111,7 +111,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
-        spriteSheets: ["shared", "winter"],
+        spriteSheets: ["shared", "normal", "winter"],
         sounds: {
             ambience: "snowstorm",
             replace: ["menu_music", "airdrop_plane"]

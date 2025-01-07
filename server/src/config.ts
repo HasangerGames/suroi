@@ -4,6 +4,7 @@ import { type Maps } from "./data/maps";
 import { type Game } from "./game";
 import { type GamePlugin } from "./pluginManager";
 import type { Mode } from "@common/definitions/modes";
+import { TeleportPlugin } from "./defaultPlugins/teleportPlugin";
 
 export const enum SpawnMode {
     Normal,
@@ -21,7 +22,7 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "normal",
+    map: "winter",
     mode: "normal",
 
     spawn: { mode: SpawnMode.Normal },

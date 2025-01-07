@@ -1,9 +1,9 @@
 import { createHash } from "crypto";
-import { existsSync, mkdirSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from "fs";
 import { type IOption, MaxRectsPacker } from "maxrects-packer";
 import path from "path";
 import { type SpritesheetData } from "pixi.js";
-import { Canvas } from "skia-canvas";
+import { Canvas, Image } from "skia-canvas";
 import type { SpritesheetNames } from "../../../../common/src/definitions/modes";
 import { CacheData, cacheDir } from "../spritesheet-plugin";
 
@@ -59,128 +59,142 @@ interface PackerRectData {
 export async function createSpritesheets(
     name: string,
     fileMap: Record<string, number>,
+    imageMap: Map<string, Image>,
     options: CompilerOptions
 ): Promise<{ readonly low: Atlas[], readonly high: Atlas[] }> {
-    const paths = Object.keys(fileMap);
-    if (paths.length === 0) throw new Error("No file given.");
-
-    const results = await Promise.allSettled(
-        paths.map(async path => ({
-            image: await loadImage(path),
-            path
-        } satisfies PackerRectData))
+    const packer = new MaxRectsPacker(
+        options.maximumSize,
+        options.maximumSize,
+        options.margin,
+        {
+            ...options.packerOptions,
+            allowRotation: false // TODO: support rotating frames
+        }
     );
 
-    const images: readonly PackerRectData[] = results.filter(x => x.status === "fulfilled").map(({ value }) => value);
-    const errors = results.filter(x => x.status === "rejected").map(({ reason }) => reason as unknown);
-    if (errors.length !== 0) {
-        console.error(errors);
-        // @ts-expect-error ts doesn't know what an AggregateError is for some reason
-        throw new AggregateError(errors);
+    const images = Object.keys(fileMap)
+        .map(path => ({ path, image: imageMap.get(path) }))
+        .filter(data => data.image !== undefined);
+    for (const image of images) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const { width, height } = image.image!;
+        packer.add(width, height, image);
     }
 
-    function createSheet(resolution: number): Atlas[] {
-        const packer = new MaxRectsPacker(
-            options.maximumSize * resolution,
-            options.maximumSize * resolution,
-            options.margin,
-            {
-                ...options.packerOptions,
-                allowRotation: false // TODO: support rotating frames
-            }
-        );
+    const low: Atlas[] = [];
+    const high: Atlas[] = [];
+    const lowScale = 0.5;
 
-        for (const image of images) {
-            packer.add(
-                image.image.naturalWidth * resolution,
-                image.image.naturalHeight * resolution,
-                image
-            );
+    const atlasCacheDir = path.join(cacheDir, name);
+    if (existsSync(atlasCacheDir)) {
+        for (const file of readdirSync(atlasCacheDir)) {
+            rmSync(path.join(atlasCacheDir, file));
+        }
+    } else {
+        mkdirSync(atlasCacheDir);
+    }
+
+    for (const bin of packer.bins) {
+        const canvas = new Canvas(bin.width, bin.height);
+        const ctx = canvas.getContext("2d");
+
+        const lowJSON: SpritesheetData = {
+            meta: {
+                image: "",
+                scale: lowScale,
+                size: {
+                    w: bin.width * lowScale,
+                    h: bin.height * lowScale
+                }
+            },
+            frames: {}
+        };
+        const highJSON: SpritesheetData = {
+            meta: {
+                image: "",
+                scale: 1,
+                size: {
+                    w: bin.width,
+                    h: bin.height
+                }
+            },
+            frames: {}
+        };
+
+        for (const rect of bin.rects) {
+            const data = rect.data as PackerRectData;
+
+            ctx.drawImage(data.image, rect.x, rect.y, rect.width, rect.height);
+
+            /**
+             * there is _probably_ a file name
+             */
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            let name = data.path.split(path.sep).at(-1)!;
+
+            if (options.removeExtensions) {
+                name = name.split(".").slice(0, -1).join("");
+            }
+
+            const { width, height, x, y } = rect;
+
+            lowJSON.frames[name] = {
+                frame: {
+                    w: width * lowScale,
+                    h: height * lowScale,
+                    x: x * lowScale,
+                    y: y * lowScale
+                },
+                sourceSize: {
+                    w: width * lowScale,
+                    h: height * lowScale
+                }
+            };
+            highJSON.frames[name] = {
+                frame: {
+                    w: width,
+                    h: height,
+                    x: x,
+                    y: y
+                },
+                sourceSize: {
+                    w: width,
+                    h: height
+                }
+            };
         }
 
-        const atlases: Atlas[] = [];
+        const buffer = canvas.toBufferSync("png");
 
-        for (const bin of packer.bins) {
-            const canvas = new Canvas(bin.width, bin.height);
-            const ctx = canvas.getContext("2d");
+        const lowResCanvas = new Canvas(bin.width * lowScale, bin.height * lowScale);
+        const lowResCtx = lowResCanvas.getContext("2d");
+        lowResCtx.drawImage(canvas, 0, 0, bin.width * lowScale, bin.height * lowScale);
+        const lowBuffer = lowResCanvas.toBufferSync("png");
 
-            const json: SpritesheetData = {
-                meta: {
-                    image: "",
-                    scale: resolution,
-                    size: {
-                        w: bin.width,
-                        h: bin.height
-                    }
-                },
-                frames: {}
-            };
-
-            for (const rect of bin.rects) {
-                const data = rect.data as PackerRectData;
-
-                ctx.drawImage(data.image, rect.x, rect.y, rect.width, rect.height);
-
-                /**
-                 * there is _probably_ a file name
-                 */
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                let name = data.path.split(path.sep).at(-1)!;
-
-                if (options.removeExtensions) {
-                    name = name.split(".").slice(0, -1).join("");
-                }
-
-                json.frames[name] = {
-                    frame: {
-                        w: rect.width,
-                        h: rect.height,
-                        x: rect.x,
-                        y: rect.y
-                    },
-                    sourceSize: {
-                        w: rect.width,
-                        h: rect.height
-                    }
-                };
-            }
-
-            const buffer = canvas.toBufferSync("png");
-
-            const hash = createHash("sha1").update(buffer).digest("hex").slice(0, 8);
+        const writeAtlas = (image: Buffer, json: SpritesheetData, resolution: number, sheets: Atlas[]): void => {
+            const hash = createHash("sha1").update(image).digest("hex").slice(0, 8);
             const cacheName = `${name}-${hash}@${resolution}x`;
             json.meta.image = `${options.outDir}/${cacheName}.png`;
 
             writeFileSync(path.join(atlasCacheDir, `${cacheName}.json`), JSON.stringify(json));
-            writeFileSync(path.join(atlasCacheDir, `${cacheName}.png`), buffer);
+            writeFileSync(path.join(atlasCacheDir, `${cacheName}.png`), image);
 
-            atlases.push({
-                json,
-                image: buffer,
-                cacheName
-            });
-        }
+            sheets.push({ json, image, cacheName });
+        };
 
-        return atlases;
+        writeAtlas(lowBuffer, lowJSON, lowScale, low);
+        writeAtlas(buffer, highJSON, 1, high);
     }
-
-    const atlasCacheDir = path.join(cacheDir, name);
-    if (!existsSync(atlasCacheDir)) mkdirSync(atlasCacheDir);
-
-    const sheets = {
-        low: createSheet(0.5),
-        high: createSheet(1)
-    };
 
     const cacheData: CacheData = {
         lastModified: Date.now(),
         fileMap,
         atlasFiles: {
-            low: sheets.low.map(s => s.cacheName ?? ""),
-            high: sheets.high.map(s => s.cacheName ?? "")
+            low: low.map(s => s.cacheName ?? ""),
+            high: high.map(s => s.cacheName ?? "")
         }
     };
     writeFileSync(path.join(atlasCacheDir, "data.json"), JSON.stringify(cacheData));
 
-    return sheets;
+    return { low, high };
 }

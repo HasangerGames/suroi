@@ -28,10 +28,7 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         : (await import("virtual:spritesheets-jsons-low-res")).atlases;
 
-    const spritesheets = [
-        ...atlases.shared,
-        ...atlases[GameConstants.modeName]
-    ];
+    const spritesheets = atlases[GameConstants.modeName];
 
     let resolved = 0;
     const count = spritesheets.length;

@@ -7,7 +7,7 @@
    viewBox="0 0 758.88772 406.83523"
    version="1.1"
    id="svg62775"
-   inkscape:version="1.3.2 (1:1.3.2+202404261509+091e20ef0f)"
+   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
    sodipodi:docname="headquarters_second_floor_top.svg"
    inkscape:export-filename="hq_floor_1_a_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaagh.svg"
    inkscape:export-xdpi="96"
@@ -28,15 +28,15 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1"
-     inkscape:cx="669"
-     inkscape:cy="179.5"
+     inkscape:zoom="0.35355339"
+     inkscape:cx="1705.5416"
+     inkscape:cy="562.857"
      inkscape:window-width="2560"
      inkscape:window-height="1368"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g37169-6" />
+     inkscape:current-layer="g37405-6" />
   <defs
      id="defs62772">
     <pattern
@@ -73,9 +73,9 @@
        xlink:href="#pattern1-64-07-6-8-4-0-0-4-8"
        preserveAspectRatio="xMidYMid"
        id="pattern5-5-4"
-       patternTransform="matrix(0.25,0,0,0.25,-801.70943,-4020.8289)"
-       x="1023"
-       y="-530" />
+       patternTransform="matrix(0.25,0,0,0.25,1000,10)"
+       x="0"
+       y="0" />
     <pattern
        patternUnits="userSpaceOnUse"
        width="4350.9062"
@@ -7282,7 +7282,10 @@
        inkscape:collect="always"
        xlink:href="#pattern7-9-4"
        id="pattern95456-1"
-       patternTransform="matrix(0.24995437,0,0,-0.24995437,14.58841,726.75649)" />
+       patternTransform="matrix(0.24995437,0,0,0.24995437,10.58841,733.75649)"
+       x="0"
+       y="0"
+       preserveAspectRatio="none" />
     <pattern
        inkscape:collect="always"
        xlink:href="#pattern6-6-1-6-5-6-7-2-0-8-7-3"
@@ -7903,7 +7906,10 @@
        inkscape:collect="always"
        xlink:href="#pattern7-9-7-3"
        id="pattern95458-6"
-       patternTransform="matrix(-0.24995437,0,0,-0.24028887,570.73111,839.91098)" />
+       patternTransform="matrix(-0.24995437,0,0,-0.24028887,570.73111,808.1610)"
+       x="0"
+       y="0"
+       preserveAspectRatio="none" />
     <pattern
        inkscape:collect="always"
        xlink:href="#pattern6-6-1-8-6-2-1-2-9-5-6-2"
@@ -8526,8 +8532,8 @@
        preserveAspectRatio="xMidYMid"
        id="pattern2-81-5"
        patternTransform="matrix(0.24995437,0,0,0.24995437,-2714.6886,-3467.8489)"
-       x="1042"
-       y="120" />
+       x="0"
+       y="0" />
     <inkscape:path-effect
        effect="bspline"
        id="path-effect37433-5-1-6-3-4-3-9-2"
@@ -9282,8 +9288,8 @@
                             <path
                                id="path36841-2"
                                style="fill:url(#pattern95456-1);fill-opacity:1;stroke:none;stroke-width:0.264535"
-                               d="m 112.35071,-361.51865 h 118.80294 l 1.0397,117.7699 -98.15824,-1.213 -21.4059,0.20433 0.8104,-24.62843 z"
-                               sodipodi:nodetypes="ccccccc" />
+                               d="m 112.35071,-361.51865 h 118.80294 l 1.0397,117.7699 c -39.85657,-0.38911 -77.19223,-1.08399 -119.56414,-1.00867 l 0.8104,-24.62843 z"
+                               sodipodi:nodetypes="cccccc" />
                             <rect
                                style="fill:#55412b;fill-opacity:1;stroke:none;stroke-width:2.08249;stroke-linecap:round;stroke-linejoin:round;stop-color:#000000"
                                id="rect36843-4"

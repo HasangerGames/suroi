@@ -7,7 +7,7 @@
    viewBox="0 0 758.58193 492.20231"
    version="1.1"
    id="svg62775"
-   inkscape:version="1.3.2 (1:1.3.2+202404261509+091e20ef0f)"
+   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
    sodipodi:docname="headquarters_second_floor_bottom.svg"
    inkscape:export-filename="hq_floor_2_a.svg"
    inkscape:export-xdpi="96"
@@ -28,9 +28,9 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="0.52221046"
-     inkscape:cx="1752.1671"
-     inkscape:cy="881.82837"
+     inkscape:zoom="0.73851711"
+     inkscape:cx="662.13767"
+     inkscape:cy="693.28116"
      inkscape:window-width="2560"
      inkscape:window-height="1368"
      inkscape:window-x="0"
@@ -8538,8 +8538,8 @@
        preserveAspectRatio="xMidYMid"
        id="pattern2-81-8"
        patternTransform="matrix(0.24995437,0,0,0.24995437,-2714.6886,-3467.8489)"
-       x="1042"
-       y="120" />
+       x="0"
+       y="0" />
     <inkscape:path-effect
        effect="bspline"
        id="path-effect37433-9-0-5-7-9-7-4-5-2"

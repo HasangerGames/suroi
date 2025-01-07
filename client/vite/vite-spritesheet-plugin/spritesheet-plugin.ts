@@ -8,6 +8,7 @@ import { type Plugin, type ResolvedConfig } from "vite";
 import { Modes, SpritesheetNames } from "../../../common/src/definitions/modes";
 import readDirectory from "./utils/readDirectory.js";
 import { Atlas, type CompilerOptions, createSpritesheets, MultiAtlasList } from "./utils/spritesheet.js";
+import { Image, loadImage } from "skia-canvas";
 
 const PLUGIN_NAME = "vite-spritesheet-plugin";
 
@@ -39,29 +40,44 @@ export interface CacheData {
 
 const cache: Partial<Record<SpritesheetNames, CacheData>> = {};
 
-const atlasIDs = ["shared", ...Object.keys(Modes)] as SpritesheetNames[];
-
 async function buildSpritesheets(): Promise<void> {
     let builtCount = 0;
-    const totalCount = atlasIDs.length;
+    const modeEntries = Object.entries(Modes);
+    const totalCount = modeEntries.length;
     console.log(`Building ${totalCount} spritesheets...`);
     const start = performance.now();
 
-    await Promise.all(atlasIDs.map(async atlasID => {
-        const files = readDirectory(`public/img/game/${atlasID}`)
+    const uncachedModes: Record<string, Record<string, number>> = {};
+    const imagePaths: string[] = [];
+
+    await Promise.all(modeEntries.map(async([mode, modeDef]) => {
+        const pathMap = new Map<string, string>();
+
+        const files = modeDef.spriteSheets
+            .flatMap(sheet => readDirectory(`public/img/game/${sheet}`))
             .filter(x => imagesMatcher.match(x));
 
-        const fileMap: Record<string, number> = files.reduce((fileMap, file) => {
+        // Maps have unique keys.
+        // Since the filename is used as the key, and mode sprites are added to the map after the common sprites,
+        // this method allows mode sprites to override common sprites with the same filename.
+        for (const imagePath of files) {
+            pathMap.set(imagePath.slice(imagePath.lastIndexOf(path.sep)), imagePath);
+        }
+
+        const images = [...pathMap.values()];
+
+        const fileMap: Record<string, number> = images.reduce((fileMap, file) => {
             const { mtime, ctime } = statSync(file);
             fileMap[file] = Math.max(mtime.getTime(), ctime.getTime());
             return fileMap;
         }, {});
 
         const getCacheData = (): CacheData | undefined => {
-            const dataFile = path.join(cacheDir, atlasID, "data.json");
+            const dataFile = path.join(cacheDir, mode, "data.json");
             if (!existsSync(dataFile)) return;
 
-            const cacheData = cache[atlasID] ?? JSON.parse(readFileSync(dataFile, "utf8")) as CacheData;
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            const cacheData: CacheData = cache[mode] ?? JSON.parse(readFileSync(dataFile, "utf8")) as CacheData;
 
             const paths = Object.keys(fileMap);
             const cachedPaths = Object.keys(cacheData.fileMap);
@@ -78,25 +94,41 @@ async function buildSpritesheets(): Promise<void> {
 
         const cacheData = getCacheData();
         if (cacheData) {
-            console.log(`Spritesheet "${atlasID}" is cached, skipping (${++builtCount}/${totalCount})`);
+            console.log(`Spritesheet "${mode}" is cached, skipping (${++builtCount}/${totalCount})`);
 
             const loadFromCache = async(files: string[]): Promise<Atlas[]> => Promise.all(
                 files.map(async file => ({
-                    json: JSON.parse(await readFile(path.join(cacheDir, atlasID, `${file}.json`), "utf8")) as SpritesheetData,
-                    image: await readFile(path.join(cacheDir, atlasID, `${file}.png`))
+                    json: JSON.parse(await readFile(path.join(cacheDir, mode, `${file}.json`), "utf8")) as SpritesheetData,
+                    image: await readFile(path.join(cacheDir, mode, `${file}.png`))
                 }))
             );
 
             const { low, high } = cacheData.atlasFiles;
-            atlases[atlasID] = {
+            atlases[mode] = {
                 low: await loadFromCache(low),
                 high: await loadFromCache(high)
             };
         } else {
-            atlases[atlasID] = await createSpritesheets(atlasID, fileMap, compilerOpts);
-            console.log(`Built spritesheet "${atlasID}" (${++builtCount}/${totalCount})`);
+            uncachedModes[mode] = fileMap;
+            imagePaths.push(...images);
         }
     }));
+
+    if (Object.keys(uncachedModes).length) {
+        console.log("\nLoading images...");
+        const start = performance.now();
+        const imageMap = new Map<string, Image>();
+        await Promise.all([...new Set(imagePaths)].map(async path => imageMap.set(path, await loadImage(path))));
+        console.log(`Loaded ${imagePaths.length} images in ${Math.round(performance.now() - start) / 1000}s\n`);
+
+        const uncachedModeEntries = Object.entries(uncachedModes);
+        for (const [mode, fileMap] of uncachedModeEntries) {
+            console.log(`Building spritesheet "${mode}" (${++builtCount}/${totalCount})...`);
+            const start = performance.now();
+            atlases[mode] = await createSpritesheets(mode, fileMap, imageMap, compilerOpts);
+            console.log(`Built spritesheet "${mode}" in ${Math.round(performance.now() - start) / 1000}s (${builtCount}/${totalCount})\n`);
+        }
+    }
 
     console.log(`Finished building spritesheets in ${Math.round(performance.now() - start) / 1000}s`);
 }
