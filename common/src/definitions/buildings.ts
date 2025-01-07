@@ -2398,7 +2398,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                             rsh_case_dual: 0.1
                         },
                         position: Vec.create(15.93, -5.14),
-                        rotation: 0
+                        rotation: 2
                     }
                 ],
                 subBuildings: [{ idString: "blue_house_basement_ceiling", position: Vec.create(0, 0) }]
