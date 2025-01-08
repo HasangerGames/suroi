@@ -20,5 +20,5 @@ export default defineConfig(({ command, mode }) => {
         if (existsSync(resolve(DIRNAME, "./dist"))) { rmSync(resolve(DIRNAME, "./dist"), { recursive: true, force: true }); }
     }
 
-    return mergeConfig(commonConfig, command === "serve" ? devConfig() : prodConfig());
+    return mergeConfig(commonConfig(), command === "serve" ? devConfig() : prodConfig());
 });

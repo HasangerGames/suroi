@@ -4,7 +4,7 @@ import { splitVendorChunkPlugin, type UserConfig } from "vite";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 import pkg from "../../package.json";
 
-const commonConfig: UserConfig = {
+export default (): UserConfig => ({
     build: {
         rollupOptions: {
             input: {
@@ -48,6 +48,4 @@ const commonConfig: UserConfig = {
     define: {
         APP_VERSION: JSON.stringify(pkg.version)
     }
-};
-
-export default commonConfig;
+});
