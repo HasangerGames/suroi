@@ -159,21 +159,20 @@ const resolveId = (id: string): string | undefined => {
 
 export function spritesheet(enableDevMode: boolean): Plugin[] {
     const getModeName = (): void => {
-        if (!enableDevMode) return;
-
-        // truly awful hack to get the mode name from the server
-        // because importing the server config directly causes vite to have a stroke
-        const serverConfig = readFileSync(resolve(__dirname, "../../../server/src/config.ts"), "utf8");
-        const mode: Mode = serverConfig
-            .matchAll(/map: "(.*?)",/g)
-            .next()
-            .value?.[1]
-            .split(":")[0];
-        if (mode in Modes) {
-            modeName = mode;
-            modeDefs = [[mode, Modes[mode]]];
+        if (enableDevMode) {
+            // truly awful hack to get the mode name from the server
+            // because importing the server config directly causes vite to have a stroke
+            const serverConfig = readFileSync(resolve(__dirname, "../../../server/src/config.ts"), "utf8");
+            const mode: Mode = serverConfig
+                .matchAll(/map: "(.*?)",/g)
+                .next()
+                .value?.[1]
+                .split(":")[0];
+            if (mode in Modes) {
+                modeName = mode;
+                modeDefs = [[mode, Modes[mode]]];
+            }
         }
-
         modeDefs ??= Object.entries(Modes) as typeof modeDefs;
     };
     getModeName();
