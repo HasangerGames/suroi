@@ -15,6 +15,7 @@ import { GameMap } from "../map";
 import { Player, type PlayerContainer } from "../objects/player";
 import { getLootFromTable, LootTables } from "./lootTables";
 import { PerkCategories } from "@common/definitions/perks";
+import { Mode } from "@common/definitions/modes";
 
 export interface RiverDefinition {
     readonly minAmount: number
@@ -43,6 +44,7 @@ export interface RiverDefinition {
 export interface MapDefinition {
     readonly width: number
     readonly height: number
+    readonly mode?: Mode
     readonly oceanSize: number
     readonly beachSize: number
     readonly rivers?: RiverDefinition

@@ -1,11 +1,12 @@
 import { createHash } from "crypto";
-import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, readdirSync, writeFileSync } from "fs";
+import { rm, writeFile } from "fs/promises";
 import { type IOption, MaxRectsPacker } from "maxrects-packer";
 import path from "path";
 import { type SpritesheetData } from "pixi.js";
-import { Canvas, Image } from "skia-canvas";
-import type { SpritesheetNames } from "../../../../common/src/definitions/modes";
-import { CacheData, cacheDir } from "../spritesheet-plugin";
+import { Canvas, Image, loadImage } from "skia-canvas";
+import type { SpritesheetNames } from "../../../common/src/definitions/modes";
+import { cacheDir } from "./spritesheet-plugin";
 
 export interface CompilerOptions {
     /**
@@ -41,14 +42,34 @@ export interface CompilerOptions {
     packerOptions: Omit<IOption, "allowRotation">
 }
 
-export type Atlas = { readonly json: SpritesheetData, readonly image: Buffer, readonly cacheName?: string };
+export interface Atlas {
+    readonly json: SpritesheetData
+    readonly image: Buffer
+    readonly cacheName?: string
+}
 
-export type MultiAtlasList = Record<SpritesheetNames, { readonly low: Atlas[], readonly high: Atlas[] }>;
+export interface Spritesheet {
+    readonly low: Atlas[]
+    readonly high: Atlas[]
+}
+
+export type MultiAtlasList = Record<SpritesheetNames, Spritesheet>;
 
 interface PackerRectData {
     readonly image: Image
     readonly path: string
 }
+
+export interface CacheData {
+    lastModified: number
+    fileMap: Record<string, number>
+    atlasFiles: {
+        low: string[]
+        high: string[]
+    }
+}
+
+export const imageMap = new Map<string, Image>();
 
 /**
  * Pack images spritesheets.
@@ -59,9 +80,8 @@ interface PackerRectData {
 export async function createSpritesheets(
     name: string,
     fileMap: Record<string, number>,
-    imageMap: Map<string, Image>,
     options: CompilerOptions
-): Promise<{ readonly low: Atlas[], readonly high: Atlas[] }> {
+): Promise<Spritesheet> {
     const packer = new MaxRectsPacker(
         options.maximumSize,
         options.maximumSize,
@@ -72,29 +92,35 @@ export async function createSpritesheets(
         }
     );
 
-    const images = Object.keys(fileMap)
-        .map(path => ({ path, image: imageMap.get(path) }))
-        .filter(data => data.image !== undefined);
-    for (const image of images) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const { width, height } = image.image!;
-        packer.add(width, height, image);
-    }
+    await Promise.all(Object.keys(fileMap).map(async path => {
+        let image = imageMap.get(path);
+        if (!image) {
+            imageMap.set(path, image = await loadImage(path));
+        }
+        packer.add(
+            image.width,
+            image.height,
+            { path, image }
+        );
+    }));
 
-    const low: Atlas[] = [];
-    const high: Atlas[] = [];
+    const sheets: Spritesheet = {
+        low: [],
+        high: []
+    };
     const lowScale = 0.5;
 
     const atlasCacheDir = path.join(cacheDir, name);
     if (existsSync(atlasCacheDir)) {
-        for (const file of readdirSync(atlasCacheDir)) {
-            rmSync(path.join(atlasCacheDir, file));
-        }
+        await Promise.all(
+            readdirSync(atlasCacheDir)
+                .map(async file => await rm(path.join(atlasCacheDir, file)))
+        );
     } else {
         mkdirSync(atlasCacheDir);
     }
 
-    for (const bin of packer.bins) {
+    await Promise.all(packer.bins.map(async bin => {
         const canvas = new Canvas(bin.width, bin.height);
         const ctx = canvas.getContext("2d");
 
@@ -164,37 +190,49 @@ export async function createSpritesheets(
             };
         }
 
-        const buffer = canvas.toBufferSync("png");
-
         const lowResCanvas = new Canvas(bin.width * lowScale, bin.height * lowScale);
         const lowResCtx = lowResCanvas.getContext("2d");
         lowResCtx.drawImage(canvas, 0, 0, bin.width * lowScale, bin.height * lowScale);
-        const lowBuffer = lowResCanvas.toBufferSync("png");
 
-        const writeAtlas = (image: Buffer, json: SpritesheetData, resolution: number, sheets: Atlas[]): void => {
+        const [lowBuffer, highBuffer] = await Promise.all([
+            lowResCanvas.toBuffer("png"),
+            canvas.toBuffer("png")
+        ]);
+
+        const writeAtlas = async(image: Buffer, json: SpritesheetData, resolution: number, sheetList: Atlas[]): Promise<void> => {
             const hash = createHash("sha1").update(image).digest("hex").slice(0, 8);
             const cacheName = `${name}-${hash}@${resolution}x`;
             json.meta.image = `${options.outDir}/${cacheName}.png`;
 
-            writeFileSync(path.join(atlasCacheDir, `${cacheName}.json`), JSON.stringify(json));
-            writeFileSync(path.join(atlasCacheDir, `${cacheName}.png`), image);
+            void writeFile(path.join(atlasCacheDir, `${cacheName}.json`), JSON.stringify(json));
+            void writeFile(path.join(atlasCacheDir, `${cacheName}.png`), image);
 
-            sheets.push({ json, image, cacheName });
+            sheetList.push({ json, image, cacheName });
         };
 
-        writeAtlas(lowBuffer, lowJSON, lowScale, low);
-        writeAtlas(buffer, highJSON, 1, high);
-    }
+        void writeAtlas(
+            lowBuffer,
+            lowJSON,
+            lowScale,
+            sheets.low
+        );
+        void writeAtlas(
+            highBuffer,
+            highJSON,
+            1,
+            sheets.high
+        );
+    }));
 
     const cacheData: CacheData = {
         lastModified: Date.now(),
         fileMap,
         atlasFiles: {
-            low: low.map(s => s.cacheName ?? ""),
-            high: high.map(s => s.cacheName ?? "")
+            low: sheets.low.map(s => s.cacheName ?? ""),
+            high: sheets.high.map(s => s.cacheName ?? "")
         }
     };
     writeFileSync(path.join(atlasCacheDir, "data.json"), JSON.stringify(cacheData));
 
-    return { low, high };
+    return sheets;
 }

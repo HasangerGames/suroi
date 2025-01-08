@@ -3,8 +3,6 @@ import { type Vector } from "@common/utils/vector";
 import { type Maps } from "./data/maps";
 import { type Game } from "./game";
 import { type GamePlugin } from "./pluginManager";
-import type { Mode } from "@common/definitions/modes";
-import { TeleportPlugin } from "./defaultPlugins/teleportPlugin";
 
 export const enum SpawnMode {
     Normal,
@@ -23,7 +21,6 @@ export const Config = {
     port: 8000,
 
     map: "winter",
-    mode: "normal",
 
     spawn: { mode: SpawnMode.Normal },
 
@@ -66,6 +63,8 @@ export const Config = {
     }
 } satisfies ConfigType as ConfigType;
 
+export type MapWithParams = `${keyof typeof Maps}${string}`;
+
 export interface ConfigType {
     /**
      * The hostname to host the server on.
@@ -92,13 +91,7 @@ export interface ConfigType {
      * Example: `"main"` for the main map or `"debug"` for the debug map.
      * Parameters can also be specified for certain maps, separated by colons (e.g. `singleObstacle:rock`)
      */
-    readonly map: `${keyof typeof Maps}${string}`
-
-    /**
-     * The game mode. Must be a valid value from the modes definitions (`common/src/definitions/modes.ts`).
-     * Example: `"fall"` for fall mode or `"halloween"` for halloween mode
-     */
-    readonly mode: Mode | {
+    readonly map: MapWithParams | {
         /**
         * The duration between switches. Must be a cron pattern.
         */
@@ -106,7 +99,7 @@ export interface ConfigType {
         /**
         * The modes to switch between.
         */
-        readonly rotation: Mode[]
+        readonly rotation: MapWithParams[]
     }
 
     /**

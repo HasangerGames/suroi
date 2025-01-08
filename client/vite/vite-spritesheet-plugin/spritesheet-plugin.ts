@@ -1,14 +1,12 @@
 import { FSWatcher, watch } from "chokidar";
-import { existsSync, mkdirSync, readFileSync, statSync } from "fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync } from "fs";
 import { readFile } from "fs/promises";
 import { Minimatch } from "minimatch";
-import path from "path";
+import path, { resolve } from "path";
 import { type SpritesheetData } from "pixi.js";
 import { type Plugin, type ResolvedConfig } from "vite";
-import { Modes, SpritesheetNames } from "../../../common/src/definitions/modes";
-import readDirectory from "./utils/readDirectory.js";
-import { Atlas, type CompilerOptions, createSpritesheets, MultiAtlasList } from "./utils/spritesheet.js";
-import { Image, loadImage } from "skia-canvas";
+import { Mode, ModeDefinition, Modes, SpritesheetNames } from "../../../common/src/definitions/modes";
+import { Atlas, CacheData, type CompilerOptions, createSpritesheets, imageMap, MultiAtlasList } from "./spritesheet";
 
 const PLUGIN_NAME = "vite-spritesheet-plugin";
 
@@ -29,31 +27,23 @@ if (!existsSync(cacheDir)) {
     mkdirSync(cacheDir);
 }
 
-export interface CacheData {
-    lastModified: number
-    fileMap: Record<string, number>
-    atlasFiles: {
-        low: string[]
-        high: string[]
-    }
-}
-
 const cache: Partial<Record<SpritesheetNames, CacheData>> = {};
 
+let modeDefs: Array<[Mode, ModeDefinition]>;
+
 async function buildSpritesheets(): Promise<void> {
-    let builtCount = 0;
-    const modeEntries = Object.entries(Modes);
-    const totalCount = modeEntries.length;
-    console.log(`Building ${totalCount} spritesheets...`);
     const start = performance.now();
 
-    const uncachedModes: Record<string, Record<string, number>> = {};
-    const imagePaths: string[] = [];
+    let builtCount = 0;
+    const totalCount = modeDefs.length;
+    console.log(`Building ${totalCount} spritesheet${totalCount === 1 ? "" : "s"}...`);
 
-    await Promise.all(modeEntries.map(async([mode, modeDef]) => {
+    const uncachedModes: Record<string, Record<string, number>> = {};
+
+    await Promise.all(modeDefs.map(async([mode, { spriteSheets }]) => {
         const pathMap = new Map<string, string>();
 
-        const files = modeDef.spriteSheets
+        const files = spriteSheets
             .flatMap(sheet => readDirectory(`public/img/game/${sheet}`))
             .filter(x => imagesMatcher.match(x));
 
@@ -68,7 +58,7 @@ async function buildSpritesheets(): Promise<void> {
 
         const fileMap: Record<string, number> = images.reduce((fileMap, file) => {
             const { mtime, ctime } = statSync(file);
-            fileMap[file] = Math.max(mtime.getTime(), ctime.getTime());
+            fileMap[file] = max(mtime.getTime(), ctime.getTime());
             return fileMap;
         }, {});
 
@@ -76,8 +66,7 @@ async function buildSpritesheets(): Promise<void> {
             const dataFile = path.join(cacheDir, mode, "data.json");
             if (!existsSync(dataFile)) return;
 
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const cacheData: CacheData = cache[mode] ?? JSON.parse(readFileSync(dataFile, "utf8")) as CacheData;
+            const cacheData: CacheData = cache[mode as SpritesheetNames] ?? JSON.parse(readFileSync(dataFile, "utf8")) as CacheData;
 
             const paths = Object.keys(fileMap);
             const cachedPaths = Object.keys(cacheData.fileMap);
@@ -110,27 +99,48 @@ async function buildSpritesheets(): Promise<void> {
             };
         } else {
             uncachedModes[mode] = fileMap;
-            imagePaths.push(...images);
         }
     }));
 
-    if (Object.keys(uncachedModes).length) {
-        console.log("\nLoading images...");
-        const start = performance.now();
-        const imageMap = new Map<string, Image>();
-        await Promise.all([...new Set(imagePaths)].map(async path => imageMap.set(path, await loadImage(path))));
-        console.log(`Loaded ${imagePaths.length} images in ${Math.round(performance.now() - start) / 1000}s\n`);
+    const sheetsToBuild = Object.entries(uncachedModes);
+    if (sheetsToBuild.length) {
+        imageMap.clear();
 
-        const uncachedModeEntries = Object.entries(uncachedModes);
-        for (const [mode, fileMap] of uncachedModeEntries) {
-            console.log(`Building spritesheet "${mode}" (${++builtCount}/${totalCount})...`);
+        for (const [mode, fileMap] of sheetsToBuild) {
+            const str = `Building spritesheet "${mode}" (${++builtCount}/${totalCount})...`;
+            const strLength = str.length;
+            process.stdout.write(str);
             const start = performance.now();
-            atlases[mode] = await createSpritesheets(mode, fileMap, imageMap, compilerOpts);
-            console.log(`Built spritesheet "${mode}" in ${Math.round(performance.now() - start) / 1000}s (${builtCount}/${totalCount})\n`);
+            atlases[mode] = await createSpritesheets(mode, fileMap, compilerOpts);
+            console.log(`\rBuilt spritesheet "${mode}" in ${Math.round(performance.now() - start) / 1000}s (${builtCount}/${totalCount})`.padEnd(strLength, " "));
         }
     }
 
     console.log(`Finished building spritesheets in ${Math.round(performance.now() - start) / 1000}s`);
+}
+
+const max = (a: number, b: number): number => a > b ? a : b;
+
+/**
+ * Recursively read a directory.
+ * @param dir The absolute path to the directory.
+ * @returns An array representation of the directory's contents.
+ */
+function readDirectory(dir: string): string[] {
+    let results: string[] = [];
+
+    for (const file of readdirSync(dir)) {
+        const filePath = resolve(dir, file);
+        const stat = statSync(filePath);
+
+        if (stat?.isDirectory()) {
+            results = results.concat(readDirectory(filePath));
+        } else {
+            results.push(filePath);
+        }
+    }
+
+    return results;
 }
 
 const highResVirtualModuleId = "virtual:spritesheets-jsons-high-res";
@@ -146,7 +156,24 @@ const resolveId = (id: string): string | undefined => {
     }
 };
 
-export function spritesheet(): Plugin[] {
+export function spritesheet(enableDevMode: boolean): Plugin[] {
+    let modeName: Mode | undefined;
+    if (enableDevMode) {
+        // truly awful hack to get the mode name from the server
+        // because importing the server config directly causes vite to have a stroke
+        const serverConfig = readFileSync(resolve(__dirname, "../../../server/src/config.ts"), "utf8");
+        const mode: Mode = serverConfig
+            .matchAll(/map: "(.*?)",/g)
+            .next()
+            .value?.[1]
+            .split(":")[0];
+        if (mode in Modes) {
+            modeName = mode;
+            modeDefs = [[mode, Modes[mode]]];
+        }
+    }
+    modeDefs ??= Object.entries(Modes) as typeof modeDefs;
+
     let watcher: FSWatcher;
     let config: ResolvedConfig;
 
@@ -222,7 +249,9 @@ export function spritesheet(): Plugin[] {
                     }, 500);
                 }
 
-                watcher = watch("public/img/game", {
+                const foldersToWatch = Modes[modeName ?? "" as Mode]?.spriteSheets.map(sheet => `public/img/game/${sheet}`) ?? "public/img/game";
+
+                watcher = watch(foldersToWatch, {
                     cwd: config.root,
                     ignoreInitial: true
                 })
