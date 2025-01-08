@@ -75,11 +75,11 @@ let teamSizeRotationIndex = 0;
 
 let maxTeamSizeSwitchCron: Cron | undefined;
 
-let mode = typeof Config.mode === "string" ? Config.mode : Config.mode.rotation[0];
+let map = typeof Config.map === "string" ? Config.map : Config.map.rotation[0];
 
-let modeRotationIndex = 0;
+let mapRotationIndex = 0;
 
-let modeSwitchCron: Cron | undefined;
+let mapSwitchCron: Cron | undefined;
 
 if (isMainThread) {
     // Initialize the server
@@ -92,7 +92,7 @@ if (isMainThread) {
                 maxTeamSize,
 
                 nextSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
-                mode: Config.mode,
+                mode: map as unknown as Mode, // TODO
                 protocolVersion: GameConstants.protocolVersion
             }));
     }).get("/api/getGame", async(res, req) => {
@@ -343,10 +343,10 @@ if (isMainThread) {
             });
         }
 
-        const _mode = Config.mode;
-        if (typeof _mode !== "string") {
-            modeSwitchCron = Cron(_mode.switchSchedule, () => {
-                mode = _mode.rotation[modeRotationIndex = (modeRotationIndex + 1) % _mode.rotation.length];
+        const _map = Config.map;
+        if (typeof _map === "object") {
+            mapSwitchCron = Cron(_map.switchSchedule, () => {
+                map = _map.rotation[mapRotationIndex = (mapRotationIndex + 1) % _map.rotation.length];
             });
         }
 

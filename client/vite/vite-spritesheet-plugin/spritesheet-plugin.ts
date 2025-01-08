@@ -29,6 +29,7 @@ if (!existsSync(cacheDir)) {
 
 const cache: Partial<Record<SpritesheetNames, CacheData>> = {};
 
+let modeName: Mode | undefined;
 let modeDefs: Array<[Mode, ModeDefinition]>;
 
 async function buildSpritesheets(): Promise<void> {
@@ -157,8 +158,9 @@ const resolveId = (id: string): string | undefined => {
 };
 
 export function spritesheet(enableDevMode: boolean): Plugin[] {
-    let modeName: Mode | undefined;
-    if (enableDevMode) {
+    const getModeName = (): void => {
+        if (!enableDevMode) return;
+
         // truly awful hack to get the mode name from the server
         // because importing the server config directly causes vite to have a stroke
         const serverConfig = readFileSync(resolve(__dirname, "../../../server/src/config.ts"), "utf8");
@@ -171,10 +173,13 @@ export function spritesheet(enableDevMode: boolean): Plugin[] {
             modeName = mode;
             modeDefs = [[mode, Modes[mode]]];
         }
-    }
-    modeDefs ??= Object.entries(Modes) as typeof modeDefs;
+
+        modeDefs ??= Object.entries(Modes) as typeof modeDefs;
+    };
+    getModeName();
 
     let watcher: FSWatcher;
+    let serverConfigWatcher: FSWatcher;
     let config: ResolvedConfig;
 
     const exportedAtlases: {
@@ -236,7 +241,7 @@ export function spritesheet(enableDevMode: boolean): Plugin[] {
                 config = cfg;
             },
             async configureServer(server) {
-                function reloadPage(): void {
+                const reloadPage = (): void => {
                     clearTimeout(buildTimeout);
 
                     buildTimeout = setTimeout(() => {
@@ -247,17 +252,32 @@ export function spritesheet(enableDevMode: boolean): Plugin[] {
                             if (module2 !== undefined) void server.reloadModule(module2);
                         }).catch(e => console.error(e));
                     }, 500);
-                }
+                };
 
-                const foldersToWatch = Modes[modeName ?? "" as Mode]?.spriteSheets.map(sheet => `public/img/game/${sheet}`) ?? "public/img/game";
+                const initWatcher = (): void => {
+                    const foldersToWatch = Modes[modeName ?? "" as Mode]?.spriteSheets.map(sheet => `public/img/game/${sheet}`) ?? "public/img/game";
 
-                watcher = watch(foldersToWatch, {
+                    watcher = watch(foldersToWatch, {
+                        cwd: config.root,
+                        ignoreInitial: true
+                    })
+                        .on("add", reloadPage)
+                        .on("change", reloadPage)
+                        .on("unlink", reloadPage);
+                };
+                initWatcher();
+
+                serverConfigWatcher = watch("../server/src/config.ts", {
                     cwd: config.root,
                     ignoreInitial: true
                 })
-                    .on("add", reloadPage)
-                    .on("change", reloadPage)
-                    .on("unlink", reloadPage);
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                    .on("change", async() => {
+                        getModeName();
+                        await watcher.close();
+                        initWatcher();
+                        reloadPage();
+                    });
 
                 const files = new Map<string, Buffer | string>();
 
@@ -293,6 +313,7 @@ export function spritesheet(enableDevMode: boolean): Plugin[] {
             },
             closeBundle: async() => {
                 await watcher.close();
+                await serverConfigWatcher.close();
             },
             resolveId,
             load
