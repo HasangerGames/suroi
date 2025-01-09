@@ -322,11 +322,15 @@ export async function setUpUI(game: Game): Promise<void> {
     });
 
     const joinGame = (): void => {
+        if (
+            game.gameStarted
+            || game.connecting
+            || selectedRegion === undefined // shouldn't happen
+        ) return;
+
         ui.splashOptions.addClass("loading");
         ui.loadingText.text(getTranslatedString("loading_finding_game"));
         // ui.cancelFindingGame.css("display", "");
-        // shouldn't happen
-        if (selectedRegion === undefined) return;
 
         const target = selectedRegion;
 

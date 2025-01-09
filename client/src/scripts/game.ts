@@ -126,6 +126,7 @@ export class Game {
         return this.objects.get(this.activePlayerID) as Player;
     }
 
+    connecting = false;
     gameStarted = false;
     gameOver = false;
     spectating = false;
@@ -266,17 +267,17 @@ export class Game {
     }
 
     connect(address: string): void {
-        this.error = false;
-
         if (this.gameStarted) return;
+
+        this.error = false;
+        this.connecting = true;
 
         this._socket = new WebSocket(address);
         this._socket.binaryType = "arraybuffer";
 
         this._socket.onopen = (): void => {
-            if (this.music) {
-                this.music.stop();
-            }
+            this.music?.stop();
+            this.connecting = false;
             this.gameStarted = true;
             this.gameOver = false;
             this.spectating = false;
@@ -377,12 +378,14 @@ export class Game {
 
         this._socket.onerror = (): void => {
             this.error = true;
+            this.connecting = false;
             ui.splashMsgText.html(getTranslatedString("msg_err_joining"));
             ui.splashMsg.show();
             resetPlayButtons();
         };
 
         this._socket.onclose = (): void => {
+            this.connecting = false;
             resetPlayButtons();
 
             const reason = this.disconnectReason || "Connection lost";
