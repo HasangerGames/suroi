@@ -134,17 +134,18 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private _maxHealth = GameConstants.player.defaultHealth;
     get maxHealth(): number { return this._maxHealth; }
     set maxHealth(maxHealth: number) {
-        if (this._maxHealth === maxHealth) return;
+        if (this._maxHealth !== maxHealth) {
+            this._maxHealth = maxHealth;
+            this.dirty.maxMinStats = true;
+            this._team?.setDirty();
+        }
 
-        this._maxHealth = maxHealth;
-        this.dirty.maxMinStats = true;
-        this._team?.setDirty();
         this.health = this._health;
     }
 
     private _health = this._maxHealth;
 
-    private _normalizedHealth = 0;
+    private _normalizedHealth = Numeric.remap(this._health, 0, this._maxHealth, 0, 1);
     get normalizedHealth(): number { return this._normalizedHealth; }
 
     get health(): number { return this._health; }
@@ -165,10 +166,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     get maxAdrenaline(): number { return this._maxAdrenaline; }
     set maxAdrenaline(maxAdrenaline: number) {
-        if (this._maxAdrenaline === maxAdrenaline) return;
+        if (this._maxAdrenaline !== maxAdrenaline) {
+            this._maxAdrenaline = maxAdrenaline;
+            this.dirty.maxMinStats = true;
+        }
 
-        this._maxAdrenaline = maxAdrenaline;
-        this.dirty.maxMinStats = true;
         this.adrenaline = this._adrenaline;
     }
 
@@ -176,10 +178,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     get minAdrenaline(): number { return this._minAdrenaline; }
     set minAdrenaline(minAdrenaline: number) {
         const min = Numeric.min(minAdrenaline, this._maxAdrenaline);
-        if (this._minAdrenaline === min) return;
+        if (this._minAdrenaline !== min) {
+            this._minAdrenaline = min;
+            this.dirty.maxMinStats = true;
+        }
 
-        this._minAdrenaline = min;
-        this.dirty.maxMinStats = true;
         this.adrenaline = this._adrenaline;
     }
 
@@ -1286,9 +1289,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             ...(
                 player.dirty.maxMinStats || forceInclude
                     ? { minMax: {
-                        maxHealth: player.maxHealth,
-                        minAdrenaline: player.minAdrenaline,
-                        maxAdrenaline: player.maxAdrenaline
+                        maxHealth: player._maxHealth,
+                        minAdrenaline: player._minAdrenaline,
+                        maxAdrenaline: player._maxAdrenaline
                     } }
                     : {}
             ),
