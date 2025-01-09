@@ -328,6 +328,7 @@ export async function setUpUI(game: Game): Promise<void> {
             || selectedRegion === undefined // shouldn't happen
         ) return;
 
+        game.connecting = true;
         ui.splashOptions.addClass("loading");
         ui.loadingText.text(getTranslatedString("loading_finding_game"));
         // ui.cancelFindingGame.css("display", "");
@@ -371,6 +372,8 @@ export async function setUpUI(game: Game): Promise<void> {
                     // Check again because there is a small chance that the create-team-menu element won't hide.
                     if (createTeamMenu.css("display") !== "none") createTeamMenu.hide(); // what the if condition doin
                 } else {
+                    game.connecting = false;
+
                     if (data.message !== undefined) {
                         const reportID = data.reportID || "No report ID provided.";
                         const message = getTranslatedString(`msg_punishment_${data.message}_reason`, { reason: data.reason ?? getTranslatedString("msg_no_reason") });
@@ -394,6 +397,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 }
             }
         ).fail(() => {
+            game.connecting = false;
             ui.splashMsgText.html(html`
                 ${getTranslatedString("msg_err_finding")}
                 <br>

@@ -267,10 +267,9 @@ export class Game {
     }
 
     connect(address: string): void {
-        if (this.gameStarted) return;
-
         this.error = false;
-        this.connecting = true;
+
+        if (this.gameStarted) return;
 
         this._socket = new WebSocket(address);
         this._socket.binaryType = "arraybuffer";
