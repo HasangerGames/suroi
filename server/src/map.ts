@@ -571,7 +571,7 @@ export class GameMap {
             >(obstacleData.idString);
             if (idString === NullString) continue;
             const gameMode = GameConstants.modeName;
-            if (obstacleData.modeVariant) {
+            if (obstacleData.outdoors) {
                 idString = `${idString}${ObstacleModeVariations[gameMode] ?? ""}`;
             }
 
@@ -600,7 +600,7 @@ export class GameMap {
                     locked: obstacleData.locked,
                     activated: obstacleData.activated
                 },
-                true
+                obstacleData.outdoors
             );
 
             if (
@@ -712,7 +712,7 @@ export class GameMap {
             locked?: boolean
             activated?: boolean
         } = {},
-        asPartOfBuilding?: boolean
+        ignoreHideOnMap?: boolean
     ): Obstacle | undefined {
         const def = Obstacles.reify(definition);
         layer ??= 0;
@@ -758,7 +758,7 @@ export class GameMap {
             activated
         );
 
-        if ((!def.hideOnMap || asPartOfBuilding) && !def.invisible && obstacle.layer === Layer.Ground) this._packet.objects.push(obstacle);
+        if ((!def.hideOnMap || ignoreHideOnMap) && !def.invisible && obstacle.layer === Layer.Ground) this._packet.objects.push(obstacle);
         this.game.grid.addObject(obstacle);
         this.game.updateObjects = true;
         this.game.pluginManager.emit("obstacle_did_generate", obstacle);
