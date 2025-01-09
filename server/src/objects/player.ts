@@ -116,6 +116,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             return;
         }
 
+        if (this._team === this.team) return;
+
         this.dirty.teammates = true;
         this._team = value;
     }
@@ -123,6 +125,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private _kills = 0;
     get kills(): number { return this._kills; }
     set kills(kills: number) {
+        if (this._kills === kills) return;
+
         this._kills = kills;
         this.game.updateKillLeader(this);
     }
@@ -130,6 +134,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private _maxHealth = GameConstants.player.defaultHealth;
     get maxHealth(): number { return this._maxHealth; }
     set maxHealth(maxHealth: number) {
+        if (this._maxHealth === maxHealth) return;
+
         this._maxHealth = maxHealth;
         this.dirty.maxMinStats = true;
         this._team?.setDirty();
@@ -143,7 +149,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     get health(): number { return this._health; }
     set health(health: number) {
-        this._health = Numeric.min(health, this._maxHealth);
+        const clamped = Numeric.min(health, this._maxHealth);
+        if (this._health === clamped) return;
+
+        this._health = clamped;
         this._team?.setDirty();
         this.dirty.health = true;
         this._normalizedHealth = Numeric.remap(this.health, 0, this.maxHealth, 0, 1);
@@ -156,6 +165,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     get maxAdrenaline(): number { return this._maxAdrenaline; }
     set maxAdrenaline(maxAdrenaline: number) {
+        if (this._maxAdrenaline === maxAdrenaline) return;
+
         this._maxAdrenaline = maxAdrenaline;
         this.dirty.maxMinStats = true;
         this.adrenaline = this._adrenaline;
@@ -164,7 +175,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private _minAdrenaline = 0;
     get minAdrenaline(): number { return this._minAdrenaline; }
     set minAdrenaline(minAdrenaline: number) {
-        this._minAdrenaline = Numeric.min(minAdrenaline, this._maxAdrenaline);
+        const min = Numeric.min(minAdrenaline, this._maxAdrenaline);
+        if (this._minAdrenaline === min) return;
+
+        this._minAdrenaline = min;
         this.dirty.maxMinStats = true;
         this.adrenaline = this._adrenaline;
     }
@@ -172,7 +186,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private _adrenaline = this._minAdrenaline;
     get adrenaline(): number { return this._adrenaline; }
     set adrenaline(adrenaline: number) {
-        this._adrenaline = Numeric.clamp(adrenaline, this._minAdrenaline, this._maxAdrenaline);
+        const clamped = Numeric.clamp(adrenaline, this._minAdrenaline, this._maxAdrenaline);
+        if (this._adrenaline === clamped) return;
+
+        this._adrenaline = clamped;
         this.dirty.adrenaline = true;
         this._normalizedAdrenaline = Numeric.remap(this.adrenaline, this.minAdrenaline, this.maxAdrenaline, 0, 1);
     }
@@ -181,6 +198,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     get sizeMod(): number { return this._sizeMod; }
     set sizeMod(size: number) {
         if (this._sizeMod === size) return;
+
         this._sizeMod = size;
         this._hitbox = Player.baseHitbox.transform(this._hitbox.position, size);
         this.dirty.size = true;
