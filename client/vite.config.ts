@@ -1,11 +1,10 @@
 import { existsSync, rmSync } from "fs";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
-import { defineConfig, mergeConfig } from "vite";
+import { defineConfig } from "vite";
 import pkg from "../package.json";
 import devConfig from "./vite/vite.dev";
 import prodConfig from "./vite/vite.prod";
-import commonConfig from "./vite/vite.common";
 
 const DIRNAME = dirname(fileURLToPath(import.meta.url));
 export default defineConfig(({ command, mode }) => {
@@ -20,5 +19,5 @@ export default defineConfig(({ command, mode }) => {
         if (existsSync(resolve(DIRNAME, "./dist"))) { rmSync(resolve(DIRNAME, "./dist"), { recursive: true, force: true }); }
     }
 
-    return mergeConfig(commonConfig(), command === "serve" ? devConfig() : prodConfig());
+    return command === "serve" ? devConfig : prodConfig;
 });

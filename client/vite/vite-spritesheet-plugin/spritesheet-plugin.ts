@@ -29,10 +29,9 @@ if (!existsSync(cacheDir)) {
 
 const cache: Partial<Record<SpritesheetNames, CacheData>> = {};
 
-let modeName: Mode | undefined;
-let modeDefs: Array<[Mode, ModeDefinition]>;
-
-async function buildSpritesheets(): Promise<void> {
+async function buildSpritesheets(
+    modeDefs: ReadonlyArray<readonly [Mode, ModeDefinition]>
+): Promise<void> {
     const start = performance.now();
 
     let builtCount = 0;
@@ -67,7 +66,7 @@ async function buildSpritesheets(): Promise<void> {
             const dataFile = path.join(cacheDir, mode, "data.json");
             if (!existsSync(dataFile)) return;
 
-            const cacheData: CacheData = cache[mode as SpritesheetNames] ?? JSON.parse(readFileSync(dataFile, "utf8")) as CacheData;
+            const cacheData: CacheData = cache[mode satisfies SpritesheetNames] ?? JSON.parse(readFileSync(dataFile, "utf8")) as CacheData;
 
             const paths = Object.keys(fileMap);
             const cachedPaths = Object.keys(cacheData.fileMap);
@@ -86,7 +85,7 @@ async function buildSpritesheets(): Promise<void> {
         if (cacheData) {
             console.log(`Spritesheet "${mode}" is cached, skipping (${++builtCount}/${totalCount})`);
 
-            const loadFromCache = async(files: string[]): Promise<Atlas[]> => Promise.all(
+            const loadFromCache = async(files: readonly string[]): Promise<Atlas[]> => Promise.all(
                 files.map(async file => ({
                     json: JSON.parse(await readFile(path.join(cacheDir, mode, `${file}.json`), "utf8")) as SpritesheetData,
                     image: await readFile(path.join(cacheDir, mode, `${file}.png`))
@@ -158,7 +157,10 @@ const resolveId = (id: string): string | undefined => {
 };
 
 export function spritesheet(enableDevMode: boolean): Plugin[] {
-    const getModeName = (): void => {
+    let modeName: Mode | undefined;
+    let modeDefs: ReadonlyArray<readonly [Mode, ModeDefinition]>;
+
+    const updateModeTarget = (): void => {
         if (enableDevMode) {
             // truly awful hack to get the mode name from the server
             // because importing the server config directly causes vite to have a stroke
@@ -168,6 +170,7 @@ export function spritesheet(enableDevMode: boolean): Plugin[] {
                 .next()
                 .value?.[1]
                 .split(":")[0];
+
             if (mode in Modes) {
                 modeName = mode;
                 modeDefs = [[mode, Modes[mode]]];
@@ -175,7 +178,7 @@ export function spritesheet(enableDevMode: boolean): Plugin[] {
         }
         modeDefs ??= Object.entries(Modes) as typeof modeDefs;
     };
-    getModeName();
+    updateModeTarget();
 
     let watcher: FSWatcher;
     let serverConfigWatcher: FSWatcher;
@@ -205,19 +208,15 @@ export function spritesheet(enableDevMode: boolean): Plugin[] {
             name: `${PLUGIN_NAME}:build`,
             apply: "build",
             async buildStart() {
-                await buildSpritesheets();
+                await buildSpritesheets(modeDefs);
 
+                const { low, high } = exportedAtlases;
                 for (const atlasId in atlases) {
-                    // seriously eslint stfu
-                    /*
-                        eslint-disable
-                        @typescript-eslint/no-unsafe-assignment,
-                        @typescript-eslint/no-unsafe-call,
-                        @typescript-eslint/no-unsafe-member-access,
-                        @typescript-eslint/no-unsafe-return
-                    */
-                    exportedAtlases.high[atlasId] = atlases[atlasId].high.map(sheet => sheet.json);
-                    exportedAtlases.low[atlasId] = atlases[atlasId].low.map(sheet => sheet.json);
+                    const atlas = atlases[atlasId as keyof typeof atlases];
+                    if (atlas === undefined) continue;
+
+                    high[atlasId] = atlas.high.map(sheet => sheet.json);
+                    low[atlasId] = atlas.low.map(sheet => sheet.json);
                 }
             },
             generateBundle() {
@@ -254,7 +253,9 @@ export function spritesheet(enableDevMode: boolean): Plugin[] {
                 };
 
                 const initWatcher = (): void => {
-                    const foldersToWatch = Modes[modeName ?? "" as Mode]?.spriteSheets.map(sheet => `public/img/game/${sheet}`) ?? "public/img/game";
+                    const foldersToWatch = modeName === undefined
+                        ? "public/img/game"
+                        : Modes[modeName].spriteSheets.map(sheet => `public/img/game/${sheet}`);
 
                     watcher = watch(foldersToWatch, {
                         cwd: config.root,
@@ -272,7 +273,7 @@ export function spritesheet(enableDevMode: boolean): Plugin[] {
                 })
                     // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     .on("change", async() => {
-                        getModeName();
+                        updateModeTarget();
                         await watcher.close();
                         initWatcher();
                         reloadPage();
@@ -281,12 +282,15 @@ export function spritesheet(enableDevMode: boolean): Plugin[] {
                 const files = new Map<string, Buffer | string>();
 
                 async function buildSheets(): Promise<void> {
-                    await buildSpritesheets();
+                    await buildSpritesheets(modeDefs);
 
                     const { low, high } = exportedAtlases;
                     for (const atlasId in atlases) {
-                        high[atlasId] = atlases[atlasId].high.map(sheet => sheet.json);
-                        low[atlasId] = atlases[atlasId].low.map(sheet => sheet.json);
+                        const atlas = atlases[atlasId as keyof typeof atlases];
+                        if (atlas === undefined) continue;
+
+                        high[atlasId] = atlas.high.map(sheet => sheet.json);
+                        low[atlasId] = atlas.low.map(sheet => sheet.json);
                     }
 
                     files.clear();
