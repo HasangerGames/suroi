@@ -599,7 +599,8 @@ export class GameMap {
                     puzzlePiece: obstacleData.puzzlePiece,
                     locked: obstacleData.locked,
                     activated: obstacleData.activated
-                }
+                },
+                true
             );
 
             if (
@@ -710,7 +711,8 @@ export class GameMap {
             puzzlePiece?: string | boolean
             locked?: boolean
             activated?: boolean
-        } = {}
+        } = {},
+        asPartOfBuilding?: boolean
     ): Obstacle | undefined {
         const def = Obstacles.reify(definition);
         layer ??= 0;
@@ -756,7 +758,7 @@ export class GameMap {
             activated
         );
 
-        if (!def.hideOnMap && !def.invisible && obstacle.layer === Layer.Ground) this._packet.objects.push(obstacle);
+        if ((!def.hideOnMap || asPartOfBuilding) && !def.invisible && obstacle.layer === Layer.Ground) this._packet.objects.push(obstacle);
         this.game.grid.addObject(obstacle);
         this.game.updateObjects = true;
         this.game.pluginManager.emit("obstacle_did_generate", obstacle);
