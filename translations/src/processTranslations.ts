@@ -77,12 +77,17 @@ This file is a report of all errors and missing keys in the translation files of
 }
 
 export async function buildTranslations(): Promise<void> {
-    const languages: Record<string, Record<string, string>> = {};
-
-    await Promise.all(
-        files.map(async file => {
-            languages[file.slice(0, -".hjson".length)] = parse(await readFile(LANGUAGES_DIRECTORY + file, "utf8")) as Record<string, string>;
-        })
+    const languages = Object.fromEntries(
+        (
+            await Promise.all(
+                files.map(async file =>
+                    [
+                        file.slice(0, -".hjson".length),
+                        parse(await readFile(LANGUAGES_DIRECTORY + file, "utf8")) as Record<string, string>
+                    ] as const
+                )
+            )
+        ).sort(([nameA], [nameB]) => nameA < nameB ? -1 : 1)
     );
 
     const manifest: TranslationsManifest = {};
@@ -98,12 +103,12 @@ export async function buildTranslations(): Promise<void> {
             percentage: content.percentage ?? `${Math.round(100 * calculateValidRatio(Object.keys(content)))}%`
         };
 
-        filePromises.push(writeFile(`../../client/public/translations/${language}.json`, JSON.stringify(content)));
+        filePromises.push(writeFile(`../../client/public/translations/${language}.json`, JSON.stringify(content, null, 2)));
     }
 
     await Promise.all([
         ...filePromises,
-        writeFile("../../client/src/translationsManifest.json", JSON.stringify(manifest))
+        writeFile("../../client/src/translationsManifest.json", JSON.stringify(manifest, null, 2))
     ]);
 }
 
@@ -116,7 +121,7 @@ export async function buildTypings(keys: readonly string[]): Promise<void> {
         ...Guns.definitions.map(({ idString }) => idString),
         ...Melees.definitions.map(({ idString }) => idString),
         ...Throwables.definitions.map(({ idString }) => idString)
-    ].map(key => `"${key}"`).join("|");
+    ].map(key => `"${key}"`).join("|\n");
     buffer += ";";
 
     await writeFile("../../client/src/typings/translations.ts", buffer);
