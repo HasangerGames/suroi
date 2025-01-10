@@ -2606,6 +2606,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: RectangleHitbox.fromRect(12.83, 1.9, Vec.create(0, -0.4)),
                 rotationMode: RotationMode.Limited,
                 zIndex: ZIndexes.ObstaclesLayer3,
+                allowFlyover: FlyoverPref.Never, // LMAO no
                 frames: {
                     particle: "metal_particle"
                 }
