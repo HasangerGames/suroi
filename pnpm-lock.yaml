@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      cum:
+        specifier: ^1.5.0
+        version: 1.5.0
     devDependencies:
       '@eslint/js':
         specifier: ^9.17.0
@@ -1734,6 +1738,9 @@ packages:
   csso@5.0.5:
     resolution: {integrity: sha512-0LrrStPOdJj+SPCCrGhzryycLjwcgUSHBtxNA8aIDxf0GLsRh1cKYhB00Gd1lDOS4yGH69+SNn13+TWbVHETFQ==}
     engines: {node: ^10 || ^12.20.0 || ^14.13.0 || >=15.0.0, npm: '>=7.0.0'}
+
+  cum@1.5.0:
+    resolution: {integrity: sha512-J/DN6wAUxfJcQM9c021Y2wXETzIjCgOWs44xhY95CJE1ob7Y2zbq4/SuxsM9/oK+sqMMrGhvcTK64DtEy61J3g==}
 
   debug@4.4.0:
     resolution: {integrity: sha512-6WTZ/IxCY/T6BALoZHaE4ctp9xm+Z5kY/pzYaCHRFeyVhojxlrm+46y68HA6hr0TcwEssoxNiDEUJQjfPZ/RYA==}
@@ -4891,6 +4898,8 @@ snapshots:
   csso@5.0.5:
     dependencies:
       css-tree: 2.2.1
+
+  cum@1.5.0: {}
 
   debug@4.4.0(supports-color@5.5.0):
     dependencies:
