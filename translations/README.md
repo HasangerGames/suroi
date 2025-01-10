@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Thu, 09 Jan 2025 00:51:31 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Fri, 10 Jan 2025 20:43:31 GMT
 
 ## 🇦🇱 Shqip (88% Complete) - ab.hjson
 
@@ -503,7 +503,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 
-## 🇨🇳 中文（简体） (98% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -511,10 +511,5 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `msg_punishment_warn_agreement` is not defined
 - Key `wiki` is not defined
-- Key `settings_gyro_angle` is not defined
-- Key `settings_haptics` is not defined
-- Key `msg_your_team_eliminated` is not defined
-- Key `msg_the_team_eliminated` is not defined
 
