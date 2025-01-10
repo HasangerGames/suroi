@@ -435,6 +435,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     readonly perks = new ServerPerkManager(this, Perks.defaults);
     perkUpdateMap?: Map<UpdatablePerkDefinition, number>; // key = perk, value = last updated
 
+    private _pingSeq = 0;
+
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
 
@@ -1286,6 +1288,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         packet.playerData = {
+            pingSeq: this._pingSeq,
             ...(
                 player.dirty.maxMinStats || forceInclude
                     ? { minMax: {
@@ -2435,6 +2438,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             ...packet.movement,
             ...(packet.isMobile ? packet.mobile : { moving: false, angle: 0 })
         };
+
+        this._pingSeq = packet.pingSeq;
 
         const wasAttacking = this.attacking;
         const isAttacking = packet.attacking;

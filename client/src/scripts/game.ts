@@ -14,7 +14,6 @@ import { MapPacket } from "@common/packets/mapPacket";
 import { type InputPacket, type OutputPacket } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { PickupPacket } from "@common/packets/pickupPacket";
-import { PingPacket } from "@common/packets/pingPacket";
 import { ReportPacket } from "@common/packets/reportPacket";
 import { UpdatePacket, type UpdatePacketDataOut } from "@common/packets/updatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
@@ -57,6 +56,7 @@ import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, EMOTE_SLOTS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
+import { Graph } from "./utils/graph/graph";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
 
@@ -133,7 +133,6 @@ export class Game {
     spectating = false;
     error = false;
 
-    lastPingDate = 0;
 
     disconnectReason = "";
 
@@ -224,7 +223,8 @@ export class Game {
             pixi.stage.addChild(
                 game.camera.container,
                 game.map.container,
-                game.map.mask
+                game.map.mask,
+                game.netGraph.container
             );
 
             game.map.visible = !game.console.getBuiltInCVar("cv_minimap_minimized");
@@ -296,8 +296,6 @@ export class Game {
                 ui.joystickContainer.show();
             }
 
-            this.sendPacket(PingPacket.create());
-            this.lastPingDate = Date.now();
 
             let skin: typeof defaultClientCVars["cv_loadout_skin"];
             const joinPacket: JoinPacketCreation = {
@@ -426,14 +424,6 @@ export class Game {
             case packet instanceof KillFeedPacket:
                 this.uiManager.processKillFeedPacket(packet.output);
                 break;
-            case packet instanceof PingPacket: {
-                this.uiManager.debugReadouts.ping.text(`${Date.now() - this.lastPingDate} ms`);
-                setTimeout((): void => {
-                    this.sendPacket(PingPacket.create());
-                    this.lastPingDate = Date.now();
-                }, 5000);
-                break;
-            }
             case packet instanceof ReportPacket: {
                 const ui = this.uiManager.ui;
                 const { output } = packet;
@@ -682,6 +672,17 @@ export class Game {
      * Otherwise known as "time since last update", in milliseconds
      */
     get serverDt(): number { return this._serverDt; }
+
+    private _pingSeq = -1;
+
+    private readonly _seqsSent: Array<number | undefined> = [];
+    get seqsSent(): Array<number | undefined> { return this._seqsSent; }
+
+    takePingSeq(): number {
+        const n = this._pingSeq = (this._pingSeq + 1) % 128;
+        this._seqsSent[n] = Date.now();
+        return n;
+    }
 
     processUpdate(updateData: UpdatePacketDataOut): void {
         const now = Date.now();

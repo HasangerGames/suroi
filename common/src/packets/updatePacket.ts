@@ -30,6 +30,7 @@ interface ObjectPartialData {
 function serializePlayerData(
     strm: SuroiByteStream,
     {
+        pingSeq,
         minMax,
         health,
         adrenaline,
@@ -76,6 +77,8 @@ function serializePlayerData(
         hasPerks,
         hasTeamID
     );
+
+    strm.writeUint8(pingSeq);
 
     if (hasMinMax) {
         const { maxHealth, minAdrenaline, maxAdrenaline } = minMax;
@@ -279,7 +282,9 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         hasTeamID
     ] = strm.readBooleanGroup2();
 
-    const data: SDeepMutable<PlayerData> = {};
+    const data: SDeepMutable<PlayerData> = {
+        pingSeq: strm.readUint8()
+    };
 
     if (hasMinMax) {
         data.minMax = {
@@ -478,6 +483,7 @@ export type EmoteSerialization = {
 };
 
 export type PlayerData = {
+    readonly pingSeq: number
     readonly minMax?: {
         readonly maxHealth: number
         readonly minAdrenaline: number

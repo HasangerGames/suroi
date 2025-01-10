@@ -615,6 +615,7 @@ export class UIManager {
 
     updateUI(data: PlayerData): void {
         const {
+            pingSeq,
             minMax,
             health,
             adrenaline,
@@ -627,6 +628,12 @@ export class UIManager {
             activeC4s,
             perks
         } = data;
+
+        const sentTime = this.game.seqsSent[pingSeq];
+        if (sentTime !== undefined) {
+            this.debugReadouts.ping.text(`${Date.now() - sentTime} ms`);
+            this.game.seqsSent[pingSeq] = undefined;
+        }
 
         if (id !== undefined) this.game.activePlayerID = id.id;
 

@@ -11,7 +11,6 @@ import { JoinedPacket } from "@common/packets/joinedPacket";
 import { KillFeedPacket, type KillFeedPacketData } from "@common/packets/killFeedPacket";
 import { type InputPacket, type OutputPacket } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
-import { PingPacket } from "@common/packets/pingPacket";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { type PingSerialization } from "@common/packets/updatePacket";
 import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
@@ -262,21 +261,13 @@ export class Game implements GameData {
                 this.activatePlayer(player, packet.output);
                 break;
             case packet instanceof PlayerInputPacket:
-                // Ignore input packets from players that haven't finished joining, dead players, and if the game is over
+                // Ignore input packets from players that haven't finished joining, dead players, or if the game is over
                 if (!player.joined || player.dead || player.game.over) return;
                 player.processInputs(packet.output);
                 break;
             case packet instanceof SpectatePacket:
                 player.spectate(packet.output);
                 break;
-            case packet instanceof PingPacket: {
-                if (Date.now() - player.lastPingTime < 4000) return;
-                player.lastPingTime = Date.now();
-                const stream = new PacketStream(new ArrayBuffer(8));
-                stream.serializeServerPacket(PingPacket.create());
-                player.sendData(stream.getBuffer());
-                break;
-            }
         }
     }
 

@@ -8,7 +8,6 @@ import { KillFeedPacket } from "./killFeedPacket";
 import { MapPacket } from "./mapPacket";
 import { type InputPacket, type OutputPacket, type PacketTemplate } from "./packet";
 import { PickupPacket } from "./pickupPacket";
-import { PingPacket } from "./pingPacket";
 import { ReportPacket } from "./reportPacket";
 import { SpectatePacket } from "./spectatePacket";
 import { UpdatePacket } from "./updatePacket";
@@ -39,7 +38,6 @@ class PacketRegister {
 
 export const ClientToServerPackets = new PacketRegister(
     PlayerInputPacket,
-    PingPacket,
     JoinPacket,
     SpectatePacket
 );
@@ -48,7 +46,6 @@ export const ServerToClientPackets = new PacketRegister(
     UpdatePacket,
     KillFeedPacket,
     PickupPacket,
-    PingPacket,
     JoinedPacket,
     MapPacket,
     GameOverPacket,
