@@ -48,6 +48,7 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>("Emotes", [
         "Greedy Face",
         "Creepy Clown",
         "Lying Face",
+        "Nerd Face",
         "Skull",
         "Melting Face",
         "Grimacing Face",
