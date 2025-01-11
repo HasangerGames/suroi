@@ -215,10 +215,10 @@ const randomToilet = {
 
 const ContainerTints = {
     white: 0xc0c0c0,
-    red: 0xa32900,
-    green: 0x00a30e,
-    blue: 0x005fa3,
-    yellow: 0xcccc00
+    red: 0xa33229,
+    green: 0x419e2e,
+    blue: 0x2e6e9e,
+    yellow: 0xc1b215
 };
 
 const ContainerWallOutlineTints = {
