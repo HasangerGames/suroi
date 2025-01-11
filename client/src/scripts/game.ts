@@ -188,10 +188,10 @@ export class Game {
                 stroke: { color: "blue" },
                 background: { stroke: { color: "transparent" } }
             })
-                .addLabel(({ last }) => `out:${bytes(last).padStart(8)}`, undefined, { y: -17 })
-                .addLabel(({ mean }) => `avg:${bytes(mean).padStart(8)}`, undefined, { y: -17 })
-                .addLabel(({ valueThroughput: val }) => `${bytes(val).padStart(5)}/s`, undefined, { y: -17 })
-                .addLabel(({ countThroughput: cnt }) => `${cnt.toFixed(2).padStart(5)}/s`, undefined, { y: -17 }),
+                .addLabel(({ last }) => `out:${bytes(last).padStart(8)}`, { style: { fill: "lightblue" } }, { y: -17 })
+                .addLabel(({ mean }) => `avg:${bytes(mean).padStart(8)}`, { style: { fill: "lightblue" } }, { y: -17 })
+                .addLabel(({ valueThroughput: val }) => `${bytes(val).padStart(5)}/s`, { style: { fill: "lightblue" } }, { y: -17 })
+                .addLabel(({ countThroughput: cnt }) => `${cnt.toFixed(2).padStart(5)}/s`, { style: { fill: "lightblue" } }, { y: -17 }),
 
             ping: new SingleGraph({
                 ...Vec.addComponent(anchor, 0, 205),
@@ -200,9 +200,9 @@ export class Game {
                 stroke: { color: "lime" },
                 background: { stroke: { color: "transparent" } }
             })
-                .addLabel(({ last }) => `ping:${time(last).padStart(9)}`, undefined, { y: -34 })
-                .addLabel(({ mean }) => `avg:${time(mean).padStart(9)}`, undefined, { y: -34 })
-                .addLabel(() => `lerp: ${time(this.serverDt).padStart(5)}`, undefined, { y: -34 }),
+                .addLabel(({ last }) => `ping:${time(last).padStart(9)}`, { style: { fill: "lightgreen" } }, { y: -34 })
+                .addLabel(({ mean }) => `avg:${time(mean).padStart(9)}`, { style: { fill: "lightgreen" } }, { y: -34 })
+                .addLabel(() => `lerp: ${time(this.serverDt).padStart(5)}`, { style: { fill: "lightgreen" } }, { y: -34 }),
 
             fps: new SingleGraph({
                 ...Vec.addComponent(anchor, 0, 225),
@@ -211,9 +211,9 @@ export class Game {
                 stroke: { color: "red" },
                 background: { stroke: { color: "transparent" } }
             })
-                .addLabel(({ last }) => `fps : ${last.toFixed(2).padStart(5)}`, undefined, { y: -38 })
-                .addLabel(({ min }) => `min: ${min.toFixed(2).padStart(5)}`, undefined, { y: -38 })
-                .addLabel(({ max }) => `max: ${max.toFixed(2).padStart(5)}`, undefined, { y: -38 })
+                .addLabel(({ last }) => `fps : ${last.toFixed(2).padStart(5)}`, { style: { fill: "pink" } }, { y: -38 })
+                .addLabel(({ min }) => `min: ${min.toFixed(2).padStart(5)}`, { style: { fill: "pink" } }, { y: -38 })
+                .addLabel(({ max }) => `max: ${max.toFixed(2).padStart(5)}`, { style: { fill: "pink" } }, { y: -38 })
         });
     })();
 

@@ -176,7 +176,6 @@ export abstract class BaseGraph<DataType extends readonly any[], Stats extends o
         this.title.anchor.y = 1;
 
         this.container.addChild(this.gfx, this.title);
-        this.clear();
     }
 
     addLabel(
@@ -302,9 +301,10 @@ export abstract class SVSGraph<
     _start = -1;
 
     override addEntry(...data: DataType): void {
-        const stats = this.stats;
+        const stats = this._stats;
 
         const [val] = data;
+        stats.last = val;
 
         const now = Date.now();
         const histLength = this._history.push([now, ...data]);
@@ -317,6 +317,8 @@ export abstract class SVSGraph<
             stats.sum = stats.sum + val - rm;
 
             if (rm === stats.min || rm === stats.max) {
+                stats.max = -Infinity;
+                stats.min = Infinity;
                 // only re-traverse the whole array if the removed value is an extremum
                 // if it's not, then that means that both the min and max are still
                 // in the collection, meaning we just need to compare it to data
@@ -386,7 +388,7 @@ export class SingleGraph extends SVSGraph<readonly [number]> {
 
         const spaceBetween = this.width / (this.maxHistory - 1);
         const history = this._history;
-        const resizeConst = this._height / this.stats.max;
+        const resizeConst = this._height / this._stats.max;
 
         switch (this._renderStyle) {
             case "line": {
@@ -517,7 +519,7 @@ export class SegmentedBarGraph extends SVSGraph<readonly [number, readonly numbe
         const historyLength = history.length;
 
         let x = 0;
-        const resizeConst = this._height / this.stats.max;
+        const resizeConst = this._height / this._stats.max;
         for (let i = 0; i < historyLength; i++) {
             const height = history[i][1] * resizeConst;
             x = spaceBetween * i;
