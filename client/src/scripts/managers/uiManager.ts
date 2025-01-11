@@ -631,7 +631,9 @@ export class UIManager {
 
         const sentTime = this.game.seqsSent[pingSeq];
         if (sentTime !== undefined) {
-            this.debugReadouts.ping.text(`${Date.now() - sentTime} ms`);
+            const ping = Date.now() - sentTime;
+            this.debugReadouts.ping.text(`${ping} ms`);
+            this.game.netGraph.ping.addEntry(ping);
             this.game.seqsSent[pingSeq] = undefined;
         }
 

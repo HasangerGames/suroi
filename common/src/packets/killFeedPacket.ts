@@ -5,7 +5,7 @@ import { type MeleeDefinition } from "../definitions/melees";
 import { type ThrowableDefinition } from "../definitions/throwables";
 import { GlobalRegistrar } from "../utils/definitionRegistry";
 import { type DeepMutable, type Mutable } from "../utils/misc";
-import { createPacket } from "./packet";
+import { createPacket, DataSplitTypes } from "./packet";
 
 export type KillDamageSources = GunDefinition
     | MeleeDefinition
@@ -412,7 +412,8 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
         stream.index = curIndex;
     },
 
-    deserialize(stream) {
+    deserialize(stream, [saveIndex, recordTo]) {
+        saveIndex();
         const kfData = stream.readUint8();
         const messageType = (kfData & 3) as KillfeedMessageType;
 
@@ -468,6 +469,7 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
                 break;
         }
 
+        recordTo(DataSplitTypes.Killfeed);
         return data as KillFeedPacketData;
     }
 });

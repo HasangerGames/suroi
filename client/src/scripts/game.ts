@@ -11,7 +11,7 @@ import { JoinedPacket, type JoinedPacketData } from "@common/packets/joinedPacke
 import { JoinPacket, type JoinPacketCreation } from "@common/packets/joinPacket";
 import { KillFeedPacket } from "@common/packets/killFeedPacket";
 import { MapPacket } from "@common/packets/mapPacket";
-import { type InputPacket, type OutputPacket } from "@common/packets/packet";
+import { type DataSplit, type DataSplitTypes, type InputPacket, type OutputPacket } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { PickupPacket } from "@common/packets/pickupPacket";
 import { ReportPacket } from "@common/packets/reportPacket";
@@ -27,7 +27,7 @@ import { randomFloat, randomVector } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { sound, type Sound } from "@pixi/sound";
 import $ from "jquery";
-import { Application, Color, Container } from "pixi.js";
+import { Application, Color, Container, type ColorSource } from "pixi.js";
 import "pixi.js/prepare";
 import { getTranslatedString, initTranslation } from "../translations";
 import { type TranslationKeys } from "../typings/translations";
@@ -56,7 +56,7 @@ import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, EMOTE_SLOTS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
-import { Graph } from "./utils/graph/graph";
+import { SegmentedBarGraph, SingleGraph } from "./utils/graph/graph";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
 
@@ -133,7 +133,6 @@ export class Game {
     spectating = false;
     error = false;
 
-
     disconnectReason = "";
 
     readonly uiManager = new UIManager(this);
@@ -147,6 +146,76 @@ export class Game {
 
     readonly gasRender = new GasRender(PIXI_SCALE);
     readonly gas = new Gas(this);
+
+    readonly netGraph = (() => {
+        const makeFormatter = ([big, small]: readonly [big: string, small: string], cutoff = 1000, fixedPlaces = 2) =>
+            (n: number): string => n > cutoff
+                ? `${(n / 1000).toFixed(fixedPlaces)} ${big}`
+                : `${n.toFixed(fixedPlaces)} ${small}`;
+
+        const bytes = makeFormatter(["kB", "B"], 100);
+        const time = makeFormatter(["s", "ms"]);
+
+        const anchor = Vec.create(5, 300);
+
+        return Object.freeze({
+            receiving: new SegmentedBarGraph({
+                ...anchor,
+                fill: { color: "white", alpha: 0.5 },
+                stroke: { color: "white" },
+                background: { stroke: { color: "transparent" } },
+                segments: (
+                    [
+                        ["player data", "red"],
+                        ["other players", "lime"],
+                        ["obstacles", "blue"],
+                        ["loot", "yellow"],
+                        ["particles", "magenta"],
+                        ["objects", "orange"],
+                        ["killfeed", "black"]
+                    ] satisfies Record<DataSplitTypes, readonly [string, ColorSource]>
+                ).map(([name, color]) => ({ name, color, alpha: 0.5 }))
+            })
+                .addLabel(({ last }) => `in :${bytes(last).padStart(8)}`)
+                .addLabel(({ mean }) => `avg:${bytes(mean).padStart(8)}`)
+                .addLabel(({ valueThroughput: val }) => `${bytes(val).padStart(5)}/s`)
+                .addLabel(({ countThroughput: cnt }) => `${cnt.toFixed(2).padStart(5)}/s`),
+
+            sending: new SingleGraph({
+                ...Vec.addComponent(anchor, 0, 135),
+                height: 30,
+                fill: { color: "blue" },
+                stroke: { color: "blue" },
+                background: { stroke: { color: "transparent" } }
+            })
+                .addLabel(({ last }) => `out:${bytes(last).padStart(8)}`, undefined, { y: -17 })
+                .addLabel(({ mean }) => `avg:${bytes(mean).padStart(8)}`, undefined, { y: -17 })
+                .addLabel(({ valueThroughput: val }) => `${bytes(val).padStart(5)}/s`, undefined, { y: -17 })
+                .addLabel(({ countThroughput: cnt }) => `${cnt.toFixed(2).padStart(5)}/s`, undefined, { y: -17 }),
+
+            ping: new SingleGraph({
+                ...Vec.addComponent(anchor, 0, 205),
+                height: 15,
+                fill: { color: "lime" },
+                stroke: { color: "lime" },
+                background: { stroke: { color: "transparent" } }
+            })
+                .addLabel(({ last }) => `ping:${time(last).padStart(9)}`, undefined, { y: -34 })
+                .addLabel(({ mean }) => `avg:${time(mean).padStart(9)}`, undefined, { y: -34 })
+                .addLabel(() => `lerp: ${time(this.serverDt).padStart(5)}`, undefined, { y: -34 }),
+
+            fps: new SingleGraph({
+                ...Vec.addComponent(anchor, 0, 225),
+                height: 15,
+                fill: { color: "red" },
+                stroke: { color: "red" },
+                background: { stroke: { color: "transparent" } }
+            })
+                .addLabel(({ last }) => `fps : ${last.toFixed(2).padStart(5)}`, undefined, { y: -38 })
+                .addLabel(({ min }) => `min: ${min.toFixed(2).padStart(5)}`, undefined, { y: -38 })
+                .addLabel(({ max }) => `max: ${max.toFixed(2).padStart(5)}`, undefined, { y: -38 })
+        });
+    })();
 
     music!: Sound;
 
@@ -219,12 +288,21 @@ export class Game {
                 }));
             });
 
-            pixi.ticker.add(game.render.bind(game));
+            pixi.ticker.add(() => {
+                game.render();
+
+                if (game.console.getBuiltInCVar("pf_show_fps")) {
+                    const fps = Math.round(game.pixi.ticker.FPS);
+                    game.uiManager.debugReadouts.fps.text(`${fps} fps`);
+                    game.netGraph.fps.addEntry(fps);
+                }
+            });
+
             pixi.stage.addChild(
                 game.camera.container,
                 game.map.container,
                 game.map.mask,
-                game.netGraph.container
+                ...Object.values(game.netGraph).map(g => g.container)
             );
 
             game.map.visible = !game.console.getBuiltInCVar("cv_minimap_minimized");
@@ -233,12 +311,6 @@ export class Game {
 
             pixi.renderer.on("resize", () => game.resize());
             game.resize();
-
-            setInterval(() => {
-                if (game.console.getBuiltInCVar("pf_show_fps")) {
-                    game.uiManager.debugReadouts.fps.text(`${Math.round(game.pixi.ticker.FPS)} fps`);
-                }
-            }, 500);
         };
 
         void Promise.all([
@@ -284,6 +356,8 @@ export class Game {
             this.spectating = false;
             this.disconnectReason = "";
 
+            for (const graph of Object.values(this.netGraph)) graph.clear();
+
             if (!UI_DEBUG_MODE) {
                 clearTimeout(this.uiManager.gameOverScreenTimeout);
                 const ui = this.uiManager.ui;
@@ -295,7 +369,6 @@ export class Game {
                 ui.spectatingContainer.hide();
                 ui.joystickContainer.show();
             }
-
 
             let skin: typeof defaultClientCVars["cv_loadout_skin"];
             const joinPacket: JoinPacketCreation = {
@@ -363,14 +436,18 @@ export class Game {
         this._socket.onmessage = (message: MessageEvent<ArrayBuffer>): void => {
             const stream = new PacketStream(message.data);
             let iterationCount = 0;
+            const splits = [0, 0, 0, 0, 0, 0, 0] satisfies DataSplit;
             while (true) {
                 if (++iterationCount === 1e3) {
                     console.warn("1000 iterations of packet reading; possible infinite loop");
                 }
-                const packet = stream.deserializeServerPacket();
+                const packet = stream.deserializeServerPacket({ splits, activePlayerId: this.activePlayerID });
                 if (packet === undefined) break;
                 this.onPacket(packet);
             }
+
+            const msgLength = message.data.byteLength;
+            this.netGraph.receiving.addEntry(msgLength, splits);
         };
 
         const ui = this.uiManager.ui;
@@ -585,6 +662,7 @@ export class Game {
 
     sendData(buffer: ArrayBuffer): void {
         if (this._socket?.readyState === WebSocket.OPEN) {
+            this.netGraph.sending.addEntry(buffer.byteLength);
             try {
                 this._socket.send(buffer);
             } catch (e) {

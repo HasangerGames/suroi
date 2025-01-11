@@ -6,7 +6,7 @@ import { JoinPacket } from "./joinPacket";
 import { JoinedPacket } from "./joinedPacket";
 import { KillFeedPacket } from "./killFeedPacket";
 import { MapPacket } from "./mapPacket";
-import { type InputPacket, type OutputPacket, type PacketTemplate } from "./packet";
+import { type DataSplit, type InputPacket, type OutputPacket, type PacketTemplate } from "./packet";
 import { PickupPacket } from "./pickupPacket";
 import { ReportPacket } from "./reportPacket";
 import { SpectatePacket } from "./spectatePacket";
@@ -68,8 +68,8 @@ export class PacketStream {
         this._serializePacket(packet, ServerToClientPackets);
     }
 
-    deserializeServerPacket(): OutputPacket | undefined {
-        return this._deserializePacket(ServerToClientPackets);
+    deserializeServerPacket(splitData?: { splits: DataSplit, activePlayerId: number }): OutputPacket | undefined {
+        return this._deserializePacket(ServerToClientPackets, splitData);
     }
 
     serializeClientPacket(packet: InputPacket): void {
@@ -80,9 +80,9 @@ export class PacketStream {
         return this._deserializePacket(ClientToServerPackets);
     }
 
-    private _deserializePacket(register: PacketRegister): OutputPacket | undefined {
+    private _deserializePacket(register: PacketRegister, splitData?: { splits: DataSplit, activePlayerId: number }): OutputPacket | undefined {
         if (this.stream.buffer.byteLength > this.stream.index) {
-            return register.idToTemplate[this.stream.readUint8()].read(this.stream);
+            return register.idToTemplate[this.stream.readUint8()].read(this.stream, splitData);
         }
         return undefined;
     }

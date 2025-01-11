@@ -107,7 +107,12 @@ export function handleResult<Res>(result: Result<Res, unknown>, fallbackSupplier
     return "err" in result ? fallbackSupplier() : result.res;
 }
 
-export function mergeDeep<T extends object>(target: T, ...sources: Array<DeepPartial<T>>): T {
+// from https://stackoverflow.com/a/50375286
+type UnionToIntersection<U> = (U extends unknown ? (x: U) => void : never) extends ((x: infer I) => void) ? I : never;
+
+export function mergeDeep<A extends readonly object[]>(target: Record<PrimitiveKey, never>, ...sources: A): UnionToIntersection<A[number]>;
+export function mergeDeep<T extends object>(target: T, ...sources: ReadonlyArray<DeepPartial<T>>): T;
+export function mergeDeep<T extends object>(target: T, ...sources: ReadonlyArray<DeepPartial<T>>): T {
     if (!sources.length) return target;
 
     const [source, ...rest] = sources;

@@ -13,7 +13,7 @@ import type { PerkCollection } from "../utils/perkManager";
 import { type SuroiByteStream } from "../utils/suroiByteStream";
 import { Vec, type Vector } from "../utils/vector";
 import type { AllowedEmoteSources } from "./inputPacket";
-import { createPacket } from "./packet";
+import { createPacket, DataSplitTypes, getSplitTypeForCategory } from "./packet";
 
 interface ObjectFullData {
     readonly id: number
@@ -441,7 +441,7 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
     return data;
 }
 
-const enum UpdateFlags {
+export const enum UpdateFlags {
     PlayerData = 1 << 0,
     DeletedObjects = 1 << 1,
     FullObjects = 1 << 2,
@@ -765,26 +765,31 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
         strm.index = idx;
     },
 
-    deserialize(stream) {
+    deserialize(stream, [saveIndex, recordTo, activeId]) {
         const data = {} as Mutable<UpdatePacketDataOut>;
 
         const flags = stream.readUint16();
 
-        if (flags & UpdateFlags.PlayerData) {
+        if ((flags & UpdateFlags.PlayerData) !== 0) {
+            saveIndex();
             data.playerData = deserializePlayerData(stream);
+            recordTo(DataSplitTypes.PlayerData);
         }
 
-        if (flags & UpdateFlags.DeletedObjects) {
+        if ((flags & UpdateFlags.DeletedObjects) !== 0) {
+            saveIndex();
             data.deletedObjects = stream.readArray(() => stream.readObjectId(), 2);
+            recordTo(DataSplitTypes.GameObjects);
         }
 
-        if (flags & UpdateFlags.FullObjects) {
+        if ((flags & UpdateFlags.FullObjects) !== 0) {
             data.fullDirtyObjects = stream.readArray(() => {
+                saveIndex();
                 const id = stream.readObjectId();
                 const type = stream.readObjectType();
 
                 const serializers = ObjectSerializations[type];
-                return {
+                const obj = {
                     id,
                     type,
                     data: {
@@ -792,26 +797,44 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
                         full: serializers.deserializeFull(stream)
                     } as ObjectsNetData[typeof type]
                 };
+
+                recordTo(
+                    type === ObjectCategory.Player && id === activeId
+                        ? DataSplitTypes.PlayerData
+                        : getSplitTypeForCategory(type)
+                );
+
+                return obj;
             }, 2);
         }
 
-        if (flags & UpdateFlags.PartialObjects) {
+        if ((flags & UpdateFlags.PartialObjects) !== 0) {
             data.partialDirtyObjects = stream.readArray(() => {
+                saveIndex();
                 const id = stream.readObjectId();
                 const type = stream.readObjectType();
-                return {
+                const obj = {
                     id,
                     type,
                     data: ObjectSerializations[type].deserializePartial(stream)
                 };
+
+                recordTo(
+                    type === ObjectCategory.Player && id === activeId
+                        ? DataSplitTypes.PlayerData
+                        : getSplitTypeForCategory(type)
+                );
+
+                return obj;
             }, 2);
         }
 
-        if (flags & UpdateFlags.Bullets) {
+        saveIndex();
+        if ((flags & UpdateFlags.Bullets) !== 0) {
             data.deserializedBullets = stream.readArray(() => BaseBullet.deserialize(stream), 1);
         }
 
-        if (flags & UpdateFlags.Explosions) {
+        if ((flags & UpdateFlags.Explosions) !== 0) {
             data.explosions = stream.readArray(() => ({
                 definition: Explosions.readFromStream(stream),
                 position: stream.readPosition(),
@@ -819,14 +842,15 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
             }), 1);
         }
 
-        if (flags & UpdateFlags.Emotes) {
+        if ((flags & UpdateFlags.Emotes) !== 0) {
             data.emotes = stream.readArray(() => ({
                 definition: GlobalRegistrar.readFromStream(stream),
                 playerID: stream.readObjectId()
             }), 1);
         }
+        recordTo(DataSplitTypes.GameObjects);
 
-        if (flags & UpdateFlags.Gas) {
+        if ((flags & UpdateFlags.Gas) !== 0) {
             data.gas = {
                 state: stream.readUint8(),
                 currentDuration: stream.readUint8(),
@@ -837,11 +861,12 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
             };
         }
 
-        if (flags & UpdateFlags.GasPercentage) {
+        if ((flags & UpdateFlags.GasPercentage) !== 0) {
             data.gasProgress = stream.readFloat(0, 1, 2);
         }
 
-        if (flags & UpdateFlags.NewPlayers) {
+        saveIndex();
+        if ((flags & UpdateFlags.NewPlayers) !== 0) {
             data.newPlayers = stream.readArray(() => {
                 const id = stream.readObjectId();
                 const name = stream.readPlayerName();
@@ -858,15 +883,16 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
             }, 1);
         }
 
-        if (flags & UpdateFlags.DeletedPlayers) {
+        if ((flags & UpdateFlags.DeletedPlayers) !== 0) {
             data.deletedPlayers = stream.readArray(() => stream.readObjectId(), 1);
         }
+        recordTo(DataSplitTypes.GameObjects);
 
-        if (flags & UpdateFlags.AliveCount) {
+        if ((flags & UpdateFlags.AliveCount) !== 0) {
             data.aliveCount = stream.readUint8();
         }
 
-        if (flags & UpdateFlags.Planes) {
+        if ((flags & UpdateFlags.Planes) !== 0) {
             data.planes = stream.readArray(() => ({
                 position: stream.readVector(
                     -Constants.MAX_POSITION,
@@ -879,7 +905,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
             }), 1);
         }
 
-        if (flags & UpdateFlags.MapPings) {
+        if ((flags & UpdateFlags.MapPings) !== 0) {
             data.mapPings = stream.readArray(() => {
                 const definition = MapPings.readFromStream(stream);
 
