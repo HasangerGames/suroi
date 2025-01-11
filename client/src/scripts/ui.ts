@@ -97,13 +97,14 @@ export async function setUpUI(game: Game): Promise<void> {
     const { inputManager, uiManager: { ui } } = game;
 
     // Change the menu based on the mode.
-    if (MODE.specialLogo) $("#splash-logo").children("img").attr("src", `./img/logos/suroi_beta_${MODE.idString}.svg`);
+    $("#splash-ui").css("background-image", `url(./img/backgrounds/menu/${GameConstants.modeName}.png)`);
+    if (MODE.specialLogo) $("#splash-logo").children("img").attr("src", `./img/logos/suroi_beta_${GameConstants.modeName}.svg`);
     if (MODE.specialPlayButtons) {
         const playButtons = [$("#btn-play-solo"), $("#btn-play-duo"), $("#btn-play-squad")];
         for (let buttonIndex = 0; buttonIndex < playButtons.length; buttonIndex++) {
             const button = playButtons[buttonIndex];
 
-            button.addClass(`event-${MODE.idString}`);
+            button.addClass(`event-${GameConstants.modeName}`);
 
             // Mode Logo
             if (MODE.modeLogoImage) {
