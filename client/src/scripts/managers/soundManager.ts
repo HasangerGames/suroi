@@ -39,7 +39,10 @@ export class GameSound {
     readonly dynamic: boolean;
     readonly ambient: boolean;
 
-    get volume(): number { return this.ambient ? this.manager.ambienceVolume : this.manager.sfxVolume; }
+    get managerVolume(): number { return this.ambient ? this.manager.ambienceVolume : this.manager.sfxVolume; }
+
+    // acts as multiplier
+    volume = 1;
 
     instance?: PixiSound.IMediaInstance;
     readonly stereoFilter: PixiSound.filters.StereoFilter;
@@ -87,7 +90,7 @@ export class GameSound {
             },
             filters: [filter],
             loop: options.loop,
-            volume: this.volume,
+            volume: this.managerVolume * this.volume,
             speed: this.speed
         });
 
@@ -117,11 +120,11 @@ export class GameSound {
 
             this.instance.volume = (
                 1 - Numeric.clamp(Math.abs(Vec.length(diff) / this.maxRange), 0, 1)
-            ) ** (1 + this.falloff * 2) * this.volume;
+            ) ** (1 + this.falloff * 2) * this.managerVolume * this.volume;
 
             this.stereoFilter.pan = Numeric.clamp(-diff.x / this.maxRange, -1, 1);
         } else {
-            this.instance.volume = this.volume;
+            this.instance.volume = this.managerVolume * this.volume;
         }
     }
 

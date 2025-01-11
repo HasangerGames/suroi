@@ -23,6 +23,7 @@ const definitions: ObjectDefinition[] = [];
 const idStringToNumber = Object.create(null) as Record<string, number>;
 
 export const strictSchemaReads = true;
+export const REGISTRY_MAX_SIZE = 1 << 16;
 
 let initialized = false;
 
@@ -120,7 +121,18 @@ function init(): void {
         }
     }
 
-    if (totalLength > 65536) {
+    if (totalLength > REGISTRY_MAX_SIZE) {
         throw new RangeError("Global registry too large for 2 bytes.");
     }
+
+    // console.log("Global registry stats");
+    // console.log(`Size: ${totalLength} / ${REGISTRY_MAX_SIZE} (${(100 * totalLength / REGISTRY_MAX_SIZE).toFixed(2)}%)`);
+    // console.log("Breakdown by schema:");
+    // console.table(
+    //     Object.fromEntries(
+    //         schemas.map(schema => [schema.name, schema.definitions.length] as const)
+    //             .sort(([, sizeA], [, sizeB]) => sizeB - sizeA)
+    //             .map(([name, size]) => [name, { length: size, percentage: `${(100 * size / totalLength).toFixed(2)}%` }] as const)
+    //     )
+    // );
 }

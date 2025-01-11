@@ -270,6 +270,7 @@ export class UIManager {
         warningAgreeCheckbox: $<HTMLInputElement>("#warning-modal-agree-checkbox"),
         warningModal: $<HTMLDivElement>("#warning-modal"),
 
+        btnShareLink: $<HTMLButtonElement>("#btn-share-link"),
         btnStartGame: $<HTMLButtonElement>("#btn-start-game"),
         createTeamToggles: $<HTMLDivElement>("#create-team-toggles"),
 

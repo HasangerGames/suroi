@@ -100,6 +100,10 @@ type Fonts = typeof FontStyles;
 type FontStyle = Fonts[keyof Fonts];
 
 const CSI = "\u001B";
+const CLOSING_CODE = `${CSI}[0m`;
 export function styleText(string: string, ...styles: Array<Colors[Channel][Color][Variant] | FontStyle>): string {
-    return `${CSI}[${styles.join(";")}m${string}${CSI}[0m`;
+    const opening = `${CSI}[${styles.join(";")}m`;
+    // replace the closing codes with this opening code
+    // so that styling is consistent
+    return `${opening}${string.replaceAll(CLOSING_CODE, opening)}${CLOSING_CODE}`;
 }

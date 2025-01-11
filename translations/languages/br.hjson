@@ -192,7 +192,7 @@
   "bindings_cycle_scopes 1": "Próxima Mira"
   "bindings_use_consumable gauze": "Usar Gaze"
   "bindings_use_consumable medikit": "Usar Kit Médico"
-  "bindings_use_consumable cola": "Usar Cola"
+  "bindings_use_consumable cola": "Usar Refrigerante"
   "bindings_use_consumable tablets": "Usar Comprimidos"
   "bindings_cancel_action": "Cancelar Ação"
   "bindings_+view_map": "Ver Mapa"
@@ -267,7 +267,7 @@
 
   "gauze": "Gaze"
   "medikit": "Kit Médico"
-  "cola": "Cola"
+  "cola": "Refrigerante"
   "tablets": "Comprimidos"
 
   "basic_vest": "Colete Básico"

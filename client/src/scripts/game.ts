@@ -28,7 +28,7 @@ import { randomFloat, randomVector } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { sound, type Sound } from "@pixi/sound";
 import $ from "jquery";
-import { Application, Color } from "pixi.js";
+import { Application, Color, Container } from "pixi.js";
 import "pixi.js/prepare";
 import { getTranslatedString, initTranslation } from "../translations";
 import { type TranslationKeys } from "../typings/translations";
@@ -101,6 +101,8 @@ export class Game {
 
     ambience?: GameSound;
 
+    layerTween?: Tween<Container>;
+
     readonly spinningImages = new Map<SuroiSprite, number>();
 
     readonly playerNames = new Map<number, {
@@ -150,7 +152,7 @@ export class Game {
 
     music!: Sound;
 
-    readonly tweens = new Set<Tween<unknown>>();
+    readonly tweens = new Set<Tween<object>>();
 
     private readonly _timeouts = new Set<Timeout>();
 
@@ -722,22 +724,18 @@ export class Game {
                 )(this, id, data);
                 this.objects.add(_object);
 
-                // Layer Transition: We pray that this works lmao
+                // Layer Transition
                 if (_object.layer !== (this.layer ?? Layer.Ground)) {
                     _object.container.alpha = 0;
 
-                    // Yes, we need to do this specifically for building ceilings as well.
-                    if (_object.isBuilding) {
-                        _object.ceilingVisible = false;
-                        _object.ceilingContainer.alpha = 0;
-                        _object.toggleCeiling(LAYER_TRANSITION_DELAY);
-                    }
-
-                    this.addTween({
+                    this.layerTween = this.addTween({
                         target: _object.container,
                         to: { alpha: 1 },
                         duration: LAYER_TRANSITION_DELAY,
-                        ease: EaseFunctions.sineIn
+                        ease: EaseFunctions.sineIn,
+                        onComplete: () => {
+                            this.layerTween = undefined;
+                        }
                     });
                 }
             } else {
@@ -762,27 +760,17 @@ export class Game {
                 continue;
             }
 
-            // Layer Transition: We pray that this works lmao
+            // Layer Transition
             if (object.layer !== (this.layer ?? Layer.Ground)) {
                 object.container.alpha = 1;
 
-                // Yes, we need to do this specifically for building ceilings as well.
-                if (object.isBuilding && object.ceilingVisible) {
-                    object.ceilingContainer.alpha = 1;
-                    this.addTween({
-                        target: object.ceilingContainer,
-                        to: { alpha: 0 },
-                        duration: LAYER_TRANSITION_DELAY,
-                        ease: EaseFunctions.sineOut
-                    });
-                }
-
-                this.addTween({
+                this.layerTween = this.addTween({
                     target: object.container,
                     to: { alpha: 0 },
                     duration: LAYER_TRANSITION_DELAY,
                     ease: EaseFunctions.sineOut,
                     onComplete: () => {
+                        this.layerTween = undefined;
                         object.destroy();
                         this.objects.delete(object);
                     }
@@ -831,18 +819,19 @@ export class Game {
         this.tick();
     }
 
-    addTween<T>(config: ConstructorParameters<typeof Tween<T>>[1]): Tween<T> {
+    addTween<T extends object>(config: ConstructorParameters<typeof Tween<T>>[1]): Tween<T> {
         const tween = new Tween(this, config);
 
         this.tweens.add(tween);
         return tween;
     }
 
-    removeTween(tween: Tween<unknown>): void {
+    removeTween(tween: Tween<object>): void {
         this.tweens.delete(tween);
     }
 
-    backgroundTween?: Tween<unknown>;
+    backgroundTween?: Tween<{ readonly r: number, readonly g: number, readonly b: number }>;
+    volumeTween?: Tween<GameSound>;
 
     changeLayer(layer: Layer): void {
         for (const object of this.objects) {
@@ -862,10 +851,33 @@ export class Game {
             onUpdate: () => {
                 this.pixi.renderer.background.color = new Color(color);
             },
-            duration: LAYER_TRANSITION_DELAY
+            duration: LAYER_TRANSITION_DELAY,
+            onComplete: () => { this.backgroundTween = undefined; }
         });
 
-        this.ambience?.setPaused(layer < Layer.Ground);
+        if (this.ambience !== undefined) {
+            this.volumeTween?.kill();
+
+            let target = 1; // if, somehow, the switch fails to assign a value
+
+            switch (true) {
+                // above ground—play as normal
+                case layer >= Layer.Ground: target = 1; break;
+
+                // stairway leading down to bunker—half volume
+                case layer === Layer.ToBasement1: target = 0.5; break;
+
+                // below ground—very muted
+                case layer <= Layer.Basement1: target = 0.15; break;
+            }
+
+            this.volumeTween = this.addTween({
+                target: this.ambience,
+                to: { volume: target },
+                duration: 2000,
+                onComplete: () => { this.volumeTween = undefined; }
+            });
+        };
     }
 
     // yes this might seem evil. but the two local variables really only need to
