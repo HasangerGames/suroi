@@ -63,12 +63,6 @@ export class UIManager {
 
     readonly perks: ClientPerkManager;
 
-    readonly debugReadouts = Object.freeze({
-        fps: $<HTMLSpanElement>("#fps-counter"),
-        ping: $<HTMLSpanElement>("#ping-counter"),
-        pos: $<HTMLSpanElement>("#coordinates-hud")
-    });
-
     public hasC4s = false;
 
     private static _instantiated = false;
@@ -282,7 +276,9 @@ export class UIManager {
         c4Button: $<HTMLButtonElement>("#c4-detonate-btn"),
         detonateKey: $<HTMLDivElement>("#detonate-key"),
 
-        inventoryMsg: $<HTMLSpanElement>("#inventory-message")
+        inventoryMsg: $<HTMLSpanElement>("#inventory-message"),
+
+        debugPos: $<HTMLSpanElement>("#coordinates-hud")
     });
 
     private readonly _weaponSlotCache = new ExtendedMap<
@@ -632,7 +628,6 @@ export class UIManager {
         const sentTime = this.game.seqsSent[pingSeq];
         if (sentTime !== undefined) {
             const ping = Date.now() - sentTime;
-            this.debugReadouts.ping.text(`${ping} ms`);
             this.game.netGraph.ping.addEntry(ping);
             this.game.seqsSent[pingSeq] = undefined;
         }

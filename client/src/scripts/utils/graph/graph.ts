@@ -38,6 +38,8 @@ interface GraphOptions {
         stroke: StrokeStyle
     }
     titleTextStyle: TextStyleOptions
+    showGraph: boolean
+    showLabels: boolean
 }
 
 const defaultOptions: GraphOptions = {
@@ -62,7 +64,9 @@ const defaultOptions: GraphOptions = {
     titleTextStyle: {
         ...defaultLabelTextOptions.style as TextStyleOptions,
         fontSize: 15
-    }
+    },
+    showGraph: true,
+    showLabels: true
 };
 
 export interface GraphLabel<Stats extends object> {
@@ -74,7 +78,7 @@ export interface GraphLabel<Stats extends object> {
 
 // variance says hello
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface Graph<DataType extends readonly any[], Stats extends object> {
+export interface Graph<DataType extends readonly any[], Stats extends object> {
     readonly container: Container
     readonly gfx: Graphics
     readonly title: Text
@@ -96,6 +100,9 @@ interface Graph<DataType extends readonly any[], Stats extends object> {
     fill: FillStyle
     stroke: StrokeStyle
     background: GraphOptions["background"]
+
+    showGraph: boolean
+    showLabels: boolean
 
     clear(): void
     addEntry(...data: DataType): void
@@ -156,6 +163,20 @@ export abstract class BaseGraph<DataType extends readonly any[], Stats extends o
         this.update();
     }
 
+    _showGraph: boolean;
+    get showGraph(): boolean { return this._showGraph; }
+    set showGraph(showGraph: boolean) {
+        this._showGraph = showGraph;
+        this.update();
+    }
+
+    _showLabels: boolean;
+    get showLabels(): boolean { return this._showLabels; }
+    set showLabels(showLabels: boolean) {
+        this._showLabels = showLabels;
+        this.update();
+    }
+
     constructor(options: DeepPartial<GraphOptions> = {}) {
         const merged = mergeDeep({}, defaultOptions, options);
 
@@ -175,6 +196,9 @@ export abstract class BaseGraph<DataType extends readonly any[], Stats extends o
         this.title.anchor.x = 0.5;
         this.title.anchor.y = 1;
 
+        this._showGraph = merged.showGraph;
+        this._showLabels = merged.showLabels;
+
         this.container.addChild(this.gfx, this.title);
     }
 
@@ -192,6 +216,11 @@ export abstract class BaseGraph<DataType extends readonly any[], Stats extends o
     updateLabels(): void {
         for (let i = 0, x = 0; i < this._labels.length; i++) {
             const { text, updateText, forceX, forceY } = this._labels[i];
+
+            if (!(text.visible = this._showLabels)) {
+                continue;
+            }
+
             text.text = updateText(this.stats);
             text.x = forceX ?? x;
             text.y = forceY ?? this._height;
@@ -226,56 +255,6 @@ export interface SingleValueStats {
     // entries/sec
     countThroughput: number
 }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function addEntryToSVSGraph<DataType extends readonly [data: number, ...rest: any[]]>(
-    //                                                 ^^^^^^^^^^^^ the value to add to the stats
-    this: Graph<DataType, SingleValueStats> & { _start: number },
-    data: DataType,
-    mutableHistory: Array<readonly [number, ...DataType]>
-): void {
-    const stats = this.stats;
-
-    const [val] = data;
-
-    const now = Date.now();
-    const histLength = mutableHistory.push([now, ...data]);
-    if (histLength > this.maxHistory) {
-        // history must have at least 1 entry
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const [, rm] = mutableHistory.shift()!;
-
-        this._start = mutableHistory[0][0];
-        stats.sum = stats.sum + val - rm;
-
-        if (rm === stats.min || rm === stats.max) {
-            // only re-traverse the whole array if the removed value is an extremum
-            // if it's not, then that means that both the min and max are still
-            // in the collection, meaning we just need to compare it to data
-            for (const [, item] of mutableHistory) {
-                stats.max = stats.max > item ? stats.max : item;
-                stats.min = stats.min < item ? stats.min : item;
-            }
-        } else {
-            stats.max = Numeric.max(stats.max, val);
-            stats.min = Numeric.min(stats.min, val);
-        }
-    } else {
-        if (this._start === -1) this._start = now;
-
-        stats.max = Numeric.max(stats.max, val);
-        stats.min = Numeric.min(stats.min, val);
-        stats.sum += val;
-    }
-
-    const throughputMult = 1e3 / (now - this._start);
-
-    stats.mean = stats.sum / histLength;
-    stats.valueThroughput = throughputMult * stats.sum;
-    stats.countThroughput = throughputMult * histLength;
-
-    this.update();
-};
 
 export abstract class SVSGraph<
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -378,6 +357,8 @@ export class SingleGraph extends SVSGraph<readonly [number]> {
     }
 
     override renderGraph(): void {
+        if (!(this.gfx.visible = this._showGraph)) { return; }
+
         this.title.x = this.width / 2;
 
         this.gfx
@@ -487,24 +468,9 @@ export class SegmentedBarGraph extends SVSGraph<readonly [number, readonly numbe
         this.container.addChild(this.legend);
     }
 
-    override clear(): void {
-        this._history.length = 0;
-        this._stats = {
-            min: Infinity,
-            max: -Infinity,
-            sum: 0,
-            last: 0,
-            mean: 0,
-            valueThroughput: 0,
-            countThroughput: 0
-        };
-    }
-
-    override addEntry(...args: readonly [number, readonly number[]]): void {
-        addEntryToSVSGraph.call(this, args, this._history);
-    }
-
     override renderGraph(): void {
+        if (!(this.legend.visible = this.gfx.visible = this._showGraph)) { return; }
+
         this.title.x = this.width / 2;
 
         this.gfx

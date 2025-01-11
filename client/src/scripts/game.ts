@@ -11,7 +11,7 @@ import { JoinedPacket, type JoinedPacketData } from "@common/packets/joinedPacke
 import { JoinPacket, type JoinPacketCreation } from "@common/packets/joinPacket";
 import { KillFeedPacket } from "@common/packets/killFeedPacket";
 import { MapPacket } from "@common/packets/mapPacket";
-import { type DataSplit, type DataSplitTypes, type InputPacket, type OutputPacket } from "@common/packets/packet";
+import { type DataSplit, type InputPacket, type OutputPacket } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { PickupPacket } from "@common/packets/pickupPacket";
 import { ReportPacket } from "@common/packets/reportPacket";
@@ -27,7 +27,7 @@ import { randomFloat, randomVector } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { sound, type Sound } from "@pixi/sound";
 import $ from "jquery";
-import { Application, Color, Container, type ColorSource } from "pixi.js";
+import { Application, Color, Container } from "pixi.js";
 import "pixi.js/prepare";
 import { getTranslatedString, initTranslation } from "../translations";
 import { type TranslationKeys } from "../typings/translations";
@@ -56,7 +56,7 @@ import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, EMOTE_SLOTS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
-import { SegmentedBarGraph, SingleGraph } from "./utils/graph/graph";
+import { setUpNetGraph } from "./utils/graph/netGraph";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
 
@@ -147,75 +147,7 @@ export class Game {
     readonly gasRender = new GasRender(PIXI_SCALE);
     readonly gas = new Gas(this);
 
-    readonly netGraph = (() => {
-        const makeFormatter = ([big, small]: readonly [big: string, small: string], cutoff = 1000, fixedPlaces = 2) =>
-            (n: number): string => n > cutoff
-                ? `${(n / 1000).toFixed(fixedPlaces)} ${big}`
-                : `${n.toFixed(fixedPlaces)} ${small}`;
-
-        const bytes = makeFormatter(["kB", "B"], 100);
-        const time = makeFormatter(["s", "ms"]);
-
-        const anchor = Vec.create(5, 300);
-
-        return Object.freeze({
-            receiving: new SegmentedBarGraph({
-                ...anchor,
-                fill: { color: "white", alpha: 0.5 },
-                stroke: { color: "white" },
-                background: { stroke: { color: "transparent" } },
-                segments: (
-                    [
-                        ["player data", "red"],
-                        ["other players", "lime"],
-                        ["obstacles", "blue"],
-                        ["loot", "yellow"],
-                        ["particles", "magenta"],
-                        ["objects", "orange"],
-                        ["killfeed", "black"]
-                    ] satisfies Record<DataSplitTypes, readonly [string, ColorSource]>
-                ).map(([name, color]) => ({ name, color, alpha: 0.5 }))
-            })
-                .addLabel(({ last }) => `in :${bytes(last).padStart(8)}`)
-                .addLabel(({ mean }) => `avg:${bytes(mean).padStart(8)}`)
-                .addLabel(({ valueThroughput: val }) => `${bytes(val).padStart(5)}/s`)
-                .addLabel(({ countThroughput: cnt }) => `${cnt.toFixed(2).padStart(5)}/s`),
-
-            sending: new SingleGraph({
-                ...Vec.addComponent(anchor, 0, 135),
-                height: 30,
-                fill: { color: "blue" },
-                stroke: { color: "blue" },
-                background: { stroke: { color: "transparent" } }
-            })
-                .addLabel(({ last }) => `out:${bytes(last).padStart(8)}`, { style: { fill: "lightblue" } }, { y: -17 })
-                .addLabel(({ mean }) => `avg:${bytes(mean).padStart(8)}`, { style: { fill: "lightblue" } }, { y: -17 })
-                .addLabel(({ valueThroughput: val }) => `${bytes(val).padStart(5)}/s`, { style: { fill: "lightblue" } }, { y: -17 })
-                .addLabel(({ countThroughput: cnt }) => `${cnt.toFixed(2).padStart(5)}/s`, { style: { fill: "lightblue" } }, { y: -17 }),
-
-            ping: new SingleGraph({
-                ...Vec.addComponent(anchor, 0, 205),
-                height: 15,
-                fill: { color: "lime" },
-                stroke: { color: "lime" },
-                background: { stroke: { color: "transparent" } }
-            })
-                .addLabel(({ last }) => `ping:${time(last).padStart(9)}`, { style: { fill: "lightgreen" } }, { y: -34 })
-                .addLabel(({ mean }) => `avg:${time(mean).padStart(9)}`, { style: { fill: "lightgreen" } }, { y: -34 })
-                .addLabel(() => `lerp: ${time(this.serverDt).padStart(5)}`, { style: { fill: "lightgreen" } }, { y: -34 }),
-
-            fps: new SingleGraph({
-                ...Vec.addComponent(anchor, 0, 225),
-                height: 15,
-                fill: { color: "red" },
-                stroke: { color: "red" },
-                background: { stroke: { color: "transparent" } }
-            })
-                .addLabel(({ last }) => `fps : ${last.toFixed(2).padStart(5)}`, { style: { fill: "pink" } }, { y: -38 })
-                .addLabel(({ min }) => `min: ${min.toFixed(2).padStart(5)}`, { style: { fill: "pink" } }, { y: -38 })
-                .addLabel(({ max }) => `max: ${max.toFixed(2).padStart(5)}`, { style: { fill: "pink" } }, { y: -38 })
-        });
-    })();
+    readonly netGraph = setUpNetGraph(this);
 
     music!: Sound;
 
@@ -293,7 +225,6 @@ export class Game {
 
                 if (game.console.getBuiltInCVar("pf_show_fps")) {
                     const fps = Math.round(game.pixi.ticker.FPS);
-                    game.uiManager.debugReadouts.fps.text(`${fps} fps`);
                     game.netGraph.fps.addEntry(fps);
                 }
             });

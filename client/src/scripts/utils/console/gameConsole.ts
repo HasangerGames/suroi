@@ -643,9 +643,11 @@ export class GameConsole {
                         this._ui.input.val("");
                         navigatingAutocmp = false;
 
-                        this._history.add(input);
                         this.log.raw(`> ${sanitizeHTML(input, { strict: true, escapeNewLines: true, escapeSpaces: true })}`);
-                        this.handleQuery(input, "never");
+                        if (input !== "") {
+                            this._history.add(input);
+                            this.handleQuery(input, "never");
+                        }
                         this._updateAutocmp();
                         break;
                     }

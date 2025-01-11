@@ -86,6 +86,10 @@ export const CVarCasters = Object.freeze({
     pf_show_fps: Casters.toBoolean,
     pf_show_ping: Casters.toBoolean,
     pf_show_pos: Casters.toBoolean,
+    pf_net_graph: Casters.generateUnionCaster([0, 1, 2]),
+    // 0: off
+    // 1: label only
+    // 2: graph & label
 
     mb_controls_enabled: Casters.toBoolean,
     mb_joystick_size: Casters.toNumber,
@@ -215,6 +219,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     pf_show_fps: false,
     pf_show_ping: false,
     pf_show_pos: false,
+    pf_net_graph: 0,
 
     mb_controls_enabled: true,
     mb_joystick_size: 150,
