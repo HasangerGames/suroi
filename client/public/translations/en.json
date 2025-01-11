@@ -229,6 +229,7 @@
   "create_team_lock": "Lock Team",
   "create_team_ready": "Ready",
   "create_team_waiting": "Waiting...",
+  "create_team_share": "Share",
   "create_team_play": "Start Game",
   "report_reporting": "Reporting",
   "report_id": "Report ID:",
