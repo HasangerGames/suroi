@@ -664,6 +664,23 @@ export async function setUpUI(game: Game): Promise<void> {
         }));
     });
 
+    function share(): void {
+        ui.btnShareLink.show();
+        ui.btnShareLink.on("click", () => {
+            navigator.share({
+                title: "Suroi",
+                url: ui.createTeamUrl.val()
+            })
+            .then()
+            .catch(e => {
+                console.warn(e);
+            });
+    });
+    }
+
+    if (typeof navigator.share === "function") share();
+    else ui.btnShareLink.hide();
+
     ui.btnStartGame.on("click", () => {
         teamSocket?.send(JSON.stringify({ type: CustomTeamMessages.Start }));
     });
