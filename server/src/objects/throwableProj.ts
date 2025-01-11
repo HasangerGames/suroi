@@ -124,7 +124,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
 
     detonate(delay: number): void {
         this._activated = true;
-        this.setDirty();
+        this.setPartialDirty();
         setTimeout(() => {
             if (this.dead) return;
 
@@ -150,8 +150,6 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
     update(): void {
         if (this.definition.c4) {
             this._airborne = false;
-            this.game.grid.updateObject(this);
-            this.setPartialDirty();
             return;
         }
 

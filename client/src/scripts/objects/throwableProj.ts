@@ -29,8 +29,6 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
     hitbox: CircleHitbox;
     hitSound?: GameSound;
 
-    c4?: boolean;
-
     floorType: FloorNames = FloorNames.Grass;
 
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.ThrowableProjectile]) {
@@ -40,15 +38,14 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
 
         this.container.addChild(this.image, this.waterOverlay);
         this.layer = data.layer;
-        this.updateFromData(data);
+        this.updateFromData(data, true);
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.ThrowableProjectile], isNew = false): void {
         if (data.full) {
-            const def = (this._definition ??= data.full.definition);
+            const def = this._definition ??= data.full.definition;
 
             this.radius = this._definition.hitboxRadius;
-            this.c4 = true;
 
             this.halloweenSkin = data.full.halloweenSkin;
 
@@ -131,30 +128,30 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
     }
 
     hitEffect(position: Vector, angle: number): void {
-        if (this.c4) {
-            this.hitSound?.stop();
-            this.hitSound = this.game.soundManager.play(
-                `stone_hit_${randomBoolean() ? "1" : "2"}`,
-                {
-                    position,
-                    falloff: 0.2,
-                    maxRange: 96
-                }
-            );
+        if (!this.definition.c4) return;
 
-            this.game.particleManager.spawnParticles(4, () => {
-                return {
-                    frames: this.halloweenSkin ? "plumpkin_particle" : "metal_particle",
-                    position,
-                    layer: this.layer,
-                    zIndex: Numeric.max(ZIndexes.Players + 1, 4),
-                    lifetime: 600,
-                    scale: { start: 0.9, end: 0.2 },
-                    alpha: { start: 1, end: 0.65 },
-                    speed: Vec.fromPolar((angle + randomFloat(0, 2 * PI)), randomFloat(2.5, 4.5))
-                };
-            });
-        }
+        this.hitSound?.stop();
+        this.hitSound = this.game.soundManager.play(
+            `stone_hit_${randomBoolean() ? "1" : "2"}`,
+            {
+                position,
+                falloff: 0.2,
+                maxRange: 96
+            }
+        );
+
+        this.game.particleManager.spawnParticles(4, () => {
+            return {
+                frames: this.halloweenSkin ? "plumpkin_particle" : "metal_particle",
+                position,
+                layer: this.layer,
+                zIndex: Numeric.max(ZIndexes.Players + 1, 4),
+                lifetime: 600,
+                scale: { start: 0.9, end: 0.2 },
+                alpha: { start: 1, end: 0.65 },
+                speed: Vec.fromPolar((angle + randomFloat(0, 2 * PI)), randomFloat(2.5, 4.5))
+            };
+        });
     }
 
     override destroy(): void {
