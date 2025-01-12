@@ -572,12 +572,12 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ceilingImages: [
                     {
                         key: upperCeilingImage,
-                        position: Vec.create(0, -6.98),
+                        position: Vec.create(0, -6.94),
                         tint
                     },
                     {
                         key: lowerCeilingImage,
-                        position: Vec.create(0, 6.98),
+                        position: Vec.create(0, 6.94),
                         rotation: Math.PI,
                         tint
                     },
