@@ -180,6 +180,7 @@
   "bindings_+map_ping": "Map Ping",
   "bindings_toggle_console": "Activer/Désactiver la Console",
   "bindings_toggle_slot_lock": "Activer/Désactiver verrouillage de slots",
+  "bindings_toggle pf_net_graph 0 1 2": "Adjuster Graphique de Réseau",
   "kf_suicide_kill": "<player> s'est suicidé",
   "kf_suicide_down": "<player> s'est assommé",
   "kf_bleed_out_kill": "<player> a saigné à mort",

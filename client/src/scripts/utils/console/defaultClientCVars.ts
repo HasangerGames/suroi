@@ -270,5 +270,6 @@ export const defaultBinds = Object.freeze({
     "+map_ping_wheel": ["C"],
     "toggle_console": [],
     "+map_ping": [],
-    "toggle_slot_lock": []
+    "toggle_slot_lock": [],
+    "toggle pf_net_graph 0 1 2": []
 } as Record<string, string[]>);
