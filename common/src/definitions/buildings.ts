@@ -572,12 +572,12 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ceilingImages: [
                     {
                         key: upperCeilingImage,
-                        position: Vec.create(0, -6.98),
+                        position: Vec.create(0, -6.97),
                         tint
                     },
                     {
                         key: lowerCeilingImage,
-                        position: Vec.create(0, 6.98),
+                        position: Vec.create(0, 6.97),
                         rotation: Math.PI,
                         tint
                     },
@@ -598,7 +598,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
 
         // WARNING: INCOMPLETE BUILDING
         /* Missing:
-            - Main Floor svg (pattern is corrupted)
             - Ceiling svg (not finished probably)
             - Spawn mode
             - Ceiling residue
@@ -613,7 +612,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 name: "River Hut",
                 wallsToDestroy: 3,
                 ceilingCollapseParticle: "river_hut_ceiling_particle",
-                spawnMode: MapObjectSpawnMode.River, // TODO: river bank spawn mode
+                spawnMode: MapObjectSpawnMode.Beach, // TODO: river bank spawn mode support
                 spawnHitbox: RectangleHitbox.fromRect(70, 70, Vec.create(8, 0)),
                 ceilingHitbox: RectangleHitbox.fromRect(32.5, 39.25), // RectangleHitbox.fromRect(30.6, 37),
                 floorImages: [
@@ -623,15 +622,20 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     },
                     {
                         key: "river_hut_bridge_floor_2",
-                        position: Vec.create(bridgeFloor1, -5)
+                        position: Vec.create(bridgeFloor1, -5),
+                        scale: Vec.create(2, 2)
                     },
                     {
                         key: "river_hut_floor",
                         position: Vec.create(0, 0),
-                        scale: Vec.create(1.07, 1.07)
+                        scale: Vec.create(2.14, 2.14)
                     }
                 ],
-                // TODO: ceiling image
+                ceilingImages: [{
+                    key: "river_hut_ceiling",
+                    position: Vec.create(0, 0),
+                    scale: Vec.create(2.1, 2.1)
+                }],
                 floors: [{
                     type: FloorNames.Wood,
                     hitbox: new GroupHitbox(
@@ -6951,8 +6955,22 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 { idString: "trash_can", position: Vec.create(-10.86, 2.48) }
             ]]),
 
-            // Fall Mode Only
             riverHut([3, [
+                { idString: "small_bed", position: Vec.create(-10.55, -9.38), rotation: 0 },
+                { idString: "large_drawer", position: Vec.create(-0.26, -13.52), rotation: 0 },
+                { idString: "small_table", position: Vec.create(8.01, 13.4), rotation: 1 },
+                { idString: "chair", position: Vec.create(8.01, 9.7), rotation: 2 },
+                { idString: "trash_can", position: Vec.create(-1.69, 14.64) },
+                { idString: "potted_plant", position: Vec.create(-10.31, 3.33), rotation: 0 },
+                { idString: "barrel", position: Vec.create(-21.06, -2.26), outdoors: true },
+                { idString: "box", position: Vec.create(-19.46, 4.73), outdoors: true },
+                { idString: "grenade_box", position: Vec.create(28.14, 4.01), outdoors: true },
+                { idString: "super_barrel", position: Vec.create(31.58, -22.6), outdoors: true },
+                { idString: "regular_crate", position: Vec.create(31.49, 11.3), outdoors: true }
+            ]]),
+
+            // Fall Mode Only
+            riverHut([4, [
                 { idString: "small_bed", position: Vec.create(-10.55, -9.38), rotation: 0 },
                 { idString: "cooler", position: Vec.create(-1.83, -14.4), rotation: 0 },
                 { idString: "small_table", position: Vec.create(9.54, 11.44), rotation: 0 },
@@ -6966,7 +6984,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 { idString: "super_barrel", position: Vec.create(31.59, -22.89), outdoors: true }
             ]]),
 
-            riverHut([4, [
+            riverHut([5, [
                 { idString: "small_bed", position: Vec.create(-5.74, -13.61), rotation: 3 },
                 { idString: "cooler", position: Vec.create(-11.12, -4.91), rotation: 1 },
                 { idString: "small_table", position: Vec.create(9.76, 4.3), rotation: 0 },
@@ -6979,7 +6997,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 { idString: "propane_tank", position: Vec.create(-2.64, 21.93), outdoors: true }
             ]]),
 
-            riverHut([5, [
+            riverHut([6, [
                 { idString: "small_bed", position: Vec.create(-10.55, -9.38), rotation: 0 },
                 { idString: "small_drawer", position: Vec.create(-3.48, -13.6), rotation: 0 },
                 { idString: "small_table", position: Vec.create(9.54, 11.44), rotation: 0 },
