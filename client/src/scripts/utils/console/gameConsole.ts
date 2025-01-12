@@ -267,11 +267,21 @@ export class GameConsole {
 
         const nameRemap = {
             "-": "Minus",
-            "=": "Equals",
+
+            "equals": "Equal",
+            "=": "Equal",
+
+            "leftbracket": "BracketLeft",
             "[": "BracketLeft",
+
+            "rightbracket": "BracketRight",
             "]": "BracketRight",
+
             ";": "Semicolon",
+
+            "apostrophe": "Quote",
             "'": "Quote",
+
             "\\": "Backslash",
             ",": "Comma",
             ".": "Period",
@@ -288,8 +298,9 @@ export class GameConsole {
             }
 
             for (let bind of bindList) {
-                if (bind in nameRemap) {
-                    const newName = nameRemap[bind as keyof typeof nameRemap];
+                const mapKeyName = bind.replace(/_/g, "").toLowerCase();
+                if (mapKeyName in nameRemap) {
+                    const newName = nameRemap[mapKeyName as keyof typeof nameRemap];
                     this.warn.raw(
                         `Input <code>${bind}</code> (bound to <code>${command}</code>) is not a supported name; `
                         + `it has automatically been changed to its proper name—<code>${newName}</code>—for you.`
