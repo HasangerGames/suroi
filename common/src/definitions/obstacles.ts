@@ -1743,14 +1743,14 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 idString: "propane_tank",
                 name: "Propane Tank",
                 material: "metal_light",
-                health: 80,
+                health: 60,
                 scale: {
                     spawnMin: 1,
                     spawnMax: 1,
                     destroy: 0.95
                 },
                 reflectBullets: true,
-                hitbox: new CircleHitbox(2.5),
+                hitbox: new CircleHitbox(1.9),
                 rotationMode: RotationMode.Full,
                 allowFlyover: FlyoverPref.Always,
                 explosion: "propane_tank_explosion",
