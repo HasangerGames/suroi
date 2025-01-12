@@ -220,7 +220,8 @@ export class GameConsole {
                 rewriteToLS = true;
 
                 if (!name.match(/^uv_[a-zA-Z0-9_]+$/)) {
-                    const message = `Malformed CVar '${name}' found (this was either forced into local storage manually or is an old CVar that no longer exists). It will not be registered and will be deleted.`;
+                    const message = `Malformed CVar '${name}' found (this was either forced into local storage manually or `
+                        + "is an old CVar that no longer exists). It will not be registered and will be deleted.";
 
                     console.warn(message);
                     this.warn(message);
@@ -245,15 +246,13 @@ export class GameConsole {
 
             // FIXME remove after one or two updates (transition code grace period)
             const badge = this.variables.get.builtIn("cv_loadout_badge").value;
-            if (!Badges.hasString(badge) && !badge.startsWith("bdg_")) {
+            if (!Badges.hasString(badge) && !badge.startsWith("bdg_") && badge !== "") {
                 this.variables.set.builtIn("cv_loadout_badge", `bdg_${badge}`);
                 rewriteToLS = true;
             }
 
             if (config.binds) {
                 for (const key in config.binds) {
-                    if (!(key in config.binds)) continue;
-
                     binds[key] = config.binds[key];
                 }
                 rewriteToLS = true;
@@ -266,15 +265,38 @@ export class GameConsole {
             this._autocmpData.cache.invalidateAll();
         }
 
+        const nameRemap = {
+            "-": "Minus",
+            "=": "Equals",
+            "[": "BracketLeft",
+            "]": "BracketRight",
+            ";": "Semicolon",
+            "'": "Quote",
+            "\\": "Backslash",
+            ",": "Comma",
+            ".": "Period",
+            "/": "Slash",
+            "`": "Backquote"
+        };
+
         const bindManager = this.game.inputManager.binds;
         for (const command in binds) {
             const bindList = binds[command];
-            if (!bindList.length) {
+            if (bindList.length === 0) {
                 bindManager.addInputsToAction(command);
                 continue;
             }
 
-            for (const bind of bindList) {
+            for (let bind of bindList) {
+                if (bind in nameRemap) {
+                    const newName = nameRemap[bind as keyof typeof nameRemap];
+                    this.warn.raw(
+                        `Input <code>${bind}</code> (bound to <code>${command}</code>) is not a supported name; `
+                        + `it has automatically been changed to its proper name—<code>${newName}</code>—for you.`
+                    );
+                    bind = newName;
+                    rewriteToLS = true;
+                }
                 bindManager.addActionsToInput(bind, command);
             }
         }
@@ -486,7 +508,6 @@ export class GameConsole {
                 console.error(err);
             }
         });
-
         const addChangeListener = this.variables.addChangeListener.bind(this.variables);
         addChangeListener(
             "cv_console_left",
