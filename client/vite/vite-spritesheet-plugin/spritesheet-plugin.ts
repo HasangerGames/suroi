@@ -17,6 +17,10 @@ const compilerOpts = {
     margin: 8,
     removeExtensions: true,
     maximumSize: 4096,
+    msaa: {
+        low: 2,
+        high: 8
+    },
     packerOptions: {}
 } satisfies CompilerOptions as CompilerOptions;
 

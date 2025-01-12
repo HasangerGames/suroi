@@ -28,11 +28,19 @@ export interface CompilerOptions {
     removeExtensions: boolean
 
     /**
-    * The Maximum width and height a generated image can be
-    * Once a spritesheet exceeds this size a new one will be created
-    * @default 4096
-    */
+     * The Maximum width and height a generated image can be
+     * Once a spritesheet exceeds this size a new one will be created
+     * @default 4096
+     */
     maximumSize: number
+
+    /**
+     * Level of MSAA antialiasing to use for each size spritesheet
+     */
+    msaa: {
+        low: number
+        high: number
+    }
 
     /**
      * maxrects-packer options
@@ -195,8 +203,10 @@ export async function createSpritesheets(
         lowResCtx.drawImage(canvas, 0, 0, bin.width * lowScale, bin.height * lowScale);
 
         const [lowBuffer, highBuffer] = await Promise.all([
-            lowResCanvas.toBuffer("png"),
-            canvas.toBuffer("png")
+            // @ts-expect-error no typings for the msaa property for some reason
+            lowResCanvas.toBuffer("png", { msaa: options.msaa.low }),
+            // @ts-expect-error no typings for the msaa property for some reason
+            canvas.toBuffer("png", { msaa: options.msaa.high })
         ]);
 
         const writeAtlas = async(image: Buffer, json: SpritesheetData, resolution: number, sheetList: Atlas[]): Promise<void> => {
