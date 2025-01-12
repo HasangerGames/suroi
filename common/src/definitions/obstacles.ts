@@ -349,6 +349,8 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     red_metal_auto_door_particle:  { base: "metal_particle_1", tint: 0x401a1a },
     blue_metal_auto_door_particle: { base: "metal_particle_1", tint: 0x1a1a40 },
     rsh_case_particle:             { base: "wood_particle",    tint: 0x583928 },
+    river_hut_wall_particle:       { base: "wood_particle",    tint: 0x736758 },
+    river_hut_ceiling_particle:    { base: "ceiling_particle", tint: 0x736758 },
 
     red_gift_particle:             { base: "toilet_particle",  tint: 0x962626 },
     green_gift_particle:           { base: "toilet_particle",  tint: 0x377130 },
@@ -1963,6 +1965,24 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             houseWall(
                 [19, { color: 0x74858b, border: 0x23282a, particle: "hq_tp_wall_particle" }],
                 { hitbox: RectangleHitbox.fromRect(19.55, 2) }
+            ),
+
+            // river hut
+            houseWall(
+                [20, { color: 0x736758, border: 0x383127, particle: "river_hut_wall_particle" }],
+                { hitbox: RectangleHitbox.fromRect(32.7, 2) }
+            ),
+            houseWall(
+                [21, { color: 0x736758, border: 0x383127, particle: "river_hut_wall_particle" }],
+                { hitbox: RectangleHitbox.fromRect(23.15, 2) }
+            ),
+            houseWall(
+                [22, { color: 0x736758, border: 0x383127, particle: "river_hut_wall_particle" }],
+                { hitbox: RectangleHitbox.fromRect(30.8, 2) }
+            ),
+            houseWall(
+                [23, { color: 0x736758, border: 0x383127, particle: "river_hut_wall_particle" }],
+                { hitbox: RectangleHitbox.fromRect(25.4, 2) }
             ),
 
             // HQ walls (headquarters)
