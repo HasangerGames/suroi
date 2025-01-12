@@ -97,11 +97,12 @@ export function setUpNetGraph(game: Game) {
     }
 
     function updateForNetGraph(val: 0 | 1 | 2, doUpdate = true): void {
+        const showIO = getBuiltInCVar("pf_show_inout");
         const showPing = getBuiltInCVar("pf_show_ping");
         const showFps = getBuiltInCVar("pf_show_fps");
 
-        updateGraphVis(receiving, val, doUpdate);
-        updateGraphVis(sending, val, doUpdate);
+        updateGraphVis(receiving, showIO ? val : 0, doUpdate);
+        updateGraphVis(sending, showIO ? val : 0, doUpdate);
         updateGraphVis(
             ping,
             showPing
@@ -117,26 +118,46 @@ export function setUpNetGraph(game: Game) {
             doUpdate
         );
 
-        updatePositionsForNetGraph(val);
+        updatePositionsForGraphs(val);
     }
 
-    function updatePositionsForNetGraph(val: 0 | 1 | 2): void {
+    function updatePositionsForGraphs(val: 0 | 1 | 2): void {
+        const showIO = getBuiltInCVar("pf_show_inout");
         const showPing = getBuiltInCVar("pf_show_ping");
         const showFps = getBuiltInCVar("pf_show_fps");
 
+        // spaghetti
+        // my spaghetti :3
+        // (help)
         switch (val) {
             case 1: {
                 receiving.y = anchor.y - receiving.height;
                 sending.y = anchor.y + sendGraphOffset.y - receiving.height;
-                ping.y = anchor.y + pingGraphOffset.y - receiving.height - sending.height - (showFps ? 0 : 17);
-                fps.y = anchor.y + fpsGraphOffset.y - receiving.height - sending.height - (showPing ? 0 : 35);
+                ping.y = (
+                    showIO
+                        ? anchor.y + pingGraphOffset.y - receiving.height - sending.height
+                        : anchor.y + sendGraphOffset.y - receiving.height
+                ) - (showFps ? 0 : 17);
+                fps.y = (
+                    showIO
+                        ? anchor.y + fpsGraphOffset.y - receiving.height - sending.height
+                        : anchor.y + sendGraphOffset.y + fpsGraphOffset.y - pingGraphOffset.y - receiving.height
+                ) - (showPing ? 0 : 35);
                 break;
             }
             case 2: {
                 receiving.y = anchor.y;
                 sending.y = anchor.y + sendGraphOffset.y;
-                ping.y = anchor.y + pingGraphOffset.y - (showFps ? 0 : 17);
-                fps.y = anchor.y + fpsGraphOffset.y - (showPing ? 0 : 35);
+                ping.y = (
+                    showIO
+                        ? anchor.y + pingGraphOffset.y
+                        : anchor.y + sendGraphOffset.y - receiving.height
+                ) - (showFps ? 0 : 17);
+                fps.y = (
+                    showIO
+                        ? anchor.y + fpsGraphOffset.y
+                        : anchor.y + sendGraphOffset.y - receiving.height + fpsGraphOffset.y - pingGraphOffset.y
+                ) - (showPing ? 0 : 35);
                 break;
             }
         }
@@ -151,14 +172,14 @@ export function setUpNetGraph(game: Game) {
     ): CVarChangeListener<boolean> => (_, val) => {
         if (val) {
             updateGraphVis(self, getBuiltInCVar("pf_net_graph"), false);
-            updatePositionsForNetGraph(getBuiltInCVar("pf_net_graph"));
+            updatePositionsForGraphs(getBuiltInCVar("pf_net_graph"));
             for (const label of other.labels) {
                 if (label.forceY === undefined) continue;
                 label.forceY = targetForceY;
             }
         } else {
             self.showGraph = self.showLabels = false;
-            updatePositionsForNetGraph(getBuiltInCVar("pf_net_graph"));
+            updatePositionsForGraphs(getBuiltInCVar("pf_net_graph"));
             for (const label of other.labels) {
                 if (label.forceY === undefined) continue;
                 label.forceY = -17;
@@ -169,6 +190,19 @@ export function setUpNetGraph(game: Game) {
 
     addChangeListener("pf_show_ping", generateListener(-38, ping, fps));
     addChangeListener("pf_show_fps", generateListener(-34, fps, ping));
+    addChangeListener("pf_show_inout", (_, val) => {
+        const ng = getBuiltInCVar("pf_net_graph");
+        if (val) {
+            updateGraphVis(sending, ng, false);
+            updateGraphVis(receiving, ng, false);
+        } else {
+            sending._showGraph = sending._showLabels = false;
+            receiving._showGraph = receiving._showLabels = false;
+        }
+        sending.update();
+        receiving.update();
+        updatePositionsForGraphs(ng);
+    });
     updateForNetGraph(getBuiltInCVar("pf_net_graph"), false);
     addChangeListener("pf_net_graph", (_, val) => updateForNetGraph(val));
 
