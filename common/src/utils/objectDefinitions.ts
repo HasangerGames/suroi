@@ -240,7 +240,7 @@ export const createTemplate = <
 >(
     ...[arg0, arg1]: Parent extends undefined ? [Base] : [Parent, Base]
 ): TemplateApplier<Def, Aggregate> => {
-    const [base, parent] = arg1 === undefined ? [arg0 as Base, undefined] : [arg1, arg0 as Parent];
+    const [base, parent]: [Base, Parent | undefined] = arg1 === undefined ? [arg0 as Base, undefined] : [arg1, arg0 as Parent];
 
     // attach a hidden tag to function templates
     type Tagged = typeof fn & { __functionTemplate__: boolean };
@@ -259,13 +259,13 @@ export const createTemplate = <
                 // function template inheriting from other function template
                 ...[[cArgs, pArgs], overrides]: DetermineApplierArgs<Def, FnFromFn, Override>
             ): Def => mergeDeep(
-                {} as Def,
+                {},
                 (
                     parent as TemplateApplier<Def, FunctionTemplate<Def, ParentArgs>>
                 )(pArgs, {} as GetMissing<Def, DeepPartial<Def>>) ?? {},
-                base(...cArgs),
-                overrides ?? {}
-            )
+                (base as FunctionTemplate<Def>)(...cArgs),
+                (overrides ?? {}) as Override
+            ) as Def
             : noParent
                 ? <
                     Override extends GetMissing<Def, FnFromNorm>
@@ -273,21 +273,21 @@ export const createTemplate = <
                     // function template with no parent
                     ...[args, overrides]: DetermineApplierArgs<Def, FnFromNorm, Override>
                 ): Def => mergeDeep(
-                    {} as Def,
-                    base(...args),
-                    overrides ?? {}
-                )
+                    {},
+                    (base as FunctionTemplate<Def>)(...args),
+                    (overrides ?? {}) as Override
+                ) as Def
                 : <
                     Override extends GetMissing<Def, FnFromNorm>
                 >(
                     // function template inheriting from object parent
                     ...[args, overrides]: DetermineApplierArgs<Def, FnFromNorm, Override>
                 ): Def => mergeDeep(
-                    {} as Def,
+                    {},
                     parent({} as Def) ?? {},
-                    base(...args),
-                    overrides ?? {}
-                )
+                    (base as FunctionTemplate<Def>)(...args),
+                    (overrides ?? {}) as Override
+                ) as Def
         : parentIsFunc
             ? <
                 Override extends GetMissing<Def, NormFromFn>
@@ -300,7 +300,7 @@ export const createTemplate = <
                     parent as TemplateApplier<Def, FunctionTemplate<Def, ParentArgs>>
                 )(args, {} as GetMissing<Def, DeepPartial<Def>>) ?? {},
                 base,
-                overrides as Override ?? {}
+                (overrides ?? {}) as Override
             )
             : noParent
                 ? <
@@ -311,7 +311,7 @@ export const createTemplate = <
                 ): Def => mergeDeep(
                     {} as Def,
                     base,
-                    overrides as Override ?? {}
+                    (overrides ?? {}) as Override
                 )
                 : <
                     Override extends GetMissing<Def, NormFromNorm>
@@ -322,7 +322,7 @@ export const createTemplate = <
                     {} as Def,
                     (parent({} as Def) ?? {}),
                     base,
-                    overrides as Override ?? {}
+                    (overrides ?? {}) as Override
                 );
 
     (fn as Tagged).__functionTemplate__ = baseIsFunc;
