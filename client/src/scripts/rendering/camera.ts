@@ -8,6 +8,7 @@ import { type Game } from "../game";
 import { PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
+import type { Layer } from "@common/constants";
 
 export class Camera {
     readonly pixi: Application;
@@ -105,9 +106,9 @@ export class Camera {
         this.shakeIntensity = intensity;
     }
 
-    shockwave(duration: number, position: Vector, amplitude: number, wavelength: number, speed: number): void {
+    shockwave(duration: number, position: Vector, amplitude: number, wavelength: number, speed: number, layer: Layer): void {
         if (!this.game.console.getBuiltInCVar("cv_cooler_graphics")) return;
-        this.shockwaves.add(new Shockwave(this.game, duration, position, amplitude, wavelength, speed));
+        this.shockwaves.add(new Shockwave(this.game, duration, position, amplitude, wavelength, speed, layer));
     }
 
     addObject(...objects: Container[]): void {
@@ -127,7 +128,8 @@ export class Shockwave {
         position: Vector,
         public amplitude: number,
         public wavelength: number,
-        public speed: number
+        public speed: number,
+        public layer: Layer
     ) {
         this.lifeStart = Date.now();
         this.lifeEnd = this.lifeStart + lifetime;
