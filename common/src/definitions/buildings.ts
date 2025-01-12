@@ -634,7 +634,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ceilingImages: [{
                     key: "river_hut_ceiling",
                     position: Vec.create(0, 0),
-                    scale: Vec.create(2.1, 2.1)
+                    scale: Vec.create(2.1, 2.1),
+                    residue: "river_hut_residue"
                 }],
                 floors: [{
                     type: FloorNames.Wood,
