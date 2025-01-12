@@ -2182,7 +2182,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 floorImages: [
                     {
                         key: "blue_house_floor_2_1",
-                        position: Vec.create(-18.67, 18),
+                        position: Vec.create(-18.67, 17.97),
                         scale: Vec.create(1.07, 1.07)
                     },
                     {
@@ -4429,7 +4429,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     },
                     {
                         key: "headquarters_ceiling_2",
-                        position: Vec.create(-46.25, 5.8),
+                        position: Vec.create(-46.2, 5.8),
                         scale: Vec.create(2.15, 2.15)
                     },
                     {
