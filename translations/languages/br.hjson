@@ -104,7 +104,7 @@
   "loadout_badges": "Distintivos"
   "loadout_special": "Especial"
   "loadout_crosshairs_default": "Padrão do sistema"
-  "loadout_crosshairs_size": "Tamanho:" 
+  "loadout_crosshairs_size": "Tamanho:"
   "loadout_crosshairs_color": "Cor:"
   "loadout_crosshairs_stroke_size": "Tamanho do contorno:"
   "loadout_crosshairs_stroke_color": "Cor do contorno:"
@@ -205,7 +205,7 @@
   "bindings_toggle_console": "Alternar Console"
   "bindings_toggle_slot_lock": "Alternar Bloqueio de Slot"
 
-  "kf_suicide_kill": "<player> cometeu suicídio" 
+  "kf_suicide_kill": "<player> cometeu suicídio"
   "kf_suicide_down": "<player> se nocauteou"
 
   "kf_bleed_out_kill": "<player> sangrou até a morte"
@@ -326,7 +326,7 @@
   "mini14": "Mini-14"
   "model_37": "Modelo 37"
   "model_89": "Modelo 89"
-  "negev": "Negev"
+  "negev": "Negev SF"
   "sr25": "SR-25"
   "tango_51": "Tango 51"
   "stoner_63": "Stoner 63"
