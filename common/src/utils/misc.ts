@@ -62,6 +62,8 @@ export type DeepMutable<T> = (T extends ReadonlyArray<infer I> ? Array<DeepMutab
     -readonly [K in keyof T]: DeepMutable<T[K]>;
 };
 
+export type WithPartial<O extends object, K extends keyof O> = Omit<O, K> & { [L in K]?: O[L] };
+
 /**
  * Same as {@link Mutable} but descendants of {@link ObjectDefinition} remain untouched
  */

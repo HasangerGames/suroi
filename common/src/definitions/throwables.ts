@@ -1,4 +1,5 @@
-import { ItemType, ObjectDefinitions, type InventoryItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import type { WithPartial } from "../utils/misc";
+import { ItemType, ObjectDefinitions, type InventoryItemDefinition, type RawDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { type ExplosionDefinition } from "./explosions";
 import { type SyncedParticleSpawnerDefinition } from "./syncedParticles";
@@ -88,146 +89,150 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
         fireDelay: 250,
         speedCap: Infinity
     },
-    () => [
-        {
-            idString: "frag_grenade",
-            name: "Frag Grenade",
-            fuseTime: 4000,
-            impactDamage: 1,
-            obstacleMultiplier: 20,
-            cookable: true,
-            image: {
-                position: Vec.create(60, 43),
-                angle: 60
-            },
-            detonation: {
-                explosion: "frag_grenade_explosion"
-            },
-            animation: {
-                pinImage: "proj_frag_pin",
-                liveImage: "proj_frag",
-                leverImage: "proj_frag_lever",
-                cook: {
-                    cookingImage: "proj_frag_nopin",
-                    leftFist: Vec.create(2.5, 0),
-                    rightFist: Vec.create(-0.5, 2.15)
+    ([, , , missing]) => {
+        type Missing = typeof missing;
+        return ([
+            {
+                idString: "frag_grenade",
+                name: "Frag Grenade",
+                fuseTime: 4000,
+                impactDamage: 1,
+                cookable: true,
+                image: {
+                    position: Vec.create(60, 43),
+                    angle: 60
                 },
-                throw: {
-                    leftFist: Vec.create(1.9, -1.75),
-                    rightFist: Vec.create(4, 2.15)
-                }
-            }
-        },
-        {
-            idString: "smoke_grenade",
-            name: "Smoke Grenade",
-            fuseTime: 2000,
-            cookTime: 150,
-            throwTime: 150,
-            impactDamage: 1,
-            obstacleMultiplier: 20,
-            image: {
-                position: Vec.create(60, 43),
-                angle: 60
-            },
-            detonation: {
-                explosion: "smoke_grenade_explosion",
-                spookyParticles: {
-                    type: "plumpkin_smoke_grenade_particle",
-                    count: 10,
-                    deployAnimation: {
-                        duration: 4000,
-                        staggering: {
-                            delay: 300,
-                            initialAmount: 2
-                        }
+                detonation: {
+                    explosion: "frag_grenade_explosion"
+                },
+                animation: {
+                    pinImage: "proj_frag_pin",
+                    liveImage: "proj_frag",
+                    leverImage: "proj_frag_lever",
+                    cook: {
+                        cookingImage: "proj_frag_nopin",
+                        leftFist: Vec.create(2.5, 0),
+                        rightFist: Vec.create(-0.5, 2.15)
                     },
-                    spawnRadius: 15
+                    throw: {
+                        leftFist: Vec.create(1.9, -1.75),
+                        rightFist: Vec.create(4, 2.15)
+                    }
+                }
+            },
+            {
+                idString: "smoke_grenade",
+                name: "Smoke Grenade",
+                fuseTime: 2000,
+                cookTime: 150,
+                throwTime: 150,
+                impactDamage: 1,
+                image: {
+                    position: Vec.create(60, 43),
+                    angle: 60
                 },
-                particles: {
-                    type: "smoke_grenade_particle",
-                    count: 10,
-                    deployAnimation: {
-                        duration: 4000,
-                        staggering: {
-                            delay: 300,
-                            initialAmount: 2
-                        }
+                detonation: {
+                    explosion: "smoke_grenade_explosion",
+                    spookyParticles: {
+                        type: "plumpkin_smoke_grenade_particle",
+                        count: 10,
+                        deployAnimation: {
+                            duration: 4000,
+                            staggering: {
+                                delay: 300,
+                                initialAmount: 2
+                            }
+                        },
+                        spawnRadius: 15
                     },
-                    spawnRadius: 15
+                    particles: {
+                        type: "smoke_grenade_particle",
+                        count: 10,
+                        deployAnimation: {
+                            duration: 4000,
+                            staggering: {
+                                delay: 300,
+                                initialAmount: 2
+                            }
+                        },
+                        spawnRadius: 15
+                    }
+                },
+                animation: {
+                    pinImage: "proj_smoke_pin",
+                    liveImage: "proj_smoke",
+                    leverImage: "proj_smoke_lever",
+                    cook: {
+                        cookingImage: "proj_smoke_nopin",
+                        leftFist: Vec.create(2.5, 0),
+                        rightFist: Vec.create(-0.5, 2.15)
+                    },
+                    throw: {
+                        leftFist: Vec.create(1.9, -1.75),
+                        rightFist: Vec.create(4, 2.15)
+                    }
                 }
             },
-            animation: {
-                pinImage: "proj_smoke_pin",
-                liveImage: "proj_smoke",
-                leverImage: "proj_smoke_lever",
-                cook: {
-                    cookingImage: "proj_smoke_nopin",
-                    leftFist: Vec.create(2.5, 0),
-                    rightFist: Vec.create(-0.5, 2.15)
+            {
+                idString: "confetti_grenade",
+                name: "Confetti Grenade",
+                fuseTime: 4000,
+                cookTime: 150,
+                noSkin: true,
+                throwTime: 150,
+                impactDamage: 1,
+                cookable: true,
+                image: {
+                    position: Vec.create(60, 43),
+                    angle: 60
                 },
-                throw: {
-                    leftFist: Vec.create(1.9, -1.75),
-                    rightFist: Vec.create(4, 2.15)
+                detonation: {
+                    explosion: "confetti_grenade_explosion"
+                },
+                animation: {
+                    pinImage: "proj_frag_pin",
+                    liveImage: "proj_confetti",
+                    leverImage: "proj_frag_lever",
+                    cook: {
+                        cookingImage: "proj_confetti_nopin",
+                        leftFist: Vec.create(2.5, 0),
+                        rightFist: Vec.create(-0.5, 2.15)
+                    },
+                    throw: {
+                        leftFist: Vec.create(1.9, -1.75),
+                        rightFist: Vec.create(4, 2.15)
+                    }
+                }
+            },
+            {
+                idString: "c4",
+                name: "C4",
+                c4: true,
+                health: 40,
+                image: {
+                    position: Vec.create(60, 43),
+                    angle: 60
+                },
+                detonation: {
+                    explosion: "c4_explosion"
+                },
+                animation: {
+                    liveImage: "proj_c4",
+                    activatedImage: "proj_c4_activated",
+                    cook: {
+                        leftFist: Vec.create(2, -1),
+                        rightFist: Vec.create(3, 0)
+                    },
+                    throw: {
+                        leftFist: Vec.create(1.9, -1.75),
+                        rightFist: Vec.create(4, 2.15)
+                    }
                 }
             }
-        },
-        {
-            idString: "confetti_grenade",
-            name: "Confetti Grenade",
-            fuseTime: 4000,
-            cookTime: 150,
-            noSkin: true,
-            throwTime: 150,
-            impactDamage: 1,
-            obstacleMultiplier: 20,
-            cookable: true,
-            image: {
-                position: Vec.create(60, 43),
-                angle: 60
-            },
-            detonation: {
-                explosion: "confetti_grenade_explosion"
-            },
-            animation: {
-                pinImage: "proj_frag_pin",
-                liveImage: "proj_confetti",
-                leverImage: "proj_frag_lever",
-                cook: {
-                    cookingImage: "proj_confetti_nopin",
-                    leftFist: Vec.create(2.5, 0),
-                    rightFist: Vec.create(-0.5, 2.15)
-                },
-                throw: {
-                    leftFist: Vec.create(1.9, -1.75),
-                    rightFist: Vec.create(4, 2.15)
-                }
-            }
-        },
-        {
-            idString: "c4",
-            name: "C4",
-            c4: true,
-            health: 40,
-            image: {
-                position: Vec.create(60, 43),
-                angle: 60
-            },
-            detonation: {
-                explosion: "c4_explosion"
-            },
-            animation: {
-                liveImage: "proj_c4",
-                activatedImage: "proj_c4_activated",
-                cook: {
-                    leftFist: Vec.create(2, -1),
-                    rightFist: Vec.create(3, 0)
-                },
-                throw: {
-                    leftFist: Vec.create(1.9, -1.75),
-                    rightFist: Vec.create(4, 2.15)
-                }
-            }
-        }
-    ]
+        ] satisfies ReadonlyArray<RawDefinition<WithPartial<Missing, "killfeedFrame">>>).map(v => {
+            // @ts-expect-error init code
+            v.killfeedFrame ??= v.idString;
+            return v as Missing;
+        });
+    }
 );
