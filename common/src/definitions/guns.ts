@@ -1063,7 +1063,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             },
             {
                 idString: "negev",
-                name: "Negev",
+                name: "Negev SF",
                 ammoType: "556mm",
                 ammoSpawnAmount: 200,
                 capacity: 200,
