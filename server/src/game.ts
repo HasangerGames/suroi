@@ -595,7 +595,11 @@ export class Game implements GameData {
             }
         }
 
-        switch (Config.spawn.mode) {
+        switch (
+            Config.spawn.mode === SpawnMode.Default
+                ? this.map.mapDef.spawnMode ?? SpawnMode.Normal
+                : Config.spawn.mode
+        ) {
             case SpawnMode.Normal: {
                 const hitbox = new CircleHitbox(5);
                 const gasPosition = this.gas.currentPosition;

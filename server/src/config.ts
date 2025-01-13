@@ -3,18 +3,7 @@ import { type Vector } from "@common/utils/vector";
 import { type Maps } from "./data/maps";
 import { type Game } from "./game";
 import { type GamePlugin } from "./pluginManager";
-
-export const enum SpawnMode {
-    Normal,
-    Radius,
-    Fixed,
-    Center
-}
-export const enum GasMode {
-    Normal,
-    Debug,
-    Disabled
-}
+import { TeleportPlugin } from "./defaultPlugins/teleportPlugin";
 
 export const Config = {
     host: "127.0.0.1",
@@ -22,7 +11,7 @@ export const Config = {
 
     map: "normal",
 
-    spawn: { mode: SpawnMode.Normal },
+    spawn: { mode: SpawnMode.Default },
 
     maxTeamSize: TeamSize.Solo,
 
@@ -63,6 +52,20 @@ export const Config = {
 
 export type MapWithParams = `${keyof typeof Maps}${string}`;
 
+export const enum SpawnMode {
+    Normal,
+    Radius,
+    Fixed,
+    Center,
+    Default
+}
+
+export const enum GasMode {
+    Normal,
+    Debug,
+    Disabled
+}
+
 export interface ConfigType {
     /**
      * The hostname to host the server on.
@@ -101,14 +104,20 @@ export interface ConfigType {
     }
 
     /**
-     * There are 4 spawn modes: `Normal`, `Radius`, `Fixed`, and `Center`.
+     * There are 5 spawn modes: `Normal`, `Radius`, `Fixed`, `Center`, and `Default`.
      * - `SpawnMode.Normal` spawns the player at a random location that is at least 50 units away from other players.
      * - `SpawnMode.Radius` spawns the player at a random location within the circle with the given position and radius.
      * - `SpawnMode.Fixed` always spawns the player at the exact position given.
      * - `SpawnMode.Center` always spawns the player in the center of the map.
+     * - `SpawnMode.Default` uses the default spawn mode specified in the map definition, or `SpawnMode.Normal` if it doesn't specify one.
      */
     readonly spawn:
-        | { readonly mode: SpawnMode.Normal }
+        | {
+            readonly mode:
+                | SpawnMode.Normal
+                | SpawnMode.Center
+                | SpawnMode.Default
+        }
         | {
             readonly mode: SpawnMode.Radius
             readonly position: Vector
@@ -119,7 +128,6 @@ export interface ConfigType {
             readonly position: Vector
             readonly layer?: Layer
         }
-        | { readonly mode: SpawnMode.Center }
 
     /**
      * The maximum number of players allowed to join a team.

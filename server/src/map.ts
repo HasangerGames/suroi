@@ -24,7 +24,7 @@ import { CARDINAL_DIRECTIONS, Logger, getRandomIDString } from "./utils/misc";
 export class GameMap {
     readonly game: Game;
 
-    private readonly mapDef: MapDefinition;
+    readonly mapDef: MapDefinition;
     private readonly quadBuildings: Record<1 | 2 | 3 | 4, string[]> = { 1: [], 2: [], 3: [], 4: [] };
     private readonly quadMajorBuildings: Array<1 | 2 | 3 | 4> = [];
     private readonly majorBuildingPositions: Vector[] = [];
