@@ -13,7 +13,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": false,
-    "percentage": "98%"
+    "percentage": "99%"
   },
   "cz": {
     "name": "Čeština",
@@ -21,7 +21,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": false,
-    "percentage": "92%"
+    "percentage": "93%"
   },
   "de": {
     "name": "Deutsch",
@@ -29,7 +29,7 @@
     "mandatory": false,
     "no_resize": true,
     "no_space": false,
-    "percentage": "98%"
+    "percentage": "99%"
   },
   "en": {
     "name": "English",
@@ -45,7 +45,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": false,
-    "percentage": "99%"
+    "percentage": "100%"
   },
   "et": {
     "name": "eesti",
@@ -53,7 +53,7 @@
     "mandatory": false,
     "no_resize": true,
     "no_space": false,
-    "percentage": "99%"
+    "percentage": "100%"
   },
   "fi": {
     "name": "suomi",
@@ -61,7 +61,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": false,
-    "percentage": "97%"
+    "percentage": "98%"
   },
   "fr": {
     "name": "Français",
@@ -69,7 +69,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": false,
-    "percentage": "97%"
+    "percentage": "98%"
   },
   "gr": {
     "name": "Ελληνικά",
@@ -77,7 +77,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": false,
-    "percentage": "98%"
+    "percentage": "99%"
   },
   "hk_mo": {
     "name": "廣東話(香港/澳門)",
@@ -101,7 +101,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": false,
-    "percentage": "88%"
+    "percentage": "89%"
   },
   "jp": {
     "name": "日本語",
@@ -109,7 +109,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": true,
-    "percentage": "92%"
+    "percentage": "93%"
   },
   "lt": {
     "name": "Lietuvių",
@@ -117,7 +117,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": false,
-    "percentage": "92%"
+    "percentage": "93%"
   },
   "lv": {
     "name": "Latviešu",
@@ -125,7 +125,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": false,
-    "percentage": "92%"
+    "percentage": "93%"
   },
   "pl": {
     "name": "Polski",
@@ -133,7 +133,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": false,
-    "percentage": "97%"
+    "percentage": "98%"
   },
   "qen": {
     "name": "Cute Engwish",
@@ -165,7 +165,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": false,
-    "percentage": "91%"
+    "percentage": "92%"
   },
   "tr": {
     "name": "Turkısh",
@@ -181,7 +181,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": true,
-    "percentage": "84%"
+    "percentage": "85%"
   },
   "vi": {
     "name": "Tiếng Việt",
@@ -197,6 +197,6 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": true,
-    "percentage": "99%"
+    "percentage": "100%"
   }
 }
