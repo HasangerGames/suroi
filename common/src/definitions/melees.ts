@@ -63,7 +63,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
         image: {
             zIndex: 1
         },
-        fireMode: FireMode.Single
+        fireMode: FireMode.Auto
     },
     () => [
         {
@@ -444,7 +444,6 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             name: "Chain Saw",
             devItem: true,
             damage: 25,
-            fireMode: FireMode.Auto,
             obstacleMultiplier: 2,
             piercingMultiplier: 2,
             radius: 2.7,
