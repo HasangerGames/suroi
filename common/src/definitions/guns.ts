@@ -1333,7 +1333,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             extendedCapacity: 20,
             reloadTime: 3,
             fireDelay: 525,
-            switchDelay: 400,
+            switchDelay: 900,
             recoilMultiplier: 0.5,
             recoilDuration: 525,
             fireMode: FireMode.Auto,
@@ -1352,7 +1352,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 position: Vec.create(4.5, 0.6)
             }],
             ballistics: {
-                damage: 10,
+                damage: 5,
                 obstacleMultiplier: 1,
                 speed: 0.22,
                 range: 50,
@@ -1480,7 +1480,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             }],
             gasParticles: gasParticlePresets.shotgun,
             ballistics: {
-                damage: 10,
+                damage: 5,
                 obstacleMultiplier: 1,
                 speed: 0.22,
                 range: 50,

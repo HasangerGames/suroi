@@ -252,7 +252,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             {
                 idString: "usas_explosion",
                 name: "USAS-12",
-                damage: 40,
+                damage: 30,
                 obstacleMultiplier: 1.5,
                 radius: {
                     min: 6,
@@ -273,7 +273,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
                     damage: 2,
                     obstacleMultiplier: 1.5,
                     speed: 0.06,
-                    range: 10,
+                    range: 7,
                     rangeVariance: 1
                 },
                 sound: "12g_frag_explosion",
@@ -282,7 +282,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             {
                 idString: "m590m_explosion",
                 name: "M590M",
-                damage: 40,
+                damage: 30,
                 obstacleMultiplier: 1.5,
                 radius: {
                     min: 6,
@@ -303,7 +303,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
                     damage: 2,
                     obstacleMultiplier: 1.5,
                     speed: 0.06,
-                    range: 10,
+                    range: 7,
                     rangeVariance: 1
                 },
                 sound: "12g_frag_explosion",
