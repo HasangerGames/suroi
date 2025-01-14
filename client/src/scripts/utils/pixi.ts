@@ -203,6 +203,18 @@ export async function loadTextures(modeName: Mode, renderer: Renderer, highResol
                 resolve();
             }))
     ]);
+
+    // Apply the missing texture to any sprites whose textures can't be found after loading spritesheets
+    if (unloadedSprites) {
+        for (const [sprite, frame] of unloadedSprites.entries()) {
+            if (sprite.destroyed) continue;
+
+            console.warn(`Texture not found: "${frame}"`);
+            sprite.setFrame("_missing_texture", true);
+            unloadedSprites.delete(sprite);
+        }
+        unloadedSprites = undefined;
+    }
 }
 
 export class SuroiSprite extends Sprite {
