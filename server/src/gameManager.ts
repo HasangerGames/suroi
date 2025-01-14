@@ -216,32 +216,7 @@ if (!isMainThread) {
     const simultaneousConnections: Record<string, number> = {};
     let joinAttempts: Record<string, number> = {};
 
-    parentPort?.on("message", (message: WorkerMessage) => {
-        switch (message.type) {
-            case WorkerMessages.AllowIP: {
-                allowedIPs.set(message.ip, game.now + 10000);
-                parentPort?.postMessage({
-                    type: WorkerMessages.IPAllowed,
-                    ip: message.ip
-                });
-                break;
-            }
-            case WorkerMessages.Reset: {
-                game = new Game(id, maxTeamSize, map);
-                break;
-            }
-            case WorkerMessages.Kill: {
-                game.kill();
-                break;
-            }
-            case WorkerMessages.UpdateMaxTeamSize: {
-                maxTeamSize = message.maxTeamSize;
-                break;
-            }
-        }
-    });
-
-    createServer().ws("/play", {
+    const app = createServer().ws("/play", {
         idleTimeout: 30,
 
         /**
@@ -283,7 +258,6 @@ if (!isMainThread) {
             // Ensure IP is allowed
             //
             if ((allowedIPs.get(ip) ?? 0) < game.now) {
-                console.log("forbidden to due unallowed IP");
                 forbidden(res);
                 return;
             }
@@ -381,6 +355,32 @@ if (!isMainThread) {
         }
     }).listen(Config.host, Config.port + id + 1, (): void => {
         game.log(`Listening on ${Config.host}:${Config.port + id + 1}`);
+    });
+
+    parentPort?.on("message", (message: WorkerMessage) => {
+        switch (message.type) {
+            case WorkerMessages.AllowIP: {
+                allowedIPs.set(message.ip, game.now + 10000);
+                parentPort?.postMessage({
+                    type: WorkerMessages.IPAllowed,
+                    ip: message.ip
+                });
+                break;
+            }
+            case WorkerMessages.Reset: {
+                game = new Game(id, maxTeamSize, map);
+                break;
+            }
+            case WorkerMessages.Kill: {
+                game.kill();
+                app.close();
+                break;
+            }
+            case WorkerMessages.UpdateMaxTeamSize: {
+                maxTeamSize = message.maxTeamSize;
+                break;
+            }
+        }
     });
 
     if (Config.protection?.maxJoinAttempts) {
