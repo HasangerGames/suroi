@@ -95,6 +95,12 @@ export function resetPlayButtons(): void {
     $("#locked-msg").css("top", isSolo ? "225px" : "153px").toggle(maxTeamSize !== undefined);
 }
 
+let forceReload = false;
+export function reloadPage(): void {
+    forceReload = true;
+    location.reload();
+}
+
 export async function fetchServerData(game: Game): Promise<void> {
     const { uiManager: { ui } } = game;
     const regionMap = Object.entries(regionInfo);
@@ -169,7 +175,7 @@ export async function fetchServerData(game: Game): Promise<void> {
             (modeSwitchTime ?? Infinity) - now
         ];
         if ((timeBeforeTeamSizeSwitch < 0 && !game.gameStarted) || timeBeforeModeSwitch < 0) {
-            location.reload();
+            reloadPage();
             return;
         }
 
@@ -2236,7 +2242,12 @@ export async function setUpUI(game: Game): Promise<void> {
 
     // Prompt when trying to close the tab while playing
     window.addEventListener("beforeunload", (e: Event) => {
-        if (ui.canvas.hasClass("active") && game.console.getBuiltInCVar("cv_leave_warning") && !game.gameOver) {
+        if (
+            ui.canvas.hasClass("active")
+            && game.console.getBuiltInCVar("cv_leave_warning")
+            && !forceReload
+            && !game.gameOver
+        ) {
             e.preventDefault();
         }
     });

@@ -54,7 +54,7 @@ import { ThrowableProjectile } from "./objects/throwableProj";
 import { Camera } from "./rendering/camera";
 import { Gas, GasRender } from "./rendering/gas";
 import { Minimap } from "./rendering/minimap";
-import { autoPickup, fetchServerData, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, updateDisconnectTime } from "./ui";
+import { autoPickup, fetchServerData, reloadPage, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, updateDisconnectTime } from "./ui";
 import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
@@ -449,7 +449,7 @@ export class Game {
             const reason = this.disconnectReason || "Connection lost";
 
             if (reason === "Server killed") {
-                location.reload();
+                reloadPage();
                 return;
             }
 
