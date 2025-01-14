@@ -1,10 +1,9 @@
+import { type Mode } from "@common/definitions/modes";
 import { Obstacles } from "@common/definitions/obstacles";
 import { HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Vec, type Vector } from "@common/utils/vector";
-import $ from "jquery";
 import { Assets, Container, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
 import { PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
-import { type Mode } from "@common/definitions/modes";
 
 const textures: Record<string, Texture> = {};
 

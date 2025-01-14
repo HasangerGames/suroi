@@ -1,8 +1,9 @@
 import { GameConstants, TeamSize } from "@common/constants";
 import { Badges } from "@common/definitions/badges";
+import { Mode, Modes } from "@common/definitions/modes";
 import { Skins } from "@common/definitions/skins";
 import { type GetGameResponse } from "@common/typings";
-import { ColorStyles, styleText } from "@common/utils/logging";
+import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import { Numeric } from "@common/utils/math";
 import { Cron } from "croner";
 import { existsSync, readFile, readFileSync, writeFile, writeFileSync } from "fs";
@@ -12,13 +13,12 @@ import { type WebSocket } from "uWebSockets.js";
 import { isMainThread } from "worker_threads";
 import { version } from "../../package.json";
 import { Config } from "./config";
+import { MapName, Maps } from "./data/maps";
 import { findGame, games, newGame, WorkerMessages } from "./gameManager";
 import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./team";
 import IPChecker, { Punishment } from "./utils/apiHelper";
-import { cleanUsername } from "./utils/misc";
-import { Logger } from "@common/utils/logging";
+import { cleanUsername, modeFromMap } from "./utils/misc";
 import { cors, createServer, forbidden, getIP, textDecoder } from "./utils/serverHelpers";
-import { clearScreenDown } from "node:readline";
 
 let punishments: Punishment[] = [];
 
@@ -92,6 +92,8 @@ let mapRotationIndex = 0;
 
 let mapSwitchCron: Cron | undefined;
 
+let mode: Mode;
+
 if (isMainThread) {
     // Initialize the server
     createServer().get("/api/serverInfo", async res => {
@@ -99,13 +101,12 @@ if (isMainThread) {
         res
             .writeHeader("Content-Type", "application/json")
             .end(JSON.stringify({
+                protocolVersion: GameConstants.protocolVersion,
                 playerCount: games.reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
                 maxTeamSize,
-
-                nextTeamSizeSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
-                nextMapSwitchTime: mapSwitchCron?.nextRun()?.getTime(),
-                mode: map as unknown as Mode, // TODO
-                protocolVersion: GameConstants.protocolVersion
+                maxTeamSizeSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
+                mode,
+                modeSwitchTime: mapSwitchCron?.nextRun()?.getTime()
             }));
     }).get("/api/getGame", async(res, req) => {
         let aborted = false;
@@ -316,6 +317,8 @@ if (isMainThread) {
         serverLog(`Listening on ${Config.host}:${Config.port}`);
         serverLog("Press Ctrl+C to exit.");
 
+        mode = modeFromMap(map);
+
         void newGame(0);
 
         setInterval(() => {
@@ -350,10 +353,13 @@ if (isMainThread) {
         if (typeof _map === "object") {
             mapSwitchCron = Cron(_map.switchSchedule, () => {
                 map = _map.rotation[++mapRotationIndex % _map.rotation.length];
+                mode = modeFromMap(map);
 
                 for (const game of games) {
-                    game?.worker.postMessage({ type: WorkerMessages.UpdateMap, map });
+                    game?.worker.postMessage({ type: WorkerMessages.Kill });
                 }
+                games.length = 0;
+                void newGame();
 
                 serverLog(`Switching to "${map}" map`);
             });

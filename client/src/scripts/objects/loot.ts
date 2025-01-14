@@ -9,7 +9,7 @@ import { ItemType, LootRadius } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
-import { DIFF_LAYER_HITBOX_OPACITY, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
@@ -74,9 +74,10 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                     .setAngle(90);
 
                 if (definition.grassTint) {
-                    this.images.item.setTint(GHILLIE_TINT);
-                    this.images.skinFistLeft.setTint(GHILLIE_TINT);
-                    this.images.skinFistRight.setTint(GHILLIE_TINT);
+                    const ghillieTint = this.game.ghillieTint;
+                    this.images.item.setTint(ghillieTint);
+                    this.images.skinFistLeft.setTint(ghillieTint);
+                    this.images.skinFistRight.setTint(ghillieTint);
                 }
 
                 this.container.addChild(this.images.skinFistLeft, this.images.skinFistRight);

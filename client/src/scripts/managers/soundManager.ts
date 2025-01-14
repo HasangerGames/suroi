@@ -3,7 +3,6 @@ import { Layer } from "@common/constants";
 import { Numeric } from "@common/utils/math";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
-import { MODE /* , SOUND_FILTER_FOR_LAYERS */ } from "../utils/constants";
 // add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
 import * as PixiSound from "@pixi/sound";
 
@@ -158,7 +157,7 @@ export class SoundManager {
 
         this.sfxVolume = game.console.getBuiltInCVar("cv_sfx_volume");
         this.ambienceVolume = game.console.getBuiltInCVar("cv_ambience_volume");
-        this.loadSounds();
+        this.loadSounds(game);
     }
 
     play(name: string, options?: Partial<SoundOptions>): GameSound {
@@ -193,7 +192,7 @@ export class SoundManager {
         PixiSound.sound.stopAll();
     }
 
-    loadSounds(): void {
+    loadSounds({ mode, modeName }: Game): void {
         for (const path in import.meta.glob(["/public/audio/sfx/**/*.mp3", "/public/audio/ambience/**/*.mp3"])) {
             /**
              * For some reason, PIXI will call the `loaded` callback twice
@@ -203,8 +202,8 @@ export class SoundManager {
 
             const name = path.slice(path.lastIndexOf("/") + 1, -4); // removes path and extension
             let url = path.slice(7); // removes the "/public"
-            if (MODE.specialSounds?.includes(name)) {
-                url = url.replace(name, `${name}_${MODE.reskin}`);
+            if (mode.sounds?.replace?.includes(name)) {
+                url = url.replace(name, `${name}_${modeName}`);
             }
 
             PixiSound.sound.add(

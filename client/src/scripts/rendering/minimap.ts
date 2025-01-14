@@ -6,14 +6,14 @@ import { RectangleHitbox } from "@common/utils/hitbox";
 import { Numeric } from "@common/utils/math";
 import { FloorTypes, River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
+import FontFaceObserver from "fontfaceobserver";
 import $ from "jquery";
 import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
 import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
-import { COLORS, DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, drawGroundGraphics, drawHitbox, setOnSpritesheetsLoaded, spritesheetsLoaded, toPixiCoords } from "../utils/pixi";
 import { GasRender } from "./gas";
-import FontFaceObserver from "fontfaceobserver";
 
 export class Minimap {
     private _expanded = false;
@@ -75,10 +75,10 @@ export class Minimap {
 
     private _margins = Vec.create(0, 0);
 
-    readonly gasRender = new GasRender(1);
+    gasRender: GasRender;
     readonly placesContainer = new Container();
 
-    private _terrain = new Terrain(0, 0, 0, 0, 0, []);
+    private _terrain: Terrain;
     get terrain(): Terrain { return this._terrain; }
 
     readonly pings = new Set<MapPing>();
@@ -99,6 +99,9 @@ export class Minimap {
             throw new Error("Class 'Minimap' has already been instantiated");
         }
         Minimap._instantiated = true;
+
+        this.gasRender = new GasRender(game, 1);
+        this._terrain = new Terrain(0, 0, 0, 0, 0, []);
 
         this._objectsContainer.mask = this.mask;
 
@@ -148,13 +151,15 @@ export class Minimap {
             { points: grassPoints }
         ] = [this._terrain.beachHitbox, this._terrain.grassHitbox];
 
+        const colors = this.game.colors;
+
         const beach = scale === 1 ? beachPoints : beachPoints.map(point => Vec.scale(point, scale));
         // The grass is a hole in the map shape, the background clear color is the grass color
         ctx.roundShape(beach, radius);
         ctx.cut();
 
         ctx.roundShape?.(beach, radius);
-        ctx.fill(COLORS.beach);
+        ctx.fill(colors.beach);
 
         const grass = scale === 1 ? grassPoints : grassPoints.map(point => Vec.scale(point, scale));
         ctx.roundShape(grass, radius);
@@ -178,7 +183,7 @@ export class Minimap {
             ctx
                 .beginPath()
                 .roundShape(getRiverPoly(river.bankHitbox.points), 0, true)
-                .fill(river.isTrail ? COLORS.trail : COLORS.riverBank);
+                .fill(river.isTrail ? colors.trail : colors.riverBank);
         }
 
         ctx.beginPath();
@@ -187,11 +192,11 @@ export class Minimap {
                 ctx.roundShape(getRiverPoly(river.waterHitbox.points), 0, true);
             }
         }
-        ctx.fill(COLORS.water);
+        ctx.fill(colors.water);
 
         ctx.beginPath();
         ctx.rect(0, 0, this._width * scale, this._height * scale);
-        ctx.fill(COLORS.water);
+        ctx.fill(colors.water);
         ctx.roundShape(beach, radius);
         ctx.cut();
 
@@ -235,6 +240,8 @@ export class Minimap {
         terrainGraphics.clear();
         const mapGraphics = new Graphics();
 
+        const colors = this.game.colors;
+
         this.drawTerrain(terrainGraphics, PIXI_SCALE, 6);
         this.drawTerrain(mapGraphics, 1, 2);
 
@@ -251,7 +258,7 @@ export class Minimap {
         terrainGraphics.rect(-margin, realHeight, realWidth + doubleMargin, margin);
         terrainGraphics.rect(-margin, -margin, margin, realHeight + doubleMargin);
         terrainGraphics.rect(realWidth, -margin, margin, realHeight + doubleMargin);
-        terrainGraphics.fill(COLORS.border);
+        terrainGraphics.fill(colors.border);
 
         this.game.camera.addObject(terrainGraphics);
 
@@ -338,7 +345,7 @@ export class Minimap {
             resolution: isMobile.any ? 1 : 2
         });
 
-        this.game.pixi.renderer.render({ container: mapRender, target: this._texture, clearColor: COLORS.grass });
+        this.game.pixi.renderer.render({ container: mapRender, target: this._texture, clearColor: colors.grass });
         this.sprite.texture.destroy(true);
         this.sprite.texture = this._texture;
         mapRender.destroy({

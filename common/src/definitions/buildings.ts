@@ -1,4 +1,4 @@
-import { GameConstants, Layers, TentTints, ZIndexes } from "../constants";
+import { Layers, TentTints, ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
@@ -586,8 +586,9 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         position: Vec.create(0, 6.98),
                         rotation: Math.PI,
                         tint
-                    },
-                    ...(GameConstants.modeName === "winter" ? snowDecalDefinitions[open] : [])
+                    }
+                    // TODO Detect mode somehow
+                    // ...(GameConstants.modeName === "winter" ? snowDecalDefinitions[open] : [])
                 ],
                 floors: [{
                     type: FloorNames.Metal,
@@ -900,62 +901,63 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     position: Vec.create(0, 0),
                     tint,
                     scale: Vec.create(2.01, 2.05)
-                },
-                ...(GameConstants.modeName === "winter"
-                    ? [
-                        {
-                            key: "snow_decal_1",
-                            position: Vec.create(5, 0),
-                            scale: Vec.create(1.5, 1.5)
-                        },
-                        {
-                            key: "snow_decal_2",
-                            position: Vec.create(12, -39),
-                            scale: Vec.create(1.5, 1.5),
-                            rotation: Math.PI / 2
-                        },
-                        {
-                            key: "snow_decal_3",
-                            position: Vec.create(-15, 33),
-                            scale: Vec.create(2, 2),
-                            rotation: Math.PI
-                        },
-                        {
-                            key: "port_warehouse_snow_decal_1",
-                            position: Vec.create(-28.5, -53.7),
-                            scale: Vec.create(2, 2),
-                            rotation: -Math.PI / 2
-                        },
-                        {
-                            key: "port_warehouse_snow_decal_2",
-                            position: Vec.create(13.1, 53.5),
-                            rotation: Math.PI,
-                            scale: Vec.create(2, 2)
-                        },
-                        {
-                            key: "port_warehouse_snow_decal_3",
-                            position: Vec.create(17.5, -52.25),
-                            scale: Vec.create(2, 2),
-                            rotation: -Math.PI / 2
-                        },
-                        {
-                            key: "port_warehouse_snow_decal_4",
-                            position: Vec.create(-23, -20),
-                            scale: Vec.create(2, 2)
-                        },
-                        {
-                            key: "port_warehouse_snow_decal_5",
-                            position: Vec.create(22.8, -20),
-                            scale: Vec.create(2, 2)
-                        },
-                        {
-                            key: "port_warehouse_snow_decal_1",
-                            position: Vec.create(-23.5, 58.6),
-                            scale: Vec.create(2, 2),
-                            rotation: Math.PI
-                        }
-                    ]
-                    : [])
+                }
+                // TODO Detect mode somehow
+                // ...(GameConstants.modeName === "winter"
+                //     ? [
+                //         {
+                //             key: "snow_decal_1",
+                //             position: Vec.create(5, 0),
+                //             scale: Vec.create(1.5, 1.5)
+                //         },
+                //         {
+                //             key: "snow_decal_2",
+                //             position: Vec.create(12, -39),
+                //             scale: Vec.create(1.5, 1.5),
+                //             rotation: Math.PI / 2
+                //         },
+                //         {
+                //             key: "snow_decal_3",
+                //             position: Vec.create(-15, 33),
+                //             scale: Vec.create(2, 2),
+                //             rotation: Math.PI
+                //         },
+                //         {
+                //             key: "port_warehouse_snow_decal_1",
+                //             position: Vec.create(-28.5, -53.7),
+                //             scale: Vec.create(2, 2),
+                //             rotation: -Math.PI / 2
+                //         },
+                //         {
+                //             key: "port_warehouse_snow_decal_2",
+                //             position: Vec.create(13.1, 53.5),
+                //             rotation: Math.PI,
+                //             scale: Vec.create(2, 2)
+                //         },
+                //         {
+                //             key: "port_warehouse_snow_decal_3",
+                //             position: Vec.create(17.5, -52.25),
+                //             scale: Vec.create(2, 2),
+                //             rotation: -Math.PI / 2
+                //         },
+                //         {
+                //             key: "port_warehouse_snow_decal_4",
+                //             position: Vec.create(-23, -20),
+                //             scale: Vec.create(2, 2)
+                //         },
+                //         {
+                //             key: "port_warehouse_snow_decal_5",
+                //             position: Vec.create(22.8, -20),
+                //             scale: Vec.create(2, 2)
+                //         },
+                //         {
+                //             key: "port_warehouse_snow_decal_1",
+                //             position: Vec.create(-23.5, 58.6),
+                //             scale: Vec.create(2, 2),
+                //             rotation: Math.PI
+                //         }
+                //     ]
+                //     : [])
             ],
             obstacles: [
                 { idString: "super_barrel", position: Vec.create(-10, -52) },

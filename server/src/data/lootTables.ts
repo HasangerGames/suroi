@@ -1,4 +1,3 @@
-import { GameConstants } from "@common/constants";
 import { Ammos } from "@common/definitions/ammos";
 import { Armors } from "@common/definitions/armors";
 import { Backpacks } from "@common/definitions/backpacks";
@@ -7,6 +6,7 @@ import { Guns } from "@common/definitions/guns";
 import { HealingItems } from "@common/definitions/healingItems";
 import { Loots, type LootDefForType, type LootDefinition } from "@common/definitions/loots";
 import { Melees } from "@common/definitions/melees";
+import { Mode } from "@common/definitions/modes";
 import { ObstacleDefinition, Obstacles } from "@common/definitions/obstacles";
 import { PerkIds, Perks } from "@common/definitions/perks";
 import { Scopes } from "@common/definitions/scopes";
@@ -15,8 +15,8 @@ import { Throwables } from "@common/definitions/throwables";
 import { isArray } from "@common/utils/misc";
 import { ItemType, NullString, type ObjectDefinition, type ObjectDefinitions, type ReferenceOrRandom, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, weightedRandom } from "@common/utils/random";
+import { map } from "../server";
 import { Maps } from "./maps";
-import { Mode } from "@common/definitions/modes";
 
 export type WeightedItem =
     (
@@ -81,7 +81,7 @@ export function getLootFromTable(tableID: string): LootItem[] {
 }
 
 export function resolveTable(tableID: string): LootTable {
-    return LootTables[GameConstants.modeName]?.[tableID] ?? LootTables.normal[tableID];
+    return LootTables[map as Mode]?.[tableID] ?? LootTables.normal[tableID];
 }
 
 function getLoot(items: WeightedItem[], noDuplicates?: boolean): LootItem[] {
@@ -1686,7 +1686,8 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "baseball_bat", weight: 2 },
             { item: "gas_can", weight: 0 } // somewhat hack in order to make the gas can obtainable through mini plumpkins
         ]
-    }
+    },
+    birthday: {}
 };
 
 // either return a reference as-is, or take all the non-null string references
@@ -1723,7 +1724,7 @@ type Cache = {
 // an array is just an object with numeric keys
 const spawnableItemTypeCache = [] as Cache;
 
-// has to lazy-loaded to avoid circular dependency issues
+// has to be lazy-loaded to avoid circular dependency issues
 let spawnableLoots: SpawnableItemRegistry | undefined = undefined;
 export const SpawnableLoots = (): SpawnableItemRegistry => spawnableLoots ??= (() => {
     /*
@@ -1732,7 +1733,7 @@ export const SpawnableLoots = (): SpawnableItemRegistry => spawnableLoots ??= ((
         then we mustn't take loot table A into account
     */
 
-    const mainMap = Maps[GameConstants.modeName as keyof typeof Maps];
+    const mainMap = Maps[map.split(":")[0] as keyof typeof Maps];
 
     // first, get all the reachable buildings
     // to do this, we get all the buildings in the map def, then for each one, include itself and any subbuildings

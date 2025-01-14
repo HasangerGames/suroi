@@ -23,7 +23,8 @@ export enum WorkerMessages {
     UpdateMaxTeamSize,
     UpdateMap,
     CreateNewGame,
-    Reset
+    Reset,
+    Kill
 }
 
 export type WorkerMessage =
@@ -40,13 +41,10 @@ export type WorkerMessage =
         readonly maxTeamSize: TeamSize
     }
     | {
-        readonly type: WorkerMessages.UpdateMap
-        readonly map: MapWithParams
-    }
-    | {
         readonly type:
             | WorkerMessages.CreateNewGame
             | WorkerMessages.Reset
+            | WorkerMessages.Kill
     };
 
 export interface GameData {
@@ -230,6 +228,10 @@ if (!isMainThread) {
             }
             case WorkerMessages.Reset: {
                 game = new Game(id, maxTeamSize, map);
+                break;
+            }
+            case WorkerMessages.Kill: {
+                game.kill();
                 break;
             }
             case WorkerMessages.UpdateMaxTeamSize: {

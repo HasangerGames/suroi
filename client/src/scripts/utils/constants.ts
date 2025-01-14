@@ -1,5 +1,4 @@
-import { GameConstants, Layer } from "@common/constants";
-import { Modes, type ColorKeys } from "@common/definitions/modes";
+import { Layer } from "@common/constants";
 import { Color } from "pixi.js";
 
 export const FORCE_MOBILE = false;
@@ -25,18 +24,6 @@ export const HITBOX_COLORS = {
     player: new Color("blue"),
     playerWeapon: new Color("lime")
 };
-
-// Converts the strings in the mode definition to Color objects
-export const COLORS = (Object.keys(MODE.colors) as ColorKeys[])
-    .reduce(
-        (result, key) => {
-            result[key] = new Color(MODE.colors[key]);
-            return result;
-        },
-        {} as Record<ColorKeys, Color>
-    );
-
-export const GHILLIE_TINT = COLORS.grass.multiply(new Color("hsl(0, 0%, 99%)"));
 
 export const TEAMMATE_COLORS = [
     new Color("#00ffff"),

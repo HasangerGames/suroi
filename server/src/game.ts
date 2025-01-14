@@ -47,7 +47,9 @@ import { PluginManager } from "./pluginManager";
 import { Team } from "./team";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
-import { cleanUsername, removeFrom } from "./utils/misc";
+import { cleanUsername, modeFromMap, removeFrom } from "./utils/misc";
+import { Mode } from "fs";
+import { ModeDefinition, Modes } from "@common/definitions/modes";
 
 /*
     eslint-disable
@@ -65,6 +67,9 @@ export class Game implements GameData {
     readonly gas: Gas;
     readonly grid: Grid;
     readonly pluginManager = new PluginManager(this);
+
+    readonly modeName: Mode;
+    readonly mode: ModeDefinition;
 
     readonly partialDirtyObjects = new Set<BaseGameObject>();
     readonly fullDirtyObjects = new Set<BaseGameObject>();
@@ -231,6 +236,9 @@ export class Game implements GameData {
             stopped: false,
             startedTime: -1
         });
+
+        this.modeName = modeFromMap(map);
+        this.mode = (Modes as Record<Mode, ModeDefinition>)[this.modeName];
 
         this.pluginManager.loadPlugins();
 
@@ -503,6 +511,20 @@ export class Game implements GameData {
         parentPort?.postMessage({ type: WorkerMessages.CreateNewGame });
         this.log("Attempting to create new game");
         this.setGameData({ allowJoin: false });
+    }
+
+    kill(): void {
+        for (const player of this.connectedPlayers) {
+            player.disconnect("Server killed");
+        }
+
+        this.setGameData({
+            allowJoin: false,
+            over: true,
+            stopped: true
+        });
+
+        this.log("Killed");
     }
 
     private _killLeader: Player | undefined;

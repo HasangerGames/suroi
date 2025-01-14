@@ -55,7 +55,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
             void: "hsl(25, 80%, 6%)"
         },
         sounds: {
-            replace: ["wind_ambience"]
+            ambience: "wind_ambience"
         },
         defaultScope: "2x_scope",
         particleEffects: {
