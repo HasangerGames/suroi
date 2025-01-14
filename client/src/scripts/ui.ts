@@ -43,7 +43,8 @@ interface RegionInfo {
     readonly gameAddress: string
     readonly playerCount?: number
     readonly maxTeamSize?: number
-    readonly nextSwitchTime?: number
+    readonly maxTeamSizeSwitchTime?: number
+    readonly mapSwitchTime?: number
     readonly ping?: number
 }
 
@@ -202,12 +203,12 @@ export async function setUpUI(game: Game): Promise<void> {
 
     const pad = (n: number): string | number => n < 10 ? `0${n}` : n;
     const updateSwitchTime = (): void => {
-        if (!selectedRegion?.nextSwitchTime) {
+        if (!selectedRegion?.maxTeamSizeSwitchTime) {
             ui.lockedTime.text("--:--:--");
             return;
         }
-        const millis = selectedRegion.nextSwitchTime - Date.now();
-        if (millis < 0) {
+        const millis = selectedRegion.maxTeamSizeSwitchTime - Date.now();
+        if (millis < 0 && !game.gameStarted) {
             location.reload();
             return;
         }

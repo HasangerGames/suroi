@@ -5,13 +5,13 @@ import $ from "jquery";
 import { Assets, Container, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
 import { getTranslatedString } from "../../translations";
 import { PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
-import { GameConstants } from "@common/constants";
+import { type Mode } from "@common/definitions/modes";
 
 const textures: Record<string, Texture> = {};
 
 const loadingText = $("#loading-text");
 
-export async function loadTextures(renderer: Renderer, highResolution: boolean): Promise<void> {
+export async function loadTextures(modeName: Mode, renderer: Renderer, highResolution: boolean): Promise<void> {
     // If device doesn't support 4096x4096 textures, force low resolution textures since they are 2048x2048
     if (renderer.type as RendererType === RendererType.WEBGL) {
         const gl = (renderer as WebGLRenderer).gl;
@@ -28,7 +28,7 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         : (await import("virtual:spritesheets-jsons-low-res")).atlases;
 
-    const spritesheets = atlases[GameConstants.modeName];
+    const spritesheets = atlases[modeName];
 
     let resolved = 0;
     const count = spritesheets.length;

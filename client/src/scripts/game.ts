@@ -117,6 +117,8 @@ export class Game {
 
     teamMode = false;
 
+    modeName: Mode;
+
     /**
      * proxy for `activePlayer`'s layer
      */

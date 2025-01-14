@@ -26,8 +26,6 @@ export const HITBOX_COLORS = {
     playerWeapon: new Color("lime")
 };
 
-export const MODE = Modes[GameConstants.modeName];
-
 // Converts the strings in the mode definition to Color objects
 export const COLORS = (Object.keys(MODE.colors) as ColorKeys[])
     .reduce(

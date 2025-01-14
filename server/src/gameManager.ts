@@ -4,15 +4,16 @@ import { Numeric } from "@common/utils/math";
 import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { isMainThread, parentPort, Worker, workerData } from "node:worker_threads";
 import { WebSocket } from "uWebSockets.js";
-import { Config } from "./config";
+import { Config, MapWithParams } from "./config";
 import { Game } from "./game";
 import { PlayerContainer } from "./objects/player";
-import { maxTeamSize, serverLog, serverWarn } from "./server";
+import { map, maxTeamSize, serverLog, serverWarn } from "./server";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 
 export interface WorkerInitData {
     readonly id: number
     readonly maxTeamSize: number
+    readonly map: MapWithParams
 }
 
 export enum WorkerMessages {
@@ -20,6 +21,7 @@ export enum WorkerMessages {
     IPAllowed,
     UpdateGameData,
     UpdateMaxTeamSize,
+    UpdateMap,
     CreateNewGame,
     Reset
 }
@@ -36,6 +38,10 @@ export type WorkerMessage =
     | {
         readonly type: WorkerMessages.UpdateMaxTeamSize
         readonly maxTeamSize: TeamSize
+    }
+    | {
+        readonly type: WorkerMessages.UpdateMap
+        readonly map: MapWithParams
     }
     | {
         readonly type:
@@ -78,7 +84,7 @@ export class GameContainer {
             this.worker = new Worker(
                 __filename,
                 {
-                    workerData: { id, maxTeamSize } satisfies WorkerInitData,
+                    workerData: { id, maxTeamSize, map } satisfies WorkerInitData,
                     execArgv: __filename.endsWith(".ts")
                         ? ["-r", "ts-node/register", "-r", "tsconfig-paths/register"]
                         : undefined
@@ -197,12 +203,12 @@ export async function newGame(id?: number): Promise<number> {
 
 export const games: Array<GameContainer | undefined> = [];
 
-
 if (!isMainThread) {
     const id = (workerData as WorkerInitData).id;
     let maxTeamSize = (workerData as WorkerInitData).maxTeamSize;
+    const map = (workerData as WorkerInitData).map;
 
-    let game = new Game(id, maxTeamSize);
+    let game = new Game(id, maxTeamSize, map);
 
     process.on("uncaughtException", e => game.error("An unhandled error occurred. Details:", e));
 
@@ -223,7 +229,7 @@ if (!isMainThread) {
                 break;
             }
             case WorkerMessages.Reset: {
-                game = new Game(id, maxTeamSize);
+                game = new Game(id, maxTeamSize, map);
                 break;
             }
             case WorkerMessages.UpdateMaxTeamSize: {

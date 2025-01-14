@@ -25,7 +25,7 @@ import { type WebSocket } from "uWebSockets.js";
 import { parentPort } from "worker_threads";
 
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
-import { Config, SpawnMode } from "./config";
+import { Config, MapWithParams, SpawnMode } from "./config";
 import { MapName, Maps } from "./data/maps";
 import { WorkerMessages, type GameData, type WorkerMessage } from "./gameManager";
 import { Gas } from "./gas";
@@ -220,7 +220,7 @@ export class Game implements GameData {
         return this._idAllocator.takeNext();
     }
 
-    constructor(id: number, maxTeamSize: TeamSize) {
+    constructor(id: number, maxTeamSize: TeamSize, map: MapWithParams) {
         this.id = id;
         this.maxTeamSize = maxTeamSize;
         this.teamMode = this.maxTeamSize > TeamSize.Solo;
@@ -234,9 +234,9 @@ export class Game implements GameData {
 
         this.pluginManager.loadPlugins();
 
-        const { width, height } = Maps[Config.map.split(":")[0] as MapName];
+        const { width, height } = Maps[map.split(":")[0] as MapName];
         this.grid = new Grid(this, width, height);
-        this.map = new GameMap(this, Config.map);
+        this.map = new GameMap(this, map);
         this.gas = new Gas(this);
 
         this.setGameData({ allowJoin: true });

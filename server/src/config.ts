@@ -3,13 +3,15 @@ import { type Vector } from "@common/utils/vector";
 import { type Maps } from "./data/maps";
 import { type Game } from "./game";
 import { type GamePlugin } from "./pluginManager";
-import { TeleportPlugin } from "./defaultPlugins/teleportPlugin";
 
 export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "normal",
+    map: {
+        rotation: ["normal", "fall"],
+        switchSchedule: "*/30 * * * * *"
+    },
 
     spawn: { mode: SpawnMode.Default },
 

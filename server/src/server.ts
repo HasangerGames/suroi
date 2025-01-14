@@ -18,6 +18,7 @@ import IPChecker, { Punishment } from "./utils/apiHelper";
 import { cleanUsername } from "./utils/misc";
 import { Logger } from "@common/utils/logging";
 import { cors, createServer, forbidden, getIP, textDecoder } from "./utils/serverHelpers";
+import { clearScreenDown } from "node:readline";
 
 let punishments: Punishment[] = [];
 
@@ -85,7 +86,7 @@ let teamSizeRotationIndex = 0;
 
 let maxTeamSizeSwitchCron: Cron | undefined;
 
-let map = typeof Config.map === "string" ? Config.map : Config.map.rotation[0];
+export let map = typeof Config.map === "string" ? Config.map : Config.map.rotation[0];
 
 let mapRotationIndex = 0;
 
@@ -93,7 +94,7 @@ let mapSwitchCron: Cron | undefined;
 
 if (isMainThread) {
     // Initialize the server
-    createServer().get("/api/serverInfo", res => {
+    createServer().get("/api/serverInfo", async res => {
         cors(res);
         res
             .writeHeader("Content-Type", "application/json")
@@ -101,7 +102,8 @@ if (isMainThread) {
                 playerCount: games.reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
                 maxTeamSize,
 
-                nextSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
+                nextTeamSizeSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
+                nextMapSwitchTime: mapSwitchCron?.nextRun()?.getTime(),
                 mode: map as unknown as Mode, // TODO
                 protocolVersion: GameConstants.protocolVersion
             }));
@@ -309,6 +311,7 @@ if (isMainThread) {
             player.team.removePlayer(player);
         }
     }).listen(Config.host, Config.port, (): void => {
+        process.stdout.write("\x1Bc"); // clears screen
         serverLog(`Suroi Server v${version}`);
         serverLog(`Listening on ${Config.host}:${Config.port}`);
         serverLog("Press Ctrl+C to exit.");
@@ -318,7 +321,7 @@ if (isMainThread) {
         setInterval(() => {
             const memoryUsage = process.memoryUsage().rss;
 
-            let perfString = `Mem usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`;
+            let perfString = `RAM usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`;
 
             // windows L
             if (os.platform() !== "win32") {
@@ -332,7 +335,7 @@ if (isMainThread) {
         const teamSize = Config.maxTeamSize;
         if (typeof teamSize === "object") {
             maxTeamSizeSwitchCron = Cron(teamSize.switchSchedule, () => {
-                maxTeamSize = teamSize.rotation[teamSizeRotationIndex = (teamSizeRotationIndex + 1) % teamSize.rotation.length];
+                maxTeamSize = teamSize.rotation[++teamSizeRotationIndex % teamSize.rotation.length];
 
                 for (const game of games) {
                     game?.worker.postMessage({ type: WorkerMessages.UpdateMaxTeamSize, maxTeamSize });
@@ -346,7 +349,13 @@ if (isMainThread) {
         const _map = Config.map;
         if (typeof _map === "object") {
             mapSwitchCron = Cron(_map.switchSchedule, () => {
-                map = _map.rotation[mapRotationIndex = (mapRotationIndex + 1) % _map.rotation.length];
+                map = _map.rotation[++mapRotationIndex % _map.rotation.length];
+
+                for (const game of games) {
+                    game?.worker.postMessage({ type: WorkerMessages.UpdateMap, map });
+                }
+
+                serverLog(`Switching to "${map}" map`);
             });
         }
 
