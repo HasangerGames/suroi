@@ -355,10 +355,8 @@ if (isMainThread) {
                 mode = modeFromMap(map);
 
                 for (const game of games) {
-                    game?.worker.postMessage({ type: WorkerMessages.Kill });
+                    game?.worker.postMessage({ type: WorkerMessages.UpdateMap, map });
                 }
-                games.length = 0;
-                void newGame();
 
                 serverLog(`Switching to "${map}" map`);
             });

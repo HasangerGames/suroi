@@ -23,8 +23,7 @@ export enum WorkerMessages {
     UpdateMaxTeamSize,
     UpdateMap,
     CreateNewGame,
-    Reset,
-    Kill
+    Reset
 }
 
 export type WorkerMessage =
@@ -41,10 +40,13 @@ export type WorkerMessage =
         readonly maxTeamSize: TeamSize
     }
     | {
+        readonly type: WorkerMessages.UpdateMap
+        readonly map: MapWithParams
+    }
+    | {
         readonly type:
             | WorkerMessages.CreateNewGame
             | WorkerMessages.Reset
-            | WorkerMessages.Kill
     };
 
 export interface GameData {
@@ -202,13 +204,13 @@ export async function newGame(id?: number): Promise<number> {
 export const games: Array<GameContainer | undefined> = [];
 
 if (!isMainThread) {
+    process.on("uncaughtException", e => game.error("An unhandled error occurred. Details:", e));
+
     const id = (workerData as WorkerInitData).id;
     let maxTeamSize = (workerData as WorkerInitData).maxTeamSize;
-    const map = (workerData as WorkerInitData).map;
+    let map = (workerData as WorkerInitData).map;
 
     let game = new Game(id, maxTeamSize, map);
-
-    process.on("uncaughtException", e => game.error("An unhandled error occurred. Details:", e));
 
     // string = ip, number = expire time
     const allowedIPs = new Map<string, number>();
@@ -216,7 +218,32 @@ if (!isMainThread) {
     const simultaneousConnections: Record<string, number> = {};
     let joinAttempts: Record<string, number> = {};
 
-    const app = createServer().ws("/play", {
+    parentPort?.on("message", (message: WorkerMessage) => {
+        switch (message.type) {
+            case WorkerMessages.AllowIP: {
+                allowedIPs.set(message.ip, game.now + 10000);
+                parentPort?.postMessage({
+                    type: WorkerMessages.IPAllowed,
+                    ip: message.ip
+                });
+                break;
+            }
+            case WorkerMessages.UpdateMap:
+                map = message.map;
+            // eslint-disable-next-line no-fallthrough
+            case WorkerMessages.Reset: {
+                game.kill();
+                game = new Game(id, maxTeamSize, map);
+                break;
+            }
+            case WorkerMessages.UpdateMaxTeamSize: {
+                maxTeamSize = message.maxTeamSize;
+                break;
+            }
+        }
+    });
+
+    createServer().ws("/play", {
         idleTimeout: 30,
 
         /**
@@ -355,32 +382,6 @@ if (!isMainThread) {
         }
     }).listen(Config.host, Config.port + id + 1, (): void => {
         game.log(`Listening on ${Config.host}:${Config.port + id + 1}`);
-    });
-
-    parentPort?.on("message", (message: WorkerMessage) => {
-        switch (message.type) {
-            case WorkerMessages.AllowIP: {
-                allowedIPs.set(message.ip, game.now + 10000);
-                parentPort?.postMessage({
-                    type: WorkerMessages.IPAllowed,
-                    ip: message.ip
-                });
-                break;
-            }
-            case WorkerMessages.Reset: {
-                game = new Game(id, maxTeamSize, map);
-                break;
-            }
-            case WorkerMessages.Kill: {
-                game.kill();
-                app.close();
-                break;
-            }
-            case WorkerMessages.UpdateMaxTeamSize: {
-                maxTeamSize = message.maxTeamSize;
-                break;
-            }
-        }
     });
 
     if (Config.protection?.maxJoinAttempts) {
