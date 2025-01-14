@@ -630,11 +630,10 @@ export class Game implements GameData {
             }
         }
 
-        switch (
-            Config.spawn.mode === SpawnMode.Default
-                ? this.map.mapDef.spawnMode ?? SpawnMode.Normal
-                : Config.spawn.mode
-        ) {
+        const spawnOptions = Config.spawn.mode === SpawnMode.Default
+            ? this.map.mapDef.spawn ?? { mode: SpawnMode.Normal }
+            : Config.spawn;
+        switch (spawnOptions.mode) {
             case SpawnMode.Normal: {
                 const hitbox = new CircleHitbox(5);
                 const gasPosition = this.gas.currentPosition;
@@ -683,17 +682,18 @@ export class Game implements GameData {
                 break;
             }
             case SpawnMode.Radius: {
-                const { x, y } = Config.spawn.position;
+                const [x, y, layer] = spawnOptions.position;
                 spawnPosition = randomPointInsideCircle(
                     Vec.create(x, y),
-                    Config.spawn.radius
+                    spawnOptions.radius
                 );
+                spawnLayer = layer ?? Layer.Ground;
                 break;
             }
             case SpawnMode.Fixed: {
-                const { x, y } = Config.spawn.position;
+                const [x, y, layer] = spawnOptions.position;
                 spawnPosition = Vec.create(x, y);
-                spawnLayer = Config.spawn.layer ?? Layer.Ground;
+                spawnLayer = layer ?? Layer.Ground;
                 break;
             }
             case SpawnMode.Center: {

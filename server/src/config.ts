@@ -1,5 +1,4 @@
-import { Layer, TeamSize } from "@common/constants";
-import { type Vector } from "@common/utils/vector";
+import { TeamSize } from "@common/constants";
 import { type Maps } from "./data/maps";
 import { type Game } from "./game";
 import { type GamePlugin } from "./pluginManager";
@@ -59,6 +58,20 @@ export const enum SpawnMode {
     Default
 }
 
+export type SpawnOptions =
+    | {
+        readonly mode: SpawnMode.Normal | SpawnMode.Center
+    }
+    | {
+        readonly mode: SpawnMode.Radius
+        readonly position: [number, number, number?]
+        readonly radius: number
+    }
+    | {
+        readonly mode: SpawnMode.Fixed
+        readonly position: [number, number, number?]
+    };
+
 export const enum GasMode {
     Normal,
     Debug,
@@ -108,25 +121,9 @@ export interface ConfigType {
      * - `SpawnMode.Radius` spawns the player at a random location within the circle with the given position and radius.
      * - `SpawnMode.Fixed` always spawns the player at the exact position given.
      * - `SpawnMode.Center` always spawns the player in the center of the map.
-     * - `SpawnMode.Default` uses the default spawn mode specified in the map definition, or `SpawnMode.Normal` if it doesn't specify one.
+     * - `SpawnMode.Default` uses the spawn options specified in the map definition, or `SpawnMode.Normal` if none are specified.
      */
-    readonly spawn:
-        | {
-            readonly mode:
-                | SpawnMode.Normal
-                | SpawnMode.Center
-                | SpawnMode.Default
-        }
-        | {
-            readonly mode: SpawnMode.Radius
-            readonly position: Vector
-            readonly radius: number
-        }
-        | {
-            readonly mode: SpawnMode.Fixed
-            readonly position: Vector
-            readonly layer?: Layer
-        }
+    readonly spawn: SpawnOptions | { readonly mode: SpawnMode.Default }
 
     /**
      * The maximum number of players allowed to join a team.

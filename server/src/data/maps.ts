@@ -16,7 +16,7 @@ import { Player, type PlayerContainer } from "../objects/player";
 import { getLootFromTable, LootTables } from "./lootTables";
 import { PerkCategories } from "@common/definitions/perks";
 import { Mode } from "@common/definitions/modes";
-import { SpawnMode } from "../config";
+import { SpawnMode, SpawnOptions } from "../config";
 
 export interface RiverDefinition {
     readonly minAmount: number
@@ -46,8 +46,7 @@ export interface MapDefinition {
     readonly width: number
     readonly height: number
     readonly mode?: Mode
-    // can't use default spawn mode because that means to use the spawn mode specified in the def (i.e. here)
-    readonly spawnMode?: Exclude<SpawnMode, SpawnMode.Default>
+    readonly spawn?: SpawnOptions
     readonly oceanSize: number
     readonly beachSize: number
     readonly rivers?: RiverDefinition
@@ -68,7 +67,7 @@ export interface MapDefinition {
     readonly quadBuildingLimit?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly obstacles?: Record<ReferenceTo<ObstacleDefinition>, number>
     readonly obstacleClumps?: readonly ObstacleClump[]
-    readonly loots?: Record<keyof typeof LootTables, number>
+    readonly loots?: Record<keyof typeof LootTables[Mode], number>
 
     readonly places?: ReadonlyArray<{
         readonly name: string
@@ -695,7 +694,7 @@ const maps = {
     debug: {
         width: 1620,
         height: 1620,
-        spawnMode: SpawnMode.Center,
+        spawn: { mode: SpawnMode.Center },
         oceanSize: 128,
         beachSize: 32,
         onGenerate(map) {
@@ -756,7 +755,7 @@ const maps = {
     arena: {
         width: 512,
         height: 512,
-        spawnMode: SpawnMode.Center,
+        spawn: { mode: SpawnMode.Center },
         beachSize: 16,
         oceanSize: 40,
         onGenerate(map) {
@@ -871,7 +870,7 @@ const maps = {
     singleBuilding: {
         width: 1024,
         height: 1024,
-        spawnMode: SpawnMode.Center,
+        spawn: { mode: SpawnMode.Center },
         beachSize: 32,
         oceanSize: 64,
         onGenerate(map, [building]) {
@@ -885,7 +884,7 @@ const maps = {
     singleObstacle: {
         width: 256,
         height: 256,
-        spawnMode: SpawnMode.Center,
+        spawn: { mode: SpawnMode.Center },
         beachSize: 8,
         oceanSize: 8,
         onGenerate(map, [obstacle]) {
@@ -895,7 +894,7 @@ const maps = {
     singleGun: {
         width: 256,
         height: 256,
-        spawnMode: SpawnMode.Center,
+        spawn: { mode: SpawnMode.Center },
         beachSize: 8,
         oceanSize: 8,
         onGenerate(map, [gun]) {
@@ -965,7 +964,7 @@ const maps = {
     lootTest: {
         width: 256,
         height: 256,
-        spawnMode: SpawnMode.Center,
+        spawn: { mode: SpawnMode.Center },
         beachSize: 16,
         oceanSize: 16,
         onGenerate(map) {
