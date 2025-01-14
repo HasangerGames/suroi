@@ -213,6 +213,12 @@ const randomToilet = {
     used_toilet: 1
 };
 
+const randomHayShed = {
+    hay_shed_1: 1,
+    hay_shed_2: 1,
+    hay_shed_3: 1
+};
+
 const ContainerTints = {
     white: 0xc0c0c0,
     red: 0xa33229,
@@ -5097,6 +5103,11 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         key: "barn_top_floor_1",
                         position: Vec.create(-19.5, 0),
                         scale: Vec.create(1.07, 1.07)
+                    },
+                    {
+                        key: "barn_top_floor_wall",
+                        position: Vec.create(-23.14, -21.51),
+                        scale: Vec.create(1.07, 1.07)
                     }
                 ],
                 floors: [
@@ -5114,6 +5125,22 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             },
             {
                 idString: "barn_exterior", // spanAdjacent layer thingy no work
+                name: "Barn Exterior",
+                material: "stone",
+                particleVariations: 2,
+                spawnHitbox: RectangleHitbox.fromRect(120, 92),
+                particle: "barn_wall_particle",
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(77, 1.75, Vec.create(-4.5, -41)),
+                    RectangleHitbox.fromRect(1.75, 45, Vec.create(-55.1, -5.8)),
+                    RectangleHitbox.fromRect(31.5, 1.75, Vec.create(-40.25, 17)),
+                    RectangleHitbox.fromRect(48, 1.75, Vec.create(10, 17)),
+                    RectangleHitbox.fromRect(1.75, 16, Vec.create(33.1, 9)),
+                    RectangleHitbox.fromRect(1.75, 16, Vec.create(33.1, -32.25))
+                )
+            },
+            {
+                idString: "barn_exterior_top_floor", // spanAdjacent layer thingy no work
                 name: "Barn Exterior",
                 material: "stone",
                 particleVariations: 2,
@@ -5156,6 +5183,11 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         key: "barn_floor_2",
                         position: Vec.create(16, -11.9),
                         scale: Vec.create(1.07, 1.07)
+                    },
+                    {
+                        key: "barn_floor_explosion",
+                        position: Vec.create(-50, -37),
+                        scale: Vec.create(1, 1)
                     }
                 ],
                 ceilingImages: [{
@@ -5238,10 +5270,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "barn_door", position: Vec.create(33.06, -4.48), rotation: 1 },
                     { idString: "barn_door", position: Vec.create(33.06, -18.9), rotation: 3 },
                     { idString: "regular_crate", position: Vec.create(-5.16, 10.94) },
-                    { idString: "ammo_crate", position: Vec.create(-48.33, -34.23) },
+                    { idString: "ammo_crate", position: Vec.create(-48.33, -18) },
                     { idString: "bookshelf", position: Vec.create(29.66, 9.22), rotation: 1 },
                     { idString: "bookshelf", position: Vec.create(-25.21, -37.16), rotation: 0 },
-                    { idString: "box", position: Vec.create(-50.76, -26.18) },
+                    { idString: "box", position: Vec.create(-24, -20.18) },
                     { idString: "box", position: Vec.create(8.98, 12.94) },
                     { idString: "box", position: Vec.create(14.16, 10.48) },
                     { idString: "flint_crate", position: Vec.create(-48.59, 10.82) },
@@ -5273,7 +5305,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "barn_top_floor_shadow", position: Vec.create(-24.5, -11.7) },
                     { idString: "barn_top_floor", position: Vec.create(-23.9, -11.85), layer: 2 },
                     { idString: "barn_exterior", position: Vec.create(0, 0) },
-                    { idString: "barn_exterior", position: Vec.create(0, 0), layer: 2 }
+                    { idString: "barn_exterior_top_floor", position: Vec.create(0, 0), layer: 2 },
+                    { idString: randomHayShed, position: Vec.create(-5, -58) }
                 ]
             },
             {
