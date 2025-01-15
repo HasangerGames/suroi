@@ -266,6 +266,7 @@ class Bot {
             turning: true,
             rotation: this._angle,
             distanceToMouse: this._distanceToMouse,
+            pingSeq: 0,
             actions: actions
         });
 
