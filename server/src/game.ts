@@ -23,7 +23,8 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { type WebSocket } from "uWebSockets.js";
 import { parentPort } from "worker_threads";
 
-import { Config, SpawnMode } from "./config";
+import { ColorStyles, Logger, styleText } from "@common/utils/logging";
+import { Config, MapWithParams, SpawnMode } from "./config";
 import { MapName, Maps } from "./data/maps";
 import { WorkerMessages, type GameData, type WorkerMessage } from "./gameManager";
 import { Gas } from "./gas";
@@ -45,7 +46,9 @@ import { PluginManager } from "./pluginManager";
 import { Team } from "./team";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
-import { cleanUsername, Logger, removeFrom } from "./utils/misc";
+import { cleanUsername, modeFromMap, removeFrom } from "./utils/misc";
+import { Mode } from "fs";
+import { ModeDefinition, Modes } from "@common/definitions/modes";
 
 /*
     eslint-disable
@@ -63,6 +66,9 @@ export class Game implements GameData {
     readonly gas: Gas;
     readonly grid: Grid;
     readonly pluginManager = new PluginManager(this);
+
+    readonly modeName: Mode;
+    readonly mode: ModeDefinition;
 
     readonly partialDirtyObjects = new Set<BaseGameObject>();
     readonly fullDirtyObjects = new Set<BaseGameObject>();
@@ -218,7 +224,7 @@ export class Game implements GameData {
         return this._idAllocator.takeNext();
     }
 
-    constructor(id: number, maxTeamSize: TeamSize) {
+    constructor(id: number, maxTeamSize: TeamSize, map: MapWithParams) {
         this.id = id;
         this.maxTeamSize = maxTeamSize;
         this.teamMode = this.maxTeamSize > TeamSize.Solo;
@@ -230,20 +236,35 @@ export class Game implements GameData {
             startedTime: -1
         });
 
+        this.modeName = modeFromMap(map);
+        this.mode = (Modes as Record<Mode, ModeDefinition>)[this.modeName];
+
         this.pluginManager.loadPlugins();
 
-        const { width, height } = Maps[Config.map.split(":")[0] as MapName];
+        const { width, height } = Maps[map.split(":")[0] as MapName];
         this.grid = new Grid(this, width, height);
-        this.map = new GameMap(this, Config.map);
+        this.map = new GameMap(this, map);
         this.gas = new Gas(this);
 
         this.setGameData({ allowJoin: true });
 
         this.pluginManager.emit("game_created", this);
-        Logger.log(`Game ${this.id} | Created in ${Date.now() - this._start} ms`);
+        this.log(`Created in ${Date.now() - this._start} ms`);
 
         // Start the tick loop
         this.tick();
+    }
+
+    log(...message: unknown[]): void {
+        Logger.log(styleText(`[Game ${this.id}]`, ColorStyles.foreground.green.normal), ...message);
+    }
+
+    warn(...message: unknown[]): void {
+        Logger.log(styleText(`[Game ${this.id}] [WARNING]`, ColorStyles.foreground.yellow.normal), ...message);
+    }
+
+    error(...message: unknown[]): void {
+        Logger.log(styleText(`[Game ${this.id}] [ERROR]`, ColorStyles.foreground.red.normal), ...message);
     }
 
     onMessage(stream: SuroiByteStream, player: Player): void {
@@ -435,7 +456,7 @@ export class Game implements GameData {
             // End the game in 1 second
             this.addTimeout(() => {
                 this.setGameData({ stopped: true });
-                Logger.log(`Game ${this.id} | Ended`);
+                this.log("Ended");
             }, 1000);
         }
 
@@ -452,7 +473,7 @@ export class Game implements GameData {
         if (this._tickTimes.length >= 200) {
             const mspt = Statistics.average(this._tickTimes);
             const stddev = Statistics.stddev(this._tickTimes);
-            Logger.log(`Game ${this.id} | ms/tick: ${mspt.toFixed(2)} ± ${stddev.toFixed(2)} | Load: ${((mspt / this.idealDt) * 100).toFixed(1)}%`);
+            this.log(`ms/tick: ${mspt.toFixed(2)} ± ${stddev.toFixed(2)} | Load: ${((mspt / this.idealDt) * 100).toFixed(1)}%`);
             this._tickTimes.length = 0;
         }
 
@@ -479,8 +500,22 @@ export class Game implements GameData {
         if (!this.allowJoin) return; // means a new game has already been created by this game
 
         parentPort?.postMessage({ type: WorkerMessages.CreateNewGame });
-        Logger.log(`Game ${this.id} | Attempting to create new game`);
+        this.log("Attempting to create new game");
         this.setGameData({ allowJoin: false });
+    }
+
+    kill(): void {
+        for (const player of this.connectedPlayers) {
+            player.disconnect("Server killed");
+        }
+
+        this.setGameData({
+            allowJoin: false,
+            over: true,
+            stopped: true
+        });
+
+        this.log("Killed");
     }
 
     private _killLeader: Player | undefined;
@@ -586,7 +621,10 @@ export class Game implements GameData {
             }
         }
 
-        switch (Config.spawn.mode) {
+        const spawnOptions = Config.spawn.mode === SpawnMode.Default
+            ? this.map.mapDef.spawn ?? { mode: SpawnMode.Normal }
+            : Config.spawn;
+        switch (spawnOptions.mode) {
             case SpawnMode.Normal: {
                 const hitbox = new CircleHitbox(5);
                 const gasPosition = this.gas.currentPosition;
@@ -635,17 +673,18 @@ export class Game implements GameData {
                 break;
             }
             case SpawnMode.Radius: {
-                const { x, y } = Config.spawn.position;
+                const [x, y, layer] = spawnOptions.position;
                 spawnPosition = randomPointInsideCircle(
                     Vec.create(x, y),
-                    Config.spawn.radius
+                    spawnOptions.radius
                 );
+                spawnLayer = layer ?? Layer.Ground;
                 break;
             }
             case SpawnMode.Fixed: {
-                const { x, y } = Config.spawn.position;
+                const [x, y, layer] = spawnOptions.position;
                 spawnPosition = Vec.create(x, y);
-                spawnLayer = Config.spawn.layer ?? Layer.Ground;
+                spawnLayer = layer ?? Layer.Ground;
                 break;
             }
             case SpawnMode.Center: {
@@ -733,7 +772,7 @@ export class Game implements GameData {
             }, 3000);
         }
 
-        Logger.log(`Game ${this.id} | "${player.name}" joined`);
+        this.log(`"${player.name}" joined`);
         // AccessLog to store usernames for this connection
         if (Config.protection?.punishments) {
             const username = player.name;
@@ -755,6 +794,8 @@ export class Game implements GameData {
     }
 
     removePlayer(player: Player): void {
+        this.log(`"${player.name}" left`);
+
         if (player === this.killLeader) {
             this.killLeaderDisconnected(player);
         }

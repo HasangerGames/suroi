@@ -6,7 +6,7 @@ import $ from "jquery";
 import { Graphics } from "pixi.js";
 import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
-import { COLORS, UI_DEBUG_MODE } from "../utils/constants";
+import { UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate } from "../utils/misc";
 
 export class Gas {
@@ -137,7 +137,7 @@ export class GasRender {
     private static readonly _overdraw = 100 * 1000;
     private static readonly _segments = 512;
 
-    constructor(scale: number) {
+    constructor(game: Game, scale: number) {
         this._scale = scale;
 
         this._graphics = new Graphics();
@@ -153,7 +153,7 @@ export class GasRender {
             .lineTo(GasRender._overdraw, GasRender._overdraw)
             .lineTo(-GasRender._overdraw, GasRender._overdraw)
             .closePath()
-            .fill(COLORS.gas)
+            .fill(game.colors.gas)
             .moveTo(0, 1);
 
         const tau = 2 * Math.PI;

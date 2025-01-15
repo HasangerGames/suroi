@@ -14,17 +14,16 @@ body {
 
   margin: 0;
   padding: 0;
-
-  & > :not(#loading-logo) {
-    opacity: 1;
-  }
-  & > .loading-logo {
-    display: none;
-    animation: none;
-  }
 }
 
-// NOTE: WIP, will refactor later
+#splash-ui, #game {
+  opacity: 1;
+}
+
+#initial-loader {
+  display: none;
+  animation: none;
+}
 
 .modal {
   position: absolute;

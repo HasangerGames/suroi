@@ -90,7 +90,7 @@
         }
 
         #console-in {
-            font-family: menlo, monospace;
+            font-family: "JetBrains Mono", monospace;
             position: sticky;
             bottom: 0;
             left: 0;
@@ -108,7 +108,7 @@
         }
 
         .console-entry {
-            font-family: monospace;
+            font-family: "JetBrains Mono", monospace;
             border-width: 2px;
             padding: 1px 0;
             border-style: solid none;
@@ -118,7 +118,7 @@
         }
 
         .console-entry-timestamp {
-            font-family: monospace;
+            font-family: "JetBrains Mono", monospace;
             background-color: #444;
             margin: 0 1% 0 0;
             padding: 0 0.5%;
@@ -191,7 +191,7 @@
 
         .console-entry-content {
             * {
-                font-family: monospace;
+                font-family: "JetBrains Mono", monospace;
                 word-break: break-word;
             }
 
@@ -322,7 +322,7 @@
         }
 
         .console-detail-toggle {
-            font-family: monospace;
+            font-family: "JetBrains Mono", monospace;
             color: #AAA;
             display: flex;
             align-items: top;
@@ -355,7 +355,7 @@
         background-color: #666;
         overflow: auto;
         box-shadow: 5px 4px 3px 0px #0008;
-        font-family: menlo, monospace;
+        font-family: "JetBrains Mono", monospace;
         padding: 1px;
         color: white;
         border: 3px solid #999;

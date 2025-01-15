@@ -7,7 +7,7 @@
    viewBox="0 0 79.128512 131.42776"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3.2 (1:1.3.2+202404261509+091e20ef0f)"
+   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
    sodipodi:docname="outhouse_floor.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -24,9 +24,9 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
      inkscape:document-units="px"
-     inkscape:zoom="1.0431888"
-     inkscape:cx="74.770739"
-     inkscape:cy="424.18015"
+     inkscape:zoom="1.4752917"
+     inkscape:cx="115.23145"
+     inkscape:cy="259.60967"
      inkscape:window-width="2560"
      inkscape:window-height="1368"
      inkscape:window-x="0"
@@ -39,7 +39,10 @@
        inkscape:collect="always"
        xlink:href="#pattern21976"
        id="pattern2"
-       patternTransform="matrix(0.23411783,0,0,0.23411783,725.07221,1049.1035)" />
+       patternTransform="matrix(0.23411783,0,0,0.23411783,725.07221,1049.1035)"
+       x="0"
+       y="0"
+       preserveAspectRatio="none" />
     <pattern
        inkscape:collect="always"
        xlink:href="#pattern2-5"

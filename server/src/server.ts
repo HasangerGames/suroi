@@ -1,7 +1,9 @@
 import { GameConstants, TeamSize } from "@common/constants";
 import { Badges } from "@common/definitions/badges";
+import { Mode } from "@common/definitions/modes";
 import { Skins } from "@common/definitions/skins";
 import { type GetGameResponse } from "@common/typings";
+import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import { Numeric } from "@common/utils/math";
 import { Cron } from "croner";
 import { existsSync, readFile, readFileSync, writeFile, writeFileSync } from "fs";
@@ -14,7 +16,7 @@ import { Config } from "./config";
 import { findGame, games, newGame, WorkerMessages } from "./gameManager";
 import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./team";
 import IPChecker, { Punishment } from "./utils/apiHelper";
-import { cleanUsername, Logger } from "./utils/misc";
+import { cleanUsername, modeFromMap } from "./utils/misc";
 import { cors, createServer, forbidden, getIP, textDecoder } from "./utils/serverHelpers";
 
 let punishments: Punishment[] = [];
@@ -65,27 +67,54 @@ function removePunishment(ip: string): void {
     }
 }
 
+export function serverLog(...message: unknown[]): void {
+    Logger.log(styleText("[Server]", ColorStyles.foreground.magenta.normal), ...message);
+}
+
+export function serverWarn(...message: unknown[]): void {
+    Logger.warn(styleText("[Server] [WARNING]", ColorStyles.foreground.yellow.normal), ...message);
+}
+
 let teamsCreated: Record<string, number> = {};
 
 export const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
 
-export let maxTeamSize = typeof Config.maxTeamSize === "number" ? Config.maxTeamSize : Config.maxTeamSize.rotation[0];
+export let maxTeamSize = typeof Config.maxTeamSize === "number"
+    ? Config.maxTeamSize
+    : Config.maxTeamSize.rotation[0];
+
+let nextTeamSize = typeof Config.maxTeamSize === "number"
+    ? undefined
+    : (Config.maxTeamSize.rotation[1] ?? Config.maxTeamSize.rotation[0]);
+
 let teamSizeRotationIndex = 0;
 
 let maxTeamSizeSwitchCron: Cron | undefined;
 
+export let map = typeof Config.map === "string" ? Config.map : Config.map.rotation[0];
+
+let mapRotationIndex = 0;
+
+let mapSwitchCron: Cron | undefined;
+
+let mode: Mode;
+let nextMode: Mode;
+
 if (isMainThread) {
     // Initialize the server
-    createServer().get("/api/serverInfo", res => {
+    createServer().get("/api/serverInfo", async res => {
         cors(res);
         res
             .writeHeader("Content-Type", "application/json")
             .end(JSON.stringify({
+                protocolVersion: GameConstants.protocolVersion,
                 playerCount: games.reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
                 maxTeamSize,
-
-                nextSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
-                protocolVersion: GameConstants.protocolVersion
+                maxTeamSizeSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
+                nextTeamSize,
+                mode,
+                modeSwitchTime: mapSwitchCron?.nextRun()?.getTime(),
+                nextMode
             }));
     }).get("/api/getGame", async(res, req) => {
         let aborted = false;
@@ -126,10 +155,10 @@ if (isMainThread) {
             } else {
                 response = await findGame();
             }
+        }
 
-            if (response.success) {
-                await games[response.gameID]?.allowIP(ip);
-            }
+        if (response.success) {
+            await games[response.gameID]?.allowIP(ip);
         }
 
         if (!aborted) {
@@ -291,48 +320,58 @@ if (isMainThread) {
             player.team.removePlayer(player);
         }
     }).listen(Config.host, Config.port, (): void => {
-        console.log(
-            `
- _____ _   _______ _____ _____
-/  ___| | | | ___ \\  _  |_   _|
-\\ \`--.| | | | |_/ / | | | | |
- \`--. \\ | | |    /| | | | | |
-/\\__/ / |_| | |\\ \\\\ \\_/ /_| |_
-\\____/ \\___/\\_| \\_|\\___/ \\___/
-            `);
-
-        Logger.log(`Suroi Server v${version}`);
-        Logger.log(`Listening on ${Config.host}:${Config.port}`);
-        Logger.log("Press Ctrl+C to exit.");
+        process.stdout.write("\x1Bc"); // clears screen
+        serverLog(`Suroi Server v${version}`);
+        serverLog(`Listening on ${Config.host}:${Config.port}`);
+        serverLog("Press Ctrl+C to exit.");
 
         void newGame(0);
 
         setInterval(() => {
             const memoryUsage = process.memoryUsage().rss;
 
-            let perfString = `Server | Memory usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`;
+            let perfString = `RAM usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`;
 
             // windows L
             if (os.platform() !== "win32") {
                 const load = os.loadavg().join("%, ");
-                perfString += ` | Load (1m, 5m, 15m): ${load}%`;
+                perfString += ` | CPU usage (1m, 5m, 15m): ${load}%`;
             }
 
-            Logger.log(perfString);
+            serverLog(perfString);
         }, 60000);
 
         const teamSize = Config.maxTeamSize;
         if (typeof teamSize === "object") {
             maxTeamSizeSwitchCron = Cron(teamSize.switchSchedule, () => {
-                maxTeamSize = teamSize.rotation[teamSizeRotationIndex = (teamSizeRotationIndex + 1) % teamSize.rotation.length];
+                maxTeamSize = teamSize.rotation[++teamSizeRotationIndex % teamSize.rotation.length];
+                nextTeamSize = teamSize.rotation[(teamSizeRotationIndex + 1) % teamSize.rotation.length];
 
                 for (const game of games) {
                     game?.worker.postMessage({ type: WorkerMessages.UpdateMaxTeamSize, maxTeamSize });
                 }
 
                 const humanReadableTeamSizes = [undefined, "solos", "duos", "trios", "squads"];
-                Logger.log(`Switching to ${humanReadableTeamSizes[maxTeamSize] ?? `team size ${maxTeamSize}`}`);
+                serverLog(`Switching to ${humanReadableTeamSizes[maxTeamSize] ?? `team size ${maxTeamSize}`}`);
             });
+        }
+
+        mode = modeFromMap(map);
+
+        const _map = Config.map;
+        if (typeof _map === "object") {
+            mapSwitchCron = Cron(_map.switchSchedule, () => {
+                map = _map.rotation[++mapRotationIndex % _map.rotation.length];
+                mode = modeFromMap(map);
+                nextMode = modeFromMap(_map.rotation[(mapRotationIndex + 1) % _map.rotation.length]);
+
+                for (const game of games) {
+                    game?.worker.postMessage({ type: WorkerMessages.UpdateMap, map });
+                }
+
+                serverLog(`Switching to "${map}" map`);
+            });
+            nextMode = modeFromMap(_map.rotation[1] ?? _map.rotation[0]);
         }
 
         const { protection } = Config;

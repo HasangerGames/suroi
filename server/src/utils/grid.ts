@@ -40,7 +40,7 @@ export class Grid {
      */
     addObject(object: GameObject): void {
         if (this.pool.has(object)) {
-            Logger.warn(`[Grid] Tried to add object ${ObjectCategory[object.type]} again`);
+            this.game.warn(`[Grid] Tried to add object ${ObjectCategory[object.type]} again`);
             return;
         }
         this.pool.add(object);

@@ -2,6 +2,7 @@ import { Layer } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Guns } from "@common/definitions/guns";
 import { Loots } from "@common/definitions/loots";
+import { Mode } from "@common/definitions/modes";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { PerkCategories } from "@common/definitions/perks";
 import { Orientation, type Variation } from "@common/typings";
@@ -11,6 +12,7 @@ import { ItemType, MapObjectSpawnMode, type ReferenceTo } from "@common/utils/ob
 import { random, randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type WebSocket } from "uWebSockets.js";
+import { SpawnMode, SpawnOptions } from "../config";
 import { type GunItem } from "../inventory/gunItem";
 import { GameMap } from "../map";
 import { Player, type PlayerContainer } from "../objects/player";
@@ -43,6 +45,8 @@ export interface RiverDefinition {
 export interface MapDefinition {
     readonly width: number
     readonly height: number
+    readonly mode?: Mode
+    readonly spawn?: SpawnOptions
     readonly oceanSize: number
     readonly beachSize: number
     readonly rivers?: RiverDefinition
@@ -63,7 +67,7 @@ export interface MapDefinition {
     readonly quadBuildingLimit?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly obstacles?: Record<ReferenceTo<ObstacleDefinition>, number>
     readonly obstacleClumps?: readonly ObstacleClump[]
-    readonly loots?: Record<keyof typeof LootTables, number>
+    readonly loots?: Record<keyof typeof LootTables[Mode], number>
 
     readonly places?: ReadonlyArray<{
         readonly name: string
@@ -117,6 +121,9 @@ const maps = {
             large_bridge: 2,
             small_bridge: Infinity,
             port_complex: 1,
+            river_hut_1: 2,
+            river_hut_2: 2,
+            river_hut_3: 2,
             sea_traffic_control: 1,
             tugboat_red: 1,
             tugboat_white: 5,
@@ -145,6 +152,9 @@ const maps = {
         },
         majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
         quadBuildingLimit: {
+            river_hut_1: 1,
+            river_hut_2: 1,
+            river_hut_3: 1,
             red_house: 1,
             red_house_v2: 1,
             warehouse: 2,
@@ -271,6 +281,9 @@ const maps = {
             ]
         },
         buildings: {
+            river_hut_4: 3,
+            river_hut_5: 3,
+            river_hut_6: 3,
             small_bridge: Infinity,
             plumpkin_bunker: 1,
             sea_traffic_control: 1,
@@ -299,6 +312,9 @@ const maps = {
         },
         majorBuildings: ["bombed_armory", "lodge", "plumpkin_bunker"],
         quadBuildingLimit: {
+            river_hut_4: 2,
+            river_hut_5: 2,
+            river_hut_6: 2,
             barn: 1,
             outhouse: 3,
             red_house: 1,
@@ -690,6 +706,7 @@ const maps = {
     debug: {
         width: 1620,
         height: 1620,
+        spawn: { mode: SpawnMode.Center },
         oceanSize: 128,
         beachSize: 32,
         onGenerate(map) {
@@ -750,6 +767,7 @@ const maps = {
     arena: {
         width: 512,
         height: 512,
+        spawn: { mode: SpawnMode.Center },
         beachSize: 16,
         oceanSize: 40,
         onGenerate(map) {
@@ -864,6 +882,7 @@ const maps = {
     singleBuilding: {
         width: 1024,
         height: 1024,
+        spawn: { mode: SpawnMode.Center },
         beachSize: 32,
         oceanSize: 64,
         onGenerate(map, [building]) {
@@ -877,6 +896,7 @@ const maps = {
     singleObstacle: {
         width: 256,
         height: 256,
+        spawn: { mode: SpawnMode.Center },
         beachSize: 8,
         oceanSize: 8,
         onGenerate(map, [obstacle]) {
@@ -886,6 +906,7 @@ const maps = {
     singleGun: {
         width: 256,
         height: 256,
+        spawn: { mode: SpawnMode.Center },
         beachSize: 8,
         oceanSize: 8,
         onGenerate(map, [gun]) {
@@ -950,6 +971,21 @@ const maps = {
                     if (random(0, 1) === 1) map.generateObstacle("barrel", Vec.create(x, y));
                 }
             }
+        }
+    },
+    lootTest: {
+        width: 256,
+        height: 256,
+        spawn: { mode: SpawnMode.Center },
+        beachSize: 16,
+        oceanSize: 16,
+        onGenerate(map) {
+            const { game } = map;
+            const pos = Vec.create(128, 128);
+            game.addLoot(Loots.fromString("gauze"), pos, 0);
+            game.addLoot(Loots.fromString("medikit"), pos, 0);
+            game.addLoot(Loots.fromString("cola"), pos, 0);
+            game.addLoot(Loots.fromString("tablets"), pos, 0);
         }
     },
     river: {

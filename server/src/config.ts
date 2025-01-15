@@ -1,20 +1,7 @@
-import { Layer, TeamSize } from "@common/constants";
-import { type Vector } from "@common/utils/vector";
+import { TeamSize } from "@common/constants";
 import { type Maps } from "./data/maps";
 import { type Game } from "./game";
 import { type GamePlugin } from "./pluginManager";
-
-export const enum SpawnMode {
-    Normal,
-    Radius,
-    Fixed,
-    Center
-}
-export const enum GasMode {
-    Normal,
-    Debug,
-    Disabled
-}
 
 export const Config = {
     host: "127.0.0.1",
@@ -22,7 +9,7 @@ export const Config = {
 
     map: "normal",
 
-    spawn: { mode: SpawnMode.Normal },
+    spawn: { mode: SpawnMode.Default },
 
     maxTeamSize: TeamSize.Solo,
 
@@ -61,6 +48,36 @@ export const Config = {
     }
 } satisfies ConfigType as ConfigType;
 
+export type MapWithParams = `${keyof typeof Maps}${string}`;
+
+export const enum SpawnMode {
+    Normal,
+    Radius,
+    Fixed,
+    Center,
+    Default
+}
+
+export type SpawnOptions =
+    | {
+        readonly mode: SpawnMode.Normal | SpawnMode.Center
+    }
+    | {
+        readonly mode: SpawnMode.Radius
+        readonly position: [number, number, number?]
+        readonly radius: number
+    }
+    | {
+        readonly mode: SpawnMode.Fixed
+        readonly position: [number, number, number?]
+    };
+
+export const enum GasMode {
+    Normal,
+    Debug,
+    Disabled
+}
+
 export interface ConfigType {
     /**
      * The hostname to host the server on.
@@ -87,28 +104,26 @@ export interface ConfigType {
      * Example: `"main"` for the main map or `"debug"` for the debug map.
      * Parameters can also be specified for certain maps, separated by colons (e.g. `singleObstacle:rock`)
      */
-    readonly map: `${keyof typeof Maps}${string}`
+    readonly map: MapWithParams | {
+        /**
+        * The duration between switches. Must be a cron pattern.
+        */
+        readonly switchSchedule: string
+        /**
+        * The modes to switch between.
+        */
+        readonly rotation: MapWithParams[]
+    }
 
     /**
-     * There are 4 spawn modes: `Normal`, `Radius`, `Fixed`, and `Center`.
+     * There are 5 spawn modes: `Normal`, `Radius`, `Fixed`, `Center`, and `Default`.
      * - `SpawnMode.Normal` spawns the player at a random location that is at least 50 units away from other players.
      * - `SpawnMode.Radius` spawns the player at a random location within the circle with the given position and radius.
      * - `SpawnMode.Fixed` always spawns the player at the exact position given.
      * - `SpawnMode.Center` always spawns the player in the center of the map.
+     * - `SpawnMode.Default` uses the spawn options specified in the map definition, or `SpawnMode.Normal` if none are specified.
      */
-    readonly spawn:
-        | { readonly mode: SpawnMode.Normal }
-        | {
-            readonly mode: SpawnMode.Radius
-            readonly position: Vector
-            readonly radius: number
-        }
-        | {
-            readonly mode: SpawnMode.Fixed
-            readonly position: Vector
-            readonly layer?: Layer
-        }
-        | { readonly mode: SpawnMode.Center }
+    readonly spawn: SpawnOptions | { readonly mode: SpawnMode.Default }
 
     /**
      * The maximum number of players allowed to join a team.

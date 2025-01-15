@@ -22,7 +22,7 @@ import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
 import { type GameObject } from "../objects/gameObject";
 import { Player } from "../objects/player";
-import { GHILLIE_TINT, MODE, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
+import { TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
 import { ClientPerkManager } from "./perkManager";
@@ -151,8 +151,9 @@ export class UIManager {
     }
 
     readonly ui = Object.freeze({
-        loadingText: $<HTMLDivElement>("#loading-text"),
-        // cancelFindingGame: $<HTMLButtonElement>("#btn-cancel-finding-game"),
+        loaderText: $<HTMLDivElement>("#loader-text"),
+
+        serverList: $<HTMLUListElement>("#server-list"),
 
         ammoCounterContainer: $<HTMLDivElement>("#weapon-ammo-container"),
         activeAmmo: $<HTMLSpanElement>("#weapon-clip-ammo-count"),
@@ -256,7 +257,20 @@ export class UIManager {
 
         lockedInfo: $<HTMLButtonElement>("#locked-info"),
         lockedTooltip: $<HTMLDivElement>("#locked-tooltip"),
-        lockedTime: $<HTMLSpanElement>("#locked-time"),
+        teamSizeSwitchTime: $<HTMLSpanElement>("#next-team-size-msg .next-switch-time"),
+        modeSwitchTime: $<HTMLSpanElement>("#next-mode-msg .next-switch-time"),
+
+        playSoloBtn: $<HTMLDivElement>("#btn-play-solo"),
+        playDuoBtn: $<HTMLDivElement>("#btn-play-duo"),
+        playSquadBtn: $<HTMLDivElement>("#btn-play-squad"),
+
+        teamOptionBtns: $<HTMLDivElement>("#team-option-btns"),
+
+        switchMessages: $<HTMLDivElement>("#next-switch-messages"),
+        nextTeamSizeMsg: $<HTMLDivElement>("#next-team-size-msg"),
+        nextTeamSizeIcon: $<HTMLDivElement>("#next-team-size-msg .next-switch-icon"),
+        nextModeMsg: $<HTMLDivElement>("#next-mode-msg"),
+        nextModeIcon: $<HTMLDivElement>("#next-mode-msg .next-switch-icon"),
 
         warningTitle: $<HTMLHeadingElement>("#warning-modal-title"),
         warningText: $<HTMLParagraphElement>("#warning-modal-text"),
@@ -989,7 +1003,7 @@ export class UIManager {
                     frame += "_halloween";
                 }
 
-                const location = definition.itemType === ItemType.Melee && definition.reskins?.includes(MODE.idString) ? MODE.idString : "shared";
+                const location = definition.itemType === ItemType.Melee && definition.reskins?.includes(this.game.modeName) ? this.game.modeName : "shared";
                 const newSrc = `./img/game/${location}/weapons/${frame}.svg`;
                 if (oldSrc !== newSrc) {
                     this._playSlotAnimation(container);
@@ -999,7 +1013,7 @@ export class UIManager {
                 const backgroundImage
                     = isFists
                         ? this.skinID !== undefined && Skins.fromStringSafe(this.skinID)?.grassTint
-                            ? `url("data:image/svg+xml,${encodeURIComponent(`<svg width="34" height="34" viewBox="0 0 8.996 8.996" xmlns="http://www.w3.org/2000/svg"><circle fill="${GHILLIE_TINT.toHex()}" stroke="${new Color(GHILLIE_TINT).multiply("#111").toHex()}" stroke-width="1.05833" cx="4.498" cy="4.498" r="3.969"/></svg>`)}")`
+                            ? `url("data:image/svg+xml,${encodeURIComponent(`<svg width="34" height="34" viewBox="0 0 8.996 8.996" xmlns="http://www.w3.org/2000/svg"><circle fill="${this.game.ghillieTint.toHex()}" stroke="${new Color(this.game.ghillieTint).multiply("#111").toHex()}" stroke-width="1.05833" cx="4.498" cy="4.498" r="3.969"/></svg>`)}")`
                             : `url(./img/game/shared/skins/${this.skinID ?? this.game.console.getBuiltInCVar("cv_loadout_skin")}_fist.svg)`
                         : "none";
 

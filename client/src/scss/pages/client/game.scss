@@ -163,7 +163,7 @@
 #debug-hud {
     // margin-top: -10px;
     text-shadow: 1px 1px 2px black;
-    font-family: monospace;
+    font-family: "JetBrains Mono", monospace;
 
     @media screen and (max-width: variables.$screen_large) {
         font-size: 14px;

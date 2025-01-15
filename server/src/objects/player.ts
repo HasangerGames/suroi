@@ -480,7 +480,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         this.inventory.addOrReplaceWeapon(2, "fists");
 
-        const defaultScope = Modes[GameConstants.modeName].defaultScope;
+        const defaultScope = game.mode.defaultScope;
         if (defaultScope) {
             this.inventory.scope = defaultScope;
             this.inventory.items.setItem(defaultScope, 1);
@@ -2189,7 +2189,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 if (
                     def.noDrop
                     || ("ephemeral" in def && def.ephemeral)
-                    || def.idString === Modes[GameConstants.modeName].defaultScope
+                    || def.idString === this.game.mode.defaultScope
                 ) continue;
 
                 if (def.itemType === ItemType.Ammo && count !== Infinity) {
