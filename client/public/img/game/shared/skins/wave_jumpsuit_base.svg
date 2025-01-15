@@ -8,7 +8,7 @@
    version="1.1"
    id="svg5"
    sodipodi:docname="wave_jumpsuit_base.svg"
-   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
+   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -23,13 +23,13 @@
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
-     inkscape:zoom="6.1"
-     inkscape:cx="45"
-     inkscape:cy="45"
-     inkscape:window-width="1366"
-     inkscape:window-height="745"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:zoom="4.3133514"
+     inkscape:cx="49.381556"
+     inkscape:cy="45.440305"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg5" />
   <defs
@@ -61,8 +61,8 @@
        preserveAspectRatio="xMidYMid"
        id="pattern33"
        patternTransform="matrix(0.6,0,0,0.6,435,777)"
-       x="-0.15000001"
-       y="2" />
+       x="0"
+       y="0" />
     <pattern
        patternUnits="userSpaceOnUse"
        width="30"
@@ -70,7 +70,8 @@
        patternTransform="translate(435,777)"
        preserveAspectRatio="xMidYMid"
        style="fill:#000000"
-       id="Wave 2">
+       id="Wave 2"
+       inkscape:label="Wave 2">
       <path
          id="path37"
          style="stroke:none;stroke-linecap:butt;stroke-linejoin:bevel;paint-order:stroke markers fill;stop-color:#000000"

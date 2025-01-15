@@ -201,18 +201,18 @@ export class Terrain {
 
         const isInsideMap = this.beachHitbox.isPointInside(position);
         if (isInsideMap) {
-            if (layer) { // Keeping this commented out until a solution is found
+            if (layer) {
                 /*
                     grass and sand only exist on layer 0; on other
                     layers, it's the void
                 */
                 floor = FloorNames.Void;
             } else {
-                floor = FloorNames.Sand;
-
                 if (this.grassHitbox.isPointInside(position)) {
-                    // adding a property wont work for some reason in the mode def
-                    floor = GameConstants.modeName === "winter" ? FloorNames.Sand : FloorNames.Grass;
+                    // TODO Detect mode somehow
+                    floor = FloorNames.Grass; // this.game.modeName === "winter" ? FloorNames.Sand : FloorNames.Grass;
+                } else {
+                    floor = FloorNames.Sand;
                 }
             }
         }

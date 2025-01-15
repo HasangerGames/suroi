@@ -21,7 +21,7 @@ import { DEFAULT_SCOPE, Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
 import { SyncedParticles } from "../../common/src/definitions/syncedParticles";
 import { Throwables, type ThrowableDefinition } from "../../common/src/definitions/throwables";
-import { ColorStyles, FontStyles, styleText } from "../../common/src/utils/ansiColoring";
+import { ColorStyles, FontStyles, styleText } from "../../common/src/utils/logging";
 import { NullString, ObstacleSpecialRoles, type ItemDefinition } from "../../common/src/utils/objectDefinitions";
 import { FloorTypes } from "../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../common/src/utils/vector";

@@ -1,4 +1,4 @@
-import { GameConstants, Layers, TentTints, ZIndexes } from "../constants";
+import { Layers, TentTints, ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
@@ -213,12 +213,18 @@ const randomToilet = {
     used_toilet: 1
 };
 
+const randomHayShed = {
+    hay_shed_1: 1,
+    hay_shed_2: 1,
+    hay_shed_3: 1
+};
+
 const ContainerTints = {
     white: 0xc0c0c0,
-    red: 0xa32900,
-    green: 0x00a30e,
-    blue: 0x005fa3,
-    yellow: 0xcccc00
+    red: 0xa33229,
+    green: 0x419e2e,
+    blue: 0x2e6e9e,
+    yellow: 0xc1b215
 };
 
 const ContainerWallOutlineTints = {
@@ -580,8 +586,9 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         position: Vec.create(0, 6.94),
                         rotation: Math.PI,
                         tint
-                    },
-                    ...(GameConstants.modeName === "winter" ? snowDecalDefinitions[open] : [])
+                    }
+                    // TODO Detect mode somehow
+                    // ...(GameConstants.modeName === "winter" ? snowDecalDefinitions[open] : [])
                 ],
                 floors: [{
                     type: FloorNames.Metal,
@@ -894,62 +901,63 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     position: Vec.create(0, 0),
                     tint,
                     scale: Vec.create(2.01, 2.05)
-                },
-                ...(GameConstants.modeName === "winter"
-                    ? [
-                        {
-                            key: "snow_decal_1",
-                            position: Vec.create(5, 0),
-                            scale: Vec.create(1.5, 1.5)
-                        },
-                        {
-                            key: "snow_decal_2",
-                            position: Vec.create(12, -39),
-                            scale: Vec.create(1.5, 1.5),
-                            rotation: Math.PI / 2
-                        },
-                        {
-                            key: "snow_decal_3",
-                            position: Vec.create(-15, 33),
-                            scale: Vec.create(2, 2),
-                            rotation: Math.PI
-                        },
-                        {
-                            key: "port_warehouse_snow_decal_1",
-                            position: Vec.create(-28.5, -53.7),
-                            scale: Vec.create(2, 2),
-                            rotation: -Math.PI / 2
-                        },
-                        {
-                            key: "port_warehouse_snow_decal_2",
-                            position: Vec.create(13.1, 53.5),
-                            rotation: Math.PI,
-                            scale: Vec.create(2, 2)
-                        },
-                        {
-                            key: "port_warehouse_snow_decal_3",
-                            position: Vec.create(17.5, -52.25),
-                            scale: Vec.create(2, 2),
-                            rotation: -Math.PI / 2
-                        },
-                        {
-                            key: "port_warehouse_snow_decal_4",
-                            position: Vec.create(-23, -20),
-                            scale: Vec.create(2, 2)
-                        },
-                        {
-                            key: "port_warehouse_snow_decal_5",
-                            position: Vec.create(22.8, -20),
-                            scale: Vec.create(2, 2)
-                        },
-                        {
-                            key: "port_warehouse_snow_decal_1",
-                            position: Vec.create(-23.5, 58.6),
-                            scale: Vec.create(2, 2),
-                            rotation: Math.PI
-                        }
-                    ]
-                    : [])
+                }
+                // TODO Detect mode somehow
+                // ...(GameConstants.modeName === "winter"
+                //     ? [
+                //         {
+                //             key: "snow_decal_1",
+                //             position: Vec.create(5, 0),
+                //             scale: Vec.create(1.5, 1.5)
+                //         },
+                //         {
+                //             key: "snow_decal_2",
+                //             position: Vec.create(12, -39),
+                //             scale: Vec.create(1.5, 1.5),
+                //             rotation: Math.PI / 2
+                //         },
+                //         {
+                //             key: "snow_decal_3",
+                //             position: Vec.create(-15, 33),
+                //             scale: Vec.create(2, 2),
+                //             rotation: Math.PI
+                //         },
+                //         {
+                //             key: "port_warehouse_snow_decal_1",
+                //             position: Vec.create(-28.5, -53.7),
+                //             scale: Vec.create(2, 2),
+                //             rotation: -Math.PI / 2
+                //         },
+                //         {
+                //             key: "port_warehouse_snow_decal_2",
+                //             position: Vec.create(13.1, 53.5),
+                //             rotation: Math.PI,
+                //             scale: Vec.create(2, 2)
+                //         },
+                //         {
+                //             key: "port_warehouse_snow_decal_3",
+                //             position: Vec.create(17.5, -52.25),
+                //             scale: Vec.create(2, 2),
+                //             rotation: -Math.PI / 2
+                //         },
+                //         {
+                //             key: "port_warehouse_snow_decal_4",
+                //             position: Vec.create(-23, -20),
+                //             scale: Vec.create(2, 2)
+                //         },
+                //         {
+                //             key: "port_warehouse_snow_decal_5",
+                //             position: Vec.create(22.8, -20),
+                //             scale: Vec.create(2, 2)
+                //         },
+                //         {
+                //             key: "port_warehouse_snow_decal_1",
+                //             position: Vec.create(-23.5, 58.6),
+                //             scale: Vec.create(2, 2),
+                //             rotation: Math.PI
+                //         }
+                //     ]
+                //     : [])
             ],
             obstacles: [
                 { idString: "super_barrel", position: Vec.create(-10, -52) },
@@ -2182,7 +2190,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 floorImages: [
                     {
                         key: "blue_house_floor_2_1",
-                        position: Vec.create(-18.67, 18),
+                        position: Vec.create(-18.67, 17.97),
                         scale: Vec.create(1.07, 1.07)
                     },
                     {
@@ -4429,7 +4437,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     },
                     {
                         key: "headquarters_ceiling_2",
-                        position: Vec.create(-46.25, 5.8),
+                        position: Vec.create(-46.2, 5.8),
                         scale: Vec.create(2.15, 2.15)
                     },
                     {
@@ -5097,6 +5105,11 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         key: "barn_top_floor_1",
                         position: Vec.create(-19.5, 0),
                         scale: Vec.create(1.07, 1.07)
+                    },
+                    {
+                        key: "barn_top_floor_wall",
+                        position: Vec.create(-23.14, -21.51),
+                        scale: Vec.create(1.07, 1.07)
                     }
                 ],
                 floors: [
@@ -5114,6 +5127,22 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             },
             {
                 idString: "barn_exterior", // spanAdjacent layer thingy no work
+                name: "Barn Exterior",
+                material: "stone",
+                particleVariations: 2,
+                spawnHitbox: RectangleHitbox.fromRect(120, 92),
+                particle: "barn_wall_particle",
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(77, 1.75, Vec.create(-4.5, -41)),
+                    RectangleHitbox.fromRect(1.75, 45, Vec.create(-55.1, -5.8)),
+                    RectangleHitbox.fromRect(31.5, 1.75, Vec.create(-40.25, 17)),
+                    RectangleHitbox.fromRect(48, 1.75, Vec.create(10, 17)),
+                    RectangleHitbox.fromRect(1.75, 16, Vec.create(33.1, 9)),
+                    RectangleHitbox.fromRect(1.75, 16, Vec.create(33.1, -32.25))
+                )
+            },
+            {
+                idString: "barn_exterior_top_floor", // spanAdjacent layer thingy no work
                 name: "Barn Exterior",
                 material: "stone",
                 particleVariations: 2,
@@ -5156,6 +5185,11 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         key: "barn_floor_2",
                         position: Vec.create(16, -11.9),
                         scale: Vec.create(1.07, 1.07)
+                    },
+                    {
+                        key: "barn_floor_explosion",
+                        position: Vec.create(-50, -37),
+                        scale: Vec.create(1, 1)
                     }
                 ],
                 ceilingImages: [{
@@ -5238,10 +5272,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "barn_door", position: Vec.create(33.06, -4.48), rotation: 1 },
                     { idString: "barn_door", position: Vec.create(33.06, -18.9), rotation: 3 },
                     { idString: "regular_crate", position: Vec.create(-5.16, 10.94) },
-                    { idString: "ammo_crate", position: Vec.create(-48.33, -34.23) },
+                    { idString: "ammo_crate", position: Vec.create(-48.33, -18) },
                     { idString: "bookshelf", position: Vec.create(29.66, 9.22), rotation: 1 },
                     { idString: "bookshelf", position: Vec.create(-25.21, -37.16), rotation: 0 },
-                    { idString: "box", position: Vec.create(-50.76, -26.18) },
+                    { idString: "box", position: Vec.create(-24, -20.18) },
                     { idString: "box", position: Vec.create(8.98, 12.94) },
                     { idString: "box", position: Vec.create(14.16, 10.48) },
                     { idString: "flint_crate", position: Vec.create(-48.59, 10.82) },
@@ -5273,7 +5307,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "barn_top_floor_shadow", position: Vec.create(-24.5, -11.7) },
                     { idString: "barn_top_floor", position: Vec.create(-23.9, -11.85), layer: 2 },
                     { idString: "barn_exterior", position: Vec.create(0, 0) },
-                    { idString: "barn_exterior", position: Vec.create(0, 0), layer: 2 }
+                    { idString: "barn_exterior_top_floor", position: Vec.create(0, 0), layer: 2 },
+                    { idString: randomHayShed, position: Vec.create(-5, -58) }
                 ]
             },
             {

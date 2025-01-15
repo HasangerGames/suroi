@@ -3,9 +3,8 @@ import path, { resolve } from "path";
 import { splitVendorChunkPlugin, type UserConfig } from "vite";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 import pkg from "../../package.json";
-import { spritesheet } from "./vite-spritesheet-plugin/spritesheet-plugin";
 
-const config: UserConfig = {
+const commonConfig: UserConfig = {
     build: {
         rollupOptions: {
             input: {
@@ -29,8 +28,7 @@ const config: UserConfig = {
         ViteImageOptimizer({
             test: /\.(svg)$/i,
             logStats: false
-        }),
-        spritesheet()
+        })
     ],
 
     css: {
@@ -52,4 +50,4 @@ const config: UserConfig = {
     }
 };
 
-export default config;
+export default commonConfig;

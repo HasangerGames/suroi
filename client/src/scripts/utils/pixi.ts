@@ -1,16 +1,22 @@
+import { type Mode } from "@common/definitions/modes";
 import { Obstacles } from "@common/definitions/obstacles";
 import { HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Vec, type Vector } from "@common/utils/vector";
-import $ from "jquery";
 import { Assets, Container, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
-import { getTranslatedString } from "../../translations";
 import { PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
 
 const textures: Record<string, Texture> = {};
 
-const loadingText = $("#loading-text");
+export let spritesheetsLoaded = false;
 
-export async function loadTextures(renderer: Renderer, highResolution: boolean): Promise<void> {
+let onSpritesheetsLoaded: ((value: unknown) => void) | undefined;
+export function setOnSpritesheetsLoaded(callback: (value: unknown) => void): void {
+    onSpritesheetsLoaded = callback;
+}
+
+export let unloadedSprites: Map<SuroiSprite, string> | undefined;
+
+export async function loadTextures(modeName: Mode, renderer: Renderer, highResolution: boolean): Promise<void> {
     // If device doesn't support 4096x4096 textures, force low resolution textures since they are 2048x2048
     if (renderer.type as RendererType === RendererType.WEBGL) {
         const gl = (renderer as WebGLRenderer).gl;
@@ -21,11 +27,13 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
 
     // we pray
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const spritesheets: SpritesheetData[] = highResolution
+    const atlases: Record<string, SpritesheetData[]> = highResolution
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         ? (await import("virtual:spritesheets-jsons-high-res")).atlases
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         : (await import("virtual:spritesheets-jsons-low-res")).atlases;
+
+    const spritesheets = atlases[modeName];
 
     let resolved = 0;
     const count = spritesheets.length;
@@ -50,9 +58,21 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
                 const progress = `(${resolvedCount} / ${count})`;
 
                 console.log(`Atlas ${image} loaded ${progress}`);
-                loadingText.text(getTranslatedString("loading_spritesheets", {
-                    progress
-                }));
+
+                if (unloadedSprites) {
+                    for (const [sprite, frame] of unloadedSprites.entries()) {
+                        if (!(frame in textures)) continue;
+
+                        if (!sprite.destroyed) sprite.setFrame(frame, true);
+                        unloadedSprites.delete(sprite);
+                    }
+                    if (!unloadedSprites.size) unloadedSprites = undefined;
+                }
+
+                if (resolvedCount === count) {
+                    spritesheetsLoaded = true;
+                    onSpritesheetsLoaded?.(undefined);
+                }
             } catch (e) {
                 ++resolved;
                 console.error(`Atlas ${image} failed to load. Details:`, e);
@@ -183,6 +203,18 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
                 resolve();
             }))
     ]);
+
+    // Apply the missing texture to any sprites whose textures can't be found after loading spritesheets
+    if (unloadedSprites) {
+        for (const [sprite, frame] of unloadedSprites.entries()) {
+            if (sprite.destroyed) continue;
+
+            console.warn(`Texture not found: "${frame}"`);
+            sprite.setFrame("_missing_texture", true);
+            unloadedSprites.delete(sprite);
+        }
+        unloadedSprites = undefined;
+    }
 }
 
 export class SuroiSprite extends Sprite {
@@ -195,13 +227,23 @@ export class SuroiSprite extends Sprite {
     }
 
     constructor(frame?: string) {
-        super(frame ? SuroiSprite.getTexture(frame) : undefined);
+        super(spritesheetsLoaded && frame ? SuroiSprite.getTexture(frame) : undefined);
+        if (!spritesheetsLoaded && frame) {
+            (unloadedSprites ??= new Map<SuroiSprite, string>()).set(this, frame);
+        }
 
         this.anchor.set(0.5);
         this.setPos(0, 0);
     }
 
-    setFrame(frame: string): this {
+    setFrame(frame: string, force?: boolean): this {
+        if (!spritesheetsLoaded && !force) {
+            // @ts-expect-error technically this shouldn't be undefined, but there isn't a way around it so
+            this.texture = undefined;
+            (unloadedSprites ??= new Map<SuroiSprite, string>()).set(this, frame);
+            return this;
+        }
+
         this.texture = SuroiSprite.getTexture(frame);
         return this;
     }

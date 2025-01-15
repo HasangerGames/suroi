@@ -48,6 +48,7 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>("Emotes", [
         "Greedy Face",
         "Creepy Clown",
         "Lying Face",
+        "Nerd Face",
         "Skull",
         "Melting Face",
         "Grimacing Face",
@@ -85,7 +86,6 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>("Emotes", [
         "Bleh",
         "Muller",
         "Suroi General Chat",
-        "Fire",
         "RIP",
         "Leosmug",
         "awhhmahgawd",
@@ -102,5 +102,13 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>("Emotes", [
         "real",
         "fake",
         "Colon Three"
-    ].map(name => emote([name, EmoteCategory.Text]))
+    ].map(name => emote([name, EmoteCategory.Text])),
+    ...[
+        "Fire",
+        "Carrot",
+        "Egg",
+        "Penguin",
+        "Squid",
+        "Tomato"
+    ].map(name => emote([name, EmoteCategory.Misc]))
 ]);

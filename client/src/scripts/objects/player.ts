@@ -10,6 +10,7 @@ import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "@common/definitions/
 import { type ObstacleDefinition } from "@common/definitions/obstacles";
 import { PerkData, PerkIds } from "@common/definitions/perks";
 import { Skins, type SkinDefinition } from "@common/definitions/skins";
+import type { AllowedEmoteSources } from "@common/packets/inputPacket";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, getEffectiveZIndex } from "@common/utils/layer";
@@ -27,13 +28,12 @@ import { getTranslatedString } from "../../translations";
 import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { BULLET_WHIZ_SCALE, COLORS, DIFF_LAYER_HITBOX_OPACITY, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { BULLET_WHIZ_SCALE, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
-import type { AllowedEmoteSources } from "@common/packets/inputPacket";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -172,7 +172,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             weapon: new SuroiSprite().setZIndex(3),
             altWeapon: new SuroiSprite().setZIndex(3),
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec.create(0, 0.5)),
-            waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water),
+            waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(game.colors.water),
             blood: new Container(),
             disguiseSprite: new SuroiSprite()
         };
@@ -672,7 +672,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
             this._skin = skinID;
             const skinDef = Loots.fromString<SkinDefinition>(skinID);
-            const tint = skinDef.grassTint ? GHILLIE_TINT : 0xffffff;
+            const tint = skinDef.grassTint ? this.game.ghillieTint : 0xffffff;
 
             const { body, leftFist, rightFist, leftLeg, rightLeg } = this.images;
 

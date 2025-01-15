@@ -150,6 +150,8 @@
   "loading_connecting": "Connecting",
   "loading_joining_game": "Joining Game",
   "loading_fetching_data": "Fetching Server Data...",
+  "loading_fetching_data_failed": "Failed to fetch server data",
+  "retry": "Retry",
   "loading_finding_game": "Finding Game",
   "keybind_clear_tooltip": "To remove a keybind, press the keybind and then press either <kbd>Escape</kbd> or <kbd>Backspace</kbd>.",
   "keybind_reset": "Reset to defaults",

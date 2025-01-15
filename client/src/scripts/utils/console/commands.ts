@@ -14,7 +14,6 @@ import { Rectangle, RendererType, Sprite, VERSION } from "pixi.js";
 import { Config, type ServerInfo } from "../../config";
 import { type Game } from "../../game";
 import { type CompiledAction, type CompiledTuple, type InputManager } from "../../managers/inputManager";
-import { COLORS } from "../constants";
 import { sanitizeHTML, stringify } from "../misc";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
@@ -868,7 +867,7 @@ export function setUpCommands(game: Game): void {
             );
 
             const canvas = game.pixi.renderer.extract.canvas({
-                clearColor: COLORS.grass,
+                clearColor: game.colors.grass,
                 target: container,
                 frame: rectangle,
                 resolution: container.scale.x,
@@ -1841,7 +1840,7 @@ export function setUpCommands(game: Game): void {
                                     k,
                                     {
                                         ...v,
-                                        ...(typeof v.nextSwitchTime === "number" ? { nextSwitchTime: new Date(v.nextSwitchTime) } : {}),
+                                        ...(typeof v.maxTeamSizeSwitchTime === "number" ? { maxTeamSizeSwitchTime: new Date(v.maxTeamSizeSwitchTime) } : {}),
                                         ...(typeof v.maxTeamSize === "number" ? { maxTeamSize: TeamSize[v.maxTeamSize] } : {})
                                     }
                                 ]

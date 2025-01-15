@@ -5,7 +5,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": false,
-    "percentage": "88%"
+    "percentage": "87%"
   },
   "br": {
     "name": "Português (Brasil)",
@@ -45,7 +45,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": false,
-    "percentage": "99%"
+    "percentage": "98%"
   },
   "et": {
     "name": "eesti",
@@ -53,7 +53,7 @@
     "mandatory": false,
     "no_resize": true,
     "no_space": false,
-    "percentage": "99%"
+    "percentage": "98%"
   },
   "fi": {
     "name": "suomi",
@@ -85,7 +85,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": true,
-    "percentage": "91%"
+    "percentage": "90%"
   },
   "hu": {
     "name": "Magyar",
@@ -93,7 +93,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": false,
-    "percentage": "99%"
+    "percentage": "98%"
   },
   "it": {
     "name": "Italiano",
@@ -149,7 +149,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": false,
-    "percentage": "86%"
+    "percentage": "85%"
   },
   "ru": {
     "name": "Русский",
@@ -157,7 +157,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": false,
-    "percentage": "99%"
+    "percentage": "98%"
   },
   "ta": {
     "name": "தமிழ்",
@@ -173,7 +173,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": false,
-    "percentage": "98%"
+    "percentage": "97%"
   },
   "tw": {
     "name": "中文（繁體）",
@@ -189,7 +189,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": false,
-    "percentage": "98%"
+    "percentage": "97%"
   },
   "zh": {
     "name": "中文（简体）",
@@ -197,6 +197,6 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": true,
-    "percentage": "99%"
+    "percentage": "98%"
   }
 }

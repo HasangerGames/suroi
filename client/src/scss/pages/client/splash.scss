@@ -14,8 +14,6 @@
     height: 100%;
     z-index: 100;
 
-    //noinspection CssUnknownTarget
-    background-image: url("/img/backgrounds/background.png");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -359,8 +357,7 @@
         transition: filter 0.5s;
     }
 
-    .loading-logo,
-    #loading-text {
+    #loader-container {
         opacity: 0;
         transition: opacity 0.5s;
     }
@@ -368,8 +365,7 @@
     &.loading {
         pointer-events: none;
 
-        .loading-logo,
-        #loading-text {
+        #loader-container {
             opacity: 1;
         }
 
@@ -467,24 +463,34 @@
         }
     }
 
-    #locked-msg {
+    #next-switch-messages {
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
-        @include variables.text-shadow;
         pointer-events: none;
-
-        & .fa-solid {
-            font-size: 20px;
-            @include variables.text-shadow;
-        }
+        display: flex;
+        gap: 20px;
     }
 
-    #locked-info {
-        background: none;
-        border: none;
-        cursor: pointer;
-        pointer-events: all;
+    .next-switch-msg {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .next-switch-time {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 18px;
+        @include variables.text-shadow;
+    }
+
+    .next-switch-icon {
+        width: 28px;
+        height: 28px;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        @include variables.drop-shadow;
     }
 
     #locked-tooltip {
@@ -762,7 +768,6 @@
     animation: mode-winter-color 4s linear infinite;
 }
 
-
 .event-fall {
     background-color: #72742f;
     border-bottom: 2px solid #535421;
@@ -775,13 +780,6 @@
     border-bottom: 2px solid #450b0b;
     box-shadow: inset 0 -2px #450b0b;
     animation: mode-halloween-color 4s linear infinite;
-}
-
-.event-fall {
-    background-color: #72742f;
-    border-bottom: 2px solid #535421;
-    box-shadow: inset 0 -2px #535421;
-    animation: mode-fall-color 4s linear infinite;
 }
 
 @keyframes mode-winter-color {

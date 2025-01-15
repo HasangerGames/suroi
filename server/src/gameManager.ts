@@ -4,16 +4,16 @@ import { Numeric } from "@common/utils/math";
 import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { isMainThread, parentPort, Worker, workerData } from "node:worker_threads";
 import { WebSocket } from "uWebSockets.js";
-import { Config } from "./config";
+import { Config, MapWithParams } from "./config";
 import { Game } from "./game";
 import { PlayerContainer } from "./objects/player";
-import { maxTeamSize } from "./server";
-import { Logger } from "./utils/misc";
+import { map, maxTeamSize, serverLog, serverWarn } from "./server";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 
 export interface WorkerInitData {
     readonly id: number
     readonly maxTeamSize: number
+    readonly map: MapWithParams
 }
 
 export enum WorkerMessages {
@@ -21,6 +21,7 @@ export enum WorkerMessages {
     IPAllowed,
     UpdateGameData,
     UpdateMaxTeamSize,
+    UpdateMap,
     CreateNewGame,
     Reset
 }
@@ -37,6 +38,10 @@ export type WorkerMessage =
     | {
         readonly type: WorkerMessages.UpdateMaxTeamSize
         readonly maxTeamSize: TeamSize
+    }
+    | {
+        readonly type: WorkerMessages.UpdateMap
+        readonly map: MapWithParams
     }
     | {
         readonly type:
@@ -79,7 +84,7 @@ export class GameContainer {
             this.worker = new Worker(
                 __filename,
                 {
-                    workerData: { id, maxTeamSize } satisfies WorkerInitData,
+                    workerData: { id, maxTeamSize, map } satisfies WorkerInitData,
                     execArgv: __filename.endsWith(".ts")
                         ? ["-r", "ts-node/register", "-r", "tsconfig-paths/register"]
                         : undefined
@@ -171,7 +176,7 @@ export async function newGame(id?: number): Promise<number> {
             resolve(creatingID);
         } else if (id !== undefined) {
             creatingID = id;
-            Logger.log(`Game ${id} | Creating...`);
+            serverLog(`Creating new game with ID ${id}`);
             const game = games[id];
             if (!game) {
                 games[id] = new GameContainer(id, resolve);
@@ -179,7 +184,7 @@ export async function newGame(id?: number): Promise<number> {
                 game.resolve = resolve;
                 game.sendMessage({ type: WorkerMessages.Reset });
             } else {
-                Logger.warn(`Game ${id} | Already exists`);
+                serverWarn(`Game with ID ${id} already exists`);
                 resolve(id);
             }
         } else {
@@ -199,10 +204,13 @@ export async function newGame(id?: number): Promise<number> {
 export const games: Array<GameContainer | undefined> = [];
 
 if (!isMainThread) {
+    process.on("uncaughtException", e => game.error("An unhandled error occurred. Details:", e));
+
     const id = (workerData as WorkerInitData).id;
     let maxTeamSize = (workerData as WorkerInitData).maxTeamSize;
+    let map = (workerData as WorkerInitData).map;
 
-    let game = new Game(id, maxTeamSize);
+    let game = new Game(id, maxTeamSize, map);
 
     // string = ip, number = expire time
     const allowedIPs = new Map<string, number>();
@@ -220,8 +228,12 @@ if (!isMainThread) {
                 });
                 break;
             }
+            case WorkerMessages.UpdateMap:
+                map = message.map;
+            // eslint-disable-next-line no-fallthrough
             case WorkerMessages.Reset: {
-                game = new Game(id, maxTeamSize);
+                game.kill();
+                game = new Game(id, maxTeamSize, map);
                 break;
             }
             case WorkerMessages.UpdateMaxTeamSize: {
@@ -252,17 +264,17 @@ if (!isMainThread) {
                     (simultaneousConnections[ip] >= (maxSimultaneousConnections ?? Infinity))
                     || (joinAttempts[ip] >= (maxJoinAttempts?.count ?? Infinity))
                 ) {
-                    Logger.log(`Game ${id} | Rate limited: ${ip}`);
+                    game.log(`Rate limited: ${ip}`);
                     forbidden(res);
                     return;
                 } else {
                     if (maxSimultaneousConnections) {
                         simultaneousConnections[ip] = (simultaneousConnections[ip] ?? 0) + 1;
-                        Logger.log(`Game ${id} | ${simultaneousConnections[ip]}/${maxSimultaneousConnections} simultaneous connections: ${ip}`);
+                        game.log(`${simultaneousConnections[ip]}/${maxSimultaneousConnections} simultaneous connections: ${ip}`);
                     }
                     if (maxJoinAttempts) {
                         joinAttempts[ip] = (joinAttempts[ip] ?? 0) + 1;
-                        Logger.log(`Game ${id} | ${joinAttempts[ip]}/${maxJoinAttempts.count} join attempts in the last ${maxJoinAttempts.duration} ms: ${ip}`);
+                        game.log(`${joinAttempts[ip]}/${maxJoinAttempts.count} join attempts in the last ${maxJoinAttempts.duration} ms: ${ip}`);
                     }
                 }
             }
@@ -366,11 +378,10 @@ if (!isMainThread) {
 
             if (!player) return;
 
-            Logger.log(`Game ${id} | "${player.name}" left`);
             game.removePlayer(player);
         }
     }).listen(Config.host, Config.port + id + 1, (): void => {
-        Logger.log(`Game ${id} | Listening on ${Config.host}:${Config.port + id + 1}`);
+        game.log(`Listening on ${Config.host}:${Config.port + id + 1}`);
     });
 
     if (Config.protection?.maxJoinAttempts) {

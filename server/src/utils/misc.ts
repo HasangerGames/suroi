@@ -1,27 +1,22 @@
 import { Constants, GameConstants } from "@common/constants";
-import { ColorStyles, styleText } from "@common/utils/ansiColoring";
 import { halfπ, τ } from "@common/utils/math";
 import { NullString, type ObjectDefinition, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { weightedRandom } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-import { Config } from "../config";
+import { Config, MapWithParams } from "../config";
+import { Mode, Modes } from "@common/definitions/modes";
+import { MapName, Maps } from "../data/maps";
 
-export const Logger = {
-    log(...message: string[]): void {
-        internalLog(message.join(" "));
-    },
-    warn(...message: string[]): void {
-        internalLog(styleText("[WARNING]", ColorStyles.foreground.yellow.normal), message.join(" "));
+export function modeFromMap(map: MapWithParams): Mode {
+    const mapName = map.split(":")[0];
+    const mapMode = Maps[mapName as MapName]?.mode;
+    if (mapMode) {
+        return mapMode;
+    } else if (mapName in Modes) {
+        return mapName as Mode;
+    } else {
+        return GameConstants.defaultMode;
     }
-};
-
-function internalLog(...message: string[]): void {
-    const date = new Date();
-
-    console.log(
-        styleText(`[${date.toLocaleDateString("en-US")} ${date.toLocaleTimeString("en-US")}]`, ColorStyles.foreground.green.bright),
-        message.join(" ")
-    );
 }
 
 export function cleanUsername(name?: string | null): string {

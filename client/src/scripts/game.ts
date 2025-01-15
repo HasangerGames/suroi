@@ -1,9 +1,11 @@
-import { GameConstants, InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize } from "@common/constants";
+import { InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize } from "@common/constants";
 import { ArmorType } from "@common/definitions/armors";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { Emotes } from "@common/definitions/emotes";
 import { type DualGunNarrowing } from "@common/definitions/guns";
 import { Loots } from "@common/definitions/loots";
+import type { ColorKeys, Mode, ModeDefinition } from "@common/definitions/modes";
+import { Modes } from "@common/definitions/modes";
 import { Scopes } from "@common/definitions/scopes";
 import { DisconnectPacket } from "@common/packets/disconnectPacket";
 import { GameOverPacket } from "@common/packets/gameOverPacket";
@@ -51,11 +53,11 @@ import { ThrowableProjectile } from "./objects/throwableProj";
 import { Camera } from "./rendering/camera";
 import { Gas, GasRender } from "./rendering/gas";
 import { Minimap } from "./rendering/minimap";
-import { autoPickup, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, updateDisconnectTime } from "./ui";
+import { autoPickup, fetchServerData, reloadPage, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, updateDisconnectTime } from "./ui";
 import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
-import { COLORS, EMOTE_SLOTS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
+import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { setUpNetGraph } from "./utils/graph/netGraph";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
@@ -117,6 +119,46 @@ export class Game {
 
     teamMode = false;
 
+    _modeName: Mode | undefined;
+    get modeName(): Mode {
+        if (!this._modeName) throw new Error("modeName accessed before initialization");
+        return this._modeName;
+    }
+
+    set modeName(modeName: Mode) {
+        this._modeName = modeName;
+        this._mode = Modes[this.modeName];
+
+        // Converts the strings in the mode definition to Color objects
+        this._colors = (Object.entries(this.mode.colors) as Array<[ColorKeys, string]>).reduce(
+            (result, [key, color]) => {
+                result[key] = new Color(color);
+                return result;
+            },
+            {} as Record<ColorKeys, Color>
+        );
+
+        this._ghillieTint = this._colors.grass.multiply(new Color("hsl(0, 0%, 99%)"));
+    }
+
+    _mode: ModeDefinition | undefined;
+    get mode(): ModeDefinition {
+        if (!this._mode) throw new Error("mode accessed before initialization");
+        return this._mode;
+    }
+
+    private _colors: Record<ColorKeys, Color> | undefined;
+    get colors(): Record<ColorKeys, Color> {
+        if (!this._colors) throw new Error("colors accessed before initialization");
+        return this._colors;
+    }
+
+    private _ghillieTint: Color | undefined;
+    get ghillieTint(): Color {
+        if (!this._ghillieTint) throw new Error("ghillieTint accessed before initialization");
+        return this._ghillieTint;
+    }
+
     /**
      * proxy for `activePlayer`'s layer
      */
@@ -128,6 +170,7 @@ export class Game {
         return this.objects.get(this.activePlayerID) as Player;
     }
 
+    connecting = false;
     gameStarted = false;
     gameOver = false;
     spectating = false;
@@ -138,13 +181,13 @@ export class Game {
     readonly uiManager = new UIManager(this);
     readonly pixi = new Application();
     readonly particleManager = new ParticleManager(this);
-    readonly map = new Minimap(this);
+    map!: Minimap;
     readonly camera = new Camera(this);
     readonly console = new GameConsole(this);
     readonly inputManager = new InputManager(this);
-    readonly soundManager = new SoundManager(this);
+    soundManager!: SoundManager;
 
-    readonly gasRender = new GasRender(PIXI_SCALE);
+    gasRender!: GasRender;
     readonly gas = new Gas(this);
 
     readonly netGraph = setUpNetGraph(this);
@@ -172,8 +215,15 @@ export class Game {
         const game = new Game();
 
         game.console.readFromLocalStorage();
+        setUpCommands(game);
         await initTranslation(game);
+        await fetchServerData(game);
+        game.inputManager.generateBindsConfigScreen();
         game.inputManager.setupInputs();
+
+        game.gasRender = new GasRender(game, PIXI_SCALE);
+        game.map = new Minimap(game);
+        game.soundManager = new SoundManager(game);
 
         const initPixi = async(): Promise<void> => {
             const renderMode = game.console.getBuiltInCVar("cv_renderer");
@@ -181,7 +231,7 @@ export class Game {
 
             await game.pixi.init({
                 resizeTo: window,
-                background: COLORS.grass,
+                background: game.colors.grass,
                 antialias: game.console.getBuiltInCVar("cv_antialias"),
                 autoDensity: true,
                 preferWebGLVersion: renderMode === "webgl1" ? 1 : 2,
@@ -200,7 +250,8 @@ export class Game {
             });
 
             const pixi = game.pixi;
-            await loadTextures(
+            void loadTextures(
+                game.modeName,
                 pixi.renderer,
                 game.inputManager.isMobile
                     ? game.console.getBuiltInCVar("mb_high_res_textures")
@@ -244,24 +295,31 @@ export class Game {
             game.resize();
         };
 
-        void Promise.all([
-            initPixi(),
-            setUpUI(game)
-        ]).then(() => {
-            unlockPlayButtons();
-            resetPlayButtons();
-        });
-
-        setUpCommands(game);
-        game.inputManager.generateBindsConfigScreen();
-
+        let menuMusicSuffix: string;
+        if (game.console.getBuiltInCVar("cv_use_old_menu_music")) {
+            menuMusicSuffix = "_old";
+        } else if (game.mode.sounds?.replace?.includes("menu_music")) {
+            menuMusicSuffix = `_${game.modeName}`;
+        } else {
+            menuMusicSuffix = "";
+        }
         game.music = sound.add("menu_music", {
-            url: `./audio/music/menu_music${game.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${GameConstants.modeName}` : ""}.mp3`,
+            url: `./audio/music/menu_music${menuMusicSuffix}.mp3`,
             singleInstance: true,
             preload: true,
             autoPlay: true,
             volume: game.console.getBuiltInCVar("cv_music_volume")
         });
+
+        void Promise.all([
+            initPixi(),
+            game.soundManager.loadSounds(game),
+            setUpUI(game)
+        ]).then(() => {
+            unlockPlayButtons();
+            resetPlayButtons(game);
+        });
+
         return game;
     }
 
@@ -279,9 +337,8 @@ export class Game {
         this._socket.binaryType = "arraybuffer";
 
         this._socket.onopen = (): void => {
-            if (this.music) {
-                this.music.stop();
-            }
+            this.music?.stop();
+            this.connecting = false;
             this.gameStarted = true;
             this.gameOver = false;
             this.spectating = false;
@@ -323,7 +380,7 @@ export class Game {
             this.camera.addObject(this.gasRender.graphics);
             this.map.indicator.setFrame("player_indicator");
 
-            const particleEffects = MODE.particleEffects;
+            const particleEffects = this.mode.particleEffects;
 
             if (particleEffects !== undefined) {
                 const This = this;
@@ -385,20 +442,27 @@ export class Game {
 
         this._socket.onerror = (): void => {
             this.error = true;
+            this.connecting = false;
             ui.splashMsgText.html(getTranslatedString("msg_err_joining"));
             ui.splashMsg.show();
-            resetPlayButtons();
+            resetPlayButtons(this);
         };
 
         this._socket.onclose = (): void => {
-            resetPlayButtons();
+            this.connecting = false;
+            resetPlayButtons(this);
 
             const reason = this.disconnectReason || "Connection lost";
+
+            if (reason === "Server killed") {
+                reloadPage();
+                return;
+            }
 
             if (!this.gameOver) {
                 if (this.gameStarted) {
                     ui.splashUi.fadeIn(400);
-                    ui.splashMsgText.html(this.disconnectReason || "Connection lost.");
+                    ui.splashMsgText.html(reason);
                     ui.splashMsg.show();
                 }
                 this.uiManager.ui.btnSpectate.addClass("btn-disabled");
@@ -508,8 +572,9 @@ export class Game {
         // game started if page is out of focus.
         if (!document.hasFocus()) this.soundManager.play("join_notification");
 
-        if (MODE.ambience) {
-            this.ambience = this.soundManager.play(MODE.ambience, { loop: true, ambient: true });
+        const ambience = this.mode.sounds?.ambience;
+        if (ambience) {
+            this.ambience = this.soundManager.play(ambience, { loop: true, ambient: true });
         }
 
         this.uiManager.emotes = packet.emotes;
@@ -522,7 +587,7 @@ export class Game {
         }
 
         ui.canvas.addClass("active");
-        ui.splashUi.fadeOut(400, resetPlayButtons);
+        ui.splashUi.fadeOut(400, () => resetPlayButtons(this));
 
         ui.killLeaderLeader.html(getTranslatedString("msg_waiting_for_leader"));
         ui.killLeaderCount.text("0");
@@ -535,7 +600,9 @@ export class Game {
         const ui = this.uiManager.ui;
 
         return await new Promise(resolve => {
+            ui.gameMenu.fadeOut(250);
             ui.splashOptions.addClass("loading");
+            ui.loaderText.text("");
 
             this.soundManager.stopAll();
 
@@ -545,7 +612,6 @@ export class Game {
                 }
                 ui.teamContainer.html("");
                 ui.actionContainer.hide();
-                ui.gameMenu.hide();
                 ui.gameOverOverlay.hide();
                 ui.canvas.removeClass("active");
                 ui.killLeaderLeader.text(getTranslatedString("msg_waiting_for_leader"));
@@ -577,7 +643,7 @@ export class Game {
 
                 this.camera.zoom = Scopes.definitions[0].zoomLevel;
                 updateDisconnectTime();
-                resetPlayButtons();
+                resetPlayButtons(this);
                 if (teamSocket) ui.createTeamMenu.fadeIn(250, resolve);
                 else resolve();
             });
@@ -850,7 +916,7 @@ export class Game {
         this.map.terrainGraphics.visible = !basement;
         const { red, green, blue } = this.pixi.renderer.background.color;
         const color = { r: red * 255, g: green * 255, b: blue * 255 };
-        const targetColor = basement ? COLORS.void : COLORS.grass;
+        const targetColor = basement ? this.colors.void : this.colors.grass;
 
         this.backgroundTween?.kill();
         this.backgroundTween = this.addTween({
