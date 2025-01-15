@@ -1,4 +1,4 @@
-import { GameConstants, Layers, TentTints, ZIndexes } from "../constants";
+import { Layers, TentTints, ZIndexes } from "../constants";
 import { type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial, type GetEnumMemberName, type Mutable } from "../utils/misc";

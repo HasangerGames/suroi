@@ -309,6 +309,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             let upperCeilingImage;
             let lowerCeilingImage;
 
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const snowDecalDefinitions = {
                 closed: pickRandomInArray([
                     [

@@ -15,7 +15,6 @@ import { HealingItems } from "../../common/src/definitions/healingItems";
 import { Loots } from "../../common/src/definitions/loots";
 import { MapPings } from "../../common/src/definitions/mapPings";
 import { Melees } from "../../common/src/definitions/melees";
-import { Modes } from "../../common/src/definitions/modes";
 import { Obstacles, RotationMode } from "../../common/src/definitions/obstacles";
 import { DEFAULT_SCOPE, Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
@@ -25,10 +24,10 @@ import { ColorStyles, FontStyles, styleText } from "../../common/src/utils/loggi
 import { NullString, ObstacleSpecialRoles, type ItemDefinition } from "../../common/src/utils/objectDefinitions";
 import { FloorTypes } from "../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../common/src/utils/vector";
-import { Config, GasMode, Config as ServerConfig, SpawnMode } from "../../server/src/config";
+import { Config, GasMode, Config as ServerConfig } from "../../server/src/config";
 import { GasStages } from "../../server/src/data/gasStages";
 import { LootTables, type FullLootTable, type SimpleLootTable, type WeightedItem } from "../../server/src/data/lootTables";
-import { Maps, type MapName } from "../../server/src/data/maps";
+import { Maps } from "../../server/src/data/maps";
 import { findDupes, logger, safeString, tester, validators } from "./validationUtils";
 
 const testStart = Date.now();

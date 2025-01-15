@@ -1,4 +1,4 @@
-import { GameConstants, Layer } from "../constants";
+import { Layer } from "../constants";
 import { PolygonHitbox, RectangleHitbox, type Hitbox } from "./hitbox";
 import { Collision, Numeric } from "./math";
 import { randomBoolean, randomFloat, SeededRandom } from "./random";

@@ -1,4 +1,4 @@
-import { GameConstants, Layer, Layers, ObjectCategory, ZIndexes } from "@common/constants";
+import { Layer, Layers, ObjectCategory, ZIndexes } from "@common/constants";
 import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";

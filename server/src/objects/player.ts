@@ -9,7 +9,6 @@ import { HealingItems } from "@common/definitions/healingItems";
 import { Loots, type WeaponDefinition } from "@common/definitions/loots";
 import { type PlayerPing } from "@common/definitions/mapPings";
 import { Melees, type MeleeDefinition } from "@common/definitions/melees";
-import { Modes } from "@common/definitions/modes";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { PerkCategories, PerkIds, Perks, type PerkDefinition, type PerkNames } from "@common/definitions/perks";
 import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/scopes";
