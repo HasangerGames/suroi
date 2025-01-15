@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Wed, 15 Jan 2025 13:09:39 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Wed, 15 Jan 2025 13:25:45 GMT
 
 ## 🇦🇱 Shqip (87% Complete) - ab.hjson
 
@@ -13,6 +13,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
+- Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
@@ -42,20 +43,21 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇧🇷 Português (Brasil) (98% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (97% Complete) - br.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `wiki` is not defined
+- Key `settings_show_inout` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
-## 🇨🇿 Čeština (92% Complete) - cz.hjson
+## 🇨🇿 Čeština (91% Complete) - cz.hjson
 
 ### (No Invalid Keys)
 
@@ -68,6 +70,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
@@ -84,13 +87,14 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇩🇪 Deutsch (98% Complete) - de.hjson
+## 🇩🇪 Deutsch (97% Complete) - de.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `wiki` is not defined
+- Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `loading_fetching_data_failed` is not defined
@@ -104,6 +108,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `wiki` is not defined
+- Key `settings_show_inout` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
@@ -117,11 +122,12 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `wiki` is not defined
+- Key `settings_show_inout` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
-## 🇫🇮 suomi (97% Complete) - fi.hjson
+## 🇫🇮 suomi (96% Complete) - fi.hjson
 
 ### (No Invalid Keys)
 
@@ -129,6 +135,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `wiki` is not defined
+- Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
@@ -152,13 +159,14 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 
-## 🇬🇷 Ελληνικά (98% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (97% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `wiki` is not defined
+- Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `loading_fetching_data_failed` is not defined
@@ -180,6 +188,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
@@ -207,12 +216,13 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `wiki` is not defined
+- Key `settings_show_inout` is not defined
 - Key `settings_haptics` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
-## 🇮🇹 Italiano (88% Complete) - it.hjson
+## 🇮🇹 Italiano (87% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -241,6 +251,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
@@ -261,7 +272,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇯🇵 日本語 (92% Complete) - jp.hjson
+## 🇯🇵 日本語 (91% Complete) - jp.hjson
 
 ### (No Invalid Keys)
 
@@ -274,6 +285,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
@@ -290,7 +302,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇱🇹 Lietuvių (92% Complete) - lt.hjson
+## 🇱🇹 Lietuvių (91% Complete) - lt.hjson
 
 ### (No Invalid Keys)
 
@@ -303,6 +315,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
@@ -319,7 +332,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇱🇻 Latviešu (92% Complete) - lv.hjson
+## 🇱🇻 Latviešu (91% Complete) - lv.hjson
 
 ### (No Invalid Keys)
 
@@ -332,6 +345,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
@@ -348,7 +362,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇵🇱 Polski (97% Complete) - pl.hjson
+## 🇵🇱 Polski (96% Complete) - pl.hjson
 
 ### (No Invalid Keys)
 
@@ -356,6 +370,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `wiki` is not defined
+- Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
@@ -382,6 +397,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
@@ -416,6 +432,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
@@ -452,12 +469,13 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `wiki` is not defined
+- Key `settings_show_inout` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `m16a4` is not defined
 
-## 🇮🇳 தமிழ் (91% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (90% Complete) - ta.hjson
 
 ### (No Invalid Keys)
 
@@ -471,6 +489,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
@@ -497,6 +516,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `wiki` is not defined
+- Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
@@ -523,6 +543,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
@@ -565,6 +586,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `wiki` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_show_inout` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
 - Key `loading_fetching_data_failed` is not defined
@@ -580,6 +602,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `wiki` is not defined
+- Key `settings_show_inout` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined

@@ -67,6 +67,7 @@
   "settings_warn_before_leaving": "Avertir avant abandon",
   "settings_show_fps": "Montrer FPS",
   "settings_show_ping": "Montrer ping",
+  "settings_show_inout": "Montrer stats de réseau",
   "settings_show_coordinates": "Montrer coordonnées",
   "settings_anon_names": "Joueurs anonymes",
   "settings_hide_emotes": "Cacher emotes",

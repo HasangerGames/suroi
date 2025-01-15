@@ -1586,6 +1586,11 @@ export async function setUpUI(game: Game): Promise<void> {
         "pf_show_fps"
     );
 
+    addCheckboxListener(
+        "#toggle-inout",
+        "pf_show_inout"
+    );
+
     // lmao one day, we'll have dropdown menus
 
     // Text killfeed toggle

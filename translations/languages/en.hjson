@@ -73,6 +73,7 @@
   "settings_warn_before_leaving": "Warn before leaving"
   "settings_show_fps": "Show FPS"
   "settings_show_ping": "Show ping"
+  "settings_show_inout": "Show network stats"
   "settings_show_coordinates": "Show coordinates"
   "settings_anon_names": "Anonymous player names"
   "settings_hide_emotes": "Hide emotes"
