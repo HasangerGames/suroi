@@ -14,6 +14,7 @@ export const news: NewsPost[] = [
   <li><strong>Mode switching!</strong> The game now switches between Harvest and Classic modes every week.</li>
   <li><strong>New bunker!</strong> Added a variation of the blue house with a basement.</li>
   <li><strong>Team stats!</strong> Stats are now shown for everyone on your team on the game over screen.</li>
+  <li>Added an improved debug readout, accessible by binding the "Adjust Network Graph Style" keybind.</li>
   <li>Added back most of the emotes removed in the previous update, tweaked some emotes, and added 1 new emote.</li>
 </ul>
 
