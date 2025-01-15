@@ -62,6 +62,8 @@ export type DeepMutable<T> = (T extends ReadonlyArray<infer I> ? Array<DeepMutab
     -readonly [K in keyof T]: DeepMutable<T[K]>;
 };
 
+export type WithPartial<O extends object, K extends keyof O> = Omit<O, K> & { [L in K]?: O[L] };
+
 /**
  * Same as {@link Mutable} but descendants of {@link ObjectDefinition} remain untouched
  */
@@ -105,7 +107,12 @@ export function handleResult<Res>(result: Result<Res, unknown>, fallbackSupplier
     return "err" in result ? fallbackSupplier() : result.res;
 }
 
-export function mergeDeep<T extends object>(target: T, ...sources: Array<DeepPartial<T>>): T {
+// from https://stackoverflow.com/a/50375286
+type UnionToIntersection<U> = (U extends unknown ? (x: U) => void : never) extends ((x: infer I) => void) ? I : never;
+
+export function mergeDeep<A extends readonly object[]>(target: Record<PrimitiveKey, never>, ...sources: A): UnionToIntersection<A[number]>;
+export function mergeDeep<T extends object>(target: T, ...sources: ReadonlyArray<DeepPartial<T>>): T;
+export function mergeDeep<T extends object>(target: T, ...sources: ReadonlyArray<DeepPartial<T>>): T {
     if (!sources.length) return target;
 
     const [source, ...rest] = sources;

@@ -243,24 +243,15 @@
     width: max-content;
 
     position: absolute;
-    left: 5px;
-    top: 50%;
-    transform: translateY(-50%);
+    transform: scale(85%);
+    transform-origin: 0% 0%;
+    left: 240px;
+    top: 10px;
 
-    @media screen and (max-width: variables.$screen_medium) {
-        transform: scale(55%);
-    }
-
-    @media screen and (max-height: 800px) {
-        flex-direction: column;
-        top: 160px;
-        transform: scale(55%);
-        transform-origin: 0% 0%;
-        @media screen and (min-width: variables.$screen_large) {
-            flex-direction: column;
-            left: 240px;
-            top: 20px;
-        }
+    @media screen and (max-width: variables.$screen_large) {
+        left: 150px;
+        transform: scale(50%);
+        top: 5px;
     }
 
     @media screen and (max-height: 465px) and (max-width: variables.$screen-large) {

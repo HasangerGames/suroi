@@ -11,13 +11,12 @@ import { JoinedPacket } from "@common/packets/joinedPacket";
 import { KillFeedPacket, type KillFeedPacketData } from "@common/packets/killFeedPacket";
 import { type InputPacket, type OutputPacket } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
-import { PingPacket } from "@common/packets/pingPacket";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { type PingSerialization } from "@common/packets/updatePacket";
 import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric, Statistics } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
-import { ItemType, MapObjectSpawnMode, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { ItemType, MapObjectSpawnMode, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "@common/utils/random";
 import { type SuroiByteStream } from "@common/utils/suroiByteStream";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -283,21 +282,13 @@ export class Game implements GameData {
                 this.activatePlayer(player, packet.output);
                 break;
             case packet instanceof PlayerInputPacket:
-                // Ignore input packets from players that haven't finished joining, dead players, and if the game is over
+                // Ignore input packets from players that haven't finished joining, dead players, or if the game is over
                 if (!player.joined || player.dead || player.game.over) return;
                 player.processInputs(packet.output);
                 break;
             case packet instanceof SpectatePacket:
                 player.spectate(packet.output);
                 break;
-            case packet instanceof PingPacket: {
-                if (Date.now() - player.lastPingTime < 4000) return;
-                player.lastPingTime = Date.now();
-                const stream = new PacketStream(new ArrayBuffer(8));
-                stream.serializeServerPacket(PingPacket.create());
-                player.sendData(stream.getBuffer());
-                break;
-            }
         }
     }
 
@@ -861,6 +852,41 @@ export class Game implements GameData {
         this.pluginManager.emit("player_disconnect", player);
     }
 
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // ! The implementation signature is the correct signature, but due to some TS strangeness,
+    // ! ReifiableDef<Def> has been expanded out into Def | ReferenceTo<Def> (as per its definition),
+    // ! and each constituent of the union has been given an overload. This doesn't actually change
+    // ! which calls succeed and which ones don't, but without it, the inference for Def breaks.
+    // ! Indeed, for some reason, directly using the implementation signature causes TS to infer
+    // ! the generic Def as never for calls resembling addLoot(SomeSchema.fromString("some_string"), …)
+    // !
+    // ! For anyone reading this, try removing the two overloads, and test if the code
+    // ! this.addLoot(HealingItems.fromString("cola"), Vec.create(0, 0), Layer.Ground) does two things:
+    // ! a) it does not raise type errors
+    // ! b) Def is inferred as HealingItemDefinition
+    addLoot<Def extends LootDefinition = LootDefinition>(
+        definition: Def,
+        position: Vector,
+        layer: Layer,
+        opts?: { readonly count?: number, readonly pushVel?: number, readonly jitterSpawn?: boolean, readonly data?: ItemData<Def> }
+    ): Loot<Def> | undefined;
+    addLoot<Def extends LootDefinition = LootDefinition>(
+        // eslint-disable-next-line @typescript-eslint/unified-signatures
+        definition: ReferenceTo<Def>,
+        position: Vector,
+        layer: Layer,
+        opts?: { readonly count?: number, readonly pushVel?: number, readonly jitterSpawn?: boolean, readonly data?: ItemData<Def> }
+    ): Loot<Def> | undefined;
+    // ! and for any calling code using ReifiableDef, we gotta support that too
+    // ! yes, this is a duplicate of the implementation signature
+    addLoot<Def extends LootDefinition = LootDefinition>(
+        // eslint-disable-next-line @typescript-eslint/unified-signatures
+        definition: ReifiableDef<Def>,
+        position: Vector,
+        layer: Layer,
+        opts?: { readonly count?: number, readonly pushVel?: number, readonly jitterSpawn?: boolean, readonly data?: ItemData<Def> }
+    ): Loot<Def> | undefined;
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     /**
      * Adds a `Loot` item to the game world
      * @param definition The type of loot to add. Prefer passing `LootDefinition` if possible

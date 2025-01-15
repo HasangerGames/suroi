@@ -118,7 +118,6 @@ export class InputManager {
     private _inputPacketTimer = 0;
 
     update(): void {
-        if (this.game.gameOver) return;
         const packet = {
             movement: { ...this.movement },
             attacking: this.attacking,
@@ -142,7 +141,8 @@ export class InputManager {
                     }
                     : {}
             ),
-            actions: this.actions
+            actions: this.actions,
+            pingSeq: this.game.takePingSeq() + (this.game.gameOver ? 128 : 0) // MSB = "seq only?"
         } as PlayerInputData;
 
         this.turning = false;
@@ -155,7 +155,7 @@ export class InputManager {
         this._inputPacketTimer += this.game.serverDt;
 
         if (
-            !this._lastInputPacket
+            this._lastInputPacket === undefined
             || areDifferent(this._lastInputPacket, packet)
             || this._inputPacketTimer >= 100
         ) {

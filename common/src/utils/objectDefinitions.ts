@@ -740,13 +740,17 @@ export interface EventModifiers {
     readonly damageDealt: readonly ExtendedWearerAttributes[]
 }
 
+export interface KillfeedItemMixin {
+    readonly killfeedFrame: string
+}
+
 export interface ItemDefinition extends ObjectDefinition {
     readonly itemType: ItemType
     readonly noDrop: boolean
     readonly devItem?: boolean
 }
 
-export interface InventoryItemDefinition extends ItemDefinition {
+export interface InventoryItemDefinition extends ItemDefinition, KillfeedItemMixin {
     readonly fists?: {
         readonly left: Vector
         readonly right: Vector

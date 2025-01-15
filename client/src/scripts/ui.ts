@@ -1,3 +1,4 @@
+import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "@common/constants";
 import { Ammos, type AmmoDefinition } from "@common/definitions/ammos";
 import { type ArmorDefinition } from "@common/definitions/armors";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
@@ -8,6 +9,7 @@ import { PerkIds, Perks } from "@common/definitions/perks";
 import { Scopes, type ScopeDefinition } from "@common/definitions/scopes";
 import { Skins, type SkinDefinition } from "@common/definitions/skins";
 import { SpectatePacket } from "@common/packets/spectatePacket";
+import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { pickRandomInArray } from "@common/utils/random";
@@ -25,8 +27,6 @@ import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaul
 import { EMOTE_SLOTS, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
-import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "@common/constants";
-import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "@common/typings";
 
 /*
     eslint-disable
@@ -263,7 +263,8 @@ export async function fetchServerData(game: Game): Promise<void> {
 }
 
 export async function setUpUI(game: Game): Promise<void> {
-    const { inputManager, uiManager: { ui } } = game;
+    const { inputManager, uiManager } = game;
+    const { ui } = uiManager;
 
     // Change the menu based on the mode.
     $("#splash-ui").css("background-image", `url(./img/backgrounds/menu/${game.modeName}.png)`);
@@ -719,23 +720,6 @@ export async function setUpUI(game: Game): Promise<void> {
             locked: this.checked
         }));
     });
-
-    function share(): void {
-        ui.btnShareLink.show();
-        ui.btnShareLink.on("click", () => {
-            navigator.share({
-                title: "Suroi",
-                url: ui.createTeamUrl.val()
-            })
-            .then()
-            .catch(e => {
-                console.warn(e);
-            });
-    });
-    }
-
-    if (typeof navigator.share === "function") share();
-    else ui.btnShareLink.hide();
 
     ui.btnStartGame.on("click", () => {
         teamSocket?.send(JSON.stringify({ type: CustomTeamMessages.Start }));
@@ -1580,19 +1564,27 @@ export async function setUpUI(game: Game): Promise<void> {
     // Camera shake
     addCheckboxListener("#toggle-camera-shake", "cv_camera_shake_fx");
 
-    // FPS, ping, and coordinates toggles
-    for (const prop of ["fps", "ping", "pos"] as const) {
-        const debugReadout = game.uiManager.debugReadouts[prop];
+    // Coordinate toggles
+    const debugReadout = ui.debugPos;
 
-        // toggleClass is sadly depreciated.
-        toggleClass(debugReadout, "hidden-prop", !game.console.getBuiltInCVar(`pf_show_${prop}`));
+    // toggleClass is sadly deprecated.
+    toggleClass(debugReadout, "hidden-prop", !game.console.getBuiltInCVar("pf_show_pos"));
 
-        addCheckboxListener(
-            `#toggle-${prop}`,
-            `pf_show_${prop}`,
-            value => toggleClass(debugReadout, "hidden-prop", !value)
-        );
-    }
+    addCheckboxListener(
+        "#toggle-pos",
+        "pf_show_pos",
+        value => toggleClass(debugReadout, "hidden-prop", !value)
+    );
+
+    addCheckboxListener(
+        "#toggle-ping",
+        "pf_show_ping"
+    );
+
+    addCheckboxListener(
+        "#toggle-fps",
+        "pf_show_fps"
+    );
 
     // lmao one day, we'll have dropdown menus
 
@@ -1606,7 +1598,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
         game.console.variables.addChangeListener("cv_killfeed_style", (game, value) => {
             element.checked = value === "text";
-            game.uiManager.updateWeaponSlots();
+            uiManager.updateWeaponSlots();
         });
 
         element.checked = game.console.getBuiltInCVar("cv_killfeed_style") === "text";
@@ -1618,13 +1610,13 @@ export async function setUpUI(game: Game): Promise<void> {
 
         element.addEventListener("input", () => {
             game.console.setBuiltInCVar("cv_weapon_slot_style", element.checked ? "colored" : "simple");
-            game.uiManager.updateWeaponSlots();
+            uiManager.updateWeaponSlots();
         });
 
         game.console.variables.addChangeListener("cv_weapon_slot_style", (game, value) => {
             console.trace();
             element.checked = value === "colored";
-            game.uiManager.updateWeaponSlots();
+            uiManager.updateWeaponSlots();
         });
 
         element.checked = game.console.getBuiltInCVar("cv_weapon_slot_style") === "colored";
@@ -1675,7 +1667,7 @@ export async function setUpUI(game: Game): Promise<void> {
     );
     addCheckboxListener("#toggle-ambient-particles", "cv_ambient_particles");
 
-    const { gameUi } = game.uiManager.ui;
+    const { gameUi } = uiManager.ui;
 
     game.console.variables.addChangeListener(
         "cv_draw_hud",
@@ -2167,7 +2159,7 @@ export async function setUpUI(game: Game): Promise<void> {
     if (inputManager.isMobile) {
         // Interact message
         ui.interactMsg.on("click", () => {
-            inputManager.addAction(game.uiManager.action.active ? InputActions.Cancel : InputActions.Interact);
+            inputManager.addAction(uiManager.action.active ? InputActions.Cancel : InputActions.Interact);
         });
         // noinspection HtmlUnknownTarget
         ui.interactKey.html('<img src="./img/misc/tap-icon.svg" alt="Tap">');
@@ -2186,7 +2178,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 let clicked = true;
 
                 if (inputManager.pingWheelActive) {
-                    const ping = game.uiManager.mapPings[emoteSlot];
+                    const ping = uiManager.mapPings[emoteSlot];
 
                     setTimeout(() => {
                         let gameMousePosition: Vector;
@@ -2224,7 +2216,7 @@ export async function setUpUI(game: Game): Promise<void> {
                         }
                     }, 100); // 0.1 second (to wait for the emote wheel)
                 } else {
-                    const emote = game.uiManager.emotes[emoteSlot];
+                    const emote = uiManager.emotes[emoteSlot];
                     if (emote) {
                         inputManager.addAction({
                             type: InputActions.Emote,
@@ -2253,7 +2245,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 .toggleClass("btn-alert", !emoteWheelActive)
                 .toggleClass("btn-primary", emoteWheelActive);
 
-            game.uiManager.ui.emoteWheel.show();
+            uiManager.ui.emoteWheel.show();
         });
 
         ui.pingToggle.on("click", () => {
@@ -2263,7 +2255,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 .toggleClass("btn-danger", pingWheelActive)
                 .toggleClass("btn-primary", !pingWheelActive);
 
-            game.uiManager.updateEmoteWheel();
+            uiManager.updateEmoteWheel();
         });
     }
 

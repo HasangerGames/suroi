@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Tue, 14 Jan 2025 19:16:02 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Wed, 15 Jan 2025 04:45:50 GMT
 
 ## 🇦🇱 Shqip (87% Complete) - ab.hjson
 
@@ -26,6 +26,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `finally` is not defined
 - Key `with` is not defined
 - Key `you` is not defined
@@ -39,7 +40,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
-- Key `create_team_share` is not defined
 - Key `m16a4` is not defined
 
 ## 🇧🇷 Português (Brasil) (98% Complete) - br.hjson
@@ -53,7 +53,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_the_team_eliminated` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `create_team_share` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🇨🇿 Čeština (92% Complete) - cz.hjson
 
@@ -81,8 +81,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
-- Key `create_team_share` is not defined
 
 ## 🇩🇪 Deutsch (98% Complete) - de.hjson
 
@@ -95,7 +95,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_haptics` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `create_team_share` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🇪🇸 Español (98% Complete) - es.hjson
 
@@ -106,7 +106,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `create_team_share` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🇪🇪 eesti (98% Complete) - et.hjson
 
@@ -119,7 +119,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `create_team_share` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🇫🇮 suomi (97% Complete) - fi.hjson
 
@@ -135,7 +135,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_the_team_eliminated` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `create_team_share` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🇫🇷 Français (97% Complete) - fr.hjson
 
@@ -151,7 +151,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_the_team_eliminated` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `create_team_share` is not defined
 
 ## 🇬🇷 Ελληνικά (98% Complete) - gr.hjson
 
@@ -164,7 +163,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_haptics` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `create_team_share` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🇭🇰 🇲🇴 廣東話(香港/澳門) (90% Complete) - hk_mo.hjson
 
@@ -194,10 +193,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
 - Key `create_team_ready` is not defined
-- Key `create_team_share` is not defined
 
 ## 🇭🇺 Magyar (98% Complete) - hu.hjson
 
@@ -211,7 +210,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_haptics` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `create_team_share` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🇮🇹 Italiano (88% Complete) - it.hjson
 
@@ -256,10 +255,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
 - Key `create_team_ready` is not defined
-- Key `create_team_share` is not defined
 - Key `m16a4` is not defined
 
 ## 🇯🇵 日本語 (92% Complete) - jp.hjson
@@ -288,8 +287,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
-- Key `create_team_share` is not defined
 
 ## 🇱🇹 Lietuvių (92% Complete) - lt.hjson
 
@@ -317,8 +316,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
-- Key `create_team_share` is not defined
 
 ## 🇱🇻 Latviešu (92% Complete) - lv.hjson
 
@@ -346,8 +345,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
-- Key `create_team_share` is not defined
 
 ## 🇵🇱 Polski (97% Complete) - pl.hjson
 
@@ -363,7 +362,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_the_team_eliminated` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `create_team_share` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🎀 Cute Engwish (89% Complete) - qen.hjson
 
@@ -396,8 +395,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
-- Key `create_team_share` is not defined
 - Key `m16a4` is not defined
 
 ## 🇷🇴 Română (85% Complete) - ro.hjson
@@ -430,6 +429,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `finally` is not defined
 - Key `with` is not defined
 - Key `you` is not defined
@@ -443,7 +443,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
-- Key `create_team_share` is not defined
 - Key `m16a4` is not defined
 
 ## 🇷🇺 Русский (98% Complete) - ru.hjson
@@ -455,7 +454,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `create_team_share` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `m16a4` is not defined
 
 ## 🇮🇳 தமிழ் (91% Complete) - ta.hjson
@@ -486,8 +485,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
-- Key `create_team_share` is not defined
 
 ## 🇹🇷 Turkısh (97% Complete) - tr.hjson
 
@@ -504,7 +503,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_the_team_eliminated` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `create_team_share` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🇹🇼 中文（繁體） (84% Complete) - tw.hjson
 
@@ -537,6 +536,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
 - Key `finally` is not defined
@@ -552,7 +552,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
-- Key `create_team_share` is not defined
 - Key `m16a4` is not defined
 
 ## 🇻🇳 Tiếng Việt (97% Complete) - vi.hjson
@@ -570,7 +569,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_the_team_eliminated` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `create_team_share` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🇨🇳 中文（简体） (98% Complete) - zh.hjson
 
@@ -583,5 +582,5 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `wiki` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `create_team_share` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 

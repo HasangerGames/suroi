@@ -74,16 +74,22 @@ export const Casters = Object.freeze({
             }
         }
     },
-    generateUnionCaster<const T extends string>(options: readonly T[]) {
+    generateUnionCaster: (<const T extends string | number>(options: readonly T[]) => {
         const errorStr = options.map((v, i, a) => `${i === a.length - 1 ? "or " : ""}'${v}'`).join(", ");
+        const isNumeric = !Number.isNaN(+options[0]);
 
         return (val: string): Result<T, string> => {
-            if (options.includes(val as T)) return { res: val as T };
+            const v = (isNumeric ? +val : val) as T;
+            if (options.includes(v)) return { res: v };
 
             return {
                 err: `Value must be either ${errorStr}; received ${val}`
             };
         };
+    }) as {
+        // silly workaround to have overloaded object literal methods
+        <const T extends number>(options: readonly T[]): (val: string) => Result<T, string>
+        <const T extends string>(options: readonly T[]): (val: string) => Result<T, string>
     }
 });
 

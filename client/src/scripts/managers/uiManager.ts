@@ -63,12 +63,6 @@ export class UIManager {
 
     readonly perks: ClientPerkManager;
 
-    readonly debugReadouts = Object.freeze({
-        fps: $<HTMLSpanElement>("#fps-counter"),
-        ping: $<HTMLSpanElement>("#ping-counter"),
-        pos: $<HTMLSpanElement>("#coordinates-hud")
-    });
-
     public hasC4s = false;
 
     private static _instantiated = false;
@@ -284,7 +278,6 @@ export class UIManager {
         warningAgreeCheckbox: $<HTMLInputElement>("#warning-modal-agree-checkbox"),
         warningModal: $<HTMLDivElement>("#warning-modal"),
 
-        btnShareLink: $<HTMLButtonElement>("#btn-share-link"),
         btnStartGame: $<HTMLButtonElement>("#btn-start-game"),
         createTeamToggles: $<HTMLDivElement>("#create-team-toggles"),
 
@@ -297,7 +290,9 @@ export class UIManager {
         c4Button: $<HTMLButtonElement>("#c4-detonate-btn"),
         detonateKey: $<HTMLDivElement>("#detonate-key"),
 
-        inventoryMsg: $<HTMLSpanElement>("#inventory-message")
+        inventoryMsg: $<HTMLSpanElement>("#inventory-message"),
+
+        debugPos: $<HTMLSpanElement>("#coordinates-hud")
     });
 
     private readonly _weaponSlotCache = new ExtendedMap<
@@ -630,6 +625,7 @@ export class UIManager {
 
     updateUI(data: PlayerData): void {
         const {
+            pingSeq,
             minMax,
             health,
             adrenaline,
@@ -642,6 +638,13 @@ export class UIManager {
             activeC4s,
             perks
         } = data;
+
+        const sentTime = this.game.seqsSent[pingSeq];
+        if (sentTime !== undefined) {
+            const ping = Date.now() - sentTime;
+            this.game.netGraph.ping.addEntry(ping);
+            this.game.seqsSent[pingSeq] = undefined;
+        }
 
         if (id !== undefined) this.game.activePlayerID = id.id;
 
@@ -1539,7 +1542,7 @@ export class UIManager {
                                 iconName = "airdrop";
                                 break;
                             default:
-                                iconName = weaponUsed?.idString ?? "";
+                                iconName = weaponUsed?.killfeedFrame ?? "";
                                 break;
                         }
                         const altText = weaponUsed ? weaponUsed.name : iconName;

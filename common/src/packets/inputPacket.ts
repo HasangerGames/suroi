@@ -90,6 +90,7 @@ export type PlayerInputData = {
     }
     readonly attacking: boolean
     readonly actions: readonly InputAction[]
+    readonly pingSeq: number
 } & MobileMixin & TurningMixin;
 
 export type WithMobile = PlayerInputData & { readonly isMobile: true };
@@ -99,147 +100,166 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
     serialize(stream, data) {
         const { movement, isMobile, turning } = data;
 
-        stream.writeBooleanGroup(
-            movement.up,
-            movement.down,
-            movement.left,
-            movement.right,
-            isMobile,
-            data.mobile?.moving,
-            turning,
-            data.attacking
-        );
+        stream.writeUint8(data.pingSeq);
 
-        if (isMobile) {
-            stream.writeRotation2(data.mobile.angle);
+        if ((data.pingSeq & 128) === 0) {
+            stream.writeBooleanGroup(
+                movement.up,
+                movement.down,
+                movement.left,
+                movement.right,
+                isMobile,
+                data.mobile?.moving,
+                turning,
+                data.attacking
+            );
+
+            if (isMobile) {
+                stream.writeRotation2(data.mobile.angle);
+            }
+
+            if (turning) {
+                stream.writeRotation2(data.rotation);
+                if (!isMobile) {
+                    stream.writeFloat(data.distanceToMouse, 0, GameConstants.player.maxMouseDist, 2);
+                }
+            }
+
+            stream.writeArray(data.actions, action => {
+                if ("slot" in action) {
+                    // slot is 2 bits, InputActions is 4
+                    // move the slot info to the MSB and leave
+                    // the enum member as the LSB for compatibility
+                    // with the other branch
+                    stream.writeUint8(action.type + (action.slot << 6));
+                } else {
+                    stream.writeUint8(action.type);
+                }
+
+                switch (action.type) {
+                    case InputActions.EquipItem:
+                    case InputActions.DropWeapon:
+                    case InputActions.LockSlot:
+                    case InputActions.UnlockSlot:
+                    case InputActions.ToggleSlotLock:
+                        // already handled above
+                        break;
+                    case InputActions.DropItem:
+                        Loots.writeToStream(stream, action.item);
+                        break;
+                    case InputActions.UseItem:
+                        Loots.writeToStream(stream, action.item);
+                        break;
+                    case InputActions.Emote:
+                        GlobalRegistrar.writeToStream(stream, action.emote);
+                        break;
+                    case InputActions.MapPing:
+                        MapPings.writeToStream(stream, action.ping);
+                        stream.writePosition(action.position);
+                        break;
+                }
+            }, 1);
         }
-
-        if (turning) {
-            stream.writeRotation2(data.rotation);
-            if (!isMobile) {
-                stream.writeFloat(data.distanceToMouse, 0, GameConstants.player.maxMouseDist, 2);
-            }
-        }
-
-        stream.writeArray(data.actions, action => {
-            if ("slot" in action) {
-                // slot is 2 bits, InputActions is 4
-                // move the slot info to the MSB and leave
-                // the enum member as the LSB for compatibility
-                // with the other branch
-                stream.writeUint8(action.type + (action.slot << 6));
-            } else {
-                stream.writeUint8(action.type);
-            }
-
-            switch (action.type) {
-                case InputActions.EquipItem:
-                case InputActions.DropWeapon:
-                case InputActions.LockSlot:
-                case InputActions.UnlockSlot:
-                case InputActions.ToggleSlotLock:
-                    // already handled above
-                    break;
-                case InputActions.DropItem:
-                    Loots.writeToStream(stream, action.item);
-                    break;
-                case InputActions.UseItem:
-                    Loots.writeToStream(stream, action.item);
-                    break;
-                case InputActions.Emote:
-                    GlobalRegistrar.writeToStream(stream, action.emote);
-                    break;
-                case InputActions.MapPing:
-                    MapPings.writeToStream(stream, action.ping);
-                    stream.writePosition(action.position);
-                    break;
-            }
-        }, 1);
     },
     deserialize(stream) {
-        const [
-            up,
-            down,
-            left,
-            right,
-            isMobile,
-            moving,
-            turning,
-            attacking
-        ] = stream.readBooleanGroup();
+        const pingSeq = stream.readUint8();
 
         const data = {
             movement: {
+                up: false,
+                down: false,
+                left: false,
+                right: false
+            },
+            isMobile: false,
+            attacking: false,
+            turning: false,
+            pingSeq: pingSeq & 127,
+            actions: []
+        } satisfies SDeepMutable<PlayerInputData> as SDeepMutable<PlayerInputData>;
+
+        if ((pingSeq & 128) === 0) {
+            const [
                 up,
                 down,
                 left,
-                right
-            },
-            isMobile,
-            attacking,
-            turning
-        } as SDeepMutable<PlayerInputData>;
-
-        if (isMobile) {
-            (data as DeepMutable<WithMobile>).mobile = {
+                right,
+                isMobile,
                 moving,
-                angle: stream.readRotation2()
-            };
-        }
+                turning,
+                attacking
+            ] = stream.readBooleanGroup();
 
-        if (turning) {
-            data.rotation = stream.readRotation2();
-            if (!isMobile) {
-                (
-                    data as DeepMutable<NoMobile & { turning: true }>
-                ).distanceToMouse = stream.readFloat(0, GameConstants.player.maxMouseDist, 2);
-            }
-        }
+            data.movement.up = up;
+            data.movement.down = down;
+            data.movement.left = left;
+            data.movement.right = right;
 
-        // Actions
-        data.actions = stream.readArray(() => {
-            const data = stream.readUint8();
-            // hiMask = 2 msb, type = 4 lsb
-            const [hiMask, type] = [data & 0b1100_0000, (data & 15) as InputActions];
+            data.isMobile = isMobile;
+            data.turning = turning;
+            data.attacking = attacking;
 
-            let slot: number | undefined;
-            let item: HealingItemDefinition | ScopeDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition | PerkDefinition | undefined;
-            let emote: AllowedEmoteSources | undefined;
-            let position: Vector | undefined;
-            let ping: MapPingDefinition | undefined;
-
-            switch (type) {
-                case InputActions.EquipItem:
-                case InputActions.DropWeapon:
-                case InputActions.LockSlot:
-                case InputActions.UnlockSlot:
-                case InputActions.ToggleSlotLock:
-                    slot = hiMask >> 6;
-                    break;
-                case InputActions.DropItem:
-                    item = Loots.readFromStream<
-                        HealingItemDefinition |
-                        ScopeDefinition |
-                        ArmorDefinition |
-                        AmmoDefinition |
-                        BackpackDefinition |
-                        PerkDefinition
-                    >(stream);
-                    break;
-                case InputActions.UseItem:
-                    item = Loots.readFromStream<HealingItemDefinition | ScopeDefinition>(stream);
-                    break;
-                case InputActions.Emote:
-                    emote = GlobalRegistrar.readFromStream<AllowedEmoteSources>(stream);
-                    break;
-                case InputActions.MapPing:
-                    ping = MapPings.readFromStream(stream);
-                    position = stream.readPosition();
-                    break;
+            if (isMobile) {
+                data.mobile = {
+                    moving,
+                    angle: stream.readRotation2()
+                };
             }
 
-            return { type, item, slot, emote, ping, position } as InputAction;
-        }, 1);
+            if (turning) {
+                data.rotation = stream.readRotation2();
+                if (!isMobile) {
+                    (
+                        data as DeepMutable<NoMobile & { turning: true }>
+                    ).distanceToMouse = stream.readFloat(0, GameConstants.player.maxMouseDist, 2);
+                }
+            }
+
+            // Actions
+            data.actions = stream.readArray(() => {
+                const data = stream.readUint8();
+                // hiMask = 2 msb, type = 4 lsb
+                const [hiMask, type] = [data & 0b1100_0000, (data & 15) as InputActions];
+
+                let slot: number | undefined;
+                let item: HealingItemDefinition | ScopeDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition | PerkDefinition | undefined;
+                let emote: AllowedEmoteSources | undefined;
+                let position: Vector | undefined;
+                let ping: MapPingDefinition | undefined;
+
+                switch (type) {
+                    case InputActions.EquipItem:
+                    case InputActions.DropWeapon:
+                    case InputActions.LockSlot:
+                    case InputActions.UnlockSlot:
+                    case InputActions.ToggleSlotLock:
+                        slot = hiMask >> 6;
+                        break;
+                    case InputActions.DropItem:
+                        item = Loots.readFromStream<
+                            HealingItemDefinition |
+                            ScopeDefinition |
+                            ArmorDefinition |
+                            AmmoDefinition |
+                            BackpackDefinition |
+                            PerkDefinition
+                        >(stream);
+                        break;
+                    case InputActions.UseItem:
+                        item = Loots.readFromStream<HealingItemDefinition | ScopeDefinition>(stream);
+                        break;
+                    case InputActions.Emote:
+                        emote = GlobalRegistrar.readFromStream<AllowedEmoteSources>(stream);
+                        break;
+                    case InputActions.MapPing:
+                        ping = MapPings.readFromStream(stream);
+                        position = stream.readPosition();
+                        break;
+                }
+
+                return { type, item, slot, emote, ping, position } as InputAction;
+            }, 1);
+        }
 
         return data;
     }

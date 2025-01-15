@@ -2,7 +2,9 @@ import { Layer } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Guns } from "@common/definitions/guns";
 import { Loots } from "@common/definitions/loots";
+import { Mode } from "@common/definitions/modes";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { PerkCategories } from "@common/definitions/perks";
 import { Orientation, type Variation } from "@common/typings";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Collision } from "@common/utils/math";
@@ -10,13 +12,11 @@ import { ItemType, MapObjectSpawnMode, type ReferenceTo } from "@common/utils/ob
 import { random, randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type WebSocket } from "uWebSockets.js";
+import { SpawnMode, SpawnOptions } from "../config";
 import { type GunItem } from "../inventory/gunItem";
 import { GameMap } from "../map";
 import { Player, type PlayerContainer } from "../objects/player";
 import { getLootFromTable, LootTables } from "./lootTables";
-import { PerkCategories } from "@common/definitions/perks";
-import { Mode } from "@common/definitions/modes";
-import { SpawnMode, SpawnOptions } from "../config";
 
 export interface RiverDefinition {
     readonly minAmount: number

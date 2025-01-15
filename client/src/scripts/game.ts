@@ -13,10 +13,9 @@ import { JoinedPacket, type JoinedPacketData } from "@common/packets/joinedPacke
 import { JoinPacket, type JoinPacketCreation } from "@common/packets/joinPacket";
 import { KillFeedPacket } from "@common/packets/killFeedPacket";
 import { MapPacket } from "@common/packets/mapPacket";
-import { type InputPacket, type OutputPacket } from "@common/packets/packet";
+import { type DataSplit, type InputPacket, type OutputPacket } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { PickupPacket } from "@common/packets/pickupPacket";
-import { PingPacket } from "@common/packets/pingPacket";
 import { ReportPacket } from "@common/packets/reportPacket";
 import { UpdatePacket, type UpdatePacketDataOut } from "@common/packets/updatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
@@ -59,6 +58,7 @@ import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
 import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
+import { setUpNetGraph } from "./utils/graph/netGraph";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
 
@@ -176,8 +176,6 @@ export class Game {
     spectating = false;
     error = false;
 
-    lastPingDate = 0;
-
     disconnectReason = "";
 
     readonly uiManager = new UIManager(this);
@@ -191,6 +189,8 @@ export class Game {
 
     gasRender!: GasRender;
     readonly gas = new Gas(this);
+
+    readonly netGraph = setUpNetGraph(this);
 
     music!: Sound;
 
@@ -271,11 +271,20 @@ export class Game {
                 }));
             });
 
-            pixi.ticker.add(game.render.bind(game));
+            pixi.ticker.add(() => {
+                game.render();
+
+                if (game.console.getBuiltInCVar("pf_show_fps")) {
+                    const fps = Math.round(game.pixi.ticker.FPS);
+                    game.netGraph.fps.addEntry(fps);
+                }
+            });
+
             pixi.stage.addChild(
                 game.camera.container,
                 game.map.container,
-                game.map.mask
+                game.map.mask,
+                ...Object.values(game.netGraph).map(g => g.container)
             );
 
             game.map.visible = !game.console.getBuiltInCVar("cv_minimap_minimized");
@@ -284,12 +293,6 @@ export class Game {
 
             pixi.renderer.on("resize", () => game.resize());
             game.resize();
-
-            setInterval(() => {
-                if (game.console.getBuiltInCVar("pf_show_fps")) {
-                    game.uiManager.debugReadouts.fps.text(`${Math.round(game.pixi.ticker.FPS)} fps`);
-                }
-            }, 500);
         };
 
         let menuMusicSuffix: string;
@@ -341,6 +344,8 @@ export class Game {
             this.spectating = false;
             this.disconnectReason = "";
 
+            for (const graph of Object.values(this.netGraph)) graph.clear();
+
             if (!UI_DEBUG_MODE) {
                 clearTimeout(this.uiManager.gameOverScreenTimeout);
                 const ui = this.uiManager.ui;
@@ -352,9 +357,6 @@ export class Game {
                 ui.spectatingContainer.hide();
                 ui.joystickContainer.show();
             }
-
-            this.sendPacket(PingPacket.create());
-            this.lastPingDate = Date.now();
 
             let skin: typeof defaultClientCVars["cv_loadout_skin"];
             const joinPacket: JoinPacketCreation = {
@@ -422,14 +424,18 @@ export class Game {
         this._socket.onmessage = (message: MessageEvent<ArrayBuffer>): void => {
             const stream = new PacketStream(message.data);
             let iterationCount = 0;
+            const splits = [0, 0, 0, 0, 0, 0, 0] satisfies DataSplit;
             while (true) {
                 if (++iterationCount === 1e3) {
                     console.warn("1000 iterations of packet reading; possible infinite loop");
                 }
-                const packet = stream.deserializeServerPacket();
+                const packet = stream.deserializeServerPacket({ splits, activePlayerId: this.activePlayerID });
                 if (packet === undefined) break;
                 this.onPacket(packet);
             }
+
+            const msgLength = message.data.byteLength;
+            this.netGraph.receiving.addEntry(msgLength, splits);
         };
 
         const ui = this.uiManager.ui;
@@ -490,14 +496,6 @@ export class Game {
             case packet instanceof KillFeedPacket:
                 this.uiManager.processKillFeedPacket(packet.output);
                 break;
-            case packet instanceof PingPacket: {
-                this.uiManager.debugReadouts.ping.text(`${Date.now() - this.lastPingDate} ms`);
-                setTimeout((): void => {
-                    this.sendPacket(PingPacket.create());
-                    this.lastPingDate = Date.now();
-                }, 5000);
-                break;
-            }
             case packet instanceof ReportPacket: {
                 const ui = this.uiManager.ui;
                 const { output } = packet;
@@ -661,6 +659,7 @@ export class Game {
 
     sendData(buffer: ArrayBuffer): void {
         if (this._socket?.readyState === WebSocket.OPEN) {
+            this.netGraph.sending.addEntry(buffer.byteLength);
             try {
                 this._socket.send(buffer);
             } catch (e) {
@@ -748,6 +747,17 @@ export class Game {
      * Otherwise known as "time since last update", in milliseconds
      */
     get serverDt(): number { return this._serverDt; }
+
+    private _pingSeq = -1;
+
+    private readonly _seqsSent: Array<number | undefined> = [];
+    get seqsSent(): Array<number | undefined> { return this._seqsSent; }
+
+    takePingSeq(): number {
+        const n = this._pingSeq = (this._pingSeq + 1) % 128;
+        this._seqsSent[n] = Date.now();
+        return n;
+    }
 
     processUpdate(updateData: UpdatePacketDataOut): void {
         const now = Date.now();
