@@ -1067,15 +1067,15 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             ammoSpawnAmount: 200,
             capacity: 200,
             extendedCapacity: 250,
-            reloadTime: 5.8,
+            reloadTime: 5.9,
             fireDelay: 70,
             switchDelay: 400,
-            speedMultiplier: 0.8,
-            recoilMultiplier: 0.65,
+            speedMultiplier: 0.85,
+            recoilMultiplier: 0.675,
             recoilDuration: 200,
             fireMode: FireMode.Auto,
-            shotSpread: 3,
-            moveSpread: 8,
+            shotSpread: 5,
+            moveSpread: 10,
             length: 7.15,
             fists: {
                 left: Vec.create(109, -18),
@@ -1105,10 +1105,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
             gasParticles: gasParticlePresets.automatic,
             ballistics: {
-                damage: 12.5,
+                damage: 13.25,
                 obstacleMultiplier: 1.5,
                 speed: 0.28,
-                range: 180,
+                range: 160,
                 tracer: {
                     width: 1.1,
                     length: 1.4
