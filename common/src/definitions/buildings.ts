@@ -578,12 +578,12 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ceilingImages: [
                     {
                         key: upperCeilingImage,
-                        position: Vec.create(0, -6.98),
+                        position: Vec.create(0, -6.94),
                         tint
                     },
                     {
                         key: lowerCeilingImage,
-                        position: Vec.create(0, 6.98),
+                        position: Vec.create(0, 6.94),
                         rotation: Math.PI,
                         tint
                     }
@@ -601,6 +601,66 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         table: "ground_loot"
                     }]
             } as const;
+        });
+
+        // WARNING: INCOMPLETE BUILDING
+        /* Missing:
+            - Ceiling svg (not finished probably)
+            - Spawn mode
+            - Ceiling residue
+        */
+        const riverHut = derive((
+            id: number,
+            obstacles: BuildingObstacle[]
+        ) => {
+            const bridgeFloor1 = 31.5;
+            return {
+                idString: `river_hut_${id}`,
+                name: "River Hut",
+                wallsToDestroy: 3,
+                ceilingCollapseParticle: "river_hut_ceiling_particle",
+                spawnMode: MapObjectSpawnMode.Beach, // TODO: river bank spawn mode support
+                spawnHitbox: RectangleHitbox.fromRect(70, 70, Vec.create(8, 0)),
+                ceilingHitbox: RectangleHitbox.fromRect(32.5, 39.25), // RectangleHitbox.fromRect(30.6, 37),
+                floorImages: [
+                    {
+                        key: "river_hut_bridge_floor_1",
+                        position: Vec.create(20.15, -10.5)
+                    },
+                    {
+                        key: "river_hut_bridge_floor_2",
+                        position: Vec.create(bridgeFloor1, -5),
+                        scale: Vec.create(2, 2)
+                    },
+                    {
+                        key: "river_hut_floor",
+                        position: Vec.create(0, 0),
+                        scale: Vec.create(2.14, 2.14)
+                    }
+                ],
+                ceilingImages: [{
+                    key: "river_hut_ceiling",
+                    position: Vec.create(0, 0),
+                    scale: Vec.create(2.1, 2.1),
+                    residue: "river_hut_residue"
+                }],
+                floors: [{
+                    type: FloorNames.Wood,
+                    hitbox: new GroupHitbox(
+                        RectangleHitbox.fromRect(32.5, 39.25),
+                        RectangleHitbox.fromRect(10, 13, Vec.create(20.4, -10.5)),
+                        RectangleHitbox.fromRect(13, 46, Vec.create(bridgeFloor1, -5))
+                    )
+                }],
+                obstacles: [
+                    { idString: "door", position: Vec.create(-15.5, 12.18), rotation: 1 },
+                    { idString: "house_wall_20", position: Vec.create(0, -18.65), rotation: 0 },
+                    { idString: "house_wall_21", position: Vec.create(15.38, 8.12), rotation: 1 },
+                    { idString: "house_wall_22", position: Vec.create(-0.87, 18.68), rotation: 0 },
+                    { idString: "house_wall_23", position: Vec.create(-15.35, -5.09), rotation: 1 },
+                    ...obstacles
+                ]
+            };
         });
 
         const tent = derive((
@@ -6902,7 +6962,89 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         }, position: Vec.create(30, -58), orientation: 1
                     }
                 ]
-            }
+            },
+
+            // Normal Mode Only
+            riverHut([1, [
+                { idString: "small_bed", position: Vec.create(-10.55, -9.38), rotation: 0 },
+                { idString: "small_drawer", position: Vec.create(-3.48, -13.6), rotation: 0 },
+                { idString: "small_table", position: Vec.create(9.54, 11.44), rotation: 0 },
+                { idString: "chair", position: Vec.create(5.1, 11.44), rotation: 3 },
+                { idString: "box", position: Vec.create(11.66, 0.14) },
+                { idString: "box", position: Vec.create(6.84, 2.69) },
+                { idString: "flint_crate", position: Vec.create(31.58, -22.6), outdoors: true },
+                { idString: "barrel", position: Vec.create(31.49, 11.78), outdoors: true }
+            ]]),
+
+            riverHut([2, [
+                { idString: "trash_bag", position: Vec.create(-19.99, -5.03), outdoors: true },
+                { idString: "barrel", position: Vec.create(-21.27, 2.62), outdoors: true },
+                { idString: "regular_crate", position: Vec.create(31.56, -21.66), outdoors: true },
+                { idString: "box", position: Vec.create(33.9, 9.33), outdoors: true },
+                { idString: "box", position: Vec.create(29.16, 13.99), outdoors: true },
+                { idString: "small_bed", position: Vec.create(-5.89, -13.83), rotation: 3 },
+                { idString: "box", position: Vec.create(-11.56, -5.55) },
+                { idString: "box", position: Vec.create(-6.56, -7.35) },
+                { idString: "small_table", position: Vec.create(9.86, 4.59), rotation: 0 },
+                { idString: "chair", position: Vec.create(5.72, 4.59), rotation: 3 },
+                { idString: "small_drawer", position: Vec.create(10.49, 14.3), rotation: 3 },
+                { idString: "trash_can", position: Vec.create(-10.86, 2.48) }
+            ]]),
+
+            riverHut([3, [
+                { idString: "small_bed", position: Vec.create(-10.55, -9.38), rotation: 0 },
+                { idString: "large_drawer", position: Vec.create(-0.26, -13.52), rotation: 0 },
+                { idString: "small_table", position: Vec.create(8.01, 13.4), rotation: 1 },
+                { idString: "chair", position: Vec.create(8.01, 9.7), rotation: 2 },
+                { idString: "trash_can", position: Vec.create(-1.69, 14.64) },
+                { idString: "potted_plant", position: Vec.create(-10.31, 3.33), rotation: 0 },
+                { idString: "barrel", position: Vec.create(-21.06, -2.26), outdoors: true },
+                { idString: "box", position: Vec.create(-19.46, 4.73), outdoors: true },
+                { idString: "grenade_box", position: Vec.create(28.14, 4.01), outdoors: true },
+                { idString: "super_barrel", position: Vec.create(31.58, -22.6), outdoors: true },
+                { idString: "regular_crate", position: Vec.create(31.49, 11.3), outdoors: true }
+            ]]),
+
+            // Fall Mode Only
+            riverHut([4, [
+                { idString: "small_bed", position: Vec.create(-10.55, -9.38), rotation: 0 },
+                { idString: "cooler", position: Vec.create(-1.83, -14.4), rotation: 0 },
+                { idString: "small_table", position: Vec.create(9.54, 11.44), rotation: 0 },
+                { idString: "chair", position: Vec.create(5.1, 11.44), rotation: 3 },
+                { idString: "small_drawer", position: Vec.create(10.11, 1.69), rotation: 3 },
+                { idString: "box", position: Vec.create(-2.92, -22.55), outdoors: true },
+                { idString: "propane_tank", position: Vec.create(1.77, -22.01), outdoors: true },
+                { idString: "box", position: Vec.create(7.39, 22.27), outdoors: true },
+                { idString: "box", position: Vec.create(2.62, 24.11), outdoors: true },
+                { idString: "barrel", position: Vec.create(-4.58, 24.41), outdoors: true },
+                { idString: "super_barrel", position: Vec.create(31.59, -22.89), outdoors: true }
+            ]]),
+
+            riverHut([5, [
+                { idString: "small_bed", position: Vec.create(-5.74, -13.61), rotation: 3 },
+                { idString: "cooler", position: Vec.create(-11.12, -4.91), rotation: 1 },
+                { idString: "small_table", position: Vec.create(9.76, 4.3), rotation: 0 },
+                { idString: "chair", position: Vec.create(5.64, 4.3), rotation: 3 },
+                { idString: "small_drawer", position: Vec.create(10.51, 14.23), rotation: 3 },
+                { idString: "barrel", position: Vec.create(-20.58, 0.31), outdoors: true },
+                { idString: "box", position: Vec.create(-19.47, -6.71), outdoors: true },
+                { idString: "box", position: Vec.create(-21, -12), outdoors: true },
+                { idString: "box", position: Vec.create(2.19, 22.4), outdoors: true },
+                { idString: "propane_tank", position: Vec.create(-2.64, 21.93), outdoors: true }
+            ]]),
+
+            riverHut([6, [
+                { idString: "small_bed", position: Vec.create(-10.55, -9.38), rotation: 0 },
+                { idString: "small_drawer", position: Vec.create(-3.48, -13.6), rotation: 0 },
+                { idString: "small_table", position: Vec.create(9.54, 11.44), rotation: 0 },
+                { idString: "chair", position: Vec.create(5.1, 11.44), rotation: 3 },
+                { idString: "cooler", position: Vec.create(9.4, 2.16), rotation: 2 },
+                { idString: "barrel", position: Vec.create(-5.16, -23.9), outdoors: true },
+                { idString: "box", position: Vec.create(1.49, -25.52), outdoors: true },
+                { idString: "box", position: Vec.create(6.31, -22.32), outdoors: true },
+                { idString: "box", position: Vec.create(-19.11, -1.56), outdoors: true },
+                { idString: "propane_tank", position: Vec.create(-18.6, 3.13), outdoors: true }
+            ]])
         ] satisfies ReadonlyArray<RawDefinition<Missing>>;
     }
 );

@@ -150,7 +150,7 @@ export const Vec = Object.freeze({
     normalize(a: Vector): Vector {
         const eps = 0.000001;
         const len = Vec.length(a);
-        return len < eps
+        return len > eps
             ? {
                 x: a.x / len,
                 y: a.y / len

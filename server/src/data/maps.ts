@@ -121,6 +121,9 @@ const maps = {
             large_bridge: 2,
             small_bridge: Infinity,
             port_complex: 1,
+            river_hut_1: 2,
+            river_hut_2: 2,
+            river_hut_3: 2,
             sea_traffic_control: 1,
             tugboat_red: 1,
             tugboat_white: 5,
@@ -149,6 +152,9 @@ const maps = {
         },
         majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
         quadBuildingLimit: {
+            river_hut_1: 1,
+            river_hut_2: 1,
+            river_hut_3: 1,
             red_house: 1,
             red_house_v2: 1,
             warehouse: 2,
@@ -275,6 +281,9 @@ const maps = {
             ]
         },
         buildings: {
+            river_hut_4: 3,
+            river_hut_5: 3,
+            river_hut_6: 3,
             small_bridge: Infinity,
             plumpkin_bunker: 1,
             sea_traffic_control: 1,
@@ -303,6 +312,9 @@ const maps = {
         },
         majorBuildings: ["bombed_armory", "lodge", "plumpkin_bunker"],
         quadBuildingLimit: {
+            river_hut_4: 2,
+            river_hut_5: 2,
+            river_hut_6: 2,
             barn: 1,
             outhouse: 3,
             red_house: 1,

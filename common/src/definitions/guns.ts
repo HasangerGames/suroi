@@ -375,6 +375,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 160
                 },
                 dual: {
+                    ammoSpawnAmount: 42,
                     leftRightOffset: 1.3,
                     fireDelay: 187.5,
                     shotSpread: 2,
@@ -1062,7 +1063,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             },
             {
                 idString: "negev",
-                name: "Negev",
+                name: "Negev SF",
                 ammoType: "556mm",
                 ammoSpawnAmount: 200,
                 capacity: 200,

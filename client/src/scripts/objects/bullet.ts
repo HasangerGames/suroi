@@ -49,9 +49,9 @@ export class Bullet extends BaseBullet {
         this._image.alpha = tracerStats.opacity * (tracerMods?.opacity ?? 1) / (this.reflectionCount + 1);
 
         if (this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
-            this._image.filters = new BloomFilter({
+            this._image.filters = [new BloomFilter({
                 strength: 5
-            });
+            })];
         }
 
         if (!tracerStats.particle) this._image.anchor.set(1, 0.5);

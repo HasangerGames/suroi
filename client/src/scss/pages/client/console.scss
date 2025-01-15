@@ -137,30 +137,55 @@
             background-color: hsl(250, 50%, 30%);
             border-color: hsl(250, 50%, 35%);
             color: hsl(240, 100%, 80%);
+
+            .console-entry-content code {
+                background-color: hsl(250, 10%, 25%);
+                color: hsl(240, 100%, 70%);
+            }
         }
 
         .console-entry-warn {
             background-color: hsl(50, 50%, 30%);
             border-color: hsl(50, 50%, 35%);
             color: hsl(40, 100%, 60%);
+
+            .console-entry-content code {
+                background-color: hsl(50, 10%, 25%);
+                color: hsl(40, 100%, 70%);
+            }
         }
 
         .console-entry-severe_warn {
             background-color: hsl(40, 50%, 30%);
             border-color: hsl(40, 50%, 35%);
             color: hsl(30, 100%, 60%);
+
+            .console-entry-content code {
+                background-color: hsl(40, 10%, 25%);
+                color: hsl(30, 100%, 70%);
+            }
         }
 
         .console-entry-error {
             background-color: hsl(10, 50%, 30%);
             border-color: hsl(10, 50%, 35%);
             color: hsl(0, 100%, 75%);
+
+            .console-entry-content code {
+                background-color: hsl(10, 10%, 25%);
+                color: hsl(0, 100%, 70%);
+            }
         }
 
         .console-entry-fatal_error {
             background-color: hsl(310, 50%, 30%);
             border-color: hsl(310, 50%, 35%);
             color: hsl(300, 100%, 75%);
+
+            .console-entry-content code {
+                background-color: hsl(310, 10%, 25%);
+                color: hsl(300, 100%, 70%);
+            }
             animation: fatal-error-cycle 1s infinite linear;
         }
 

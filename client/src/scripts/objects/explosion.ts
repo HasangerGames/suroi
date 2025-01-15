@@ -68,7 +68,8 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
             pixiPos,
             definition.cameraShake.intensity * SHOCKWAVE_EXPLOSION_MULTIPLIERS.amplitude,
             definition.radius.min * 100 * SHOCKWAVE_EXPLOSION_MULTIPLIERS.wavelength,
-            definition.ballistics.speed * SHOCKWAVE_EXPLOSION_MULTIPLIERS.speed
+            definition.ballistics.speed * SHOCKWAVE_EXPLOSION_MULTIPLIERS.speed,
+            game.layer ?? Layer.Ground
         );
     }
 

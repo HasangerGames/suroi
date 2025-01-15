@@ -1054,7 +1054,7 @@ export function setUpCommands(game: Game): void {
                 + `<table style="text-align: center"><thead><tr><td>Input</td><td>"Console" name</td></tr></thead><tbody>${(
                     [
                         ["Hyphen-minus (<code>-</code>)", "Minus"],
-                        ["Equals (<code>=</code>)", "Equals"],
+                        ["Equals (<code>=</code>)", "Equal"],
                         ["Opening square bracket (<code>[</code>)", "BracketLeft"],
                         ["Closing square bracket (<code>]</code>)", "BracketRight"],
                         ["Semicolon (<code>;</code>)", "Semicolon"],
