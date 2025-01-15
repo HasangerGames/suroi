@@ -6,10 +6,7 @@
             <stop style="stop-color:#a5d9ff;stop-opacity:1" offset="1"/>
         </linearGradient>
     </defs>
-    <circle style="fill:#6e460b;fill-opacity:0;stroke:#31220c;stroke-width:0;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke" cx="23.758" cy="114.932" r="4.469" fill="none"/>
-    <path style="fill:#d96300;fill-opacity:1;stroke:none;stroke-width:1.5658;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="M7.847 7.847h33.152v33.152H7.847z"/>
     <path style="fill:#4084bf;stroke-width:0;stroke-linecap:round;fill-opacity:1" d="M.981.981v46.986h46.986V.98Zm7.927 7.927H40.04V40.04H8.91Z"/>
-    <path style="fill:none;fill-opacity:1;stroke:none;stroke-width:1.96165;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="M7.847 7.847h33.152v33.152H7.847z"/>
     <circle style="fill:gray;fill-opacity:1;stroke:#2e2e2e;stroke-width:.980823;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1" cx="5.056" cy="5.056" r="1.622"/>
     <circle style="fill:gray;fill-opacity:1;stroke:#2e2e2e;stroke-width:.980823;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1" cx="43.892" cy="5.056" r="1.622"/>
     <circle style="fill:gray;fill-opacity:1;stroke:#2e2e2e;stroke-width:.980823;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1" cx="5.056" cy="43.892" r="1.622"/>
