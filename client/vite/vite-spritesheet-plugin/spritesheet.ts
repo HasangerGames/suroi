@@ -4,7 +4,7 @@ import { rm, writeFile } from "fs/promises";
 import { type IOption, MaxRectsPacker } from "maxrects-packer";
 import path from "path";
 import { type SpritesheetData } from "pixi.js";
-import { Canvas, Image, loadImage } from "skia-canvas";
+import { Canvas, Image, loadImage, RenderOptions } from "skia-canvas";
 import type { SpritesheetNames } from "../../../common/src/definitions/modes";
 import { cacheDir } from "./spritesheet-plugin";
 
@@ -35,11 +35,11 @@ export interface CompilerOptions {
     maximumSize: number
 
     /**
-     * Level of MSAA antialiasing to use for each size spritesheet
+     * Options to pass to skia-canvas when rendering
      */
-    msaa: {
-        low: number
-        high: number
+    renderOptions?: {
+        low?: RenderOptions
+        high?: RenderOptions
     }
 
     /**
@@ -203,10 +203,8 @@ export async function createSpritesheets(
         lowResCtx.drawImage(canvas, 0, 0, bin.width * lowScale, bin.height * lowScale);
 
         const [lowBuffer, highBuffer] = await Promise.all([
-            // @ts-expect-error no typings for the msaa property for some reason
-            lowResCanvas.toBuffer("png", { msaa: options.msaa.low }),
-            // @ts-expect-error no typings for the msaa property for some reason
-            canvas.toBuffer("png", { msaa: options.msaa.high })
+            lowResCanvas.toBuffer("png", options.renderOptions?.low),
+            canvas.toBuffer("png", options.renderOptions?.high)
         ]);
 
         const writeAtlas = async(image: Buffer, json: SpritesheetData, resolution: number, sheetList: Atlas[]): Promise<void> => {

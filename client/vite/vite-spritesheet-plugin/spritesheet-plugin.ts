@@ -17,9 +17,11 @@ const compilerOpts = {
     margin: 8,
     removeExtensions: true,
     maximumSize: 4096,
-    msaa: {
-        low: 2,
-        high: 8
+    renderOptions: {
+        // @ts-expect-error no typings for the msaa property for some reason
+        low: { msaa: false },
+        // @ts-expect-error no typings for the msaa property for some reason
+        high: { msaa: false }
     },
     packerOptions: {}
 } satisfies CompilerOptions as CompilerOptions;
