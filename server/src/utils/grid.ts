@@ -6,7 +6,6 @@ import { ObjectPool } from "@common/utils/objectPool";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { type GameObject, type ObjectMapping } from "../objects/gameObject";
-import { Logger } from "./misc";
 
 /**
  * A Grid to filter collision detection of game objects

@@ -1,7 +1,7 @@
 import { GameConstants, Layer, ObjectCategory } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
-import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { ObstacleModeVariations } from "@common/definitions/modes";
+import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { MapPacket, type MapPacketData } from "@common/packets/mapPacket";
 import { PacketStream } from "@common/packets/packetStream";
 import { type Orientation, type Variation } from "@common/typings";
@@ -13,13 +13,13 @@ import { MapObjectSpawnMode, NullString, type ReferenceTo, type ReifiableDef } f
 import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
 import { River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
-import { Config } from "./config";
+import { MapWithParams } from "./config";
 import { getLootFromTable } from "./data/lootTables";
 import { MapDefinition, MapName, Maps, ObstacleClump, RiverDefinition } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
-import { CARDINAL_DIRECTIONS, Logger, getRandomIDString } from "./utils/misc";
+import { CARDINAL_DIRECTIONS, getRandomIDString } from "./utils/misc";
 
 export class GameMap {
     readonly game: Game;
@@ -80,7 +80,7 @@ export class GameMap {
         }
     }
 
-    constructor(game: Game, mapData: typeof Config["map"]) {
+    constructor(game: Game, mapData: MapWithParams) {
         this.game = game;
 
         const [name, ...params] = mapData.split(":") as [MapName, ...string[]];
@@ -570,9 +570,9 @@ export class GameMap {
                 ReferenceTo<ObstacleDefinition> | typeof NullString
             >(obstacleData.idString);
             if (idString === NullString) continue;
-            const gameMode = GameConstants.modeName;
             if (obstacleData.outdoors) {
-                idString = `${idString}${ObstacleModeVariations[gameMode] ?? ""}`;
+                // @ts-expect-error TODO fix this error
+                idString = `${idString}${ObstacleModeVariations[this.game.modeName] ?? ""}`;
             }
 
             const obstacleDef = Obstacles.fromString(idString);
