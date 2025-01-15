@@ -17,7 +17,6 @@ import { GunItem } from "./gunItem";
 import { InventoryItem } from "./inventoryItem";
 import { MeleeItem } from "./meleeItem";
 import { ThrowableItem } from "./throwableItem";
-import { Modes } from "@common/definitions/modes";
 
 type ReifiableItem =
     GunItem |
@@ -572,7 +571,7 @@ export class Inventory {
                 && itemType !== ItemType.Perk
             )
             || definition.noDrop
-            || definition.idString === Modes[GameConstants.modeName].defaultScope
+            || definition.idString === this.owner.game.mode.defaultScope
         ) return;
 
         switch (itemType) {
