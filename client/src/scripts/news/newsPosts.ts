@@ -2,12 +2,66 @@ import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
+        date: 1736919248000,
+        author: "HAZEL",
+        title: "Spring Thaw",
+        content: `Winter mode is over, and weekly mode rotations have begun. The blue house has received a variant with a bunker containing the RSh-12, replacing the old spawn for the weapon inside Headquarters. Team stats have also been added on the game over screen.<br><br>
+
+        Numerous tweaks and fixes have been made across the game, including updated healing item textures, new container colors, and the return of most emotes removed in the last update.`,
+        longContent: `<h2>Suroi v0.23.0</h2>
+<h3>New features</h3>
+<ul>
+  <li><strong>Mode switching!</strong> The game now switches between Harvest and Classic modes every week.</li>
+  <li><strong>New bunker!</strong> Added a variation of the blue house with a basement.</li>
+  <li><strong>Team stats!</strong> Stats are now shown for everyone on your team on the game over screen.</li>
+  <li>Added back most of the emotes removed in the previous update, tweaked some emotes, and added 1 new emote.</li>
+</ul>
+
+<h3>Changes</h3>
+<ul>
+  <li>Better textures for healing items.</li>
+  <li>Improved textures for grenade, melee, AEGIS, Flint, and ammo crates, and boxes.</li>
+  <li>Changed the way textures are loaded, improving loading times.</li>
+  <li>Improved socials on main menu.</li>
+  <li>Improved barn layout.</li>
+  <li>Nerfed USAS-12 and M590M.</li>
+  <li>Rebalanced Negev.</li>
+  <li>Removed RSh-12 from the headquarters, as it's now found in the blue house basement.</li>
+  <li>Removed SR-25 from airdrops in Harvest mode.</li>
+  <li>Dual M1895 now spawns with 42 rounds of 7.62mm instead of 28.</li>
+  <li>The briefcase in Harvest mode now has a chance to contain the M1 Garand.</li>
+  <li>New CZ-600 and MP40 sounds.</li>
+  <li>Adjusted Micro Uzi and MP40 sounds.</li>
+  <li>Adjusted Lewis Gun and USAS-12 killfeed images.</li>
+  <li>Adjusted Lewis Gun, USAS-12, and M1895 loot images.</li>
+  <li>Renamed RGS to RG Scout, Negev to Negev SF, and MG-36 to MG36.</li>
+  <li>Adjusted container colors.</li>
+  <li>Improved textures for the bunk bed and life preserver.</li>
+  <li>Ambient sounds now fade in/out when entering or exiting bunkers instead of pausing abruptly.</li>
+  <li>Obstacles that are normally hidden on the minimap (e.g. Flint crates) that generate as part of a building are now shown on the minimap.</li>
+  <li>Keybinds are now more permissive and will autocorrect invalid keybinds.</li>
+  <li>Updated various translations.</li>
+</ul>
+
+<h3>Bug fixes</h3>
+<ul>
+  <li>Fixed bugs with explosions.</li>
+  <li>Fixed "JoinPacket not received after 5 seconds" error.</li>
+  <li>Fixed page reloading when the game switches between solos/duos/squads.</li>
+  <li>Fixed 2x scope dropping from players in Harvest mode.</li>
+  <li>Fixed poor distribution of obstacles in rivers.</li>
+  <li>Fixed being able to throw grenades over the vault door in the Plumpkin bunker.</li>
+  <li>Fixed an issue with fonts occasionally not loading in game.</li>
+  <li>Fixed translation/language percentages going higher than 100%.</li>
+</ul>`
+    },
+    {
         date: 1735793234000,
         author: "HAZEL",
         title: "Out With The Old",
         content: `Happy New Year! To celebrate, we're releasing the first of several overhaul updates for Suroi. The world sprite of every gun in the game has been replaced with high quality variants, and the length, art, and names of several weapons have been updated. Dual pistols have had their spread penalty removed. The game has also been switched to Harvest mode.<br><br>
 
-        We're looking to address every aspect of the game going forward this year, including rebalances to adrenaline, armor, weapon damage, movement speed, the gas, reworked locations, and much more as we work towards the eventual full release of the game. `
+        We're looking to address every aspect of the game going forward this year, including rebalances to adrenaline, armor, weapon damage, movement speed, the gas, reworked locations, and much more as we work towards the eventual full release of the game.`
     },
     {
         date: 1733881464000,
