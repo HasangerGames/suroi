@@ -314,7 +314,7 @@ export class Game {
             setUpUI(game)
         ]).then(() => {
             unlockPlayButtons();
-            resetPlayButtons();
+            resetPlayButtons(game);
         });
 
         return game;
@@ -439,12 +439,12 @@ export class Game {
             this.connecting = false;
             ui.splashMsgText.html(getTranslatedString("msg_err_joining"));
             ui.splashMsg.show();
-            resetPlayButtons();
+            resetPlayButtons(this);
         };
 
         this._socket.onclose = (): void => {
             this.connecting = false;
-            resetPlayButtons();
+            resetPlayButtons(this);
 
             const reason = this.disconnectReason || "Connection lost";
 
@@ -589,7 +589,7 @@ export class Game {
         }
 
         ui.canvas.addClass("active");
-        ui.splashUi.fadeOut(400, resetPlayButtons);
+        ui.splashUi.fadeOut(400, () => resetPlayButtons(this));
 
         ui.killLeaderLeader.html(getTranslatedString("msg_waiting_for_leader"));
         ui.killLeaderCount.text("0");
@@ -645,7 +645,7 @@ export class Game {
 
                 this.camera.zoom = Scopes.definitions[0].zoomLevel;
                 updateDisconnectTime();
-                resetPlayButtons();
+                resetPlayButtons(this);
                 if (teamSocket) ui.createTeamMenu.fadeIn(250, resolve);
                 else resolve();
             });

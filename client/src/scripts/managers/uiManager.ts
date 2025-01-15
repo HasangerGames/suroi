@@ -263,7 +263,20 @@ export class UIManager {
 
         lockedInfo: $<HTMLButtonElement>("#locked-info"),
         lockedTooltip: $<HTMLDivElement>("#locked-tooltip"),
-        lockedTime: $<HTMLSpanElement>("#locked-time"),
+        teamSizeSwitchTime: $<HTMLSpanElement>("#next-team-size-msg .next-switch-time"),
+        modeSwitchTime: $<HTMLSpanElement>("#next-mode-msg .next-switch-time"),
+
+        playSoloBtn: $<HTMLDivElement>("#btn-play-solo"),
+        playDuoBtn: $<HTMLDivElement>("#btn-play-duo"),
+        playSquadBtn: $<HTMLDivElement>("#btn-play-squad"),
+
+        teamOptionBtns: $<HTMLDivElement>("#team-option-btns"),
+
+        switchMessages: $<HTMLDivElement>("#next-switch-messages"),
+        nextTeamSizeMsg: $<HTMLDivElement>("#next-team-size-msg"),
+        nextTeamSizeIcon: $<HTMLDivElement>("#next-team-size-msg .next-switch-icon"),
+        nextModeMsg: $<HTMLDivElement>("#next-mode-msg"),
+        nextModeIcon: $<HTMLDivElement>("#next-mode-msg .next-switch-icon"),
 
         warningTitle: $<HTMLHeadingElement>("#warning-modal-title"),
         warningText: $<HTMLParagraphElement>("#warning-modal-text"),

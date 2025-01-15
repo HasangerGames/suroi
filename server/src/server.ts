@@ -79,7 +79,13 @@ let teamsCreated: Record<string, number> = {};
 
 export const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
 
-export let maxTeamSize = typeof Config.maxTeamSize === "number" ? Config.maxTeamSize : Config.maxTeamSize.rotation[0];
+export let maxTeamSize = typeof Config.maxTeamSize === "number"
+    ? Config.maxTeamSize
+    : Config.maxTeamSize.rotation[0];
+
+let nextTeamSize = typeof Config.maxTeamSize === "number"
+    ? undefined
+    : (Config.maxTeamSize.rotation[1] ?? Config.maxTeamSize.rotation[0]);
 
 let teamSizeRotationIndex = 0;
 
@@ -92,6 +98,7 @@ let mapRotationIndex = 0;
 let mapSwitchCron: Cron | undefined;
 
 let mode: Mode;
+let nextMode: Mode;
 
 if (isMainThread) {
     // Initialize the server
@@ -104,8 +111,10 @@ if (isMainThread) {
                 playerCount: games.reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
                 maxTeamSize,
                 maxTeamSizeSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
+                nextTeamSize,
                 mode,
-                modeSwitchTime: mapSwitchCron?.nextRun()?.getTime()
+                modeSwitchTime: mapSwitchCron?.nextRun()?.getTime(),
+                nextMode
             }));
     }).get("/api/getGame", async(res, req) => {
         let aborted = false;
@@ -316,8 +325,6 @@ if (isMainThread) {
         serverLog(`Listening on ${Config.host}:${Config.port}`);
         serverLog("Press Ctrl+C to exit.");
 
-        mode = modeFromMap(map);
-
         void newGame(0);
 
         setInterval(() => {
@@ -338,6 +345,7 @@ if (isMainThread) {
         if (typeof teamSize === "object") {
             maxTeamSizeSwitchCron = Cron(teamSize.switchSchedule, () => {
                 maxTeamSize = teamSize.rotation[++teamSizeRotationIndex % teamSize.rotation.length];
+                nextTeamSize = teamSize.rotation[(teamSizeRotationIndex + 1) % teamSize.rotation.length];
 
                 for (const game of games) {
                     game?.worker.postMessage({ type: WorkerMessages.UpdateMaxTeamSize, maxTeamSize });
@@ -348,11 +356,14 @@ if (isMainThread) {
             });
         }
 
+        mode = modeFromMap(map);
+
         const _map = Config.map;
         if (typeof _map === "object") {
             mapSwitchCron = Cron(_map.switchSchedule, () => {
                 map = _map.rotation[++mapRotationIndex % _map.rotation.length];
                 mode = modeFromMap(map);
+                nextMode = modeFromMap(_map.rotation[(mapRotationIndex + 1) % _map.rotation.length]);
 
                 for (const game of games) {
                     game?.worker.postMessage({ type: WorkerMessages.UpdateMap, map });
@@ -360,6 +371,7 @@ if (isMainThread) {
 
                 serverLog(`Switching to "${map}" map`);
             });
+            nextMode = modeFromMap(_map.rotation[1] ?? _map.rotation[0]);
         }
 
         const { protection } = Config;

@@ -463,24 +463,34 @@
         }
     }
 
-    #locked-msg {
+    #next-switch-messages {
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
-        @include variables.text-shadow;
         pointer-events: none;
-
-        & .fa-solid {
-            font-size: 20px;
-            @include variables.text-shadow;
-        }
+        display: flex;
+        gap: 20px;
     }
 
-    #locked-info {
-        background: none;
-        border: none;
-        cursor: pointer;
-        pointer-events: all;
+    .next-switch-msg {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .next-switch-time {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 18px;
+        @include variables.text-shadow;
+    }
+
+    .next-switch-icon {
+        width: 28px;
+        height: 28px;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        @include variables.drop-shadow;
     }
 
     #locked-tooltip {

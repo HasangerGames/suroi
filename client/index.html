@@ -211,14 +211,16 @@
                 <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team" translation="create_team"></button>
               </div>
 
-              <span id="locked-msg" style="display: none">
-                <i class="fa-solid fa-lock"></i>
-                <span id="locked-time">--:--:--</span>
-                <button id="locked-info">
-                  <i class="fa-solid fa-info-circle"></i>
-                </button>
-                <div id="locked-tooltip" style="display: none" translation="msg_locked_tooltip"></div>
-              </span>
+              <div id="next-switch-messages">
+                <span id="next-team-size-msg" class="next-switch-msg" style="display: none">
+                  <div class="next-switch-icon"></div>
+                  <span class="next-switch-time"></span>
+                </span>
+                <span id="next-mode-msg" class="next-switch-msg" style="display: none">
+                  <div class="next-switch-icon"></div>
+                  <span class="next-switch-time"></span>
+                </span>
+              </div>
 
               <button class="rules-close-btn btn-darken" id="rules-close-btn" style="display: none">
                 <i class="fa-solid fa-xmark"></i>

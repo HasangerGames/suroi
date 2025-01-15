@@ -3,7 +3,7 @@ import { type ArmorDefinition } from "@common/definitions/armors";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { EmoteCategory, Emotes, type EmoteDefinition } from "@common/definitions/emotes";
 import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/healingItems";
-import type { Mode } from "@common/definitions/modes";
+import { Modes, type Mode } from "@common/definitions/modes";
 import { PerkIds, Perks } from "@common/definitions/perks";
 import { Scopes, type ScopeDefinition } from "@common/definitions/scopes";
 import { Skins, type SkinDefinition } from "@common/definitions/skins";
@@ -43,10 +43,15 @@ interface RegionInfo {
     readonly mainAddress: string
     readonly gameAddress: string
     readonly playerCount?: number
+
     readonly maxTeamSize?: number
     readonly maxTeamSizeSwitchTime?: number
+    readonly nextTeamSize?: number
+
     readonly mode?: Mode
     readonly modeSwitchTime?: number
+    readonly nextMode?: Mode
+
     readonly ping?: number
 }
 
@@ -68,31 +73,47 @@ export function unlockPlayButtons(): void { buttonsLocked = false; }
 let lastDisconnectTime: number | undefined;
 export function updateDisconnectTime(): void { lastDisconnectTime = Date.now(); }
 
-let btnMap: ReadonlyArray<readonly [TeamSize, JQuery<HTMLButtonElement>]>;
-export function resetPlayButtons(): void {
+let btnMap: ReadonlyArray<readonly [TeamSize, JQuery<HTMLDivElement>]>;
+export function resetPlayButtons(game: Game): void { // TODO Refactor this method to use uiManager for jQuery calls
     if (buttonsLocked) return;
 
-    $("#splash-options").removeClass("loading");
-    $("#loader-text").text("");
+    const { uiManager: { ui } } = game;
+    const { maxTeamSize, nextTeamSize, nextMode } = selectedRegion ?? regionInfo[Config.defaultRegion];
 
-    const { maxTeamSize } = selectedRegion ?? regionInfo[Config.defaultRegion];
+    ui.splashOptions.removeClass("loading");
+    ui.loaderText.text("");
 
     const isSolo = maxTeamSize === TeamSize.Solo;
 
     for (
         const [size, btn] of (
             btnMap ??= [
-                [TeamSize.Solo, $("#btn-play-solo")],
-                [TeamSize.Duo, $("#btn-play-duo")],
-                [TeamSize.Squad, $("#btn-play-squad")]
+                [TeamSize.Solo, ui.playSoloBtn],
+                [TeamSize.Duo, ui.playDuoBtn],
+                [TeamSize.Squad, ui.playSquadBtn]
             ]
         )
         // stfu
         // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     ) btn.toggleClass("locked", maxTeamSize !== undefined && maxTeamSize !== size);
 
-    $("#team-option-btns").toggleClass("locked", isSolo);
-    $("#locked-msg").css("top", isSolo ? "225px" : "153px").toggle(maxTeamSize !== undefined);
+    ui.teamOptionBtns.toggleClass("locked", isSolo);
+
+    ui.switchMessages.css("top", isSolo ? "225px" : "150px").toggle(nextTeamSize !== undefined || nextMode !== undefined);
+
+    ui.nextTeamSizeMsg.toggle(nextTeamSize !== undefined);
+    const teamSizeIcons = [
+        "url(./img/misc/player_icon.svg)",
+        "url(./img/misc/duos.svg)",
+        undefined,
+        "url(./img/misc/squads.svg)"
+    ];
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    ui.nextTeamSizeIcon.css("background-image", nextTeamSize ? teamSizeIcons[nextTeamSize - 1]! : "none");
+
+    ui.nextModeMsg.toggle(nextMode !== undefined);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    ui.nextModeIcon.css("background-image", `url(${Modes[nextMode!]?.modeLogoImage ?? "./img/game/shared/emotes/suroi_logo.svg"})`);
 }
 
 let forceReload = false;
@@ -165,6 +186,15 @@ export async function fetchServerData(game: Game): Promise<void> {
     await Promise.all(regionPromises);
 
     const pad = (n: number): string | number => n < 10 ? `0${n}` : n;
+    const getTimeString = (millis: number | undefined): string => {
+        if (millis === undefined) return "--:--:--";
+
+        const days = Math.floor(millis / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(millis / (1000 * 60 * 60)) % 24;
+        const minutes = Math.floor(millis / (1000 * 60)) % 60;
+        const seconds = Math.floor(millis / 1000) % 60;
+        return `${days > 0 ? `${pad(days)}:` : ""}${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+    };
     const updateSwitchTime = (): void => {
         if (!selectedRegion) return;
         const { maxTeamSizeSwitchTime, modeSwitchTime } = selectedRegion;
@@ -174,20 +204,17 @@ export async function fetchServerData(game: Game): Promise<void> {
             (maxTeamSizeSwitchTime ?? Infinity) - now,
             (modeSwitchTime ?? Infinity) - now
         ];
-        if ((timeBeforeTeamSizeSwitch < 0 && !game.gameStarted) || timeBeforeModeSwitch < 0) {
+
+        if (
+            (timeBeforeTeamSizeSwitch < 0 && !game.gameStarted)
+            || timeBeforeModeSwitch < 0
+        ) {
             reloadPage();
             return;
         }
 
-        if (!maxTeamSizeSwitchTime) {
-            ui.lockedTime.text("--:--:--");
-            return;
-        }
-
-        const hours = Math.floor(timeBeforeTeamSizeSwitch / 3600000) % 24;
-        const minutes = Math.floor(timeBeforeTeamSizeSwitch / 60000) % 60;
-        const seconds = Math.floor(timeBeforeTeamSizeSwitch / 1000) % 60;
-        ui.lockedTime.text(`${pad(hours)}:${pad(minutes)}:${pad(seconds)}`);
+        ui.teamSizeSwitchTime.text(getTimeString(timeBeforeTeamSizeSwitch));
+        ui.modeSwitchTime.text(getTimeString(timeBeforeModeSwitch));
     };
     setInterval(updateSwitchTime, 1000);
 
@@ -210,7 +237,7 @@ export async function fetchServerData(game: Game): Promise<void> {
         playerCount.text(selectedRegion.playerCount ?? "-");
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
         updateSwitchTime();
-        resetPlayButtons();
+        resetPlayButtons(game);
     };
 
     selectedRegion = regionInfo[game.console.getBuiltInCVar("cv_region") ?? Config.defaultRegion];
@@ -225,7 +252,7 @@ export async function fetchServerData(game: Game): Promise<void> {
         const info = regionInfo[region];
         if (info === undefined) return;
 
-        resetPlayButtons();
+        resetPlayButtons(game);
 
         selectedRegion = info;
 
@@ -414,7 +441,7 @@ export async function setUpUI(game: Game): Promise<void> {
                         ui.splashMsg.show();
                     }
 
-                    resetPlayButtons();
+                    resetPlayButtons(game);
                 }
             }
         ).fail(() => {
@@ -425,7 +452,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 ${getTranslatedString("msg_try_again")}
             `);
             ui.splashMsg.show();
-            resetPlayButtons();
+            resetPlayButtons(game);
         });
     };
 
@@ -455,7 +482,7 @@ export async function setUpUI(game: Game): Promise<void> {
             while (!teamID) {
                 teamID = prompt(getTranslatedString("msg_enter_team_code"));
                 if (!teamID) {
-                    resetPlayButtons();
+                    resetPlayButtons(game);
                     return;
                 }
 
@@ -565,7 +592,7 @@ export async function setUpUI(game: Game): Promise<void> {
         teamSocket.onerror = (): void => {
             ui.splashMsgText.html(getTranslatedString("msg_error_joining_team"));
             ui.splashMsg.show();
-            resetPlayButtons();
+            resetPlayButtons(game);
             createTeamMenu.fadeOut(250);
 
             // Dimmed backdrop on team menu. (Probably not needed here)
@@ -583,7 +610,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 );
                 ui.splashMsg.show();
             }
-            resetPlayButtons();
+            resetPlayButtons(game);
             teamSocket = undefined;
             teamID = undefined;
             joinedTeam = false;
