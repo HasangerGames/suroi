@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Mon, 13 Jan 2025 17:18:13 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Wed, 15 Jan 2025 02:29:03 GMT
 
 ## 🇦🇱 Shqip (88% Complete) - ab.hjson
 
@@ -473,7 +473,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇨🇳 中文（简体） (103% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (102% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -483,7 +483,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_your_team_eliminated` is not a valid key
 - Key `msg_the_team_eliminated` is not a valid key
 - Key `msg_punishment_warn_agreement` is not a valid key
-- Key `create_team_share` is not a valid key
 - Key `developr_vest` is not a valid key
 
 ### Undefined Keys
