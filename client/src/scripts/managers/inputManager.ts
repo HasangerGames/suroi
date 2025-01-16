@@ -367,9 +367,8 @@ export class InputManager {
             let a = false;
             let b = false;
             window.addEventListener("deviceorientation", gyro => {
-                // It would be impossible to send the DeviceOrientation event but lack the beta property
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const angle = gyro.beta!;
+                const angle = gyro.beta;
+                if (angle === null) return;
                 a = (angle <= -gyroAngle)
                     ? (a ? a : swap(-1), true)
                     : false;
