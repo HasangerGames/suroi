@@ -690,6 +690,7 @@ export class Game implements GameData {
 
     // Called when a JoinPacket is sent by the client
     activatePlayer(player: Player, packet: JoinPacketData): void {
+        if (player.joined) return;
         const rejectedBy = this.pluginManager.emit("player_will_join", { player, joinPacket: packet });
         if (rejectedBy) {
             player.disconnect(`Connection rejected by server plugin '${rejectedBy.constructor.name}'`);
