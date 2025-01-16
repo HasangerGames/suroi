@@ -461,6 +461,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.nameColor = userData.nameColor ?? 0;
         this.hasColor = userData.nameColor !== undefined;
 
+        game.addTimeout(() => {
+            if (!this.joined) {
+                this.disconnect("JoinPacket not received after 5 seconds");
+            }
+        }, 5000);
+
         this.loadout = {
             skin: Loots.fromString("hazel_jumpsuit"),
             emotes: [
