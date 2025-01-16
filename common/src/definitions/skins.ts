@@ -136,6 +136,12 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 }
             ),
             hidden(
+                ["Square", 0xb4a894],
+                {
+                    hideEquipment: true
+                }
+            ),
+            hidden(
                 ["Ghillie Suit", 0xffffff],
                 {
                     grassTint: true,
