@@ -404,13 +404,13 @@ export class InputManager {
 
             This only applies to keyboard events
 
-            Also we allow shift and alt to be used normally, because keyboard shortcuts usually involve
+            Also, we allow shift and alt to be used normally, because keyboard shortcuts usually involve
             the meta or control key
         */
 
         if (event instanceof KeyboardEvent) {
             const { key } = event;
-            // This statement cross references and updates focus checks for key presses.
+            // This statement cross-references and updates focus checks for key presses.
             if (down) {
                 this._focusController.add(key);
             } else {
