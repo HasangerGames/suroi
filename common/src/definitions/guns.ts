@@ -124,7 +124,43 @@ export type GunDefinition = BaseGunDefinition & {
 export type SingleGunNarrowing = GunDefinition & { readonly isDual: false };
 export type DualGunNarrowing = GunDefinition & { readonly isDual: true };
 
-const gasParticlePresets: Record<"automatic" | "shotgun" | "pistol" | "rifle", BaseGunDefinition["gasParticles"]> = {
+type RawForDef<B extends BaseGunDefinition> = B & {
+    readonly isDual?: never
+    readonly dual?: {
+        readonly leftRightOffset: number
+    } & {
+        [
+        K in Extract<
+            keyof B,
+            "wearerAttributes" |
+            "ammoSpawnAmount" |
+            "capacity" |
+            "extendedCapacity" |
+            "reloadTime" |
+            "fireDelay" |
+            "switchDelay" |
+            "speedMultiplier" |
+            "recoilMultiplier" |
+            "recoilDuration" |
+            "shotSpread" |
+            "moveSpread" |
+            "fsaReset" |
+            "burstProperties" |
+            "leftRightOffset"
+        >
+        ]?: B[K]
+    }
+};
+
+type RawGunDefinition =
+    | RawForDef<
+        BaseGunDefinition & BurstFireMixin & { readonly fireMode: FireMode.Burst }
+    >
+    | RawForDef<
+        BaseGunDefinition & BurstFireMixin & { readonly fireMode: FireMode.Single | FireMode.Auto }
+    >;
+
+const gasParticlePresets = {
     automatic: {
         amount: 2,
         spread: 30,
@@ -165,35 +201,7 @@ const gasParticlePresets: Record<"automatic" | "shotgun" | "pistol" | "rifle", B
         minSpeed: 7,
         maxSpeed: 14
     }
-};
-
-type RawGunDefinition = BaseGunDefinition & {
-    readonly isDual?: never
-    readonly dual?: {
-        readonly leftRightOffset: number
-    } & {
-        [
-        K in Extract<
-            keyof DualGunNarrowing,
-            "wearerAttributes" |
-            "ammoSpawnAmount" |
-            "capacity" |
-            "extendedCapacity" |
-            "reloadTime" |
-            "fireDelay" |
-            "switchDelay" |
-            "speedMultiplier" |
-            "recoilMultiplier" |
-            "recoilDuration" |
-            "shotSpread" |
-            "moveSpread" |
-            "fsaReset" |
-            "burstProperties" |
-            "leftRightOffset"
-        >
-        ]?: DualGunNarrowing[K]
-    }
-};
+} satisfies Record<string, BaseGunDefinition["gasParticles"]>;
 
 const defaultGun = {
     itemType: ItemType.Gun,
@@ -220,7 +228,7 @@ const defaultGun = {
     isDual: false,
     noMuzzleFlash: false,
     ballistics: defaultBulletTemplate
-} satisfies DeepPartial<GunDefinition> as DeepPartial<GunDefinition>;
+} satisfies DeepPartial<GunDefinition>;
 
 export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
     "Guns",
@@ -2422,7 +2430,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
         e.dualVariant = dualDef.idString;
 
         return [e, dualDef];
-    }).flat() as readonly GunDefinition[]).map(v => {
+    }).flat() satisfies ReadonlyArray<RawDefinition<GunDefinition>>).map(v => {
         // @ts-expect-error init code
         v.killfeedFrame ??= v.idString;
         return v;
