@@ -1419,6 +1419,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         const gas = game.gas;
 
+        // shut up
+        // eslint-disable-next-line @typescript-eslint/no-misused-spread
         packet.gas = gas.dirty || this._firstPacket ? { ...gas } : undefined;
         packet.gasProgress = gas.completionRatioDirty || this._firstPacket ? gas.completionRatio : undefined;
 
@@ -1990,7 +1992,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         if (sourceIsPlayer) {
             this.killedBy = source;
-            if (source !== this && (!this.game.teamMode || source.teamID !== this.teamID)) source.kills++;
 
             for (const perk of source.perks) {
                 switch (perk.idString) {
@@ -2038,6 +2039,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 .victimId(this.id);
 
             const attributeToPlayer = (player: Player, item: InventoryItem | null = player.activeItem): void => {
+                ++player.kills;
+
                 (
                     message as ForEventType<
                         | KillfeedEventType.NormalTwoParty
@@ -2071,9 +2074,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
             };
 
-            const attributeToDowner = (withWeapon = false): boolean => {
+            const attributeToDowner = (): boolean => {
                 const downer = this.downedBy;
-                if (!downer) return false;
+                if (downer === undefined) return false;
 
                 const { player, item } = downer;
 
@@ -2092,18 +2095,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     }
                 }
 
-                if (withWeapon) {
-                    // see call sites for why this is safe
-                    (
-                        message as ForEventType<
-                            | KillfeedEventType.NormalTwoParty
-                            | KillfeedEventType.FinishedOff
-                        >
-                    ).weaponUsed(item?.definition);
-                }
-
-                attributeToPlayer(player, item);
-
                 return true;
             };
 
@@ -2118,7 +2109,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             ) {
                 message.eventType(source);
 
-                attributeToDowner();
+                const downer = this.downedBy;
+                if (downer !== undefined) {
+                    attributeToPlayer(downer.player);
+                }
             } else if (sourceIsPlayer) {
                 if (source === this) {
                     message.eventType(KillfeedEventType.Suicide)
@@ -2130,13 +2124,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                             : KillfeedEventType.NormalTwoParty
                     ).weaponUsed(weaponUsed?.definition);
 
-                    if (
-                        this.teamID === undefined // if we're in solos…
-                        || source.teamID !== this.teamID // …or the killer is in a different team from the downer…
-                        || !attributeToDowner(true) // …or if attributing to the downer fails (because they can't be found)…
-                    ) {
-                        attributeToPlayer(source, weaponUsed instanceof Explosion ? null : weaponUsed); // …then attribute to the killer
+                    if (source.teamID === this.downedBy?.player.teamID) {
+                        attributeToDowner();
                     }
+
+                    attributeToPlayer(source, weaponUsed instanceof Explosion ? null : weaponUsed); // …then attribute to the killer
                 }
             } else if (source instanceof BaseGameObject) {
                 console.warn(`Unexpected source of death for player '${this.name}' (id: ${this.id}); source is of category ${ObjectCategory[source.type]}`);
