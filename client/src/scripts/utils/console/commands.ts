@@ -988,7 +988,7 @@ export function setUpCommands(game: Game): void {
 
                 + "<li><details><summary>Alphanumeric keys (case insensitive)</summary>"
                 + `<table style="text-align: center"><thead><tr><td>Input</td><td>"Console" name</td></tr></thead><tbody>${(
-                    [..."ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"].map(
+                    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split("").map(
                         s => [s, s] as const
                     )
                 ).map(([name, code]) => `<tr><td>${name}</td><td><code>${code}</td></tr>`).join("")}</tbody></table>`
