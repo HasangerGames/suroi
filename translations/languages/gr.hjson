@@ -46,7 +46,7 @@
   "settings_show_inout": "Εμφάνιση στατιστικών στοιχείων δικτύου"
   "loading_fetching_data_failed": "Αποτυχία φόρτωσης του διακομιστή"
   "retry": "Προσπάθησε ξανά"
-  "bindings_toggle pf_net_graph 0 1 2": "Ajustar estilo do gráfico de rede"
+  "bindings_toggle pf_net_graph 0 1 2": "Προσαρμόστε το στυλ γραφήματος δικτύου"
   "settings_volume": "Ένταση ήχου"
   "settings_keybinds": "Πλήκτρα"
   "settings_graphics": "Γραφικά"
