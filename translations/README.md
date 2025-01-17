@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Wed, 15 Jan 2025 13:25:45 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Fri, 17 Jan 2025 10:11:47 GMT
 
 ## 🇦🇱 Shqip (87% Complete) - ab.hjson
 
@@ -43,19 +43,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇧🇷 Português (Brasil) (97% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (100% Complete) - br.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
-- Key `wiki` is not defined
 - Key `settings_show_inout` is not defined
-- Key `msg_your_team_eliminated` is not defined
-- Key `msg_the_team_eliminated` is not defined
-- Key `loading_fetching_data_failed` is not defined
-- Key `retry` is not defined
-- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🇨🇿 Čeština (91% Complete) - cz.hjson
 
@@ -159,19 +153,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 
-## 🇬🇷 Ελληνικά (97% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (100% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
-### Undefined Keys
-
-- Key `wiki` is not defined
-- Key `settings_show_inout` is not defined
-- Key `settings_gyro_angle` is not defined
-- Key `settings_haptics` is not defined
-- Key `loading_fetching_data_failed` is not defined
-- Key `retry` is not defined
-- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+### (No Undefined Keys)
 
 ## 🇭🇰 🇲🇴 廣東話(香港/澳門) (90% Complete) - hk_mo.hjson
 
@@ -207,7 +193,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off_down` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇭🇺 Magyar (98% Complete) - hu.hjson
+## 🇭🇺 Magyar (99% Complete) - hu.hjson
 
 ### Invalid Keys
 
@@ -215,12 +201,8 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `wiki` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_haptics` is not defined
-- Key `loading_fetching_data_failed` is not defined
-- Key `retry` is not defined
-- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🇮🇹 Italiano (87% Complete) - it.hjson
 
