@@ -204,13 +204,13 @@ export async function newGame(id?: number): Promise<number> {
 export const games: Array<GameContainer | undefined> = [];
 
 if (!isMainThread) {
-    process.on("uncaughtException", e => game.error("An unhandled error occurred. Details:", e));
-
     const id = (workerData as WorkerInitData).id;
     let maxTeamSize = (workerData as WorkerInitData).maxTeamSize;
     let map = (workerData as WorkerInitData).map;
 
     let game = new Game(id, maxTeamSize, map);
+
+    process.on("uncaughtException", e => game.error("An unhandled error occurred. Details:", e));
 
     // string = ip, number = expire time
     const allowedIPs = new Map<string, number>();
