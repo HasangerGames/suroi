@@ -4961,7 +4961,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
                 floorImages: [{
                     key: "small_bunker_entrance_floor",
-                    position: Vec.create(0, 0),
+                    position: Vec.create(-0.05, 0),
                     scale: Vec.create(2.2, 2.2)
                 }],
                 floors: [
