@@ -1,4 +1,4 @@
-import { Layer } from "@common/constants";
+import { GameConstants, Layer } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Guns } from "@common/definitions/guns";
 import { Loots } from "@common/definitions/loots";
@@ -17,6 +17,7 @@ import { type GunItem } from "../inventory/gunItem";
 import { GameMap } from "../map";
 import { Player, type PlayerContainer } from "../objects/player";
 import { getLootFromTable, LootTables } from "./lootTables";
+import { GamePlugin } from "../pluginManager";
 
 export interface RiverDefinition {
     readonly minAmount: number
@@ -906,30 +907,78 @@ const maps = {
         const Guns = Loots.byType(ItemType.Gun);
 
         return {
-            width: 64,
-            height: 48 + (16 * Guns.length),
-            beachSize: 8,
-            oceanSize: 8,
+            width: 64 * 8,
+            height: 48 + (6 * Guns.length),
+            beachSize: 0,
+            oceanSize: 0,
             onGenerate(map) {
-                for (let i = 0, l = Guns.length; i < l; i++) {
-                    const player = new Player(
-                        map.game,
-                        { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>,
-                        Vec.create(32, 32 + (16 * i))
-                    );
-                    const gun = Guns[i];
+                const game = map.game;
 
-                    player.inventory.addOrReplaceWeapon(0, gun.idString);
-                    (player.inventory.getWeapon(0) as GunItem).ammo = gun.capacity;
-                    player.inventory.items.setItem(gun.ammoType, Infinity);
-                    player.disableInvulnerability();
-                    // setInterval(() => player.activeItem.useItem(), 30);
-                    map.game.addLoot(gun.idString, Vec.create(16, 32 + (16 * i)), 0);
-                    map.game.addLoot(gun.ammoType, Vec.create(16, 32 + (16 * i)), 0, { count: Infinity });
-                    map.game.grid.addObject(player);
-                }
+                game.pluginManager.loadPlugin(
+                    class extends GamePlugin {
+                        protected initListeners(): void {
+                            this.on("game_created", _game => {
+                                if (_game !== game) return;
+                                const createBot = (name: string): Player | undefined => {
+                                    const bot = game.addPlayer({
+                                        send(): number { return 0; },
+                                        getBufferedAmount(): number { return 0; },
+                                        end(): void { return; },
+                                        close(): void { return; },
+                                        ping(): number { return 0; },
+                                        subscribe(): boolean { return false; },
+                                        unsubscribe(): boolean { return false; },
+                                        isSubscribed(): boolean { return false; },
+                                        getTopics(): string[] { return []; },
+                                        publish(): boolean { return true; },
+                                        cork(): WebSocket<PlayerContainer> { return this; },
+                                        getRemoteAddress(): ArrayBuffer { return new ArrayBuffer(); },
+                                        getRemoteAddressAsText(): ArrayBuffer { return new ArrayBuffer(); },
+                                        getUserData(): PlayerContainer { return { isDev: false, autoFill: false, ip: undefined, lobbyClearing: false, weaponPreset: "" }; }
+                                    });
+
+                                    if (bot !== undefined) {
+                                        game.activatePlayer(
+                                            bot,
+                                            {
+                                                name,
+                                                isMobile: false,
+                                                skin: Loots.fromString("hazel_jumpsuit"),
+                                                emotes: Array.from({ length: 6 }, () => undefined),
+                                                protocolVersion: GameConstants.protocolVersion
+                                            }
+                                        );
+                                    }
+
+                                    return bot;
+                                };
+
+                                const teleportPlayer = (player: Player, position: Vector): void => {
+                                    player.position = position;
+                                    player.updateObjects = true;
+                                    player.game.grid.updateObject(player);
+                                    player.setDirty();
+                                };
+
+                                for (let i = 0, l = Guns.length; i < l; i++) {
+                                    const player = createBot(`bot ${i}`);
+                                    if (player === undefined) return;
+                                    teleportPlayer(player, Vec.create(256, 24 + 6 * i));
+                                    const gun = Guns[i];
+
+                                    player.inventory.addOrReplaceWeapon(0, gun.idString);
+                                    (player.inventory.getWeapon(0) as GunItem).ammo = gun.capacity;
+                                    player.inventory.items.setItem(gun.ammoType, Infinity);
+                                    player.disableInvulnerability();
+                                    // map.game.addLoot(gun.idString, Vec.create(16, 32 + 16 * i), 0);
+                                    // map.game.addLoot(gun.ammoType, Vec.create(16, 32 + 16 * i), 0, { count: Infinity });
+                                }
+                            });
+                        }
+                    }
+                );
             }
-        };
+        } satisfies MapDefinition;
     })(),
     obstaclesTest: {
         width: 128,
