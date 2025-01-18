@@ -24,8 +24,8 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="8.1501761"
-     inkscape:cx="78.035124"
-     inkscape:cy="57.422072"
+     inkscape:cx="77.973775"
+     inkscape:cy="57.483421"
      inkscape:window-width="2560"
      inkscape:window-height="1368"
      inkscape:window-x="0"
@@ -80,14 +80,18 @@
          d="m -72.769599,115.07082 a 5.123292,10.263678 0 0 1 -5.123292,10.26368 5.123292,10.263678 0 0 1 -5.123292,-10.26368 5.123292,10.263678 0 0 1 5.123292,-10.26367 5.123292,10.263678 0 0 1 5.123292,10.26367 z"
          id="path4" />
     </g>
-    <ellipse
-       style="fill:#404040;fill-opacity:1;fill-rule:evenodd;stroke:#0b0b0b;stroke-width:2.50897;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers;stop-color:#000000"
+    <g
        id="ellipse8652"
-       cx="-79.680748"
-       cy="115.09898"
-       rx="1.4767119"
-       ry="3.1617453"
-       transform="rotate(-90)" />
+       transform="rotate(-90)">
+      <path
+         style="fill:#0b0b0b;fill-rule:evenodd;stroke-linecap:round;paint-order:stroke fill markers"
+         d="m -79.681641,110.68359 c -1.133578,0 -1.808923,0.85461 -2.179687,1.64844 -0.370765,0.79383 -0.550781,1.73616 -0.550781,2.76758 0,1.03142 0.180016,1.97179 0.550781,2.76562 0.370764,0.79384 1.046109,1.65039 2.179687,1.6504 1.133578,0 1.810877,-0.85656 2.181641,-1.6504 0.370764,-0.79383 0.550781,-1.7342 0.550781,-2.76562 0,-1.03142 -0.180017,-1.97375 -0.550781,-2.76758 -0.370764,-0.79383 -1.048063,-1.64844 -2.181641,-1.64844 z m 0.002,3.21485 c 0.101492,0.3541 0.220703,0.6977 0.220703,1.20117 0,0.50347 -0.119211,0.84707 -0.220703,1.20117 -0.101538,-0.35414 -0.222657,-0.69756 -0.222657,-1.20117 0,-0.50361 0.121119,-0.84703 0.222657,-1.20117 z"
+         id="path5" />
+      <path
+         style="fill:#404040;fill-rule:evenodd;stroke-linecap:round;paint-order:stroke fill markers"
+         d="m -78.204036,115.09898 a 1.4767119,3.1617453 0 0 1 -1.476712,3.16175 1.4767119,3.1617453 0 0 1 -1.476712,-3.16175 1.4767119,3.1617453 0 0 1 1.476712,-3.16174 1.4767119,3.1617453 0 0 1 1.476712,3.16174 z"
+         id="path6" />
+    </g>
     <ellipse
        style="fill:#808080;fill-opacity:1;stroke:#0b0b0b;stroke-width:0.687672;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
        id="circle8656"
