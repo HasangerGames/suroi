@@ -16,7 +16,7 @@ import { type SkinDefinition } from "@common/definitions/skins";
 import { SyncedParticles, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
 import { DisconnectPacket } from "@common/packets/disconnectPacket";
-import { GameOverPacket, TeammateGameOverData, type GameOverData } from "@common/packets/gameOverPacket";
+import { GameOverPacket, TeammateGameOverData, GameOverData } from "@common/packets/gameOverPacket";
 import { type AllowedEmoteSources, type NoMobile, type PlayerInputData } from "@common/packets/inputPacket";
 import { createKillfeedMessage, KillFeedPacket, type ForEventType } from "@common/packets/killFeedPacket";
 import { type InputPacket } from "@common/packets/packet";
@@ -2256,17 +2256,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             c4.damage({ amount: Infinity });
         }
 
-        if (this.team) {
-            if (this.team.hasLivingPlayers()) {
-                this.spectating?.spectators.delete(this);
-                this.updateObjects = true;
-                this.startedSpectating = true;
-                const toSpectate = this.team.getLivingPlayers()[0];
-                toSpectate.spectators.add(this);
-                this.spectating = toSpectate;
-            }
-        }
-
         if (!this.disconnected) {
             this.sendGameOverPacket();
         }
@@ -2367,61 +2356,24 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     sendGameOverPacket(won = false): void {
-        const teammates: TeammateGameOverData[] = [];
-        let packet;
-        if (this.team && (this.game.teamMode && this.spectating === undefined)) {
-            for (const player of this.team.players) {
-                const playerID = player.id;
-                const kills = player.kills;
-                const damageDone = player.damageDone;
-                const damageTaken = player.damageTaken;
-                const timeAlive = (this.game.now - player.joinTime) / 1000;
-                teammates.push({
-                    playerID,
-                    kills,
-                    damageDone,
-                    damageTaken,
-                    timeAlive
-                });
-            }
+        const teammates: TeammateGameOverData[] = (
+            this.team && this.spectating === undefined
+                ? this.team.players
+                : [this]
+        ).map(player => ({
+            playerID: player.id,
+            kills: player.kills,
+            damageDone: player.damageDone,
+            damageTaken: player.damageTaken,
+            timeAlive: (player.game.now - player.joinTime) / 1000
+        }));
 
-            packet = GameOverPacket.create({
-                won,
-                rank: won ? 1 as const : this.game.aliveCount + 1,
-                numberTeammates: teammates.length,
-                teammates: teammates
-            } as GameOverData);
-        } else {
-            const playerID = this.id;
-            const kills = this.kills;
-            const damageDone = this.damageDone;
-            const damageTaken = this.damageTaken;
-            const timeAlive = (this.game.now - this.joinTime) / 1000;
-            teammates.push({
-                playerID,
-                kills,
-                damageDone,
-                damageTaken,
-                timeAlive
-            });
-            packet = GameOverPacket.create({
-                won,
-                rank: won ? 1 as const : this.game.aliveCount + 1,
-                numberTeammates: 1,
-                teammates: teammates
-            } as GameOverData);
-        }
-
-        /* const packet = GameOverPacket.create({
+        const packet = GameOverPacket.create({
             won,
-            playerID: this.id,
-            kills: this.kills,
-            damageDone: this.damageDone,
-            damageTaken: this.damageTaken,
-            timeAlive: (this.game.now - this.joinTime) / 1000,
-            rank: won ? 1 as const : this.game.aliveCount + 1
+            rank: won ? 1 as const : this.game.aliveCount + 1,
+            numberTeammates: teammates.length,
+            teammates
         } as GameOverData);
-         */
 
         this.sendPacket(packet);
 
