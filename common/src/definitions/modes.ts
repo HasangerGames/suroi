@@ -9,17 +9,17 @@ export type SpritesheetNames = Mode | "shared";
 
 export interface ModeDefinition {
     readonly colors: Record<ColorKeys, string>
-    readonly spriteSheets: SpritesheetNames[]
+    readonly spriteSheets: readonly SpritesheetNames[]
     readonly sounds?: {
         readonly ambience?: string
-        readonly replace?: string[]
+        readonly replace?: readonly string[]
     }
     readonly defaultScope?: ReferenceTo<ScopeDefinition>
     readonly darkShaders?: boolean
     // will be multiplied by the bullet trail color
     readonly bulletTrailAdjust?: string
     readonly particleEffects?: {
-        readonly frames: string | string[]
+        readonly frames: string | readonly string[]
         readonly delay: number
         readonly tint?: number
         readonly gravity?: boolean
@@ -118,7 +118,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
         },
         bulletTrailAdjust: "hsl(0, 50%, 80%)",
         particleEffects: {
-            frames: ["snow_particle"],
+            frames: "snow_particle",
             delay: 800,
             gravity: true
         },

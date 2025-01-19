@@ -47,8 +47,7 @@ import { Team } from "./team";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { cleanUsername, modeFromMap, removeFrom } from "./utils/misc";
-import { Mode } from "fs";
-import { ModeDefinition, Modes } from "@common/definitions/modes";
+import { ModeDefinition, Modes, type Mode } from "@common/definitions/modes";
 
 /*
     eslint-disable
@@ -233,7 +232,7 @@ export class Game implements GameData {
         });
 
         this.modeName = modeFromMap(map);
-        this.mode = (Modes as Record<Mode, ModeDefinition>)[this.modeName];
+        this.mode = Modes[this.modeName];
 
         this.pluginManager.loadPlugins();
 

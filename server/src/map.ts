@@ -185,7 +185,11 @@ export class GameMap {
         this.buffer = stream.getBuffer();
     }
 
-    private _generateRivers(definition: RiverDefinition, randomGenerator: SeededRandom, isTrail = false): River[] {
+    private _generateRivers(
+        definition: RiverDefinition,
+        randomGenerator: SeededRandom,
+        isTrail = false
+    ): River[] {
         const {
             minAmount,
             maxAmount,
@@ -571,7 +575,6 @@ export class GameMap {
             >(obstacleData.idString);
             if (idString === NullString) continue;
             if (obstacleData.outdoors) {
-                // @ts-expect-error TODO fix this error
                 idString = `${idString}${ObstacleModeVariations[this.game.modeName] ?? ""}`;
             }
 
@@ -676,7 +679,7 @@ export class GameMap {
                 scale,
                 orientation,
                 spawnMode: def.spawnMode,
-                ignoreClearings: this.mapDef.clearings?.allowedObstacles?.includes(def.idString)
+                ignoreClearings: this.mapDef.clearings?.allowedObstacles.includes(def.idString)
             });
 
             if (!position) {

@@ -30,13 +30,15 @@ export interface RiverDefinition {
     readonly maxWideWidth: number
     /**
      * The number is the amount of the specified obstacle each river will have
+     *
      * Multiplied by the river width and amount of nodes and divided by a magic number (500)
      * (division done so the numbers here don't need to be too small / decimals)
-     * so its kinda of a "density" of obstacles inside a river
-     * a better way would be to calculate the polygon area of the river
+     *
+     * so its kinda of a "density" of obstacles inside a river\
+     * a better way would be to calculate the polygon area of the river\
      * but that's slower and we don't need to be that accurate
      *
-     * NOTE: obstacles in this object still need `River` or `Trail` spawn mode
+     * **NOTE**: obstacles in this object still need `River` or `Trail` spawn mode
      * for river obstacles that have a fixed amount per game (like river chests)
      * you should use `MapDefinition.obstacles`
      */
@@ -58,8 +60,12 @@ export interface MapDefinition {
         readonly maxWidth: number
         readonly maxHeight: number
         readonly count: number
-        readonly allowedObstacles: Array<ReferenceTo<ObstacleDefinition>>
-        readonly obstacles: Array<{ idString: ReferenceTo<ObstacleDefinition>, min: number, max: number }>
+        readonly allowedObstacles: ReadonlyArray<ReferenceTo<ObstacleDefinition>>
+        readonly obstacles: ReadonlyArray<{
+            readonly idString: ReferenceTo<ObstacleDefinition>
+            readonly min: number
+            readonly max: number
+        }>
     }
 
     readonly bridges?: ReadonlyArray<ReferenceTo<BuildingDefinition>>

@@ -17,7 +17,7 @@ export type MeleeDefinition = InventoryItemDefinition & {
     readonly offset: Vector
     readonly cooldown: number
     readonly maxTargets: number
-    readonly reskins?: string[]
+    readonly reskins?: readonly string[]
     readonly fists: InventoryItemDefinition["fists"] & {
         readonly animationDuration: number
         readonly randomFist?: boolean

@@ -27,8 +27,10 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
+    "croner": "^8.1.2",
     "svg-parser": "^2.0.4",
     "ts-node": "^10.9.2",
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.51.0",
     "ws": "^8.18.0"
   }
 }

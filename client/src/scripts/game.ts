@@ -121,7 +121,7 @@ export class Game {
 
     _modeName: Mode | undefined;
     get modeName(): Mode {
-        if (!this._modeName) throw new Error("modeName accessed before initialization");
+        if (this._modeName === undefined) throw new Error("modeName accessed before initialization");
         return this._modeName;
     }
 
@@ -385,38 +385,36 @@ export class Game {
             if (particleEffects !== undefined) {
                 const This = this;
                 const gravityOn = particleEffects.gravity;
-                this.particleManager.addEmitter(
-                    {
-                        delay: particleEffects.delay,
-                        active: this.console.getBuiltInCVar("cv_ambient_particles"),
-                        spawnOptions: () => ({
-                            frames: particleEffects.frames,
-                            get position(): Vector {
-                                const width = This.camera.width / PIXI_SCALE;
-                                const height = This.camera.height / PIXI_SCALE;
-                                const player = This.activePlayer;
-                                if (!player) return Vec.create(0, 0);
-                                const { x, y } = player.position;
-                                return randomVector(x - width, x + width, y - height, y + height);
-                            },
-                            speed: randomVector(-10, 10, gravityOn ? 10 : -10, 10),
-                            lifetime: randomFloat(12000, 50000),
-                            zIndex: Number.MAX_SAFE_INTEGER - 5,
-                            alpha: {
-                                start: this.layer === Layer.Ground ? 0.7 : 0,
-                                end: 0
-                            },
-                            rotation: {
-                                start: randomFloat(0, 36),
-                                end: randomFloat(40, 80)
-                            },
-                            scale: {
-                                start: randomFloat(0.8, 1.1),
-                                end: randomFloat(0.7, 0.8)
-                            }
-                        })
-                    }
-                );
+                this.particleManager.addEmitter({
+                    delay: particleEffects.delay,
+                    active: this.console.getBuiltInCVar("cv_ambient_particles"),
+                    spawnOptions: () => ({
+                        frames: particleEffects.frames,
+                        get position(): Vector {
+                            const width = This.camera.width / PIXI_SCALE;
+                            const height = This.camera.height / PIXI_SCALE;
+                            const player = This.activePlayer;
+                            if (!player) return Vec.create(0, 0);
+                            const { x, y } = player.position;
+                            return randomVector(x - width, x + width, y - height, y + height);
+                        },
+                        speed: randomVector(-10, 10, gravityOn ? 10 : -10, 10),
+                        lifetime: randomFloat(12000, 50000),
+                        zIndex: Number.MAX_SAFE_INTEGER - 5,
+                        alpha: {
+                            start: this.layer === Layer.Ground ? 0.7 : 0,
+                            end: 0
+                        },
+                        rotation: {
+                            start: randomFloat(0, 36),
+                            end: randomFloat(40, 80)
+                        },
+                        scale: {
+                            start: randomFloat(0.8, 1.1),
+                            end: randomFloat(0.7, 0.8)
+                        }
+                    })
+                });
             }
         };
 

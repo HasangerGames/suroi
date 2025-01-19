@@ -46,7 +46,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly ceilingCollapseParticleVariations?: number
     readonly resetCeilingResidueScale?: boolean
     readonly ceilingCollapseSound?: string
-    readonly destroyUponCeilingCollapse?: string[]
+    readonly destroyUponCeilingCollapse?: readonly string[]
     readonly material?: typeof Materials[number]
     readonly particle?: string
     readonly particleVariations?: number
@@ -5189,8 +5189,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     },
                     {
                         key: "barn_floor_explosion",
-                        position: Vec.create(-50, -37),
-                        scale: Vec.create(1, 1)
+                        position: Vec.create(-50, -37)
                     }
                 ],
                 ceilingImages: [{

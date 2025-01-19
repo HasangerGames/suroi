@@ -88,8 +88,8 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
                 }
             }, 2)
             .writeArray(data.places ?? [], place => {
-                strm.writeString(24, place.name);
-                strm.writePosition(place.position);
+                strm.writeString(24, place.name)
+                    .writePosition(place.position);
             }, 1);
     },
     deserialize(stream, [saveIndex, recordTo]) {

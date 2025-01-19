@@ -245,8 +245,7 @@ const perks = [
         healthMod: 1.5,
         regenRate: 1,
         damageMod: 2.5,
-        noDrop: true,
-        noSwap: false
+        noDrop: true
     },
     {
         idString: PerkIds.Bloodthirst,
@@ -315,8 +314,7 @@ const perks = [
         type: PerkQualities.Neutral, // how is this neutral it's annoying
 
         updateInterval: 10e3, // milliseconds
-        noDrop: true,
-        noSwap: false
+        noDrop: true
     },
     {
         idString: PerkIds.Costumed,
