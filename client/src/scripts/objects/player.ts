@@ -6,7 +6,7 @@ import { Explosions } from "@common/definitions/explosions";
 import { Guns, type GunDefinition, type SingleGunNarrowing } from "@common/definitions/guns";
 import { HealType, type HealingItemDefinition } from "@common/definitions/healingItems";
 import { Loots, type WeaponDefinition } from "@common/definitions/loots";
-import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "@common/definitions/melees";
+import { DEFAULT_HAND_RIGGING, Melees, type MeleeDefinition } from "@common/definitions/melees";
 import { type ObstacleDefinition } from "@common/definitions/obstacles";
 import { PerkData, PerkIds } from "@common/definitions/perks";
 import { Skins, type SkinDefinition } from "@common/definitions/skins";
@@ -44,6 +44,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     meleeAttackCounter = 0;
 
     blockEmoting = false;
+
+    wearingPan = false;
 
     private activeDisguise?: ObstacleDefinition;
     private readonly disguiseContainer: Container;
@@ -102,6 +104,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         readonly waterOverlay: SuroiSprite
         readonly blood: Container
         readonly disguiseSprite: SuroiSprite
+        readonly panSprite: SuroiSprite
         readonly badge?: SuroiSprite
     };
 
@@ -174,7 +177,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec.create(0, 0.5)),
             waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(game.colors.water),
             blood: new Container(),
-            disguiseSprite: new SuroiSprite()
+            disguiseSprite: new SuroiSprite(),
+            panSprite: new SuroiSprite("pan_world")
         };
 
         this.container.addChild(
@@ -190,7 +194,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.altWeapon,
             this.images.muzzleFlash,
             this.images.waterOverlay,
-            this.images.blood
+            this.images.blood,
+            this.images.panSprite
         );
 
         this.disguiseContainer.addChild(this.images.disguiseSprite);
@@ -520,13 +525,16 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     backpack,
                     halloweenThrowableSkin,
                     activeDisguise,
-                    blockEmoting
+                    blockEmoting,
+                    wearingPan
                 }
             } = data;
 
             const layerChange = this.isActivePlayer && (this.layer !== layer || isNew);
             this.layer = layer;
             if (layerChange) game.changeLayer(this.layer);
+
+            this.wearingPan = wearingPan;
 
             this.container.visible = !dead;
             this.disguiseContainer.visible = this.container.visible;
@@ -735,6 +743,18 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this.images.disguiseSprite.setVisible(false);
                 }
                 updateContainerZIndex = true;
+            }
+
+            // Pan Image Display
+            const pan = this.images.panSprite;
+            pan.setVisible(this.wearingPan);
+            if (this.wearingPan) {
+                const panProperties = Melees.fromString("pan").wearProps;
+
+                if (panProperties !== undefined) {
+                    pan.setPos(panProperties.x, panProperties.y);
+                    pan.setAngle(panProperties.angle);
+                }
             }
 
             // Rate Limiting: Team Pings & Emotes
@@ -1522,7 +1542,13 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                             return a.hitbox.distanceTo(selfHitbox).distance - b.hitbox.distanceTo(selfHitbox).distance;
                         }).slice(0, weaponDef.maxTargets)
-                    ) target.hitEffect(position, angleToPos);
+                    ) {
+                        if (target.isPlayer) {
+                            target.hitEffect(position, angleToPos, this.activeItem.itemType === ItemType.Melee && this.activeItem.wearProps ? "pan_hit" : undefined);
+                        } else {
+                            target.hitEffect(position, angleToPos);
+                        }
+                    }
                 }, 50);
 
                 break;

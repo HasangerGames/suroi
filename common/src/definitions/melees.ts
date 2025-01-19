@@ -36,6 +36,11 @@ export type MeleeDefinition = InventoryItemDefinition & {
         readonly animated?: boolean
     }
     readonly fireMode: FireMode
+    readonly wearProps?: {
+        readonly angle: number
+        readonly x: number
+        readonly y: number
+    }
 } & ({
     readonly rotationalAnimation: true
 } | {
@@ -469,6 +474,37 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                     useAngle: 10,
                     lootScale: 0.5,
                     animated: true
+                }
+            },
+            {
+                idString: "pan",
+                name: "Pan",
+                damage: 49,
+                swingSound: "heavy_swing",
+                obstacleMultiplier: 1.2,
+                radius: 2.7,
+                offset: Vec.create(5.5, 0),
+                cooldown: 800,
+                fists: {
+                    animationDuration: 300,
+                    left: Vec.create(38, -35),
+                    right: Vec.create(45, 35),
+                    useLeft: Vec.create(38, -35),
+                    useRight: Vec.create(80, -5)
+                },
+                wearProps: {
+                    angle: 35,
+                    x: -45,
+                    y: 30
+                },
+                image: {
+                    separateWorldImage: true,
+                    position: Vec.create(60, 4),
+                    usePosition: Vec.create(115, 18),
+                    angle: -70,
+                    useAngle: 30,
+                    lootScale: 0.9,
+                    xConstant: 85
                 }
             }
         ] satisfies ReadonlyArray<RawDefinition<WithPartial<Missing, "killfeedFrame">>>).map(v => {

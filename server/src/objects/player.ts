@@ -87,6 +87,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     activeBloodthirstEffect = false;
     activeDisguise?: ObstacleDefinition;
 
+    wearingPan = false;
+
     teamID?: number;
     colorIndex = 0; // Assigned in the team.ts file.
 
@@ -1965,6 +1967,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             size
         } = this._modifiers = this._calculateModifiers();
 
+        // todo: V find a better place for the pan stuff V
+        const hasPan = (this.inventory.getWeapon(2) as MeleeItem).definition.idString === "pan";
+        this.wearingPan = hasPan && !(this.activeItem instanceof MeleeItem);
+
         this.maxHealth = GameConstants.player.defaultHealth * maxHealth;
         this.maxAdrenaline = GameConstants.player.maxAdrenaline * maxAdrenaline;
         this.minAdrenaline = minAdrenaline;
@@ -2587,7 +2593,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 backpack: this.inventory.backpack,
                 halloweenThrowableSkin: this.halloweenThrowableSkin,
                 activeDisguise: this.activeDisguise,
-                blockEmoting: this.blockEmoting
+                blockEmoting: this.blockEmoting,
+                wearingPan: this.wearingPan
             }
         };
 

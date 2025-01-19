@@ -56,6 +56,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly halloweenThrowableSkin: boolean
             readonly activeDisguise?: ObstacleDefinition
             readonly blockEmoting: boolean
+            readonly wearingPan: boolean
         }
     }
     //
@@ -235,7 +236,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 backpack,
                 halloweenThrowableSkin,
                 activeDisguise,
-                blockEmoting
+                blockEmoting,
+                wearingPan
             } }
         ): void {
             stream.writeLayer(layer);
@@ -254,7 +256,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 hasHelmet,
                 hasVest,
                 hasDisguise,
-                blockEmoting
+                blockEmoting,
+                wearingPan
             );
             stream.writeUint8(teamID);
             Loots.writeToStream(stream, activeItem);
@@ -311,7 +314,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 hasHelmet,
                 hasVest,
                 hasDisguise,
-                blockEmoting
+                blockEmoting,
+                wearingPan
             ] = stream.readBooleanGroup2();
 
             return {
@@ -329,7 +333,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 vest: hasVest ? Armors.readFromStream(stream) : undefined,
                 backpack: Backpacks.readFromStream(stream),
                 activeDisguise: hasDisguise ? Obstacles.readFromStream(stream) : undefined,
-                blockEmoting
+                blockEmoting,
+                wearingPan
             };
         }
     },
