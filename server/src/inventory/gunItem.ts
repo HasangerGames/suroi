@@ -1,4 +1,4 @@
-import { AnimationType, FireMode, InventoryMessages } from "@common/constants";
+import { AnimationType, FireMode, GameConstants, InventoryMessages } from "@common/constants";
 import { type GunDefinition } from "@common/definitions/guns";
 import { PerkData, PerkIds } from "@common/definitions/perks";
 import { PickupPacket } from "@common/packets/pickupPacket";
@@ -319,13 +319,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
         if (definition.summonAirdrop) {
             owner.game.summonAirdrop(owner.position);
 
-            if (
-                this.owner.mapPerkOrDefault(
-                    PerkIds.InfiniteAmmo,
-                    ({ airdropCallerLimit }) => this._shots >= airdropCallerLimit,
-                    false
-                )
-            ) {
+            if (this._shots >= GameConstants.airdrop.callerLimit) {
                 owner.sendPacket(PickupPacket.create({ message: InventoryMessages.RadioOverused }));
                 this.owner.inventory.destroyWeapon(this.owner.inventory.activeWeaponIndex);
                 return;

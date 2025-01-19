@@ -75,7 +75,8 @@ export const GameConstants = freezeDeep({
     airdrop: {
         fallTime: 8000,
         flyTime: 30000,
-        damage: 300
+        damage: 300,
+        callerLimit: 3
     },
     riverPadding: 64,
     trailPadding: 384
