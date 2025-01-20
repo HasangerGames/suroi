@@ -14,7 +14,7 @@ import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInside
 import { River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { MapWithParams } from "./config";
-import { getLootFromTable } from "./data/lootTables";
+import { getLootFromTable } from "./utils/lootHelpers";
 import { MapDefinition, MapName, Maps, ObstacleClump, RiverDefinition } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
@@ -571,7 +571,6 @@ export class GameMap {
             >(obstacleData.idString);
             if (idString === NullString) continue;
             if (obstacleData.outdoors) {
-                // @ts-expect-error TODO fix this error
                 idString = `${idString}${ObstacleModeVariations[this.game.modeName] ?? ""}`;
             }
 
@@ -614,7 +613,7 @@ export class GameMap {
         }
 
         for (const lootData of definition.lootSpawners) {
-            for (const item of getLootFromTable(lootData.table)) {
+            for (const item of getLootFromTable(this.game.modeName, lootData.table)) {
                 this.game.addLoot(
                     item.idString,
                     Vec.addAdjust(position, lootData.position, orientation),
@@ -802,7 +801,7 @@ export class GameMap {
 
     private _generateLoots(table: string, count: number): void {
         for (let i = 0; i < count; i++) {
-            const loot = getLootFromTable(table);
+            const loot = getLootFromTable(this.game.modeName, table);
 
             const position = this.getRandomPosition(
                 new CircleHitbox(5),

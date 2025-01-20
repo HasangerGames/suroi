@@ -8,7 +8,7 @@ import { Angle, calculateDoorHitboxes, resolveStairInteraction } from "@common/u
 import { ItemType, NullString, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { Vec, type Vector } from "@common/utils/vector";
-import { getLootFromTable, LootItem } from "../data/lootTables";
+import { getLootFromTable, LootItem } from "../utils/lootHelpers";
 import { type Game } from "../game";
 import { InventoryItem } from "../inventory/inventoryItem";
 import { getRandomIDString } from "../utils/misc";
@@ -102,11 +102,11 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         this.collidable = !definition.noCollisions;
 
         if (definition.hasLoot) {
-            this.loot = getLootFromTable(definition.lootTable ?? definition.idString);
+            this.loot = getLootFromTable(this.game.modeName, definition.lootTable ?? definition.idString);
         }
 
         if (definition.spawnWithLoot) {
-            for (const item of getLootFromTable(definition.lootTable ?? definition.idString)) {
+            for (const item of getLootFromTable(this.game.modeName, definition.lootTable ?? definition.idString)) {
                 this.game.addLoot(
                     item.idString,
                     this.position,

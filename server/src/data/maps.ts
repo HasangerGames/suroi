@@ -16,7 +16,8 @@ import { SpawnMode, SpawnOptions } from "../config";
 import { type GunItem } from "../inventory/gunItem";
 import { GameMap } from "../map";
 import { Player, type PlayerContainer } from "../objects/player";
-import { getLootFromTable, LootTables } from "./lootTables";
+import { getLootFromTable } from "../utils/lootHelpers";
+import { LootTables } from "./lootTables";
 
 export interface RiverDefinition {
     readonly minAmount: number
@@ -1154,7 +1155,7 @@ const maps = {
 
             Object.entries(loots ?? {}).forEach(([lootTable, count]) => {
                 for (let i = 0; i < count; i++) {
-                    const loot = getLootFromTable(lootTable);
+                    const loot = getLootFromTable("normal", lootTable);
 
                     const position = map.getRandomPosition(
                         new CircleHitbox(5),
