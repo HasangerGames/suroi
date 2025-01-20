@@ -1242,10 +1242,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     object => (
                         (
                             !newVisibleObjects.has(object)
-                            || !isVisibleFromLayer(this.layer, object, object?.hitbox && [...game.grid.intersectsHitbox(object.hitbox)])
+                            || !isVisibleFromLayer(
+                                this.layer,
+                                object,
+                                object?.hitbox && [...game.grid.intersectsHitbox(object.hitbox)]
+                            )
                         )
                         && (this.visibleObjects.delete(object), true)
-                        && (!object.isObstacle || !object.definition.isStair)
                     )
                 )
                 .map(({ id }) => id);
@@ -1256,14 +1259,15 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         if (
                             (
                                 this.visibleObjects.has(object)
-                                || !(
-                                    visCache.getAndGetDefaultIfAbsent(
+                                || !visCache.getAndGetDefaultIfAbsent(
+                                    object,
+                                    () => isVisibleFromLayer(
+                                        this.layer,
                                         object,
-                                        () => isVisibleFromLayer(this.layer, object, object?.hitbox && [...game.grid.intersectsHitbox(object.hitbox)])
+                                        object?.hitbox && [...game.grid.intersectsHitbox(object.hitbox)]
                                     )
                                 )
                             )
-                            && (!object.isObstacle || !object.definition.isStair)
                         ) return;
 
                         this.visibleObjects.add(object);

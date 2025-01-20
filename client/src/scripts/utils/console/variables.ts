@@ -244,9 +244,9 @@ export class ConsoleVariables {
 
     readonly set = (() => {
         type GoofyParameterType<K extends string> = K extends keyof CVarTypeMapping ? ExtractConVarValue<CVarTypeMapping[K]> : Stringable;
-        type Setter = (<K extends string>(key: K, value: GoofyParameterType<K>) => PossibleError<string>) & {
+        type Setter = (<K extends string>(key: K, value: GoofyParameterType<K>, writeToLS?: boolean) => PossibleError<string>) & {
             builtIn: <K extends keyof CVarTypeMapping>(key: K, value: CVarTypeMapping[K]["value"], writeToLS?: boolean) => void
-            custom: (key: string, value: Stringable) => PossibleError<string>
+            custom: (key: string, value: Stringable, writeToLS?: boolean) => PossibleError<string>
         };
 
         const setBuiltIn = <K extends keyof CVarTypeMapping>(key: K, value: CVarTypeMapping[K]["value"], writeToLS = true): PossibleError<string> => {
@@ -264,21 +264,21 @@ export class ConsoleVariables {
             return res;
         };
 
-        const setCustom = (key: string, value: Stringable): PossibleError<string> => {
+        const setCustom = (key: string, value: Stringable, writeToLS = true): PossibleError<string> => {
             const cvar = this._userCVars.get(key);
 
             if (cvar === undefined) {
                 return { err: `Could not find console variable '${key}'` };
             }
 
-            return cvar.setValue(value);
+            return cvar.setValue(value, writeToLS);
         };
-        const fn: Setter = <K extends string>(key: K, value: GoofyParameterType<K>, writeToLs = false): PossibleError<string> => {
+        const fn: Setter = <K extends string>(key: K, value: GoofyParameterType<K>, writeToLS = false): PossibleError<string> => {
             if (key in this._builtInCVars) {
-                return setBuiltIn(key as keyof CVarTypeMapping, value as ExtractConVarValue<CVarTypeMapping[keyof CVarTypeMapping]>, writeToLs);
+                return setBuiltIn(key as keyof CVarTypeMapping, value as ExtractConVarValue<CVarTypeMapping[keyof CVarTypeMapping]>, writeToLS);
             }
 
-            return setCustom(key, value);
+            return setCustom(key, value, writeToLS);
         };
 
         fn.builtIn = setBuiltIn;
