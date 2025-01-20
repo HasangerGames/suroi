@@ -571,14 +571,17 @@ export class Inventory {
                 && itemType !== ItemType.Perk
             )
             || definition.noDrop
-            || definition.idString === this.owner.game.mode.defaultScope
+            || idString === this.owner.game.mode.defaultScope
         ) return;
 
         switch (itemType) {
             case ItemType.Healing:
             case ItemType.Ammo: {
                 const itemAmount = this.items.getItem(idString);
-                const removalAmount = Numeric.min(itemAmount, Math.ceil(itemAmount / 2));
+                const dropAmount = itemType === ItemType.Ammo
+                    ? Numeric.max(Math.ceil(itemAmount / 2), definition.minDropAmount)
+                    : Math.ceil(itemAmount / 2);
+                const removalAmount = Numeric.min(itemAmount, dropAmount);
 
                 this._dropItem(definition, { count: removalAmount });
                 this.items.decrementItem(idString, removalAmount);
