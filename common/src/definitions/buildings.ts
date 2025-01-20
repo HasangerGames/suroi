@@ -36,6 +36,18 @@ interface SubBuilding {
     readonly layer?: number
 }
 
+export interface BuildingImageDefinition {
+    readonly key: string
+    readonly position: Vector
+    readonly rotation?: number
+    readonly scale?: Vector
+    readonly tint?: number | `#${string}`
+    readonly zIndex?: ZIndexes
+    readonly spinSpeed?: number
+    readonly spinOnSolve?: boolean
+    readonly residue?: string
+}
+
 export interface BuildingDefinition extends ObjectDefinition {
     readonly noCollisions?: boolean
     readonly noBulletCollision?: boolean
@@ -91,26 +103,10 @@ export interface BuildingDefinition extends ObjectDefinition {
         readonly falloff: number
     }
 
-    readonly floorImages: ReadonlyArray<{
-        readonly key: string
-        readonly position: Vector
-        readonly rotation?: number
-        readonly scale?: Vector
-        readonly tint?: number | `#${string}`
-        readonly zIndex?: ZIndexes
-        readonly spinSpeed?: number
-        readonly spinOnSolve?: boolean
-    }>
+    readonly floorImages: readonly BuildingImageDefinition[]
     readonly floorZIndex: ZIndexes
 
-    readonly ceilingImages: ReadonlyArray<{
-        readonly key: string
-        readonly position: Vector
-        readonly rotation?: number
-        readonly scale?: Vector
-        readonly residue?: string
-        readonly tint?: number | `#${string}`
-    }>
+    readonly ceilingImages: readonly BuildingImageDefinition[]
     readonly ceilingZIndex: ZIndexes
     readonly ceilingHiddenAlpha?: number
 

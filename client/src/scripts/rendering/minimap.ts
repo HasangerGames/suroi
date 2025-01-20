@@ -294,29 +294,45 @@ export class Minimap {
                     const definition = mapObject.definition;
                     const rotation = mapObject.rotation;
 
+                    const floorContainer = new Container({
+                        sortableChildren: true,
+                        zIndex: ZIndexes.BuildingsFloor,
+                        rotation,
+                        position: mapObject.position
+                    });
+
                     for (const image of definition.floorImages) {
                         const sprite = new SuroiSprite(image.key)
-                            .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.orientation))
-                            .setRotation(rotation + (image.rotation ?? 0))
-                            .setZIndex(ZIndexes.BuildingsFloor);
+                            .setVPos(image.position)
+                            .setRotation(image.rotation ?? 0)
+                            .setZIndex(image.zIndex ?? 0);
 
                         if (image.tint !== undefined) sprite.setTint(image.tint);
                         sprite.scale = Vec.scale(image.scale ?? Vec.create(1, 1), 1 / PIXI_SCALE);
-                        mapRender.addChild(sprite);
+                        floorContainer.addChild(sprite);
                     }
+                    mapRender.addChild(floorContainer);
+
+                    const ceilingContainer = new Container({
+                        sortableChildren: true,
+                        zIndex: definition.ceilingZIndex,
+                        rotation,
+                        position: mapObject.position
+                    });
 
                     for (const image of definition.ceilingImages) {
                         const sprite = new SuroiSprite(image.key)
-                            .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.orientation))
-                            .setRotation(rotation + (image.rotation ?? 0))
-                            .setZIndex(definition.ceilingZIndex);
+                            .setVPos(image.position)
+                            .setRotation(image.rotation ?? 0)
+                            .setZIndex(image.zIndex ?? 0);
 
                         sprite.scale.set(1 / PIXI_SCALE);
                         sprite.scale.x *= image.scale?.x ?? 1;
                         sprite.scale.y *= image.scale?.y ?? 1;
                         if (image.tint !== undefined) sprite.setTint(image.tint);
-                        mapRender.addChild(sprite);
+                        ceilingContainer.addChild(sprite);
                     }
+                    mapRender.addChild(ceilingContainer);
 
                     if (definition.graphics.length) {
                         const ctx = new Graphics();
