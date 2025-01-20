@@ -13,6 +13,7 @@ export type MeleeDefinition = InventoryItemDefinition & {
     readonly iceMultiplier?: number
     readonly swingSound: string
     readonly stopSound?: string
+    readonly hitSound?: string
     readonly radius: number
     readonly offset: Vector
     readonly cooldown: number
@@ -36,10 +37,17 @@ export type MeleeDefinition = InventoryItemDefinition & {
         readonly animated?: boolean
     }
     readonly fireMode: FireMode
-    readonly wearProps?: {
+    readonly reflectiveSurface?: {
+        readonly pointA: Vector
+        readonly pointB: Vector
+    }
+    readonly onBack: {
         readonly angle: number
-        readonly x: number
-        readonly y: number
+        readonly position: Vector
+        readonly reflectiveSurface?: {
+            readonly pointA: Vector
+            readonly pointB: Vector
+        }
     }
 } & ({
     readonly rotationalAnimation: true
@@ -481,6 +489,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 name: "Pan",
                 damage: 49,
                 swingSound: "heavy_swing",
+                hitSound: "pan_hit",
                 obstacleMultiplier: 1.2,
                 radius: 2.7,
                 offset: Vec.create(5.5, 0),
@@ -492,10 +501,17 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                     useLeft: Vec.create(38, -35),
                     useRight: Vec.create(80, -5)
                 },
-                wearProps: {
+                reflectiveSurface: {
+                    pointA: Vec.create(3.8, -2.5),
+                    pointB: Vec.create(2.5, 1.025)
+                },
+                onBack: {
                     angle: 35,
-                    x: -45,
-                    y: 30
+                    position: Vec.create(-45, 30),
+                    reflectiveSurface: {
+                        pointA: Vec.create(-3, 0.8),
+                        pointB: Vec.create(0.25, 3)
+                    }
                 },
                 image: {
                     separateWorldImage: true,

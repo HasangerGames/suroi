@@ -6,7 +6,7 @@ import { Explosions } from "@common/definitions/explosions";
 import { Guns, type GunDefinition, type SingleGunNarrowing } from "@common/definitions/guns";
 import { HealType, type HealingItemDefinition } from "@common/definitions/healingItems";
 import { Loots, type WeaponDefinition } from "@common/definitions/loots";
-import { DEFAULT_HAND_RIGGING, Melees, type MeleeDefinition } from "@common/definitions/melees";
+import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "@common/definitions/melees";
 import { type ObstacleDefinition } from "@common/definitions/obstacles";
 import { PerkData, PerkIds } from "@common/definitions/perks";
 import { Skins, type SkinDefinition } from "@common/definitions/skins";
@@ -40,12 +40,17 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     activeItem: WeaponDefinition = Loots.fromString("fists");
 
+    // for common code
+    get activeItemDefinition(): WeaponDefinition {
+        return this.activeItem;
+    }
+
     meleeStopSound?: GameSound;
     meleeAttackCounter = 0;
 
     blockEmoting = false;
 
-    wearingPan = false;
+    backEquippedMelee?: MeleeDefinition;
 
     private activeDisguise?: ObstacleDefinition;
     private readonly disguiseContainer: Container;
@@ -104,7 +109,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         readonly waterOverlay: SuroiSprite
         readonly blood: Container
         readonly disguiseSprite: SuroiSprite
-        readonly panSprite: SuroiSprite
+        readonly backMeleeSprite: SuroiSprite
         readonly badge?: SuroiSprite
     };
 
@@ -178,7 +183,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(game.colors.water),
             blood: new Container(),
             disguiseSprite: new SuroiSprite(),
-            panSprite: new SuroiSprite("pan_world")
+            backMeleeSprite: new SuroiSprite()
         };
 
         this.container.addChild(
@@ -195,7 +200,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.muzzleFlash,
             this.images.waterOverlay,
             this.images.blood,
-            this.images.panSprite
+            this.images.backMeleeSprite
         );
 
         this.disguiseContainer.addChild(this.images.disguiseSprite);
@@ -526,7 +531,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     halloweenThrowableSkin,
                     activeDisguise,
                     blockEmoting,
-                    wearingPan
+                    backEquippedMelee
                 }
             } = data;
 
@@ -534,7 +539,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.layer = layer;
             if (layerChange) game.changeLayer(this.layer);
 
-            this.wearingPan = wearingPan;
+            this.backEquippedMelee = backEquippedMelee;
 
             this.container.visible = !dead;
             this.disguiseContainer.visible = this.container.visible;
@@ -746,15 +751,16 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             // Pan Image Display
-            const pan = this.images.panSprite;
-            pan.setVisible(this.wearingPan);
-            if (this.wearingPan) {
-                const panProperties = Melees.fromString("pan").wearProps;
+            const backMeleeSprite = this.images.backMeleeSprite;
+            const backMelee = this.backEquippedMelee;
+            backMeleeSprite.setVisible(!!backMelee?.onBack);
 
-                if (panProperties !== undefined) {
-                    pan.setPos(panProperties.x, panProperties.y);
-                    pan.setAngle(panProperties.angle);
-                }
+            if (backMelee && backMelee.onBack) {
+                const frame = `${backMelee.idString}${backMelee.image?.separateWorldImage ? "_world" : ""}`;
+                backMeleeSprite.setFrame(frame);
+                const { onBack } = backMelee;
+                backMeleeSprite.setPos(onBack.position.x, onBack.position.y);
+                backMeleeSprite.setAngle(onBack.angle);
             }
 
             // Rate Limiting: Team Pings & Emotes
@@ -977,6 +983,32 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             // revival range
         }
 
+        const renderMeleeReflectionSurface = (surface: { pointA: Vector, pointB: Vector }): void => {
+            ctx.setStrokeStyle({
+                color: HITBOX_COLORS.playerWeapon,
+                width: 2,
+                alpha
+            });
+
+            const start = toPixiCoords(
+                Vec.add(
+                    this.position,
+                    Vec.rotate(surface.pointA, this.rotation)
+                )
+            );
+
+            const lineEnd = toPixiCoords(
+                Vec.add(
+                    this.position,
+                    Vec.rotate(surface.pointB, this.rotation)
+                )
+            );
+
+            ctx.moveTo(start.x, start.y);
+            ctx.lineTo(lineEnd.x, lineEnd.y);
+            ctx.stroke();
+        };
+
         switch (this.activeItem.itemType) {
             case ItemType.Gun: {
                 ctx.setStrokeStyle({
@@ -1027,8 +1059,15 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     ctx,
                     alpha
                 );
+                if (this.activeItem.reflectiveSurface) {
+                    renderMeleeReflectionSurface(this.activeItem.reflectiveSurface);
+                }
                 break;
             }
+        }
+
+        if (this.backEquippedMelee?.onBack.reflectiveSurface) {
+            renderMeleeReflectionSurface(this.backEquippedMelee?.onBack.reflectiveSurface);
         }
     }
 
@@ -1544,7 +1583,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         }).slice(0, weaponDef.maxTargets)
                     ) {
                         if (target.isPlayer) {
-                            target.hitEffect(position, angleToPos, this.activeItem.itemType === ItemType.Melee && this.activeItem.wearProps ? "pan_hit" : undefined);
+                            target.hitEffect(position, angleToPos, (this.activeItem as MeleeDefinition).hitSound);
                         } else {
                             target.hitEffect(position, angleToPos);
                         }
@@ -2084,6 +2123,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.grenadeImpactPreview?.destroy();
 
         this.disguiseContainer.destroy();
+        images.backMeleeSprite?.destroy();
 
         this.healingParticlesEmitter.destroy();
         this.actionSound?.stop();

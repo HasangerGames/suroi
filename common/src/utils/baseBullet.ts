@@ -1,10 +1,11 @@
 import { Layer } from "../constants";
 import { Bullets, type BulletDefinition } from "../definitions/bullets";
+import { type MeleeDefinition } from "../definitions/melees";
 import type { CommonGameObject } from "./gameObject";
 import { type Hitbox } from "./hitbox";
 import { adjacentOrEqualLayer, equivLayer } from "./layer";
-import { Geometry, Numeric } from "./math";
-import { type ReifiableDef } from "./objectDefinitions";
+import { Collision, Geometry, type IntersectionResponse, Numeric } from "./math";
+import { ItemType, type ReifiableDef } from "./objectDefinitions";
 import type { SuroiByteStream } from "./suroiByteStream";
 import { Vec, type Vector } from "./vector";
 
@@ -39,12 +40,15 @@ type GameObject = {
     readonly id: number
 } & CommonGameObject;
 
-interface Collision {
+interface BulletCollision {
     readonly intersection: {
         readonly point: Vector
         readonly normal: Vector
     }
     readonly object: GameObject
+    readonly reflected: boolean
+    readonly dealDamage: boolean
+    readonly reflectedMeleeDefinition?: MeleeDefinition
 }
 
 export class BaseBullet {
@@ -67,7 +71,7 @@ export class BaseBullet {
 
     readonly sourceID: number;
 
-    readonly damagedIDs = new Set<number>();
+    readonly collidedIDs = new Set<number>();
 
     readonly rangeVariance: number;
 
@@ -126,7 +130,7 @@ export class BaseBullet {
      * @returns An array containing the objects that the bullet collided and the intersection data for each,
      * sorted by closest to furthest
      */
-    updateAndGetCollisions(delta: number, objects: Iterable<GameObject>): Collision[] {
+    updateAndGetCollisions(delta: number, objects: Iterable<GameObject>): BulletCollision[] {
         const oldPosition = this._oldPosition = Vec.clone(this.position);
 
         this.position = Vec.add(this.position, Vec.scale(this.velocity, delta));
@@ -138,7 +142,7 @@ export class BaseBullet {
 
         if (this.definition.noCollision) return [];
 
-        const collisions: Collision[] = [];
+        const collisions: BulletCollision[] = [];
 
         for (const object of objects) {
             const { isPlayer, isObstacle, isBuilding } = object;
@@ -150,14 +154,82 @@ export class BaseBullet {
                 || (isPlayer && !adjacentOrEqualLayer(this.layer, object.layer))
                 || !object.damageable
                 || object.dead
-                || this.damagedIDs.has(object.id)
+                || this.collidedIDs.has(object.id)
                 || (object.id === this.sourceID && !this.canHitShooter)
             ) continue;
+
+            if (isPlayer) {
+                const getIntersection = (surface: { pointA: Vector, pointB: Vector }): IntersectionResponse => {
+                    const pointA = Vec.add(
+                        object.position,
+                        Vec.rotate(surface.pointA, object.rotation)
+                    );
+                    const pointB = Vec.add(
+                        object.position,
+                        Vec.rotate(surface.pointB, object.rotation)
+                    );
+                    const point = Collision.lineIntersectsLine(
+                        oldPosition,
+                        this.position,
+                        pointA,
+                        pointB
+                    );
+                    if (!point) return null;
+                    const s = Vec.sub(pointA, pointB);
+                    const normal = Vec.normalize(Vec.create(-s.y, s.x));
+                    return { point, normal };
+                };
+
+                const activeDef = object.activeItemDefinition;
+                const backDef = object.backEquippedMelee;
+                let intersection: IntersectionResponse = null;
+                let reflectedMeleeDefinition: MeleeDefinition | undefined;
+
+                if (activeDef.itemType === ItemType.Melee && activeDef.reflectiveSurface) {
+                    intersection = getIntersection(activeDef.reflectiveSurface);
+                    reflectedMeleeDefinition = activeDef;
+                }
+
+                if (backDef?.onBack.reflectiveSurface) {
+                    const backIntersection = getIntersection(backDef?.onBack.reflectiveSurface);
+                    // if a bullet is really fast and there's both back and active item surfaces
+                    // the bullet can end up colliding with both reflective surfaces
+                    // this handles that by using the closest surface to the bullet old position
+                    if (backIntersection && intersection) {
+                        if (Geometry.distanceSquared(oldPosition, backIntersection.point)
+                            < Geometry.distanceSquared(oldPosition, intersection.point)
+                        ) {
+                            intersection = backIntersection;
+                            reflectedMeleeDefinition = backDef;
+                        }
+                    } else {
+                        intersection = backIntersection;
+                        reflectedMeleeDefinition = backDef;
+                    }
+                }
+
+                if (intersection) {
+                    collisions.push({
+                        intersection: intersection,
+                        object,
+                        dealDamage: false,
+                        reflected: true,
+                        reflectedMeleeDefinition
+                    });
+                    continue;
+                }
+            }
 
             const intersection = object.hitbox?.intersectsLine(oldPosition, this.position);
 
             if (intersection) {
-                collisions.push({ intersection, object });
+                collisions.push({
+                    intersection,
+                    object,
+                    dealDamage: true,
+                    reflected: ((object.isObstacle || object.isBuilding)
+                        && object.definition.reflectBullets) ?? false
+                });
             }
         }
 

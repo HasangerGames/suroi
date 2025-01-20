@@ -87,8 +87,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     activeBloodthirstEffect = false;
     activeDisguise?: ObstacleDefinition;
 
-    wearingPan = false;
-
     teamID?: number;
     colorIndex = 0; // Assigned in the team.ts file.
 
@@ -432,6 +430,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private readonly _mapPings: Game["mapPings"] = [];
 
     c4s: ThrowableProjectile[] = [];
+
+    backEquippedMelee?: MeleeDefinition;
 
     readonly perks = new ServerPerkManager(this, Perks.defaults);
     perkUpdateMap?: Map<UpdatablePerkDefinition, number>; // key = perk, value = last updated
@@ -1967,9 +1967,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             size
         } = this._modifiers = this._calculateModifiers();
 
-        // todo: V find a better place for the pan stuff V
-        const hasPan = (this.inventory.getWeapon(2) as MeleeItem).definition.idString === "pan";
-        this.wearingPan = hasPan && !(this.activeItem instanceof MeleeItem);
+        this.backEquippedMelee = this.inventory.weapons.find(w => {
+            return w
+                && w.definition.itemType === ItemType.Melee
+                && w.definition.onBack
+                && w !== this.activeItem;
+        })?.definition as MeleeDefinition | undefined;
 
         this.maxHealth = GameConstants.player.defaultHealth * maxHealth;
         this.maxAdrenaline = GameConstants.player.maxAdrenaline * maxAdrenaline;
@@ -2594,7 +2597,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 halloweenThrowableSkin: this.halloweenThrowableSkin,
                 activeDisguise: this.activeDisguise,
                 blockEmoting: this.blockEmoting,
-                wearingPan: this.wearingPan
+                backEquippedMelee: this.backEquippedMelee
             }
         };
 
