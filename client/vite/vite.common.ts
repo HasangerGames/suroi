@@ -3,6 +3,7 @@ import path, { resolve } from "path";
 import { splitVendorChunkPlugin, type UserConfig } from "vite";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 import pkg from "../../package.json";
+import { importPathsPlugin } from "./import-paths-plugin/import-paths-plugin";
 
 const commonConfig: UserConfig = {
     build: {
@@ -28,6 +29,10 @@ const commonConfig: UserConfig = {
         ViteImageOptimizer({
             test: /\.(svg)$/i,
             logStats: false
+        }),
+        importPathsPlugin({
+            folders: ["public/audio/sfx/", "public/audio/ambience/"],
+            moduleName: "game-sounds"
         })
     ],
 

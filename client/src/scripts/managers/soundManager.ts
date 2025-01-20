@@ -5,6 +5,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 // add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
 import * as PixiSound from "@pixi/sound";
+import { paths } from "virtual:game-sounds";
 
 export interface SoundOptions {
     position?: Vector
@@ -192,7 +193,7 @@ export class SoundManager {
     }
 
     async loadSounds({ mode, modeName }: Game): Promise<void> {
-        for (const path in import.meta.glob(["/public/audio/sfx/**/*.mp3", "/public/audio/ambience/**/*.mp3"])) {
+        for (const path of paths as string[]) {
             /**
              * For some reason, PIXI will call the `loaded` callback twice
              * when an error occurs…
@@ -200,7 +201,7 @@ export class SoundManager {
             let called = false;
 
             const name = path.slice(path.lastIndexOf("/") + 1, -4); // removes path and extension
-            let url = path.slice(7); // removes the "/public"
+            let url = path;
             if (mode.sounds?.replace?.includes(name)) {
                 url = url.replace(name, `${name}_${modeName}`);
             }
