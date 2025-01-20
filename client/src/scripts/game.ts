@@ -62,6 +62,7 @@ import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PIXI_SCALE, UI_DEBUG_MODE } from "
 import { setUpNetGraph } from "./utils/graph/netGraph";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
+import { DebugRenderer } from "./utils/debugRenderer";
 
 /* eslint-disable @stylistic/indent */
 
@@ -188,6 +189,7 @@ export class Game {
     readonly gas = new Gas(this);
 
     readonly netGraph = setUpNetGraph(this);
+    readonly debugRenderer = new DebugRenderer();
 
     readonly fontObserver = new FontFaceObserver("Inter", { weight: 600 }).load();
 
@@ -281,6 +283,7 @@ export class Game {
 
             pixi.stage.addChild(
                 game.camera.container,
+                game.debugRenderer.graphics,
                 game.map.container,
                 game.map.mask,
                 ...Object.values(game.netGraph).map(g => g.container)
@@ -685,9 +688,15 @@ export class Game {
 
         const hasMovementSmoothing = this.console.getBuiltInCVar("cv_movement_smoothing");
 
+        const showHitboxes = this.console.getBuiltInCVar("db_show_hitboxes");
+
         for (const object of this.objects) {
             object.update();
             if (hasMovementSmoothing) object.updateInterpolation();
+
+            if (DEBUG_CLIENT) {
+                if (showHitboxes) object.updateDebugGraphics(this.debugRenderer);
+            }
         }
 
         if (hasMovementSmoothing && this.activePlayer) {
@@ -710,6 +719,9 @@ export class Game {
         for (const plane of this.planes) plane.update();
 
         this.camera.update();
+        this.debugRenderer.graphics.position = this.camera.container.position;
+        this.debugRenderer.graphics.scale = this.camera.container.scale;
+        this.debugRenderer.render();
     }
 
     private _lastUpdateTime = 0;

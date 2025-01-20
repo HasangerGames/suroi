@@ -10,7 +10,7 @@ import $ from "jquery";
 import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
 import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
-import { DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, drawGroundGraphics, drawHitbox, setOnSpritesheetsLoaded, spritesheetsLoaded, toPixiCoords } from "../utils/pixi";
 import { GasRender } from "./gas";
 
@@ -139,6 +139,16 @@ export class Minimap {
             this.switchToSmallMap();
             e.stopImmediatePropagation();
         });
+
+        if (DEBUG_CLIENT) {
+            game.console.variables.addChangeListener("db_show_hitboxes", (_, newValue) => {
+                if (!this.game.gameStarted) return;
+                if (newValue) {
+                    this.renderMapDebug();
+                }
+                this.debugGraphics.visible = newValue;
+            });
+        }
     }
 
     drawTerrain(ctx: Graphics, scale: number, gridLineWidth: number): void {
@@ -229,6 +239,13 @@ export class Minimap {
                 drawGroundGraphics(ground.hitbox.transform(building.position, 1, building.orientation), ctx, scale);
                 ctx.closePath();
                 ctx.fill(ground.color);
+            }
+        }
+
+        if (DEBUG_CLIENT) {
+            if (this.game.console.getBuiltInCVar("db_show_hitboxes")) {
+                this.renderMapDebug();
+                this.debugGraphics.visible = true;
             }
         }
     }
@@ -401,13 +418,11 @@ export class Minimap {
 
             this.placesContainer.addChild(text);
         }
-
-        if (HITBOX_DEBUG_MODE) {
-            this.renderMapDebug();
-        }
     }
 
     renderMapDebug(): void {
+        if (!DEBUG_CLIENT) return;
+
         const debugGraphics = this.debugGraphics;
         debugGraphics.clear();
         debugGraphics.zIndex = 999;

@@ -91,6 +91,7 @@ export const CVarCasters = Object.freeze({
     // 0: off
     // 1: label only
     // 2: graph & label
+    db_show_hitboxes: Casters.toBoolean,
 
     mb_controls_enabled: Casters.toBoolean,
     mb_joystick_size: Casters.toNumber,
@@ -222,6 +223,8 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     pf_show_pos: false,
     pf_show_inout: false,
     pf_net_graph: 1,
+
+    db_show_hitboxes: true,
 
     mb_controls_enabled: true,
     mb_joystick_size: 150,

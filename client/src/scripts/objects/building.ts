@@ -11,10 +11,11 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { Container, Graphics } from "pixi.js";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
-import { drawGroundGraphics, drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE } from "../utils/constants";
+import { drawGroundGraphics, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
+import type { DebugRenderer } from "../utils/debugRenderer";
 
 export class Building extends GameObject.derive(ObjectCategory.Building) {
     definition!: BuildingDefinition;
@@ -77,13 +78,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
             const hitboxes = this.ceilingHitbox instanceof GroupHitbox ? this.ceilingHitbox.hitboxes : [this.ceilingHitbox];
 
-            let graphics: Graphics | undefined;
-            if (HITBOX_DEBUG_MODE) {
-                graphics = new Graphics();
-                graphics.zIndex = 100;
-                this.game.camera.addObject(graphics);
-            }
-
             for (const hitbox of hitboxes) {
                 // find the direction to cast rays
                 let collision: CollisionResponse = null;
@@ -115,20 +109,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
                 const direction = collision?.dir;
                 if (direction) {
-                    /* if (HITBOX_DEBUG_MODE) {
-                        graphics?.setStrokeStyle({
-                            color: 0xff0000,
-                            width: 0.1
-                        });
-
-                        graphics?.fill();
-                        graphics?.scale.set(PIXI_SCALE);
-
-                        this.addTimeout(() => {
-                            graphics?.destroy();
-                        }, 30);
-                    } */
-
                     const angle = Math.atan2(direction.y, direction.x);
 
                     let collided = false;
@@ -152,12 +132,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                             // what's the point of this assignment?
                             collided = true;
                             continue;
-                        }
-
-                        if (graphics) {
-                            graphics.moveTo(player.position.x, player.position.y);
-                            graphics.lineTo(end.x, end.y);
-                            graphics.fill();
                         }
 
                         if (!(
@@ -377,8 +351,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         this.toggleCeiling();
 
         this.updateZIndex();
-
-        this.updateDebugGraphics();
     }
 
     override updateZIndex(): void {
@@ -397,58 +369,59 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         this.container.zIndex = getEffectiveZIndex(this.definition.floorZIndex, this.layer, this.game.layer);
     }
 
-    override updateDebugGraphics(): void {
-        if (!HITBOX_DEBUG_MODE) return;
+    override updateDebugGraphics(debugRender: DebugRenderer): void {
+        if (!DEBUG_CLIENT) return;
 
         const definition = this.definition;
-        const alpha = this.layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY;
-        this.debugGraphics.clear();
+        const alpha = this.layer === this.game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY;
 
         if (this.hitbox) {
-            drawHitbox(
+            debugRender.addHitbox(
                 this.hitbox,
                 HITBOX_COLORS.obstacle,
-                this.debugGraphics,
+                undefined,
                 this.game.activePlayer !== undefined && equivLayer(this, this.game.activePlayer) ? 1 : DIFF_LAYER_HITBOX_OPACITY
             );
         }
 
-        drawHitbox(
+        debugRender.addHitbox(
             definition.spawnHitbox.transform(this.position, 1, this.orientation),
             HITBOX_COLORS.spawnHitbox,
-            this.debugGraphics,
+            undefined,
             alpha
         );
 
         if (definition.ceilingHitbox) {
-            drawHitbox(
+            debugRender.addHitbox(
                 definition.ceilingHitbox.transform(this.position, 1, this.orientation),
                 definition.ceilingScopeEffect ? HITBOX_COLORS.buildingZoomCeiling : HITBOX_COLORS.buildingScopeCeiling,
-                this.debugGraphics
+                undefined,
+                alpha
             );
         }
 
         if (definition.bulletMask) {
-            drawHitbox(
+            debugRender.addHitbox(
                 definition.bulletMask.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.bulletMask,
-                this.debugGraphics
+                undefined,
+                alpha
             );
         }
 
         if (definition.bridgeHitbox) {
-            drawHitbox(
+            debugRender.addHitbox(
                 definition.bridgeHitbox.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.landHitbox,
-                this.debugGraphics
+                undefined,
+                alpha
             );
         }
 
         for (const { collider, layer } of definition.visibilityOverrides ?? []) {
-            drawHitbox(
+            debugRender.addHitbox(
                 collider.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.buildingVisOverride,
-                this.debugGraphics,
                 layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY
             );
         }

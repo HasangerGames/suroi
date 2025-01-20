@@ -1,7 +1,7 @@
 import { Layer, Layers, ObjectCategory, ZIndexes } from "@common/constants";
 import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
-import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, equivLayer, getEffectiveZIndex } from "@common/utils/layer";
 import { Angle, EaseFunctions, Numeric, calculateDoorHitboxes } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
@@ -12,12 +12,13 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { Graphics } from "pixi.js";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE } from "../utils/constants";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { type Particle, type ParticleEmitter, type ParticleOptions } from "./particles";
 import { type Player } from "./player";
+import type { DebugRenderer } from "../utils/debugRenderer";
 
 export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     override readonly damageable = true;
@@ -395,8 +396,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         }
 
         this.container.rotation = this.rotation;
-
-        this.updateDebugGraphics();
     }
 
     override updateZIndex(): void {
@@ -414,38 +413,36 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         }
     }
 
-    override updateDebugGraphics(): void {
-        if (!HITBOX_DEBUG_MODE) return;
+    override updateDebugGraphics(debugRenderer: DebugRenderer): void {
+        if (!DEBUG_CLIENT) return;
 
         const definition = this.definition;
-        this.debugGraphics.clear();
         const alpha = this.game.activePlayer !== undefined && equivLayer(this, this.game.activePlayer) ? 1 : DIFF_LAYER_HITBOX_OPACITY;
 
         if (definition.isStair) {
             const hitbox = this.hitbox as RectangleHitbox;
 
-            const min = toPixiCoords(hitbox.min);
-            const max = toPixiCoords(hitbox.max);
-            const gphx = this.debugGraphics;
+            const min = hitbox.min;
+            const max = hitbox.max;
 
             // using the same numbering system as server-side, but with array indexes
-            const drawSide = [
-                () => {
-                    gphx.moveTo(min.x, min.y)
-                        .lineTo(max.x, min.y);
-                },
-                () => {
-                    gphx.moveTo(max.x, min.y)
-                        .lineTo(max.x, max.y);
-                },
-                () => {
-                    gphx.moveTo(max.x, max.y)
-                        .lineTo(min.x, max.y);
-                },
-                () => {
-                    gphx.moveTo(min.x, max.y)
-                        .lineTo(min.x, min.y);
-                }
+            const sides = [
+                [
+                    Vec.create(min.x, min.y),
+                    Vec.create(max.x, min.y)
+                ],
+                [
+                    Vec.create(max.x, min.y),
+                    Vec.create(max.x, max.y)
+                ],
+                [
+                    Vec.create(max.x, max.y),
+                    Vec.create(min.x, max.y)
+                ],
+                [
+                    Vec.create(min.x, max.y),
+                    Vec.create(min.x, min.y)
+                ]
             ];
 
             const { high: highDef, low: lowDef } = definition.activeEdges;
@@ -479,11 +476,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         }
                     }
 
-                    gphx.setStrokeStyle({ color, width, alpha })
-                        .beginPath();
-                    drawSide[i]();
-                    gphx.closePath()
-                        .stroke();
+                    debugRenderer.addLine(sides[i][0], sides[i][1], color, width, alpha);
                 }
 
                 // determine the line's endpoints
@@ -494,67 +487,74 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         { x: min.x, y: max.y }
                     ];
                 const ratio = (vertexB.y - vertexA.y) / (vertexB.x - vertexA.x);
-                const protrusion = Numeric.min(50, 50 / ratio);
+                const protrusion = Numeric.min(2.5, 2.5 / ratio);
 
-                gphx.setStrokeStyle({ color: 0xffff00, width: 2, alpha })
-                    .beginPath()
-                    .moveTo(vertexA.x - protrusion, vertexA.y - protrusion * ratio)
-                    .lineTo(vertexA.x, vertexA.y)
-                    .moveTo(vertexB.x, vertexB.y)
-                    .lineTo(vertexB.x + protrusion, vertexB.y + protrusion * ratio)
-                    .stroke()
-                    .setStrokeStyle({ color: 0xffff00, alpha: 0.25 * alpha, width: 2 })
-                    .beginPath()
-                    .moveTo(vertexA.x, vertexA.y)
-                    .lineTo(vertexB.x, vertexB.y)
-                    .closePath()
-                    .stroke();
+                debugRenderer.addLine(
+                    Vec.create(vertexA.x - protrusion, vertexA.y - protrusion * ratio),
+                    vertexA,
+                    0xffff00,
+                    2,
+                    alpha
+                ).addLine(
+                    vertexB,
+                    Vec.create(vertexB.x + protrusion, vertexB.y + protrusion * ratio),
+                    0xffff00,
+                    2,
+                    alpha
+                ).addLine(
+                    vertexA,
+                    vertexB,
+                    0xffff00,
+                    2,
+                    0.25 * alpha
+                );
             } else {
-                drawHitbox(
-                    hitbox,
+                debugRenderer.addHitbox(hitbox,
                     definition.noCollisions || this.dead
                         ? HITBOX_COLORS.obstacleNoCollision
                         : HITBOX_COLORS.stair,
-                    this.debugGraphics,
+                    undefined,
                     alpha
                 );
 
-                gphx.setStrokeStyle({ color: 0xff0000, width: 4 })
-                    .beginPath();
-                drawSide[high]();
-                gphx.closePath()
-                    .stroke()
-                    .setStrokeStyle({ color: 0x00ff00, width: 4 })
-                    .beginPath();
-                drawSide[low]();
-                gphx.closePath()
-                    .stroke();
+                debugRenderer.addLine(
+                    sides[high][0],
+                    sides[high][1],
+                    0xff0000,
+                    4
+                );
+                debugRenderer.addLine(
+                    sides[low][0],
+                    sides[low][1],
+                    0x00ff00,
+                    4
+                );
             }
         } else {
-            drawHitbox(
-                this.hitbox,
+            debugRenderer.addHitbox(this.hitbox,
                 definition.noCollisions || this.dead
                     ? HITBOX_COLORS.obstacleNoCollision
                     : HITBOX_COLORS.obstacle,
-                this.debugGraphics,
+                undefined,
                 alpha
             );
         }
 
         if (definition.isDoor && definition.operationStyle !== "slide") {
-            drawHitbox(
-                new CircleHitbox(0.2, Vec.addAdjust(this.position, definition.hingeOffset, this.orientation)),
+            debugRenderer.addCircle(
+                0.2,
+                Vec.addAdjust(this.position, definition.hingeOffset, this.orientation),
                 HITBOX_COLORS.obstacleNoCollision,
-                this.debugGraphics,
+                undefined,
                 alpha
             );
         }
 
         if (definition.spawnHitbox) {
-            drawHitbox(
+            debugRenderer.addHitbox(
                 definition.spawnHitbox.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.spawnHitbox,
-                this.debugGraphics,
+                undefined,
                 alpha
             );
         }
