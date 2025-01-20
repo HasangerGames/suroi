@@ -100,8 +100,8 @@ let mapSwitchCron: Cron | undefined;
 let mode: Mode;
 let nextMode: Mode;
 
-if (isMainThread) {
-    // Initialize the server
+if (isMainThread && require.main === module) {
+    //              ^^^^^^^^^^^^^^^^^^^^^^^ only starts server if called directly from command line (not imported)
     createServer().get("/api/serverInfo", async res => {
         cors(res);
         res
