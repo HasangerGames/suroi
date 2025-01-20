@@ -5,7 +5,8 @@ import { HitboxType, type Hitbox } from "../../common/src/utils/hitbox";
 import { type EaseFunctions } from "../../common/src/utils/math";
 import { NullString, type BaseBulletDefinition, type InventoryItemDefinition, type ObjectDefinitions, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../common/src/utils/vector";
-import { LootTables, type WeightedItem } from "../../server/src/data/lootTables";
+import { LootTables } from "../../server/src/data/lootTables";
+import type { WeightedItem } from "../../server/src/utils/lootHelpers";
 
 export function findDupes<
     K extends string | number | symbol
