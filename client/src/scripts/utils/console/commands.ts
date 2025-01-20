@@ -1575,7 +1575,7 @@ export function setUpCommands(game: Game): void {
                 };
             }
 
-            return gameConsole.variables.set(cvar.name, values[(index + 1) % values.length]);
+            return gameConsole.variables.set(cvar.name, values[(index + 1) % values.length], true);
         },
         game,
         {
