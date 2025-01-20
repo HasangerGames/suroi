@@ -107,6 +107,13 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
         );
     }
 
+    override update(): void { /* bleh */ }
+    override updateInterpolation(): void {
+        this.updateContainerPosition();
+        this.updateContainerRotation();
+        this.updateContainerScale();
+    }
+
     override destroy(): void {
         super.destroy();
         this.image.destroy();

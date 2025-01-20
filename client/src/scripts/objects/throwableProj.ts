@@ -128,6 +128,13 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
         );
     }
 
+    override update(): void { /* bleh */ }
+
+    override updateInterpolation(): void {
+        this.updateContainerPosition();
+        this.updateContainerRotation();
+    }
+
     hitEffect(position: Vector, angle: number): void {
         if (!this.definition.c4) return;
 

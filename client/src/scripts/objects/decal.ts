@@ -45,6 +45,9 @@ export class Decal extends GameObject.derive(ObjectCategory.Decal) {
         this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, this.game.layer);
     }
 
+    update(): void { /* bleh */ }
+    updateInterpolation(): void { /* bleh */ }
+
     override destroy(): void {
         this.image.destroy();
     }

@@ -491,6 +491,9 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         }
     }
 
+    override update(): void { /* bleh */ }
+    override updateInterpolation(): void { /* bleh */ }
+
     hitEffect(position: Vector, angle: number): void {
         this.game.particleManager.spawnParticle({
             frames: this.particleFrames,

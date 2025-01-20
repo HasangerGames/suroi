@@ -288,6 +288,17 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         }
     }
 
+    override update(): void {
+        this.updateGrenadePreview();
+    }
+
+    override updateInterpolation(): void {
+        this.updateContainerPosition();
+        if (!this.isActivePlayer || !this.game.console.getBuiltInCVar("cv_responsive_rotation") || this.game.spectating) {
+            this.updateContainerRotation();
+        }
+    }
+
     spawnCasingParticles(filterBy: "fire" | "reload", altFire = false): void {
         const weaponDef = this.activeItem as GunDefinition;
         const reference = this._getItemReference() as SingleGunNarrowing;

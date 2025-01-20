@@ -187,6 +187,11 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
         );
     }
 
+    override update(): void { /* bleh */ }
+    override updateInterpolation(): void {
+        this.updateContainerPosition();
+    }
+
     destroy(): void {
         super.destroy();
         this.images.background.destroy();

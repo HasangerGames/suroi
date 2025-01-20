@@ -560,6 +560,9 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         }
     }
 
+    override update(): void { /* bleh */ };
+    override updateInterpolation(): void { /* bleh */ }
+
     updateDoor(data: ObjectsNetData[ObjectCategory.Obstacle]["full"], isNew = false): void {
         if (!data?.door || data.definition.role !== ObstacleSpecialRoles.Door) return;
         const definition = data.definition;

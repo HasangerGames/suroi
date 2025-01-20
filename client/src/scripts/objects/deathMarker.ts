@@ -114,6 +114,9 @@ export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
         );
     }
 
+    override update(): void { /* bleh */ }
+    override updateInterpolation(): void { /* bleh */ }
+
     override destroy(): void {
         super.destroy();
 

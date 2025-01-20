@@ -87,6 +87,10 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
         this.container.zIndex = 994; // gas is 996 ig
     }
 
+    override update(): void { /* bleh */ }
+
+    override updateInterpolation(): void { /* bleh */ }
+
     destroy(): void {
         super.destroy();
 

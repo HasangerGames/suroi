@@ -144,6 +144,9 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
 
     abstract updateZIndex(): void;
 
+    abstract update(): void;
+    abstract updateInterpolation(): void;
+
     /**
      * subclasses are free to override this method to draw debug graphics if they wish
      */

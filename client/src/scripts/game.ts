@@ -683,37 +683,15 @@ export class Game {
             }
         }
 
-        let players: Set<Player> | undefined;
-        if (this.console.getBuiltInCVar("cv_movement_smoothing")) {
-            for (const player of players = this.objects.getCategory(ObjectCategory.Player)) {
-                player.updateContainerPosition();
-                if (!player.isActivePlayer || !this.console.getBuiltInCVar("cv_responsive_rotation") || this.spectating) {
-                    player.updateContainerRotation();
-                }
-            }
+        const hasMovementSmoothing = this.console.getBuiltInCVar("cv_movement_smoothing");
 
-            if (this.activePlayer) {
-                this.camera.position = this.activePlayer.container.position;
-            }
-
-            for (const loot of this.objects.getCategory(ObjectCategory.Loot)) {
-                loot.updateContainerPosition();
-            }
-
-            for (const projectile of this.objects.getCategory(ObjectCategory.ThrowableProjectile)) {
-                projectile.updateContainerPosition();
-                projectile.updateContainerRotation();
-            }
-
-            for (const syncedParticle of this.objects.getCategory(ObjectCategory.SyncedParticle)) {
-                syncedParticle.updateContainerPosition();
-                syncedParticle.updateContainerRotation();
-                syncedParticle.updateContainerScale();
-            }
+        for (const object of this.objects) {
+            object.update();
+            if (hasMovementSmoothing) object.updateInterpolation();
         }
 
-        for (const player of players ?? this.objects.getCategory(ObjectCategory.Player)) {
-            player.updateGrenadePreview();
+        if (hasMovementSmoothing && this.activePlayer) {
+            this.camera.position = this.activePlayer.container.position;
         }
 
         for (const [image, spinSpeed] of this.spinningImages.entries()) {
