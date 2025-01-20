@@ -37,7 +37,6 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { randomBytes } from "crypto";
 import { type WebSocket } from "uWebSockets.js";
 import { Config } from "../config";
-import { SpawnableLoots } from "../data/lootTables";
 import { type Game } from "../game";
 import { HealingAction, ReloadAction, ReviveAction, type Action } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
@@ -610,7 +609,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             // and if we somehow don't have any matching slots, then someone's probably messing with us… fallback to slot 0 lol
         }
 
-        const spawnable = SpawnableLoots();
+        const spawnable = this.game.spawnableLoots;
 
         const { inventory } = this;
         const { items, backpack: { maxCapacity }, throwableItemMap } = inventory;

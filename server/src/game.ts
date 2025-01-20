@@ -23,6 +23,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { type WebSocket } from "uWebSockets.js";
 import { parentPort } from "worker_threads";
 
+import { Mode, ModeDefinition, Modes } from "@common/definitions/modes";
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import { Config, MapWithParams, SpawnMode } from "./config";
 import { MapName, Maps } from "./data/maps";
@@ -46,8 +47,8 @@ import { PluginManager } from "./pluginManager";
 import { Team } from "./team";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
+import { Cache, getSpawnableLoots, SpawnableItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap, removeFrom } from "./utils/misc";
-import { ModeDefinition, Modes, type Mode } from "@common/definitions/modes";
 
 /*
     eslint-disable
@@ -163,6 +164,13 @@ export class Game implements GameData {
      */
     readonly mapPings: PingSerialization[] = [];
 
+    private readonly _spawnableItemTypeCache = [] as Cache;
+
+    private _spawnableLoots: SpawnableItemRegistry | undefined;
+    get spawnableLoots(): SpawnableItemRegistry {
+        return this._spawnableLoots ??= getSpawnableLoots(this.modeName, this.map.mapDef, this._spawnableItemTypeCache);
+    }
+
     private readonly _timeouts = new Set<Timeout>();
 
     addTimeout(callback: () => void, delay = 0): Timeout {
@@ -231,8 +239,7 @@ export class Game implements GameData {
             startedTime: -1
         });
 
-        this.modeName = modeFromMap(map);
-        this.mode = Modes[this.modeName];
+        this.mode = Modes[this.modeName = modeFromMap(map)];
 
         this.pluginManager.loadPlugins();
 
