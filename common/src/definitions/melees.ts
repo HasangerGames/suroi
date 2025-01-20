@@ -487,15 +487,15 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             {
                 idString: "pan",
                 name: "Pan",
-                damage: 49,
+                damage: 65,
                 swingSound: "heavy_swing",
                 hitSound: "pan_hit",
-                obstacleMultiplier: 1.2,
+                obstacleMultiplier: 1.5,
                 radius: 2.7,
                 offset: Vec.create(5.5, 0),
                 cooldown: 800,
                 fists: {
-                    animationDuration: 300,
+                    animationDuration: 200,
                     left: Vec.create(38, -35),
                     right: Vec.create(45, 35),
                     useLeft: Vec.create(38, -35),
