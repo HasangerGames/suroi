@@ -301,7 +301,7 @@
 </main>
 
 <style lang="scss">
-    @import "../../src/scss/palette.scss";
+    @use "../../src/scss/palette.scss";
 
     main {
         display: flex;
@@ -313,7 +313,7 @@
         height: 100vh;
         width: 20vw;
         padding: 10px;
-        background-color: $transparent_bg;
+        background-color: palette.$transparent_bg;
         display: flex;
         flex-direction: column;
 
