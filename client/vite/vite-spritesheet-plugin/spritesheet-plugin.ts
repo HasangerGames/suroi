@@ -63,8 +63,8 @@ async function buildSpritesheets(
         const images = [...pathMap.values()];
 
         const fileMap: Record<string, number> = images.reduce((fileMap, file) => {
-            const { mtime, ctime } = statSync(file);
-            fileMap[file] = max(mtime.getTime(), ctime.getTime());
+            const { mtimeMs, ctimeMs } = statSync(file);
+            fileMap[file] = max(mtimeMs, ctimeMs);
             return fileMap;
         }, {});
 
