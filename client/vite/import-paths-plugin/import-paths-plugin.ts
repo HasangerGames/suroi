@@ -1,31 +1,9 @@
 import { FSWatcher, watch } from "chokidar";
-import { readdirSync, statSync } from "fs";
 import * as path from "path";
 import { type Plugin, type ResolvedConfig } from "vite";
+import { readDirectory } from "../../../common/src/utils/readDirectory";
 
 const PLUGIN_NAME = "import-paths-plugin";
-
-/**
- * Recursively read a directory.
- * @param dir The absolute path to the directory.
- * @returns An array representation of the directory's contents.
- */
-function readDirectory(dir: string): string[] {
-    let results: string[] = [];
-
-    for (const file of readdirSync(dir)) {
-        const filePath = path.resolve(dir, file);
-        const stat = statSync(filePath);
-
-        if (stat?.isDirectory()) {
-            results = results.concat(readDirectory(filePath));
-        } else {
-            results.push(filePath);
-        }
-    }
-
-    return results;
-}
 
 export function importPathsPlugin(
     pluginConfig: {

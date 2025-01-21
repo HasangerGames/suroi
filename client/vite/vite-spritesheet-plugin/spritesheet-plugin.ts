@@ -1,16 +1,14 @@
 import { FSWatcher, watch } from "chokidar";
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync } from "fs";
+import { existsSync, mkdirSync, readFileSync, statSync } from "fs";
 import { readFile } from "fs/promises";
-import { Minimatch } from "minimatch";
 import path, { resolve } from "path";
 import { type SpritesheetData } from "pixi.js";
 import { type Plugin, type ResolvedConfig } from "vite";
 import { Mode, ModeDefinition, Modes, SpritesheetNames } from "../../../common/src/definitions/modes";
 import { Atlas, CacheData, type CompilerOptions, createSpritesheets, imageMap, MultiAtlasList } from "./spritesheet";
+import { readDirectory } from "../../../common/src/utils/readDirectory";
 
 const PLUGIN_NAME = "vite-spritesheet-plugin";
-
-const imagesMatcher = new Minimatch("**/*.{png,gif,jpg,bmp,tiff,svg}");
 
 const compilerOpts = {
     outDir: "atlases",
@@ -50,8 +48,7 @@ async function buildSpritesheets(
         const pathMap = new Map<string, string>();
 
         const files = spriteSheets
-            .flatMap(sheet => readDirectory(`public/img/game/${sheet}`))
-            .filter(x => imagesMatcher.match(x));
+            .flatMap(sheet => readDirectory(`public/img/game/${sheet}`, /\.(png|gif|jpg|bmp|tiff|svg)$/i));
 
         // Maps have unique keys.
         // Since the filename is used as the key, and mode sprites are added to the map after the common sprites,
@@ -126,28 +123,6 @@ async function buildSpritesheets(
 }
 
 const max = (a: number, b: number): number => a > b ? a : b;
-
-/**
- * Recursively read a directory.
- * @param dir The absolute path to the directory.
- * @returns An array representation of the directory's contents.
- */
-function readDirectory(dir: string): string[] {
-    let results: string[] = [];
-
-    for (const file of readdirSync(dir)) {
-        const filePath = resolve(dir, file);
-        const stat = statSync(filePath);
-
-        if (stat?.isDirectory()) {
-            results = results.concat(readDirectory(filePath));
-        } else {
-            results.push(filePath);
-        }
-    }
-
-    return results;
-}
 
 const highResVirtualModuleId = "virtual:spritesheets-jsons-high-res";
 const highResResolvedVirtualModuleId = `\0${highResVirtualModuleId}`;

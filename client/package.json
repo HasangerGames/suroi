@@ -24,7 +24,6 @@
     "@types/node": "^22.10.5",
     "chokidar": "^4.0.3",
     "maxrects-packer": "^2.7.3",
-    "minimatch": "^10.0.1",
     "postcss": "^8.4.49",
     "postcss-import": "^16.1.0",
     "postcss-loader": "^8.1.1",
