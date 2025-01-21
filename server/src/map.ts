@@ -14,11 +14,11 @@ import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInside
 import { River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { MapWithParams } from "./config";
-import { getLootFromTable } from "./utils/lootHelpers";
 import { MapDefinition, MapName, Maps, ObstacleClump, RiverDefinition } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
+import { getLootFromTable } from "./utils/lootHelpers";
 import { CARDINAL_DIRECTIONS, getRandomIDString } from "./utils/misc";
 
 export class GameMap {
@@ -148,16 +148,16 @@ export class GameMap {
             rivers
         );
 
+        this._generateClearings(mapDef.clearings);
+
+        Object.entries(mapDef.buildings ?? {}).forEach(([building, count]) => this._generateBuildings(building, count));
+
         if (mapDef.rivers) {
             this._generateRiverObstacles(mapDef.rivers, false);
         }
         if (mapDef.trails) {
             this._generateRiverObstacles(mapDef.trails, true);
         }
-
-        this._generateClearings(mapDef.clearings);
-
-        Object.entries(mapDef.buildings ?? {}).forEach(([building, count]) => this._generateBuildings(building, count));
 
         for (const clump of mapDef.obstacleClumps ?? []) {
             this._generateObstacleClumps(clump);
@@ -490,52 +490,59 @@ export class GameMap {
                 attempts = 0; // Reset attempts counter for the next building
             }
         } else {
+            const { bridgeHitbox, bridgeMinRiverWidth, spawnHitbox } = buildingDef;
             let spawnedCount = 0;
 
             const generateBridge = (river: River) => (start: number, end: number): void => {
                 if (spawnedCount >= count) return;
 
                 let shortestDistance = Number.MAX_VALUE;
-                let bestPosition = 0.5;
+                let bestPosition: Vector | undefined;
                 let bestOrientation: Orientation = 0;
                 for (let pos = start; pos <= end; pos += 0.05) {
+                    const position = river.getPosition(pos);
+
                     // Find the best orientation
                     const direction = Vec.direction(river.getTangent(pos));
-                    for (let orientation: Orientation = 0; orientation < 4; orientation++) {
+                    for (const orientation of [0, 1] as readonly Orientation[]) {
                         const distance = Math.abs(Angle.minimize(direction, CARDINAL_DIRECTIONS[orientation]));
                         if (distance < shortestDistance) {
+                            const hitbox = spawnHitbox.transform(position, 1, orientation);
+
+                            if (
+                                this.occupiedBridgePositions.some(pos => Vec.equals(pos, position))
+                                || this.isInRiver(bridgeHitbox.transform(position, 1, orientation))
+                                || hitbox.collidesWith(this.beachHitbox)
+                            ) continue;
+
+                            // checks if the bridge hitbox collides with another object and if so does not spawn it
+                            let shouldContinue = false;
+                            for (const object of this.game.grid.intersectsHitbox(hitbox)) {
+                                const objectHitbox = "spawnHitbox" in object && object.spawnHitbox;
+
+                                if (!objectHitbox) continue;
+                                if (hitbox.collidesWith(objectHitbox)) {
+                                    shouldContinue = true;
+                                    break;
+                                }
+                            }
+                            if (shouldContinue) continue;
+
                             shortestDistance = distance;
-                            bestPosition = pos;
-                            bestOrientation = orientation as Orientation;
+                            bestPosition = position;
+                            bestOrientation = orientation;
                         }
                     }
                 }
-                const position = river.getPosition(bestPosition);
+                if (!bestPosition) return;
 
-                const spawnHitbox = buildingDef.spawnHitbox.transform(position, 1, bestOrientation);
-
-                if (
-                    this.occupiedBridgePositions.some(pos => Vec.equals(pos, position))
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    || (this.isInRiver(buildingDef.bridgeHitbox!.transform(position, 1, bestOrientation)))
-                    || (spawnHitbox.collidesWith(this.beachHitbox))
-                ) return;
-
-                // checks if the bridge hitbox collides with another object and if so does not spawn it
-                for (const object of this.game.grid.intersectsHitbox(spawnHitbox)) {
-                    const objectHitbox = "spawnHitbox" in object && object.spawnHitbox;
-
-                    if (!objectHitbox) continue;
-                    if (spawnHitbox.collidesWith(objectHitbox)) return;
-                }
-
-                this.occupiedBridgePositions.push(position);
-                this.generateBuilding(buildingDef, position, bestOrientation);
+                this.occupiedBridgePositions.push(bestPosition);
+                this.generateBuilding(buildingDef, bestPosition, bestOrientation);
                 spawnedCount++;
             };
 
             this.terrain.rivers
-                .filter(({ isTrail }) => !isTrail)
+                .filter(({ isTrail, width }) => !isTrail && width >= (bridgeMinRiverWidth ?? 0))
                 .map(generateBridge)
                 .forEach(generator => {
                     generator(0.1, 0.4);

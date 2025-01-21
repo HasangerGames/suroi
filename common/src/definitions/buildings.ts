@@ -60,6 +60,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly spawnMode: MapObjectSpawnMode
 
     readonly bridgeHitbox?: Hitbox
+    readonly bridgeMinRiverWidth?: number
 
     readonly ceilingScopeEffect: boolean
     readonly obstacles: readonly BuildingObstacle[]
@@ -4234,6 +4235,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(105, 45, Vec.create(0, 92.5)),
                     RectangleHitbox.fromRect(105, 45, Vec.create(0, -92.5))
                 ),
+                bridgeMinRiverWidth: 25,
                 floorImages: [
                     { key: "large_bridge_railing", position: Vec.create(23.3, -38) },
                     { key: "large_bridge_railing", position: Vec.create(23.3, 35.3), rotation: Math.PI, scale: Vec.create(-1, 1) },
