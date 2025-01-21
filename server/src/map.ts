@@ -10,7 +10,7 @@ import { equalLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
 import { type Mutable, type SMutable } from "@common/utils/misc";
 import { MapObjectSpawnMode, NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
-import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
+import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
 import { River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { MapWithParams } from "./config";
@@ -537,7 +537,10 @@ export class GameMap {
                 if (!bestPosition) return;
 
                 this.occupiedBridgePositions.push(bestPosition);
-                this.generateBuilding(buildingDef, bestPosition, bestOrientation);
+                const finalOrientation: Orientation = bestOrientation === 0
+                    ? randomBoolean() ? 0 : 2
+                    : randomBoolean() ? 1 : 3;
+                this.generateBuilding(buildingDef, bestPosition, finalOrientation);
                 spawnedCount++;
             };
 
