@@ -6,6 +6,14 @@ import pkg from "../../package.json";
 import { importPathsPlugin } from "./import-paths-plugin/import-paths-plugin";
 
 const commonConfig: UserConfig = {
+    server: {
+        port: 3000,
+        host: "0.0.0.0"
+    },
+    preview: {
+        port: 3000,
+        host: "0.0.0.0"
+    },
     build: {
         chunkSizeWarningLimit: 2000,
         rollupOptions: {
