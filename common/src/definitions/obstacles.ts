@@ -2159,6 +2159,47 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 reflectBullets: true
             },
             {
+                idString: "pan_stove",
+                name: "Pan Stove",
+                material: "metal_light",
+                health: 140,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.8
+                },
+                hitbox: RectangleHitbox.fromRect(9.1, 6.45, Vec.create(0, -0.2)),
+                rotationMode: RotationMode.Limited,
+                explosion: "stove_explosion",
+                frames: {
+                    particle: "metal_particle",
+                    residue: "stove_residue"
+                },
+                reflectBullets: true,
+                hasLoot: true
+            },
+            {
+                idString: "small_pan_stove",
+                name: "Small Pan Stove",
+                material: "metal_light",
+                health: 140,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.8
+                },
+                hideOnMap: true,
+                hitbox: RectangleHitbox.fromRect(6.9, 6.64, Vec.create(0, -0.3)),
+                rotationMode: RotationMode.Limited,
+                explosion: "stove_explosion",
+                frames: {
+                    particle: "metal_particle",
+                    residue: "stove_residue"
+                },
+                reflectBullets: true,
+                hasLoot: true
+            },
+            {
                 idString: "fireplace",
                 name: "Fireplace",
                 material: "metal_light",

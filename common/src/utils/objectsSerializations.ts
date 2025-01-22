@@ -5,6 +5,7 @@ import { Buildings, type BuildingDefinition } from "../definitions/buildings";
 import { Decals, type DecalDefinition } from "../definitions/decals";
 import { type HealingItemDefinition } from "../definitions/healingItems";
 import { Loots, type LootDefinition, type WeaponDefinition } from "../definitions/loots";
+import { type MeleeDefinition, Melees } from "../definitions/melees";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions/obstacles";
 import { Skins, type SkinDefinition } from "../definitions/skins";
 import { SyncedParticles, type SyncedParticleDefinition } from "../definitions/syncedParticles";
@@ -56,6 +57,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly halloweenThrowableSkin: boolean
             readonly activeDisguise?: ObstacleDefinition
             readonly blockEmoting: boolean
+            readonly backEquippedMelee?: MeleeDefinition
         }
     }
     //
@@ -235,7 +237,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 backpack,
                 halloweenThrowableSkin,
                 activeDisguise,
-                blockEmoting
+                blockEmoting,
+                backEquippedMelee
             } }
         ): void {
             stream.writeLayer(layer);
@@ -243,6 +246,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const hasHelmet = helmet !== undefined;
             const hasVest = vest !== undefined;
             const hasDisguise = activeDisguise !== undefined;
+            const hasBackEquippedMelee = backEquippedMelee !== undefined;
 
             stream.writeBooleanGroup2(
                 dead,
@@ -254,7 +258,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 hasHelmet,
                 hasVest,
                 hasDisguise,
-                blockEmoting
+                blockEmoting,
+                hasBackEquippedMelee
             );
             stream.writeUint8(teamID);
             Loots.writeToStream(stream, activeItem);
@@ -270,6 +275,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             Backpacks.writeToStream(stream, backpack);
 
             if (hasDisguise) Obstacles.writeToStream(stream, activeDisguise);
+            if (hasBackEquippedMelee) Melees.writeToStream(stream, backEquippedMelee);
         },
         deserializePartial(stream) {
             const data: Mutable<ObjectsNetData[ObjectCategory.Player]> = {
@@ -311,7 +317,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 hasHelmet,
                 hasVest,
                 hasDisguise,
-                blockEmoting
+                blockEmoting,
+                hasBackEquippedMelee
             ] = stream.readBooleanGroup2();
 
             return {
@@ -329,7 +336,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 vest: hasVest ? Armors.readFromStream(stream) : undefined,
                 backpack: Backpacks.readFromStream(stream),
                 activeDisguise: hasDisguise ? Obstacles.readFromStream(stream) : undefined,
-                blockEmoting
+                blockEmoting,
+                backEquippedMelee: hasBackEquippedMelee ? Melees.readFromStream(stream) : undefined
             };
         }
     },

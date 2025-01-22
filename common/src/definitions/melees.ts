@@ -13,6 +13,7 @@ export type MeleeDefinition = InventoryItemDefinition & {
     readonly iceMultiplier?: number
     readonly swingSound: string
     readonly stopSound?: string
+    readonly hitSound?: string
     readonly radius: number
     readonly offset: Vector
     readonly cooldown: number
@@ -36,6 +37,18 @@ export type MeleeDefinition = InventoryItemDefinition & {
         readonly animated?: boolean
     }
     readonly fireMode: FireMode
+    readonly reflectiveSurface?: {
+        readonly pointA: Vector
+        readonly pointB: Vector
+    }
+    readonly onBack: {
+        readonly angle: number
+        readonly position: Vector
+        readonly reflectiveSurface?: {
+            readonly pointA: Vector
+            readonly pointB: Vector
+        }
+    }
 } & ({
     readonly rotationalAnimation: true
 } | {
@@ -469,6 +482,45 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                     useAngle: 10,
                     lootScale: 0.5,
                     animated: true
+                }
+            },
+            {
+                idString: "pan",
+                name: "Pan",
+                damage: 65,
+                swingSound: "heavy_swing",
+                hitSound: "pan_hit",
+                obstacleMultiplier: 1.5,
+                radius: 2.7,
+                offset: Vec.create(5.5, 0),
+                cooldown: 800,
+                fists: {
+                    animationDuration: 200,
+                    left: Vec.create(38, -35),
+                    right: Vec.create(45, 35),
+                    useLeft: Vec.create(38, -35),
+                    useRight: Vec.create(80, -5)
+                },
+                reflectiveSurface: {
+                    pointA: Vec.create(3.8, -2.5),
+                    pointB: Vec.create(2.5, 1.025)
+                },
+                onBack: {
+                    angle: 35,
+                    position: Vec.create(-45, 30),
+                    reflectiveSurface: {
+                        pointA: Vec.create(-3, 0.8),
+                        pointB: Vec.create(0.25, 3)
+                    }
+                },
+                image: {
+                    separateWorldImage: true,
+                    position: Vec.create(60, 4),
+                    usePosition: Vec.create(115, 18),
+                    angle: -70,
+                    useAngle: 30,
+                    lootScale: 0.9,
+                    xConstant: 85
                 }
             }
         ] satisfies ReadonlyArray<RawDefinition<WithPartial<Missing, "killfeedFrame">>>).map(v => {

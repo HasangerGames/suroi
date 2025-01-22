@@ -104,7 +104,7 @@ export class Bullet extends BaseBullet {
         const damageMod = (this.modifiers?.damage ?? 1) / (this.reflectionCount + 1);
         for (const collision of this.updateAndGetCollisions(dt, objects)) {
             const object = collision.object as DamageRecord["object"];
-            const { isObstacle, isBuilding } = object;
+            const { isObstacle } = object;
 
             if (isObstacle && object.definition.isStair) {
                 object.handleStairInteraction(this);
@@ -113,24 +113,22 @@ export class Bullet extends BaseBullet {
 
             const { point, normal } = collision.intersection;
 
-            records.push({
-                object,
-                damage: damageMod * definition.damage * (isObstacle ? (this.modifiers?.dtc ?? 1) * definition.obstacleMultiplier : 1),
-                weapon: this.sourceGun,
-                source: this.shooter,
-                position: point
-            });
+            if (collision.dealDamage) {
+                records.push({
+                    object,
+                    damage: damageMod * definition.damage * (isObstacle ? (this.modifiers?.dtc ?? 1) * definition.obstacleMultiplier : 1),
+                    weapon: this.sourceGun,
+                    source: this.shooter,
+                    position: point
+                });
+            }
 
-            this.damagedIDs.add(object.id);
+            this.collidedIDs.add(object.id);
             this.position = point;
 
             if (isObstacle && object.definition.noCollisions) continue;
 
-            if (
-                (isObstacle || isBuilding)
-                && object.definition.reflectBullets
-                && this.reflectionCount < 3
-            ) {
+            if (collision.reflected && this.reflectionCount < 3) {
                 /*
                     no matter what, nudge the bullet
 

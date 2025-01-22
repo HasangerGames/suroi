@@ -38,6 +38,7 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>("Emotes", [
         "Picasso Face",
         "Alien",
         "Headshot",
+        "Panned",
         "Dab",
         "Devil Face",
         "Bandaged Face",

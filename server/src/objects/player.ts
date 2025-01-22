@@ -430,6 +430,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     c4s: ThrowableProjectile[] = [];
 
+    backEquippedMelee?: MeleeDefinition;
+
     readonly perks = new ServerPerkManager(this, Perks.defaults);
     perkUpdateMap?: Map<UpdatablePerkDefinition, number>; // key = perk, value = last updated
 
@@ -1968,6 +1970,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             size
         } = this._modifiers = this._calculateModifiers();
 
+        this.backEquippedMelee = this.inventory.weapons.find(w => {
+            return w
+                && w.definition.itemType === ItemType.Melee
+                && w.definition.onBack
+                && w !== this.activeItem;
+        })?.definition as MeleeDefinition | undefined;
+
         this.maxHealth = GameConstants.player.defaultHealth * maxHealth;
         this.maxAdrenaline = GameConstants.player.maxAdrenaline * maxAdrenaline;
         this.minAdrenaline = minAdrenaline;
@@ -2590,7 +2599,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 backpack: this.inventory.backpack,
                 halloweenThrowableSkin: this.halloweenThrowableSkin,
                 activeDisguise: this.activeDisguise,
-                blockEmoting: this.blockEmoting
+                blockEmoting: this.blockEmoting,
+                backEquippedMelee: this.backEquippedMelee
             }
         };
 

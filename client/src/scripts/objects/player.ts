@@ -40,10 +40,17 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     activeItem: WeaponDefinition = Loots.fromString("fists");
 
+    // for common code
+    get activeItemDefinition(): WeaponDefinition {
+        return this.activeItem;
+    }
+
     meleeStopSound?: GameSound;
     meleeAttackCounter = 0;
 
     blockEmoting = false;
+
+    backEquippedMelee?: MeleeDefinition;
 
     private activeDisguise?: ObstacleDefinition;
     private readonly disguiseContainer: Container;
@@ -102,6 +109,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         readonly waterOverlay: SuroiSprite
         readonly blood: Container
         readonly disguiseSprite: SuroiSprite
+        readonly backMeleeSprite: SuroiSprite
         readonly badge?: SuroiSprite
     };
 
@@ -174,7 +182,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec.create(0, 0.5)),
             waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(game.colors.water),
             blood: new Container(),
-            disguiseSprite: new SuroiSprite()
+            disguiseSprite: new SuroiSprite(),
+            backMeleeSprite: new SuroiSprite()
         };
 
         this.container.addChild(
@@ -190,7 +199,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.altWeapon,
             this.images.muzzleFlash,
             this.images.waterOverlay,
-            this.images.blood
+            this.images.blood,
+            this.images.backMeleeSprite
         );
 
         this.disguiseContainer.addChild(this.images.disguiseSprite);
@@ -520,13 +530,16 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     backpack,
                     halloweenThrowableSkin,
                     activeDisguise,
-                    blockEmoting
+                    blockEmoting,
+                    backEquippedMelee
                 }
             } = data;
 
             const layerChange = this.isActivePlayer && (this.layer !== layer || isNew);
             this.layer = layer;
             if (layerChange) game.changeLayer(this.layer);
+
+            this.backEquippedMelee = backEquippedMelee;
 
             this.container.visible = !dead;
             this.disguiseContainer.visible = this.container.visible;
@@ -735,6 +748,19 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this.images.disguiseSprite.setVisible(false);
                 }
                 updateContainerZIndex = true;
+            }
+
+            // Pan Image Display
+            const backMeleeSprite = this.images.backMeleeSprite;
+            const backMelee = this.backEquippedMelee;
+            backMeleeSprite.setVisible(!!backMelee?.onBack);
+
+            if (backMelee && backMelee.onBack) {
+                const frame = `${backMelee.idString}${backMelee.image?.separateWorldImage ? "_world" : ""}`;
+                backMeleeSprite.setFrame(frame);
+                const { onBack } = backMelee;
+                backMeleeSprite.setPos(onBack.position.x, onBack.position.y);
+                backMeleeSprite.setAngle(onBack.angle);
             }
 
             // Rate Limiting: Team Pings & Emotes
@@ -957,6 +983,32 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             // revival range
         }
 
+        const renderMeleeReflectionSurface = (surface: { pointA: Vector, pointB: Vector }): void => {
+            ctx.setStrokeStyle({
+                color: HITBOX_COLORS.playerWeapon,
+                width: 2,
+                alpha
+            });
+
+            const start = toPixiCoords(
+                Vec.add(
+                    this.position,
+                    Vec.rotate(surface.pointA, this.rotation)
+                )
+            );
+
+            const lineEnd = toPixiCoords(
+                Vec.add(
+                    this.position,
+                    Vec.rotate(surface.pointB, this.rotation)
+                )
+            );
+
+            ctx.moveTo(start.x, start.y);
+            ctx.lineTo(lineEnd.x, lineEnd.y);
+            ctx.stroke();
+        };
+
         switch (this.activeItem.itemType) {
             case ItemType.Gun: {
                 ctx.setStrokeStyle({
@@ -1007,8 +1059,15 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     ctx,
                     alpha
                 );
+                if (this.activeItem.reflectiveSurface) {
+                    renderMeleeReflectionSurface(this.activeItem.reflectiveSurface);
+                }
                 break;
             }
+        }
+
+        if (this.backEquippedMelee?.onBack.reflectiveSurface) {
+            renderMeleeReflectionSurface(this.backEquippedMelee?.onBack.reflectiveSurface);
         }
     }
 
@@ -1522,7 +1581,13 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                             return a.hitbox.distanceTo(selfHitbox).distance - b.hitbox.distanceTo(selfHitbox).distance;
                         }).slice(0, weaponDef.maxTargets)
-                    ) target.hitEffect(position, angleToPos);
+                    ) {
+                        if (target.isPlayer) {
+                            target.hitEffect(position, angleToPos, (this.activeItem as MeleeDefinition).hitSound);
+                        } else {
+                            target.hitEffect(position, angleToPos);
+                        }
+                    }
                 }, 50);
 
                 break;
@@ -2058,6 +2123,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.grenadeImpactPreview?.destroy();
 
         this.disguiseContainer.destroy();
+        images.backMeleeSprite?.destroy();
 
         this.healingParticlesEmitter.destroy();
         this.actionSound?.stop();

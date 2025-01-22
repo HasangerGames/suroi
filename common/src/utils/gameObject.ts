@@ -1,7 +1,8 @@
 import { ObjectCategory, type Layer } from "../constants";
 import { type BuildingDefinition } from "../definitions/buildings";
 import { type DecalDefinition } from "../definitions/decals";
-import { type LootDefinition } from "../definitions/loots";
+import { type WeaponDefinition, type LootDefinition } from "../definitions/loots";
+import { type MeleeDefinition } from "../definitions/melees";
 import { type ObstacleDefinition } from "../definitions/obstacles";
 import { type SyncedParticleDefinition } from "../definitions/syncedParticles";
 import { type ThrowableDefinition } from "../definitions/throwables";
@@ -55,6 +56,8 @@ export type CommonObjectMapping = {
 } & {
     [ObjectCategory.Player]: {
         readonly hitbox: CircleHitbox
+        readonly activeItemDefinition: WeaponDefinition
+        readonly backEquippedMelee?: MeleeDefinition
     }
     [ObjectCategory.Obstacle]: {
         readonly definition: ObstacleDefinition

@@ -95,9 +95,20 @@ export class Bullet extends BaseBullet {
 
                 const { point, normal } = collision.intersection;
 
-                (object as Player | Obstacle | Building).hitEffect(point, Math.atan2(normal.y, normal.x));
+                if (object.isPlayer && collision.reflected) {
+                    this.game.soundManager.play(
+                        `bullet_reflection_${random(1, 5)}`,
+                        {
+                            position: collision.intersection.point,
+                            falloff: 0.2,
+                            maxRange: 96,
+                            layer: object.layer
+                        });
+                } else {
+                    (object as Player | Obstacle | Building).hitEffect(point, Math.atan2(normal.y, normal.x));
+                }
 
-                this.damagedIDs.add(object.id);
+                this.collidedIDs.add(object.id);
 
                 this.position = point;
 
