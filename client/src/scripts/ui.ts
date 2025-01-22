@@ -2239,7 +2239,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
         $("#mobile-options").show();
 
-        ui.menuButton.on("click", () => ui.gameMenu.toggle());
+        ui.menuButton.on("click", () => ui.gameMenu.fadeToggle(250));
 
         ui.emoteButton.on("click", () => {
             const { emoteWheelActive } = inputManager;
