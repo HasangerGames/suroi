@@ -308,6 +308,7 @@ export class Game {
             singleInstance: true,
             preload: true,
             autoPlay: true,
+            loop: true,
             volume: game.console.getBuiltInCVar("cv_music_volume")
         });
 
