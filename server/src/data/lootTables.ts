@@ -780,8 +780,9 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
         ],
         melee: [
             { item: "baseball_bat", weight: 3 },
+            { item: "kbar", weight: 2 },
             { item: "sickle", weight: 0.5 },
-            { item: "kbar", weight: 2 }
+            { item: "pan", weight: 0.1 }
         ],
         airdrop_equipment: [
             { item: "tactical_helmet", weight: 1 },
@@ -812,7 +813,8 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "crowbar", weight: 0.1 },
             { item: "hatchet", weight: 0.1 },
             { item: "sickle", weight: 0.1 },
-            { item: "kbar", weight: 0.1 }
+            { item: "kbar", weight: 0.1 },
+            { item: "pan", weight: 0.075 }
         ],
         airdrop_guns: [
             { item: "mg36", weight: 1 },
