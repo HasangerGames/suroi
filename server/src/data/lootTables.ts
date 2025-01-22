@@ -1000,7 +1000,9 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
                 { item: "coal", weight: 1 },
                 { item: NullString, weight: 1 }
             ]
-        ]
+        ],
+        pan_stove: [{ item: "pan", weight: 1 }],
+        small_pan_stove: [{ item: "pan", weight: 1 }]
     },
 
     halloween: {
