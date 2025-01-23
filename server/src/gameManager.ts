@@ -230,9 +230,9 @@ if (!isMainThread) {
             }
             case WorkerMessages.UpdateMap:
                 map = message.map;
+                game.kill();
             // eslint-disable-next-line no-fallthrough
             case WorkerMessages.Reset: {
-                game.kill();
                 game = new Game(id, maxTeamSize, map);
                 break;
             }
