@@ -331,17 +331,30 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     ticksSinceLastUpdate = 0;
 
     private _scope!: ScopeDefinition;
-    get effectiveScope(): ScopeDefinition { return this._scope; }
+    private _tempScope: ScopeDefinition | undefined;
+    private _scopeTimeout?: Timeout;
+    get effectiveScope(): ScopeDefinition { return this._tempScope ?? this._scope; }
     set effectiveScope(target: ReifiableDef<ScopeDefinition>) {
         const scope = Scopes.reify(target);
         if (this._scope === scope) return;
 
+        // This timeout prevents objects from visibly disappearing when switching from a higher to a lower scope
+        this._scopeTimeout?.kill();
+        if ((this._scope?.zoomLevel ?? 0) > scope.zoomLevel) {
+            this._tempScope = this._scope;
+            this._scope = scope;
+            this._scopeTimeout = this.game.addTimeout(() => {
+                this._tempScope = undefined;
+                this.updateObjects = true;
+            }, 2000);
+        } else {
+            this._tempScope = undefined;
+            this.updateObjects = true;
+        }
+
         this._scope = scope;
         this.dirty.zoom = true;
-        this.updateObjects = true;
     }
-
-    get zoom(): number { return this._scope.zoomLevel; }
 
     readonly socket: WebSocket<PlayerContainer>;
 
@@ -1232,7 +1245,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.ticksSinceLastUpdate = 0;
             this.updateObjects = false;
 
-            const dim = player.zoom * 2 + 8;
+            const dim = player.effectiveScope.zoomLevel * 2 + 8;
             this.screenHitbox = RectangleHitbox.fromRect(dim, dim, player.position);
 
             const visCache = new ExtendedMap<GameObject, boolean>();
