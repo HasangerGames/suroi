@@ -95,6 +95,8 @@ type ObjectMapping = {
     readonly [Cat in keyof ObjectClassMapping]: InstanceType<ObjectClassMapping[Cat]>
 };
 
+type Colors = Record<ColorKeys | "ghillie", Color>;
+
 export class Game {
     private _socket?: WebSocket;
 
@@ -136,10 +138,10 @@ export class Game {
                 result[key] = new Color(color);
                 return result;
             },
-            {} as Record<ColorKeys, Color>
+            {} as Colors
         );
 
-        this._ghillieTint = this._colors.grass.multiply(new Color("hsl(0, 0%, 99%)"));
+        this._colors.ghillie = new Color(this._colors.grass).multiply("hsl(0, 0%, 99%)");
     }
 
     _mode: ModeDefinition | undefined;
@@ -148,16 +150,10 @@ export class Game {
         return this._mode;
     }
 
-    private _colors: Record<ColorKeys, Color> | undefined;
-    get colors(): Record<ColorKeys, Color> {
+    private _colors: Colors | undefined;
+    get colors(): Colors {
         if (!this._colors) throw new Error("colors accessed before initialization");
         return this._colors;
-    }
-
-    private _ghillieTint: Color | undefined;
-    get ghillieTint(): Color {
-        if (!this._ghillieTint) throw new Error("ghillieTint accessed before initialization");
-        return this._ghillieTint;
     }
 
     /**

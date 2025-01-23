@@ -640,7 +640,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
             this._skin = skinID;
             const skinDef = Loots.fromString<SkinDefinition>(skinID);
-            const tint = skinDef.grassTint ? this.game.ghillieTint : 0xffffff;
+            const tint = skinDef.grassTint ? this.game.colors.ghillie : 0xffffff;
 
             const { body, leftFist, rightFist, leftLeg, rightLeg } = this.images;
 

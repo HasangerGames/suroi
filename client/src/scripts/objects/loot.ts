@@ -74,7 +74,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                     .setAngle(90);
 
                 if (definition.grassTint) {
-                    const ghillieTint = this.game.ghillieTint;
+                    const ghillieTint = this.game.colors.ghillie;
                     this.images.item.setTint(ghillieTint);
                     this.images.skinFistLeft.setTint(ghillieTint);
                     this.images.skinFistRight.setTint(ghillieTint);
