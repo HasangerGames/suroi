@@ -438,8 +438,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.floorType = floorType;
 
         if (oldPosition !== undefined) {
-            this.distSinceLastFootstep += Geometry.distance(oldPosition, this.position);
-            this.distTraveled += Geometry.distance(oldPosition, this.position);
+            const dist = Geometry.distance(oldPosition, this.position);
+            this.distSinceLastFootstep += dist;
+            this.distTraveled += dist;
 
             if (this.distTraveled > 8 && this.downed) {
                 this.playAnimation(AnimationType.Downed);
