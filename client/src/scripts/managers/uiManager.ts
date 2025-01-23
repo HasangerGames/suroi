@@ -1,4 +1,4 @@
-import { DEFAULT_INVENTORY, GameConstants, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType } from "@common/constants";
+import { DEFAULT_INVENTORY, GameConstants, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, ObjectCategory } from "@common/constants";
 import { Ammos } from "@common/definitions/ammos";
 import { type BadgeDefinition } from "@common/definitions/badges";
 import { type EmoteDefinition } from "@common/definitions/emotes";
@@ -646,7 +646,15 @@ export class UIManager {
             this.game.seqsSent[pingSeq] = undefined;
         }
 
-        if (id !== undefined) this.game.activePlayerID = id.id;
+        if (id !== undefined) {
+            const oldID = this.game.activePlayerID;
+            this.game.activePlayerID = id.id;
+            if (oldID !== id.id) {
+                for (const player of this.game.objects.getCategory(ObjectCategory.Player)) {
+                    player.updateTeammateName();
+                }
+            }
+        }
 
         if (id) {
             const spectating = id.spectating;
