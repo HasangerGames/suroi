@@ -66,7 +66,7 @@ export class Camera {
                 {
                     target: this.container.scale,
                     to: { x: scale, y: scale },
-                    duration: 800,
+                    duration: 1250,
                     ease: EaseFunctions.cubicOut,
                     onComplete: () => {
                         this.zoomTween = undefined;
