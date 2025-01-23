@@ -345,8 +345,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "one_at_nsd", weight: 1 }
         ],
         rsh_case_single: [
-            { item: "rsh12", weight: 1 },
-            { item: "firework_rocket", weight: 0.005 }
+            { item: "rsh12", weight: 1 }
         ],
         rsh_case_dual: [
             { item: "dual_rsh12", weight: 1 }
