@@ -61,6 +61,7 @@ import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PIXI_SCALE, UI_DEBUG_MODE } from "
 import { setUpNetGraph } from "./utils/graph/netGraph";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
+import FontFaceObserver from "fontfaceobserver";
 
 /* eslint-disable @stylistic/indent */
 
@@ -191,6 +192,8 @@ export class Game {
     readonly gas = new Gas(this);
 
     readonly netGraph = setUpNetGraph(this);
+
+    readonly fontObserver = new FontFaceObserver("Inter", { weight: 600 }).load();
 
     music!: Sound;
 

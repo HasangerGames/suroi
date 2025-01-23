@@ -354,7 +354,7 @@ export class Minimap {
         });
 
         // Wait for font to load
-        await new FontFaceObserver("Inter", { weight: 600 }).load();
+        await this.game.fontObserver;
 
         // Add the places
         this.placesContainer.removeChildren();

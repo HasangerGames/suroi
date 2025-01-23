@@ -587,52 +587,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             const teammateIDs = [];
             for (const teammate of uiManager.teammates) teammateIDs.push(teammate.id);
 
-            if (this.game.teamMode && (
-                (!this.isActivePlayer
-                    && !this.teammateName
-                    && !this.dead
-                    && this.teamID === game.teamID)
-                || (this.game.spectating && !this.dead && this.teamID === game.teamID && !this.teammateName))
-            ) {
-                const name = game.playerNames.get(this.id);
-                this.teammateName = {
-                    text: new Text({
-                        text: uiManager.getRawPlayerName(this.id),
-                        style: {
-                            fill: name?.hasColor ? name?.nameColor : "#00ffff",
-                            fontSize: 36,
-                            fontFamily: "Inter",
-                            fontWeight: "600",
-                            dropShadow: {
-                                alpha: 0.8,
-                                color: "black",
-                                blur: 2,
-                                distance: 2
-                            }
-                        }
-                    }),
-                    badge: name?.badge ? new SuroiSprite(name.badge.idString) : undefined,
-                    container: new Container()
-                };
-                const { text, badge, container } = this.teammateName;
-
-                text.anchor.set(0.5);
-                container.addChild(this.teammateName.text);
-
-                if (badge) {
-                    const oldWidth = badge.width;
-                    badge.width = text.height / 1.25;
-                    badge.height *= badge.width / oldWidth;
-                    badge.position = Vec.create(
-                        text.width / 2 + 20,
-                        0
-                    );
-                    container.addChild(badge);
-                }
-
-                container.zIndex = getEffectiveZIndex(ZIndexes.DeathMarkers, game.layer, game.layer);
-                game.camera.addObject(container);
-            }
+            void this.game.fontObserver.then(() => this.updateTeammateName());
 
             this.container.alpha = invulnerable ? 0.5 : 1;
 
@@ -1087,6 +1042,72 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             : 0;
     }
 
+    updateTeammateName(): void {
+        const game = this.game;
+        if (
+            game.teamMode
+            && (
+                !this.isActivePlayer
+                && !this.teammateName
+                && !this.dead
+                && this.teamID === game.teamID
+            )
+        ) {
+            const name = game.playerNames.get(this.id);
+            this.teammateName = {
+                text: new Text({
+                    text: game.uiManager.getRawPlayerName(this.id),
+                    style: {
+                        fill: name?.hasColor ? name?.nameColor : "#00ffff",
+                        fontSize: 36,
+                        fontFamily: "Inter",
+                        fontWeight: "600",
+                        dropShadow: {
+                            alpha: 0.8,
+                            color: "black",
+                            blur: 2,
+                            distance: 2
+                        }
+                    }
+                }),
+                badge: name?.badge ? new SuroiSprite(name.badge.idString) : undefined,
+                container: new Container()
+            };
+            const { text, badge, container } = this.teammateName;
+
+            text.anchor.set(0.5);
+            container.addChild(this.teammateName.text);
+
+            if (badge) {
+                const oldWidth = badge.width;
+                badge.width = text.height / 1.25;
+                badge.height *= badge.width / oldWidth;
+                badge.position = Vec.create(
+                    text.width / 2 + 20,
+                    0
+                );
+                container.addChild(badge);
+            }
+
+            container.zIndex = getEffectiveZIndex(ZIndexes.DeathMarkers, game.layer, game.layer);
+            game.camera.addObject(container);
+        } else if (
+            this.teammateName
+            && (
+                this.isActivePlayer
+                || this.dead
+                || this.teamID !== game.teamID
+            )
+        ) {
+            const { text, badge, container } = this.teammateName;
+
+            text?.destroy();
+            badge?.destroy();
+            container?.destroy();
+            this.teammateName = undefined;
+        }
+    }
+
     updateFistsPosition(anim: boolean): void {
         this.anims.leftFist?.kill();
         this.anims.rightFist?.kill();
@@ -1252,6 +1273,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, this.game.layer);
         this.disguiseContainer.zIndex = this.container.zIndex + 1;
         this.emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer, this.game.layer);
+        if (this.teammateName) this.teammateName.container.zIndex = getEffectiveZIndex(ZIndexes.DeathMarkers, this.game.layer, this.game.layer);
     }
 
     updateEquipmentWorldImage(type: "helmet" | "vest" | "backpack"): void {
