@@ -7,7 +7,7 @@ import { Guns, type GunDefinition, type SingleGunNarrowing } from "@common/defin
 import { HealType, type HealingItemDefinition } from "@common/definitions/healingItems";
 import { Loots, type WeaponDefinition } from "@common/definitions/loots";
 import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "@common/definitions/melees";
-import { type ObstacleDefinition } from "@common/definitions/obstacles";
+import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { PerkData, PerkIds } from "@common/definitions/perks";
 import { Skins, type SkinDefinition } from "@common/definitions/skins";
 import type { AllowedEmoteSources } from "@common/packets/inputPacket";
@@ -2036,19 +2036,23 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     get bloodDecals(): Set<Particle> { return this._bloodDecals; }
 
     hitEffect(position: Vector, angle: number, sound?: string): void {
-        const randomVariation = randomBoolean() ? "1" : "2";
-        const hitSound = this.activeDisguise ? `${this.activeDisguise.material === "crate" ? "wood" : this.activeDisguise.material}_hit_${randomVariation}` : `player_hit_${randomVariation}`;
+        if (!this.game.gameOver) {
+            this.game.soundManager.play(
+                sound ?? `${
+                    this.activeDisguise
+                        ? MaterialSounds[this.activeDisguise.material]?.hit ?? this.activeDisguise.material
+                        : "player"
+                }_hit_${randomBoolean() ? "1" : "2"}`,
+                {
+                    position,
+                    falloff: 0.2,
+                    maxRange: 96,
+                    layer: this.layer
+                }
+            );
+        }
 
-        this.game.soundManager.play(
-            sound ?? hitSound,
-            {
-                position,
-                falloff: 0.2,
-                maxRange: 96,
-                layer: this.layer
-            });
-
-        let particle = this.activeDisguise ? this.activeDisguise.frames.particle ?? `${this.activeDisguise.idString}_particle` : "blood_particle";
+        let particle = this.activeDisguise ? (this.activeDisguise.frames.particle ?? `${this.activeDisguise.idString}_particle`) : "blood_particle";
 
         if (this.activeDisguise?.particleVariations) particle += `_${random(1, this.activeDisguise.particleVariations)}`;
 
