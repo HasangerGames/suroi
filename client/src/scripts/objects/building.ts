@@ -467,8 +467,8 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         if (this.dead && imageDef.residue) key = imageDef.residue;
         sprite.setFrame(key);
 
-        if (isCeiling && this.dead && imageDef.residue === undefined) {
-            sprite.setVisible(false);
+        if (isCeiling) {
+            sprite.setVisible(this.dead ? !!imageDef.residue : !!imageDef.key);
         } else {
             sprite.setVisible(true);
         }
@@ -488,12 +488,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
     override update(): void {
         for (const [definition, image] of this.images) {
-            const visible = definition.spinOnSolve
-                ? this.puzzle?.solved
-                : true;
-            image.sprite.setVisible(!!visible);
-
-            if (definition.spinSpeed && visible) {
+            if (definition.spinSpeed && (definition.spinOnSolve ? this.puzzle?.solved : true)) {
                 image.sprite.rotation += definition.spinSpeed;
             }
         }

@@ -2490,24 +2490,15 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ceilingHitbox: RectangleHitbox.fromRect(20, 27.5, Vec.create(-0.8, -1.5)),
                 floorImages: [
                     {
-                        key: "shed_floor_1",
-                        position: Vec.create(0, -8.3),
-                        scale: Vec.create(2, 2)
-                    },
-                    {
-                        key: "shed_floor_2",
-                        position: Vec.create(0, 8.1),
+                        key: "shed_floor",
+                        position: Vec.create(0, 0),
                         scale: Vec.create(2, 2)
                     }
                 ],
                 ceilingImages: [
                     {
-                        key: "shed_ceiling_1",
-                        position: Vec.create(-0.8, -9.025)
-                    },
-                    {
-                        key: "shed_ceiling_2",
-                        position: Vec.create(-0.8, 5.9)
+                        key: "shed_ceiling",
+                        position: Vec.create(-0.8, -1.6)
                     }
                 ],
                 floors: [
@@ -6260,15 +6251,13 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     hitbox: RectangleHitbox.fromRect(46.52, 55.74, Vec.create(13.43, 101.53))
                 }],
                 floorImages: [
-                    { key: "plumpkin_bunker_main_entrance_floor_1", position: Vec.create(13.43, 87.7) },
-                    { key: "plumpkin_bunker_main_entrance_floor_2", position: Vec.create(13.43, 115.3) },
+                    { key: "plumpkin_bunker_main_entrance_floor", position: Vec.create(13.43, 101.5) },
                     { key: "plumpkin_bunker_entrance_floor", position: Vec.create(146.55, -32.85), rotation: Math.PI },
                     { key: "plumpkin_bunker_entrance_floor", position: Vec.create(-145.11, -52.85), rotation: Math.PI / 2 }
                 ],
                 floorZIndex: ZIndexes.BuildingsFloor + 0.5,
                 ceilingImages: [
-                    { key: "plumpkin_bunker_main_entrance_ceiling_1", position: Vec.create(13.43, 87.7), scale: Vec.create(2, 2) },
-                    { key: "plumpkin_bunker_main_entrance_ceiling_2", position: Vec.create(13.43, 115.3), scale: Vec.create(2, 2) },
+                    { key: "plumpkin_bunker_main_entrance_ceiling", position: Vec.create(13.43, 101.5), scale: Vec.create(2, 2) },
                     { key: "plumpkin_bunker_entrance_ceiling", position: Vec.create(146.55, -32.85), rotation: Math.PI },
                     { key: "plumpkin_bunker_entrance_ceiling", position: Vec.create(-145.11, -52.85), rotation: Math.PI / 2 }
                 ],
