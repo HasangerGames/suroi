@@ -3,6 +3,18 @@ import type { WithPartial } from "../utils/misc";
 import { ItemType, ObjectDefinitions, type InventoryItemDefinition, type RawDefinition } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 
+interface MeleeKeyframe {
+    readonly duration: number
+    readonly fists: {
+        readonly left: Vector
+        readonly right: Vector
+    }
+    readonly image: {
+        readonly position: Vector
+        readonly angle: number
+    }
+}
+
 export type MeleeDefinition = InventoryItemDefinition & {
     readonly itemType: ItemType.Melee
 
@@ -36,6 +48,7 @@ export type MeleeDefinition = InventoryItemDefinition & {
         readonly separateWorldImage?: boolean
         readonly animated?: boolean
     }
+    readonly animation?: MeleeKeyframe[]
     readonly fireMode: FireMode
     readonly reflectiveSurface?: {
         readonly pointA: Vector
@@ -289,6 +302,30 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                     useLeft: Vec.create(0, -50),
                     useRight: Vec.create(40, -25)
                 },
+                animation: [
+                    {
+                        duration: 150,
+                        fists: {
+                            left: Vec.create(0, -50),
+                            right: Vec.create(40, -25)
+                        },
+                        image: {
+                            angle: 65,
+                            position: Vec.create(40, -25)
+                        }
+                    },
+                    {
+                        duration: 400,
+                        fists: {
+                            left: Vec.create(40, -25),
+                            right: Vec.create(40, 15)
+                        },
+                        image: {
+                            angle: 135,
+                            position: Vec.create(40, 20)
+                        }
+                    }
+                ],
                 image: {
                     position: Vec.create(40, 20),
                     usePosition: Vec.create(40, -25),
