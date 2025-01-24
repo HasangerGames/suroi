@@ -995,27 +995,15 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ceilingHitbox: RectangleHitbox.fromRect(14, 18),
                 floorImages: [
                     {
-                        key: "porta_potty_floor_1",
-                        position: Vec.create(0, -3.8)
-                    },
-                    {
-                        key: "porta_potty_floor_2",
-                        position: Vec.create(0, 7)
+                        key: "porta_potty_floor",
+                        position: Vec.create(0, 1.5)
                     }
                 ],
                 ceilingImages: [
                     {
-                        key: "porta_potty_ceiling_2",
+                        key: "porta_potty_ceiling",
                         position: Vec.create(0, 0),
                         residue: "porta_potty_residue"
-                    },
-                    {
-                        key: "porta_potty_ceiling_1",
-                        position: Vec.create(0, -4.81)
-                    },
-                    {
-                        key: "porta_potty_ceiling_2",
-                        position: Vec.create(0, 4.825)
                     }
                 ],
                 wallsToDestroy: 2,
