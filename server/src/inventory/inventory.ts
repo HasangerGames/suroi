@@ -8,13 +8,13 @@ import { Loots, type LootDefForType, type LootDefinition, type WeaponDefinition 
 import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/scopes";
 import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
 import { Numeric } from "@common/utils/math";
-import { ExtendedMap, type AbstractConstructor, type Timeout } from "@common/utils/misc";
+import { ExtendedMap, type AbstractConstructor, type GetEnumMemberName, type PredicateFor, type Timeout } from "@common/utils/misc";
 import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import { HealingAction } from "./action";
 import { GunItem } from "./gunItem";
-import { InventoryItem } from "./inventoryItem";
+import { InventoryItemBase } from "./inventoryItem";
 import { MeleeItem } from "./meleeItem";
 import { ThrowableItem } from "./throwableItem";
 
@@ -27,15 +27,25 @@ type ReifiableItem =
 type WeaponTypes = WeaponDefinition["itemType"];
 
 type ReifiableItemOfType<Type extends WeaponTypes> =
-    InstanceType<(typeof InventoryItemMapping)[Type]> |
-    ReifiableDef<LootDefForType<Type>>;
+    InventoryItemMapping[Type] | ReifiableDef<LootDefForType<Type>>;
 
-export const InventoryItemMapping = {
+export type WeaponItemType = WeaponDefinition["itemType"];
+export type WeaponItemTypeMap = { [K in GetEnumMemberName<typeof ItemType, WeaponItemType>]: (typeof ItemType)[K] };
+
+export interface InventoryItemMapping {
+    [ItemType.Gun]: GunItem
+    [ItemType.Melee]: MeleeItem
+    [ItemType.Throwable]: ThrowableItem
+}
+
+export type InventoryItem = InventoryItemMapping[WeaponItemType];
+
+export const InventoryItemCtorMapping = {
     [ItemType.Gun]: GunItem,
     [ItemType.Melee]: MeleeItem,
     [ItemType.Throwable]: ThrowableItem
 } satisfies {
-    [K in ItemType]?: AbstractConstructor<InventoryItem, [def: ReifiableDef<LootDefForType<K>>, owner: Player, data?: ItemData<LootDefForType<K>>]>
+    [K in WeaponItemType]: AbstractConstructor<InventoryItem & PredicateFor<WeaponItemTypeMap, K>, [def: ReifiableDef<LootDefForType<K>>, owner: Player, data?: ItemData<LootDefForType<K>>]>
 };
 
 /**
@@ -189,8 +199,8 @@ export class Inventory {
         const owner = this.owner;
 
         this._reloadTimeout?.kill();
-        if (this.activeWeapon.category === ItemType.Gun) {
-            (this.activeWeapon as GunItem).cancelAllTimers();
+        if (this.activeWeapon.isGun) {
+            this.activeWeapon.cancelAllTimers();
         }
         owner.bufferedAttack?.kill();
 
@@ -213,7 +223,7 @@ export class Inventory {
         owner.effectiveSwitchDelay = effectiveSwitchDelay;
         item.switchDate = now;
 
-        if (item instanceof GunItem && item.ammo <= 0) {
+        if (item.isGun && item.ammo <= 0) {
             this._reloadTimeout = this.owner.game.addTimeout(
                 item.reload.bind(item),
                 owner.effectiveSwitchDelay
@@ -288,13 +298,13 @@ export class Inventory {
     private _reifyItem<Type extends WeaponTypes>(
         item: ReifiableItemOfType<Type>,
         data?: ItemData<LootDefForType<Type>>
-    ): InstanceType<(typeof InventoryItemMapping)[Type]> {
-        if (item instanceof InventoryItem) return item;
-        type Item = InstanceType<(typeof InventoryItemMapping)[Type]>;
+    ): InventoryItemMapping[Type] {
+        type Item = InventoryItemMapping[Type];
+        if (item instanceof InventoryItemBase) return item as Item;
         const definition = Loots.reify<LootDefForType<Type>>(item);
 
         return new (
-            InventoryItemMapping[definition.itemType] as new (def: ReifiableDef<LootDefForType<Type>>, owner: Player, data?: ItemData<LootDefForType<Type>>) => Item
+            InventoryItemCtorMapping[definition.itemType] as new (def: ReifiableDef<LootDefForType<Type>>, owner: Player, data?: ItemData<LootDefForType<Type>>) => Item
         )(definition, this.owner, data);
     }
 
@@ -354,7 +364,7 @@ export class Inventory {
         slot: number,
         item: ReifiableItemOfType<Type>,
         data?: ItemData<LootDefForType<Type>>
-    ): InstanceType<(typeof InventoryItemMapping)[Type]> | undefined | null {
+    ): InstanceType<(typeof InventoryItemCtorMapping)[Type]> | undefined | null {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to set item in invalid slot '${slot}'`);
         if (slot === this.activeWeaponIndex) this.owner.setDirty();
         if (this.isLocked(slot)) return null;
@@ -377,7 +387,7 @@ export class Inventory {
         }
 
         // Drop old item into the game world and set the new item
-        const old = this.dropWeapon(slot) as InstanceType<(typeof InventoryItemMapping)[Type]>;
+        const old = this.dropWeapon(slot) as InstanceType<(typeof InventoryItemCtorMapping)[Type]>;
         this._setWeapon(slot, this._reifyItem(item, data));
 
         if (index !== undefined) {
@@ -484,7 +494,7 @@ export class Inventory {
         if (GameConstants.player.inventorySlotTypings[slot] === ItemType.Throwable) {
             this.removeThrowable(definition as ThrowableDefinition, true);
         } else {
-            if (item instanceof GunItem && (definition as GunDefinition).isDual) {
+            if (item.isGun && (definition as GunDefinition).isDual) {
                 this._dropItem((definition as DualGunNarrowing).singleVariant);
                 this._dropItem((definition as DualGunNarrowing).singleVariant);
             } else {
@@ -493,7 +503,7 @@ export class Inventory {
 
             this._setWeapon(slot, undefined);
 
-            if (item instanceof GunItem && item.ammo > 0) {
+            if (item.isGun && item.ammo > 0) {
                 // Put the ammo in the gun back in the inventory
                 this.giveItem((definition as GunDefinition).ammoType, item.ammo);
                 item.ammo = 0;
@@ -676,7 +686,7 @@ export class Inventory {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to upgrade to dual weapon in invalid slot '${slot}'`);
         if (
             !this.hasWeapon(slot)
-            || !(this.weapons[slot] instanceof GunItem)
+            || !this.weapons[slot]?.isGun
             || this.isLocked(slot)
         ) return false;
 

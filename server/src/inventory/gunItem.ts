@@ -15,14 +15,12 @@ import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import { getPatterningShape } from "../utils/misc";
 import { ReloadAction } from "./action";
-import { InventoryItem } from "./inventoryItem";
+import { InventoryItemBase } from "./inventoryItem";
 
 /**
  * A class representing a firearm
  */
-export class GunItem extends InventoryItem<GunDefinition> {
-    declare readonly category: ItemType.Gun;
-
+export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
     ammo = 0;
 
     private _consecutiveShots = 0;

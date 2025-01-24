@@ -11,7 +11,7 @@ import { type PlayerModifiers } from "@common/utils/objectDefinitions";
 import { Vector } from "@common/utils/vector";
 import { Config } from "./config";
 import { Airdrop, Game } from "./game";
-import { type InventoryItem } from "./inventory/inventoryItem";
+import type { InventoryItem } from "./inventory/inventory";
 import { Building } from "./objects/building";
 import { DamageParams } from "./objects/gameObject";
 import { Loot, type ItemData } from "./objects/loot";

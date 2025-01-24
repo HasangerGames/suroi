@@ -685,7 +685,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 && !(this.definition as DoorDef).automatic
             ) || (
                 this.definition.isActivatable === true
-                && (player.activeItem.idString === this.definition.requiredItem || !this.definition.requiredItem)
+                && (this.definition.requiredItem === undefined || player.activeItem.idString === this.definition.requiredItem)
                 && !this.activated
             )
         );

@@ -9,14 +9,12 @@ import { Vec } from "@common/utils/vector";
 import { type CollidableGameObject } from "../objects/gameObject";
 import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
-import { InventoryItem } from "./inventoryItem";
+import { InventoryItemBase } from "./inventoryItem";
 
 /**
  * A class representing a melee weapon
  */
-export class MeleeItem extends InventoryItem<MeleeDefinition> {
-    declare readonly category: ItemType.Melee;
-
+export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
     private _autoUseTimeoutID?: NodeJS.Timeout;
 
     /**

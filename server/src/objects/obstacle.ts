@@ -10,7 +10,7 @@ import { type FullData } from "@common/utils/objectsSerializations";
 import { Vec, type Vector } from "@common/utils/vector";
 import { getLootFromTable, LootItem } from "../utils/lootHelpers";
 import { type Game } from "../game";
-import { InventoryItem } from "../inventory/inventoryItem";
+import { InventoryItemBase } from "../inventory/inventoryItem";
 import { getRandomIDString } from "../utils/misc";
 import { type Building } from "./building";
 import { type Bullet } from "./bullet";
@@ -144,7 +144,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         const { amount, source, weaponUsed, position } = params;
         if (this.health === 0 || definition.indestructible) return;
 
-        const weaponIsItem = weaponUsed instanceof InventoryItem;
+        const weaponIsItem = weaponUsed instanceof InventoryItemBase;
         const weaponDef = weaponIsItem ? weaponUsed.definition : undefined;
         if (
             (

@@ -11,9 +11,7 @@ import { type Player } from "../objects/player";
 import { type ThrowableProjectile } from "../objects/throwableProj";
 import { CountableInventoryItem } from "./inventoryItem";
 
-export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
-    declare readonly category: ItemType.Throwable;
-
+export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwable) {
     count: number;
 
     private _activeHandler?: GrenadeHandler;

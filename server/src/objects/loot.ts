@@ -191,7 +191,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
             case ItemType.Gun: {
                 for (const weapon of inventory.weapons) {
                     if (
-                        weapon instanceof GunItem
+                        weapon?.isGun === true
                         && !weapon.definition.isDual
                         && weapon.definition.dualVariant
                         && weapon.definition === definition
@@ -323,7 +323,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                     const weapon = inventory.weapons[i];
 
                     if (
-                        weapon instanceof GunItem
+                        weapon?.isGun
                         && weapon.definition.dualVariant
                         && weapon.definition === definition
                     ) {
@@ -354,7 +354,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                         From here, the only way for the gun to make it into the inventory is for it to replace the active
                         weapon, which must be a different gun (dual weapons are already handled when we get here, so we ignore them)
                     */
-                    if (inventory.activeWeapon instanceof GunItem && definition !== inventory.activeWeapon.definition) {
+                    if (inventory.activeWeapon.isGun && definition !== inventory.activeWeapon.definition) {
                         if (player.action?.type === PlayerActions.Reload) {
                             player.action.cancel();
                         }
@@ -533,7 +533,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         // Reload active gun if the player picks up the correct ammo
         const activeWeapon = player.inventory.activeWeapon;
         if (
-            activeWeapon instanceof GunItem
+            activeWeapon.isGun
             && activeWeapon.ammo === 0
             && idString === activeWeapon.definition.ammoType
         ) {

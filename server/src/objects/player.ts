@@ -40,8 +40,8 @@ import { Config } from "../config";
 import { type Game } from "../game";
 import { HealingAction, ReloadAction, ReviveAction, type Action } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
-import { Inventory } from "../inventory/inventory";
-import { CountableInventoryItem, InventoryItem } from "../inventory/inventoryItem";
+import { Inventory, type InventoryItem } from "../inventory/inventory";
+import { CountableInventoryItem, InventoryItemBase } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
 import { ServerPerkManager, UpdatablePerkDefinition } from "../inventory/perkManager";
 import { ThrowableItem } from "../inventory/throwableItem";
@@ -374,7 +374,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if (
             !wasReload
             && value === undefined
-            && this.activeItem instanceof GunItem
+            && this.activeItem.isGun
             && this.activeItem.ammo <= 0
             && this.inventory.items.hasItem((this.activeItemDefinition as GunDefinition).ammoType)
         ) {
@@ -540,7 +540,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     weapon.refreshModifiers();
                 }
 
-                if (!(weapon instanceof GunItem)) return;
+                if (!weapon.isGun) return;
 
                 weapon.ammo = (weaponDef as GunDefinition).capacity;
                 const ammoPtr = (weaponDef as GunDefinition).ammoType;
@@ -1358,7 +1358,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                             return (item && {
                                 definition: item.definition,
-                                count: item instanceof GunItem
+                                count: item.isGun
                                     ? item.ammo
                                     : item instanceof CountableInventoryItem
                                         ? item.count
@@ -1779,7 +1779,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             })
         ) return;
 
-        const canTrackStats = weaponUsed instanceof InventoryItem;
+        const canTrackStats = weaponUsed instanceof InventoryItemBase;
         const attributes = canTrackStats ? weaponUsed.definition.wearerAttributes?.on : undefined;
         const sourceIsPlayer = source instanceof Player;
         const applyPlayerFX = sourceIsPlayer
@@ -1932,7 +1932,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     break;
                 }
                 case PerkIds.Berserker: {
-                    if (this.activeItem instanceof MeleeItem) {
+                    if (this.activeItem.isMelee) {
                         newModifiers.baseSpeed *= perk.speedMod;
                     }
                     break;
@@ -2113,7 +2113,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 ++player.kills;
                 if (
-                    (item instanceof GunItem || item instanceof MeleeItem)
+                    (item?.isGun || item?.isMelee)
                     && player.inventory.weapons.includes(item)
                 ) {
                     const kills = ++item.stats.kills;
@@ -2186,7 +2186,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.game.fullDirtyObjects.add(this);
         removeFrom(this.game.spectatablePlayers, this);
 
-        if (this.activeItem instanceof ThrowableItem) {
+        if (this.activeItem.isThrowable) {
             this.activeItem.stopUse();
         }
 
@@ -2329,7 +2329,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             if (sourceIsPlayer) {
                 this.downedBy = {
                     player: source,
-                    item: weaponUsed instanceof InventoryItem ? weaponUsed : undefined
+                    item: weaponUsed instanceof InventoryItemBase ? weaponUsed : undefined
                 };
 
                 if (source !== this) {
@@ -2559,7 +2559,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     break;
                 }
                 case InputActions.Reload:
-                    if (this.activeItem instanceof GunItem) {
+                    if (this.activeItem.isGun) {
                         this.activeItem.reload();
                     }
                     break;

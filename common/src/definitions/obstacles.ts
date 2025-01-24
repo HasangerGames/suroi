@@ -1,7 +1,7 @@
 import { Layers, TentTints, ZIndexes } from "../constants";
 import { type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
-import { type DeepPartial, type GetEnumMemberName, type Mutable } from "../utils/misc";
+import { type DeepPartial, type Mutable, type PredicateFor } from "../utils/misc";
 import { MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type ObjectDefinition, type RawDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { type GunDefinition } from "./guns";
@@ -43,25 +43,7 @@ export enum FlyoverPref {
     Never
 }
 
-// yes these two types are mostly copied from ./utils/gameObject.ts
-// when ts adds hkt's and better enum type support, i'll rewrite it to reduce repetition
-
-type PredicateFor<Role extends ObstacleSpecialRoles | undefined = ObstacleSpecialRoles | undefined> = ObstacleSpecialRoles extends Role
-    ? {
-        // if Cat === ObstacleSpecialRoles, then they should all be boolean | undefined; if not, narrow as appropriate
-        // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-        readonly [K in (keyof typeof ObstacleSpecialRoles & string) as `is${K}`]?: boolean | undefined
-    }
-    : Role extends undefined
-        ? {
-            // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-            readonly [K in (keyof typeof ObstacleSpecialRoles & string) as `is${K}`]?: false | undefined
-        }
-        : Readonly<Record<`is${GetName<NonNullable<Role>>}`, true>> & {
-            readonly [K in Exclude<ObstacleSpecialRoles, Role> as `is${GetName<K>}`]?: K extends GetName<NonNullable<Role>> ? never : false
-        };
-
-type GetName<Member extends number> = GetEnumMemberName<typeof ObstacleSpecialRoles, Member>;
+type PredicateForRole<Role extends ObstacleSpecialRoles | undefined = ObstacleSpecialRoles | undefined> = PredicateFor<typeof ObstacleSpecialRoles, Role>;
 
 type RawObstacleDefinition = ObjectDefinition & {
     readonly material: typeof Materials[number]
@@ -227,9 +209,9 @@ export type ObstacleRoleMixin = (
 
 export type ObstacleDefinition = RawObstacleDefinition & (
     {
-        [K in ObstacleSpecialRoles]: PredicateFor<K> & { readonly role: K }
+        [K in ObstacleSpecialRoles]: PredicateForRole<K> & { readonly role: K }
     }[ObstacleSpecialRoles]
-    | ({ readonly role?: undefined } & PredicateFor<undefined>)
+    | ({ readonly role?: undefined } & PredicateForRole<undefined>)
 );
 
 export enum RotationMode {

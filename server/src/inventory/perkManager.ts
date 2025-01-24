@@ -5,7 +5,6 @@ import { Skins } from "@common/definitions/skins";
 import { PerkManager } from "@common/utils/perkManager";
 import { weightedRandom } from "@common/utils/random";
 import { type Player } from "../objects/player";
-import { GunItem } from "./gunItem";
 
 export type UpdatablePerkDefinition = PerkDefinition & { readonly updateInterval: number };
 
@@ -80,7 +79,7 @@ export class ServerPerkManager extends PerkManager {
                     for (let i = 0; i < maxWeapons; i++) {
                         const weapon = weapons[i];
 
-                        if (!(weapon instanceof GunItem)) continue;
+                        if (!weapon?.isGun) continue;
 
                         const def = weapon.definition;
 
@@ -135,7 +134,7 @@ export class ServerPerkManager extends PerkManager {
                     for (let i = 0; i < maxWeapons; i++) {
                         const weapon = weapons[i];
 
-                        if (!(weapon instanceof GunItem)) continue;
+                        if (!weapon?.isGun) continue;
 
                         const def = weapon.definition;
                         const extra = weapon.ammo - def.capacity;
