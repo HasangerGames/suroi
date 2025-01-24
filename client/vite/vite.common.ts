@@ -64,7 +64,7 @@ const commonConfig: UserConfig = {
             logStats: false
         }),
         importPathsPlugin({
-            folders: ["public/audio/sfx/", "public/audio/ambience/"],
+            folders: ["public/audio/game/"],
             moduleName: "game-sounds"
         })
     ],

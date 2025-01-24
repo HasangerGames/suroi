@@ -300,7 +300,7 @@ export class Game {
         let menuMusicSuffix: string;
         if (game.console.getBuiltInCVar("cv_use_old_menu_music")) {
             menuMusicSuffix = "_old";
-        } else if (game.mode.sounds?.replace?.includes("menu_music")) {
+        } else if (game.mode.sounds?.replaceMenuMusic) {
             menuMusicSuffix = `_${game.modeName}`;
         } else {
             menuMusicSuffix = "";
