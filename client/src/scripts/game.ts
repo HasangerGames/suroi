@@ -251,6 +251,7 @@ export class Game {
             });
 
             const pixi = game.pixi;
+            pixi.stop();
             void loadTextures(
                 game.modeName,
                 pixi.renderer,
@@ -340,6 +341,7 @@ export class Game {
         this._socket.binaryType = "arraybuffer";
 
         this._socket.onopen = (): void => {
+            this.pixi.start();
             this.music?.stop();
             this.connecting = false;
             this.gameStarted = true;
@@ -442,6 +444,7 @@ export class Game {
         const ui = this.uiManager.ui;
 
         this._socket.onerror = (): void => {
+            this.pixi.stop();
             this.error = true;
             this.connecting = false;
             ui.splashMsgText.html(getTranslatedString("msg_err_joining"));
@@ -450,6 +453,7 @@ export class Game {
         };
 
         this._socket.onclose = (): void => {
+            this.pixi.stop();
             this.connecting = false;
             resetPlayButtons(this);
 
@@ -608,9 +612,8 @@ export class Game {
             this.soundManager.stopAll();
 
             ui.splashUi.fadeIn(400, () => {
-                if (this.music) {
-                    void this.music.play();
-                }
+                this.pixi.stop();
+                void this.music?.play();
                 ui.teamContainer.html("");
                 ui.actionContainer.hide();
                 ui.gameOverOverlay.hide();
