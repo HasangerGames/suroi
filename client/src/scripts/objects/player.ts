@@ -1459,36 +1459,39 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 if (weaponDef.animation) {
                     for (const frame of weaponDef.animation) {
                         const duration = frame.duration;
+                        const currentWeapon = this.activeItem;
                         this.addTimeout(() => {
-                            if (!weaponDef.fists.randomFist || !altFist) {
-                                this.anims.leftFist = this.game.addTween({
-                                    target: this.images.leftFist,
-                                    to: { x: frame.fists.left.x, y: frame.fists.left.y },
-                                    duration,
-                                    ease: EaseFunctions.sineIn
-                                });
-                            }
+                            if (this.activeItem === currentWeapon) {
+                                if (!weaponDef.fists.randomFist || !altFist) {
+                                    this.anims.leftFist = this.game.addTween({
+                                        target: this.images.leftFist,
+                                        to: { x: frame.fists.left.x, y: frame.fists.left.y },
+                                        duration,
+                                        ease: EaseFunctions.sineIn
+                                    });
+                                }
 
-                            if (altFist) {
-                                this.anims.rightFist = this.game.addTween({
-                                    target: this.images.rightFist,
-                                    to: { x: frame.fists.right.x, y: frame.fists.right.y },
-                                    duration,
-                                    ease: EaseFunctions.sineIn
-                                });
-                            }
+                                if (altFist) {
+                                    this.anims.rightFist = this.game.addTween({
+                                        target: this.images.rightFist,
+                                        to: { x: frame.fists.right.x, y: frame.fists.right.y },
+                                        duration,
+                                        ease: EaseFunctions.sineIn
+                                    });
+                                }
 
-                            if (weaponDef.image !== undefined) {
-                                this.anims.weapon = this.game.addTween({
-                                    target: this.images.weapon,
-                                    to: {
-                                        x: frame.image.position.x,
-                                        y: frame.image.position.y,
-                                        angle: frame.image.angle
-                                    },
-                                    duration,
-                                    ease: EaseFunctions.sineIn
-                                });
+                                if (weaponDef.image !== undefined) {
+                                    this.anims.weapon = this.game.addTween({
+                                        target: this.images.weapon,
+                                        to: {
+                                            x: frame.image.position.x,
+                                            y: frame.image.position.y,
+                                            angle: frame.image.angle
+                                        },
+                                        duration,
+                                        ease: EaseFunctions.sineIn
+                                    });
+                                }
                             }
                         }, previousDuration);
                         previousDuration += duration;
