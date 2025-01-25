@@ -396,11 +396,17 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 radius: 2.7,
                 offset: Vec.create(4, 0),
                 cooldown: 175,
+                reskins: ["winter"],
                 //  fireMode: FireMode.Auto, - todo
                 fists: {
                     animationDuration: 70,
                     left: Vec.create(29, -39),
                     right: Vec.create(44, 35)
+                },
+                image: {
+                    position: Vec.create(42, 66),
+                    angle: 135,
+                    lootScale: 0.85
                 },
                 animation: [
                     {
@@ -424,14 +430,19 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                             position: Vec.create(62, 64),
                             angle: 102
                         }
+                    },
+                    {
+                        duration: 85,
+                        fists: {
+                            left: Vec.create(29, -39),
+                            right: Vec.create(44, 35)
+                        },
+                        image: {
+                            position: Vec.create(42, 66),
+                            angle: 135
+                        }
                     }
-                ],
-                image: {
-                    position: Vec.create(62, 64),
-                    angle: 102,
-                    lootScale: 0.85
-                },
-                reskins: ["winter"]
+                ]
             },
             {
                 idString: "maul",
@@ -779,7 +790,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 },
                 animation: [
                     {
-                        duration: 1,
+                        duration: 10,
                         fists: {
                             left: Vec.create(57, 10),
                             right: Vec.create(31, 70)
@@ -790,7 +801,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                         }
                     },
                     {
-                        duration: 1,
+                        duration: 10,
                         fists: {
                             left: Vec.create(61, 10),
                             right: Vec.create(35, 70)

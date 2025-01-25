@@ -183,7 +183,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(game.colors.water),
             blood: new Container(),
             disguiseSprite: new SuroiSprite(),
-            backMeleeSprite: new SuroiSprite()
+            backMeleeSprite: new SuroiSprite().setZIndex(ZIndexes.Players + 0.1)
         };
 
         this.container.addChild(
