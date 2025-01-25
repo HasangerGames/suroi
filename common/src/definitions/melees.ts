@@ -404,7 +404,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 },
                 animation: [
                     {
-                        duration: 70,
+                        duration: 85,
                         fists: {
                             left: Vec.create(29, -39),
                             right: Vec.create(44, -25)
@@ -415,7 +415,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                         }
                     },
                     {
-                        duration: 70,
+                        duration: 85,
                         fists: {
                             left: Vec.create(29, -39),
                             right: Vec.create(44, 35)
