@@ -19,6 +19,8 @@ import { Player, type PlayerContainer } from "../objects/player";
 import { GamePlugin } from "../pluginManager";
 import { LootTables } from "./lootTables";
 import { getLootFromTable } from "../utils/lootHelpers";
+import { Backpacks } from "@common/definitions/backpacks";
+import { Armors } from "@common/definitions/armors";
 
 export interface RiverDefinition {
     readonly minAmount: number
@@ -1025,11 +1027,13 @@ const maps = {
         oceanSize: 16,
         onGenerate(map) {
             const { game } = map;
-            const pos = Vec.create(128, 128);
-            game.addLoot(Loots.fromString("gauze"), pos, 0);
-            game.addLoot(Loots.fromString("medikit"), pos, 0);
-            game.addLoot(Loots.fromString("cola"), pos, 0);
-            game.addLoot(Loots.fromString("tablets"), pos, 0);
+            let x = 88;
+            [
+                ...Armors.definitions,
+                ...Backpacks.definitions
+            ].map(({ idString }) => idString).filter(idString => idString !== "bag" && idString !== "developr_vest").forEach(loot => {
+                game.addLoot(Loots.fromString(loot), Vec.create(x = x + 8, 120), 0, { pushVel: 0, jitterSpawn: false });
+            });
         }
     },
     river: {
