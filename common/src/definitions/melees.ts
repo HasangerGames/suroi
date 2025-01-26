@@ -40,6 +40,7 @@ export type MeleeDefinition = InventoryItemDefinition & {
         // no relation to the ZIndexes enum
         readonly zIndex: number
         readonly angle?: number
+        readonly pivot?: Vector
         readonly lootScale?: number
         readonly separateWorldImage?: boolean
         readonly animated?: boolean
@@ -149,7 +150,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                             right: Vec.create(60, -10)
                         },
                         image: {
-                            position: Vec.create(100, -20),
+                            position: Vec.create(40, -50),
                             angle: -350
                         }
                     },
@@ -160,14 +161,15 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                             right: Vec.create(-10, 50)
                         },
                         image: {
-                            position: Vec.create(-65, 20),
+                            position: Vec.create(-45, 85),
                             angle: -110
                         }
                     }
                 ],
                 image: {
-                    position: Vec.create(-65, 20),
+                    position: Vec.create(-45, 85),
                     angle: -110,
+                    pivot: Vec.create(-65, 0),
                     lootScale: 0.55
                 }
             },

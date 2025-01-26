@@ -1204,6 +1204,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.altWeapon.setFrame(frame);
             this.images.weapon.setAngle(angle);
             this.images.altWeapon.setAngle(angle); // there's an ambiguity here as to whether the angle should be inverted or the same
+            this.images.weapon.setPivot(reference.image && "pivot" in reference.image && reference.image.pivot ? reference.image.pivot : Vec.create(0, 0));
 
             if (this.activeItem !== this._oldItem) {
                 this.anims.muzzleFlashFade?.kill();
