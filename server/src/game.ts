@@ -38,7 +38,6 @@ import { type Emote } from "./objects/emote";
 import { Explosion } from "./objects/explosion";
 import { type BaseGameObject, type GameObject } from "./objects/gameObject";
 import { Loot, type ItemData } from "./objects/loot";
-import { Obstacle } from "./objects/obstacle";
 import { Parachute } from "./objects/parachute";
 import { Player, type PlayerContainer } from "./objects/player";
 import { SyncedParticle } from "./objects/syncedParticle";
@@ -156,8 +155,6 @@ export class Game implements GameData {
         readonly position: Vector
         readonly direction: number
     }> = [];
-
-    readonly detectors: Obstacle[] = [];
 
     /**
      * All map pings this tick
@@ -370,11 +367,6 @@ export class Game implements GameData {
         // Handle explosions
         for (const explosion of this.explosions) {
             explosion.explode();
-        }
-
-        // Update detectors
-        for (const detector of this.detectors) {
-            detector.updateDetector();
         }
 
         // Update gas

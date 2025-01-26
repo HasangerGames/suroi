@@ -77,7 +77,6 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             }
             readonly variation?: Variation
             readonly activated?: boolean
-            readonly detectedMetal?: boolean
             readonly door?: {
                 readonly offset: number
                 readonly locked: boolean
@@ -361,7 +360,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                     rotation,
                     door,
                     activated,
-                    detectedMetal,
                     variation,
                     layer
                 }
@@ -381,7 +379,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 possibly one of:
                     - door stuff
                     - activation stuff
-                    - detector stuff stuff
             */
 
             // variations leave at least 5 vacant bits, which is enough for the rest of our data
@@ -408,10 +405,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             } else if (definition.isActivatable) {
                 // 1 bit
                 obstacleData += activated ? 1 : 0;
-                // will result in something like xxx0000x
-            } else if (definition.detector) {
-                // 1 bit
-                obstacleData += detectedMetal ? 1 : 0;
                 // will result in something like xxx0000x
             }
 
@@ -522,8 +515,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 };
             } else if (definition.isActivatable) {
                 data.activated = stream.readUint8() !== 0;
-            } else if (definition.detector) {
-                data.detectedMetal = stream.readUint8() !== 0;
             }
             */
             const obstacleData = stream.readUint8();
@@ -540,8 +531,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 };
             } else if (definition.isActivatable) {
                 data.activated = (obstacleData & 1) === 1;
-            } else if (definition.detector) {
-                data.detectedMetal = (obstacleData & 1) === 1;
             }
 
             switch (definition.rotationMode) {

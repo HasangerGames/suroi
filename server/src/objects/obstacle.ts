@@ -3,14 +3,13 @@ import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/defini
 import { PerkIds } from "@common/definitions/perks";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { equalLayer } from "@common/utils/layer";
 import { Angle, calculateDoorHitboxes, resolveStairInteraction } from "@common/utils/math";
 import { ItemType, NullString, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { Vec, type Vector } from "@common/utils/vector";
-import { getLootFromTable, LootItem } from "../utils/lootHelpers";
 import { type Game } from "../game";
 import { InventoryItemBase } from "../inventory/inventoryItem";
+import { getLootFromTable, LootItem } from "../utils/lootHelpers";
 import { getRandomIDString } from "../utils/misc";
 import { type Building } from "./building";
 import { type Bullet } from "./bullet";
@@ -59,8 +58,6 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override hitbox: Hitbox;
 
     puzzlePiece?: string | boolean;
-
-    detectedMetal?: boolean;
 
     constructor(
         game: Game,
@@ -135,8 +132,6 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         if (puzzlePiece) {
             this.parentBuilding?.puzzlePieces.push(this);
         }
-
-        if (this.definition.detector) game.detectors.push(this);
     }
 
     damage(params: DamageParams & { position?: Vector }): void {
@@ -436,18 +431,6 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         this.game.grid.updateObject(this);
     }
 
-    updateDetector(): void {
-        for (const object of this.game.grid.intersectsHitbox(this.spawnHitbox)) {
-            if (object.isPlayer) {
-                const player = object;
-
-                this.detectedMetal = this.hitbox.collidesWith(player.hitbox) && equalLayer(this.layer, player.layer);
-
-                this.setDirty();
-            }
-        }
-    }
-
     override get data(): FullData<ObjectCategory.Obstacle> {
         return {
             scale: this.scale,
@@ -463,8 +446,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 rotation: {
                     rotation: this.rotation,
                     orientation: this.rotation as Orientation
-                },
-                detectedMetal: this.detectedMetal
+                }
             }
         };
     }

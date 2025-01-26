@@ -110,18 +110,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 this.mountSpriteInitalized = true;
             }
 
-            if (this.definition.detector && full.detectedMetal && this.notOnCoolDown) {
-                this.game.soundManager.play("detection", {
-                    falloff: 0.25,
-                    position: Vec.create(this.position.x + 20, this.position.y - 20),
-                    maxRange: 200
-                });
-                this.notOnCoolDown = false;
-                setTimeout(() => {
-                    this.notOnCoolDown = true;
-                }, 1000);
-            }
-
             if (definition.invisible) this.container.visible = false;
 
             // If there are multiple particle variations, generate a list of variation image names

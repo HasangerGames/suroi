@@ -1,7 +1,7 @@
 import { InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize } from "@common/constants";
 import { ArmorType } from "@common/definitions/armors";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
-import { Emotes, type EmoteDefinition } from "@common/definitions/emotes";
+import { Emotes } from "@common/definitions/emotes";
 import { type DualGunNarrowing } from "@common/definitions/guns";
 import { Loots } from "@common/definitions/loots";
 import type { ColorKeys, Mode, ModeDefinition } from "@common/definitions/modes";
@@ -19,7 +19,7 @@ import { PickupPacket } from "@common/packets/pickupPacket";
 import { ReportPacket } from "@common/packets/reportPacket";
 import { UpdatePacket, type UpdatePacketDataOut } from "@common/packets/updatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer } from "@common/utils/layer";
+import { adjacentOrEqualLayer, equalLayer } from "@common/utils/layer";
 import { EaseFunctions, Geometry } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
 import { ItemType, ObstacleSpecialRoles } from "@common/utils/objectDefinitions";
@@ -59,10 +59,10 @@ import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
 import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
+import { DebugRenderer } from "./utils/debugRenderer";
 import { setUpNetGraph } from "./utils/graph/netGraph";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
-import { DebugRenderer } from "./utils/debugRenderer";
 
 /* eslint-disable @stylistic/indent */
 
@@ -1041,6 +1041,23 @@ export class Game {
                     }
                 } else if (isBuilding) {
                     object.toggleCeiling();
+                } else if (isObstacle && object.definition.detector && object.notOnCoolDown) {
+                    for (const player of this.objects.getCategory(ObjectCategory.Player)) {
+                        if (
+                            !object.hitbox.collidesWith(player.hitbox)
+                            || !equalLayer(object.layer, player.layer)
+                            || player.dead
+                        ) continue;
+
+                        this.soundManager.play("detection", {
+                            falloff: 0.25,
+                            position: Vec.create(object.position.x + 20, object.position.y - 20),
+                            maxRange: 200
+                        });
+
+                        object.notOnCoolDown = false;
+                        setTimeout(() => object.notOnCoolDown = true, 1000);
+                    }
                 }
             }
 
