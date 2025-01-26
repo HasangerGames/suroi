@@ -739,29 +739,35 @@ export function setUpCommands(game: Game): void {
         }
     );
 
+    const showEmoteWheel = (): void => {
+        if (!game.inputManager.pingWheelMinimap) {
+            game.inputManager.pingWheelPosition = Vec.clone(game.inputManager.gameMousePosition);
+        }
+
+        const { mouseX, mouseY } = game.inputManager;
+        const scale = game.console.getBuiltInCVar("cv_ui_scale");
+
+        game.uiManager.ui.emoteWheel
+            .css("left", `${mouseX / scale}px`)
+            .css("top", `${mouseY / scale}px`)
+            .css("background-image", 'url("./img/misc/emote_wheel.svg")')
+            .show();
+        game.inputManager.emoteWheelPosition = Vec.create(mouseX, mouseY);
+    };
+
     Command.createInvertiblePair(
         "emote_wheel",
         function() {
+            if (game.inputManager.emoteWheelActive) return;
+
+            game.inputManager.emoteWheelActive = true;
+
             if (
-                game.console.getBuiltInCVar("cv_hide_emotes")
+                (game.console.getBuiltInCVar("cv_hide_emotes") && !this.inputManager.pingWheelActive)
                 || this.gameOver
-                || this.inputManager.emoteWheelActive
             ) return;
-            const { mouseX, mouseY } = this.inputManager;
 
-            const scale = this.console.getBuiltInCVar("cv_ui_scale");
-
-            if (!this.inputManager.pingWheelMinimap) {
-                this.inputManager.pingWheelPosition = Vec.clone(this.inputManager.gameMousePosition);
-            }
-
-            this.uiManager.ui.emoteWheel
-                .css("left", `${mouseX / scale}px`)
-                .css("top", `${mouseY / scale}px`)
-                .css("background-image", 'url("./img/misc/emote_wheel.svg")')
-                .show();
-            this.inputManager.emoteWheelActive = true;
-            this.inputManager.emoteWheelPosition = Vec.create(mouseX, mouseY);
+            showEmoteWheel();
         },
         function() {
             if (!this.inputManager.emoteWheelActive) return;
@@ -806,10 +812,25 @@ export function setUpCommands(game: Game): void {
     Command.createInvertiblePair(
         "map_ping_wheel",
         function() {
+            if (
+                game.console.getBuiltInCVar("cv_hide_emotes")
+                && this.inputManager.emoteWheelActive
+                && !this.inputManager.pingWheelActive
+            ) {
+                showEmoteWheel();
+            }
+
             this.inputManager.pingWheelActive = true;
             this.uiManager.updateEmoteWheel();
         },
         function() {
+            if (game.console.getBuiltInCVar("cv_hide_emotes")) {
+                this.uiManager.ui.emoteWheel.hide();
+                this.inputManager.emoteWheelActive = false;
+                this.inputManager.pingWheelMinimap = false;
+                this.inputManager.selectedEmote = undefined;
+            }
+
             this.inputManager.pingWheelActive = false;
             this.uiManager.updateEmoteWheel();
         },

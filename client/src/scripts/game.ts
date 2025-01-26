@@ -1,7 +1,7 @@
 import { InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize } from "@common/constants";
 import { ArmorType } from "@common/definitions/armors";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
-import { Emotes } from "@common/definitions/emotes";
+import { Emotes, type EmoteDefinition } from "@common/definitions/emotes";
 import { type DualGunNarrowing } from "@common/definitions/guns";
 import { Loots } from "@common/definitions/loots";
 import type { ColorKeys, Mode, ModeDefinition } from "@common/definitions/modes";
@@ -855,7 +855,11 @@ export class Game {
         }
 
         for (const emote of updateData.emotes ?? []) {
-            if (this.console.getBuiltInCVar("cv_hide_emotes")) break;
+            if (
+                this.console.getBuiltInCVar("cv_hide_emotes")
+                && !("itemType" in emote.definition) // Never hide team emotes (ammo & healing items)
+            ) break;
+
             const player = this.objects.get(emote.playerID);
             if (player?.isPlayer) {
                 player.showEmote(emote.definition);
