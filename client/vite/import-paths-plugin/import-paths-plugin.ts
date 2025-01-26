@@ -33,7 +33,7 @@ export function importPathsPlugin(
         paths = pluginConfig.folders.map(
             p => readDirectory(path.join(config.root, p))
                 .map(p => {
-                    return `./${path.relative(config.publicDir, p)}`;
+                    return `./${path.relative(config.publicDir, p)}`.replace(/\\/g, "/");
                 })
         ).flat();
     };
