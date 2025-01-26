@@ -127,36 +127,47 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 cooldown: 340,
                 fists: {
                     animationDuration: 150,
-                    left: Vec.create(55, -15),
-                    right: Vec.create(45, 0)
+                    left: Vec.create(-30, 40),
+                    right: Vec.create(-10, 50)
                 },
                 animation: [
+                    // {
+                    //     duration: 1500,
+                    //     fists: {
+                    //         left: Vec.create(25, 45),
+                    //         right: Vec.create(35, 65)
+                    //     },
+                    //     image: {
+                    //         position: Vec.create(65, 100),
+                    //         angle: -260
+                    //     }
+                    // },
                     {
-                        duration: 150,
+                        duration: 1500,
                         fists: {
-                            left: Vec.create(28, -15),
-                            right: Vec.create(50, -15)
+                            left: Vec.create(50, -5),
+                            right: Vec.create(60, -10)
                         },
                         image: {
-                            position: Vec.create(115, -14),
-                            angle: 45
+                            position: Vec.create(100, -20),
+                            angle: -350
                         }
                     },
                     {
-                        duration: 150,
+                        duration: 1500,
                         fists: {
-                            left: Vec.create(55, -15),
-                            right: Vec.create(45, 0)
+                            left: Vec.create(-30, 40),
+                            right: Vec.create(-10, 50)
                         },
                         image: {
-                            position: Vec.create(35, 45),
-                            angle: 155
+                            position: Vec.create(-65, 20),
+                            angle: -110
                         }
                     }
                 ],
                 image: {
-                    position: Vec.create(35, 45),
-                    angle: 155,
+                    position: Vec.create(-65, 20),
+                    angle: -110,
                     lootScale: 0.55
                 }
             },
