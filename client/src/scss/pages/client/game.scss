@@ -108,10 +108,15 @@
         }
 
         @media screen and (max-height: 465px) and (max-width: variables.$screen_large) {
-            right: 85px;
+            right: 100px;
             width: auto;
             border-radius: 5px;
+            padding: 0;
             bottom: 218px;
+        }
+
+        @media screen and (min-width: variables.$screen_large) and (max-height: 720px) {
+            justify-content: center;
         }
     }
 }
@@ -250,10 +255,11 @@
     width: max-content;
 
     position: absolute;
-    transform: scale(85%);
+    transform: scale(60%);
     transform-origin: 0% 0%;
     left: 240px;
     top: 10px;
+
 
     @media screen and (max-height: variables.$screen-large) and (max-width: variables.$screen_large) {
         flex-direction: column;
@@ -351,7 +357,7 @@
     display: flex;
     position: absolute;
     top: 15px;
-    right: 185px;
+    right: 120px;
     margin-left: auto;
     width: max-content;
     background: palette.$transparent_bg;
@@ -359,16 +365,12 @@
     padding: 8px 12px 8px 12px;
     gap: 10px;
     @media screen and (max-width: variables.$screen_large) {
-        top: 7px;
-        right: 90px;
+        top: 0;
+        right: 95px;
         padding: 4px 5px 4px 8px;
         gap: 5px;
         height: 26px;
         border-radius: 4px;
-    }
-
-    @media screen and (max-width: variables.$screen_medium) {
-        display: none;
     }
 
     #kill-leader-leader-container {
@@ -388,6 +390,18 @@
             .badge-icon {
                 width: 12px;
             }
+        }
+    }
+
+    @media screen and (max-width: variables.$screen_medium) {
+        padding: 0 12px 0 10px;
+        right: 75px;
+
+        #kill-leader-leader-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
         }
     }
 }
@@ -460,21 +474,33 @@
                 font-size: 25px;
             }
         }
+
+        @media screen and (min-width: variables.$screen_large) and (max-height: 720px) {
+            width: auto;
+            height: auto;
+            padding: 0 5px 0 10px;
+
+            .counter-text {
+                font-size: 45px;
+            }
+        }
     }
 
     #kill-feed {
-        margin-right: 185px;
+        margin-right: 120px;
         margin-top: -10px;
         @media screen and (max-width: variables.$screen_large) {
-            margin-right: 90px;
-            margin-top: 0px;
+            margin-right: 20px;
+            margin-top: -12px;
+            transform: scale(70%);
+            transform-origin: 0% 0%;
         }
         @media screen and (max-width: variables.$screen_medium) {
-            margin-right: 5px;
+            margin-right: 0;
         }
         @media screen and (max-width: variables.$screen_medium) and (max-height: 500px) {
             margin-top: -40px;
-            margin-right: 80px;
+            margin-right: 0;
         }
         .kill-feed-item {
             max-width: fit-content;
@@ -551,7 +577,7 @@
 
     #action-timer {
         position: relative;
-        top: -10%;
+        top: 25px;
         text-align: center;
         justify-content: center;
         @include variables.drop-shadow;
@@ -614,6 +640,10 @@
     background-color: palette.$transparent_bg;
     padding: 8px;
     border-radius: 5px;
+
+    @media screen and (max-height: variables.$screen_small) {
+        padding: 3px 5px 3px 5px;
+    }
 }
 
 #interact-key {
@@ -639,7 +669,6 @@
     @media screen and (max-width: variables.$screen-large) {
         width: 20px;
         height: 20px;
-        vertical-align: middle;
 
         img {
             width: 15px;
@@ -650,17 +679,27 @@
 
 #interact-text {
     font-size: 20px;
+    position: relative;
+    top: 2.5px;
     @include variables.text-shadow;
 
     @media screen and (max-width: variables.$screen-large) {
         font-size: 15px;
-        margin-bottom: 5px;
+        top: 0;
+    }
+
+    @media screen and (min-width: variables.$screen_large) and (max-height: 720px) {
+        top: 0;
     }
 }
 
 #interact-key.active + #interact-text {
     position: relative;
     top: 3px;
+
+    @media screen and (max-width: variables.$screen-large) {
+        top: 0.95px;
+    }
 }
 
 #weapon-ammo-container {
@@ -1039,7 +1078,7 @@
 
     @media screen and (max-width: variables.$screen_large) {
         width: 220px;
-        bottom: 60px;
+        bottom: 105px;
         font-size: 12px;
 
         .badge-icon {
@@ -1065,6 +1104,18 @@
             font-size: 22px;
         }
     }
+
+    @media screen and (max-width: variables.$screen_large) and (max-height: variables.$screen_large) {
+        bottom: 102px;
+
+        #kill-msg-cont {
+            font-size: 10px;
+        }
+
+        #kill-msg-kills {
+            font-size: 15px;;
+        }
+    }
 }
 
 #gas-and-debug {
@@ -1080,7 +1131,8 @@
 
     #gas-msg-info {
         font-weight: bold;
-        font-size: 36px;
+        font-size: 33px;
+        width: 600px;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
 
         @media screen and (max-width: variables.$screen_large) {
@@ -1195,12 +1247,42 @@
                 }
             }
 
-            @media screen and (max-height: 465px) and (max-width: variables.$screen_large) {
+            @media screen and (max-width: variables.$screen_large) and (max-width: variables.$screen_large) {
+                position: relative;
+                left: 5px;
                 width: auto;
-                height: 20px;
-                gap: 0.25px;
-                padding: 2.5px;
+                height: 25px;
+                padding: 2px;
                 flex-direction: row;
+
+                span {
+                    font-size: 12px;
+                }
+                
+                img {
+                    width: 20px;
+                }
+            }
+
+            @media screen and (min-width: variables.$screen_large) and (max-height: 720px) {
+                position: relative;
+                left: 5px;
+                width: auto;
+                height: auto;
+                gap: 1px;
+                padding: 5px;
+                flex-direction: row;
+                margin: 0.5px;
+
+                span {
+                    font-weight: bold;
+                    font-size: 18px;
+                }
+
+                img {
+                    vertical-align: middle;
+                    width: 35px;
+                }
             }
         }
 
@@ -1525,7 +1607,7 @@
     gap: 5px;
 
     @media screen and (min-width: variables.$screen_large) and (max-height: 720px) {
-        bottom: 370px;
+        bottom: 415px;
     }
 
     @media screen and (max-width: variables.$screen_large) {

@@ -382,9 +382,11 @@ export class UIManager {
     }
 
     cancelAction(): void {
-        this.ui.actionContainer
-            .hide()
-            .stop();
+        if (!UI_DEBUG_MODE) {
+            this.ui.actionContainer
+                .hide()
+                .stop();
+        }
         this.action.active = false;
     }
 
@@ -877,7 +879,7 @@ export class UIManager {
         const activeWeapon = inventory.weapons[activeIndex];
         const count = activeWeapon?.count;
 
-        if (activeWeapon === undefined || count === undefined || UI_DEBUG_MODE) {
+        if (activeWeapon === undefined || count === undefined) {
             this.ui.ammoCounterContainer.hide();
         } else {
             this.ui.ammoCounterContainer.show();

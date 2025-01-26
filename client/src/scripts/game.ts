@@ -591,7 +591,7 @@ export class Game {
         ui.killLeaderCount.text("0");
         ui.spectateKillLeader.addClass("btn-disabled");
 
-        ui.teamContainer.toggle(this.teamMode);
+        if (!UI_DEBUG_MODE) ui.teamContainer.toggle(this.teamMode);
     }
 
     async endGame(): Promise<void> {
@@ -1159,7 +1159,7 @@ export class Game {
                         if (player.downed && (object?.isLoot || (object?.isObstacle && object.definition.noInteractMessage))) interactMsg.hide();
                     }
                 } else {
-                    interactMsg.hide();
+                   if (!UI_DEBUG_MODE) interactMsg.hide();
                 }
 
                 // Mobile stuff
