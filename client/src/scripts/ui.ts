@@ -769,8 +769,8 @@ export async function setUpUI(game: Game): Promise<void> {
             link: "https://www.youtube.com/@123op."
         },
         {
-            name: "bruh button official",
-            link: "https://www.youtube.com/@bruhbuttonofficial4658"
+            name: "$parkySKULL",
+            link: "https://www.youtube.com/@Skullboi249"
         },
         {
             name: "viper",
