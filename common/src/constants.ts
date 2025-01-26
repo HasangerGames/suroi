@@ -79,7 +79,8 @@ export const GameConstants = freezeDeep({
         callerLimit: 3
     },
     riverPadding: 64,
-    trailPadding: 384
+    trailPadding: 384,
+    explosionRayDistance: 2
 });
 
 export enum ZIndexes {

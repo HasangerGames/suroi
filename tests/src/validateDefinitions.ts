@@ -2525,20 +2525,11 @@ logger.indent("Validating modes", () => {
                 errorPath
             );
 
-            tester.assertValidOrNPV({
-                obj: mode,
-                field: "sounds",
-                defaultValue: {},
-                equalityFunction: a => Object.keys(a).length === 0,
-                validatorIfPresent(sounds, baseErrorPath) {
-                    tester.assertNoPointlessValue({
-                        obj: sounds,
-                        field: "replace",
-                        defaultValue: [],
-                        equalityFunction: a => a.length === 0,
-                        baseErrorPath
-                    });
-                },
+            tester.assertNoPointlessValue({
+                obj: mode.sounds,
+                field: "foldersToLoad",
+                defaultValue: [],
+                equalityFunction: a => a.length === 0,
                 baseErrorPath: tester.createPath(errorPath, "sounds")
             });
 

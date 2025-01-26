@@ -4,8 +4,8 @@ import { getEffectiveZIndex } from "@common/utils/layer";
 import { Numeric } from "@common/utils/math";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { type Game } from "../game";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
-import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
 
 export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParticle) {
@@ -86,8 +86,6 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
             this.container.rotation = this.rotation;
             this.container.scale.set(this._scale);
         }
-
-        this.updateDebugGraphics();
     }
 
     override updateZIndex(): void {
@@ -95,16 +93,22 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
     }
 
     override updateDebugGraphics(): void {
-        if (!HITBOX_DEBUG_MODE || !this.definition.hitbox) return;
+        if (!DEBUG_CLIENT) return;
+        if (!this.definition.hitbox) return;
 
-        this.debugGraphics.clear();
-
-        drawHitbox(
+        this.game.debugRenderer.addHitbox(
             this.definition.hitbox.transform(this.position, this._scale),
             HITBOX_COLORS.obstacleNoCollision,
-            this.debugGraphics,
-            this.layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY
+            undefined,
+            this.layer === this.game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
         );
+    }
+
+    override update(): void { /* bleh */ }
+    override updateInterpolation(): void {
+        this.updateContainerPosition();
+        this.updateContainerRotation();
+        this.updateContainerScale();
     }
 
     override destroy(): void {

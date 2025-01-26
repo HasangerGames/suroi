@@ -28,12 +28,13 @@ import { getTranslatedString } from "../../translations";
 import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { BULLET_WHIZ_SCALE, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
-import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { BULLET_WHIZ_SCALE, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE } from "../utils/constants";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
+import type { DebugRenderer } from "../utils/debugRenderer";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -285,6 +286,17 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.teammateName.container.position = Vec.addComponent(this.container.position, 0, 95);
                 this.teammateName.container.zIndex = getEffectiveZIndex(ZIndexes.TeammateName, this.layer, this.game.layer);
             }
+        }
+    }
+
+    override update(): void {
+        this.updateGrenadePreview();
+    }
+
+    override updateInterpolation(): void {
+        this.updateContainerPosition();
+        if (!this.isActivePlayer || !this.game.console.getBuiltInCVar("cv_responsive_rotation") || this.game.spectating) {
+            this.updateContainerRotation();
         }
     }
 
@@ -809,16 +821,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             // @ts-expect-error 'item' not existing is okay
             this.action = action;
         }
-
-        if (this.isActivePlayer && layerChanged && HITBOX_DEBUG_MODE) {
-            game.addTimeout(() => {
-                for (const object of game.objects) {
-                    object.updateDebugGraphics();
-                }
-            }, 0);
-        }
-
-        this.updateDebugGraphics();
     }
 
     updateGrenadePreview(): void {
@@ -925,94 +927,62 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         }
     }
 
-    override updateDebugGraphics(): void {
-        if (!HITBOX_DEBUG_MODE) return;
+    override updateDebugGraphics(debugRenderer: DebugRenderer): void {
+        if (!DEBUG_CLIENT) return;
 
-        const ctx = this.debugGraphics;
-        ctx.clear();
-        const alpha = this.layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY;
-
-        drawHitbox(this._hitbox, HITBOX_COLORS.player, ctx, alpha);
+        debugRenderer.addHitbox(this.hitbox, HITBOX_COLORS.player);
+        const alpha = this.layer === this.game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY;
 
         if (this.downed) {
-            drawHitbox(new CircleHitbox(5, this.position), HITBOX_COLORS.obstacleNoCollision, ctx, alpha);
-            // revival range
+            debugRenderer.addCircle(5, this.position, HITBOX_COLORS.obstacleNoCollision, undefined, alpha);
         }
 
         const renderMeleeReflectionSurface = (surface: { pointA: Vector, pointB: Vector }): void => {
-            ctx.setStrokeStyle({
-                color: HITBOX_COLORS.playerWeapon,
-                width: 2,
-                alpha
-            });
-
-            const start = toPixiCoords(
-                Vec.add(
-                    this.position,
-                    Vec.rotate(surface.pointA, this.rotation)
-                )
+            const start = Vec.add(
+                this.position,
+                Vec.rotate(surface.pointA, this.rotation)
             );
 
-            const lineEnd = toPixiCoords(
-                Vec.add(
-                    this.position,
-                    Vec.rotate(surface.pointB, this.rotation)
-                )
-            );
+            const lineEnd = (Vec.add(
+                this.position,
+                Vec.rotate(surface.pointB, this.rotation)
+            ));
 
-            ctx.moveTo(start.x, start.y);
-            ctx.lineTo(lineEnd.x, lineEnd.y);
-            ctx.stroke();
+            debugRenderer.addLine(start, lineEnd, HITBOX_COLORS.playerWeapon, undefined, alpha);
         };
 
         switch (this.activeItem.itemType) {
             case ItemType.Gun: {
-                ctx.setStrokeStyle({
-                    color: HITBOX_COLORS.playerWeapon,
-                    width: 4,
-                    alpha
-                });
                 const offset = this.activeItem.bulletOffset ?? 0;
 
-                const start = toPixiCoords(
-                    Vec.add(
-                        this.position,
-                        Vec.scale(
-                            Vec.rotate(Vec.create(0, offset), this.rotation),
-                            this.sizeMod
-                        )
-                    )
-                );
+                const start = Vec.add(this.position,
+                    Vec.scale(
+                        Vec.rotate(Vec.create(0, offset), this.rotation),
+                        this.sizeMod
+                    ));
 
-                const lineEnd = toPixiCoords(
-                    Vec.add(
-                        this.position,
-                        Vec.scale(
-                            Vec.rotate(Vec.create(this.activeItem.length, offset), this.rotation),
-                            this.sizeMod
-                        )
-                    )
+                debugRenderer.addRay(
+                    start,
+                    this.rotation,
+                    this.activeItem.length,
+                    HITBOX_COLORS.playerWeapon,
+                    4,
+                    alpha
                 );
-
-                ctx.moveTo(start.x, start.y);
-                ctx.lineTo(lineEnd.x, lineEnd.y);
-                ctx.stroke();
                 break;
             }
             case ItemType.Melee: {
-                drawHitbox(
-                    new CircleHitbox(
-                        this.activeItem.radius * this.sizeMod,
-                        Vec.add(
-                            this.position,
-                            Vec.scale(
-                                Vec.rotate(this.activeItem.offset, this.rotation),
-                                this.sizeMod
-                            )
+                debugRenderer.addCircle(
+                    this.activeItem.radius * this.sizeMod,
+                    Vec.add(
+                        this.position,
+                        Vec.scale(
+                            Vec.rotate(this.activeItem.offset, this.rotation),
+                            this.sizeMod
                         )
                     ),
                     HITBOX_COLORS.playerWeapon,
-                    ctx,
+                    undefined,
                     alpha
                 );
                 if (this.activeItem.reflectiveSurface) {
@@ -1188,10 +1158,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         const imagePresent = image !== undefined;
         if (imagePresent) {
-            let frame = `${reference.idString}${
-                weaponDef.itemType === ItemType.Gun || (image as NonNullable<MeleeDefinition["image"]>).separateWorldImage
-                    ? "_world"
-                    : ""
+            let frame = `${reference.idString}${weaponDef.itemType === ItemType.Gun || (image as NonNullable<MeleeDefinition["image"]>).separateWorldImage
+                ? "_world"
+                : ""
             }`;
 
             if (weaponDef.itemType === ItemType.Throwable && this.halloweenThrowableSkin && !weaponDef.noSkin) {

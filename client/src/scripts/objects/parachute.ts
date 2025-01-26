@@ -9,6 +9,7 @@ import { type GameSound } from "../managers/soundManager";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
+import type { DebugRenderer } from "../utils/debugRenderer";
 
 export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
     private readonly image = new SuroiSprite("airdrop_parachute");
@@ -16,6 +17,8 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
     private scaleAnim?: Tween<Vector>;
 
     private fallSound?: GameSound;
+
+    height = 0;
 
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Parachute]) {
         super(game, id);
@@ -39,7 +42,7 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
                 }
             );
         }
-
+        this.height = data.height;
         const scale = Numeric.lerp(0.5, 1, data.height);
         if (isNew) {
             this.container.scale.set(scale);
@@ -85,6 +88,16 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
 
     override updateZIndex(): void {
         this.container.zIndex = 994; // gas is 996 ig
+    }
+
+    override update(): void { /* bleh */ }
+
+    override updateInterpolation(): void { /* bleh */ }
+
+    override updateDebugGraphics(debugRenderer: DebugRenderer): void {
+        if (!DEBUG_CLIENT) return;
+
+        debugRenderer.addCircle(this.height, this.position);
     }
 
     destroy(): void {

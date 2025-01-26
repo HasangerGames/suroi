@@ -3,8 +3,7 @@ import { Color } from "pixi.js";
 
 export const FORCE_MOBILE = false;
 export const UI_DEBUG_MODE = false;
-export const HITBOX_DEBUG_MODE = false;
-export const DIFF_LAYER_HITBOX_OPACITY = 0;
+export const DIFF_LAYER_HITBOX_OPACITY = 0.25;
 export const FOOTSTEP_HITBOX_LAYER = Layer.Ground;
 
 export const LAYER_TRANSITION_DELAY = 200;
@@ -18,11 +17,12 @@ export const HITBOX_COLORS = {
     buildingZoomCeiling: new Color("purple"),
     buildingScopeCeiling: new Color("cyan"),
     buildingVisOverride: new Color("teal"),
-    bulletMask: new Color("fuchsia"),
+    bulletMask: new Color("fuchsia"), // me when this is the same as magenta
     landHitbox: new Color("orangered"),
     loot: new Color("magenta"),
     player: new Color("blue"),
-    playerWeapon: new Color("lime")
+    playerWeapon: new Color("lime"),
+    projectiles: new Color("#ba31ff")
 };
 
 export const TEAMMATE_COLORS = [

@@ -1,5 +1,5 @@
 import { ObjectCategory, ZIndexes } from "@common/constants";
-import { type BuildingDefinition } from "@common/definitions/buildings";
+import { type BuildingDefinition, type BuildingImageDefinition } from "@common/definitions/buildings";
 import { MaterialSounds } from "@common/definitions/obstacles";
 import { type Orientation } from "@common/typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
@@ -11,20 +11,20 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { Container, Graphics } from "pixi.js";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
-import { drawGroundGraphics, drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE } from "../utils/constants";
+import { drawGroundGraphics, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
+import type { DebugRenderer } from "../utils/debugRenderer";
 
 export class Building extends GameObject.derive(ObjectCategory.Building) {
-    readonly ceilingContainer: Container;
-
     definition!: BuildingDefinition;
 
     hitbox?: Hitbox;
 
     graphics?: Graphics;
 
+    ceilingContainer = new Container({ sortableChildren: true });
     ceilingHitbox?: Hitbox;
     ceilingTween?: Tween<Container>;
 
@@ -32,7 +32,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
     ceilingVisible = false;
 
-    errorSeq?: boolean;
+    puzzle: ObjectsNetData[ObjectCategory.Building]["puzzle"];
 
     sound?: GameSound;
 
@@ -44,16 +44,19 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
     mask?: Graphics;
 
-    spinningImages?: Map<SuroiSprite, number>;
-    spinOnSolveImages?: Map<SuroiSprite, number>;
+    images = new Map<BuildingImageDefinition, {
+        isCeiling: boolean
+        sprite: SuroiSprite
+    }>();
 
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Building]) {
         super(game, id);
 
-        this.ceilingContainer = new Container();
-        this.game.camera.addObject(this.ceilingContainer);
-
         this.layer = data.layer;
+
+        this.container.sortableChildren = true;
+
+        this.game.camera.addObject(this.ceilingContainer);
 
         this.updateFromData(data, true);
     }
@@ -74,13 +77,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             const playerHitbox = new CircleHitbox(visionSize, player.position);
 
             const hitboxes = this.ceilingHitbox instanceof GroupHitbox ? this.ceilingHitbox.hitboxes : [this.ceilingHitbox];
-
-            let graphics: Graphics | undefined;
-            if (HITBOX_DEBUG_MODE) {
-                graphics = new Graphics();
-                graphics.zIndex = 100;
-                this.game.camera.addObject(graphics);
-            }
 
             for (const hitbox of hitboxes) {
                 // find the direction to cast rays
@@ -113,20 +109,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
                 const direction = collision?.dir;
                 if (direction) {
-                    /* if (HITBOX_DEBUG_MODE) {
-                        graphics?.setStrokeStyle({
-                            color: 0xff0000,
-                            width: 0.1
-                        });
-
-                        graphics?.fill();
-                        graphics?.scale.set(PIXI_SCALE);
-
-                        this.addTimeout(() => {
-                            graphics?.destroy();
-                        }, 30);
-                    } */
-
                     const angle = Math.atan2(direction.y, direction.x);
 
                     let collided = false;
@@ -150,12 +132,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                             // what's the point of this assignment?
                             collided = true;
                             continue;
-                        }
-
-                        if (graphics) {
-                            graphics.moveTo(player.position.x, player.position.y);
-                            graphics.lineTo(end.x, end.y);
-                            graphics.fill();
                         }
 
                         if (!(
@@ -212,37 +188,10 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 ? Array.from({ length: definition.particleVariations }, (_, i) => `${particleImage}_${i + 1}`)
                 : [particleImage];
 
-            for (const image of definition.floorImages) {
-                const sprite = new SuroiSprite(image.key);
-                sprite.setVPos(toPixiCoords(image.position));
-                if (image.tint !== undefined) sprite.setTint(image.tint);
-                if (image.rotation) sprite.setRotation(image.rotation);
-                if (image.scale) sprite.scale = image.scale;
-                if (image.zIndex !== undefined) sprite.setZIndex(image.zIndex);
-                if (image.spinSpeed) {
-                    if (image.spinOnSolve && !data.puzzle?.solved) {
-                        (this.spinOnSolveImages ??= new Map<SuroiSprite, number>()).set(sprite, image.spinSpeed);
-                    } else {
-                        (this.spinningImages ??= new Map<SuroiSprite, number>()).set(sprite, image.spinSpeed);
-                        this.game.spinningImages.set(sprite, image.spinSpeed);
-                    }
-                }
-                this.container.addChild(sprite);
-            }
-
             this.layer = data.layer;
             const pos = toPixiCoords(this.position);
             this.container.position.copyFrom(pos);
             this.ceilingContainer.position.copyFrom(pos);
-
-            this.ceilingContainer.zIndex = getEffectiveZIndex(
-                definition.ceilingZIndex,
-                this.layer + Numeric.clamp(Math.max( // make sure the ceiling appears over everything else
-                    ...this.definition.obstacles.map(({ layer }) => layer ?? 0),
-                    ...this.definition.subBuildings.map(({ layer }) => layer ?? 0)
-                ), 0, Infinity),
-                this.game.layer
-            );
 
             this.orientation = full.orientation;
             this.rotation = Angle.orientationToRotation(this.orientation);
@@ -375,26 +324,16 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 );
             }
             this.ceilingTween?.kill();
-            this.ceilingContainer.zIndex = getEffectiveZIndex(ZIndexes.DeadObstacles, this.layer, this.game.layer);
             this.ceilingContainer.alpha = 1;
-
-            //  this.ceilingContainer.addChild(new SuroiSprite(`${definition.idString}_residue`));
         }
         this.dead = data.dead;
 
         if (data.puzzle) {
-            if (!isNew && data.puzzle.errorSeq !== this.errorSeq) {
+            if (!isNew && data.puzzle.errorSeq !== this.puzzle?.errorSeq) {
                 this.playSound("puzzle_error");
             }
-            this.errorSeq = data.puzzle.errorSeq;
 
             if (!isNew && data.puzzle.solved) {
-                if (this.spinOnSolveImages) {
-                    for (const [image, spinSpeed] of this.spinOnSolveImages.entries()) {
-                        this.game.spinningImages.set(image, spinSpeed);
-                    }
-                }
-
                 if (definition.puzzle?.solvedSound) {
                     this.game.soundManager.play("puzzle_solved", {
                         position: definition.puzzle.soundPosition
@@ -405,91 +344,157 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 }
             }
         }
+        this.puzzle = data.puzzle;
 
-        this.ceilingContainer.removeChildren();
-        for (const image of definition.ceilingImages) {
-            let key = image.key;
-            if (this.dead && image.residue) key = image.residue;
+        this._createSprites();
 
-            const sprite = new SuroiSprite(key);
-
-            if (this.dead && key !== image.residue) sprite.setVisible(false);
-
-            sprite.setVPos(toPixiCoords(image.position));
-            if (image.rotation) sprite.setRotation(image.rotation);
-
-            if (image.scale) sprite.scale = (this.definition.resetCeilingResidueScale && this.dead) ? 1 : image.scale;
-
-            if (image.tint !== undefined) sprite.setTint(image.tint);
-            this.ceilingContainer.addChild(sprite);
-        }
         this.toggleCeiling();
 
         this.updateZIndex();
-
-        this.updateDebugGraphics();
     }
 
     override updateZIndex(): void {
+        if (this.dead) {
+            this.ceilingContainer.zIndex = getEffectiveZIndex(ZIndexes.DeadObstacles, this.layer, this.game.layer);
+        } else {
+            this.ceilingContainer.zIndex = getEffectiveZIndex(
+                this.definition.ceilingZIndex,
+                this.layer + Numeric.clamp(Math.max( // make sure the ceiling appears over everything else
+                    ...this.definition.obstacles.map(({ layer }) => layer ?? 0),
+                    ...this.definition.subBuildings.map(({ layer }) => layer ?? 0)
+                ), 0, Infinity),
+                this.game.layer
+            );
+        }
         this.container.zIndex = getEffectiveZIndex(this.definition.floorZIndex, this.layer, this.game.layer);
     }
 
-    override updateDebugGraphics(): void {
-        if (!HITBOX_DEBUG_MODE) return;
+    override updateDebugGraphics(debugRender: DebugRenderer): void {
+        if (!DEBUG_CLIENT) return;
 
         const definition = this.definition;
-        const alpha = this.layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY;
-        this.debugGraphics.clear();
+        const alpha = this.layer === this.game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY;
 
         if (this.hitbox) {
-            drawHitbox(
+            debugRender.addHitbox(
                 this.hitbox,
                 HITBOX_COLORS.obstacle,
-                this.debugGraphics,
+                undefined,
                 this.game.activePlayer !== undefined && equivLayer(this, this.game.activePlayer) ? 1 : DIFF_LAYER_HITBOX_OPACITY
             );
         }
 
-        drawHitbox(
+        debugRender.addHitbox(
             definition.spawnHitbox.transform(this.position, 1, this.orientation),
             HITBOX_COLORS.spawnHitbox,
-            this.debugGraphics,
+            undefined,
             alpha
         );
 
         if (definition.ceilingHitbox) {
-            drawHitbox(
+            debugRender.addHitbox(
                 definition.ceilingHitbox.transform(this.position, 1, this.orientation),
                 definition.ceilingScopeEffect ? HITBOX_COLORS.buildingZoomCeiling : HITBOX_COLORS.buildingScopeCeiling,
-                this.debugGraphics
+                undefined,
+                alpha
             );
         }
 
         if (definition.bulletMask) {
-            drawHitbox(
+            debugRender.addHitbox(
                 definition.bulletMask.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.bulletMask,
-                this.debugGraphics
+                undefined,
+                alpha
             );
         }
 
         if (definition.bridgeHitbox) {
-            drawHitbox(
+            debugRender.addHitbox(
                 definition.bridgeHitbox.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.landHitbox,
-                this.debugGraphics
+                undefined,
+                alpha
             );
         }
 
         for (const { collider, layer } of definition.visibilityOverrides ?? []) {
-            drawHitbox(
+            debugRender.addHitbox(
                 collider.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.buildingVisOverride,
-                this.debugGraphics,
                 layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY
             );
         }
     }
+
+    private _createSprites(): void {
+        const { definition } = this;
+
+        for (const image of definition.ceilingImages) {
+            this._updateImage(image, true);
+        }
+        for (const image of definition.floorImages) {
+            this._updateImage(image, false);
+        }
+
+        // delete sprites not in the current definition
+        const definitionSprites = new Set([...definition.ceilingImages, ...definition.floorImages]);
+        for (const [definition, image] of this.images) {
+            if (definitionSprites.has(definition)) continue;
+            image.sprite.destroy();
+            this.images.delete(definition);
+        }
+    }
+
+    private _updateImage(imageDef: BuildingImageDefinition, isCeiling: boolean): void {
+        const isNewSprite = !this.images.has(imageDef);
+
+        const image = this.images.get(imageDef) ?? {
+            sprite: new SuroiSprite(),
+            definition: imageDef,
+            isCeiling
+        };
+        this.images.set(imageDef, image);
+
+        const { sprite } = image;
+
+        if (isNewSprite) {
+            if (isCeiling) this.ceilingContainer.addChild(sprite);
+            else this.container.addChild(sprite);
+        }
+
+        let key = imageDef.key;
+        if (this.dead && imageDef.residue) key = imageDef.residue;
+        sprite.setFrame(key);
+
+        if (isCeiling) {
+            sprite.setVisible(this.dead ? !!imageDef.residue : !!imageDef.key);
+        } else {
+            sprite.setVisible(true);
+        }
+
+        sprite.setVPos(toPixiCoords(imageDef.position));
+
+        if (imageDef.spinSpeed !== undefined ? isNewSprite : true) {
+            sprite.setRotation(imageDef.rotation ?? 0);
+        }
+
+        sprite.setZIndex(imageDef.zIndex ?? 0);
+
+        if (imageDef.scale) sprite.scale = (this.definition.resetCeilingResidueScale && this.dead) ? 1 : imageDef.scale;
+
+        if (imageDef.tint !== undefined) sprite.setTint(imageDef.tint);
+    }
+
+    override update(): void {
+        for (const [definition, image] of this.images) {
+            if (definition.spinSpeed && (definition.spinOnSolve ? this.puzzle?.solved : true)) {
+                image.sprite.rotation += definition.spinSpeed;
+            }
+        }
+    }
+
+    override updateInterpolation(): void { /* bleh */ }
 
     hitEffect(position: Vector, angle: number): void {
         this.game.particleManager.spawnParticle({
@@ -523,13 +528,10 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         this.graphics?.destroy();
         this.mask?.destroy();
         this.ceilingTween?.kill();
-        this.ceilingContainer.destroy();
         this.sound?.stop();
 
-        if (this.spinningImages) {
-            for (const image of this.spinningImages.keys()) {
-                this.game.spinningImages.delete(image);
-            }
+        for (const [, image] of this.images) {
+            image.sprite.destroy();
         }
     }
 }

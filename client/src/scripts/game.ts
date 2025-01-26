@@ -62,6 +62,7 @@ import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PIXI_SCALE, UI_DEBUG_MODE } from "
 import { setUpNetGraph } from "./utils/graph/netGraph";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
+import { DebugRenderer } from "./utils/debugRenderer";
 
 /* eslint-disable @stylistic/indent */
 
@@ -188,6 +189,7 @@ export class Game {
     readonly gas = new Gas(this);
 
     readonly netGraph = setUpNetGraph(this);
+    readonly debugRenderer = new DebugRenderer();
 
     readonly fontObserver = new FontFaceObserver("Inter", { weight: 600 }).load();
 
@@ -249,6 +251,7 @@ export class Game {
             });
 
             const pixi = game.pixi;
+            pixi.stop();
             void loadTextures(
                 game.modeName,
                 pixi.renderer,
@@ -281,6 +284,7 @@ export class Game {
 
             pixi.stage.addChild(
                 game.camera.container,
+                game.debugRenderer.graphics,
                 game.map.container,
                 game.map.mask,
                 ...Object.values(game.netGraph).map(g => g.container)
@@ -297,7 +301,7 @@ export class Game {
         let menuMusicSuffix: string;
         if (game.console.getBuiltInCVar("cv_use_old_menu_music")) {
             menuMusicSuffix = "_old";
-        } else if (game.mode.sounds?.replace?.includes("menu_music")) {
+        } else if (game.mode.sounds?.replaceMenuMusic) {
             menuMusicSuffix = `_${game.modeName}`;
         } else {
             menuMusicSuffix = "";
@@ -337,6 +341,7 @@ export class Game {
         this._socket.binaryType = "arraybuffer";
 
         this._socket.onopen = (): void => {
+            this.pixi.start();
             this.music?.stop();
             this.connecting = false;
             this.gameStarted = true;
@@ -439,6 +444,7 @@ export class Game {
         const ui = this.uiManager.ui;
 
         this._socket.onerror = (): void => {
+            this.pixi.stop();
             this.error = true;
             this.connecting = false;
             ui.splashMsgText.html(getTranslatedString("msg_err_joining"));
@@ -447,6 +453,7 @@ export class Game {
         };
 
         this._socket.onclose = (): void => {
+            this.pixi.stop();
             this.connecting = false;
             resetPlayButtons(this);
 
@@ -605,9 +612,8 @@ export class Game {
             this.soundManager.stopAll();
 
             ui.splashUi.fadeIn(400, () => {
-                if (this.music) {
-                    void this.music.play();
-                }
+                this.pixi.stop();
+                void this.music?.play();
                 ui.teamContainer.html("");
                 ui.actionContainer.hide();
                 ui.gameOverOverlay.hide();
@@ -683,37 +689,21 @@ export class Game {
             }
         }
 
-        let players: Set<Player> | undefined;
-        if (this.console.getBuiltInCVar("cv_movement_smoothing")) {
-            for (const player of players = this.objects.getCategory(ObjectCategory.Player)) {
-                player.updateContainerPosition();
-                if (!player.isActivePlayer || !this.console.getBuiltInCVar("cv_responsive_rotation") || this.spectating) {
-                    player.updateContainerRotation();
-                }
-            }
+        const hasMovementSmoothing = this.console.getBuiltInCVar("cv_movement_smoothing");
 
-            if (this.activePlayer) {
-                this.camera.position = this.activePlayer.container.position;
-            }
+        const showHitboxes = this.console.getBuiltInCVar("db_show_hitboxes");
 
-            for (const loot of this.objects.getCategory(ObjectCategory.Loot)) {
-                loot.updateContainerPosition();
-            }
+        for (const object of this.objects) {
+            object.update();
+            if (hasMovementSmoothing) object.updateInterpolation();
 
-            for (const projectile of this.objects.getCategory(ObjectCategory.ThrowableProjectile)) {
-                projectile.updateContainerPosition();
-                projectile.updateContainerRotation();
-            }
-
-            for (const syncedParticle of this.objects.getCategory(ObjectCategory.SyncedParticle)) {
-                syncedParticle.updateContainerPosition();
-                syncedParticle.updateContainerRotation();
-                syncedParticle.updateContainerScale();
+            if (DEBUG_CLIENT) {
+                if (showHitboxes) object.updateDebugGraphics(this.debugRenderer);
             }
         }
 
-        for (const player of players ?? this.objects.getCategory(ObjectCategory.Player)) {
-            player.updateGrenadePreview();
+        if (hasMovementSmoothing && this.activePlayer) {
+            this.camera.position = this.activePlayer.container.position;
         }
 
         for (const [image, spinSpeed] of this.spinningImages.entries()) {
@@ -732,6 +722,9 @@ export class Game {
         for (const plane of this.planes) plane.update();
 
         this.camera.update();
+        this.debugRenderer.graphics.position = this.camera.container.position;
+        this.debugRenderer.graphics.scale = this.camera.container.scale;
+        this.debugRenderer.render();
     }
 
     private _lastUpdateTime = 0;

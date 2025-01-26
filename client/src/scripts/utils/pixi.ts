@@ -337,16 +337,7 @@ export function drawGroundGraphics(hitbox: Hitbox, graphics: Graphics, scale = P
     }
 };
 
-export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSource, graphics: T, alpha = 1): T {
-    if (alpha === 0) return graphics;
-
-    graphics.setStrokeStyle({
-        color,
-        width: 2,
-        alpha
-    });
-    graphics.beginPath();
-
+export function traceHitbox<T extends Graphics>(hitbox: Hitbox, graphics: T): T {
     switch (hitbox.type) {
         case HitboxType.Rect: {
             const min = toPixiCoords(hitbox.min);
@@ -364,12 +355,29 @@ export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSourc
             graphics.arc(pos.x, pos.y, hitbox.radius * PIXI_SCALE, 0, Math.PI * 2);
             break;
         }
-        case HitboxType.Group:
-            for (const h of hitbox.hitboxes) drawHitbox(h, color, graphics, alpha);
-            break;
         case HitboxType.Polygon:
             graphics.poly(hitbox.points.map(point => toPixiCoords(point)));
             break;
+    }
+    return graphics;
+}
+
+export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSource, graphics: T, alpha = 1): T {
+    if (alpha === 0) return graphics;
+
+    graphics.setStrokeStyle({
+        color,
+        width: 2,
+        alpha
+    });
+    graphics.beginPath();
+
+    if (hitbox.type === HitboxType.Group) {
+        for (const h of hitbox.hitboxes) {
+            drawHitbox(h, color, graphics, alpha);
+        }
+    } else {
+        traceHitbox(hitbox, graphics);
     }
 
     graphics.closePath();

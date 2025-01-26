@@ -9,10 +9,11 @@ import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE, TEAMMATE_COLORS } from "../utils/constants";
-import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, TEAMMATE_COLORS } from "../utils/constants";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
+import type { DebugRenderer } from "../utils/debugRenderer";
 
 export class ThrowableProjectile extends GameObject.derive(ObjectCategory.ThrowableProjectile) {
     readonly image = new SuroiSprite();
@@ -108,24 +109,28 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
             this.container.position = toPixiCoords(this.position);
             this.container.rotation = this.rotation;
         }
-
-        this.updateDebugGraphics();
     }
 
     override updateZIndex(): void {
         this.container.zIndex = getEffectiveZIndex(this.doOverlay() ? ZIndexes.UnderwaterGroundedThrowables : ZIndexes.GroundedThrowables, this.layer, this.game.layer);
     }
 
-    override updateDebugGraphics(): void {
-        if (!HITBOX_DEBUG_MODE || !this.radius) return;
-
-        this.debugGraphics.clear();
-
-        drawHitbox(
+    override updateDebugGraphics(debugRenderer: DebugRenderer): void {
+        if (!DEBUG_CLIENT) return;
+        if (!this.radius) return;
+        debugRenderer.addHitbox(
             this.hitbox,
-            HITBOX_COLORS.obstacle,
-            this.debugGraphics
+            HITBOX_COLORS.projectiles,
+            undefined,
+            this.layer === this.game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
         );
+    }
+
+    override update(): void { /* bleh */ }
+
+    override updateInterpolation(): void {
+        this.updateContainerPosition();
+        this.updateContainerRotation();
     }
 
     hitEffect(position: Vector, angle: number): void {
