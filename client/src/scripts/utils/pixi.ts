@@ -79,9 +79,13 @@ export async function loadTextures(modeName: Mode, renderer: Renderer, highResol
                 console.error(`Atlas ${image} failed to load. Details:`, e);
             }
         }),
+
+        //
+        // Walls
+        //
         ...Obstacles.definitions
             .filter(obj => obj.wall)
-            .map(def => new Promise<void>(resolve => {
+            .map(def => async() => {
                 if (def.wall) {
                     const { color, borderColor, rounded } = def.wall;
                     const dimensions = (def.hitbox as RectangleHitbox).clone();
@@ -101,22 +105,14 @@ export async function loadTextures(modeName: Mode, renderer: Renderer, highResol
 
                     Assets.cache.set(def.idString, wallTexture);
                 }
-                resolve();
-            })),
-        new Promise<void>(resolve => {
-            const vestTexture = RenderTexture.create({ width: 102, height: 102, antialias: true });
-            renderer.render({
-                target: vestTexture,
-                container: new Graphics()
-                    .arc(51, 51, 51, 0, Math.PI * 2)
-                    .fill({ color: 0xffffff })
-            });
-            Assets.cache.set("vest_world", vestTexture);
-            resolve();
-        }),
+            }),
+
+        //
+        // Gun mounts
+        //
         ...Obstacles.definitions
             .filter(obj => obj.gunMount)
-            .map(def => new Promise<void>(resolve => {
+            .map(def => async() => {
                 if (def.gunMount === undefined) return;
 
                 const spriteWidth = def.gunMount.type === "melee" ? 153.394 : 166.75;
@@ -201,8 +197,7 @@ export async function loadTextures(modeName: Mode, renderer: Renderer, highResol
                     container: container
                 });
                 Assets.cache.set(def.idString, mountTexture);
-                resolve();
-            }))
+            })
     ]);
 
     // Apply the missing texture to any sprites whose textures can't be found after loading spritesheets
