@@ -611,12 +611,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             } as const;
         });
 
-        // WARNING: INCOMPLETE BUILDING
-        /* Missing:
-            - Ceiling svg (not finished probably)
-            - Spawn mode
-            - Ceiling residue
-        */
         const riverHut = derive((
             id: number,
             obstacles: BuildingObstacle[]
@@ -642,7 +636,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     },
                     {
                         key: "river_hut_floor",
-                        position: Vec.create(0, 0),
+                        position: Vec.create(-2.6, 0),
                         scale: Vec.create(2.14, 2.14)
                     }
                 ],
@@ -652,14 +646,20 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     scale: Vec.create(2.1, 2.1),
                     residue: "river_hut_residue"
                 }],
-                floors: [{
-                    type: FloorNames.Wood,
-                    hitbox: new GroupHitbox(
-                        RectangleHitbox.fromRect(32.5, 39.25),
-                        RectangleHitbox.fromRect(10, 13, Vec.create(20.4, -10.5)),
-                        RectangleHitbox.fromRect(13, 46, Vec.create(bridgeFloor1, -5))
-                    )
-                }],
+                floors: [
+                    {
+                        type: FloorNames.Wood,
+                        hitbox: new GroupHitbox(
+                            RectangleHitbox.fromRect(32.5, 39.25),
+                            RectangleHitbox.fromRect(10, 13, Vec.create(20.4, -10.5)),
+                            RectangleHitbox.fromRect(13, 46, Vec.create(bridgeFloor1, -5))
+                        )
+                    },
+                    {
+                        type: FloorNames.Stone,
+                        hitbox: RectangleHitbox.fromRect(5.3, 11, Vec.create(-18.7, 12))
+                    }
+                ],
                 obstacles: [
                     { idString: "door", position: Vec.create(-15.5, 12.18), rotation: 1 },
                     { idString: "house_wall_20", position: Vec.create(0, -18.65), rotation: 0 },
