@@ -49,7 +49,7 @@ export const GameConstants = freezeDeep({
     defaultMode: "normal" satisfies Mode as Mode,
     player: {
         radius: 2.25,
-        baseSpeed: 0.02655,
+        baseSpeed: 0.0272,
         defaultHealth: 100,
         maxAdrenaline: 100,
         inventorySlotTypings,

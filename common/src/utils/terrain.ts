@@ -43,7 +43,7 @@ export const FloorTypes: Record<FloorNames, FloorDefinition> = {
     },
     water: {
         debugColor: 0x00ddff,
-        speedMultiplier: 0.7,
+        speedMultiplier: 0.72,
         overlay: true,
         particles: true
     },
