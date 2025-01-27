@@ -85,7 +85,7 @@ export async function loadTextures(modeName: Mode, renderer: Renderer, highResol
         //
         ...Obstacles.definitions
             .filter(obj => obj.wall)
-            .map(def => async() => {
+            .map(def => new Promise<void>(resolve => {
                 if (def.wall) {
                     const { color, borderColor, rounded } = def.wall;
                     const dimensions = (def.hitbox as RectangleHitbox).clone();
@@ -105,14 +105,15 @@ export async function loadTextures(modeName: Mode, renderer: Renderer, highResol
 
                     Assets.cache.set(def.idString, wallTexture);
                 }
-            }),
+                resolve();
+            })),
 
         //
         // Gun mounts
         //
         ...Obstacles.definitions
             .filter(obj => obj.gunMount)
-            .map(def => async() => {
+            .map(def => new Promise<void>(resolve => {
                 if (def.gunMount === undefined) return;
 
                 const spriteWidth = def.gunMount.type === "melee" ? 153.394 : 166.75;
@@ -197,7 +198,8 @@ export async function loadTextures(modeName: Mode, renderer: Renderer, highResol
                     container: container
                 });
                 Assets.cache.set(def.idString, mountTexture);
-            })
+                resolve();
+            }))
     ]);
 
     // Apply the missing texture to any sprites whose textures can't be found after loading spritesheets
