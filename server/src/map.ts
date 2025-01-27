@@ -39,6 +39,7 @@ export class GameMap {
     readonly beachSize: number;
 
     readonly beachHitbox: GroupHitbox<RectangleHitbox[]>;
+    readonly islandHitbox: RectangleHitbox;
 
     readonly seed: number;
 
@@ -126,6 +127,11 @@ export class GameMap {
                 Vec.create(oceanSize, this.height - beachPadding),
                 Vec.create(this.width - beachPadding, this.height - oceanSize)
             )
+        );
+
+        this.islandHitbox = new RectangleHitbox(
+            Vec.create(oceanSize, oceanSize),
+            Vec.create(this.width - oceanSize, this.height - oceanSize)
         );
 
         const rivers: River[] = [];
@@ -970,10 +976,7 @@ export class GameMap {
                     for (const river of this.terrain.getRiversInHitbox(hitbox)) {
                         if (
                             (spawnMode !== MapObjectSpawnMode.GrassAndSand || river.isTrail)
-                            && (
-                                river.bankHitbox.isPointInside(position)
-                                || hitbox.collidesWith(river.bankHitbox)
-                            )
+                            && (river.bankHitbox.isPointInside(position) || hitbox.collidesWith(river.bankHitbox))
                         ) {
                             collided = true;
                             break;
@@ -981,10 +984,7 @@ export class GameMap {
 
                         if (
                             spawnMode === MapObjectSpawnMode.GrassAndSand
-                            && (
-                                river.waterHitbox?.isPointInside(position)
-                                || river.waterHitbox?.collidesWith(hitbox)
-                            )
+                            && (river.waterHitbox?.isPointInside(position) || river.waterHitbox?.collidesWith(hitbox))
                         ) {
                             collided = true;
                             break;
@@ -1001,6 +1001,11 @@ export class GameMap {
                     break;
                 }
                 case MapObjectSpawnMode.River: {
+                    if (!this.islandHitbox.isPointInside(position)) {
+                        collided = true;
+                        break;
+                    }
+
                     let points: Vector[];
                     if (hitbox instanceof CircleHitbox) {
                         const radius = hitbox.radius;
