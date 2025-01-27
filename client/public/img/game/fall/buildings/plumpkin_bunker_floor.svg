@@ -8,7 +8,7 @@
    version="1.1"
    id="svg1"
    sodipodi:docname="plumpkin_bunker_floor.svg"
-   inkscape:version="1.4 (1:1.4+202410161248+e7c3feb100)"
+   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -24,9 +24,9 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
      inkscape:document-units="px"
-     inkscape:zoom="0.12984182"
-     inkscape:cx="1859.9554"
-     inkscape:cy="1956.2264"
+     inkscape:zoom="0.35355339"
+     inkscape:cx="2295.2686"
+     inkscape:cy="3107.0272"
      inkscape:window-width="2560"
      inkscape:window-height="1368"
      inkscape:window-x="0"
@@ -35,6 +35,14 @@
      inkscape:current-layer="layer1" />
   <defs
      id="defs1">
+    <pattern
+       inkscape:collect="always"
+       xlink:href="#pattern34"
+       preserveAspectRatio="xMidYMid"
+       id="pattern35"
+       patternTransform="matrix(0.4,0,0,0.4,2077.082,3716.3926)"
+       x="0"
+       y="0" />
     <pattern
        inkscape:collect="always"
        xlink:href="#pattern67-2"
@@ -338,14 +346,6 @@
          x="1249.0825"
          y="924.59912" />
     </clipPath>
-    <pattern
-       inkscape:collect="always"
-       xlink:href="#pattern140"
-       preserveAspectRatio="xMidYMid"
-       id="pattern141"
-       patternTransform="matrix(0.265,0,0,0.265,989.16422,1550.2405)"
-       x="0"
-       y="0" />
     <pattern
        patternUnits="userSpaceOnUse"
        width="320.26245"
@@ -1713,6 +1713,27 @@
            id="path65-8" />
       </g>
     </pattern>
+    <pattern
+       patternUnits="userSpaceOnUse"
+       width="106.48048"
+       height="106.48048"
+       patternTransform="translate(2077.082,3716.3926)"
+       preserveAspectRatio="xMidYMid"
+       id="pattern34"
+       inkscape:label="pattern34">
+      <rect
+         style="fill:#5e5e5e;fill-opacity:1;stroke-width:1.99937;stroke-linecap:round;stroke-linejoin:round"
+         id="rect4"
+         width="106.47973"
+         height="106.47973"
+         x="-1.7053026e-13"
+         y="0.00025234988" />
+      <path
+         id="rect5"
+         style="fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:1.99937;stroke-linecap:round;stroke-linejoin:round"
+         d="M 1.0532111e-5,0 V 106.48048 H 5.6601667 V 5.6601448 H 106.48048 V 0 Z"
+         sodipodi:nodetypes="ccccccc" />
+    </pattern>
   </defs>
   <g
      inkscape:label="Layer 1"
@@ -1767,7 +1788,7 @@
          id="path162"
          sodipodi:nodetypes="ccccc" />
       <path
-         style="fill:url(#pattern141);fill-opacity:1;stroke:none;stroke-width:0.527996;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:url(#pattern35);fill-opacity:1;stroke:none;stroke-width:0.527996;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          d="m -95.47614,608.52942 93.12828,-0.53092 1.4695,226.53498 139.59475,-0.7483 -0.74836,-226.5424 84.20597,-0.0864 0.1406,-53.27434 450.58272,-2.44313 1.6796,-431.91244 312.2502,-0.5325 2.6245,-106.67791 -278.234,0.45474 -23.5734,-2.20654 -444.75613,0.7269 -2.04875,272.23978 -335.55076,-4.02188 z"
          id="path163"
          sodipodi:nodetypes="ccccccccccccccccc" />
@@ -5120,5 +5141,9 @@
         </g>
       </g>
     </g>
+    <path
+       style="fill:#c0c0c0;stroke:none;stroke-width:0.529;stroke-linecap:round;stroke-linejoin:round"
+       d="m -168.65996,318.01761 c 0,0 -0.009,0.0497 0,0 z"
+       id="path31" />
   </g>
 </svg>
