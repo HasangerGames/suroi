@@ -2673,7 +2673,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 idString: "sink",
                 name: "Sink",
                 material: "wood",
-                health: 100,
+                health: 80,
                 scale: {
                     spawnMin: 1,
                     spawnMax: 1,
