@@ -1001,27 +1001,36 @@ export class GameMap {
                     break;
                 }
                 case MapObjectSpawnMode.River: {
+                    let points: Vector[];
                     if (hitbox instanceof CircleHitbox) {
                         const radius = hitbox.radius;
-                        for (
-                            const point of [
-                                Vec.subComponent(position, 0, radius),
-                                Vec.subComponent(position, radius, 0),
-                                Vec.addComponent(position, 0, radius),
-                                Vec.addComponent(position, radius, 0)
-                            ]
-                        ) {
-                            collided = true;
-                            for (const river of this.terrain.getRiversInHitbox(hitbox, true)) {
-                                if (river.waterHitbox?.isPointInside(point)) {
-                                    collided = false;
-                                    break;
-                                }
-                            }
-                            if (collided) break;
-                        }
+                        points = [
+                            Vec.subComponent(position, 0, radius),
+                            Vec.subComponent(position, radius, 0),
+                            Vec.addComponent(position, 0, radius),
+                            Vec.addComponent(position, radius, 0)
+                        ];
+                    } else if (hitbox instanceof RectangleHitbox) {
+                        const { min, max } = hitbox;
+                        points = [
+                            min,
+                            Vec.create(max.x, min.y),
+                            Vec.create(min.x, max.y),
+                            max
+                        ];
+                    } else {
+                        points = [];
                     }
-                    // TODO add code for other hitbox types
+
+                    for (const point of points) {
+                        for (const river of this.terrain.getRiversInHitbox(hitbox, true)) {
+                            if (!river.waterHitbox?.isPointInside(point)) {
+                                collided = true;
+                                break;
+                            }
+                        }
+                        if (collided) break;
+                    }
                     break;
                 }
                 case MapObjectSpawnMode.Trail: {

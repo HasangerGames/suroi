@@ -1065,7 +1065,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 spawnMode: MapObjectSpawnMode.River,
                 zIndex: ZIndexes.UnderwaterPlayers - 1,
                 hitbox: new CircleHitbox(8),
-                spawnHitbox: new CircleHitbox(9),
+                spawnHitbox: new CircleHitbox(10),
                 rotationMode: RotationMode.Full,
                 variations: 5,
                 particleVariations: 2
@@ -4324,7 +4324,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1,
                     destroy: 0.7
                 },
-                hitbox: RectangleHitbox.fromRect(12, 7, Vec.create(0, -0.1)),
+                hitbox: RectangleHitbox.fromRect(12, 7),
+                spawnHitbox: RectangleHitbox.fromRect(14, 9),
                 rotationMode: RotationMode.None,
                 zIndex: ZIndexes.UnderwaterPlayers - 1,
                 hasLoot: true,
