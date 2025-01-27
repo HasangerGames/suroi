@@ -224,7 +224,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     pf_show_inout: false,
     pf_net_graph: 1,
 
-    db_show_hitboxes: true,
+    db_show_hitboxes: false,
 
     mb_controls_enabled: true,
     mb_joystick_size: 150,
