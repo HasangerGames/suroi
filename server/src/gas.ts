@@ -176,7 +176,7 @@ export class Gas {
             this.game.addTimeout(() => this.advanceGasStage(), duration * 1000);
         }
 
-        if (this.stage === GasState.Advancing && this.game.allowJoin) {
+        if (currentStage.preventJoin) {
             this.game.setGameData({ allowJoin: false });
         }
     }
