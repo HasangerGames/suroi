@@ -55,7 +55,6 @@ export class Decal extends GameObject.derive(ObjectCategory.Decal) {
         debugRenderer.addCircle(0.1 * this.definition.scale,
             this.position,
             HITBOX_COLORS.obstacleNoCollision,
-            undefined,
             this.layer === this.game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
         );
     }

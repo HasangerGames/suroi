@@ -442,7 +442,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             if (Math.abs(high - low) === 1) {
                 for (let i = 0; i < 4; i++) {
                     let color: 0xff0000 | 0x00ff00 = 0xff0000;
-                    let width = 4;
                     switch (true) {
                         case i === high: { // active edge
                             color = 0xff0000;
@@ -454,17 +453,15 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         }
                         case Math.abs(i - low) === 2: { // opposite of low edge -> high edge
                             color = 0xff0000;
-                            width = 2;
                             break;
                         }
                         case Math.abs(i - high) === 2: { // opposite of high edge -> low edge
                             color = 0x00ff00;
-                            width = 2;
                             break;
                         }
                     }
 
-                    debugRenderer.addLine(sides[i][0], sides[i][1], color, width, alpha);
+                    debugRenderer.addLine(sides[i][0], sides[i][1], color, alpha);
                 }
 
                 // determine the line's endpoints
@@ -481,19 +478,16 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     Vec.create(vertexA.x - protrusion, vertexA.y - protrusion * ratio),
                     vertexA,
                     0xffff00,
-                    2,
                     alpha
                 ).addLine(
                     vertexB,
                     Vec.create(vertexB.x + protrusion, vertexB.y + protrusion * ratio),
                     0xffff00,
-                    2,
                     alpha
                 ).addLine(
                     vertexA,
                     vertexB,
                     0xffff00,
-                    2,
                     0.25 * alpha
                 );
             } else {
@@ -501,21 +495,18 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     definition.noCollisions || this.dead
                         ? HITBOX_COLORS.obstacleNoCollision
                         : HITBOX_COLORS.stair,
-                    undefined,
                     alpha
                 );
 
                 debugRenderer.addLine(
                     sides[high][0],
                     sides[high][1],
-                    0xff0000,
-                    4
+                    0xff0000
                 );
                 debugRenderer.addLine(
                     sides[low][0],
                     sides[low][1],
-                    0x00ff00,
-                    4
+                    0x00ff00
                 );
             }
         } else {
@@ -523,7 +514,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 definition.noCollisions || this.dead
                     ? HITBOX_COLORS.obstacleNoCollision
                     : HITBOX_COLORS.obstacle,
-                undefined,
                 alpha
             );
         }
@@ -533,7 +523,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 0.2,
                 Vec.addAdjust(this.position, definition.hingeOffset, this.orientation),
                 HITBOX_COLORS.obstacleNoCollision,
-                undefined,
                 alpha
             );
         }
@@ -542,7 +531,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             debugRenderer.addHitbox(
                 definition.spawnHitbox.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.spawnHitbox,
-                undefined,
                 alpha
             );
         }

@@ -934,7 +934,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         const alpha = this.layer === this.game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY;
 
         if (this.downed) {
-            debugRenderer.addCircle(5, this.position, HITBOX_COLORS.obstacleNoCollision, undefined, alpha);
+            debugRenderer.addCircle(5, this.position, HITBOX_COLORS.obstacleNoCollision, alpha);
         }
 
         const renderMeleeReflectionSurface = (surface: { pointA: Vector, pointB: Vector }): void => {
@@ -948,7 +948,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 Vec.rotate(surface.pointB, this.rotation)
             ));
 
-            debugRenderer.addLine(start, lineEnd, HITBOX_COLORS.playerWeapon, undefined, alpha);
+            debugRenderer.addLine(start, lineEnd, HITBOX_COLORS.playerWeapon, alpha);
         };
 
         switch (this.activeItem.itemType) {
@@ -966,7 +966,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this.rotation,
                     this.activeItem.length,
                     HITBOX_COLORS.playerWeapon,
-                    4,
                     alpha
                 );
                 break;
@@ -982,7 +981,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         )
                     ),
                     HITBOX_COLORS.playerWeapon,
-                    undefined,
                     alpha
                 );
                 if (this.activeItem.reflectiveSurface) {

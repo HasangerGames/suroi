@@ -41,8 +41,8 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
 
             for (let angle = -Math.PI; angle < Math.PI; angle += step) {
                 game.debugRenderer
-                    .addRay(position, angle, definition.radius.max, 0xff0000, undefined, alpha)
-                    .addRay(position, angle, definition.radius.min, 0x00ff00, undefined, alpha);
+                    .addRay(position, angle, definition.radius.max, 0xff0000, alpha)
+                    .addRay(position, angle, definition.radius.min, 0x00ff00, alpha);
             }
         }
     });

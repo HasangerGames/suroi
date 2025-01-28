@@ -12,7 +12,6 @@ enum ShapeType {
 
 interface BaseShape {
     readonly color: ColorSource
-    readonly strokeWidth: number
     readonly alpha: number
 }
 
@@ -41,7 +40,7 @@ export class DebugRenderer {
 
     readonly graphics = new Graphics();
 
-    addLine(a: Vector, b: Vector, color: ColorSource = "red", strokeWidth = 2, alpha = 1): this {
+    addLine(a: Vector, b: Vector, color: ColorSource = "red", alpha = 1): this {
         if (!DEBUG_CLIENT) return this;
 
         this._shapes.push({
@@ -49,7 +48,6 @@ export class DebugRenderer {
             a,
             b,
             color,
-            strokeWidth,
             alpha
         });
         return this;
@@ -60,7 +58,6 @@ export class DebugRenderer {
         angle: number,
         length: number,
         color: ColorSource = "red",
-        strokeWidth = 2,
         alpha = 1
     ): this {
         if (!DEBUG_CLIENT) return this;
@@ -71,20 +68,18 @@ export class DebugRenderer {
             angle,
             length,
             color,
-            strokeWidth,
             alpha
         });
         return this;
     }
 
-    addHitbox(hitbox: Hitbox, color: ColorSource = "red", strokeWidth = 2, alpha = 1): this {
+    addHitbox(hitbox: Hitbox, color: ColorSource = "red", alpha = 1): this {
         if (!DEBUG_CLIENT) return this;
 
         this._shapes.push({
             type: ShapeType.Hitbox,
             hitbox,
             color,
-            strokeWidth,
             alpha
         });
         return this;
@@ -94,7 +89,6 @@ export class DebugRenderer {
         radius: number,
         position: Vector,
         color: ColorSource = "red",
-        strokeWidth = 2,
         alpha = 1
     ): this {
         if (!DEBUG_CLIENT) return this;
@@ -103,7 +97,6 @@ export class DebugRenderer {
             type: ShapeType.Hitbox,
             hitbox: new CircleHitbox(radius, position),
             color,
-            strokeWidth,
             alpha
         });
         return this;
@@ -114,7 +107,6 @@ export class DebugRenderer {
         width: number,
         height: number,
         color: ColorSource = "red",
-        strokeWidth = 2,
         alpha = 1
     ): this {
         if (!DEBUG_CLIENT) return this;
@@ -123,7 +115,6 @@ export class DebugRenderer {
             type: ShapeType.Hitbox,
             hitbox: RectangleHitbox.fromRect(width, height, position),
             color,
-            strokeWidth,
             alpha
         });
         return this;
@@ -155,8 +146,8 @@ export class DebugRenderer {
                             gfx.closePath();
                             gfx.stroke({
                                 color: shape.color,
-                                width: shape.strokeWidth,
-                                alpha: shape.alpha
+                                alpha: shape.alpha,
+                                pixelLine: true
                             });
                         }
                     } else {
@@ -167,8 +158,8 @@ export class DebugRenderer {
             gfx.closePath();
             gfx.stroke({
                 color: shape.color,
-                width: shape.strokeWidth,
-                alpha: shape.alpha
+                alpha: shape.alpha,
+                pixelLine: true
             });
         }
 

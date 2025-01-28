@@ -379,7 +379,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             debugRender.addHitbox(
                 this.hitbox,
                 HITBOX_COLORS.obstacle,
-                undefined,
                 this.game.activePlayer !== undefined && equivLayer(this, this.game.activePlayer) ? 1 : DIFF_LAYER_HITBOX_OPACITY
             );
         }
@@ -387,7 +386,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         debugRender.addHitbox(
             definition.spawnHitbox.transform(this.position, 1, this.orientation),
             HITBOX_COLORS.spawnHitbox,
-            undefined,
             alpha
         );
 
@@ -395,7 +393,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             debugRender.addHitbox(
                 definition.ceilingHitbox.transform(this.position, 1, this.orientation),
                 definition.ceilingScopeEffect ? HITBOX_COLORS.buildingZoomCeiling : HITBOX_COLORS.buildingScopeCeiling,
-                undefined,
                 alpha
             );
         }
@@ -404,7 +401,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             debugRender.addHitbox(
                 definition.bulletMask.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.bulletMask,
-                undefined,
                 alpha
             );
         }
@@ -413,7 +409,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             debugRender.addHitbox(
                 definition.bridgeHitbox.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.landHitbox,
-                undefined,
                 alpha
             );
         }

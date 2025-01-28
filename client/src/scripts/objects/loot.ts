@@ -180,7 +180,6 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
         debugRenderer.addHitbox(
             this.hitbox,
             HITBOX_COLORS.loot,
-            undefined,
             this.layer === this.game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
         );
     }

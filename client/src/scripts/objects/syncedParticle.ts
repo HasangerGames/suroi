@@ -99,7 +99,6 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
         this.game.debugRenderer.addHitbox(
             this.definition.hitbox.transform(this.position, this._scale),
             HITBOX_COLORS.obstacleNoCollision,
-            undefined,
             this.layer === this.game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
         );
     }
