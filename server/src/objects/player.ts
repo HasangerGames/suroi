@@ -822,6 +822,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if (!this.rateLimitCheck()) return;
         // -------------------------------------
 
+        if (!ping.isPlayerPing) return;
+
         if (
             this.game.pluginManager.emit("player_will_map_ping", {
                 player: this,
