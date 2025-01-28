@@ -653,13 +653,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 inventory.replaceWeapon(slot, chosenItem, force);
                 (this.activeItem as GunItem).ammo = capacity;
-                this.sendEmote(Guns.fromString(chosenItem.idString));
+                this.sendEmote(Guns.fromString(chosenItem.idString), true);
                 break;
             }
 
             case ItemType.Melee: {
                 inventory.replaceWeapon(slot, chosenItem, force);
-                this.sendEmote(Melees.fromString(chosenItem.idString));
+                this.sendEmote(Melees.fromString(chosenItem.idString), true);
                 break;
             }
 
@@ -697,12 +697,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 this.dirty.weapons = true;
                 this.dirty.items = true;
-                this.sendEmote(Throwables.fromString(chosenItem.idString));
+                this.sendEmote(Throwables.fromString(chosenItem.idString), true);
                 break;
             }
         }
 
-        this.sendEmote(Emotes.fromStringSafe(chosenItem.idString));
+        this.sendEmote(Emotes.fromStringSafe(chosenItem.idString), true);
     }
 
     fillInventory(max = false): void {
@@ -777,33 +777,42 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
     // --------------------------------------------------------------------------------
 
-    sendEmote(source?: AllowedEmoteSources): void {
+    /**
+     * @param isFromServer If the emoji should skip checking if the player has that emoji in their emoji wheel
+     */
+    sendEmote(source?: AllowedEmoteSources, isFromServer = false): void {
         // -------------------------------------
         // Rate Limiting: Team Pings & Emotes.
         // -------------------------------------
         if (!this.rateLimitCheck()) return;
         // -------------------------------------
+        if (!source) return;
 
-        if (
-            source !== undefined
-            && !this.game.pluginManager.emit("player_will_emote", {
-                player: this,
-                emote: source
-            })
-        ) {
-            if (
-                ("itemType" in source)
-                && (source.itemType === ItemType.Ammo || source.itemType === ItemType.Healing)
-                && !this.game.teamMode
-            ) return;
-
-            this.game.emotes.push(new Emote(source, this));
-
-            this.game.pluginManager.emit("player_did_emote", {
-                player: this,
-                emote: source
-            });
+        let isValid = false;
+        for (const definitionList of [Emotes, Ammos, HealingItems, Guns, Melees, Throwables]) {
+            if (definitionList.hasString(source.idString)) {
+                isValid = true;
+                break;
+            }
         }
+
+        if (!isValid) return;
+
+        if (("itemType" in source)
+            && (source.itemType === ItemType.Ammo || source.itemType === ItemType.Healing)
+            && !this.game.teamMode) return;
+
+        const indexOf = this.loadout.emotes.indexOf(source as EmoteDefinition);
+        if (!isFromServer && (indexOf < 0 || indexOf > 3)) return;
+
+        if (this.game.pluginManager.emit("player_will_emote", { player: this, emote: source })) return;
+
+        this.game.emotes.push(new Emote(source, this));
+
+        this.game.pluginManager.emit("player_did_emote", {
+            player: this,
+            emote: source
+        });
     }
 
     sendMapPing(ping: PlayerPing, position: Vector): void {
@@ -930,7 +939,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         break;
                     }
                     case PerkIds.RottenPlumpkin: {
-                        this.sendEmote(Emotes.fromStringSafe(perk.emote));
+                        this.sendEmote(Emotes.fromStringSafe(perk.emote), true);
                         this.piercingDamage({
                             amount: perk.healthLoss
                         });
@@ -2179,7 +2188,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.adrenaline = 0;
         this.dirty.items = true;
         this.action?.cancel();
-        this.sendEmote(this.loadout.emotes[5]);
+        this.sendEmote(this.loadout.emotes[5], true);
 
         this.game.livingPlayers.delete(this);
         this.game.updateGameData({ aliveCount: this.game.aliveCount });

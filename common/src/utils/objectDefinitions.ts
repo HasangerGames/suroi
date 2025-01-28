@@ -501,6 +501,10 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
      * Convenience method for clarity purposes—proxy for {@link GlobalRegistrar.writeToStream}
      */
     writeToStream<S extends ByteStream>(stream: S, def: ReifiableDef<Def>): S {
+        const idString = typeof def === "string" ? def : def.idString;
+        if (!this.hasString(idString)) {
+            throw new Error(`Definition with idString '${idString}' does not belong to this schema ('${this.name}')`);
+        }
         return GlobalRegistrar.writeToStream(stream, def);
     }
 
@@ -511,10 +515,9 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
         // safety: uncomment for debugging
         const obj = GlobalRegistrar.readFromStream<Specific>(stream);
         if (!(obj?.idString in this.idStringToDef)) {
-            console.error(`Definition with idString '${obj?.idString}' does not belong to this schema ('${this.name}')`);
+            throw new Error(`Definition with idString '${obj?.idString}' does not belong to this schema ('${this.name}')`);
         }
         return obj;
-        return GlobalRegistrar.readFromStream(stream);
     }
 
     [Symbol.iterator](): Iterator<Def> {
