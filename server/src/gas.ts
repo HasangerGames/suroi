@@ -175,6 +175,10 @@ export class Gas {
         if (duration !== 0) {
             this.game.addTimeout(() => this.advanceGasStage(), duration * 1000);
         }
+
+        if (this.stage === GasState.Advancing && this.game.allowJoin) {
+            this.game.setGameData({ allowJoin: false });
+        }
     }
 
     isInGas(position: Vector): boolean {
