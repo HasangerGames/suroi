@@ -203,11 +203,13 @@
     }
 }
 
+
 #splash-news,
 #splash-options,
 #splash-customize,
 #splash-server-message,
-#splash-rotate-message {
+#splash-rotate-message,
+#splash-hw-acceleration-warning {
     background: palette.$transparent_bg;
     width: 370px;
 
@@ -225,6 +227,7 @@
     #splash-server-message,
     #splash-rotate-message,
     #splash-socials,
+    #splash-hw-acceleration-warning,
     .featured-container,
     .server-list-item {
         backdrop-filter: blur(8px);
@@ -241,6 +244,12 @@
 #splash-server-message,
 #btn-server-select {
     text-shadow: 3px 3px 8px #00000064;
+}
+
+#splash-hw-acceleration-warning {
+    text-align: center;
+    justify-content: center;
+    margin: 5px auto 5px auto;
 }
 
 #splash-rotate-message {

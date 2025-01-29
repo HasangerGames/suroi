@@ -1641,6 +1641,19 @@ export async function setUpUI(game: Game): Promise<void> {
         element.checked = game.console.getBuiltInCVar("cv_weapon_slot_style") === "colored";
     }
 
+    const tmpCanvas = document.createElement("canvas");
+    let glContext = tmpCanvas.getContext("webgl2", { failIfMajorPerformanceCaveat: true });
+
+    if (!glContext) {
+        $("#splash-hw-acceleration-warning").show();
+    } else {
+        const loseContext = glContext.getExtension("WEBGL_lose_context");
+        if (loseContext) {
+            loseContext.loseContext();
+        }
+        glContext = null;
+    }
+
     // render mode select menu
     const renderSelect = $<HTMLSelectElement>("#render-mode-select")[0];
     renderSelect.addEventListener("input", () => {
