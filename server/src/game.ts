@@ -208,6 +208,8 @@ export class Game implements GameData {
     private _dt = this.idealDt;
     get dt(): number { return this._dt; }
 
+    private readonly _tickInterval: NodeJS.Timeout;
+
     private readonly _tickTimes: number[] = [];
 
     private readonly _idAllocator = new IDAllocator(16);
@@ -251,7 +253,7 @@ export class Game implements GameData {
         this.log(`Created in ${Date.now() - this._start} ms`);
 
         // Start the tick loop
-        this.tick();
+        this._tickInterval = setInterval(this.tick.bind(this), this.idealDt);
     }
 
     log(...message: unknown[]): void {
@@ -291,7 +293,7 @@ export class Game implements GameData {
         }
     }
 
-    readonly tick = (): void => {
+    tick(): void {
         const now = Date.now();
         this._dt = now - this._now;
         this._now = now;
@@ -466,8 +468,8 @@ export class Game implements GameData {
 
         this.pluginManager.emit("game_tick", this);
 
-        if (!this.stopped) {
-            setTimeout(this.tick, this.idealDt);
+        if (this.stopped) {
+            clearInterval(this._tickInterval);
         }
     };
 
