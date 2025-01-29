@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Wed, 29 Jan 2025 02:37:38 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Wed, 29 Jan 2025 15:51:51 GMT
 
 ## 🇦🇱 Shqip (86% Complete) - ab.hjson
 
@@ -495,7 +495,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇷🇺 Русский (97% Complete) - ru.hjson
+## 🇷🇺 Русский (98% Complete) - ru.hjson
 
 ### (No Invalid Keys)
 
@@ -504,11 +504,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
-- Key `wiki` is not defined
 - Key `settings_show_inout` is not defined
-- Key `loading_fetching_data_failed` is not defined
-- Key `retry` is not defined
-- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `m16a4` is not defined
 
 ## 🇮🇳 தமிழ் (89% Complete) - ta.hjson
@@ -620,26 +616,15 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇻🇳 Tiếng Việt (95% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (99% Complete) - vi.hjson
 
-### Invalid Keys
-
-- Key `deathray` is not a valid key
+### (No Invalid Keys)
 
 ### Undefined Keys
 
-- Key `msg_punishment_warn_agreement` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
-- Key `wiki` is not defined
-- Key `settings_ambient_particles` is not defined
-- Key `settings_show_inout` is not defined
-- Key `msg_your_team_eliminated` is not defined
-- Key `msg_the_team_eliminated` is not defined
-- Key `loading_fetching_data_failed` is not defined
-- Key `retry` is not defined
-- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🇨🇳 中文（简体） (97% Complete) - zh.hjson
 

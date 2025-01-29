@@ -157,7 +157,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": false,
-    "percentage": "97%"
+    "percentage": "98%"
   },
   "ta": {
     "name": "தமிழ்",
@@ -189,7 +189,7 @@
     "mandatory": false,
     "no_resize": false,
     "no_space": false,
-    "percentage": "95%"
+    "percentage": "99%"
   },
   "zh": {
     "name": "中文（简体）",
