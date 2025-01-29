@@ -177,7 +177,7 @@ export class Gas {
         }
 
         if (currentStage.preventJoin) {
-            this.game.setGameData({ allowJoin: false });
+            this.game.preventJoin();
         }
     }
 

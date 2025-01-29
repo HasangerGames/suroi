@@ -22,7 +22,6 @@ export enum WorkerMessages {
     UpdateGameData,
     UpdateMaxTeamSize,
     UpdateMap,
-    CreateNewGame,
     Reset
 }
 
@@ -44,9 +43,7 @@ export type WorkerMessage =
         readonly map: MapWithParams
     }
     | {
-        readonly type:
-            | WorkerMessages.CreateNewGame
-            | WorkerMessages.Reset
+        readonly type: WorkerMessages.Reset
     };
 
 export interface GameData {
@@ -99,10 +96,6 @@ export class GameContainer {
                         creatingID = -1;
                         this.resolve(this.id);
                     }
-                    break;
-                }
-                case WorkerMessages.CreateNewGame: {
-                    void newGame();
                     break;
                 }
                 case WorkerMessages.IPAllowed: {

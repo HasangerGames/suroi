@@ -448,7 +448,7 @@ export class Game implements GameData {
         }
 
         if (this.aliveCount >= Config.maxPlayersPerGame) {
-            this.createNewGame();
+            this.preventJoin();
         }
 
         // Record performance and start the next tick
@@ -483,11 +483,10 @@ export class Game implements GameData {
         parentPort?.postMessage({ type: WorkerMessages.UpdateGameData, data } satisfies WorkerMessage);
     }
 
-    createNewGame(): void {
-        if (!this.allowJoin) return; // means a new game has already been created by this game
+    preventJoin(): void {
+        if (!this.allowJoin) return;
 
-        parentPort?.postMessage({ type: WorkerMessages.CreateNewGame });
-        this.log("Attempting to create new game");
+        this.log("Preventing new players from joining");
         this.setGameData({ allowJoin: false });
     }
 
@@ -753,8 +752,6 @@ export class Game implements GameData {
                 this._started = true;
                 this.setGameData({ startedTime: this.now });
                 this.gas.advanceGasStage();
-
-                this.addTimeout(this.createNewGame.bind(this), Config.gameJoinTime * 1000);
             }, 3000);
         }
 
