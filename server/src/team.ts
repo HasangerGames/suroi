@@ -133,7 +133,7 @@ export class Team {
 }
 
 export class CustomTeam {
-    private static readonly _idChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static readonly _idChars = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789";
     private static readonly _idCharMax = this._idChars.length - 1;
 
     readonly id: string;
