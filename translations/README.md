@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Wed, 29 Jan 2025 16:05:02 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Wed, 29 Jan 2025 16:10:33 GMT
 
 ## 🇦🇱 Shqip (86% Complete) - ab.hjson
 
@@ -505,13 +505,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 ## 🇮🇳 தமிழ் (95% Complete) - ta.hjson
 
-### Invalid Keys
-
-- Key `msg_punishment_warn_agreeement` is not a valid key
+### (No Invalid Keys)
 
 ### Undefined Keys
 
-- Key `msg_punishment_warn_agreement` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
