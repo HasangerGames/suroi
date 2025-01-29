@@ -2577,8 +2577,17 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 case InputActions.Cancel:
                     this.action?.cancel();
                     break;
-                case InputActions.Emote:
-                    this.sendEmote(action.emote);
+                case InputActions.Emote: {
+                    let isValid = false;
+                    for (const definitionList of [Emotes, Ammos, HealingItems, Guns, Melees, Throwables]) {
+                        if (definitionList.hasString(action.emote.idString)) {
+                            isValid = true;
+                            break;
+                        }
+                    }
+
+                    this.sendEmote(action.emote, isValid);
+                }
                     break;
                 case InputActions.MapPing:
                     this.sendMapPing(action.ping, action.position);

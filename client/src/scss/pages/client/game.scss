@@ -357,7 +357,7 @@
     display: flex;
     position: absolute;
     top: 15px;
-    right: 120px;
+    right: 150px;
     margin-left: auto;
     width: max-content;
     background: palette.$transparent_bg;
@@ -487,7 +487,7 @@
     }
 
     #kill-feed {
-        margin-right: 120px;
+        margin-right: 150px;
         margin-top: -10px;
         @media screen and (max-width: variables.$screen_large) {
             margin-right: 20px;
