@@ -822,7 +822,7 @@ export class UIManager {
             this.updateWeapons();
         }
 
-        if (activeC4s !== undefined) {
+        if (activeC4s !== undefined && !UI_DEBUG_MODE) {
             this.ui.c4Button.toggle(activeC4s);
             this.hasC4s = activeC4s;
         }

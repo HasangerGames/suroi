@@ -289,6 +289,8 @@ export async function setUpUI(game: Game): Promise<void> {
     }
 
     if (UI_DEBUG_MODE) {
+        ui.c4Button.show();
+
         ui.inventoryMsg.show();
         ui.inventoryMsg.text("Inventory message");
 

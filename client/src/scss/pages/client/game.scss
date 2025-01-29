@@ -108,11 +108,11 @@
         }
 
         @media screen and (max-height: 465px) and (max-width: variables.$screen_large) {
-            right: 100px;
+            right: 85px;
             width: auto;
             border-radius: 5px;
             padding: 0;
-            bottom: 218px;
+            bottom: 200px;
         }
 
         @media screen and (min-width: variables.$screen_large) and (max-height: 720px) {
@@ -1251,16 +1251,17 @@
                 position: relative;
                 left: 5px;
                 width: auto;
-                height: 25px;
-                padding: 2px;
+                height: 28px;
+                padding: 5px;
+                gap: 5px;
                 flex-direction: row;
 
                 span {
-                    font-size: 12px;
+                    font-size: 15px;
                 }
                 
                 img {
-                    width: 20px;
+                    width: 25px;
                 }
             }
 
@@ -1470,8 +1471,8 @@
         opacity: 0.75;
 
         @media screen and (max-width: variables.$screen_large) {
-            height: 50px;
-            width: 140px;
+            height: 45px;
+            width: 120px;
         }
 
         @media screen and (max-width: variables.$screen_medium) {
@@ -1548,8 +1549,8 @@
         left: 5px;
 
         @media screen and (max-width: variables.$screen_large) {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
         }
 
         @media screen and (max-width: variables.$screen_medium) {
