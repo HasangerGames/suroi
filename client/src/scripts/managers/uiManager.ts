@@ -547,19 +547,19 @@ export class UIManager {
                 <h1 class="game-over-player-name" class="modal-item">${(wonMedal ? medal : "") + teammateName + teammateBadgeText}</h1>
                 <div class="modal-item game-over-stats">
                   <div class="stat">
-                    <span class="stat-name" translation="go_kills">Kills:</span>
+                    <span class="stat-name" translation="go_kills">${getTranslatedString("go_kills")}</span>
                     <span class="stat-value">${packet.teammates[i].kills}</span>
                   </div>
                   <div class="stat">
-                    <span class="stat-name" translation="go_damage_done">Damage done:</span>
+                    <span class="stat-name" translation="go_damage_done">${getTranslatedString("go_damage_done")}</span>
                     <span class="stat-value">${packet.teammates[i].damageDone}</span>
                   </div>
                   <div class="stat">
-                    <span class="stat-name" translation="go_damage_taken">Damage taken:</span>
+                    <span class="stat-name" translation="go_damage_taken">${getTranslatedString("go_damage_taken")}</span>
                     <span class="stat-value">${packet.teammates[i].damageTaken}</span>
                   </div>
                   <div class="stat">
-                    <span class="stat-name" translation="go_time_alive">Time alive:</span>
+                    <span class="stat-name" translation="go_time_alive">${getTranslatedString("go_time_alive")}</span>
                     <span class="stat-value">${formatDate(packet.teammates[i].timeAlive)}</span>
                   </div>
                 </div>
