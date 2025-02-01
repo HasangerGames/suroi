@@ -5208,7 +5208,11 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             {
                 idString: "barn",
                 name: "Barn",
-                spawnHitbox: RectangleHitbox.fromRect(120, 92),
+                spawnHitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(120, 92),
+                    // temp fix (bleh)
+                    RectangleHitbox.fromRect(47, 32, Vec.create(-5, -58))
+                ),
                 ceilingHitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(85.5, 56, Vec.create(-11, -11.9)),
                     RectangleHitbox.fromRect(64, 24, Vec.create(-23, 29.5))
