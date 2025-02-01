@@ -160,7 +160,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
     //
     readonly [ObjectCategory.SyncedParticle]: {
         readonly definition: SyncedParticleDefinition
-        readonly position: Vector
+        readonly startPosition: Vector
         readonly endPosition: Vector
         readonly rotation: number
         readonly layer: Layer
@@ -710,7 +710,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         serializePartial(stream, data) {
             const {
                 definition,
-                position,
+                startPosition,
                 endPosition,
                 rotation,
                 layer,
@@ -723,7 +723,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             } = data;
 
             SyncedParticles.writeToStream(stream, definition);
-            stream.writePosition(position);
+            stream.writePosition(startPosition);
             stream.writePosition(endPosition);
             stream.writeRotation2(rotation);
             stream.writeLayer(layer);
@@ -755,29 +755,39 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         deserializePartial(stream) {
             const data: Mutable<ObjectsNetData[ObjectCategory.SyncedParticle]> = {
                 definition: SyncedParticles.readFromStream(stream),
-                position: stream.readPosition(),
+                startPosition: stream.readPosition(),
+                endPosition: stream.readPosition(),
                 rotation: stream.readRotation2(),
                 layer: stream.readLayer()
-
             };
 
-            const { angularVelocity, scale, alpha, hasCreatorID } = data.definition;
+            const { angularVelocity, scale, alpha, variations, hasCreatorID } = data.definition;
 
             if (typeof angularVelocity === "object" && "min" in angularVelocity) {
                 data.angularVelocity = stream.readFloat(angularVelocity.min, angularVelocity.max, 1);
             }
 
-            data.variant = stream.readUint8();
+            data.interpFactor = stream.readFloat(0, 1, 1);
+
+            if (typeof scale === "object" && "min" in scale) {
+                data.scale = {
+                    start: stream.readScale(),
+                    end: stream.readScale()
+                };
+            }
 
             if (typeof alpha === "object" && "min" in alpha) {
-                data.scale = stream.readScale();
+                data.alpha = {
+                    start: stream.readFloat(0, 1, 1),
+                    end: stream.readFloat(0, 1, 1)
+                };
             }
 
-            if (hasAlpha) {
-                data.alpha = stream.readFloat(0, 1, 1);
+            if (variations !== undefined) {
+                data.variant = stream.readUint8() as Variation;
             }
 
-            if () {
+            if (hasCreatorID) {
                 data.creatorID = stream.readObjectId();
             }
 

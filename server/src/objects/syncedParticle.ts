@@ -59,6 +59,8 @@ export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedP
     scaleActive = false;
     private readonly _scaleAnim?: InternalAnimation<number>;
 
+    private readonly _initialRotation: number;
+
     angularVelocity = 0;
 
     readonly definition: SyncedParticleDefinition;
@@ -179,7 +181,7 @@ export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedP
     override get data(): FullData<ObjectCategory.SyncedParticle> {
         return {
             definition: this.definition,
-            position: this.position,
+            startPosition: this._positionAnim.start,
             endPosition: this._positionAnim.end,
             rotation: this.rotation,
             layer: this.layer,

@@ -29,6 +29,8 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
         this._scale = scale;
     }
 
+    private _interpFactor!: number;
+
     private _definition!: SyncedParticleDefinition;
     get definition(): SyncedParticleDefinition { return this._definition; }
 
@@ -57,26 +59,36 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.SyncedParticle], isNew = false): void {
-        const full = data.full;
-        if (full) {
-            const { variant, definition } = full;
+        const {
+            definition,
+            startPosition,
+            endPosition,
+            rotation,
+            layer,
+            angularVelocity,
+            interpFactor,
+            scale,
+            alpha,
+            variant,
+            creatorID
+        } = data;
 
-            this._definition = definition;
-            this.layer = data.layer;
+        this._definition = definition;
+        this._startPosition = startPosition;
+        this.layer = data.layer;
 
-            if (
-                full.creatorID === this.game.activePlayerID
-                && typeof definition.alpha === "object"
-                && "creatorMult" in definition.alpha
-                && definition.alpha.creatorMult !== undefined
-            ) this._alphaMult = definition.alpha.creatorMult;
+        if (
+            full.creatorID === this.game.activePlayerID
+            && typeof definition.alpha === "object"
+            && "creatorMult" in definition.alpha
+            && definition.alpha.creatorMult !== undefined
+        ) this._alphaMult = definition.alpha.creatorMult;
 
-            this.image.setFrame(`${definition.frame}${variant !== undefined ? `_${variant}` : ""}`);
-            if (definition.tint) this.image.tint = definition.tint;
-            this.updateZIndex();
-        }
+        this.image.setFrame(`${definition.frame}${variant !== undefined ? `_${variant}` : ""}`);
+        if (definition.tint) this.image.tint = definition.tint;
+        this.updateZIndex();
 
-        this.position = data.position;
+        this.position = data.startPosition;
         this.rotation = data.rotation;
         this.scale = data.scale ?? this._scale;
         this.container.alpha = (this._alpha = data.alpha ?? this._alpha) * this._alphaMult;
@@ -103,12 +115,12 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
         );
     }
 
-    override update(): void { /* bleh */ }
-    override updateInterpolation(): void {
+    override update(): void {
         this.updateContainerPosition();
         this.updateContainerRotation();
         this.updateContainerScale();
     }
+    override updateInterpolation(): void { /* bleh */ }
 
     override destroy(): void {
         super.destroy();
