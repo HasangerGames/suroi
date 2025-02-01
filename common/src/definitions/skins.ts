@@ -51,6 +51,7 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
             withRole([[["solstice"]], ["Dragonscale",   0x3f808d]]),
             withRole([[["error"]],    ["error",         0x1fc462]]),
             withRole([[["pap"]],      ["pap",           0x00366b]]),
+            withRole([[["zedaes"]],   ["zedaes",        0x052105]]),
 
             // Role skins
             withRole([[["developr", "pap", "error", "limenade"]],                ["Developr Swag", 0x007a7f]]),

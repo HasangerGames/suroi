@@ -39,7 +39,8 @@ export const Config = {
         pap: { password: "pap", isDev: true },
         error: { password: "error", isDev: true },
         limenade: { password: "limenade", isDev: true },
-        solstice: { password: "solstice", isDev: true }
+        solstice: { password: "solstice", isDev: true },
+        zedaes: { password: "zedaes", isDev: true }
     },
 
     authServer: {
