@@ -26,6 +26,7 @@ import { TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
 import { ClientPerkManager } from "./perkManager";
+import type { ReportPacketData } from "@common/packets/reportPacket";
 
 function safeRound(value: number): number {
     if (0 < value && value <= 1) return 1;
@@ -656,6 +657,7 @@ export class UIManager {
                     player.updateTeammateName();
                 }
             }
+            this.ui.btnReport.toggleClass("btn-disabled", !!this.reportedPlayerIDs.get(id.id));
         }
 
         if (id) {
@@ -869,6 +871,17 @@ export class UIManager {
                 }
             }
         }
+    }
+
+    reportedPlayerIDs = new Map<number, boolean>();
+    processReportPacket(data: ReportPacketData): void {
+        const { ui } = this;
+        const name = this.getRawPlayerName(data.playerID);
+        ui.reportingName.text(name);
+        ui.reportingId.text(data.reportID);
+        ui.reportingModal.fadeIn(250);
+        ui.btnReport.addClass("btn-disabled");
+        this.reportedPlayerIDs.set(data.playerID, true);
     }
 
     skinID?: string;

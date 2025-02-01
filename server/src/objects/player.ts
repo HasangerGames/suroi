@@ -389,6 +389,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     startedSpectating = false;
     spectators = new Set<Player>();
     lastSpectateActionTime = 0;
+    reportedPlayerIDs = new Map<number, boolean>();
     lastPingTime = 0;
 
     readonly role?: string;
@@ -1604,18 +1605,22 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 break;
             }
             case SpectateActions.Report: {
+                if (!this.spectating) return;
+                if (this.reportedPlayerIDs.get(this.spectating.id)) return;
+                this.reportedPlayerIDs.set(this.spectating.id, true);
+
                 const reportID = randomBytes(4).toString("hex");
                 // SERVER HOSTERS assign your custom server an ID somewhere then pass it into the report body region: region
                 const reportJson = {
                     id: reportID,
                     reporterName: this.name,
-                    suspectName: this.spectating?.name,
-                    suspectIP: this.spectating?.ip,
+                    suspectName: this.spectating.name,
+                    suspectIP: this.spectating.ip,
                     reporterIP: this.ip
                 };
 
                 this.sendPacket(ReportPacket.create({
-                    playerName: this.spectating?.name ?? "",
+                    playerID: this.spectating.id,
                     reportID: reportID
                 }));
                 if (Config.protection) {
@@ -1629,7 +1634,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                                 fields: [
                                     {
                                         name: "Username",
-                                        value: `\`${this.spectating?.name}\``
+                                        value: `\`${this.spectating.name}\``
                                     },
                                     {
                                         name: "Time reported",

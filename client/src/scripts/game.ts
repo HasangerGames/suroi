@@ -502,11 +502,7 @@ export class Game {
                 this.uiManager.processKillFeedPacket(packet.output);
                 break;
             case packet instanceof ReportPacket: {
-                const ui = this.uiManager.ui;
-                const { output } = packet;
-                ui.reportingName.text(output.playerName);
-                ui.reportingId.text(output.reportID);
-                ui.reportingModal.fadeIn(250);
+                this.uiManager.processReportPacket(packet.output);
                 break;
             }
             case packet instanceof PickupPacket: {
@@ -633,6 +629,7 @@ export class Game {
                 this.camera.container.removeChildren();
                 this.particleManager.clear();
                 this.uiManager.clearTeammateCache();
+                this.uiManager.reportedPlayerIDs.clear();
 
                 const map = this.map;
                 map.safeZone.clear();

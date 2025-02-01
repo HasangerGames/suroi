@@ -1,19 +1,19 @@
 import { createPacket } from "./packet";
 
 export type ReportPacketData = {
-    readonly playerName: string // TODO refactor to use player ID
+    readonly playerID: number
     readonly reportID: string
 };
 
 export const ReportPacket = createPacket("ReportPacket")<ReportPacketData>({
     serialize(strm, data) {
-        strm.writePlayerName(data.playerName)
+        strm.writeObjectId(data.playerID)
             .writeString(8, data.reportID);
     },
 
     deserialize(stream) {
         return {
-            playerName: stream.readPlayerName(),
+            playerID: stream.readObjectId(),
             reportID: stream.readString(8)
         };
     }
