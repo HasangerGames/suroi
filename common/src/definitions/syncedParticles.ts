@@ -23,7 +23,6 @@ export type VectorSpecifier = ValueSpecifier<Vector>;
 export interface Animated<T> {
     readonly start: ValueSpecifier<T>
     readonly end: ValueSpecifier<T>
-    readonly duration?: NumericSpecifier | "lifetime"
     readonly easing?: keyof typeof EaseFunctions
 }
 
@@ -47,7 +46,7 @@ export type SyncedParticleDefinition = ObjectDefinition & {
     /**
      * @default {Vec.create(0,0)}
      */
-    readonly velocity: Animated<Vector> | VectorSpecifier
+    readonly velocity: VectorSpecifier & { easing?: keyof typeof EaseFunctions }
     /**
      * @default {ZIndexes.ObstaclesLayer1}
      */
@@ -60,6 +59,8 @@ export type SyncedParticleDefinition = ObjectDefinition & {
         readonly health: number
         readonly adrenaline: number
     }
+
+    readonly hasCreatorID?: boolean
 } & ({
     /**
      * @default {undefined}
@@ -190,6 +191,9 @@ export const SyncedParticles = ObjectDefinitions.withDefault<SyncedParticleDefin
                         end: 0,
                         creatorMult: 0.15
                     },
+                    velocity: {
+                        easing: "circOut"
+                    },
                     lifetime: {
                         mean: 2000,
                         deviation: 200
@@ -218,7 +222,8 @@ export const SyncedParticles = ObjectDefinitions.withDefault<SyncedParticleDefin
                         max: {
                             x: 0.002,
                             y: 0.002
-                        }
+                        },
+                        easing: "circOut"
                     },
                     lifetime: {
                         mean: 2000,

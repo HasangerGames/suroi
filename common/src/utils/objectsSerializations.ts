@@ -159,16 +159,23 @@ export interface ObjectsNetData extends BaseObjectsNetData {
     // Synced particle data
     //
     readonly [ObjectCategory.SyncedParticle]: {
+        readonly definition: SyncedParticleDefinition
         readonly position: Vector
+        readonly endPosition: Vector
         readonly rotation: number
         readonly layer: Layer
-        readonly scale?: number
-        readonly alpha?: number
-        readonly full?: {
-            readonly definition: SyncedParticleDefinition
-            readonly variant?: Variation
-            readonly creatorID?: number
+        readonly angularVelocity: number
+        readonly interpFactor: number
+        readonly scale?: {
+            start: number
+            end: number
         }
+        readonly alpha?: {
+            start: number
+            end: number
+        }
+        readonly variant?: Variation
+        readonly creatorID?: number
     }
 }
 
@@ -701,57 +708,68 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     },
     [ObjectCategory.SyncedParticle]: {
         serializePartial(stream, data) {
-            const { position, rotation, layer, scale, alpha } = data;
+            const {
+                definition,
+                position,
+                endPosition,
+                rotation,
+                layer,
+                angularVelocity,
+                interpFactor,
+                scale,
+                alpha,
+                variant,
+                creatorID
+            } = data;
 
+            SyncedParticles.writeToStream(stream, definition);
             stream.writePosition(position);
+            stream.writePosition(endPosition);
             stream.writeRotation2(rotation);
             stream.writeLayer(layer);
-            const writeScale = scale !== undefined;
-            const writeAlpha = alpha !== undefined;
-            stream.writeBooleanGroup(
-                writeScale,
-                writeAlpha
-            );
+            if (typeof definition.angularVelocity === "object" && "min" in definition.angularVelocity) {
+                const { min, max } = definition.angularVelocity;
+                stream.writeFloat(angularVelocity, min, max, 1);
+            }
+            stream.writeFloat(interpFactor, 0, 1, 1);
 
-            if (writeScale) {
-                stream.writeScale(scale);
+            if (scale !== undefined) {
+                stream.writeScale(scale.start);
+                stream.writeScale(scale.end);
             }
 
-            if (writeAlpha) {
-                stream.writeFloat(alpha, 0, 1, 1);
+            if (alpha !== undefined) {
+                stream.writeFloat(alpha.start, 0, 1, 1);
+                stream.writeFloat(alpha.end, 0, 1, 1);
             }
-        },
-        serializeFull(stream, { full }) {
-            SyncedParticles.writeToStream(stream, full.definition);
-            const { variant, creatorID } = full;
-            const hasCreatorId = creatorID !== undefined;
 
-            // similar to obstacles, dedicate up to 3 bits to the variant, and then
-            // add in the 'hasCreatorId' boolean as a 4th bit
-            let data = hasCreatorId ? 1 : 0;
-            if (full.definition.variations !== undefined && variant !== undefined) {
-                data += variant * 2;
-                //                ^ leave the LSB alone
+            if (definition.variations !== undefined && variant !== undefined) {
+                stream.writeUint8(variant);
             }
-            stream.writeUint8(data);
 
-            if (hasCreatorId) {
+            if (creatorID !== undefined) {
                 stream.writeObjectId(creatorID);
             }
         },
+        serializeFull() { /* no full serialization */ },
         deserializePartial(stream) {
             const data: Mutable<ObjectsNetData[ObjectCategory.SyncedParticle]> = {
+                definition: SyncedParticles.readFromStream(stream),
                 position: stream.readPosition(),
                 rotation: stream.readRotation2(),
                 layer: stream.readLayer()
+
             };
 
-            const [
-                hasScale,
-                hasAlpha
-            ] = stream.readBooleanGroup();
+            const { angularVelocity, scale, alpha, hasCreatorID } = data.definition;
 
-            if (hasScale) {
+            if (typeof angularVelocity === "object" && "min" in angularVelocity) {
+                data.angularVelocity = stream.readFloat(angularVelocity.min, angularVelocity.max, 1);
+            }
+
+            data.variant = stream.readUint8();
+
+            if (typeof alpha === "object" && "min" in alpha) {
                 data.scale = stream.readScale();
             }
 
@@ -759,18 +777,13 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 data.alpha = stream.readFloat(0, 1, 1);
             }
 
+            if () {
+                data.creatorID = stream.readObjectId();
+            }
+
             return data;
         },
-        deserializeFull(stream) {
-            const definition = SyncedParticles.readFromStream(stream);
-            const data = stream.readUint8();
-
-            return {
-                definition,
-                variant: definition.variations !== undefined ? (data >> 1) as Variation : undefined,
-                creatorID: (data % 1) !== 0 ? stream.readObjectId() : undefined
-            };
-        }
+        deserializeFull() { /* no full serialization */ }
     },
     [ObjectCategory.ThrowableProjectile]: {
         serializePartial(strm, data) {

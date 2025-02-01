@@ -729,6 +729,8 @@ export class Game implements GameData {
         this.updateObjects = true;
         this.updateGameData({ aliveCount: this.aliveCount });
 
+        setInterval(() => this.addSyncedParticle(SyncedParticles.fromString("smoke_grenade_particle"), player.position, 0), 1000);
+
         player.joined = true;
 
         player.sendPacket(
