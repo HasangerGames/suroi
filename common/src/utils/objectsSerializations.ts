@@ -162,10 +162,10 @@ export interface ObjectsNetData extends BaseObjectsNetData {
         readonly definition: SyncedParticleDefinition
         readonly startPosition: Vector
         readonly endPosition: Vector
-        readonly rotation: number
         readonly layer: Layer
-        readonly angularVelocity: number
-        readonly interpFactor: number
+        readonly age: number
+        readonly lifetime?: number
+        readonly angularVelocity?: number
         readonly scale?: {
             start: number
             end: number
@@ -712,10 +712,10 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 definition,
                 startPosition,
                 endPosition,
-                rotation,
                 layer,
+                age,
+                lifetime,
                 angularVelocity,
-                interpFactor,
                 scale,
                 alpha,
                 variant,
@@ -725,13 +725,20 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             SyncedParticles.writeToStream(stream, definition);
             stream.writePosition(startPosition);
             stream.writePosition(endPosition);
-            stream.writeRotation2(rotation);
             stream.writeLayer(layer);
-            if (typeof definition.angularVelocity === "object" && "min" in definition.angularVelocity) {
-                const { min, max } = definition.angularVelocity;
-                stream.writeFloat(angularVelocity, min, max, 1);
+            stream.writeFloat(age, 0, 1, 1);
+
+            if (typeof definition.lifetime === "object") {
+                const { min, max } = definition.lifetime;
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                stream.writeFloat(lifetime!, min, max, 1);
             }
-            stream.writeFloat(interpFactor, 0, 1, 1);
+
+            if (typeof definition.angularVelocity === "object") {
+                const { min, max } = definition.angularVelocity;
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                stream.writeFloat(angularVelocity!, min, max, 1);
+            }
 
             if (scale !== undefined) {
                 stream.writeScale(scale.start);
@@ -757,26 +764,35 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 definition: SyncedParticles.readFromStream(stream),
                 startPosition: stream.readPosition(),
                 endPosition: stream.readPosition(),
-                rotation: stream.readRotation2(),
-                layer: stream.readLayer()
+                layer: stream.readLayer(),
+                age: stream.readFloat(0, 1, 1)
             };
 
-            const { angularVelocity, scale, alpha, variations, hasCreatorID } = data.definition;
+            const {
+                lifetime,
+                angularVelocity,
+                scale,
+                alpha,
+                variations,
+                hasCreatorID
+            } = data.definition;
 
-            if (typeof angularVelocity === "object" && "min" in angularVelocity) {
+            if (typeof lifetime === "object") {
+                data.lifetime = stream.readFloat(lifetime.min, lifetime.max, 1);
+            }
+
+            if (typeof angularVelocity === "object") {
                 data.angularVelocity = stream.readFloat(angularVelocity.min, angularVelocity.max, 1);
             }
 
-            data.interpFactor = stream.readFloat(0, 1, 1);
-
-            if (typeof scale === "object" && "min" in scale) {
+            if (typeof scale === "object") {
                 data.scale = {
                     start: stream.readScale(),
                     end: stream.readScale()
                 };
             }
 
-            if (typeof alpha === "object" && "min" in alpha) {
+            if (typeof alpha === "object") {
                 data.alpha = {
                     start: stream.readFloat(0, 1, 1),
                     end: stream.readFloat(0, 1, 1)
@@ -796,11 +812,12 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         deserializeFull() { /* no full serialization */ }
     },
     [ObjectCategory.ThrowableProjectile]: {
-        serializePartial(strm, data) {
-            strm.writeBooleanGroup(
-                data.airborne,
-                data.activated
-            )
+        serializePartial(stream, data) {
+            stream
+                .writeBooleanGroup(
+                    data.airborne,
+                    data.activated
+                )
                 .writePosition(data.position)
                 .writeRotation2(data.rotation)
                 .writeLayer(data.layer)

@@ -1,65 +1,25 @@
 import { ObjectCategory } from "@common/constants";
-import { type NumericSpecifier, type SyncedParticleDefinition, type VectorSpecifier } from "@common/definitions/syncedParticles";
+import { InternalAnimation, resolveNumericSpecifier, resolveVectorSpecifier, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { type Variation } from "@common/typings";
 import { CircleHitbox } from "@common/utils/hitbox";
-import { Angle, EaseFunctions, Numeric } from "@common/utils/math";
+import { EaseFunctions, Numeric } from "@common/utils/math";
 import { type FullData } from "@common/utils/objectsSerializations";
-import { random, randomFloat } from "@common/utils/random";
+import { random } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { BaseGameObject } from "./gameObject";
 
-function resolveNumericSpecifier(numericSpecifier: NumericSpecifier): number {
-    if (typeof numericSpecifier === "number") return numericSpecifier;
-
-    const [min, max] = "min" in numericSpecifier
-        ? [numericSpecifier.min, numericSpecifier.max]
-        : [
-            numericSpecifier.mean - numericSpecifier.deviation,
-            numericSpecifier.mean + numericSpecifier.deviation
-        ];
-
-    return randomFloat(min, max);
-}
-
-function resolveVectorSpecifier(vectorSpecifier: VectorSpecifier): Vector {
-    if ("x" in vectorSpecifier) return vectorSpecifier;
-
-    const [min, max] = "min" in vectorSpecifier
-        ? [vectorSpecifier.min, vectorSpecifier.max]
-        : [
-            Vec.sub(vectorSpecifier.mean, vectorSpecifier.deviation),
-            Vec.add(vectorSpecifier.mean, vectorSpecifier.deviation)
-        ];
-
-    return Vec.create(
-        randomFloat(min.x, max.x),
-        randomFloat(min.y, max.y)
-    );
-}
-
-interface InternalAnimation<T> {
-    readonly start: T
-    readonly end: T
-    readonly easing: (typeof EaseFunctions)[keyof typeof EaseFunctions]
-}
-
 export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedParticle) {
     override readonly fullAllocBytes = 0;
-    override readonly partialAllocBytes = 22;
+    override readonly partialAllocBytes = 16;
     override readonly hitbox?: CircleHitbox | undefined;
 
     private readonly _positionAnim: InternalAnimation<Vector>;
 
-    alpha: number;
-    alphaActive = false;
-    private readonly _alphaAnim?: InternalAnimation<number>;
+    private readonly _alphaAnim?: Omit<InternalAnimation<number>, "easing">;
 
-    scale: number;
-    scaleActive = false;
+    scale = 0;
     private readonly _scaleAnim?: InternalAnimation<number>;
-
-    private readonly _initialRotation: number;
 
     angularVelocity = 0;
 
@@ -67,7 +27,7 @@ export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedP
 
     readonly _creationDate: number;
     readonly _lifetime: number;
-    _interpFactor = 0;
+    age = 0;
 
     private readonly variant?: Variation;
 
@@ -106,17 +66,10 @@ export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedP
         this._position = Vec.lerp(this._positionAnim.start, this._positionAnim.end, easing(0));
 
         if (typeof alpha === "object" && "start" in alpha) {
-            const easing = EaseFunctions[alpha.easing ?? "linear"];
             this._alphaAnim = {
                 start: resolveNumericSpecifier(alpha.start),
-                end: resolveNumericSpecifier(alpha.end),
-                easing
+                end: resolveNumericSpecifier(alpha.end)
             };
-
-            this.alpha = Numeric.lerp(this._alphaAnim.start, this._alphaAnim.end, easing(0));
-            this.alphaActive = true;
-        } else {
-            this.alpha = resolveNumericSpecifier(alpha);
         }
 
         if (typeof scale === "object" && "start" in scale) {
@@ -128,7 +81,6 @@ export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedP
             };
 
             this.scale = Numeric.lerp(this._scaleAnim.start, this._scaleAnim.end, easing(0));
-            this.scaleActive = true;
         } else {
             this.scale = resolveNumericSpecifier(scale);
         }
@@ -154,21 +106,14 @@ export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedP
             this.game.removeSyncedParticle(this);
             return;
         }
-        const interpFactor = this._interpFactor = age / this._lifetime;
+        const interpFactor = this.age = age / this._lifetime;
 
-        this._rotation = Angle.normalize(this._rotation + this.angularVelocity * this.game.dt);
+        const { start, end, easing } = this._positionAnim;
+        this._position = Vec.lerp(start, end, easing(interpFactor));
 
-        const positionAnim = this._positionAnim;
-        this._position = Vec.lerp(positionAnim.start, positionAnim.end, interpFactor);
-
-        const alphaAnim = this._alphaAnim;
-        if (alphaAnim) {
-            this.alpha = Numeric.lerp(alphaAnim.start, alphaAnim.end, interpFactor);
-        }
-
-        const scaleAnim = this._scaleAnim;
-        if (scaleAnim) {
-            this.scale = Numeric.lerp(scaleAnim.start, scaleAnim.end, interpFactor);
+        if (this._scaleAnim) {
+            const { start, end, easing } = this._scaleAnim;
+            this.scale = Numeric.lerp(start, end, easing(interpFactor));
         }
 
         if (this.hitbox instanceof CircleHitbox && this.definition.hitbox !== undefined) {
@@ -183,22 +128,20 @@ export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedP
             definition: this.definition,
             startPosition: this._positionAnim.start,
             endPosition: this._positionAnim.end,
-            rotation: this.rotation,
             layer: this.layer,
+            age: this.age,
+            lifetime: this._lifetime,
             angularVelocity: this.angularVelocity,
-            interpFactor: this._interpFactor,
-            // scaleActive and alphaActive guarantee the existence of _scaleAnim and _alphaAnim respectively
-            /* eslint-disable @typescript-eslint/no-non-null-assertion */
-            scale: this.scaleActive
+            scale: this._scaleAnim
                 ? {
-                    start: this._scaleAnim!.start,
-                    end: this._scaleAnim!.end
+                    start: this._scaleAnim.start,
+                    end: this._scaleAnim.end
                 }
                 : undefined,
-            alpha: this.alphaActive
+            alpha: this._alphaAnim
                 ? {
-                    start: this._alphaAnim!.start,
-                    end: this._alphaAnim!.end
+                    start: this._alphaAnim.start,
+                    end: this._alphaAnim.end
                 }
                 : undefined,
             variant: this.variant,

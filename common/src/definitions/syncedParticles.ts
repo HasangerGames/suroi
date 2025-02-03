@@ -3,20 +3,11 @@ import { type Variation } from "../typings";
 import { CircleHitbox } from "../utils/hitbox";
 import { type EaseFunctions } from "../utils/math";
 import { ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { randomFloat } from "../utils/random";
 import { Vec, type Vector } from "../utils/vector";
 import { type ScopeDefinition } from "./scopes";
 
-export interface MinMax<T> {
-    readonly min: T
-    readonly max: T
-}
-
-export interface MeanDeviation<T> {
-    readonly mean: T
-    readonly deviation: T
-}
-
-export type ValueSpecifier<T> = T | MinMax<T> | MeanDeviation<T>;
+export type ValueSpecifier<T> = T | { readonly min: T, readonly max: T };
 export type NumericSpecifier = ValueSpecifier<number>;
 export type VectorSpecifier = ValueSpecifier<Vector>;
 
@@ -24,6 +15,28 @@ export interface Animated<T> {
     readonly start: ValueSpecifier<T>
     readonly end: ValueSpecifier<T>
     readonly easing?: keyof typeof EaseFunctions
+}
+
+export interface InternalAnimation<T> {
+    readonly start: T
+    readonly end: T
+    readonly easing: (typeof EaseFunctions)[keyof typeof EaseFunctions]
+}
+
+export function resolveNumericSpecifier(numericSpecifier: NumericSpecifier): number {
+    return typeof numericSpecifier === "number"
+        ? numericSpecifier
+        : randomFloat(numericSpecifier.min, numericSpecifier.max);
+}
+
+export function resolveVectorSpecifier(vectorSpecifier: VectorSpecifier): Vector {
+    if ("x" in vectorSpecifier) return vectorSpecifier;
+
+    const { min, max } = vectorSpecifier;
+    return Vec.create(
+        randomFloat(min.x, max.x),
+        randomFloat(min.y, max.y)
+    );
 }
 
 export type SyncedParticleDefinition = ObjectDefinition & {
@@ -156,8 +169,8 @@ export const SyncedParticles = ObjectDefinitions.withDefault<SyncedParticleDefin
                 }
             },
             lifetime: {
-                mean: 20000,
-                deviation: 1000
+                min: 19000,
+                max: 21000
             },
             frame: "smoke_grenade_particle",
             zIndex: ZIndexes.BuildingsCeiling - 1,
@@ -195,8 +208,8 @@ export const SyncedParticles = ObjectDefinitions.withDefault<SyncedParticleDefin
                         easing: "circOut"
                     },
                     lifetime: {
-                        mean: 2000,
-                        deviation: 200
+                        min: 1800,
+                        max: 2200
                     }
                 }
             ),
@@ -226,8 +239,8 @@ export const SyncedParticles = ObjectDefinitions.withDefault<SyncedParticleDefin
                         easing: "circOut"
                     },
                     lifetime: {
-                        mean: 2000,
-                        deviation: 500
+                        min: 1500,
+                        max: 2500
                     },
                     hitbox: new CircleHitbox(5)
                 }
