@@ -69,16 +69,22 @@ type FunctionTemplate<
  * @template Def The overarching definition at play
  * @template Base The partial version being used as a template
  */
-export type GetMissing<
+export type _GetMissing<
     Def extends object,
     Base extends DeepPartial<Def> | FunctionTemplate<Def>
 > = Base extends (...args: any[]) => (infer Ret extends DeepPartial<Def>)
-    ? GetMissing<Def, Ret>
-    : [keyof Base] extends [never]
-        ? Def
-        : DeepPartial<{
-            readonly [K in keyof Base & keyof Def]?: Def[K]
-        }> & PreservingOmit<Def, keyof Base>;
+        ? GetMissing<Def, Ret>
+        : [keyof Base] extends [never]
+            ? Def
+            : DeepPartial<{
+                readonly [K in keyof Base & keyof Def]?: Def[K]
+            }> & PreservingOmit<Def, keyof Base>;
+
+export type GetMissing<
+    Def extends object,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    Base extends DeepPartial<Def> | FunctionTemplate<Def>
+> = DeepPartial<Def>;
 
 type PreservingOmit<T extends object, RejectKeys extends keyof any> = Exclude<keyof T, RejectKeys> extends infer KeyDiff extends keyof T
     ? {
