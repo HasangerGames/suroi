@@ -100,8 +100,13 @@ type Fonts = typeof FontStyles;
 type FontStyle = Fonts[keyof Fonts];
 
 const CSI = "\u001B";
+const OPENING_CODE = `${CSI}[`;
+const CLOSING_CODE = `${OPENING_CODE}0m`;
 export function styleText(string: string, ...styles: Array<Colors[Channel][Color][Variant] | FontStyle>): string {
-    return `${CSI}[${styles.join(";")}m${string}${CSI}[0m`;
+    const opening = `${OPENING_CODE}${styles.join(";")}m`;
+    // replace the closing codes with this opening code
+    // so that styling is consistent
+    return `${opening}${string.replaceAll(CLOSING_CODE, opening)}${CLOSING_CODE}`;
 }
 
 export const Logger = {
