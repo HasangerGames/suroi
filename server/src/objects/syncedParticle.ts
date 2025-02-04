@@ -11,7 +11,7 @@ import { BaseGameObject } from "./gameObject";
 
 export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedParticle) {
     override readonly fullAllocBytes = 0;
-    override readonly partialAllocBytes = 16;
+    override readonly partialAllocBytes = 32; // TODO adjust me
     override readonly hitbox?: CircleHitbox | undefined;
 
     private readonly _positionAnim: InternalAnimation<Vector>;

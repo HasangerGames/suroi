@@ -16,9 +16,9 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
     private _age = 0;
     private _lifetime = 0;
 
-    private _positionAnim: InternalAnimation<Vector>;
-    private _scaleAnim: InternalAnimation<number>;
-    private _alphaAnim: InternalAnimation<number>;
+    private _positionAnim?: InternalAnimation<Vector>;
+    private _scaleAnim?: InternalAnimation<number>;
+    private _alphaAnim?: InternalAnimation<number>;
 
     private _alphaMult = 1;
 
@@ -26,23 +26,6 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
 
     private _definition!: SyncedParticleDefinition;
     get definition(): SyncedParticleDefinition { return this._definition; }
-
-    updateContainerScale(): void {
-        if (
-            this._oldScale === undefined
-            || this._lastScaleChange === undefined
-            || this.container.scale === undefined
-        ) return;
-
-        this.container.scale.set(Numeric.lerp(
-            this._oldScale,
-            this._scale,
-            Numeric.min(
-                (Date.now() - this._lastScaleChange) / this.game.serverDt,
-                1
-            )
-        ));
-    }
 
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.SyncedParticle]) {
         super(game, id);
@@ -70,17 +53,15 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
 
         const easing = EaseFunctions[definition.velocity.easing ?? "linear"];
         this._positionAnim = {
-            start: startPosition,
-            end: endPosition,
+            start: toPixiCoords(startPosition),
+            end: toPixiCoords(endPosition),
             easing
         };
-        this.forcePosition(toPixiCoords(
-            Vec.lerp(startPosition, endPosition, easing(this._age))
-        ));
+        this.forcePosition(Vec.lerp(startPosition, endPosition, easing(this._age)));
 
         this.layer = layer;
         this._lifetime = lifetime ?? definition.lifetime as number;
-        this._age = age * this._lifetime;
+        this._age = age;
         this._spawnTime = Date.now() - this._age;
         this.angularVelocity = angularVelocity ?? definition.angularVelocity as number;
 
@@ -144,11 +125,8 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
     }
 
     override update(): void {
-        this.updateContainerPosition();
-        this.updateContainerRotation();
-        this.updateContainerScale();
-
-        this._age += this.game.serverDt;
+        this._age = (Date.now() - this._spawnTime) / this._lifetime;
+        if (this._age > 1 || !this._positionAnim) return;
 
         const { start, end, easing } = this._positionAnim;
         this.forcePosition(Vec.lerp(start, end, easing(this._age)));
