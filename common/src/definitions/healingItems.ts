@@ -18,19 +18,18 @@ export const HealingItems = ObjectDefinitions.withDefault<HealingItemDefinition>
         itemType: ItemType.Healing,
         noDrop: false
     },
-    ([derive, , createTemplate]) => {
-        const consumable = derive((name: string) => ({
+    ([derive]) => {
+        const healing = derive((name: string) => ({
             idString: name.toLowerCase().replace(/ /g, "_"),
+            healType: HealType.Health,
             name
         }));
 
-        const healing = createTemplate(consumable, {
-            healType: HealType.Health
-        });
-
-        const adren = createTemplate(consumable, {
-            healType: HealType.Adrenaline
-        });
+        const adren = derive((name: string) => ({
+            idString: name.toLowerCase().replace(/ /g, "_"),
+            healType: HealType.Adrenaline,
+            name
+        }));
 
         return [
             healing(

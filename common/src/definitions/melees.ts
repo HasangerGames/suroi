@@ -79,7 +79,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
         },
         fireMode: FireMode.Single
     },
-    ([, , , missing]) => {
+    ([, , missing]) => {
         type Missing = typeof missing;
         return ([
             {

@@ -111,7 +111,7 @@ export const SyncedParticles = ObjectDefinitions.withDefault<SyncedParticleDefin
             adrenaline: 0
         }
     },
-    ([derive, , createTemplate]) => {
+    ([derive]) => {
         const syncedParticle = derive((idString: string, name?: string) => ({
             idString,
             name: name ?? (
@@ -124,7 +124,8 @@ export const SyncedParticles = ObjectDefinitions.withDefault<SyncedParticleDefin
             frame: idString
         }));
 
-        const smokeLike = createTemplate(syncedParticle, {
+        const smokeLike = derive((idString: string, name?: string) => ({
+            ...syncedParticle([idString, name]),
             scale: {
                 start: {
                     min: 1.5,
@@ -161,7 +162,7 @@ export const SyncedParticles = ObjectDefinitions.withDefault<SyncedParticleDefin
             frame: "smoke_grenade_particle",
             zIndex: ZIndexes.BuildingsCeiling - 1,
             scopeOutPreMs: 3200
-        });
+        }));
 
         return [
             smokeLike(

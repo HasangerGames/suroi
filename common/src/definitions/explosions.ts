@@ -29,7 +29,7 @@ export interface ExplosionDefinition extends ObjectDefinition, KillfeedItemMixin
 export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
     "Explosions",
     { ballistics: { ...defaultBulletTemplate, shrapnel: true } },
-    ([, , , missing]) => {
+    ([, , missing]) => {
         type Missing = typeof missing;
         return ([
             {

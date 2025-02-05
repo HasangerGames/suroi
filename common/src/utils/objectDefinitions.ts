@@ -69,7 +69,7 @@ type FunctionTemplate<
  * @template Def The overarching definition at play
  * @template Base The partial version being used as a template
  */
-export type _GetMissing<
+export type GetMissing<
     Def extends object,
     Base extends DeepPartial<Def> | FunctionTemplate<Def>
 > = Base extends (...args: any[]) => (infer Ret extends DeepPartial<Def>)
@@ -79,12 +79,6 @@ export type _GetMissing<
             : DeepPartial<{
                 readonly [K in keyof Base & keyof Def]?: Def[K]
             }> & PreservingOmit<Def, keyof Base>;
-
-export type GetMissing<
-    Def extends object,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    Base extends DeepPartial<Def> | FunctionTemplate<Def>
-> = DeepPartial<Def>;
 
 type PreservingOmit<T extends object, RejectKeys extends keyof any> = Exclude<keyof T, RejectKeys> extends infer KeyDiff extends keyof T
     ? {
@@ -212,124 +206,39 @@ export const createTemplate = <
     Def extends object
 >() => <
     Base extends DeepPartial<Def> | FunctionTemplate<Def>,
-    Parent extends TemplateApplier<Def, object> | undefined = undefined,
 
     // don't overwrite the types below, they're here to avoid repetition/convenience/clarity
-    ParentBaseType = Parent extends undefined ? unknown : GetTemplateBase<NonNullable<Parent>>,
-
-    ArgsRet extends [any[], unknown] = Base extends (...args: infer Args) => infer Ret ? [Args, Ret] : never,
-    PArgsRet extends [any[], unknown] = Parent extends (...args: infer PArgs) => infer PRet ? [PArgs, PRet] : never,
-
-    BaseArgs extends any[] = ArgsRet[0],
-    BaseRet = ArgsRet[1],
-    ParentArgs extends any[] = PArgsRet[0],
-    ParentRet = PArgsRet[1],
-
-    FnFromFn extends FunctionTemplate<Def, [BaseArgs, ParentArgs]> = (...args: [BaseArgs, ParentArgs[0]]) => BaseRet & ParentRet,
-    FnFromNorm extends FunctionTemplate<Def, BaseArgs> = (...args: BaseArgs) => BaseRet & ParentBaseType,
-    NormFromFn extends FunctionTemplate<Def, ParentArgs> = (...args: ParentArgs) => Base & ParentRet,
-    NormFromNorm = Base & ParentBaseType,
-
-    Aggregate = (
-        // using FnFromFn, FnFromNorm, NormFromFn, or NormFromNorm breaks
-        // stuff and causes assignability errors for some reason
-        Base extends (...args: infer BArgs) => infer BRet
-            ? ParentBaseType extends (...args: infer PArgs) => infer PRet
-                ? (...args: [BArgs, PArgs]) => BRet & PRet
-                : (...args: BArgs) => BRet & ParentBaseType
-            : ParentBaseType extends (...args: infer PArgs) => infer PRet
-                ? (...args: PArgs) => Base & PRet
-                : Base & ParentBaseType
-    )
+    ArgsRet extends [any[], DeepPartial<Def>] = Base extends (...args: infer Args extends any[]) => (infer Ret extends DeepPartial<Def>) ? [Args, Ret] : [[], Base]
 >(
-    ...[arg0, arg1]: Parent extends undefined ? [Base] : [Parent, Base]
-): TemplateApplier<Def, Aggregate> => {
-    const [base, parent]: [Base, Parent | undefined] = arg1 === undefined ? [arg0 as Base, undefined] : [arg1, arg0 as Parent];
-
-    // attach a hidden tag to function templates
-    type Tagged = typeof fn & { __functionTemplate__: boolean };
-
+    base: Base
+): TemplateApplier<Def, ArgsRet[1]> => {
     const baseIsFunc = typeof base === "function";
-    const parentIsFunc = (parent as Tagged | undefined)?.__functionTemplate__;
-    const noParent = parent === undefined;
+
+    type FnFromNorm = (...args: ArgsRet[0]) => ArgsRet[1];
 
     // @ts-expect-error since the function we're returning will probably be called
     // often, we take the time to optimize it based on the three booleans above
-    const fn: TemplateApplier<Def, Aggregate> = baseIsFunc
-        ? parentIsFunc
-            ? <
-                Override extends GetMissing<Def, FnFromFn>
-            >(
-                // function template inheriting from other function template
-                ...[[cArgs, pArgs], overrides]: DetermineApplierArgs<Def, FnFromFn, Override>
-            ): Def => mergeDeep(
-                {},
-                (
-                    parent as TemplateApplier<Def, FunctionTemplate<Def, ParentArgs>>
-                )(pArgs, {} as GetMissing<Def, DeepPartial<Def>>) ?? {},
-                (base as FunctionTemplate<Def>)(...cArgs),
-                (overrides ?? {}) as Override
-            ) as Def
-            : noParent
-                ? <
-                    Override extends GetMissing<Def, FnFromNorm>
-                >(
-                    // function template with no parent
-                    ...[args, overrides]: DetermineApplierArgs<Def, FnFromNorm, Override>
-                ): Def => mergeDeep(
-                    {},
-                    (base as FunctionTemplate<Def>)(...args),
-                    (overrides ?? {}) as Override
-                ) as Def
-                : <
-                    Override extends GetMissing<Def, FnFromNorm>
-                >(
-                    // function template inheriting from object parent
-                    ...[args, overrides]: DetermineApplierArgs<Def, FnFromNorm, Override>
-                ): Def => mergeDeep(
-                    {},
-                    parent({} as Def) ?? {},
-                    (base as FunctionTemplate<Def>)(...args),
-                    (overrides ?? {}) as Override
-                ) as Def
-        : parentIsFunc
-            ? <
-                Override extends GetMissing<Def, NormFromFn>
-            >(
-                // object template inheriting from function template
-                ...[args, overrides]: DetermineApplierArgs<Def, NormFromFn, Override>
-            ): Def => mergeDeep(
-                {} as Def,
-                (
-                    parent as TemplateApplier<Def, FunctionTemplate<Def, ParentArgs>>
-                )(args, {} as GetMissing<Def, DeepPartial<Def>>) ?? {},
-                base,
-                (overrides ?? {}) as Override
-            )
-            : noParent
-                ? <
-                    Override extends GetMissing<Def, NormFromNorm>
-                >(
-                    // object template with no inheritance
-                    ...[overrides/* , non_applicable */]: DetermineApplierArgs<Def, NormFromNorm, Override>
-                ): Def => mergeDeep(
-                    {} as Def,
-                    base,
-                    (overrides ?? {}) as Override
-                )
-                : <
-                    Override extends GetMissing<Def, NormFromNorm>
-                >(
-                    // object template inheriting from object template
-                    ...[overrides/* , non_applicable */]: DetermineApplierArgs<Def, NormFromNorm, Override>
-                ): Def => mergeDeep(
-                    {} as Def,
-                    (parent({} as Def) ?? {}),
-                    base,
-                    (overrides ?? {}) as Override
-                );
-
-    (fn as Tagged).__functionTemplate__ = baseIsFunc;
+    const fn: TemplateApplier<Def, Base> = baseIsFunc
+        ? <
+            Override extends GetMissing<Def, FnFromNorm>
+        >(
+            // function template with no parent
+            ...[args, overrides]: DetermineApplierArgs<Def, FnFromNorm, Override>
+        ): Def => mergeDeep(
+            {},
+            (base as FunctionTemplate<Def>)(...args),
+            (overrides ?? {}) as Override
+        ) as Def
+        : <
+            Override extends GetMissing<Def, Base>
+        >(
+            // object template with no inheritance
+            ...[overrides/* , non_applicable */]: DetermineApplierArgs<Def, Base, Override>
+        ): Def => mergeDeep(
+            {} as Def,
+            base,
+            (overrides ?? {}) as Override
+        );
 
     return fn;
 };
@@ -360,7 +269,6 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                 [
                     derive,
                     inherit,
-                    createTemplateForMissing,
                     __helper_variable_to_get_Missing_type_dont_use_as_value_or_you_will_be_fired__
                 ]: [
                     <
@@ -372,31 +280,17 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
                             : Base & Default
                     >,
                     typeof inheritFrom,
-                    ReturnType<typeof createTemplate<Missing>>,
                     Missing
                 ]
             ) => ReadonlyArray<RawDefinition<Missing>>
         ) => {
-            const defaultTemplate = createTemplate<RawDefinition<Missing>>()(
-                defaultValue
-            ) as unknown as (...args: [RawDefinition<Missing>]) => RawDefinition<Def>;
-            // SAFETY: defaultValue is not a function, thus the signature of the applier is (override: GetMissing<…>) => …
-
-            const derive: <
-                Base extends DeepPartial<Missing> | FunctionTemplate<Missing>
-            >(base: Base) => TemplateApplier<
-                Missing,
-                Base extends (...args: infer Args) => infer Ret
-                    ? (...args: Args) => Ret & Default
-                    : Base & Default
-                // ts is inconsistent about when it wants to accept/reject this
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore lol, is this the new ts2589
-            > = createTemplate<Missing>().bind(null, defaultTemplate);
-
             return new ObjectDefinitions<Def>(
                 name,
-                creationCallback([derive, inheritFrom, createTemplate<Missing>(), undefined as any]) as ReadonlyArray<RawDefinition<Def>>,
+                creationCallback([
+                    createTemplate<Missing>(),
+                    inheritFrom,
+                    undefined as any
+                ]) as ReadonlyArray<RawDefinition<Def>>,
                 defaultValue
             );
         };

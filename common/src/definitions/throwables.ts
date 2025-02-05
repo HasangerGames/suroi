@@ -89,7 +89,7 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
         fireDelay: 250,
         speedCap: Infinity
     },
-    ([, , , missing]) => {
+    ([, , missing]) => {
         type Missing = typeof missing;
         return ([
             {

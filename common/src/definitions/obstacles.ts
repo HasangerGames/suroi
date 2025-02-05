@@ -414,7 +414,7 @@ const defaultObstacle: DeepPartial<RawObstacleDefinition> = {
 export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
     "Obstacles",
     defaultObstacle,
-    ([derive, inheritFrom, , _missingType]) => {
+    ([derive, inheritFrom, _missingType]) => {
         type Missing = typeof _missingType;
 
         const tree = derive(

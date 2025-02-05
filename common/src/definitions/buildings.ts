@@ -271,7 +271,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
         allowFlyover: FlyoverPref.Never,
         ceilingScopeEffect: true
     } satisfies DeepPartial<Omit<BuildingDefinition, "idString">>,
-    ([derive, , , _missingType]) => {
+    ([derive, , _missingType]) => {
         type Missing = typeof _missingType;
         const blueHouseVaultLayout = derive((id: number, obstacles: readonly BuildingObstacle[], subBuildings?: readonly SubBuilding[]) => {
             return {

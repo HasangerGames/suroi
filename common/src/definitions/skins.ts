@@ -14,7 +14,7 @@ export interface SkinDefinition extends ItemDefinition {
     readonly grassTint: boolean
     readonly backpackTint?: number
     readonly hideEquipment: boolean
-    readonly rolesRequired?: string[]
+    readonly rolesRequired?: readonly string[]
     readonly hideBlood: boolean
     readonly noSwap?: boolean
 }
@@ -29,34 +29,36 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
         hideEquipment: false,
         hideBlood: false
     },
-    ([derive, , createTemplate]) => {
+    ([derive]) => {
         const skin = derive((name: string, backpackTint?: number) => ({
             idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
             backpackTint,
             name
         }));
 
-        const hidden = createTemplate(skin, {
+        const hidden = derive((name: string, backpackTint?: number) => ({
+            ...skin([name, backpackTint]),
             hideFromLoadout: true
-        });
+        }));
 
-        const withRole = createTemplate(skin, (roles: string[]) => ({
+        const withRole = derive((roles: readonly string[], name: string, backpackTint?: number) => ({
+            ...skin([name, backpackTint]),
             rolesRequired: roles
         }));
 
         return [
             // Dev funny skins
-            withRole([[["hasanger"]], ["Hasanger",      0x640000]]),
-            withRole([[["limenade"]], ["LimeNade",      0xffffff]]),
-            withRole([[["solstice"]], ["Dragonscale",   0x3f808d]]),
-            withRole([[["error"]],    ["error",         0x1fc462]]),
-            withRole([[["pap"]],      ["pap",           0x00366b]]),
-            withRole([[["zedaes"]],   ["zedaes",        0x052105]]),
+            withRole([["hasanger"], "Hasanger",      0x640000]),
+            withRole([["limenade"], "LimeNade",      0xffffff]),
+            withRole([["solstice"], "Dragonscale",   0x3f808d]),
+            withRole([["error"],    "error",         0x1fc462]),
+            withRole([["pap"],      "pap",           0x00366b]),
+            withRole([["zedaes"],   "zedaes",        0x052105]),
 
             // Role skins
-            withRole([[["developr", "pap", "error", "limenade"]],                ["Developr Swag", 0x007a7f]]),
-            withRole([[["designr", "solstice", "vip_designr", "lead_designr"]],  ["Designr Swag",  0x67cf00]]),
-            withRole([[["sound_designr"]],                                       ["Sound Designr Swag",  0x3e8476]]),
+            withRole([["developr", "pap", "error", "limenade"],                "Developr Swag", 0x007a7f]),
+            withRole([["designr", "solstice", "vip_designr", "lead_designr"],  "Designr Swag",  0x67cf00]),
+            withRole([["sound_designr"],                                       "Sound Designr Swag",  0x3e8476]),
             ...([
                 ["HAZEL Jumpsuit",  0xb4a894],
                 ["The Amateur",     0x9b8767],
