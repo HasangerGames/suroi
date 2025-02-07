@@ -202,10 +202,10 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
                     /*
                         Otherwise, check conditions as normal
                     */
-                    || flyoverCondMap[object.definition.allowFlyover]
+                    || flyoverCondMap[object.definition.allowFlyover ?? FlyoverPref.Never]
                 );
             } else {
-                return flyoverCondMap[object.definition.allowFlyover];
+                return flyoverCondMap[object.definition.allowFlyover ?? FlyoverPref.Never];
             }
         };
 

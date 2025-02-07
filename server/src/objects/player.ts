@@ -28,7 +28,7 @@ import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox
 import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
 import { Collision, EaseFunctions, Geometry, Numeric } from "@common/utils/math";
 import { ExtendedMap, type SDeepMutable, type SMutable, type Timeout } from "@common/utils/misc";
-import { defaultModifiers, ItemType, type EventModifiers, type ExtendedWearerAttributes, type PlayerModifiers, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
+import { ItemType, type EventModifiers, type ExtendedWearerAttributes, type PlayerModifiers, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray, randomPointInsideCircle, weightedRandom } from "@common/utils/random";
 import { SuroiByteStream } from "@common/utils/suroiByteStream";
@@ -67,6 +67,19 @@ export interface PlayerContainer {
     readonly nameColor?: number
     readonly lobbyClearing: boolean
     readonly weaponPreset: string
+}
+
+export interface PlayerModifiers {
+    // Multiplicative
+    maxHealth: number
+    maxAdrenaline: number
+    baseSpeed: number
+    size: number
+    adrenDrain: number
+
+    // Additive
+    minAdrenaline: number
+    hpRegen: number
 }
 
 export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
@@ -206,7 +219,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.setDirty();
     }
 
-    private _modifiers = defaultModifiers();
+    private _modifiers = Player.defaultModifiers();
 
     killedBy?: Player;
     downedBy?: {
@@ -1886,8 +1899,21 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
     }
 
+    static defaultModifiers(): PlayerModifiers {
+        return {
+            maxHealth: 1,
+            maxAdrenaline: 1,
+            baseSpeed: 1,
+            size: 1,
+            adrenDrain: 1,
+
+            minAdrenaline: 0,
+            hpRegen: 0
+        };
+    }
+
     private _calculateModifiers(): PlayerModifiers {
-        const newModifiers = defaultModifiers();
+        const newModifiers = Player.defaultModifiers();
         const eventMods: EventModifiers = {
             kill: [],
             damageDealt: []

@@ -1,4 +1,4 @@
-import { ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
+import { ItemDefinitions, ItemType, type ItemDefinition } from "../utils/objectDefinitions";
 
 export interface ScopeDefinition extends ItemDefinition {
     readonly itemType: ItemType.Scope
@@ -6,34 +6,23 @@ export interface ScopeDefinition extends ItemDefinition {
     readonly giveByDefault: boolean
 }
 
-export const Scopes = ObjectDefinitions.withDefault<ScopeDefinition>()(
-    "Scopes",
-    {
-        itemType: ItemType.Scope,
-        noDrop: false,
-        giveByDefault: false
-    },
-    ([derive]) => {
-        const scope = derive((magnification: number) => ({
-            idString: `${magnification}x_scope`,
-            name: `${magnification}x Scope`
-        }));
+const scope = (magnification: string, zoomLevel: number): Omit<ScopeDefinition, "itemType"> => ({
+    idString: `${magnification}_scope`,
+    name: `${magnification} Scope`,
+    giveByDefault: false,
+    zoomLevel
+});
 
-        return [
-            scope(
-                [1],
-                {
-                    zoomLevel: 70,
-                    noDrop: true,
-                    giveByDefault: true
-                }
-            ),
-            scope([2], { zoomLevel: 100 }),
-            scope([4], { zoomLevel: 135 }),
-            scope([8], { zoomLevel: 185 }),
-            scope([15], { zoomLevel: 255 })
-        ];
-    }
-);
+export const Scopes = new ItemDefinitions<ScopeDefinition>(ItemType.Scope, [
+    {
+        ...scope("1x", 70),
+        noDrop: true,
+        giveByDefault: true
+    },
+    scope("2x", 100),
+    scope("4x", 135),
+    scope("8x", 185),
+    scope("15x", 255)
+]);
 
 export const DEFAULT_SCOPE = Scopes.definitions[0];

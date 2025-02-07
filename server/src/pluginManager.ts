@@ -7,7 +7,7 @@ import { type AllowedEmoteSources, type PlayerInputData } from "@common/packets/
 import { type JoinPacketData } from "@common/packets/joinPacket";
 import { Variation, type Orientation } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
-import { type PlayerModifiers } from "@common/utils/objectDefinitions";
+import { type PlayerModifiers } from "./objects/player";
 import { Vector } from "@common/utils/vector";
 import { Config } from "./config";
 import { Airdrop, Game } from "./game";

@@ -1489,7 +1489,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         });
                     }
 
-                    if (weaponDef.image !== undefined) {
+                    if (weaponDef.image?.usePosition !== undefined) {
                         this.anims.weapon = this.game.addTween({
                             target: this.images.weapon,
                             to: {
@@ -1505,7 +1505,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
 
                 this.playSound(
-                    weaponDef.swingSound,
+                    weaponDef.swingSound ?? "swing",
                     {
                         falloff: 0.4,
                         maxRange: 96
@@ -1570,7 +1570,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             ) return -Infinity;
 
                             return a.hitbox.distanceTo(selfHitbox).distance - b.hitbox.distanceTo(selfHitbox).distance;
-                        }).slice(0, weaponDef.maxTargets)
+                        }).slice(0, weaponDef.maxTargets ?? 1)
                     ) {
                         if (target.isPlayer) {
                             target.hitEffect(position, angleToPos, (this.activeItem as MeleeDefinition).hitSound);

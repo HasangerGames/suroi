@@ -198,9 +198,9 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             this.container.rotation = this.rotation;
             this.ceilingContainer.rotation = this.rotation;
 
-            if (definition.graphics.length) {
+            if (definition.graphics?.length) {
                 this.graphics = new Graphics();
-                this.graphics.zIndex = getEffectiveZIndex(definition.graphicsZIndex, this.layer, this.game.layer);
+                this.graphics.zIndex = getEffectiveZIndex(definition.graphicsZIndex ?? ZIndexes.BuildingsFloor, this.layer, this.game.layer);
                 for (const graphics of definition.graphics) {
                     this.graphics.beginPath();
                     drawGroundGraphics(graphics.hitbox.transform(this.position, 1, this.orientation), this.graphics);
@@ -357,16 +357,17 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         if (this.dead) {
             this.ceilingContainer.zIndex = getEffectiveZIndex(ZIndexes.DeadObstacles, this.layer, this.game.layer);
         } else {
+            const { obstacles = [], subBuildings = [] } = this.definition;
             this.ceilingContainer.zIndex = getEffectiveZIndex(
-                this.definition.ceilingZIndex,
+                this.definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling,
                 this.layer + Numeric.clamp(Math.max( // make sure the ceiling appears over everything else
-                    ...this.definition.obstacles.map(({ layer }) => layer ?? 0),
-                    ...this.definition.subBuildings.map(({ layer }) => layer ?? 0)
+                    ...obstacles.map(({ layer }) => layer ?? 0),
+                    ...subBuildings.map(({ layer }) => layer ?? 0)
                 ), 0, Infinity),
                 this.game.layer
             );
         }
-        this.container.zIndex = getEffectiveZIndex(this.definition.floorZIndex, this.layer, this.game.layer);
+        this.container.zIndex = getEffectiveZIndex(this.definition.floorZIndex ?? ZIndexes.BuildingsFloor, this.layer, this.game.layer);
     }
 
     override updateDebugGraphics(debugRender: DebugRenderer): void {
@@ -423,17 +424,17 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
     }
 
     private _createSprites(): void {
-        const { definition } = this;
+        const { ceilingImages = [], floorImages = [] } = this.definition;
 
-        for (const image of definition.ceilingImages) {
+        for (const image of ceilingImages) {
             this._updateImage(image, true);
         }
-        for (const image of definition.floorImages) {
+        for (const image of floorImages) {
             this._updateImage(image, false);
         }
 
         // delete sprites not in the current definition
-        const definitionSprites = new Set([...definition.ceilingImages, ...definition.floorImages]);
+        const definitionSprites = new Set([...ceilingImages, ...floorImages]);
         for (const [definition, image] of this.images) {
             if (definitionSprites.has(definition)) continue;
             image.sprite.destroy();

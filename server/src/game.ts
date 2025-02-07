@@ -1181,7 +1181,7 @@ export class Game implements GameData {
                     if (
                         object.isBuilding
                         && object.scopeHitbox
-                        && object.definition.wallsToDestroy === Infinity
+                        && object.definition.wallsToDestroy === undefined
                     ) {
                         const hitbox = object.scopeHitbox.clone();
                         hitbox.scale(paddingFactor);

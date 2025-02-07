@@ -2928,10 +2928,6 @@ logger.indent("Validating obstacles", () => {
                 });
             }
 
-            if (obstacle.imageAnchor !== undefined) {
-                validators.vector(tester.createPath(errorPath, "field imageAnchor"), obstacle.imageAnchor);
-            }
-
             if (obstacle.tint !== undefined) {
                 validators.color(tester.createPath(errorPath, "tint"), obstacle.tint);
             }

@@ -72,7 +72,7 @@ export class GameMap {
         }
     }
 
-    static getRandomBuildingOrientation(mode: NonNullable<BuildingDefinition["rotationMode"]>): Orientation {
+    static getRandomBuildingOrientation(mode: NonNullable<BuildingDefinition["rotationMode"]> = RotationMode.Limited): Orientation {
         switch (mode) {
             case RotationMode.Binary:
                 return pickRandomInArray([0, 2]);
@@ -448,7 +448,7 @@ export class GameMap {
 
                     position = this.getRandomPosition(buildingDef.spawnHitbox, {
                         orientation,
-                        spawnMode: buildingDef.spawnMode,
+                        spawnMode: buildingDef.spawnMode ?? MapObjectSpawnMode.Grass,
                         orientationConsumer: (newOrientation: Orientation) => {
                             orientation = newOrientation;
                         },
@@ -584,7 +584,7 @@ export class GameMap {
 
         const building = new Building(this.game, definition, Vec.clone(position), orientation, layer);
 
-        for (const obstacleData of definition.obstacles) {
+        for (const obstacleData of definition.obstacles ?? []) {
             let idString = getRandomIDString<
                 ObstacleDefinition,
                 ReferenceTo<ObstacleDefinition> | typeof NullString
@@ -643,7 +643,7 @@ export class GameMap {
             }
         }
 
-        for (const subBuilding of definition.subBuildings) {
+        for (const subBuilding of definition.subBuildings ?? []) {
             const idString = getRandomIDString<
                 BuildingDefinition,
                 ReferenceTo<BuildingDefinition> | typeof NullString
@@ -660,7 +660,7 @@ export class GameMap {
             );
         }
 
-        for (const floor of definition.floors) {
+        for (const floor of definition.floors ?? []) {
             this.terrain.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation), floor.layer ?? layer);
         }
 

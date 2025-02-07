@@ -1,4 +1,4 @@
-import { ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
+import { ItemDefinitions, ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
 
 export interface HealingItemDefinition extends ItemDefinition {
     readonly itemType: ItemType.Healing
@@ -12,55 +12,34 @@ export enum HealType {
     Adrenaline
 }
 
-export const HealingItems = ObjectDefinitions.withDefault<HealingItemDefinition>()(
-    "HealingItems",
+export const HealingItems = new ItemDefinitions<HealingItemDefinition>(ItemType.Healing, [
     {
-        itemType: ItemType.Healing,
-        noDrop: false
+        idString: "gauze",
+        name: "Gauze",
+        healType: HealType.Health,
+        restoreAmount: 15,
+        useTime: 3
     },
-    ([derive, , createTemplate]) => {
-        const consumable = derive((name: string) => ({
-            idString: name.toLowerCase().replace(/ /g, "_"),
-            name
-        }));
+    {
+        idString: "medikit",
+        name: "Medikit",
+        healType: HealType.Health,
+        restoreAmount: 100,
+        useTime: 6
+    },
 
-        const healing = createTemplate(consumable, {
-            healType: HealType.Health
-        });
-
-        const adren = createTemplate(consumable, {
-            healType: HealType.Adrenaline
-        });
-
-        return [
-            healing(
-                ["Gauze"],
-                {
-                    restoreAmount: 15,
-                    useTime: 3
-                }
-            ),
-            healing(
-                ["Medikit"],
-                {
-                    restoreAmount: 100,
-                    useTime: 6
-                }
-            ),
-            adren(
-                ["Cola"],
-                {
-                    restoreAmount: 25,
-                    useTime: 3
-                }
-            ),
-            adren(
-                ["Tablets"],
-                {
-                    restoreAmount: 50,
-                    useTime: 5
-                }
-            )
-        ];
+    {
+        idString: "cola",
+        name: "Cola",
+        healType: HealType.Adrenaline,
+        restoreAmount: 25,
+        useTime: 3
+    },
+    {
+        idString: "tablets",
+        name: "Tablets",
+        healType: HealType.Adrenaline,
+        restoreAmount: 50,
+        useTime: 5
     }
-);
+]);

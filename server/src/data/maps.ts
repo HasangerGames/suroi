@@ -925,11 +925,9 @@ const maps = {
         }
     },
     gunsTest: (() => {
-        const Guns = Loots.byType(ItemType.Gun);
-
         return {
             width: 64 * 8,
-            height: 48 + (6 * Guns.length),
+            height: 48 + (6 * Guns.definitions.length),
             beachSize: 0,
             oceanSize: 0,
             onGenerate(map) {
@@ -981,11 +979,11 @@ const maps = {
                                     player.setDirty();
                                 };
 
-                                for (let i = 0, l = Guns.length; i < l; i++) {
+                                for (let i = 0, l = Guns.definitions.length; i < l; i++) {
                                     const player = createBot(`bot ${i}`);
                                     if (player === undefined) return;
                                     teleportPlayer(player, Vec.create(256, 24 + 6 * i));
-                                    const gun = Guns[i];
+                                    const gun = Guns.definitions[i];
 
                                     player.inventory.addOrReplaceWeapon(0, gun.idString);
                                     (player.inventory.getWeapon(0) as GunItem).ammo = gun.capacity;
@@ -1172,7 +1170,7 @@ const maps = {
 
                         const position = map.getRandomPosition(definition.spawnHitbox, {
                             orientation,
-                            spawnMode: definition.spawnMode,
+                            spawnMode: definition.spawnMode ?? MapObjectSpawnMode.Grass,
                             orientationConsumer: (newOrientation: Orientation) => {
                                 orientation = newOrientation;
                             },

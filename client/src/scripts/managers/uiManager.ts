@@ -1569,7 +1569,7 @@ export class UIManager {
                                 iconName = "airdrop";
                                 break;
                             default:
-                                iconName = weaponUsed?.killfeedFrame ?? "";
+                                iconName = weaponUsed?.killfeedFrame ?? weaponUsed?.idString ?? "";
                                 break;
                         }
                         const altText = weaponUsed ? weaponUsed.name : iconName;

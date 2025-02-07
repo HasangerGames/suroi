@@ -194,7 +194,7 @@ export function getSpawnableLoots(mode: Mode, mapDef: MapDefinition, cache: Cach
         ...new Set(
             Object.keys(mapDef.obstacles ?? {}).map(o => Obstacles.fromString(o)).concat(
                 reachableBuildings.map(
-                    ({ obstacles }) => obstacles.map(
+                    ({ obstacles = [] }) => obstacles.map(
                         ({ idString }) => referenceOrRandomOptions(idString).map(o => Obstacles.fromString(o))
                     )
                 ).flat(2)

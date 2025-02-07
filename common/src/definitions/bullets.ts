@@ -1,5 +1,5 @@
-import { defaultBulletTemplate } from "../constants";
-import { ObjectDefinitions, type BaseBulletDefinition, type ObjectDefinition } from "../utils/objectDefinitions";
+import { BaseBulletDefinition } from "../utils/baseBullet";
+import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
 import { Explosions } from "./explosions";
 import { Guns } from "./guns";
 
@@ -27,10 +27,8 @@ const saturatedBulletColors: Record<string, number> = {
     "shrapnel": 0x363636
 };
 
-export const Bullets = ObjectDefinitions.withDefault<BulletDefinition>()(
-    "Bullets",
-    defaultBulletTemplate,
-    () => [
+export const Bullets = new ObjectDefinitions<BulletDefinition>(
+    [
         ...Guns.definitions,
         ...Explosions.definitions
     ]

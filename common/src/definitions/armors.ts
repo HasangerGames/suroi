@@ -1,106 +1,84 @@
-import { ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
+import { ItemDefinitions, ItemType, type ItemDefinition } from "../utils/objectDefinitions";
 
 export type ArmorDefinition = ItemDefinition & {
-    readonly itemType: ItemType.Armor
-    readonly armorType: ArmorType
     readonly level: number
     readonly damageReduction: number
-} & ({
-    readonly armorType: ArmorType.Vest
-    readonly color: number
-} | {
-    readonly armorType: ArmorType.Helmet
-    readonly color?: undefined
-});
+} & (
+    | {
+        readonly armorType: ArmorType.Helmet
+    }
+    | {
+        readonly armorType: ArmorType.Vest
+        readonly color: number
+    }
+);
 
 export enum ArmorType {
     Helmet,
     Vest
 }
 
-export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
-    "Armors",
+export const Armors = new ItemDefinitions<ArmorDefinition>(ItemType.Armor, [
+    //
+    // Helmets
+    //
     {
-        itemType: ItemType.Armor,
-        noDrop: false
+        idString: "basic_helmet",
+        name: "Basic Helmet",
+        armorType: ArmorType.Helmet,
+        level: 1,
+        damageReduction: 0.1
     },
-    ([derive]) => {
-        const vest = derive((name: string) => ({
-            idString: `${name.toLowerCase()}_vest`,
-            name: `${name} Vest`,
-            armorType: ArmorType.Vest,
-            color: 0x000000
-        }));
+    {
+        idString: "regular_helmet",
+        name: "Regular Helmet",
+        armorType: ArmorType.Helmet,
+        level: 2,
+        damageReduction: 0.15
+    },
+    {
+        idString: "tactical_helmet",
+        name: "Tactical Helmet",
+        armorType: ArmorType.Helmet,
+        level: 3,
+        damageReduction: 0.2
+    },
 
-        const helmet = derive((name: string) => ({
-            idString: `${name.toLowerCase()}_helmet`,
-            name: `${name} Helmet`,
-            armorType: ArmorType.Helmet
-        }));
-
-        return [
-            //
-            // Helmets
-            //
-            helmet(
-                ["Basic"],
-                {
-                    level: 1,
-                    damageReduction: 0.1
-                }
-            ),
-            helmet(
-                ["Regular"],
-                {
-                    level: 2,
-                    damageReduction: 0.15
-                }
-            ),
-            helmet(
-                ["Tactical"],
-                {
-                    level: 3,
-                    damageReduction: 0.2
-                }
-            ),
-
-            //
-            // Vests
-            //
-            vest(
-                ["Basic"],
-                {
-                    level: 1,
-                    damageReduction: 0.2,
-                    color: 0xc8c8c6
-                }
-            ),
-            vest(
-                ["Regular"],
-                {
-                    level: 2,
-                    damageReduction: 0.35,
-                    color: 0x404d2e
-                }
-            ),
-            vest(
-                ["Tactical"],
-                {
-                    level: 3,
-                    damageReduction: 0.45,
-                    color: 0x0d0d0d
-                }
-            ),
-            vest(
-                ["Developr"],
-                {
-                    level: 99,
-                    devItem: true,
-                    damageReduction: 0.72,
-                    color: 0x2f0000,
-                    noDrop: true
-                }
-            )
-        ];
+    //
+    // Vests
+    //
+    {
+        idString: "basic_vest",
+        name: "Basic Vest",
+        armorType: ArmorType.Vest,
+        level: 1,
+        damageReduction: 0.2,
+        color: 0xc8c8c6
+    },
+    {
+        idString: "regular_vest",
+        name: "Regular Vest",
+        armorType: ArmorType.Vest,
+        level: 2,
+        damageReduction: 0.35,
+        color: 0x404d2e
+    },
+    {
+        idString: "tactical_vest",
+        name: "Tactical Vest",
+        armorType: ArmorType.Vest,
+        level: 3,
+        damageReduction: 0.45,
+        color: 0x0d0d0d
+    },
+    {
+        idString: "developr_vest",
+        name: "Developr Vest",
+        armorType: ArmorType.Vest,
+        level: 99,
+        devItem: true,
+        damageReduction: 0.72,
+        color: 0x2f0000,
+        noDrop: true
     }
-);
+]);
