@@ -235,7 +235,8 @@ export class Inventory {
         owner.dirty.weapons = true;
         this.owner.setDirty();
 
-        // owner.updateAndApplyModifiers();
+        owner.updateAndApplyModifiers();
+        owner.updateBackEquippedMelee();
 
         return true;
     }
@@ -761,6 +762,7 @@ export class Inventory {
 
         item?.refreshModifiers();
         this.owner.updateAndApplyModifiers();
+        this.owner.updateBackEquippedMelee();
 
         return old;
     }

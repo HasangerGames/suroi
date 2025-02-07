@@ -488,7 +488,6 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
 
                 // Add the new perk
                 player.perks.addItem(definition);
-                player.updateAndApplyModifiers();
                 break;
             }
 
