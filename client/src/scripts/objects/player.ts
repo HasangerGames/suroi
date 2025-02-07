@@ -515,7 +515,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.disguiseContainer.position.copyFrom(toPixiCoords(this.position));
             this.emote.container.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, -175)));
             this.teammateName?.container.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, 95)));
-            if (this.isActivePlayer) game.uiManager.resetPerkSlots();
         }
 
         if (data.animation !== undefined) {
@@ -638,7 +637,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             if (this.dead) {
-                if (this.isActivePlayer) uiManager.resetPerkSlots();
                 if (this.teammateName !== undefined) this.teammateName.container.visible = false;
             }
 
