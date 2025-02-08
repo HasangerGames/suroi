@@ -1,5 +1,4 @@
-import { type DeepPartial } from "../utils/misc";
-import { ItemDefinitions, ItemType, ObjectDefinitions, type ItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { ItemDefinitions, ItemType, type ItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 
 export const enum PerkQualities {
     Positive = "positive",
@@ -10,7 +9,6 @@ export const enum PerkQualities {
 export interface BasicPerk extends ItemDefinition {
     readonly itemType: ItemType.Perk
     readonly description: string
-    readonly giveByDefault: boolean
     readonly category: PerkCategories
     readonly updateInterval?: number
     readonly type?: PerkQualities
@@ -18,12 +16,6 @@ export interface BasicPerk extends ItemDefinition {
     readonly alwaysAllowSwap?: boolean
     readonly plumpkinGambleIgnore?: boolean
 }
-
-const defaultTemplate = {
-    itemType: ItemType.Perk as const,
-    noDrop: false,
-    giveByDefault: false
-} satisfies DeepPartial<BasicPerk>;
 
 /**
  * As the name implies, loosens numeric literal type to be `number`
@@ -39,6 +31,15 @@ type LoosenNumerics<T> = T extends object
                 : number
             : T
     );
+
+export type PerkDefinition = LoosenNumerics<(typeof perks)[number]> & BasicPerk;
+
+export type PerkNames = ReferenceTo<PerkDefinition>;
+
+export const enum PerkCategories {
+    Normal,
+    Halloween
+}
 
 export const enum PerkIds {
     //
@@ -76,16 +77,7 @@ export const enum PerkIds {
     PriorityTarget = "priority_target"
 }
 
-export const enum PerkCategories {
-    Normal,
-    Halloween
-}
-
-export type PerkDefinition = LoosenNumerics<(typeof perks)[number]> & BasicPerk;
-
-export type PerkNames = ReferenceTo<PerkDefinition>;
-
-export const Perks = new ItemDefinitions<PerkDefinition>(ItemType.Perk, [
+const perks = [
     //
     // Normal Perks
     //
@@ -408,6 +400,7 @@ export const Perks = new ItemDefinitions<PerkDefinition>(ItemType.Perk, [
         noDrop: true,
         plumpkinGambleIgnore: true
     }
-]);
+];
 
+export const Perks = new ItemDefinitions<PerkDefinition>(ItemType.Perk, perks);
 export const PerkData = Perks.idStringToDef;

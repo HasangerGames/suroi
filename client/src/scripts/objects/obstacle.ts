@@ -113,7 +113,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             if (definition.invisible) this.container.visible = false;
 
             // If there are multiple particle variations, generate a list of variation image names
-            const particleImage = definition.frames.particle ?? `${definition.idString}_particle`;
+            const particleImage = definition.frames?.particle ?? `${definition.idString}_particle`;
 
             this.particleFrames = definition.particleVariations !== undefined
                 ? Array.from({ length: definition.particleVariations }, (_, i) => `${particleImage}_${i + 1}`)
@@ -136,7 +136,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 });
             }
 
-            if (definition.sound && !definition.role && !this.destroyed) {
+            if (definition.sound && !this.destroyed) {
                 if ("names" in definition.sound) definition.sound.names.forEach(name => this.playSound(name, definition.sound));
                 else this.playSound(definition.sound.name, definition.sound);
             }
@@ -314,7 +314,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 if (definition.noResidue) {
                     this.image.setVisible(false);
                 } else {
-                    this.image.setFrame(definition.frames.residue ?? `${definition.idString}_residue`);
+                    this.image.setFrame(definition.frames?.residue ?? `${definition.idString}_residue`);
                 }
 
                 this.container.rotation = this.rotation;
@@ -366,10 +366,10 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         this.image.setVisible(!(this.dead && definition.noResidue));
 
         texture ??= !this.dead
-            ? this.activated && definition.frames.activated
-                ? definition.frames.activated
-                : definition.frames.base ?? definition.idString
-            : definition.frames.residue ?? `${definition.idString}_residue`;
+            ? this.activated && definition.frames?.activated
+                ? definition.frames?.activated
+                : definition.frames?.base ?? definition.idString
+            : definition.frames?.residue ?? `${definition.idString}_residue`;
 
         if (this.variation !== undefined && !this.dead) {
             texture += `_${this.variation + 1}`;
@@ -540,7 +540,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     override updateInterpolation(): void { /* bleh */ }
 
     updateDoor(data: ObjectsNetData[ObjectCategory.Obstacle]["full"], isNew = false): void {
-        if (!data?.door || data.definition.role !== ObstacleSpecialRoles.Door) return;
+        if (!data?.door || !data.definition.isDoor) return;
         const definition = data.definition;
 
         if (!this._door) this._door = { offset: 0 };

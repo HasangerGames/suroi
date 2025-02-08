@@ -105,6 +105,8 @@ export type ResultErr<Err> = { err: Err };
  */
 export type Result<Res, Err> = ResultRes<Res> | ResultErr<Err>;
 
+export type ReadonlyRecord<K extends string | number | symbol, T> = Readonly<Record<K, T>>;
+
 export function handleResult<Res>(result: Result<Res, unknown>, fallbackSupplier: () => Res): Res {
     return "err" in result ? fallbackSupplier() : result.res;
 }

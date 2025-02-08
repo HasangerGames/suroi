@@ -711,7 +711,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 const def = this.activeDisguise;
                 if (def !== undefined) {
                     this.images.disguiseSprite.setVisible(true);
-                    this.images.disguiseSprite.setFrame(`${def.frames.base ?? def.idString}${def.variations !== undefined ? `_${random(1, def.variations)}` : ""}`);
+                    this.images.disguiseSprite.setFrame(`${def.frames?.base ?? def.idString}${def.variations !== undefined ? `_${random(1, def.variations)}` : ""}`);
                 } else {
                     this.images.disguiseSprite.setVisible(false);
                 }
@@ -2019,7 +2019,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             );
         }
 
-        let particle = this.activeDisguise ? (this.activeDisguise.frames.particle ?? `${this.activeDisguise.idString}_particle`) : "blood_particle";
+        let particle = this.activeDisguise ? (this.activeDisguise.frames?.particle ?? `${this.activeDisguise.idString}_particle`) : "blood_particle";
 
         if (this.activeDisguise?.particleVariations) particle += `_${random(1, this.activeDisguise.particleVariations)}`;
 

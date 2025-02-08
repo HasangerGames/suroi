@@ -291,7 +291,7 @@ export class Minimap {
                 case ObjectCategory.Obstacle: {
                     const definition = mapObject.definition;
 
-                    let texture = definition.frames.base ?? definition.idString;
+                    let texture = definition.frames?.base ?? definition.idString;
 
                     if (mapObject.variation !== undefined) texture += `_${mapObject.variation + 1}`;
 

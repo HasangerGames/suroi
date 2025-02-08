@@ -252,6 +252,6 @@ export class SuroiByteStream extends ByteStream {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         } while (i < Constants.PLAYER_NAME_MAX_LENGTH);
 
-        return new TextDecoder().decode(new Uint8Array(chars));
+        return ByteStream.decoder.decode(new Uint8Array(chars));
     }
 }

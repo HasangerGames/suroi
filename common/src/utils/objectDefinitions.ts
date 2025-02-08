@@ -1,25 +1,94 @@
-import { Ammos } from "../definitions/ammos";
-import { Armors } from "../definitions/armors";
-import { Backpacks } from "../definitions/backpacks";
-import { Badges } from "../definitions/badges";
-import { Buildings } from "../definitions/buildings";
-import { Bullets } from "../definitions/bullets";
-import { Decals } from "../definitions/decals";
-import { Emotes } from "../definitions/emotes";
-import { Explosions } from "../definitions/explosions";
-import { Guns } from "../definitions/guns";
-import { HealingItems } from "../definitions/healingItems";
-import { Loots } from "../definitions/loots";
-import { MapPings } from "../definitions/mapPings";
-import { Melees } from "../definitions/melees";
-import { Obstacles } from "../definitions/obstacles";
-import { Perks } from "../definitions/perks";
-import { Scopes } from "../definitions/scopes";
-import { Skins } from "../definitions/skins";
-import { SyncedParticles } from "../definitions/syncedParticles";
-import { Throwables } from "../definitions/throwables";
 import { type ByteStream } from "./byteStream";
+import { Mutable, ReadonlyRecord } from "./misc";
 import { type Vector } from "./vector";
+
+/**
+ * A class representing a list of definitions
+ * @template Def The specific type of `ObjectDefinition` this class holds
+ */
+export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> {
+    readonly definitions: readonly Def[];
+    readonly idStringToDef: ReadonlyRecord<string, Def> = Object.create(null);
+    readonly idStringToNumber: ReadonlyRecord<string, number> = Object.create(null);
+    /**
+     * Whether there are more than 255 definitions in this schema, requiring 2 bytes to serialize
+     */
+    readonly overLength: boolean;
+
+    constructor(definitions: readonly Def[]) {
+        this.definitions = definitions;
+
+        let idx = 0;
+        for (const def of definitions) {
+            const idString = def.idString;
+            if (idString in this.idStringToDef) {
+                throw new Error(`Duplicate idString '${idString}' in schema`);
+            }
+
+            // casting here is necessary to modify the readonly defs
+            (this.idStringToDef as Record<string, Def>)[idString] = def;
+            (this.idStringToNumber as Record<string, number>)[idString] = idx++;
+        }
+        this.overLength = idx > 255;
+    }
+
+    reify<U extends Def = Def>(type: ReifiableDef<Def>): U {
+        return typeof type === "string"
+            ? this.fromString<U>(type)
+            : type as U;
+    }
+
+    fromString<Spec extends Def = Def>(idString: ReferenceTo<Spec>): Spec {
+        const def = this.fromStringSafe(idString);
+        if (def === undefined) {
+            throw new ReferenceError(`Unknown idString '${idString}' for this schema`);
+        }
+        return def;
+    }
+
+    fromStringSafe<Spec extends Def = Def>(idString: ReferenceTo<Spec>): Spec | undefined {
+        return this.idStringToDef[idString] as Spec | undefined;
+    }
+
+    hasString(idString: string): boolean {
+        return idString in this.idStringToDef;
+    }
+
+    writeToStream(stream: ByteStream, def: ReifiableDef<Def>): void {
+        const idString = typeof def === "string" ? def : def.idString;
+        if (!this.hasString(idString)) {
+            throw new Error(`Unknown idString '${idString}' for this schema`);
+        }
+        (this.overLength ? stream.writeUint16 : stream.writeUint8)(
+            this.idStringToNumber[idString]
+        );
+    }
+
+    readFromStream<Spec extends Def>(stream: ByteStream): Spec {
+        const idx = this.overLength ? stream.readUint16() : stream.readUint8();
+        const def = this.definitions[idx];
+        if (def === undefined) {
+            throw new RangeError(`Bad index ${idx} in schema`);
+        }
+        if (!this.hasString(def.idString)) {
+            throw new Error(`Unknown idString '${def.idString}' for this schema`);
+        }
+        return def as Spec;
+    }
+
+    [Symbol.iterator](): Iterator<Def> {
+        return this.definitions[Symbol.iterator]();
+    }
+}
+
+export class ItemDefinitions<Def extends ItemDefinition = ItemDefinition> extends ObjectDefinitions<Def> {
+    constructor(itemType: ItemType, definitions: ReadonlyArray<Omit<Def, "itemType">>) {
+        super(definitions.map(def => {
+            (def as Mutable<Def>).itemType = itemType;
+            return def as Def;
+        }));
+    }
+}
 
 export interface ObjectDefinition {
     readonly idString: string
@@ -41,194 +110,10 @@ export type ReferenceTo<T extends ObjectDefinition> = T["idString"];
  */
 export type ReferenceOrRandom<T extends ObjectDefinition> = Partial<Record<ReferenceTo<T> | typeof NullString, number>> | ReferenceTo<T>;
 
-export type ReifiableDef<T extends ObjectDefinition> = ReferenceTo<T> | T;
-
 /**
- * A class representing a list of definitions
- * @template Def The specific type of `ObjectDefinition` this class holds
+ * Either a definition or an idString referencing a definition
  */
-export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> {
-    readonly definitions: readonly Def[];
-    readonly idStringToDef: Readonly<Record<string, Def>>;
-
-    constructor(definitions: readonly Def[]) {
-        this.definitions = definitions;
-
-        this.idStringToDef = definitions.reduce((idStringToDef, def) => {
-            idStringToDef[def.idString] = def;
-            return idStringToDef;
-        }, {} as Record<string, Def>);
-    }
-
-    reify<U extends Def = Def>(type: ReifiableDef<Def>): U {
-        return typeof type === "string"
-            ? this.fromString<U>(type)
-            : type as U;
-    }
-
-    fromString<Spec extends Def = Def>(idString: ReferenceTo<Spec>): Spec {
-        const def = this.idStringToDef[idString] as Spec | undefined;
-        if (def === undefined) {
-            throw new ReferenceError(`Unknown idString '${idString}' for this schema`);
-        }
-        return def;
-    }
-
-    fromStringSafe<Spec extends Def = Def>(idString: ReferenceTo<Spec>): Spec | undefined {
-        return this.idStringToDef[idString] as Spec | undefined;
-    }
-
-    hasString(idString: string): boolean {
-        return idString in this.idStringToDef;
-    }
-
-    /**
-     * Convenience method for clarity purposes—proxy for {@link GlobalRegistrar.writeToStream}
-     */
-    writeToStream<S extends ByteStream>(stream: S, def: ReifiableDef<Def>): S {
-        const idString = typeof def === "string" ? def : def.idString;
-        if (!this.hasString(idString)) {
-            throw new Error(`Definition with idString '${idString}' does not belong to this schema`);
-        }
-        return GlobalRegistrar.writeToStream(stream, def);
-    }
-
-    /**
-     * Convenience method for clarity purposes—proxy for {@link GlobalRegistrar.readFromStream}
-     */
-    readFromStream<Specific extends Def = Def>(stream: ByteStream): Specific {
-        const obj = GlobalRegistrar.readFromStream<Specific>(stream);
-        if (!(obj?.idString in this.idStringToDef)) {
-            throw new Error(`Definition with idString '${obj?.idString}' does not belong to this schema`);
-        }
-        return obj;
-    }
-
-    [Symbol.iterator](): Iterator<Def> {
-        return this.definitions[Symbol.iterator]();
-    }
-}
-
-export class ItemDefinitions<Def extends ItemDefinition = ItemDefinition> extends ObjectDefinitions {
-    constructor(itemType: ItemType, definitions: ReadonlyArray<Omit<Def, "itemType">>) {
-        super(definitions.map(def => {
-            // @ts-expect-error init code
-            def.itemType = itemType;
-            return def;
-        }));
-    }
-}
-
-/*
-    2 bytes = 16 bits = 65536 item schema entries
-    that's a lot
-    maybe too many
-
-    ObjectCategory is 3 bits
-    16 - 3 = 13 bits = 8192 item schema entries
-
-    hmm
-    alright, well we could package the object category with the definition
-    as a safety measure
-    but who says safety says performance penalty
-    so…
-
-    there are also other ways of doing safety checks that don't compromise
-    the flow of data
-*/
-
-const definitions: ObjectDefinition[] = [];
-const idStringToNumber = Object.create(null) as Record<string, number>;
-
-export const strictSchemaReads = true;
-export const REGISTRY_MAX_SIZE = 1 << 16;
-
-const schemas: ObjectDefinitions[] = [
-    Ammos,
-    Armors,
-    Backpacks,
-    Badges,
-    Buildings,
-    Bullets,
-    Decals,
-    Emotes,
-    Explosions,
-    Guns,
-    HealingItems,
-    Loots,
-    MapPings,
-    Melees,
-    Obstacles,
-    Perks,
-    Scopes,
-    Skins,
-    SyncedParticles,
-    Throwables
-];
-const schemaCount = schemas.length;
-
-let totalLength = 0;
-for (let i = 0; i < schemaCount; i++) {
-    const { definitions: incoming } = schemas[i];
-    for (let j = 0, len = incoming.length; j < len; j++) {
-        const def = incoming[j];
-        const { idString } = def;
-        if (idString in idStringToNumber) {
-            throw new Error(`Duplicate idString '${idString}' in registry`);
-        }
-
-        definitions.push(def);
-        idStringToNumber[idString] = totalLength++;
-    }
-}
-
-if (totalLength > REGISTRY_MAX_SIZE) {
-    throw new RangeError("Global registry too large for 2 bytes.");
-}
-
-// console.log("Global registry stats");
-// console.log(`Size: ${totalLength} / ${REGISTRY_MAX_SIZE} (${(100 * totalLength / REGISTRY_MAX_SIZE).toFixed(2)}%)`);
-// console.log("Breakdown by schema:");
-// console.table(
-//     Object.fromEntries(
-//         schemas.map(schema => [schema.name, schema.definitions.length] as const)
-//             .sort(([, sizeA], [, sizeB]) => sizeB - sizeA)
-//             .map(([name, size]) => [name, { length: size, percentage: `${(100 * size / totalLength).toFixed(2)}%` }] as const)
-//     )
-// );
-
-export const GlobalRegistrar = Object.freeze({
-    writeToStream<S extends ByteStream>(stream: S, def: ReifiableDef<ObjectDefinition>): S {
-        return stream.writeUint16(
-            idStringToNumber[typeof def === "string" ? def : def.idString]
-        );
-    },
-    readFromStream<Spec extends ObjectDefinition>(stream: ByteStream): Spec {
-        const idx = stream.readUint16();
-        const def = definitions[idx];
-        if (def === undefined) {
-            if (strictSchemaReads) {
-                throw new RangeError(`Bad index ${idx} in registry`);
-            } else {
-                console.error(`Bad index ${idx} in registry`);
-            }
-        }
-        return def as Spec;
-    },
-    /**
-     * Use a specific schema's `fromString` proxy, if you want stricter typings
-     */
-    fromString(idString: ReferenceTo<ObjectDefinition>): ObjectDefinition {
-        const def = definitions[idStringToNumber[idString]];
-        if (def === undefined) {
-            throw new ReferenceError(`idString '${idString}' does not exist in the global registry`);
-        }
-        return def;
-    },
-    hasString(idString: ReferenceTo<ObjectDefinition>): boolean {
-        return idString in idStringToNumber;
-    }
-});
+export type ReifiableDef<T extends ObjectDefinition> = ReferenceTo<T> | T;
 
 export enum ItemType {
     Gun,

@@ -257,7 +257,7 @@ export class BaseBullet {
                     reflectedMeleeDefinition = activeDef;
                 }
 
-                if (backDef?.onBack.reflectiveSurface) {
+                if (backDef?.onBack?.reflectiveSurface) {
                     const backIntersection = getIntersection(backDef?.onBack.reflectiveSurface);
                     // if a bullet is really fast and there's both back and active item surfaces
                     // the bullet can end up colliding with both reflective surfaces

@@ -1102,15 +1102,12 @@ export class Game {
                         let text;
                         switch (true) {
                             case object?.isObstacle: {
-                                switch (object.definition.role) {
-                                    case ObstacleSpecialRoles.Door:
-                                        text = object.door?.offset === 0
-                                            ? getTranslatedString("action_open_door")
-                                            : getTranslatedString("action_close_door");
-                                        break;
-                                    case ObstacleSpecialRoles.Activatable:
-                                        text = getTranslatedString(`interact_${object.definition.idString}` as TranslationKeys);
-                                        break;
+                                if (object.definition.isDoor) {
+                                    text = object.door?.offset === 0
+                                        ? getTranslatedString("action_open_door")
+                                        : getTranslatedString("action_close_door");
+                                } else if (object.definition.isActivatable) {
+                                    text = getTranslatedString(`interact_${object.definition.idString}` as TranslationKeys);
                                 }
                                 break;
                             }

@@ -321,44 +321,39 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
         const definition = this.definition;
 
-        switch (definition.role) {
-            case ObstacleSpecialRoles.Door: {
-                // optional chaining not required but makes both eslint and tsc happy
-                if (!(this.door?.isOpen && definition.openOnce)) {
-                    this.toggleDoor(player);
-                }
-                break;
+        if (definition.isDoor) {
+            // optional chaining not required but makes both eslint and tsc happy
+            if (!(this.door?.isOpen && definition.openOnce)) {
+                this.toggleDoor(player);
             }
-            case ObstacleSpecialRoles.Activatable: {
-                this.activated = true;
+        } else if (definition.isActivatable) {
+            this.activated = true;
 
-                if (this.parentBuilding && this.puzzlePiece) {
-                    this.parentBuilding.togglePuzzlePiece(this);
-                }
+            if (this.parentBuilding && this.puzzlePiece) {
+                this.parentBuilding.togglePuzzlePiece(this);
+            }
 
-                const replaceWith = definition.replaceWith;
-                if (replaceWith !== undefined) {
-                    this.game.addTimeout(() => {
-                        this.dead = true;
-                        this.collidable = false;
-                        this.setDirty();
+            const replaceWith = definition.replaceWith;
+            if (replaceWith !== undefined) {
+                this.game.addTimeout(() => {
+                    this.dead = true;
+                    this.collidable = false;
+                    this.setDirty();
 
-                        const idString = getRandomIDString<
-                            ObstacleDefinition,
-                            ReferenceTo<ObstacleDefinition> | typeof NullString
-                        >(replaceWith.idString);
-                        if (idString === NullString) {
-                            return;
-                        }
+                    const idString = getRandomIDString<
+                        ObstacleDefinition,
+                        ReferenceTo<ObstacleDefinition> | typeof NullString
+                    >(replaceWith.idString);
+                    if (idString === NullString) {
+                        return;
+                    }
 
-                        this.game.map.generateObstacle(
-                            idString,
-                            this.position,
-                            { rotation: this.rotation, layer: this.layer }
-                        );
-                    }, replaceWith.delay);
-                }
-                break;
+                    this.game.map.generateObstacle(
+                        idString,
+                        this.position,
+                        { rotation: this.rotation, layer: this.layer }
+                    );
+                }, replaceWith.delay);
             }
         }
 

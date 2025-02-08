@@ -10,7 +10,7 @@ import { Loots, type WeaponDefinition } from "@common/definitions/loots";
 import { type PlayerPing } from "@common/definitions/mapPings";
 import { Melees, type MeleeDefinition } from "@common/definitions/melees";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { PerkCategories, PerkIds, Perks, type PerkDefinition, type PerkNames } from "@common/definitions/perks";
+import { DefaultPerks, PerkCategories, PerkIds, Perks, type PerkDefinition, type PerkNames } from "@common/definitions/perks";
 import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/scopes";
 import { type SkinDefinition } from "@common/definitions/skins";
 import { SyncedParticles, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
@@ -459,7 +459,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     backEquippedMelee?: MeleeDefinition;
 
-    readonly perks = new ServerPerkManager(this, Perks.defaults);
+    readonly perks = new ServerPerkManager(this, []);
     perkUpdateMap?: Map<UpdatablePerkDefinition, number>; // key = perk, value = last updated
 
     private _pingSeq = 0;
