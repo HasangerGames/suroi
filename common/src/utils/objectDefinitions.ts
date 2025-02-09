@@ -81,15 +81,6 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
     }
 }
 
-export class ItemDefinitions<Def extends ItemDefinition = ItemDefinition> extends ObjectDefinitions<Def> {
-    constructor(itemType: ItemType, definitions: ReadonlyArray<Omit<Def, "itemType">>) {
-        super(definitions.map(def => {
-            (def as Mutable<Def>).itemType = itemType;
-            return def as Def;
-        }));
-    }
-}
-
 export interface ObjectDefinition {
     readonly idString: string
     readonly name: string

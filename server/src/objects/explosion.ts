@@ -1,6 +1,6 @@
 import { GameConstants, Layer, ObjectCategory } from "@common/constants";
 import { Explosions, type ExplosionDefinition } from "@common/definitions/explosions";
-import { PerkIds } from "@common/definitions/perks";
+import { PerkIds } from "@common/definitions/items/perks";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Angle, Geometry } from "@common/utils/math";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";

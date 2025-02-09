@@ -1,6 +1,6 @@
-import { ItemDefinitions, ItemType, ObjectDefinitions, type ItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
-import { type AmmoDefinition } from "./ammos";
+import { ItemType, ObjectDefinitions, type ItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
 import { type HealingItemDefinition } from "./healingItems";
+import { type AmmoDefinition } from "./ammos";
 import { type ThrowableDefinition } from "./throwables";
 
 export interface BackpackDefinition extends ItemDefinition {
@@ -10,10 +10,11 @@ export interface BackpackDefinition extends ItemDefinition {
     readonly maxCapacity: Record<ReferenceTo<HealingItemDefinition | AmmoDefinition | ThrowableDefinition>, number>
 }
 
-export const Backpacks = new ItemDefinitions<BackpackDefinition>(ItemType.Backpack, [
+export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
     {
         idString: "bag",
         name: "Bag",
+        itemType: ItemType.Backpack,
         level: 0,
         maxCapacity: {
             "gauze": 5,
@@ -39,6 +40,7 @@ export const Backpacks = new ItemDefinitions<BackpackDefinition>(ItemType.Backpa
     {
         idString: "basic_pack",
         name: "Basic Pack",
+        itemType: ItemType.Backpack,
         level: 1,
         maxCapacity: {
             "gauze": 10,
@@ -64,6 +66,7 @@ export const Backpacks = new ItemDefinitions<BackpackDefinition>(ItemType.Backpa
     {
         idString: "regular_pack",
         name: "Regular Pack",
+        itemType: ItemType.Backpack,
         level: 2,
         maxCapacity: {
             "gauze": 15,
@@ -89,6 +92,7 @@ export const Backpacks = new ItemDefinitions<BackpackDefinition>(ItemType.Backpa
     {
         idString: "tactical_pack",
         name: "Tactical Pack",
+        itemType: ItemType.Backpack,
         level: 3,
         maxCapacity: {
             "gauze": 30,

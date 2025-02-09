@@ -1,6 +1,6 @@
 import { ObjectCategory } from "@common/constants";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { PerkIds } from "@common/definitions/perks";
+import { PerkIds } from "@common/definitions/items/perks";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Angle, calculateDoorHitboxes, resolveStairInteraction } from "@common/utils/math";

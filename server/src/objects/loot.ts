@@ -1,8 +1,8 @@
 import { GameConstants, InventoryMessages, ObjectCategory, PlayerActions } from "@common/constants";
-import { ArmorType } from "@common/definitions/armors";
-import { type GunDefinition } from "@common/definitions/guns";
+import { ArmorType } from "@common/definitions/items/armors";
+import { type GunDefinition } from "@common/definitions/items/guns";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
-import { PerkCategories, type PerkDefinition } from "@common/definitions/perks";
+import { PerkCategories, type PerkDefinition } from "@common/definitions/items/perks";
 import { PickupPacket } from "@common/packets/pickupPacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer } from "@common/utils/layer";

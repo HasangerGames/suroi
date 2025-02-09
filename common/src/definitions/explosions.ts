@@ -531,4 +531,4 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         ...defaultBulletTemplate,
         shrapnel: true
     }
-}));
+})));

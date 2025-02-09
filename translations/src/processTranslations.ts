@@ -1,6 +1,6 @@
-import { Guns } from "@common/definitions/guns";
-import { Melees } from "@common/definitions/melees";
-import { Throwables } from "@common/definitions/throwables";
+import { Guns } from "@common/definitions/items/guns";
+import { Melees } from "@common/definitions/items/melees";
+import { Throwables } from "@common/definitions/items/throwables";
 import { parse } from "hjson";
 import { readdirSync, readFileSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";

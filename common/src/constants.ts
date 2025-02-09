@@ -1,8 +1,8 @@
-import { Ammos } from "./definitions/ammos";
-import { HealingItems } from "./definitions/healingItems";
+import { Ammos } from "./definitions/items/ammos";
+import { HealingItems } from "./definitions/items/healingItems";
 import { type Mode } from "./definitions/modes";
-import { Scopes } from "./definitions/scopes";
-import { Throwables } from "./definitions/throwables";
+import { Scopes } from "./definitions/items/scopes";
+import { Throwables } from "./definitions/items/throwables";
 import { freezeDeep } from "./utils/misc";
 import { ItemType } from "./utils/objectDefinitions";
 

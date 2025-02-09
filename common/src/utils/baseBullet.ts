@@ -1,7 +1,7 @@
 import { Layer, ZIndexes } from "../constants";
 import { Bullets, type BulletDefinition } from "../definitions/bullets";
 import { ExplosionDefinition } from "../definitions/explosions";
-import { type MeleeDefinition } from "../definitions/melees";
+import { type MeleeDefinition } from "../definitions/items/melees";
 import type { CommonGameObject } from "./gameObject";
 import { type Hitbox } from "./hitbox";
 import { adjacentOrEqualLayer, equivLayer } from "./layer";

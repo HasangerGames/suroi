@@ -1,6 +1,6 @@
 import { AnimationType, Layer } from "@common/constants";
-import { PerkData, PerkIds } from "@common/definitions/perks";
-import { type ThrowableDefinition } from "@common/definitions/throwables";
+import { PerkData, PerkIds } from "@common/definitions/items/perks";
+import { type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
@@ -72,7 +72,7 @@ export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwa
 
     override useItem(): void {
         super._bufferAttack(
-            this.definition.fireDelay,
+            this.definition.fireDelay ?? 250,
             this._useItemNoDelayCheck.bind(this, true)
         );
     }
@@ -224,7 +224,7 @@ class GrenadeHandler {
                     soft
                         ? 0
                         : Numeric.min(
-                            definition.maxThrowDistance * this.owner.mapPerkOrDefault(PerkIds.DemoExpert, ({ rangeMod }) => rangeMod, 1),
+                            (definition.maxThrowDistance ?? 128) * this.owner.mapPerkOrDefault(PerkIds.DemoExpert, ({ rangeMod }) => rangeMod, 1),
                             0.9 * this.owner.distanceToMouse
                         //  ^^^ Grenades will consistently undershoot the mouse by 10% in order to make long-range shots harder
                         //      while not really affecting close-range shots

@@ -1,10 +1,10 @@
 import { GameConstants, Layer } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
-import { Guns } from "@common/definitions/guns";
+import { Guns } from "@common/definitions/items/guns";
 import { Loots } from "@common/definitions/loots";
 import { Mode } from "@common/definitions/modes";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { PerkCategories } from "@common/definitions/perks";
+import { PerkCategories } from "@common/definitions/items/perks";
 import { Orientation, type Variation } from "@common/typings";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Collision } from "@common/utils/math";
@@ -19,8 +19,8 @@ import { Player, type PlayerContainer } from "../objects/player";
 import { GamePlugin } from "../pluginManager";
 import { LootTables } from "./lootTables";
 import { getLootFromTable } from "../utils/lootHelpers";
-import { Backpacks } from "@common/definitions/backpacks";
-import { Armors } from "@common/definitions/armors";
+import { Backpacks } from "@common/definitions/items/backpacks";
+import { Armors } from "@common/definitions/items/armors";
 
 export interface RiverDefinition {
     readonly minAmount: number

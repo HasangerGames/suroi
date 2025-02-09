@@ -1,9 +1,9 @@
 // noinspection JSConstantReassignment
 import { GameConstants, InputActions, SpectateActions, TeamSize } from "@common/constants";
-import { HealingItems, type HealingItemDefinition } from "@common/definitions/healingItems";
+import { HealingItems, type HealingItemDefinition } from "@common/definitions/items/healingItems";
 import { Loots } from "@common/definitions/loots";
-import { Scopes, type ScopeDefinition } from "@common/definitions/scopes";
-import { Throwables } from "@common/definitions/throwables";
+import { Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
+import { Throwables } from "@common/definitions/items/throwables";
 import { type InputAction } from "@common/packets/inputPacket";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { Numeric } from "@common/utils/math";

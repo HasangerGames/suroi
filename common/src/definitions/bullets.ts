@@ -1,7 +1,7 @@
 import { BaseBulletDefinition } from "../utils/baseBullet";
 import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
 import { Explosions } from "./explosions";
-import { Guns } from "./guns";
+import { Guns } from "./items/guns";
 
 export type BulletDefinition = BaseBulletDefinition & ObjectDefinition;
 

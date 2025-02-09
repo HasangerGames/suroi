@@ -1,22 +1,22 @@
 import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, Layer, ObjectCategory, PlayerActions, SpectateActions } from "@common/constants";
-import { Ammos } from "@common/definitions/ammos";
-import { Armors, ArmorType } from "@common/definitions/armors";
-import { Backpacks } from "@common/definitions/backpacks";
+import { Backpacks } from "@common/definitions/items/backpacks";
 import { type BadgeDefinition } from "@common/definitions/badges";
 import { Emotes, type EmoteDefinition } from "@common/definitions/emotes";
-import { Guns, type GunDefinition } from "@common/definitions/guns";
-import { HealingItems } from "@common/definitions/healingItems";
+import { Guns, type GunDefinition } from "@common/definitions/items/guns";
+import { HealingItems } from "@common/definitions/items/healingItems";
+import { Ammos } from "@common/definitions/items/ammos";
+import { Armors, ArmorType } from "@common/definitions/items/armors";
 import { Loots, type WeaponDefinition } from "@common/definitions/loots";
 import { type PlayerPing } from "@common/definitions/mapPings";
-import { Melees, type MeleeDefinition } from "@common/definitions/melees";
+import { Melees, type MeleeDefinition } from "@common/definitions/items/melees";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { DefaultPerks, PerkCategories, PerkIds, Perks, type PerkDefinition, type PerkNames } from "@common/definitions/perks";
-import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/scopes";
+import { PerkCategories, PerkIds, Perks, type PerkDefinition, type PerkNames } from "@common/definitions/items/perks";
+import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
 import { type SkinDefinition } from "@common/definitions/skins";
 import { SyncedParticles, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
-import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
+import { Throwables, type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { DisconnectPacket } from "@common/packets/disconnectPacket";
-import { GameOverPacket, TeammateGameOverData, GameOverData } from "@common/packets/gameOverPacket";
+import { GameOverData, GameOverPacket, TeammateGameOverData } from "@common/packets/gameOverPacket";
 import { type AllowedEmoteSources, type NoMobile, type PlayerInputData } from "@common/packets/inputPacket";
 import { createKillfeedMessage, KillFeedPacket, type ForEventType } from "@common/packets/killFeedPacket";
 import { type InputPacket } from "@common/packets/packet";
@@ -1175,6 +1175,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         depleters.forEach(depleter => {
             const def = depleter.definition;
             const depletion = def.depletePerMs;
+            if (!depletion) return;
 
             // For convenience and readability
             type ScopeBlockingParticle = SyncedParticleDefinition & { readonly hitbox: Hitbox };

@@ -1,12 +1,12 @@
 import { InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize } from "@common/constants";
-import { ArmorType } from "@common/definitions/armors";
+import { ArmorType } from "@common/definitions/items/armors";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { Emotes } from "@common/definitions/emotes";
-import { type DualGunNarrowing } from "@common/definitions/guns";
+import { type DualGunNarrowing } from "@common/definitions/items/guns";
 import { Loots } from "@common/definitions/loots";
 import type { ColorKeys, Mode, ModeDefinition } from "@common/definitions/modes";
 import { Modes } from "@common/definitions/modes";
-import { Scopes } from "@common/definitions/scopes";
+import { Scopes } from "@common/definitions/items/scopes";
 import { DisconnectPacket } from "@common/packets/disconnectPacket";
 import { GameOverPacket } from "@common/packets/gameOverPacket";
 import { JoinedPacket, type JoinedPacketData } from "@common/packets/joinedPacket";

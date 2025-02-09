@@ -4,7 +4,7 @@ import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "@common/definitions/syncedParticles";
-import { type ThrowableDefinition } from "@common/definitions/throwables";
+import { type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { PlayerInputPacket } from "@common/packets/inputPacket";
 import { JoinPacket, type JoinPacketData } from "@common/packets/joinPacket";
 import { JoinedPacket } from "@common/packets/joinedPacket";

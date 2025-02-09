@@ -1,6 +1,6 @@
 import { AnimationType, FireMode, GameConstants, InventoryMessages } from "@common/constants";
-import { type GunDefinition } from "@common/definitions/guns";
-import { PerkData, PerkIds } from "@common/definitions/perks";
+import { type GunDefinition } from "@common/definitions/items/guns";
+import { PerkData, PerkIds } from "@common/definitions/items/perks";
 import { PickupPacket } from "@common/packets/pickupPacket";
 import { Orientation } from "@common/typings";
 import { type BulletOptions } from "@common/utils/baseBullet";
@@ -123,7 +123,7 @@ export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
             : Angle.degreesToRadians((owner.isMoving ? moveSpread : shotSpread) / 2);
 
         this._lastUse = owner.game.now;
-        const jitter = definition.jitterRadius;
+        const jitter = definition.jitterRadius ?? 0;
         // when are we gonna have a perk that takes this mechanic and chucks it in the fucking trash where it belongs
 
         const offset = definition.isDual
@@ -157,7 +157,7 @@ export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
         }
 
         const rangeOverride = owner.distanceToMouse - this.definition.length;
-        const projCount = definition.bulletCount;
+        const projCount = definition.bulletCount ?? 1;
 
         const modifiers: DeepMutable<DeepRequired<BulletOptions["modifiers"]>> = {
             damage: 1,

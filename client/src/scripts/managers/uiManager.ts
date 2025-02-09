@@ -1,12 +1,12 @@
 import { DEFAULT_INVENTORY, GameConstants, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, ObjectCategory } from "@common/constants";
-import { Ammos } from "@common/definitions/ammos";
+import { Ammos } from "@common/definitions/items/ammos";
 import { type BadgeDefinition } from "@common/definitions/badges";
 import { type EmoteDefinition } from "@common/definitions/emotes";
-import { type GunDefinition } from "@common/definitions/guns";
+import { type GunDefinition } from "@common/definitions/items/guns";
 import { Loots } from "@common/definitions/loots";
 import { MapPings, type PlayerPing } from "@common/definitions/mapPings";
-import { PerkCategories, PerkIds, type PerkDefinition } from "@common/definitions/perks";
-import { DEFAULT_SCOPE, type ScopeDefinition } from "@common/definitions/scopes";
+import { PerkCategories, PerkIds, type PerkDefinition } from "@common/definitions/items/perks";
+import { DEFAULT_SCOPE, type ScopeDefinition } from "@common/definitions/items/scopes";
 import { Skins } from "@common/definitions/skins";
 import { type GameOverData } from "@common/packets/gameOverPacket";
 import { type KillFeedPacketData } from "@common/packets/killFeedPacket";

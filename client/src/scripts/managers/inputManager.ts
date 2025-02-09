@@ -1,7 +1,7 @@
 import { GameConstants, InputActions } from "@common/constants";
 import { type WeaponDefinition } from "@common/definitions/loots";
-import { Scopes } from "@common/definitions/scopes";
-import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
+import { Scopes } from "@common/definitions/items/scopes";
+import { Throwables, type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { areDifferent, PlayerInputPacket, type InputAction, type PlayerInputData, type SimpleInputActions } from "@common/packets/inputPacket";
 import { Angle, Geometry, Numeric } from "@common/utils/math";
 import { ItemType, type ItemDefinition } from "@common/utils/objectDefinitions";

@@ -1,4 +1,4 @@
-import { ItemDefinitions, ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
+import { ItemType, ObjectDefinitions, type ItemDefinition } from "../../utils/objectDefinitions";
 
 /*
     eslint-disable @stylistic/no-multi-spaces
@@ -19,14 +19,15 @@ export interface SkinDefinition extends ItemDefinition {
     readonly noSwap?: boolean
 }
 
-const skin = (name: string, backpackTint?: number, rolesRequired?: string[]): Omit<SkinDefinition, "itemType"> => ({
+const skin = (name: string, backpackTint?: number, rolesRequired?: string[]): SkinDefinition => ({
     idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
     name,
+    itemType: ItemType.Skin,
     backpackTint,
     rolesRequired
 });
 
-export const Skins = new ItemDefinitions<SkinDefinition>(ItemType.Skin, [
+export const Skins = new ObjectDefinitions<SkinDefinition>([
     // Dev funny skins
     skin("Hasanger",    0x640000, ["hasanger"]),
     skin("LimeNade",    0xffffff, ["limenade"]),

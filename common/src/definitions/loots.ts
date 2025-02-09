@@ -1,14 +1,14 @@
+import { Ammos, type AmmoDefinition } from "./items/ammos";
+import { Armors, type ArmorDefinition } from "./items/armors";
+import { Backpacks, type BackpackDefinition } from "./items/backpacks";
+import { Guns, type GunDefinition } from "./items/guns";
+import { HealingItems, type HealingItemDefinition } from "./items/healingItems";
+import { Melees, type MeleeDefinition } from "./items/melees";
 import { ObjectDefinitions, type ItemType } from "../utils/objectDefinitions";
-import { Ammos, type AmmoDefinition } from "./ammos";
-import { Armors, type ArmorDefinition } from "./armors";
-import { Backpacks, type BackpackDefinition } from "./backpacks";
-import { Guns, type GunDefinition } from "./guns";
-import { HealingItems, type HealingItemDefinition } from "./healingItems";
-import { Melees, type MeleeDefinition } from "./melees";
-import { Perks, type PerkDefinition } from "./perks";
-import { Scopes, type ScopeDefinition } from "./scopes";
-import { Skins, type SkinDefinition } from "./skins";
-import { Throwables, type ThrowableDefinition } from "./throwables";
+import { Perks, type PerkDefinition } from "./items/perks";
+import { Scopes, type ScopeDefinition } from "./items/scopes";
+import { Skins, type SkinDefinition } from "./items/skins";
+import { Throwables, type ThrowableDefinition } from "./items/throwables";
 
 export type LootDefinition =
     | GunDefinition

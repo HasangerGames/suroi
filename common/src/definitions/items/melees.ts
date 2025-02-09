@@ -1,6 +1,6 @@
-import { FireMode } from "../constants";
-import { ItemDefinitions, ItemType, type InventoryItemDefinition } from "../utils/objectDefinitions";
-import { Vec, type Vector } from "../utils/vector";
+import { FireMode } from "../../constants";
+import { ItemDefinitions, ItemType, ObjectDefinitions, type InventoryItemDefinition } from "../../utils/objectDefinitions";
+import { Vec, type Vector } from "../../utils/vector";
 
 export type MeleeDefinition = InventoryItemDefinition & {
     readonly itemType: ItemType.Melee
@@ -66,7 +66,7 @@ export const DEFAULT_HAND_RIGGING = Object.freeze({
     right: Vec.create(38, 35)
 }) as InventoryItemDefinition["fists"] & object;
 
-export const Melees = new ItemDefinitions<MeleeDefinition>(ItemType.Melee, [
+export const Melees = new ObjectDefinitions<MeleeDefinition>(([
     {
         idString: "fists",
         name: "Fists",
@@ -541,4 +541,7 @@ export const Melees = new ItemDefinitions<MeleeDefinition>(ItemType.Melee, [
             xConstant: 85
         }
     }
-]);
+] satisfies ReadonlyArray<Omit<MeleeDefinition, "itemType">>).map(def => {
+    (def as Mutable<MeleeDefinition>).itemType = ItemType.Melee;
+    return def;
+}));

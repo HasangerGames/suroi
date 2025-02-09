@@ -1,7 +1,7 @@
 import { GameConstants, TeamSize } from "@common/constants";
 import { Badges } from "@common/definitions/badges";
 import { Mode } from "@common/definitions/modes";
-import { Skins } from "@common/definitions/skins";
+import { Skins } from "@common/definitions/items/skins";
 import { CustomTeamMessage, type GetGameResponse } from "@common/typings";
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import { Numeric } from "@common/utils/math";

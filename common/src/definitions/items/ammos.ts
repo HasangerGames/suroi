@@ -1,4 +1,4 @@
-import { ItemDefinitions, ItemType, type ItemDefinition } from "../utils/objectDefinitions";
+import { ItemType, ObjectDefinitions, type ItemDefinition } from "../../utils/objectDefinitions";
 
 export interface AmmoDefinition extends ItemDefinition {
     readonly itemType: ItemType.Ammo
@@ -21,10 +21,11 @@ export interface AmmoDefinition extends ItemDefinition {
     readonly hideUnlessPresent?: boolean
 }
 
-export const Ammos = new ItemDefinitions<AmmoDefinition>(ItemType.Ammo, [
+export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "12g",
         name: "12 gauge",
+        itemType: ItemType.Ammo,
         maxStackSize: 20,
         minDropAmount: 3,
         characteristicColor: {
@@ -37,6 +38,7 @@ export const Ammos = new ItemDefinitions<AmmoDefinition>(ItemType.Ammo, [
     {
         idString: "556mm",
         name: "5.56mm",
+        itemType: ItemType.Ammo,
         maxStackSize: 60,
         minDropAmount: 5,
         characteristicColor: {
@@ -49,6 +51,7 @@ export const Ammos = new ItemDefinitions<AmmoDefinition>(ItemType.Ammo, [
     {
         idString: "762mm",
         name: "7.62mm",
+        itemType: ItemType.Ammo,
         maxStackSize: 60,
         minDropAmount: 5,
         characteristicColor: {
@@ -61,6 +64,7 @@ export const Ammos = new ItemDefinitions<AmmoDefinition>(ItemType.Ammo, [
     {
         idString: "9mm",
         name: "9mm",
+        itemType: ItemType.Ammo,
         maxStackSize: 90,
         minDropAmount: 5,
         characteristicColor: {
@@ -73,6 +77,7 @@ export const Ammos = new ItemDefinitions<AmmoDefinition>(ItemType.Ammo, [
     {
         idString: "50cal",
         name: ".50 Cal",
+        itemType: ItemType.Ammo,
         maxStackSize: 9,
         minDropAmount: 3,
         characteristicColor: {
@@ -86,6 +91,7 @@ export const Ammos = new ItemDefinitions<AmmoDefinition>(ItemType.Ammo, [
     {
         idString: "338lap",
         name: ".338 Lapua Magnum",
+        itemType: ItemType.Ammo,
         maxStackSize: 9,
         minDropAmount: 3,
         characteristicColor: {
@@ -99,6 +105,7 @@ export const Ammos = new ItemDefinitions<AmmoDefinition>(ItemType.Ammo, [
     {
         idString: "curadell",
         name: "Curadell",
+        itemType: ItemType.Ammo,
         maxStackSize: 10,
         minDropAmount: 1,
         characteristicColor: {
@@ -112,6 +119,7 @@ export const Ammos = new ItemDefinitions<AmmoDefinition>(ItemType.Ammo, [
     {
         idString: "firework_rocket",
         name: "Firework Rocket",
+        itemType: ItemType.Ammo,
         maxStackSize: 5,
         minDropAmount: 1,
         characteristicColor: {
@@ -128,6 +136,7 @@ export const Ammos = new ItemDefinitions<AmmoDefinition>(ItemType.Ammo, [
     {
         idString: "power_cell",
         name: "P.O.W.E.R. cell",
+        itemType: ItemType.Ammo,
         maxStackSize: 10,
         minDropAmount: 1,
         characteristicColor: {
@@ -141,6 +150,7 @@ export const Ammos = new ItemDefinitions<AmmoDefinition>(ItemType.Ammo, [
     {
         idString: "bb",
         name: "6mm BB",
+        itemType: ItemType.Ammo,
         maxStackSize: 240,
         minDropAmount: 1,
         characteristicColor: {

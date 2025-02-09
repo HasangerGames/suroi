@@ -1,14 +1,14 @@
 import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "@common/constants";
-import { Ammos } from "@common/definitions/ammos";
-import { type ArmorDefinition } from "@common/definitions/armors";
-import { type BackpackDefinition } from "@common/definitions/backpacks";
+import { Ammos } from "@common/definitions/items/ammos";
+import { type ArmorDefinition } from "@common/definitions/items/armors";
+import { type BackpackDefinition } from "@common/definitions/items/backpacks";
 import { Explosions } from "@common/definitions/explosions";
-import { Guns, type GunDefinition, type SingleGunNarrowing } from "@common/definitions/guns";
-import { HealType, type HealingItemDefinition } from "@common/definitions/healingItems";
+import { Guns, type GunDefinition, type SingleGunNarrowing } from "@common/definitions/items/guns";
+import { HealType, type HealingItemDefinition } from "@common/definitions/items/healingItems";
 import { Loots, type WeaponDefinition } from "@common/definitions/loots";
-import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "@common/definitions/melees";
+import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "@common/definitions/items/melees";
 import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { PerkData, PerkIds } from "@common/definitions/perks";
+import { PerkData, PerkIds } from "@common/definitions/items/perks";
 import { Skins, type SkinDefinition } from "@common/definitions/skins";
 import type { AllowedEmoteSources } from "@common/packets/inputPacket";
 import { SpectatePacket } from "@common/packets/spectatePacket";
@@ -304,9 +304,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         const weaponDef = this.activeItem as GunDefinition;
         const reference = this._getItemReference() as SingleGunNarrowing;
         const initialRotation = this.rotation + Math.PI / 2;
-        const casings = reference.casingParticles.filter(c => (c.on ?? "fire") === filterBy) as NonNullable<SingleGunNarrowing["casingParticles"]>;
+        const casings = reference.casingParticles?.filter(c => (c.on ?? "fire") === filterBy) as NonNullable<SingleGunNarrowing["casingParticles"]>;
 
-        if (casings.length === 0) return;
+        if (casings?.length === 0) return;
 
         for (const casingSpec of casings) {
             const position = Vec.scale(casingSpec.position, this.sizeMod);
@@ -1191,8 +1191,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         switch (weaponDef.itemType) {
             case ItemType.Gun: {
-                this.images.rightFist.setZIndex((fists as SingleGunNarrowing["fists"]).rightZIndex);
-                this.images.leftFist.setZIndex((fists as SingleGunNarrowing["fists"]).leftZIndex);
+                this.images.rightFist.setZIndex((fists as SingleGunNarrowing["fists"]).rightZIndex ?? 1);
+                this.images.leftFist.setZIndex((fists as SingleGunNarrowing["fists"]).leftZIndex ?? 1);
                 this.images.weapon.setZIndex(image?.zIndex ?? 2);
                 this.images.altWeapon.setZIndex(2);
                 this.images.body.setZIndex(3);

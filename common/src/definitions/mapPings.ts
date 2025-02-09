@@ -28,7 +28,7 @@ export interface MapPingDefinition extends ObjectDefinition {
 export type PlayerPing = MapPingDefinition & { readonly isPlayerPing: true };
 export type MapPing = MapPingDefinition & { readonly isPlayerPing?: false };
 
-const gamePingFactory = (idString: string, color: number, ignoreExpiration = false): MapPing => ({
+const gamePing = (idString: string, color: number, ignoreExpiration = false): MapPing => ({
     idString,
     name: idString,
     showInGame: false,
@@ -39,7 +39,7 @@ const gamePingFactory = (idString: string, color: number, ignoreExpiration = fal
     sound: idString
 });
 
-const playerPingFactory = (idString: string, ignoreExpiration = false): PlayerPing => ({
+const playerPing = (idString: string, ignoreExpiration = false): PlayerPing => ({
     idString,
     name: idString,
     showInGame: true,
@@ -51,9 +51,9 @@ const playerPingFactory = (idString: string, ignoreExpiration = false): PlayerPi
 });
 
 export const MapPings = new ObjectDefinitions<MapPingDefinition>([
-    gamePingFactory("airdrop_ping", 0x00ffff, true),
-    playerPingFactory("warning_ping"),
-    playerPingFactory("arrow_ping", true),
-    playerPingFactory("gift_ping"),
-    playerPingFactory("heal_ping")
+    gamePing("airdrop_ping", 0x00ffff, true),
+    playerPing("warning_ping"),
+    playerPing("arrow_ping", true),
+    playerPing("gift_ping"),
+    playerPing("heal_ping")
 ]);

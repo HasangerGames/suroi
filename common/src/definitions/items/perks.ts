@@ -1,4 +1,4 @@
-import { ItemDefinitions, ItemType, type ItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { ItemType, ObjectDefinitions, type ItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
 
 export const enum PerkQualities {
     Positive = "positive",
@@ -15,6 +15,11 @@ export interface BasicPerk extends ItemDefinition {
     readonly noSwap?: boolean
     readonly alwaysAllowSwap?: boolean
     readonly plumpkinGambleIgnore?: boolean
+}
+
+// allows perk definitions to have any properties in addition to those in BasicPerk
+interface RawPerkDefinition extends BasicPerk {
+    [x: string | number | symbol]: unknown
 }
 
 /**
@@ -77,13 +82,14 @@ export const enum PerkIds {
     PriorityTarget = "priority_target"
 }
 
-const perks = [
+const perks: RawPerkDefinition[] = [
     //
     // Normal Perks
     //
     {
         idString: PerkIds.SecondWind,
         name: "Second Wind",
+        itemType: ItemType.Perk,
         description: "Move faster below half health.",
         category: PerkCategories.Normal,
 
@@ -93,6 +99,7 @@ const perks = [
     {
         idString: PerkIds.Flechettes,
         name: "Fléchettes",
+        itemType: ItemType.Perk,
         description: "All bullets splinter into 3 weaker versions.",
         category: PerkCategories.Normal,
 
@@ -103,6 +110,7 @@ const perks = [
     {
         idString: PerkIds.SabotRounds,
         name: "Sabot Rounds",
+        itemType: ItemType.Perk,
         description: "Large increase to range, velocity, and accuracy, but at the cost of lower damage.",
         category: PerkCategories.Normal,
 
@@ -115,6 +123,7 @@ const perks = [
     {
         idString: PerkIds.ExtendedMags,
         name: "Extended Mags",
+        itemType: ItemType.Perk,
         description: "Most weapons have increased bullet capacity.",
         category: PerkCategories.Normal
 
@@ -123,6 +132,7 @@ const perks = [
     {
         idString: PerkIds.DemoExpert,
         name: "Demo Expert",
+        itemType: ItemType.Perk,
         description: "Grenades have a greater throwing range and visible detonation point.",
         category: PerkCategories.Normal,
 
@@ -133,6 +143,7 @@ const perks = [
     {
         idString: PerkIds.AdvancedAthletics,
         name: "Advanced Athletics",
+        itemType: ItemType.Perk,
         description: "Move faster in water and smoke, walk through trees, and vault through windows.",
         category: PerkCategories.Normal,
 
@@ -143,6 +154,7 @@ const perks = [
     {
         idString: PerkIds.Toploaded,
         name: "Toploaded",
+        itemType: ItemType.Perk,
         description: "Do more damage with the top half of your magazine.",
         category: PerkCategories.Normal,
 
@@ -154,6 +166,7 @@ const perks = [
     {
         idString: PerkIds.InfiniteAmmo,
         name: "Infinite Ammo",
+        itemType: ItemType.Perk,
         description: "All weapons have unlimited ammo. Electronic devices may break if overused.",
         category: PerkCategories.Normal,
 
@@ -162,6 +175,7 @@ const perks = [
     {
         idString: PerkIds.FieldMedic,
         name: "Field Medic",
+        itemType: ItemType.Perk,
         description: "All consumable items can be used faster. Teammates can be revived more quickly.",
         category: PerkCategories.Normal,
 
@@ -170,6 +184,7 @@ const perks = [
     {
         idString: PerkIds.Berserker,
         name: "Berserker",
+        itemType: ItemType.Perk,
         description: "Melee weapons make you move faster when equipped, and deal more damage.",
         category: PerkCategories.Normal,
 
@@ -179,6 +194,7 @@ const perks = [
     {
         idString: PerkIds.CloseQuartersCombat,
         name: "Close Quarters Combat",
+        itemType: ItemType.Perk,
         description: "Weapons do more damage and reload faster at close range.",
         category: PerkCategories.Normal,
 
@@ -189,6 +205,7 @@ const perks = [
     {
         idString: PerkIds.LowProfile,
         name: "Low Profile",
+        itemType: ItemType.Perk,
         description: "Become smaller and take less damage from explosions.",
         category: PerkCategories.Normal,
 
@@ -202,6 +219,7 @@ const perks = [
     {
         idString: PerkIds.PlumpkinGamble,
         name: "Plumpkin Gamble",
+        itemType: ItemType.Perk,
         description: "Picks a random Halloween perk.",
         category: PerkCategories.Halloween,
 
@@ -233,6 +251,7 @@ const perks = [
     {
         idString: PerkIds.Lycanthropy,
         name: "Lycanthropy",
+        itemType: ItemType.Perk,
         description: "Become a werewolf with high speed, health, regeneration, and melee damage, but can't use guns & grenades.",
         category: PerkCategories.Halloween,
         type: PerkQualities.Positive,
@@ -246,6 +265,7 @@ const perks = [
     {
         idString: PerkIds.Bloodthirst,
         name: "Bloodthirst",
+        itemType: ItemType.Perk,
         description: "Gain 25% adrenaline, 25% health, and a speed boost on kill. Slowly lose health over time.",
         category: PerkCategories.Halloween,
         type: PerkQualities.Positive,
@@ -261,6 +281,7 @@ const perks = [
     {
         idString: PerkIds.PlumpkinBomb,
         name: "Plumpkin Bomb",
+        itemType: ItemType.Perk,
         description: "All plumpkins/pumpkins explode when destroyed. Throwables have a special appearance and do extra damage.",
         category: PerkCategories.Halloween,
         type: PerkQualities.Positive,
@@ -271,6 +292,7 @@ const perks = [
     {
         idString: PerkIds.Shrouded,
         name: "Shrouded",
+        itemType: ItemType.Perk,
         description: "Emit a trail of thick fog that other players have difficulty seeing through.",
         category: PerkCategories.Halloween,
         type: PerkQualities.Positive,
@@ -281,6 +303,7 @@ const perks = [
     {
         idString: PerkIds.ExperimentalTreatment,
         name: "Experimental Treatment",
+        itemType: ItemType.Perk,
         description: "Permanent adrenaline, but reduced max health.",
         category: PerkCategories.Halloween,
         type: PerkQualities.Neutral,
@@ -293,6 +316,7 @@ const perks = [
     {
         idString: PerkIds.Engorged,
         name: "Engorged",
+        itemType: ItemType.Perk,
         description: "Increased max health and size with each kill.",
         category: PerkCategories.Halloween,
         type: PerkQualities.Neutral,
@@ -305,6 +329,7 @@ const perks = [
     {
         idString: PerkIds.BabyPlumpkinPie,
         name: "Baby Plumpkin Pie",
+        itemType: ItemType.Perk,
         description: "Your held weapon randomizes every 10 seconds and after every kill.",
         category: PerkCategories.Halloween,
         type: PerkQualities.Neutral, // how is this neutral it's annoying
@@ -315,6 +340,7 @@ const perks = [
     {
         idString: PerkIds.Costumed,
         name: "Costumed",
+        itemType: ItemType.Perk,
         description: "Become a random obstacle. Rare chance to become a Plumpkin variant.",
         category: PerkCategories.Halloween,
         type: PerkQualities.Neutral,
@@ -348,6 +374,7 @@ const perks = [
     {
         idString: PerkIds.TornPockets,
         name: "Torn Pockets",
+        itemType: ItemType.Perk,
         description: "Every two seconds, drop 2 of a random ammo on the ground.",
         category: PerkCategories.Halloween,
         type: PerkQualities.Negative,
@@ -359,6 +386,7 @@ const perks = [
     {
         idString: PerkIds.Claustrophobic,
         name: "Claustrophobic",
+        itemType: ItemType.Perk,
         description: "Move slower inside buildings and bunkers.",
         category: PerkCategories.Halloween,
         type: PerkQualities.Negative,
@@ -369,6 +397,7 @@ const perks = [
     {
         idString: PerkIds.LacedStimulants,
         name: "Laced Stimulants",
+        itemType: ItemType.Perk,
         description: "Instead of healing you, adrenaline damages you at half the normal healing rate.",
         category: PerkCategories.Halloween,
         type: PerkQualities.Negative,
@@ -380,6 +409,7 @@ const perks = [
     {
         idString: PerkIds.RottenPlumpkin,
         name: "Rotten Plumpkin",
+        itemType: ItemType.Perk,
         description: "Every 10 seconds, you send the vomit emote and lose 5% adrenaline and 5 health.",
         category: PerkCategories.Halloween,
         type: PerkQualities.Negative,
@@ -393,6 +423,7 @@ const perks = [
     {
         idString: PerkIds.PriorityTarget,
         name: "Priority Target",
+        itemType: ItemType.Perk,
         description: "All players on the map can see your location.",
         category: PerkCategories.Halloween,
         type: PerkQualities.Negative,
@@ -402,5 +433,5 @@ const perks = [
     }
 ];
 
-export const Perks = new ItemDefinitions<PerkDefinition>(ItemType.Perk, perks);
+export const Perks = new ObjectDefinitions<PerkDefinition>(perks);
 export const PerkData = Perks.idStringToDef;

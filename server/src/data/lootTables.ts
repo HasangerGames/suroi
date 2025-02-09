@@ -1,5 +1,5 @@
 import { Mode } from "@common/definitions/modes";
-import { PerkIds } from "@common/definitions/perks";
+import { PerkIds } from "@common/definitions/items/perks";
 import { NullString } from "@common/utils/objectDefinitions";
 import { LootTable } from "../utils/lootHelpers";
 

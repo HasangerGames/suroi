@@ -4,11 +4,11 @@ import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../util
 import { type Mutable } from "../utils/misc";
 import { ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
-import { type GunDefinition } from "./guns";
+import { type GunDefinition } from "./items/guns";
 import { type LootDefinition } from "./loots";
 import { type SyncedParticleSpawnerDefinition } from "./syncedParticles";
 
-export type ObstacleDefinition = ObjectDefinition & ObstacleRoleMixin & {
+export type ObstacleDefinition = ObjectDefinition & {
     readonly name?: string
     readonly material: typeof Materials[number]
     readonly health: number
@@ -95,9 +95,15 @@ export type ObstacleDefinition = ObjectDefinition & ObstacleRoleMixin & {
         readonly maxRange?: number
         readonly falloff?: number
     }
-};
+} & (
+    | DoorMixin
+    | StairMixin
+    | ActivatableMixin
+    | { readonly isWindow?: boolean }
+    | { readonly isWall?: boolean }
+);
 
-export type DoorMixin = ({
+type DoorMixin = ({
     readonly isDoor: true
     readonly hitbox: RectangleHitbox
     readonly locked?: boolean
@@ -154,15 +160,6 @@ type ActivatableMixin = {
         readonly delay: number
     }
 } | { readonly isActivatable?: false };
-
-export type ObstacleRoleMixin =
-    & DoorMixin
-    & StairMixin
-    & ActivatableMixin
-    & {
-        readonly isWindow?: boolean
-        readonly isWall?: boolean
-    };
 
 /**
  * An enum indicating the degree to which an obstacle should allow

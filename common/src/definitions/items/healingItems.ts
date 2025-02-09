@@ -1,4 +1,4 @@
-import { ItemDefinitions, ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
+import { ItemType, ObjectDefinitions, type ItemDefinition } from "../../utils/objectDefinitions";
 
 export interface HealingItemDefinition extends ItemDefinition {
     readonly itemType: ItemType.Healing
@@ -12,10 +12,11 @@ export enum HealType {
     Adrenaline
 }
 
-export const HealingItems = new ItemDefinitions<HealingItemDefinition>(ItemType.Healing, [
+export const HealingItems = new ObjectDefinitions<HealingItemDefinition>([
     {
         idString: "gauze",
         name: "Gauze",
+        itemType: ItemType.Healing,
         healType: HealType.Health,
         restoreAmount: 15,
         useTime: 3
@@ -23,6 +24,7 @@ export const HealingItems = new ItemDefinitions<HealingItemDefinition>(ItemType.
     {
         idString: "medikit",
         name: "Medikit",
+        itemType: ItemType.Healing,
         healType: HealType.Health,
         restoreAmount: 100,
         useTime: 6
@@ -31,6 +33,7 @@ export const HealingItems = new ItemDefinitions<HealingItemDefinition>(ItemType.
     {
         idString: "cola",
         name: "Cola",
+        itemType: ItemType.Healing,
         healType: HealType.Adrenaline,
         restoreAmount: 25,
         useTime: 3
@@ -38,6 +41,7 @@ export const HealingItems = new ItemDefinitions<HealingItemDefinition>(ItemType.
     {
         idString: "tablets",
         name: "Tablets",
+        itemType: ItemType.Healing,
         healType: HealType.Adrenaline,
         restoreAmount: 50,
         useTime: 5

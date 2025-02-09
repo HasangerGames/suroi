@@ -8,9 +8,6 @@ export interface DecalDefinition extends ObjectDefinition {
      * @default {1}
      */
     readonly scale?: number
-    /**
-     * @default {RotationMode.Limited}
-     */
     readonly rotationMode: RotationMode
     readonly zIndex?: ZIndexes
 }

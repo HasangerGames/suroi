@@ -1,7 +1,7 @@
 import { Layer, ObjectCategory } from "@common/constants";
 import { FlyoverPref } from "@common/definitions/obstacles";
-import { PerkIds } from "@common/definitions/perks";
-import { type ThrowableDefinition } from "@common/definitions/throwables";
+import { PerkIds } from "@common/definitions/items/perks";
+import { type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { CircleHitbox, Hitbox, HitboxType, RectangleHitbox, type GroupHitbox } from "@common/utils/hitbox";
 import { Angle, Collision, Numeric } from "@common/utils/math";
 import { type FullData } from "@common/utils/objectsSerializations";
@@ -113,7 +113,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         let displacement = Vec.scale(this.velocity, halfDt);
 
         const displacementLength = Vec.length(displacement);
-        const maxDisplacement = this.definition.speedCap * halfDt;
+        const maxDisplacement = (this.definition.speedCap ?? Infinity) * halfDt;
 
         if (displacementLength > maxDisplacement) {
             displacement = Vec.scale(displacement, maxDisplacement / displacementLength);

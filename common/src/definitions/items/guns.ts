@@ -1,20 +1,18 @@
-import { defaultBulletTemplate, FireMode } from "../constants";
-import { BaseBulletDefinition } from "../utils/baseBullet";
-import { mergeDeep, type DeepPartial } from "../utils/misc";
-import { ItemDefinitions, ItemType, type InventoryItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
-import { Vec, type Vector } from "../utils/vector";
+import { defaultBulletTemplate, FireMode } from "../../constants";
+import { BaseBulletDefinition } from "../../utils/baseBullet";
+import { mergeDeep, WithPartial, type DeepPartial } from "../../utils/misc";
+import { ItemType, ObjectDefinitions, type InventoryItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
+import { Vec, type Vector } from "../../utils/vector";
 import { type AmmoDefinition } from "./ammos";
 
 type BaseGunDefinition = InventoryItemDefinition & {
-    readonly itemType: ItemType.Gun
-
     readonly ammoType: ReferenceTo<AmmoDefinition>
     readonly ammoSpawnAmount: number
     readonly capacity: number
     readonly extendedCapacity?: number
     readonly reloadTime: number
     readonly shotsPerReload?: number
-    readonly infiniteAmmo: boolean
+    readonly infiniteAmmo?: boolean
 
     readonly fireDelay: number
     readonly switchDelay: number
@@ -26,23 +24,29 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly bulletOffset?: number
     readonly fsaReset?: number // first-shot-accuracy reset (ms)
     readonly jitterRadius: number // Jitters the bullet position, mainly for shotguns
-    readonly consistentPatterning: boolean
+    readonly consistentPatterning?: boolean
 
-    readonly noQuickswitch: boolean
-    readonly bulletCount: number
+    readonly noQuickswitch?: boolean
+    readonly bulletCount?: number
     readonly length: number
-    readonly shootOnRelease: boolean
-    readonly summonAirdrop: boolean
+    readonly shootOnRelease?: boolean
+    readonly summonAirdrop?: boolean
 
     readonly fists: {
-        // no relation to the ZIndexes enum
-        readonly leftZIndex: number
-        // no relation to the ZIndexes enum
-        readonly rightZIndex: number
+        /**
+         * no relation to the ZIndexes enum
+         * @default 1
+         */
+        readonly leftZIndex?: number
+        /**
+         * no relation to the ZIndexes enum
+         * @default 1
+         */
+        readonly rightZIndex?: number
         readonly animationDuration: number
     }
 
-    readonly casingParticles: Array<{
+    readonly casingParticles?: Array<{
         readonly frame?: string
         readonly count?: number
         readonly ejectionDelay?: number
@@ -74,13 +78,13 @@ type BaseGunDefinition = InventoryItemDefinition & {
     }
 
     readonly image: {
-        readonly angle: number
+        readonly angle?: number
         // no relation to the ZIndexes enum
-        readonly zIndex: number
+        readonly zIndex?: number
     }
 
-    readonly noMuzzleFlash: boolean
-    readonly ballistics: BaseBulletDefinition
+    readonly noMuzzleFlash?: boolean
+    readonly ballistics: DeepPartial<BaseBulletDefinition>
 } & ReloadOnEmptyMixin & BurstFireMixin & DualDefMixin;
 
 type BurstFireMixin = ({
@@ -119,6 +123,7 @@ type DualDefMixin = ({
 });
 
 export type GunDefinition = BaseGunDefinition & {
+    readonly itemType: ItemType.Gun
     readonly dualVariant?: ReferenceTo<GunDefinition>
 };
 
@@ -133,21 +138,21 @@ type RawForDef<B extends BaseGunDefinition> = B & {
         [
         K in Extract<
             keyof B,
-            "wearerAttributes" |
-            "ammoSpawnAmount" |
-            "capacity" |
-            "extendedCapacity" |
-            "reloadTime" |
-            "fireDelay" |
-            "switchDelay" |
-            "speedMultiplier" |
-            "recoilMultiplier" |
-            "recoilDuration" |
-            "shotSpread" |
-            "moveSpread" |
-            "fsaReset" |
-            "burstProperties" |
-            "leftRightOffset"
+            | "wearerAttributes"
+            | "ammoSpawnAmount"
+            | "capacity"
+            | "extendedCapacity"
+            | "reloadTime"
+            | "fireDelay"
+            | "switchDelay"
+            | "speedMultiplier"
+            | "recoilMultiplier"
+            | "recoilDuration"
+            | "shotSpread"
+            | "moveSpread"
+            | "fsaReset"
+            | "burstProperties"
+            | "leftRightOffset"
         >
         ]?: B[K]
     }
@@ -204,34 +209,7 @@ const gasParticlePresets = {
     }
 } satisfies Record<string, BaseGunDefinition["gasParticles"]>;
 
-const defaultGun = {
-    itemType: ItemType.Gun,
-    noDrop: false,
-    ammoSpawnAmount: 0,
-    speedMultiplier: 0.92,
-    infiniteAmmo: false,
-    jitterRadius: 0,
-    consistentPatterning: false,
-    noQuickswitch: false,
-    bulletCount: 1,
-    killstreak: false,
-    shootOnRelease: false,
-    summonAirdrop: false,
-    fists: {
-        leftZIndex: 1,
-        rightZIndex: 1
-    },
-    casingParticles: [] as RawGunDefinition["casingParticles"],
-    image: {
-        angle: 0,
-        zIndex: 2
-    },
-    isDual: false,
-    noMuzzleFlash: false,
-    ballistics: defaultBulletTemplate
-} satisfies DeepPartial<GunDefinition>;
-
-export const Guns = new ItemDefinitions<GunDefinition>(ItemType.Gun, ([
+export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "g19",
         name: "G19",
@@ -2356,6 +2334,54 @@ export const Guns = new ItemDefinitions<GunDefinition>(ItemType.Gun, ([
         }
     },
     {
+        idString: "model_37",
+        name: "Model 37",
+        ammoType: "12g",
+        ammoSpawnAmount: 15,
+        capacity: 5,
+        extendedCapacity: 8,
+        reloadTime: 0.75,
+        fireDelay: 900,
+        switchDelay: 900,
+        recoilMultiplier: 0.5,
+        recoilDuration: 550,
+        fireMode: FireMode.Single,
+        shotSpread: 11,
+        moveSpread: 14,
+        jitterRadius: 1.25,
+        bulletCount: 10,
+        length: 7.85,
+        fists: {
+            left: Vec.create(114, -3),
+            right: Vec.create(45, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec.create(89, 0) },
+        casingParticles: [{
+            position: Vec.create(4, 0.6),
+            ejectionDelay: 450,
+            velocity: {
+                y: {
+                    min: 2,
+                    max: 5,
+                    randomSign: true
+                }
+            }
+        }],
+        gasParticles: gasParticlePresets.shotgun,
+        shotsPerReload: 1,
+        ballistics: {
+            damage: 10,
+            obstacleMultiplier: 1,
+            speed: 0.16,
+            range: 48,
+            tracer: {
+                length: 0.7
+            }
+        }
+    },
+    {
         [inheritFrom]: "model_37",
         idString: "revitalizer",
         name: "Revitalizer",
@@ -2396,14 +2422,22 @@ export const Guns = new ItemDefinitions<GunDefinition>(ItemType.Gun, ([
             }
         }
     }
-] satisfies ReadonlyArray<Omit<GunDefinition, "itemType">>).flatMap(e => {
+] satisfies readonly RawGunDefinition[]).flatMap((e: RawGunDefinition) => {
     if (e.dual === undefined) {
         return [e];
     }
 
+    const def = mergeDeep(
+        {
+            itemType: ItemType.Gun,
+            ballistics: defaultBulletTemplate
+        },
+        e
+    );
+
     const dualDef = mergeDeep(
         {},
-        e,
+        def,
         e.dual,
         {
             idString: `dual_${e.idString}`,
@@ -2427,4 +2461,4 @@ export const Guns = new ItemDefinitions<GunDefinition>(ItemType.Gun, ([
     e.dualVariant = dualDef.idString;
 
     return [e, dualDef];
-}));
+}) as GunDefinition[]);

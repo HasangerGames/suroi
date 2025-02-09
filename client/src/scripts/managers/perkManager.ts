@@ -1,4 +1,4 @@
-import type { PerkDefinition } from "@common/definitions/perks";
+import type { PerkDefinition } from "@common/definitions/items/perks";
 import { PerkManager, type PerkCollection } from "@common/utils/perkManager";
 import type { Game } from "../game";
 

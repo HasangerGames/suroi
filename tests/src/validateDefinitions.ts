@@ -1,5 +1,5 @@
 import { Modes, type Mode } from "@common/definitions/modes";
-import { Perks } from "@common/definitions/perks";
+import { Perks } from "@common/definitions/items/perks";
 import { HitboxType, RectangleHitbox } from "@common/utils/hitbox";
 import { Config as ClientConfig } from "../../client/src/scripts/config";
 import { FireMode, GameConstants, Layers } from "../../common/src/constants";

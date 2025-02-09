@@ -1,6 +1,6 @@
 import { AnimationType, FireMode } from "@common/constants";
-import { type MeleeDefinition } from "@common/definitions/melees";
-import { PerkIds } from "@common/definitions/perks";
+import { type MeleeDefinition } from "@common/definitions/items/melees";
+import { PerkIds } from "@common/definitions/items/perks";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Numeric } from "@common/utils/math";

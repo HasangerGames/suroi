@@ -1,7 +1,7 @@
 import { ObjectCategory, ZIndexes } from "@common/constants";
-import { ArmorType } from "@common/definitions/armors";
+import { ArmorType } from "@common/definitions/items/armors";
 import { type LootDefinition } from "@common/definitions/loots";
-import { PerkIds } from "@common/definitions/perks";
+import { PerkIds } from "@common/definitions/items/perks";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { getEffectiveZIndex } from "@common/utils/layer";
 import { EaseFunctions } from "@common/utils/math";

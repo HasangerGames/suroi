@@ -590,8 +590,8 @@ export class GameMap {
                 ReferenceTo<ObstacleDefinition> | typeof NullString
             >(obstacleData.idString);
             if (idString === NullString) continue;
-            if (obstacleData.outdoors) {
-                idString = `${idString}${ObstacleModeVariations[this.game.modeName] ?? ""}`;
+            if (obstacleData.outdoors && this.game.mode.obstacleVariants) {
+                idString = `${idString}_${this.game.modeName}`;
             }
 
             const obstacleDef = Obstacles.fromString(idString);

@@ -1,8 +1,8 @@
 import { KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType } from "../constants";
 import { type ExplosionDefinition } from "../definitions/explosions";
-import { type GunDefinition } from "../definitions/guns";
-import { type MeleeDefinition } from "../definitions/melees";
-import { type ThrowableDefinition } from "../definitions/throwables";
+import { type GunDefinition } from "../definitions/items/guns";
+import { type MeleeDefinition } from "../definitions/items/melees";
+import { type ThrowableDefinition } from "../definitions/items/throwables";
 import { GlobalRegistrar } from "../utils/definitionRegistry";
 import { type DeepMutable, type Mutable } from "../utils/misc";
 import { createPacket, DataSplitTypes } from "./packet";
