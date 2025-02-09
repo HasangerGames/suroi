@@ -90,6 +90,13 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly ballistics: BaseBulletDefinition
 } & ReloadOnEmptyMixin & BurstFireMixin & DualDefMixin;
 
+type ReloadOnEmptyMixin = ({
+    readonly reloadFullOnEmpty?: false
+} | {
+    readonly reloadFullOnEmpty: true
+    readonly fullReloadTime: number
+});
+
 type BurstFireMixin = ({
     readonly fireMode: FireMode.Auto | FireMode.Single
 } | {
@@ -98,13 +105,6 @@ type BurstFireMixin = ({
         readonly shotsPerBurst: number
         readonly burstCooldown: number
     }
-});
-
-type ReloadOnEmptyMixin = ({
-    readonly reloadFullOnEmpty?: false
-} | {
-    readonly reloadFullOnEmpty: true
-    readonly fullReloadTime: number
 });
 
 type DualDefMixin = ({
@@ -124,11 +124,6 @@ type DualDefMixin = ({
      */
     readonly leftRightOffset: number
 });
-
-export type GunDefinition = BaseGunDefinition & {
-    readonly ballistics: BaseBulletDefinition
-    readonly dualVariant?: ReferenceTo<GunDefinition>
-};
 
 export type SingleGunNarrowing = GunDefinition & { readonly isDual: false };
 export type DualGunNarrowing = GunDefinition & { readonly isDual: true };
@@ -168,6 +163,8 @@ type RawGunDefinition =
     | RawForDef<
         BaseGunDefinition & BurstFireMixin & { readonly fireMode: FireMode.Single | FireMode.Auto }
     >;
+
+export type GunDefinition = BaseGunDefinition & { readonly dualVariant?: ReferenceTo<GunDefinition> };
 
 const gasParticlePresets = {
     automatic: {
@@ -2500,9 +2497,9 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     // @ts-expect-error init code
     delete dualDef.casingParticles;
     // @ts-expect-error init code
-    delete rawDef.dual;
+    delete def.dual;
     // @ts-expect-error init code
-    rawDef.dualVariant = dualDef.idString;
+    def.dualVariant = dualDef.idString;
 
     return [def, dualDef];
 }));

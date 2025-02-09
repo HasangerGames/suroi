@@ -1,8 +1,8 @@
 import { WebSocket, type MessageEvent } from "ws";
 import { GameConstants, InputActions, ObjectCategory } from "../../common/src/constants";
-import { Emotes, type EmoteDefinition } from "../../common/src/definitions/emotes";
+import { EmoteCategory, Emotes, type EmoteDefinition } from "../../common/src/definitions/emotes";
 import { Loots } from "../../common/src/definitions/loots";
-import { Skins, type SkinDefinition } from "../../common/src/definitions/skins";
+import { Skins, type SkinDefinition } from "../../common/src/definitions/items/skins";
 import { GameOverPacket } from "../../common/src/packets/gameOverPacket";
 import { areDifferent, PlayerInputPacket, type InputAction, type PlayerInputData } from "../../common/src/packets/inputPacket";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
@@ -31,7 +31,7 @@ const skins: ReadonlyArray<ReferenceTo<SkinDefinition>> = Skins.definitions
     .map(({ idString }) => idString);
 
 const emotes: EmoteDefinition[] = Emotes.definitions
-    .filter(({ isTeamEmote, isWeaponEmote }) => !isTeamEmote && !isWeaponEmote);
+    .filter(({ category }) => category !== EmoteCategory.TeamEmote);
 
 const bots: Bot[] = [];
 const objects = new Map<number, Bot | undefined>();

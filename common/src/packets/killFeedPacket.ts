@@ -3,7 +3,7 @@ import { type ExplosionDefinition } from "../definitions/explosions";
 import { type GunDefinition } from "../definitions/items/guns";
 import { type MeleeDefinition } from "../definitions/items/melees";
 import { type ThrowableDefinition } from "../definitions/items/throwables";
-import { GlobalRegistrar } from "../utils/definitionRegistry";
+import { Weapons } from "../definitions/weapons";
 import { type DeepMutable, type Mutable } from "../utils/misc";
 import { createPacket, DataSplitTypes } from "./packet";
 
@@ -367,7 +367,7 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
                 // and our last bit is for this
                 kfData += weaponWasUsed ? 128 : 0;
                 if (weaponWasUsed) {
-                    GlobalRegistrar.writeToStream(stream, data.weaponUsed);
+                    Weapons.writeToStream(stream, data.weaponUsed);
                     if ("killstreak" in data.weaponUsed && data.weaponUsed.killstreak) {
                         if (data.killstreak === undefined) {
                             console.error(`Killfeed packet with weapon '${data.weaponUsed.idString}' is missing a killstreak amount, but weapon schema in question mandates it`);
@@ -443,7 +443,7 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
                         killstreak?: number
                     };
 
-                    const weaponUsed = (data as WithWeapon).weaponUsed = GlobalRegistrar.readFromStream(stream);
+                    const weaponUsed = (data as WithWeapon).weaponUsed = Weapons.readFromStream(stream);
 
                     if ("killstreak" in weaponUsed && weaponUsed.killstreak) {
                         (data as WithWeapon).killstreak = stream.readUint8();

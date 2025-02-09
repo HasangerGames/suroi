@@ -159,6 +159,64 @@ export enum ObjectCategory {
     SyncedParticle
 }
 
+/**
+ * An enum indicating the degree to which an obstacle should allow
+ * throwables to sail over it.
+ *
+ * Note that any throwable whose velocity is below 0.03 u/ms won't be able to sail
+ * over any obstacle, even those marked as `Always`. Additionally, if the obstacle
+ * in question has a role that is `ObstacleSpecialRoles.Door`, its preference will only
+ * be honored when the door is opened; if it is closed, it will act as {@link Never}.
+ */
+export enum FlyoverPref {
+    /**
+     * Always allow throwables to fly over the object.
+     */
+    Always,
+
+    /**
+     * Only allow throwables to fly over the object if the throwable's velocity exceeds 0.04 u/ms.
+     * For reference, the maximum throwing speed is around 0.09 u/ms for a 1x scope.
+     */
+    Sometimes,
+
+    /**
+     * Never allow throwables to fly over the object.
+     */
+    Never
+}
+
+export enum MapObjectSpawnMode {
+    Grass,
+    /**
+     * Grass, beach and river banks.
+     */
+    GrassAndSand,
+    River,
+    Beach,
+    Trail
+}
+
+export enum RotationMode {
+    /**
+     * Allows rotation in any direction (within the limits of the bit stream's encoding capabilities)
+     */
+    Full,
+    /**
+     * Allows rotation in the four cardinal directions: up, right, down and left
+     */
+    Limited,
+    /**
+     * Allows rotation in two directions: a "normal" direction and a "flipped" direction; for example,
+     * up and down, or left and right
+     */
+    Binary,
+    /**
+     * Disabled rotation
+     */
+    None
+}
+
 export const enum AnimationType {
     None,
     Melee,

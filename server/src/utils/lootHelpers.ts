@@ -10,7 +10,7 @@ import { Mode } from "@common/definitions/modes";
 import { ObstacleDefinition, Obstacles } from "@common/definitions/obstacles";
 import { Perks } from "@common/definitions/items/perks";
 import { Scopes } from "@common/definitions/items/scopes";
-import { Skins } from "@common/definitions/skins";
+import { Skins } from "@common/definitions/items/skins";
 import { Throwables } from "@common/definitions/items/throwables";
 import { isArray } from "@common/utils/misc";
 import { ItemType, NullString, ObjectDefinition, ObjectDefinitions, ReferenceOrRandom, ReferenceTo } from "@common/utils/objectDefinitions";

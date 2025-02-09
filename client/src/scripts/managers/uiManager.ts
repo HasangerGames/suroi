@@ -7,7 +7,7 @@ import { Loots } from "@common/definitions/loots";
 import { MapPings, type PlayerPing } from "@common/definitions/mapPings";
 import { PerkCategories, PerkIds, type PerkDefinition } from "@common/definitions/items/perks";
 import { DEFAULT_SCOPE, type ScopeDefinition } from "@common/definitions/items/scopes";
-import { Skins } from "@common/definitions/skins";
+import { Skins } from "@common/definitions/items/skins";
 import { type GameOverData } from "@common/packets/gameOverPacket";
 import { type KillFeedPacketData } from "@common/packets/killFeedPacket";
 import { type PlayerData } from "@common/packets/updatePacket";

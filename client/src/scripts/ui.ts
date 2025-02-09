@@ -7,7 +7,7 @@ import { HealType, HealingItems, type HealingItemDefinition } from "@common/defi
 import { Modes, type Mode } from "@common/definitions/modes";
 import { PerkIds, Perks } from "@common/definitions/items/perks";
 import { Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
-import { Skins, type SkinDefinition } from "@common/definitions/skins";
+import { Skins, type SkinDefinition } from "@common/definitions/items/skins";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
@@ -2030,7 +2030,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     if (inputManager.pingWheelActive) {
                         inputManager.addAction({
                             type: InputActions.Emote,
-                            emote: HealingItems.fromString(item.idString)
+                            emote: Emotes.fromString(item.idString)
                         });
                     } else {
                         inputManager.addAction({
@@ -2084,7 +2084,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 if (inputManager.pingWheelActive) {
                     inputManager.addAction({
                         type: InputActions.Emote,
-                        emote: Ammos.fromString(ammo.idString)
+                        emote: Emotes.fromString(ammo.idString)
                     });
                 }
 

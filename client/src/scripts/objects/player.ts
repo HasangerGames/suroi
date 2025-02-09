@@ -9,8 +9,7 @@ import { Loots, type WeaponDefinition } from "@common/definitions/loots";
 import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "@common/definitions/items/melees";
 import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { PerkData, PerkIds } from "@common/definitions/items/perks";
-import { Skins, type SkinDefinition } from "@common/definitions/skins";
-import type { AllowedEmoteSources } from "@common/packets/inputPacket";
+import { Skins, type SkinDefinition } from "@common/definitions/items/skins";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, getEffectiveZIndex } from "@common/utils/layer";
@@ -35,6 +34,7 @@ import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
 import type { DebugRenderer } from "../utils/debugRenderer";
+import { EmoteCategory, type EmoteDefinition } from "@common/definitions/emotes";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -1339,7 +1339,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             && this.teamID === player.teamID;
     }
 
-    showEmote(type: AllowedEmoteSources): void {
+    showEmote(emote: EmoteDefinition): void {
         if (this.game.inputManager.isMobile) {
             this.game.inputManager.emoteWheelActive = false;
             this.game.uiManager.ui.emoteButton
@@ -1357,10 +1357,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 maxRange: 128
             }
         );
-        this.emote.image.setFrame(type.idString);
-
-        const isItemEmote = "itemType" in type;
-        const isHealingOrAmmoEmote = isItemEmote && [ItemType.Healing, ItemType.Ammo].includes(type.itemType);
+        this.emote.image.setFrame(emote.idString);
 
         const container = this.emote.container;
         container.visible = true;
@@ -1368,11 +1365,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         container.alpha = 0;
 
         let backgroundFrame = "emote_background";
-        if (Guns.fromStringSafe(type.idString)) {
-            backgroundFrame = `loot_background_gun_${Guns.fromStringSafe(type.idString)?.ammoType}`;
+        if (Guns.fromStringSafe(emote.idString)) {
+            backgroundFrame = `loot_background_gun_${Guns.fromStringSafe(emote.idString)?.ammoType}`;
         }
 
-        this.emote.image.setScale(isItemEmote && !isHealingOrAmmoEmote ? 0.7 : 1);
+        this.emote.image.setScale(emote.category === EmoteCategory.Team ? 0.7 : 1);
         this.emote.background.setFrame(backgroundFrame);
 
         this.anims.emote = this.game.addTween({

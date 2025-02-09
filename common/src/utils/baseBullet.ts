@@ -15,6 +15,11 @@ export type BaseBulletDefinition = {
     readonly obstacleMultiplier: number
     readonly speed: number
     readonly range: number
+    readonly rangeVariance?: number
+    readonly shrapnel?: boolean
+    readonly allowRangeOverride?: boolean
+    readonly lastShotFX?: boolean
+    readonly noCollision?: boolean
 
     readonly tracer?: {
         /**
@@ -65,12 +70,6 @@ export type BaseBulletDefinition = {
         }
         readonly tint: number
     }
-
-    readonly rangeVariance?: number
-    readonly shrapnel?: boolean
-    readonly allowRangeOverride?: boolean
-    readonly lastShotFX?: boolean
-    readonly noCollision?: boolean
 } & ({
     readonly onHitExplosion?: never
 } | {

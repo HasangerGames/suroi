@@ -6,14 +6,13 @@ import { MapPings, type MapPing, type PlayerPing } from "../definitions/mapPings
 import { Perks, type PerkDefinition } from "../definitions/items/perks";
 import { Scopes, type ScopeDefinition } from "../definitions/items/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
-import { GlobalRegistrar } from "../utils/definitionRegistry";
 import { type Mutable, type SDeepMutable } from "../utils/misc";
 import { ObjectSerializations, type FullData, type ObjectsNetData } from "../utils/objectsSerializations";
 import type { PerkCollection } from "../utils/perkManager";
 import { type SuroiByteStream } from "../utils/suroiByteStream";
 import { Vec, type Vector } from "../utils/vector";
-import type { AllowedEmoteSources } from "./inputPacket";
 import { createPacket, DataSplitTypes, getSplitTypeForCategory } from "./packet";
+import { EmoteDefinition, Emotes } from "../definitions/emotes";
 
 interface ObjectFullData {
     readonly id: number
@@ -478,7 +477,7 @@ export type ExplosionSerialization = {
 };
 
 export type EmoteSerialization = {
-    readonly definition: AllowedEmoteSources
+    readonly definition: EmoteDefinition
     readonly playerID: number
 };
 
@@ -661,7 +660,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
             strm.writeArray(
                 data.emotes,
                 emote => {
-                    GlobalRegistrar.writeToStream(strm, emote.definition);
+                    Emotes.writeToStream(strm, emote.definition);
                     strm.writeObjectId(emote.playerID);
                 },
                 1
@@ -844,7 +843,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
 
         if ((flags & UpdateFlags.Emotes) !== 0) {
             data.emotes = stream.readArray(() => ({
-                definition: GlobalRegistrar.readFromStream(stream),
+                definition: Emotes.readFromStream(stream),
                 playerID: stream.readObjectId()
             }), 1);
         }

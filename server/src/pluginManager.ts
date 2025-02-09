@@ -3,7 +3,7 @@ import { type BuildingDefinition } from "@common/definitions/buildings";
 import type { LootDefinition } from "@common/definitions/loots";
 import { type PlayerPing } from "@common/definitions/mapPings";
 import { type ObstacleDefinition } from "@common/definitions/obstacles";
-import { type AllowedEmoteSources, type PlayerInputData } from "@common/packets/inputPacket";
+import { type PlayerInputData } from "@common/packets/inputPacket";
 import { type JoinPacketData } from "@common/packets/joinPacket";
 import { Variation, type Orientation } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
@@ -17,6 +17,7 @@ import { DamageParams } from "./objects/gameObject";
 import { Loot, type ItemData } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { Player } from "./objects/player";
+import { EmoteDefinition } from "@common/definitions/emotes";
 
 interface PlayerDamageEvent extends DamageParams {
     readonly player: Player
@@ -456,11 +457,11 @@ export interface EventDataMap {
     }
     readonly player_will_emote: {
         readonly player: Player
-        readonly emote: AllowedEmoteSources
+        readonly emote: EmoteDefinition
     }
     readonly player_did_emote: {
         readonly player: Player
-        readonly emote: AllowedEmoteSources
+        readonly emote: EmoteDefinition
     }
     readonly player_will_map_ping: {
         readonly player: Player

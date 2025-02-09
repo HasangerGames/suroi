@@ -12,12 +12,12 @@ import { Melees, type MeleeDefinition } from "@common/definitions/items/melees";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { PerkCategories, PerkIds, Perks, type PerkDefinition, type PerkNames } from "@common/definitions/items/perks";
 import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
-import { type SkinDefinition } from "@common/definitions/skins";
+import { type SkinDefinition } from "@common/definitions/items/skins";
 import { SyncedParticles, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { Throwables, type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { DisconnectPacket } from "@common/packets/disconnectPacket";
 import { GameOverData, GameOverPacket, TeammateGameOverData } from "@common/packets/gameOverPacket";
-import { type AllowedEmoteSources, type NoMobile, type PlayerInputData } from "@common/packets/inputPacket";
+import { type NoMobile, type PlayerInputData } from "@common/packets/inputPacket";
 import { createKillfeedMessage, KillFeedPacket, type ForEventType } from "@common/packets/killFeedPacket";
 import { type InputPacket } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
@@ -28,7 +28,7 @@ import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox
 import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
 import { Collision, EaseFunctions, Geometry, Numeric } from "@common/utils/math";
 import { ExtendedMap, type SDeepMutable, type SMutable, type Timeout } from "@common/utils/misc";
-import { ItemType, type EventModifiers, type ExtendedWearerAttributes, type PlayerModifiers, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
+import { ItemType, type EventModifiers, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray, randomPointInsideCircle, weightedRandom } from "@common/utils/random";
 import { SuroiByteStream } from "@common/utils/suroiByteStream";
@@ -667,13 +667,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 inventory.replaceWeapon(slot, chosenItem, force);
                 (this.activeItem as GunItem).ammo = capacity;
-                this.sendEmote(Guns.fromString(chosenItem.idString), true);
+                this.sendEmote(Emotes.fromString(chosenItem.idString), true);
                 break;
             }
 
             case ItemType.Melee: {
                 inventory.replaceWeapon(slot, chosenItem, force);
-                this.sendEmote(Melees.fromString(chosenItem.idString), true);
+                this.sendEmote(Emotes.fromString(chosenItem.idString), true);
                 break;
             }
 
@@ -711,7 +711,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 this.dirty.weapons = true;
                 this.dirty.items = true;
-                this.sendEmote(Throwables.fromString(chosenItem.idString), true);
+                this.sendEmote(Emotes.fromString(chosenItem.idString), true);
                 break;
             }
         }
@@ -794,7 +794,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     /**
      * @param isFromServer If the emoji should skip checking if the player has that emoji in their emoji wheel
      */
-    sendEmote(source?: AllowedEmoteSources, isFromServer = false): void {
+    sendEmote(source?: EmoteDefinition, isFromServer = false): void {
         // -------------------------------------
         // Rate Limiting: Team Pings & Emotes.
         // -------------------------------------
