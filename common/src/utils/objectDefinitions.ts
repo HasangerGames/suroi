@@ -1,5 +1,5 @@
 import { type ByteStream } from "./byteStream";
-import { Mutable, ReadonlyRecord } from "./misc";
+import { ReadonlyRecord } from "./misc";
 import { type Vector } from "./vector";
 
 /**

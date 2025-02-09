@@ -1,5 +1,5 @@
 import { FireMode } from "../../constants";
-import { ItemDefinitions, ItemType, ObjectDefinitions, type InventoryItemDefinition } from "../../utils/objectDefinitions";
+import { ItemType, ObjectDefinitions, type InventoryItemDefinition } from "../../utils/objectDefinitions";
 import { Vec, type Vector } from "../../utils/vector";
 
 export type MeleeDefinition = InventoryItemDefinition & {
@@ -38,7 +38,7 @@ export type MeleeDefinition = InventoryItemDefinition & {
         readonly separateWorldImage?: boolean
         readonly animated?: boolean
     }
-    readonly fireMode: FireMode
+    readonly fireMode?: FireMode
     readonly reflectiveSurface?: {
         readonly pointA: Vector
         readonly pointB: Vector
@@ -66,11 +66,11 @@ export const DEFAULT_HAND_RIGGING = Object.freeze({
     right: Vec.create(38, 35)
 }) as InventoryItemDefinition["fists"] & object;
 
-export const Melees = new ObjectDefinitions<MeleeDefinition>(([
+export const Melees = new ObjectDefinitions<MeleeDefinition>([
     {
         idString: "fists",
         name: "Fists",
-        fireMode: FireMode.Single,
+        itemType: ItemType.Melee,
         damage: 20,
         speedMultiplier: 1,
         obstacleMultiplier: 1,
@@ -91,7 +91,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>(([
     {
         idString: "baseball_bat",
         name: "Baseball Bat",
-        fireMode: FireMode.Single,
+        itemType: ItemType.Melee,
         swingSound: "heavy_swing",
         damage: 34,
         speedMultiplier: 1,
@@ -117,7 +117,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>(([
     {
         idString: "feral_claws",
         name: "Feral Claws",
-        fireMode: FireMode.Single,
+        itemType: ItemType.Melee,
         damage: 20,
         speedMultiplier: 1,
         obstacleMultiplier: 1,
@@ -144,7 +144,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>(([
     {
         idString: "hatchet",
         name: "Hatchet",
-        fireMode: FireMode.Single,
+        itemType: ItemType.Melee,
         damage: 45,
         rotationalAnimation: true,
         speedMultiplier: 1,
@@ -169,7 +169,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>(([
     {
         idString: "fire_hatchet",
         name: "Fire Hatchet",
-        fireMode: FireMode.Single,
+        itemType: ItemType.Melee,
         damage: 50,
         speedMultiplier: 1,
         rotationalAnimation: true,
@@ -195,7 +195,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>(([
     {
         idString: "crowbar",
         name: "Crowbar",
-        fireMode: FireMode.Single,
+        itemType: ItemType.Melee,
         swingSound: "heavy_swing",
         damage: 40,
         speedMultiplier: 1,
@@ -223,7 +223,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>(([
     {
         idString: "kbar",
         name: "K-bar",
-        fireMode: FireMode.Single,
+        itemType: ItemType.Melee,
         swingSound: "soft_swing",
         damage: 25,
         speedMultiplier: 1,
@@ -250,7 +250,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>(([
     {
         idString: "sickle",
         name: "Sickle",
-        fireMode: FireMode.Single,
+        itemType: ItemType.Melee,
         damage: 24,
         swingSound: "soft_swing",
         speedMultiplier: 1,
@@ -278,7 +278,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>(([
     {
         idString: "maul",
         name: "Maul",
-        fireMode: FireMode.Single,
+        itemType: ItemType.Melee,
         damage: 54,
         speedMultiplier: 1,
         iceMultiplier: 5,
@@ -305,7 +305,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>(([
     {
         idString: "steelfang",
         name: "Steelfang",
-        fireMode: FireMode.Single,
+        itemType: ItemType.Melee,
         devItem: true,
         damage: 40,
         noDrop: true,
@@ -339,7 +339,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>(([
     {
         idString: "gas_can",
         name: "Gas Can",
-        fireMode: FireMode.Single,
+        itemType: ItemType.Melee,
         damage: 22,
         speedMultiplier: 1,
         obstacleMultiplier: 1,
@@ -364,7 +364,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>(([
     {
         idString: "heap_sword",
         name: "HE-AP sword",
-        fireMode: FireMode.Single,
+        itemType: ItemType.Melee,
         devItem: true,
         damage: 75,
         speedMultiplier: 1,
@@ -394,7 +394,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>(([
     {
         idString: "ice_pick",
         name: "Ice Pick",
-        fireMode: FireMode.Single,
+        itemType: ItemType.Melee,
         swingSound: "heavy_swing",
         damage: 35,
         speedMultiplier: 1,
@@ -420,7 +420,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>(([
     {
         idString: "seax",
         name: "Seax",
-        fireMode: FireMode.Single,
+        itemType: ItemType.Melee,
         damage: 45,
         swingSound: "heavy_swing",
         speedMultiplier: 1,
@@ -446,7 +446,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>(([
     {
         idString: "falchion",
         name: "Falchion",
-        fireMode: FireMode.Single,
+        itemType: ItemType.Melee,
         damage: 41,
         swingSound: "soft_swing",
         speedMultiplier: 1,
@@ -473,6 +473,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>(([
     {
         idString: "chainsaw",
         name: "Chain Saw",
+        itemType: ItemType.Melee,
         fireMode: FireMode.Auto,
         devItem: true,
         damage: 25,
@@ -503,7 +504,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>(([
     {
         idString: "pan",
         name: "Pan",
-        fireMode: FireMode.Single,
+        itemType: ItemType.Melee,
         damage: 65,
         swingSound: "heavy_swing",
         hitSound: "pan_hit",
@@ -541,7 +542,4 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>(([
             xConstant: 85
         }
     }
-] satisfies ReadonlyArray<Omit<MeleeDefinition, "itemType">>).map(def => {
-    (def as Mutable<MeleeDefinition>).itemType = ItemType.Melee;
-    return def;
-}));
+]);
