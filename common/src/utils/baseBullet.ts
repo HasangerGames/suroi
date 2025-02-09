@@ -16,25 +16,32 @@ export type BaseBulletDefinition = {
     readonly speed: number
     readonly range: number
 
-    readonly tracer: {
-        readonly opacity: number
-        readonly width: number
-        readonly length: number
-        readonly image: string
-        // used by the radio bullet
-        // this will make it scale and fade in and out
-        readonly particle: boolean
-        readonly zIndex: ZIndexes
-    } & ({
-        readonly color?: undefined
-        readonly saturatedColor?: never
-    } | {
+    readonly tracer?: {
+        /**
+         * @default 1
+         */
+        readonly opacity?: number
+        /**
+         * @default 1
+         */
+        readonly width?: number
+        /**
+         * @default 1
+         */
+        readonly length?: number
+        readonly image?: string
+        /**
+         * Used by the radio bullet
+         * This will make it scale and fade in and out
+         */
+        readonly particle?: boolean
+        readonly zIndex?: ZIndexes
         /**
          * A value of `-1` causes a random color to be chosen
          */
-        readonly color: number
-        readonly saturatedColor: number
-    })
+        readonly color?: number
+        readonly saturatedColor?: number
+    }
 
     readonly trail?: {
         readonly interval: number
@@ -60,10 +67,10 @@ export type BaseBulletDefinition = {
     }
 
     readonly rangeVariance?: number
-    readonly shrapnel: boolean
-    readonly allowRangeOverride: boolean
-    readonly lastShotFX: boolean
-    readonly noCollision: boolean
+    readonly shrapnel?: boolean
+    readonly allowRangeOverride?: boolean
+    readonly lastShotFX?: boolean
+    readonly noCollision?: boolean
 } & ({
     readonly onHitExplosion?: never
 } | {

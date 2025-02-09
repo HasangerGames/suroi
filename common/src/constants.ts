@@ -248,27 +248,3 @@ export enum InventoryMessages {
     CannotUseRadio,
     RadioOverused
 }
-
-// i'm putting this here because placing it in objectDefinitions.ts or
-// in bullets.ts causes circular imports
-export const defaultBulletTemplate = {
-    tracer: {
-        opacity: 1,
-        width: 1,
-        length: 1,
-        image: "base_trail",
-        particle: false,
-        zIndex: ZIndexes.Bullets
-    },
-    allowRangeOverride: false,
-    lastShotFX: false,
-    noCollision: false
-};
-
-export const TentTints = {
-    red: 0xb24c4c,
-    green: 0x90b24c,
-    blue: 0x4c7fb2,
-    orange: 0xc67438,
-    purple: 0x994cb2
-};

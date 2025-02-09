@@ -1,9 +1,10 @@
-import { Layers, TentTints, ZIndexes } from "../constants";
+import { Layers, ZIndexes } from "../constants";
 import { type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type Mutable } from "../utils/misc";
 import { ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
+import { TentTints } from "./buildings";
 import { type GunDefinition } from "./items/guns";
 import { type LootDefinition } from "./loots";
 import { type SyncedParticleSpawnerDefinition } from "./syncedParticles";

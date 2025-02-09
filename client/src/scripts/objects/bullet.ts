@@ -36,17 +36,24 @@ export class Bullet extends BaseBullet {
 
         const tracerStats = this.definition.tracer;
 
-        this._image = new SuroiSprite(tracerStats.image)
+        this._image = new SuroiSprite(tracerStats?.image ?? "base_trail")
             .setRotation(this.rotation - Math.PI / 2)
             .setVPos(toPixiCoords(this.position));
 
-        const mods = options.modifiers;
-        const tracerMods = mods?.tracer;
-
-        this.tracerLength = tracerStats.length * (tracerMods?.length ?? 1);
+        const {
+            length = 1,
+            width = 1,
+            opacity = 1
+        } = tracerStats ?? {};
+        const {
+            length: lengthMod = 1,
+            width: widthMod = 1,
+            opacity: opacityMod = 1
+        } = options.modifiers?.tracer ?? {};
+        this.tracerLength = length * lengthMod;
         this.maxLength = this._image.width * this.tracerLength;
-        this._image.scale.y = tracerStats.width * (tracerMods?.width ?? 1) * (this.thin ? 0.5 : 1);
-        this._image.alpha = tracerStats.opacity * (tracerMods?.opacity ?? 1) / (this.reflectionCount + 1);
+        this._image.scale.y = width * widthMod * (this.thin ? 0.5 : 1);
+        this._image.alpha = opacity * opacityMod / (this.reflectionCount + 1);
 
         if (this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
             this._image.filters = [new BloomFilter({
@@ -54,12 +61,12 @@ export class Bullet extends BaseBullet {
             })];
         }
 
-        if (!tracerStats.particle) this._image.anchor.set(1, 0.5);
+        if (!tracerStats?.particle) this._image.anchor.set(1, 0.5);
 
         const color = new Color(
-            tracerStats.color === -1
+            tracerStats?.color === -1
                 ? random(0, white)
-                : tracerStats.color ?? white
+                : tracerStats?.color ?? white
         );
         if (game.mode.bulletTrailAdjust) color.multiply(game.mode.bulletTrailAdjust);
         if (this.saturate) {
@@ -128,13 +135,13 @@ export class Bullet extends BaseBullet {
 
         if (!this.dead && !this._trailReachedMaxLength) {
             this._trailTicks += delta;
-        } else if (this.dead || this.definition.tracer.particle) {
+        } else if (this.dead || this.definition.tracer?.particle) {
             this._trailTicks -= delta;
         }
 
         const traveledDistance = Geometry.distance(this.initialPosition, this.position);
 
-        if (this.definition.tracer.particle) {
+        if (this.definition.tracer?.particle) {
             this._image.scale.set(1 + (traveledDistance / this.maxDistance));
             this._image.alpha = 2 * this.definition.speed * (this.modifiers?.speed ?? 1) * this._trailTicks / this.maxDistance;
 
@@ -220,7 +227,7 @@ export class Bullet extends BaseBullet {
     private setLayer(layer: number): void {
         this.layer = layer;
         this.updateVisibility();
-        this._image.zIndex = getEffectiveZIndex(this.definition.tracer.zIndex, this.layer, this.game.layer);
+        this._image.zIndex = getEffectiveZIndex(this.definition.tracer?.zIndex ?? ZIndexes.Bullets, this.layer, this.game.layer);
     }
 
     private updateVisibility(): void {

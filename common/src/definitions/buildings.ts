@@ -1,11 +1,11 @@
-import { Layers, TentTints, ZIndexes } from "../constants";
+import { Layers, ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
-import { MapObjectSpawnMode, NullString, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
+import { NullString, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { pickRandomInArray, randomBoolean } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
-import { FlyoverPref, Materials, RotationMode, type ObstacleDefinition } from "./obstacles";
+import { FlyoverPref, MapObjectSpawnMode, Materials, RotationMode, type ObstacleDefinition } from "./obstacles";
 
 interface BuildingObstacle {
     readonly idString: ReferenceOrRandom<ObstacleDefinition>
@@ -266,6 +266,14 @@ const ContainerWallTints = {
     green: 0x008f0c,
     blue: 0x00538f,
     yellow: 0xb3b300
+};
+
+export const TentTints = {
+    red: 0xb24c4c,
+    green: 0x90b24c,
+    blue: 0x4c7fb2,
+    orange: 0xc67438,
+    purple: 0x994cb2
 };
 
 const blueHouseVaultLayout = (id: number, obstacles: readonly BuildingObstacle[], subBuildings?: readonly SubBuilding[]): BuildingDefinition => ({

@@ -1,11 +1,14 @@
-import { defaultBulletTemplate, FireMode } from "../../constants";
+import { FireMode } from "../../constants";
 import { BaseBulletDefinition } from "../../utils/baseBullet";
-import { mergeDeep, WithPartial, type DeepPartial } from "../../utils/misc";
+import { mergeDeep } from "../../utils/misc";
 import { ItemType, ObjectDefinitions, type InventoryItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
 import { Vec, type Vector } from "../../utils/vector";
 import { type AmmoDefinition } from "./ammos";
 
 type BaseGunDefinition = InventoryItemDefinition & {
+    readonly itemType: ItemType.Gun
+
+    readonly speedMultiplier: number
     readonly ammoType: ReferenceTo<AmmoDefinition>
     readonly ammoSpawnAmount: number
     readonly capacity: number
@@ -23,7 +26,7 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly moveSpread: number
     readonly bulletOffset?: number
     readonly fsaReset?: number // first-shot-accuracy reset (ms)
-    readonly jitterRadius: number // Jitters the bullet position, mainly for shotguns
+    readonly jitterRadius?: number // Jitters the bullet position, mainly for shotguns
     readonly consistentPatterning?: boolean
 
     readonly noQuickswitch?: boolean
@@ -84,7 +87,7 @@ type BaseGunDefinition = InventoryItemDefinition & {
     }
 
     readonly noMuzzleFlash?: boolean
-    readonly ballistics: DeepPartial<BaseBulletDefinition>
+    readonly ballistics: BaseBulletDefinition
 } & ReloadOnEmptyMixin & BurstFireMixin & DualDefMixin;
 
 type BurstFireMixin = ({
@@ -111,7 +114,7 @@ type DualDefMixin = ({
         readonly position: Vector
     }
 
-    readonly casingParticles: Array<{ readonly position: Vector }>
+    readonly casingParticles?: Array<{ readonly position: Vector }>
 } | {
     readonly isDual: true
     readonly singleVariant: ReferenceTo<GunDefinition>
@@ -123,7 +126,7 @@ type DualDefMixin = ({
 });
 
 export type GunDefinition = BaseGunDefinition & {
-    readonly itemType: ItemType.Gun
+    readonly ballistics: BaseBulletDefinition
     readonly dualVariant?: ReferenceTo<GunDefinition>
 };
 
@@ -210,13 +213,18 @@ const gasParticlePresets = {
 } satisfies Record<string, BaseGunDefinition["gasParticles"]>;
 
 export const Guns = new ObjectDefinitions<GunDefinition>(([
+    //
+    // Pistols
+    //
     {
         idString: "g19",
         name: "G19",
+        itemType: ItemType.Gun,
         ammoType: "9mm",
         ammoSpawnAmount: 60,
         fireDelay: 110,
         switchDelay: 250,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.8,
         recoilDuration: 90,
         fireMode: FireMode.Single,
@@ -263,10 +271,12 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "cz75a",
         name: "CZ-75A",
+        itemType: ItemType.Gun,
         ammoType: "9mm",
         ammoSpawnAmount: 64,
         fireDelay: 60,
         switchDelay: 250,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.8,
         recoilDuration: 90,
         fireMode: FireMode.Auto,
@@ -313,10 +323,12 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "m1895",
         name: "M1895",
+        itemType: ItemType.Gun,
         ammoType: "762mm",
         ammoSpawnAmount: 28,
         fireDelay: 375,
         switchDelay: 250,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.75,
         recoilDuration: 135,
         fireMode: FireMode.Single,
@@ -370,10 +382,12 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "deagle",
         name: "DEagle",
+        itemType: ItemType.Gun,
         ammoType: "50cal",
         ammoSpawnAmount: 42,
         fireDelay: 200,
         switchDelay: 250,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.65,
         recoilDuration: 150,
         fireMode: FireMode.Single,
@@ -426,10 +440,12 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "rsh12",
         name: "RSh-12",
+        itemType: ItemType.Gun,
         ammoType: "50cal",
         ammoSpawnAmount: 30,
         fireDelay: 400,
         switchDelay: 250,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.8,
         recoilDuration: 600,
         fsaReset: 600,
@@ -486,10 +502,14 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
             reloadTime: 4.2
         }
     },
-    // submachine guns
+
+    //
+    // Submachine guns (SMGs)
+    //
     {
         idString: "saf200",
         name: "SAF-200",
+        itemType: ItemType.Gun,
         ammoType: "9mm",
         ammoSpawnAmount: 90,
         capacity: 30,
@@ -501,6 +521,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
             burstCooldown: 325
         },
         switchDelay: 300,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.75,
         recoilDuration: 300,
         fireMode: FireMode.Burst,
@@ -528,6 +549,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "micro_uzi",
         name: "Micro Uzi",
+        itemType: ItemType.Gun,
         ammoType: "9mm",
         ammoSpawnAmount: 96,
         capacity: 32,
@@ -535,6 +557,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 1.75,
         fireDelay: 40,
         switchDelay: 300,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.75,
         recoilDuration: 60,
         fireMode: FireMode.Auto,
@@ -562,6 +585,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "mp40",
         name: "MP40",
+        itemType: ItemType.Gun,
         ammoType: "9mm",
         ammoSpawnAmount: 96,
         capacity: 32,
@@ -569,6 +593,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 2.1,
         fireDelay: 90,
         switchDelay: 300,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.75,
         recoilDuration: 150,
         fireMode: FireMode.Auto,
@@ -602,6 +627,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "vector",
         name: "Vector",
+        itemType: ItemType.Gun,
         ammoType: "9mm",
         ammoSpawnAmount: 99,
         capacity: 33,
@@ -609,6 +635,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 1.7,
         fireDelay: 40,
         switchDelay: 300,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.75,
         recoilDuration: 60,
         fireMode: FireMode.Auto,
@@ -636,6 +663,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "pp19",
         name: "PP-19 Vityaz",
+        itemType: ItemType.Gun,
         ammoType: "9mm",
         ammoSpawnAmount: 90,
         capacity: 30,
@@ -643,6 +671,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 2.3,
         fireDelay: 50,
         switchDelay: 300,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.75,
         recoilDuration: 150,
         fireMode: FireMode.Auto,
@@ -670,10 +699,14 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
             }
         }
     },
-    // assault rifles
+
+    //
+    // Assault rifles
+    //
     {
         idString: "ak47",
         name: "AK-47",
+        itemType: ItemType.Gun,
         ammoType: "762mm",
         ammoSpawnAmount: 90,
         capacity: 30,
@@ -681,6 +714,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 2.5,
         fireDelay: 100,
         switchDelay: 400,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.75,
         recoilDuration: 150,
         fireMode: FireMode.Auto,
@@ -709,6 +743,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "mcx_spear",
         name: "MCX Spear",
+        itemType: ItemType.Gun,
         ammoType: "762mm",
         ammoSpawnAmount: 80,
         capacity: 20,
@@ -716,6 +751,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 2.75,
         fireDelay: 87.5,
         switchDelay: 400,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.75,
         recoilDuration: 130,
         fireMode: FireMode.Auto,
@@ -746,6 +782,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "m16a2",
         name: "M16A2",
+        itemType: ItemType.Gun,
         ammoType: "556mm",
         ammoSpawnAmount: 80,
         capacity: 20,
@@ -757,6 +794,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
             burstCooldown: 325
         },
         switchDelay: 400,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.75,
         recoilDuration: 350,
         fireMode: FireMode.Burst,
@@ -784,10 +822,12 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "aug",
         name: "AUG",
+        itemType: ItemType.Gun,
         ammoType: "556mm",
         ammoSpawnAmount: 90,
         fireDelay: 70,
         switchDelay: 400,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.75,
         recoilDuration: 120,
         fireMode: FireMode.Auto,
@@ -818,6 +858,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "arx160",
         name: "ARX-160",
+        itemType: ItemType.Gun,
         ammoType: "762mm",
         ammoSpawnAmount: 90,
         capacity: 30,
@@ -825,6 +866,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 2.5,
         fireDelay: 75,
         switchDelay: 400,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.75,
         recoilDuration: 145,
         fireMode: FireMode.Auto,
@@ -853,10 +895,12 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "acr",
         name: "ACR",
+        itemType: ItemType.Gun,
         ammoType: "556mm",
         ammoSpawnAmount: 90,
         fireDelay: 72.5,
         switchDelay: 400,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.75,
         recoilDuration: 130,
         fireMode: FireMode.Auto,
@@ -887,10 +931,14 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
             }
         }
     },
-    // light machine guns
+
+    //
+    // Light machine guns (LMGs)
+    //
     {
         idString: "lewis_gun",
         name: "Lewis Gun",
+        itemType: ItemType.Gun,
         ammoType: "762mm",
         ammoSpawnAmount: 94,
         capacity: 47,
@@ -931,6 +979,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "stoner_63",
         name: "Stoner 63",
+        itemType: ItemType.Gun,
         ammoType: "556mm",
         ammoSpawnAmount: 150,
         capacity: 75,
@@ -992,6 +1041,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "mg5",
         name: "MG5",
+        itemType: ItemType.Gun,
         ammoType: "762mm",
         ammoSpawnAmount: 240,
         capacity: 120,
@@ -1047,6 +1097,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "negev",
         name: "Negev SF",
+        itemType: ItemType.Gun,
         ammoType: "556mm",
         ammoSpawnAmount: 200,
         capacity: 200,
@@ -1102,6 +1153,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "mg36",
         name: "MG36",
+        itemType: ItemType.Gun,
         ammoType: "556mm",
         ammoSpawnAmount: 100,
         capacity: 50,
@@ -1109,6 +1161,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 2.75,
         fireDelay: 75,
         switchDelay: 400,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.75,
         recoilDuration: 140,
         fireMode: FireMode.Auto,
@@ -1133,10 +1186,14 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
             range: 160
         }
     },
-    // shotguns
+
+    //
+    // Shotguns
+    //
     {
         idString: "m3k",
         name: "M3K",
+        itemType: ItemType.Gun,
         ammoType: "12g",
         ammoSpawnAmount: 18,
         capacity: 9,
@@ -1144,6 +1201,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 0.55,
         fireDelay: 700,
         switchDelay: 700,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.5,
         recoilDuration: 500,
         fireMode: FireMode.Single,
@@ -1175,6 +1233,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "model_37",
         name: "Model 37",
+        itemType: ItemType.Gun,
         ammoType: "12g",
         ammoSpawnAmount: 15,
         capacity: 5,
@@ -1182,6 +1241,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 0.75,
         fireDelay: 900,
         switchDelay: 900,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.5,
         recoilDuration: 550,
         fireMode: FireMode.Single,
@@ -1223,6 +1283,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "hp18",
         name: "HP-18",
+        itemType: ItemType.Gun,
         ammoType: "12g",
         ammoSpawnAmount: 15,
         capacity: 5,
@@ -1231,6 +1292,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         shotsPerReload: 1,
         fireDelay: 300,
         switchDelay: 400,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.6,
         recoilDuration: 600,
         fireMode: FireMode.Single,
@@ -1264,12 +1326,14 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "flues",
         name: "Flues",
+        itemType: ItemType.Gun,
         ammoType: "12g",
         ammoSpawnAmount: 10,
         capacity: 2,
         reloadTime: 2.6,
         fireDelay: 250,
         switchDelay: 250,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.5,
         recoilDuration: 550,
         fireMode: FireMode.Single,
@@ -1311,6 +1375,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "usas12",
         name: "USAS-12",
+        itemType: ItemType.Gun,
         ammoType: "12g",
         ammoSpawnAmount: 30,
         capacity: 10,
@@ -1318,6 +1383,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 3,
         fireDelay: 525,
         switchDelay: 900,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.5,
         recoilDuration: 525,
         fireMode: FireMode.Auto,
@@ -1353,6 +1419,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "vepr12",
         name: "Vepr-12",
+        itemType: ItemType.Gun,
         ammoType: "12g",
         ammoSpawnAmount: 20,
         capacity: 5,
@@ -1360,6 +1427,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 2.4,
         fireDelay: 400,
         switchDelay: 650,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.7,
         recoilDuration: 550,
         fireMode: FireMode.Auto,
@@ -1392,12 +1460,14 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "dt11",
         name: "DT-11",
+        itemType: ItemType.Gun,
         ammoType: "12g",
         ammoSpawnAmount: 10,
         capacity: 2,
         reloadTime: 2.3,
         fireDelay: 300,
         switchDelay: 500,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.6,
         recoilDuration: 400,
         fireMode: FireMode.Single,
@@ -1437,6 +1507,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "m590m",
         name: "M590M",
+        itemType: ItemType.Gun,
         ammoType: "12g",
         ammoSpawnAmount: 15,
         capacity: 5,
@@ -1444,6 +1515,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 2.8,
         fireDelay: 900,
         switchDelay: 900,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.5,
         recoilDuration: 500,
         fireMode: FireMode.Single,
@@ -1478,10 +1550,14 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
             }
         }
     },
-    // sniper rifles
+
+    //
+    // Sniper rifles
+    //
     {
         idString: "mosin_nagant",
         name: "Mosin-Nagant",
+        itemType: ItemType.Gun,
         ammoType: "762mm",
         ammoSpawnAmount: 20,
         capacity: 5,
@@ -1491,6 +1567,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         fullReloadTime: 2.9,
         fireDelay: 900,
         switchDelay: 900,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.45,
         recoilDuration: 750,
         fireMode: FireMode.Single,
@@ -1525,6 +1602,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "tango_51",
         name: "Tango 51",
+        itemType: ItemType.Gun,
         ammoType: "762mm",
         ammoSpawnAmount: 20,
         capacity: 5,
@@ -1532,6 +1610,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 2.6,
         fireDelay: 900,
         switchDelay: 900,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.4,
         recoilDuration: 1000,
         fireMode: FireMode.Single,
@@ -1565,6 +1644,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "cz600",
         name: "CZ-600",
+        itemType: ItemType.Gun,
         ammoType: "556mm",
         ammoSpawnAmount: 20,
         capacity: 5,
@@ -1572,6 +1652,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 2.2,
         fireDelay: 600,
         switchDelay: 600,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.75,
         recoilDuration: 750,
         fireMode: FireMode.Single,
@@ -1605,10 +1686,12 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "l115a1",
         name: "L115A1",
+        itemType: ItemType.Gun,
         ammoType: "338lap",
         ammoSpawnAmount: 12,
         fireDelay: 1500,
         switchDelay: 900,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.4,
         recoilDuration: 1600,
         fireMode: FireMode.Single,
@@ -1645,6 +1728,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "rgs",
         name: "RG Scout",
+        itemType: ItemType.Gun,
         ammoType: "556mm",
         ammoSpawnAmount: 30,
         capacity: 10,
@@ -1652,6 +1736,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 2.6,
         fireDelay: 600,
         switchDelay: 600,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.75,
         recoilDuration: 600,
         fireMode: FireMode.Single,
@@ -1686,10 +1771,12 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "vks",
         name: "VKS Vykhlop",
+        itemType: ItemType.Gun,
         ammoType: "50cal",
         ammoSpawnAmount: 25,
         fireDelay: 800,
         switchDelay: 900,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.6,
         recoilDuration: 1000,
         fireMode: FireMode.Single,
@@ -1722,10 +1809,14 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
             }
         }
     },
-    // designated marksman rifles
+
+    //
+    // Designated marksman rifles (DMRs)
+    //
     {
         idString: "vss",
         name: "VSS Vintorez",
+        itemType: ItemType.Gun,
         ammoType: "9mm",
         ammoSpawnAmount: 60,
         capacity: 20,
@@ -1733,6 +1824,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 2.15,
         fireDelay: 140,
         switchDelay: 400,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.7,
         recoilDuration: 140,
         fireMode: FireMode.Single,
@@ -1765,6 +1857,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "sr25",
         name: "SR-25",
+        itemType: ItemType.Gun,
         ammoType: "762mm",
         ammoSpawnAmount: 80,
         capacity: 20,
@@ -1772,6 +1865,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 2.5,
         fireDelay: 200,
         switchDelay: 400,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.7,
         recoilDuration: 200,
         fireMode: FireMode.Single,
@@ -1802,6 +1896,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "mini14",
         name: "Mini-14",
+        itemType: ItemType.Gun,
         ammoType: "556mm",
         ammoSpawnAmount: 80,
         capacity: 20,
@@ -1809,6 +1904,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 2.4,
         fireDelay: 155,
         switchDelay: 400,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.8,
         recoilDuration: 155,
         fireMode: FireMode.Single,
@@ -1845,12 +1941,14 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "m1_garand",
         name: "M1 Garand",
+        itemType: ItemType.Gun,
         ammoType: "762mm",
         ammoSpawnAmount: 40,
         capacity: 8,
         reloadTime: 2.1,
         fireDelay: 250,
         switchDelay: 400,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.75,
         recoilDuration: 200,
         fireMode: FireMode.Single,
@@ -1909,6 +2007,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "model_89",
         name: "Model 89",
+        itemType: ItemType.Gun,
         ammoType: "50cal",
         ammoSpawnAmount: 28,
         capacity: 7,
@@ -1917,6 +2016,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         shotsPerReload: 1,
         fireDelay: 350,
         switchDelay: 400,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.7,
         recoilDuration: 300,
         fireMode: FireMode.Single,
@@ -1950,6 +2050,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "sks",
         name: "SKS",
+        itemType: ItemType.Gun,
         ammoType: "762mm",
         ammoSpawnAmount: 60,
         capacity: 10,
@@ -1960,6 +2061,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         fullReloadTime: 2.4,
         fireDelay: 180,
         switchDelay: 400,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.8,
         recoilDuration: 150,
         fireMode: FireMode.Single,
@@ -1997,6 +2099,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "blr",
         name: "BLR 556",
+        itemType: ItemType.Gun,
         ammoType: "556mm",
         ammoSpawnAmount: 20,
         capacity: 5,
@@ -2004,6 +2107,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 2.1,
         fireDelay: 350,
         switchDelay: 400,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.8,
         recoilDuration: 300,
         fireMode: FireMode.Single,
@@ -2034,10 +2138,12 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     {
         idString: "mk18",
         name: "Mk-18 Mjölnir",
+        itemType: ItemType.Gun,
         ammoType: "338lap",
         ammoSpawnAmount: 20,
         fireDelay: 450,
         switchDelay: 700,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.65,
         recoilDuration: 500,
         fsaReset: 700,
@@ -2070,15 +2176,20 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
             range: 250
         }
     },
-    // radio
+
+    //
+    // Radio
+    //
     {
         idString: "radio",
         name: "Radio",
+        itemType: ItemType.Gun,
         summonAirdrop: true,
         ammoType: "curadell",
         ammoSpawnAmount: 1,
         fireDelay: 500,
         switchDelay: 250,
+        speedMultiplier: 0.92,
         recoilMultiplier: 1,
         recoilDuration: 0,
         fireMode: FireMode.Single,
@@ -2115,10 +2226,14 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
             noCollision: true
         }
     },
-    // only event exclusive weapons below this point
+
+    //
+    // Event exclusive weapons
+    //
     {
         idString: "firework_launcher",
         name: "Firework Launcher",
+        itemType: ItemType.Gun,
         ammoType: "firework_rocket",
         ammoSpawnAmount: 9,
         capacity: 3,
@@ -2183,12 +2298,17 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
             }
         }
     },
-    // only dev weapons below this point
+
+    //
+    // Dev weapons
+    //
     {
         idString: "g17_scoped",
         name: "G17 (scoped)",
+        itemType: ItemType.Gun,
         devItem: true,
         ammoType: "bb",
+        ammoSpawnAmount: 0,
         fireDelay: 35,
         switchDelay: 250,
         speedMultiplier: 1.5,
@@ -2221,27 +2341,30 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
                 color: 0xFF8000,
                 saturatedColor: 0xF5B83D
             }
-        } /* ,
-    dual: {
-        leftRightOffset: 1.3,
-        capacity: 200,
-        extendedCapacity: 500,
-        fireDelay: 20,
-        shotSpread: 1,
-        moveSpread: 8,
-        reloadTime: 2.8
-    } */
+        }/*,
+        dual: {
+            leftRightOffset: 1.3,
+            capacity: 200,
+            extendedCapacity: 500,
+            fireDelay: 20,
+            shotSpread: 1,
+            moveSpread: 8,
+            reloadTime: 2.8
+        }*/
         // justice for dual s_g17 when™
     },
     {
         idString: "death_ray",
         name: "Death Ray",
+        itemType: ItemType.Gun,
         ammoType: "power_cell",
+        ammoSpawnAmount: 0,
         devItem: true,
         capacity: 1,
         reloadTime: 1.4,
         fireDelay: 40,
         switchDelay: 500,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.8,
         recoilDuration: 100,
         fireMode: FireMode.Auto,
@@ -2272,70 +2395,13 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         }
     },
     {
-        idString: "destroyer_of_worlds",
-        name: "Destroyer Of Worlds",
-        ammoType: "50cal",
+        idString: "revitalizer",
+        name: "Revitalizer",
+        itemType: ItemType.Gun,
         devItem: true,
-        ammoSpawnAmount: 255,
-        capacity: 255,
-        extendedCapacity: 1, // womp womp
-        reloadTime: 0.4,
-        fireDelay: 50,
-        switchDelay: 250,
-        speedMultiplier: 1,
-        recoilMultiplier: 0.95,
-        recoilDuration: 100,
-        fireMode: FireMode.Auto,
-        shotSpread: 0.5,
-        moveSpread: 4,
-        length: 14,
-        noMuzzleFlash: true,
-        fists: {
-            left: Vec.create(145, -4),
-            right: Vec.create(40, 0),
-            rightZIndex: 4,
-            animationDuration: 100
-        },
-        image: { position: Vec.create(150, 0) },
-        casingParticles: [
-            {
-                position: Vec.create(5, 0.6),
-                velocity: {
-                    y: {
-                        min: 15,
-                        max: 25
-                    }
-                }
-            },
-            {
-                position: Vec.create(5.2, 0.6),
-                frame: "50_link",
-                velocity: {
-                    x: {
-                        min: -6,
-                        max: 8
-                    },
-                    y: {
-                        min: 10,
-                        max: 25
-                    }
-                }
-            }
-        ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
-        ballistics: {
-            damage: 300,
-            obstacleMultiplier: 1,
-            speed: 0.45,
-            range: 500,
-            tracer: {
-                width: 2.5,
-                length: 4
-            }
-        }
-    },
-    {
-        idString: "model_37",
-        name: "Model 37",
+        killstreak: true,
+        consistentPatterning: true,
+        jitterRadius: 0,
         ammoType: "12g",
         ammoSpawnAmount: 15,
         capacity: 5,
@@ -2343,21 +2409,21 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 0.75,
         fireDelay: 900,
         switchDelay: 900,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.5,
         recoilDuration: 550,
         fireMode: FireMode.Single,
         shotSpread: 11,
         moveSpread: 14,
-        jitterRadius: 1.25,
         bulletCount: 10,
-        length: 7.85,
+        length: 6.88,
         fists: {
-            left: Vec.create(114, -3),
+            left: Vec.create(112, -3),
             right: Vec.create(45, 0),
             rightZIndex: 4,
             animationDuration: 100
         },
-        image: { position: Vec.create(89, 0) },
+        image: { position: Vec.create(78, 0) },
         casingParticles: [{
             position: Vec.create(4, 0.6),
             ejectionDelay: 450,
@@ -2379,21 +2445,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
             tracer: {
                 length: 0.7
             }
-        }
-    },
-    {
-        [inheritFrom]: "model_37",
-        idString: "revitalizer",
-        name: "Revitalizer",
-        // devItem: true,
-        killstreak: true,
-        consistentPatterning: true,
-        jitterRadius: 0,
-        image: { position: Vec.create(78, 0) },
-        fists: {
-            left: Vec.create(112, -3)
         },
-        length: 6.88,
         wearerAttributes: {
             passive: {
                 maxHealth: 0.51,
@@ -2422,28 +2474,20 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
             }
         }
     }
-] satisfies readonly RawGunDefinition[]).flatMap((e: RawGunDefinition) => {
-    if (e.dual === undefined) {
-        return [e];
+] satisfies readonly RawGunDefinition[]).flatMap((def: RawGunDefinition) => {
+    if (def.dual === undefined) {
+        return [def];
     }
-
-    const def = mergeDeep(
-        {
-            itemType: ItemType.Gun,
-            ballistics: defaultBulletTemplate
-        },
-        e
-    );
 
     const dualDef = mergeDeep(
         {},
         def,
-        e.dual,
+        def.dual,
         {
-            idString: `dual_${e.idString}`,
-            name: `Dual ${e.name}`,
+            idString: `dual_${def.idString}`,
+            name: `Dual ${def.name}`,
             isDual: true,
-            singleVariant: e.idString
+            singleVariant: def.idString
         }
     ) as DualGunNarrowing;
 
@@ -2456,9 +2500,9 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     // @ts-expect-error init code
     delete dualDef.casingParticles;
     // @ts-expect-error init code
-    delete e.dual;
+    delete rawDef.dual;
     // @ts-expect-error init code
-    e.dualVariant = dualDef.idString;
+    rawDef.dualVariant = dualDef.idString;
 
-    return [e, dualDef];
-}) as GunDefinition[]);
+    return [def, dualDef];
+}));

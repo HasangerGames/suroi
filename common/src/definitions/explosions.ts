@@ -1,9 +1,8 @@
-import { defaultBulletTemplate } from "../constants";
 import { BaseBulletDefinition } from "../utils/baseBullet";
-import { ObjectDefinitions, type KillfeedItemMixin, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { type DecalDefinition } from "./decals";
 
-export interface ExplosionDefinition extends ObjectDefinition, KillfeedItemMixin {
+export interface ExplosionDefinition extends ObjectDefinition {
     readonly damage: number
     readonly obstacleMultiplier: number
     readonly radius: {
@@ -49,6 +48,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         killfeedFrame: "explosion",
         shrapnelCount: 10,
         ballistics: {
+            shrapnel: true,
             damage: 2,
             obstacleMultiplier: 1,
             speed: 0.08,
@@ -77,6 +77,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         killfeedFrame: "explosion",
         shrapnelCount: 10,
         ballistics: {
+            shrapnel: true,
             damage: 10,
             obstacleMultiplier: 1,
             speed: 0.08,
@@ -105,6 +106,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         killfeedFrame: "explosion_big",
         shrapnelCount: 20,
         ballistics: {
+            shrapnel: true,
             damage: 5,
             obstacleMultiplier: 5,
             speed: 0.1,
@@ -133,6 +135,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         killfeedFrame: "explosion",
         shrapnelCount: 10,
         ballistics: {
+            shrapnel: true,
             damage: 10,
             obstacleMultiplier: 1,
             speed: 0.08,
@@ -161,6 +164,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         killfeedFrame: "explosion_big",
         shrapnelCount: 20,
         ballistics: {
+            shrapnel: true,
             damage: 4,
             obstacleMultiplier: 2,
             speed: 0.08,
@@ -189,6 +193,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         killfeedFrame: "explosion",
         shrapnelCount: 25,
         ballistics: {
+            shrapnel: true,
             damage: 12,
             obstacleMultiplier: 2,
             speed: 0.08,
@@ -217,6 +222,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         killfeedFrame: "explosion_big",
         shrapnelCount: 50,
         ballistics: {
+            shrapnel: true,
             damage: 15,
             obstacleMultiplier: 3,
             speed: 0.08,
@@ -245,6 +251,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         killfeedFrame: "explosion",
         shrapnelCount: 8,
         ballistics: {
+            shrapnel: true,
             damage: 2,
             obstacleMultiplier: 1,
             speed: 0.08,
@@ -273,6 +280,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         killfeedFrame: "usas12",
         shrapnelCount: 13,
         ballistics: {
+            shrapnel: true,
             damage: 2,
             obstacleMultiplier: 1.5,
             speed: 0.06,
@@ -303,6 +311,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         killfeedFrame: "m590m",
         shrapnelCount: 13,
         ballistics: {
+            shrapnel: true,
             damage: 2,
             obstacleMultiplier: 1.5,
             speed: 0.06,
@@ -333,6 +342,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         killfeedFrame: "firework_launcher",
         shrapnelCount: 17,
         ballistics: {
+            shrapnel: true,
             damage: 3,
             obstacleMultiplier: 1.5,
             speed: 0.06,
@@ -365,6 +375,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         },
         shrapnelCount: 40,
         ballistics: {
+            shrapnel: true,
             damage: 3,
             obstacleMultiplier: 1,
             speed: 0.08,
@@ -397,6 +408,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         },
         shrapnelCount: 40,
         ballistics: {
+            shrapnel: true,
             damage: 3,
             obstacleMultiplier: 1,
             speed: 0.08,
@@ -430,6 +442,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         },
         shrapnelCount: 10,
         ballistics: {
+            shrapnel: true,
             damage: 15,
             obstacleMultiplier: 1,
             speed: 0.08,
@@ -459,11 +472,11 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         },
         shrapnelCount: 0,
         ballistics: {
+            shrapnel: false,
             damage: 0,
             obstacleMultiplier: 0,
             speed: 0,
-            range: 0,
-            shrapnel: false
+            range: 0
         },
         sound: "smoke_grenade",
         decal: "smoke_explosion_decal"
@@ -488,6 +501,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         },
         shrapnelCount: 0,
         ballistics: {
+            shrapnel: true,
             damage: 15,
             obstacleMultiplier: 1,
             speed: 0.08,
@@ -518,6 +532,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         sound: "pumpkin_bomb",
         shrapnelCount: 10,
         ballistics: {
+            shrapnel: true,
             damage: 2,
             obstacleMultiplier: 1,
             speed: 0.08,
@@ -525,10 +540,4 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
             rangeVariance: 1
         }
     }
-].map(def => ({
-    ...def,
-    ballistics: {
-        ...defaultBulletTemplate,
-        shrapnel: true
-    }
-})));
+]);
