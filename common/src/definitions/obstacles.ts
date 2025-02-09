@@ -3435,7 +3435,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     idString: "large_refinery_barrel",
                     name: "Large Refinery Barrel",
                     material: "metal_heavy",
-                    health: 3500,
+                    health: 2000,
                     scale: {
                         spawnMin: 1,
                         spawnMax: 1,
