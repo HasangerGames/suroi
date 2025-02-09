@@ -3512,6 +3512,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             gunMount(["stoner_63", "gun"]),
             gunMount(["mini14", "gun"]),
             gunMount(["hp18", "gun"]),
+            gunMount(["model_37", "gun"]),
+            gunMount(["sks", "gun"]),
             gunMount(["m590m", "gun"]),
             gunMount(["maul", "melee"], {
                 hitbox: new GroupHitbox(
