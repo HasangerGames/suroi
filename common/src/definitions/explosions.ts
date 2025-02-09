@@ -35,7 +35,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             {
                 name: "Barrel",
                 damage: 130,
-                obstacleMultiplier: 1,
+                obstacleMultiplier: 2,
                 radius: {
                     min: 8,
                     max: 25
@@ -116,7 +116,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             {
                 name: "Control Panel",
                 damage: 130,
-                obstacleMultiplier: 1.5,
+                obstacleMultiplier: 2,
                 radius: {
                     min: 8,
                     max: 25
@@ -143,7 +143,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             {
                 name: "Super Barrel",
                 damage: 160,
-                obstacleMultiplier: 1,
+                obstacleMultiplier: 2,
                 radius: {
                     min: 8,
                     max: 25
@@ -225,7 +225,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
                 idString: "propane_tank_explosion",
                 name: "Propane Tank",
                 damage: 80,
-                obstacleMultiplier: 1,
+                obstacleMultiplier: 2,
                 radius: {
                     min: 5,
                     max: 15
