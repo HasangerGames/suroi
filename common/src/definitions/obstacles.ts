@@ -2388,7 +2388,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     material: "iron",
                     reflectBullets: true,
                     hasLoot: true,
-                    health: 300,
+                    health: 200,
                     scale: {
                         spawnMin: 1,
                         spawnMax: 1,
