@@ -5,7 +5,7 @@ import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/defini
 import { MapPacket, type MapPacketData } from "@common/packets/mapPacket";
 import { PacketStream } from "@common/packets/packetStream";
 import { type Orientation, type Variation } from "@common/typings";
-import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { CircleHitbox, GroupHitbox, HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { equalLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
 import { type Mutable, type SMutable } from "@common/utils/misc";
@@ -371,11 +371,13 @@ export class GameMap {
                     const position = this.getRandomPosition(hitbox, {
                         getPosition: () => {
                             return river.getRandomPosition(
-                                definition.spawnMode === MapObjectSpawnMode.Trail
+                                definition.spawnMode === MapObjectSpawnMode.Trail,
+                                hitbox.type === HitboxType.Circle ? hitbox.radius : 0
                             );
                         },
                         spawnMode: definition.spawnMode,
-                        ignoreClearings: true
+                        ignoreClearings: true,
+                        river
                     });
 
                     if (position) {
@@ -859,6 +861,7 @@ export class GameMap {
             // so it can retry on different orientations
             orientationConsumer?: (orientation: Orientation) => void
             ignoreClearings?: boolean
+            river?: River
         }
     ): Vector | undefined {
         let position: Vector | undefined = Vec.create(0, 0);
@@ -873,6 +876,8 @@ export class GameMap {
         };
 
         const spawnMode = params?.spawnMode ?? MapObjectSpawnMode.Grass;
+
+        let river = params?.river;
 
         const getPosition = params?.getPosition ?? (() => {
             switch (spawnMode) {
@@ -895,7 +900,13 @@ export class GameMap {
                 // TODO: evenly distribute objects based on river size
                 case MapObjectSpawnMode.River: {
                     // rivers that aren't trails must have a waterHitbox
-                    return () => pickRandomInArray(this.terrain.rivers.filter(({ isTrail }) => !isTrail))?.getRandomPosition();
+                    return () => {
+                        river ??= pickRandomInArray(this.terrain.rivers.filter(({ isTrail }) => !isTrail));
+                        return river.getRandomPosition(
+                            false,
+                            initialHitbox.type === HitboxType.Circle ? initialHitbox.radius : 0
+                        );
+                    };
                 }
                 case MapObjectSpawnMode.Beach: {
                     return () => {
@@ -923,7 +934,13 @@ export class GameMap {
                     };
                 }
                 case MapObjectSpawnMode.Trail: {
-                    return () => pickRandomInArray(this.terrain.rivers.filter(({ isTrail }) => isTrail)).getRandomPosition(true);
+                    return () => {
+                        river ??= pickRandomInArray(this.terrain.rivers.filter(({ isTrail }) => isTrail));
+                        return river.getRandomPosition(
+                            true,
+                            initialHitbox.type === HitboxType.Circle ? initialHitbox.radius : 0
+                        );
+                    };
                 }
             }
         })();
@@ -1028,11 +1045,9 @@ export class GameMap {
                     }
 
                     for (const point of points) {
-                        for (const river of this.terrain.getRiversInHitbox(hitbox, true)) {
-                            if (!river.waterHitbox?.isPointInside(point)) {
-                                collided = true;
-                                break;
-                            }
+                        if (!river?.waterHitbox?.isPointInside(point)) {
+                            collided = true;
+                            break;
                         }
                         if (collided) break;
                     }
