@@ -1,6 +1,6 @@
-import { ObjectCategory } from "../constants";
+import { ObjectCategory, RotationMode } from "../constants";
 import { Buildings } from "../definitions/buildings";
-import { Obstacles, RotationMode } from "../definitions/obstacles";
+import { Obstacles } from "../definitions/obstacles";
 import { type Orientation, type Variation } from "../typings";
 import type { CommonGameObject } from "../utils/gameObject";
 import { Angle, halfπ } from "../utils/math";
@@ -55,7 +55,7 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
                         let obstacleData = 0;
                         if (object.definition.variations !== undefined && object.variation !== undefined) {
                             // again, we'll make variation take up the MSB
-                            obstacleData = object.variation << (8 - object.definition.variationBits);
+                            obstacleData = object.variation << (8 - object.definition.variationBits!);
                         }
 
                         switch (object.definition.rotationMode) {
@@ -121,7 +121,7 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
 
                         let variation: Variation | undefined;
                         if (definition.variations !== undefined) {
-                            const bits = 8 - definition.variationBits;
+                            const bits = 8 - definition.variationBits!;
                             variation = ((obstacleData & (0xFF - (2 ** bits - 1)))) >> bits as Variation;
                             //                           ^^^^^^^^^^^^^^^^^^^^^^^^ mask the most significant bits
                         }

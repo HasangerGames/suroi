@@ -29,7 +29,7 @@ export type SyncedParticleDefinition = ObjectDefinition & {
     readonly variations?: undefined
     readonly variationBits?: never
 } | {
-    readonly variations: Variation
+    readonly variations: Exclude<Variation, 0>
     readonly variationBits: number // TODO Auto generate this property if synced particles w/ variations are added
 }) & ({
     readonly hitbox?: undefined

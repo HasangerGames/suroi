@@ -7,8 +7,8 @@ import { Throwables } from "./items/throwables";
 
 // TODO remove me when refactoring killfeed stuff
 export const Weapons = new ObjectDefinitions<KillDamageSources>([
-    ...Guns.definitions,
-    ...Melees.definitions,
-    ...Throwables.definitions,
-    ...Explosions.definitions
+    ...Guns,
+    ...Melees,
+    ...Throwables,
+    ...Explosions
 ]);

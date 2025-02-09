@@ -9,7 +9,7 @@ import { type MeleeDefinition, Melees } from "../definitions/items/melees";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions/obstacles";
 import { Skins, type SkinDefinition } from "../definitions/items/skins";
 import { SyncedParticles, type SyncedParticleDefinition } from "../definitions/syncedParticles";
-import { type ThrowableDefinition } from "../definitions/items/throwables";
+import { type ThrowableDefinition } from "../definitions/throwables";
 import { type Orientation, type Variation } from "../typings";
 import { Angle, halfπ } from "./math";
 import { type Mutable, type SDeepMutable } from "./misc";
@@ -394,7 +394,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 // variation being undefined is equivalent to it being 0
 
                 // make the variation stuff take up the MSBs, leaving the LSBs for the other stuff
-                obstacleData += variation << (8 - definition.variationBits);
+                obstacleData += variation << (8 - definition.variationBits!);
                 /*
                     for example, variation = 3, variationBits = 3
                     we then have 0110 0000
@@ -526,7 +526,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             */
             const obstacleData = stream.readUint8();
             if (definition.variations !== undefined) {
-                const bits = 8 - definition.variationBits;
+                const bits = 8 - definition.variationBits!;
                 data.variation = (obstacleData & (0xFF - (2 ** bits - 1))) >> bits as Variation;
                 //                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ mask the most significant bits
             }

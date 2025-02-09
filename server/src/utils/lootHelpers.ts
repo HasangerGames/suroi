@@ -180,7 +180,7 @@ export function getSpawnableLoots(mode: Mode, mapDef: MapDefinition, cache: Cach
                 const b = Buildings.fromString(building);
 
                 // for each subbuilding, we either take it as-is, or take all possible spawn options
-                return b.subBuildings.map(
+                return (b.subBuildings ?? []).map(
                     ({ idString }) => referenceOrRandomOptions(idString).map(s => Buildings.fromString(s))
                 ).concat([b]);
             }).flat(2)
@@ -212,7 +212,7 @@ export function getSpawnableLoots(mode: Mode, mapDef: MapDefinition, cache: Cach
                 )
             ).concat(
                 reachableBuildings.map(
-                    ({ lootSpawners }) => lootSpawners.map(({ table }) => resolveTable(mode, table))
+                    ({ lootSpawners }) => lootSpawners ? lootSpawners.map(({ table }) => resolveTable(mode, table)) : []
                 ).flat()
             )
         )

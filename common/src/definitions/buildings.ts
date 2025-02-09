@@ -7031,5 +7031,4 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         { idString: "box", position: Vec.create(-19.11, -1.56), outdoors: true },
         { idString: "propane_tank", position: Vec.create(-18.6, 3.13), outdoors: true }
     ])
-] as BuildingDefinition[]); // TODO remove cast
-console.log(Buildings.definitions.length);
+]);

@@ -96,11 +96,11 @@ export type ObstacleDefinition = ObjectDefinition & {
         readonly falloff?: number
     }
 } & (
-    | DoorMixin
-    | StairMixin
-    | ActivatableMixin
-    | { readonly isWindow?: boolean }
-    | { readonly isWall?: boolean }
+    & DoorMixin
+    & StairMixin
+    & ActivatableMixin
+    & { readonly isWindow?: boolean }
+    & { readonly isWall?: boolean }
 );
 
 type DoorMixin = ({
@@ -678,7 +678,7 @@ const rshCase = (idString: string): ObstacleDefinition => ({
 
 type RawObstacleDefinition = ObstacleDefinition & { readonly winterVariations?: Exclude<Variation, 0> };
 
-const obstacles: readonly RawObstacleDefinition[] = [
+export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "oak_tree",
         name: "Oak Tree",
@@ -4668,23 +4668,20 @@ const obstacles: readonly RawObstacleDefinition[] = [
     },
     rshCase("rsh_case_single"),
     rshCase("rsh_case_dual")
-];
-
-export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(obstacles.flatMap(o => {
-    const obj = o as Mutable<RawObstacleDefinition>;
-    if (o.variations !== undefined) obj.variationBits = Math.ceil(Math.log2(o.variations));
-    if (o.allowFlyover === undefined) obj.allowFlyover = FlyoverPref.Sometimes;
-    if (o.visibleFromLayers === undefined) obj.visibleFromLayers = Layers.Adjacent;
-    const winterVariations = o.winterVariations;
+] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
+    if (def.variations !== undefined) def.variationBits = Math.ceil(Math.log2(def.variations));
+    if (def.allowFlyover === undefined) def.allowFlyover = FlyoverPref.Sometimes;
+    if (def.visibleFromLayers === undefined) def.visibleFromLayers = Layers.Adjacent;
+    const winterVariations = def.winterVariations;
     return winterVariations
         ? [
-            o,
+            def,
             {
-                ...o,
-                idString: `${o.idString}_winter`,
+                ...def,
+                idString: `${def.idString}_winter`,
                 variations: winterVariations === 1 ? undefined : winterVariations,
                 winterVariations: undefined
             }
         ]
-        : o;
+        : def;
 }));

@@ -1,5 +1,4 @@
-import { Layer, ObjectCategory } from "@common/constants";
-import { FlyoverPref } from "@common/definitions/obstacles";
+import { FlyoverPref, Layer, ObjectCategory } from "@common/constants";
 import { PerkIds } from "@common/definitions/items/perks";
 import { type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { CircleHitbox, Hitbox, HitboxType, RectangleHitbox, type GroupHitbox } from "@common/utils/hitbox";

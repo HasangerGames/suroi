@@ -2473,7 +2473,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
     }
 ] satisfies readonly RawGunDefinition[]).flatMap((def: RawGunDefinition) => {
     if (def.dual === undefined) {
-        return [def];
+        return def;
     }
 
     const dualDef = mergeDeep(

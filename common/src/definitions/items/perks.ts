@@ -82,7 +82,7 @@ export const enum PerkIds {
     PriorityTarget = "priority_target"
 }
 
-const perks: RawPerkDefinition[] = [
+const perks = [
     //
     // Normal Perks
     //
@@ -431,7 +431,7 @@ const perks: RawPerkDefinition[] = [
         noDrop: true,
         plumpkinGambleIgnore: true
     }
-];
+] satisfies readonly RawPerkDefinition[];
 
 export const Perks = new ObjectDefinitions<PerkDefinition>(perks);
 export const PerkData = Perks.idStringToDef;
