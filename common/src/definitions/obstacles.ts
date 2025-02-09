@@ -3901,7 +3901,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 idString: "trash_can",
                 name: "Trash Can",
                 material: "appliance",
-                health: 90,
+                health: 60,
                 scale: {
                     spawnMin: 1,
                     spawnMax: 1,
