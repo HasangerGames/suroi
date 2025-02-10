@@ -3,8 +3,9 @@ import { Numeric } from "@common/utils/math";
 import type { AbstractConstructor, Constructor, PredicateFor } from "@common/utils/misc";
 import { ItemType, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type ItemData } from "../objects/loot";
-import { Player } from "../objects/player";
 import type { InventoryItem, WeaponItemType, WeaponItemTypeMap } from "./inventory";
+import { GameConstants } from "@common/constants";
+import { type Player } from "../objects/player";
 
 type PredicateForItem<Type extends WeaponItemType> = {
     readonly category: Type
@@ -45,7 +46,7 @@ export abstract class InventoryItemBase<Type extends WeaponItemType = WeaponItem
          */
         readonly owner: Player;
 
-        private readonly _modifiers = Player.defaultModifiers();
+        private readonly _modifiers = GameConstants.player.defaultModifiers();
 
         /**
          * Returns a clone
@@ -190,7 +191,7 @@ export abstract class InventoryItemBase<Type extends WeaponItemType = WeaponItem
             if (!wearerAttributes) return;
 
             const { active, passive, on } = wearerAttributes;
-            const newModifiers = Player.defaultModifiers();
+            const newModifiers = GameConstants.player.defaultModifiers();
 
             const applyModifiers = (modifiers: WearerAttributes): void => {
                 newModifiers.maxHealth *= modifiers.maxHealth ?? 1;

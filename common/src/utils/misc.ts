@@ -88,6 +88,8 @@ export type GetEnumMemberName<Enum extends Record<string | number, unknown>, Mem
     [K in keyof Enum]: Enum[K] extends Member ? K : never
 }[keyof Enum];
 
+export type ReadonlyRecord<K extends string | number | symbol, T> = Readonly<Record<K, T>>;
+
 /**
  * Represents a successful operation
  * @template Res The type of the successful operation's result
@@ -104,8 +106,6 @@ export type ResultErr<Err> = { err: Err };
  * @template Err The type of the failed operation's result
  */
 export type Result<Res, Err> = ResultRes<Res> | ResultErr<Err>;
-
-export type ReadonlyRecord<K extends string | number | symbol, T> = Readonly<Record<K, T>>;
 
 export function handleResult<Res>(result: Result<Res, unknown>, fallbackSupplier: () => Res): Res {
     return "err" in result ? fallbackSupplier() : result.res;

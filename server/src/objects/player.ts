@@ -1,20 +1,20 @@
 import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, Layer, ObjectCategory, PlayerActions, SpectateActions } from "@common/constants";
-import { Backpacks } from "@common/definitions/items/backpacks";
 import { type BadgeDefinition } from "@common/definitions/badges";
 import { Emotes, type EmoteDefinition } from "@common/definitions/emotes";
-import { Guns, type GunDefinition } from "@common/definitions/items/guns";
-import { HealingItems } from "@common/definitions/items/healingItems";
 import { Ammos } from "@common/definitions/items/ammos";
 import { Armors, ArmorType } from "@common/definitions/items/armors";
-import { Loots, type WeaponDefinition } from "@common/definitions/loots";
-import { type PlayerPing } from "@common/definitions/mapPings";
+import { Backpacks } from "@common/definitions/items/backpacks";
+import { Guns, type GunDefinition } from "@common/definitions/items/guns";
+import { HealingItems } from "@common/definitions/items/healingItems";
 import { Melees, type MeleeDefinition } from "@common/definitions/items/melees";
-import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { PerkCategories, PerkIds, Perks, type PerkDefinition } from "@common/definitions/items/perks";
 import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
 import { type SkinDefinition } from "@common/definitions/items/skins";
-import { SyncedParticles, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { Throwables, type ThrowableDefinition } from "@common/definitions/items/throwables";
+import { Loots, type WeaponDefinition } from "@common/definitions/loots";
+import { type PlayerPing } from "@common/definitions/mapPings";
+import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { SyncedParticles, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { DisconnectPacket } from "@common/packets/disconnectPacket";
 import { GameOverData, GameOverPacket, TeammateGameOverData } from "@common/packets/gameOverPacket";
 import { type NoMobile, type PlayerInputData } from "@common/packets/inputPacket";
@@ -24,6 +24,7 @@ import { PacketStream } from "@common/packets/packetStream";
 import { ReportPacket } from "@common/packets/reportPacket";
 import { type SpectatePacketData } from "@common/packets/spectatePacket";
 import { UpdatePacket, type PlayerData, type UpdatePacketDataCommon, type UpdatePacketDataIn } from "@common/packets/updatePacket";
+import { PlayerModifiers } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
 import { Collision, EaseFunctions, Geometry, Numeric } from "@common/utils/math";
@@ -67,19 +68,6 @@ export interface PlayerContainer {
     readonly nameColor?: number
     readonly lobbyClearing: boolean
     readonly weaponPreset: string
-}
-
-export interface PlayerModifiers {
-    // Multiplicative
-    maxHealth: number
-    maxAdrenaline: number
-    baseSpeed: number
-    size: number
-    adrenDrain: number
-
-    // Additive
-    minAdrenaline: number
-    hpRegen: number
 }
 
 export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
@@ -219,7 +207,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.setDirty();
     }
 
-    private _modifiers = Player.defaultModifiers();
+    private _modifiers = GameConstants.player.defaultModifiers();
 
     killedBy?: Player;
     downedBy?: {
@@ -1900,21 +1888,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
     }
 
-    static defaultModifiers(): PlayerModifiers {
-        return {
-            maxHealth: 1,
-            maxAdrenaline: 1,
-            baseSpeed: 1,
-            size: 1,
-            adrenDrain: 1,
-
-            minAdrenaline: 0,
-            hpRegen: 0
-        };
-    }
-
     private _calculateModifiers(): PlayerModifiers {
-        const newModifiers = Player.defaultModifiers();
+        const newModifiers = GameConstants.player.defaultModifiers();
         const eventMods: EventModifiers = {
             kill: [],
             damageDealt: []

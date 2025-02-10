@@ -1,9 +1,9 @@
 import { Ammos } from "./definitions/items/ammos";
 import { HealingItems } from "./definitions/items/healingItems";
-import { type Mode } from "./definitions/modes";
 import { Scopes } from "./definitions/items/scopes";
 import { Throwables } from "./definitions/items/throwables";
-import { freezeDeep } from "./utils/misc";
+import { type Mode } from "./definitions/modes";
+import { PlayerModifiers } from "./typings";
 import { ItemType } from "./utils/objectDefinitions";
 
 export const DEFAULT_INVENTORY: Record<string, number> = Object.create(null) as Record<string, number>;
@@ -25,7 +25,7 @@ export const itemKeys: readonly string[] = Object.keys(DEFAULT_INVENTORY);
 export const itemKeysLength = itemKeys.length;
 
 const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType.Melee, ItemType.Throwable] as const);
-export const GameConstants = freezeDeep({
+export const GameConstants = {
     // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
     // or a new item is added to a definition list
     protocolVersion: 48,
@@ -52,7 +52,17 @@ export const GameConstants = freezeDeep({
         maxPerkCount: 1,
         rateLimitPunishmentTrigger: 10,
         emotePunishmentTime: 5000, // ms
-        rateLimitInterval: 1000
+        rateLimitInterval: 1000,
+        defaultModifiers: (): PlayerModifiers => ({
+            maxHealth: 1,
+            maxAdrenaline: 1,
+            baseSpeed: 1,
+            size: 1,
+            adrenDrain: 1,
+
+            minAdrenaline: 0,
+            hpRegen: 0
+        })
     },
     gas: {
         damageScaleFactor: 0.005, // Extra damage, linear per distance unit into the gas
@@ -80,7 +90,7 @@ export const GameConstants = freezeDeep({
     riverPadding: 64,
     trailPadding: 384,
     explosionRayDistance: 2
-});
+} as const;
 
 export enum ZIndexes {
     Ground,
