@@ -2338,7 +2338,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
                 color: 0xFF8000,
                 saturatedColor: 0xF5B83D
             }
-        }/*,
+        }/* ,
         dual: {
             leftRightOffset: 1.3,
             capacity: 200,
@@ -2347,7 +2347,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
             shotSpread: 1,
             moveSpread: 8,
             reloadTime: 2.8
-        }*/
+        } */
         // justice for dual s_g17 when™
     },
     {

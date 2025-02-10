@@ -2953,7 +2953,7 @@ logger.indent("Validating obstacles", () => {
 
                     tester.runTestOnArray(
                         Object.keys(ObstacleSpecialRoles)
-                            // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+
                             .filter(k => Number.isNaN(+k)) as ReadonlyArray<keyof typeof ObstacleSpecialRoles & string>,
                         (key, errorPath) => {
                             const prop = `is${key}` as const;
@@ -3569,7 +3569,7 @@ logger.indent("Validating throwables", () => {
             });
 
             tester.assertNoPointlessValue({
-                obj: throwable as ThrowableDefinition & { readonly impactDamage: number },
+                obj: throwable,
                 field: "obstacleMultiplier",
                 defaultValue: 1,
                 baseErrorPath: errorPath

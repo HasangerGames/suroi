@@ -816,7 +816,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             && (source.itemType === ItemType.Ammo || source.itemType === ItemType.Healing)
             && !this.game.teamMode) return;
 
-        const indexOf = this.loadout.emotes.indexOf(source as EmoteDefinition);
+        const indexOf = this.loadout.emotes.indexOf(source);
         if (!isFromServer && (indexOf < 0 || indexOf > 3)) return;
 
         if (this.game.pluginManager.emit("player_will_emote", { player: this, emote: source })) return;

@@ -216,8 +216,6 @@ export class SuroiByteStream extends ByteStream {
     writePlayerName(name: string): this {
         const byteArray = ByteStream.encoder.encode(name);
 
-        // you fuckin stupid or something?
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         for (let i = 0; i < nameMaxLength; i++) {
             const val = byteArray[i] ?? 0;
             this.writeUint8(val);
@@ -242,7 +240,6 @@ export class SuroiByteStream extends ByteStream {
             }
 
             chars[i++] = c;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         } while (i < nameMaxLength);
 
         return ByteStream.decoder.decode(new Uint8Array(chars));

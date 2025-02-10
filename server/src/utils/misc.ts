@@ -21,8 +21,7 @@ export function modeFromMap(map: MapWithParams): Mode {
 
 export function cleanUsername(name?: string | null): string {
     if (
-        !name
-        || !name.length
+        !name?.length
         || name.length > GameConstants.player.nameMaxLength
         || Config.protection?.usernameFilters?.some((regex: RegExp) => regex.test(name))
         || /[^\x20-\x7E]/g.test(name) // extended ASCII chars
@@ -40,7 +39,7 @@ export function getRandomIDString<T extends ObjectDefinition>(ref: ReferenceOrRa
     const weights: number[] = [];
     for (const item in ref) {
         items.push(item);
-        weights.push(ref[item as ReferenceOrNull<T>] as number);
+        weights.push(ref[item as ReferenceOrNull<T>]!);
     }
     return weightedRandom(items, weights);
 }

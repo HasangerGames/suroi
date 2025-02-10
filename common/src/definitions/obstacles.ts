@@ -354,7 +354,7 @@ const houseWall = (
 
 const hqWall = (lengthNumber: number, hitbox: RectangleHitbox, customHealth = false): ObstacleDefinition => ({
     idString: `headquarters_wall_${lengthNumber}`,
-    name: `Headquarters Wall`,
+    name: "Headquarters Wall",
     material: "wood",
     hideOnMap: true,
     noResidue: true,
@@ -1832,7 +1832,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     // river hut
     houseWall(
         20, RectangleHitbox.fromRect(32.7, 2),
-        { color: 0x736758, border: 0x383127, particle: "river_hut_wall_particle" },
+        { color: 0x736758, border: 0x383127, particle: "river_hut_wall_particle" }
     ),
     houseWall(
         21, RectangleHitbox.fromRect(23.15, 2),
