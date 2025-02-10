@@ -121,7 +121,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             [
                 { item: "4x_scope", weight: 1 },
                 { item: "8x_scope", weight: 0.1 },
-                { item: "15x_scope", weight: 0.0025 }
+                { item: "16x_scope", weight: 0.0025 }
             ],
             [
                 { item: "tango_51", weight: 60 },
@@ -561,7 +561,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "2x_scope", weight: 1 },
             { item: "4x_scope", weight: 0.5 },
             { item: "8x_scope", weight: 0.1 },
-            { item: "15x_scope", weight: 0.00025 }
+            { item: "16x_scope", weight: 0.00025 }
         ],
         equipment: [
             { item: "basic_helmet", weight: 1 },
@@ -634,7 +634,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "2x_scope", weight: 1 },
             { item: "4x_scope", weight: 0.45 },
             { item: "8x_scope", weight: 0.1 },
-            { item: "15x_scope", weight: 0.005 }
+            { item: "16x_scope", weight: 0.005 }
         ],
         special_equipment: [
             { item: "basic_helmet", weight: 1 },
@@ -663,7 +663,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
         airdrop_scopes: [
             { item: "4x_scope", weight: 1 },
             { item: "8x_scope", weight: 0.5 },
-            { item: "15x_scope", weight: 0.0025 }
+            { item: "16x_scope", weight: 0.0025 }
         ],
         airdrop_healing_items: [
             { item: "gauze", count: 5, weight: 1.5 },
@@ -1086,7 +1086,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
         ],
         airdrop_scopes: [
             { item: "8x_scope", weight: 1 },
-            { item: "15x_scope", weight: 0.005 }
+            { item: "16x_scope", weight: 0.005 }
         ],
         airdrop_melee: [
             { item: NullString, weight: 1 },
@@ -1188,12 +1188,12 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
         scopes: [
             { item: "4x_scope", weight: 1 },
             { item: "8x_scope", weight: 0.1 },
-            { item: "15x_scope", weight: 0.00025 }
+            { item: "16x_scope", weight: 0.00025 }
         ],
         special_scopes: [
             { item: "4x_scope", weight: 1 },
             { item: "8x_scope", weight: 0.2 },
-            { item: "15x_scope", weight: 0.0005 }
+            { item: "16x_scope", weight: 0.0005 }
         ],
         melee: [
             { item: "hatchet", weight: 3 },
@@ -1444,7 +1444,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
         ],
         airdrop_scopes: [
             { item: "8x_scope", weight: 1 },
-            { item: "15x_scope", weight: 0.005 }
+            { item: "16x_scope", weight: 0.005 }
         ],
         airdrop_melee: [
             { item: NullString, weight: 1 },
@@ -1548,12 +1548,12 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
         scopes: [
             { item: "4x_scope", weight: 1 },
             { item: "8x_scope", weight: 0.1 },
-            { item: "15x_scope", weight: 0.00025 }
+            { item: "16x_scope", weight: 0.00025 }
         ],
         special_scopes: [
             { item: "4x_scope", weight: 1 },
             { item: "8x_scope", weight: 0.2 },
-            { item: "15x_scope", weight: 0.0005 }
+            { item: "16x_scope", weight: 0.0005 }
         ],
         melee: [
             { item: "hatchet", weight: 3 },

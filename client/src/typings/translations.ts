@@ -256,7 +256,7 @@ export type TranslationKeys="msg_rotate"|
 "2x_scope"|
 "4x_scope"|
 "8x_scope"|
-"15x_scope"|
+"16x_scope"|
 "m16a4"|
 "dual_template"|
 "region_dev"|

@@ -130,7 +130,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.game.updateKillLeader(this);
     }
 
-    private _maxHealth = GameConstants.player.defaultHealth;
+    private _maxHealth = GameConstants.player.defaultHealth as number;
     get maxHealth(): number { return this._maxHealth; }
     set maxHealth(maxHealth: number) {
         if (this._maxHealth !== maxHealth) {
@@ -262,7 +262,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     /**
      * The distance from the player position to the player mouse in game units
      */
-    distanceToMouse = GameConstants.player.maxMouseDist;
+    distanceToMouse = GameConstants.player.maxMouseDist as number;
 
     /**
      * Keeps track of various fields which are "dirty"
@@ -434,7 +434,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._team?.setDirty();
     }
 
-    baseSpeed = GameConstants.player.baseSpeed;
+    baseSpeed = GameConstants.player.baseSpeed as number;
 
     private _movementVector = Vec.create(0, 0);
     get movementVector(): Vector { return Vec.clone(this._movementVector); }
@@ -732,7 +732,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         items.setItem("2x_scope", 1);
         items.setItem("4x_scope", 1);
         items.setItem("8x_scope", 1);
-        items.setItem("15x_scope", 1);
+        items.setItem("16x_scope", 1);
 
         Throwables.definitions.forEach(({ idString }) => this.giveThrowable(idString));
 
