@@ -18,6 +18,7 @@ vite.config.ts.timestamp-*
 .vscode
 *.kate-swp
 .history
+.fleet/
 
 # node-gyp sometimes does this
 build/
