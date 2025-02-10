@@ -96,10 +96,12 @@ export const NullString = Symbol("null idString");
  */
 export type ReferenceTo<T extends ObjectDefinition> = T["idString"];
 
+export type ReferenceOrNull<T extends ObjectDefinition> = ReferenceTo<T> | typeof NullString;
+
 /**
  * Either a normal reference or an object whose keys are random options and whose values are corresponding weights
  */
-export type ReferenceOrRandom<T extends ObjectDefinition> = Partial<Record<ReferenceTo<T> | typeof NullString, number>> | ReferenceTo<T>;
+export type ReferenceOrRandom<T extends ObjectDefinition> = Partial<Record<ReferenceOrNull<T>, number>> | ReferenceTo<T>;
 
 /**
  * Either a definition or an idString referencing a definition

@@ -1,23 +1,16 @@
-import { Constants, Derived, ObjectCategory, type Layer } from "../constants";
-import { RotationMode } from "../definitions/obstacles";
+import { GameConstants, ObjectCategory, RotationMode, type Layer } from "../constants";
 import { type Orientation } from "../typings";
 import { ByteStream } from "./byteStream";
 import { Angle, halfπ } from "./math";
 import { type Vector } from "./vector";
 
 export const calculateEnumPacketBits = (enumeration: Record<string | number, string | number>): number => Math.ceil(Math.log2(Object.keys(enumeration).length / 2));
-
-// #region pre-flight checks
 if (calculateEnumPacketBits(ObjectCategory) > 8) {
     throw new RangeError("FATAL: ObjectCategory enum contains too many keys for a single byte. Please update code accordingly");
 }
 
-// shut the fuck up
-// eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
-if (Constants.PLAYER_NAME_MAX_LENGTH <= 0) {
-    throw new RangeError("FATAL: Player name max. length must be greater than 0");
-}
-// #endregion pre-flight checks
+const { maxPosition, objectMinScale, objectMaxScale, player: { nameMaxLength } } = GameConstants;
+const objectScaleRange = objectMaxScale - objectMinScale;
 
 export class SuroiByteStream extends ByteStream {
     /**
@@ -96,8 +89,8 @@ export class SuroiByteStream extends ByteStream {
      * Impl. note: inlined and optimized version of the expression: `vector => writeVector(vector, 0, GameConstants.maxPosition, 0, GameConstants.maxPosition, 2)`
      */
     writePosition(vector: Vector): this {
-        this.writeUint16((vector.x / Constants.MAX_POSITION) * 65535 + 0.5);
-        this.writeUint16((vector.y / Constants.MAX_POSITION) * 65535 + 0.5);
+        this.writeUint16((vector.x / maxPosition) * 65535 + 0.5);
+        this.writeUint16((vector.y / maxPosition) * 65535 + 0.5);
         return this;
     }
 
@@ -108,8 +101,8 @@ export class SuroiByteStream extends ByteStream {
      */
     readPosition(): Vector {
         return {
-            x: Constants.MAX_POSITION * this.readUint16() / 65535,
-            y: Constants.MAX_POSITION * this.readUint16() / 65535
+            x: maxPosition * this.readUint16() / 65535,
+            y: maxPosition * this.readUint16() / 65535
         };
     }
 
@@ -187,7 +180,7 @@ export class SuroiByteStream extends ByteStream {
     writeScale(scale: number): this {
         this.writeUint8(
             (
-                (scale - Constants.MIN_OBJECT_SCALE) / Derived.OBJECT_SCALE_DIFF
+                (scale - objectMinScale) / objectScaleRange
             ) * 255 + 0.5
         );
         return this;
@@ -200,7 +193,7 @@ export class SuroiByteStream extends ByteStream {
      * Impl. note: inlined and optimized version of the expression: `() => readFloat(MIN_OBJECT_SCALE, MAX_OBJECT_SCALE, 1)`
      */
     readScale(): number {
-        return Constants.MIN_OBJECT_SCALE + Derived.OBJECT_SCALE_DIFF * this.readUint8() / 255;
+        return objectMinScale + objectScaleRange * this.readUint8() / 255;
     }
 
     /**
@@ -225,7 +218,7 @@ export class SuroiByteStream extends ByteStream {
 
         // you fuckin stupid or something?
         // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
-        for (let i = 0; i < Constants.PLAYER_NAME_MAX_LENGTH; i++) {
+        for (let i = 0; i < nameMaxLength; i++) {
             const val = byteArray[i] ?? 0;
             this.writeUint8(val);
 
@@ -250,7 +243,7 @@ export class SuroiByteStream extends ByteStream {
 
             chars[i++] = c;
         // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
-        } while (i < Constants.PLAYER_NAME_MAX_LENGTH);
+        } while (i < nameMaxLength);
 
         return ByteStream.decoder.decode(new Uint8Array(chars));
     }

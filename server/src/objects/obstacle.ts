@@ -1,4 +1,4 @@
-import { ObjectCategory } from "@common/constants";
+import { ObjectCategory, RotationMode } from "@common/constants";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { PerkIds } from "@common/definitions/items/perks";
 import { type Orientation, type Variation } from "@common/typings";
@@ -340,10 +340,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                     this.collidable = false;
                     this.setDirty();
 
-                    const idString = getRandomIDString<
-                        ObstacleDefinition,
-                        ReferenceTo<ObstacleDefinition> | typeof NullString
-                    >(replaceWith.idString);
+                    const idString = getRandomIDString<ObstacleDefinition>(replaceWith.idString);
                     if (idString === NullString) {
                         return;
                     }

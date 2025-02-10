@@ -6,21 +6,6 @@ import { Throwables } from "./definitions/items/throwables";
 import { freezeDeep } from "./utils/misc";
 import { ItemType } from "./utils/objectDefinitions";
 
-export const enum Constants {
-    MAX_POSITION = 1924,
-    MIN_OBJECT_SCALE = 0.15,
-    MAX_OBJECT_SCALE = 3,
-    PLAYER_NAME_MAX_LENGTH = 16
-}
-
-/* eslint-disable @typescript-eslint/prefer-literal-enum-member */
-// the point of "derived" is to have them not be hardcoded
-
-export const enum Derived {
-    OBJECT_SCALE_DIFF = Constants.MAX_OBJECT_SCALE - Constants.MIN_OBJECT_SCALE,
-    DOUBLE_MAX_POS = 2 * Constants.MAX_POSITION
-}
-
 export const DEFAULT_INVENTORY: Record<string, number> = Object.create(null) as Record<string, number>;
 
 for (const item of [...HealingItems, ...Ammos, ...Scopes, ...Throwables]) {
@@ -45,7 +30,9 @@ export const GameConstants = freezeDeep({
     // or a new item is added to a definition list
     protocolVersion: 48,
     gridSize: 32,
-    maxPosition: Constants.MAX_POSITION,
+    maxPosition: 1924,
+    objectMinScale: 0.15,
+    objectMaxScale: 3,
     defaultMode: "normal" satisfies Mode as Mode,
     player: {
         radius: 2.25,
@@ -54,7 +41,7 @@ export const GameConstants = freezeDeep({
         maxAdrenaline: 100,
         inventorySlotTypings,
         maxWeapons: inventorySlotTypings.length,
-        nameMaxLength: Constants.PLAYER_NAME_MAX_LENGTH,
+        nameMaxLength: 16,
         defaultName: "Player",
         defaultSkin: "hazel_jumpsuit",
         killLeaderMinKills: 3,
@@ -71,7 +58,19 @@ export const GameConstants = freezeDeep({
         damageScaleFactor: 0.005, // Extra damage, linear per distance unit into the gas
         unscaledDamageDist: 12 // Don't scale damage for a certain distance into the gas
     },
-    lootSpawnDistance: 0.7,
+    lootSpawnMaxJitter: 0.7,
+    lootRadius: {
+        [ItemType.Gun]: 3.4,
+        [ItemType.Ammo]: 2,
+        [ItemType.Melee]: 3,
+        [ItemType.Throwable]: 3,
+        [ItemType.Healing]: 2.5,
+        [ItemType.Armor]: 3,
+        [ItemType.Backpack]: 3,
+        [ItemType.Scope]: 3,
+        [ItemType.Skin]: 3,
+        [ItemType.Perk]: 3
+    } satisfies Record<ItemType, number>,
     airdrop: {
         fallTime: 8000,
         flyTime: 30000,

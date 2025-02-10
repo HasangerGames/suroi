@@ -1,7 +1,6 @@
-import { GameConstants, Layer, ObjectCategory } from "@common/constants";
+import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory, RotationMode } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
-import { ObstacleModeVariations } from "@common/definitions/modes";
-import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { MapPacket, type MapPacketData } from "@common/packets/mapPacket";
 import { PacketStream } from "@common/packets/packetStream";
 import { type Orientation, type Variation } from "@common/typings";
@@ -9,7 +8,7 @@ import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "@common
 import { equalLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
 import { type Mutable, type SMutable } from "@common/utils/misc";
-import { MapObjectSpawnMode, NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
 import { River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -585,10 +584,7 @@ export class GameMap {
         const building = new Building(this.game, definition, Vec.clone(position), orientation, layer);
 
         for (const obstacleData of definition.obstacles ?? []) {
-            let idString = getRandomIDString<
-                ObstacleDefinition,
-                ReferenceTo<ObstacleDefinition> | typeof NullString
-            >(obstacleData.idString);
+            let idString = getRandomIDString<ObstacleDefinition>(obstacleData.idString);
             if (idString === NullString) continue;
             if (obstacleData.outdoors && this.game.mode.obstacleVariants) {
                 idString = `${idString}_${this.game.modeName}`;
@@ -632,7 +628,7 @@ export class GameMap {
             }
         }
 
-        for (const lootData of definition.lootSpawners) {
+        for (const lootData of definition.lootSpawners ?? []) {
             for (const item of getLootFromTable(this.game.modeName, lootData.table)) {
                 this.game.addLoot(
                     item.idString,
@@ -644,10 +640,7 @@ export class GameMap {
         }
 
         for (const subBuilding of definition.subBuildings ?? []) {
-            const idString = getRandomIDString<
-                BuildingDefinition,
-                ReferenceTo<BuildingDefinition> | typeof NullString
-            >(subBuilding.idString);
+            const idString = getRandomIDString<BuildingDefinition>(subBuilding.idString);
 
             if (idString === NullString) continue;
 

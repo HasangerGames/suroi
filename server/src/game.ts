@@ -1,4 +1,4 @@
-import { GameConstants, KillfeedMessageType, Layer, ObjectCategory, TeamSize } from "@common/constants";
+import { GameConstants, KillfeedMessageType, Layer, MapObjectSpawnMode, ObjectCategory, TeamSize } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
@@ -16,7 +16,7 @@ import { type PingSerialization } from "@common/packets/updatePacket";
 import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric, Statistics } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
-import { ItemType, MapObjectSpawnMode, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "@common/utils/random";
 import { type SuroiByteStream } from "@common/utils/suroiByteStream";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -922,7 +922,7 @@ export class Game implements GameData {
             jitterSpawn
                 ? Vec.add(
                     position,
-                    randomPointInsideCircle(Vec.create(0, 0), GameConstants.lootSpawnDistance)
+                    randomPointInsideCircle(Vec.create(0, 0), GameConstants.lootSpawnMaxJitter)
                 )
                 : position,
             layer,

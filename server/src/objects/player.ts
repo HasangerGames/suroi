@@ -10,7 +10,7 @@ import { Loots, type WeaponDefinition } from "@common/definitions/loots";
 import { type PlayerPing } from "@common/definitions/mapPings";
 import { Melees, type MeleeDefinition } from "@common/definitions/items/melees";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { PerkCategories, PerkIds, Perks, type PerkDefinition, type PerkNames } from "@common/definitions/items/perks";
+import { PerkCategories, PerkIds, Perks, type PerkDefinition } from "@common/definitions/items/perks";
 import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
 import { type SkinDefinition } from "@common/definitions/items/skins";
 import { SyncedParticles, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
@@ -1548,25 +1548,25 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._action.dirty = false;
     }
 
-    hasPerk(perk: PerkNames | PerkDefinition): boolean {
+    hasPerk(perk: PerkIds | PerkDefinition): boolean {
         return this.perks.hasItem(perk);
     }
 
-    ifPerkPresent<Name extends PerkNames>(
+    ifPerkPresent<Name extends PerkIds>(
         perk: Name | PerkDefinition & { readonly idString: Name },
         cb: (data: PerkDefinition & { readonly idString: Name }) => void
     ): void {
         return this.perks.ifPresent<Name>(perk, cb);
     }
 
-    mapPerk<Name extends PerkNames, U>(
+    mapPerk<Name extends PerkIds, U>(
         perk: Name | PerkDefinition & { readonly idString: Name },
         mapper: (data: PerkDefinition & { readonly idString: Name }) => U
     ): U | undefined {
         return this.perks.map<Name, U>(perk, mapper);
     }
 
-    mapPerkOrDefault<Name extends PerkNames, U>(
+    mapPerkOrDefault<Name extends PerkIds, U>(
         perk: Name | PerkDefinition & { readonly idString: Name },
         mapper: (data: PerkDefinition & { readonly idString: Name }) => U,
         defaultValue: U

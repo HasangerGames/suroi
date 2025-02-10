@@ -1,7 +1,6 @@
 import { type ObstacleDefinition } from "../definitions/obstacles";
 import { type Orientation } from "../typings";
 import { RectangleHitbox } from "./hitbox";
-import { ObstacleSpecialRoles } from "./objectDefinitions";
 import { Vec, type Vector } from "./vector";
 
 export const π = Math.PI;

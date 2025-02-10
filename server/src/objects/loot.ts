@@ -7,7 +7,7 @@ import { PickupPacket } from "@common/packets/pickupPacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Collision, Geometry, Numeric } from "@common/utils/math";
-import { ItemType, LootRadius, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { randomRotation } from "@common/utils/random";
 import { FloorNames } from "@common/utils/terrain";
@@ -71,7 +71,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         this.definition = Loots.reify(basis);
         this.itemData = data;
 
-        this.hitbox = new CircleHitbox(LootRadius[this.definition.itemType], Vec.clone(position));
+        this.hitbox = new CircleHitbox(GameConstants.lootRadius[this.definition.itemType], Vec.clone(position));
         this.layer = layer;
 
         if ((this._count = count ?? 1) <= 0) {

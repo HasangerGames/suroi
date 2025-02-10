@@ -1,14 +1,14 @@
-import { GameConstants, Layer } from "@common/constants";
+import { GameConstants, Layer, MapObjectSpawnMode, RotationMode } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Guns } from "@common/definitions/items/guns";
 import { Loots } from "@common/definitions/loots";
 import { Mode } from "@common/definitions/modes";
-import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { PerkCategories } from "@common/definitions/items/perks";
 import { Orientation, type Variation } from "@common/typings";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Collision } from "@common/utils/math";
-import { ItemType, MapObjectSpawnMode, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type WebSocket } from "uWebSockets.js";

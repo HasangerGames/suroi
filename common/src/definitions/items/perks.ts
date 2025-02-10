@@ -1,12 +1,7 @@
-import { ItemType, ObjectDefinitions, type ItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
+import { ItemType, ObjectDefinitions, type ItemDefinition } from "../../utils/objectDefinitions";
+import { FloorTypes } from "../../utils/terrain";
 
-export const enum PerkQualities {
-    Positive = "positive",
-    Neutral = "neutral",
-    Negative = "negative"
-}
-
-export interface BasicPerk extends ItemDefinition {
+interface BasePerkDefinition extends ItemDefinition {
     readonly itemType: ItemType.Perk
     readonly description: string
     readonly category: PerkCategories
@@ -17,13 +12,13 @@ export interface BasicPerk extends ItemDefinition {
     readonly plumpkinGambleIgnore?: boolean
 }
 
-// allows perk definitions to have any properties in addition to those in BasicPerk
-interface RawPerkDefinition extends BasicPerk {
+interface RawPerkDefinition extends BasePerkDefinition {
+    // allows perk definitions to have any properties in addition to those in RawPerkDefinition
     [x: string | number | symbol]: unknown
 }
 
 /**
- * As the name implies, loosens numeric literal type to be `number`
+ * As the name implies, loosens numeric literal type (e.g. 1.2) to be `number`
  */
 type LoosenNumerics<T> = T extends object
     ? {
@@ -37,13 +32,17 @@ type LoosenNumerics<T> = T extends object
             : T
     );
 
-export type PerkDefinition = LoosenNumerics<(typeof perks)[number]> & BasicPerk;
-
-export type PerkNames = ReferenceTo<PerkDefinition>;
+export type PerkDefinition = LoosenNumerics<typeof perks[number]> & BasePerkDefinition;
 
 export const enum PerkCategories {
     Normal,
     Halloween
+}
+
+export const enum PerkQualities {
+    Positive = "positive",
+    Neutral = "neutral",
+    Negative = "negative"
 }
 
 export const enum PerkIds {
@@ -148,7 +147,7 @@ const perks = [
         category: PerkCategories.Normal,
 
         // all multiplicative
-        waterSpeedMod: (1 / 0.7) * 1.3,
+        waterSpeedMod: (1 / (FloorTypes.water.speedMultiplier ?? 1)) * 1.3,
         smokeSpeedMod: 1.3
     },
     {
@@ -431,7 +430,7 @@ const perks = [
         noDrop: true,
         plumpkinGambleIgnore: true
     }
-] satisfies readonly RawPerkDefinition[];
+] as const satisfies readonly RawPerkDefinition[];
 
 export const Perks = new ObjectDefinitions<PerkDefinition>(perks);
-export const PerkData = Perks.idStringToDef;
+export const PerkData = Perks.idStringToDef as { [K in PerkIds]: Extract<PerkDefinition, { idString: K }> };

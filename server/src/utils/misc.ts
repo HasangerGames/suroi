@@ -1,10 +1,10 @@
-import { Constants, GameConstants } from "@common/constants";
+import { GameConstants } from "@common/constants";
+import { Mode, Modes } from "@common/definitions/modes";
 import { halfπ, τ } from "@common/utils/math";
-import { NullString, type ObjectDefinition, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { ReferenceOrNull, ReferenceOrRandom, type ObjectDefinition, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { weightedRandom } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Config, MapWithParams } from "../config";
-import { Mode, Modes } from "@common/definitions/modes";
 import { MapName, Maps } from "../data/maps";
 
 export function modeFromMap(map: MapWithParams): Mode {
@@ -20,29 +20,27 @@ export function modeFromMap(map: MapWithParams): Mode {
 }
 
 export function cleanUsername(name?: string | null): string {
-    return (
-        !name?.length
-        // this rule is stupid
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
-        || name.length > Constants.PLAYER_NAME_MAX_LENGTH
+    if (
+        !name
+        || !name.length
+        || name.length > GameConstants.player.nameMaxLength
         || Config.protection?.usernameFilters?.some((regex: RegExp) => regex.test(name))
         || /[^\x20-\x7E]/g.test(name) // extended ASCII chars
-    )
-        ? GameConstants.player.defaultName
-        : name;
+    ) {
+        return GameConstants.player.defaultName;
+    } else {
+        return name;
+    }
 }
 
-export function getRandomIDString<
-    T extends ObjectDefinition,
-    Ref extends ReferenceTo<T> | typeof NullString
->(table: Record<Ref, number> | Ref): Ref {
-    if (typeof table !== "object") return table;
+export function getRandomIDString<T extends ObjectDefinition>(ref: ReferenceOrRandom<T>): ReferenceOrNull<T> {
+    if (typeof ref === "string") return ref;
 
-    const items: Ref[] = [];
+    const items: Array<ReferenceOrNull<T>> = [];
     const weights: number[] = [];
-    for (const item in table) {
+    for (const item in ref) {
         items.push(item);
-        weights.push(table[item]);
+        weights.push(ref[item as ReferenceOrNull<T>] as number);
     }
     return weightedRandom(items, weights);
 }
