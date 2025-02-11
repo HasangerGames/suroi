@@ -55,7 +55,7 @@ import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject
 import { type Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { type SyncedParticle } from "./syncedParticle";
-import { type ThrowableProjectile } from "./throwableProj";
+import { Projectile } from "./projectile";
 
 export interface PlayerContainer {
     readonly teamID?: string
@@ -446,7 +446,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     private readonly _mapPings: Game["mapPings"] = [];
 
-    c4s: ThrowableProjectile[] = [];
+    c4s = new Set<Projectile>();
 
     backEquippedMelee?: MeleeDefinition;
 
@@ -1442,7 +1442,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             ),
             ...(
                 player.dirty.activeC4s || forceInclude
-                    ? { activeC4s: this.c4s.length > 0 }
+                    ? { activeC4s: this.c4s.size > 0 }
                     : {}
             ),
             ...(
@@ -2646,9 +2646,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     break;
                 case InputActions.ExplodeC4:
                     for (const c4 of this.c4s) {
-                        c4.detonate(750);
+                        c4.activateC4();
                     }
-                    this.c4s.length = 0;
+                    this.c4s.clear();
                     this.dirty.activeC4s = true;
                     break;
             }

@@ -848,16 +848,17 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     Vec.rotate(toPixiCoords(def.animation.cook.rightFist), this.rotation)
                 );
 
-                const range = def.c4
-                    ? 0
-                    : Numeric.min(
-                        this.game.inputManager.distanceToMouse * 0.9, // <- this constant is defined server-side
-                        (def.maxThrowDistance ?? 128) * PerkData[PerkIds.DemoExpert].rangeMod
-                    );
+                const range = Numeric.min(
+                    this.game.inputManager.distanceToMouse,
+                    def.physics.maxThrowDistance * PerkData[PerkIds.DemoExpert].rangeMod
+                );
 
                 const cookMod = def.cookable ? Date.now() - this.animationChangeTime : 0;
-                const drag = 0.001; // defined server-side
-                const physDist = (range / (985 * drag)) * (1 - Math.exp(-drag * (def.fuseTime - cookMod))); // also defined server-side
+                const drag = GameConstants.projectiles.drag.air;
+
+                let cookDrag = Numeric.max((def.fuseTime /* - cookMod */), 0) / 1000;
+
+                const physDist = range * (1 + cookDrag * drag) / 4;
 
                 const { x, y } = Vec.add(
                     pos,
@@ -1534,7 +1535,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                         (
                                             object.damageable
                                             && (object.isObstacle || object.isPlayer || object.isBuilding)
-                                        ) || (object.isThrowableProjectile && object.definition.c4)
+                                        ) || (object.isProjectile && object.definition.c4)
                                     )
                                     && object.hitbox?.collidesWith(hitbox)
                                     && adjacentOrEqualLayer(object.layer, this.layer)

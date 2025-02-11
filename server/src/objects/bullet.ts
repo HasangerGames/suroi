@@ -153,7 +153,7 @@ export class Bullet extends BaseBullet {
 
         for (const object of objects) {
             if (
-                object.isThrowableProjectile
+                object.isProjectile
                 && object.definition.health
                 && lineRect.collidesWith(object.hitbox)
             ) {

@@ -4,14 +4,15 @@ import { type AmmoDefinition } from "../definitions/items/ammos";
 import { type ArmorDefinition } from "../definitions/items/armors";
 import { type BackpackDefinition } from "../definitions/items/backpacks";
 import { type HealingItemDefinition } from "../definitions/items/healingItems";
+import { Loots } from "../definitions/loots";
+import { type MapPingDefinition, MapPings, type PlayerPing } from "../definitions/mapPings";
 import { type PerkDefinition } from "../definitions/items/perks";
 import { type ScopeDefinition } from "../definitions/items/scopes";
 import { type ThrowableDefinition } from "../definitions/items/throwables";
-import { Loots } from "../definitions/loots";
-import { MapPings, type MapPingDefinition, type PlayerPing } from "../definitions/mapPings";
 import { type DeepMutable, type SDeepMutable } from "../utils/misc";
 import { type Vector } from "../utils/vector";
 import { createPacket, type InputPacket } from "./packet";
+import { Numeric } from "../utils/math";
 
 /**
  * {@linkcode InputAction}s requiring no additional parameter
@@ -118,7 +119,12 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
             if (turning) {
                 stream.writeRotation2(data.rotation);
                 if (!isMobile) {
-                    stream.writeFloat(data.distanceToMouse, 0, GameConstants.player.maxMouseDist, 2);
+                    stream.writeFloat(
+                        Numeric.clamp(data.distanceToMouse, 0, GameConstants.player.maxMouseDist),
+                        0,
+                        GameConstants.player.maxMouseDist,
+                        2
+                    );
                 }
             }
 

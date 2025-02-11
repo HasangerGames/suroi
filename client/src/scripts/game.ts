@@ -50,7 +50,6 @@ import { ParticleManager } from "./objects/particles";
 import { Plane } from "./objects/plane";
 import { Player } from "./objects/player";
 import { SyncedParticle } from "./objects/syncedParticle";
-import { ThrowableProjectile } from "./objects/throwableProj";
 import { Camera } from "./rendering/camera";
 import { Gas, GasRender } from "./rendering/gas";
 import { Minimap } from "./rendering/minimap";
@@ -63,6 +62,7 @@ import { DebugRenderer } from "./utils/debugRenderer";
 import { setUpNetGraph } from "./utils/graph/netGraph";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
+import { Projectile } from "./objects/projectile";
 
 /* eslint-disable @stylistic/indent */
 
@@ -74,7 +74,7 @@ type ObjectClassMapping = {
     readonly [ObjectCategory.Building]: typeof Building
     readonly [ObjectCategory.Decal]: typeof Decal
     readonly [ObjectCategory.Parachute]: typeof Parachute
-    readonly [ObjectCategory.ThrowableProjectile]: typeof ThrowableProjectile
+    readonly [ObjectCategory.Projectile]: typeof Projectile
     readonly [ObjectCategory.SyncedParticle]: typeof SyncedParticle
 };
 
@@ -88,7 +88,7 @@ const ObjectClassMapping: ObjectClassMapping = Object.freeze<{
     [ObjectCategory.Building]: Building,
     [ObjectCategory.Decal]: Decal,
     [ObjectCategory.Parachute]: Parachute,
-    [ObjectCategory.ThrowableProjectile]: ThrowableProjectile,
+    [ObjectCategory.Projectile]: Projectile,
     [ObjectCategory.SyncedParticle]: SyncedParticle
 });
 
