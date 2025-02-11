@@ -79,6 +79,7 @@ export interface InternalAnimation<T> {
     readonly start: T
     readonly end: T
     readonly easing: EasingFunction
+    readonly duration?: number
 }
 
 export function resolveNumericSpecifier(numericSpecifier: NumericSpecifier): number {
@@ -141,7 +142,19 @@ export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
         idString: "smoke_grenade_particle",
         name: "Smoke Grenade Particle",
         hitbox: new CircleHitbox(5),
-        snapScopeTo: "1x_scope"
+        snapScopeTo: "1x_scope",
+        velocity: {
+            easing: "circOut"
+        },
+        spawner: {
+            count: 10,
+            radius: 15,
+            duration: 4000,
+            staggering: {
+                delay: 300,
+                initialAmount: 2
+            }
+        }
     }),
     smokeLike({
         idString: "plumpkin_smoke_grenade_particle",

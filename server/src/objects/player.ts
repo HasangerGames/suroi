@@ -583,6 +583,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.dirty.weapons = true;
 
         this.updateAndApplyModifiers();
+
+        this.giveThrowable("smoke_grenade");
     }
 
     giveGun(idString: ReferenceTo<GunDefinition>): void {

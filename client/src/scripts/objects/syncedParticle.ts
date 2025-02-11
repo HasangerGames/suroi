@@ -1,7 +1,7 @@
 import { ObjectCategory } from "@common/constants";
 import { resolveNumericSpecifier, type InternalAnimation, type NumericSpecifier, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { getEffectiveZIndex } from "@common/utils/layer";
-import { EaseFunctions, Numeric } from "@common/utils/math";
+import { Angle, EaseFunctions, Numeric } from "@common/utils/math";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
@@ -55,9 +55,10 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
         this._positionAnim = {
             start: toPixiCoords(startPosition),
             end: toPixiCoords(endPosition),
-            easing
+            easing,
+            duration: endPosition ? definition.spawner?.duration : undefined
         };
-        this.forcePosition(Vec.lerp(startPosition, endPosition, easing(this._age)));
+        this.forcePosition(startPosition);
 
         this.layer = layer;
         this._lifetime = lifetime ?? definition.lifetime as number;
@@ -130,11 +131,15 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
     }
 
     override update(): void {
-        this._age = (Date.now() - this._spawnTime) / this._lifetime;
+        const ageMs = Date.now() - this._spawnTime;
+        this._age = ageMs / this._lifetime;
         if (this._age > 1 || !this._positionAnim) return;
 
-        const { start, end, easing } = this._positionAnim;
-        this.forcePosition(Vec.lerp(start, end, easing(this._age)));
+        const { start, end, easing, duration } = this._positionAnim;
+        const interpFactor = duration ? ageMs / duration : this._age;
+        this.forcePosition(Vec.lerp(start, end, easing(Numeric.clamp(interpFactor, 0, 1))));
+
+        this.container.rotation = Angle.normalize(this.angularVelocity * ageMs);
 
         this.updateScale();
         this.updateAlpha();

@@ -60,10 +60,11 @@ export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedP
         this._positionAnim = {
             start: position,
             end: endPosition ?? Vec.add(position, Vec.scale(resolveVectorSpecifier(velocity), this._lifetime)),
-            easing
+            easing,
+            duration: endPosition ? definition.spawner?.duration : undefined
         };
 
-        this._position = Vec.lerp(this._positionAnim.start, this._positionAnim.end, easing(0));
+        this._position = position;
 
         if (typeof alpha === "object" && "start" in alpha) {
             this._alphaAnim = {
@@ -106,8 +107,9 @@ export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedP
         }
         const interpFactor = this.age = age / this._lifetime;
 
-        const { start, end, easing } = this._positionAnim;
-        this._position = Vec.lerp(start, end, easing(interpFactor));
+        const { start, end, easing, duration } = this._positionAnim;
+        const positionInterpFactor = duration ? duration / this._lifetime : interpFactor;
+        this._position = Vec.lerp(start, end, easing(Numeric.clamp(positionInterpFactor, 0, 1)));
 
         if (this._scaleAnim) {
             const { start, end, easing } = this._scaleAnim;
@@ -119,6 +121,8 @@ export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedP
             this.hitbox.radius = this.definition.hitbox.radius * this.scale;
             this.game.grid.updateObject(this);
         }
+
+        this.serializePartial();
     }
 
     override get data(): FullData<ObjectCategory.SyncedParticle> {

@@ -1,7 +1,7 @@
 import { Vec, type Vector } from "../../utils/vector";
 import { type ExplosionDefinition } from "../explosions";
 import { ItemType, ObjectDefinitions, type InventoryItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
-import { type SyncedParticleSpawnerDefinition } from "../syncedParticles";
+import { SyncedParticleDefinition } from "../syncedParticles";
 
 export type ThrowableDefinition = InventoryItemDefinition & {
     readonly itemType: ItemType.Throwable
@@ -48,8 +48,8 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly fireDelay?: number
     readonly detonation: {
         readonly explosion?: ReferenceTo<ExplosionDefinition>
-        readonly particles?: SyncedParticleSpawnerDefinition
-        readonly spookyParticles?: SyncedParticleSpawnerDefinition
+        readonly particles?: ReferenceTo<SyncedParticleDefinition>
+        readonly spookyParticles?: ReferenceTo<SyncedParticleDefinition>
     }
     readonly animation: {
         readonly pinImage?: string
@@ -126,30 +126,8 @@ export const Throwables = new ObjectDefinitions<ThrowableDefinition>([
         },
         detonation: {
             explosion: "smoke_grenade_explosion",
-            spookyParticles: {
-                type: "plumpkin_smoke_grenade_particle",
-                count: 10,
-                deployAnimation: {
-                    duration: 4000,
-                    staggering: {
-                        delay: 300,
-                        initialAmount: 2
-                    }
-                },
-                spawnRadius: 15
-            },
-            particles: {
-                type: "smoke_grenade_particle",
-                count: 10,
-                deployAnimation: {
-                    duration: 4000,
-                    staggering: {
-                        delay: 300,
-                        initialAmount: 2
-                    }
-                },
-                spawnRadius: 15
-            }
+            spookyParticles: "plumpkin_smoke_grenade_particle",
+            particles: "smoke_grenade_particle",
         },
         animation: {
             pinImage: "proj_smoke_pin",
