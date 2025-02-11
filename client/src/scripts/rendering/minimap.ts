@@ -332,7 +332,7 @@ export class Minimap {
 
                     const ceilingContainer = new Container({
                         sortableChildren: true,
-                        zIndex: definition.ceilingZIndex,
+                        zIndex: definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling,
                         rotation,
                         position: mapObject.position
                     });
