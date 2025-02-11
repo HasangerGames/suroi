@@ -91,9 +91,7 @@ export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedP
             this.variant = random(0, definition.variations) as Variation;
         }
 
-        if (definition.hitbox !== undefined) {
-            this.hitbox = this.definition.hitbox?.transform(this.position, this.scale);
-        }
+        this.hitbox = definition.hitbox?.transform(this.position, this.scale);
 
         this.setPartialDirty();
     }

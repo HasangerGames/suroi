@@ -2069,7 +2069,7 @@ export async function setUpUI(game: Game): Promise<void> {
             </div>`
         );
 
-        ammoContainers[`${ammo.hideUnlessPresent}`].append(ele);
+        ammoContainers[`${ammo.hideUnlessPresent ?? false}`].append(ele);
 
         ele[0].addEventListener("pointerup", (): void => {
             clearTimeout(dropTimer);

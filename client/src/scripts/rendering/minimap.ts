@@ -491,7 +491,7 @@ export class Minimap {
 
         for (const object of this._objects) {
             if (object.isBuilding) {
-                for (const floor of object.definition.floors) {
+                for (const floor of object.definition.floors ?? []) {
                     const hitbox = floor.hitbox.transform(object.position, 1, object.orientation);
                     this._terrain.addFloor(floor.type, hitbox, floor.layer ?? object.layer ?? 0);
                 }

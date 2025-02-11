@@ -1,11 +1,11 @@
-import { ObjectCategory, ZIndexes } from "@common/constants";
+import { GameConstants, ObjectCategory, ZIndexes } from "@common/constants";
 import { ArmorType } from "@common/definitions/items/armors";
 import { type LootDefinition } from "@common/definitions/loots";
 import { PerkIds } from "@common/definitions/items/perks";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { getEffectiveZIndex } from "@common/utils/layer";
 import { EaseFunctions } from "@common/utils/math";
-import { ItemType, LootRadius } from "@common/utils/objectDefinitions";
+import { ItemType } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
@@ -133,7 +133,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                 this.images.background.setVisible(false);
             }
 
-            this.hitbox = new CircleHitbox(LootRadius[itemType]);
+            this.hitbox = new CircleHitbox(GameConstants.lootRadius[itemType]);
 
             /*
                 Infinity is serialized as 0 in the bit stream

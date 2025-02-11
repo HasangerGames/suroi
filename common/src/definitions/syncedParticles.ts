@@ -1,7 +1,7 @@
 import { ZIndexes } from "../constants";
 import { type Variation } from "../typings";
 import { CircleHitbox } from "../utils/hitbox";
-import { type EaseFunctions } from "../utils/math";
+import { EasingFunction, type EaseFunctions } from "../utils/math";
 import { DeepPartial, mergeDeep } from "../utils/misc";
 import { ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { randomFloat } from "../utils/random";
@@ -24,6 +24,29 @@ export type SyncedParticleDefinition = ObjectDefinition & {
         readonly adrenaline: number
     }
 
+    readonly spawner?: {
+        readonly count: number
+        readonly radius: number
+        /**
+         * The amount of time, in milliseconds, it takes for the particles to move
+         * from their initial position to a random position within the circle with the given radius
+         */
+        readonly duration?: number
+        /**
+         * Adds a delay to the spawning of particles
+         */
+        readonly staggering?: {
+            /**
+             * The amount of time, in milliseconds, to wait between the spawning of each successive particle
+             */
+            readonly delay: number
+            /**
+             * The number of particles to spawn right away
+             */
+            readonly initialAmount?: number
+        }
+    }
+
     readonly hasCreatorID?: boolean
 } & ({
     readonly variations?: undefined
@@ -42,20 +65,6 @@ export type SyncedParticleDefinition = ObjectDefinition & {
     readonly scopeOutPreMs?: number
 });
 
-export interface SyncedParticleSpawnerDefinition {
-    readonly type: ReferenceTo<SyncedParticleDefinition>
-    readonly count: number
-    readonly deployAnimation?: {
-        readonly duration?: number
-        readonly staggering?: {
-            readonly delay: number
-            readonly spawnPerGroup?: number
-            readonly initialAmount?: number
-        }
-    }
-    readonly spawnRadius: number
-}
-
 export type ValueSpecifier<T> = T | { readonly min: T, readonly max: T };
 export type NumericSpecifier = ValueSpecifier<number>;
 export type VectorSpecifier = ValueSpecifier<Vector>;
@@ -69,7 +78,7 @@ export interface Animated<T> {
 export interface InternalAnimation<T> {
     readonly start: T
     readonly end: T
-    readonly easing: (typeof EaseFunctions)[keyof typeof EaseFunctions]
+    readonly easing: EasingFunction
 }
 
 export function resolveNumericSpecifier(numericSpecifier: NumericSpecifier): number {
@@ -88,7 +97,6 @@ export function resolveVectorSpecifier(vectorSpecifier: VectorSpecifier): Vector
     );
 }
 
-// the cast to SyncedParticleDefinition is technically incorrect, but it makes ts shut up so
 const smokeLike = (def: DeepPartial<SyncedParticleDefinition>): SyncedParticleDefinition => mergeDeep({
     frame: "smoke_grenade_particle",
     scale: {
@@ -126,7 +134,7 @@ const smokeLike = (def: DeepPartial<SyncedParticleDefinition>): SyncedParticleDe
     },
     zIndex: ZIndexes.BuildingsCeiling - 1,
     scopeOutPreMs: 3200
-} as SyncedParticleDefinition, def);
+} as SyncedParticleDefinition, def); // the cast to SyncedParticleDefinition is technically incorrect, but it makes ts shut up so
 
 export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
     smokeLike({

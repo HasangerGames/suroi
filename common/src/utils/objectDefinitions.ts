@@ -59,7 +59,8 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
         if (!this.hasString(idString)) {
             throw new Error(`Unknown idString '${idString}' for this schema`);
         }
-        (this.overLength ? stream.writeUint16 : stream.writeUint8)(
+        const writeFunc = this.overLength ? stream.writeUint16 : stream.writeUint8;
+        writeFunc.bind(stream)(
             this.idStringToNumber[idString]
         );
     }

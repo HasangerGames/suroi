@@ -729,7 +729,7 @@ export class Game implements GameData {
         this.updateObjects = true;
         this.updateGameData({ aliveCount: this.aliveCount });
 
-        setInterval(() => this.addSyncedParticle(SyncedParticles.fromString("smoke_grenade_particle"), player.position, 0), 1000);
+        setInterval(() => this.addSyncedParticle("smoke_grenade_particle", player.position), 1000);
 
         player.joined = true;
 
@@ -985,8 +985,14 @@ export class Game implements GameData {
         projectile.dead = true;
     }
 
-    addSyncedParticle(definition: SyncedParticleDefinition, position: Vector, layer: Layer | number, creatorID?: number): SyncedParticle {
-        const syncedParticle = new SyncedParticle(this, definition, position, layer, creatorID);
+    addSyncedParticle(
+        definition: ReifiableDef<SyncedParticleDefinition>,
+        position: Vector,
+        endPosition?: Vector,
+        layer: Layer | number = 0,
+        creatorID?: number
+    ): SyncedParticle {
+        const syncedParticle = new SyncedParticle(this, SyncedParticles.reify(definition), position, endPosition, layer, creatorID);
         this.grid.addObject(syncedParticle);
         return syncedParticle;
     }
@@ -996,55 +1002,33 @@ export class Game implements GameData {
         syncedParticle.dead = true;
     }
 
-    addSyncedParticles(particles: SyncedParticleSpawnerDefinition, position: Vector, layer: Layer | number): void {
-        const particleDef = SyncedParticles.fromString(particles.type);
-        const { spawnRadius, count, deployAnimation } = particles;
-
-        const duration = deployAnimation?.duration;
-        const circOut = EaseFunctions.cubicOut;
-
-        const setParticleTarget = duration
-            ? (particle: SyncedParticle, target: Vector) => {
-                particle.setTarget(target, duration, circOut);
-            }
-            : (particle: SyncedParticle, target: Vector) => {
-                particle._position = target;
-            };
+    addSyncedParticles(def: ReifiableDef<SyncedParticleDefinition>, position: Vector, layer: Layer | number): void {
+        const { idString, spawner } = SyncedParticles.reify(def);
+        if (!spawner) {
+            throw new Error("Attempted to spawn synced particles without a spawner");
+        }
+        const { count, radius, duration, staggering } = spawner;
 
         const spawnParticles = (amount = 1): void => {
             for (let i = 0; i++ < amount; i++) {
-                setParticleTarget(
-                    this.addSyncedParticle(
-                        particleDef,
-                        position,
-                        layer
-                    ),
-                    Vec.add(
-                        Vec.fromPolar(
-                            randomRotation(),
-                            randomFloat(0, spawnRadius)
-                        ),
-                        position
-                    )
-                );
+                const endPosition = randomPointInsideCircle(position, radius);
+                if (duration) {
+                    this.addSyncedParticle(idString, position, endPosition, layer);
+                } else {
+                    this.addSyncedParticle(idString, endPosition, undefined, layer);
+                }
             }
         };
 
-        if (deployAnimation?.staggering) {
-            const staggering = deployAnimation.staggering;
-            const initialAmount = staggering.initialAmount ?? 0;
-
+        if (staggering) {
+            const { delay, initialAmount = 0 } = staggering;
             spawnParticles(initialAmount);
 
-            const addTimeout = this.addTimeout.bind(this);
-            const addParticles = spawnParticles.bind(null, staggering.spawnPerGroup);
-            const delay = staggering.delay;
-
             for (let i = initialAmount, j = 1; i < count; i++, j++) {
-                addTimeout(addParticles, j * delay);
+                this.addTimeout(() => spawnParticles(1), j * delay);
             }
         } else {
-            spawnParticles(particles.count);
+            spawnParticles(count);
         }
     }
 

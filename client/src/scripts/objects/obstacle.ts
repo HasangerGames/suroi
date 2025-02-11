@@ -5,7 +5,6 @@ import { RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, equivLayer, getEffectiveZIndex } from "@common/utils/layer";
 import { Angle, EaseFunctions, Numeric, calculateDoorHitboxes } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
-import { ObstacleSpecialRoles } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { random, randomBoolean, randomFloat, randomRotation } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";

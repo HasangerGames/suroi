@@ -7,7 +7,7 @@ import { Vec, type Vector } from "../utils/vector";
 import { TentTints } from "./buildings";
 import { type GunDefinition } from "./items/guns";
 import { type LootDefinition } from "./loots";
-import { type SyncedParticleSpawnerDefinition } from "./syncedParticles";
+import { SyncedParticleDefinition } from "./syncedParticles";
 
 export type ObstacleDefinition = ObjectDefinition & {
     readonly material: typeof Materials[number]
@@ -89,7 +89,7 @@ export type ObstacleDefinition = ObjectDefinition & {
 
     readonly spawnMode?: MapObjectSpawnMode
     readonly tint?: number
-    readonly particlesOnDestroy?: SyncedParticleSpawnerDefinition
+    readonly particlesOnDestroy?: ReferenceTo<SyncedParticleDefinition>
     readonly additionalDestroySounds?: readonly string[]
     readonly sound?: ({ readonly name: string } | { readonly names: string[] }) & {
         readonly maxRange?: number
@@ -1537,18 +1537,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             particle: "crate_particle",
             residue: "regular_crate_residue"
         },
-        particlesOnDestroy: {
-            type: "tear_gas_particle",
-            count: 10,
-            deployAnimation: {
-                duration: 4000,
-                staggering: {
-                    delay: 300,
-                    initialAmount: 2
-                }
-            },
-            spawnRadius: 15
-        },
+        particlesOnDestroy: "tear_gas_particle",
         additionalDestroySounds: ["smoke_grenade"],
         winterVariations: 1
     },
