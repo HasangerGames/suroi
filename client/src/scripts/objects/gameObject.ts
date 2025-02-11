@@ -37,7 +37,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
     }
 
     forcePosition(position: Vector): void {
-        this._position = position;
+        this._position = this.container.position = position;
     }
 
     updateContainerPosition(): void {

@@ -11,7 +11,7 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
     readonly idStringToDef: ReadonlyRecord<string, Def> = Object.create(null);
     readonly idStringToNumber: ReadonlyRecord<string, number> = Object.create(null);
     /**
-     * Whether there are more than 255 definitions in this schema, requiring 2 bytes to serialize
+     * Whether there are more than 256 definitions in this schema, requiring 2 bytes to serialize
      */
     readonly overLength: boolean;
 
@@ -59,10 +59,12 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
         if (!this.hasString(idString)) {
             throw new Error(`Unknown idString '${idString}' for this schema`);
         }
-        const writeFunc = this.overLength ? stream.writeUint16 : stream.writeUint8;
-        writeFunc.bind(stream)(
-            this.idStringToNumber[idString]
-        );
+        const idx = this.idStringToNumber[idString];
+        if (this.overLength) {
+            stream.writeUint16(idx);
+        } else {
+            stream.writeUint8(idx);
+        }
     }
 
     readFromStream<Spec extends Def>(stream: ByteStream): Spec {

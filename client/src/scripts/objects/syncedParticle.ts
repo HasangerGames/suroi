@@ -1,13 +1,13 @@
 import { ObjectCategory } from "@common/constants";
-import { type Animated, type InternalAnimation, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
+import { resolveNumericSpecifier, type InternalAnimation, type NumericSpecifier, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { getEffectiveZIndex } from "@common/utils/layer";
 import { EaseFunctions, Numeric } from "@common/utils/math";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
+import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
-import { Vec, type Vector } from "@common/utils/vector";
 
 export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParticle) {
     readonly image = new SuroiSprite();
@@ -62,7 +62,7 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
         this.layer = layer;
         this._lifetime = lifetime ?? definition.lifetime as number;
         this._age = age;
-        this._spawnTime = Date.now() - this._age;
+        this._spawnTime = Date.now() - this._age * this._lifetime;
         this.angularVelocity = angularVelocity ?? definition.angularVelocity as number;
 
         if (typeof definition.scale === "object" && "start" in definition.scale) {
@@ -72,6 +72,9 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
 
             this._scaleAnim = { start, end, easing };
             this.updateScale();
+        } else {
+            const scale = resolveNumericSpecifier(definition.scale as NumericSpecifier);
+            this.container.scale.set(scale, scale);
         }
 
         if (
@@ -88,6 +91,8 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
 
             this._alphaAnim = { start, end, easing };
             this.updateAlpha();
+        } else {
+            this.container.alpha = resolveNumericSpecifier(definition.alpha as NumericSpecifier);
         }
 
         this.image.setFrame(`${definition.frame}${variant !== undefined ? `_${variant}` : ""}`);
