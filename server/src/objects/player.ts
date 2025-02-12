@@ -14,7 +14,7 @@ import { Throwables, type ThrowableDefinition } from "@common/definitions/items/
 import { Loots, type WeaponDefinition } from "@common/definitions/loots";
 import { type PlayerPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { SyncedParticles, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
+import { type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { DisconnectPacket } from "@common/packets/disconnectPacket";
 import { GameOverData, GameOverPacket, TeammateGameOverData } from "@common/packets/gameOverPacket";
 import { type NoMobile, type PlayerInputData } from "@common/packets/inputPacket";
@@ -27,7 +27,7 @@ import { UpdatePacket, type PlayerData, type UpdatePacketDataCommon, type Update
 import { PlayerModifiers } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
-import { Collision, EaseFunctions, Geometry, Numeric } from "@common/utils/math";
+import { Collision, Geometry, Numeric } from "@common/utils/math";
 import { ExtendedMap, type SDeepMutable, type SMutable, type Timeout } from "@common/utils/misc";
 import { ItemType, type EventModifiers, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
@@ -578,8 +578,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.dirty.weapons = true;
 
         this.updateAndApplyModifiers();
-
-        this.giveThrowable("smoke_grenade");
     }
 
     giveGun(idString: ReferenceTo<GunDefinition>): void {

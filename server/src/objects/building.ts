@@ -60,7 +60,7 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
         this.hitbox = this.definition.hitbox?.transform(this.position, 1, orientation);
         this.collidable = this.damageable = !!this.definition.hitbox;
 
-        if (this.definition.ceilingHitbox !== undefined && this.definition.ceilingScopeEffect) {
+        if (this.definition.ceilingHitbox !== undefined && !this.definition.noCeilingScopeEffect) {
             this.scopeHitbox = this.definition.ceilingHitbox.transform(this.position, 1, orientation);
         }
 

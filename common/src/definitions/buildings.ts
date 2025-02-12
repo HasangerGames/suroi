@@ -79,7 +79,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly bridgeHitbox?: Hitbox
     readonly bridgeMinRiverWidth?: number
 
-    readonly ceilingScopeEffect?: boolean
+    readonly noCeilingScopeEffect?: boolean
     readonly obstacles?: readonly BuildingObstacle[]
     readonly lootSpawners?: readonly LootSpawner[]
     readonly subBuildings?: readonly SubBuilding[]
@@ -2479,7 +2479,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "crane",
         name: "Crane",
         reflectBullets: true,
-        ceilingScopeEffect: false,
+        noCeilingScopeEffect: true,
         material: "metal_heavy",
         particle: "container_particle_yellow",
         hitbox: new GroupHitbox(
