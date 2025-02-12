@@ -99,8 +99,6 @@ class GrenadeHandler {
     private _detonate(): void {
         const { explosion } = this.definition.detonation;
 
-        const particles = (this.owner.halloweenThrowableSkin && this.definition.detonation.spookyParticles) ? this.definition.detonation.spookyParticles : this.definition.detonation.particles;
-
         const referencePosition = Vec.clone(this._projectile?.position ?? this.parent.owner.position);
         const game = this.game;
 
@@ -114,6 +112,10 @@ class GrenadeHandler {
                 (this._projectile?.halloweenSkin ?? false) ? PerkData[PerkIds.PlumpkinBomb].damageMod : 1
             );
         }
+
+        const particles = (this.owner.halloweenThrowableSkin && this.definition.detonation.spookyParticles)
+            ? this.definition.detonation.spookyParticles
+            : this.definition.detonation.particles;
 
         if (particles !== undefined) {
             game.addSyncedParticles(particles, referencePosition, this._projectile ? this._projectile.layer : Layer.Ground);

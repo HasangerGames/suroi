@@ -37,18 +37,7 @@ export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
             this.game.pluginManager.emit("airdrop_landed", this._airdrop);
 
             // Spawn smoke
-            this.game.addSyncedParticles({
-                type: "airdrop_smoke_particle",
-                count: 5,
-                deployAnimation: {
-                    duration: 2000,
-                    staggering: {
-                        delay: 100,
-                        initialAmount: 2
-                    }
-                },
-                spawnRadius: 10
-            }, crate.position, crate.layer);
+            this.game.addSyncedParticles("airdrop_smoke_particle", crate.position, crate.layer);
 
             // Crush damage
             for (const object of this.game.grid.intersectsHitbox(crate.hitbox, crate.layer)) {

@@ -1166,11 +1166,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             const def = depleter.definition;
             const depletion = def.depletePerMs;
 
-            const { snapScopeTo, scopeOutPreMs } = def as SyncedParticleDefinition & { readonly hitbox: Hitbox };
+            const { snapScopeTo, scopeOutPreMs = 0 } = def as SyncedParticleDefinition & { readonly hitbox: Hitbox };
             // If lifetime - age > scope out time, we have the potential to zoom in the scope
             if (
                 snapScopeTo
-                && depleter._lifetime - (this.game.now - depleter._creationDate) >= (scopeOutPreMs ?? 0)
+                && depleter._lifetime - (this.game.now - depleter._creationDate) >= scopeOutPreMs
             ) {
                 scopeTarget ??= snapScopeTo;
             }

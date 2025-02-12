@@ -28,11 +28,6 @@ export type SyncedParticleDefinition = ObjectDefinition & {
         readonly count: number
         readonly radius: number
         /**
-         * The amount of time, in milliseconds, it takes for the particles to move
-         * from their initial position to a random position within the circle with the given radius
-         */
-        readonly duration?: number
-        /**
          * Adds a delay to the spawning of particles
          */
         readonly staggering?: {
@@ -198,20 +193,21 @@ export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
         idString: "airdrop_smoke_particle",
         name: "Airdrop Smoke Particle",
         velocity: {
-            min: {
-                x: -0.002,
-                y: -0.002
-            },
-            max: {
-                x: 0.002,
-                y: 0.002
-            },
+            duration: 2000,
             easing: "circOut"
         },
         lifetime: {
             min: 1500,
             max: 2500
         },
-        hitbox: new CircleHitbox(5)
+        hitbox: new CircleHitbox(5),
+        spawner: {
+            count: 5,
+            radius: 10,
+            staggering: {
+                delay: 100,
+                initialAmount: 2
+            }
+        }
     })
 ]);
