@@ -1,6 +1,6 @@
-import { GunDefinition, Guns } from "@common/definitions/guns";
-import { MeleeDefinition, Melees } from "@common/definitions/melees";
-import { ThrowableDefinition, Throwables } from "@common/definitions/throwables";
+import { GunDefinition, Guns } from "@common/definitions/items/guns";
+import { MeleeDefinition, Melees } from "@common/definitions/items/melees";
+import { ThrowableDefinition, Throwables } from "@common/definitions/items/throwables";
 import { ItemType } from "@common/utils/objectDefinitions";
 import { pickRandomInArray } from "@common/utils/random";
 

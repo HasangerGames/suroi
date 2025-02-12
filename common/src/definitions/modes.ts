@@ -1,5 +1,5 @@
 import { type ReferenceTo } from "../utils/objectDefinitions";
-import { type ScopeDefinition } from "./scopes";
+import { type ScopeDefinition } from "./items/scopes";
 
 export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "trail" | "gas" | "void";
 
@@ -17,6 +17,7 @@ export interface ModeDefinition {
         readonly foldersToLoad: readonly string[]
     }
     readonly defaultScope?: ReferenceTo<ScopeDefinition>
+    readonly obstacleVariants?: boolean
     readonly darkShaders?: boolean
     // will be multiplied by the bullet trail color
     readonly bulletTrailAdjust?: string
@@ -132,12 +133,9 @@ export const Modes: Record<Mode, ModeDefinition> = {
             delay: 800,
             gravity: true
         },
+        obstacleVariants: true,
         specialLogo: true,
         specialPlayButtons: true,
         modeLogoImage: "./img/game/winter/obstacles/red_gift.svg"
     }
-};
-
-export const ObstacleModeVariations: Partial<Record<Mode, string>> = {
-    winter: "_winter"
 };

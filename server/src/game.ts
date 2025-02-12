@@ -1,10 +1,10 @@
-import { GameConstants, KillfeedMessageType, Layer, ObjectCategory, TeamSize } from "@common/constants";
+import { GameConstants, KillfeedMessageType, Layer, MapObjectSpawnMode, ObjectCategory, TeamSize } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "@common/definitions/syncedParticles";
-import { type ThrowableDefinition } from "@common/definitions/throwables";
+import { type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { PlayerInputPacket } from "@common/packets/inputPacket";
 import { JoinPacket, type JoinPacketData } from "@common/packets/joinPacket";
 import { JoinedPacket } from "@common/packets/joinedPacket";
@@ -16,7 +16,7 @@ import { type PingSerialization } from "@common/packets/updatePacket";
 import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric, Statistics } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
-import { ItemType, MapObjectSpawnMode, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "@common/utils/random";
 import { type SuroiByteStream } from "@common/utils/suroiByteStream";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -923,7 +923,7 @@ export class Game implements GameData {
             jitterSpawn
                 ? Vec.add(
                     position,
-                    randomPointInsideCircle(Vec.create(0, 0), GameConstants.lootSpawnDistance)
+                    randomPointInsideCircle(Vec.create(0, 0), GameConstants.lootSpawnMaxJitter)
                 )
                 : position,
             layer,
@@ -986,8 +986,14 @@ export class Game implements GameData {
         projectile.dead = true;
     }
 
-    addSyncedParticle(definition: SyncedParticleDefinition, position: Vector, layer: Layer | number, creatorID?: number): SyncedParticle {
-        const syncedParticle = new SyncedParticle(this, definition, position, layer, creatorID);
+    addSyncedParticle(
+        definition: ReifiableDef<SyncedParticleDefinition>,
+        position: Vector,
+        endPosition?: Vector,
+        layer: Layer | number = 0,
+        creatorID?: number
+    ): SyncedParticle {
+        const syncedParticle = new SyncedParticle(this, SyncedParticles.reify(definition), position, endPosition, layer, creatorID);
         this.grid.addObject(syncedParticle);
         return syncedParticle;
     }
@@ -997,55 +1003,33 @@ export class Game implements GameData {
         syncedParticle.dead = true;
     }
 
-    addSyncedParticles(particles: SyncedParticleSpawnerDefinition, position: Vector, layer: Layer | number): void {
-        const particleDef = SyncedParticles.fromString(particles.type);
-        const { spawnRadius, count, deployAnimation } = particles;
-
-        const duration = deployAnimation?.duration;
-        const circOut = EaseFunctions.cubicOut;
-
-        const setParticleTarget = duration
-            ? (particle: SyncedParticle, target: Vector) => {
-                particle.setTarget(target, duration, circOut);
-            }
-            : (particle: SyncedParticle, target: Vector) => {
-                particle._position = target;
-            };
+    addSyncedParticles(def: ReifiableDef<SyncedParticleDefinition>, position: Vector, layer: Layer | number): void {
+        const { idString, spawner, velocity: { duration } } = SyncedParticles.reify(def);
+        if (!spawner) {
+            throw new Error("Attempted to spawn synced particles without a spawner");
+        }
+        const { count, radius, staggering } = spawner;
 
         const spawnParticles = (amount = 1): void => {
             for (let i = 0; i++ < amount; i++) {
-                setParticleTarget(
-                    this.addSyncedParticle(
-                        particleDef,
-                        position,
-                        layer
-                    ),
-                    Vec.add(
-                        Vec.fromPolar(
-                            randomRotation(),
-                            randomFloat(0, spawnRadius)
-                        ),
-                        position
-                    )
-                );
+                const endPosition = randomPointInsideCircle(position, radius);
+                if (duration) {
+                    this.addSyncedParticle(idString, position, endPosition, layer);
+                } else {
+                    this.addSyncedParticle(idString, endPosition, undefined, layer);
+                }
             }
         };
 
-        if (deployAnimation?.staggering) {
-            const staggering = deployAnimation.staggering;
-            const initialAmount = staggering.initialAmount ?? 0;
-
+        if (staggering) {
+            const { delay, initialAmount = 0 } = staggering;
             spawnParticles(initialAmount);
 
-            const addTimeout = this.addTimeout.bind(this);
-            const addParticles = spawnParticles.bind(null, staggering.spawnPerGroup);
-            const delay = staggering.delay;
-
             for (let i = initialAmount, j = 1; i < count; i++, j++) {
-                addTimeout(addParticles, j * delay);
+                this.addTimeout(() => spawnParticles(1), j * delay);
             }
         } else {
-            spawnParticles(particles.count);
+            spawnParticles(count);
         }
     }
 
@@ -1182,7 +1166,7 @@ export class Game implements GameData {
                     if (
                         object.isBuilding
                         && object.scopeHitbox
-                        && object.definition.wallsToDestroy === Infinity
+                        && object.definition.wallsToDestroy === undefined
                     ) {
                         const hitbox = object.scopeHitbox.clone();
                         hitbox.scale(paddingFactor);

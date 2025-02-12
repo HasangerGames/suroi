@@ -1,17 +1,17 @@
-import { Ammos } from "@common/definitions/ammos";
-import { Armors } from "@common/definitions/armors";
-import { Backpacks } from "@common/definitions/backpacks";
+import { Ammos } from "@common/definitions/items/ammos";
+import { Armors } from "@common/definitions/items/armors";
+import { Backpacks } from "@common/definitions/items/backpacks";
 import { BuildingDefinition, Buildings } from "@common/definitions/buildings";
-import { Guns } from "@common/definitions/guns";
-import { HealingItems } from "@common/definitions/healingItems";
+import { Guns } from "@common/definitions/items/guns";
+import { HealingItems } from "@common/definitions/items/healingItems";
 import { LootDefForType, LootDefinition, Loots } from "@common/definitions/loots";
-import { Melees } from "@common/definitions/melees";
+import { Melees } from "@common/definitions/items/melees";
 import { Mode } from "@common/definitions/modes";
 import { ObstacleDefinition, Obstacles } from "@common/definitions/obstacles";
-import { Perks } from "@common/definitions/perks";
-import { Scopes } from "@common/definitions/scopes";
-import { Skins } from "@common/definitions/skins";
-import { Throwables } from "@common/definitions/throwables";
+import { Perks } from "@common/definitions/items/perks";
+import { Scopes } from "@common/definitions/items/scopes";
+import { Skins } from "@common/definitions/items/skins";
+import { Throwables } from "@common/definitions/items/throwables";
 import { isArray } from "@common/utils/misc";
 import { ItemType, NullString, ObjectDefinition, ObjectDefinitions, ReferenceOrRandom, ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, weightedRandom } from "@common/utils/random";
@@ -180,7 +180,7 @@ export function getSpawnableLoots(mode: Mode, mapDef: MapDefinition, cache: Cach
                 const b = Buildings.fromString(building);
 
                 // for each subbuilding, we either take it as-is, or take all possible spawn options
-                return b.subBuildings.map(
+                return (b.subBuildings ?? []).map(
                     ({ idString }) => referenceOrRandomOptions(idString).map(s => Buildings.fromString(s))
                 ).concat([b]);
             }).flat(2)
@@ -194,7 +194,7 @@ export function getSpawnableLoots(mode: Mode, mapDef: MapDefinition, cache: Cach
         ...new Set(
             Object.keys(mapDef.obstacles ?? {}).map(o => Obstacles.fromString(o)).concat(
                 reachableBuildings.map(
-                    ({ obstacles }) => obstacles.map(
+                    ({ obstacles = [] }) => obstacles.map(
                         ({ idString }) => referenceOrRandomOptions(idString).map(o => Obstacles.fromString(o))
                     )
                 ).flat(2)
@@ -212,7 +212,7 @@ export function getSpawnableLoots(mode: Mode, mapDef: MapDefinition, cache: Cach
                 )
             ).concat(
                 reachableBuildings.map(
-                    ({ lootSpawners }) => lootSpawners.map(({ table }) => resolveTable(mode, table))
+                    ({ lootSpawners }) => lootSpawners ? lootSpawners.map(({ table }) => resolveTable(mode, table)) : []
                 ).flat()
             )
         )

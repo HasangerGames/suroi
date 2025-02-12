@@ -1,5 +1,5 @@
 import { Bullets } from "@common/definitions/bullets";
-import { type SingleGunNarrowing } from "@common/definitions/guns";
+import { type SingleGunNarrowing } from "@common/definitions/items/guns";
 import { Loots } from "@common/definitions/loots";
 import { BaseBullet, type BulletOptions } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";

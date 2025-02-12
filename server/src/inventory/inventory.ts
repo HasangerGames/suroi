@@ -1,12 +1,12 @@
 import { DEFAULT_INVENTORY, GameConstants } from "@common/constants";
-import { Ammos, type AmmoDefinition } from "@common/definitions/ammos";
-import { ArmorType, type ArmorDefinition } from "@common/definitions/armors";
-import { type BackpackDefinition } from "@common/definitions/backpacks";
-import { type DualGunNarrowing, type GunDefinition } from "@common/definitions/guns";
-import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/healingItems";
+import { Ammos, type AmmoDefinition } from "@common/definitions/items/ammos";
+import { ArmorType, type ArmorDefinition } from "@common/definitions/items/armors";
+import { type BackpackDefinition } from "@common/definitions/items/backpacks";
+import { type DualGunNarrowing, type GunDefinition } from "@common/definitions/items/guns";
+import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/items/healingItems";
 import { Loots, type LootDefForType, type LootDefinition, type WeaponDefinition } from "@common/definitions/loots";
-import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/scopes";
-import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
+import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
+import { Throwables, type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { Numeric } from "@common/utils/math";
 import { ExtendedMap, type AbstractConstructor, type GetEnumMemberName, type PredicateFor, type Timeout } from "@common/utils/misc";
 import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
@@ -582,7 +582,6 @@ export class Inventory {
                 && itemType !== ItemType.Perk
             )
             || definition.noDrop
-            || idString === this.owner.game.mode.defaultScope
         ) return;
 
         switch (itemType) {

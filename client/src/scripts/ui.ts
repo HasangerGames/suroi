@@ -1,13 +1,13 @@
 import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "@common/constants";
-import { Ammos, type AmmoDefinition } from "@common/definitions/ammos";
-import { type ArmorDefinition } from "@common/definitions/armors";
+import { Ammos, type AmmoDefinition } from "@common/definitions/items/ammos";
+import { type ArmorDefinition } from "@common/definitions/items/armors";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { EmoteCategory, Emotes, type EmoteDefinition } from "@common/definitions/emotes";
-import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/healingItems";
+import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/items/healingItems";
 import { Modes, type Mode } from "@common/definitions/modes";
-import { PerkIds, Perks } from "@common/definitions/perks";
-import { Scopes, type ScopeDefinition } from "@common/definitions/scopes";
-import { Skins, type SkinDefinition } from "@common/definitions/skins";
+import { PerkIds, Perks } from "@common/definitions/items/perks";
+import { Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
+import { Skins, type SkinDefinition } from "@common/definitions/items/skins";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
@@ -2030,7 +2030,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     if (inputManager.pingWheelActive) {
                         inputManager.addAction({
                             type: InputActions.Emote,
-                            emote: HealingItems.fromString(item.idString)
+                            emote: Emotes.fromString(item.idString)
                         });
                     } else {
                         inputManager.addAction({
@@ -2069,7 +2069,7 @@ export async function setUpUI(game: Game): Promise<void> {
             </div>`
         );
 
-        ammoContainers[`${ammo.hideUnlessPresent}`].append(ele);
+        ammoContainers[`${ammo.hideUnlessPresent ?? false}`].append(ele);
 
         ele[0].addEventListener("pointerup", (): void => {
             clearTimeout(dropTimer);
@@ -2084,7 +2084,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 if (inputManager.pingWheelActive) {
                     inputManager.addAction({
                         type: InputActions.Emote,
-                        emote: Ammos.fromString(ammo.idString)
+                        emote: Emotes.fromString(ammo.idString)
                     });
                 }
 

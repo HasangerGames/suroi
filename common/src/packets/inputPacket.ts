@@ -1,15 +1,14 @@
 import { GameConstants, InputActions } from "../constants";
-import { type AmmoDefinition } from "../definitions/ammos";
-import { type ArmorDefinition } from "../definitions/armors";
-import { type BackpackDefinition } from "../definitions/backpacks";
-import { type EmoteDefinition } from "../definitions/emotes";
-import { type HealingItemDefinition } from "../definitions/healingItems";
+import { type AmmoDefinition } from "../definitions/items/ammos";
+import { type ArmorDefinition } from "../definitions/items/armors";
+import { type BackpackDefinition } from "../definitions/items/backpacks";
+import { Emotes, type EmoteDefinition } from "../definitions/emotes";
+import { type HealingItemDefinition } from "../definitions/items/healingItems";
 import { Loots, type WeaponDefinition } from "../definitions/loots";
 import { type MapPingDefinition, MapPings, type PlayerPing } from "../definitions/mapPings";
-import { type PerkDefinition } from "../definitions/perks";
-import { type ScopeDefinition } from "../definitions/scopes";
-import { type ThrowableDefinition } from "../definitions/throwables";
-import { GlobalRegistrar } from "../utils/definitionRegistry";
+import { type PerkDefinition } from "../definitions/items/perks";
+import { type ScopeDefinition } from "../definitions/items/scopes";
+import { type ThrowableDefinition } from "../definitions/items/throwables";
 import { type DeepMutable, type SDeepMutable } from "../utils/misc";
 import { type Vector } from "../utils/vector";
 import { createPacket, type InputPacket } from "./packet";
@@ -30,8 +29,6 @@ export type SimpleInputActions = Exclude<
     | InputActions.ToggleSlotLock
 >;
 
-export type AllowedEmoteSources = EmoteDefinition | AmmoDefinition | HealingItemDefinition | WeaponDefinition;
-
 export type InputAction =
     | {
         readonly type: InputActions.UseItem
@@ -47,7 +44,7 @@ export type InputAction =
     }
     | {
         readonly type: InputActions.Emote
-        readonly emote: AllowedEmoteSources
+        readonly emote: EmoteDefinition
     }
     | {
         readonly type: InputActions.MapPing
@@ -151,7 +148,7 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
                         Loots.writeToStream(stream, action.item);
                         break;
                     case InputActions.Emote:
-                        GlobalRegistrar.writeToStream(stream, action.emote);
+                        Emotes.writeToStream(stream, action.emote);
                         break;
                     case InputActions.MapPing:
                         MapPings.writeToStream(stream, action.ping);
@@ -219,11 +216,11 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
             data.actions = stream.readArray(() => {
                 const data = stream.readUint8();
                 // hiMask = 2 msb, type = 4 lsb
-                const [hiMask, type] = [data & 0b1100_0000, (data & 15) as InputActions];
+                const [hiMask, type] = [data & 0b1100_0000, (data & 0b0000_1111) as InputActions];
 
                 let slot: number | undefined;
                 let item: HealingItemDefinition | ScopeDefinition | ArmorDefinition | AmmoDefinition | BackpackDefinition | PerkDefinition | undefined;
-                let emote: AllowedEmoteSources | undefined;
+                let emote: EmoteDefinition | undefined;
                 let position: Vector | undefined;
                 let ping: MapPingDefinition | undefined;
 
@@ -249,7 +246,7 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
                         item = Loots.readFromStream<HealingItemDefinition | ScopeDefinition>(stream);
                         break;
                     case InputActions.Emote:
-                        emote = GlobalRegistrar.readFromStream<AllowedEmoteSources>(stream);
+                        emote = Emotes.readFromStream(stream);
                         break;
                     case InputActions.MapPing:
                         ping = MapPings.readFromStream(stream);

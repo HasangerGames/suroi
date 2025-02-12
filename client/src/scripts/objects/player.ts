@@ -1,16 +1,15 @@
 import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "@common/constants";
-import { Ammos } from "@common/definitions/ammos";
-import { type ArmorDefinition } from "@common/definitions/armors";
-import { type BackpackDefinition } from "@common/definitions/backpacks";
+import { Ammos } from "@common/definitions/items/ammos";
+import { type ArmorDefinition } from "@common/definitions/items/armors";
+import { type BackpackDefinition } from "@common/definitions/items/backpacks";
 import { Explosions } from "@common/definitions/explosions";
-import { Guns, type GunDefinition, type SingleGunNarrowing } from "@common/definitions/guns";
-import { HealType, type HealingItemDefinition } from "@common/definitions/healingItems";
+import { Guns, type GunDefinition, type SingleGunNarrowing } from "@common/definitions/items/guns";
+import { HealType, type HealingItemDefinition } from "@common/definitions/items/healingItems";
 import { Loots, type WeaponDefinition } from "@common/definitions/loots";
-import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "@common/definitions/melees";
+import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "@common/definitions/items/melees";
 import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { PerkData, PerkIds } from "@common/definitions/perks";
-import { Skins, type SkinDefinition } from "@common/definitions/skins";
-import type { AllowedEmoteSources } from "@common/packets/inputPacket";
+import { PerkData, PerkIds } from "@common/definitions/items/perks";
+import { Skins, type SkinDefinition } from "@common/definitions/items/skins";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, getEffectiveZIndex } from "@common/utils/layer";
@@ -35,6 +34,7 @@ import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
 import type { DebugRenderer } from "../utils/debugRenderer";
+import { EmoteCategory, type EmoteDefinition } from "@common/definitions/emotes";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -304,9 +304,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         const weaponDef = this.activeItem as GunDefinition;
         const reference = this._getItemReference() as SingleGunNarrowing;
         const initialRotation = this.rotation + Math.PI / 2;
-        const casings = reference.casingParticles.filter(c => (c.on ?? "fire") === filterBy) as NonNullable<SingleGunNarrowing["casingParticles"]>;
+        const casings = reference.casingParticles?.filter(c => (c.on ?? "fire") === filterBy) as NonNullable<SingleGunNarrowing["casingParticles"]>;
 
-        if (casings.length === 0) return;
+        if (casings?.length === 0) return;
 
         for (const casingSpec of casings) {
             const position = Vec.scale(casingSpec.position, this.sizeMod);
@@ -709,7 +709,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 const def = this.activeDisguise;
                 if (def !== undefined) {
                     this.images.disguiseSprite.setVisible(true);
-                    this.images.disguiseSprite.setFrame(`${def.frames.base ?? def.idString}${def.variations !== undefined ? `_${random(1, def.variations)}` : ""}`);
+                    this.images.disguiseSprite.setFrame(`${def.frames?.base ?? def.idString}${def.variations !== undefined ? `_${random(1, def.variations)}` : ""}`);
                 } else {
                     this.images.disguiseSprite.setVisible(false);
                 }
@@ -1189,8 +1189,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         switch (weaponDef.itemType) {
             case ItemType.Gun: {
-                this.images.rightFist.setZIndex((fists as SingleGunNarrowing["fists"]).rightZIndex);
-                this.images.leftFist.setZIndex((fists as SingleGunNarrowing["fists"]).leftZIndex);
+                this.images.rightFist.setZIndex((fists as SingleGunNarrowing["fists"]).rightZIndex ?? 1);
+                this.images.leftFist.setZIndex((fists as SingleGunNarrowing["fists"]).leftZIndex ?? 1);
                 this.images.weapon.setZIndex(image?.zIndex ?? 2);
                 this.images.altWeapon.setZIndex(2);
                 this.images.body.setZIndex(3);
@@ -1337,7 +1337,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             && this.teamID === player.teamID;
     }
 
-    showEmote(type: AllowedEmoteSources): void {
+    showEmote(emote: EmoteDefinition): void {
         if (this.game.inputManager.isMobile) {
             this.game.inputManager.emoteWheelActive = false;
             this.game.uiManager.ui.emoteButton
@@ -1355,10 +1355,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 maxRange: 128
             }
         );
-        this.emote.image.setFrame(type.idString);
-
-        const isItemEmote = "itemType" in type;
-        const isHealingOrAmmoEmote = isItemEmote && [ItemType.Healing, ItemType.Ammo].includes(type.itemType);
+        this.emote.image.setFrame(emote.idString);
 
         const container = this.emote.container;
         container.visible = true;
@@ -1366,11 +1363,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         container.alpha = 0;
 
         let backgroundFrame = "emote_background";
-        if (Guns.fromStringSafe(type.idString)) {
-            backgroundFrame = `loot_background_gun_${Guns.fromStringSafe(type.idString)?.ammoType}`;
+        if (Guns.fromStringSafe(emote.idString)) {
+            backgroundFrame = `loot_background_gun_${Guns.fromStringSafe(emote.idString)?.ammoType}`;
         }
 
-        this.emote.image.setScale(isItemEmote && !isHealingOrAmmoEmote ? 0.7 : 1);
+        this.emote.image.setScale(emote.category === EmoteCategory.Team ? 0.7 : 1);
         this.emote.background.setFrame(backgroundFrame);
 
         this.anims.emote = this.game.addTween({
@@ -1487,7 +1484,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         });
                     }
 
-                    if (weaponDef.image !== undefined) {
+                    if (weaponDef.image?.usePosition !== undefined) {
                         this.anims.weapon = this.game.addTween({
                             target: this.images.weapon,
                             to: {
@@ -1503,7 +1500,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
 
                 this.playSound(
-                    weaponDef.swingSound,
+                    weaponDef.swingSound ?? "swing",
                     {
                         falloff: 0.4,
                         maxRange: 96
@@ -1568,7 +1565,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             ) return -Infinity;
 
                             return a.hitbox.distanceTo(selfHitbox).distance - b.hitbox.distanceTo(selfHitbox).distance;
-                        }).slice(0, weaponDef.maxTargets)
+                        }).slice(0, weaponDef.maxTargets ?? 1)
                     ) {
                         if (target.isPlayer) {
                             target.hitEffect(position, angleToPos, (this.activeItem as MeleeDefinition).hitSound);
@@ -2023,7 +2020,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             );
         }
 
-        let particle = this.activeDisguise ? (this.activeDisguise.frames.particle ?? `${this.activeDisguise.idString}_particle`) : "blood_particle";
+        let particle = this.activeDisguise ? (this.activeDisguise.frames?.particle ?? `${this.activeDisguise.idString}_particle`) : "blood_particle";
 
         if (this.activeDisguise?.particleVariations) particle += `_${random(1, this.activeDisguise.particleVariations)}`;
 

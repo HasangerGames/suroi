@@ -1,5 +1,5 @@
 import { Modes, type Mode } from "@common/definitions/modes";
-import { Perks } from "@common/definitions/perks";
+import { Perks } from "@common/definitions/items/perks";
 import { HitboxType, RectangleHitbox } from "@common/utils/hitbox";
 import { Config as ClientConfig } from "../../client/src/scripts/config";
 import { FireMode, GameConstants, Layers } from "../../common/src/constants";
@@ -2928,10 +2928,6 @@ logger.indent("Validating obstacles", () => {
                 });
             }
 
-            if (obstacle.imageAnchor !== undefined) {
-                validators.vector(tester.createPath(errorPath, "field imageAnchor"), obstacle.imageAnchor);
-            }
-
             if (obstacle.tint !== undefined) {
                 validators.color(tester.createPath(errorPath, "tint"), obstacle.tint);
             }
@@ -2957,7 +2953,7 @@ logger.indent("Validating obstacles", () => {
 
                     tester.runTestOnArray(
                         Object.keys(ObstacleSpecialRoles)
-                            // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+
                             .filter(k => Number.isNaN(+k)) as ReadonlyArray<keyof typeof ObstacleSpecialRoles & string>,
                         (key, errorPath) => {
                             const prop = `is${key}` as const;
@@ -3573,7 +3569,7 @@ logger.indent("Validating throwables", () => {
             });
 
             tester.assertNoPointlessValue({
-                obj: throwable as ThrowableDefinition & { readonly impactDamage: number },
+                obj: throwable,
                 field: "obstacleMultiplier",
                 defaultValue: 1,
                 baseErrorPath: errorPath

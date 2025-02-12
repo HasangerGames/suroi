@@ -1,4 +1,9 @@
-import { createTemplate, ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
+import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
+import { Ammos } from "./items/ammos";
+import { Guns } from "./items/guns";
+import { HealingItems } from "./items/healingItems";
+import { Melees } from "./items/melees";
+import { Throwables } from "./items/throwables";
 
 export enum EmoteCategory {
     People,
@@ -6,22 +11,22 @@ export enum EmoteCategory {
     Memes,
     Icons,
     Misc,
-    TeamEmote
+    Team,
+    Weapon
 }
 
 export interface EmoteDefinition extends ObjectDefinition {
     readonly category: EmoteCategory
-    readonly isTeamEmote?: boolean
-    readonly isWeaponEmote?: boolean
+    readonly scale?: number
 }
 
-const emote = createTemplate<EmoteDefinition>()((name: string, category: EmoteCategory) => ({
+const emote = (name: string, category: EmoteCategory): EmoteDefinition => ({
     idString: name.toLowerCase().replace(/ /g, "_"),
     name,
     category
-}));
+});
 
-export const Emotes = ObjectDefinitions.create<EmoteDefinition>("Emotes", [
+export const Emotes = new ObjectDefinitions<EmoteDefinition>([
     ...[
         "Happy Face",
         "Sad Face",
@@ -77,7 +82,7 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>("Emotes", [
         "Weary Face",
         "Pensive Face",
         "Zipper Mouth Face"
-    ].map(name => emote([name, EmoteCategory.People])),
+    ].map(name => emote(name, EmoteCategory.People)),
     ...[
         "Suroi Logo",
         "AEGIS Logo",
@@ -85,7 +90,7 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>("Emotes", [
         "Duel",
         "Chicken Dinner",
         "Trophy"
-    ].map(name => emote([name, EmoteCategory.Icons])),
+    ].map(name => emote(name, EmoteCategory.Icons)),
     ...[
         "Troll Face",
         "Clueless",
@@ -99,7 +104,7 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>("Emotes", [
         "awhhmahgawd",
         "Boykisser",
         "Grr"
-    ].map(name => emote([name, EmoteCategory.Memes])),
+    ].map(name => emote(name, EmoteCategory.Memes)),
     ...[
         "Question Mark",
         "Team = Ban",
@@ -111,7 +116,7 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>("Emotes", [
         "real",
         "fake",
         "Colon Three"
-    ].map(name => emote([name, EmoteCategory.Text])),
+    ].map(name => emote(name, EmoteCategory.Text)),
     ...[
         "Fire",
         "Carrot",
@@ -120,5 +125,24 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>("Emotes", [
         "Squid",
         "Tomato",
         "Eagle"
-    ].map(name => emote([name, EmoteCategory.Misc]))
+    ].map(name => emote(name, EmoteCategory.Misc)),
+    ...[
+        ...Ammos.definitions,
+        ...HealingItems.definitions
+    ].map(({ idString, name }) => ({
+        idString,
+        name,
+        category: EmoteCategory.Team,
+        scale: 0.7
+    })),
+    ...[
+
+        ...Guns.definitions,
+        ...Melees.definitions,
+        ...Throwables.definitions
+    ].map(({ idString, name }) => ({
+        idString,
+        name,
+        category: EmoteCategory.Weapon
+    }))
 ]);

@@ -1,12 +1,12 @@
 import { InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize } from "@common/constants";
-import { ArmorType } from "@common/definitions/armors";
+import { ArmorType } from "@common/definitions/items/armors";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { Emotes } from "@common/definitions/emotes";
-import { type DualGunNarrowing } from "@common/definitions/guns";
+import { type DualGunNarrowing } from "@common/definitions/items/guns";
 import { Loots } from "@common/definitions/loots";
 import type { ColorKeys, Mode, ModeDefinition } from "@common/definitions/modes";
 import { Modes } from "@common/definitions/modes";
-import { Scopes } from "@common/definitions/scopes";
+import { Scopes } from "@common/definitions/items/scopes";
 import { DisconnectPacket } from "@common/packets/disconnectPacket";
 import { GameOverPacket } from "@common/packets/gameOverPacket";
 import { JoinedPacket, type JoinedPacketData } from "@common/packets/joinedPacket";
@@ -22,7 +22,7 @@ import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, equalLayer } from "@common/utils/layer";
 import { EaseFunctions, Geometry } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
-import { ItemType, ObstacleSpecialRoles } from "@common/utils/objectDefinitions";
+import { ItemType } from "@common/utils/objectDefinitions";
 import { ObjectPool } from "@common/utils/objectPool";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { randomFloat, randomVector } from "@common/utils/random";
@@ -1102,15 +1102,12 @@ export class Game {
                         let text;
                         switch (true) {
                             case object?.isObstacle: {
-                                switch (object.definition.role) {
-                                    case ObstacleSpecialRoles.Door:
-                                        text = object.door?.offset === 0
-                                            ? getTranslatedString("action_open_door")
-                                            : getTranslatedString("action_close_door");
-                                        break;
-                                    case ObstacleSpecialRoles.Activatable:
-                                        text = getTranslatedString(`interact_${object.definition.idString}` as TranslationKeys);
-                                        break;
+                                if (object.definition.isDoor) {
+                                    text = object.door?.offset === 0
+                                        ? getTranslatedString("action_open_door")
+                                        : getTranslatedString("action_close_door");
+                                } else if (object.definition.isActivatable) {
+                                    text = getTranslatedString(`interact_${object.definition.idString}` as TranslationKeys);
                                 }
                                 break;
                             }

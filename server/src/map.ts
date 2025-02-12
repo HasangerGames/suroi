@@ -1,7 +1,6 @@
-import { GameConstants, Layer, ObjectCategory } from "@common/constants";
+import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory, RotationMode } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
-import { ObstacleModeVariations } from "@common/definitions/modes";
-import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { MapPacket, type MapPacketData } from "@common/packets/mapPacket";
 import { PacketStream } from "@common/packets/packetStream";
 import { type Orientation, type Variation } from "@common/typings";
@@ -9,7 +8,7 @@ import { CircleHitbox, GroupHitbox, HitboxType, RectangleHitbox, type Hitbox } f
 import { equalLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
 import { type Mutable, type SMutable } from "@common/utils/misc";
-import { MapObjectSpawnMode, NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
 import { River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -72,7 +71,7 @@ export class GameMap {
         }
     }
 
-    static getRandomBuildingOrientation(mode: NonNullable<BuildingDefinition["rotationMode"]>): Orientation {
+    static getRandomBuildingOrientation(mode: NonNullable<BuildingDefinition["rotationMode"]> = RotationMode.Limited): Orientation {
         switch (mode) {
             case RotationMode.Binary:
                 return pickRandomInArray([0, 2]);
@@ -450,7 +449,7 @@ export class GameMap {
 
                     position = this.getRandomPosition(buildingDef.spawnHitbox, {
                         orientation,
-                        spawnMode: buildingDef.spawnMode,
+                        spawnMode: buildingDef.spawnMode ?? MapObjectSpawnMode.Grass,
                         orientationConsumer: (newOrientation: Orientation) => {
                             orientation = newOrientation;
                         },
@@ -586,14 +585,11 @@ export class GameMap {
 
         const building = new Building(this.game, definition, Vec.clone(position), orientation, layer);
 
-        for (const obstacleData of definition.obstacles) {
-            let idString = getRandomIDString<
-                ObstacleDefinition,
-                ReferenceTo<ObstacleDefinition> | typeof NullString
-            >(obstacleData.idString);
+        for (const obstacleData of definition.obstacles ?? []) {
+            let idString = getRandomIDString<ObstacleDefinition>(obstacleData.idString);
             if (idString === NullString) continue;
-            if (obstacleData.outdoors) {
-                idString = `${idString}${ObstacleModeVariations[this.game.modeName] ?? ""}`;
+            if (obstacleData.outdoors && this.game.mode.obstacleVariants) {
+                idString = `${idString}_${this.game.modeName}`;
             }
 
             const obstacleDef = Obstacles.fromString(idString);
@@ -634,7 +630,7 @@ export class GameMap {
             }
         }
 
-        for (const lootData of definition.lootSpawners) {
+        for (const lootData of definition.lootSpawners ?? []) {
             for (const item of getLootFromTable(this.game.modeName, lootData.table)) {
                 this.game.addLoot(
                     item.idString,
@@ -645,11 +641,8 @@ export class GameMap {
             }
         }
 
-        for (const subBuilding of definition.subBuildings) {
-            const idString = getRandomIDString<
-                BuildingDefinition,
-                ReferenceTo<BuildingDefinition> | typeof NullString
-            >(subBuilding.idString);
+        for (const subBuilding of definition.subBuildings ?? []) {
+            const idString = getRandomIDString<BuildingDefinition>(subBuilding.idString);
 
             if (idString === NullString) continue;
 
@@ -662,7 +655,7 @@ export class GameMap {
             );
         }
 
-        for (const floor of definition.floors) {
+        for (const floor of definition.floors ?? []) {
             this.terrain.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation), floor.layer ?? layer);
         }
 

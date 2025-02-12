@@ -1,7 +1,6 @@
-import { GameConstants, GasState } from "@common/constants";
+import { GameConstants, GasState, MapObjectSpawnMode } from "@common/constants";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Geometry, Numeric } from "@common/utils/math";
-import { MapObjectSpawnMode } from "@common/utils/objectDefinitions";
 import { randomBoolean, randomPointInsideCircle } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Config, GasMode } from "./config";

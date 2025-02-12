@@ -88,6 +88,8 @@ export type GetEnumMemberName<Enum extends Record<string | number, unknown>, Mem
     [K in keyof Enum]: Enum[K] extends Member ? K : never
 }[keyof Enum];
 
+export type ReadonlyRecord<K extends string | number | symbol, T> = Readonly<Record<K, T>>;
+
 /**
  * Represents a successful operation
  * @template Res The type of the successful operation's result

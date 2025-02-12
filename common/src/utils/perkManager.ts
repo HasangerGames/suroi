@@ -1,4 +1,4 @@
-import { Perks, type PerkDefinition } from "../definitions/perks";
+import { Perks, type PerkDefinition } from "../definitions/items/perks";
 import { makeSchemaManager, type SchemaCollection } from "./schemaManager";
 
 export type PerkCollection = SchemaCollection<PerkDefinition>;

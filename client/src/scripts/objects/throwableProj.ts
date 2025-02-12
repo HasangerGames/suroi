@@ -1,5 +1,5 @@
 import { ObjectCategory, ZIndexes } from "@common/constants";
-import { type ThrowableDefinition } from "@common/definitions/throwables";
+import { type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { getEffectiveZIndex } from "@common/utils/layer";
 import { Numeric, PI } from "@common/utils/math";

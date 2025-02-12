@@ -30,9 +30,9 @@ export class Decal extends GameObject.derive(ObjectCategory.Decal) {
 
         const definition = this.definition = data.definition;
 
-        this.image.setFrame(definition.image);
+        this.image.setFrame(definition.image ?? definition.idString);
         this.container.addChild(this.image);
-        this.container.scale.set(definition.scale);
+        this.container.scale.set(definition.scale ?? 1);
 
         this.container.position.copyFrom(toPixiCoords(this.position));
         this.container.rotation = data.rotation;
@@ -52,7 +52,7 @@ export class Decal extends GameObject.derive(ObjectCategory.Decal) {
     updateDebugGraphics(debugRenderer: DebugRenderer): void {
         if (!DEBUG_CLIENT) return;
 
-        debugRenderer.addCircle(0.1 * this.definition.scale,
+        debugRenderer.addCircle(0.1 * (this.definition.scale ?? 1),
             this.position,
             HITBOX_COLORS.obstacleNoCollision,
             this.layer === this.game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY

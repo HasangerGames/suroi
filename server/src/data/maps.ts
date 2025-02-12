@@ -1,14 +1,14 @@
-import { GameConstants, Layer } from "@common/constants";
+import { GameConstants, Layer, MapObjectSpawnMode, RotationMode } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
-import { Guns } from "@common/definitions/guns";
+import { Guns } from "@common/definitions/items/guns";
 import { Loots } from "@common/definitions/loots";
 import { Mode } from "@common/definitions/modes";
-import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { PerkCategories } from "@common/definitions/perks";
+import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { PerkCategories } from "@common/definitions/items/perks";
 import { Orientation, type Variation } from "@common/typings";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Collision } from "@common/utils/math";
-import { ItemType, MapObjectSpawnMode, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type WebSocket } from "uWebSockets.js";
@@ -19,8 +19,8 @@ import { Player, type PlayerContainer } from "../objects/player";
 import { GamePlugin } from "../pluginManager";
 import { LootTables } from "./lootTables";
 import { getLootFromTable } from "../utils/lootHelpers";
-import { Backpacks } from "@common/definitions/backpacks";
-import { Armors } from "@common/definitions/armors";
+import { Backpacks } from "@common/definitions/items/backpacks";
+import { Armors } from "@common/definitions/items/armors";
 
 export interface RiverDefinition {
     readonly minAmount: number
@@ -925,11 +925,9 @@ const maps = {
         }
     },
     gunsTest: (() => {
-        const Guns = Loots.byType(ItemType.Gun);
-
         return {
             width: 64 * 8,
-            height: 48 + (6 * Guns.length),
+            height: 48 + (6 * Guns.definitions.length),
             beachSize: 0,
             oceanSize: 0,
             onGenerate(map) {
@@ -981,11 +979,11 @@ const maps = {
                                     player.setDirty();
                                 };
 
-                                for (let i = 0, l = Guns.length; i < l; i++) {
+                                for (let i = 0, l = Guns.definitions.length; i < l; i++) {
                                     const player = createBot(`bot ${i}`);
                                     if (player === undefined) return;
                                     teleportPlayer(player, Vec.create(256, 24 + 6 * i));
-                                    const gun = Guns[i];
+                                    const gun = Guns.definitions[i];
 
                                     player.inventory.addOrReplaceWeapon(0, gun.idString);
                                     (player.inventory.getWeapon(0) as GunItem).ammo = gun.capacity;
@@ -1172,7 +1170,7 @@ const maps = {
 
                         const position = map.getRandomPosition(definition.spawnHitbox, {
                             orientation,
-                            spawnMode: definition.spawnMode,
+                            spawnMode: definition.spawnMode ?? MapObjectSpawnMode.Grass,
                             orientationConsumer: (newOrientation: Orientation) => {
                                 orientation = newOrientation;
                             },

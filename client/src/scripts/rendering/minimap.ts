@@ -234,7 +234,7 @@ export class Minimap {
             if (!building.isBuilding) continue;
 
             const definition = building.definition;
-            for (const ground of definition.groundGraphics) {
+            for (const ground of definition.groundGraphics ?? []) {
                 ctx.beginPath();
                 drawGroundGraphics(ground.hitbox.transform(building.position, 1, building.orientation), ctx, scale);
                 ctx.closePath();
@@ -291,7 +291,7 @@ export class Minimap {
                 case ObjectCategory.Obstacle: {
                     const definition = mapObject.definition;
 
-                    let texture = definition.frames.base ?? definition.idString;
+                    let texture = definition.frames?.base ?? definition.idString;
 
                     if (mapObject.variation !== undefined) texture += `_${mapObject.variation + 1}`;
 
@@ -318,7 +318,7 @@ export class Minimap {
                         position: mapObject.position
                     });
 
-                    for (const image of definition.floorImages) {
+                    for (const image of definition.floorImages ?? []) {
                         const sprite = new SuroiSprite(image.key)
                             .setVPos(image.position)
                             .setRotation(image.rotation ?? 0)
@@ -332,12 +332,12 @@ export class Minimap {
 
                     const ceilingContainer = new Container({
                         sortableChildren: true,
-                        zIndex: definition.ceilingZIndex,
+                        zIndex: definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling,
                         rotation,
                         position: mapObject.position
                     });
 
-                    for (const image of definition.ceilingImages) {
+                    for (const image of definition.ceilingImages ?? []) {
                         const sprite = new SuroiSprite(image.key)
                             .setVPos(image.position)
                             .setRotation(image.rotation ?? 0)
@@ -351,9 +351,9 @@ export class Minimap {
                     }
                     mapRender.addChild(ceilingContainer);
 
-                    if (definition.graphics.length) {
+                    if (definition.graphics?.length) {
                         const ctx = new Graphics();
-                        ctx.zIndex = definition.graphicsZIndex;
+                        ctx.zIndex = definition.graphicsZIndex ?? ZIndexes.BuildingsFloor;
                         for (const graphics of definition.graphics) {
                             ctx.beginPath();
                             drawGroundGraphics(graphics.hitbox.transform(mapObject.position, 1, mapObject.orientation), ctx, 1);
@@ -491,7 +491,7 @@ export class Minimap {
 
         for (const object of this._objects) {
             if (object.isBuilding) {
-                for (const floor of object.definition.floors) {
+                for (const floor of object.definition.floors ?? []) {
                     const hitbox = floor.hitbox.transform(object.position, 1, object.orientation);
                     this._terrain.addFloor(floor.type, hitbox, floor.layer ?? object.layer ?? 0);
                 }

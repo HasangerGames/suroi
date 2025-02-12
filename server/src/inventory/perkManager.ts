@@ -1,7 +1,7 @@
 import { GameConstants } from "@common/constants";
 import { Obstacles } from "@common/definitions/obstacles";
-import { PerkData, PerkIds, type PerkDefinition } from "@common/definitions/perks";
-import { Skins } from "@common/definitions/skins";
+import { PerkData, PerkIds, type PerkDefinition } from "@common/definitions/items/perks";
+import { Skins } from "@common/definitions/items/skins";
 import { PerkManager } from "@common/utils/perkManager";
 import { weightedRandom } from "@common/utils/random";
 import { type Player } from "../objects/player";

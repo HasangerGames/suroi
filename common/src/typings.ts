@@ -1,6 +1,19 @@
 export type Orientation = 0 | 1 | 2 | 3;
 export type Variation = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
+export interface PlayerModifiers {
+    // Multiplicative
+    maxHealth: number
+    maxAdrenaline: number
+    baseSpeed: number
+    size: number
+    adrenDrain: number
+
+    // Additive
+    minAdrenaline: number
+    hpRegen: number
+}
+
 export type GetGameResponse =
     {
         readonly success: true
