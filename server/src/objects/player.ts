@@ -158,7 +158,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._normalizedHealth = Numeric.remap(this.health, 0, this.maxHealth, 0, 1);
     }
 
-    private _maxAdrenaline = GameConstants.player.maxAdrenaline;
+    private _maxAdrenaline = GameConstants.player.maxAdrenaline as number;
 
     private _normalizedAdrenaline = 0;
     get normalizedAdrenaline(): number { return this._normalizedAdrenaline; }
@@ -501,14 +501,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         this.inventory.addOrReplaceWeapon(2, "fists");
 
-        const defaultScope = game.mode.defaultScope;
-        if (defaultScope) {
-            this.inventory.scope = defaultScope;
-            this.inventory.items.setItem(defaultScope, 1);
-        } else {
-            this.inventory.scope = DEFAULT_SCOPE.idString;
-        }
-        this.effectiveScope = DEFAULT_SCOPE;
+        // TODO make a constant for this or something
+        this.inventory.scope = "2x_scope";
+        this.effectiveScope = "2x_scope";
 
         const specialFunnies = this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing;
         // Inventory preset
@@ -953,8 +948,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         break;
                     }
                     case PerkIds.Shrouded: {
-                        this.game.addSyncedParticle(SyncedParticles.fromString("shrouded_particle"), this.position, this.layer, this.id)
-                            .setTarget(randomPointInsideCircle(this.position, 5), 1000, EaseFunctions.circOut);
+                        this.game.addSyncedParticle(
+                            "shrouded_particle",
+                            this.position,
+                            randomPointInsideCircle(this.position, 5),
+                            this.layer,
+                            this.id
+                        );
                         break;
                     }
                 }

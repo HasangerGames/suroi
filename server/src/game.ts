@@ -1001,11 +1001,11 @@ export class Game implements GameData {
     }
 
     addSyncedParticles(def: ReifiableDef<SyncedParticleDefinition>, position: Vector, layer: Layer | number): void {
-        const { idString, spawner } = SyncedParticles.reify(def);
+        const { idString, spawner, velocity: { duration } } = SyncedParticles.reify(def);
         if (!spawner) {
             throw new Error("Attempted to spawn synced particles without a spawner");
         }
-        const { count, radius, duration, staggering } = spawner;
+        const { count, radius, staggering } = spawner;
 
         const spawnParticles = (amount = 1): void => {
             for (let i = 0; i++ < amount; i++) {

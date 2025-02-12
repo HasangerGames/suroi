@@ -58,7 +58,7 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
             easing,
             duration: endPosition ? definition.spawner?.duration : undefined
         };
-        this.forcePosition(startPosition);
+        this.container.position = startPosition;
 
         this.layer = layer;
         this._lifetime = lifetime ?? definition.lifetime as number;
@@ -67,11 +67,11 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
         this.angularVelocity = angularVelocity ?? definition.angularVelocity as number;
 
         if (typeof definition.scale === "object" && "start" in definition.scale) {
-            const start = scale?.start ?? definition.scale.start as number;
-            const end = scale?.end ?? definition.scale.end as number;
-            const easing = EaseFunctions[definition.scale.easing ?? "linear"];
-
-            this._scaleAnim = { start, end, easing };
+            this._scaleAnim = {
+                start: scale?.start ?? definition.scale.start as number,
+                end: scale?.end ?? definition.scale.end as number,
+                easing: EaseFunctions[definition.scale.easing ?? "linear"]
+            };
             this.updateScale();
         } else {
             const scale = resolveNumericSpecifier(definition.scale as NumericSpecifier);
@@ -86,11 +86,11 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
         ) this._alphaMult = definition.alpha.creatorMult;
 
         if (typeof definition.alpha === "object" && "start" in definition.alpha) {
-            const start = alpha?.start ?? definition.alpha.start as number;
-            const end = alpha?.end ?? definition.alpha.end as number;
-            const easing = EaseFunctions[definition.alpha.easing ?? "linear"];
-
-            this._alphaAnim = { start, end, easing };
+            this._alphaAnim = {
+                start: alpha?.start ?? definition.alpha.start as number,
+                end: alpha?.end ?? definition.alpha.end as number,
+                easing: EaseFunctions[definition.alpha.easing ?? "linear"]
+            };
             this.updateAlpha();
         } else {
             this.container.alpha = resolveNumericSpecifier(definition.alpha as NumericSpecifier);
@@ -137,7 +137,7 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
 
         const { start, end, easing, duration } = this._positionAnim;
         const interpFactor = duration ? ageMs / duration : this._age;
-        this.forcePosition(Vec.lerp(start, end, easing(Numeric.clamp(interpFactor, 0, 1))));
+        this.container.position = Vec.lerp(start, end, easing(Numeric.clamp(interpFactor, 0, 1)));
 
         this.container.rotation = Angle.normalize(this.angularVelocity * ageMs);
 

@@ -13,7 +13,7 @@ export type SyncedParticleDefinition = ObjectDefinition & {
     readonly alpha: (Animated<number> & { creatorMult?: number }) | NumericSpecifier
     readonly lifetime: NumericSpecifier
     readonly angularVelocity: NumericSpecifier
-    readonly velocity: VectorSpecifier & { easing?: keyof typeof EaseFunctions }
+    readonly velocity: VectorSpecifier & { easing?: keyof typeof EaseFunctions, duration?: number }
     readonly zIndex: ZIndexes
 
     readonly frame: string
@@ -144,12 +144,12 @@ export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
         hitbox: new CircleHitbox(5),
         snapScopeTo: "1x_scope",
         velocity: {
-            easing: "circOut"
+            duration: 4000,
+            easing: "expoOut"
         },
         spawner: {
             count: 10,
             radius: 15,
-            duration: 4000,
             staggering: {
                 delay: 300,
                 initialAmount: 2
@@ -175,12 +175,14 @@ export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
             creatorMult: 0.15
         },
         velocity: {
+            duration: 1000,
             easing: "circOut"
         },
         lifetime: {
             min: 1800,
             max: 2200
-        }
+        },
+        hasCreatorID: true
     }),
     smokeLike({
         idString: "tear_gas_particle",

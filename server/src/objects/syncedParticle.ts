@@ -11,7 +11,7 @@ import { BaseGameObject } from "./gameObject";
 
 export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedParticle) {
     override readonly fullAllocBytes = 0;
-    override readonly partialAllocBytes = 32; // TODO adjust me
+    override readonly partialAllocBytes = 23;
     override readonly hitbox?: CircleHitbox | undefined;
 
     private readonly _positionAnim: InternalAnimation<Vector>;
@@ -50,6 +50,8 @@ export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedP
         this.creatorID = creatorID;
         if (definition.hasCreatorID && creatorID === undefined) {
             throw new Error("creatorID not specified for SyncedParticle which requires it");
+        } else if (!definition.hasCreatorID && creatorID !== undefined) {
+            throw new Error("creatorID specified for SyncedParticle which doesn't have it");
         }
 
         this._lifetime = resolveNumericSpecifier(definition.lifetime);
@@ -81,7 +83,7 @@ export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedP
                 easing
             };
 
-            this.scale = Numeric.lerp(this._scaleAnim.start, this._scaleAnim.end, easing(0));
+            this.scale = this._scaleAnim.start;
         } else {
             this.scale = resolveNumericSpecifier(scale);
         }
