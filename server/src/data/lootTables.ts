@@ -135,8 +135,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             ]
         ],
         lux_crate: [
-            [{ item: "rgs", weight: 1 }],
-            [{ table: "scopes", weight: 1 }]
+            [{ item: "rgs", weight: 1 }]
         ],
         gold_rock: [
             { item: "mosin_nagant", weight: 1 }
@@ -959,12 +958,10 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             [
                 { item: "vks", weight: 1 },
                 { item: "tango_51", weight: 1 }
-            ],
-            [{ table: "special_scopes", weight: 1 }]
+            ]
         ],
         gold_rock: [
-            [{ item: "tango_51", weight: 1 }],
-            [{ table: "scopes", weight: 1 }]
+            { item: "tango_51", weight: 1 }
         ],
         loot_barrel: [
             [{ item: "crowbar", weight: 1 }],
@@ -1313,12 +1310,10 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
                 { item: "tango_51", weight: 0.3 },
                 { item: "rgs", weight: 0.3 },
                 { item: "l115a1", weight: 0.1 }
-            ],
-            [{ table: "special_scopes", weight: 1 }]
+            ]
         ],
         gold_rock: [
-            [{ item: "tango_51", weight: 1 }],
-            [{ table: "scopes", weight: 1 }]
+            { item: "tango_51", weight: 1 }
         ],
         loot_barrel: [
             [{ item: "crowbar", weight: 1 }],

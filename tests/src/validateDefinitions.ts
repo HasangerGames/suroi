@@ -1831,6 +1831,14 @@ logger.indent("Validating guns", () => {
                 baseErrorPath: errorPath
             });
 
+            tester.assertReferenceExistsArray({
+                obj: gun,
+                field: "spawnScope",
+                collection: Scopes.definitions,
+                collectionName: "Scopes",
+                baseErrorPath: errorPath
+            });
+
             tester.assertIsNaturalFiniteNumber({
                 obj: gun,
                 field: "ammoSpawnAmount",

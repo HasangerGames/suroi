@@ -123,6 +123,9 @@ function getLoot(mode: Mode, items: WeightedItem[], noDuplicates?: boolean): Loo
             loot.push(new LootItem(ammoType, ammoSpawnAmount));
         }
     }
+    if (definition.itemType === ItemType.Gun && definition.spawnScope) {
+        loot.push(new LootItem(definition.spawnScope, 1));
+    }
 
     if (noDuplicates) {
         const index = items.findIndex(entry => "item" in entry && entry.item === selection.item);

@@ -4,6 +4,7 @@ import { mergeDeep } from "../../utils/misc";
 import { ItemType, ObjectDefinitions, type InventoryItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
 import { Vec, type Vector } from "../../utils/vector";
 import { type AmmoDefinition } from "./ammos";
+import { ScopeDefinition } from "./scopes";
 
 type BaseGunDefinition = InventoryItemDefinition & {
     readonly itemType: ItemType.Gun
@@ -11,6 +12,7 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly speedMultiplier: number
     readonly ammoType: ReferenceTo<AmmoDefinition>
     readonly ammoSpawnAmount: number
+    readonly spawnScope?: ReferenceTo<ScopeDefinition>
     readonly capacity: number
     readonly extendedCapacity?: number
     readonly reloadTime: number
@@ -1557,6 +1559,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         itemType: ItemType.Gun,
         ammoType: "762mm",
         ammoSpawnAmount: 20,
+        spawnScope: "4x_scope",
         capacity: 5,
         reloadTime: 0.85,
         shotsPerReload: 1,
@@ -1602,6 +1605,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         itemType: ItemType.Gun,
         ammoType: "762mm",
         ammoSpawnAmount: 20,
+        spawnScope: "8x_scope",
         capacity: 5,
         extendedCapacity: 10,
         reloadTime: 2.6,
@@ -1686,6 +1690,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         itemType: ItemType.Gun,
         ammoType: "338lap",
         ammoSpawnAmount: 12,
+        spawnScope: "16x_scope",
         fireDelay: 1500,
         switchDelay: 900,
         speedMultiplier: 0.92,
@@ -1728,6 +1733,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         itemType: ItemType.Gun,
         ammoType: "556mm",
         ammoSpawnAmount: 30,
+        spawnScope: "4x_scope",
         capacity: 10,
         extendedCapacity: 15,
         reloadTime: 2.6,
@@ -1771,6 +1777,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         itemType: ItemType.Gun,
         ammoType: "50cal",
         ammoSpawnAmount: 25,
+        spawnScope: "8x_scope",
         fireDelay: 800,
         switchDelay: 900,
         speedMultiplier: 0.92,
@@ -2138,6 +2145,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         itemType: ItemType.Gun,
         ammoType: "338lap",
         ammoSpawnAmount: 20,
+        spawnScope: "4x_scope",
         fireDelay: 450,
         switchDelay: 700,
         speedMultiplier: 0.92,
