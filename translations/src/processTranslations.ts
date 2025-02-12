@@ -27,7 +27,7 @@ function calculateValidRatio(keys: string[]): number {
     return keys.filter(key => ValidKeys.includes(key)).length / ValidKeys.length;
 }
 
-export type TranslationManifest = {
+export interface TranslationManifest {
     readonly name: string
     readonly flag: string
     readonly percentage: string
@@ -35,7 +35,7 @@ export type TranslationManifest = {
     readonly mandatory?: boolean
     readonly no_resize?: boolean
     readonly no_space?: boolean
-};
+}
 export type TranslationsManifest = Record<string, TranslationManifest>;
 
 export async function validateTranslations(): Promise<void> {
@@ -103,12 +103,12 @@ export async function buildTranslations(): Promise<void> {
             percentage: content.percentage ?? `${Math.round(100 * calculateValidRatio(Object.keys(content)))}%`
         };
 
-        filePromises.push(writeFile(`../../client/public/translations/${language}.json`, JSON.stringify(content, null, 2)));
+        filePromises.push(writeFile(`../../client/public/translations/${language}.json`, JSON.stringify(content)));
     }
 
     await Promise.all([
         ...filePromises,
-        writeFile("../../client/src/translationsManifest.json", JSON.stringify(manifest, null, 2))
+        writeFile("../../client/src/translationsManifest.json", JSON.stringify(manifest))
     ]);
 }
 

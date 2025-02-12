@@ -165,7 +165,7 @@
     "action_cancel": "Отмена"
     "action_reloading": "Перезарядка..."
     "action_reviving": "Оживление..."
-    "action_being_revived": "Оживляется..." 
+    "action_being_revived": "Оживляется..."
     "action_gauze_use": "Вы перевязываетесь"
     "action_medikit_use": "Вы используете аптечку"
     "action_cola_use": "Вы пьете колу"
@@ -308,7 +308,7 @@
     "2x_scope": "Оптика 2x"
     "4x_scope": "Оптика 4x"
     "8x_scope": "Оптика 8x"
-    "16x_scope": "Оптика 15x"
+    "16x_scope": "Оптика 16x"
 
 
     "region_dev": "Локальный сервер"

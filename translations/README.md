@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Wed, 29 Jan 2025 16:10:33 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Wed, 12 Feb 2025 15:35:53 GMT
 
 ## 🇦🇱 Shqip (86% Complete) - ab.hjson
 
@@ -281,6 +281,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
 - Key `create_team_ready` is not defined
+- Key `destroyer_of_worlds` is not defined
 - Key `m16a4` is not defined
 
 ## 🇯🇵 日本語 (90% Complete) - jp.hjson
@@ -439,6 +440,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
+- Key `destroyer_of_worlds` is not defined
 - Key `m16a4` is not defined
 
 ## 🇷🇴 Română (84% Complete) - ro.hjson
