@@ -1165,17 +1165,17 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         depleters.forEach(depleter => {
             const def = depleter.definition;
             const depletion = def.depletePerMs;
-            if (!depletion) return;
 
-            // For convenience and readability
-            type ScopeBlockingParticle = SyncedParticleDefinition & { readonly hitbox: Hitbox };
+            const { snapScopeTo, scopeOutPreMs } = def as SyncedParticleDefinition & { readonly hitbox: Hitbox };
             // If lifetime - age > scope out time, we have the potential to zoom in the scope
-            if (depleter._lifetime - (this.game.now - depleter._creationDate)
-                >= ((def as ScopeBlockingParticle).scopeOutPreMs ?? 0)) {
-                scopeTarget ??= (def as ScopeBlockingParticle).snapScopeTo;
+            if (
+                snapScopeTo
+                && depleter._lifetime - (this.game.now - depleter._creationDate) >= (scopeOutPreMs ?? 0)
+            ) {
+                scopeTarget ??= snapScopeTo;
             }
 
-            if (depletion.health) {
+            if (depletion?.health) {
                 this.piercingDamage({
                     amount: depletion.health * dt,
                     source: KillfeedEventType.Gas
@@ -1183,7 +1183,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 });
             }
 
-            if (depletion.adrenaline) {
+            if (depletion?.adrenaline) {
                 this.adrenaline -= depletion.adrenaline * dt;
             }
         });
