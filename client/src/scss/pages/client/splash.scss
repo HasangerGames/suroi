@@ -73,6 +73,8 @@
         #splash-customize,
         #splash-socials,
         #splash-rotate-message,
+        #splash-server-message,
+        #splash-customize,
         #splash-news {
             max-width: 300px;
         }
@@ -80,9 +82,9 @@
         #splash-customize {
             width: 300px !important;
             height: auto !important;
-            margin-right: 22px;
             padding: 15px;
             border-radius: 15px;
+            margin-right: 20px;
         }
 
 
@@ -106,6 +108,7 @@
         #splash-customize,
         #splash-socials,
         #splash-rotate-message,
+        #splash-server-message,
         #splash-news {
             max-width: 300px;
         }
