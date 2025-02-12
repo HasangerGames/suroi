@@ -85,7 +85,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             loot: [
                 { table: "guns", weight: 0.8 },
                 { table: "healing_items", weight: 0.6 },
-                { table: "scopes", weight: 0.4 },
+                { table: "scopes", weight: 0.3 },
                 { table: "throwables", weight: 0.4 },
                 { table: "equipment", weight: 0.4 },
                 { item: "ghillie_suit", weight: 0.05 }
@@ -226,7 +226,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             ],
             [
                 { table: "healing_items", weight: 1 },
-                { table: "scopes", weight: 1 }
+                { table: "throwables", weight: 0.5 }
             ]
         ],
         bookshelf: {
@@ -234,7 +234,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             max: 2,
             loot: [
                 { table: "equipment", weight: 1.1 },
-                { table: "scopes", weight: 0.4 },
+                { table: "scopes", weight: 0.3 },
                 { table: "guns", weight: 1 },
                 { table: "healing_items", weight: 0.6 }
             ]
@@ -289,7 +289,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             loot: [
                 { table: "guns", weight: 1.25 },
                 { table: "equipment", weight: 1 },
-                { table: "scopes", weight: 0.35 },
+                { table: "scopes", weight: 0.3 },
                 { table: "special_guns", weight: 0.8 },
                 { table: "healing_items", weight: 0.75 }
             ]
@@ -302,7 +302,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
                 { table: "healing_items", weight: 1 },
                 { table: "equipment", weight: 0.9 },
                 { table: "special_guns", weight: 0.8 },
-                { table: "special_scopes", weight: 0.35 }
+                { table: "special_scopes", weight: 0.30 }
             ]
         },
         porta_potty_toilet_closed: {
@@ -553,8 +553,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "medikit", weight: 1 }
         ],
         scopes: [
-            { item: "2x_scope", weight: 1 },
-            { item: "4x_scope", weight: 0.5 },
+            { item: "4x_scope", weight: 1 },
             { item: "8x_scope", weight: 0.1 },
             { item: "16x_scope", weight: 0.00025 }
         ],
@@ -626,10 +625,9 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "gauze", count: 5, weight: 3 }
         ],
         special_scopes: [
-            { item: "2x_scope", weight: 1 },
-            { item: "4x_scope", weight: 0.45 },
-            { item: "8x_scope", weight: 0.1 },
-            { item: "16x_scope", weight: 0.005 }
+            { item: "4x_scope", weight: 1 },
+            { item: "8x_scope", weight: 0.2 },
+            { item: "16x_scope", weight: 0.0005 }
         ],
         special_equipment: [
             { item: "basic_helmet", weight: 1 },
@@ -656,9 +654,8 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "tactical_pack", weight: 1 }
         ],
         airdrop_scopes: [
-            { item: "4x_scope", weight: 1 },
-            { item: "8x_scope", weight: 0.5 },
-            { item: "16x_scope", weight: 0.0025 }
+            { item: "8x_scope", weight: 1 },
+            { item: "16x_scope", weight: 0.005 }
         ],
         airdrop_healing_items: [
             { item: "gauze", count: 5, weight: 1.5 },
@@ -1084,10 +1081,6 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "ghillie_suit", weight: 0.1 },
             { item: "basic_outfit", weight: 0.001 }
         ],
-        airdrop_scopes: [
-            { item: "8x_scope", weight: 1 },
-            { item: "16x_scope", weight: 0.005 }
-        ],
         airdrop_melee: [
             { item: NullString, weight: 1 },
             { item: "hatchet", weight: 0.2 },
@@ -1186,16 +1179,6 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "basic_pack", weight: 0.8 },
             { item: "regular_pack", weight: 0.5 },
             { item: "tactical_pack", weight: 0.09 }
-        ],
-        scopes: [
-            { item: "4x_scope", weight: 1 },
-            { item: "8x_scope", weight: 0.1 },
-            { item: "16x_scope", weight: 0.00025 }
-        ],
-        special_scopes: [
-            { item: "4x_scope", weight: 1 },
-            { item: "8x_scope", weight: 0.2 },
-            { item: "16x_scope", weight: 0.0005 }
         ],
         melee: [
             { item: "hatchet", weight: 3 },
@@ -1442,10 +1425,6 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "ghillie_suit", weight: 0.1 },
             { item: "basic_outfit", weight: 0.001 }
         ],
-        airdrop_scopes: [
-            { item: "8x_scope", weight: 1 },
-            { item: "16x_scope", weight: 0.005 }
-        ],
         airdrop_melee: [
             { item: NullString, weight: 1 },
             { item: "hatchet", weight: 0.2 },
@@ -1544,16 +1523,6 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "basic_pack", weight: 0.8 },
             { item: "regular_pack", weight: 0.5 },
             { item: "tactical_pack", weight: 0.09 }
-        ],
-        scopes: [
-            { item: "4x_scope", weight: 1 },
-            { item: "8x_scope", weight: 0.1 },
-            { item: "16x_scope", weight: 0.00025 }
-        ],
-        special_scopes: [
-            { item: "4x_scope", weight: 1 },
-            { item: "8x_scope", weight: 0.2 },
-            { item: "16x_scope", weight: 0.0005 }
         ],
         melee: [
             { item: "hatchet", weight: 3 },
