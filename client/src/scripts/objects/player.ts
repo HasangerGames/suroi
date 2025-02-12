@@ -515,7 +515,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.disguiseContainer.position.copyFrom(toPixiCoords(this.position));
             this.emote.container.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, -175)));
             this.teammateName?.container.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, 95)));
-            if (this.isActivePlayer) game.uiManager.resetPerkSlots();
         }
 
         if (data.animation !== undefined) {
@@ -638,7 +637,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             if (this.dead) {
-                if (this.isActivePlayer) uiManager.resetPerkSlots();
                 if (this.teammateName !== undefined) this.teammateName.container.visible = false;
             }
 
@@ -1686,6 +1684,15 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 });
 
                 if (weaponDef.gasParticles && this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
+                    const offset = weaponDef.isDual
+                        ? (isAltFire ? -1 : 1) * weaponDef.leftRightOffset
+                        : (weaponDef.bulletOffset ?? 0);
+
+                    const position = Vec.add(
+                        this.position,
+                        Vec.scale(Vec.rotate(Vec.create(weaponDef.length, offset), this.rotation), this.sizeMod)
+                    );
+
                     const gas = weaponDef.gasParticles;
                     const halfSpread = 0.5 * gas.spread;
 
@@ -1696,10 +1703,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         scale: {
                             start: 0, end: randomFloat(gas.minSize, gas.maxSize)
                         },
-                        position: Vec.add(
-                            randomPointInsideCircle(this.position, 2),
-                            Vec.fromPolar(this.rotation, weaponDef.length)
-                        ),
+                        position,
                         speed: Vec.fromPolar(
                             this.rotation + Angle.degreesToRadians(
                                 randomFloat(-halfSpread, halfSpread)

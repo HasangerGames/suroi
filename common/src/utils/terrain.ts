@@ -490,11 +490,15 @@ export class River {
         return nearestT;
     }
 
-    getRandomPosition(onBank?: boolean): Vector {
+    /**
+     * @param onBank If the position can also be inside a river bank not just water
+     * @param margin A margin to subtract from the river width, useful when you dont want a cirlce to spawn inside it
+     */
+    getRandomPosition(onBank?: boolean, margin = 0): Vector {
         const t = Math.random();
         // river width is not consistent so map t to a point indexing the width at that point
         const pointIdx = Numeric.clamp(Math.floor(t * this.points.length), 0, this.points.length);
-        const waterWidth = this[onBank ? "bankWidths" : "waterWidths"][pointIdx];
+        const waterWidth = this[onBank ? "bankWidths" : "waterWidths"][pointIdx] - margin;
         const dist = randomFloat(0, waterWidth) * (randomBoolean() ? 1 : -1);
         // add a random offset that's between river center and river border on either directions
         const normal = this.getNormal(t);

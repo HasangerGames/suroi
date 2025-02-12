@@ -37,6 +37,12 @@
     @media screen and (max-height: 500px) {
         margin-top: 10px;
     }
+
+    @media screen and (max-width: variables.$screen_medium) and (max-height: variables.$screen_medium) {
+        min-width: 170px;
+        max-width: 300px;
+        margin: 2.5px auto 2.5px auto;
+    }
 }
 
 #splash-modals {
@@ -51,7 +57,45 @@
 
     font-size: 20px;
 
+    @media screen and (max-width: variables.$screen_medium) and (max-height: variables.$screen_medium) {
+        align-items: center;
+        flex-wrap: nowrap;
+        flex-direction: column;
+        gap: 5px;
+        max-height: unset;
+        margin-bottom: 1rem;
+
+        button span {
+            font-size: 16px;
+        }
+
+        #splash-options,
+        #splash-customize,
+        #splash-socials,
+        #splash-rotate-message,
+        #splash-news {
+            max-width: 300px;
+        }
+
+        #splash-customize {
+            width: 300px !important;
+            height: auto !important;
+            margin-right: 22px;
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+
+        #splash-featured-people,
+        #skin-container,
+        #splash-news,
+        #splash-socials {
+            display: none !important;
+        }
+    }
+
     @media screen and (max-width: variables.$screen_large) {
+        display: inline-flex;
         align-items: center;
         flex-wrap: nowrap;
         gap: 5px;

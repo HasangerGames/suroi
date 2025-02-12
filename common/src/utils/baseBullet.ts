@@ -255,41 +255,31 @@ export class BaseBullet {
 
                 const activeDef = object.activeItemDefinition;
                 const backDef = object.backEquippedMelee;
-                let intersection: IntersectionResponse = null;
-                let reflectedMeleeDefinition: MeleeDefinition | undefined;
 
                 if (activeDef.itemType === ItemType.Melee && activeDef.reflectiveSurface) {
-                    intersection = getIntersection(activeDef.reflectiveSurface);
-                    reflectedMeleeDefinition = activeDef;
-                }
-
-                if (backDef?.onBack?.reflectiveSurface) {
-                    const backIntersection = getIntersection(backDef?.onBack.reflectiveSurface);
-                    // if a bullet is really fast and there's both back and active item surfaces
-                    // the bullet can end up colliding with both reflective surfaces
-                    // this handles that by using the closest surface to the bullet old position
-                    if (backIntersection && intersection) {
-                        if (Geometry.distanceSquared(oldPosition, backIntersection.point)
-                            < Geometry.distanceSquared(oldPosition, intersection.point)
-                        ) {
-                            intersection = backIntersection;
-                            reflectedMeleeDefinition = backDef;
-                        }
-                    } else {
-                        intersection = backIntersection;
-                        reflectedMeleeDefinition = backDef;
+                    const intersection = getIntersection(activeDef.reflectiveSurface);
+                    if (intersection) {
+                        collisions.push({
+                            intersection: intersection,
+                            object,
+                            dealDamage: false,
+                            reflected: true,
+                            reflectedMeleeDefinition: activeDef
+                        });
                     }
                 }
 
-                if (intersection) {
-                    collisions.push({
-                        intersection: intersection,
-                        object,
-                        dealDamage: false,
-                        reflected: true,
-                        reflectedMeleeDefinition
-                    });
-                    continue;
+                if (backDef?.onBack.reflectiveSurface) {
+                    const intersection = getIntersection(backDef?.onBack.reflectiveSurface);
+                    if (intersection) {
+                        collisions.push({
+                            intersection: intersection,
+                            object,
+                            dealDamage: false,
+                            reflected: true,
+                            reflectedMeleeDefinition: backDef
+                        });
+                    }
                 }
             }
 

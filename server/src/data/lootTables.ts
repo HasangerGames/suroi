@@ -80,13 +80,16 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             ]
         ],
         dumpster: {
-            min: 1,
-            max: 2,
+            min: 2,
+            max: 4,
             loot: [
                 { table: "guns", weight: 0.8 },
                 { table: "healing_items", weight: 0.6 },
                 { table: "scopes", weight: 0.4 },
-                { table: "equipment", weight: 0.3 }
+                { table: "throwables", weight: 0.4 },
+                { table: "equipment", weight: 0.4 },
+                { item: "ghillie_suit", weight: 0.05 }
+                // placeholder for special Dumpster themed skin
             ]
         },
         flint_crate: {
@@ -319,7 +322,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
                 { table: "guns", weight: 0.05 }
             ]
         },
-        ...["mcx_spear", "hp18", "stoner_63", "mini14", "maul", "m590m", "dual_rsh12"].reduce(
+        ...["mcx_spear", "hp18", "stoner_63", "mini14", "maul", "m590m", "dual_rsh12", "model_37", "sks"].reduce(
             (acc, item) => {
                 acc[`gun_mount_${item}`] = [{ item, weight: 1 }];
                 return acc;

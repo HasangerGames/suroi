@@ -1722,7 +1722,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         idString: "box",
         name: "Box",
         material: "cardboard",
-        health: 60,
+        health: 40,
         scale: {
             spawnMin: 1,
             spawnMax: 1,
@@ -2199,7 +2199,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         material: "iron",
         reflectBullets: true,
         hasLoot: true,
-        health: 300,
+        health: 200,
         scale: {
             spawnMin: 1,
             spawnMax: 1,
@@ -2218,7 +2218,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         idString: "trash_bag",
         name: "Trash Bag",
         material: "trash_bag",
-        health: 70,
+        health: 40,
         scale: {
             spawnMin: 1,
             spawnMax: 1,
@@ -3245,7 +3245,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         idString: "large_refinery_barrel",
         name: "Large Refinery Barrel",
         material: "metal_heavy",
-        health: 3500,
+        health: 2000,
         scale: {
             spawnMin: 1,
             spawnMax: 1,
@@ -3322,6 +3322,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     gunMount("stoner_63", "gun"),
     gunMount("mini14", "gun"),
     gunMount("hp18", "gun"),
+    gunMount("model_37", "gun"),
+    gunMount("sks", "gun"),
     gunMount("m590m", "gun"),
     gunMount(
         "maul",
@@ -3716,7 +3718,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         idString: "trash_can",
         name: "Trash Can",
         material: "appliance",
-        health: 90,
+        health: 60,
         scale: {
             spawnMin: 1,
             spawnMax: 1,

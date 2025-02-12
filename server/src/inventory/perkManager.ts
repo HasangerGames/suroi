@@ -98,6 +98,7 @@ export class ServerPerkManager extends PerkManager {
             // ! evil ends here
         }
 
+        owner.updateAndApplyModifiers();
         owner.dirty.perks = true;
         return absent;
     }
@@ -159,6 +160,8 @@ export class ServerPerkManager extends PerkManager {
             }
             // ! evil ends here
         }
+
+        this.owner.updateAndApplyModifiers();
 
         owner.dirty.perks ||= has;
         return has;

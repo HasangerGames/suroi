@@ -863,8 +863,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     update(): void {
         const dt = this.game.dt;
 
-        this.updateAndApplyModifiers();
-
         // Calculate movement
         let movement: Vector;
 
@@ -1886,6 +1884,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
             );
         }
+
+        this.updateAndApplyModifiers();
+        if (sourceIsPlayer) source.updateAndApplyModifiers();
     }
 
     private _calculateModifiers(): PlayerModifiers {
@@ -2001,6 +2002,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             size
         } = this._modifiers = this._calculateModifiers();
 
+        this.maxHealth = GameConstants.player.defaultHealth * maxHealth;
+        this.maxAdrenaline = GameConstants.player.maxAdrenaline * maxAdrenaline;
+        this.minAdrenaline = minAdrenaline;
+        this.sizeMod = size;
+    }
+
+    updateBackEquippedMelee(): void {
+        const old = this.backEquippedMelee?.idString;
         this.backEquippedMelee = this.inventory.weapons.find(w => {
             return w
                 && w.definition.itemType === ItemType.Melee
@@ -2008,10 +2017,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 && w !== this.activeItem;
         })?.definition as MeleeDefinition | undefined;
 
-        this.maxHealth = GameConstants.player.defaultHealth * maxHealth;
-        this.maxAdrenaline = GameConstants.player.maxAdrenaline * maxAdrenaline;
-        this.minAdrenaline = minAdrenaline;
-        this.sizeMod = size;
+        if (old !== this.backEquippedMelee?.idString) {
+            this.setDirty();
+        }
     }
 
     // dies of death
@@ -2307,6 +2315,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if (this === this.game.killLeader) {
             this.game.killLeaderDead(sourceIsPlayer ? source : undefined);
         }
+
+        this.updateAndApplyModifiers();
+        if (sourceIsPlayer) source.updateAndApplyModifiers();
 
         this.game.pluginManager.emit("player_did_die", {
             player: this,
