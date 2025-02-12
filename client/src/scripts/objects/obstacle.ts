@@ -135,7 +135,12 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 });
             }
 
-            if (definition.sound && !this.destroyed) {
+            if (
+                definition.sound
+                && !this.destroyed
+                && !definition.isActivatable
+                && !definition.isDoor
+            ) {
                 if ("names" in definition.sound) definition.sound.names.forEach(name => this.playSound(name, definition.sound));
                 else this.playSound(definition.sound.name, definition.sound);
             }
