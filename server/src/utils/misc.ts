@@ -1,7 +1,7 @@
 import { GameConstants } from "@common/constants";
 import { Mode, Modes } from "@common/definitions/modes";
 import { halfπ, τ } from "@common/utils/math";
-import { ReferenceOrNull, ReferenceOrRandom, type ObjectDefinition, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { ReferenceOrNull, ReferenceOrRandom, type ObjectDefinition } from "@common/utils/objectDefinitions";
 import { weightedRandom } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Config, MapWithParams } from "../config";
@@ -37,9 +37,9 @@ export function getRandomIDString<T extends ObjectDefinition>(ref: ReferenceOrRa
 
     const items: Array<ReferenceOrNull<T>> = [];
     const weights: number[] = [];
-    for (const item in ref) {
+    for (const [item, weight] of Object.entries(ref) as ReadonlyArray<readonly [ReferenceOrNull<T>, number]>) {
         items.push(item);
-        weights.push(ref[item as ReferenceOrNull<T>]!);
+        weights.push(weight);
     }
     return weightedRandom(items, weights);
 }

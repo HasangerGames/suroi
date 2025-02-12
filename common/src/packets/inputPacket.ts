@@ -1,14 +1,14 @@
 import { GameConstants, InputActions } from "../constants";
+import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { type AmmoDefinition } from "../definitions/items/ammos";
 import { type ArmorDefinition } from "../definitions/items/armors";
 import { type BackpackDefinition } from "../definitions/items/backpacks";
-import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { type HealingItemDefinition } from "../definitions/items/healingItems";
-import { Loots, type WeaponDefinition } from "../definitions/loots";
-import { type MapPingDefinition, MapPings, type PlayerPing } from "../definitions/mapPings";
 import { type PerkDefinition } from "../definitions/items/perks";
 import { type ScopeDefinition } from "../definitions/items/scopes";
 import { type ThrowableDefinition } from "../definitions/items/throwables";
+import { Loots } from "../definitions/loots";
+import { MapPings, type MapPingDefinition, type PlayerPing } from "../definitions/mapPings";
 import { type DeepMutable, type SDeepMutable } from "../utils/misc";
 import { type Vector } from "../utils/vector";
 import { createPacket, type InputPacket } from "./packet";

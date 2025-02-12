@@ -269,7 +269,7 @@ export class BaseBullet {
                     }
                 }
 
-                if (backDef?.onBack.reflectiveSurface) {
+                if (backDef?.onBack?.reflectiveSurface) {
                     const intersection = getIntersection(backDef?.onBack.reflectiveSurface);
                     if (intersection) {
                         collisions.push({

@@ -31,7 +31,7 @@ const skins: ReadonlyArray<ReferenceTo<SkinDefinition>> = Skins.definitions
     .map(({ idString }) => idString);
 
 const emotes: EmoteDefinition[] = Emotes.definitions
-    .filter(({ category }) => category !== EmoteCategory.TeamEmote);
+    .filter(({ category }) => category !== EmoteCategory.Team);
 
 const bots: Bot[] = [];
 const objects = new Map<number, Bot | undefined>();

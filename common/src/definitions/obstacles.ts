@@ -9,7 +9,7 @@ import { type GunDefinition } from "./items/guns";
 import { type LootDefinition } from "./loots";
 import { SyncedParticleDefinition } from "./syncedParticles";
 
-export type ObstacleDefinition = ObjectDefinition & {
+type CommonObstacleDefinition = ObjectDefinition & {
     readonly material: typeof Materials[number]
     readonly health: number
     readonly indestructible?: boolean
@@ -30,8 +30,6 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly noCollisionAfterDestroyed?: boolean
     readonly pallet?: boolean
     readonly rotationMode: RotationMode // for obstacles with a role, this cannot be RotationMode.Full
-    readonly variations?: Exclude<Variation, 0>
-    readonly variationBits?: number
     readonly particleVariations?: number
     readonly zIndex?: ZIndexes
     /**
@@ -102,6 +100,14 @@ export type ObstacleDefinition = ObjectDefinition & {
     & { readonly isWindow?: boolean }
     & { readonly isWall?: boolean }
 );
+
+type VariationMixin = {
+    readonly variations: Exclude<Variation, 0>
+    readonly variationBits: number
+} | {
+    readonly variations?: never
+    readonly variationBits?: never
+};
 
 type DoorMixin = ({
     readonly isDoor: true
@@ -326,7 +332,7 @@ const houseWall = (
         readonly border: number
         readonly particle: string
     }
-): ObstacleDefinition => ({
+): RawObstacleDefinition => ({
     idString: `house_wall_${lengthNumber}`,
     name: `House Wall ${lengthNumber}`,
     material: "wood",
@@ -352,7 +358,7 @@ const houseWall = (
     }
 });
 
-const hqWall = (lengthNumber: number, hitbox: RectangleHitbox, customHealth = false): ObstacleDefinition => ({
+const hqWall = (lengthNumber: number, hitbox: RectangleHitbox, customHealth = false): RawObstacleDefinition => ({
     idString: `headquarters_wall_${lengthNumber}`,
     name: "Headquarters Wall",
     material: "wood",
@@ -378,7 +384,7 @@ const hqWall = (lengthNumber: number, hitbox: RectangleHitbox, customHealth = fa
     }
 });
 
-const lodgeWall = (id: string, length: number): ObstacleDefinition => ({
+const lodgeWall = (id: string, length: number): RawObstacleDefinition => ({
     idString: `lodge_wall_${id}`,
     name: "Lodge Wall",
     material: "wood",
@@ -404,7 +410,7 @@ const lodgeWall = (id: string, length: number): ObstacleDefinition => ({
     }
 });
 
-const innerConcreteWall = (id: number, hitbox: Hitbox): ObstacleDefinition => ({
+const innerConcreteWall = (id: number, hitbox: Hitbox): RawObstacleDefinition => ({
     idString: `inner_concrete_wall_${id}`,
     name: "Inner Concrete Wall",
     material: "stone",
@@ -431,7 +437,7 @@ const innerConcreteWall = (id: number, hitbox: Hitbox): ObstacleDefinition => ({
     }
 });
 
-const mobileHomeWall = (lengthNumber: string, hitbox: RectangleHitbox): ObstacleDefinition => ({
+const mobileHomeWall = (lengthNumber: string, hitbox: RectangleHitbox): RawObstacleDefinition => ({
     idString: `mobile_home_wall_${lengthNumber}`,
     name: `Mobile Home Wall ${lengthNumber}`,
     material: "appliance",
@@ -459,7 +465,7 @@ const mobileHomeWall = (lengthNumber: string, hitbox: RectangleHitbox): Obstacle
 const tentWall = (
     id: number,
     color: "red" | "green" | "blue" | "orange" | "purple"
-): ObstacleDefinition => ({
+): RawObstacleDefinition => ({
     idString: `tent_wall_${id}`,
     name: `Tent Wall ${id}`,
     material: "stone",
@@ -491,7 +497,7 @@ const portaPottyWall = (
     name: string,
     hitbox: RectangleHitbox,
     outhouse?: boolean
-): ObstacleDefinition => ({
+): RawObstacleDefinition => ({
     idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
     name: name,
     material: "wood",
@@ -520,7 +526,7 @@ const portaPottyWall = (
 const bigTentWall = (
     id: number,
     color: "red" | "green" | "blue" | "orange" | "purple"
-): ObstacleDefinition => ({
+): RawObstacleDefinition => ({
     idString: `tent_wall_big_${id}`,
     name: `Big Tent Wall ${id}`,
     material: "stone",
@@ -559,7 +565,7 @@ const gunMount = (
     useSvg = false,
     hitbox?: Hitbox,
     frames?: ObstacleDefinition["frames"]
-): ObstacleDefinition => ({
+): RawObstacleDefinition => ({
     idString: `gun_mount_${gunID}`,
     name: "Gun Mount",
     material: "wood",
@@ -590,7 +596,7 @@ const gunMount = (
         : undefined
 } as const);
 
-const kitchenUnit = (id: string, hitbox: RectangleHitbox, residue?: string): ObstacleDefinition => ({
+const kitchenUnit = (id: string, hitbox: RectangleHitbox, residue?: string): RawObstacleDefinition => ({
     idString: `kitchen_unit_${id}`,
     name: "Kitchen Unit",
     material: "wood",
@@ -611,7 +617,7 @@ const kitchenUnit = (id: string, hitbox: RectangleHitbox, residue?: string): Obs
     }
 });
 
-const controlPanel = (idString: string, name: string): ObstacleDefinition => ({
+const controlPanel = (idString: string, name: string): RawObstacleDefinition => ({
     idString,
     name,
     material: "metal_light",
@@ -634,7 +640,7 @@ const controlPanel = (idString: string, name: string): ObstacleDefinition => ({
 const gift = (
     color: "red" | "green" | "blue" | "purple" | "black",
     explode = false
-): ObstacleDefinition => ({
+): RawObstacleDefinition => ({
     idString: `${color}_gift`,
     name: `${color.charAt(0).toUpperCase() + color.slice(1)} Gift`,
     material: "cardboard",
@@ -653,7 +659,7 @@ const gift = (
     explosion: explode ? "coal_explosion" : undefined
 });
 
-const rshCase = (idString: string): ObstacleDefinition => ({
+const rshCase = (idString: string): RawObstacleDefinition => ({
     idString,
     name: "RSh-12 Case",
     material: "crate",
@@ -676,7 +682,13 @@ const rshCase = (idString: string): ObstacleDefinition => ({
     }
 });
 
-type RawObstacleDefinition = ObstacleDefinition & { readonly winterVariations?: Exclude<Variation, 0> };
+type RawObstacleDefinition = CommonObstacleDefinition & {
+    readonly variations?: Exclude<Variation, 0>
+    readonly variationBits?: never
+    readonly winterVariations?: Exclude<Variation, 0>
+};
+
+export type ObstacleDefinition = CommonObstacleDefinition & VariationMixin;
 
 export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
@@ -4660,7 +4672,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     rshCase("rsh_case_single"),
     rshCase("rsh_case_dual")
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
-    if (def.variations !== undefined) def.variationBits = Math.ceil(Math.log2(def.variations));
+    if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));
     if (def.allowFlyover === undefined) def.allowFlyover = FlyoverPref.Sometimes;
     if (def.visibleFromLayers === undefined) def.visibleFromLayers = Layers.Adjacent;
     const winterVariations = def.winterVariations;
@@ -4675,4 +4687,4 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             }
         ]
         : def;
-}));
+}) as readonly ObstacleDefinition[]);

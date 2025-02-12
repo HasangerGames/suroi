@@ -143,7 +143,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                                     ({ damageable, dead, definition, hitbox, layer }) =>
                                         damageable
                                         && !dead
-                                        && (!("role" in definition) || !definition.isWindow)
+                                        && (!("isWindow" in definition) || !definition.isWindow)
                                         && equivLayer({ layer, definition }, player)
                                         && hitbox?.intersectsLine(player.position, end)
                                 )
@@ -393,7 +393,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         if (definition.ceilingHitbox) {
             debugRender.addHitbox(
                 definition.ceilingHitbox.transform(this.position, 1, this.orientation),
-                definition.ceilingScopeEffect ? HITBOX_COLORS.buildingZoomCeiling : HITBOX_COLORS.buildingScopeCeiling,
+                definition.noCeilingScopeEffect ? HITBOX_COLORS.buildingScopeCeiling : HITBOX_COLORS.buildingZoomCeiling,
                 alpha
             );
         }

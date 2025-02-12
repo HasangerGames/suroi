@@ -63,7 +63,7 @@ export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedP
             start: position,
             end: endPosition ?? Vec.add(position, Vec.scale(resolveVectorSpecifier(velocity), this._lifetime)),
             easing,
-            duration: endPosition ? definition.spawner?.duration : undefined
+            duration: endPosition ? definition.velocity?.duration : undefined
         };
 
         this._position = position;

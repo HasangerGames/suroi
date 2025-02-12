@@ -8,8 +8,9 @@ import { type Vector } from "./vector";
  */
 export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> {
     readonly definitions: readonly Def[];
-    readonly idStringToDef: ReadonlyRecord<string, Def> = Object.create(null);
-    readonly idStringToNumber: ReadonlyRecord<string, number> = Object.create(null);
+    readonly idStringToDef = Object.create(null) as ReadonlyRecord<string, Def>;
+    readonly idStringToNumber = Object.create(null) as ReadonlyRecord<string, number>;
+
     /**
      * Whether there are more than 256 definitions in this schema, requiring 2 bytes to serialize
      */

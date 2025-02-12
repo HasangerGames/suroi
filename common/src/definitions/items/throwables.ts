@@ -127,7 +127,7 @@ export const Throwables = new ObjectDefinitions<ThrowableDefinition>([
         detonation: {
             explosion: "smoke_grenade_explosion",
             spookyParticles: "plumpkin_smoke_grenade_particle",
-            particles: "smoke_grenade_particle",
+            particles: "smoke_grenade_particle"
         },
         animation: {
             pinImage: "proj_smoke_pin",

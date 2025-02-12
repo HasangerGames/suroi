@@ -1,15 +1,16 @@
 import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "@common/constants";
+import { EmoteCategory, type EmoteDefinition } from "@common/definitions/emotes";
+import { Explosions } from "@common/definitions/explosions";
 import { Ammos } from "@common/definitions/items/ammos";
 import { type ArmorDefinition } from "@common/definitions/items/armors";
 import { type BackpackDefinition } from "@common/definitions/items/backpacks";
-import { Explosions } from "@common/definitions/explosions";
 import { Guns, type GunDefinition, type SingleGunNarrowing } from "@common/definitions/items/guns";
 import { HealType, type HealingItemDefinition } from "@common/definitions/items/healingItems";
-import { Loots, type WeaponDefinition } from "@common/definitions/loots";
 import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "@common/definitions/items/melees";
-import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { PerkData, PerkIds } from "@common/definitions/items/perks";
 import { Skins, type SkinDefinition } from "@common/definitions/items/skins";
+import { Loots, type WeaponDefinition } from "@common/definitions/loots";
+import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, getEffectiveZIndex } from "@common/utils/layer";
@@ -28,13 +29,12 @@ import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
 import { BULLET_WHIZ_SCALE, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE } from "../utils/constants";
+import type { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
-import { type Particle, type ParticleEmitter } from "./particles";
-import type { DebugRenderer } from "../utils/debugRenderer";
-import { EmoteCategory, type EmoteDefinition } from "@common/definitions/emotes";
+import { type Particle, type ParticleEmitter, type ParticleOptions } from "./particles";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -340,7 +340,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         }
 
                         return {
-                            frames: casingSpec.frame ?? Ammos.fromString(weaponDef.ammoType).defaultCasingFrame,
+                            frames: casingSpec.frame ?? Ammos.fromString(weaponDef.ammoType).defaultCasingFrame ?? "",
                             zIndex: ZIndexes.Players,
                             position: Vec.add(this.position, Vec.rotate(position, this.rotation)),
                             lifetime: 400,
@@ -370,7 +370,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                 ),
                                 this.rotation
                             )
-                        };
+                        } satisfies ParticleOptions;
                     }
                 );
             };
@@ -678,7 +678,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             const { hideEquipment, helmetLevel, vestLevel, backpackLevel } = this;
 
-            this.hideEquipment = skinDef.hideEquipment;
+            this.hideEquipment = skinDef.hideEquipment ?? false;
 
             this.helmetLevel = (this.equipment.helmet = helmet)?.level ?? 0;
             this.vestLevel = (this.equipment.vest = vest)?.level ?? 0;
@@ -850,7 +850,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     ? 0
                     : Numeric.min(
                         this.game.inputManager.distanceToMouse * 0.9, // <- this constant is defined server-side
-                        def.maxThrowDistance * PerkData[PerkIds.DemoExpert].rangeMod
+                        (def.maxThrowDistance ?? 128) * PerkData[PerkIds.DemoExpert].rangeMod
                     );
 
                 const cookMod = def.cookable ? Date.now() - this.animationChangeTime : 0;
@@ -988,7 +988,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
         }
 
-        if (this.backEquippedMelee?.onBack.reflectiveSurface) {
+        if (this.backEquippedMelee?.onBack?.reflectiveSurface) {
             renderMeleeReflectionSurface(this.backEquippedMelee?.onBack.reflectiveSurface);
         }
     }

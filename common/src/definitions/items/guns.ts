@@ -2288,8 +2288,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
             onHitExplosion: "firework_launcher_explosion",
             explodeOnImpact: true,
             tracer: {
-                image: "firework_rocket_trail",
-                length: 1
+                image: "firework_rocket_trail"
             },
             trail: {
                 frame: "small_gas",
@@ -2406,7 +2405,6 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         devItem: true,
         killstreak: true,
         consistentPatterning: true,
-        jitterRadius: 0,
         ammoType: "12g",
         ammoSpawnAmount: 15,
         capacity: 5,

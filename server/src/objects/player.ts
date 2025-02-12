@@ -130,7 +130,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.game.updateKillLeader(this);
     }
 
-    private _maxHealth = GameConstants.player.defaultHealth as number;
+    private _maxHealth = GameConstants.player.defaultHealth;
     get maxHealth(): number { return this._maxHealth; }
     set maxHealth(maxHealth: number) {
         if (this._maxHealth !== maxHealth) {
@@ -158,7 +158,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._normalizedHealth = Numeric.remap(this.health, 0, this.maxHealth, 0, 1);
     }
 
-    private _maxAdrenaline = GameConstants.player.maxAdrenaline as number;
+    private _maxAdrenaline = GameConstants.player.maxAdrenaline;
 
     private _normalizedAdrenaline = 0;
     get normalizedAdrenaline(): number { return this._normalizedAdrenaline; }
@@ -262,7 +262,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     /**
      * The distance from the player position to the player mouse in game units
      */
-    distanceToMouse = GameConstants.player.maxMouseDist as number;
+    distanceToMouse = GameConstants.player.maxMouseDist;
 
     /**
      * Keeps track of various fields which are "dirty"
@@ -434,7 +434,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._team?.setDirty();
     }
 
-    baseSpeed = GameConstants.player.baseSpeed as number;
+    baseSpeed = GameConstants.player.baseSpeed;
 
     private _movementVector = Vec.create(0, 0);
     get movementVector(): Vector { return Vec.clone(this._movementVector); }

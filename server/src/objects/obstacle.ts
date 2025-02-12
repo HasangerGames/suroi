@@ -1,10 +1,10 @@
 import { ObjectCategory, RotationMode } from "@common/constants";
-import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { PerkIds } from "@common/definitions/items/perks";
+import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Angle, calculateDoorHitboxes, resolveStairInteraction } from "@common/utils/math";
-import { ItemType, NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { ItemType, NullString, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";

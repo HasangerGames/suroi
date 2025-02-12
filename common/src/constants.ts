@@ -90,7 +90,7 @@ export const GameConstants = {
     riverPadding: 64,
     trailPadding: 384,
     explosionRayDistance: 2
-} as const;
+};
 
 export enum ZIndexes {
     Ground,

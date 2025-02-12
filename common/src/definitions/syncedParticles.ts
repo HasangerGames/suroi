@@ -10,10 +10,13 @@ import { type ScopeDefinition } from "./items/scopes";
 
 export type SyncedParticleDefinition = ObjectDefinition & {
     readonly scale: Animated<number> | NumericSpecifier
-    readonly alpha: (Animated<number> & { creatorMult?: number }) | NumericSpecifier
+    readonly alpha: (Animated<number> & { readonly creatorMult?: number }) | NumericSpecifier
     readonly lifetime: NumericSpecifier
     readonly angularVelocity: NumericSpecifier
-    readonly velocity: VectorSpecifier & { easing?: keyof typeof EaseFunctions, duration?: number }
+    readonly velocity: VectorSpecifier & {
+        readonly easing?: keyof typeof EaseFunctions
+        readonly duration?: number
+    }
     readonly zIndex: ZIndexes
 
     readonly frame: string
@@ -200,7 +203,6 @@ export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
             min: 1500,
             max: 2500
         },
-        hitbox: new CircleHitbox(5),
         spawner: {
             count: 5,
             radius: 10,

@@ -12,11 +12,6 @@ interface BasePerkDefinition extends ItemDefinition {
     readonly plumpkinGambleIgnore?: boolean
 }
 
-interface RawPerkDefinition extends BasePerkDefinition {
-    // allows perk definitions to have any properties in addition to those in RawPerkDefinition
-    [x: string | number | symbol]: unknown
-}
-
 /**
  * As the name implies, loosens numeric literal type (e.g. 1.2) to be `number`
  */
@@ -430,7 +425,7 @@ const perks = [
         noDrop: true,
         plumpkinGambleIgnore: true
     }
-] as const satisfies readonly RawPerkDefinition[];
+] as const satisfies ReadonlyArray<BasePerkDefinition & Record<string, unknown>>;
 
 export const Perks = new ObjectDefinitions<PerkDefinition>(perks);
 export const PerkData = Perks.idStringToDef as { [K in PerkIds]: Extract<PerkDefinition, { idString: K }> };

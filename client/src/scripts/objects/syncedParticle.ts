@@ -56,7 +56,7 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
             start: toPixiCoords(startPosition),
             end: toPixiCoords(endPosition),
             easing,
-            duration: endPosition ? definition.spawner?.duration : undefined
+            duration: endPosition ? definition.velocity?.duration : undefined
         };
         this.container.position = startPosition;
 
@@ -133,7 +133,7 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
     override update(): void {
         const ageMs = Date.now() - this._spawnTime;
         this._age = ageMs / this._lifetime;
-        if (this._age > 1 || !this._positionAnim) return;
+        if (this._age > 1 || this._positionAnim === undefined) return;
 
         const { start, end, easing, duration } = this._positionAnim;
         const interpFactor = duration ? ageMs / duration : this._age;

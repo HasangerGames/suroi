@@ -276,7 +276,11 @@ export const TentTints = {
     purple: 0x994cb2
 };
 
-const blueHouseVaultLayout = (id: number, obstacles: readonly BuildingObstacle[], subBuildings?: readonly SubBuilding[]): BuildingDefinition => ({
+const blueHouseVaultLayout = (
+    id: number,
+    obstacles: readonly BuildingObstacle[],
+    subBuildings?: readonly SubBuilding[]
+): BuildingDefinition => ({
     idString: `blue_house_vault_layout_${id}`,
     name: "Blue House Vault Layout",
     spawnHitbox: RectangleHitbox.fromRect(40, 35, Vec.create(18.4, 18)),
@@ -286,10 +290,8 @@ const blueHouseVaultLayout = (id: number, obstacles: readonly BuildingObstacle[]
         scale: Vec.create(1.07, 1.07)
     }],
     obstacles,
-    subBuildings: subBuildings ?? [],
-    lootSpawners: subBuildings
-        ? []
-        : [{ table: "ground_loot", position: Vec.create(23.5, 14.4) }]
+    subBuildings,
+    ...(subBuildings ? { lootSpawners: [{ table: "ground_loot", position: Vec.create(23.5, 14.4) }] } : {})
 });
 
 const warehouseLayout = (id: number, obstacles: readonly BuildingObstacle[]): BuildingDefinition => ({
@@ -605,16 +607,18 @@ const container = (
             type: FloorNames.Metal,
             hitbox: RectangleHitbox.fromRect(14, 28)
         }],
-        lootSpawners: closed
-            ? []
-            : [{
-                position: Vec.create(0, 0),
-                table: "ground_loot"
-            }]
+        ...(
+            closed
+                ? {}
+                : { lootSpawners: [{
+                    position: Vec.create(0, 0),
+                    table: "ground_loot"
+                }] }
+        )
     } as const;
 };
 
-const riverHut = (id: number, obstacles: BuildingObstacle[]): BuildingDefinition => {
+const riverHut = (id: number, obstacles: readonly BuildingObstacle[]): BuildingDefinition => {
     const bridgeFloor1 = 31.5;
     return {
         idString: `river_hut_${id}`,
@@ -729,7 +733,7 @@ const tent = (
 const hayShed = (
     id: number,
     ceilingVariation: number,
-    obstacles: BuildingObstacle[],
+    obstacles: readonly BuildingObstacle[],
     lootSpawners?: readonly LootSpawner[]
 ): BuildingDefinition => ({
     idString: `hay_shed_${id}`,
@@ -758,7 +762,7 @@ const hayShed = (
         { idString: "pole", position: Vec.create(13.98, 10.87) },
         ...obstacles
     ],
-    lootSpawners: lootSpawners ?? []
+    lootSpawners
 });
 
 const bigTent = (
@@ -919,11 +923,15 @@ const tugboat = (color: string, mainLoot: string): BuildingDefinition => ({
         { idString: "window2", position: Vec.create(83.91, 30.75), rotation: 1 },
         { idString: "window2", position: Vec.create(95.63, 30.75), rotation: 1 }
     ],
-    lootSpawners: color === "red"
-        ? [
-            { table: "tugboat_red_floor", position: Vec.create(89, -25) }
-        ]
-        : []
+    ...(
+        color === "red"
+            ? {
+                lootSpawners: [
+                    { table: "tugboat_red_floor", position: Vec.create(89, -25) }
+                ]
+            }
+            : {}
+    )
 } as const);
 
 const port_warehouse = (color: string, tint: number): BuildingDefinition => ({
@@ -4358,7 +4366,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             { idString: "grenade_crate", position: Vec.create(-27.5, 85.5), outdoors: true }
         ],
-        lootSpawners: [],
         subBuildings: [
             // North West Shed
             { idString: "shed", position: Vec.create(-36, -95) },
@@ -4427,8 +4434,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "roadblock", position: Vec.create(2.5, 27.5), rotation: 1 },
             { idString: "roadblock", position: Vec.create(17.5, 27.5), rotation: 1 },
             { idString: "roadblock", position: Vec.create(25, 15), rotation: 0 }
-        ],
-        lootSpawners: []
+        ]
     },
 
     // -----------------------------------------------------------------------------------------------
@@ -5023,8 +5029,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         obstacles: [
             { idString: "bunker_stair", position: Vec.create(0, 2.6), rotation: 0 }
-        ],
-        lootSpawners: []
+        ]
     },
     {
         idString: "small_bunker_main",
@@ -5177,8 +5182,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(20, 12, Vec.create(-20, 21.5))
                 )
             }
-        ],
-        obstacles: []
+        ]
     },
     {
         idString: "barn_exterior", // spanAdjacent layer thingy no work
