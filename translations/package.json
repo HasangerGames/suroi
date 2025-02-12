@@ -12,7 +12,7 @@
   "license": "GPL-3.0",
   "devDependencies": {
     "@types/hjson": "^2.4.6",
-    "@types/node": "^22.10.7",
+    "@types/node": "^22.13.1",
     "hjson": "^3.2.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
