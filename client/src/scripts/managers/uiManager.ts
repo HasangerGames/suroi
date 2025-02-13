@@ -534,7 +534,7 @@ export class UIManager {
                             : getTranslatedString("msg_player_died", {
                                 player: this.getPlayerData(packet.teammates[i].playerID).name
                             })
-                        : packet.numberTeammates > 1 ? getTranslatedString("msg_your_team_eliminated") : getTranslatedString("msg_you_died"))
+                        : packet.numberTeammates > 1 && packet.teammates.every(teammate => !teammate.alive) ? getTranslatedString("msg_your_team_eliminated") : getTranslatedString("msg_you_died"))
             );
 
             const teammateName = this.getPlayerData(teammateID).name;

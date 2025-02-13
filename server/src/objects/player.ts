@@ -2419,6 +2419,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             kills: player.kills,
             damageDone: player.damageDone,
             damageTaken: player.damageTaken,
+            alive: !player.dead,
             timeAlive: (player.game.now - player.joinTime) / 1000
         }));
 

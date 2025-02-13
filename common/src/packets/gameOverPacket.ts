@@ -8,6 +8,7 @@ export type GameOverData = {
         readonly damageDone: number
         readonly damageTaken: number
         readonly timeAlive: number
+        readonly alive: boolean
     }>
 } & ({
     readonly won: true
@@ -23,6 +24,7 @@ export interface TeammateGameOverData {
     damageDone: number
     damageTaken: number
     timeAlive: number
+    alive: boolean
 }
 
 export const GameOverPacket = createPacket("GameOverPacket")<GameOverData>({
@@ -34,7 +36,7 @@ export const GameOverPacket = createPacket("GameOverPacket")<GameOverData>({
                 .writeUint8(data.teammates[i].kills)
                 .writeUint16(data.teammates[i].damageDone)
                 .writeUint16(data.teammates[i].damageTaken)
-                .writeUint16(data.teammates[i].timeAlive);
+                .writeUint16(data.teammates[i].timeAlive).writeBooleanGroup(data.teammates[i].alive);
         }
     },
 
@@ -48,12 +50,14 @@ export const GameOverPacket = createPacket("GameOverPacket")<GameOverData>({
             const damageDone = stream.readUint16();
             const damageTaken = stream.readUint16();
             const timeAlive = stream.readUint16();
+            const [alive] = stream.readBooleanGroup();
             teammates.push({
                 playerID,
                 kills,
                 damageDone,
                 damageTaken,
-                timeAlive
+                timeAlive,
+                alive
             });
         }
         return {
