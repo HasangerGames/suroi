@@ -634,8 +634,6 @@
     position: absolute;
     top: 60%;
     left: 50%;
-    text-align: center;
-    vertical-align: middle;
     transform: translateX(-50%);
     background-color: palette.$transparent_bg;
     padding: 8px;
@@ -679,8 +677,6 @@
 
 #interact-text {
     font-size: 20px;
-    position: relative;
-    top: 2.5px;
     @include variables.text-shadow;
 
     @media screen and (max-width: variables.$screen-large) {
@@ -1259,7 +1255,7 @@
                 span {
                     font-size: 15px;
                 }
-                
+
                 img {
                     width: 25px;
                 }
