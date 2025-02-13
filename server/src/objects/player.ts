@@ -1795,6 +1795,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             })
         ) return;
 
+        this.canDespawn = false;
+
         const canTrackStats = weaponUsed instanceof InventoryItemBase;
         const attributes = canTrackStats ? weaponUsed.definition.wearerAttributes?.on : undefined;
         const sourceIsPlayer = source instanceof Player;
