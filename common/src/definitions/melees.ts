@@ -125,12 +125,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 obstacleMultiplier: 1.5,
                 radius: 3.8,
                 offset: Vec.create(3.8, 2.2),
-                cooldown: 340,
-                fists: {
-                    animationDuration: 150,
-                    left: Vec.create(-30, 40),
-                    right: Vec.create(-10, 50)
-                },
+                cooldown: 370,
                 animation: [
                     // {
                     //     duration: 1500,
@@ -143,33 +138,49 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                     //         angle: -260
                     //     }
                     // },
-                    {
-                        duration: 1500,
+                    { // warmup
+                        duration: 150,
+                        fists: {
+                            left: Vec.create(-40, 35),
+                            right: Vec.create(-25, 55)
+                        },
+                        image: {
+                            position: Vec.create(-25, 20),
+                            angle: -65
+                        }
+                    },
+                    { // swing
+                        duration: 150,
                         fists: {
                             left: Vec.create(50, -5),
                             right: Vec.create(60, -10)
                         },
                         image: {
-                            position: Vec.create(40, -50),
+                            position: Vec.create(65, 27),
                             angle: -350
                         }
                     },
                     {
-                        duration: 1500,
+                        duration: 150,
                         fists: {
                             left: Vec.create(-30, 40),
                             right: Vec.create(-10, 50)
                         },
                         image: {
-                            position: Vec.create(-45, 85),
+                            position: Vec.create(-30, 19),
                             angle: -110
                         }
                     }
                 ],
+                fists: {
+                    animationDuration: 150,
+                    left: Vec.create(-30, 40),
+                    right: Vec.create(-10, 50)
+                },
                 image: {
-                    position: Vec.create(-45, 85),
+                    position: Vec.create(-30, 19),
                     angle: -110,
-                    pivot: Vec.create(-65, 0),
+                    pivot: Vec.create(-20, 50),
                     lootScale: 0.55
                 }
             },
