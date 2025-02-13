@@ -7,8 +7,8 @@
    viewBox="0 0 535.54866 356.27231"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3.2 (1:1.3.2+202404261509+091e20ef0f)"
-   sodipodi:docname="lodge_floor_bottom_2.svg"
+   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
+   sodipodi:docname="lodge_floor_bottom.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -24,9 +24,9 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
      inkscape:document-units="px"
-     inkscape:zoom="0.26079721"
-     inkscape:cx="283.74537"
-     inkscape:cy="837.81572"
+     inkscape:zoom="1.4752918"
+     inkscape:cx="1126.2179"
+     inkscape:cy="1130.9627"
      inkscape:window-width="2560"
      inkscape:window-height="1368"
      inkscape:window-x="0"
@@ -408,16 +408,18 @@
            transform="matrix(0.99448,0,0,1.01574,3600.983,186.845)"
            id="path2224" />
       </g>
-      <rect
-         width="4"
-         height="243.351"
-         x="305.00534"
-         y="-373.10904"
-         rx="0"
-         ry="0"
-         style="display:inline;fill:#5d4622;fill-opacity:1;stroke:#2d2110;stroke-width:3.99998;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill;stop-color:#000000"
-         transform="rotate(90)"
-         id="rect2226" />
+      <g
+         id="rect2226"
+         transform="rotate(90)">
+        <path
+           style="fill:#2d2110;paint-order:markers stroke fill"
+           d="m 303.00586,-375.10937 v 247.35156 h 8 v -247.35156 z"
+           id="path1" />
+        <path
+           style="fill:#5d4622;paint-order:markers stroke fill"
+           d="m 305.00534,-373.10904 h 4 v 243.351 h -4 z"
+           id="path2" />
+      </g>
       <g
          transform="translate(-7586.256,-1672.8196)"
          id="g2228">
