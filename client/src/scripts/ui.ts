@@ -1728,6 +1728,7 @@ export async function setUpUI(game: Game): Promise<void> {
     addSliderListener("#slider-gyro-angle", "mb_gyro_angle");
     addCheckboxListener("#toggle-haptics", "mb_haptics");
     addCheckboxListener("#toggle-high-res-mobile", "mb_high_res_textures");
+    addCheckboxListener("#toggle-antialias-mobile", "mb_antialias");
 
     function updateUiScale(): void {
         const scale = game.console.getBuiltInCVar("cv_ui_scale");
@@ -2186,11 +2187,10 @@ export async function setUpUI(game: Game): Promise<void> {
             .toggleClass("fa-eye-slash", visible);
     });
 
-    // Hide mobile settings on desktop
-    $("#tab-mobile").toggle(isMobile.any);
-
     // Mobile event listeners
     if (inputManager.isMobile) {
+        $("#tab-mobile").show();
+
         // Interact message
         ui.interactMsg.on("click", () => {
             inputManager.addAction(uiManager.action.active ? InputActions.Cancel : InputActions.Interact);

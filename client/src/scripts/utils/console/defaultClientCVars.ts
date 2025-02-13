@@ -99,6 +99,7 @@ export const CVarCasters = Object.freeze({
     mb_gyro_angle: Casters.toNumber,
     mb_haptics: Casters.toBoolean,
     mb_high_res_textures: Casters.toBoolean,
+    mb_antialias: Casters.toBoolean,
 
     dv_password: Casters.toString,
     dv_role: Casters.toString,
@@ -232,6 +233,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     mb_gyro_angle: 0,
     mb_haptics: true,
     mb_high_res_textures: false,
+    mb_antialias: false,
 
     dv_password: "",
     dv_role: "",

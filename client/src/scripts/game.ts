@@ -233,7 +233,9 @@ export class Game {
             await game.pixi.init({
                 resizeTo: window,
                 background: game.colors.grass,
-                antialias: game.console.getBuiltInCVar("cv_antialias"),
+                antialias: game.inputManager.isMobile
+                    ? game.console.getBuiltInCVar("mb_antialias")
+                    : game.console.getBuiltInCVar("cv_antialias"),
                 autoDensity: true,
                 preferWebGLVersion: renderMode === "webgl1" ? 1 : 2,
                 preference: renderMode === "webgpu" ? "webgpu" : "webgl",
