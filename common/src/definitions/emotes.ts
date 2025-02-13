@@ -18,6 +18,7 @@ export enum EmoteCategory {
 export interface EmoteDefinition extends ObjectDefinition {
     readonly category: EmoteCategory
     readonly scale?: number
+    readonly hideInLoadout?: boolean
 }
 
 const emote = (name: string, category: EmoteCategory): EmoteDefinition => ({
@@ -129,22 +130,23 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
         "Eagle"
     ].map(name => emote(name, EmoteCategory.Misc)),
     ...[
-        ...Ammos.definitions,
-        ...HealingItems.definitions
+        ...Ammos,
+        ...HealingItems
     ].map(({ idString, name }) => ({
         idString,
         name,
         category: EmoteCategory.Team,
-        scale: 0.7
+        scale: 0.7,
+        hideInLoadout: true
     })),
     ...[
-
-        ...Guns.definitions,
-        ...Melees.definitions,
-        ...Throwables.definitions
+        ...Guns,
+        ...Melees,
+        ...Throwables
     ].map(({ idString, name }) => ({
         idString,
         name,
-        category: EmoteCategory.Weapon
+        category: EmoteCategory.Weapon,
+        hideInLoadout: true
     }))
 ]);
