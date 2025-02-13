@@ -483,7 +483,7 @@ export class UIManager {
                 const killsMedal = bestKills === packet.teammates[i].kills && bestKills >= 10 && !medals.kills.assigned;
                 const damageDoneMedal = bestDamageDone === packet.teammates[i].damageDone && bestDamageDone >= 1000 && !medals.damageDone.assigned;
                 const damageTakenMedal = bestDamageTaken === packet.teammates[i].damageTaken && bestDamageTaken >= 1000 && !medals.damageTaken.assigned;
-                const wellDone = packet.teammates[i].kills === 0 && packet.teammates[i].damageDone === 0;
+                const wellDone = packet.teammates[i].kills === 0 && packet.teammates[i].damageDone === 0 && packet.won;
 
                 wonMedal = (
                     // Kills (More than 10 kills + most kills on team)
