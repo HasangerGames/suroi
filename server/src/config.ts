@@ -26,8 +26,8 @@ export const Config = {
 
     roles: {
         developr: { password: "developr", isDev: true },
+        dev_managr: { password: "dev_managr" },
         designr: { password: "designr" },
-        lead_designr: { password: "lead_designr" },
         vip_designr: { password: "vip_designr" },
         sound_designr: { password: "sound_designr" },
         moderatr: { password: "moderatr" },
