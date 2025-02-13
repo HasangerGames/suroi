@@ -1765,8 +1765,8 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
             speed: 0.33,
             range: 270,
             tracer: {
-                width: 1.1,
-                length: 1.7
+                width: 1.3,
+                length: 2.4
             },
             lastShotFX: true
         }
