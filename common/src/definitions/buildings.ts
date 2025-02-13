@@ -229,8 +229,8 @@ const randomToilet = {
 };
 
 const randomStove = {
-    stove: 0.95,
-    pan_stove: 0.05
+    stove: 0.97,
+    pan_stove: 0.03
 };
 
 const randomSmallStove = {
