@@ -102,6 +102,7 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
         "RIP",
         "Leosmug",
         "awhhmahgawd",
+        "emoji_50",
         "Boykisser",
         "Grr"
     ].map(name => emote(name, EmoteCategory.Memes)),
@@ -124,6 +125,7 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
         "Penguin",
         "Squid",
         "Tomato",
+        "Leek",
         "Eagle"
     ].map(name => emote(name, EmoteCategory.Misc)),
     ...[
