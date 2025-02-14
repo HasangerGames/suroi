@@ -18,6 +18,7 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
     declare readonly category: ItemType.Melee;
 
     private _autoUseTimeoutID?: NodeJS.Timeout;
+    private _hitTimeoutID?: NodeJS.Timeout;
 
     /**
      * Constructs a new melee weapon
@@ -115,11 +116,23 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                         multiplier *= definition.obstacleMultiplier;
                     }
 
-                    closestObject.damage({
-                        amount: definition.damage * multiplier,
-                        source: owner,
-                        weaponUsed: this
-                    });
+                    if (definition.hitDelay === undefined) {
+                        closestObject.damage({
+                            amount: definition.damage * multiplier,
+                            source: owner,
+                            weaponUsed: this
+                        });
+                    }
+                    else {
+                        clearTimeout(this._hitTimeoutID);
+                        this._hitTimeoutID = setTimeout((): void => {
+                            closestObject.damage({
+                                amount: definition.damage * multiplier,
+                                source: owner,
+                                weaponUsed: this
+                            });
+                        }, definition.hitDelay);
+                    }
 
                     if (closestObject.isObstacle && !closestObject.dead) {
                         closestObject.interact(this.owner);

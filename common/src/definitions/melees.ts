@@ -26,6 +26,7 @@ export type MeleeDefinition = InventoryItemDefinition & {
     readonly swingSound: string
     readonly stopSound?: string
     readonly hitSound?: string
+    readonly hitDelay?: number
     readonly radius: number
     readonly offset: Vector
     readonly cooldown: number
@@ -124,8 +125,9 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 damage: 34,
                 obstacleMultiplier: 1.5,
                 radius: 3.8,
-                offset: Vec.create(3.8, 2.2),
-                cooldown: 370,
+                offset: Vec.create(4.5, 2.2),
+                cooldown: 450,
+                hitDelay: 150,
                 animation: [
                     // {
                     //     duration: 1500,
