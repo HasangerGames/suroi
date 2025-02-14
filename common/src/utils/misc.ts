@@ -297,6 +297,10 @@ export function splitArray<In, Narrow extends In>(target: In[], predicate: (ele:
     true: Narrow[]
     false: Array<Exclude<In, Narrow>>
 };
+export function splitArray<In>(target: In[], predicate: (ele: In, index: number, array: In[]) => boolean): {
+    true: In[]
+    false: In[]
+};
 export function splitArray<In, const Out extends PrimitiveKey>(target: In[], predicate: (ele: In, index: number, array: In[]) => Out): Record<Out, In[]>;
 /**
  * Splits an array into two subarrays based on a predicate. If `Out` is not assignable to `string | number | symbol`, use {@link groupArray} instead
