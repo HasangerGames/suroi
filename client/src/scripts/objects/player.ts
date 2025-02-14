@@ -1436,7 +1436,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                     });
                                 }
 
-                                if (weaponDef.image !== undefined) {
+                                if (weaponDef.image !== undefined && frame.image !== undefined) {
                                     this.anims.weapon = this.game.addTween({
                                         target: this.images.weapon,
                                         to: {
