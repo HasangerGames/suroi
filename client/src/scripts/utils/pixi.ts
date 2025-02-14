@@ -251,6 +251,11 @@ export class SuroiSprite extends Sprite {
         return this;
     }
 
+    setPivot(pivot: Vector): this {
+        this.pivot.copyFrom(pivot);
+        return this;
+    }
+
     setPos(x: number, y: number): this {
         this.position.set(x, y);
         return this;

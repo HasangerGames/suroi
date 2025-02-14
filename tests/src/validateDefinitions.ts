@@ -2534,7 +2534,7 @@ logger.indent("Validating melees", () => {
 
             logger.indent("Validating fists", () => {
                 const errorPath2 = tester.createPath(errorPath, "fists");
-                const { fists, rotationalAnimation } = melee;
+                const { fists } = melee;
 
                 tester.assertIsPositiveReal({
                     obj: fists,
@@ -2549,20 +2549,8 @@ logger.indent("Validating melees", () => {
                     baseErrorPath: errorPath2
                 });
 
-                tester.assertNoPointlessValue({
-                    obj: fists,
-                    field: "noLeftFistMovement",
-                    defaultValue: false,
-                    baseErrorPath: errorPath2
-                });
-
                 validators.vector(tester.createPath(errorPath2, "left"), fists.left);
                 validators.vector(tester.createPath(errorPath2, "right"), fists.right);
-
-                if (!rotationalAnimation) {
-                    validators.vector(tester.createPath(errorPath2, "use left"), fists.useLeft);
-                    validators.vector(tester.createPath(errorPath2, "use right"), fists.useRight);
-                }
             });
 
             const image = melee.image;
@@ -2571,9 +2559,6 @@ logger.indent("Validating melees", () => {
                     const errorPath2 = tester.createPath(errorPath, "image");
 
                     validators.vector(tester.createPath(errorPath2, "position"), image.position);
-                    if (!melee.rotationalAnimation && image.usePosition !== undefined) {
-                        validators.vector(tester.createPath(errorPath2, "use position"), image.usePosition);
-                    }
 
                     tester.assertValidOrNPV({
                         obj: image,

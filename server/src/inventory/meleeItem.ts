@@ -16,6 +16,7 @@ import { InventoryItemBase } from "./inventoryItem";
  */
 export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
     private _autoUseTimeoutID?: NodeJS.Timeout;
+    private _hitTimeoutID?: NodeJS.Timeout;
 
     /**
      * Constructs a new melee weapon
@@ -113,11 +114,22 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
                         multiplier *= definition.obstacleMultiplier;
                     }
 
-                    closestObject.damage({
-                        amount: definition.damage * multiplier,
-                        source: owner,
-                        weaponUsed: this
-                    });
+                    if (definition.hitDelay === undefined) {
+                        closestObject.damage({
+                            amount: definition.damage * multiplier,
+                            source: owner,
+                            weaponUsed: this
+                        });
+                    } else {
+                        clearTimeout(this._hitTimeoutID);
+                        this._hitTimeoutID = setTimeout((): void => {
+                            closestObject.damage({
+                                amount: definition.damage * multiplier,
+                                source: owner,
+                                weaponUsed: this
+                            });
+                        }, definition.hitDelay);
+                    }
 
                     if (closestObject.isObstacle && !closestObject.dead) {
                         closestObject.interact(this.owner);
@@ -128,7 +140,9 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
                     clearTimeout(this._autoUseTimeoutID);
                     this._autoUseTimeoutID = setTimeout(
                         this._useItemNoDelayCheck.bind(this, false),
-                        definition.cooldown
+                        damagedObjects.length && definition.attackCooldown
+                            ? definition.attackCooldown
+                            : definition.cooldown
                     );
                 }
             }
