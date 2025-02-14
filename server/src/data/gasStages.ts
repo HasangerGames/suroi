@@ -30,7 +30,8 @@ export const GasStages: GasStage[] = [
         duration: 20,
         oldRadius: 0.76,
         newRadius: 0.55,
-        dps: 2
+        dps: 2,
+        preventJoin: true
     },
     // Zone 1 closed, 1 min 20 seconds
     {

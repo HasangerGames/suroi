@@ -1,7 +1,7 @@
 import { GameConstants, GasState, MapObjectSpawnMode } from "@common/constants";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Geometry, Numeric } from "@common/utils/math";
-import { randomBoolean, randomPointInsideCircle } from "@common/utils/random";
+import { randomPointInsideCircle } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Config, GasMode } from "./config";
 import { GasStages } from "./data/gasStages";
@@ -98,12 +98,12 @@ export class Gas {
                 if (isDebug && gas.overridePosition) {
                     this.newPosition = Vec.create(width / 2, height / 2);
                 } else {
+                    const { oldRadius, newRadius } = currentStage;
                     const { x, y } = randomPointInsideCircle(
                         this.oldPosition,
-                        (currentStage.oldRadius - currentStage.newRadius) * this.mapSize
+                        (oldRadius - newRadius) * this.mapSize
                     );
-                    const { width, height } = this.game.map;
-                    const radius = currentStage.newRadius * 0.75; // ensure at least 75% of the safe zone will be inside map bounds
+                    const radius = newRadius * 0.75; // ensure at least 75% of the safe zone will be inside map bounds
                     this.newPosition = Vec.create(
                         Numeric.clamp(x, radius, width - radius),
                         Numeric.clamp(y, radius, height - radius)
