@@ -2209,6 +2209,9 @@ export async function setUpUI(game: Game): Promise<void> {
         const createEmoteWheelListener = (slot: typeof EMOTE_SLOTS[number], emoteSlot: number): void => {
             $(`#emote-wheel .emote-${slot}`).on("click", () => {
                 ui.emoteWheel.hide();
+                ui.emoteButton
+                    .removeClass("btn-alert")
+                    .addClass("btn-primary");
                 let clicked = true;
 
                 if (inputManager.pingWheelActive) {
@@ -2279,7 +2282,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 .toggleClass("btn-alert", !emoteWheelActive)
                 .toggleClass("btn-primary", emoteWheelActive);
 
-            uiManager.ui.emoteWheel.show();
+            uiManager.ui.emoteWheel.toggle(!emoteWheelActive);
         });
 
         ui.pingToggle.on("click", () => {

@@ -363,6 +363,10 @@ export class Game {
                 ui.killFeed.html("");
                 ui.spectatingContainer.hide();
                 ui.joystickContainer.show();
+
+                this.inputManager.emoteWheelActive = false;
+                this.inputManager.pingWheelMinimap = false;
+                this.uiManager.ui.emoteWheel.hide();
             }
 
             let skin: typeof defaultClientCVars["cv_loadout_skin"];
