@@ -421,7 +421,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 obstacleMultiplier: 1.3,
                 radius: 2.7,
                 offset: Vec.create(4, 0),
-                cooldown: 175,
+                cooldown: 220,
                 reskins: ["winter"],
                 //  fireMode: FireMode.Auto, - todo
                 fists: {
@@ -436,7 +436,18 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 },
                 animation: [
                     {
-                        duration: 85,
+                        duration: 70,
+                        fists: {
+                            left: Vec.create(29, -39),
+                            right: Vec.create(34, 38)
+                        },
+                        image: {
+                            position: Vec.create(28, 67),
+                            angle: 145,
+                        }
+                    },
+                    {
+                        duration: 65,
                         fists: {
                             left: Vec.create(29, -39),
                             right: Vec.create(44, -25)

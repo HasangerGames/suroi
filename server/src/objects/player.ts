@@ -497,7 +497,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.joinTime = game.now;
         this._hitbox = Player.baseHitbox.transform(position);
 
-        this.inventory.addOrReplaceWeapon(2, "baseball_bat");
+        this.inventory.addOrReplaceWeapon(2, "sickle");
 
         const defaultScope = game.mode.defaultScope;
         if (defaultScope) {
