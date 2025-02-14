@@ -68,35 +68,6 @@ export class Gas {
         }
     }
 
-    // Generate random coordinate within quadrant
-    private static _genQuadCoord(v: Vector, width: number, height: number): Vector {
-        // Define initial offsets by dividing width and height into 4ths and multiplying it by a random number between 0 and 1
-        let xOffset = Math.ceil(width / 4 * Math.random());
-        let yOffset = Math.ceil(height / 4 * Math.random());
-
-        // Apply weighting to the outer corners
-        if (randomBoolean()) {
-            xOffset = randomBoolean() ? Math.ceil(xOffset * 0.2) : xOffset;
-            yOffset = randomBoolean() ? Math.ceil(yOffset * 0.2) : yOffset;
-        }
-
-        // Case switch to, depending on the quadrant, generate the random offset for said
-        // quadrant, with a random weight towards this outside or the inside of the map
-        const { x, y } = v;
-        const halfWidth = width / 2;
-        const halfHeight = height / 2;
-
-        if (x < halfWidth && y < halfHeight) {
-            return Vec.create(Math.ceil(width / 4 + xOffset), Math.ceil(height / 4 + yOffset));
-        } else if (x >= halfWidth && y < halfHeight) {
-            return Vec.create(Math.ceil(3 * width / 4 - xOffset), Math.ceil(height / 4 + yOffset));
-        } else if (x < halfWidth && y >= halfHeight) {
-            return Vec.create(Math.ceil(width / 4 + xOffset), Math.ceil(3 * height / 4 - yOffset));
-        } else {
-            return Vec.create(x, y);
-        }
-    }
-
     scaledDamage(position: Vector): number {
         const distIntoGas = Geometry.distance(position, this.currentPosition) - this.currentRadius;
         return this.dps + Numeric.clamp(distIntoGas - GameConstants.gas.unscaledDamageDist, 0, Infinity) * GameConstants.gas.damageScaleFactor;
@@ -127,22 +98,16 @@ export class Gas {
                 if (isDebug && gas.overridePosition) {
                     this.newPosition = Vec.create(width / 2, height / 2);
                 } else {
-                    const maxDistance = (currentStage.oldRadius - currentStage.newRadius) * this.mapSize;
-                    const maxDistanceSquared = maxDistance ** 2;
-
-                    this.newPosition = randomPointInsideCircle(this.oldPosition, maxDistance);
-
-                    let quadCoord = Gas._genQuadCoord(this.newPosition, width, height);
-                    let foundPosition = false;
-                    for (let attempts = 0; attempts < 100; attempts++) {
-                        quadCoord = Gas._genQuadCoord(this.newPosition, width, height);
-                        if (Geometry.distanceSquared(quadCoord, this.oldPosition) <= maxDistanceSquared) {
-                            foundPosition = true;
-                            break;
-                        }
-                    }
-
-                    if (foundPosition) this.newPosition = quadCoord;
+                    const { x, y } = randomPointInsideCircle(
+                        this.oldPosition,
+                        (currentStage.oldRadius - currentStage.newRadius) * this.mapSize
+                    );
+                    const { width, height } = this.game.map;
+                    const radius = currentStage.newRadius * 0.75; // ensure at least 75% of the safe zone will be inside map bounds
+                    this.newPosition = Vec.create(
+                        Numeric.clamp(x, radius, width - radius),
+                        Numeric.clamp(y, radius, height - radius)
+                    );
                 }
             } else {
                 this.newPosition = Vec.clone(this.oldPosition);
