@@ -142,7 +142,9 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                     clearTimeout(this._autoUseTimeoutID);
                     this._autoUseTimeoutID = setTimeout(
                         this._useItemNoDelayCheck.bind(this, false),
-                        definition.cooldown
+                        damagedObjects.length && definition.attackCooldown
+                            ? definition.attackCooldown
+                            : definition.cooldown
                     );
                 }
             }

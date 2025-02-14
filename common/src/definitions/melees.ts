@@ -30,6 +30,7 @@ export type MeleeDefinition = InventoryItemDefinition & {
     readonly radius: number
     readonly offset: Vector
     readonly cooldown: number
+    readonly attackCooldown?: number
     readonly maxTargets: number
     readonly reskins?: readonly string[]
     readonly fists: InventoryItemDefinition["fists"] & {
@@ -422,6 +423,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 radius: 2.7,
                 offset: Vec.create(4, 0),
                 cooldown: 220,
+                attackCooldown: 170,
                 reskins: ["winter"],
                 //  fireMode: FireMode.Auto, - todo
                 fists: {
