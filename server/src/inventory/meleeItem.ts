@@ -122,8 +122,7 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                             source: owner,
                             weaponUsed: this
                         });
-                    }
-                    else {
+                    } else {
                         clearTimeout(this._hitTimeoutID);
                         this._hitTimeoutID = setTimeout((): void => {
                             closestObject.damage({

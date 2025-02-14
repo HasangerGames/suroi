@@ -443,7 +443,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                         },
                         image: {
                             position: Vec.create(28, 67),
-                            angle: 145,
+                            angle: 145
                         }
                     },
                     {
