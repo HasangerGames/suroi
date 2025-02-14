@@ -192,18 +192,6 @@
   }
 }
 
-.rules-close-btn {
-  position: absolute;
-  transform: translate(150px, 6px);
-  width: 25px;
-  height: 25px;
-  z-index: 10;
-  text-align: center;
-  border-radius: 50%;
-  background-color: palette.$danger;
-  cursor: pointer;
-}
-
 .btn-spectate-kill-leader {
   background: palette.$orange;
   border-bottom: 2px solid palette.$orange_bg;

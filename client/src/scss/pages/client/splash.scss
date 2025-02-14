@@ -237,7 +237,6 @@
 
 #btn-rules {
     margin-top: 10px;
-    position: relative;
 
     &.highlighted {
         background-color: palette.$orange;
@@ -249,6 +248,22 @@
         }
     }
 }
+
+#rules-close-btn {
+    position: relative;
+    margin-top: -50px;
+    right: -10px;
+    float: right;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    border-radius: 50%;
+    background-color: palette.$danger;
+    cursor: pointer;
+  }
 
 
 #splash-news,
