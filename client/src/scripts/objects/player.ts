@@ -1175,7 +1175,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.anims.muzzleFlashFade?.kill();
                 this.anims.muzzleFlashRecoil?.kill();
                 this.images.muzzleFlash.alpha = 0;
-                if (this.isActivePlayer && !isNew) this.game.soundManager.play(`${reference.itemType === ItemType.Throwable ? "throwable" : reference.idString}_switch`);
             }
 
             const offset = this._getOffset();
