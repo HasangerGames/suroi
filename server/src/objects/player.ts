@@ -499,7 +499,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.joinTime = game.now;
         this._hitbox = Player.baseHitbox.transform(position);
 
-        this.inventory.addOrReplaceWeapon(2, "sickle");
+        this.inventory.addOrReplaceWeapon(2, "fists");
 
         // TODO make a constant for this or something
         this.inventory.scope = "2x_scope";
