@@ -169,53 +169,6 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>([
         ]
     },
     {
-        idString: "feral_claws",
-        name: "Feral Claws",
-        itemType: ItemType.Melee,
-        damage: 20,
-        speedMultiplier: 1,
-        obstacleMultiplier: 1,
-        radius: 1.75,
-        offset: Vec.create(2.5, 0),
-        cooldown: 150,
-        // noDrop: true,
-        fists: {
-            animationDuration: 100,
-            randomFist: true,
-            left: Vec.create(38, -35),
-            right: Vec.create(38, 35)
-        },
-        image: {
-            position: Vec.create(42, 20),
-            angle: 45,
-            lootScale: 0.6
-        },
-        animation: [
-            {
-                duration: 100,
-                fists: {
-                    left: Vec.create(75, -10),
-                    right: Vec.create(75, 10)
-                },
-                image: {
-                    position: Vec.create(80, -25),
-                    angle: 65
-                }
-            },
-            {
-                duration: 100,
-                fists: {
-                    left: Vec.create(38, -35),
-                    right: Vec.create(38, 35)
-                },
-                image: {
-                    position: Vec.create(42, 20),
-                    angle: 45
-                }
-            }
-        ]
-    },
-    {
         idString: "hatchet",
         name: "Hatchet",
         itemType: ItemType.Melee,

@@ -320,7 +320,6 @@ export type TranslationKeys="msg_rotate"|
 "revitalizer"|
 "fists"|
 "baseball_bat"|
-"feral_claws"|
 "hatchet"|
 "fire_hatchet"|
 "crowbar"|
