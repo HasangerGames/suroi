@@ -465,9 +465,10 @@ export class Game {
 
             const reason = this.disconnectReason || "Connection lost";
 
-            if (reason === "Server killed") {
-                reloadPage();
-                return;
+            if (reason.startsWith("Invalid game version")) {
+                alert(reason);
+                // reload the page with a time stamp to try clearing cache
+                location.search = `t=${Date.now()}`;
             }
 
             if (!this.gameOver) {
@@ -478,12 +479,6 @@ export class Game {
                 }
                 this.uiManager.ui.btnSpectate.addClass("btn-disabled");
                 if (!this.error) void this.endGame();
-            }
-
-            if (reason.startsWith("Invalid game version")) {
-                alert(reason);
-                // reload the page with a time stamp to try clearing cache
-                location.search = `t=${Date.now()}`;
             }
         };
     }

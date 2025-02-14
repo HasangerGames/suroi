@@ -235,7 +235,7 @@ export class Game implements GameData {
             allowJoin: false,
             over: false,
             stopped: false,
-            startedTime: -1
+            startedTime: Number.MAX_VALUE // Makes it so games that haven't started yet are joined first
         });
 
         this.mode = Modes[this.modeName = modeFromMap(map)];
@@ -284,7 +284,7 @@ export class Game implements GameData {
                 break;
             case packet instanceof PlayerInputPacket:
                 // Ignore input packets from players that haven't finished joining, dead players, or if the game is over
-                if (!player.joined || player.dead || player.game.over) return;
+                if (!player.joined || player.dead || this.over) return;
                 player.processInputs(packet.output);
                 break;
             case packet instanceof SpectatePacket:
@@ -444,6 +444,9 @@ export class Game implements GameData {
 
             // End the game in 1 second
             this.addTimeout(() => {
+                for (const player of this.connectedPlayers) {
+                    player.disconnect("Game ended");
+                }
                 this.setGameData({ stopped: true });
                 this.log("Ended");
             }, 1000);
