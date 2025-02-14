@@ -1,7 +1,7 @@
 import { GameConstants, InputActions } from "@common/constants";
 import { type WeaponDefinition } from "@common/definitions/loots";
-import { Scopes } from "@common/definitions/scopes";
-import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
+import { Scopes } from "@common/definitions/items/scopes";
+import { Throwables, type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { areDifferent, PlayerInputPacket, type InputAction, type PlayerInputData, type SimpleInputActions } from "@common/packets/inputPacket";
 import { Angle, Geometry, Numeric } from "@common/utils/math";
 import { ItemType, type ItemDefinition } from "@common/utils/objectDefinitions";
@@ -347,32 +347,16 @@ export class InputManager {
         // Gyro stuff
         const gyroAngle = game.console.getBuiltInCVar("mb_gyro_angle");
         if (gyroAngle > 0) {
-            const inv = this.game.uiManager.inventory;
-            const swap = (x: number): void => {
-                let y = Numeric.absMod(inv.activeWeaponIndex + x, 4);
-                let iteration = 0;
-                while (!inv.weapons[y]) {
-                    y = Numeric.absMod(y + x, 4);
-                    if (iteration++ > 5) {
-                        y = inv.activeWeaponIndex;
-                        break;
-                    }
-                }
-                this.addAction({
-                    type: InputActions.EquipItem,
-                    slot: y
-                });
-            };
             let a = false;
             let b = false;
             window.addEventListener("deviceorientation", gyro => {
                 const angle = gyro.beta;
                 if (angle === null) return;
                 a = (angle <= -gyroAngle)
-                    ? (a ? a : swap(-1), true)
+                    ? (a ? a : game.console.handleQuery("cycle_items -1", "always"), true)
                     : false;
                 b = (angle >= gyroAngle)
-                    ? (b ? b : swap(1), true)
+                    ? (b ? b : game.console.handleQuery("cycle_items 1", "always"), true)
                     : false;
             });
         }

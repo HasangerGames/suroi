@@ -37,6 +37,12 @@
     @media screen and (max-height: 500px) {
         margin-top: 10px;
     }
+
+    @media screen and (max-width: variables.$screen_medium) and (max-height: variables.$screen_medium) {
+        min-width: 170px;
+        max-width: 300px;
+        margin: 2.5px auto 2.5px auto;
+    }
 }
 
 #splash-modals {
@@ -51,28 +57,92 @@
 
     font-size: 20px;
 
-    @media screen and (max-width: variables.$screen_large) {
-        flex-direction: column;
+    @media screen and (max-width: variables.$screen_medium) and (max-height: variables.$screen_medium) {
         align-items: center;
         flex-wrap: nowrap;
-        gap: 1rem;
+        flex-direction: column;
+        gap: 5px;
         max-height: unset;
         margin-bottom: 1rem;
 
-        #splash-options {
-            order: 1;
+        button span {
+            font-size: 16px;
         }
 
+        #splash-options,
+        #splash-customize,
+        #splash-socials,
+        #splash-rotate-message,
+        #splash-server-message,
+        #splash-customize,
         #splash-news {
-            order: 2;
-        }
-
-        #splash-featured-people {
-            order: 3;
+            max-width: 300px;
         }
 
         #splash-customize {
-            order: 4;
+            width: 300px !important;
+            height: auto !important;
+            padding: 15px;
+            border-radius: 15px;
+            margin-right: 20px;
+        }
+
+
+        #splash-featured-people,
+        #skin-container,
+        #splash-news,
+        #splash-socials {
+            display: none !important;
+        }
+    }
+
+    @media screen and (max-width: variables.$screen_large) {
+        display: inline-flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 5px;
+        max-height: unset;
+        margin-bottom: 1rem;
+
+        #splash-options,
+        #splash-customize,
+        #splash-socials,
+        #splash-rotate-message,
+        #splash-server-message,
+        #splash-news {
+            max-width: 300px;
+        }
+
+        #splash-news {
+            height: 250px;
+            #news-posts {
+                height: 80%;
+            }
+        }
+
+        #splash-socials {
+            height: 90px;
+            display: flex;
+
+            div {
+                flex-direction: column !important;
+
+                .btn-wiki, .btn-kofi, .btn-github {
+                    display: none;
+                }
+            }
+        }
+
+        #splash-customize {
+            height: 250px;
+
+            #skin-container {
+                transform: scale(90%);
+            }
+
+            button {
+                font-size: 16px;
+            }
         }
     }
 }
@@ -180,11 +250,13 @@
     }
 }
 
+
 #splash-news,
 #splash-options,
 #splash-customize,
 #splash-server-message,
-#splash-rotate-message {
+#splash-rotate-message,
+#splash-hw-acceleration-warning {
     background: palette.$transparent_bg;
     width: 370px;
 
@@ -202,6 +274,7 @@
     #splash-server-message,
     #splash-rotate-message,
     #splash-socials,
+    #splash-hw-acceleration-warning,
     .featured-container,
     .server-list-item {
         backdrop-filter: blur(8px);
@@ -218,6 +291,12 @@
 #splash-server-message,
 #btn-server-select {
     text-shadow: 3px 3px 8px #00000064;
+}
+
+#splash-hw-acceleration-warning {
+    text-align: center;
+    justify-content: center;
+    margin: 5px auto 5px auto;
 }
 
 #splash-rotate-message {
@@ -658,7 +737,7 @@
     gap: 16px;
 
     @media screen and (max-width: variables.$screen_large) {
-        flex-direction: column;
+        width: 200px;
     }
 
     @media screen and (max-width: 800px) {

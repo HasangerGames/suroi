@@ -40,7 +40,8 @@ export class Plane {
                 position: startPosition,
                 falloff: 0.5,
                 maxRange: 256,
-                dynamic: true
+                dynamic: true,
+                loop: true
             }
         );
 
@@ -69,5 +70,6 @@ export class Plane {
 
     destroy(): void {
         this.image.destroy();
+        this.sound.stop();
     }
 }

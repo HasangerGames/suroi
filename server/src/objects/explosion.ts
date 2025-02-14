@@ -1,6 +1,6 @@
-import { Layer } from "@common/constants";
+import { GameConstants, Layer, ObjectCategory } from "@common/constants";
 import { Explosions, type ExplosionDefinition } from "@common/definitions/explosions";
-import { PerkIds } from "@common/definitions/perks";
+import { PerkIds } from "@common/definitions/items/perks";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Angle, Geometry } from "@common/utils/math";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
@@ -10,13 +10,8 @@ import { type Game } from "../game";
 import { type GunItem } from "../inventory/gunItem";
 import { type MeleeItem } from "../inventory/meleeItem";
 import { type ThrowableItem } from "../inventory/throwableItem";
-import { Building } from "./building";
 import { Decal } from "./decal";
 import { type GameObject } from "./gameObject";
-import { Loot } from "./loot";
-import { Obstacle } from "./obstacle";
-import { Player } from "./player";
-import { ThrowableProjectile } from "./throwableProj";
 
 export class Explosion {
     readonly definition: ExplosionDefinition;
@@ -38,7 +33,9 @@ export class Explosion {
         const objects = this.game.grid.intersectsHitbox(new CircleHitbox(this.definition.radius.max * 2, this.position), this.layer);
         const damagedObjects = new Set<number>();
 
-        for (let angle = -Math.PI; angle < Math.PI; angle += 0.1) {
+        const step = Math.acos(1 - ((GameConstants.explosionRayDistance / this.definition.radius.max) ** 2) / 2);
+
+        for (let angle = -Math.PI; angle < Math.PI; angle += step) {
             // All objects that collided with this line
             const lineCollisions: Array<{
                 readonly object: GameObject
@@ -53,12 +50,12 @@ export class Explosion {
                     object.dead
                     || !object.hitbox
                     || ![
-                        Building,
-                        Obstacle,
-                        Player,
-                        Loot,
-                        ThrowableProjectile
-                    ].some(cls => object instanceof cls)
+                        ObjectCategory.Building,
+                        ObjectCategory.Obstacle,
+                        ObjectCategory.Player,
+                        ObjectCategory.Loot,
+                        ObjectCategory.ThrowableProjectile
+                    ].some(type => object.type === type)
                 ) continue;
 
                 // check if the object hitbox collides with a line from the explosion center to the explosion max distance

@@ -1,6 +1,6 @@
-import { ObjectCategory } from "../constants";
+import { ObjectCategory, RotationMode } from "../constants";
 import { Buildings } from "../definitions/buildings";
-import { Obstacles, RotationMode } from "../definitions/obstacles";
+import { Obstacles } from "../definitions/obstacles";
 import { type Orientation, type Variation } from "../typings";
 import type { CommonGameObject } from "../utils/gameObject";
 import { Angle, halfπ } from "../utils/math";

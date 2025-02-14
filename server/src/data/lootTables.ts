@@ -1,5 +1,5 @@
 import { Mode } from "@common/definitions/modes";
-import { PerkIds } from "@common/definitions/perks";
+import { PerkIds } from "@common/definitions/items/perks";
 import { NullString } from "@common/utils/objectDefinitions";
 import { LootTable } from "../utils/lootHelpers";
 
@@ -80,13 +80,16 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             ]
         ],
         dumpster: {
-            min: 1,
-            max: 2,
+            min: 2,
+            max: 4,
             loot: [
                 { table: "guns", weight: 0.8 },
                 { table: "healing_items", weight: 0.6 },
-                { table: "scopes", weight: 0.4 },
-                { table: "equipment", weight: 0.3 }
+                { table: "scopes", weight: 0.3 },
+                { table: "throwables", weight: 0.4 },
+                { table: "equipment", weight: 0.4 },
+                { item: "ghillie_suit", weight: 0.05 }
+                // placeholder for special Dumpster themed skin
             ]
         },
         flint_crate: {
@@ -118,22 +121,14 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             ]
         },
         tango_crate: [
-            [
-                { item: "4x_scope", weight: 1 },
-                { item: "8x_scope", weight: 0.1 },
-                { item: "15x_scope", weight: 0.0025 }
-            ],
-            [
-                { item: "tango_51", weight: 60 },
-                { item: "tango_51", spawnSeparately: true, count: 2, weight: 30 },
-                { item: "tango_51", spawnSeparately: true, count: 3, weight: 3.5 },
-                { item: "tango_51", spawnSeparately: true, count: 4, weight: 0.1 },
-                { item: "tango_51", spawnSeparately: true, count: 5, weight: 0.0000001 }
-            ]
+            { item: "tango_51", weight: 60 },
+            { item: "tango_51", spawnSeparately: true, count: 2, weight: 30 },
+            { item: "tango_51", spawnSeparately: true, count: 3, weight: 3.5 },
+            { item: "tango_51", spawnSeparately: true, count: 4, weight: 0.1 },
+            { item: "tango_51", spawnSeparately: true, count: 5, weight: 0.0000001 }
         ],
         lux_crate: [
-            [{ item: "rgs", weight: 1 }],
-            [{ table: "scopes", weight: 1 }]
+            { item: "rgs", weight: 1 }
         ],
         gold_rock: [
             { item: "mosin_nagant", weight: 1 }
@@ -231,7 +226,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             ],
             [
                 { table: "healing_items", weight: 1 },
-                { table: "scopes", weight: 1 }
+                { table: "throwables", weight: 0.5 }
             ]
         ],
         bookshelf: {
@@ -239,7 +234,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             max: 2,
             loot: [
                 { table: "equipment", weight: 1.1 },
-                { table: "scopes", weight: 0.4 },
+                { table: "scopes", weight: 0.3 },
                 { table: "guns", weight: 1 },
                 { table: "healing_items", weight: 0.6 }
             ]
@@ -294,7 +289,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             loot: [
                 { table: "guns", weight: 1.25 },
                 { table: "equipment", weight: 1 },
-                { table: "scopes", weight: 0.35 },
+                { table: "scopes", weight: 0.3 },
                 { table: "special_guns", weight: 0.8 },
                 { table: "healing_items", weight: 0.75 }
             ]
@@ -307,7 +302,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
                 { table: "healing_items", weight: 1 },
                 { table: "equipment", weight: 0.9 },
                 { table: "special_guns", weight: 0.8 },
-                { table: "special_scopes", weight: 0.35 }
+                { table: "special_scopes", weight: 0.30 }
             ]
         },
         porta_potty_toilet_closed: {
@@ -319,7 +314,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
                 { table: "guns", weight: 0.05 }
             ]
         },
-        ...["mcx_spear", "hp18", "stoner_63", "mini14", "maul", "m590m", "dual_rsh12"].reduce(
+        ...["mcx_spear", "hp18", "stoner_63", "mini14", "maul", "m590m", "dual_rsh12", "model_37", "sks"].reduce(
             (acc, item) => {
                 acc[`gun_mount_${item}`] = [{ item, weight: 1 }];
                 return acc;
@@ -558,10 +553,9 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "medikit", weight: 1 }
         ],
         scopes: [
-            { item: "2x_scope", weight: 1 },
-            { item: "4x_scope", weight: 0.5 },
+            { item: "4x_scope", weight: 1 },
             { item: "8x_scope", weight: 0.1 },
-            { item: "15x_scope", weight: 0.00025 }
+            { item: "16x_scope", weight: 0.00025 }
         ],
         equipment: [
             { item: "basic_helmet", weight: 1 },
@@ -631,10 +625,9 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "gauze", count: 5, weight: 3 }
         ],
         special_scopes: [
-            { item: "2x_scope", weight: 1 },
-            { item: "4x_scope", weight: 0.45 },
-            { item: "8x_scope", weight: 0.1 },
-            { item: "15x_scope", weight: 0.005 }
+            { item: "4x_scope", weight: 1 },
+            { item: "8x_scope", weight: 0.2 },
+            { item: "16x_scope", weight: 0.0005 }
         ],
         special_equipment: [
             { item: "basic_helmet", weight: 1 },
@@ -661,9 +654,8 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "tactical_pack", weight: 1 }
         ],
         airdrop_scopes: [
-            { item: "4x_scope", weight: 1 },
-            { item: "8x_scope", weight: 0.5 },
-            { item: "15x_scope", weight: 0.0025 }
+            { item: "8x_scope", weight: 1 },
+            { item: "16x_scope", weight: 0.005 }
         ],
         airdrop_healing_items: [
             { item: "gauze", count: 5, weight: 1.5 },
@@ -924,10 +916,11 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             [{ item: "frag_grenade", count: 3, weight: 1 }]
         ],
         briefcase: [
-            { item: "usas12", weight: 1 },
+            { item: "usas12", weight: 0.5 },
+            { item: "m1_garand", weight: 0.5 },
             { item: "mk18", weight: 0.2 },
             { item: "l115a1", weight: 0.2 },
-            { item: "g19", weight: 0.0001 }
+            { item: "g19", weight: 0.01 }
         ],
         ammo_crate: [
             [{ table: "ammo", weight: 1 }],
@@ -954,14 +947,14 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
         ],
         lux_crate: [
             [
-                { item: "vks", weight: 1 },
-                { item: "tango_51", weight: 1 }
-            ],
-            [{ table: "special_scopes", weight: 1 }]
+                { item: "vks", weight: 0.3 },
+                { item: "tango_51", weight: 0.3 },
+                { item: "rgs", weight: 0.3 },
+                { item: "l115a1", weight: 0.1 }
+            ]
         ],
         gold_rock: [
-            [{ item: "tango_51", weight: 1 }],
-            [{ table: "scopes", weight: 1 }]
+            { item: "tango_51", weight: 1 }
         ],
         loot_barrel: [
             [{ item: "crowbar", weight: 1 }],
@@ -977,11 +970,12 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             max: 2,
             loot: [
                 // 65% chance for one of these
-                { item: "model_37", weight: 0.13 },
-                { item: "m3k", weight: 0.13 },
-                { item: "cz600", weight: 0.13 },
-                { item: "flues", weight: 0.13 },
-                { item: "dual_m1895", weight: 0.13 },
+                { item: "model_37", weight: 0.1083 },
+                { item: "m3k", weight: 0.1083 },
+                { item: "cz600", weight: 0.1083 },
+                { item: "flues", weight: 0.1083 },
+                { item: "dual_m1895", weight: 0.1083 },
+                { item: "blr", weight: 0.1083 },
 
                 // 20% chance for one of these
                 { item: "sr25", weight: 0.066 },
@@ -989,8 +983,9 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
                 { item: "mosin_nagant", weight: 0.066 },
 
                 // 10% chance for one of these
-                { item: "rsh12", weight: 0.05 },
-                { item: "vepr12", weight: 0.05 },
+                { item: "rsh12", weight: 0.03 },
+                { item: "vepr12", weight: 0.03 },
+                { item: "rgs", weight: 0.03 },
 
                 // 5% chance for one of these
                 { item: "tango_51", weight: 0.01 },
@@ -1007,15 +1002,16 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "hp18", weight: 0.166 },
             { item: "sks", weight: 0.166 },
 
-            // 30% chance for one of these
-            { item: "dt11", weight: 0.15 },
-            { item: "model_37", weight: 0.15 },
+            // 28% chance for one of these
+            { item: "dt11", weight: 0.14 },
+            { item: "model_37", weight: 0.14 },
 
-            // 14% chance for one of these
-            { item: "m3k", weight: 0.035 },
-            { item: "cz600", weight: 0.035 },
-            { item: "flues", weight: 0.035 },
-            { item: "dual_m1895", weight: 0.035 },
+            // 16% chance for one of these
+            { item: "m3k", weight: 0.032 },
+            { item: "cz600", weight: 0.032 },
+            { item: "flues", weight: 0.032 },
+            { item: "dual_m1895", weight: 0.032 },
+            { item: "blr", weight: 0.032 },
 
             // 4% chance for one of these
             { item: "sr25", weight: 0.0133 },
@@ -1039,10 +1035,11 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "model_37", weight: 0.16 },
 
             // 37% chance for one of these
-            { item: "dual_m1895", weight: 0.0925 },
-            { item: "m3k", weight: 0.0925 },
-            { item: "cz600", weight: 0.0925 },
-            { item: "flues", weight: 0.0925 },
+            { item: "dual_m1895", weight: 0.074 },
+            { item: "m3k", weight: 0.074 },
+            { item: "cz600", weight: 0.074 },
+            { item: "flues", weight: 0.074 },
+            { item: "blr", weight: 0.074 },
 
             // 15% chance for one of these (L unlucky)
             { item: "sks", weight: 0.075 },
@@ -1084,10 +1081,6 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "ghillie_suit", weight: 0.1 },
             { item: "basic_outfit", weight: 0.001 }
         ],
-        airdrop_scopes: [
-            { item: "8x_scope", weight: 1 },
-            { item: "15x_scope", weight: 0.005 }
-        ],
         airdrop_melee: [
             { item: NullString, weight: 1 },
             { item: "hatchet", weight: 0.2 },
@@ -1096,11 +1089,11 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
         ],
         gold_airdrop_guns: [
             { item: "dual_rsh12", weight: 1 },
-            { item: "usas12", weight: 1 },
+            { item: "m1_garand", weight: 1 },
             { item: "l115a1", weight: 1 },
             { item: "mk18", weight: 1 },
-            { item: "m1_garand", weight: 0.5 },
-            { item: "g19", weight: 0.0001 }
+            { item: "usas12", weight: 0.5 },
+            { item: "g19", weight: 0.02 }
         ],
         viking_chest_guns: [
             // 35% chance for one of these
@@ -1109,9 +1102,10 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "flues", weight: 0.1166 },
 
             // 40% chance for one of these
-            { item: "mini14", weight: 0.133 },
-            { item: "sr25", weight: 0.133 },
-            { item: "mosin_nagant", weight: 0.133 },
+            { item: "mini14", weight: 0.1 },
+            { item: "sr25", weight: 0.1 },
+            { item: "mosin_nagant", weight: 0.1 },
+            { item: "rgs", weight: 0.1 },
 
             // 10% chance for one of these
             { item: "m590m", weight: 0.033 },
@@ -1132,9 +1126,10 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "flues", weight: 0.2 },
 
             // 20% chance for one of these
-            { item: "mini14", weight: 0.066 },
-            { item: "sr25", weight: 0.066 },
-            { item: "mosin_nagant", weight: 0.066 },
+            { item: "mini14", weight: 0.05 },
+            { item: "sr25", weight: 0.05 },
+            { item: "mosin_nagant", weight: 0.05 },
+            { item: "rgs", weight: 0.05 },
 
             // 15% chance for one of these
             { item: "rsh12", weight: 0.03 },
@@ -1184,16 +1179,6 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "basic_pack", weight: 0.8 },
             { item: "regular_pack", weight: 0.5 },
             { item: "tactical_pack", weight: 0.09 }
-        ],
-        scopes: [
-            { item: "4x_scope", weight: 1 },
-            { item: "8x_scope", weight: 0.1 },
-            { item: "15x_scope", weight: 0.00025 }
-        ],
-        special_scopes: [
-            { item: "4x_scope", weight: 1 },
-            { item: "8x_scope", weight: 0.2 },
-            { item: "15x_scope", weight: 0.0005 }
         ],
         melee: [
             { item: "hatchet", weight: 3 },
@@ -1310,12 +1295,10 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
                 { item: "tango_51", weight: 0.3 },
                 { item: "rgs", weight: 0.3 },
                 { item: "l115a1", weight: 0.1 }
-            ],
-            [{ table: "special_scopes", weight: 1 }]
+            ]
         ],
         gold_rock: [
-            [{ item: "tango_51", weight: 1 }],
-            [{ table: "scopes", weight: 1 }]
+            { item: "tango_51", weight: 1 }
         ],
         loot_barrel: [
             [{ item: "crowbar", weight: 1 }],
@@ -1442,10 +1425,6 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "ghillie_suit", weight: 0.1 },
             { item: "basic_outfit", weight: 0.001 }
         ],
-        airdrop_scopes: [
-            { item: "8x_scope", weight: 1 },
-            { item: "15x_scope", weight: 0.005 }
-        ],
         airdrop_melee: [
             { item: NullString, weight: 1 },
             { item: "hatchet", weight: 0.2 },
@@ -1544,16 +1523,6 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "basic_pack", weight: 0.8 },
             { item: "regular_pack", weight: 0.5 },
             { item: "tactical_pack", weight: 0.09 }
-        ],
-        scopes: [
-            { item: "4x_scope", weight: 1 },
-            { item: "8x_scope", weight: 0.1 },
-            { item: "15x_scope", weight: 0.00025 }
-        ],
-        special_scopes: [
-            { item: "4x_scope", weight: 1 },
-            { item: "8x_scope", weight: 0.2 },
-            { item: "15x_scope", weight: 0.0005 }
         ],
         melee: [
             { item: "hatchet", weight: 3 },

@@ -1,7 +1,7 @@
 import * as svgParser from "svg-parser";
 import * as fs from "node:fs";
-import * as path from "node:path";
 import { ColorStyles, styleText } from "@common/utils/logging";
+import { readDirectory } from "@common/utils/readDirectory";
 
 const MAX_SIZES: Record<string, number> = {
     buildings: 300_000,
@@ -28,25 +28,6 @@ const MAX_SIZES: Record<string, number> = {
 };
 
 const MAX_PATH_LENGTH = 100_000;
-
-function readDirectory(dir: string): string[] {
-    let paths: string[] = [];
-    const files = fs.readdirSync(dir);
-
-    for (const file of files) {
-        const filePath = path.join(dir, file);
-        const stat = fs.statSync(filePath);
-
-        if (stat?.isDirectory()) {
-            const res = readDirectory(filePath);
-            paths = paths.concat(res);
-        } else if (filePath.toLowerCase().endsWith(".svg")) {
-            paths.push(filePath);
-        }
-    }
-
-    return paths;
-}
 
 function humanSize(bytes: number, dp = 1): string {
     const thresh = 1000;
@@ -82,8 +63,8 @@ const fileSizes: Record<string, {
 }> = {};
 
 const svgPaths = [
-    ...readDirectory("../client/public/img/game"),
-    ...readDirectory("../client/public/img/killfeed")
+    ...readDirectory("../client/public/img/game", /\.(svg)$/i),
+    ...readDirectory("../client/public/img/killfeed", /\.(svg)$/i)
 ];
 
 function checkNode(path: string, node: svgParser.ElementNode): void {

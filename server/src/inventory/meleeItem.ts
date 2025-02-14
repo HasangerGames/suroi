@@ -1,6 +1,6 @@
 import { AnimationType, FireMode } from "@common/constants";
-import { type MeleeDefinition } from "@common/definitions/melees";
-import { PerkIds } from "@common/definitions/perks";
+import { type MeleeDefinition } from "@common/definitions/items/melees";
+import { PerkIds } from "@common/definitions/items/perks";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Numeric } from "@common/utils/math";
@@ -9,14 +9,12 @@ import { Vec } from "@common/utils/vector";
 import { type CollidableGameObject } from "../objects/gameObject";
 import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
-import { InventoryItem } from "./inventoryItem";
+import { InventoryItemBase } from "./inventoryItem";
 
 /**
  * A class representing a melee weapon
  */
-export class MeleeItem extends InventoryItem<MeleeDefinition> {
-    declare readonly category: ItemType.Melee;
-
+export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
     private _autoUseTimeoutID?: NodeJS.Timeout;
     private _hitTimeoutID?: NodeJS.Timeout;
 
@@ -93,7 +91,7 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                     return a.hitbox.distanceTo(this.owner.hitbox).distance - b.hitbox.distanceTo(this.owner.hitbox).distance;
                 });
 
-                const targetLimit = Numeric.min(damagedObjects.length, definition.maxTargets);
+                const targetLimit = Numeric.min(damagedObjects.length, definition.maxTargets ?? 1);
 
                 for (let i = 0; i < targetLimit; i++) {
                     const closestObject = damagedObjects[i];
@@ -107,8 +105,8 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                             ? definition.piercingMultiplier
                             : definition.obstacleMultiplier;
 
-                        if (closestObject.definition.material === "ice" && definition.iceMultiplier) {
-                            multiplier *= definition.iceMultiplier;
+                        if (closestObject.definition.material === "ice") {
+                            multiplier *= definition.iceMultiplier ?? 0.01;
                         }
                     }
 

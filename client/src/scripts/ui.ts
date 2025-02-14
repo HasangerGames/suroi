@@ -1,13 +1,13 @@
 import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "@common/constants";
-import { Ammos, type AmmoDefinition } from "@common/definitions/ammos";
-import { type ArmorDefinition } from "@common/definitions/armors";
+import { Ammos, type AmmoDefinition } from "@common/definitions/items/ammos";
+import { type ArmorDefinition } from "@common/definitions/items/armors";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { EmoteCategory, Emotes, type EmoteDefinition } from "@common/definitions/emotes";
-import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/healingItems";
+import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/items/healingItems";
 import { Modes, type Mode } from "@common/definitions/modes";
-import { PerkIds, Perks } from "@common/definitions/perks";
-import { Scopes, type ScopeDefinition } from "@common/definitions/scopes";
-import { Skins, type SkinDefinition } from "@common/definitions/skins";
+import { PerkIds, Perks } from "@common/definitions/items/perks";
+import { Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
+import { Skins, type SkinDefinition } from "@common/definitions/items/skins";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
@@ -289,6 +289,22 @@ export async function setUpUI(game: Game): Promise<void> {
     }
 
     if (UI_DEBUG_MODE) {
+        ui.c4Button.show();
+
+        ui.inventoryMsg.show();
+        ui.inventoryMsg.text("Inventory message");
+
+        // Interaction and action stuff
+        ui.interactMsg.show();
+        ui.interactText.text("Interact");
+        ui.actionContainer.show();
+        ui.actionName.text("Action");
+        ui.actionTime.text("5.0");
+
+        // Team container
+        ui.teamContainer.show();
+        ui.teamContainer.html("<div class=\"teammate-container\"><svg class=\"teammate-health-indicator\" width=\"48\" height=\"48\" xmlns=\"http://www.w3.org/2000/svg\"><circle r=\"21\" cy=\"24\" cx=\"24\" stroke-width=\"6\" stroke-dasharray=\"132\" fill=\"none\" style=\"transition: stroke-dashoffset 50ms ease-in-out; stroke: rgb(189, 199, 208); stroke-dashoffset: 0px;\"></circle></svg><div class=\"teammate-indicator-container\" style=\"background-color: rgb(0, 255, 255);\"><img class=\"teammate-indicator\" src=\"./img/game/shared/player/player_indicator.svg\"></div><span class=\"teammate-name\" style=\"color: rgb(0, 125, 128);\">pap_local_test23</span><img class=\"teammate-badge\" src=\"./img/game/shared/badges/bdg_developr.svg\"></div><div class=\"teammate-container\"><svg class=\"teammate-health-indicator\" width=\"48\" height=\"48\" xmlns=\"http://www.w3.org/2000/svg\"><circle r=\"21\" cy=\"24\" cx=\"24\" stroke-width=\"6\" stroke-dasharray=\"132\" fill=\"none\" style=\"transition: stroke-dashoffset 50ms ease-in-out; stroke: rgb(189, 199, 208); stroke-dashoffset: 0px;\"></circle></svg><div class=\"teammate-indicator-container\" style=\"background-color: rgb(255, 0, 255);\"><img class=\"teammate-indicator\" src=\"./img/game/shared/player/player_indicator.svg\"></div><span class=\"teammate-name\" style=\"color: rgb(0, 125, 128);\">pap_local_test23</span><img class=\"teammate-badge\" src=\"./img/game/shared/badges/bdg_developr.svg\"></div><div class=\"teammate-container\"><svg class=\"teammate-health-indicator\" width=\"48\" height=\"48\" xmlns=\"http://www.w3.org/2000/svg\"><circle r=\"21\" cy=\"24\" cx=\"24\" stroke-width=\"6\" stroke-dasharray=\"132\" fill=\"none\" style=\"transition: stroke-dashoffset 50ms ease-in-out; stroke: rgb(189, 199, 208); stroke-dashoffset: 0px;\"></circle></svg><div class=\"teammate-indicator-container\" style=\"background-color: rgb(255, 255, 0);\"><img class=\"teammate-indicator\" src=\"./img/game/shared/player/player_indicator.svg\"></div><span class=\"teammate-name\" style=\"color: rgb(0, 125, 128);\">pap_local_test23</span><img class=\"teammate-badge\" src=\"./img/game/shared/badges/bdg_developr.svg\"></div><div class=\"teammate-container\"><svg class=\"teammate-health-indicator\" width=\"48\" height=\"48\" xmlns=\"http://www.w3.org/2000/svg\"><circle r=\"21\" cy=\"24\" cx=\"24\" stroke-width=\"6\" stroke-dasharray=\"132\" fill=\"none\" style=\"transition: stroke-dashoffset 50ms ease-in-out; stroke: rgb(189, 199, 208); stroke-dashoffset: 0px;\"></circle></svg><div class=\"teammate-indicator-container\" style=\"background-color: rgb(255, 128, 0);\"><img class=\"teammate-indicator\" src=\"./img/game/shared/player/player_indicator.svg\"></div><span class=\"teammate-name\" style=\"color: rgb(0, 125, 128);\">pap_local_test23</span><img class=\"teammate-badge\" src=\"./img/game/shared/badges/bdg_developr.svg\" style=\"\"></div>");
+
         // Kill message
         ui.killMsgHeader.text("Kills: 7");
         ui.killMsgContainer.text("Player  with Mosin-Nagant (streak: 255)");
@@ -755,8 +771,8 @@ export async function setUpUI(game: Game): Promise<void> {
             link: "https://www.youtube.com/@123op."
         },
         {
-            name: "bruh button official",
-            link: "https://www.youtube.com/@bruhbuttonofficial4658"
+            name: "$parkySKULL",
+            link: "https://www.youtube.com/@Skullboi249"
         },
         {
             name: "viper",
@@ -1081,9 +1097,9 @@ export async function setUpUI(game: Game): Promise<void> {
     function updateEmotesList(): void {
         emoteList.empty();
 
-        const emotes = [...Emotes.definitions].sort((a, b) => {
-            return a.category - b.category;
-        });
+        const emotes = [...Emotes]
+            .filter(({ hideInLoadout }) => !hideInLoadout)
+            .sort((a, b) => a.category - b.category);
 
         let lastCategory: EmoteCategory | undefined;
 
@@ -1627,6 +1643,19 @@ export async function setUpUI(game: Game): Promise<void> {
         element.checked = game.console.getBuiltInCVar("cv_weapon_slot_style") === "colored";
     }
 
+    const tmpCanvas = document.createElement("canvas");
+    let glContext = tmpCanvas.getContext("webgl2", { failIfMajorPerformanceCaveat: true });
+
+    if (!glContext) {
+        $("#splash-hw-acceleration-warning").show();
+    } else {
+        const loseContext = glContext.getExtension("WEBGL_lose_context");
+        if (loseContext) {
+            loseContext.loseContext();
+        }
+        glContext = null;
+    }
+
     // render mode select menu
     const renderSelect = $<HTMLSelectElement>("#render-mode-select")[0];
     renderSelect.addEventListener("input", () => {
@@ -1699,6 +1728,7 @@ export async function setUpUI(game: Game): Promise<void> {
     addSliderListener("#slider-gyro-angle", "mb_gyro_angle");
     addCheckboxListener("#toggle-haptics", "mb_haptics");
     addCheckboxListener("#toggle-high-res-mobile", "mb_high_res_textures");
+    addCheckboxListener("#toggle-antialias-mobile", "mb_antialias");
 
     function updateUiScale(): void {
         const scale = game.console.getBuiltInCVar("cv_ui_scale");
@@ -2001,7 +2031,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     if (inputManager.pingWheelActive) {
                         inputManager.addAction({
                             type: InputActions.Emote,
-                            emote: HealingItems.fromString(item.idString)
+                            emote: Emotes.fromString(item.idString)
                         });
                     } else {
                         inputManager.addAction({
@@ -2040,7 +2070,7 @@ export async function setUpUI(game: Game): Promise<void> {
             </div>`
         );
 
-        ammoContainers[`${ammo.hideUnlessPresent}`].append(ele);
+        ammoContainers[`${ammo.hideUnlessPresent ?? false}`].append(ele);
 
         ele[0].addEventListener("pointerup", (): void => {
             clearTimeout(dropTimer);
@@ -2055,7 +2085,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 if (inputManager.pingWheelActive) {
                     inputManager.addAction({
                         type: InputActions.Emote,
-                        emote: Ammos.fromString(ammo.idString)
+                        emote: Emotes.fromString(ammo.idString)
                     });
                 }
 
@@ -2157,11 +2187,10 @@ export async function setUpUI(game: Game): Promise<void> {
             .toggleClass("fa-eye-slash", visible);
     });
 
-    // Hide mobile settings on desktop
-    $("#tab-mobile").toggle(isMobile.any);
-
     // Mobile event listeners
     if (inputManager.isMobile) {
+        $("#tab-mobile").show();
+
         // Interact message
         ui.interactMsg.on("click", () => {
             inputManager.addAction(uiManager.action.active ? InputActions.Cancel : InputActions.Interact);
@@ -2180,6 +2209,9 @@ export async function setUpUI(game: Game): Promise<void> {
         const createEmoteWheelListener = (slot: typeof EMOTE_SLOTS[number], emoteSlot: number): void => {
             $(`#emote-wheel .emote-${slot}`).on("click", () => {
                 ui.emoteWheel.hide();
+                ui.emoteButton
+                    .removeClass("btn-alert")
+                    .addClass("btn-primary");
                 let clicked = true;
 
                 if (inputManager.pingWheelActive) {
@@ -2250,7 +2282,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 .toggleClass("btn-alert", !emoteWheelActive)
                 .toggleClass("btn-primary", emoteWheelActive);
 
-            uiManager.ui.emoteWheel.show();
+            uiManager.ui.emoteWheel.toggle(!emoteWheelActive);
         });
 
         ui.pingToggle.on("click", () => {

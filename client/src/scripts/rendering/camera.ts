@@ -1,4 +1,4 @@
-import { DEFAULT_SCOPE } from "@common/definitions/scopes";
+import { DEFAULT_SCOPE } from "@common/definitions/items/scopes";
 import { EaseFunctions, Numeric } from "@common/utils/math";
 import { randomPointInsideCircle } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";

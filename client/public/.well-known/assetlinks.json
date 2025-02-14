@@ -1,0 +1,11 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.zereshk.suroi",
+      "sha256_cert_fingerprints":
+      ["E5:E4:AB:BF:58:8A:59:6B:93:CE:D3:04:A3:FC:41:F3:E9:82:A3:3C:92:07:D1:E5:F1:DB:07:24:E4:1A:E4:BC"]
+    }
+  }
+]

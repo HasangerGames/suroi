@@ -7,6 +7,7 @@ export interface GasStage {
     readonly newRadius: number
     readonly dps: number
     readonly summonAirdrop?: boolean
+    readonly preventJoin?: boolean
 }
 
 export const GasStages: GasStage[] = [
@@ -22,7 +23,7 @@ export const GasStages: GasStage[] = [
         state: GasState.Waiting,
         duration: 90,
         oldRadius: 0.762,
-        newRadius: 0.381,
+        newRadius: 0.42,
         dps: 0,
         summonAirdrop: true
     },
@@ -30,20 +31,21 @@ export const GasStages: GasStage[] = [
         state: GasState.Advancing,
         duration: 30,
         oldRadius: 0.762,
-        newRadius: 0.381,
+        newRadius: 0.42,
         dps: 1
     },
     {
         state: GasState.Waiting,
         duration: 60,
-        oldRadius: 0.381,
+        oldRadius: 0.42,
         newRadius: 0.238,
-        dps: 1
+        dps: 1,
+        preventJoin: true
     },
     {
         state: GasState.Advancing,
         duration: 20,
-        oldRadius: 0.381,
+        oldRadius: 0.42,
         newRadius: 0.238,
         dps: 2
     },

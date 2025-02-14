@@ -1,11 +1,10 @@
 import { GameConstants } from "@common/constants";
 import { Obstacles } from "@common/definitions/obstacles";
-import { PerkData, PerkIds, type PerkDefinition } from "@common/definitions/perks";
-import { Skins } from "@common/definitions/skins";
+import { PerkData, PerkIds, type PerkDefinition } from "@common/definitions/items/perks";
+import { Skins } from "@common/definitions/items/skins";
 import { PerkManager } from "@common/utils/perkManager";
 import { weightedRandom } from "@common/utils/random";
 import { type Player } from "../objects/player";
-import { GunItem } from "./gunItem";
 
 export type UpdatablePerkDefinition = PerkDefinition & { readonly updateInterval: number };
 
@@ -80,7 +79,7 @@ export class ServerPerkManager extends PerkManager {
                     for (let i = 0; i < maxWeapons; i++) {
                         const weapon = weapons[i];
 
-                        if (!(weapon instanceof GunItem)) continue;
+                        if (!weapon?.isGun) continue;
 
                         const def = weapon.definition;
 
@@ -99,6 +98,7 @@ export class ServerPerkManager extends PerkManager {
             // ! evil ends here
         }
 
+        owner.updateAndApplyModifiers();
         owner.dirty.perks = true;
         return absent;
     }
@@ -135,7 +135,7 @@ export class ServerPerkManager extends PerkManager {
                     for (let i = 0; i < maxWeapons; i++) {
                         const weapon = weapons[i];
 
-                        if (!(weapon instanceof GunItem)) continue;
+                        if (!weapon?.isGun) continue;
 
                         const def = weapon.definition;
                         const extra = weapon.ammo - def.capacity;
@@ -160,6 +160,8 @@ export class ServerPerkManager extends PerkManager {
             }
             // ! evil ends here
         }
+
+        this.owner.updateAndApplyModifiers();
 
         owner.dirty.perks ||= has;
         return has;

@@ -5,7 +5,6 @@ import "../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 import { processPost } from "./scripts/news/newsHelper";
 import { news } from "./scripts/news/newsPosts";
 import { createDropdown } from "./scripts/uiHelpers";
-import "./scss/pages/client.scss";
 import "./scss/pages/news.scss";
 
 $(() => {

@@ -1,18 +1,17 @@
-import { Constants, DEFAULT_INVENTORY, Derived, itemKeys, itemKeysLength, Layer, ObjectCategory, type GasState } from "../constants";
+import { DEFAULT_INVENTORY, GameConstants, itemKeys, itemKeysLength, Layer, ObjectCategory, type GasState } from "../constants";
 import { Badges, type BadgeDefinition } from "../definitions/badges";
+import { EmoteDefinition, Emotes } from "../definitions/emotes";
 import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
+import { Perks, type PerkDefinition } from "../definitions/items/perks";
+import { Scopes, type ScopeDefinition } from "../definitions/items/scopes";
 import { Loots, type WeaponDefinition } from "../definitions/loots";
 import { MapPings, type MapPing, type PlayerPing } from "../definitions/mapPings";
-import { Perks, type PerkDefinition } from "../definitions/perks";
-import { Scopes, type ScopeDefinition } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
-import { GlobalRegistrar } from "../utils/definitionRegistry";
 import { type Mutable, type SDeepMutable } from "../utils/misc";
 import { ObjectSerializations, type FullData, type ObjectsNetData } from "../utils/objectsSerializations";
 import type { PerkCollection } from "../utils/perkManager";
 import { type SuroiByteStream } from "../utils/suroiByteStream";
 import { Vec, type Vector } from "../utils/vector";
-import type { AllowedEmoteSources } from "./inputPacket";
 import { createPacket, DataSplitTypes, getSplitTypeForCategory } from "./packet";
 
 interface ObjectFullData {
@@ -478,7 +477,7 @@ export type ExplosionSerialization = {
 };
 
 export type EmoteSerialization = {
-    readonly definition: AllowedEmoteSources
+    readonly definition: EmoteDefinition
     readonly playerID: number
 };
 
@@ -587,6 +586,9 @@ export type UpdatePacketDataIn = UpdatePacketDataCommon & ServerOnly;
  */
 export type UpdatePacketDataOut = UpdatePacketDataCommon & ClientOnly;
 
+const planeMinPos = -GameConstants.maxPosition;
+const planeMaxPos = GameConstants.maxPosition * 2;
+
 export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, UpdatePacketDataOut>({
     serialize(strm, data) {
         let flags = 0;
@@ -661,7 +663,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
             strm.writeArray(
                 data.emotes,
                 emote => {
-                    GlobalRegistrar.writeToStream(strm, emote.definition);
+                    Emotes.writeToStream(strm, emote.definition);
                     strm.writeObjectId(emote.playerID);
                 },
                 1
@@ -730,10 +732,10 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
                 plane => {
                     strm.writeVector(
                         plane.position,
-                        -Constants.MAX_POSITION,
-                        -Constants.MAX_POSITION,
-                        Derived.DOUBLE_MAX_POS,
-                        Derived.DOUBLE_MAX_POS,
+                        planeMinPos,
+                        planeMinPos,
+                        planeMaxPos,
+                        planeMaxPos,
                         3
                     );
                     strm.writeRotation2(plane.direction);
@@ -844,7 +846,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
 
         if ((flags & UpdateFlags.Emotes) !== 0) {
             data.emotes = stream.readArray(() => ({
-                definition: GlobalRegistrar.readFromStream(stream),
+                definition: Emotes.readFromStream(stream),
                 playerID: stream.readObjectId()
             }), 1);
         }
@@ -895,10 +897,10 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
         if ((flags & UpdateFlags.Planes) !== 0) {
             data.planes = stream.readArray(() => ({
                 position: stream.readVector(
-                    -Constants.MAX_POSITION,
-                    -Constants.MAX_POSITION,
-                    Derived.DOUBLE_MAX_POS,
-                    Derived.DOUBLE_MAX_POS,
+                    planeMinPos,
+                    planeMinPos,
+                    planeMaxPos,
+                    planeMaxPos,
                     3
                 ),
                 direction: stream.readRotation2()

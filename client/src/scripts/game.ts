@@ -1,12 +1,12 @@
 import { InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize } from "@common/constants";
-import { ArmorType } from "@common/definitions/armors";
+import { ArmorType } from "@common/definitions/items/armors";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { Emotes } from "@common/definitions/emotes";
-import { type DualGunNarrowing } from "@common/definitions/guns";
+import { type DualGunNarrowing } from "@common/definitions/items/guns";
 import { Loots } from "@common/definitions/loots";
 import type { ColorKeys, Mode, ModeDefinition } from "@common/definitions/modes";
 import { Modes } from "@common/definitions/modes";
-import { Scopes } from "@common/definitions/scopes";
+import { Scopes } from "@common/definitions/items/scopes";
 import { DisconnectPacket } from "@common/packets/disconnectPacket";
 import { GameOverPacket } from "@common/packets/gameOverPacket";
 import { JoinedPacket, type JoinedPacketData } from "@common/packets/joinedPacket";
@@ -19,15 +19,16 @@ import { PickupPacket } from "@common/packets/pickupPacket";
 import { ReportPacket } from "@common/packets/reportPacket";
 import { UpdatePacket, type UpdatePacketDataOut } from "@common/packets/updatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer } from "@common/utils/layer";
+import { adjacentOrEqualLayer, equalLayer } from "@common/utils/layer";
 import { EaseFunctions, Geometry } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
-import { ItemType, ObstacleSpecialRoles } from "@common/utils/objectDefinitions";
+import { ItemType } from "@common/utils/objectDefinitions";
 import { ObjectPool } from "@common/utils/objectPool";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { randomFloat, randomVector } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { sound, type Sound } from "@pixi/sound";
+import FontFaceObserver from "fontfaceobserver";
 import $ from "jquery";
 import { Application, Color, Container } from "pixi.js";
 import "pixi.js/prepare";
@@ -58,10 +59,10 @@ import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
 import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
+import { DebugRenderer } from "./utils/debugRenderer";
 import { setUpNetGraph } from "./utils/graph/netGraph";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
-import FontFaceObserver from "fontfaceobserver";
 
 /* eslint-disable @stylistic/indent */
 
@@ -188,6 +189,7 @@ export class Game {
     readonly gas = new Gas(this);
 
     readonly netGraph = setUpNetGraph(this);
+    readonly debugRenderer = new DebugRenderer();
 
     readonly fontObserver = new FontFaceObserver("Inter", { weight: 600 }).load();
 
@@ -231,7 +233,9 @@ export class Game {
             await game.pixi.init({
                 resizeTo: window,
                 background: game.colors.grass,
-                antialias: game.console.getBuiltInCVar("cv_antialias"),
+                antialias: game.inputManager.isMobile
+                    ? game.console.getBuiltInCVar("mb_antialias")
+                    : game.console.getBuiltInCVar("cv_antialias"),
                 autoDensity: true,
                 preferWebGLVersion: renderMode === "webgl1" ? 1 : 2,
                 preference: renderMode === "webgpu" ? "webgpu" : "webgl",
@@ -249,6 +253,7 @@ export class Game {
             });
 
             const pixi = game.pixi;
+            pixi.stop();
             void loadTextures(
                 game.modeName,
                 pixi.renderer,
@@ -281,6 +286,7 @@ export class Game {
 
             pixi.stage.addChild(
                 game.camera.container,
+                game.debugRenderer.graphics,
                 game.map.container,
                 game.map.mask,
                 ...Object.values(game.netGraph).map(g => g.container)
@@ -297,7 +303,7 @@ export class Game {
         let menuMusicSuffix: string;
         if (game.console.getBuiltInCVar("cv_use_old_menu_music")) {
             menuMusicSuffix = "_old";
-        } else if (game.mode.sounds?.replace?.includes("menu_music")) {
+        } else if (game.mode.sounds?.replaceMenuMusic) {
             menuMusicSuffix = `_${game.modeName}`;
         } else {
             menuMusicSuffix = "";
@@ -337,6 +343,7 @@ export class Game {
         this._socket.binaryType = "arraybuffer";
 
         this._socket.onopen = (): void => {
+            this.pixi.start();
             this.music?.stop();
             this.connecting = false;
             this.gameStarted = true;
@@ -356,6 +363,10 @@ export class Game {
                 ui.killFeed.html("");
                 ui.spectatingContainer.hide();
                 ui.joystickContainer.show();
+
+                this.inputManager.emoteWheelActive = false;
+                this.inputManager.pingWheelMinimap = false;
+                this.uiManager.ui.emoteWheel.hide();
             }
 
             let skin: typeof defaultClientCVars["cv_loadout_skin"];
@@ -439,6 +450,7 @@ export class Game {
         const ui = this.uiManager.ui;
 
         this._socket.onerror = (): void => {
+            this.pixi.stop();
             this.error = true;
             this.connecting = false;
             ui.splashMsgText.html(getTranslatedString("msg_err_joining"));
@@ -447,14 +459,16 @@ export class Game {
         };
 
         this._socket.onclose = (): void => {
+            this.pixi.stop();
             this.connecting = false;
             resetPlayButtons(this);
 
             const reason = this.disconnectReason || "Connection lost";
 
-            if (reason === "Server killed") {
-                reloadPage();
-                return;
+            if (reason.startsWith("Invalid game version")) {
+                alert(reason);
+                // reload the page with a time stamp to try clearing cache
+                location.search = `t=${Date.now()}`;
             }
 
             if (!this.gameOver) {
@@ -465,12 +479,6 @@ export class Game {
                 }
                 this.uiManager.ui.btnSpectate.addClass("btn-disabled");
                 if (!this.error) void this.endGame();
-            }
-
-            if (reason.startsWith("Invalid game version")) {
-                alert(reason);
-                // reload the page with a time stamp to try clearing cache
-                location.search = `t=${Date.now()}`;
             }
         };
     }
@@ -495,11 +503,7 @@ export class Game {
                 this.uiManager.processKillFeedPacket(packet.output);
                 break;
             case packet instanceof ReportPacket: {
-                const ui = this.uiManager.ui;
-                const { output } = packet;
-                ui.reportingName.text(output.playerName);
-                ui.reportingId.text(output.reportID);
-                ui.reportingModal.fadeIn(250);
+                this.uiManager.processReportPacket(packet.output);
                 break;
             }
             case packet instanceof PickupPacket: {
@@ -591,7 +595,7 @@ export class Game {
         ui.killLeaderCount.text("0");
         ui.spectateKillLeader.addClass("btn-disabled");
 
-        ui.teamContainer.toggle(this.teamMode);
+        if (!UI_DEBUG_MODE) ui.teamContainer.toggle(this.teamMode);
     }
 
     async endGame(): Promise<void> {
@@ -605,9 +609,8 @@ export class Game {
             this.soundManager.stopAll();
 
             ui.splashUi.fadeIn(400, () => {
-                if (this.music) {
-                    void this.music.play();
-                }
+                this.pixi.stop();
+                void this.music?.play();
                 ui.teamContainer.html("");
                 ui.actionContainer.hide();
                 ui.gameOverOverlay.hide();
@@ -627,6 +630,7 @@ export class Game {
                 this.camera.container.removeChildren();
                 this.particleManager.clear();
                 this.uiManager.clearTeammateCache();
+                this.uiManager.reportedPlayerIDs.clear();
 
                 const map = this.map;
                 map.safeZone.clear();
@@ -683,37 +687,21 @@ export class Game {
             }
         }
 
-        let players: Set<Player> | undefined;
-        if (this.console.getBuiltInCVar("cv_movement_smoothing")) {
-            for (const player of players = this.objects.getCategory(ObjectCategory.Player)) {
-                player.updateContainerPosition();
-                if (!player.isActivePlayer || !this.console.getBuiltInCVar("cv_responsive_rotation") || this.spectating) {
-                    player.updateContainerRotation();
-                }
-            }
+        const hasMovementSmoothing = this.console.getBuiltInCVar("cv_movement_smoothing");
 
-            if (this.activePlayer) {
-                this.camera.position = this.activePlayer.container.position;
-            }
+        const showHitboxes = this.console.getBuiltInCVar("db_show_hitboxes");
 
-            for (const loot of this.objects.getCategory(ObjectCategory.Loot)) {
-                loot.updateContainerPosition();
-            }
+        for (const object of this.objects) {
+            object.update();
+            if (hasMovementSmoothing) object.updateInterpolation();
 
-            for (const projectile of this.objects.getCategory(ObjectCategory.ThrowableProjectile)) {
-                projectile.updateContainerPosition();
-                projectile.updateContainerRotation();
-            }
-
-            for (const syncedParticle of this.objects.getCategory(ObjectCategory.SyncedParticle)) {
-                syncedParticle.updateContainerPosition();
-                syncedParticle.updateContainerRotation();
-                syncedParticle.updateContainerScale();
+            if (DEBUG_CLIENT) {
+                if (showHitboxes) object.updateDebugGraphics(this.debugRenderer);
             }
         }
 
-        for (const player of players ?? this.objects.getCategory(ObjectCategory.Player)) {
-            player.updateGrenadePreview();
+        if (hasMovementSmoothing && this.activePlayer) {
+            this.camera.position = this.activePlayer.container.position;
         }
 
         for (const [image, spinSpeed] of this.spinningImages.entries()) {
@@ -732,6 +720,9 @@ export class Game {
         for (const plane of this.planes) plane.update();
 
         this.camera.update();
+        this.debugRenderer.graphics.position = this.camera.container.position;
+        this.debugRenderer.graphics.scale = this.camera.container.scale;
+        this.debugRenderer.render();
     }
 
     private _lastUpdateTime = 0;
@@ -862,7 +853,11 @@ export class Game {
         }
 
         for (const emote of updateData.emotes ?? []) {
-            if (this.console.getBuiltInCVar("cv_hide_emotes")) break;
+            if (
+                this.console.getBuiltInCVar("cv_hide_emotes")
+                && !("itemType" in emote.definition) // Never hide team emotes (ammo & healing items)
+            ) break;
+
             const player = this.objects.get(emote.playerID);
             if (player?.isPlayer) {
                 player.showEmote(emote.definition);
@@ -1044,6 +1039,23 @@ export class Game {
                     }
                 } else if (isBuilding) {
                     object.toggleCeiling();
+                } else if (isObstacle && object.definition.detector && object.notOnCoolDown) {
+                    for (const player of this.objects.getCategory(ObjectCategory.Player)) {
+                        if (
+                            !object.hitbox.collidesWith(player.hitbox)
+                            || !equalLayer(object.layer, player.layer)
+                            || player.dead
+                        ) continue;
+
+                        this.soundManager.play("detection", {
+                            falloff: 0.25,
+                            position: Vec.create(object.position.x + 20, object.position.y - 20),
+                            maxRange: 200
+                        });
+
+                        object.notOnCoolDown = false;
+                        setTimeout(() => object.notOnCoolDown = true, 1000);
+                    }
                 }
             }
 
@@ -1091,15 +1103,12 @@ export class Game {
                         let text;
                         switch (true) {
                             case object?.isObstacle: {
-                                switch (object.definition.role) {
-                                    case ObstacleSpecialRoles.Door:
-                                        text = object.door?.offset === 0
-                                            ? getTranslatedString("action_open_door")
-                                            : getTranslatedString("action_close_door");
-                                        break;
-                                    case ObstacleSpecialRoles.Activatable:
-                                        text = getTranslatedString(`interact_${object.definition.idString}` as TranslationKeys);
-                                        break;
+                                if (object.definition.isDoor) {
+                                    text = object.door?.offset === 0
+                                        ? getTranslatedString("action_open_door")
+                                        : getTranslatedString("action_close_door");
+                                } else if (object.definition.isActivatable) {
+                                    text = getTranslatedString(`interact_${object.definition.idString}` as TranslationKeys);
                                 }
                                 break;
                             }
@@ -1159,7 +1168,7 @@ export class Game {
                         if (player.downed && (object?.isLoot || (object?.isObstacle && object.definition.noInteractMessage))) interactMsg.hide();
                     }
                 } else {
-                    interactMsg.hide();
+                   if (!UI_DEBUG_MODE) interactMsg.hide();
                 }
 
                 // Mobile stuff

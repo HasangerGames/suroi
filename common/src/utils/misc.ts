@@ -1,5 +1,7 @@
 import type { ObjectDefinition } from "./objectDefinitions";
 
+/* eslint-disable @stylistic/indent */
+
 declare global {
     // taken from https://github.com/microsoft/TypeScript/issues/45602#issuecomment-934427206
     interface Promise<T = void> {
@@ -85,6 +87,8 @@ export type SDeepMutable<T> = T extends ObjectDefinition
 export type GetEnumMemberName<Enum extends Record<string | number, unknown>, Member extends number> = {
     [K in keyof Enum]: Enum[K] extends Member ? K : never
 }[keyof Enum];
+
+export type ReadonlyRecord<K extends string | number | symbol, T> = Readonly<Record<K, T>>;
 
 /**
  * Represents a successful operation
@@ -628,3 +632,17 @@ export class ExtendedMap<K, V> extends Map<K, V> {
         return mapper(this._get(key));
     }
 }
+
+export type PredicateFor<
+    Enum extends Record<string | number, string | number>,
+    Member extends number | undefined
+> = Enum[keyof Enum] extends Member
+    ? {
+        // if Member === Enum[keyof Enum], then they should all be boolean | undefined; if not, narrow as appropriate
+        readonly [K in (keyof Enum & string) as `is${K}`]?: boolean | undefined
+    }
+    : Readonly<Record<`is${GetEnumMemberName<Enum, NonNullable<Member>> & string}`, true>> & {
+        readonly [
+            K in Exclude<Enum[keyof Enum], Member> as `is${GetEnumMemberName<Enum, K & number> & string}`
+        ]?: K extends GetEnumMemberName<Enum, NonNullable<Member>> ? never : false
+    };

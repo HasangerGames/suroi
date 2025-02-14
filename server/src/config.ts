@@ -15,7 +15,6 @@ export const Config = {
 
     maxPlayersPerGame: 80,
     maxGames: 5,
-    gameJoinTime: 60,
 
     gas: { mode: GasMode.Normal },
 
@@ -27,8 +26,8 @@ export const Config = {
 
     roles: {
         developr: { password: "developr", isDev: true },
+        dev_managr: { password: "dev_managr" },
         designr: { password: "designr" },
-        lead_designr: { password: "lead_designr" },
         vip_designr: { password: "vip_designr" },
         sound_designr: { password: "sound_designr" },
         moderatr: { password: "moderatr" },
@@ -40,7 +39,8 @@ export const Config = {
         pap: { password: "pap", isDev: true },
         error: { password: "error", isDev: true },
         limenade: { password: "limenade", isDev: true },
-        solstice: { password: "solstice", isDev: true }
+        solstice: { password: "solstice", isDev: true },
+        zedaes: { password: "zedaes", isDev: true }
     },
 
     authServer: {
@@ -158,11 +158,6 @@ export interface ConfigType {
      * The maximum number of concurrent games.
      */
     readonly maxGames: number
-
-    /**
-     * The number of seconds after which players are prevented from joining a game.
-     */
-    readonly gameJoinTime: number
 
     /**
      * There are 3 gas modes: GasMode.Normal, GasMode.Debug, and GasMode.Disabled.

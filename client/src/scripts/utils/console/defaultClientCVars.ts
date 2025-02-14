@@ -91,6 +91,7 @@ export const CVarCasters = Object.freeze({
     // 0: off
     // 1: label only
     // 2: graph & label
+    db_show_hitboxes: Casters.toBoolean,
 
     mb_controls_enabled: Casters.toBoolean,
     mb_joystick_size: Casters.toNumber,
@@ -98,6 +99,7 @@ export const CVarCasters = Object.freeze({
     mb_gyro_angle: Casters.toNumber,
     mb_haptics: Casters.toBoolean,
     mb_high_res_textures: Casters.toBoolean,
+    mb_antialias: Casters.toBoolean,
 
     dv_password: Casters.toString,
     dv_role: Casters.toString,
@@ -223,12 +225,15 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     pf_show_inout: false,
     pf_net_graph: 1,
 
+    db_show_hitboxes: false,
+
     mb_controls_enabled: true,
     mb_joystick_size: 150,
     mb_joystick_transparency: 0.8,
     mb_gyro_angle: 0,
     mb_haptics: true,
     mb_high_res_textures: false,
+    mb_antialias: false,
 
     dv_password: "",
     dv_role: "",

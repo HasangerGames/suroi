@@ -1,13 +1,13 @@
 import { DEFAULT_INVENTORY, GameConstants, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, ObjectCategory } from "@common/constants";
-import { Ammos } from "@common/definitions/ammos";
+import { Ammos } from "@common/definitions/items/ammos";
 import { type BadgeDefinition } from "@common/definitions/badges";
 import { type EmoteDefinition } from "@common/definitions/emotes";
-import { type GunDefinition } from "@common/definitions/guns";
+import { type GunDefinition } from "@common/definitions/items/guns";
 import { Loots } from "@common/definitions/loots";
 import { MapPings, type PlayerPing } from "@common/definitions/mapPings";
-import { PerkCategories, PerkIds, type PerkDefinition } from "@common/definitions/perks";
-import { DEFAULT_SCOPE, type ScopeDefinition } from "@common/definitions/scopes";
-import { Skins } from "@common/definitions/skins";
+import { PerkCategories, PerkIds, type PerkDefinition } from "@common/definitions/items/perks";
+import { DEFAULT_SCOPE, type ScopeDefinition } from "@common/definitions/items/scopes";
+import { Skins } from "@common/definitions/items/skins";
 import { type GameOverData } from "@common/packets/gameOverPacket";
 import { type KillFeedPacketData } from "@common/packets/killFeedPacket";
 import { type PlayerData } from "@common/packets/updatePacket";
@@ -26,6 +26,7 @@ import { TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
 import { ClientPerkManager } from "./perkManager";
+import type { ReportPacketData } from "@common/packets/reportPacket";
 
 function safeRound(value: number): number {
     if (0 < value && value <= 1) return 1;
@@ -382,9 +383,11 @@ export class UIManager {
     }
 
     cancelAction(): void {
-        this.ui.actionContainer
-            .hide()
-            .stop();
+        if (!UI_DEBUG_MODE) {
+            this.ui.actionContainer
+                .hide()
+                .stop();
+        }
         this.action.active = false;
     }
 
@@ -480,7 +483,7 @@ export class UIManager {
                 const killsMedal = bestKills === packet.teammates[i].kills && bestKills >= 10 && !medals.kills.assigned;
                 const damageDoneMedal = bestDamageDone === packet.teammates[i].damageDone && bestDamageDone >= 1000 && !medals.damageDone.assigned;
                 const damageTakenMedal = bestDamageTaken === packet.teammates[i].damageTaken && bestDamageTaken >= 1000 && !medals.damageTaken.assigned;
-                const wellDone = packet.teammates[i].kills === 0 && packet.teammates[i].damageDone === 0;
+                const wellDone = packet.teammates[i].kills === 0 && packet.teammates[i].damageDone === 0 && packet.won;
 
                 wonMedal = (
                     // Kills (More than 10 kills + most kills on team)
@@ -531,7 +534,7 @@ export class UIManager {
                             : getTranslatedString("msg_player_died", {
                                 player: this.getPlayerData(packet.teammates[i].playerID).name
                             })
-                        : packet.numberTeammates > 1 ? getTranslatedString("msg_your_team_eliminated") : getTranslatedString("msg_you_died"))
+                        : packet.numberTeammates > 1 && packet.teammates.every(teammate => !teammate.alive) ? getTranslatedString("msg_your_team_eliminated") : getTranslatedString("msg_you_died"))
             );
 
             const teammateName = this.getPlayerData(teammateID).name;
@@ -544,19 +547,19 @@ export class UIManager {
                 <h1 class="game-over-player-name" class="modal-item">${(wonMedal ? medal : "") + teammateName + teammateBadgeText}</h1>
                 <div class="modal-item game-over-stats">
                   <div class="stat">
-                    <span class="stat-name" translation="go_kills">Kills:</span>
+                    <span class="stat-name" translation="go_kills">${getTranslatedString("go_kills")}</span>
                     <span class="stat-value">${packet.teammates[i].kills}</span>
                   </div>
                   <div class="stat">
-                    <span class="stat-name" translation="go_damage_done">Damage done:</span>
+                    <span class="stat-name" translation="go_damage_done">${getTranslatedString("go_damage_done")}</span>
                     <span class="stat-value">${packet.teammates[i].damageDone}</span>
                   </div>
                   <div class="stat">
-                    <span class="stat-name" translation="go_damage_taken">Damage taken:</span>
+                    <span class="stat-name" translation="go_damage_taken">${getTranslatedString("go_damage_taken")}</span>
                     <span class="stat-value">${packet.teammates[i].damageTaken}</span>
                   </div>
                   <div class="stat">
-                    <span class="stat-name" translation="go_time_alive">Time alive:</span>
+                    <span class="stat-name" translation="go_time_alive">${getTranslatedString("go_time_alive")}</span>
                     <span class="stat-value">${formatDate(packet.teammates[i].timeAlive)}</span>
                   </div>
                 </div>
@@ -654,6 +657,7 @@ export class UIManager {
                     player.updateTeammateName();
                 }
             }
+            this.ui.btnReport.toggleClass("btn-disabled", !!this.reportedPlayerIDs.get(id.id));
         }
 
         if (id) {
@@ -820,7 +824,7 @@ export class UIManager {
             this.updateWeapons();
         }
 
-        if (activeC4s !== undefined) {
+        if (activeC4s !== undefined && !UI_DEBUG_MODE) {
             this.ui.c4Button.toggle(activeC4s);
             this.hasC4s = activeC4s;
         }
@@ -869,6 +873,17 @@ export class UIManager {
         }
     }
 
+    reportedPlayerIDs = new Map<number, boolean>();
+    processReportPacket(data: ReportPacketData): void {
+        const { ui } = this;
+        const name = this.getRawPlayerName(data.playerID);
+        ui.reportingName.text(name);
+        ui.reportingId.text(data.reportID);
+        ui.reportingModal.fadeIn(250);
+        ui.btnReport.addClass("btn-disabled");
+        this.reportedPlayerIDs.set(data.playerID, true);
+    }
+
     skinID?: string;
 
     updateWeapons(): void {
@@ -877,7 +892,7 @@ export class UIManager {
         const activeWeapon = inventory.weapons[activeIndex];
         const count = activeWeapon?.count;
 
-        if (activeWeapon === undefined || count === undefined || UI_DEBUG_MODE) {
+        if (activeWeapon === undefined || count === undefined) {
             this.ui.ammoCounterContainer.hide();
         } else {
             this.ui.ammoCounterContainer.show();
@@ -1554,7 +1569,7 @@ export class UIManager {
                                 iconName = "airdrop";
                                 break;
                             default:
-                                iconName = weaponUsed?.killfeedFrame ?? "";
+                                iconName = weaponUsed?.killfeedFrame ?? weaponUsed?.idString ?? "";
                                 break;
                         }
                         const altText = weaponUsed ? weaponUsed.name : iconName;

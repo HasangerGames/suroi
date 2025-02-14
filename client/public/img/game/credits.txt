@@ -13,7 +13,7 @@ Loot:
   Level 3 Helmet (Loot Image): Slapdap
   Level 3 Helmet (World Image): Slapdap, modified by Leia
 
-  1x, 2x, 4x, 8x, 15x Scopes: Slapdap
+  1x, 2x, 4x, 8x, 16x Scopes: Slapdap
 
   Tablets: jchen
   Cola: Asultra

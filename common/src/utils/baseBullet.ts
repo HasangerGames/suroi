@@ -1,13 +1,86 @@
-import { Layer } from "../constants";
+import { Layer, ZIndexes } from "../constants";
 import { Bullets, type BulletDefinition } from "../definitions/bullets";
-import { type MeleeDefinition } from "../definitions/melees";
+import { ExplosionDefinition } from "../definitions/explosions";
+import { type MeleeDefinition } from "../definitions/items/melees";
 import type { CommonGameObject } from "./gameObject";
 import { type Hitbox } from "./hitbox";
 import { adjacentOrEqualLayer, equivLayer } from "./layer";
 import { Collision, Geometry, type IntersectionResponse, Numeric } from "./math";
-import { ItemType, type ReifiableDef } from "./objectDefinitions";
+import { ItemType, ReferenceTo, type ReifiableDef } from "./objectDefinitions";
 import type { SuroiByteStream } from "./suroiByteStream";
 import { Vec, type Vector } from "./vector";
+
+export type BaseBulletDefinition = {
+    readonly damage: number
+    readonly obstacleMultiplier: number
+    readonly speed: number
+    readonly range: number
+    readonly rangeVariance?: number
+    readonly shrapnel?: boolean
+    readonly allowRangeOverride?: boolean
+    readonly lastShotFX?: boolean
+    readonly noCollision?: boolean
+
+    readonly tracer?: {
+        /**
+         * @default 1
+         */
+        readonly opacity?: number
+        /**
+         * @default 1
+         */
+        readonly width?: number
+        /**
+         * @default 1
+         */
+        readonly length?: number
+        readonly image?: string
+        /**
+         * Used by the radio bullet
+         * This will make it scale and fade in and out
+         */
+        readonly particle?: boolean
+        readonly zIndex?: ZIndexes
+        /**
+         * A value of `-1` causes a random color to be chosen
+         */
+        readonly color?: number
+        readonly saturatedColor?: number
+    }
+
+    readonly trail?: {
+        readonly interval: number
+        readonly amount?: number
+        readonly frame: string
+        readonly scale: {
+            readonly min: number
+            readonly max: number
+        }
+        readonly alpha: {
+            readonly min: number
+            readonly max: number
+        }
+        readonly spreadSpeed: {
+            readonly min: number
+            readonly max: number
+        }
+        readonly lifetime: {
+            readonly min: number
+            readonly max: number
+        }
+        readonly tint: number
+    }
+} & ({
+    readonly onHitExplosion?: never
+} | {
+    readonly onHitExplosion: ReferenceTo<ExplosionDefinition>
+    /**
+     * When hitting a reflective surface:
+     * - `true` causes the explosion to be spawned
+     * - `false` causes the projectile to be reflected (default)
+     */
+    readonly explodeOnImpact?: boolean
+});
 
 export interface BulletOptions {
     readonly position: Vector
@@ -182,41 +255,31 @@ export class BaseBullet {
 
                 const activeDef = object.activeItemDefinition;
                 const backDef = object.backEquippedMelee;
-                let intersection: IntersectionResponse = null;
-                let reflectedMeleeDefinition: MeleeDefinition | undefined;
 
                 if (activeDef.itemType === ItemType.Melee && activeDef.reflectiveSurface) {
-                    intersection = getIntersection(activeDef.reflectiveSurface);
-                    reflectedMeleeDefinition = activeDef;
-                }
-
-                if (backDef?.onBack.reflectiveSurface) {
-                    const backIntersection = getIntersection(backDef?.onBack.reflectiveSurface);
-                    // if a bullet is really fast and there's both back and active item surfaces
-                    // the bullet can end up colliding with both reflective surfaces
-                    // this handles that by using the closest surface to the bullet old position
-                    if (backIntersection && intersection) {
-                        if (Geometry.distanceSquared(oldPosition, backIntersection.point)
-                            < Geometry.distanceSquared(oldPosition, intersection.point)
-                        ) {
-                            intersection = backIntersection;
-                            reflectedMeleeDefinition = backDef;
-                        }
-                    } else {
-                        intersection = backIntersection;
-                        reflectedMeleeDefinition = backDef;
+                    const intersection = getIntersection(activeDef.reflectiveSurface);
+                    if (intersection) {
+                        collisions.push({
+                            intersection: intersection,
+                            object,
+                            dealDamage: false,
+                            reflected: true,
+                            reflectedMeleeDefinition: activeDef
+                        });
                     }
                 }
 
-                if (intersection) {
-                    collisions.push({
-                        intersection: intersection,
-                        object,
-                        dealDamage: false,
-                        reflected: true,
-                        reflectedMeleeDefinition
-                    });
-                    continue;
+                if (backDef?.onBack?.reflectiveSurface) {
+                    const intersection = getIntersection(backDef?.onBack.reflectiveSurface);
+                    if (intersection) {
+                        collisions.push({
+                            intersection: intersection,
+                            object,
+                            dealDamage: false,
+                            reflected: true,
+                            reflectedMeleeDefinition: backDef
+                        });
+                    }
                 }
             }
 

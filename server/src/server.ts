@@ -1,7 +1,7 @@
 import { GameConstants, TeamSize } from "@common/constants";
 import { Badges } from "@common/definitions/badges";
 import { Mode } from "@common/definitions/modes";
-import { Skins } from "@common/definitions/skins";
+import { Skins } from "@common/definitions/items/skins";
 import { CustomTeamMessage, type GetGameResponse } from "@common/typings";
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import { Numeric } from "@common/utils/math";
@@ -267,14 +267,15 @@ if (isMainThread && require.main === module) {
             }
 
             // Validate skin
-            const rolesRequired = Skins.fromStringSafe(skin)?.rolesRequired;
-            if (rolesRequired && !rolesRequired.includes(role)) {
+            const skinDefinition = Skins.fromStringSafe(skin);
+            const rolesRequired = skinDefinition?.rolesRequired;
+            if (!skinDefinition || (rolesRequired && !rolesRequired.includes(role))) {
                 skin = GameConstants.player.defaultSkin;
             }
 
             // Validate badge
-            const roles = badge ? Badges.fromStringSafe(badge)?.roles : undefined;
-            if (roles?.length && !roles.includes(role)) {
+            const badgeDefinition = badge ? Badges.fromStringSafe(badge) : undefined;
+            if (!badgeDefinition || (badgeDefinition.roles && !badgeDefinition.roles.includes(role))) {
                 badge = undefined;
             }
 
