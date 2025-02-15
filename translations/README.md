@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Wed, 12 Feb 2025 15:35:53 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 15 Feb 2025 13:32:35 GMT
 
 ## 🇦🇱 Shqip (86% Complete) - ab.hjson
 
@@ -14,6 +14,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
 - Key `settings_show_inout` is not defined
@@ -55,6 +56,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `settings_show_inout` is not defined
 
 ## 🇨🇿 Čeština (90% Complete) - cz.hjson
@@ -69,6 +71,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
 - Key `settings_ambience_volume` is not defined
@@ -99,6 +102,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `wiki` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
@@ -116,6 +120,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `wiki` is not defined
 - Key `settings_show_inout` is not defined
 - Key `loading_fetching_data_failed` is not defined
@@ -133,6 +138,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `wiki` is not defined
 - Key `settings_show_inout` is not defined
 - Key `loading_fetching_data_failed` is not defined
@@ -149,6 +155,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `wiki` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
@@ -170,10 +177,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 
-## 🇬🇷 Ελληνικά (99% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (98% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
@@ -182,8 +190,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (89% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (88% Complete) - hk_mo.hjson
 
 ### (No Invalid Keys)
 
@@ -196,6 +205,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
 - Key `copied` is not defined
@@ -220,7 +230,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off_down` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇭🇺 Magyar (99% Complete) - hu.hjson
+## 🇭🇺 Magyar (98% Complete) - hu.hjson
 
 ### (No Invalid Keys)
 
@@ -229,6 +239,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 
 ## 🇮🇹 Italiano (86% Complete) - it.hjson
 
@@ -258,6 +269,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
 - Key `settings_ambience_volume` is not defined
@@ -296,6 +308,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
 - Key `settings_ambience_volume` is not defined
@@ -329,6 +342,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
 - Key `settings_ambience_volume` is not defined
@@ -362,6 +376,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
 - Key `settings_ambience_volume` is not defined
@@ -393,6 +408,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `wiki` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
@@ -403,7 +419,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `retry` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
-## 🎀 Cute Engwish (88% Complete) - qen.hjson
+## 🎀 Cute Engwish (87% Complete) - qen.hjson
 
 ### (No Invalid Keys)
 
@@ -419,6 +435,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
 - Key `copied` is not defined
@@ -443,7 +460,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `destroyer_of_worlds` is not defined
 - Key `m16a4` is not defined
 
-## 🇷🇴 Română (84% Complete) - ro.hjson
+## 🇷🇴 Română (83% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
@@ -459,6 +476,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
 - Key `settings_ambience_volume` is not defined
@@ -502,6 +520,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `settings_show_inout` is not defined
 - Key `m16a4` is not defined
 
@@ -514,6 +533,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `wiki` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
@@ -536,6 +556,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `wiki` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
@@ -546,7 +567,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `retry` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
-## 🇹🇼 中文（繁體） (83% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (82% Complete) - tw.hjson
 
 ### (No Invalid Keys)
 
@@ -562,6 +583,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
 - Key `copied` is not defined
@@ -599,7 +621,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇻🇳 Tiếng Việt (99% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (98% Complete) - vi.hjson
 
 ### (No Invalid Keys)
 
@@ -608,6 +630,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 
 ## 🇨🇳 中文（简体） (97% Complete) - zh.hjson
 
@@ -620,6 +643,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
 - Key `wiki` is not defined
 - Key `settings_show_inout` is not defined
 - Key `loading_fetching_data_failed` is not defined
