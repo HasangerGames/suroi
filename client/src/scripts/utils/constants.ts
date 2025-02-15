@@ -22,7 +22,8 @@ export const HITBOX_COLORS = {
     loot: new Color("magenta"),
     player: new Color("blue"),
     playerWeapon: new Color("lime"),
-    projectiles: new Color("#ba31ff")
+    projectiles: new Color("#ba31ff"),
+    pivot: new Color("#271b3d")
 };
 
 export const TEAMMATE_COLORS = [

@@ -1,11 +1,11 @@
 import { type RulesPost } from "./rulePosts";
 
 export const privacyPolicy: RulesPost = {
-        date: 1729944000000,
-        author: "Error",
-        title: "Policy",
-        content: "This document informs users of Suroi on how their personal data is collected and processed.",
-        longContent: `
+    date: 1729944000000,
+    author: "Error",
+    title: "Policy",
+    content: "This document informs users of Suroi on how their personal data is collected and processed.",
+    longContent: `
         <br>
         <h2>1. Acceptance of Privacy Policy</h2>
         By accessing or using suroi.io (the "Site" or "Game"), you agree to this Privacy Policy. If you do not agree with this policy, please do not use our Site. We comply with international data protection laws, including the General Data Protection Regulation (GDPR) for users in the European Union.
@@ -80,4 +80,4 @@ export const privacyPolicy: RulesPost = {
         <li><h3>Data Protection:</h3> We employ industry-standard security measures to protect your personal information from unauthorized access, alteration, disclosure, or destruction.
         </ul>
         `
-    }
+};

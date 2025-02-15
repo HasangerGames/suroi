@@ -721,7 +721,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             const backMelee = this.backEquippedMelee;
             backMeleeSprite.setVisible(!!backMelee?.onBack);
 
-            if (backMelee && backMelee.onBack) {
+            if (backMelee?.onBack) {
                 const frame = `${backMelee.idString}${backMelee.image?.separateWorldImage ? "_world" : ""}`;
                 backMeleeSprite.setFrame(frame);
                 const { onBack } = backMelee;
@@ -983,6 +983,21 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 );
                 if (this.activeItem.reflectiveSurface) {
                     renderMeleeReflectionSurface(this.activeItem.reflectiveSurface);
+                }
+
+                if (this.activeItem.image?.pivot) {
+                    debugRenderer.addCircle(
+                        this.sizeMod,
+                        Vec.add(
+                            this.position,
+                            Vec.scale(
+                                Vec.rotate(this.activeItem.image.pivot, this.rotation),
+                                this.sizeMod
+                            )
+                        ),
+                        HITBOX_COLORS.pivot,
+                        alpha
+                    );
                 }
                 break;
             }
