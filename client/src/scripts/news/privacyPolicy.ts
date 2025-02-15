@@ -3,7 +3,7 @@ import { type RulesPost } from "./rulePosts";
 export const privacyPolicy: RulesPost = {
     date: 1729944000000,
     author: "Error",
-    title: "Policy",
+    title: "Privacy",
     content: "This document informs users of Suroi on how their personal data is collected and processed.",
     longContent: `
         <br>
@@ -79,5 +79,48 @@ export const privacyPolicy: RulesPost = {
 
         <li><h3>Data Protection:</h3> We employ industry-standard security measures to protect your personal information from unauthorized access, alteration, disclosure, or destruction.
         </ul>
+        
+        <br>
+        
+        <h2>7. User Rights</h2>
+        <ul>
+        <li><h3>Access and Correction:</h3> You may request access to the personal data we hold about you and request corrections to any inaccurate or incomplete data.
+
+        <li><h3>Data Deletion:</h3> You can request the deletion of your personal data by contacting us at support@suroi.io. We will process such requests in accordance with applicable laws.
+        </ul>
+        
+        <br>
+        
+        <h2>8. Children's Privacy</h2>
+        We do not knowingly collect personal information from children under the age of 13. If you are under 13, please do not use our Site or provide any personal information to us. If we become aware that we have collected personal information from a child under 13, we will take steps to delete such information promptly.
+        
+        <br><br>
+        
+        <h2>9. International Users</h2>
+        By using our Site, you acknowledge that your personal data may be processed in the country where it was collected as well as other countries where laws regarding processing of personal data may be less stringent than the laws in your country.
+        
+        <br><br>
+        
+        <h2>10. User-Generated Content</h2>
+        <ul>
+        <li>Usernames: Users create their own usernames when registering. We prohibit the use of inappropriate or offensive usernames and reserve the right to ban users who violate this policy.
+        </ul>
+        
+        <br>
+        
+        <h2>11. Changes to This Privacy Policy</h2>
+        We may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated revision date. We encourage you to review this Privacy Policy periodically. If we make significant changes, we will notify users via our Discord server before the changes take effect.
+        
+        <br><br>
+        
+        <h2>12. Contact Us</h2>
+        If you have any questions or concerns about this Privacy Policy or our data practices, please contact us at:
+
+        Email: support@suroi.io
+        
+        <br><br>
+        
+        <h2>13. Your Acceptance of These Terms</h2>
+        By using suroi.io, you signify your acceptance of this Privacy Policy. If you do not agree to this policy, please do not use our Site.
         `
 };
