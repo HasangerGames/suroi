@@ -18,7 +18,7 @@ export const HealingItems = new ObjectDefinitions<HealingItemDefinition>([
         name: "Gauze",
         itemType: ItemType.Healing,
         healType: HealType.Health,
-        restoreAmount: 15,
+        restoreAmount: 20,
         useTime: 3
     },
     {
