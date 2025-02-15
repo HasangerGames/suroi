@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 15 Feb 2025 16:30:00 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 15 Feb 2025 17:44:04 GMT
 
 ## 🇦🇱 Shqip (86% Complete) - ab.hjson
 
@@ -554,7 +554,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
-- Key `privacy` is not defined
 - Key `wiki` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
