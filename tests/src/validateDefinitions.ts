@@ -70,6 +70,14 @@ logger.indent("Validating gas stages", () => {
                 defaultValue: false,
                 baseErrorPath: errorPath
             });
+
+            if (stage.scaleDamageFactor !== undefined) {
+                tester.assertIsPositiveReal({
+                    obj: stage,
+                    field: "scaleDamageFactor",
+                    baseErrorPath: errorPath
+                });
+            }
         },
         "gas stages"
     );
