@@ -830,13 +830,8 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>([
         speedMultiplier: 1,
         obstacleMultiplier: 1.5,
         radius: 2.7,
-        offset: Vec.create(5.5, 0),
+        offset: Vec.create(5.5, 2),
         cooldown: 800,
-        fists: {
-            animationDuration: 200,
-            left: Vec.create(38, -35),
-            right: Vec.create(45, 35)
-        },
         reflectiveSurface: {
             pointA: Vec.create(3.8, -2.5),
             pointB: Vec.create(2.5, 1.025)
@@ -849,22 +844,28 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>([
                 pointB: Vec.create(0.25, 3)
             }
         },
+        fists: {
+            animationDuration: 200,
+            left: Vec.create(38, -35),
+            right: Vec.create(45, 35)
+        },
         image: {
             separateWorldImage: true,
-            position: Vec.create(60, 4),
             angle: -70,
+            position: Vec.create(60, 4),
             lootScale: 0.9
         },
         animation: [
+
             {
                 duration: 200,
                 fists: {
                     left: Vec.create(38, -35),
-                    right: Vec.create(80, -5)
+                    right: Vec.create(65, 55)
                 },
                 image: {
-                    angle: 30,
-                    position: Vec.create(115, 18)
+                    angle: 15,
+                    position: Vec.create(105, 65)
                 }
             },
             {
