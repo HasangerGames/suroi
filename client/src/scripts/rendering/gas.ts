@@ -71,13 +71,14 @@ export class Gas {
             const time = this.currentDuration - Math.round(this.currentDuration * (gasProgress ?? 1));
 
             let gasMessage = "";
+            const finalStage = gas.finalStage;
             switch (this.state) {
                 case GasState.Waiting: {
-                    gasMessage = getTranslatedString("gas_waiting", { time: formatDate(time) });
+                    gasMessage = finalStage ? `Final zone closes in ${formatDate(time)}` : getTranslatedString("gas_waiting", { time: formatDate(time) });
                     break;
                 }
                 case GasState.Advancing: {
-                    gasMessage = getTranslatedString("gas_advancing");
+                    gasMessage = finalStage ? "Final zone is closing!" : getTranslatedString("gas_advancing");
                     break;
                 }
                 case GasState.Inactive: {

@@ -1468,7 +1468,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         // shut up
         // eslint-disable-next-line @typescript-eslint/no-misused-spread
-        packet.gas = gas.dirty || this._firstPacket ? { ...gas } : undefined;
+        packet.gas = gas.dirty || this._firstPacket ? { ...gas, finalStage: gas.getDef().finalStage } : undefined;
         packet.gasProgress = gas.completionRatioDirty || this._firstPacket ? gas.completionRatio : undefined;
 
         const newPlayers = this._firstPacket

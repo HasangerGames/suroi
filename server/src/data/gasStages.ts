@@ -9,6 +9,7 @@ export interface GasStage {
     readonly summonAirdrop?: boolean
     readonly preventJoin?: boolean
     readonly scaleDamageFactor?: number
+    readonly finalStage?: boolean // only affects client side text
 }
 
 export const GasStages: GasStage[] = [
@@ -104,7 +105,8 @@ export const GasStages: GasStage[] = [
         newRadius: 0,
         dps: 10,
         summonAirdrop: true,
-        scaleDamageFactor: 1
+        scaleDamageFactor: 1,
+        finalStage: true
     },
     {
         state: GasState.Advancing,
@@ -112,7 +114,8 @@ export const GasStages: GasStage[] = [
         oldRadius: 0.09,
         newRadius: 0,
         dps: 10,
-        scaleDamageFactor: 1
+        scaleDamageFactor: 1,
+        finalStage: true
     },
     // Final Zone Closed, 6 min 30 seconds
     {
@@ -121,7 +124,8 @@ export const GasStages: GasStage[] = [
         oldRadius: 0,
         newRadius: 0,
         dps: 10,
-        scaleDamageFactor: 1
+        scaleDamageFactor: 1,
+        finalStage: true
     }
 ];
 

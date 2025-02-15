@@ -537,6 +537,7 @@ export type UpdatePacketDataCommon = {
         readonly newPosition: Vector
         readonly oldRadius: number
         readonly newRadius: number
+        readonly finalStage?: boolean
     }
     readonly gasProgress?: number
     readonly newPlayers?: ReadonlyArray<{
@@ -678,7 +679,8 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
                 .writePosition(gas.oldPosition)
                 .writePosition(gas.newPosition)
                 .writeFloat(gas.oldRadius, 0, 2048, 2)
-                .writeFloat(gas.newRadius, 0, 2048, 2);
+                .writeFloat(gas.newRadius, 0, 2048, 2)
+                .writeBooleanGroup(gas.finalStage ?? false);
             flags |= UpdateFlags.Gas;
         }
 
@@ -859,7 +861,8 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
                 oldPosition: stream.readPosition(),
                 newPosition: stream.readPosition(),
                 oldRadius: stream.readFloat(0, 2048, 2),
-                newRadius: stream.readFloat(0, 2048, 2)
+                newRadius: stream.readFloat(0, 2048, 2),
+                finalStage: stream.readBooleanGroup()[0]
             };
         }
 
