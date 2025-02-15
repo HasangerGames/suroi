@@ -6603,7 +6603,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "potted_plant", position: Vec.create(-38.35, 90.99), rotation: 0 },
             { idString: "control_panel_small", position: Vec.create(-46.14, 91.33), rotation: 0 },
             { idString: "hq_desk_right", position: Vec.create(-40.79, 104.56), rotation: 3 },
-            { idString: "pipe_4", position: Vec.create(-136.1, 95.81), rotation: 0 },
+            { idString: "pipe", position: Vec.create(-136.1, 95.9), rotation: 0, variation: 3 },
 
             // vault
             { idString: "metal_door", position: Vec.create(-84.12, 88.37), rotation: 1 },
@@ -6699,7 +6699,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: { box: 1, grenade_box: 1 }, position: Vec.create(-139.01, -73.68) },
             { idString: "regular_crate", position: Vec.create(-146.74, -75.09) },
             { idString: "bookshelf", position: Vec.create(-145.4, -62.95), rotation: 0 },
-            { idString: "pipe_3", position: Vec.create(-145.31, -71.55), rotation: 0 },
+            { idString: "pipe", position: Vec.create(-145.31, -71.6), rotation: 0, variation: 2 },
 
             // lab
             { idString: "pumpkin", position: Vec.create(-47.26, -117.89), rotation: 0 },
@@ -6822,8 +6822,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "gun_case", position: Vec.create(18.07, -4.83), rotation: 1 },
             { idString: "ammo_crate", position: Vec.create(63.73, -20.65) },
             { idString: "barrel", position: Vec.create(73.17, -21.67) },
-            { idString: "pipe_1", position: Vec.create(106.85, -16.65), rotation: 0 },
-            { idString: "pipe_2", position: Vec.create(62.22, -86.03), rotation: 0 },
+            { idString: "pipe", position: Vec.create(106.85, -16.65), rotation: 0, variation: 4 }, // why does dv hate this? (variation: 4)
+            { idString: "pipe", position: Vec.create(62.22, -86.05), rotation: 0, variation: 1 },
             { idString: "ammo_crate", position: Vec.create(107.16, -12.64) },
             { idString: "ammo_crate", position: Vec.create(134.15, -20.66) },
             { idString: "melee_crate", position: Vec.create(17.17, -21.35) }

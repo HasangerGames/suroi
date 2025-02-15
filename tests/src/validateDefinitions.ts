@@ -1093,7 +1093,7 @@ logger.indent("Validating building definitions", () => {
                                                         obj: obstacle,
                                                         field: "variation",
                                                         min: 0,
-                                                        max: reference.variations - 1,
+                                                        max: reference.variations, // the -1 was preventing something :3
                                                         includeMin: true,
                                                         includeMax: true,
                                                         baseErrorPath: errorPath

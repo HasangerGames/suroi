@@ -3556,13 +3556,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         noBulletCollision: true,
         pallet: true
     },
-
-    // --------------------------------------------
-    // variations no work for some reason
-    // (someone fix pls uwu)
-    // --------------------------------------------
     {
-        idString: "pipe_1",
+        idString: "pipe",
         name: "Pipe",
         material: "metal_light",
         health: 200,
@@ -3573,48 +3568,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         allowFlyover: FlyoverPref.Always,
         noBulletCollision: true,
         noMeleeCollision: true,
-        noCollisions: true
-    },
-    {
-        idString: "pipe_2",
-        name: "Pipe",
-        material: "metal_light",
-        health: 200,
-        indestructible: true,
-        hitbox: RectangleHitbox.fromRect(0, 0),
-        zIndex: ZIndexes.ObstaclesLayer4,
-        rotationMode: RotationMode.Limited,
-        allowFlyover: FlyoverPref.Always,
-        noBulletCollision: true,
-        noMeleeCollision: true,
-        noCollisions: true
-    },
-    {
-        idString: "pipe_3",
-        name: "Pipe",
-        material: "metal_light",
-        health: 200,
-        indestructible: true,
-        hitbox: RectangleHitbox.fromRect(0, 0),
-        zIndex: ZIndexes.ObstaclesLayer4,
-        rotationMode: RotationMode.Limited,
-        allowFlyover: FlyoverPref.Always,
-        noBulletCollision: true,
-        noMeleeCollision: true,
-        noCollisions: true
-    },
-    {
-        idString: "pipe_4",
-        name: "Pipe",
-        material: "metal_light",
-        health: 200,
-        indestructible: true,
-        hitbox: RectangleHitbox.fromRect(0, 0),
-        zIndex: ZIndexes.ObstaclesLayer4,
-        rotationMode: RotationMode.Limited,
-        allowFlyover: FlyoverPref.Always,
-        noMeleeCollision: true,
-        noCollisions: true
+        noCollisions: true,
+        variations: 4
     },
     {
         idString: "bollard",
