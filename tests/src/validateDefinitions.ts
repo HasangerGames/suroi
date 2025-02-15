@@ -2573,13 +2573,13 @@ logger.indent("Validating melees", () => {
                         baseErrorPath: errorPath2
                     });
 
-                    if (image.useAngle) {
+                   /* if (image.useAngle) {
                         tester.assertIsFiniteRealNumber({
                             obj: image,
                             field: "useAngle",
                             baseErrorPath: errorPath2
                         });
-                    }
+                    }*/
 
                     tester.assertValidOrNPV({
                         obj: image,

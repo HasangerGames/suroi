@@ -16,7 +16,7 @@ import { pickRandomInArray } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { sound } from "@pixi/sound";
 import $ from "jquery";
-import { Color, isMobile, isWebGPUSupported } from "pixi.js";
+import { Color, isWebGPUSupported } from "pixi.js";
 import { TRANSLATIONS, getTranslatedString } from "../translations";
 import type { TranslationKeys } from "../typings/translations";
 import { Config, type ServerInfo } from "./config";

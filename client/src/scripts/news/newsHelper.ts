@@ -18,7 +18,7 @@ export interface NewsPost {
     readonly longContent?: string
 }
 
-export function processPost(post: NewsPost | RulesPost): string {
+export function processPost(post: NewsPost): string {
     let newsText = "";
 
     const date = new Date(post.date).toLocaleDateString("default", {

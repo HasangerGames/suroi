@@ -2,7 +2,6 @@ import { DEFAULT_INVENTORY, GameConstants, KillfeedEventSeverity, KillfeedEventT
 import { Ammos } from "@common/definitions/items/ammos";
 import { type BadgeDefinition } from "@common/definitions/badges";
 import { type EmoteDefinition } from "@common/definitions/emotes";
-import { type GunDefinition } from "@common/definitions/items/guns";
 import { Loots } from "@common/definitions/loots";
 import { MapPings, type PlayerPing } from "@common/definitions/mapPings";
 import { PerkCategories, PerkIds, type PerkDefinition } from "@common/definitions/items/perks";
