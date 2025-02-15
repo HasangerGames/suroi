@@ -3463,7 +3463,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             names: ["speaker_start", "speaker_start"]
         },
         frames: {
-            activated: "recorder_used"
+            activated: "recorder_used",
+            particle: "metal_particle"
         }
     },
     {
