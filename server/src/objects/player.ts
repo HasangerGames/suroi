@@ -1406,7 +1406,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             ),
             ...(
                 player.dirty.perks || forceInclude
-                    ? { perks: this.perks }
+                    ? { perks: player.perks }
                     : {}
             ),
             ...(

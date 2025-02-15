@@ -843,45 +843,18 @@ export class UIManager {
             this.hasC4s = activeC4s;
         }
 
-        /* if (perks) {
+        if (perks) {
             const oldPerks = this.perks.asList();
             this.perks.overwrite(perks);
             const newPerks = this.perks.asList();
-
-            const length = Math.max(oldPerks.length, newPerks.length);
-
-            if (length === 0) {
-                this.resetPerkSlots();
-            }
-
-            for (let i = 0; i < length; i++) {
-                const perk = newPerks[i];
-
-                if (!oldPerks[i] && perk) {
-                    this.updatePerkSlot(perk, i);
-                }
-            }
-        } */
-        if (perks) {
-            const old = this.perks.asList();
-            const oldLength = old.length;
-            this.perks.overwrite(perks);
-
-            const perkList = this.perks.asList();
-            const length = perkList.length;
-
-            if (length === 0) this.resetPerkSlots();
-
-            const iterCount = Numeric.max(oldLength, length);
-            for (let i = 0; i < iterCount; i++) {
-                const perk = perkList[i];
-                if (perk === undefined) {
+            for (let i = 0; i < 3; i++) { // TODO make a constant for max perks
+                const newPerk = newPerks[i];
+                if (newPerk === undefined) {
                     this.resetPerkSlot(i);
                     continue;
                 }
-
-                if (old[i] !== perk) {
-                    this.updatePerkSlot(perk, i);
+                if (oldPerks[i] !== newPerk) {
+                    this.updatePerkSlot(newPerk, i);
                 }
             }
         }
@@ -1122,12 +1095,6 @@ export class UIManager {
         this._animationTimeouts[index] = window.setTimeout(() => {
             container.css("animation", "none");
         }, flashAnimationDuration);
-    }
-
-    resetPerkSlots(): void {
-        for (let i = 0; i < 3; i++) {
-            this.resetPerkSlot(i);
-        }
     }
 
     updateItems(): void {
