@@ -1137,6 +1137,27 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         winterVariations: 1
     },
     {
+        idString: "monument",
+        name: "Monument",
+        material: "stone",
+        health: 200,
+        impenetrable: true,
+        hasLoot: true,
+        noResidue: true,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.7
+        },
+        spawnMode: MapObjectSpawnMode.Beach,
+        hitbox: RectangleHitbox.fromRect(10.55, 10.55),
+        rotationMode: RotationMode.None,
+        frames: {
+            particle: "clearing_boulder_particle"
+        },
+        particleVariations: 2
+    },
+    {
         idString: "bush",
         name: "Bush",
         material: "bush",

@@ -86,7 +86,7 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         ["Flamingo",              0xf1847d],
         ["Peachy Breeze",         0xf2a263],
         ["Deep Sea",              0x284553],
-        ["Basic Outfit",          0xdd9b0a],
+        ["Basic Outfit",          0x816537],
         ["Peppermint",            0xb40030],
         ["Spearmint",             0x115724],
         ["Coal",                  0x424242],

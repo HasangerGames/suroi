@@ -274,6 +274,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "ghillie_suit", weight: 0.15 },
             { item: "basic_outfit", weight: 0.05 }
         ],
+        monument: [{ item: "basic_outfit", weight: 1 }],
         toilet: {
             min: 2,
             max: 3,
