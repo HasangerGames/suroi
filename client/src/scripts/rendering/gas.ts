@@ -48,6 +48,8 @@ export class Gas {
         };
     }
 
+    private _gasMsgFadeTimeout: number | undefined;
+
     updateFrom(data: UpdatePacketDataOut): void {
         const gas = data.gas;
 
@@ -103,7 +105,8 @@ export class Gas {
                     this._ui.msgText.css("color", "white");
                 } else {
                     this._ui.msgText.css("color", "cyan");
-                    setTimeout(() => this._ui.msgContainer.fadeOut(1000), 5000);
+                    clearTimeout(this._gasMsgFadeTimeout);
+                    this._gasMsgFadeTimeout = setTimeout(() => this._ui.msgContainer.fadeOut(1000), 5000) as unknown as number;
                 }
             }
         }
