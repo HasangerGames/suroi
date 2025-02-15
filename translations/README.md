@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 15 Feb 2025 13:32:35 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 15 Feb 2025 13:38:21 GMT
 
 ## 🇦🇱 Shqip (86% Complete) - ab.hjson
 
@@ -230,7 +230,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off_down` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇭🇺 Magyar (98% Complete) - hu.hjson
+## 🇭🇺 Magyar (99% Complete) - hu.hjson
 
 ### (No Invalid Keys)
 
@@ -239,7 +239,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
-- Key `privacy` is not defined
 
 ## 🇮🇹 Italiano (86% Complete) - it.hjson
 
