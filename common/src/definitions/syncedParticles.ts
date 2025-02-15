@@ -190,6 +190,18 @@ export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
         snapScopeTo: "1x_scope",
         depletePerMs: {
             adrenaline: 0.0055
+        },
+        velocity: {
+            easing: "expoOut",
+            duration: 4000
+        },
+        spawner: {
+            count: 10,
+            radius: 15,
+            staggering: {
+                delay: 300,
+                initialAmount: 2
+            }
         }
     }),
     smokeLike({
