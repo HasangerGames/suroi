@@ -28,7 +28,7 @@ import { getTranslatedString } from "../../translations";
 import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { BULLET_WHIZ_SCALE, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE } from "../utils/constants";
+import { BULLET_WHIZ_SCALE, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import type { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
@@ -1025,7 +1025,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 text: new Text({
                     text: game.uiManager.getRawPlayerName(this.id),
                     style: {
-                        fill: name?.hasColor ? name?.nameColor : "#00ffff",
+                        fill: name?.hasColor ? name?.nameColor : TEAMMATE_COLORS[game.uiManager.getTeammateColorIndex(this.id) ?? 0],
                         fontSize: 36,
                         fontFamily: "Inter",
                         fontWeight: "600",
