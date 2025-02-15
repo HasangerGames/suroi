@@ -692,7 +692,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>([
             right: Vec.create(38, 35)
         },
         image: {
-            position: Vec.create(80, 25),
+            position: Vec.create(80, 32),
             angle: 35,
             lootScale: 0.7
         },
@@ -705,7 +705,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>([
                 },
                 image: {
                     angle: 0,
-                    position: Vec.create(123, -13)
+                    position: Vec.create(130, -9)
                 }
             },
             {
@@ -716,7 +716,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>([
                 },
                 image: {
                     angle: 35,
-                    position: Vec.create(80, 25)
+                    position: Vec.create(80, 32)
                 }
             }
         ]
