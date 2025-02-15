@@ -293,7 +293,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "m590m_explosion",
         name: "M590M",
-        damage: 30,
+        damage: 40,
         obstacleMultiplier: 1.5,
         radius: {
             min: 6,
@@ -312,7 +312,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         shrapnelCount: 13,
         ballistics: {
             shrapnel: true,
-            damage: 2,
+            damage: 3,
             obstacleMultiplier: 1.5,
             speed: 0.06,
             range: 7,
