@@ -4,7 +4,7 @@ import { Geometry, Numeric } from "@common/utils/math";
 import { randomPointInsideCircle } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Config, GasMode } from "./config";
-import { GasStages } from "./data/gasStages";
+import { GasStage, GasStages } from "./data/gasStages";
 import { type Game } from "./game";
 
 export class Gas {
@@ -147,5 +147,9 @@ export class Gas {
 
     isInGas(position: Vector): boolean {
         return Geometry.distanceSquared(position, this.currentPosition) >= this.currentRadius ** 2;
+    }
+
+    getDef(): GasStage {
+        return GasStages[this.stage];
     }
 }

@@ -95,6 +95,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     lastRateLimitUpdate = 0;
     blockEmoting = false;
 
+    private timeWhenLastOutsideOfGas = Date.now();
+    private additionalGasDamage = 0;
+
     initializedSpecialSpectatingCase = false;
 
     readonly loadout: {
@@ -1130,11 +1133,19 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         // Gas damage
         const gas = this.game.gas;
+        const now = Date.now();
+        const applyScaleDamageFactor = (now - this.timeWhenLastOutsideOfGas) >= 10000;
         if (gas.doDamage && gas.isInGas(this.position)) {
             this.piercingDamage({
-                amount: gas.scaledDamage(this.position),
+                amount: gas.scaledDamage(this.position) + (applyScaleDamageFactor ? (gas.getDef().scaleDamageFactor ?? 0) + this.additionalGasDamage : 0),
                 source: KillfeedEventType.Gas
             });
+            if (applyScaleDamageFactor) {
+                this.additionalGasDamage = this.additionalGasDamage + (gas.getDef().scaleDamageFactor ?? 0);
+            }
+        } else if (!gas.isInGas(this.position)) {
+            this.timeWhenLastOutsideOfGas = now;
+            this.additionalGasDamage = 0;
         }
 
         // Knocked out damage
