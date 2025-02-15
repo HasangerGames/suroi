@@ -656,6 +656,7 @@ export class UIManager {
                 for (const player of this.game.objects.getCategory(ObjectCategory.Player)) {
                     player.updateTeammateName();
                 }
+                this.cancelAction();
             }
             this.ui.btnReport.toggleClass("btn-disabled", !!this.reportedPlayerIDs.get(id.id));
         }
