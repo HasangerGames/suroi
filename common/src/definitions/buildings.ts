@@ -6854,9 +6854,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             falloff: 0.5
         },
         floorImages: [
-            { key: "plumpkin_bunker_large_mixing_stick", position: Vec.create(14.75, -82.03), spinSpeed: -0.002 },
-            { key: "plumpkin_bunker_large_mixing_stick", position: Vec.create(-40.11, -82.03), spinSpeed: -0.002 },
-            { key: "plumpkin_bunker_small_mixing_stick", position: Vec.create(44.62, -64.92), spinSpeed: -0.002 },
+            { key: "plumpkin_bunker_large_mixing_stick", position: Vec.create(14.75, -82.03), spinSpeed: -0.032 },
+            { key: "plumpkin_bunker_large_mixing_stick", position: Vec.create(-40.11, -82.03), spinSpeed: -0.032 },
+            { key: "plumpkin_bunker_small_mixing_stick", position: Vec.create(44.62, -64.92), spinSpeed: -0.032 },
             { key: "plumpkin_bunker_large_mixing_frame", position: Vec.create(14.75, -82.03) },
             { key: "plumpkin_bunker_large_mixing_frame", position: Vec.create(-40.11, -82.03) },
             { key: "plumpkin_bunker_small_mixing_frame", position: Vec.create(44.62, -64.92) }
