@@ -1101,19 +1101,49 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         let toRegen = this._modifiers.hpRegen;
-        if (this._adrenaline > 0) {
-            // Drain adrenaline
-            this.adrenaline -= 0.0005 * this._modifiers.adrenDrain * dt;
+        if (this._adrenaline >= 0) {
+            /*
+                The relation between healing and adrenaline is modelled around these three points:
+
+                adren. | healing (hp/s)
+                -------|---------------
+                   0   |       1
+                  30   |     1.875
+                  100  |      2.75
+
+                Using a logarithmic regression model, we obtain:
+
+                a = -2.2153107223876285
+                b = -1.9660534157593246
+                c = 0.14899999980029943
+                d = 22.5
+
+                y = b•log[c](x + d) + a
+
+                or, using the change of base law,
+                y = b•log(x + d) / log(c) + a
+
+                https://www.desmos.com/calculator/idwbtpnzbv
+            */
+
+            const a = -2.2153107223876285;
+            const b = -1.9660534157593246;
+            const c = 0.14899999980029943;
+            const d = 22.5;
+            const adrenRegen = b * Math.log(this._adrenaline + d) / Math.log(c) + a;
 
             // Regenerate health
-            toRegen += (this.adrenaline / 40 + 0.35) * this.mapPerkOrDefault(
+            toRegen += adrenRegen * this.mapPerkOrDefault(
                 PerkIds.LacedStimulants,
                 ({ healDmgRate, lowerHpLimit }) => (this.health <= lowerHpLimit ? 1 : -healDmgRate),
                 1
             );
+
+            // Drain adrenaline
+            this.adrenaline -= 0.0005 * this._modifiers.adrenDrain * dt;
         }
 
-        this.health += dt / 900 * toRegen;
+        this.health += dt / 1000 * toRegen;
 
         // Shoot gun/use item
         if (this.startedAttacking) {
