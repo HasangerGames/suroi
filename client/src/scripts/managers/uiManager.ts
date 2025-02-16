@@ -172,6 +172,8 @@ export class UIManager {
         healthAnim: $<HTMLDivElement>("#health-bar-animation"),
 
         adrenalineBar: $<HTMLDivElement>("#adrenaline-bar"),
+        minAdrenBarWrapper: $<HTMLDivElement>("#adrenaline-bar-min-wrapper"),
+        minAdrenBar: $<HTMLDivElement>("#adrenaline-bar-min"),
         adrenalineBarAmount: $<HTMLSpanElement>("#adrenaline-bar-amount"),
 
         killFeed: $<HTMLDivElement>("#kill-feed"),
@@ -694,13 +696,24 @@ export class UIManager {
                 this.ui.maxHealth.text(safeRound(this.maxHealth)).show();
             }
 
+            const noMinAdren = this.minAdrenaline === 0;
             if (
                 this.maxAdrenaline === GameConstants.player.maxAdrenaline
-                && this.minAdrenaline === 0
+                && noMinAdren
             ) {
                 this.ui.minMaxAdren.text("").hide();
+                this.ui.minAdrenBarWrapper.width(0).hide();
+                this.ui.minAdrenBar.hide();
             } else {
-                this.ui.minMaxAdren.text(`${this.minAdrenaline === 0 ? "" : `${safeRound(this.minAdrenaline)}/`}${safeRound(this.maxAdrenaline)}`).show();
+                if (noMinAdren) {
+                    this.ui.minMaxAdren.text(safeRound(this.maxAdrenaline)).show();
+                    this.ui.minAdrenBarWrapper.width(0).hide();
+                    this.ui.minAdrenBar.hide();
+                } else {
+                    this.ui.minMaxAdren.text(`${safeRound(this.minAdrenaline)}/${safeRound(this.maxAdrenaline)}`).show();
+                    this.ui.minAdrenBarWrapper.outerWidth(`${100 * this.minAdrenaline / this.maxAdrenaline}%`).show();
+                    this.ui.minAdrenBar.show();
+                }
             }
         }
 

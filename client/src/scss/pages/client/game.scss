@@ -890,20 +890,40 @@
     }
     */
 
-    #adrenaline-bar {
+    #adrenaline-bar,
+    #adrenaline-bar-min-wrapper {
         transition: width ease-in-out 50ms;
         border-radius: 4px;
-        background: palette.$orange;
-        background: linear-gradient(90deg, palette.$orange 0px, #ffc800 330px);
-        background-attachment: fixed;
         position: absolute;
         top: 0;
         left: 0;
         height: 100%;
-        width: 100%;
+        width: 0;
+    }
+
+    #adrenaline-bar {
+        background: palette.$orange;
+        background: linear-gradient(90deg, palette.$orange 0px, #ffc800 330px);
 
         @media screen and (max-width: variables.$screen_large) {
             background: linear-gradient(90deg, palette.$orange 0px, #ffc800 230px);
+        }
+    }
+
+    #adrenaline-bar-min-wrapper {
+        padding: 1.5px;
+
+        #adrenaline-bar-min {
+            background: palette.$blue;
+            background: linear-gradient(90deg, palette.$blue 0px, #0055cc 330px);
+            border-radius: 4px;
+            position: relative;
+            width: 100%;
+            height: 100%;
+
+            @media screen and (max-width: variables.$screen_large) {
+                background: linear-gradient(90deg, palette.$blue 0px, #0055cc 230px);
+            }
         }
     }
 
