@@ -48,6 +48,7 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getSpawnableLoots, SpawnableItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap, removeFrom } from "./utils/misc";
+import { GAME_SPAWN_WINDOW } from "./data/gasStages";
 
 /*
     eslint-disable
@@ -452,10 +453,6 @@ export class Game implements GameData {
             }, 1000);
         }
 
-        if (this.aliveCount >= Config.maxPlayersPerGame) {
-            this.preventJoin();
-        }
-
         // Record performance and start the next tick
         // THIS TICK COUNTER IS WORKING CORRECTLY!
         // It measures the time it takes to calculate a tick, not the time between ticks.
@@ -486,13 +483,6 @@ export class Game implements GameData {
 
     updateGameData(data: Partial<GameData>): void {
         parentPort?.postMessage({ type: WorkerMessages.UpdateGameData, data } satisfies WorkerMessage);
-    }
-
-    preventJoin(): void {
-        if (!this.allowJoin) return;
-
-        this.log("Preventing new players from joining");
-        this.setGameData({ allowJoin: false });
     }
 
     kill(): void {
@@ -761,6 +751,11 @@ export class Game implements GameData {
                 this.setGameData({ startedTime: this.now });
                 this.gas.advanceGasStage();
             }, 3000);
+
+            this.addTimeout(() => {
+                this.log("Preventing new players from joining");
+                this.setGameData({ allowJoin: false });
+            }, GAME_SPAWN_WINDOW * 1000);
         }
 
         this.log(`"${player.name}" joined`);

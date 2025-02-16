@@ -7,10 +7,14 @@ export interface GasStage {
     readonly newRadius: number
     readonly dps: number
     readonly summonAirdrop?: boolean
-    readonly preventJoin?: boolean
     readonly scaleDamageFactor?: number
     readonly finalStage?: boolean // only affects client side text
 }
+
+/**
+ * Number of seconds after which players are prevented from joining a game
+ */
+export const GAME_SPAWN_WINDOW = 84;
 
 export const GasStages: GasStage[] = [
     {
@@ -32,8 +36,7 @@ export const GasStages: GasStage[] = [
         duration: 20,
         oldRadius: 0.76,
         newRadius: 0.55,
-        dps: 1,
-        preventJoin: true
+        dps: 1
     },
     // Zone 1 closed, 1 min 5 seconds
     {
@@ -130,4 +133,4 @@ export const GasStages: GasStage[] = [
 ];
 
 // console.log(GasStages.length);
-console.log(GasStages.reduce((a, b) => a + b.duration, 0));
+// console.log(GasStages.reduce((a, b) => a + b.duration, 0));

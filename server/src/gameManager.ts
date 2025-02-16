@@ -9,6 +9,7 @@ import { Game } from "./game";
 import { PlayerContainer } from "./objects/player";
 import { map, maxTeamSize, serverLog, serverWarn } from "./server";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
+import { pickRandomInArray } from "@common/utils/random";
 
 export interface WorkerInitData {
     readonly id: number
@@ -128,34 +129,16 @@ export class GameContainer {
 }
 
 export async function findGame(): Promise<GetGameResponse> {
-    let gameID: number;
-    let eligibleGames = games.filter((g?: GameContainer): g is GameContainer => !!g && g.allowJoin && !g.over);
+    const eligibleGames = games.filter((g?: GameContainer): g is GameContainer =>
+        g !== undefined
+        && g.allowJoin
+        && g.aliveCount < Config.maxPlayersPerGame
+    );
 
-    // Attempt to create a new game if one isn't available
-    if (!eligibleGames.length) {
-        gameID = await newGame();
-        if (gameID !== -1) {
-            return { success: true, gameID };
-        } else {
-            eligibleGames = games.filter((g?: GameContainer): g is GameContainer => !!g && !g.over);
-        }
-    }
+    const gameID = eligibleGames.length
+        ? pickRandomInArray(eligibleGames)?.id // Pick randomly from the available games
+        : await newGame(); // If a game isn't available, attempt to create a new one
 
-    if (!eligibleGames.length) {
-        return { success: false };
-    }
-
-    gameID = eligibleGames
-        .reduce((a, b) =>
-            (
-                a.allowJoin && b.allowJoin
-                    ? a.aliveCount < b.aliveCount
-                    : a.startedTime > b.startedTime
-            )
-                ? a
-                : b
-        )
-        ?.id;
     return gameID !== undefined
         ? { success: true, gameID }
         : { success: false };
@@ -163,8 +146,8 @@ export async function findGame(): Promise<GetGameResponse> {
 
 let creatingID = -1;
 
-export async function newGame(id?: number): Promise<number> {
-    return new Promise<number>(resolve => {
+export async function newGame(id?: number): Promise<number | undefined> {
+    return new Promise<number | undefined>(resolve => {
         if (creatingID !== -1) {
             resolve(creatingID);
         } else if (id !== undefined) {
@@ -189,7 +172,7 @@ export async function newGame(id?: number): Promise<number> {
                     return;
                 }
             }
-            resolve(-1);
+            resolve(undefined);
         }
     });
 }

@@ -139,10 +139,6 @@ export class Gas {
         if (duration !== 0) {
             this.game.addTimeout(() => this.advanceGasStage(), duration * 1000);
         }
-
-        if (currentStage.preventJoin) {
-            this.game.preventJoin();
-        }
     }
 
     isInGas(position: Vector): boolean {
