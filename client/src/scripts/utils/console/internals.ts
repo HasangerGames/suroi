@@ -1049,7 +1049,7 @@ export function evalQuery(
                 error = !evalQuery(
                     gameConsole,
                     extractCommandsAndArgs(
-                        `assign ${name} ${resolveArgs(args)[1].join(" ")}`
+                        `assign ${name} "${resolveArgs(args)[1].join(" ")}"`
                     )
                 );
             } else {
