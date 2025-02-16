@@ -652,7 +652,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
 
                 inventory.replaceWeapon(slot, chosenItem, force);
-                (this.activeItem as GunItem).ammo = capacity;
+                (this.inventory.getWeapon(slot) as GunItem).ammo = capacity;
                 this.sendEmote(Emotes.fromString(chosenItem.idString), true);
                 break;
             }

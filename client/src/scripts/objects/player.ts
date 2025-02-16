@@ -1,12 +1,12 @@
 import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "@common/constants";
-import { EmoteCategory, type EmoteDefinition } from "@common/definitions/emotes";
+import { type EmoteDefinition } from "@common/definitions/emotes";
 import { Explosions } from "@common/definitions/explosions";
 import { Ammos } from "@common/definitions/items/ammos";
 import { type ArmorDefinition } from "@common/definitions/items/armors";
 import { type BackpackDefinition } from "@common/definitions/items/backpacks";
 import { Guns, type GunDefinition, type SingleGunNarrowing } from "@common/definitions/items/guns";
 import { HealType, type HealingItemDefinition } from "@common/definitions/items/healingItems";
-import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "@common/definitions/items/melees";
+import { DEFAULT_HAND_RIGGING, Melees, type MeleeDefinition } from "@common/definitions/items/melees";
 import { PerkData, PerkIds } from "@common/definitions/items/perks";
 import { Skins, type SkinDefinition } from "@common/definitions/items/skins";
 import { Loots, type WeaponDefinition } from "@common/definitions/loots";
@@ -308,7 +308,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         const initialRotation = this.rotation + Math.PI / 2;
         const casings = reference.casingParticles?.filter(c => (c.on ?? "fire") === filterBy) as NonNullable<SingleGunNarrowing["casingParticles"]>;
 
-        if (casings?.length === 0) return;
+        if (casings?.length === 0 || reference.casingParticles === undefined) return;
 
         for (const casingSpec of casings) {
             const position = Vec.scale(casingSpec.position, this.sizeMod);
@@ -1373,11 +1373,15 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         container.alpha = 0;
 
         let backgroundFrame = "emote_background";
-        if (Guns.fromStringSafe(emote.idString)) {
-            backgroundFrame = `loot_background_gun_${Guns.fromStringSafe(emote.idString)?.ammoType}`;
+
+        const gun = Guns.fromStringSafe(emote.idString);
+        const melee = Melees.fromStringSafe(emote.idString);
+
+        if (gun) {
+            backgroundFrame = `loot_background_gun_${gun.ammoType}`;
         }
 
-        this.emote.image.setScale(emote.category === EmoteCategory.Team ? 0.7 : 1);
+        this.emote.image.setScale((gun || melee) ? 0.7 : 1);
         this.emote.background.setFrame(backgroundFrame);
 
         this.anims.emote = this.game.addTween({
