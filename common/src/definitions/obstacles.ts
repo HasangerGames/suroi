@@ -4045,7 +4045,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         idString: "grenade_box",
         name: "Grenade Box",
         material: "cardboard",
-        health: 60,
+        health: 40,
         scale: {
             spawnMin: 1,
             spawnMax: 1,
