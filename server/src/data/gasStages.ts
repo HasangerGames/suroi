@@ -22,7 +22,7 @@ export const GasStages: GasStage[] = [
     },
     {
         state: GasState.Waiting,
-        duration: 45,
+        duration: 75,
         oldRadius: 0.76,
         newRadius: 0.55,
         dps: 0
@@ -54,7 +54,7 @@ export const GasStages: GasStage[] = [
     // Zone 2 closed, 2 min 10 seconds
     {
         state: GasState.Waiting,
-        duration: 45,
+        duration: 40,
         oldRadius: 0.43,
         newRadius: 0.32,
         dps: 2
@@ -69,7 +69,7 @@ export const GasStages: GasStage[] = [
     // Zone 3 closed, 3 min 10 seconds
     {
         state: GasState.Waiting,
-        duration: 45,
+        duration: 35,
         oldRadius: 0.32,
         newRadius: 0.2,
         dps: 3,
@@ -85,7 +85,7 @@ export const GasStages: GasStage[] = [
     // Zone 4 closed, 4 min 10 seconds
     {
         state: GasState.Waiting,
-        duration: 45,
+        duration: 30,
         oldRadius: 0.2,
         newRadius: 0.09,
         dps: 5
@@ -130,4 +130,4 @@ export const GasStages: GasStage[] = [
 ];
 
 // console.log(GasStages.length);
-// console.log(GasStages.reduce((a, b) => a + b.duration, 0));
+console.log(GasStages.reduce((a, b) => a + b.duration, 0));
