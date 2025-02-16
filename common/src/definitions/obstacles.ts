@@ -2938,7 +2938,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             destroy: 0.95
         },
         hideOnMap: true,
-        hitbox: RectangleHitbox.fromRect(1.8, 9.4),
+        hitbox: RectangleHitbox.fromRect(1.8, 10),
         zIndex: ZIndexes.ObstaclesLayer2,
         allowFlyover: FlyoverPref.Never,
         rotationMode: RotationMode.Limited,

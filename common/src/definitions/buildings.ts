@@ -291,7 +291,7 @@ const blueHouseVaultLayout = (
     }],
     obstacles,
     subBuildings,
-    ...(subBuildings ? { lootSpawners: [{ table: "ground_loot", position: Vec.create(23.5, 14.4) }] } : {})
+    ...(subBuildings === undefined ? { lootSpawners: [{ table: "ground_loot", position: Vec.create(23.5, 14.4) }] } : {})
 });
 
 const warehouseLayout = (id: number, obstacles: readonly BuildingObstacle[]): BuildingDefinition => ({
@@ -1123,9 +1123,9 @@ const blueHouse = (idString: string, subBuildings: BuildingDefinition["subBuildi
     ],
     obstacles: [
         // windows
-        { idString: "window", position: Vec.create(-34.5, 7.4), rotation: 0 },
-        { idString: "window", position: Vec.create(34.6, -2.5), rotation: 0 },
-        { idString: "window", position: Vec.create(-19, -30), rotation: 1 },
+        { idString: "window", position: Vec.create(-34.7, 7.2), rotation: 0 },
+        { idString: "window", position: Vec.create(34.7, -2.6), rotation: 0 },
+        { idString: "window", position: Vec.create(-18.9, -30), rotation: 1 },
 
         // door fun
         { idString: "door", position: Vec.create(-3.3, -29.9), rotation: 2 },
@@ -1166,22 +1166,27 @@ const blueHouse = (idString: string, subBuildings: BuildingDefinition["subBuildi
         { idString: "bookshelf", position: Vec.create(-15.25, -6), rotation: 0 },
         { idString: "potted_plant", position: Vec.create(-29, -4) }
     ],
-    subBuildings: [
-        { idString: "blue_house_vault", position: Vec.create(-14.1, 20.5), orientation: 1 },
-        {
-            idString: {
-                blue_house_vault_layout_1: 1,
-                blue_house_vault_layout_3: 1,
-                blue_house_vault_layout_4: 1,
-                blue_house_vault_layout_5: 1,
-                blue_house_vault_layout_6: 1,
-                blue_house_vault_layout_7: 0.5
+    subBuildings: subBuildings.length > 1
+        ? [
+            { idString: "blue_house_vault", position: Vec.create(-14.1, 20.5), orientation: 1 },
+            ...subBuildings
+        ]
+        : [
+            { idString: "blue_house_vault", position: Vec.create(-14.1, 20.5), orientation: 1 },
+            {
+                idString: {
+                    blue_house_vault_layout_1: 1,
+                    blue_house_vault_layout_3: 1,
+                    blue_house_vault_layout_4: 1,
+                    blue_house_vault_layout_5: 1,
+                    blue_house_vault_layout_6: 1,
+                    blue_house_vault_layout_7: 0.5
 
+                },
+                position: Vec.create(0, 0)
             },
-            position: Vec.create(0, 0)
-        },
-        ...subBuildings
-    ]
+            ...subBuildings
+        ]
 });
 
 export const Buildings = new ObjectDefinitions<BuildingDefinition>([
@@ -2347,6 +2352,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
     blueHouseVaultLayout(5, [
         { idString: "box", position: Vec.create(11.97, 9.53) },
+        { idString: "trash_bag", position: Vec.create(18.5, 9.9) },
         { idString: "bookshelf", position: Vec.create(15.85, 17.01), rotation: 0 }
     ]),
 
