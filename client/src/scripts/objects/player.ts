@@ -46,6 +46,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         return this.activeItem;
     }
 
+    private _meleeSoundTimeoutID?: number;
+
     meleeStopSound?: GameSound;
     meleeAttackCounter = 0;
 
@@ -1468,13 +1470,26 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     }
                 }
 
-                this.playSound(
-                    weaponDef.swingSound ?? "swing",
-                    {
-                        falloff: 0.4,
-                        maxRange: 96
-                    }
-                );
+                if (weaponDef.hitDelay) {
+                    clearTimeout(this._meleeSoundTimeoutID);
+                    this._meleeSoundTimeoutID = window.setTimeout(() => {
+                        this.playSound(
+                            weaponDef.swingSound ?? "swing",
+                            {
+                                falloff: 0.4,
+                                maxRange: 96
+                            }
+                        );
+                    }, weaponDef.hitDelay);
+                } else {
+                    this.playSound(
+                        weaponDef.swingSound ?? "swing",
+                        {
+                            falloff: 0.4,
+                            maxRange: 96
+                        }
+                    );
+                }
 
                 if (weaponDef.stopSound && this.meleeStopSound === undefined) {
                     this.meleeStopSound = this.playSound(
@@ -1542,7 +1557,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             target.hitEffect(position, angleToPos);
                         }
                     }
-                }, 50);
+                }, 50 + (weaponDef.hitDelay ?? 0));
 
                 break;
             }

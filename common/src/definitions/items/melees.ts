@@ -180,6 +180,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>([
         swingSound: "heavy_swing",
         offset: Vec.create(5.4, -0.5),
         cooldown: 420,
+        hitDelay: 250,
         fists: {
             animationDuration: 150,
             left: Vec.create(40, -25),
@@ -191,6 +192,17 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>([
             lootScale: 0.6
         },
         animation: [
+            { // warmup
+                duration: 100,
+                fists: {
+                    left: Vec.create(40, 25),
+                    right: Vec.create(0, 50)
+                },
+                image: {
+                    angle: 210,
+                    position: Vec.create(-10, 45)
+                }
+            },
             {
                 duration: 150,
                 fists: {
@@ -228,6 +240,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>([
         swingSound: "heavy_swing",
         offset: Vec.create(5.4, -0.5),
         cooldown: 420,
+        hitDelay: 250,
         fists: {
             animationDuration: 150,
             left: Vec.create(40, -25),
@@ -239,6 +252,17 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>([
             lootScale: 0.7
         },
         animation: [
+            { // warmup
+                duration: 100,
+                fists: {
+                    left: Vec.create(40, 25),
+                    right: Vec.create(0, 50)
+                },
+                image: {
+                    angle: 210,
+                    position: Vec.create(-10, 45)
+                }
+            },
             {
                 duration: 150,
                 fists: {
@@ -421,17 +445,29 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>([
         radius: 2.7,
         offset: Vec.create(5.4, -0.5),
         cooldown: 450,
+        hitDelay: 250,
         fists: {
             animationDuration: 150,
             left: Vec.create(40, -25),
             right: Vec.create(40, 15)
         },
         image: {
-            position: Vec.create(40, 20),
             angle: 135,
+            position: Vec.create(40, 20),
             lootScale: 0.6
         },
         animation: [
+            { // warmup
+                duration: 100,
+                fists: {
+                    left: Vec.create(40, 25),
+                    right: Vec.create(0, 50)
+                },
+                image: {
+                    angle: 210,
+                    position: Vec.create(-10, 45)
+                }
+            },
             {
                 duration: 150,
                 fists: {
@@ -618,6 +654,7 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>([
         radius: 2.8,
         offset: Vec.create(5.4, -0.5),
         cooldown: 350,
+        hitDelay: 250,
         fists: {
             animationDuration: 150,
             left: Vec.create(40, -30),
@@ -629,6 +666,17 @@ export const Melees = new ObjectDefinitions<MeleeDefinition>([
             lootScale: 0.6
         },
         animation: [
+            { // warmup
+                duration: 100,
+                fists: {
+                    left: Vec.create(40, 25),
+                    right: Vec.create(0, 50)
+                },
+                image: {
+                    angle: 210,
+                    position: Vec.create(-10, 45)
+                }
+            },
             {
                 duration: 150,
                 fists: {
