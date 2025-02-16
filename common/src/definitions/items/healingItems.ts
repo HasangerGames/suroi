@@ -44,6 +44,6 @@ export const HealingItems = new ObjectDefinitions<HealingItemDefinition>([
         itemType: ItemType.Healing,
         healType: HealType.Adrenaline,
         restoreAmount: 50,
-        useTime: 5
+        useTime: 4
     }
 ]);
