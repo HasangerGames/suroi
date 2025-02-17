@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Mon, 17 Feb 2025 10:08:09 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Mon, 17 Feb 2025 14:17:31 GMT
 
 ## 🇦🇱 Shqip (85% Complete) - ab.hjson
 
@@ -447,48 +447,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `retry` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
-## 🎀 Cute Engwish (87% Complete) - qen.hjson
+## 🎀 Cute Engwish (100% Complete) - qen.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
-- Key `msg_spectating` is not defined
-- Key `msg_enter_team_code` is not defined
-- Key `msg_lost_team_connection` is not defined
-- Key `msg_error_joining_team` is not defined
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `msg_punishment_warn_agreement` is not defined
-- Key `warning_hw_accel_1` is not defined
-- Key `warning_hw_accel_2` is not defined
-- Key `warning_hw_accel_link` is not defined
-- Key `privacy` is not defined
-- Key `donate` is not defined
-- Key `wiki` is not defined
-- Key `copied` is not defined
-- Key `settings_ambience_volume` is not defined
-- Key `settings_ambient_particles` is not defined
-- Key `settings_show_inout` is not defined
-- Key `settings_gyro_angle` is not defined
-- Key `settings_haptics` is not defined
-- Key `msg_your_team_eliminated` is not defined
-- Key `msg_the_team_eliminated` is not defined
-- Key `msg_not_enough_space` is not defined
-- Key `msg_item_already_equipped` is not defined
-- Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
-- Key `final_gas_waiting` is not defined
-- Key `final_gas_advancing` is not defined
-- Key `interact_speaker` is not defined
-- Key `loading_fetching_data_failed` is not defined
-- Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
-- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
-- Key `create_team_ready` is not defined
-- Key `destroyer_of_worlds` is not defined
-- Key `m16a4` is not defined
 
 ## 🇷🇴 Română (83% Complete) - ro.hjson
 
@@ -543,7 +508,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇷🇺 Русский (97% Complete) - ru.hjson
+## 🇷🇺 Русский (98% Complete) - ru.hjson
 
 ### (No Invalid Keys)
 
@@ -554,8 +519,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
 - Key `settings_show_inout` is not defined
-- Key `final_gas_waiting` is not defined
-- Key `final_gas_advancing` is not defined
 - Key `m16a4` is not defined
 
 ## 🇮🇳 தமிழ் (94% Complete) - ta.hjson
@@ -581,7 +544,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇹🇷 Turkısh (95% Complete) - tr.hjson
+## 🇹🇷 Turkısh (96% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -598,8 +561,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
-- Key `final_gas_waiting` is not defined
-- Key `final_gas_advancing` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined

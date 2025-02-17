@@ -111,6 +111,8 @@
   "msg_kills": "Öldürmeler: <kills>"
   "gas_waiting": " <time> sonra toksik gaz geliyor!"
   "gas_advancing": "Zehirli gaz ilerliyor! Güvenli bölgeye gidin!"
+  "final_gas_waiting": "Son bölge <time> içerisinde kapanmaya başlıyor"
+  "final_gas_advancing": "Son bölge kapanıyor!"
   "gas_inactive": "Oyuncular bekleniyor..."
   "action_open_door": "Kapıyı aç"
   "action_close_door": "Kapıyı kapa"
