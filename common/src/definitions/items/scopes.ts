@@ -7,11 +7,12 @@ export interface ScopeDefinition extends ItemDefinition {
 }
 
 export const Scopes = new ObjectDefinitions<ScopeDefinition>(([
-    ["1x", 80, true],
-    ["2x", 110, true],
-    ["4x", 140],
-    ["8x", 170],
+    ["1x", 70, true],
+    ["2x", 100, true],
+    ["4x", 130],
+    ["8x", 160],
     ["16x", 220]
+    // Value 190 reserved for possible 12x scope
 ] satisfies ReadonlyArray<[string, number, boolean?]>).map(([magnification, zoomLevel, defaultScope]) => ({
     idString: `${magnification}_scope`,
     name: `${magnification} Scope`,
