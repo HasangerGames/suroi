@@ -55,8 +55,7 @@ const commonConfig: UserConfig = {
             compilerOptions: {
                 warningFilter(warning) {
                     // we dont care about accessibility warnings on the building editor lmao
-                    if (warning.code.includes("a11y")) return false;
-                    return true;
+                    return !warning.code.includes("a11y");
                 }
             }
         }),
