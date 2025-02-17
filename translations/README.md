@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Mon, 17 Feb 2025 14:17:31 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Mon, 17 Feb 2025 15:25:00 GMT
 
 ## 🇦🇱 Shqip (85% Complete) - ab.hjson
 
@@ -634,7 +634,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 
-## 🇨🇳 中文（简体） (96% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (97% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -647,8 +647,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_link` is not defined
 - Key `wiki` is not defined
 - Key `settings_show_inout` is not defined
-- Key `final_gas_waiting` is not defined
-- Key `final_gas_advancing` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined

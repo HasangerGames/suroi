@@ -127,6 +127,8 @@
   "msg_punishment_warn_agreement": "我承认这次警告，并且不会再犯。"
   "gas_waiting": "毒气将在<time>后扩散"
   "gas_advancing": "毒气正在扩散！向安全区撤离"
+  "final_gas_waiting": "决赛圈将在<time>后收缩"
+  "final_gas_advancing": "决赛圈正在收缩！"
   "gas_inactive": "等待玩家中…"
   "action_open_door": "开门"
   "action_close_door": "关门"
