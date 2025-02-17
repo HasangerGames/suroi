@@ -517,7 +517,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         fireDelay: 75,
         burstProperties: {
             shotsPerBurst: 3,
-            burstCooldown: 325
+            burstCooldown: 300
         },
         switchDelay: 300,
         speedMultiplier: 0.92,
@@ -539,7 +539,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         }],
         gasParticles: gasParticlePresets.automatic,
         ballistics: {
-            damage: 15.5,
+            damage: 16,
             obstacleMultiplier: 1,
             speed: 0.25,
             range: 130
