@@ -130,6 +130,8 @@
   "msg_radio_overused": "A rádió túl lett használva!"
   "gas_waiting": "Mérgező gáz szűkül <time> múlva"
   "gas_advancing": "Mérgező gáz szűkül! Mozogj a biztonságos zónába"
+  "final_gas_waiting": "A végső zóna elkezd záródni <time> múlva"
+  "final_gas_advancing": "A végső zóna záródik!"
   "gas_inactive": "Várakozás játékosokra..."
   "action_open_door": "Ajtó nyitása"
   "action_close_door": "Ajtó zárása"
