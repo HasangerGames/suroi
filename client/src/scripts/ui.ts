@@ -1,13 +1,13 @@
 import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "@common/constants";
-import { Ammos, type AmmoDefinition } from "@common/definitions/items/ammos";
-import { type ArmorDefinition } from "@common/definitions/items/armors";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { EmoteCategory, Emotes, type EmoteDefinition } from "@common/definitions/emotes";
+import { Ammos, type AmmoDefinition } from "@common/definitions/items/ammos";
+import { type ArmorDefinition } from "@common/definitions/items/armors";
 import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/items/healingItems";
-import { Modes, type Mode } from "@common/definitions/modes";
 import { PerkIds, Perks } from "@common/definitions/items/perks";
 import { Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
 import { Skins, type SkinDefinition } from "@common/definitions/items/skins";
+import { Modes, type Mode } from "@common/definitions/modes";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
@@ -289,8 +289,6 @@ export async function setUpUI(game: Game): Promise<void> {
     }
 
     if (UI_DEBUG_MODE) {
-        ui.c4Button.show();
-
         ui.inventoryMsg.show();
         ui.inventoryMsg.text("Inventory message");
 
@@ -2095,16 +2093,6 @@ export async function setUpUI(game: Game): Promise<void> {
             }
         });
     }
-
-    slotListener($<HTMLDivElement>("#c4-detonate-btn"), button => {
-        const isPrimary = button === 0;
-
-        if (isPrimary) {
-            inputManager.addAction({
-                type: InputActions.ExplodeC4
-            });
-        }
-    });
 
     for (
         const [ele, type] of [

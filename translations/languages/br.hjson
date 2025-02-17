@@ -195,7 +195,6 @@
   "bindings_+attack": "Usar Arma"
   "bindings_drop": "Descartar Arma Ativa"
   "bindings_reload": "Recarregar"
-  "bindings_explode_c4": "Detonar C4"
   "bindings_cycle_scopes -1": "Mira Anterior"
   "bindings_cycle_scopes 1": "Próxima Mira"
   "bindings_use_consumable gauze": "Usar Gaze"

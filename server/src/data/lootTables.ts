@@ -148,7 +148,6 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
         loot_barrel: [
             [{ item: "crowbar", weight: 1 }],
             [{ item: "sr25", weight: 1 }],
-            [{ item: "c4", weight: 1, count: 3 }],
             [
                 { table: "equipment", weight: 1 },
                 { table: "scopes", weight: 1 },
@@ -580,8 +579,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
         ],
         throwables: [
             { item: "frag_grenade", count: 2, weight: 1 },
-            { item: "smoke_grenade", count: 2, weight: 1 },
-            { item: "c4", count: 2, weight: 0.2 }
+            { item: "smoke_grenade", count: 2, weight: 1 }
         ],
         special_guns: [
             { item: "micro_uzi", weight: 1.25 },

@@ -41,7 +41,6 @@ function serializePlayerData(
         inventory,
         lockedSlots,
         items,
-        activeC4s,
         perks,
         teamID
     }: PlayerData
@@ -57,7 +56,6 @@ function serializePlayerData(
     const hasInventory   = inventory !== undefined;
     const hasLockedSlots = lockedSlots !== undefined;
     const hasItems       = items !== undefined;
-    const hasActiveC4s   = activeC4s !== undefined;
     const hasPerks       = perks !== undefined;
     const hasTeamID      = teamID !== undefined;
     /* eslint-enable @stylistic/no-multi-spaces */
@@ -73,7 +71,6 @@ function serializePlayerData(
         hasInventory,
         hasLockedSlots,
         hasItems,
-        hasActiveC4s,
         hasPerks,
         hasTeamID
     );
@@ -240,11 +237,6 @@ function serializePlayerData(
         Scopes.writeToStream(strm, scope);
     }
 
-    if (hasActiveC4s) {
-        // lol ok
-        strm.writeUint8(activeC4s ? -1 : 0);
-    }
-
     if (hasPerks) {
         let bitfield = perks.asBitfield();
 
@@ -277,7 +269,6 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         hasInventory,
         hasLockedSlots,
         hasItems,
-        hasActiveC4s,
         hasPerks,
         hasTeamID
     ] = strm.readBooleanGroup2();
@@ -414,10 +405,6 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         };
     }
 
-    if (hasActiveC4s) {
-        data.activeC4s = strm.readUint8() !== 0;
-    }
-
     if (hasPerks) {
         const bytes = Math.ceil(Perks.definitions.length / 8);
 
@@ -520,7 +507,6 @@ export type PlayerData = {
         readonly items: typeof DEFAULT_INVENTORY
         readonly scope: ScopeDefinition
     }
-    readonly activeC4s?: boolean
     readonly perks?: PerkCollection
     readonly teamID?: number
 };

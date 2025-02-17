@@ -261,7 +261,6 @@ export const defaultBinds = Object.freeze({
     "+attack": ["Mouse0"],
     "drop": [],
     "reload": ["R"],
-    "explode_c4": ["Z"],
     "cycle_scopes -1": [],
     "cycle_scopes 1": [],
     "use_consumable gauze": ["7"],

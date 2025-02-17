@@ -225,7 +225,6 @@
     "bindings_+map_ping": "Колесо меток"
     "bindings_toggle_console": "Выключить/Включить консоль"
     "bindings_toggle_slot_lock": "Выключить/Включить блокировку слота"
-    "bindings_explode_c4": "Взорвать С4"
 
 
     "kf_suicide_kill": "<player> покончил с собой"
@@ -323,7 +322,6 @@
     "frag_grenade": "Осколочная граната"
     "smoke_grenade": "Дымовая граната"
     "confetti_grenade": "Граната с конфетти"
-    "c4": "Взрывчатка C4"
 
     "fists": "Кулаки"
     "gas_can": "Канистра"

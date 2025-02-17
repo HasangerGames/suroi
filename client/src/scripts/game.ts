@@ -29,7 +29,6 @@ import { randomFloat, randomVector } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { sound, type Sound } from "@pixi/sound";
 import FontFaceObserver from "fontfaceobserver";
-import $ from "jquery";
 import { Application, Color, Container } from "pixi.js";
 import "pixi.js/prepare";
 import { getTranslatedString, initTranslation } from "../translations";
@@ -979,14 +978,6 @@ export class Game {
          */
         let bindChangeAcknowledged = false;
 
-        // same idea as above
-        const funnyDetonateButtonCache: {
-            bind?: string
-        } = {};
-
-        // keep image thingy around to consult (and therefore lazily change) src
-        let detonateBindIcon: JQuery<HTMLImageElement> | undefined;
-
         return () => {
             if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
             this.inputManager.update();
@@ -1236,42 +1227,6 @@ export class Game {
                         this.inputManager.addAction(InputActions.Interact);
                     }
                 }
-            }
-
-            // funny detonate button stuff
-            const detonateKey = this.uiManager.ui.detonateKey;
-            if (!this.inputManager.isMobile) {
-                const boomBind: string | undefined = this.inputManager.binds.getInputsBoundToAction("explode_c4")[0];
-
-                if (funnyDetonateButtonCache.bind !== boomBind) {
-                    funnyDetonateButtonCache.bind = bind;
-
-                    if (boomBind !== undefined) {
-                        const bindImg = InputManager.getIconFromInputName(boomBind);
-
-                        detonateKey.show();
-
-                        if (bindImg === undefined) {
-                            detonateKey.text(boomBind ?? "");
-                            if (detonateBindIcon !== undefined) {
-                                detonateKey.empty();
-                                detonateBindIcon = undefined;
-                            }
-                        } else {
-                            if (detonateBindIcon === undefined) {
-                                detonateKey.children().add(detonateBindIcon = $(`<img src="${bindImg}" alt=${boomBind} />`));
-                            }
-
-                            if (detonateBindIcon.attr("src") !== bindImg) {
-                                detonateBindIcon.attr("src", bindImg);
-                            }
-                        }
-                    } else {
-                        detonateKey.hide();
-                    }
-                }
-            } else {
-                detonateKey.hide();
             }
         };
     })();

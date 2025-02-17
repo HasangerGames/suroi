@@ -64,8 +64,6 @@ export class UIManager {
 
     readonly perks: ClientPerkManager;
 
-    public hasC4s = false;
-
     private static _instantiated = false;
     constructor(readonly game: Game) {
         if (UIManager._instantiated) {
@@ -289,9 +287,6 @@ export class UIManager {
         createTeamLock: $<HTMLInputElement>("#create-team-toggle-lock"),
         createTeamPlayers: $<HTMLDivElement>("#create-team-players"),
         closeCreateTeam: $<HTMLButtonElement>("#close-create-team"),
-
-        c4Button: $<HTMLButtonElement>("#c4-detonate-btn"),
-        detonateKey: $<HTMLDivElement>("#detonate-key"),
 
         inventoryMsg: $<HTMLSpanElement>("#inventory-message"),
 
@@ -640,7 +635,6 @@ export class UIManager {
             inventory,
             lockedSlots,
             items,
-            activeC4s,
             perks
         } = data;
 
@@ -857,11 +851,6 @@ export class UIManager {
 
         if (inventory?.weapons || items) {
             this.updateWeapons();
-        }
-
-        if (activeC4s !== undefined && !UI_DEBUG_MODE) {
-            this.ui.c4Button.toggle(activeC4s);
-            this.hasC4s = activeC4s;
         }
 
         if (perks) {

@@ -482,36 +482,6 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         decal: "smoke_explosion_decal"
     },
     {
-        idString: "c4_explosion",
-        name: "C4",
-        damage: 150,
-        obstacleMultiplier: 1.15,
-        radius: {
-            min: 10,
-            max: 25
-        },
-        cameraShake: {
-            duration: 200,
-            intensity: 30
-        },
-        animation: {
-            duration: 1000,
-            tint: 0x91140b,
-            scale: 1.5
-        },
-        shrapnelCount: 0,
-        ballistics: {
-            shrapnel: true,
-            damage: 15,
-            obstacleMultiplier: 1,
-            speed: 0.08,
-            range: 20,
-            rangeVariance: 1
-        },
-        sound: "frag_grenade",
-        decal: "frag_explosion_decal"
-    },
-    {
         idString: "pumpkin_explosion",
         name: "Pumpkin",
         damage: 100,

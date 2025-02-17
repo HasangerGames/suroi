@@ -168,7 +168,6 @@
   "bindings_+attack": "Waffe benutzen"
   "bindings_drop": "Aktive Waffe fallenlassen"
   "bindings_reload": "Nachladen"
-  "bindings_explode_c4": "C4 zünden"
   "bindings_cycle_scopes -1": "Vorheriges Zielfernrohr"
   "bindings_cycle_scopes 1": "Nächstes Zielfernrohr"
   "bindings_use_consumable gauze": "Verwende Mullbinde"

@@ -725,20 +725,6 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    Command.createCommand(
-        "explode_c4",
-        function() {
-            game.inputManager.addAction(InputActions.ExplodeC4);
-        },
-        game,
-        {
-            short: "Explodes all deployed pieces of C4 belonging to this player",
-            long: "When invoked, the game will attempt to detonate all pieces of C4 this player has deployed.",
-            allowOnlyWhenGameStarted: true,
-            signatures: [{ args: [], noexcept: true }]
-        }
-    );
-
     const showEmoteWheel = (): void => {
         if (!game.inputManager.pingWheelMinimap) {
             game.inputManager.pingWheelPosition = Vec.clone(game.inputManager.gameMousePosition);

@@ -853,10 +853,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     def.physics.maxThrowDistance * PerkData[PerkIds.DemoExpert].rangeMod
                 );
 
-                const cookMod = def.cookable ? Date.now() - this.animationChangeTime : 0;
+                // const cookMod = def.cookable ? Date.now() - this.animationChangeTime : 0;
                 const drag = GameConstants.projectiles.drag.air;
 
-                let cookDrag = Numeric.max((def.fuseTime /* - cookMod */), 0) / 1000;
+                const cookDrag = Numeric.max((def.fuseTime /* - cookMod */), 0) / 1000;
 
                 const physDist = range * (1 + cookDrag * drag) / 4;
 
@@ -1532,10 +1532,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                 object => !object.dead
                                     && object !== this
                                     && (
-                                        (
-                                            object.damageable
-                                            && (object.isObstacle || object.isPlayer || object.isBuilding)
-                                        ) || (object.isProjectile && object.definition.c4)
+                                        object.damageable
+                                        && (object.isObstacle || object.isPlayer || object.isBuilding)
                                     )
                                     && object.hitbox?.collidesWith(hitbox)
                                     && adjacentOrEqualLayer(object.layer, this.layer)
@@ -1786,7 +1784,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     return;
                 }
 
-                this.playSound(this.activeItem.c4 ? "c4_pin" : "throwable_pin");
+                this.playSound("throwable_pin");
 
                 const def = this.activeItem;
                 const projImage = this.images.weapon;

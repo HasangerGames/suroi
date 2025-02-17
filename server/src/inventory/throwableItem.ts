@@ -128,7 +128,7 @@ export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwa
 
         const time = this.definition.cookable ? (game.now - (this._cookStart ?? 0)) : 0;
 
-        const projectile = game.addProjectile({
+        game.addProjectile({
             definition,
             position: Vec.add(
                 owner.position,
@@ -143,10 +143,5 @@ export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwa
             height: this.definition.physics.initialHeight,
             fuseTime: this.definition.fuseTime - time
         });
-
-        if (definition.c4) {
-            owner.c4s.add(projectile);
-            owner.dirty.activeC4s = true;
-        }
     }
 }
