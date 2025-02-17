@@ -1701,7 +1701,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 rotation: 3
             },
             {
-                idString: { gun_mount_mcx_spear: 0.99, gun_mount_stoner_63: 0.01 },
+                idString: { gun_mount_mcx_spear: 0.95, gun_mount_stoner_63: 0.05 },
                 position: Vec.create(-46.8, 28),
                 rotation: 1,
                 lootSpawnOffset: Vec.create(4, 0)
