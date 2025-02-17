@@ -21,7 +21,7 @@ import { TRANSLATIONS, getTranslatedString } from "../translations";
 import type { TranslationKeys } from "../typings/translations";
 import { Config, type ServerInfo } from "./config";
 import { type Game } from "./game";
-import { news } from "./news/newsPosts";
+import { news } from "./posts/newsPosts";
 import { body, createDropdown } from "./uiHelpers";
 import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";
 import { EMOTE_SLOTS, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";

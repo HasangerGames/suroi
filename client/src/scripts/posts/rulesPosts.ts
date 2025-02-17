@@ -1,12 +1,6 @@
-export interface RulesPost {
-    date: number
-    author: string
-    title: string
-    content: string
-    longContent?: string
-}
+import type { Post } from "./newsPosts";
 
-export const rules: RulesPost[] = [
+export const rules: Post[] = [
     {
         date: 1731370468000,
         author: "hasanger",

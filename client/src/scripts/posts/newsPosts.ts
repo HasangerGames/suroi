@@ -1,6 +1,13 @@
-import { type NewsPost } from "./newsHelper";
+export interface Post {
+    readonly date: number
+    readonly author: string
+    readonly title: string
+    readonly bannerImage?: string
+    readonly content: string
+    readonly longContent?: string
+}
 
-export const news: NewsPost[] = [
+export const news: Post[] = [
     {
         date: 1736919248000,
         author: "HAZEL",

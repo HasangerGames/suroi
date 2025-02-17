@@ -4413,7 +4413,7 @@ snapshots:
   '@sveltejs/vite-plugin-svelte-inspector@4.0.1(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.20.0)(vite@6.1.0(@types/node@22.13.1)(jiti@1.21.7)(sass@1.84.0)))(svelte@5.20.0)(vite@6.1.0(@types/node@22.13.1)(jiti@1.21.7)(sass@1.84.0))':
     dependencies:
       '@sveltejs/vite-plugin-svelte': 5.0.3(svelte@5.20.0)(vite@6.1.0(@types/node@22.13.1)(jiti@1.21.7)(sass@1.84.0))
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.0
       svelte: 5.20.0
       vite: 6.1.0(@types/node@22.13.1)(jiti@1.21.7)(sass@1.84.0)
     transitivePeerDependencies:
@@ -4422,7 +4422,7 @@ snapshots:
   '@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.20.0)(vite@6.1.0(@types/node@22.13.1)(jiti@1.21.7)(sass@1.84.0))':
     dependencies:
       '@sveltejs/vite-plugin-svelte-inspector': 4.0.1(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.20.0)(vite@6.1.0(@types/node@22.13.1)(jiti@1.21.7)(sass@1.84.0)))(svelte@5.20.0)(vite@6.1.0(@types/node@22.13.1)(jiti@1.21.7)(sass@1.84.0))
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.0
       deepmerge: 4.3.1
       kleur: 4.1.5
       magic-string: 0.30.17
@@ -4688,7 +4688,7 @@ snapshots:
 
   agent-base@6.0.2:
     dependencies:
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.0
     transitivePeerDependencies:
       - supports-color
 
@@ -4996,6 +4996,10 @@ snapshots:
   csso@5.0.5:
     dependencies:
       css-tree: 2.2.1
+
+  debug@4.4.0:
+    dependencies:
+      ms: 2.1.3
 
   debug@4.4.0(supports-color@5.5.0):
     dependencies:
@@ -5368,7 +5372,7 @@ snapshots:
   https-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.0
     transitivePeerDependencies:
       - supports-color
 
