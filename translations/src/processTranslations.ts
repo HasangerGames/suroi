@@ -11,7 +11,7 @@ export const LANGUAGES_DIRECTORY = "../languages/";
 
 const files = readdirSync(LANGUAGES_DIRECTORY).filter(file => file.endsWith(".hjson"));
 
-const metadataKeys = ["name", "flag", "mandatory", "no_space", "no_resize", "percentage"];
+const metadataKeys = ["name", "flag", "mandatory", "no_space", "no_resize", "percentage", "html_lang"];
 
 const keyFilter = (key: string): boolean => (
     !metadataKeys.includes(key)
@@ -35,6 +35,7 @@ export interface TranslationManifest {
     readonly mandatory?: boolean
     readonly no_resize?: boolean
     readonly no_space?: boolean
+    readonly html_lang?: string
 }
 export type TranslationsManifest = Record<string, TranslationManifest>;
 

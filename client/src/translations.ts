@@ -149,7 +149,7 @@ function adjustFontSize(element: HTMLElement): void {
 
 function translateCurrentDOM(): void {
     let debugTranslationCounter = 0;
-
+    document.documentElement.lang = TRANSLATIONS.translations[selectedLanguage]?.html_lang ?? "";
     document.querySelectorAll("body *").forEach(element => {
         if (!(element instanceof HTMLElement)) return; // ignore non-html elements (like svg and mathml)
 

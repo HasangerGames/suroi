@@ -1,6 +1,7 @@
 {
   "name": "Tiếng Việt"
   "flag": "🇻🇳"
+  "html_lang": "vi-Hani"
   "msg_rotate": "Để có trải nghiệm game tốt hơn, vui lòng xoay thiết bị của bạn sang ngang."
   "msg_loading": "Đang Kết Nối"
   "msg_err_joining": "Lỗi khi tham gia trò chơi."

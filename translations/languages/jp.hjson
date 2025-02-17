@@ -2,6 +2,7 @@
   "name": "日本語"
   "flag": "🇯🇵"
   "no_space": true
+  "html_lang": ja
   "msg_rotate": "より良い体験のために、デバイスを横向きに回転してください。"
   "msg_loading": "接続中"
   "msg_err_joining": "ゲームへの参加中にエラーが発生しました。"
