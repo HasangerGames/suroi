@@ -2277,11 +2277,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             const def = Loots.fromString(item);
 
             if (count > 0) {
-                if (
-                    def.noDrop
-                    || ("ephemeral" in def && def.ephemeral)
-                    || def.idString === this.game.mode.defaultScope
-                ) continue;
+                if (def.noDrop || ("ephemeral" in def && def.ephemeral)) continue;
 
                 if (def.itemType === ItemType.Ammo && count !== Infinity) {
                     this.game.addLoot(item, position, layer, { count: Math.floor(count / 2) });
@@ -2297,7 +2293,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // Drop equipment
         for (const itemType of ["helmet", "vest", "backpack"] as const) {
             const item = this.inventory[itemType];
-            if (item?.noDrop === false) {
+            if (item && !item.noDrop) {
                 this.game.addLoot(item, position, layer);
             }
         }
