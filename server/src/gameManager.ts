@@ -136,7 +136,7 @@ export async function findGame(): Promise<GetGameResponse> {
     );
 
     const gameID = eligibleGames.length
-        ? pickRandomInArray(eligibleGames)?.id // Pick randomly from the available games
+        ? pickRandomInArray(eligibleGames).id // Pick randomly from the available games
         : await newGame(); // If a game isn't available, attempt to create a new one
 
     return gameID !== undefined
@@ -167,11 +167,13 @@ export async function newGame(id?: number): Promise<number | undefined> {
             const maxGames = Config.maxGames;
             for (let i = 0; i < maxGames; i++) {
                 const game = games[i];
+                console.log("Game", i, "exists:", !!game, "stopped:", game?.stopped);
                 if (!game || game.stopped) {
                     void newGame(i).then(id => resolve(id));
                     return;
                 }
             }
+            console.log("unable to create new game");
             resolve(undefined);
         }
     });
