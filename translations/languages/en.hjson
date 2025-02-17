@@ -133,6 +133,8 @@
   "msg_radio_overused": "Radio has broken due to overuse!"
   "gas_waiting": "Toxic gas advances in <time>"
   "gas_advancing": "Toxic gas is advancing! Move to the safe zone"
+  "final_gas_waiting": "Final zone starts closing in <time>"
+  "final_gas_advancing": "Final zone is closing!"
   "gas_inactive": "Waiting for players..."
   "action_open_door": "Open Door"
   "action_close_door": "Close Door"
