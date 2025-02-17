@@ -828,7 +828,15 @@ export class UIManager {
                     || this.inventory.weapons[activeWeaponIndex]?.definition.idString !== weaponDef?.idString
                 )
             ) {
-                this.game.soundManager.play(`${weaponDef.itemType === ItemType.Throwable ? "throwable" : weaponDef.idString}_switch`);
+                let soundID: string;
+                if (weaponDef.itemType === ItemType.Throwable) {
+                    soundID = "throwable";
+                } else if (weaponDef.itemType === ItemType.Gun && weaponDef.isDual) {
+                    soundID = weaponDef.idString.slice("dual_".length);
+                } else {
+                    soundID = weaponDef.idString;
+                }
+                this.game.soundManager.play(`${soundID}_switch`);
             }
 
             this.inventory.weapons = weapons;
