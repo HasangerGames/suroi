@@ -4,6 +4,7 @@ import { type UserConfig } from "vite";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 import pkg from "../../package.json";
 import { importPathsPlugin } from "./import-paths-plugin/import-paths-plugin";
+import { newsPosts } from "./news-posts-plugin/news-posts-plugin";
 
 const commonConfig: UserConfig = {
     server: {
@@ -66,7 +67,8 @@ const commonConfig: UserConfig = {
         importPathsPlugin({
             folders: ["public/audio/game/"],
             moduleName: "game-sounds"
-        })
+        }),
+        newsPosts()
     ],
 
     css: {

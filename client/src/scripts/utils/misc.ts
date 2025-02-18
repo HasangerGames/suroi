@@ -25,6 +25,14 @@ export function formatDate(seconds: number): string {
     return timeString;
 }
 
+export function humanDate(timestamp: number | string | Date): string {
+    return new Date(timestamp).toLocaleDateString("default", {
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+    });
+}
+
 export function stringify(val: unknown): string {
     /* eslint-disable */
     switch (typeof val) {

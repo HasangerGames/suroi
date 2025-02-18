@@ -54,7 +54,8 @@ async function buildSpritesheets(
         // Since the filename is used as the key, and mode sprites are added to the map after the common sprites,
         // this method allows mode sprites to override common sprites with the same filename.
         for (const imagePath of files) {
-            pathMap.set(imagePath.slice(imagePath.lastIndexOf(path.sep)), imagePath);
+            const filename = imagePath.slice(imagePath.lastIndexOf(path.sep));
+            pathMap.set(filename, imagePath);
         }
 
         const images = [...pathMap.values()];

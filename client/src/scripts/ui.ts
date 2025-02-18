@@ -21,12 +21,12 @@ import { TRANSLATIONS, getTranslatedString } from "../translations";
 import type { TranslationKeys } from "../typings/translations";
 import { Config, type ServerInfo } from "./config";
 import { type Game } from "./game";
-import { news } from "./posts/newsPosts";
 import { body, createDropdown } from "./uiHelpers";
 import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";
 import { EMOTE_SLOTS, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
-import { html, requestFullscreen } from "./utils/misc";
+import { html, humanDate, requestFullscreen } from "./utils/misc";
+import type { NewsPost } from "../../vite/news-posts-plugin/news-posts-plugin";
 
 /*
     eslint-disable
@@ -365,21 +365,16 @@ export async function setUpUI(game: Game): Promise<void> {
     }
 
     // Load news
-    let newsText = "";
-    for (const newsPost of news.slice(0, 5)) {
-        const date = new Date(newsPost.date).toLocaleDateString("default", {
-            month: "long",
-            day: "numeric",
-            year: "numeric"
-        });
-
-        newsText += '<article class="splash-news-entry">';
-        newsText += `<div class="news-date">${date}</div>`;
-        newsText += `<div class="news-title">${newsPost.title}</div>`;
-        newsText += `<p>${newsPost.content}<br><i>- ${newsPost.author}</i></p></article>`;
-    }
-
-    ui.newsPosts.html(newsText);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const posts = (await import("virtual:news-posts")).posts as NewsPost[];
+    ui.newsPosts.html(posts.slice(0, 5).map(post => `
+        <article class="splash-news-entry">
+            <div class="news-date">${humanDate(post.date)}</div>
+            <div class="news-title">${post.title}</div>
+            ${post.description}
+            <i>- ${post.author}</i>
+        </article>
+    `).join(""));
 
     // createDropdown("#splash-more");
     createDropdown("#language-dropdown");
