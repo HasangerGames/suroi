@@ -1,24 +1,24 @@
-import { Loots, type LootDefForType, type LootDefinition } from "@common/definitions/loots";
+import { GameConstants } from "@common/constants";
+import { Loots, type LootDefForType, type LootDefinition, type WeaponTypes } from "@common/definitions/loots";
 import { Numeric } from "@common/utils/math";
 import type { AbstractConstructor, Constructor, PredicateFor } from "@common/utils/misc";
 import { ItemType, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type ItemData } from "../objects/loot";
-import type { InventoryItem, WeaponItemType, WeaponItemTypeMap } from "./inventory";
-import { GameConstants } from "@common/constants";
 import { type Player } from "../objects/player";
+import type { InventoryItem, WeaponItemTypeMap } from "./inventory";
 
-type PredicateForItem<Type extends WeaponItemType> = {
+type PredicateForItem<Type extends WeaponTypes> = {
     readonly category: Type
     readonly definition: LootDefForType<Type>
 } & PredicateFor<WeaponItemTypeMap, Type>;
 
-type LoosePredicateFor<Type extends WeaponItemType = WeaponItemType> = {
+type LoosePredicateFor<Type extends WeaponTypes = WeaponTypes> = {
     readonly category: Type
     readonly definition: LootDefForType<Type>
 } & {
-    // if Type === WeaponItemType, then they should all be boolean | undefined; if not, narrow as appropriate
+    // if Type === WeaponTypes, then they should all be boolean | undefined; if not, narrow as appropriate
     // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-    readonly [K in (keyof WeaponItemTypeMap & string) as `is${K}`]: WeaponItemType extends Type
+    readonly [K in (keyof WeaponItemTypeMap & string) as `is${K}`]: WeaponTypes extends Type
         ? boolean | undefined
         : WeaponItemTypeMap[K] extends Type
             ? true
@@ -29,10 +29,10 @@ type LoosePredicateFor<Type extends WeaponItemType = WeaponItemType> = {
  * Represents some item in the player's inventory *that can be equipped*
  * @abstract
  */
-export abstract class InventoryItemBase<Type extends WeaponItemType = WeaponItemType> extends (() => {
-    type RealType<Type extends WeaponItemType = WeaponItemType> = typeof InventoryItemBase<Type> & AbstractConstructor<LoosePredicateFor<Type>>;
+export abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> extends (() => {
+    type RealType<Type extends WeaponTypes = WeaponTypes> = typeof InventoryItemBase<Type> & AbstractConstructor<LoosePredicateFor<Type>>;
 
-    abstract class InventoryItemBase<Type extends WeaponItemType = WeaponItemType> {
+    abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> {
         /**
          * The category of item this is, either melee, gun or throwable
          */
@@ -106,11 +106,11 @@ export abstract class InventoryItemBase<Type extends WeaponItemType = WeaponItem
 
         switchDate = 0;
 
-        private static readonly _subclasses: { [K in WeaponItemType]?: Constructor<InventoryItemBase<K> & PredicateForItem<K>> } = {};
+        private static readonly _subclasses: { [K in WeaponTypes]?: Constructor<InventoryItemBase<K> & PredicateForItem<K>> } = {};
 
         static derive<
             This extends AbstractConstructor,
-            Type extends WeaponItemType = WeaponItemType
+            Type extends WeaponTypes = WeaponTypes
         >(this: This, itemType: Type): new (...args: ConstructorParameters<This>) => InstanceType<This> & PredicateForItem<Type> {
             if (itemType in InventoryItemBase._subclasses) {
                 throw new Error(`Subclass for category '${ItemType[itemType]}' already registered`);
@@ -310,6 +310,6 @@ export abstract class InventoryItemBase<Type extends WeaponItemType = WeaponItem
     declare readonly definition: LootDefForType<Type>;
 }
 
-export abstract class CountableInventoryItem<Type extends WeaponItemType = WeaponItemType> extends InventoryItemBase<Type> {
+export abstract class CountableInventoryItem<Type extends WeaponTypes = WeaponTypes> extends InventoryItemBase<Type> {
     abstract count: number;
 }

@@ -27,6 +27,8 @@ export type WeaponDefinition =
     | MeleeDefinition
     | ThrowableDefinition;
 
+export type WeaponTypes = WeaponDefinition["itemType"];
+
 export type TypedLootDefinition<Type extends ItemType> = LootDefinition & { readonly itemType: Type };
 
 export type LootDefForType<K extends ItemType> = {

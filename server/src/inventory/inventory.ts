@@ -4,7 +4,7 @@ import { ArmorType, type ArmorDefinition } from "@common/definitions/items/armor
 import { type BackpackDefinition } from "@common/definitions/items/backpacks";
 import { type DualGunNarrowing, type GunDefinition } from "@common/definitions/items/guns";
 import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/items/healingItems";
-import { Loots, type LootDefForType, type LootDefinition, type WeaponDefinition } from "@common/definitions/loots";
+import { Loots, type LootDefForType, type LootDefinition, type WeaponDefinition, type WeaponTypes } from "@common/definitions/loots";
 import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
 import { Throwables, type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { Numeric } from "@common/utils/math";
@@ -18,19 +18,14 @@ import { InventoryItemBase } from "./inventoryItem";
 import { MeleeItem } from "./meleeItem";
 import { ThrowableItem } from "./throwableItem";
 
-type ReifiableItem =
-    GunItem |
-    MeleeItem |
-    ThrowableItem |
-    ReifiableDef<WeaponDefinition>;
+export type ReifiableItem = InventoryItem | ReifiableDef<InventoryItem["definition"]>;
 
-type WeaponTypes = WeaponDefinition["itemType"];
-
-type ReifiableItemOfType<Type extends WeaponTypes> =
+export type ReifiableItemOfType<Type extends WeaponTypes> =
     InventoryItemMapping[Type] | ReifiableDef<LootDefForType<Type>>;
 
-export type WeaponItemType = WeaponDefinition["itemType"];
-export type WeaponItemTypeMap = { [K in GetEnumMemberName<typeof ItemType, WeaponItemType>]: (typeof ItemType)[K] };
+export type WeaponItemTypeMap = { [K in GetEnumMemberName<typeof ItemType, WeaponTypes>]: (typeof ItemType)[K] };
+
+export type InventoryItem = InventoryItemMapping[WeaponTypes];
 
 export interface InventoryItemMapping {
     [ItemType.Gun]: GunItem
@@ -38,14 +33,12 @@ export interface InventoryItemMapping {
     [ItemType.Throwable]: ThrowableItem
 }
 
-export type InventoryItem = InventoryItemMapping[WeaponItemType];
-
 export const InventoryItemCtorMapping = {
     [ItemType.Gun]: GunItem,
     [ItemType.Melee]: MeleeItem,
     [ItemType.Throwable]: ThrowableItem
 } satisfies {
-    [K in WeaponItemType]: AbstractConstructor<InventoryItem & PredicateFor<WeaponItemTypeMap, K>, [def: ReifiableDef<LootDefForType<K>>, owner: Player, data?: ItemData<LootDefForType<K>>]>
+    [K in WeaponTypes]: AbstractConstructor<InventoryItem & PredicateFor<WeaponItemTypeMap, K>, [def: ReifiableDef<LootDefForType<K>>, owner: Player, data?: ItemData<LootDefForType<K>>]>
 };
 
 /**

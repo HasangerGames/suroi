@@ -2,6 +2,7 @@ import { Ammos } from "./definitions/items/ammos";
 import { HealingItems } from "./definitions/items/healingItems";
 import { Scopes } from "./definitions/items/scopes";
 import { Throwables } from "./definitions/items/throwables";
+import type { WeaponTypes } from "./definitions/loots";
 import { type Mode } from "./definitions/modes";
 import { PlayerModifiers } from "./typings";
 import { ItemType } from "./utils/objectDefinitions";
@@ -81,6 +82,11 @@ export const GameConstants = {
         [ItemType.Skin]: 3,
         [ItemType.Perk]: 3
     } satisfies Record<ItemType, number>,
+    defaultSpeedModifiers: {
+        [ItemType.Gun]: 0.85,
+        [ItemType.Melee]: 1,
+        [ItemType.Throwable]: 0.92
+    } satisfies Record<WeaponTypes, number>,
     airdrop: {
         fallTime: 8000,
         flyTime: 30000,
