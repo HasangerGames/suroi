@@ -2132,11 +2132,12 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         }],
         gasParticles: gasParticlePresets.rifle,
         ballistics: {
-            damage: 40,
+            damage: 45,
             obstacleMultiplier: 1,
-            speed: 0.28,
+            speed: 0.32,
             range: 200,
             tracer: {
+                width: 1.5,
                 length: 1.3
             }
         }
