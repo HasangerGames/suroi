@@ -1006,15 +1006,15 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             );
 
         // Calculate speed
-        const speed = this.baseSpeed                                          // Base speed
-            * (FloorTypes[this.floor].speedMultiplier ?? 1)                   // Speed multiplier from floor player is standing in
-            * recoilMultiplier                                                // Recoil from items
-            * perkSpeedMod                                                    // See above
-            * (this.action?.speedMultiplier ?? 1)                             // Speed modifier from performing actions
-            * (1 + (this.adrenaline / 1000))                                  // Linear speed boost from adrenaline
-            * (this.downed ? 0.5 : this.activeItemDefinition.speedMultiplier) // Active item/knocked out speed modifier
-            * (this.beingRevivedBy ? 0.5 : 1)                                 // Being revived speed multiplier
-            * this._modifiers.baseSpeed;                                      // Current on-wearer modifier
+        const speed = this.baseSpeed                                                 // Base speed
+            * (FloorTypes[this.floor].speedMultiplier ?? 1)                          // Speed multiplier from floor player is standing in
+            * recoilMultiplier                                                       // Recoil from items
+            * perkSpeedMod                                                           // See above
+            * (this.action?.speedMultiplier ?? 1)                                    // Speed modifier from performing actions
+            * (1 + (this.adrenaline / 1000))                                         // Linear speed boost from adrenaline
+            * (this.downed ? 0.5 : (this.activeItemDefinition.speedMultiplier ?? 1)) // Active item/knocked out speed modifier
+            * (this.beingRevivedBy ? 0.5 : 1)                                        // Being revived speed multiplier
+            * this._modifiers.baseSpeed;                                             // Current on-wearer modifier
 
         // Update position
         const oldPosition = Vec.clone(this.position);

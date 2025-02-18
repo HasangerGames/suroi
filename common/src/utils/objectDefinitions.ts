@@ -138,7 +138,7 @@ export interface InventoryItemDefinition extends ItemDefinition {
     }
     readonly killfeedFrame?: string
     readonly killstreak?: boolean
-    readonly speedMultiplier: number
+    readonly speedMultiplier?: number
     /**
      * A set of attributes to modify the player this item belongs to
      * All attributes stack, and all of them are removed as soon as

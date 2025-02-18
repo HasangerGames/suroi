@@ -78,7 +78,6 @@ export const Throwables = new ObjectDefinitions<ThrowableDefinition>([
         fuseTime: 4000,
         cookTime: 150,
         throwTime: 150,
-        speedMultiplier: 0.92,
         cookSpeedMultiplier: 0.7,
         impactDamage: 1,
         obstacleMultiplier: 20,
@@ -114,7 +113,6 @@ export const Throwables = new ObjectDefinitions<ThrowableDefinition>([
         fuseTime: 2000,
         cookTime: 150,
         throwTime: 150,
-        speedMultiplier: 0.92,
         cookSpeedMultiplier: 0.7,
         impactDamage: 1,
         obstacleMultiplier: 20,
@@ -192,7 +190,6 @@ export const Throwables = new ObjectDefinitions<ThrowableDefinition>([
         throwTime: 0,
         cookSpeedMultiplier: 0,
         health: 40,
-        speedMultiplier: 0.92,
         hitboxRadius: 1,
         image: {
             position: Vec.create(60, 43),
