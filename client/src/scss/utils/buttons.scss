@@ -47,7 +47,7 @@
 }
 
 .btn-disabled {
-  filter: brightness(80%);
+  filter: brightness(75%) saturate(75%);
   pointer-events: none;
   user-select: none;
 }

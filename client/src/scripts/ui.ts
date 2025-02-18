@@ -26,7 +26,7 @@ import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaul
 import { EMOTE_SLOTS, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, humanDate, requestFullscreen } from "./utils/misc";
-import type { Post } from "../../vite/news-posts-plugin/news-posts-plugin";
+import type { NewsPost } from "../../vite/news-posts-plugin/news-posts-plugin";
 
 /*
     eslint-disable
@@ -366,7 +366,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
     // Load news
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const posts = (await import("virtual:news-posts")).posts as Post[];
+    const posts = (await import("virtual:news-posts")).posts as NewsPost[];
     ui.newsPosts.html(posts.slice(0, 5).map(post => `
         <article class="splash-news-entry">
             <div class="news-date">${humanDate(post.date)}</div>

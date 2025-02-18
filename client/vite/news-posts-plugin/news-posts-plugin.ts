@@ -11,7 +11,7 @@ const VIRTUAL_MODULE_ID = "virtual:news-posts";
 const RESOLVED_VIRTUAL_MODULE_ID = `\0${VIRTUAL_MODULE_ID}`;
 const POSTS_DIR = "src/newsPosts";
 
-export interface Post {
+export interface NewsPost {
     readonly title: string
     readonly author: string
     readonly date: string
@@ -19,9 +19,9 @@ export interface Post {
     readonly description?: string
     readonly body?: string
 }
-const REQUIRED_FIELDS: Array<keyof Post> = ["title", "author", "date"];
+const REQUIRED_FIELDS: Array<keyof NewsPost> = ["title", "author", "date"];
 
-const posts: Post[] = [];
+const posts: NewsPost[] = [];
 
 const resolveId = (id: string): string | undefined => {
     if (id === VIRTUAL_MODULE_ID) return RESOLVED_VIRTUAL_MODULE_ID;
@@ -46,7 +46,7 @@ async function processPosts(): Promise<void> {
         .sort((a, b) => makeSortable(b).localeCompare(makeSortable(a)));
     for (const file of files) {
         const post = fm(readFileSync(path.resolve(POSTS_DIR, file), "utf8"));
-        const attributes = post.attributes as Post;
+        const attributes = post.attributes as NewsPost;
 
         for (const field of REQUIRED_FIELDS) {
             if (attributes[field] === undefined) {
