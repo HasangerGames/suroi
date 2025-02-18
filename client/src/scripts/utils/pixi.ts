@@ -38,10 +38,7 @@ export async function loadTextures(modeName: Mode, renderer: Renderer, highResol
 
     await Promise.all([
         ...spritesheets.map(async spritesheet => {
-            /**
-             * this is defined via vite-spritesheet-plugin, so it is never nullish
-             * @link `client/vite/vite-spritesheet-plugin/utils/spritesheet.ts:197`
-             */
+            // this is defined via vite-spritesheet-plugin, so it is never nullish
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const image = spritesheet.meta.image!;
 

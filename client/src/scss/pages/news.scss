@@ -16,7 +16,7 @@ body {
     margin: auto auto 50px;
     border-radius: 15px;
 
-    h1 {
+    & > h1 {
         color: palette.$orange;
         text-align: center;
         font-family: "Inter", sans-serif;
@@ -72,6 +72,10 @@ body {
             height: auto;
             margin: auto;
             max-width: 90%;
+        }
+
+        h1 {
+            font-size: 30px;
         }
     }
 }

@@ -359,6 +359,10 @@
         article {
             margin-bottom: 10px;
 
+            &:not(:first-child) {
+                margin-top: 25px;
+            }
+
             .news-date {
                 color: #ccc;
                 font-size: 14px;
@@ -380,10 +384,14 @@
                 margin-bottom: 15px;
             }
 
-            p {
+            p, i {
                 margin-top: 0;
                 font-size: 15px;
                 line-height: 130%;
+            }
+
+            p:last-of-type {
+                margin-bottom: 0;
             }
         }
     }
