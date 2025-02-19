@@ -15,7 +15,7 @@ import { type WebSocket } from "uWebSockets.js";
 import { SpawnMode, SpawnOptions } from "../config";
 import { type GunItem } from "../inventory/gunItem";
 import { GameMap } from "../map";
-import { Player, type PlayerContainer } from "../objects/player";
+import { Player, type PlayerJoinData } from "../objects/player";
 import { GamePlugin } from "../pluginManager";
 import { LootTables } from "./lootTables";
 import { getLootFromTable } from "../utils/lootHelpers";
@@ -954,10 +954,10 @@ const maps = {
                                         isSubscribed(): boolean { return false; },
                                         getTopics(): string[] { return []; },
                                         publish(): boolean { return true; },
-                                        cork(): WebSocket<PlayerContainer> { return this; },
+                                        cork(): WebSocket<PlayerJoinData> { return this; },
                                         getRemoteAddress(): ArrayBuffer { return new ArrayBuffer(); },
                                         getRemoteAddressAsText(): ArrayBuffer { return new ArrayBuffer(); },
-                                        getUserData(): PlayerContainer { return { isDev: false, autoFill: false, ip: undefined, lobbyClearing: false, weaponPreset: "" }; }
+                                        getUserData(): PlayerJoinData { return { isDev: false, autoFill: false, ip: undefined, lobbyClearing: false, weaponPreset: "" }; }
                                     });
 
                                     if (bot !== undefined) {

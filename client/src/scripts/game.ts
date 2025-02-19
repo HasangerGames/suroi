@@ -431,6 +431,7 @@ export class Game {
 
         // Handle incoming messages
         this._socket.onmessage = (message: MessageEvent<ArrayBuffer>): void => {
+            // console.log(message.data, [...new Uint8Array(message.data)].map(n => n.toString(16).padStart(2, "0")).join(" "));
             const stream = new PacketStream(message.data);
             let iterationCount = 0;
             const splits = [0, 0, 0, 0, 0, 0, 0] satisfies DataSplit;

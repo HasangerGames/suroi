@@ -82,7 +82,9 @@ export class PacketStream {
 
     private _deserializePacket(register: PacketRegister, splitData?: { splits: DataSplit, activePlayerId: number }): OutputPacket | undefined {
         if (this.stream.buffer.byteLength > this.stream.index) {
-            return register.idToTemplate[this.stream.readUint8()].read(this.stream, splitData);
+            const idx = this.stream.readUint8();
+            console.log("reading", idx);
+            return register.idToTemplate[idx].read(this.stream, splitData);
         }
         return undefined;
     }
@@ -94,6 +96,7 @@ export class PacketStream {
             throw new Error(`Unknown packet type: ${name}, did you forget to register it?`);
         }
 
+        console.log("writing", type);
         this.stream.writeUint8(type);
         packet.serialize(this.stream);
     }

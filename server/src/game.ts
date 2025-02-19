@@ -20,7 +20,6 @@ import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/obj
 import { pickRandomInArray, randomPointInsideCircle, randomRotation } from "@common/utils/random";
 import { type SuroiByteStream } from "@common/utils/suroiByteStream";
 import { Vec, type Vector } from "@common/utils/vector";
-import { type WebSocket } from "uWebSockets.js";
 import { parentPort } from "worker_threads";
 
 import { Mode, ModeDefinition, Modes } from "@common/definitions/modes";
@@ -39,7 +38,7 @@ import { Explosion } from "./objects/explosion";
 import { type BaseGameObject, type GameObject } from "./objects/gameObject";
 import { Loot, type ItemData } from "./objects/loot";
 import { Parachute } from "./objects/parachute";
-import { Player, type PlayerContainer } from "./objects/player";
+import { Player, type PlayerJoinData } from "./objects/player";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { ThrowableProjectile } from "./objects/throwableProj";
 import { PluginManager } from "./pluginManager";
@@ -49,6 +48,7 @@ import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getSpawnableLoots, SpawnableItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap, removeFrom } from "./utils/misc";
 import { GAME_SPAWN_WINDOW } from "./data/gasStages";
+import type { WebSocket } from "ws";
 
 /*
     eslint-disable
@@ -564,7 +564,7 @@ export class Game implements GameData {
         );
     }
 
-    addPlayer(socket: WebSocket<PlayerContainer>): Player | undefined {
+    addPlayer(socket: WebSocket, data: PlayerJoinData): Player | undefined {
         if (this.pluginManager.emit("player_will_connect")) {
             return undefined;
         }
@@ -574,7 +574,7 @@ export class Game implements GameData {
 
         let team: Team | undefined;
         if (this.teamMode) {
-            const { teamID, autoFill } = socket.getUserData();
+            const { teamID, autoFill } = data;
 
             if (teamID) {
                 team = this.customTeams.get(teamID);
@@ -675,7 +675,7 @@ export class Game implements GameData {
         }
 
         // Player is added to the players array when a JoinPacket is received from the client
-        const player = new Player(this, socket, spawnPosition, spawnLayer, team);
+        const player = new Player(this, socket, data, spawnPosition, spawnLayer, team);
         this.pluginManager.emit("player_did_connect", player);
         return player;
     }

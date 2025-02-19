@@ -40,8 +40,7 @@ import type { NewsPost } from "../../vite/news-posts-plugin/news-posts-plugin";
 
 interface RegionInfo {
     readonly name: string
-    readonly mainAddress: string
-    readonly gameAddress: string
+    readonly address: string
     readonly playerCount?: number
 
     readonly maxTeamSize?: number
@@ -153,9 +152,9 @@ export async function fetchServerData(game: Game): Promise<void> {
         let serverInfo: ServerInfo | undefined;
 
         for (let attempts = 0; attempts < 3; attempts++) {
-            console.log(`Loading server info for region ${regionID}: ${region.mainAddress} (attempt ${attempts + 1} of 3)`);
+            console.log(`Loading server info for region ${regionID}: ${region.address} (attempt ${attempts + 1} of 3)`);
             try {
-                const response = await fetch(`${region.mainAddress}/api/serverInfo`, { signal: AbortSignal.timeout(10000) });
+                const response = await fetch(`${region.address}/api/serverInfo`, { signal: AbortSignal.timeout(10000) });
                 serverInfo = await response.json() as ServerInfo;
                 if (serverInfo) break;
             } catch (e) {
@@ -396,10 +395,12 @@ export async function setUpUI(game: Game): Promise<void> {
         const target = selectedRegion;
 
         void $.get(
-            `${target.mainAddress}/api/getGame${teamID ? `?teamID=${teamID}` : ""}`,
+            `${target.address}/api/getGame${teamID ? `?teamID=${teamID}` : ""}`,
             (data: GetGameResponse) => {
                 if (data.success) {
                     const params = new URLSearchParams();
+
+                    params.set("gameID", data.gameID.toString());
 
                     if (teamID) params.set("teamID", teamID);
                     if (autoFill) params.set("autoFill", String(autoFill));
@@ -426,7 +427,7 @@ export async function setUpUI(game: Game): Promise<void> {
                         }
                     }
 
-                    game.connect(`${target.gameAddress.replace("<ID>", (data.gameID + 1).toString())}/play?${params.toString()}`);
+                    game.connect(`${target.address.replace("http", "ws")}/play?${params.toString()}`);
                     ui.splashMsg.hide();
 
                     // Check again because there is a small chance that the create-team-menu element won't hide.
@@ -538,7 +539,7 @@ export async function setUpUI(game: Game): Promise<void> {
             }
         }
 
-        teamSocket = new WebSocket(`${selectedRegion.mainAddress.replace("http", "ws")}/team?${params.toString()}`);
+        teamSocket = new WebSocket(`${selectedRegion.address.replace("http", "ws")}/team?${params.toString()}`);
 
         teamSocket.onmessage = (message: MessageEvent<string>): void => {
             const data = JSON.parse(message.data) as CustomTeamMessage;

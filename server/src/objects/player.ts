@@ -36,7 +36,6 @@ import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { randomBytes } from "crypto";
-import { type WebSocket } from "uWebSockets.js";
 import { Config } from "../config";
 import { type Game } from "../game";
 import { HealingAction, ReloadAction, ReviveAction, type Action } from "../inventory/action";
@@ -56,8 +55,9 @@ import { type Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { type SyncedParticle } from "./syncedParticle";
 import { type ThrowableProjectile } from "./throwableProj";
+import { WebSocket } from "ws";
 
-export interface PlayerContainer {
+export interface PlayerJoinData {
     readonly teamID?: string
     readonly autoFill: boolean
     player?: Player
@@ -360,7 +360,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.dirty.zoom = true;
     }
 
-    readonly socket: WebSocket<PlayerContainer>;
+    readonly socket: WebSocket;
 
     private readonly _action: { type?: Action, dirty: boolean } = {
         type: undefined,
@@ -455,7 +455,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     private _pingSeq = 0;
 
-    constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector, layer?: Layer, team?: Team) {
+    constructor(game: Game, socket: WebSocket, data: PlayerJoinData, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
 
         if (layer !== undefined) {
@@ -471,14 +471,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             team.setDirty();
         }
 
-        const userData = socket.getUserData();
         this.socket = socket;
         this.name = GameConstants.player.defaultName;
-        this.ip = userData.ip;
-        this.role = userData.role;
-        this.isDev = userData.isDev;
-        this.nameColor = userData.nameColor ?? 0;
-        this.hasColor = userData.nameColor !== undefined;
+        this.ip = data.ip;
+        this.role = data.role;
+        this.isDev = data.isDev;
+        this.nameColor = data.nameColor ?? 0;
+        this.hasColor = data.nameColor !== undefined;
 
         game.addTimeout(() => {
             if (!this.joined) {
@@ -508,13 +507,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.inventory.scope = "2x_scope";
         this.effectiveScope = "2x_scope";
 
-        const specialFunnies = this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing;
+        const specialFunnies = this.isDev && data.lobbyClearing && !Config.disableLobbyClearing;
         // Inventory preset
         if (specialFunnies) {
             const [
                 weaponA, weaponB, melee,
                 killsA, killB, killsM
-            ] = userData.weaponPreset.split(" ");
+            ] = data.weaponPreset.split(" ");
 
             const backpack = this.inventory.backpack;
             const determinePreset = (
@@ -1760,8 +1759,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     sendData(buffer: ArrayBuffer): void {
+        // console.log(buffer);
         try {
-            this.socket.send(buffer, true, false);
+            this.socket.send(buffer);
         } catch (e) {
             console.warn("Error sending packet. Details:", e);
         }
