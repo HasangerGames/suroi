@@ -24,8 +24,7 @@ const commonConfig: UserConfig = {
                 news: resolve(__dirname, "../news/index.html"),
                 rules: resolve(__dirname, "../rules/index.html"),
                 privacy: resolve(__dirname, "../privacy/index.html"),
-                editor: resolve(__dirname, "../editor/index.html"),
-                wiki: resolve(__dirname, "../wiki/index.html")
+                editor: resolve(__dirname, "../editor/index.html")
             },
             output: {
                 assetFileNames(assetInfo) {
