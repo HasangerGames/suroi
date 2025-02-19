@@ -1,6 +1,7 @@
 import { FireMode } from "../../constants";
-import { ItemType, ObjectDefinitions, type InventoryItemDefinition } from "../../utils/objectDefinitions";
+import { ItemType, type InventoryItemDefinition } from "../../utils/objectDefinitions";
 import { Vec, type Vector } from "../../utils/vector";
+import { InventoryItemDefinitions } from "./items";
 
 export interface MeleeDefinition extends InventoryItemDefinition {
     readonly itemType: ItemType.Melee
@@ -73,7 +74,7 @@ export const DEFAULT_HAND_RIGGING = Object.freeze({
     right: Vec.create(38, 35)
 }) as InventoryItemDefinition["fists"] & object;
 
-export const Melees = new ObjectDefinitions<MeleeDefinition>([
+export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "fists",
         name: "Fists",

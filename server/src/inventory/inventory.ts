@@ -1,4 +1,4 @@
-import { DEFAULT_INVENTORY, GameConstants } from "@common/constants";
+import { GameConstants } from "@common/constants";
 import { Ammos, type AmmoDefinition } from "@common/definitions/items/ammos";
 import { ArmorType, type ArmorDefinition } from "@common/definitions/items/armors";
 import { type BackpackDefinition } from "@common/definitions/items/backpacks";
@@ -17,6 +17,7 @@ import { GunItem } from "./gunItem";
 import { InventoryItemBase } from "./inventoryItem";
 import { MeleeItem } from "./meleeItem";
 import { ThrowableItem } from "./throwableItem";
+import { DEFAULT_INVENTORY } from "@common/defaultInventory";
 
 export type ReifiableItem = InventoryItem | ReifiableDef<InventoryItem["definition"]>;
 

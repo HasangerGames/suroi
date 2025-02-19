@@ -1,7 +1,8 @@
+import { ItemType, type InventoryItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
 import { Vec, type Vector } from "../../utils/vector";
 import { type ExplosionDefinition } from "../explosions";
-import { ItemType, ObjectDefinitions, type InventoryItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
 import { SyncedParticleDefinition } from "../syncedParticles";
+import { InventoryItemDefinitions } from "./items";
 
 export type ThrowableDefinition = InventoryItemDefinition & {
     readonly itemType: ItemType.Throwable
@@ -69,7 +70,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly c4?: boolean
 };
 
-export const Throwables = new ObjectDefinitions<ThrowableDefinition>([
+export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
     {
         idString: "frag_grenade",
         name: "Frag Grenade",

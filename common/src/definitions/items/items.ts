@@ -6,7 +6,6 @@ import type { WeaponDefinition } from "../loots";
 /**
  * Subclass of {@link ObjectDefinitions} specialized for {@link InventoryItemDefinition}s. Notable
  * changes include:
- * - Omitting the `itemType` field for incoming definitions
  * - Resolving speed multipliers (`base` * `defaultForType` * `specific`)
  */
 export class InventoryItemDefinitions<Def extends WeaponDefinition> extends ObjectDefinitions<Def> {

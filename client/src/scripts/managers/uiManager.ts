@@ -1,4 +1,4 @@
-import { DEFAULT_INVENTORY, GameConstants, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, ObjectCategory } from "@common/constants";
+import { GameConstants, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, ObjectCategory } from "@common/constants";
 import { Ammos } from "@common/definitions/items/ammos";
 import { type BadgeDefinition } from "@common/definitions/badges";
 import { type EmoteDefinition } from "@common/definitions/emotes";
@@ -26,6 +26,7 @@ import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
 import { ClientPerkManager } from "./perkManager";
 import type { ReportPacketData } from "@common/packets/reportPacket";
+import { DEFAULT_INVENTORY } from "@common/defaultInventory";
 
 function safeRound(value: number): number {
     if (0 < value && value <= 1) return 1;
