@@ -261,7 +261,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
                 this.layer,
                 undefined,
                 this.halloweenSkin ? PerkData[PerkIds.PlumpkinBomb].damageMod : 1,
-                this._height
+                this._obstaclesBelow
             );
         }
 

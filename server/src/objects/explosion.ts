@@ -24,7 +24,7 @@ export class Explosion {
         readonly layer: Layer,
         readonly weapon?: GunItem | MeleeItem | ThrowableItem,
         readonly damageMod = 1,
-        readonly height = 0
+        readonly objectsToIgnore = new Set<GameObject>()
     ) {
         this.definition = Explosions.reify(definition);
     }
@@ -113,7 +113,7 @@ export class Explosion {
                     (isObstacle
                         && !object.definition.noCollisions
                         && !object.definition.isStair
-                        && this.height < object.height
+                        && !this.objectsToIgnore.has(object)
                     ) || (isBuilding && !object.definition.noCollisions)
                 ) {
                     /*

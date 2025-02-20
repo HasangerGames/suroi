@@ -966,9 +966,9 @@ export class Game implements GameData {
         layer: Layer,
         weapon?: GunItem | MeleeItem | ThrowableItem,
         damageMod = 1,
-        height?: number
+        objectsToIgnore?: Set<GameObject>
     ): Explosion {
-        const explosion = new Explosion(this, type, position, source, layer, weapon, damageMod, height);
+        const explosion = new Explosion(this, type, position, source, layer, weapon, damageMod, objectsToIgnore);
         this.explosions.push(explosion);
         return explosion;
     }
