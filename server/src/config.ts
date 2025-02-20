@@ -11,7 +11,7 @@ export const Config = {
 
     spawn: { mode: SpawnMode.Default },
 
-    maxTeamSize: TeamSize.Solo,
+    maxTeamSize: TeamSize.Duo,
 
     maxPlayersPerGame: 80,
     maxGames: 5,
@@ -215,23 +215,19 @@ export interface ConfigType {
         }
 
         /**
+         * Limits the number of teams that can be created by any one IP address.
+         */
+        readonly maxTeams?: number
+
+        /**
          * If this option is present, a list of punishments will be loaded from the specified URL. Trailing slash not allowed.
          * The specified `password` is sent in the `Password` header.
          */
         readonly punishments?: {
-            readonly password: string
             readonly url: string
+            readonly password: string
+            readonly refreshDuration: number
         }
-
-        /**
-         * Every `refreshDuration` milliseconds, rate limited IPs are cleared, and the list of punishments is reloaded if enabled.
-         */
-        readonly refreshDuration: number
-
-        /**
-         * Limits the number of teams that can be created by any one IP address.
-         */
-        readonly maxTeams?: number
 
         /**
          * If a player's username matches one of the regexes in this array, it will be replaced with the default username.

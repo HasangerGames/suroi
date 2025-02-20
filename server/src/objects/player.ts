@@ -58,12 +58,10 @@ import { type ThrowableProjectile } from "./throwableProj";
 import { WebSocket } from "ws";
 
 export interface PlayerJoinData {
+    readonly ip?: string
     readonly teamID?: string
     readonly autoFill: boolean
-    player?: Player
-    readonly ip: string | undefined
     readonly role?: string
-
     readonly isDev: boolean
     readonly nameColor?: number
     readonly lobbyClearing: boolean

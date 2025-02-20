@@ -6,18 +6,12 @@ import { WebSocketServer } from "ws";
 import { Config, MapWithParams } from "./config";
 import { Game } from "./game";
 import { PlayerJoinData } from "./objects/player";
-import { map, maxTeamSize, serverLog, serverWarn, simultaneousConnections } from "./server";
-
-export interface WorkerInitData {
-    readonly id: number
-    readonly maxTeamSize: number
-    readonly map: MapWithParams
-}
+import { map, maxTeamSize, serverLog, serverWarn } from "./server";
+import { pickRandomInArray } from "@common/utils/random";
+import { RateLimiter } from "./utils/rateLimiter";
 
 export enum WorkerMessages {
     AddPlayer,
-    RemovePlayer,
-    UpdateGameData,
     UpdateMaxTeamSize,
     UpdateMap,
     Reset
@@ -27,16 +21,7 @@ export type WorkerMessage =
     | {
         readonly type: WorkerMessages.AddPlayer
         readonly request: IncomingMessage
-        readonly socket: Socket
         readonly playerData: PlayerJoinData
-    }
-    | {
-        readonly type: WorkerMessages.RemovePlayer
-        readonly ip: string
-    }
-    | {
-        readonly type: WorkerMessages.UpdateGameData
-        readonly data: Partial<GameData>
     }
     | {
         readonly type: WorkerMessages.UpdateMaxTeamSize
@@ -61,7 +46,7 @@ export interface GameData {
 export class GameContainer {
     readonly worker: Worker;
 
-    resolve: (game: GameContainer) => void;
+    readonly promiseCallbacks: Array<(game: GameContainer) => void> = [];
 
     private _data: GameData = {
         aliveCount: 0,
@@ -78,22 +63,14 @@ export class GameContainer {
     get startedTime(): number { return this._data.startedTime; }
 
     constructor(readonly id: number, resolve: (game: GameContainer) => void) {
-        this.resolve = resolve;
-        this.worker = Cluster.fork({ id, maxTeamSize, map }).on("message", (message: WorkerMessage): void => {
-            switch (message.type) {
-                case WorkerMessages.UpdateGameData: {
-                    this._data = { ...this._data, ...message.data };
+        this.promiseCallbacks.push(resolve);
+        this.worker = Cluster.fork({ id, maxTeamSize, map }).on("message", (data: Partial<GameData>): void => {
+            this._data = { ...this._data, ...data };
 
-                    if (message.data.allowJoin === true) { // This means the game was just created
-                        creating = undefined;
-                        this.resolve(this);
-                    }
-                    break;
-                }
-                case WorkerMessages.RemovePlayer: {
-                    simultaneousConnections[message.ip]--;
-                    break;
-                }
+            if (data.allowJoin === true) { // This means the game was just created
+                creating = undefined;
+                for (const resolve of this.promiseCallbacks) resolve(this);
+                this.promiseCallbacks.length = 0;
             }
         });
     }
@@ -103,19 +80,33 @@ export class GameContainer {
     }
 }
 
+export const games: Array<GameContainer | undefined> = [];
+
+export async function findGame(): Promise<GameContainer | undefined> {
+    const eligibleGames = games.filter((g?: GameContainer): g is GameContainer =>
+        g !== undefined
+        && g.allowJoin
+        && g.aliveCount < Config.maxPlayersPerGame
+    );
+
+    return eligibleGames.length
+        ? pickRandomInArray(eligibleGames)
+        : await newGame();
+}
+
 let creating: GameContainer | undefined;
 
 export async function newGame(id?: number): Promise<GameContainer | undefined> {
     return new Promise<GameContainer | undefined>(resolve => {
         if (creating !== undefined) {
-            resolve(creating);
+            creating.promiseCallbacks.push(resolve);
         } else if (id !== undefined) {
             serverLog(`Creating new game with ID ${id}`);
             const game = games[id];
             if (!game) {
                 games[id] = new GameContainer(id, resolve);
             } else if (game.stopped) {
-                game.resolve = resolve;
+                game.promiseCallbacks.push(resolve);
                 game.sendMessage({ type: WorkerMessages.Reset });
             } else {
                 serverWarn(`Game with ID ${id} already exists`);
@@ -137,15 +128,15 @@ export async function newGame(id?: number): Promise<GameContainer | undefined> {
     });
 }
 
-export const games: Array<GameContainer | undefined> = [];
-
 if (!Cluster.isPrimary) {
-    const data = process.env;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const id = parseInt(data.id!);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    let maxTeamSize = parseInt(data.maxTeamSize!);
-    let map = data.map as MapWithParams;
+    const data = process.env as {
+        readonly id: string
+        readonly maxTeamSize: string
+        readonly map: MapWithParams
+    };
+    const id = parseInt(data.id);
+    let maxTeamSize = parseInt(data.maxTeamSize);
+    let map = data.map;
 
     let game = new Game(id, maxTeamSize, map);
 
@@ -153,29 +144,26 @@ if (!Cluster.isPrimary) {
 
     const server = new WebSocketServer({ noServer: true });
 
+    const simultaneousConnections = Config.protection?.maxSimultaneousConnections
+        ? new RateLimiter(Config.protection.maxSimultaneousConnections)
+        : undefined;
+
     process.on("message", (message: WorkerMessage, socket?: Socket) => {
         switch (message.type) {
             case WorkerMessages.AddPlayer: {
                 const { request, playerData } = message;
-                const removePlayer = (): void => {
-                    if (Config.protection?.maxSimultaneousConnections) {
-                        process.send?.({ type: WorkerMessages.RemovePlayer, ip: playerData.ip });
-                    }
-                };
-                if (!socket) {
-                    removePlayer();
-                    break;
-                }
-                socket.resume();
-
                 // @ts-expect-error despite what the typings say, the headers don't have to be a Buffer
                 server.handleUpgrade(request, socket, request.headers, socket => {
-                    const player = game.addPlayer(socket, playerData);
-                    if (!player) {
+                    if (simultaneousConnections?.isLimited(playerData.ip)) {
+                        game.warn(playerData.ip, "exceeded connection limit");
                         socket.close();
-                        removePlayer();
                         return;
                     }
+
+                    const player = game.addPlayer(socket, playerData);
+                    if (!player) return;
+
+                    simultaneousConnections?.increment(player.ip);
 
                     socket.binaryType = "arraybuffer";
                     // player.sendGameOverPacket(false); // uncomment to test game over screen
@@ -184,16 +172,14 @@ if (!Cluster.isPrimary) {
                         try {
                             game.onMessage(message, player);
                         } catch (e) {
-                            console.warn("Error parsing message:", e);
+                            game.warn("Error parsing message:", e);
                         }
                     });
 
-                    const close = (): void => {
-                        removePlayer();
+                    socket.on("close", () => {
+                        simultaneousConnections?.decrement(player.ip);
                         game.removePlayer(player);
-                    };
-                    socket.on("error", close);
-                    socket.on("close", close);
+                    });
                 });
                 break;
             }

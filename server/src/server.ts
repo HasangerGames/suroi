@@ -1,21 +1,23 @@
 import { GameConstants, TeamSize } from "@common/constants";
+import { Badges } from "@common/definitions/badges";
+import { Skins } from "@common/definitions/items/skins";
 import { Mode } from "@common/definitions/modes";
+import { CustomTeamMessage } from "@common/typings";
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import { Numeric } from "@common/utils/math";
-import { pickRandomInArray } from "@common/utils/random";
 import { Cron } from "croner";
-import { existsSync, readFile, writeFileSync } from "fs";
 import Cluster from "node:cluster";
 import { createServer, IncomingMessage } from "node:http";
 import { URLSearchParams } from "node:url";
 import os from "os";
+import { WebSocketServer } from "ws";
 import { version } from "../../package.json";
 import { Config } from "./config";
-import { GameContainer, games, newGame, WorkerMessages } from "./gameManager";
-import { CustomTeam } from "./team";
+import { findGame, GameContainer, games, newGame, WorkerMessage, WorkerMessages } from "./gameManager";
+import { CustomTeam, CustomTeamPlayer } from "./team";
 import IPChecker, { Punishment } from "./utils/apiHelper";
-import { modeFromMap } from "./utils/misc";
-import { getIP } from "./utils/serverHelpers";
+import { cleanUsername, modeFromMap } from "./utils/misc";
+import { RateLimiter } from "./utils/rateLimiter";
 
 export function serverLog(...message: unknown[]): void {
     Logger.log(styleText("[Server]", ColorStyles.foreground.magenta.normal), ...message);
@@ -29,15 +31,46 @@ export function serverError(...message: unknown[]): void {
     Logger.warn(styleText("[Server] [ERROR]", ColorStyles.foreground.red.normal), ...message);
 }
 
+function parseRole(searchParams: URLSearchParams): { readonly role?: string, readonly isDev: boolean, readonly nameColor?: number } {
+    const password = searchParams.get("password");
+    const givenRole = searchParams.get("role");
+    let role: string | undefined;
+    let isDev = false;
+    let nameColor: number | undefined;
+    if (
+        password !== null
+        && givenRole !== null
+        && givenRole in Config.roles
+        && Config.roles[givenRole].password === password
+    ) {
+        role = givenRole;
+        isDev = Config.roles[givenRole].isDev ?? false;
+
+        if (isDev) {
+            try {
+                const colorString = searchParams.get("nameColor");
+                if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
+            } catch { /* guess your color sucks lol */ }
+        }
+    }
+    return { role, isDev, nameColor };
+}
+
 let punishments: Punishment[] = [];
 
-const ipCheck = Config.protection?.ipChecker
-    ? new IPChecker(Config.protection.ipChecker.baseUrl, Config.protection.ipChecker.key)
+const protection = Config.protection;
+
+const ipCheck = protection?.ipChecker
+    ? new IPChecker(protection.ipChecker.baseUrl, protection.ipChecker.key)
     : undefined;
 
-export const simultaneousConnections: Record<string, number> = {};
-let joinAttempts: Record<string, number> = {};
-let teamsCreated: Record<string, number> = {};
+const joinAttempts = protection?.maxJoinAttempts
+    ? new RateLimiter(protection.maxJoinAttempts.count, protection.maxJoinAttempts.duration)
+    : undefined;
+
+const teamsCreated = protection?.maxTeams
+    ? new RateLimiter(protection.maxTeams)
+    : undefined;
 
 export const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
 
@@ -67,6 +100,8 @@ if (Cluster.isPrimary && require.main === module) {
 
     process.on("uncaughtException", e => serverError("An unhandled error occurred. Details:", e));
 
+    const teamWs = new WebSocketServer({ noServer: true });
+
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     createServer(async(req, res) => {
         res.setHeader("Access-Control-Allow-Origin", "*");
@@ -74,24 +109,24 @@ if (Cluster.isPrimary && require.main === module) {
         res.setHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with");
         res.setHeader("Access-Control-Max-Age", "3600");
 
-        if (req.method !== "GET") {
+        if (req.method !== "GET" || !req.url) {
             res.statusCode = 404;
             res.setHeader("Content-Type", "text/plain").end("404 Not Found");
             return;
         }
 
         type ErrorResponse = { message: string, reason?: string, reportID?: string };
-        const forbidden = (message: ErrorResponse): void => {
+        const forbidden = (message?: ErrorResponse): void => {
             res.statusCode = 403;
-            res.setHeader("Content-Type", "application/json").end(JSON.stringify(message));
+            if (message) res.setHeader("Content-Type", "application/json").end(JSON.stringify(message));
+            else res.setHeader("Content-Type", "text/plain").end("403 Forbidden");
         };
 
-        const ip = getIP(req);
+        const ip = Config.ipHeader ? req.headers[Config.ipHeader] as string : req.socket.remoteAddress;
 
         const punishment = punishments.find(p => p.ip === ip);
         if (punishment) {
             if (punishment.punishmentType === "warn") {
-                const protection = Config.protection;
                 if (protection?.punishments?.url) {
                     punishments = punishments.filter(p => p.ip !== ip);
                     fetch(
@@ -106,13 +141,14 @@ if (Cluster.isPrimary && require.main === module) {
                 reportID: punishment.reportId
             });
             return;
-        }
-
-        if (ipCheck && (await ipCheck.check(ip)).flagged) {
+        } else if (ipCheck && ip && (await ipCheck.check(ip)).flagged) {
             forbidden({ message: "vpn" });
             return;
         }
 
+        //
+        // GET /api/serverInfo
+        //
         if (req.url === "/api/serverInfo") {
             res.setHeader("Content-Type", "application/json").end(JSON.stringify({
                 protocolVersion: GameConstants.protocolVersion,
@@ -124,107 +160,118 @@ if (Cluster.isPrimary && require.main === module) {
                 modeSwitchTime: mapSwitchCron?.nextRun()?.getTime(),
                 nextMode
             }));
-        } else if (req.url?.startsWith("/play") && req.headers.upgrade?.toLowerCase() === "websocket") {
-            //
-            // Rate limits
-            //
-            if (Config.protection) {
-                const { maxSimultaneousConnections, maxJoinAttempts } = Config.protection;
 
-                if (
-                    simultaneousConnections[ip] >= (maxSimultaneousConnections ?? Infinity)
-                    || joinAttempts[ip] >= (maxJoinAttempts?.count ?? Infinity)
-                ) {
-                    serverWarn(`Rate limited: ${ip}`);
-                    forbidden({ message: "rateLimit" });
-                    return;
-                } else {
-                    if (maxSimultaneousConnections) {
-                        simultaneousConnections[ip] = (simultaneousConnections[ip] ?? 0) + 1;
-                        serverLog(`${simultaneousConnections[ip]}/${maxSimultaneousConnections} simultaneous connections: ${ip}`);
-                    }
-                    if (maxJoinAttempts) {
-                        joinAttempts[ip] = (joinAttempts[ip] ?? 0) + 1;
-                        serverLog(`${joinAttempts[ip]}/${maxJoinAttempts.count} join attempts in the last ${maxJoinAttempts.duration} ms: ${ip}`);
-                    }
-                }
+        //
+        // GET /play
+        //
+        } else if (req.url.startsWith("/play") && req.headers.upgrade?.toLowerCase() === "websocket") {
+            // Rate limit join attempts
+            if (joinAttempts?.isLimited(ip)) {
+                serverWarn(ip, "exceeded join attempt limit");
+                forbidden();
+                return;
             }
+            joinAttempts?.increment(ip);
 
-            //
             // Find game
-            //
             const searchParams = new URLSearchParams(req.url.slice(req.url.indexOf("?")));
-            const teamID = maxTeamSize !== TeamSize.Solo && searchParams.get("teamID");
+            const teamID = maxTeamSize !== TeamSize.Solo ? (searchParams.get("teamID") ?? undefined) : undefined;
             let game: GameContainer | undefined;
             if (teamID) {
-                const team = customTeams.get(teamID);
-                if (team?.gameID !== undefined) {
-                    game = games[team.gameID];
+                const gameID = customTeams.get(teamID)?.gameID;
+                if (gameID !== undefined) {
+                    game = games[gameID];
                 }
             } else {
-                const eligibleGames = games.filter((g?: GameContainer): g is GameContainer =>
-                    g !== undefined
-                    && g.allowJoin
-                    && g.aliveCount < Config.maxPlayersPerGame
-                );
-
-                game = eligibleGames.length
-                    ? pickRandomInArray(eligibleGames) // Pick randomly from the available games
-                    : await newGame(); // If a game isn't available, attempt to create a new one
+                game = await findGame();
             }
-
-            if (!game || game.over) {
+            if (!game?.allowJoin) {
                 res.statusCode = 500;
                 res.setHeader("Content-Type", "text/plain").end("500 Internal Server Error");
                 return;
             }
 
-            //
-            // Validate and parse role and name color
-            //
-            const password = searchParams.get("password");
-            const givenRole = searchParams.get("role");
-            let role: string | undefined;
-            let isDev = false;
+            const { role, isDev, nameColor } = parseRole(searchParams);
 
-            let nameColor: number | undefined;
-            if (
-                password !== null
-                && givenRole !== null
-                && givenRole in Config.roles
-                && Config.roles[givenRole].password === password
-            ) {
-                role = givenRole;
-                isDev = Config.roles[givenRole].isDev ?? false;
-
-                if (isDev) {
-                    try {
-                        const colorString = searchParams.get("nameColor");
-                        if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
-                    } catch { /* guess your color sucks lol */ }
-                }
-            }
-
-            //
             // Upgrade the connection
-            //
-            const { headers, method, socket } = req;
             game.worker.send({
                 type: WorkerMessages.AddPlayer,
-                request: { headers, method } as IncomingMessage,
-                head: headers,
+                request: { headers: req.headers, method: req.method } as IncomingMessage,
                 playerData: {
+                    ip,
                     teamID,
                     autoFill: Boolean(searchParams.get("autoFill")),
-                    player: undefined,
-                    ip,
                     role,
                     isDev,
                     nameColor,
                     lobbyClearing: searchParams.get("lobbyClearing") === "true",
                     weaponPreset: searchParams.get("weaponPreset") ?? ""
                 }
-            }, socket);
+            } satisfies WorkerMessage, req.socket);
+
+        //
+        // GET /team
+        //
+        } else if (req.url.startsWith("/team") && req.headers.upgrade?.toLowerCase() === "websocket") {
+            if (maxTeamSize === TeamSize.Solo || teamsCreated?.isLimited(ip)) {
+                forbidden();
+                return;
+            }
+
+            const searchParams = new URLSearchParams(req.url.slice(req.url.indexOf("?")));
+            const teamID = searchParams.get("teamID");
+            let team: CustomTeam | undefined;
+            if (teamID !== null) {
+                team = customTeams.get(teamID);
+                if (!team || team.locked || team.players.length >= (maxTeamSize as number)) {
+                    forbidden(); // TODO "Team is locked" and "Team is full" messages
+                    return;
+                }
+            } else {
+                team = new CustomTeam();
+                customTeams.set(team.id, team);
+                teamsCreated?.increment(ip);
+            }
+
+            const name = cleanUsername(searchParams.get("name"));
+            let skin = searchParams.get("skin") ?? GameConstants.player.defaultSkin;
+            let badge = searchParams.get("badge") ?? undefined;
+            const { role, nameColor } = parseRole(searchParams);
+
+            // Validate skin
+            const skinDefinition = Skins.fromStringSafe(skin);
+            const rolesRequired = skinDefinition?.rolesRequired;
+            if (!skinDefinition || (rolesRequired && !rolesRequired.includes(role))) {
+                skin = GameConstants.player.defaultSkin;
+            }
+
+            // Validate badge
+            const badgeDefinition = badge ? Badges.fromStringSafe(badge) : undefined;
+            if (!badgeDefinition || (badgeDefinition.roles && !badgeDefinition.roles.includes(role))) {
+                badge = undefined;
+            }
+
+            // @ts-expect-error despite what the typings say, the headers don't have to be a Buffer
+            teamWs.handleUpgrade(req, req.socket, req.headers, socket => {
+                const player = new CustomTeamPlayer(team, socket, name, skin, badge, nameColor);
+
+                socket.on("message", (message: string) => {
+                    try {
+                        void player.team.onMessage(player, JSON.parse(message) as CustomTeamMessage);
+                    } catch (e) {
+                        serverError("Error parsing team socket message. Details:", e);
+                    }
+                });
+
+                socket.on("close", () => player.team.removePlayer(player));
+            });
+
+        //
+        // 404
+        //
+        } else {
+            res.statusCode = 404;
+            res.setHeader("Content-Type", "text/plain").end("404 Not Found");
         }
     }).listen(Config.port, Config.host);
 
@@ -259,6 +306,16 @@ if (Cluster.isPrimary && require.main === module) {
                 game?.sendMessage({ type: WorkerMessages.UpdateMaxTeamSize, maxTeamSize });
             }
 
+            if (maxTeamSize === TeamSize.Solo) {
+                for (const team of customTeams.values()) {
+                    for (const player of team.players) {
+                        player.socket.close();
+                    }
+                    team.players.length = 0;
+                }
+                customTeams.clear();
+            }
+
             const humanReadableTeamSizes = [undefined, "solos", "duos", "trios", "squads"];
             serverLog(`Switching to ${humanReadableTeamSizes[maxTeamSize] ?? `team size ${maxTeamSize}`}`);
         });
@@ -282,172 +339,21 @@ if (Cluster.isPrimary && require.main === module) {
         nextMode = modeFromMap(_map.rotation[1] ?? _map.rotation[0]);
     }
 
-    const { protection } = Config;
-    if (protection) {
-        setInterval(() => {
-            if (protection.punishments?.url) {
-                void (async() => {
-                    try {
-                        if (!protection.punishments?.url) return;
-                        const response = await fetch(`${protection.punishments.url}/punishments`, { headers: { "api-key": protection.punishments.password } });
+    if (protection?.punishments) {
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        setInterval(async() => {
+            if (!protection.punishments) return;
+            try {
+                const response = await fetch(`${protection.punishments.url}/punishments`, { headers: { "api-key": protection.punishments.password } });
 
-                        // we hope that this is safe
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                        if (response.ok) punishments = await response.json();
-                        else console.error("Error: Unable to fetch punishment list.");
-                    } catch (e) {
-                        console.error("Error: Unable to fetch punishment list. Details:", e);
-                    }
-                })();
+                // we hope that this is safe
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                if (response.ok) punishments = await response.json();
+                else console.error("Error: Unable to fetch punishment list.");
+            } catch (e) {
+                console.error("Error: Unable to fetch punishment list. Details:", e);
             }
-
-            teamsCreated = {};
-
             Logger.log("Reloaded punishment list");
-        }, protection.refreshDuration);
-
-        if (protection.maxJoinAttempts) {
-            setInterval((): void => {
-                joinAttempts = {};
-            }, protection.maxJoinAttempts.duration);
-        }
+        }, protection.punishments.refreshDuration);
     }
-    // }).ws("/team", {
-    //     idleTimeout: 30,
-
-    //     /**
-    //      * Upgrade the connection to WebSocket.
-    //      */
-    //     upgrade(res, req, context) {
-    //         res.onAborted((): void => { /* Handle errors in WS connection */ });
-
-    //         const ip = getIP(res, req);
-    //         const maxTeams = Config.protection?.maxTeams;
-    //         if (
-    //             maxTeamSize === TeamSize.Solo
-    //             || (maxTeams && teamsCreated[ip] > maxTeams)
-    //         ) {
-    //             forbidden(res);
-    //             return;
-    //         }
-
-    //         const searchParams = new URLSearchParams(req.getQuery());
-    //         const teamID = searchParams.get("teamID");
-
-    //         let team!: CustomTeam;
-    //         const noTeamIdGiven = teamID !== null;
-    //         if (
-    //             noTeamIdGiven
-    //             // @ts-expect-error cleanest overall way to do this (`undefined` gets filtered out anyways)
-    //             && (team = customTeams.get(teamID)) === undefined
-    //         ) {
-    //             forbidden(res);
-    //             return;
-    //         }
-
-    //         if (noTeamIdGiven) {
-    //             if (team.locked || team.players.length >= (maxTeamSize as number)) {
-    //                 forbidden(res); // TODO "Team is locked" and "Team is full" messages
-    //                 return;
-    //             }
-    //         } else {
-    //             team = new CustomTeam();
-    //             customTeams.set(team.id, team);
-
-    //             if (Config.protection?.maxTeams) {
-    //                 teamsCreated[ip] = (teamsCreated[ip] ?? 0) + 1;
-    //             }
-    //         }
-
-    //         const name = cleanUsername(searchParams.get("name"));
-    //         let skin = searchParams.get("skin") ?? GameConstants.player.defaultSkin;
-    //         let badge = searchParams.get("badge") ?? undefined;
-
-    //         //
-    //         // Role
-    //         //
-    //         const password = searchParams.get("password");
-    //         const givenRole = searchParams.get("role");
-    //         let role = "";
-    //         let nameColor: number | undefined;
-
-    //         if (
-    //             password !== null
-    //             && givenRole !== null
-    //             && givenRole in Config.roles
-    //             && Config.roles[givenRole].password === password
-    //         ) {
-    //             role = givenRole;
-
-    //             if (Config.roles[givenRole].isDev) {
-    //                 try {
-    //                     const colorString = searchParams.get("nameColor");
-    //                     if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
-    //                 } catch { /* lol your color sucks */ }
-    //             }
-    //         }
-
-    //         // Validate skin
-    //         const skinDefinition = Skins.fromStringSafe(skin);
-    //         const rolesRequired = skinDefinition?.rolesRequired;
-    //         if (!skinDefinition || (rolesRequired && !rolesRequired.includes(role))) {
-    //             skin = GameConstants.player.defaultSkin;
-    //         }
-
-    //         // Validate badge
-    //         const badgeDefinition = badge ? Badges.fromStringSafe(badge) : undefined;
-    //         if (!badgeDefinition || (badgeDefinition.roles && !badgeDefinition.roles.includes(role))) {
-    //             badge = undefined;
-    //         }
-
-    //         res.upgrade(
-    //             {
-    //                 player: new CustomTeamPlayer(
-    //                     team,
-    //                     name,
-    //                     skin,
-    //                     badge,
-    //                     nameColor
-    //                 )
-    //             },
-    //             req.getHeader("sec-websocket-key"),
-    //             req.getHeader("sec-websocket-protocol"),
-    //             req.getHeader("sec-websocket-extensions"),
-    //             context
-    //         );
-    //     },
-
-    //     /**
-    //      * Handle opening of the socket.
-    //      * @param socket The socket being opened.
-    //      */
-    //     open(socket: WebSocket<CustomTeamPlayerContainer>) {
-    //         const player = socket.getUserData().player;
-    //         player.socket = socket;
-    //         player.team.addPlayer(player);
-    //     },
-
-    //     /**
-    //      * Handle messages coming from the socket.
-    //      * @param socket The socket in question.
-    //      * @param message The message to handle.
-    //      */
-    //     message(socket: WebSocket<CustomTeamPlayerContainer>, message: ArrayBuffer) {
-    //         const player = socket.getUserData().player;
-    //         try {
-    //             void player.team.onMessage(player, JSON.parse(textDecoder.decode(message)) as CustomTeamMessage);
-    //         } catch (e) {
-    //             serverError("Error parsing team socket message. Details:", e);
-    //         }
-    //     },
-
-    //     /**
-    //      * Handle closing of the socket.
-    //      * @param socket The socket being closed.
-    //      */
-    //     close(socket: WebSocket<CustomTeamPlayerContainer>) {
-    //         const player = socket.getUserData().player;
-    //         player.team.removePlayer(player);
-    //     }
-    // }).listen(Config.host, Config.port, (): void => {
 }

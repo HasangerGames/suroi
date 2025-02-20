@@ -474,7 +474,7 @@ export class Game implements GameData {
     }
 
     updateGameData(data: Partial<GameData>): void {
-        process.send?.({ type: WorkerMessages.UpdateGameData, data } satisfies WorkerMessage);
+        process.send?.(data);
     }
 
     kill(): void {
@@ -558,6 +558,7 @@ export class Game implements GameData {
 
     addPlayer(socket: WebSocket, data: PlayerJoinData): Player | undefined {
         if (this.pluginManager.emit("player_will_connect")) {
+            socket.close();
             return undefined;
         }
 
