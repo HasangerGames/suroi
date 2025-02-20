@@ -1,72 +1,21 @@
 import { GameConstants, TeamSize } from "@common/constants";
-import { Badges } from "@common/definitions/badges";
 import { Mode } from "@common/definitions/modes";
-import { Skins } from "@common/definitions/items/skins";
-import { CustomTeamMessage, type GetGameResponse } from "@common/typings";
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import { Numeric } from "@common/utils/math";
+import { pickRandomInArray } from "@common/utils/random";
 import { Cron } from "croner";
-import { existsSync, readFile, readFileSync, writeFile, writeFileSync } from "fs";
+import { existsSync, readFile, writeFileSync } from "fs";
+import Cluster from "node:cluster";
+import { createServer, IncomingMessage } from "node:http";
 import { URLSearchParams } from "node:url";
 import os from "os";
 import { version } from "../../package.json";
 import { Config } from "./config";
-import { findGame, games, newGame, WorkerMessages } from "./gameManager";
-import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./team";
+import { GameContainer, games, newGame, WorkerMessages } from "./gameManager";
+import { CustomTeam } from "./team";
 import IPChecker, { Punishment } from "./utils/apiHelper";
-import { cleanUsername, modeFromMap } from "./utils/misc";
-import { cors, forbidden, getIP } from "./utils/serverHelpers";
-import Cluster from "node:cluster";
-import { createServer, IncomingMessage } from "node:http";
-import { Socket } from "node:net";
-
-let punishments: Punishment[] = [];
-
-const ipCheck = Config.protection?.ipChecker
-    ? new IPChecker(Config.protection.ipChecker.baseUrl, Config.protection.ipChecker.key)
-    : undefined;
-
-const isVPN = Config.protection?.ipChecker
-    ? new Map<string, boolean>()
-    : new Map<string, boolean>(
-        existsSync("isVPN.json")
-            ? Object.entries(JSON.parse(readFileSync("isVPN.json", "utf8")) as Record<string, boolean>)
-            : undefined
-    );
-
-async function isVPNCheck(ip: string): Promise<boolean> {
-    if (!ipCheck) return false;
-
-    let ipIsVPN = isVPN.get(ip);
-    if (ipIsVPN !== undefined) return ipIsVPN;
-
-    const result = await ipCheck.check(ip);
-    if (!result?.flagged) return false;
-
-    ipIsVPN = result.flagged;
-    isVPN.set(ip, ipIsVPN);
-    return ipIsVPN;
-}
-
-function removePunishment(ip: string): void {
-    punishments = punishments.filter(p => p.ip !== ip);
-
-    if (Config.protection?.punishments?.url) {
-        fetch(
-            `${Config.protection.punishments.url}/punishments/${ip}`,
-            { method: "DELETE", headers: { "api-key": Config.protection.punishments.password } }
-        ).catch(err => console.error("Error removing punishment from server. Details:", err));
-    } else {
-        writeFile(
-            "punishments.json",
-            JSON.stringify(punishments, null, 4),
-            "utf8",
-            err => {
-                if (err) console.error(err);
-            }
-        );
-    }
-}
+import { modeFromMap } from "./utils/misc";
+import { getIP } from "./utils/serverHelpers";
 
 export function serverLog(...message: unknown[]): void {
     Logger.log(styleText("[Server]", ColorStyles.foreground.magenta.normal), ...message);
@@ -80,7 +29,13 @@ export function serverError(...message: unknown[]): void {
     Logger.warn(styleText("[Server] [ERROR]", ColorStyles.foreground.red.normal), ...message);
 }
 
-const simultaneousConnections: Record<string, number> = {};
+let punishments: Punishment[] = [];
+
+const ipCheck = Config.protection?.ipChecker
+    ? new IPChecker(Config.protection.ipChecker.baseUrl, Config.protection.ipChecker.key)
+    : undefined;
+
+export const simultaneousConnections: Record<string, number> = {};
 let joinAttempts: Record<string, number> = {};
 let teamsCreated: Record<string, number> = {};
 
@@ -108,157 +63,170 @@ let mode: Mode;
 let nextMode: Mode;
 
 if (Cluster.isPrimary && require.main === module) {
-    //              ^^^^^^^^^^^^^^^^^^^^^^^ only starts server if called directly from command line (not imported)
+    //                   ^^^^^^^^^^^^^^^^^^^^^^^ only starts server if called directly from command line (not imported)
 
     process.on("uncaughtException", e => serverError("An unhandled error occurred. Details:", e));
 
-    const server = createServer();
-    server.on("request", (req, res) => {
-        if (req.method === "GET") {
-            if (req.url === "/api/serverInfo") {
-                cors(res);
-                res
-                    .setHeader("Content-Type", "application/json")
-                    .end(JSON.stringify({
-                        protocolVersion: GameConstants.protocolVersion,
-                        playerCount: games.reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
-                        maxTeamSize,
-                        maxTeamSizeSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
-                        nextTeamSize,
-                        mode,
-                        modeSwitchTime: mapSwitchCron?.nextRun()?.getTime(),
-                        nextMode
-                    }));
-            } else if (req.url?.startsWith("/api/getGame")) {
-                cors(res);
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    createServer(async(req, res) => {
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        res.setHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with");
+        res.setHeader("Access-Control-Max-Age", "3600");
 
-                const ip = getIP(req);
-
-                let response: GetGameResponse;
-
-                // const punishment = punishments.find(p => p.ip === ip);
-                // if (punishment) {
-                //     if (punishment.punishmentType === "warn") {
-                //         const protection = Config.protection;
-                //         if (protection?.punishments?.url) {
-                //             fetch(
-                //                 `${protection.punishments.url}/punishments/${ip}`,
-                //                 { headers: { "api-key": protection.punishments.password } }
-                //             ).catch(e => console.error("Error acknowledging warning. Details:", e));
-                //         }
-                //         removePunishment(ip);
-                //     }
-                //     response = { success: false, message: punishment.punishmentType, reason: punishment.reason, reportID: punishment.reportId };
-                // } else {
-                //     const teamID = maxTeamSize !== TeamSize.Solo && new URLSearchParams(req.url.split("?")[1]).get("teamID"); // must be here or it causes uWS errors
-                //     if (await isVPNCheck(ip)) {
-                //         response = { success: false, message: "vpn" };
-                //     } else if (teamID) {
-                //         const team = customTeams.get(teamID);
-                //         if (team?.gameID !== undefined) {
-                //             const game = games[team.gameID];
-                //             response = game && !game.stopped
-                //                 ? { success: true, gameID: team.gameID }
-                //                 : { success: false };
-                //         } else {
-                //             response = { success: false };
-                //         }
-                //     } else {
-                //         response = await findGame();
-                //     }
-                // }
-
-                void findGame().then(response => res.setHeader("Content-Type", "application/json").end(JSON.stringify(response)));
-            }
+        if (req.method !== "GET") {
+            res.statusCode = 404;
+            res.setHeader("Content-Type", "text/plain").end("404 Not Found");
+            return;
         }
-    });
 
-    server.on("upgrade", (req, socket: Socket, head) => {
-        socket.pause();
+        type ErrorResponse = { message: string, reason?: string, reportID?: string };
+        const forbidden = (message: ErrorResponse): void => {
+            res.statusCode = 403;
+            res.setHeader("Content-Type", "application/json").end(JSON.stringify(message));
+        };
+
         const ip = getIP(req);
 
-        //
-        // Rate limits
-        //
-        if (Config.protection) {
-            const { maxSimultaneousConnections, maxJoinAttempts } = Config.protection;
+        const punishment = punishments.find(p => p.ip === ip);
+        if (punishment) {
+            if (punishment.punishmentType === "warn") {
+                const protection = Config.protection;
+                if (protection?.punishments?.url) {
+                    punishments = punishments.filter(p => p.ip !== ip);
+                    fetch(
+                        `${protection.punishments.url}/punishments/${ip}`,
+                        { method: "DELETE", headers: { "api-key": protection.punishments.password } }
+                    ).catch(err => console.error("Error acknowledging warning. Details:", err));
+                }
+            }
+            forbidden({
+                message: punishment.punishmentType,
+                reason: punishment.reason,
+                reportID: punishment.reportId
+            });
+            return;
+        }
 
-            if (
-                (simultaneousConnections[ip] >= (maxSimultaneousConnections ?? Infinity))
-                || (joinAttempts[ip] >= (maxJoinAttempts?.count ?? Infinity))
-            ) {
-                serverWarn(`Rate limited: ${ip}`);
-                socket.destroy();
-                return;
+        if (ipCheck && (await ipCheck.check(ip)).flagged) {
+            forbidden({ message: "vpn" });
+            return;
+        }
+
+        if (req.url === "/api/serverInfo") {
+            res.setHeader("Content-Type", "application/json").end(JSON.stringify({
+                protocolVersion: GameConstants.protocolVersion,
+                playerCount: games.reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
+                maxTeamSize,
+                maxTeamSizeSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
+                nextTeamSize,
+                mode,
+                modeSwitchTime: mapSwitchCron?.nextRun()?.getTime(),
+                nextMode
+            }));
+        } else if (req.url?.startsWith("/play") && req.headers.upgrade?.toLowerCase() === "websocket") {
+            //
+            // Rate limits
+            //
+            if (Config.protection) {
+                const { maxSimultaneousConnections, maxJoinAttempts } = Config.protection;
+
+                if (
+                    simultaneousConnections[ip] >= (maxSimultaneousConnections ?? Infinity)
+                    || joinAttempts[ip] >= (maxJoinAttempts?.count ?? Infinity)
+                ) {
+                    serverWarn(`Rate limited: ${ip}`);
+                    forbidden({ message: "rateLimit" });
+                    return;
+                } else {
+                    if (maxSimultaneousConnections) {
+                        simultaneousConnections[ip] = (simultaneousConnections[ip] ?? 0) + 1;
+                        serverLog(`${simultaneousConnections[ip]}/${maxSimultaneousConnections} simultaneous connections: ${ip}`);
+                    }
+                    if (maxJoinAttempts) {
+                        joinAttempts[ip] = (joinAttempts[ip] ?? 0) + 1;
+                        serverLog(`${joinAttempts[ip]}/${maxJoinAttempts.count} join attempts in the last ${maxJoinAttempts.duration} ms: ${ip}`);
+                    }
+                }
+            }
+
+            //
+            // Find game
+            //
+            const searchParams = new URLSearchParams(req.url.slice(req.url.indexOf("?")));
+            const teamID = maxTeamSize !== TeamSize.Solo && searchParams.get("teamID");
+            let game: GameContainer | undefined;
+            if (teamID) {
+                const team = customTeams.get(teamID);
+                if (team?.gameID !== undefined) {
+                    game = games[team.gameID];
+                }
             } else {
-                if (maxSimultaneousConnections) {
-                    simultaneousConnections[ip] = (simultaneousConnections[ip] ?? 0) + 1;
-                    serverLog(`${simultaneousConnections[ip]}/${maxSimultaneousConnections} simultaneous connections: ${ip}`);
+                const eligibleGames = games.filter((g?: GameContainer): g is GameContainer =>
+                    g !== undefined
+                    && g.allowJoin
+                    && g.aliveCount < Config.maxPlayersPerGame
+                );
+
+                game = eligibleGames.length
+                    ? pickRandomInArray(eligibleGames) // Pick randomly from the available games
+                    : await newGame(); // If a game isn't available, attempt to create a new one
+            }
+
+            if (!game || game.over) {
+                res.statusCode = 500;
+                res.setHeader("Content-Type", "text/plain").end("500 Internal Server Error");
+                return;
+            }
+
+            //
+            // Validate and parse role and name color
+            //
+            const password = searchParams.get("password");
+            const givenRole = searchParams.get("role");
+            let role: string | undefined;
+            let isDev = false;
+
+            let nameColor: number | undefined;
+            if (
+                password !== null
+                && givenRole !== null
+                && givenRole in Config.roles
+                && Config.roles[givenRole].password === password
+            ) {
+                role = givenRole;
+                isDev = Config.roles[givenRole].isDev ?? false;
+
+                if (isDev) {
+                    try {
+                        const colorString = searchParams.get("nameColor");
+                        if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
+                    } catch { /* guess your color sucks lol */ }
                 }
-                if (maxJoinAttempts) {
-                    joinAttempts[ip] = (joinAttempts[ip] ?? 0) + 1;
-                    serverLog(`${joinAttempts[ip]}/${maxJoinAttempts.count} join attempts in the last ${maxJoinAttempts.duration} ms: ${ip}`);
+            }
+
+            //
+            // Upgrade the connection
+            //
+            const { headers, method, socket } = req;
+            game.worker.send({
+                type: WorkerMessages.AddPlayer,
+                request: { headers, method } as IncomingMessage,
+                head: headers,
+                playerData: {
+                    teamID,
+                    autoFill: Boolean(searchParams.get("autoFill")),
+                    player: undefined,
+                    ip,
+                    role,
+                    isDev,
+                    nameColor,
+                    lobbyClearing: searchParams.get("lobbyClearing") === "true",
+                    weaponPreset: searchParams.get("weaponPreset") ?? ""
                 }
-            }
+            }, socket);
         }
-
-        const searchParams = new URLSearchParams(req.url?.split("?")[1]);
-
-        //
-        // Validate and parse role and name color
-        //
-        const password = searchParams.get("password");
-        const givenRole = searchParams.get("role");
-        let role: string | undefined;
-        let isDev = false;
-
-        let nameColor: number | undefined;
-        if (
-            password !== null
-            && givenRole !== null
-            && givenRole in Config.roles
-            && Config.roles[givenRole].password === password
-        ) {
-            role = givenRole;
-            isDev = Config.roles[givenRole].isDev ?? false;
-
-            if (isDev) {
-                try {
-                    const colorString = searchParams.get("nameColor");
-                    if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
-                } catch { /* guess your color sucks lol */ }
-            }
-        }
-
-        const gameID = searchParams.get("gameID");
-        if (!gameID) return;
-
-        const game = games[parseInt(gameID)];
-        if (!game) return;
-
-        //
-        // Upgrade the connection
-        //
-        const { headers, method } = req;
-        game.worker.send({
-            type: WorkerMessages.AddPlayer,
-            request: { headers, method } as IncomingMessage,
-            head,
-            playerData: {
-                teamID: searchParams.get("teamID") ?? undefined,
-                autoFill: Boolean(searchParams.get("autoFill")),
-                player: undefined,
-                ip,
-                role,
-                isDev,
-                nameColor,
-                lobbyClearing: searchParams.get("lobbyClearing") === "true",
-                weaponPreset: searchParams.get("weaponPreset") ?? ""
-            }
-        }, socket);
-    });
-
-    server.listen(Config.port, Config.host);
+    }).listen(Config.port, Config.host);
 
     process.stdout.write("\x1Bc"); // clears screen
     serverLog(`Suroi Server v${version}`);
@@ -331,39 +299,9 @@ if (Cluster.isPrimary && require.main === module) {
                         console.error("Error: Unable to fetch punishment list. Details:", e);
                     }
                 })();
-            } else {
-                if (!existsSync("punishments.json")) writeFileSync("punishments.json", "[]");
-                readFile("punishments.json", "utf8", (error, data) => {
-                    if (error) {
-                        console.error("Error: Unable to load punishment list. Details:", error);
-                        return;
-                    }
-
-                    try {
-                        // we also hope that this is safe
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                        punishments = data.trim().length ? JSON.parse(data) : [];
-                    } catch (e) {
-                        console.error("Error: Unable to parse punishment list. Details:", e);
-                    }
-                });
-            }
-
-            const now = Date.now();
-
-            for (let i = 0; i < punishments.length; i++) {
-                const punishment = punishments[i];
-                if (punishment.expires && new Date(punishment.expires).getTime() < now) {
-                    punishments.splice(i, 1);
-                    i--;
-                }
             }
 
             teamsCreated = {};
-
-            if (!Config.protection?.ipChecker) {
-                writeFileSync("isVPN.json", JSON.stringify(Object.fromEntries(isVPN)));
-            }
 
             Logger.log("Reloaded punishment list");
         }, protection.refreshDuration);
@@ -374,25 +312,6 @@ if (Cluster.isPrimary && require.main === module) {
             }, protection.maxJoinAttempts.duration);
         }
     }
-
-    // }).get("/api/punishments", (res, req) => {
-    //     cors(res);
-
-    //     if (req.getHeader("password") === Config.protection?.punishments?.password) {
-    //         res.writeHeader("Content-Type", "application/json").end(JSON.stringify(punishments));
-    //     } else {
-    //         forbidden(res);
-    //     }
-    // }).get("/api/removePunishment", (res, req) => {
-    //     cors(res);
-
-    //     if (req.getHeader("password") === Config.protection?.punishments?.password) {
-    //         const ip = new URLSearchParams(req.getQuery()).get("ip");
-    //         if (ip) removePunishment(ip);
-    //         res.writeStatus("204 No Content").endWithoutBody(0);
-    //     } else {
-    //         forbidden(res);
-    //     }
     // }).ws("/team", {
     //     idleTimeout: 30,
 

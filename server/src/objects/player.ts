@@ -1759,7 +1759,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     sendData(buffer: ArrayBuffer): void {
-        // console.log(buffer);
         try {
             this.socket.send(buffer);
         } catch (e) {

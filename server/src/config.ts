@@ -215,15 +215,12 @@ export interface ConfigType {
         }
 
         /**
-         * If this option is present, a list of punishments will be loaded, either from a local file or from a remote source.
-         * If `url` is specified, the list is loaded from the specified URL (e.g. https://suroi.io). Trailing slash not allowed.
+         * If this option is present, a list of punishments will be loaded from the specified URL. Trailing slash not allowed.
          * The specified `password` is sent in the `Password` header.
-         * If `url` is not specified, the list is loaded from `punishments.json`, and it's accessible from `/api/punishments`.
-         * To access the list, the specified `password` must be provided in the `Password` header.
          */
         readonly punishments?: {
             readonly password: string
-            readonly url?: string
+            readonly url: string
         }
 
         /**

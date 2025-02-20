@@ -19,10 +19,9 @@ import { Vec, type Vector } from "../../common/src/utils/vector";
 console.log("start");
 
 const config = {
-    mainAddress: "http://127.0.0.1:8000",
-    gameAddress: "ws://127.0.0.1:800<ID>",
+    address: "http://127.0.0.1:8000",
     botCount: 79,
-    joinDelay: 100,
+    joinDelay: 10,
     rejoinOnDeath: false
 };
 
@@ -84,7 +83,7 @@ class Bot {
 
     constructor(readonly id: number, gameID: number) {
         this.gameID = gameID;
-        this._ws = new WebSocket(`${config.gameAddress.replace("<ID>", (gameID + 1).toString())}/play`);
+        this._ws = new WebSocket(`${config.address.replace("http", "ws")}/play?gameID=${gameID}`);
 
         this._ws.addEventListener("error", console.error);
 
@@ -326,7 +325,7 @@ class Bot {
 }
 
 const createBot = async(id: number): Promise<Bot> => {
-    const gameData = await (await fetch(`${config.mainAddress}/api/getGame`)).json() as GetGameResponse;
+    const gameData = await (await fetch(`${config.address}/api/getGame`)).json() as GetGameResponse;
 
     if (!gameData.success) {
         throw new Error("Error finding game.");

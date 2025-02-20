@@ -9,7 +9,7 @@ import { PlayerInputPacket } from "@common/packets/inputPacket";
 import { JoinPacket, type JoinPacketData } from "@common/packets/joinPacket";
 import { JoinedPacket } from "@common/packets/joinedPacket";
 import { KillFeedPacket, type KillFeedPacketData } from "@common/packets/killFeedPacket";
-import { type InputPacket, type OutputPacket } from "@common/packets/packet";
+import { type InputPacket } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { type PingSerialization } from "@common/packets/updatePacket";
@@ -18,13 +18,14 @@ import { Geometry, Numeric, Statistics } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
 import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray, randomPointInsideCircle, randomRotation } from "@common/utils/random";
-import { type SuroiByteStream } from "@common/utils/suroiByteStream";
+import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { Vec, type Vector } from "@common/utils/vector";
-import { parentPort } from "worker_threads";
 
 import { Mode, ModeDefinition, Modes } from "@common/definitions/modes";
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
+import type { WebSocket } from "ws";
 import { Config, MapWithParams, SpawnMode } from "./config";
+import { GAME_SPAWN_WINDOW } from "./data/gasStages";
 import { MapName, Maps } from "./data/maps";
 import { WorkerMessages, type GameData, type WorkerMessage } from "./gameManager";
 import { Gas } from "./gas";
@@ -47,8 +48,6 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getSpawnableLoots, SpawnableItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap, removeFrom } from "./utils/misc";
-import { GAME_SPAWN_WINDOW } from "./data/gasStages";
-import type { WebSocket } from "ws";
 
 /*
     eslint-disable
@@ -269,28 +268,21 @@ export class Game implements GameData {
         Logger.log(styleText(`[Game ${this.id}] [ERROR]`, ColorStyles.foreground.red.normal), ...message);
     }
 
-    onMessage(stream: SuroiByteStream, player: Player): void {
-        const packetStream = new PacketStream(stream);
+    onMessage(message: ArrayBuffer, player: Player): void {
+        const packetStream = new PacketStream(new SuroiByteStream(message));
         while (true) {
             const packet = packetStream.deserializeClientPacket();
             if (packet === undefined) break;
-            this.onPacket(packet, player);
-        }
-    }
 
-    onPacket(packet: OutputPacket, player: Player): void {
-        switch (true) {
-            case packet instanceof JoinPacket:
+            if (packet instanceof JoinPacket) {
                 this.activatePlayer(player, packet.output);
-                break;
-            case packet instanceof PlayerInputPacket:
+            } else if (packet instanceof PlayerInputPacket) {
                 // Ignore input packets from players that haven't finished joining, dead players, or if the game is over
                 if (!player.joined || player.dead || this.over) return;
                 player.processInputs(packet.output);
-                break;
-            case packet instanceof SpectatePacket:
+            } else if (packet instanceof SpectatePacket) {
                 player.spectate(packet.output);
-                break;
+            }
         }
     }
 
@@ -482,7 +474,7 @@ export class Game implements GameData {
     }
 
     updateGameData(data: Partial<GameData>): void {
-        parentPort?.postMessage({ type: WorkerMessages.UpdateGameData, data } satisfies WorkerMessage);
+        process.send?.({ type: WorkerMessages.UpdateGameData, data } satisfies WorkerMessage);
     }
 
     kill(): void {

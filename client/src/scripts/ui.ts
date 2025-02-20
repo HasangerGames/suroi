@@ -394,79 +394,63 @@ export async function setUpUI(game: Game): Promise<void> {
 
         const target = selectedRegion;
 
-        void $.get(
-            `${target.address}/api/getGame${teamID ? `?teamID=${teamID}` : ""}`,
-            (data: GetGameResponse) => {
-                if (data.success) {
-                    const params = new URLSearchParams();
+        const params = new URLSearchParams();
 
-                    params.set("gameID", data.gameID.toString());
+        if (teamID) params.set("teamID", teamID);
+        if (autoFill) params.set("autoFill", String(autoFill));
 
-                    if (teamID) params.set("teamID", teamID);
-                    if (autoFill) params.set("autoFill", String(autoFill));
+        const devPass = game.console.getBuiltInCVar("dv_password");
+        if (devPass) params.set("password", devPass);
 
-                    const devPass = game.console.getBuiltInCVar("dv_password");
-                    if (devPass) params.set("password", devPass);
+        const role = game.console.getBuiltInCVar("dv_role");
+        if (role) params.set("role", role);
 
-                    const role = game.console.getBuiltInCVar("dv_role");
-                    if (role) params.set("role", role);
+        const lobbyClearing = game.console.getBuiltInCVar("dv_lobby_clearing");
+        if (lobbyClearing) params.set("lobbyClearing", "true");
 
-                    const lobbyClearing = game.console.getBuiltInCVar("dv_lobby_clearing");
-                    if (lobbyClearing) params.set("lobbyClearing", "true");
+        const weaponPreset = game.console.getBuiltInCVar("dv_weapon_preset");
+        if (weaponPreset) params.set("weaponPreset", weaponPreset);
 
-                    const weaponPreset = game.console.getBuiltInCVar("dv_weapon_preset");
-                    if (weaponPreset) params.set("weaponPreset", weaponPreset);
-
-                    const nameColor = game.console.getBuiltInCVar("dv_name_color");
-                    if (nameColor) {
-                        try {
-                            params.set("nameColor", new Color(nameColor).toNumber().toString());
-                        } catch (e) {
-                            game.console.setBuiltInCVar("dv_name_color", "");
-                            console.error(e);
-                        }
-                    }
-
-                    game.connect(`${target.address.replace("http", "ws")}/play?${params.toString()}`);
-                    ui.splashMsg.hide();
-
-                    // Check again because there is a small chance that the create-team-menu element won't hide.
-                    if (createTeamMenu.css("display") !== "none") createTeamMenu.hide(); // what the if condition doin
-                } else {
-                    game.connecting = false;
-
-                    if (data.message !== undefined) {
-                        const reportID = data.reportID || "No report ID provided.";
-                        const message = getTranslatedString(`msg_punishment_${data.message}_reason`, { reason: data.reason ?? getTranslatedString("msg_no_reason") });
-
-                        ui.warningTitle.text(getTranslatedString(`msg_punishment_${data.message}`));
-                        ui.warningText.html(`${data.message !== "vpn" ? `<span class="case-id">Case ID: ${reportID}</span><br><br><br>` : ""}${message}`);
-                        ui.warningAgreeOpts.toggle(data.message === "warn");
-                        ui.warningAgreeCheckbox.prop("checked", false);
-                        ui.warningModal.show();
-                        ui.splashOptions.addClass("loading");
-                    } else {
-                        ui.splashMsgText.html(html`
-                            ${getTranslatedString("msg_err_joining")}
-                            <br>
-                            ${getTranslatedString("msg_try_again")}
-                        `);
-                        ui.splashMsg.show();
-                    }
-
-                    resetPlayButtons(game);
-                }
+        const nameColor = game.console.getBuiltInCVar("dv_name_color");
+        if (nameColor) {
+            try {
+                params.set("nameColor", new Color(nameColor).toNumber().toString());
+            } catch (e) {
+                game.console.setBuiltInCVar("dv_name_color", "");
+                console.error(e);
             }
-        ).fail(() => {
+        }
+
+        game.connect(`${target.address.replace("http", "ws")}/play?${params.toString()}`);
+        ui.splashMsg.hide();
+
+        // Check again because there is a small chance that the create-team-menu element won't hide.
+        if (createTeamMenu.css("display") !== "none") createTeamMenu.hide(); // what the if condition doin
+
+        /*
             game.connecting = false;
-            ui.splashMsgText.html(html`
-                ${getTranslatedString("msg_err_finding")}
-                <br>
-                ${getTranslatedString("msg_try_again")}
-            `);
-            ui.splashMsg.show();
+
+            if (data.message !== undefined) {
+                const reportID = data.reportID || "No report ID provided.";
+                const message = getTranslatedString(`msg_punishment_${data.message}_reason`, { reason: data.reason ?? getTranslatedString("msg_no_reason") });
+
+                ui.warningTitle.text(getTranslatedString(`msg_punishment_${data.message}`));
+                ui.warningText.html(`${data.message !== "vpn" ? `<span class="case-id">Case ID: ${reportID}</span><br><br><br>` : ""}${message}`);
+                ui.warningAgreeOpts.toggle(data.message === "warn");
+                ui.warningAgreeCheckbox.prop("checked", false);
+                ui.warningModal.show();
+                ui.splashOptions.addClass("loading");
+            } else {
+                ui.splashMsgText.html(html`
+                    ${getTranslatedString("msg_err_joining")}
+                    <br>
+                    ${getTranslatedString("msg_try_again")}
+                `);
+                ui.splashMsg.show();
+            }
+
             resetPlayButtons(game);
-        });
+        */
     };
 
     let lastPlayButtonClickTime = 0;

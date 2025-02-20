@@ -143,16 +143,13 @@ importers:
     dependencies:
       '@hono/node-ws':
         specifier: ^1.0.8
-        version: 1.0.8(@hono/node-server@1.13.8(hono@4.7.1))(hono@4.7.1)
+        version: 1.0.8(@hono/node-server@1.13.8(hono@4.7.2))(hono@4.7.2)
       croner:
         specifier: ^8.1.2
         version: 8.1.2
       dotenv:
         specifier: ^16.4.7
         version: 16.4.7
-      hono:
-        specifier: ^4.7.1
-        version: 4.7.1
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@swc/core@1.10.15(@swc/helpers@0.5.15))(@types/node@22.13.1)(typescript@5.7.3)
@@ -2183,8 +2180,8 @@ packages:
     resolution: {integrity: sha512-MkUeB0cTIlppeSsndgESkfFD21T2nXPRaBStLtf3cAYA2bVEFdXlodZB0TukwZiobPD1Ksax5DK4RTZeaXCI3Q==}
     hasBin: true
 
-  hono@4.7.1:
-    resolution: {integrity: sha512-V3eWoPkBxoNgFCkSc5Y5rpLF6YoQQx1pkYO4qrF6YfOw8RZbujUNlJLZCxh0z9gZct70+je2Ih7Zrdpv21hP9w==}
+  hono@4.7.2:
+    resolution: {integrity: sha512-8V5XxoOF6SI12jkHkzX/6aLBMU5GEF5g387EjVSQipS0DlxWgWGSMeEayY3CRBjtTUQYwLHx9JYouWqKzy2Vng==}
     engines: {node: '>=16.9.0'}
 
   html-escaper@2.0.2:
@@ -4232,14 +4229,14 @@ snapshots:
 
   '@fortawesome/fontawesome-free@6.7.2': {}
 
-  '@hono/node-server@1.13.8(hono@4.7.1)':
+  '@hono/node-server@1.13.8(hono@4.7.2)':
     dependencies:
-      hono: 4.7.1
+      hono: 4.7.2
 
-  '@hono/node-ws@1.0.8(@hono/node-server@1.13.8(hono@4.7.1))(hono@4.7.1)':
+  '@hono/node-ws@1.0.8(@hono/node-server@1.13.8(hono@4.7.2))(hono@4.7.2)':
     dependencies:
-      '@hono/node-server': 1.13.8(hono@4.7.1)
-      hono: 4.7.1
+      '@hono/node-server': 1.13.8(hono@4.7.2)
+      hono: 4.7.2
       ws: 8.18.0
     transitivePeerDependencies:
       - bufferutil
@@ -5630,7 +5627,7 @@ snapshots:
 
   hjson@3.2.2: {}
 
-  hono@4.7.1: {}
+  hono@4.7.2: {}
 
   html-escaper@2.0.2: {}
 

@@ -1,6 +1,4 @@
 import { TeamSize } from "@common/constants";
-import { type GetGameResponse } from "@common/typings";
-import { pickRandomInArray } from "@common/utils/random";
 import Cluster, { type Worker } from "node:cluster";
 import { IncomingMessage } from "node:http";
 import { Socket } from "node:net";
@@ -8,8 +6,7 @@ import { WebSocketServer } from "ws";
 import { Config, MapWithParams } from "./config";
 import { Game } from "./game";
 import { PlayerJoinData } from "./objects/player";
-import { maxTeamSize, serverLog, serverWarn } from "./server";
-import { SuroiByteStream } from "@common/utils/suroiByteStream";
+import { map, maxTeamSize, serverLog, serverWarn, simultaneousConnections } from "./server";
 
 export interface WorkerInitData {
     readonly id: number
@@ -31,7 +28,6 @@ export type WorkerMessage =
         readonly type: WorkerMessages.AddPlayer
         readonly request: IncomingMessage
         readonly socket: Socket
-        readonly head: Buffer
         readonly playerData: PlayerJoinData
     }
     | {
@@ -65,7 +61,7 @@ export interface GameData {
 export class GameContainer {
     readonly worker: Worker;
 
-    resolve: (id: number) => void;
+    resolve: (game: GameContainer) => void;
 
     private _data: GameData = {
         aliveCount: 0,
@@ -81,14 +77,23 @@ export class GameContainer {
     get stopped(): boolean { return this._data.stopped; }
     get startedTime(): number { return this._data.startedTime; }
 
-    constructor(readonly id: number, resolve: (id: number) => void) {
+    constructor(readonly id: number, resolve: (game: GameContainer) => void) {
         this.resolve = resolve;
-        this.worker = Cluster.fork({ id, maxTeamSize, map: "normal" }).on("message", (message: Partial<GameData>): void => {
-            this._data = { ...this._data, ...message };
+        this.worker = Cluster.fork({ id, maxTeamSize, map }).on("message", (message: WorkerMessage): void => {
+            switch (message.type) {
+                case WorkerMessages.UpdateGameData: {
+                    this._data = { ...this._data, ...message.data };
 
-            if (message.allowJoin === true) { // This means the game was just created
-                creatingID = -1;
-                this.resolve(this.id);
+                    if (message.data.allowJoin === true) { // This means the game was just created
+                        creating = undefined;
+                        this.resolve(this);
+                    }
+                    break;
+                }
+                case WorkerMessages.RemovePlayer: {
+                    simultaneousConnections[message.ip]--;
+                    break;
+                }
             }
         });
     }
@@ -98,30 +103,13 @@ export class GameContainer {
     }
 }
 
-export async function findGame(): Promise<GetGameResponse> {
-    const eligibleGames = games.filter((g?: GameContainer): g is GameContainer =>
-        g !== undefined
-        && g.allowJoin
-        && g.aliveCount < Config.maxPlayersPerGame
-    );
+let creating: GameContainer | undefined;
 
-    const gameID = eligibleGames.length
-        ? pickRandomInArray(eligibleGames).id // Pick randomly from the available games
-        : await newGame(); // If a game isn't available, attempt to create a new one
-
-    return gameID !== undefined
-        ? { success: true, gameID }
-        : { success: false };
-}
-
-let creatingID = -1;
-
-export async function newGame(id?: number): Promise<number | undefined> {
-    return new Promise<number | undefined>(resolve => {
-        if (creatingID !== -1) {
-            resolve(creatingID);
+export async function newGame(id?: number): Promise<GameContainer | undefined> {
+    return new Promise<GameContainer | undefined>(resolve => {
+        if (creating !== undefined) {
+            resolve(creating);
         } else if (id !== undefined) {
-            creatingID = id;
             serverLog(`Creating new game with ID ${id}`);
             const game = games[id];
             if (!game) {
@@ -131,7 +119,7 @@ export async function newGame(id?: number): Promise<number | undefined> {
                 game.sendMessage({ type: WorkerMessages.Reset });
             } else {
                 serverWarn(`Game with ID ${id} already exists`);
-                resolve(id);
+                resolve(game);
             }
         } else {
             const maxGames = Config.maxGames;
@@ -139,11 +127,11 @@ export async function newGame(id?: number): Promise<number | undefined> {
                 const game = games[i];
                 console.log("Game", i, "exists:", !!game, "stopped:", game?.stopped);
                 if (!game || game.stopped) {
-                    void newGame(i).then(id => resolve(id));
+                    void newGame(i).then(game => resolve(game));
                     return;
                 }
             }
-            console.log("unable to create new game");
+            serverWarn("Unable to create new game, no slots left");
             resolve(undefined);
         }
     });
@@ -152,9 +140,12 @@ export async function newGame(id?: number): Promise<number | undefined> {
 export const games: Array<GameContainer | undefined> = [];
 
 if (!Cluster.isPrimary) {
-    const data = process.env as unknown as WorkerInitData;
-    const id = data.id;
-    let { maxTeamSize, map } = data;
+    const data = process.env;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const id = parseInt(data.id!);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    let maxTeamSize = parseInt(data.maxTeamSize!);
+    let map = data.map as MapWithParams;
 
     let game = new Game(id, maxTeamSize, map);
 
@@ -165,14 +156,24 @@ if (!Cluster.isPrimary) {
     process.on("message", (message: WorkerMessage, socket?: Socket) => {
         switch (message.type) {
             case WorkerMessages.AddPlayer: {
-                if (!socket) break;
-
-                const { request, head, playerData } = message;
+                const { request, playerData } = message;
+                const removePlayer = (): void => {
+                    if (Config.protection?.maxSimultaneousConnections) {
+                        process.send?.({ type: WorkerMessages.RemovePlayer, ip: playerData.ip });
+                    }
+                };
+                if (!socket) {
+                    removePlayer();
+                    break;
+                }
                 socket.resume();
-                server.handleUpgrade(request, socket, head, socket => {
+
+                // @ts-expect-error despite what the typings say, the headers don't have to be a Buffer
+                server.handleUpgrade(request, socket, request.headers, socket => {
                     const player = game.addPlayer(socket, playerData);
                     if (!player) {
                         socket.close();
+                        removePlayer();
                         return;
                     }
 
@@ -181,21 +182,18 @@ if (!Cluster.isPrimary) {
 
                     socket.on("message", (message: ArrayBuffer) => {
                         try {
-                            const stream = new SuroiByteStream(message);
-                            game.onMessage(stream, player);
+                            game.onMessage(message, player);
                         } catch (e) {
                             console.warn("Error parsing message:", e);
                         }
                     });
 
-                    socket.on("close", () => {
-                        if (!player) return;
-
+                    const close = (): void => {
+                        removePlayer();
                         game.removePlayer(player);
-                        if (Config.protection) {
-                            process.send?.({ type: WorkerMessages.RemovePlayer, ip: player.ip });
-                        }
-                    });
+                    };
+                    socket.on("error", close);
+                    socket.on("close", close);
                 });
                 break;
             }
