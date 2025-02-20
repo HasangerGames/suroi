@@ -2,7 +2,7 @@ import { Perks } from "@common/definitions/items/perks";
 import { Modes, type Mode } from "@common/definitions/modes";
 import { HitboxType, RectangleHitbox } from "@common/utils/hitbox";
 import { Config as ClientConfig } from "../../client/src/scripts/config";
-import { FireMode, GameConstants, Layers, RotationMode } from "../../common/src/constants";
+import { FireMode, Layers, RotationMode } from "../../common/src/constants";
 import { Badges } from "../../common/src/definitions/badges";
 import { Buildings } from "../../common/src/definitions/buildings";
 import { Bullets } from "../../common/src/definitions/bullets";
@@ -3594,23 +3594,6 @@ logger.indent("Validating throwables", () => {
                 baseErrorPath: errorPath
             });
 
-            tester.assertValidOrNPV({
-                obj: throwable,
-                field: "maxThrowDistance",
-                defaultValue: 128,
-                validatorIfPresent: (value, errorPath) => {
-                    tester.assertInBounds({
-                        value,
-                        min: 0,
-                        max: GameConstants.player.maxMouseDist,
-                        includeMin: true,
-                        includeMax: true,
-                        errorPath
-                    });
-                },
-                baseErrorPath: errorPath
-            });
-
             logger.indent("Validating image", () => {
                 const image = throwable.image;
                 const errorPath2 = tester.createPath(errorPath, "image");
@@ -3638,19 +3621,6 @@ logger.indent("Validating throwables", () => {
                     field: "zIndex",
                     baseErrorPath: errorPath2
                 });
-            });
-
-            tester.assertValidOrNPV({
-                obj: throwable,
-                field: "speedCap",
-                defaultValue: Infinity,
-                validatorIfPresent: (value, errorPath) => {
-                    tester.assertIsPositiveReal({
-                        value,
-                        errorPath
-                    });
-                },
-                baseErrorPath: errorPath
             });
 
             tester.assertIsPositiveFiniteReal({
