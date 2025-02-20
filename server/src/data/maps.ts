@@ -943,22 +943,7 @@ const maps = {
                             this.on("game_created", _game => {
                                 if (_game !== game) return;
                                 const createBot = (name: string): Player | undefined => {
-                                    const bot = game.addPlayer({
-                                        send(): number { return 0; },
-                                        getBufferedAmount(): number { return 0; },
-                                        end(): void { return; },
-                                        close(): void { return; },
-                                        ping(): number { return 0; },
-                                        subscribe(): boolean { return false; },
-                                        unsubscribe(): boolean { return false; },
-                                        isSubscribed(): boolean { return false; },
-                                        getTopics(): string[] { return []; },
-                                        publish(): boolean { return true; },
-                                        cork(): WebSocket<PlayerJoinData> { return this; },
-                                        getRemoteAddress(): ArrayBuffer { return new ArrayBuffer(); },
-                                        getRemoteAddressAsText(): ArrayBuffer { return new ArrayBuffer(); },
-                                        getUserData(): PlayerJoinData { return { isDev: false, autoFill: false, ip: undefined, lobbyClearing: false, weaponPreset: "" }; }
-                                    });
+                                    const bot = game.addPlayer(undefined, { isDev: false, autoFill: false, ip: undefined, lobbyClearing: false, weaponPreset: "" });
 
                                     if (bot !== undefined) {
                                         game.activatePlayer(

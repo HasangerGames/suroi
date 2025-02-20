@@ -556,9 +556,9 @@ export class Game implements GameData {
         );
     }
 
-    addPlayer(socket: WebSocket, data: PlayerJoinData): Player | undefined {
+    addPlayer(socket: WebSocket | undefined, data: PlayerJoinData): Player | undefined {
         if (this.pluginManager.emit("player_will_connect")) {
-            socket.close();
+            socket?.close();
             return undefined;
         }
 
@@ -821,11 +821,9 @@ export class Game implements GameData {
         }
 
         try {
-            player.socket.close();
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (_) {
-            /* not a really big deal if we can't close the socket */
-            // when does this ever fail?
+            player.socket?.close();
+        } catch {
+            // not a really big deal if we can't close the socket (when does this ever fail?)
         }
         this.pluginManager.emit("player_disconnect", player);
     }

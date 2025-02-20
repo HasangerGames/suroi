@@ -358,7 +358,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.dirty.zoom = true;
     }
 
-    readonly socket: WebSocket;
+    readonly socket: WebSocket | undefined;
 
     private readonly _action: { type?: Action, dirty: boolean } = {
         type: undefined,
@@ -453,7 +453,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     private _pingSeq = 0;
 
-    constructor(game: Game, socket: WebSocket, data: PlayerJoinData, position: Vector, layer?: Layer, team?: Team) {
+    constructor(game: Game, socket: WebSocket | undefined, data: PlayerJoinData, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
 
         if (layer !== undefined) {
@@ -1758,7 +1758,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     sendData(buffer: ArrayBuffer): void {
         try {
-            this.socket.send(buffer);
+            this.socket?.send(buffer);
         } catch (e) {
             console.warn("Error sending packet. Details:", e);
         }

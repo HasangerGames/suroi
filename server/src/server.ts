@@ -109,18 +109,24 @@ if (Cluster.isPrimary && require.main === module) {
         res.setHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with");
         res.setHeader("Access-Control-Max-Age", "3600");
 
-        if (req.method !== "GET" || !req.url) {
-            res.statusCode = 404;
-            res.setHeader("Content-Type", "text/plain").end("404 Not Found");
-            return;
-        }
-
         type ErrorResponse = { message: string, reason?: string, reportID?: string };
         const forbidden = (message?: ErrorResponse): void => {
             res.statusCode = 403;
-            if (message) res.setHeader("Content-Type", "application/json").end(JSON.stringify(message));
-            else res.setHeader("Content-Type", "text/plain").end("403 Forbidden");
+            if (message) {
+                res.setHeader("Content-Type", "application/json").end(JSON.stringify(message));
+            } else {
+                res.setHeader("Content-Type", "text/plain").end("403 Forbidden");
+            }
         };
+        const notFound = (): void => {
+            res.statusCode = 404;
+            res.setHeader("Content-Type", "text/plain").end("404 Not Found");
+        };
+
+        if (req.method !== "GET" || !req.url) {
+            notFound();
+            return;
+        }
 
         const ip = Config.ipHeader ? req.headers[Config.ipHeader] as string : req.socket.remoteAddress;
 
@@ -149,7 +155,7 @@ if (Cluster.isPrimary && require.main === module) {
         //
         // GET /api/serverInfo
         //
-        if (req.url === "/api/serverInfo") {
+        if (req.url.startsWith("/api/serverInfo")) {
             res.setHeader("Content-Type", "application/json").end(JSON.stringify({
                 protocolVersion: GameConstants.protocolVersion,
                 playerCount: games.reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
@@ -162,9 +168,9 @@ if (Cluster.isPrimary && require.main === module) {
             }));
 
         //
-        // GET /play
+        // WebSocket /play
         //
-        } else if (req.url.startsWith("/play") && req.headers.upgrade?.toLowerCase() === "websocket") {
+        } else if (req.url.startsWith("/play")) {
             // Rate limit join attempts
             if (joinAttempts?.isLimited(ip)) {
                 serverWarn(ip, "exceeded join attempt limit");
@@ -210,9 +216,9 @@ if (Cluster.isPrimary && require.main === module) {
             } satisfies WorkerMessage, req.socket);
 
         //
-        // GET /team
+        // WebSocket /team
         //
-        } else if (req.url.startsWith("/team") && req.headers.upgrade?.toLowerCase() === "websocket") {
+        } else if (req.url.startsWith("/team")) {
             if (maxTeamSize === TeamSize.Solo || teamsCreated?.isLimited(ip)) {
                 forbidden();
                 return;
@@ -236,7 +242,7 @@ if (Cluster.isPrimary && require.main === module) {
             const name = cleanUsername(searchParams.get("name"));
             let skin = searchParams.get("skin") ?? GameConstants.player.defaultSkin;
             let badge = searchParams.get("badge") ?? undefined;
-            const { role, nameColor } = parseRole(searchParams);
+            const { role = "", nameColor } = parseRole(searchParams);
 
             // Validate skin
             const skinDefinition = Skins.fromStringSafe(skin);
@@ -270,8 +276,7 @@ if (Cluster.isPrimary && require.main === module) {
         // 404
         //
         } else {
-            res.statusCode = 404;
-            res.setHeader("Content-Type", "text/plain").end("404 Not Found");
+            notFound();
         }
     }).listen(Config.port, Config.host);
 
