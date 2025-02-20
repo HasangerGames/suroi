@@ -2,7 +2,7 @@ import { Perks } from "@common/definitions/items/perks";
 import { Modes, type Mode } from "@common/definitions/modes";
 import { HitboxType, RectangleHitbox } from "@common/utils/hitbox";
 import { Config as ClientConfig } from "../../client/src/scripts/config";
-import { FireMode, Layers, RotationMode } from "../../common/src/constants";
+import { FireMode, GameConstants, Layers, RotationMode } from "../../common/src/constants";
 import { Badges } from "../../common/src/definitions/badges";
 import { Buildings } from "../../common/src/definitions/buildings";
 import { Bullets } from "../../common/src/definitions/bullets";
@@ -3594,6 +3594,38 @@ logger.indent("Validating throwables", () => {
                 baseErrorPath: errorPath
             });
 
+            logger.indent("Validating physics", () => {
+                const physics = throwable.physics;
+
+                tester.assertInBounds({
+                    obj: physics,
+                    field: "maxThrowDistance",
+                    min: 0,
+                    max: GameConstants.player.maxMouseDist,
+                    includeMin: true,
+                    includeMax: true,
+                    baseErrorPath: errorPath
+                });
+
+                tester.assertIsFiniteRealNumber({
+                    obj: physics,
+                    field: "initialZVelocity",
+                    baseErrorPath: errorPath
+                });
+
+                tester.assertIsFiniteRealNumber({
+                    obj: physics,
+                    field: "initialAngularVelocity",
+                    baseErrorPath: errorPath
+                });
+
+                tester.assertIsFiniteRealNumber({
+                    obj: physics,
+                    field: "initialHeight",
+                    baseErrorPath: errorPath
+                });
+            });
+
             logger.indent("Validating image", () => {
                 const image = throwable.image;
                 const errorPath2 = tester.createPath(errorPath, "image");
@@ -3660,6 +3692,16 @@ logger.indent("Validating throwables", () => {
                     tester.assertReferenceExists({
                         obj: detonation,
                         field: "particles",
+                        collection: SyncedParticles,
+                        collectionName: "SyncedParticles",
+                        baseErrorPath: errorPath
+                    });
+                }
+
+                if (detonation.spookyParticles !== undefined) {
+                    tester.assertReferenceExists({
+                        obj: detonation,
+                        field: "spookyParticles",
                         collection: SyncedParticles,
                         collectionName: "SyncedParticles",
                         baseErrorPath: errorPath
