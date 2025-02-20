@@ -4,7 +4,7 @@ import { type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
-import { BaseGameObject, DamageParams, GameObject } from "./gameObject";
+import { BaseGameObject, GameObject } from "./gameObject";
 import { ThrowableDefinition, Throwables } from "@common/definitions/items/throwables";
 import { CircleHitbox, HitboxType, RectangleHitbox } from "@common/utils/hitbox";
 import { Obstacle } from "./obstacle";
@@ -30,8 +30,6 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
     readonly definition: ThrowableDefinition;
 
     halloweenSkin: boolean;
-
-    health: number;
 
     source: GameObject;
 
@@ -60,8 +58,6 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         this.position = params.position;
         this._lastPosition = this.position;
         this.hitbox.radius = this.definition.hitboxRadius;
-
-        this.health = this.definition.health ?? Infinity;
 
         this.source = params.source;
 
@@ -302,15 +298,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         this._angularVelocity = 10;
     }
 
-    override damage({ amount }: DamageParams): void {
-        if (!this.health) return;
-
-        this.health = this.health - amount;
-        if (this.health <= 0) {
-            this.destroy();
-            this.game.removeProjectile(this);
-        }
-    }
+    override damage(): void { /* no c4 anymore yipeeee :3 */ }
 
     destroy(): void {
         if (this.dead) return;

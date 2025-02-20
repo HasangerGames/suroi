@@ -151,16 +151,6 @@ export class Bullet extends BaseBullet {
             break;
         }
 
-        for (const object of objects) {
-            if (
-                object.isProjectile
-                && object.definition.health
-                && lineRect.collidesWith(object.hitbox)
-            ) {
-                object.damage({ amount: definition.damage });
-            }
-        }
-
         return records;
     }
 

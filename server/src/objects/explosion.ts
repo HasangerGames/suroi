@@ -101,8 +101,6 @@ export class Explosion {
                     }
 
                     if (isLoot || isProjectile) {
-                        if (isProjectile) object.damage({ amount: this.definition.damage });
-
                         const multiplier = isProjectile ? 0.002 : 0.01;
                         object.push(
                             Angle.betweenPoints(object.position, this.position),
