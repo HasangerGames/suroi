@@ -77,19 +77,14 @@ export const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>(
 export let maxTeamSize = typeof Config.maxTeamSize === "number"
     ? Config.maxTeamSize
     : Config.maxTeamSize.rotation[0];
-
 let nextTeamSize = typeof Config.maxTeamSize === "number"
     ? undefined
     : (Config.maxTeamSize.rotation[1] ?? Config.maxTeamSize.rotation[0]);
-
 let teamSizeRotationIndex = 0;
-
 let maxTeamSizeSwitchCron: Cron | undefined;
 
 export let map = typeof Config.map === "string" ? Config.map : Config.map.rotation[0];
-
 let mapRotationIndex = 0;
-
 let mapSwitchCron: Cron | undefined;
 
 let mode: Mode;
@@ -226,13 +221,14 @@ if (Cluster.isPrimary && require.main === module) {
 
             const searchParams = new URLSearchParams(req.url.slice(req.url.indexOf("?")));
             const teamID = searchParams.get("teamID");
-            let team: CustomTeam | undefined;
+            let team: CustomTeam;
             if (teamID !== null) {
-                team = customTeams.get(teamID);
-                if (!team || team.locked || team.players.length >= (maxTeamSize as number)) {
+                const givenTeam = customTeams.get(teamID);
+                if (!givenTeam || givenTeam.locked || givenTeam.players.length >= (maxTeamSize as number)) {
                     forbidden(); // TODO "Team is locked" and "Team is full" messages
                     return;
                 }
+                team = givenTeam;
             } else {
                 team = new CustomTeam();
                 customTeams.set(team.id, team);
@@ -269,7 +265,10 @@ if (Cluster.isPrimary && require.main === module) {
                     }
                 });
 
-                socket.on("close", () => player.team.removePlayer(player));
+                socket.on("close", () => {
+                    teamsCreated?.decrement(ip);
+                    player.team.removePlayer(player);
+                });
             });
 
         //
@@ -311,16 +310,6 @@ if (Cluster.isPrimary && require.main === module) {
                 game?.sendMessage({ type: WorkerMessages.UpdateMaxTeamSize, maxTeamSize });
             }
 
-            if (maxTeamSize === TeamSize.Solo) {
-                for (const team of customTeams.values()) {
-                    for (const player of team.players) {
-                        player.socket.close();
-                    }
-                    team.players.length = 0;
-                }
-                customTeams.clear();
-            }
-
             const humanReadableTeamSizes = [undefined, "solos", "duos", "trios", "squads"];
             serverLog(`Switching to ${humanReadableTeamSizes[maxTeamSize] ?? `team size ${maxTeamSize}`}`);
         });
@@ -347,7 +336,7 @@ if (Cluster.isPrimary && require.main === module) {
     if (protection?.punishments) {
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         setInterval(async() => {
-            if (!protection.punishments) return;
+            if (!protection.punishments) return; // should never happen, but adding this check makes ts shut up
             try {
                 const response = await fetch(`${protection.punishments.url}/punishments`, { headers: { "api-key": protection.punishments.password } });
 
