@@ -148,6 +148,8 @@
 
   "gas_waiting": "Gás tóxico avança em <time>"
   "gas_advancing": "Gás tóxico avançando! Mova-se para a zona segura"
+  "final_gas_waiting": "A zona final começará a fechar em <time>"
+  "final_gas_advancing": "A zona final está fechando!"
   "gas_inactive": "Esperando jogadores..."
 
   "action_open_door": "Abrir Porta"
