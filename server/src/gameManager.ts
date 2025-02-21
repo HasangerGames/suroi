@@ -192,16 +192,17 @@ if (!Cluster.isPrimary) {
                 });
                 break;
             }
-            case WorkerMessages.UpdateMap:
-                map = message.map;
-                game.kill();
-            // eslint-disable-next-line no-fallthrough
-            case WorkerMessages.Reset: {
-                game = new Game(id, teamSize, map);
-                break;
-            }
             case WorkerMessages.UpdateTeamSize: {
                 teamSize = message.teamSize;
+                break;
+            }
+            case WorkerMessages.UpdateMap: {
+                map = message.map;
+                game.kill();
+                break;
+            }
+            case WorkerMessages.Reset: {
+                game = new Game(id, teamSize, map);
                 break;
             }
         }
