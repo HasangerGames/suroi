@@ -639,9 +639,19 @@ export class Game implements GameData {
                     if (!position) break;
                     else spawnPosition = position;
 
-                    // Ensure the position is at least 60 units from other players
+                    // Ensure the position is at least n units from other players
+                    // Set N dynamically based on player ct
+                    // Each player gets a certain "area" allocated to them, and the radius is calculated from this area
+                    // Currently does not account for "occupied" area (water, buildings, obstacles etc.)
+                    let validArea = this.map.width * this.map.height;
+                    // Huhhhh need to account for obstacles etc.
+                    let minSpawnDist = Math.sqrt(validArea/(this.aliveCount * Math.PI))
+                    if (minSpawnDist < 60 || !isFinite(minSpawnDist) || tries > 150) minSpawnDist = 60;
+                    // still wanna give 50 tries with a lower minSpawnDist
+                    //console.log("Alive:", this.aliveCount, "Min R:", minSpawnDist)
+
                     foundPosition = true;
-                    const radiusHitbox = new CircleHitbox(60, spawnPosition);
+                    const radiusHitbox = new CircleHitbox(minSpawnDist, spawnPosition);
                     for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
                         if (
                             object.isPlayer
@@ -656,6 +666,7 @@ export class Game implements GameData {
 
                 // Spawn on top of a random teammate if a valid position couldn't be found
                 if (!foundPosition && teamPosition) spawnPosition = teamPosition;
+
                 break;
             }
             case SpawnMode.Radius: {
