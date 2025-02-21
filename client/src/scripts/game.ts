@@ -1104,7 +1104,7 @@ export class Game {
                         let text;
                         switch (true) {
                             case object?.isObstacle: {
-                                if (object.definition.isDoor) {
+                                if (object.definition.isDoor && !object.definition.isActivatable) {
                                     text = object.door?.offset === 0
                                         ? getTranslatedString("action_open_door")
                                         : getTranslatedString("action_close_door");

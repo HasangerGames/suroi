@@ -326,6 +326,10 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             if (!(this.door?.isOpen && definition.openOnce)) {
                 this.toggleDoor(player);
             }
+
+            if (definition.isActivatable) {
+                this.activated = true;
+            }
         } else if (definition.isActivatable) {
             this.activated = true;
 

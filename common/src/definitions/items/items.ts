@@ -12,6 +12,7 @@ export class InventoryItemDefinitions<Def extends WeaponDefinition> extends Obje
     constructor(definitions: readonly Def[]) {
         super(
             definitions.map(i => {
+                // @ts-expect-error womp womp
                 (i as Mutable<Def>).speedMultiplier *= GameConstants.defaultSpeedModifiers[i.itemType];
 
                 return i;

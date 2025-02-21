@@ -652,7 +652,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 this.game.addTween({
                     target: this.image.position,
                     to: { x, y: 0 },
-                    duration: 150
+                    duration: definition.animationDuration ?? 150
                 });
             }
         }
@@ -660,6 +660,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
     canInteract(player: Player): boolean {
         type DoorDef = { openOnce?: boolean, automatic?: boolean };
+        if (!this.dead && (this.definition as DoorDef).openOnce && this.door !== undefined && this.door.offset === 1) return false;
         return !this.dead && (
             (
                 this._door !== undefined

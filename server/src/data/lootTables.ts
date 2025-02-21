@@ -346,6 +346,20 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
         rsh_case_dual: [
             { item: "dual_rsh12", weight: 1 }
         ],
+        memorial_crate: [
+            [
+                { item: "ak47", weight: 1 },
+                { item: "vss", weight: 0.5 },
+                { item: "mosin_nagant", weight: 0.5 },
+                { item: "vector", weight: 0.25 },
+                { item: "deagle", weight: 0.25 },
+                { item: "m1_garand", weight: 0.05 }
+            ],
+            [{ item: "basic_outfit", weight: 1 }],
+            [{ item: "timeless", weight: 1 }],
+            [{ table: "equipment", weight: 1 }],
+            [{ table: "healing_items", weight: 1 }]
+        ],
         airdrop_crate: [
             [{ table: "airdrop_equipment", weight: 1 }],
             [{ table: "airdrop_scopes", weight: 1 }],

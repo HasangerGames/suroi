@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="650.87317"
+   height="656.44348"
+   viewBox="0 0 172.21019 173.684"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="monument_floor.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.71713664"
+     inkscape:cx="345.81973"
+     inkscape:cy="230.77889"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Στρώση 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-13.49375,-87.312496)">
+    <path
+       id="rect19-6-8"
+       style="fill:#c0c0c0;fill-opacity:1;stroke-width:2.3;stroke-linejoin:round"
+       d="m 16.032222,94.83434 c 0,0 13.94722,-9.42212 38.43243,-7.17567 24.48522,2.24646 47.270388,12.44589 64.702698,7.17567 17.43231,-5.27021 59.35134,0 59.35134,0 0,0 0,17.71622 6.08109,40.13514 6.08107,22.41892 -14.9386,40.77428 -14.9386,61.16617 0,7.73545 9.01453,19.26662 10.5967,29.53313 2.58868,16.79767 -1.73919,31.65204 -1.73919,31.65204 0,0 -49.29729,8.27027 -84.162148,0 -11.09322,-2.63142 -21.85255,-8.23229 -34.21322,-3.66989 -22.42915,8.27873 -44.1111,3.66989 -44.1111,3.66989 0,0 6.53596,-16.18919 0,-34.39094 -6.53596,-18.20175 1.71998,-40.84975 5.15996,-59.33964 3.43998,-18.48988 -0.1115,-32.84333 -5.15996,-45.40772 -5.04846,-12.56439 -1.21328,-15.93877 0,-23.34818 z"
+       sodipodi:nodetypes="czzczsscssczzzc" />
+  </g>
+</svg>

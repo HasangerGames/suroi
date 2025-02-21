@@ -153,6 +153,7 @@
   "interact_generator": "Activate Generator"
   "interact_button": "Press Button"
   "interact_speaker": "Play Speaker"
+  "interact_monument": "Pay Respect"
   "loading_spritesheets": "Loading Spritesheets <progress>"
   "loading_connecting": "Connecting"
   "loading_joining_game": "Joining Game"

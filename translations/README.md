@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Fri, 21 Feb 2025 04:15:18 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Fri, 21 Feb 2025 18:23:04 GMT
 
 ## 🇦🇱 Shqip (85% Complete) - ab.hjson
 
@@ -30,6 +30,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `interact_speaker` is not defined
+- Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
@@ -49,7 +50,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇧🇷 Português (Brasil) (99% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (98% Complete) - br.hjson
 
 ### (No Invalid Keys)
 
@@ -59,6 +60,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
 - Key `settings_show_inout` is not defined
+- Key `interact_monument` is not defined
 
 ## 🇨🇿 Čeština (89% Complete) - cz.hjson
 
@@ -90,6 +92,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `interact_speaker` is not defined
+- Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
@@ -112,6 +115,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_haptics` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
@@ -130,6 +134,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_show_inout` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
@@ -150,6 +155,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_show_inout` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
@@ -173,6 +179,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_the_team_eliminated` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
@@ -191,10 +198,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `privacy` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 
-## 🇬🇷 Ελληνικά (98% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (97% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
@@ -206,8 +214,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `privacy` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `interact_monument` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (88% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (87% Complete) - hk_mo.hjson
 
 ### (No Invalid Keys)
 
@@ -239,6 +248,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `interact_speaker` is not defined
+- Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
@@ -256,6 +266,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `interact_monument` is not defined
 
 ## 🇮🇹 Italiano (85% Complete) - it.hjson
 
@@ -304,6 +315,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_advancing` is not defined
 - Key `interact_headquarters_security_desk` is not defined
 - Key `interact_speaker` is not defined
+- Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
@@ -344,6 +356,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `interact_speaker` is not defined
+- Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
@@ -380,6 +393,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `interact_speaker` is not defined
+- Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
@@ -416,6 +430,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `interact_speaker` is not defined
+- Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
@@ -441,16 +456,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_the_team_eliminated` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
-## 🎀 Cute Engwish (100% Complete) - qen.hjson
+## 🎀 Cute Engwish (99% Complete) - qen.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `interact_monument` is not defined
 - Key `bindings_explode_c4` is not defined
 
 ## 🇷🇴 Română (83% Complete) - ro.hjson
@@ -487,6 +504,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `interact_speaker` is not defined
+- Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
@@ -506,7 +524,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇷🇺 Русский (98% Complete) - ru.hjson
+## 🇷🇺 Русский (97% Complete) - ru.hjson
 
 ### (No Invalid Keys)
 
@@ -517,6 +535,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
 - Key `settings_show_inout` is not defined
+- Key `interact_monument` is not defined
 - Key `m16a4` is not defined
 
 ## 🇮🇳 தமிழ் (94% Complete) - ta.hjson
@@ -537,12 +556,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_the_team_eliminated` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇹🇷 Turkısh (96% Complete) - tr.hjson
+## 🇹🇷 Turkısh (95% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -559,11 +579,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
+- Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
-## 🇹🇼 中文（繁體） (82% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (81% Complete) - tw.hjson
 
 ### (No Invalid Keys)
 
@@ -598,6 +619,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `interact_speaker` is not defined
+- Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
@@ -619,7 +641,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇻🇳 Tiếng Việt (98% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (97% Complete) - vi.hjson
 
 ### (No Invalid Keys)
 
@@ -631,6 +653,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `privacy` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `interact_monument` is not defined
 
 ## 🇨🇳 中文（简体） (97% Complete) - zh.hjson
 
@@ -645,6 +668,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_link` is not defined
 - Key `wiki` is not defined
 - Key `settings_show_inout` is not defined
+- Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
