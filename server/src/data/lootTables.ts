@@ -349,16 +349,18 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
         memorial_crate: [
             [
                 { item: "ak47", weight: 1 },
-                { item: "vss", weight: 0.5 },
                 { item: "mosin_nagant", weight: 0.5 },
-                { item: "vector", weight: 0.25 },
-                { item: "deagle", weight: 0.25 },
-                { item: "m1_garand", weight: 0.05 }
+                { item: "vss", weight: 0.2 },
+                { item: "vector", weight: 0.2 },
+                { item: "deagle", weight: 0.2},
+                { item: "m1_garand", weight: 0.01 },
+                { item: "dual_deagle", weight: 0.01}
             ],
-            [{ item: "basic_outfit", weight: 1 }],
-            [{ item: "timeless", weight: 1 }],
-            [{ table: "equipment", weight: 1 }],
-            [{ table: "healing_items", weight: 1 }]
+            [
+                { item: "basic_outfit", weight: 1 },
+                { item: "timeless", weight: 1 }
+            ],
+            [{ table: "melee", weight: 1 }] // placeholder for the unique melee in this place
         ],
         airdrop_crate: [
             [{ table: "airdrop_equipment", weight: 1 }],

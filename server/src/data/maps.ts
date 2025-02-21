@@ -158,7 +158,7 @@ const maps = {
             container_8: 2,
             container_9: 1,
             container_10: 2,
-            monument: 1
+            memorial: 1
         },
         majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
         quadBuildingLimit: {

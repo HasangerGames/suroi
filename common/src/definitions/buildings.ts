@@ -7121,22 +7121,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     },
 
     {
-        idString: "monument",
-        name: "Monument",
+        idString: "memorial",
+        name: "Memorial",
         spawnHitbox: RectangleHitbox.fromRect(50, 50),
         rotationMode: RotationMode.None, // dunno
-        spawnMode: MapObjectSpawnMode.GrassAndSand, // this shit cant fit in beach
-        floors: [{
-            type: FloorNames.Sand,
-            hitbox: RectangleHitbox.fromRect(35, 35)
-        }],
+        spawnMode: MapObjectSpawnMode.Grass, // this shit cant fit in beach
         floorImages: [
-            {
-                key: "monument_floor",
-                position: Vec.create(0, 0),
-                scale: Vec.create(1.1, 1.1),
-                beachTinted: true
-            },
             {
                 key: "memorial_bunker_stair",
                 position: Vec.create(0, 0)
