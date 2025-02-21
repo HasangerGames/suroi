@@ -6,9 +6,9 @@ import { WebSocketServer } from "ws";
 import { Config, MapWithParams } from "./config";
 import { Game } from "./game";
 import { PlayerJoinData } from "./objects/player";
-import { map, maxTeamSize, serverLog, serverWarn } from "./server";
+import { map, maxTeamSize } from "./server";
 import { pickRandomInArray } from "@common/utils/random";
-import { RateLimiter } from "./utils/rateLimiter";
+import { RateLimiter, serverLog, serverWarn } from "./utils/serverHelpers";
 
 export enum WorkerMessages {
     AddPlayer,

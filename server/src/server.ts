@@ -2,9 +2,8 @@ import { GameConstants, TeamSize } from "@common/constants";
 import { Badges } from "@common/definitions/badges";
 import { Skins } from "@common/definitions/items/skins";
 import { Mode } from "@common/definitions/modes";
-import { CustomTeamMessage } from "@common/typings";
-import { ColorStyles, Logger, styleText } from "@common/utils/logging";
-import { Numeric } from "@common/utils/math";
+import { CustomTeamMessage, PunishmentMessage } from "@common/typings";
+import { Logger } from "@common/utils/logging";
 import { Cron } from "croner";
 import Cluster from "node:cluster";
 import { createServer, IncomingMessage } from "node:http";
@@ -17,44 +16,8 @@ import { findGame, GameContainer, games, newGame, WorkerMessage, WorkerMessages 
 import { CustomTeam, CustomTeamPlayer } from "./team";
 import IPChecker, { Punishment } from "./utils/apiHelper";
 import { cleanUsername, modeFromMap } from "./utils/misc";
-import { RateLimiter } from "./utils/rateLimiter";
-
-export function serverLog(...message: unknown[]): void {
-    Logger.log(styleText("[Server]", ColorStyles.foreground.magenta.normal), ...message);
-}
-
-export function serverWarn(...message: unknown[]): void {
-    Logger.warn(styleText("[Server] [WARNING]", ColorStyles.foreground.yellow.normal), ...message);
-}
-
-export function serverError(...message: unknown[]): void {
-    Logger.warn(styleText("[Server] [ERROR]", ColorStyles.foreground.red.normal), ...message);
-}
-
-function parseRole(searchParams: URLSearchParams): { readonly role?: string, readonly isDev: boolean, readonly nameColor?: number } {
-    const password = searchParams.get("password");
-    const givenRole = searchParams.get("role");
-    let role: string | undefined;
-    let isDev = false;
-    let nameColor: number | undefined;
-    if (
-        password !== null
-        && givenRole !== null
-        && givenRole in Config.roles
-        && Config.roles[givenRole].password === password
-    ) {
-        role = givenRole;
-        isDev = Config.roles[givenRole].isDev ?? false;
-
-        if (isDev) {
-            try {
-                const colorString = searchParams.get("nameColor");
-                if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
-            } catch { /* guess your color sucks lol */ }
-        }
-    }
-    return { role, isDev, nameColor };
-}
+import { forbidden, notFound, RateLimiter, serverError, serverLog, serverWarn } from "./utils/serverHelpers";
+import { Numeric } from "@common/utils/math";
 
 let punishments: Punishment[] = [];
 
@@ -97,6 +60,55 @@ if (Cluster.isPrimary && require.main === module) {
 
     const teamWs = new WebSocketServer({ noServer: true });
 
+    function parseRole(searchParams: URLSearchParams): { readonly role?: string, readonly isDev: boolean, readonly nameColor?: number } {
+        const password = searchParams.get("password");
+        const givenRole = searchParams.get("role");
+        let role: string | undefined;
+        let isDev = false;
+        let nameColor: number | undefined;
+        if (
+            password !== null
+            && givenRole !== null
+            && givenRole in Config.roles
+            && Config.roles[givenRole].password === password
+        ) {
+            role = givenRole;
+            isDev = Config.roles[givenRole].isDev ?? false;
+
+            if (isDev) {
+                try {
+                    const colorString = searchParams.get("nameColor");
+                    if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
+                } catch { /* guess your color sucks lol */ }
+            }
+        }
+        return { role, isDev, nameColor };
+    }
+
+    async function checkPunishments(ip?: string): Promise<PunishmentMessage | undefined> {
+        if (!ip) return;
+
+        const punishment = punishments.find(p => p.ip === ip);
+        if (punishment) {
+            if (punishment.punishmentType === "warn") {
+                punishments = punishments.filter(p => p.ip !== ip);
+                if (protection?.punishments?.url) {
+                    fetch(
+                        `${protection.punishments.url}/punishments/${ip}`,
+                        { method: "DELETE", headers: { "api-key": protection.punishments.password } }
+                    ).catch(err => console.error("Error acknowledging warning. Details:", err));
+                }
+            }
+            return {
+                message: punishment.punishmentType,
+                reason: punishment.reason,
+                reportID: punishment.reportId
+            };
+        } else if (ipCheck && ip && (await ipCheck.check(ip)).flagged) {
+            return { message: "vpn" };
+        }
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     createServer(async(req, res) => {
         res.setHeader("Access-Control-Allow-Origin", "*");
@@ -104,48 +116,12 @@ if (Cluster.isPrimary && require.main === module) {
         res.setHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with");
         res.setHeader("Access-Control-Max-Age", "3600");
 
-        type ErrorResponse = { message: string, reason?: string, reportID?: string };
-        const forbidden = (message?: ErrorResponse): void => {
-            res.statusCode = 403;
-            if (message) {
-                res.setHeader("Content-Type", "application/json").end(JSON.stringify(message));
-            } else {
-                res.setHeader("Content-Type", "text/plain").end("403 Forbidden");
-            }
-        };
-        const notFound = (): void => {
-            res.statusCode = 404;
-            res.setHeader("Content-Type", "text/plain").end("404 Not Found");
-        };
-
         if (req.method !== "GET" || !req.url) {
-            notFound();
+            notFound(res);
             return;
         }
 
         const ip = Config.ipHeader ? req.headers[Config.ipHeader] as string : req.socket.remoteAddress;
-
-        const punishment = punishments.find(p => p.ip === ip);
-        if (punishment) {
-            if (punishment.punishmentType === "warn") {
-                if (protection?.punishments?.url) {
-                    punishments = punishments.filter(p => p.ip !== ip);
-                    fetch(
-                        `${protection.punishments.url}/punishments/${ip}`,
-                        { method: "DELETE", headers: { "api-key": protection.punishments.password } }
-                    ).catch(err => console.error("Error acknowledging warning. Details:", err));
-                }
-            }
-            forbidden({
-                message: punishment.punishmentType,
-                reason: punishment.reason,
-                reportID: punishment.reportId
-            });
-            return;
-        } else if (ipCheck && ip && (await ipCheck.check(ip)).flagged) {
-            forbidden({ message: "vpn" });
-            return;
-        }
 
         //
         // GET /api/serverInfo
@@ -159,7 +135,8 @@ if (Cluster.isPrimary && require.main === module) {
                 nextTeamSize,
                 mode,
                 modeSwitchTime: mapSwitchCron?.nextRun()?.getTime(),
-                nextMode
+                nextMode,
+                punishment: await checkPunishments(ip)
             }));
 
         //
@@ -169,10 +146,17 @@ if (Cluster.isPrimary && require.main === module) {
             // Rate limit join attempts
             if (joinAttempts?.isLimited(ip)) {
                 serverWarn(ip, "exceeded join attempt limit");
-                forbidden();
+                forbidden(res);
                 return;
             }
             joinAttempts?.increment(ip);
+
+            // Check punishments
+            const punishment = await checkPunishments(ip);
+            if (punishment) {
+                forbidden(res);
+                return;
+            }
 
             // Find game
             const searchParams = new URLSearchParams(req.url.slice(req.url.indexOf("?")));
@@ -187,14 +171,12 @@ if (Cluster.isPrimary && require.main === module) {
                 game = await findGame();
             }
             if (!game?.allowJoin) {
-                res.statusCode = 500;
-                res.setHeader("Content-Type", "text/plain").end("500 Internal Server Error");
+                forbidden(res);
                 return;
             }
 
-            const { role, isDev, nameColor } = parseRole(searchParams);
-
             // Upgrade the connection
+            const { role, isDev, nameColor } = parseRole(searchParams);
             game.worker.send({
                 type: WorkerMessages.AddPlayer,
                 request: { headers: req.headers, method: req.method } as IncomingMessage,
@@ -214,18 +196,24 @@ if (Cluster.isPrimary && require.main === module) {
         // WebSocket /team
         //
         } else if (req.url.startsWith("/team")) {
-            if (maxTeamSize === TeamSize.Solo || teamsCreated?.isLimited(ip)) {
-                forbidden();
+            // Prevent connection if it's solos + check punishments & rate limits
+            if (
+                maxTeamSize === TeamSize.Solo
+                || teamsCreated?.isLimited(ip)
+                || await checkPunishments(ip)
+            ) {
+                forbidden(res);
                 return;
             }
 
+            // Get team
             const searchParams = new URLSearchParams(req.url.slice(req.url.indexOf("?")));
             const teamID = searchParams.get("teamID");
             let team: CustomTeam;
             if (teamID !== null) {
                 const givenTeam = customTeams.get(teamID);
                 if (!givenTeam || givenTeam.locked || givenTeam.players.length >= (maxTeamSize as number)) {
-                    forbidden(); // TODO "Team is locked" and "Team is full" messages
+                    forbidden(res); // TODO "Team is locked" and "Team is full" messages
                     return;
                 }
                 team = givenTeam;
@@ -235,6 +223,7 @@ if (Cluster.isPrimary && require.main === module) {
                 teamsCreated?.increment(ip);
             }
 
+            // Get name, skin, badge, & role
             const name = cleanUsername(searchParams.get("name"));
             let skin = searchParams.get("skin") ?? GameConstants.player.defaultSkin;
             let badge = searchParams.get("badge") ?? undefined;
@@ -253,6 +242,7 @@ if (Cluster.isPrimary && require.main === module) {
                 badge = undefined;
             }
 
+            // Upgrade the connection
             // @ts-expect-error despite what the typings say, the headers don't have to be a Buffer
             teamWs.handleUpgrade(req, req.socket, req.headers, socket => {
                 const player = new CustomTeamPlayer(team, socket, name, skin, badge, nameColor);
@@ -275,7 +265,7 @@ if (Cluster.isPrimary && require.main === module) {
         // 404
         //
         } else {
-            notFound();
+            notFound(res);
         }
     }).listen(Config.port, Config.host);
 

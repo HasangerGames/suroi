@@ -1,15 +1,15 @@
 import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "@common/constants";
-import { Ammos, type AmmoDefinition } from "@common/definitions/items/ammos";
-import { type ArmorDefinition } from "@common/definitions/items/armors";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { EmoteCategory, Emotes, type EmoteDefinition } from "@common/definitions/emotes";
+import { Ammos, type AmmoDefinition } from "@common/definitions/items/ammos";
+import { type ArmorDefinition } from "@common/definitions/items/armors";
 import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/items/healingItems";
-import { Modes, type Mode } from "@common/definitions/modes";
 import { PerkIds, Perks } from "@common/definitions/items/perks";
 import { Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
 import { Skins, type SkinDefinition } from "@common/definitions/items/skins";
+import { Modes, type Mode } from "@common/definitions/modes";
 import { SpectatePacket } from "@common/packets/spectatePacket";
-import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "@common/typings";
+import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type PunishmentMessage } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { pickRandomInArray } from "@common/utils/random";
@@ -17,6 +17,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { sound } from "@pixi/sound";
 import $ from "jquery";
 import { Color, isWebGPUSupported } from "pixi.js";
+import type { NewsPost } from "../../vite/news-posts-plugin/news-posts-plugin";
 import { TRANSLATIONS, getTranslatedString } from "../translations";
 import type { TranslationKeys } from "../typings/translations";
 import { Config, type ServerInfo } from "./config";
@@ -26,7 +27,6 @@ import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaul
 import { EMOTE_SLOTS, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, humanDate, requestFullscreen } from "./utils/misc";
-import type { NewsPost } from "../../vite/news-posts-plugin/news-posts-plugin";
 
 /*
     eslint-disable
@@ -143,42 +143,58 @@ export async function fetchServerData(game: Game): Promise<void> {
         );
     }
 
+    let receivedPunishment = false;
     ui.loaderText.text(getTranslatedString("loading_fetching_data"));
     const regionPromises = Object.entries(regionMap).map(async([_, [regionID, region]]) => {
         const listItem = regionUICache[regionID];
 
         const pingStartTime = Date.now();
 
-        let serverInfo: ServerInfo | undefined;
+        type ServerInfoResponse = ServerInfo & { readonly punishment?: PunishmentMessage };
+        let info: ServerInfoResponse | undefined;
 
         for (let attempts = 0; attempts < 3; attempts++) {
             console.log(`Loading server info for region ${regionID}: ${region.address} (attempt ${attempts + 1} of 3)`);
             try {
                 const response = await fetch(`${region.address}/api/serverInfo`, { signal: AbortSignal.timeout(10000) });
-                serverInfo = await response.json() as ServerInfo;
-                if (serverInfo) break;
+                info = await response.json() as ServerInfoResponse;
+                if (info) break;
             } catch (e) {
                 console.error(`Error loading server info for region ${regionID}. Details:`, e);
             }
         }
 
-        if (!serverInfo) {
+        if (!info) {
             console.error(`Unable to load server info for region ${regionID} after 3 attempts`);
             return;
         }
 
-        if (serverInfo.protocolVersion !== GameConstants.protocolVersion) {
-            console.error(`Protocol version mismatch for region ${regionID}. Expected ${GameConstants.protocolVersion} (ours), got ${serverInfo.protocolVersion} (theirs)`);
+        if (info.protocolVersion !== GameConstants.protocolVersion) {
+            console.error(`Protocol version mismatch for region ${regionID}. Expected ${GameConstants.protocolVersion} (ours), got ${info.protocolVersion} (theirs)`);
             return;
+        }
+
+        if (info.punishment && !receivedPunishment) {
+            receivedPunishment = true;
+            const punishment = info.punishment;
+            const reportID = punishment.reportID ?? "No report ID provided.";
+            const message = getTranslatedString(`msg_punishment_${punishment.message}_reason`, { reason: punishment.reason ?? getTranslatedString("msg_no_reason") });
+
+            ui.warningTitle.text(getTranslatedString(`msg_punishment_${punishment.message}`));
+            ui.warningText.html(`${punishment.message !== "vpn" ? `<span class="case-id">Case ID: ${reportID}</span><br><br><br>` : ""}${message}`);
+            ui.warningAgreeOpts.toggle(punishment.message === "warn");
+            ui.warningAgreeCheckbox.prop("checked", false);
+            ui.warningModal.show();
+            ui.splashOptions.addClass("loading");
         }
 
         regionInfo[regionID] = {
             ...region,
-            ...serverInfo,
+            ...info,
             ping: Date.now() - pingStartTime
         };
 
-        listItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
+        listItem.find(".server-player-count").text(info.playerCount ?? "-");
 
         console.log(`Loaded server info for region ${regionID}`);
     });
@@ -426,31 +442,6 @@ export async function setUpUI(game: Game): Promise<void> {
 
         // Check again because there is a small chance that the create-team-menu element won't hide.
         if (createTeamMenu.css("display") !== "none") createTeamMenu.hide(); // what the if condition doin
-
-        /*
-            game.connecting = false;
-
-            if (data.message !== undefined) {
-                const reportID = data.reportID || "No report ID provided.";
-                const message = getTranslatedString(`msg_punishment_${data.message}_reason`, { reason: data.reason ?? getTranslatedString("msg_no_reason") });
-
-                ui.warningTitle.text(getTranslatedString(`msg_punishment_${data.message}`));
-                ui.warningText.html(`${data.message !== "vpn" ? `<span class="case-id">Case ID: ${reportID}</span><br><br><br>` : ""}${message}`);
-                ui.warningAgreeOpts.toggle(data.message === "warn");
-                ui.warningAgreeCheckbox.prop("checked", false);
-                ui.warningModal.show();
-                ui.splashOptions.addClass("loading");
-            } else {
-                ui.splashMsgText.html(html`
-                    ${getTranslatedString("msg_err_joining")}
-                    <br>
-                    ${getTranslatedString("msg_try_again")}
-                `);
-                ui.splashMsg.show();
-            }
-
-            resetPlayButtons(game);
-        */
     };
 
     let lastPlayButtonClickTime = 0;
@@ -2333,15 +2324,13 @@ export async function setUpUI(game: Game): Promise<void> {
         tabContent.show();
     });
 
-    const soloButtons = $<HTMLButtonElement>("#warning-btn-play-solo, #btn-play-solo");
+    const continueBtn = $<HTMLButtonElement>("#warning-continue-btn");
     $<HTMLInputElement>("#warning-modal-agree-checkbox").on("click", function() {
-        soloButtons.toggleClass("btn-disabled", !this.checked);
+        continueBtn.toggleClass("btn-disabled", !this.checked);
     });
 
-    const soloButton = $<HTMLButtonElement>("#btn-play-solo");
-    $("#warning-btn-play-solo").on("click", () => {
+    continueBtn.on("click", () => {
         ui.warningModal.hide();
-        soloButton.trigger("click");
     });
 
     const joinTeam = $("#btn-join-team");
