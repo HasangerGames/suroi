@@ -1,9 +1,10 @@
 import { FireMode } from "../../constants";
 import { BaseBulletDefinition } from "../../utils/baseBullet";
 import { mergeDeep } from "../../utils/misc";
-import { ItemType, ObjectDefinitions, type InventoryItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
+import { ItemType, type InventoryItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
 import { Vec, type Vector } from "../../utils/vector";
 import { type AmmoDefinition } from "./ammos";
+import { InventoryItemDefinitions } from "./items";
 import { ScopeDefinition } from "./scopes";
 
 type BaseGunDefinition = InventoryItemDefinition & {
@@ -210,7 +211,7 @@ const gasParticlePresets = {
     }
 } satisfies Record<string, BaseGunDefinition["gasParticles"]>;
 
-export const Guns = new ObjectDefinitions<GunDefinition>(([
+export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     //
     // Pistols
     //
