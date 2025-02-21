@@ -47,8 +47,8 @@ export interface Region {
 export interface ServerInfo {
     readonly protocolVersion: number
     readonly playerCount: number
-    readonly maxTeamSize: TeamSize
-    readonly maxTeamSizeSwitchTime: number
+    readonly teamSize: TeamSize
+    readonly teamSizeSwitchTime: number
     readonly mode: Mode
     readonly modeSwitchTime: number
 }

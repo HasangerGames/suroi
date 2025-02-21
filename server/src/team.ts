@@ -2,9 +2,10 @@ import { CustomTeamMessages, type CustomTeamMessage } from "@common/typings";
 import { random } from "@common/utils/random";
 import { findGame } from "./gameManager";
 import { type Player } from "./objects/player";
-import { customTeams } from "./server";
 import { removeFrom } from "./utils/misc";
 import { WebSocket } from "ws";
+import { TeamSize } from "@common/constants";
+import { MapWithParams } from "./config";
 
 export class Team {
     readonly id: number;
@@ -146,8 +147,14 @@ export class CustomTeam {
     gameID?: number;
     resetTimeout?: NodeJS.Timeout;
 
-    constructor() {
+    // these are only used when creating games
+    teamSize: TeamSize;
+    map: MapWithParams;
+
+    constructor(teamSize: TeamSize, map: MapWithParams) {
         this.id = Array.from({ length: 4 }, () => CustomTeam._idChars.charAt(random(0, CustomTeam._idCharMax))).join("");
+        this.teamSize = teamSize;
+        this.map = map;
     }
 
     addPlayer(player: CustomTeamPlayer): void {
@@ -167,7 +174,6 @@ export class CustomTeam {
 
         if (!this.players.length) {
             clearTimeout(this.resetTimeout);
-            customTeams.delete(this.id);
             return;
         }
 
@@ -193,7 +199,7 @@ export class CustomTeam {
             }
             case CustomTeamMessages.Start: {
                 if (player.isLeader) {
-                    const result = await findGame();
+                    const result = await findGame(this.teamSize, this.map);
                     if (result !== undefined) {
                         this.gameID = result.id;
                         clearTimeout(this.resetTimeout);

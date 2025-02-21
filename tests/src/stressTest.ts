@@ -9,7 +9,6 @@ import { JoinPacket } from "../../common/src/packets/joinPacket";
 import { type InputPacket, type OutputPacket } from "../../common/src/packets/packet";
 import { PacketStream } from "../../common/src/packets/packetStream";
 import { UpdatePacket } from "../../common/src/packets/updatePacket";
-import { type GetGameResponse } from "../../common/src/typings";
 import { Geometry, π, τ } from "../../common/src/utils/math";
 import { ItemType, type ReferenceTo } from "../../common/src/utils/objectDefinitions";
 import { type FullData } from "../../common/src/utils/objectsSerializations";
@@ -47,8 +46,6 @@ class Bot {
 
     private _serverId?: number;
 
-    readonly gameID: number;
-
     position = Vec.create(0, 0);
 
     private _shootStart = false;
@@ -81,9 +78,8 @@ class Bot {
 
     private _lastInputPacket?: InputPacket<PlayerInputData>;
 
-    constructor(readonly id: number, gameID: number) {
-        this.gameID = gameID;
-        this._ws = new WebSocket(`${config.address.replace("http", "ws")}/play?gameID=${gameID}`);
+    constructor(readonly id: number) {
+        this._ws = new WebSocket(`${config.address.replace("http", "ws")}/play`);
 
         this._ws.addEventListener("error", console.error);
 
@@ -184,7 +180,7 @@ class Bot {
         this._connected = true;
 
         const name = `BOT_${this.id}`;
-        console.log(`${name} connected to game ${this.gameID}`);
+        console.log(`${name} connected`);
 
         this.sendPacket(
             JoinPacket.create({
@@ -324,24 +320,13 @@ class Bot {
     }
 }
 
-const createBot = async(id: number): Promise<Bot> => {
-    const gameData = await (await fetch(`${config.address}/api/getGame`)).json() as GetGameResponse;
-
-    if (!gameData.success) {
-        throw new Error("Error finding game.");
-    }
-
-    return new Bot(id, gameData.gameID);
-};
-
 void (async() => {
     const { botCount, joinDelay } = config;
     console.log("scheduling joins");
 
     for (let i = 1; i <= botCount; i++) {
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        setTimeout(async() => {
-            bots.push(await createBot(i));
+        setTimeout(() => {
+            bots.push(new Bot(i));
             if (i === botCount) allBotsJoined = true;
             if (i === 1) console.log("here we go");
         }, i * joinDelay);
@@ -349,8 +334,7 @@ void (async() => {
 })();
 
 console.log("setting up loop");
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
-setInterval(async() => {
+setInterval(() => {
     for (const bot of bots) {
         if (Math.random() < 0.02) bot.updateInputs();
 
@@ -361,7 +345,7 @@ setInterval(async() => {
             if (index === -1) continue;
 
             if (config.rejoinOnDeath) {
-                bots[index] = await createBot(index + 1);
+                bots[index] = new Bot(index + 1);
             } else {
                 bots.splice(index, 1);
             }

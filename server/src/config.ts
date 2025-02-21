@@ -7,11 +7,18 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
+    // map: {
+    //     rotation: ["normal", "fall"],
+    //     cron: "0 * * * * *"
+    // },
     map: "normal",
 
     spawn: { mode: SpawnMode.Default },
 
-    maxTeamSize: TeamSize.Duo,
+    teamSize: {
+        rotation: [TeamSize.Duo, TeamSize.Squad],
+        cron: "0 * * * * *"
+    },
 
     maxPlayersPerGame: 80,
     maxGames: 5,
@@ -76,6 +83,20 @@ export const enum GasMode {
     Disabled
 }
 
+export type Switchable = string | number;
+export interface Switched<T extends Switchable> {
+    /**
+     * List of items to rotate between.
+     * When the end is reached, it will loop back to the beginning.
+     */
+    readonly rotation: T[]
+    /**
+     * Cron pattern to use for switching
+     */
+    readonly cron: string
+}
+export type StaticOrSwitched<T extends Switchable> = T | Switched<T>;
+
 export interface ConfigType {
     /**
      * The hostname to host the server on.
@@ -90,28 +111,11 @@ export interface ConfigType {
     readonly port: number
 
     /**
-     * HTTPS/SSL options. Not used if running locally or with nginx.
-     */
-    readonly ssl?: {
-        readonly keyFile: string
-        readonly certFile: string
-    }
-
-    /**
      * The map name. Must be a valid value from the server maps definitions (`maps.ts`).
      * Example: `"main"` for the main map or `"debug"` for the debug map.
      * Parameters can also be specified for certain maps, separated by colons (e.g. `singleObstacle:rock`)
      */
-    readonly map: MapWithParams | {
-        /**
-        * The duration between switches. Must be a cron pattern.
-        */
-        readonly switchSchedule: string
-        /**
-        * The modes to switch between.
-        */
-        readonly rotation: readonly MapWithParams[]
-    }
+    readonly map: StaticOrSwitched<MapWithParams>
 
     /**
      * There are 5 spawn modes: `Normal`, `Radius`, `Fixed`, `Center`, and `Default`.
@@ -125,22 +129,8 @@ export interface ConfigType {
 
     /**
      * The maximum number of players allowed to join a team.
-     *
-     * Specifying a {@link TeamSize} causes the team size to
-     * simply remain at that value indefinitely; alternatively,
-     * specifying a cron pattern and an array of team sizes
-     * allows for team sizes to change periodically
      */
-    readonly maxTeamSize: TeamSize | {
-        /**
-         * The duration between switches. Must be a cron pattern.
-         */
-        readonly switchSchedule: string
-        /**
-         * The team sizes to switch between.
-         */
-        readonly rotation: readonly TeamSize[]
-    }
+    readonly teamSize: StaticOrSwitched<TeamSize>
 
     /**
      * Whether to start the game as soon as joining (debug feature, also disables winning when 1 player is remaining for obvious reasons).

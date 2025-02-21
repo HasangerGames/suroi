@@ -6,13 +6,12 @@ import { WebSocketServer } from "ws";
 import { Config, MapWithParams } from "./config";
 import { Game } from "./game";
 import { PlayerJoinData } from "./objects/player";
-import { map, maxTeamSize } from "./server";
 import { pickRandomInArray } from "@common/utils/random";
 import { RateLimiter, serverLog, serverWarn } from "./utils/serverHelpers";
 
 export enum WorkerMessages {
     AddPlayer,
-    UpdateMaxTeamSize,
+    UpdateTeamSize,
     UpdateMap,
     Reset
 }
@@ -24,8 +23,8 @@ export type WorkerMessage =
         readonly playerData: PlayerJoinData
     }
     | {
-        readonly type: WorkerMessages.UpdateMaxTeamSize
-        readonly maxTeamSize: TeamSize
+        readonly type: WorkerMessages.UpdateTeamSize
+        readonly teamSize: TeamSize
     }
     | {
         readonly type: WorkerMessages.UpdateMap
@@ -62,9 +61,14 @@ export class GameContainer {
     get stopped(): boolean { return this._data.stopped; }
     get startedTime(): number { return this._data.startedTime; }
 
-    constructor(readonly id: number, resolve: (game: GameContainer) => void) {
+    constructor(
+        readonly id: number,
+        teamSize: TeamSize,
+        map: MapWithParams,
+        resolve: (game: GameContainer) => void
+    ) {
         this.promiseCallbacks.push(resolve);
-        this.worker = Cluster.fork({ id, maxTeamSize, map }).on("message", (data: Partial<GameData>): void => {
+        this.worker = Cluster.fork({ id, teamSize, map }).on("message", (data: Partial<GameData>): void => {
             this._data = { ...this._data, ...data };
 
             if (data.allowJoin === true) { // This means the game was just created
@@ -82,7 +86,7 @@ export class GameContainer {
 
 export const games: Array<GameContainer | undefined> = [];
 
-export async function findGame(): Promise<GameContainer | undefined> {
+export async function findGame(teamSize: TeamSize, map: MapWithParams): Promise<GameContainer | undefined> {
     const eligibleGames = games.filter((g?: GameContainer): g is GameContainer =>
         g !== undefined
         && g.allowJoin
@@ -91,12 +95,12 @@ export async function findGame(): Promise<GameContainer | undefined> {
 
     return eligibleGames.length
         ? pickRandomInArray(eligibleGames)
-        : await newGame();
+        : await newGame(undefined, teamSize, map);
 }
 
 let creating: GameContainer | undefined;
 
-export async function newGame(id?: number): Promise<GameContainer | undefined> {
+export async function newGame(id: number | undefined, teamSize: TeamSize, map: MapWithParams): Promise<GameContainer | undefined> {
     return new Promise<GameContainer | undefined>(resolve => {
         if (creating !== undefined) {
             creating.promiseCallbacks.push(resolve);
@@ -104,7 +108,7 @@ export async function newGame(id?: number): Promise<GameContainer | undefined> {
             serverLog(`Creating new game with ID ${id}`);
             const game = games[id];
             if (!game) {
-                games[id] = new GameContainer(id, resolve);
+                games[id] = new GameContainer(id, teamSize, map, resolve);
             } else if (game.stopped) {
                 game.promiseCallbacks.push(resolve);
                 game.sendMessage({ type: WorkerMessages.Reset });
@@ -118,7 +122,7 @@ export async function newGame(id?: number): Promise<GameContainer | undefined> {
                 const game = games[i];
                 console.log("Game", i, "exists:", !!game, "stopped:", game?.stopped);
                 if (!game || game.stopped) {
-                    void newGame(i).then(game => resolve(game));
+                    void newGame(i, teamSize, map).then(game => resolve(game));
                     return;
                 }
             }
@@ -131,14 +135,14 @@ export async function newGame(id?: number): Promise<GameContainer | undefined> {
 if (!Cluster.isPrimary) {
     const data = process.env as {
         readonly id: string
-        readonly maxTeamSize: string
+        readonly teamSize: string
         readonly map: MapWithParams
     };
     const id = parseInt(data.id);
-    let maxTeamSize = parseInt(data.maxTeamSize);
+    let teamSize = parseInt(data.teamSize);
     let map = data.map;
 
-    let game = new Game(id, maxTeamSize, map);
+    let game = new Game(id, teamSize, map);
 
     process.on("uncaughtException", e => game.error("An unhandled error occurred. Details:", e));
 
@@ -188,11 +192,11 @@ if (!Cluster.isPrimary) {
                 game.kill();
             // eslint-disable-next-line no-fallthrough
             case WorkerMessages.Reset: {
-                game = new Game(id, maxTeamSize, map);
+                game = new Game(id, teamSize, map);
                 break;
             }
-            case WorkerMessages.UpdateMaxTeamSize: {
-                maxTeamSize = message.maxTeamSize;
+            case WorkerMessages.UpdateTeamSize: {
+                teamSize = message.teamSize;
                 break;
             }
         }

@@ -4,7 +4,7 @@ import { Skins } from "@common/definitions/items/skins";
 import { Mode } from "@common/definitions/modes";
 import { CustomTeamMessage, PunishmentMessage } from "@common/typings";
 import { Logger } from "@common/utils/logging";
-import { Cron } from "croner";
+import { Numeric } from "@common/utils/math";
 import Cluster from "node:cluster";
 import { createServer, IncomingMessage } from "node:http";
 import { URLSearchParams } from "node:url";
@@ -16,49 +16,67 @@ import { findGame, GameContainer, games, newGame, WorkerMessage, WorkerMessages 
 import { CustomTeam, CustomTeamPlayer } from "./team";
 import IPChecker, { Punishment } from "./utils/apiHelper";
 import { cleanUsername, modeFromMap } from "./utils/misc";
-import { forbidden, notFound, RateLimiter, serverError, serverLog, serverWarn } from "./utils/serverHelpers";
-import { Numeric } from "@common/utils/math";
-
-let punishments: Punishment[] = [];
-
-const protection = Config.protection;
-
-const ipCheck = protection?.ipChecker
-    ? new IPChecker(protection.ipChecker.baseUrl, protection.ipChecker.key)
-    : undefined;
-
-const joinAttempts = protection?.maxJoinAttempts
-    ? new RateLimiter(protection.maxJoinAttempts.count, protection.maxJoinAttempts.duration)
-    : undefined;
-
-const teamsCreated = protection?.maxTeams
-    ? new RateLimiter(protection.maxTeams)
-    : undefined;
-
-export const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
-
-export let maxTeamSize = typeof Config.maxTeamSize === "number"
-    ? Config.maxTeamSize
-    : Config.maxTeamSize.rotation[0];
-let nextTeamSize = typeof Config.maxTeamSize === "number"
-    ? undefined
-    : (Config.maxTeamSize.rotation[1] ?? Config.maxTeamSize.rotation[0]);
-let teamSizeRotationIndex = 0;
-let maxTeamSizeSwitchCron: Cron | undefined;
-
-export let map = typeof Config.map === "string" ? Config.map : Config.map.rotation[0];
-let mapRotationIndex = 0;
-let mapSwitchCron: Cron | undefined;
-
-let mode: Mode;
-let nextMode: Mode;
+import { forbidden, notFound, RateLimiter, serverError, serverLog, serverWarn, Switcher } from "./utils/serverHelpers";
 
 if (Cluster.isPrimary && require.main === module) {
     //                   ^^^^^^^^^^^^^^^^^^^^^^^ only starts server if called directly from command line (not imported)
 
     process.on("uncaughtException", e => serverError("An unhandled error occurred. Details:", e));
 
-    const teamWs = new WebSocketServer({ noServer: true });
+    let punishments: Punishment[] = [];
+
+    const protection = Config.protection;
+
+    const ipCheck = protection?.ipChecker
+        ? new IPChecker(protection.ipChecker.baseUrl, protection.ipChecker.key)
+        : undefined;
+
+    const joinAttempts = protection?.maxJoinAttempts
+        ? new RateLimiter(protection.maxJoinAttempts.count, protection.maxJoinAttempts.duration)
+        : undefined;
+
+    const teamsCreated = protection?.maxTeams
+        ? new RateLimiter(protection.maxTeams)
+        : undefined;
+
+    const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
+    const customTeamWs = new WebSocketServer({ noServer: true });
+
+    const resetTeams = (): void => {
+        for (const team of customTeams.values()) {
+            for (const player of team.players) player.socket.close();
+        }
+        customTeams.clear();
+        teamsCreated?.reset();
+    };
+
+    const teamSize = new Switcher(Config.teamSize, teamSize => {
+        for (const game of games) {
+            game?.sendMessage({ type: WorkerMessages.UpdateTeamSize, teamSize });
+        }
+
+        resetTeams();
+
+        const humanReadableTeamSizes = [undefined, "solos", "duos", "trios", "squads"];
+        serverLog(`Switching to ${humanReadableTeamSizes[teamSize] ?? `team size ${teamSize}`}`);
+    });
+
+    let mode: Mode;
+    let nextMode: Mode | undefined;
+    const map = new Switcher(Config.map, (map, nextMap) => {
+        mode = modeFromMap(map);
+        nextMode = modeFromMap(nextMap);
+
+        for (const game of games) {
+            game?.sendMessage({ type: WorkerMessages.UpdateMap, map });
+        }
+
+        resetTeams();
+
+        serverLog(`Switching to "${map}" map`);
+    });
+    mode = modeFromMap(map.current);
+    nextMode = map.next ? modeFromMap(map.next) : undefined;
 
     function parseRole(searchParams: URLSearchParams): { readonly role?: string, readonly isDev: boolean, readonly nameColor?: number } {
         const password = searchParams.get("password");
@@ -130,12 +148,12 @@ if (Cluster.isPrimary && require.main === module) {
             res.setHeader("Content-Type", "application/json").end(JSON.stringify({
                 protocolVersion: GameConstants.protocolVersion,
                 playerCount: games.reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
-                maxTeamSize,
-                maxTeamSizeSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
-                nextTeamSize,
+                teamSize: teamSize.current,
+                nextTeamSize: teamSize.next,
+                teamSizeSwitchTime: teamSize.nextSwitch,
                 mode,
-                modeSwitchTime: mapSwitchCron?.nextRun()?.getTime(),
                 nextMode,
+                modeSwitchTime: map.nextSwitch,
                 punishment: await checkPunishments(ip)
             }));
 
@@ -160,7 +178,7 @@ if (Cluster.isPrimary && require.main === module) {
 
             // Find game
             const searchParams = new URLSearchParams(req.url.slice(req.url.indexOf("?")));
-            const teamID = maxTeamSize !== TeamSize.Solo ? (searchParams.get("teamID") ?? undefined) : undefined;
+            const teamID = teamSize.current !== TeamSize.Solo ? (searchParams.get("teamID") ?? undefined) : undefined;
             let game: GameContainer | undefined;
             if (teamID) {
                 const gameID = customTeams.get(teamID)?.gameID;
@@ -168,7 +186,7 @@ if (Cluster.isPrimary && require.main === module) {
                     game = games[gameID];
                 }
             } else {
-                game = await findGame();
+                game = await findGame(teamSize.current, map.current);
             }
             if (!game?.allowJoin) {
                 forbidden(res);
@@ -198,7 +216,7 @@ if (Cluster.isPrimary && require.main === module) {
         } else if (req.url.startsWith("/team")) {
             // Prevent connection if it's solos + check punishments & rate limits
             if (
-                maxTeamSize === TeamSize.Solo
+                teamSize.current === TeamSize.Solo
                 || teamsCreated?.isLimited(ip)
                 || await checkPunishments(ip)
             ) {
@@ -212,15 +230,14 @@ if (Cluster.isPrimary && require.main === module) {
             let team: CustomTeam;
             if (teamID !== null) {
                 const givenTeam = customTeams.get(teamID);
-                if (!givenTeam || givenTeam.locked || givenTeam.players.length >= (maxTeamSize as number)) {
+                if (!givenTeam || givenTeam.locked || givenTeam.players.length >= (teamSize.current as number)) {
                     forbidden(res); // TODO "Team is locked" and "Team is full" messages
                     return;
                 }
                 team = givenTeam;
             } else {
-                team = new CustomTeam();
+                team = new CustomTeam(teamSize.current, map.current);
                 customTeams.set(team.id, team);
-                teamsCreated?.increment(ip);
             }
 
             // Get name, skin, badge, & role
@@ -244,7 +261,8 @@ if (Cluster.isPrimary && require.main === module) {
 
             // Upgrade the connection
             // @ts-expect-error despite what the typings say, the headers don't have to be a Buffer
-            teamWs.handleUpgrade(req, req.socket, req.headers, socket => {
+            customTeamWs.handleUpgrade(req, req.socket, req.headers, socket => {
+                teamsCreated?.increment(ip);
                 const player = new CustomTeamPlayer(team, socket, name, skin, badge, nameColor);
 
                 socket.on("message", (message: string) => {
@@ -257,7 +275,11 @@ if (Cluster.isPrimary && require.main === module) {
 
                 socket.on("close", () => {
                     teamsCreated?.decrement(ip);
-                    player.team.removePlayer(player);
+                    const team = player.team;
+                    team.removePlayer(player);
+                    if (!team.players.length) {
+                        customTeams.delete(team.id);
+                    }
                 });
             });
 
@@ -274,7 +296,7 @@ if (Cluster.isPrimary && require.main === module) {
     serverLog(`Listening on ${Config.host}:${Config.port}`);
     serverLog("Press Ctrl+C to exit.");
 
-    void newGame(0);
+    void newGame(0, teamSize.current, map.current);
 
     setInterval(() => {
         const memoryUsage = process.memoryUsage().rss;
@@ -289,39 +311,6 @@ if (Cluster.isPrimary && require.main === module) {
 
         serverLog(perfString);
     }, 60000);
-
-    const teamSize = Config.maxTeamSize;
-    if (typeof teamSize === "object") {
-        maxTeamSizeSwitchCron = Cron(teamSize.switchSchedule, () => {
-            maxTeamSize = teamSize.rotation[++teamSizeRotationIndex % teamSize.rotation.length];
-            nextTeamSize = teamSize.rotation[(teamSizeRotationIndex + 1) % teamSize.rotation.length];
-
-            for (const game of games) {
-                game?.sendMessage({ type: WorkerMessages.UpdateMaxTeamSize, maxTeamSize });
-            }
-
-            const humanReadableTeamSizes = [undefined, "solos", "duos", "trios", "squads"];
-            serverLog(`Switching to ${humanReadableTeamSizes[maxTeamSize] ?? `team size ${maxTeamSize}`}`);
-        });
-    }
-
-    mode = modeFromMap(map);
-
-    const _map = Config.map;
-    if (typeof _map === "object") {
-        mapSwitchCron = Cron(_map.switchSchedule, () => {
-            map = _map.rotation[++mapRotationIndex % _map.rotation.length];
-            mode = modeFromMap(map);
-            nextMode = modeFromMap(_map.rotation[(mapRotationIndex + 1) % _map.rotation.length]);
-
-            for (const game of games) {
-                game?.sendMessage({ type: WorkerMessages.UpdateMap, map });
-            }
-
-            serverLog(`Switching to "${map}" map`);
-        });
-        nextMode = modeFromMap(_map.rotation[1] ?? _map.rotation[0]);
-    }
 
     if (protection?.punishments) {
         // eslint-disable-next-line @typescript-eslint/no-misused-promises

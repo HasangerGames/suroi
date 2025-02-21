@@ -1861,8 +1861,8 @@ export function setUpCommands(game: Game): void {
                                     k,
                                     {
                                         ...v,
-                                        ...(typeof v.maxTeamSizeSwitchTime === "number" ? { maxTeamSizeSwitchTime: new Date(v.maxTeamSizeSwitchTime) } : {}),
-                                        ...(typeof v.maxTeamSize === "number" ? { maxTeamSize: TeamSize[v.maxTeamSize] } : {})
+                                        ...(typeof v.teamSizeSwitchTime === "number" ? { teamSizeSwitchTime: new Date(v.teamSizeSwitchTime) } : {}),
+                                        ...(typeof v.teamSize === "number" ? { teamSize: TeamSize[v.teamSize] } : {})
                                     }
                                 ]
                             )

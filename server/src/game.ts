@@ -27,7 +27,7 @@ import type { WebSocket } from "ws";
 import { Config, MapWithParams, SpawnMode } from "./config";
 import { GAME_SPAWN_WINDOW } from "./data/gasStages";
 import { MapName, Maps } from "./data/maps";
-import { WorkerMessages, type GameData, type WorkerMessage } from "./gameManager";
+import { type GameData } from "./gameManager";
 import { Gas } from "./gas";
 import { GunItem } from "./inventory/gunItem";
 import type { MeleeItem } from "./inventory/meleeItem";
@@ -91,7 +91,7 @@ export class Game implements GameData {
      */
     readonly packets: InputPacket[] = [];
 
-    readonly maxTeamSize: TeamSize;
+    readonly teamSize: TeamSize;
 
     readonly teamMode: boolean;
 
@@ -226,10 +226,10 @@ export class Game implements GameData {
         return this._idAllocator.takeNext();
     }
 
-    constructor(id: number, maxTeamSize: TeamSize, map: MapWithParams) {
+    constructor(id: number, teamSize: TeamSize, map: MapWithParams) {
         this.id = id;
-        this.maxTeamSize = maxTeamSize;
-        this.teamMode = this.maxTeamSize > TeamSize.Solo;
+        this.teamSize = teamSize;
+        this.teamMode = this.teamSize > TeamSize.Solo;
         this.updateGameData({
             aliveCount: 0,
             allowJoin: false,
@@ -418,7 +418,7 @@ export class Game implements GameData {
             && !Config.startImmediately
             && (
                 this.teamMode
-                    ? this.aliveCount <= (this.maxTeamSize as number) && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
+                    ? this.aliveCount <= (this.teamSize as number) && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
                     : this.aliveCount <= 1
             )
         ) {
@@ -575,7 +575,7 @@ export class Game implements GameData {
                 if (
                     !team // team doesn't exist
                     || (team.players.length && !team.hasLivingPlayers()) // team isn't empty but has no living players
-                    || team.players.length >= (this.maxTeamSize as number) // team is full
+                    || team.players.length >= (this.teamSize as number) // team is full
                 ) {
                     this.teams.add(team = new Team(this.nextTeamID, autoFill));
                     this.customTeams.set(teamID, team);
@@ -584,7 +584,7 @@ export class Game implements GameData {
                 const vacantTeams = this.teams.valueArray.filter(
                     team =>
                         team.autoFill
-                        && team.players.length < (this.maxTeamSize as number)
+                        && team.players.length < (this.teamSize as number)
                         && team.hasLivingPlayers()
                 );
                 if (vacantTeams.length) {
@@ -723,7 +723,7 @@ export class Game implements GameData {
         player.sendPacket(
             JoinedPacket.create(
                 {
-                    maxTeamSize: this.maxTeamSize,
+                    teamSize: this.teamSize,
                     teamID: player.teamID ?? 0,
                     emotes: player.loadout.emotes
                 }

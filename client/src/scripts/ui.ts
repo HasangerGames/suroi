@@ -43,13 +43,13 @@ interface RegionInfo {
     readonly address: string
     readonly playerCount?: number
 
-    readonly maxTeamSize?: number
-    readonly maxTeamSizeSwitchTime?: number
-    readonly nextTeamSize?: number
+    readonly teamSize?: TeamSize
+    readonly nextTeamSize?: TeamSize
+    readonly teamSizeSwitchTime?: number
 
     readonly mode?: Mode
-    readonly modeSwitchTime?: number
     readonly nextMode?: Mode
+    readonly modeSwitchTime?: number
 
     readonly ping?: number
 }
@@ -77,12 +77,12 @@ export function resetPlayButtons(game: Game): void { // TODO Refactor this metho
     if (buttonsLocked) return;
 
     const { uiManager: { ui } } = game;
-    const { maxTeamSize, nextTeamSize, nextMode } = selectedRegion ?? regionInfo[Config.defaultRegion];
+    const { teamSize, nextTeamSize, nextMode } = selectedRegion ?? regionInfo[Config.defaultRegion];
 
     ui.splashOptions.removeClass("loading");
     ui.loaderText.text("");
 
-    const isSolo = maxTeamSize === TeamSize.Solo;
+    const isSolo = teamSize === TeamSize.Solo;
 
     for (
         const [size, btn] of (
@@ -92,9 +92,7 @@ export function resetPlayButtons(game: Game): void { // TODO Refactor this metho
                 [TeamSize.Squad, ui.playSquadBtn]
             ]
         )
-        // stfu
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
-    ) btn.toggleClass("locked", maxTeamSize !== undefined && maxTeamSize !== size);
+    ) btn.toggleClass("locked", teamSize !== undefined && teamSize !== size);
 
     ui.teamOptionBtns.toggleClass("locked", isSolo);
 
@@ -201,24 +199,22 @@ export async function fetchServerData(game: Game): Promise<void> {
     await Promise.all(regionPromises);
 
     const pad = (n: number): string | number => n < 10 ? `0${n}` : n;
-    const getTimeString = (millis: number | undefined): string => {
-        if (millis === undefined) return "--:--:--";
+    const setTimeString = (elem: JQuery, millis: number): void => {
+        if (millis === Infinity) return;
 
         const days = Math.floor(millis / (1000 * 60 * 60 * 24));
         const hours = Math.floor(millis / (1000 * 60 * 60)) % 24;
         const minutes = Math.floor(millis / (1000 * 60)) % 60;
         const seconds = Math.floor(millis / 1000) % 60;
-        return `${days > 0 ? `${pad(days)}:` : ""}${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        elem.text(`${days > 0 ? `${pad(days)}:` : ""}${pad(hours)}:${pad(minutes)}:${pad(seconds)}`);
     };
     const updateSwitchTime = (): void => {
         if (!selectedRegion) return;
-        const { maxTeamSizeSwitchTime, modeSwitchTime } = selectedRegion;
+        const { teamSizeSwitchTime, modeSwitchTime } = selectedRegion;
 
         const now = Date.now();
-        const [timeBeforeTeamSizeSwitch, timeBeforeModeSwitch] = [
-            (maxTeamSizeSwitchTime ?? Infinity) - now,
-            (modeSwitchTime ?? Infinity) - now
-        ];
+        const timeBeforeTeamSizeSwitch = (teamSizeSwitchTime ?? Infinity) - now;
+        const timeBeforeModeSwitch = (modeSwitchTime ?? Infinity) - now;
 
         if (
             (timeBeforeTeamSizeSwitch < 0 && !game.gameStarted)
@@ -228,8 +224,8 @@ export async function fetchServerData(game: Game): Promise<void> {
             return;
         }
 
-        ui.teamSizeSwitchTime.text(getTimeString(timeBeforeTeamSizeSwitch));
-        ui.modeSwitchTime.text(getTimeString(timeBeforeModeSwitch));
+        setTimeString(ui.teamSizeSwitchTime, timeBeforeTeamSizeSwitch);
+        setTimeString(ui.modeSwitchTime, timeBeforeModeSwitch);
     };
     setInterval(updateSwitchTime, 1000);
 
