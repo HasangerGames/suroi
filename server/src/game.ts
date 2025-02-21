@@ -9,7 +9,7 @@ import { PlayerInputPacket } from "@common/packets/inputPacket";
 import { JoinPacket, type JoinPacketData } from "@common/packets/joinPacket";
 import { JoinedPacket } from "@common/packets/joinedPacket";
 import { KillFeedPacket, type KillFeedPacketData } from "@common/packets/killFeedPacket";
-import { type InputPacket, type OutputPacket } from "@common/packets/packet";
+import { type InputPacket } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { type PingSerialization } from "@common/packets/updatePacket";
@@ -18,16 +18,16 @@ import { Geometry, Numeric, Statistics } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
 import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray, randomPointInsideCircle, randomRotation } from "@common/utils/random";
-import { type SuroiByteStream } from "@common/utils/suroiByteStream";
+import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { Vec, type Vector } from "@common/utils/vector";
-import { type WebSocket } from "uWebSockets.js";
-import { parentPort } from "worker_threads";
 
 import { Mode, ModeDefinition, Modes } from "@common/definitions/modes";
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
+import type { WebSocket } from "ws";
 import { Config, MapWithParams, SpawnMode } from "./config";
+import { GAME_SPAWN_WINDOW } from "./data/gasStages";
 import { MapName, Maps } from "./data/maps";
-import { WorkerMessages, type GameData, type WorkerMessage } from "./gameManager";
+import { type GameData } from "./gameManager";
 import { Gas } from "./gas";
 import { GunItem } from "./inventory/gunItem";
 import type { MeleeItem } from "./inventory/meleeItem";
@@ -39,7 +39,7 @@ import { Explosion } from "./objects/explosion";
 import { type BaseGameObject, type GameObject } from "./objects/gameObject";
 import { Loot, type ItemData } from "./objects/loot";
 import { Parachute } from "./objects/parachute";
-import { Player, type PlayerContainer } from "./objects/player";
+import { Player, type PlayerJoinData } from "./objects/player";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { ThrowableProjectile } from "./objects/throwableProj";
 import { PluginManager } from "./pluginManager";
@@ -48,7 +48,6 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getSpawnableLoots, SpawnableItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap, removeFrom } from "./utils/misc";
-import { GAME_SPAWN_WINDOW } from "./data/gasStages";
 
 /*
     eslint-disable
@@ -92,7 +91,7 @@ export class Game implements GameData {
      */
     readonly packets: InputPacket[] = [];
 
-    readonly maxTeamSize: TeamSize;
+    readonly teamSize: TeamSize;
 
     readonly teamMode: boolean;
 
@@ -227,10 +226,10 @@ export class Game implements GameData {
         return this._idAllocator.takeNext();
     }
 
-    constructor(id: number, maxTeamSize: TeamSize, map: MapWithParams) {
+    constructor(id: number, teamSize: TeamSize, map: MapWithParams) {
         this.id = id;
-        this.maxTeamSize = maxTeamSize;
-        this.teamMode = this.maxTeamSize > TeamSize.Solo;
+        this.teamSize = teamSize;
+        this.teamMode = this.teamSize > TeamSize.Solo;
         this.updateGameData({
             aliveCount: 0,
             allowJoin: false,
@@ -269,28 +268,21 @@ export class Game implements GameData {
         Logger.log(styleText(`[Game ${this.id}] [ERROR]`, ColorStyles.foreground.red.normal), ...message);
     }
 
-    onMessage(stream: SuroiByteStream, player: Player): void {
-        const packetStream = new PacketStream(stream);
+    onMessage(message: ArrayBuffer, player: Player): void {
+        const packetStream = new PacketStream(new SuroiByteStream(message));
         while (true) {
             const packet = packetStream.deserializeClientPacket();
             if (packet === undefined) break;
-            this.onPacket(packet, player);
-        }
-    }
 
-    onPacket(packet: OutputPacket, player: Player): void {
-        switch (true) {
-            case packet instanceof JoinPacket:
+            if (packet instanceof JoinPacket) {
                 this.activatePlayer(player, packet.output);
-                break;
-            case packet instanceof PlayerInputPacket:
+            } else if (packet instanceof PlayerInputPacket) {
                 // Ignore input packets from players that haven't finished joining, dead players, or if the game is over
                 if (!player.joined || player.dead || this.over) return;
                 player.processInputs(packet.output);
-                break;
-            case packet instanceof SpectatePacket:
+            } else if (packet instanceof SpectatePacket) {
                 player.spectate(packet.output);
-                break;
+            }
         }
     }
 
@@ -426,7 +418,7 @@ export class Game implements GameData {
             && !Config.startImmediately
             && (
                 this.teamMode
-                    ? this.aliveCount <= (this.maxTeamSize as number) && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
+                    ? this.aliveCount <= (this.teamSize as number) && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
                     : this.aliveCount <= 1
             )
         ) {
@@ -482,7 +474,7 @@ export class Game implements GameData {
     }
 
     updateGameData(data: Partial<GameData>): void {
-        parentPort?.postMessage({ type: WorkerMessages.UpdateGameData, data } satisfies WorkerMessage);
+        process.send?.(data);
     }
 
     kill(): void {
@@ -564,8 +556,9 @@ export class Game implements GameData {
         );
     }
 
-    addPlayer(socket: WebSocket<PlayerContainer>): Player | undefined {
+    addPlayer(socket: WebSocket | undefined, data: PlayerJoinData): Player | undefined {
         if (this.pluginManager.emit("player_will_connect")) {
+            socket?.close();
             return undefined;
         }
 
@@ -574,7 +567,7 @@ export class Game implements GameData {
 
         let team: Team | undefined;
         if (this.teamMode) {
-            const { teamID, autoFill } = socket.getUserData();
+            const { teamID, autoFill } = data;
 
             if (teamID) {
                 team = this.customTeams.get(teamID);
@@ -582,7 +575,7 @@ export class Game implements GameData {
                 if (
                     !team // team doesn't exist
                     || (team.players.length && !team.hasLivingPlayers()) // team isn't empty but has no living players
-                    || team.players.length >= (this.maxTeamSize as number) // team is full
+                    || team.players.length >= (this.teamSize as number) // team is full
                 ) {
                     this.teams.add(team = new Team(this.nextTeamID, autoFill));
                     this.customTeams.set(teamID, team);
@@ -591,7 +584,7 @@ export class Game implements GameData {
                 const vacantTeams = this.teams.valueArray.filter(
                     team =>
                         team.autoFill
-                        && team.players.length < (this.maxTeamSize as number)
+                        && team.players.length < (this.teamSize as number)
                         && team.hasLivingPlayers()
                 );
                 if (vacantTeams.length) {
@@ -675,7 +668,7 @@ export class Game implements GameData {
         }
 
         // Player is added to the players array when a JoinPacket is received from the client
-        const player = new Player(this, socket, spawnPosition, spawnLayer, team);
+        const player = new Player(this, socket, data, spawnPosition, spawnLayer, team);
         this.pluginManager.emit("player_did_connect", player);
         return player;
     }
@@ -730,7 +723,7 @@ export class Game implements GameData {
         player.sendPacket(
             JoinedPacket.create(
                 {
-                    maxTeamSize: this.maxTeamSize,
+                    teamSize: this.teamSize,
                     teamID: player.teamID ?? 0,
                     emotes: player.loadout.emotes
                 }
@@ -828,11 +821,9 @@ export class Game implements GameData {
         }
 
         try {
-            player.socket.close();
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (_) {
-            /* not a really big deal if we can't close the socket */
-            // when does this ever fail?
+            player.socket?.close();
+        } catch {
+            // not a really big deal if we can't close the socket (when does this ever fail?)
         }
         this.pluginManager.emit("player_disconnect", player);
     }

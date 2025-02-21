@@ -25,6 +25,7 @@
     "typescript": "^5.7.3"
   },
   "dependencies": {
+    "@hono/node-ws": "^1.0.8",
     "croner": "^8.1.2",
     "dotenv": "^16.4.7",
     "ts-node": "^10.9.2",

@@ -14,17 +14,11 @@ export interface PlayerModifiers {
     hpRegen: number
 }
 
-export type GetGameResponse =
-    {
-        readonly success: true
-        readonly gameID: number
-    } |
-    {
-        readonly success: false
-        readonly message?: "warn" | "temp" | "perma" | "vpn"
-        readonly reason?: string
-        readonly reportID?: string
-    };
+export interface PunishmentMessage {
+    readonly message: "warn" | "temp" | "perma" | "vpn"
+    readonly reason?: string
+    readonly reportID?: string
+}
 
 export const enum CustomTeamMessages {
     Join,

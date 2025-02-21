@@ -82,7 +82,8 @@ export class PacketStream {
 
     private _deserializePacket(register: PacketRegister, splitData?: { splits: DataSplit, activePlayerId: number }): OutputPacket | undefined {
         if (this.stream.buffer.byteLength > this.stream.index) {
-            return register.idToTemplate[this.stream.readUint8()].read(this.stream, splitData);
+            const idx = this.stream.readUint8();
+            return register.idToTemplate[idx].read(this.stream, splitData);
         }
         return undefined;
     }

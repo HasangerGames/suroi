@@ -3957,12 +3957,6 @@ logger.indent("Validating configurations", () => {
                     });
                 }
 
-                tester.assertIsPositiveReal({
-                    obj: protection,
-                    field: "refreshDuration",
-                    baseErrorPath: errorPath2
-                });
-
                 tester.assertValidOrNPV({
                     obj: protection,
                     field: "maxTeams",

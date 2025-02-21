@@ -11,7 +11,7 @@ export const Config = {
 
     spawn: { mode: SpawnMode.Default },
 
-    maxTeamSize: TeamSize.Solo,
+    teamSize: TeamSize.Solo,
 
     maxPlayersPerGame: 80,
     maxGames: 5,
@@ -38,15 +38,10 @@ export const Config = {
         donatr: { password: "donatr" },
 
         hasanger: { password: "hasanger", isDev: true },
-        pap: { password: "pap", isDev: true },
-        error: { password: "error", isDev: true },
-        limenade: { password: "limenade", isDev: true },
         solstice: { password: "solstice", isDev: true },
+        error: { password: "error", isDev: true },
+        pap: { password: "pap", isDev: true },
         zedaes: { password: "zedaes", isDev: true }
-    },
-
-    authServer: {
-        address: "http://localhost:8080"
     }
 } satisfies ConfigType as ConfigType;
 
@@ -80,6 +75,20 @@ export const enum GasMode {
     Disabled
 }
 
+export type Switchable = string | number;
+export interface Switched<T extends Switchable> {
+    /**
+     * List of items to rotate between.
+     * When the end is reached, it will loop back to the beginning.
+     */
+    readonly rotation: T[]
+    /**
+     * Cron pattern to use for switching
+     */
+    readonly cron: string
+}
+export type StaticOrSwitched<T extends Switchable> = T | Switched<T>;
+
 export interface ConfigType {
     /**
      * The hostname to host the server on.
@@ -94,28 +103,11 @@ export interface ConfigType {
     readonly port: number
 
     /**
-     * HTTPS/SSL options. Not used if running locally or with nginx.
-     */
-    readonly ssl?: {
-        readonly keyFile: string
-        readonly certFile: string
-    }
-
-    /**
      * The map name. Must be a valid value from the server maps definitions (`maps.ts`).
      * Example: `"main"` for the main map or `"debug"` for the debug map.
      * Parameters can also be specified for certain maps, separated by colons (e.g. `singleObstacle:rock`)
      */
-    readonly map: MapWithParams | {
-        /**
-        * The duration between switches. Must be a cron pattern.
-        */
-        readonly switchSchedule: string
-        /**
-        * The modes to switch between.
-        */
-        readonly rotation: readonly MapWithParams[]
-    }
+    readonly map: StaticOrSwitched<MapWithParams>
 
     /**
      * There are 5 spawn modes: `Normal`, `Radius`, `Fixed`, `Center`, and `Default`.
@@ -129,22 +121,8 @@ export interface ConfigType {
 
     /**
      * The maximum number of players allowed to join a team.
-     *
-     * Specifying a {@link TeamSize} causes the team size to
-     * simply remain at that value indefinitely; alternatively,
-     * specifying a cron pattern and an array of team sizes
-     * allows for team sizes to change periodically
      */
-    readonly maxTeamSize: TeamSize | {
-        /**
-         * The duration between switches. Must be a cron pattern.
-         */
-        readonly switchSchedule: string
-        /**
-         * The team sizes to switch between.
-         */
-        readonly rotation: readonly TeamSize[]
-    }
+    readonly teamSize: StaticOrSwitched<TeamSize>
 
     /**
      * Whether to start the game as soon as joining (debug feature, also disables winning when 1 player is remaining for obvious reasons).
@@ -215,26 +193,19 @@ export interface ConfigType {
         }
 
         /**
-         * If this option is present, a list of punishments will be loaded, either from a local file or from a remote source.
-         * If `url` is specified, the list is loaded from the specified URL (e.g. https://suroi.io). Trailing slash not allowed.
-         * The specified `password` is sent in the `Password` header.
-         * If `url` is not specified, the list is loaded from `punishments.json`, and it's accessible from `/api/punishments`.
-         * To access the list, the specified `password` must be provided in the `Password` header.
-         */
-        readonly punishments?: {
-            readonly password: string
-            readonly url?: string
-        }
-
-        /**
-         * Every `refreshDuration` milliseconds, rate limited IPs are cleared, and the list of punishments is reloaded if enabled.
-         */
-        readonly refreshDuration: number
-
-        /**
          * Limits the number of teams that can be created by any one IP address.
          */
         readonly maxTeams?: number
+
+        /**
+         * If this option is present, a list of punishments will be loaded from the specified URL. Trailing slash not allowed.
+         * The specified `password` is sent in the `Password` header.
+         */
+        readonly punishments?: {
+            readonly url: string
+            readonly password: string
+            readonly refreshDuration: number
+        }
 
         /**
          * If a player's username matches one of the regexes in this array, it will be replaced with the default username.
@@ -274,13 +245,4 @@ export interface ConfigType {
      * Disables the lobbyClearing option if set to `true`
      */
     readonly disableLobbyClearing?: boolean
-
-    /**
-     * Options for the authentication server
-     *
-     * Optional; If not specified, the server will not use an authentication server
-     */
-    readonly authServer?: {
-        readonly address: string
-    }
 }

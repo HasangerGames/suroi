@@ -585,7 +585,7 @@ export class Game {
 
         const ui = this.uiManager.ui;
 
-        if (this.teamMode = packet.maxTeamSize !== TeamSize.Solo) {
+        if (this.teamMode = packet.teamSize !== TeamSize.Solo) {
             this.teamID = packet.teamID;
         }
 

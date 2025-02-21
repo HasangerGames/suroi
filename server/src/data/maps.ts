@@ -1,26 +1,25 @@
 import { GameConstants, Layer, MapObjectSpawnMode, RotationMode } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
+import { Armors } from "@common/definitions/items/armors";
+import { Backpacks } from "@common/definitions/items/backpacks";
 import { Guns } from "@common/definitions/items/guns";
+import { PerkCategories } from "@common/definitions/items/perks";
 import { Loots } from "@common/definitions/loots";
 import { Mode } from "@common/definitions/modes";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { PerkCategories } from "@common/definitions/items/perks";
 import { Orientation, type Variation } from "@common/typings";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Collision } from "@common/utils/math";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-import { type WebSocket } from "uWebSockets.js";
 import { SpawnMode, SpawnOptions } from "../config";
 import { type GunItem } from "../inventory/gunItem";
 import { GameMap } from "../map";
-import { Player, type PlayerContainer } from "../objects/player";
+import { Player } from "../objects/player";
 import { GamePlugin } from "../pluginManager";
-import { LootTables } from "./lootTables";
 import { getLootFromTable } from "../utils/lootHelpers";
-import { Backpacks } from "@common/definitions/items/backpacks";
-import { Armors } from "@common/definitions/items/armors";
+import { LootTables } from "./lootTables";
 
 export interface RiverDefinition {
     readonly minAmount: number
@@ -943,22 +942,7 @@ const maps = {
                             this.on("game_created", _game => {
                                 if (_game !== game) return;
                                 const createBot = (name: string): Player | undefined => {
-                                    const bot = game.addPlayer({
-                                        send(): number { return 0; },
-                                        getBufferedAmount(): number { return 0; },
-                                        end(): void { return; },
-                                        close(): void { return; },
-                                        ping(): number { return 0; },
-                                        subscribe(): boolean { return false; },
-                                        unsubscribe(): boolean { return false; },
-                                        isSubscribed(): boolean { return false; },
-                                        getTopics(): string[] { return []; },
-                                        publish(): boolean { return true; },
-                                        cork(): WebSocket<PlayerContainer> { return this; },
-                                        getRemoteAddress(): ArrayBuffer { return new ArrayBuffer(); },
-                                        getRemoteAddressAsText(): ArrayBuffer { return new ArrayBuffer(); },
-                                        getUserData(): PlayerContainer { return { isDev: false, autoFill: false, ip: undefined, lobbyClearing: false, weaponPreset: "" }; }
-                                    });
+                                    const bot = game.addPlayer(undefined, { isDev: false, autoFill: false, ip: undefined, lobbyClearing: false, weaponPreset: "" });
 
                                     if (bot !== undefined) {
                                         game.activatePlayer(

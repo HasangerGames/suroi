@@ -1,15 +1,15 @@
 import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "@common/constants";
-import { Ammos, type AmmoDefinition } from "@common/definitions/items/ammos";
-import { type ArmorDefinition } from "@common/definitions/items/armors";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { EmoteCategory, Emotes, type EmoteDefinition } from "@common/definitions/emotes";
+import { Ammos, type AmmoDefinition } from "@common/definitions/items/ammos";
+import { type ArmorDefinition } from "@common/definitions/items/armors";
 import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/items/healingItems";
-import { Modes, type Mode } from "@common/definitions/modes";
 import { PerkIds, Perks } from "@common/definitions/items/perks";
 import { Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
 import { Skins, type SkinDefinition } from "@common/definitions/items/skins";
+import { Modes, type Mode } from "@common/definitions/modes";
 import { SpectatePacket } from "@common/packets/spectatePacket";
-import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "@common/typings";
+import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type PunishmentMessage } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { pickRandomInArray } from "@common/utils/random";
@@ -17,6 +17,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { sound } from "@pixi/sound";
 import $ from "jquery";
 import { Color, isWebGPUSupported } from "pixi.js";
+import type { NewsPost } from "../../vite/news-posts-plugin/news-posts-plugin";
 import { TRANSLATIONS, getTranslatedString } from "../translations";
 import type { TranslationKeys } from "../typings/translations";
 import { Config, type ServerInfo } from "./config";
@@ -26,7 +27,6 @@ import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaul
 import { EMOTE_SLOTS, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, humanDate, requestFullscreen } from "./utils/misc";
-import type { NewsPost } from "../../vite/news-posts-plugin/news-posts-plugin";
 
 /*
     eslint-disable
@@ -40,17 +40,16 @@ import type { NewsPost } from "../../vite/news-posts-plugin/news-posts-plugin";
 
 interface RegionInfo {
     readonly name: string
-    readonly mainAddress: string
-    readonly gameAddress: string
+    readonly address: string
     readonly playerCount?: number
 
-    readonly maxTeamSize?: number
-    readonly maxTeamSizeSwitchTime?: number
-    readonly nextTeamSize?: number
+    readonly teamSize?: TeamSize
+    readonly nextTeamSize?: TeamSize
+    readonly teamSizeSwitchTime?: number
 
     readonly mode?: Mode
-    readonly modeSwitchTime?: number
     readonly nextMode?: Mode
+    readonly modeSwitchTime?: number
 
     readonly ping?: number
 }
@@ -78,12 +77,12 @@ export function resetPlayButtons(game: Game): void { // TODO Refactor this metho
     if (buttonsLocked) return;
 
     const { uiManager: { ui } } = game;
-    const { maxTeamSize, nextTeamSize, nextMode } = selectedRegion ?? regionInfo[Config.defaultRegion];
+    const { teamSize, nextTeamSize, nextMode } = selectedRegion ?? regionInfo[Config.defaultRegion];
 
     ui.splashOptions.removeClass("loading");
     ui.loaderText.text("");
 
-    const isSolo = maxTeamSize === TeamSize.Solo;
+    const isSolo = teamSize === TeamSize.Solo;
 
     for (
         const [size, btn] of (
@@ -93,9 +92,7 @@ export function resetPlayButtons(game: Game): void { // TODO Refactor this metho
                 [TeamSize.Squad, ui.playSquadBtn]
             ]
         )
-        // stfu
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
-    ) btn.toggleClass("locked", maxTeamSize !== undefined && maxTeamSize !== size);
+    ) btn.toggleClass("locked", teamSize !== undefined && teamSize !== size);
 
     ui.teamOptionBtns.toggleClass("locked", isSolo);
 
@@ -144,66 +141,80 @@ export async function fetchServerData(game: Game): Promise<void> {
         );
     }
 
+    let receivedPunishment = false;
     ui.loaderText.text(getTranslatedString("loading_fetching_data"));
     const regionPromises = Object.entries(regionMap).map(async([_, [regionID, region]]) => {
         const listItem = regionUICache[regionID];
 
         const pingStartTime = Date.now();
 
-        let serverInfo: ServerInfo | undefined;
+        type ServerInfoResponse = ServerInfo & { readonly punishment?: PunishmentMessage };
+        let info: ServerInfoResponse | undefined;
 
         for (let attempts = 0; attempts < 3; attempts++) {
-            console.log(`Loading server info for region ${regionID}: ${region.mainAddress} (attempt ${attempts + 1} of 3)`);
+            console.log(`Loading server info for region ${regionID}: ${region.address} (attempt ${attempts + 1} of 3)`);
             try {
-                const response = await fetch(`${region.mainAddress}/api/serverInfo`, { signal: AbortSignal.timeout(10000) });
-                serverInfo = await response.json() as ServerInfo;
-                if (serverInfo) break;
+                const response = await fetch(`${region.address}/api/serverInfo`, { signal: AbortSignal.timeout(10000) });
+                info = await response.json() as ServerInfoResponse;
+                if (info) break;
             } catch (e) {
                 console.error(`Error loading server info for region ${regionID}. Details:`, e);
             }
         }
 
-        if (!serverInfo) {
+        if (!info) {
             console.error(`Unable to load server info for region ${regionID} after 3 attempts`);
             return;
         }
 
-        if (serverInfo.protocolVersion !== GameConstants.protocolVersion) {
-            console.error(`Protocol version mismatch for region ${regionID}. Expected ${GameConstants.protocolVersion} (ours), got ${serverInfo.protocolVersion} (theirs)`);
+        if (info.protocolVersion !== GameConstants.protocolVersion) {
+            console.error(`Protocol version mismatch for region ${regionID}. Expected ${GameConstants.protocolVersion} (ours), got ${info.protocolVersion} (theirs)`);
             return;
+        }
+
+        if (info.punishment && !receivedPunishment) {
+            receivedPunishment = true;
+            const punishment = info.punishment;
+            const reportID = punishment.reportID ?? "No report ID provided.";
+            const message = getTranslatedString(`msg_punishment_${punishment.message}_reason`, { reason: punishment.reason ?? getTranslatedString("msg_no_reason") });
+
+            ui.warningTitle.text(getTranslatedString(`msg_punishment_${punishment.message}`));
+            ui.warningText.html(`${punishment.message !== "vpn" ? `<span class="case-id">Case ID: ${reportID}</span><br><br><br>` : ""}${message}`);
+            ui.warningAgreeOpts.toggle(punishment.message === "warn");
+            ui.warningAgreeCheckbox.prop("checked", false);
+            ui.warningModal.show();
+            ui.splashOptions.addClass("loading");
         }
 
         regionInfo[regionID] = {
             ...region,
-            ...serverInfo,
+            ...info,
             ping: Date.now() - pingStartTime
         };
 
-        listItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
+        listItem.find(".server-player-count").text(info.playerCount ?? "-");
 
         console.log(`Loaded server info for region ${regionID}`);
     });
     await Promise.all(regionPromises);
 
     const pad = (n: number): string | number => n < 10 ? `0${n}` : n;
-    const getTimeString = (millis: number | undefined): string => {
-        if (millis === undefined) return "--:--:--";
+    const setTimeString = (elem: JQuery, millis: number): void => {
+        if (millis === Infinity) return;
 
         const days = Math.floor(millis / (1000 * 60 * 60 * 24));
         const hours = Math.floor(millis / (1000 * 60 * 60)) % 24;
         const minutes = Math.floor(millis / (1000 * 60)) % 60;
         const seconds = Math.floor(millis / 1000) % 60;
-        return `${days > 0 ? `${pad(days)}:` : ""}${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        elem.text(`${days > 0 ? `${pad(days)}:` : ""}${pad(hours)}:${pad(minutes)}:${pad(seconds)}`);
     };
     const updateSwitchTime = (): void => {
         if (!selectedRegion) return;
-        const { maxTeamSizeSwitchTime, modeSwitchTime } = selectedRegion;
+        const { teamSizeSwitchTime, modeSwitchTime } = selectedRegion;
 
         const now = Date.now();
-        const [timeBeforeTeamSizeSwitch, timeBeforeModeSwitch] = [
-            (maxTeamSizeSwitchTime ?? Infinity) - now,
-            (modeSwitchTime ?? Infinity) - now
-        ];
+        const timeBeforeTeamSizeSwitch = (teamSizeSwitchTime ?? Infinity) - now;
+        const timeBeforeModeSwitch = (modeSwitchTime ?? Infinity) - now;
 
         if (
             (timeBeforeTeamSizeSwitch < 0 && !game.gameStarted)
@@ -213,8 +224,8 @@ export async function fetchServerData(game: Game): Promise<void> {
             return;
         }
 
-        ui.teamSizeSwitchTime.text(getTimeString(timeBeforeTeamSizeSwitch));
-        ui.modeSwitchTime.text(getTimeString(timeBeforeModeSwitch));
+        setTimeString(ui.teamSizeSwitchTime, timeBeforeTeamSizeSwitch);
+        setTimeString(ui.modeSwitchTime, timeBeforeModeSwitch);
     };
     setInterval(updateSwitchTime, 1000);
 
@@ -407,77 +418,38 @@ export async function setUpUI(game: Game): Promise<void> {
 
         const target = selectedRegion;
 
-        void $.get(
-            `${target.mainAddress}/api/getGame${teamID ? `?teamID=${teamID}` : ""}`,
-            (data: GetGameResponse) => {
-                if (data.success) {
-                    const params = new URLSearchParams();
+        const params = new URLSearchParams();
 
-                    if (teamID) params.set("teamID", teamID);
-                    if (autoFill) params.set("autoFill", String(autoFill));
+        if (teamID) params.set("teamID", teamID);
+        if (autoFill) params.set("autoFill", String(autoFill));
 
-                    const devPass = game.console.getBuiltInCVar("dv_password");
-                    if (devPass) params.set("password", devPass);
+        const devPass = game.console.getBuiltInCVar("dv_password");
+        if (devPass) params.set("password", devPass);
 
-                    const role = game.console.getBuiltInCVar("dv_role");
-                    if (role) params.set("role", role);
+        const role = game.console.getBuiltInCVar("dv_role");
+        if (role) params.set("role", role);
 
-                    const lobbyClearing = game.console.getBuiltInCVar("dv_lobby_clearing");
-                    if (lobbyClearing) params.set("lobbyClearing", "true");
+        const lobbyClearing = game.console.getBuiltInCVar("dv_lobby_clearing");
+        if (lobbyClearing) params.set("lobbyClearing", "true");
 
-                    const weaponPreset = game.console.getBuiltInCVar("dv_weapon_preset");
-                    if (weaponPreset) params.set("weaponPreset", weaponPreset);
+        const weaponPreset = game.console.getBuiltInCVar("dv_weapon_preset");
+        if (weaponPreset) params.set("weaponPreset", weaponPreset);
 
-                    const nameColor = game.console.getBuiltInCVar("dv_name_color");
-                    if (nameColor) {
-                        try {
-                            params.set("nameColor", new Color(nameColor).toNumber().toString());
-                        } catch (e) {
-                            game.console.setBuiltInCVar("dv_name_color", "");
-                            console.error(e);
-                        }
-                    }
-
-                    game.connect(`${target.gameAddress.replace("<ID>", (data.gameID + 1).toString())}/play?${params.toString()}`);
-                    ui.splashMsg.hide();
-
-                    // Check again because there is a small chance that the create-team-menu element won't hide.
-                    if (createTeamMenu.css("display") !== "none") createTeamMenu.hide(); // what the if condition doin
-                } else {
-                    game.connecting = false;
-
-                    if (data.message !== undefined) {
-                        const reportID = data.reportID || "No report ID provided.";
-                        const message = getTranslatedString(`msg_punishment_${data.message}_reason`, { reason: data.reason ?? getTranslatedString("msg_no_reason") });
-
-                        ui.warningTitle.text(getTranslatedString(`msg_punishment_${data.message}`));
-                        ui.warningText.html(`${data.message !== "vpn" ? `<span class="case-id">Case ID: ${reportID}</span><br><br><br>` : ""}${message}`);
-                        ui.warningAgreeOpts.toggle(data.message === "warn");
-                        ui.warningAgreeCheckbox.prop("checked", false);
-                        ui.warningModal.show();
-                        ui.splashOptions.addClass("loading");
-                    } else {
-                        ui.splashMsgText.html(html`
-                            ${getTranslatedString("msg_err_joining")}
-                            <br>
-                            ${getTranslatedString("msg_try_again")}
-                        `);
-                        ui.splashMsg.show();
-                    }
-
-                    resetPlayButtons(game);
-                }
+        const nameColor = game.console.getBuiltInCVar("dv_name_color");
+        if (nameColor) {
+            try {
+                params.set("nameColor", new Color(nameColor).toNumber().toString());
+            } catch (e) {
+                game.console.setBuiltInCVar("dv_name_color", "");
+                console.error(e);
             }
-        ).fail(() => {
-            game.connecting = false;
-            ui.splashMsgText.html(html`
-                ${getTranslatedString("msg_err_finding")}
-                <br>
-                ${getTranslatedString("msg_try_again")}
-            `);
-            ui.splashMsg.show();
-            resetPlayButtons(game);
-        });
+        }
+
+        game.connect(`${target.address.replace("http", "ws")}/play?${params.toString()}`);
+        ui.splashMsg.hide();
+
+        // Check again because there is a small chance that the create-team-menu element won't hide.
+        if (createTeamMenu.css("display") !== "none") createTeamMenu.hide(); // what the if condition doin
     };
 
     let lastPlayButtonClickTime = 0;
@@ -550,7 +522,7 @@ export async function setUpUI(game: Game): Promise<void> {
             }
         }
 
-        teamSocket = new WebSocket(`${selectedRegion.mainAddress.replace("http", "ws")}/team?${params.toString()}`);
+        teamSocket = new WebSocket(`${selectedRegion.address.replace("http", "ws")}/team?${params.toString()}`);
 
         teamSocket.onmessage = (message: MessageEvent<string>): void => {
             const data = JSON.parse(message.data) as CustomTeamMessage;
@@ -2351,15 +2323,13 @@ export async function setUpUI(game: Game): Promise<void> {
         tabContent.show();
     });
 
-    const soloButtons = $<HTMLButtonElement>("#warning-btn-play-solo, #btn-play-solo");
+    const continueBtn = $<HTMLButtonElement>("#warning-continue-btn");
     $<HTMLInputElement>("#warning-modal-agree-checkbox").on("click", function() {
-        soloButtons.toggleClass("btn-disabled", !this.checked);
+        continueBtn.toggleClass("btn-disabled", !this.checked);
     });
 
-    const soloButton = $<HTMLButtonElement>("#btn-play-solo");
-    $("#warning-btn-play-solo").on("click", () => {
+    continueBtn.on("click", () => {
         ui.warningModal.hide();
-        soloButton.trigger("click");
     });
 
     const joinTeam = $("#btn-join-team");
