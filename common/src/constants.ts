@@ -61,7 +61,7 @@ export const GameConstants = {
         [ItemType.Perk]: 3
     } satisfies Record<ItemType, number>,
     defaultSpeedModifiers: {
-        [ItemType.Gun]: 0.85,
+        [ItemType.Gun]: 0.88,
         [ItemType.Melee]: 1,
         [ItemType.Throwable]: 0.92
     } satisfies Record<WeaponTypes, number>,
