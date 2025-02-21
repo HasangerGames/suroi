@@ -1,6 +1,6 @@
-import { Guns } from "@common/definitions/guns";
-import { Melees } from "@common/definitions/melees";
-import { Throwables } from "@common/definitions/throwables";
+import { Guns } from "@common/definitions/items/guns";
+import { Melees } from "@common/definitions/items/melees";
+import { Throwables } from "@common/definitions/items/throwables";
 import { parse } from "hjson";
 import { readdirSync, readFileSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
@@ -11,12 +11,10 @@ export const LANGUAGES_DIRECTORY = "../languages/";
 
 const files = readdirSync(LANGUAGES_DIRECTORY).filter(file => file.endsWith(".hjson"));
 
+const metadataKeys = ["name", "flag", "mandatory", "no_space", "no_resize", "percentage", "html_lang"];
+
 const keyFilter = (key: string): boolean => (
-    key !== "name"
-    && key !== "flag"
-    && key !== "mandatory"
-    && key !== "no_space"
-    && key !== "no_resize"
+    !metadataKeys.includes(key)
     && !Guns.hasString(key)
     && !Melees.hasString(key)
     && !Throwables.hasString(key)
@@ -25,7 +23,11 @@ const keyFilter = (key: string): boolean => (
 const ValidKeys: readonly string[] = Object.keys(parse(readFileSync(`${LANGUAGES_DIRECTORY + REFERENCE_LANGUAGE}.hjson`, "utf8")) as Record<string, unknown>)
     .filter(keyFilter);
 
-export type TranslationManifest = {
+function calculateValidRatio(keys: string[]): number {
+    return keys.filter(key => ValidKeys.includes(key)).length / ValidKeys.length;
+}
+
+export interface TranslationManifest {
     readonly name: string
     readonly flag: string
     readonly percentage: string
@@ -33,7 +35,8 @@ export type TranslationManifest = {
     readonly mandatory?: boolean
     readonly no_resize?: boolean
     readonly no_space?: boolean
-};
+    readonly html_lang?: string
+}
 export type TranslationsManifest = Record<string, TranslationManifest>;
 
 export async function validateTranslations(): Promise<void> {
@@ -53,7 +56,7 @@ This file is a report of all errors and missing keys in the translation files of
     ) {
         const keys = Object.keys(content).filter(keyFilter);
 
-        let languageReportBuffer = `## ${content.flag} ${content.name} (${Math.round(100 * keys.length / ValidKeys.length)}% Complete) - ${filename}\n\n`;
+        let languageReportBuffer = `## ${content.flag} ${content.name} (${Math.round(100 * calculateValidRatio(keys))}% Complete) - ${filename}\n\n`;
 
         // Find invalid keys
         const invalidKeys = keys.filter(k => !ValidKeys.includes(k)).map(key => `- Key \`${key}\` is not a valid key`).join("\n");
@@ -75,12 +78,17 @@ This file is a report of all errors and missing keys in the translation files of
 }
 
 export async function buildTranslations(): Promise<void> {
-    const languages: Record<string, Record<string, string>> = {};
-
-    await Promise.all(
-        files.map(async file => {
-            languages[file.slice(0, -".hjson".length)] = parse(await readFile(LANGUAGES_DIRECTORY + file, "utf8")) as Record<string, string>;
-        })
+    const languages = Object.fromEntries(
+        (
+            await Promise.all(
+                files.map(async file =>
+                    [
+                        file.slice(0, -".hjson".length),
+                        parse(await readFile(LANGUAGES_DIRECTORY + file, "utf8")) as Record<string, string>
+                    ] as const
+                )
+            )
+        ).sort(([nameA], [nameB]) => nameA < nameB ? -1 : 1)
     );
 
     const manifest: TranslationsManifest = {};
@@ -93,7 +101,7 @@ export async function buildTranslations(): Promise<void> {
             mandatory: Boolean(content.mandatory),
             no_resize: Boolean(content.no_resize),
             no_space: Boolean(content.no_space),
-            percentage: content.percentage ?? `${Math.round(100 * Object.keys(content).filter(keyFilter).length / ValidKeys.length)}%`
+            percentage: content.percentage ?? `${Math.round(100 * calculateValidRatio(Object.keys(content)))}%`
         };
 
         filePromises.push(writeFile(`../../client/public/translations/${language}.json`, JSON.stringify(content)));
@@ -114,7 +122,7 @@ export async function buildTypings(keys: readonly string[]): Promise<void> {
         ...Guns.definitions.map(({ idString }) => idString),
         ...Melees.definitions.map(({ idString }) => idString),
         ...Throwables.definitions.map(({ idString }) => idString)
-    ].map(key => `"${key}"`).join("|");
+    ].map(key => `"${key}"`).join("|\n");
     buffer += ";";
 
     await writeFile("../../client/src/typings/translations.ts", buffer);

@@ -1,20 +1,25 @@
-import { Layer } from "@common/constants";
+import { GameConstants, Layer, MapObjectSpawnMode, RotationMode } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
-import { Guns } from "@common/definitions/guns";
+import { Armors } from "@common/definitions/items/armors";
+import { Backpacks } from "@common/definitions/items/backpacks";
+import { Guns } from "@common/definitions/items/guns";
+import { PerkCategories } from "@common/definitions/items/perks";
 import { Loots } from "@common/definitions/loots";
-import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { Mode } from "@common/definitions/modes";
+import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { Orientation, type Variation } from "@common/typings";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Collision } from "@common/utils/math";
-import { ItemType, MapObjectSpawnMode, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-import { type WebSocket } from "uWebSockets.js";
+import { SpawnMode, SpawnOptions } from "../config";
 import { type GunItem } from "../inventory/gunItem";
 import { GameMap } from "../map";
-import { Player, type PlayerContainer } from "../objects/player";
-import { getLootFromTable, LootTables } from "./lootTables";
-import { PerkCategories } from "@common/definitions/perks";
+import { Player } from "../objects/player";
+import { GamePlugin } from "../pluginManager";
+import { getLootFromTable } from "../utils/lootHelpers";
+import { LootTables } from "./lootTables";
 
 export interface RiverDefinition {
     readonly minAmount: number
@@ -25,11 +30,28 @@ export interface RiverDefinition {
     readonly maxWidth: number
     readonly minWideWidth: number
     readonly maxWideWidth: number
+    /**
+     * The number is the amount of the specified obstacle each river will have
+     *
+     * Multiplied by the river width and amount of nodes and divided by a magic number (500)
+     * (division done so the numbers here don't need to be too small / decimals)
+     *
+     * so its kinda of a "density" of obstacles inside a river\
+     * a better way would be to calculate the polygon area of the river\
+     * but that's slower and we don't need to be that accurate
+     *
+     * **NOTE**: obstacles in this object still need `River` or `Trail` spawn mode
+     * for river obstacles that have a fixed amount per game (like river chests)
+     * you should use `MapDefinition.obstacles`
+     */
+    readonly obstacles: Record<ReferenceTo<ObstacleDefinition>, number>
 }
 
 export interface MapDefinition {
     readonly width: number
     readonly height: number
+    readonly mode?: Mode
+    readonly spawn?: SpawnOptions
     readonly oceanSize: number
     readonly beachSize: number
     readonly rivers?: RiverDefinition
@@ -40,8 +62,12 @@ export interface MapDefinition {
         readonly maxWidth: number
         readonly maxHeight: number
         readonly count: number
-        readonly allowedObstacles: Array<ReferenceTo<ObstacleDefinition>>
-        readonly obstacles: Array<{ idString: ReferenceTo<ObstacleDefinition>, min: number, max: number }>
+        readonly allowedObstacles: ReadonlyArray<ReferenceTo<ObstacleDefinition>>
+        readonly obstacles: ReadonlyArray<{
+            readonly idString: ReferenceTo<ObstacleDefinition>
+            readonly min: number
+            readonly max: number
+        }>
     }
 
     readonly bridges?: ReadonlyArray<ReferenceTo<BuildingDefinition>>
@@ -50,7 +76,7 @@ export interface MapDefinition {
     readonly quadBuildingLimit?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly obstacles?: Record<ReferenceTo<ObstacleDefinition>, number>
     readonly obstacleClumps?: readonly ObstacleClump[]
-    readonly loots?: Record<keyof typeof LootTables, number>
+    readonly loots?: Record<keyof typeof LootTables[Mode], number>
 
     readonly places?: ReadonlyArray<{
         readonly name: string
@@ -94,12 +120,19 @@ const maps = {
             minWidth: 12,
             maxWidth: 18,
             minWideWidth: 25,
-            maxWideWidth: 30
+            maxWideWidth: 30,
+            obstacles: {
+                river_rock: 16,
+                lily_pad: 6
+            }
         },
         buildings: {
             large_bridge: 2,
             small_bridge: Infinity,
             port_complex: 1,
+            river_hut_1: 2,
+            river_hut_2: 2,
+            river_hut_3: 2,
             sea_traffic_control: 1,
             tugboat_red: 1,
             tugboat_white: 5,
@@ -110,7 +143,8 @@ const maps = {
             warehouse: 5,
             // firework_warehouse: 1, // birthday mode
             green_house: 3,
-            blue_house: 3,
+            blue_house: 2,
+            blue_house_special: 1,
             red_house: 3,
             red_house_v2: 3,
             construction_site: 1,
@@ -127,6 +161,9 @@ const maps = {
         },
         majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
         quadBuildingLimit: {
+            river_hut_1: 1,
+            river_hut_2: 1,
+            river_hut_3: 1,
             red_house: 1,
             red_house_v2: 1,
             warehouse: 2,
@@ -134,7 +171,8 @@ const maps = {
             blue_house: 1,
             mobile_home: 3,
             porta_potty: 3,
-            construction_site: 1
+            construction_site: 1,
+            blue_house_special: 1
         },
         obstacles: {
             oil_tank: 12,
@@ -149,10 +187,8 @@ const maps = {
             grenade_crate: 35,
             rock: 150,
             river_chest: 1,
-            river_rock: 45,
             bush: 110,
             // birthday_cake: 100, // birthday mode
-            lily_pad: 20,
             blueberry_bush: 30,
             barrel: 80,
             viking_chest: 1,
@@ -160,7 +196,8 @@ const maps = {
             melee_crate: 1,
             gold_rock: 1,
             loot_barrel: 1,
-            flint_stone: 1
+            flint_stone: 1,
+            monument: 1
         },
         obstacleClumps: [
             {
@@ -219,7 +256,11 @@ const maps = {
             maxWidth: 18,
             minWideWidth: 25,
             maxWideWidth: 28,
-            maxWideAmount: 1
+            maxWideAmount: 1,
+            obstacles: {
+                river_rock: 16,
+                lily_pad: 6
+            }
         },
         trails: {
             minAmount: 2,
@@ -229,7 +270,10 @@ const maps = {
             maxWidth: 4,
             minWideWidth: 3,
             maxWideWidth: 5,
-            maxWideAmount: 1
+            maxWideAmount: 1,
+            obstacles: {
+                pebble: 300
+            }
         },
         clearings: {
             minWidth: 200,
@@ -247,6 +291,9 @@ const maps = {
             ]
         },
         buildings: {
+            river_hut_4: 3,
+            river_hut_5: 3,
+            river_hut_6: 3,
             small_bridge: Infinity,
             plumpkin_bunker: 1,
             sea_traffic_control: 1,
@@ -275,6 +322,9 @@ const maps = {
         },
         majorBuildings: ["bombed_armory", "lodge", "plumpkin_bunker"],
         quadBuildingLimit: {
+            river_hut_4: 2,
+            river_hut_5: 2,
+            river_hut_6: 2,
             barn: 1,
             outhouse: 3,
             red_house: 1,
@@ -303,10 +353,8 @@ const maps = {
             rock: 220,
             clearing_boulder: 15,
             river_chest: 1,
-            river_rock: 60,
             vibrant_bush: 200,
             oak_leaf_pile: 200,
-            lily_pad: 50,
             barrel: 90,
             viking_chest: 1,
             super_barrel: 35,
@@ -317,7 +365,7 @@ const maps = {
             flint_stone: 1,
             pumpkin: 200,
             large_pumpkin: 5,
-            pebble: 110
+            monument: 1
         },
         obstacleClumps: [
             {
@@ -386,7 +434,11 @@ const maps = {
             maxWidth: 18,
             minWideWidth: 25,
             maxWideWidth: 28,
-            maxWideAmount: 1
+            maxWideAmount: 1,
+            obstacles: {
+                river_rock: 16,
+                lily_pad: 6
+            }
         },
         trails: {
             minAmount: 4,
@@ -396,7 +448,10 @@ const maps = {
             maxWidth: 4,
             minWideWidth: 3,
             maxWideWidth: 5,
-            maxWideAmount: 1
+            maxWideAmount: 1,
+            obstacles: {
+                pebble: 300
+            }
         },
         clearings: {
             minWidth: 200,
@@ -472,10 +527,8 @@ const maps = {
             rock: 220,
             clearing_boulder: 15,
             river_chest: 1,
-            river_rock: 60,
             vibrant_bush: 200,
             oak_leaf_pile: 200,
-            lily_pad: 50,
             barrel: 90,
             jack_o_lantern: 75,
             viking_chest: 1,
@@ -488,7 +541,7 @@ const maps = {
             pumpkin: 300,
             large_pumpkin: 40,
             plumpkin: 5,
-            pebble: 110
+            monument: 1
         },
         obstacleClumps: [
             {
@@ -547,7 +600,10 @@ const maps = {
             minWidth: 12,
             maxWidth: 18,
             minWideWidth: 25,
-            maxWideWidth: 30
+            maxWideWidth: 30,
+            obstacles: {
+                river_rock: 16
+            }
         },
         buildings: {
             large_bridge: 2,
@@ -563,7 +619,8 @@ const maps = {
             warehouse: 4,
             christmas_camp: 1,
             green_house: 3,
-            blue_house: 3,
+            blue_house: 2,
+            blue_house_special: 1,
             red_house: 3,
             red_house_v2: 3,
             construction_site: 1,
@@ -587,7 +644,8 @@ const maps = {
             blue_house: 1,
             mobile_home: 3,
             porta_potty: 3,
-            construction_site: 1
+            construction_site: 1,
+            blue_house_special: 1
         },
         obstacles: {
             oil_tank_winter: 12,
@@ -602,7 +660,6 @@ const maps = {
             grenade_crate_winter: 35,
             rock: 150,
             river_chest: 1,
-            river_rock: 45,
             bush: 110,
             // birthday_cake: 100, // birthday mode
             blueberry_bush: 30,
@@ -612,7 +669,8 @@ const maps = {
             melee_crate_winter: 1,
             gold_rock: 1,
             loot_barrel: 1,
-            flint_stone_winter: 1
+            flint_stone_winter: 1,
+            monument: 1
         },
         obstacleClumps: [
             {
@@ -661,6 +719,7 @@ const maps = {
     debug: {
         width: 1620,
         height: 1620,
+        spawn: { mode: SpawnMode.Center },
         oceanSize: 128,
         beachSize: 32,
         onGenerate(map) {
@@ -721,6 +780,7 @@ const maps = {
     arena: {
         width: 512,
         height: 512,
+        spawn: { mode: SpawnMode.Center },
         beachSize: 16,
         oceanSize: 40,
         onGenerate(map) {
@@ -835,6 +895,7 @@ const maps = {
     singleBuilding: {
         width: 1024,
         height: 1024,
+        spawn: { mode: SpawnMode.Center },
         beachSize: 32,
         oceanSize: 64,
         onGenerate(map, [building]) {
@@ -848,6 +909,7 @@ const maps = {
     singleObstacle: {
         width: 256,
         height: 256,
+        spawn: { mode: SpawnMode.Center },
         beachSize: 8,
         oceanSize: 8,
         onGenerate(map, [obstacle]) {
@@ -857,6 +919,7 @@ const maps = {
     singleGun: {
         width: 256,
         height: 256,
+        spawn: { mode: SpawnMode.Center },
         beachSize: 8,
         oceanSize: 8,
         onGenerate(map, [gun]) {
@@ -865,33 +928,64 @@ const maps = {
         }
     },
     gunsTest: (() => {
-        const Guns = Loots.byType(ItemType.Gun);
-
         return {
-            width: 64,
-            height: 48 + (16 * Guns.length),
-            beachSize: 8,
-            oceanSize: 8,
+            width: 64 * 8,
+            height: 48 + (6 * Guns.definitions.length),
+            beachSize: 0,
+            oceanSize: 0,
             onGenerate(map) {
-                for (let i = 0, l = Guns.length; i < l; i++) {
-                    const player = new Player(
-                        map.game,
-                        { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>,
-                        Vec.create(32, 32 + (16 * i))
-                    );
-                    const gun = Guns[i];
+                const game = map.game;
 
-                    player.inventory.addOrReplaceWeapon(0, gun.idString);
-                    (player.inventory.getWeapon(0) as GunItem).ammo = gun.capacity;
-                    player.inventory.items.setItem(gun.ammoType, Infinity);
-                    player.disableInvulnerability();
-                    // setInterval(() => player.activeItem.useItem(), 30);
-                    map.game.addLoot(gun.idString, Vec.create(16, 32 + (16 * i)), 0);
-                    map.game.addLoot(gun.ammoType, Vec.create(16, 32 + (16 * i)), 0, { count: Infinity });
-                    map.game.grid.addObject(player);
-                }
+                game.pluginManager.loadPlugin(
+                    class extends GamePlugin {
+                        protected initListeners(): void {
+                            this.on("game_created", _game => {
+                                if (_game !== game) return;
+                                const createBot = (name: string): Player | undefined => {
+                                    const bot = game.addPlayer(undefined, { isDev: false, autoFill: false, ip: undefined, lobbyClearing: false, weaponPreset: "" });
+
+                                    if (bot !== undefined) {
+                                        game.activatePlayer(
+                                            bot,
+                                            {
+                                                name,
+                                                isMobile: false,
+                                                skin: Loots.fromString("hazel_jumpsuit"),
+                                                emotes: Array.from({ length: 6 }, () => undefined),
+                                                protocolVersion: GameConstants.protocolVersion
+                                            }
+                                        );
+                                    }
+
+                                    return bot;
+                                };
+
+                                const teleportPlayer = (player: Player, position: Vector): void => {
+                                    player.position = position;
+                                    player.updateObjects = true;
+                                    player.game.grid.updateObject(player);
+                                    player.setDirty();
+                                };
+
+                                for (let i = 0, l = Guns.definitions.length; i < l; i++) {
+                                    const player = createBot(`bot ${i}`);
+                                    if (player === undefined) return;
+                                    teleportPlayer(player, Vec.create(256, 24 + 6 * i));
+                                    const gun = Guns.definitions[i];
+
+                                    player.inventory.addOrReplaceWeapon(0, gun.idString);
+                                    (player.inventory.getWeapon(0) as GunItem).ammo = gun.capacity;
+                                    player.inventory.items.setItem(gun.ammoType, Infinity);
+                                    player.disableInvulnerability();
+                                    // map.game.addLoot(gun.idString, Vec.create(16, 32 + 16 * i), 0);
+                                    // map.game.addLoot(gun.ammoType, Vec.create(16, 32 + 16 * i), 0, { count: Infinity });
+                                }
+                            });
+                        }
+                    }
+                );
             }
-        };
+        } satisfies MapDefinition;
     })(),
     obstaclesTest: {
         width: 128,
@@ -921,6 +1015,23 @@ const maps = {
                     if (random(0, 1) === 1) map.generateObstacle("barrel", Vec.create(x, y));
                 }
             }
+        }
+    },
+    lootTest: {
+        width: 256,
+        height: 256,
+        spawn: { mode: SpawnMode.Center },
+        beachSize: 16,
+        oceanSize: 16,
+        onGenerate(map) {
+            const { game } = map;
+            let x = 88;
+            [
+                ...Armors.definitions,
+                ...Backpacks.definitions
+            ].map(({ idString }) => idString).filter(idString => idString !== "bag" && idString !== "developr_vest").forEach(loot => {
+                game.addLoot(Loots.fromString(loot), Vec.create(x = x + 8, 120), 0, { pushVel: 0, jitterSpawn: false });
+            });
         }
     },
     river: {
@@ -1047,7 +1158,7 @@ const maps = {
 
                         const position = map.getRandomPosition(definition.spawnHitbox, {
                             orientation,
-                            spawnMode: definition.spawnMode,
+                            spawnMode: definition.spawnMode ?? MapObjectSpawnMode.Grass,
                             orientationConsumer: (newOrientation: Orientation) => {
                                 orientation = newOrientation;
                             },
@@ -1101,7 +1212,7 @@ const maps = {
 
             Object.entries(loots ?? {}).forEach(([lootTable, count]) => {
                 for (let i = 0; i < count; i++) {
-                    const loot = getLootFromTable(lootTable);
+                    const loot = getLootFromTable("normal", lootTable);
 
                     const position = map.getRandomPosition(
                         new CircleHitbox(5),

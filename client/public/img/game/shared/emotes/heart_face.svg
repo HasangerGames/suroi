@@ -7,7 +7,7 @@
    viewBox="0 0 22.225 22.225001"
    version="1.1"
    id="svg8"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
    sodipodi:docname="heart_face.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -108,7 +108,7 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="3.5629552"
-     inkscape:cx="-15.997956"
+     inkscape:cx="-16.278622"
      inkscape:cy="42.941882"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -121,7 +121,7 @@
      inkscape:snap-grids="true"
      inkscape:snap-to-guides="true"
      inkscape:window-width="2560"
-     inkscape:window-height="1372"
+     inkscape:window-height="1368"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -137,7 +137,10 @@
        visible="false"
        empspacing="5"
        originx="0"
-       originy="0" />
+       originy="0"
+       spacingy="1"
+       spacingx="1"
+       units="px" />
   </sodipodi:namedview>
   <metadata
      id="metadata5">
@@ -159,12 +162,12 @@
        id="g863"
        transform="matrix(0.65625035,0,0,0.65625035,1.2293445e-7,62.914094)">
       <ellipse
-         style="fill:#ff91cd;fill-opacity:1;fill-rule:nonzero;stroke:#ff058d;stroke-width:3.10769;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+         style="fill:#ff91cd;fill-opacity:1;fill-rule:nonzero;stroke:#ff058d;stroke-width:1.55384;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="path10"
-         cx="16.933355"
-         cy="199.95633"
-         rx="15.37951"
-         ry="15.379479" />
+         cx="16.933329"
+         cy="199.9563"
+         rx="16.156408"
+         ry="16.156376" />
       <path
          style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#d30073;stroke-width:2.02;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke markers fill"
          d="m 7.4959156,204.40486 c -0.1581234,-0.33549 8.4163084,11.28542 18.8662754,0"

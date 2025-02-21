@@ -28,18 +28,164 @@
 <body>
   <pre>
 # Changelog
+v0.23.2 - [RELEASE_DATE]
+- Games are now longer; the final zone has had its duration significantly increased.
+- 2x is now the default scope across all modes.
+- Renamed the 15x scope to "16x Scope".
+- Added new obstacle: surviv.io monument.
+- Optimized smoke grenade performance.
+- Reanimated the baseball bat, it now has a new animation.
+- Reduced the health of several obstacles, including the box, trash bag, dumpster, trash can, and large refinery barrel.
+- Added gun mounts for model 37 and sks, they can sometimes replace the hp-18 mount in the green house.
+- Updated DEagle loot images.
+- Added cracks to the breakable wall in the bombed armory to make it more obvious.
+- Updated several melee animations.
+- Tweaked several gun world images.
+- Fixed a bug with cooler graphics gun gas particles.
+- Fixed perks not showing when movement smoothing is disabled.
+- Fixed some issues with river obstacle generation.
+- Fixed a bug where perks wouldn't be displayed during spectating.
+- Fixed a bug where the action timer would show up between players during spectating.
+- Fixed a bug with the tear gas crate.
+- Fixed an issue where the gas area wouldn't be displayed correctly sometimes.
+- Fixed an issue where the rules and the tutorial button would be too wide on mobile.
 
-[VERSION] - [RELEASE_DATE]
-- Fixed a bug where displayed players would have a "image not found/null" badge in the player team menu.
-- Fixed the scale of cz-75a's killfeed image.
-- Fixed a bug where the teammates' container UI would overlap with the gas timer.
-- Fixed an issue where the team container in game would not be properly scaled in some screen sizes.
-- Fixed a bug where the game would crash if you had a language other than english selected.
+## Balance changes
+- Decreased tracer opacity of suppressed weapons
+- Gas is now much less aggressive.
+- During the final stages of the game, gas damage will now increase additively after staying in the zone for 10 seconds without leaving to stop zone campers.
+- Increased obstacle damage multiplier to 2x for most explosions.
+
+- All sniper rifles except the CZ-600 now spawn with a scope:
+   - mosin-nagant, rg scout, mk-18 mjölnir: 4x scope.
+   - tango 51, vks vykhlop: 8x scope.
+   - l115a1: 16x scope.
+
+- Hatchet
+   - damage decreased to 38 (from 45).
+   - cooldown increased to 420 (from 350).
+
+- M590M
+  - bullet damage increased to 40 (from 30).
+  - shrapnel damage increased to 3 (from 2).
+
+- HP-18
+  - Obstacle multiplier increased from 0.5 to 1.
+
+- Gauze
+  - healing increased from 15 to 20.
+
+v0.23.1 - [1/27/2025]
+- Added the pan and the pan stove.
+- Added 10 new emotes.
+- The gas now shrinks more gradually.
+- Increased movement speed slightly.
+- Redesigned equipment loot and world images.
+- Bridges are now more common, thanks to improvements and fixes in generation code.
+- Optimized sounds and improved sound loading, reducing RAM usage by about 150 MB.
+- Various under-the-hood optimizations.
+- Improved mobile UI.
+- Improved performance on main menu.
+- Added a scope to the Mosin-Nagant to help differentiate it from other guns.
+- Limited radios to 3 uses to prevent abuse.
+- Slowed down scope animation.
+- Added the ghillie suit as a possible drop from the washing machine, and increased the chance of the basic outfit dropping.
+- Downed players no longer play bleeding noises after the game has ended.
+- New floor patterns in armory and refinery.
+- Decreased box texture outline thickness.
+- Updated some translations.
+- Fixed the page reloading after winning the game in some cases.
+- Fixed the game switching to spectating immediately on death.
+- Fixed teammate names not updating when spectating.
+- Fixed the font for teammate names not loading.
+- Fixed issues with several textures:
+  - Plumpkin bunker floor
+  - Airdrop crate
+  - Speaker
+  - Fire hatchet case
+  - Container ceiling
+  - Port warehouse door
+  - Refinery explosion debris
+  - Sound Designr badge
+  - Donatr badge
+- Fixed the color of the ghillie suit exactly matching the color of grass (it's supposed to be slightly darker).
+- Fixed objects visibly disappearing when switching from a higher to a lower scope.
+- Fixed the "Hide Emotes" option making it impossible to use map pings, and hiding team emotes (i.e. requesting healing items and ammo).
+- Fixed menu music not looping.
+- Fixed some server crash exploits and improved error handling.
+
+v0.23.0 - [1/15/2025]
+- Added mode switching.
+- Added a variation of the blue house with a basement.
+- Added the river hut.
+- Stats are now shown for everyone on your team on the game over screen.
+- Added an improved debug readout, accessible by binding the "Adjust Network Graph Style" keybind.
+- Added back most of the emotes removed in the previous update, tweaked some emotes, and added 1 new emote.
+- Better textures for healing items.
+- Improved textures for grenade, melee, AEGIS, Flint, and ammo crates, and boxes.
+- Changed the way textures are loaded, improving loading times.
+- Improved socials on main menu.
+- Improved barn layout.
+- Nerfed USAS-12 and M590M.
+- Rebalanced Negev.
+- Removed RSh-12 from the headquarters, as it's now found in the blue house basement.
+- Removed SR-25 from airdrops in Harvest mode.
+- Dual M1895 now spawns with 42 rounds of 7.62mm instead of 28.
+- The briefcase in Harvest mode now has a chance to contain the M1 Garand.
+- New CZ-600 and MP40 sounds.
+- Adjusted Micro Uzi and MP40 sounds.
+- Adjusted Lewis Gun and USAS-12 killfeed images.
+- Adjusted Lewis Gun, USAS-12, and M1895 loot images.
+- Renamed RGS to RG Scout, Negev to Negev SF, and MG-36 to MG36.
+- Adjusted container colors.
+- Improved textures for the bunk bed and life preserver.
+- Ambient sounds now fade in/out when entering or exiting bunkers instead of pausing abruptly.
+- Obstacles that are normally hidden on the minimap (e.g. Flint crates) that generate as part of a building are now shown on the minimap.
+- Keybinds are now more permissive and will autocorrect invalid keybinds.
+- Updated various translations.
+- Fixed bugs with explosions.
+- Fixed "JoinPacket not received after 5 seconds" error.
+- Fixed page reloading when the game switches between solos/duos/squads.
+- Fixed 2x scope dropping from players in Harvest mode.
+- Fixed poor distribution of obstacles in rivers.
+- Fixed being able to throw grenades over the vault door in the Plumpkin bunker.
+- Fixed an issue with fonts occasionally not loading in game.
+- Fixed translation/language percentages going higher than 100%.
+
+v0.22.2 - [1/1/2025]
+- Replaced world images for all guns, and renamed some guns.
+- Switched the game back to Harvest mode.
+- Removed spread penalty from dual pistols.
+- New CZ-600 sounds.
+- Buffed G19 and CZ-75A.
+- Increased SKS ammo spawn count (30 -> 60).
+- Buffed Sickle.
+- Removed 8 rarely used emotes.
+- Fixed glass automatic doors continuing to play sounds after destroyed.
+- Fixed loot collisions not checking for layers.
+- Mobile improvements.
+- Updated languages (and added a new one).
+- Tweaked gun casings.
+
+v0.22.1 - [12/22/2024]
+- Switched to Harvest mode. The game will switch back to normal mode Dec 23 at 8 PM EST, then back to Harvest on Dec 31, 8 PM EST.
+- Fixed badges in the custom team menu not rendering.
+- Fixed CZ-75A killfeed image scale.
+- Fixed teammate container UI overlapping with the gas timer.
+- Fixed teammate container UI scaling incorrectly at some screen sizes.
+- Fixed game crashes with a language other than English selected.
 - Fixed some obstacles not having snow in port and large bridge.
-- Fixed a bug where downed players wouldn't be able to see interact messages with doors.
-- Fixed a bug where bullet whiz sounds would be played if the player was in a different layer with the bullet.
+- Fixed downed players not being able to see door interact messages.
+- Fixed bullet whiz sounds playing for bullets on different layers.
+- Fixed the large bridge occasionally spawning in the ocean.
+- Fixed a bug where the killfeed wouldn't show who finished off a downed player.
 - Added a new language select dropdown menu.
-- Updated most languages.
+- Gun mounts are now drawn dynamically, freeing up spritesheet space.
+- Updated Vietnamese and Estonian translations.
+- Added Brazilian Portuguese translations.
+- Decreased the emotes' lifetime to 2 seconds (from 4).
+- Shortened SKS full reload time from 3.2s -> 2.4s.
+
 
 v0.22.0 - [12/10/2024]
 - Implemented a rate limiting function for Emotes and Team Pings. Continuously spamming emotes or pings will now disable your emote wheel for 5 seconds.

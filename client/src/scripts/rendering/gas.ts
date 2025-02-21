@@ -6,7 +6,7 @@ import $ from "jquery";
 import { Graphics } from "pixi.js";
 import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
-import { COLORS, UI_DEBUG_MODE } from "../utils/constants";
+import { UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate } from "../utils/misc";
 
 export class Gas {
@@ -48,6 +48,8 @@ export class Gas {
         };
     }
 
+    private _gasMsgFadeTimeout: number | undefined;
+
     updateFrom(data: UpdatePacketDataOut): void {
         const gas = data.gas;
 
@@ -69,13 +71,14 @@ export class Gas {
             const time = this.currentDuration - Math.round(this.currentDuration * (gasProgress ?? 1));
 
             let gasMessage = "";
+            const finalStage = gas.finalStage;
             switch (this.state) {
                 case GasState.Waiting: {
-                    gasMessage = getTranslatedString("gas_waiting", { time: formatDate(time) });
+                    gasMessage = finalStage ? getTranslatedString("final_gas_waiting", { time: formatDate(time) }) : getTranslatedString("gas_waiting", { time: formatDate(time) });
                     break;
                 }
                 case GasState.Advancing: {
-                    gasMessage = getTranslatedString("gas_advancing");
+                    gasMessage = finalStage ? getTranslatedString("final_gas_advancing") : getTranslatedString("gas_advancing");
                     break;
                 }
                 case GasState.Inactive: {
@@ -103,7 +106,8 @@ export class Gas {
                     this._ui.msgText.css("color", "white");
                 } else {
                     this._ui.msgText.css("color", "cyan");
-                    setTimeout(() => this._ui.msgContainer.fadeOut(1000), 5000);
+                    clearTimeout(this._gasMsgFadeTimeout);
+                    this._gasMsgFadeTimeout = setTimeout(() => this._ui.msgContainer.fadeOut(1000), 5000) as unknown as number;
                 }
             }
         }
@@ -137,7 +141,7 @@ export class GasRender {
     private static readonly _overdraw = 100 * 1000;
     private static readonly _segments = 512;
 
-    constructor(scale: number) {
+    constructor(game: Game, scale: number) {
         this._scale = scale;
 
         this._graphics = new Graphics();
@@ -153,7 +157,7 @@ export class GasRender {
             .lineTo(GasRender._overdraw, GasRender._overdraw)
             .lineTo(-GasRender._overdraw, GasRender._overdraw)
             .closePath()
-            .fill(COLORS.gas)
+            .fill(game.colors.gas)
             .moveTo(0, 1);
 
         const tau = 2 * Math.PI;

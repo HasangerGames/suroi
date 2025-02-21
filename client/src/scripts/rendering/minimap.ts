@@ -10,8 +10,8 @@ import $ from "jquery";
 import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
 import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
-import { COLORS, DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
-import { SuroiSprite, drawGroundGraphics, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
+import { SuroiSprite, drawGroundGraphics, drawHitbox, setOnSpritesheetsLoaded, spritesheetsLoaded, toPixiCoords } from "../utils/pixi";
 import { GasRender } from "./gas";
 
 export class Minimap {
@@ -74,10 +74,10 @@ export class Minimap {
 
     private _margins = Vec.create(0, 0);
 
-    readonly gasRender = new GasRender(1);
+    gasRender: GasRender;
     readonly placesContainer = new Container();
 
-    private _terrain = new Terrain(0, 0, 0, 0, 0, []);
+    private _terrain: Terrain;
     get terrain(): Terrain { return this._terrain; }
 
     readonly pings = new Set<MapPing>();
@@ -98,6 +98,9 @@ export class Minimap {
             throw new Error("Class 'Minimap' has already been instantiated");
         }
         Minimap._instantiated = true;
+
+        this.gasRender = new GasRender(game, 1);
+        this._terrain = new Terrain(0, 0, 0, 0, 0, []);
 
         this._objectsContainer.mask = this.mask;
 
@@ -136,6 +139,16 @@ export class Minimap {
             this.switchToSmallMap();
             e.stopImmediatePropagation();
         });
+
+        if (DEBUG_CLIENT) {
+            game.console.variables.addChangeListener("db_show_hitboxes", (_, newValue) => {
+                if (!this.game.gameStarted) return;
+                if (newValue) {
+                    this.renderMapDebug();
+                }
+                this.debugGraphics.visible = newValue;
+            });
+        }
     }
 
     drawTerrain(ctx: Graphics, scale: number, gridLineWidth: number): void {
@@ -147,13 +160,15 @@ export class Minimap {
             { points: grassPoints }
         ] = [this._terrain.beachHitbox, this._terrain.grassHitbox];
 
+        const colors = this.game.colors;
+
         const beach = scale === 1 ? beachPoints : beachPoints.map(point => Vec.scale(point, scale));
         // The grass is a hole in the map shape, the background clear color is the grass color
         ctx.roundShape(beach, radius);
         ctx.cut();
 
         ctx.roundShape?.(beach, radius);
-        ctx.fill(COLORS.beach);
+        ctx.fill(colors.beach);
 
         const grass = scale === 1 ? grassPoints : grassPoints.map(point => Vec.scale(point, scale));
         ctx.roundShape(grass, radius);
@@ -177,7 +192,7 @@ export class Minimap {
             ctx
                 .beginPath()
                 .roundShape(getRiverPoly(river.bankHitbox.points), 0, true)
-                .fill(river.isTrail ? COLORS.trail : COLORS.riverBank);
+                .fill(river.isTrail ? colors.trail : colors.riverBank);
         }
 
         ctx.beginPath();
@@ -186,11 +201,11 @@ export class Minimap {
                 ctx.roundShape(getRiverPoly(river.waterHitbox.points), 0, true);
             }
         }
-        ctx.fill(COLORS.water);
+        ctx.fill(colors.water);
 
         ctx.beginPath();
         ctx.rect(0, 0, this._width * scale, this._height * scale);
-        ctx.fill(COLORS.water);
+        ctx.fill(colors.water);
         ctx.roundShape(beach, radius);
         ctx.cut();
 
@@ -219,20 +234,29 @@ export class Minimap {
             if (!building.isBuilding) continue;
 
             const definition = building.definition;
-            for (const ground of definition.groundGraphics) {
+            for (const ground of definition.groundGraphics ?? []) {
                 ctx.beginPath();
                 drawGroundGraphics(ground.hitbox.transform(building.position, 1, building.orientation), ctx, scale);
                 ctx.closePath();
                 ctx.fill(ground.color);
             }
         }
+
+        if (DEBUG_CLIENT) {
+            if (this.game.console.getBuiltInCVar("db_show_hitboxes")) {
+                this.renderMapDebug();
+                this.debugGraphics.visible = true;
+            }
+        }
     }
 
-    renderMap(): void {
+    async renderMap(): Promise<void> {
         // Draw the terrain graphics
         const terrainGraphics = this.terrainGraphics;
         terrainGraphics.clear();
         const mapGraphics = new Graphics();
+
+        const colors = this.game.colors;
 
         this.drawTerrain(terrainGraphics, PIXI_SCALE, 6);
         this.drawTerrain(mapGraphics, 1, 2);
@@ -250,9 +274,13 @@ export class Minimap {
         terrainGraphics.rect(-margin, realHeight, realWidth + doubleMargin, margin);
         terrainGraphics.rect(-margin, -margin, margin, realHeight + doubleMargin);
         terrainGraphics.rect(realWidth, -margin, margin, realHeight + doubleMargin);
-        terrainGraphics.fill(COLORS.border);
+        terrainGraphics.fill(colors.border);
 
         this.game.camera.addObject(terrainGraphics);
+
+        if (!spritesheetsLoaded) {
+            await new Promise(resolve => setOnSpritesheetsLoaded(resolve));
+        }
 
         // Draw the minimap objects
         const mapRender = new Container();
@@ -263,7 +291,7 @@ export class Minimap {
                 case ObjectCategory.Obstacle: {
                     const definition = mapObject.definition;
 
-                    let texture = definition.frames.base ?? definition.idString;
+                    let texture = definition.frames?.base ?? definition.idString;
 
                     if (mapObject.variation !== undefined) texture += `_${mapObject.variation + 1}`;
 
@@ -283,33 +311,49 @@ export class Minimap {
                     const definition = mapObject.definition;
                     const rotation = mapObject.rotation;
 
-                    for (const image of definition.floorImages) {
+                    const floorContainer = new Container({
+                        sortableChildren: true,
+                        zIndex: ZIndexes.BuildingsFloor,
+                        rotation,
+                        position: mapObject.position
+                    });
+
+                    for (const image of definition.floorImages ?? []) {
                         const sprite = new SuroiSprite(image.key)
-                            .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.orientation))
-                            .setRotation(rotation + (image.rotation ?? 0))
-                            .setZIndex(ZIndexes.BuildingsFloor);
+                            .setVPos(image.position)
+                            .setRotation(image.rotation ?? 0)
+                            .setZIndex(image.zIndex ?? 0);
 
                         if (image.tint !== undefined) sprite.setTint(image.tint);
                         sprite.scale = Vec.scale(image.scale ?? Vec.create(1, 1), 1 / PIXI_SCALE);
-                        mapRender.addChild(sprite);
+                        floorContainer.addChild(sprite);
                     }
+                    mapRender.addChild(floorContainer);
 
-                    for (const image of definition.ceilingImages) {
+                    const ceilingContainer = new Container({
+                        sortableChildren: true,
+                        zIndex: definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling,
+                        rotation,
+                        position: mapObject.position
+                    });
+
+                    for (const image of definition.ceilingImages ?? []) {
                         const sprite = new SuroiSprite(image.key)
-                            .setVPos(Vec.addAdjust(mapObject.position, image.position, mapObject.orientation))
-                            .setRotation(rotation + (image.rotation ?? 0))
-                            .setZIndex(definition.ceilingZIndex);
+                            .setVPos(image.position)
+                            .setRotation(image.rotation ?? 0)
+                            .setZIndex(image.zIndex ?? 0);
 
                         sprite.scale.set(1 / PIXI_SCALE);
                         sprite.scale.x *= image.scale?.x ?? 1;
                         sprite.scale.y *= image.scale?.y ?? 1;
                         if (image.tint !== undefined) sprite.setTint(image.tint);
-                        mapRender.addChild(sprite);
+                        ceilingContainer.addChild(sprite);
                     }
+                    mapRender.addChild(ceilingContainer);
 
-                    if (definition.graphics.length) {
+                    if (definition.graphics?.length) {
                         const ctx = new Graphics();
-                        ctx.zIndex = definition.graphicsZIndex;
+                        ctx.zIndex = definition.graphicsZIndex ?? ZIndexes.BuildingsFloor;
                         for (const graphics of definition.graphics) {
                             ctx.beginPath();
                             drawGroundGraphics(graphics.hitbox.transform(mapObject.position, 1, mapObject.orientation), ctx, 1);
@@ -333,13 +377,16 @@ export class Minimap {
             resolution: isMobile.any ? 1 : 2
         });
 
-        this.game.pixi.renderer.render({ container: mapRender, target: this._texture, clearColor: COLORS.grass });
+        this.game.pixi.renderer.render({ container: mapRender, target: this._texture, clearColor: colors.grass });
         this.sprite.texture.destroy(true);
         this.sprite.texture = this._texture;
         mapRender.destroy({
             children: true,
             texture: false
         });
+
+        // Wait for font to load
+        await this.game.fontObserver;
 
         // Add the places
         this.placesContainer.removeChildren();
@@ -371,13 +418,11 @@ export class Minimap {
 
             this.placesContainer.addChild(text);
         }
-
-        if (HITBOX_DEBUG_MODE) {
-            this.renderMapDebug();
-        }
     }
 
     renderMapDebug(): void {
+        if (!DEBUG_CLIENT) return;
+
         const debugGraphics = this.debugGraphics;
         debugGraphics.clear();
         debugGraphics.zIndex = 999;
@@ -420,7 +465,7 @@ export class Minimap {
 
     updateFromPacket(mapPacket: MapPacketData): void {
         console.log(`Joining game with seed: ${mapPacket.seed}`);
-        this.game.uiManager.ui.loadingText.text(getTranslatedString("loading_joining_game"));
+        this.game.uiManager.ui.loaderText.text(getTranslatedString("loading_joining_game"));
 
         const width = this._width = mapPacket.width;
         const height = this._height = mapPacket.height;
@@ -446,14 +491,14 @@ export class Minimap {
 
         for (const object of this._objects) {
             if (object.isBuilding) {
-                for (const floor of object.definition.floors) {
+                for (const floor of object.definition.floors ?? []) {
                     const hitbox = floor.hitbox.transform(object.position, 1, object.orientation);
                     this._terrain.addFloor(floor.type, hitbox, floor.layer ?? object.layer ?? 0);
                 }
             }
         }
 
-        this.renderMap();
+        void this.renderMap();
         this.resize();
     }
 
@@ -700,6 +745,13 @@ export class Minimap {
     }
 
     addMapPing(data: PingSerialization): void {
+        if (this.game.inputManager.isMobile) {
+            this.game.inputManager.emoteWheelActive = false;
+            this.game.uiManager.ui.emoteButton
+                .removeClass("btn-alert")
+                .addClass("btn-primary");
+        }
+
         const { position, definition } = data;
         const playerId = definition.isPlayerPing ? (data as PlayerPingSerialization).playerId : undefined;
 

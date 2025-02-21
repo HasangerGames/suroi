@@ -63,7 +63,4 @@ To start the WebSocket server, run this command:
 pnpm start
 ```
 
-Production builds are served using [NGINX](https://nginx.org). A sample configuration file can be found [here](nginx.conf).
-
-## Self-hosting
-Visit [the wiki](https://github.com/HasangerGames/suroi/wiki/Self%E2%80%90hosting) for details on how to self-host.
+Production builds are served using [NGINX](https://nginx.org). ~~Visit [the wiki](https://github.com/HasangerGames/suroi/wiki/Self%E2%80%90hosting) for details on how to self-host.~~ This documentation is outdated and will be updated in the future.

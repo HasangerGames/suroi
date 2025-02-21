@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
    version="1.0"
-   width="24pt"
-   height="24pt"
+   width="32"
+   height="32"
    viewBox="0 0 24 24"
    preserveAspectRatio="xMidYMid"
    id="svg1"
@@ -21,7 +21,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="pt"
+     inkscape:document-units="px"
      inkscape:zoom="6.2708333"
      inkscape:cx="0.71760797"
      inkscape:cy="33.64784"

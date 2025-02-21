@@ -74,16 +74,22 @@ export const Casters = Object.freeze({
             }
         }
     },
-    generateUnionCaster<const T extends string>(options: readonly T[]) {
+    generateUnionCaster: (<const T extends string | number>(options: readonly T[]) => {
         const errorStr = options.map((v, i, a) => `${i === a.length - 1 ? "or " : ""}'${v}'`).join(", ");
+        const isNumeric = !Number.isNaN(+options[0]);
 
         return (val: string): Result<T, string> => {
-            if (options.includes(val as T)) return { res: val as T };
+            const v = (isNumeric ? +val : val) as T;
+            if (options.includes(v)) return { res: v };
 
             return {
                 err: `Value must be either ${errorStr}; received ${val}`
             };
         };
+    }) as {
+        // silly workaround to have overloaded object literal methods
+        <const T extends number>(options: readonly T[]): (val: string) => Result<T, string>
+        <const T extends string>(options: readonly T[]): (val: string) => Result<T, string>
     }
 });
 
@@ -238,9 +244,9 @@ export class ConsoleVariables {
 
     readonly set = (() => {
         type GoofyParameterType<K extends string> = K extends keyof CVarTypeMapping ? ExtractConVarValue<CVarTypeMapping[K]> : Stringable;
-        type Setter = (<K extends string>(key: K, value: GoofyParameterType<K>) => PossibleError<string>) & {
+        type Setter = (<K extends string>(key: K, value: GoofyParameterType<K>, writeToLS?: boolean) => PossibleError<string>) & {
             builtIn: <K extends keyof CVarTypeMapping>(key: K, value: CVarTypeMapping[K]["value"], writeToLS?: boolean) => void
-            custom: (key: string, value: Stringable) => PossibleError<string>
+            custom: (key: string, value: Stringable, writeToLS?: boolean) => PossibleError<string>
         };
 
         const setBuiltIn = <K extends keyof CVarTypeMapping>(key: K, value: CVarTypeMapping[K]["value"], writeToLS = true): PossibleError<string> => {
@@ -258,21 +264,21 @@ export class ConsoleVariables {
             return res;
         };
 
-        const setCustom = (key: string, value: Stringable): PossibleError<string> => {
+        const setCustom = (key: string, value: Stringable, writeToLS = true): PossibleError<string> => {
             const cvar = this._userCVars.get(key);
 
             if (cvar === undefined) {
                 return { err: `Could not find console variable '${key}'` };
             }
 
-            return cvar.setValue(value);
+            return cvar.setValue(value, writeToLS);
         };
-        const fn: Setter = <K extends string>(key: K, value: GoofyParameterType<K>, writeToLs = false): PossibleError<string> => {
+        const fn: Setter = <K extends string>(key: K, value: GoofyParameterType<K>, writeToLS = false): PossibleError<string> => {
             if (key in this._builtInCVars) {
-                return setBuiltIn(key as keyof CVarTypeMapping, value as ExtractConVarValue<CVarTypeMapping[keyof CVarTypeMapping]>, writeToLs);
+                return setBuiltIn(key as keyof CVarTypeMapping, value as ExtractConVarValue<CVarTypeMapping[keyof CVarTypeMapping]>, writeToLS);
             }
 
-            return setCustom(key, value);
+            return setCustom(key, value, writeToLS);
         };
 
         fn.builtIn = setBuiltIn;

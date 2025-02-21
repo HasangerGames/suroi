@@ -3,21 +3,20 @@ import { type BuildingDefinition } from "@common/definitions/buildings";
 import type { LootDefinition } from "@common/definitions/loots";
 import { type PlayerPing } from "@common/definitions/mapPings";
 import { type ObstacleDefinition } from "@common/definitions/obstacles";
-import { type AllowedEmoteSources, type PlayerInputData } from "@common/packets/inputPacket";
+import { type PlayerInputData } from "@common/packets/inputPacket";
 import { type JoinPacketData } from "@common/packets/joinPacket";
-import { Variation, type Orientation } from "@common/typings";
+import { PlayerModifiers, Variation, type Orientation } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
-import { type PlayerModifiers } from "@common/utils/objectDefinitions";
 import { Vector } from "@common/utils/vector";
 import { Config } from "./config";
 import { Airdrop, Game } from "./game";
-import { type InventoryItem } from "./inventory/inventoryItem";
+import type { InventoryItem } from "./inventory/inventory";
 import { Building } from "./objects/building";
 import { DamageParams } from "./objects/gameObject";
 import { Loot, type ItemData } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { Player } from "./objects/player";
-import { Logger } from "./utils/misc";
+import { EmoteDefinition } from "@common/definitions/emotes";
 
 interface PlayerDamageEvent extends DamageParams {
     readonly player: Player
@@ -102,14 +101,28 @@ export const Events = {
      * Emitted on the first tick that a player is attacking (more
      * formally, on the first tick where a player is attacking
      * following a tick where the player was not attacking)
+     *
+     * Cancelling this event causes the active item's `useItem` method
+     * not to be called, and the `startedAttacking` will not be cleared.
+     * This means that next tick, the player will still be considered as
+     * "starting to attack", and this event will be fired again. If this
+     * is undesirable, the event handler can manually set the flag to
+     * false.
      */
-    player_start_attacking: makeEvent(),
+    player_start_attacking: makeEvent(true),
     /**
      * Emitted on the first tick that a player stops attacking
      * (more formally, on the first tick where a player is not
      * attacking following a tick where the player was attacking)
+     *
+     * Cancelling this event causes the active item's `stopUse` method
+     * not to be called, and the `stoppedAttacking` will not be cleared.
+     * This means that next tick, the player will still be considered as
+     * "starting to attack", and this event will be fired again. If this
+     * is undesirable, the event handler can manually set the flag to
+     * false.
      */
-    player_stop_attacking: makeEvent(),
+    player_stop_attacking: makeEvent(true),
     /**
      * Emitted every time an {@link InputPacket} is received.
      * All side-effects from inputs will have already occurred
@@ -443,11 +456,11 @@ export interface EventDataMap {
     }
     readonly player_will_emote: {
         readonly player: Player
-        readonly emote: AllowedEmoteSources
+        readonly emote: EmoteDefinition
     }
     readonly player_did_emote: {
         readonly player: Player
-        readonly emote: AllowedEmoteSources
+        readonly emote: EmoteDefinition
     }
     readonly player_will_map_ping: {
         readonly player: Player
@@ -596,7 +609,7 @@ export interface EventDataMap {
     readonly game_end: Game
 }
 
-type EventTypes = keyof typeof Events;
+export type EventTypes = keyof typeof Events;
 
 type ArgsFor<Key extends EventTypes> = [EventDataMap[Key]] extends [never] ? [] : [EventDataMap[Key]];
 type EventData<Key extends EventTypes> = [
@@ -628,7 +641,7 @@ type EventData<Key extends EventTypes> = [
     )
 ];
 
-export type EventHandler<Ev extends EventTypes = EventTypes> = (...[data, cancel]: [...ArgsFor<Ev>, ...EventData<Ev>]) => void;
+export type EventHandler<Ev extends EventTypes = EventTypes> = (...[data, event]: [...ArgsFor<Ev>, ...EventData<Ev>]) => void;
 
 type EventHandlers = {
     [K in EventTypes]?: Array<EventHandler<K>>
@@ -637,7 +650,7 @@ type EventHandlers = {
 // basically file-scoped access to an emit method
 const pluginDispatchers = new ExtendedMap<
     GamePlugin,
-    <Ev extends EventTypes = EventTypes>(eventType: Ev, ...[data, cancel]: [...ArgsFor<Ev>, ...EventData<Ev>]) => void
+    <Ev extends EventTypes = EventTypes>(eventType: Ev, ...[data, event]: [...ArgsFor<Ev>, ...EventData<Ev>]) => void
 >();
 
 export abstract class GamePlugin {
@@ -658,7 +671,7 @@ export abstract class GamePlugin {
                     } catch (e) {
                         console.error(
                             `While dispatching event '${eventType}', listener at index ${i}`
-                            + `(source: ${this.constructor.name} threw an error (provided below):`
+                            + ` (source: ${this.constructor.name}) threw an error (provided below):`
                         );
                         console.error(e);
                     }
@@ -735,7 +748,7 @@ export class PluginManager {
         try {
             const plugin = new pluginClass(this.game);
             this._plugins.add(plugin);
-            Logger.log(`Game ${this.game.id} | Plugin ${pluginClass.name} loaded`);
+            this.game.log(`Plugin ${pluginClass.name} loaded`);
         } catch (error) {
             console.error(`Failed to load plugin ${pluginClass.name}, err:`, error);
         }

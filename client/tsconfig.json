@@ -20,6 +20,8 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.js",
+    "news/src/**/*.ts",
+    "**/*.svelte",
     "../common/src/",
     "svelte.config.js"
   ]

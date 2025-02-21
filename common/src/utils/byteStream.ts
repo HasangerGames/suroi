@@ -4,8 +4,8 @@ import { Numeric, τ } from "./math";
 // methods document the situations which may lead to undefined behavior
 
 export class ByteStream {
-    protected static readonly decoder = new TextDecoder();
-    protected static readonly encoder = new TextEncoder();
+    static readonly decoder = new TextDecoder();
+    static readonly encoder = new TextEncoder();
 
     private readonly _view: DataView;
     private readonly _u8Array: Uint8Array;
@@ -289,7 +289,7 @@ export class ByteStream {
             chars[i++] = c;
         } while (i < bytes);
 
-        return new TextDecoder().decode(new Uint8Array(chars));
+        return ByteStream.decoder.decode(new Uint8Array(chars));
     }
 
     /**

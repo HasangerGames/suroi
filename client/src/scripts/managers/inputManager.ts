@@ -1,7 +1,7 @@
 import { GameConstants, InputActions } from "@common/constants";
 import { type WeaponDefinition } from "@common/definitions/loots";
-import { Scopes } from "@common/definitions/scopes";
-import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
+import { Scopes } from "@common/definitions/items/scopes";
+import { Throwables, type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { areDifferent, PlayerInputPacket, type InputAction, type PlayerInputData, type SimpleInputActions } from "@common/packets/inputPacket";
 import { Angle, Geometry, Numeric } from "@common/utils/math";
 import { ItemType, type ItemDefinition } from "@common/utils/objectDefinitions";
@@ -118,7 +118,6 @@ export class InputManager {
     private _inputPacketTimer = 0;
 
     update(): void {
-        if (this.game.gameOver) return;
         const packet = {
             movement: { ...this.movement },
             attacking: this.attacking,
@@ -142,7 +141,8 @@ export class InputManager {
                     }
                     : {}
             ),
-            actions: this.actions
+            actions: this.actions,
+            pingSeq: this.game.takePingSeq() + (this.game.gameOver ? 128 : 0) // MSB = "seq only?"
         } as PlayerInputData;
 
         this.turning = false;
@@ -155,7 +155,7 @@ export class InputManager {
         this._inputPacketTimer += this.game.serverDt;
 
         if (
-            !this._lastInputPacket
+            this._lastInputPacket === undefined
             || areDifferent(this._lastInputPacket, packet)
             || this._inputPacketTimer >= 100
         ) {
@@ -212,6 +212,9 @@ export class InputManager {
 
         $("#emote-wheel > .button-center").on("click", () => {
             this.emoteWheelActive = false;
+            this.game.uiManager.ui.emoteButton
+                .removeClass("btn-alert")
+                .addClass("btn-primary");
             this.selectedEmote = undefined;
             this.pingWheelMinimap = false;
             $("#emote-wheel").hide();
@@ -289,13 +292,12 @@ export class InputManager {
             let shootOnRelease = false;
 
             leftJoyStick.on("move", (_, data: JoystickOutputData) => {
-                const movementAngle = -Math.atan2(data.vector.y, data.vector.x);
-
-                this.movementAngle = movementAngle;
+                const angle = -data.angle.radian;
+                this.movementAngle = angle;
                 this.movement.moving = true;
 
                 if (!rightJoyStickUsed && !shootOnRelease) {
-                    this.rotation = movementAngle;
+                    this.rotation = angle;
                     this.turning = true;
                     if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && game.activePlayer) {
                         game.activePlayer.container.rotation = this.rotation;
@@ -309,7 +311,7 @@ export class InputManager {
 
             rightJoyStick.on("move", (_, data) => {
                 rightJoyStickUsed = true;
-                this.rotation = -Math.atan2(data.vector.y, data.vector.x);
+                this.rotation = -data.angle.radian;
                 this.turning = true;
                 const activePlayer = game.activePlayer;
                 if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && activePlayer) {
@@ -342,6 +344,22 @@ export class InputManager {
                 shootOnRelease = false;
             });
         }
+        // Gyro stuff
+        const gyroAngle = game.console.getBuiltInCVar("mb_gyro_angle");
+        if (gyroAngle > 0) {
+            let a = false;
+            let b = false;
+            window.addEventListener("deviceorientation", gyro => {
+                const angle = gyro.beta;
+                if (angle === null) return;
+                a = (angle <= -gyroAngle)
+                    ? (a ? a : game.console.handleQuery("cycle_items -1", "always"), true)
+                    : false;
+                b = (angle >= gyroAngle)
+                    ? (b ? b : game.console.handleQuery("cycle_items 1", "always"), true)
+                    : false;
+            });
+        }
     }
 
     private handleInputEvent(down: boolean, event: KeyboardEvent | MouseEvent | WheelEvent): void {
@@ -369,13 +387,13 @@ export class InputManager {
 
             This only applies to keyboard events
 
-            Also we allow shift and alt to be used normally, because keyboard shortcuts usually involve
+            Also, we allow shift and alt to be used normally, because keyboard shortcuts usually involve
             the meta or control key
         */
 
         if (event instanceof KeyboardEvent) {
             const { key } = event;
-            // This statement cross references and updates focus checks for key presses.
+            // This statement cross-references and updates focus checks for key presses.
             if (down) {
                 this._focusController.add(key);
             } else {
@@ -725,7 +743,7 @@ export class InputManager {
     }
 }
 
-export type CompiledAction = (() => void) & { readonly original: string };
+export type CompiledAction = (() => boolean) & { readonly original: string };
 export type CompiledTuple = readonly [CompiledAction, CompiledAction];
 
 class InputMapper {

@@ -8,7 +8,7 @@
    version="1.1"
    id="svg1"
    sodipodi:docname="bdg_donatr.svg"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
    inkscape:export-filename="boostr.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
@@ -27,12 +27,12 @@
      inkscape:deskcolor="#505050"
      inkscape:document-units="px"
      inkscape:zoom="11.983754"
-     inkscape:cx="30.457903"
-     inkscape:cy="31.417535"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
+     inkscape:cx="30.416178"
+     inkscape:cy="31.417534"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="g5" />
   <defs
@@ -291,18 +291,12 @@
          cx="67.500992"
          r="3.96875"
          transform="matrix(0.53530801,0,0,0.53489744,-4.0929453,-18.362826)" />
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.94792px;font-family:'Russo One';-inkscape-font-specification:'Russo One';fill:#da96e8;fill-opacity:1;fill-rule:evenodd;stroke:#da96e8;stroke-width:0.198698;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-         x="23.864336"
-         y="13.149854"
+      <path
+         d="m 24.174305,11.997405 q 1.843917,0.119219 2.622813,0.119219 0.182803,0 0.286126,-0.103323 0.11127,-0.111271 0.11127,-0.294073 v -0.794792 h -1.502156 q -0.834532,0 -1.216032,-0.373552 -0.373552,-0.3815 -0.373552,-1.2160318 V 9.1758938 q 0,-0.8345316 0.373552,-1.2080838 0.3815,-0.3815002 1.216032,-0.3815002 h 0.158958 L 25.771837,6.870997 h 1.192188 l -0.07948,0.7153128 h 1.271667 v 1.1127088 h -2.145939 q -0.476875,0 -0.476875,0.4768752 v 0.1589584 q 0,0.4768752 0.476875,0.4768752 h 1.104761 q 0.778896,0 1.144501,0.3656046 0.365604,0.365604 0.365604,1.1445 v 0.397396 q 0,0.778896 -0.365604,1.144501 -0.357657,0.365604 -1.136553,0.365604 h -0.222542 l 0.06358,0.715313 h -1.192188 l 0.07948,-0.755053 q -0.921959,-0.04769 -1.677011,-0.119218 z"
          id="text4"
-         transform="scale(1.0428458,0.95891457)"><tspan
-           sodipodi:role="line"
-           id="tspan4"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Russo One';-inkscape-font-specification:'Russo One';fill:#da96e8;fill-opacity:1;stroke-width:0.198698;stroke-dasharray:none"
-           x="23.864336"
-           y="13.149854">$</tspan></text>
+         style="font-size:7.94792px;font-family:'Russo One';-inkscape-font-specification:'Russo One';fill:#da96e8;fill-rule:evenodd;stroke:#da96e8;stroke-width:0.198698;stroke-linecap:round;stroke-linejoin:round"
+         transform="scale(1.0428458,0.95891457)"
+         aria-label="$" />
     </g>
   </g>
 </svg>

@@ -29,7 +29,8 @@
     "msg_better_item_equipped": "Уже экипирован предмет лучше"
     "msg_cannot_use_radio": "Нет связи в здании"
     "msg_radio_overused": "Радио сломалось у вас в руках!"
-
+    "msg_your_team_eliminated": "Ваш отряд был ликвидирован."
+    "msg_the_team_eliminated": "Этот отряд уничтожили."
 
     "msg_waiting_for_leader": "Ожидание лидера"
     "msg_you_died": "Вы померли."
@@ -70,6 +71,12 @@
     "settings_mobile": "Мобильные устройства"
     "settings_require_reload": "* Смена этих настроек требует перезагрузки страницы."
     "settings_performance_warning": "* Эта настройка может вызвать некоторые проблемы на определенных устройствах. Отключите, если не получается зайти в игру."
+
+
+    "wiki": "Вики",
+    "loading_fetching_data_failed": "Извлечение данных не удалось",
+    "retry": "Попробуйте снова",
+    "bindings_toggle pf_net_graph 0 1 2": "Смена стиля интерфейса netgraph",
 
     "settings_master_volume": "Общая громкость"
     "settings_sfx_volume": "Громкость звуков"
@@ -114,7 +121,8 @@
     "settings_mobile_controls": "Включить мобильные настройки"
     "settings_joystick_size": "Размер джойстика"
     "settings_joystick_opacity": "Прозрачность джойстика"
-
+    "settings_gyro_angle": "Угол наклона устройства для быстрой смены оружия"
+    "settings_haptics": "Вибрации устройства"
 
     "loadout_skins": "Скины"
     "loadout_emotes": "Эмоции"
@@ -148,6 +156,8 @@
 
     "gas_waiting": "Токсичный газ будет сужаться через <time>!"
     "gas_advancing": "Токсичный газ приближается! Быстрее бегите к безопасной зоне."
+    "final_gas_waiting": "Финальная зона сузиться через <time>"
+    "final_gas_advancing": "Финальная зона сужается!"
     "gas_inactive": "Ожидание игроков..."
 
 
@@ -157,7 +167,7 @@
     "action_cancel": "Отмена"
     "action_reloading": "Перезарядка..."
     "action_reviving": "Оживление..."
-    "action_being_revived": "Оживляется..." 
+    "action_being_revived": "Оживляется..."
     "action_gauze_use": "Вы перевязываетесь"
     "action_medikit_use": "Вы используете аптечку"
     "action_cola_use": "Вы пьете колу"
@@ -300,7 +310,7 @@
     "2x_scope": "Оптика 2x"
     "4x_scope": "Оптика 4x"
     "8x_scope": "Оптика 8x"
-    "15x_scope": "Оптика 15x"
+    "16x_scope": "Оптика 16x"
 
 
     "region_dev": "Локальный сервер"
@@ -333,7 +343,6 @@
     "steelfang": "Керамбит-коготь"
     "ice_pick": "Ледоруб"
 
-    "feral_claws": "Клыки Росомахи"
     "chainsaw": "Бензопила"
 
     "dual_template": "Двойной <gun>"

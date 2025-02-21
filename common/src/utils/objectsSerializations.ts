@@ -1,14 +1,15 @@
-import { AnimationType, Layer, ObjectCategory, PlayerActions } from "../constants";
-import { Armors, type ArmorDefinition } from "../definitions/armors";
-import { Backpacks, type BackpackDefinition } from "../definitions/backpacks";
+import { AnimationType, Layer, ObjectCategory, PlayerActions, RotationMode } from "../constants";
+import { Armors, type ArmorDefinition } from "../definitions/items/armors";
+import { Backpacks, type BackpackDefinition } from "../definitions/items/backpacks";
 import { Buildings, type BuildingDefinition } from "../definitions/buildings";
 import { Decals, type DecalDefinition } from "../definitions/decals";
-import { type HealingItemDefinition } from "../definitions/healingItems";
+import { type HealingItemDefinition } from "../definitions/items/healingItems";
 import { Loots, type LootDefinition, type WeaponDefinition } from "../definitions/loots";
-import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions/obstacles";
-import { Skins, type SkinDefinition } from "../definitions/skins";
+import { type MeleeDefinition, Melees } from "../definitions/items/melees";
+import { Obstacles, type ObstacleDefinition } from "../definitions/obstacles";
+import { Skins, type SkinDefinition } from "../definitions/items/skins";
 import { SyncedParticles, type SyncedParticleDefinition } from "../definitions/syncedParticles";
-import { type ThrowableDefinition } from "../definitions/throwables";
+import { type ThrowableDefinition } from "../definitions/items/throwables";
 import { type Orientation, type Variation } from "../typings";
 import { Angle, halfπ } from "./math";
 import { type Mutable, type SDeepMutable } from "./misc";
@@ -56,6 +57,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly halloweenThrowableSkin: boolean
             readonly activeDisguise?: ObstacleDefinition
             readonly blockEmoting: boolean
+            readonly backEquippedMelee?: MeleeDefinition
         }
     }
     //
@@ -75,7 +77,6 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             }
             readonly variation?: Variation
             readonly activated?: boolean
-            readonly detectedMetal?: boolean
             readonly door?: {
                 readonly offset: number
                 readonly locked: boolean
@@ -158,16 +159,23 @@ export interface ObjectsNetData extends BaseObjectsNetData {
     // Synced particle data
     //
     readonly [ObjectCategory.SyncedParticle]: {
-        readonly position: Vector
-        readonly rotation: number
+        readonly definition: SyncedParticleDefinition
+        readonly startPosition: Vector
+        readonly endPosition: Vector
         readonly layer: Layer
-        readonly scale?: number
-        readonly alpha?: number
-        readonly full?: {
-            readonly definition: SyncedParticleDefinition
-            readonly variant?: Variation
-            readonly creatorID?: number
+        readonly age: number
+        readonly lifetime?: number
+        readonly angularVelocity?: number
+        readonly scale?: {
+            start: number
+            end: number
         }
+        readonly alpha?: {
+            start: number
+            end: number
+        }
+        readonly variant?: Variation
+        readonly creatorID?: number
     }
 }
 
@@ -235,7 +243,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 backpack,
                 halloweenThrowableSkin,
                 activeDisguise,
-                blockEmoting
+                blockEmoting,
+                backEquippedMelee
             } }
         ): void {
             stream.writeLayer(layer);
@@ -243,6 +252,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const hasHelmet = helmet !== undefined;
             const hasVest = vest !== undefined;
             const hasDisguise = activeDisguise !== undefined;
+            const hasBackEquippedMelee = backEquippedMelee !== undefined;
 
             stream.writeBooleanGroup2(
                 dead,
@@ -254,7 +264,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 hasHelmet,
                 hasVest,
                 hasDisguise,
-                blockEmoting
+                blockEmoting,
+                hasBackEquippedMelee
             );
             stream.writeUint8(teamID);
             Loots.writeToStream(stream, activeItem);
@@ -270,6 +281,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             Backpacks.writeToStream(stream, backpack);
 
             if (hasDisguise) Obstacles.writeToStream(stream, activeDisguise);
+            if (hasBackEquippedMelee) Melees.writeToStream(stream, backEquippedMelee);
         },
         deserializePartial(stream) {
             const data: Mutable<ObjectsNetData[ObjectCategory.Player]> = {
@@ -311,7 +323,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 hasHelmet,
                 hasVest,
                 hasDisguise,
-                blockEmoting
+                blockEmoting,
+                hasBackEquippedMelee
             ] = stream.readBooleanGroup2();
 
             return {
@@ -329,7 +342,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 vest: hasVest ? Armors.readFromStream(stream) : undefined,
                 backpack: Backpacks.readFromStream(stream),
                 activeDisguise: hasDisguise ? Obstacles.readFromStream(stream) : undefined,
-                blockEmoting
+                blockEmoting,
+                backEquippedMelee: hasBackEquippedMelee ? Melees.readFromStream(stream) : undefined
             };
         }
     },
@@ -353,7 +367,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                     rotation,
                     door,
                     activated,
-                    detectedMetal,
                     variation,
                     layer
                 }
@@ -373,7 +386,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 possibly one of:
                     - door stuff
                     - activation stuff
-                    - detector stuff stuff
             */
 
             // variations leave at least 5 vacant bits, which is enough for the rest of our data
@@ -400,10 +412,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             } else if (definition.isActivatable) {
                 // 1 bit
                 obstacleData += activated ? 1 : 0;
-                // will result in something like xxx0000x
-            } else if (definition.detector) {
-                // 1 bit
-                obstacleData += detectedMetal ? 1 : 0;
                 // will result in something like xxx0000x
             }
 
@@ -514,8 +522,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 };
             } else if (definition.isActivatable) {
                 data.activated = stream.readUint8() !== 0;
-            } else if (definition.detector) {
-                data.detectedMetal = stream.readUint8() !== 0;
             }
             */
             const obstacleData = stream.readUint8();
@@ -532,8 +538,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 };
             } else if (definition.isActivatable) {
                 data.activated = (obstacleData & 1) === 1;
-            } else if (definition.detector) {
-                data.detectedMetal = (obstacleData & 1) === 1;
             }
 
             switch (definition.rotationMode) {
@@ -704,83 +708,116 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     },
     [ObjectCategory.SyncedParticle]: {
         serializePartial(stream, data) {
-            const { position, rotation, layer, scale, alpha } = data;
+            const {
+                definition,
+                startPosition,
+                endPosition,
+                layer,
+                age,
+                lifetime,
+                angularVelocity,
+                scale,
+                alpha,
+                variant,
+                creatorID
+            } = data;
 
-            stream.writePosition(position);
-            stream.writeRotation2(rotation);
+            SyncedParticles.writeToStream(stream, definition);
+            stream.writePosition(startPosition);
+            stream.writePosition(endPosition);
             stream.writeLayer(layer);
-            const writeScale = scale !== undefined;
-            const writeAlpha = alpha !== undefined;
-            stream.writeBooleanGroup(
-                writeScale,
-                writeAlpha
-            );
+            stream.writeFloat(age, 0, 1, 1);
 
-            if (writeScale) {
-                stream.writeScale(scale);
+            if (typeof definition.lifetime === "object") {
+                const { min, max } = definition.lifetime;
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                stream.writeFloat(lifetime!, min, max, 1);
             }
 
-            if (writeAlpha) {
-                stream.writeFloat(alpha, 0, 1, 1);
+            if (typeof definition.angularVelocity === "object") {
+                const { min, max } = definition.angularVelocity;
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                stream.writeFloat(angularVelocity!, min, max, 1);
             }
-        },
-        serializeFull(stream, { full }) {
-            SyncedParticles.writeToStream(stream, full.definition);
-            const { variant, creatorID } = full;
-            const hasCreatorId = creatorID !== undefined;
 
-            // similar to obstacles, dedicate up to 3 bits to the variant, and then
-            // add in the 'hasCreatorId' boolean as a 4th bit
-            let data = hasCreatorId ? 1 : 0;
-            if (full.definition.variations !== undefined && variant !== undefined) {
-                data += variant * 2;
-                //                ^ leave the LSB alone
+            if (scale !== undefined) {
+                stream.writeScale(scale.start);
+                stream.writeScale(scale.end);
             }
-            stream.writeUint8(data);
 
-            if (hasCreatorId) {
+            if (alpha !== undefined) {
+                stream.writeFloat(alpha.start, 0, 1, 1);
+                stream.writeFloat(alpha.end, 0, 1, 1);
+            }
+
+            if (definition.variations !== undefined && variant !== undefined) {
+                stream.writeUint8(variant);
+            }
+
+            if (creatorID !== undefined) {
                 stream.writeObjectId(creatorID);
             }
         },
+        serializeFull() { /* no full serialization */ },
         deserializePartial(stream) {
             const data: Mutable<ObjectsNetData[ObjectCategory.SyncedParticle]> = {
-                position: stream.readPosition(),
-                rotation: stream.readRotation2(),
-                layer: stream.readLayer()
+                definition: SyncedParticles.readFromStream(stream),
+                startPosition: stream.readPosition(),
+                endPosition: stream.readPosition(),
+                layer: stream.readLayer(),
+                age: stream.readFloat(0, 1, 1)
             };
 
-            const [
-                hasScale,
-                hasAlpha
-            ] = stream.readBooleanGroup();
+            const {
+                lifetime,
+                angularVelocity,
+                scale,
+                alpha,
+                variations,
+                hasCreatorID
+            } = data.definition;
 
-            if (hasScale) {
-                data.scale = stream.readScale();
+            if (typeof lifetime === "object") {
+                data.lifetime = stream.readFloat(lifetime.min, lifetime.max, 1);
             }
 
-            if (hasAlpha) {
-                data.alpha = stream.readFloat(0, 1, 1);
+            if (typeof angularVelocity === "object") {
+                data.angularVelocity = stream.readFloat(angularVelocity.min, angularVelocity.max, 1);
+            }
+
+            if (typeof scale === "object") {
+                data.scale = {
+                    start: stream.readScale(),
+                    end: stream.readScale()
+                };
+            }
+
+            if (typeof alpha === "object") {
+                data.alpha = {
+                    start: stream.readFloat(0, 1, 1),
+                    end: stream.readFloat(0, 1, 1)
+                };
+            }
+
+            if (variations !== undefined) {
+                data.variant = stream.readUint8() as Variation;
+            }
+
+            if (hasCreatorID) {
+                data.creatorID = stream.readObjectId();
             }
 
             return data;
         },
-        deserializeFull(stream) {
-            const definition = SyncedParticles.readFromStream(stream);
-            const data = stream.readUint8();
-
-            return {
-                definition,
-                variant: definition.variations !== undefined ? (data >> 1) as Variation : undefined,
-                creatorID: (data % 1) !== 0 ? stream.readObjectId() : undefined
-            };
-        }
+        deserializeFull() { /* no full serialization */ }
     },
     [ObjectCategory.ThrowableProjectile]: {
-        serializePartial(strm, data) {
-            strm.writeBooleanGroup(
-                data.airborne,
-                data.activated
-            )
+        serializePartial(stream, data) {
+            stream
+                .writeBooleanGroup(
+                    data.airborne,
+                    data.activated
+                )
                 .writePosition(data.position)
                 .writeRotation2(data.rotation)
                 .writeLayer(data.layer)

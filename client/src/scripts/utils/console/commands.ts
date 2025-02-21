@@ -1,9 +1,9 @@
 // noinspection JSConstantReassignment
 import { GameConstants, InputActions, SpectateActions, TeamSize } from "@common/constants";
-import { HealingItems, type HealingItemDefinition } from "@common/definitions/healingItems";
+import { HealingItems, type HealingItemDefinition } from "@common/definitions/items/healingItems";
 import { Loots } from "@common/definitions/loots";
-import { Scopes, type ScopeDefinition } from "@common/definitions/scopes";
-import { Throwables } from "@common/definitions/throwables";
+import { Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
+import { Throwables } from "@common/definitions/items/throwables";
 import { type InputAction } from "@common/packets/inputPacket";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { Numeric } from "@common/utils/math";
@@ -14,7 +14,6 @@ import { Rectangle, RendererType, Sprite, VERSION } from "pixi.js";
 import { Config, type ServerInfo } from "../../config";
 import { type Game } from "../../game";
 import { type CompiledAction, type CompiledTuple, type InputManager } from "../../managers/inputManager";
-import { COLORS } from "../constants";
 import { sanitizeHTML, stringify } from "../misc";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
@@ -740,29 +739,35 @@ export function setUpCommands(game: Game): void {
         }
     );
 
+    const showEmoteWheel = (): void => {
+        if (!game.inputManager.pingWheelMinimap) {
+            game.inputManager.pingWheelPosition = Vec.clone(game.inputManager.gameMousePosition);
+        }
+
+        const { mouseX, mouseY } = game.inputManager;
+        const scale = game.console.getBuiltInCVar("cv_ui_scale");
+
+        game.uiManager.ui.emoteWheel
+            .css("left", `${mouseX / scale}px`)
+            .css("top", `${mouseY / scale}px`)
+            .css("background-image", 'url("./img/misc/emote_wheel.svg")')
+            .show();
+        game.inputManager.emoteWheelPosition = Vec.create(mouseX, mouseY);
+    };
+
     Command.createInvertiblePair(
         "emote_wheel",
         function() {
+            if (game.inputManager.emoteWheelActive) return;
+
+            game.inputManager.emoteWheelActive = true;
+
             if (
-                game.console.getBuiltInCVar("cv_hide_emotes")
+                (game.console.getBuiltInCVar("cv_hide_emotes") && !this.inputManager.pingWheelActive)
                 || this.gameOver
-                || this.inputManager.emoteWheelActive
             ) return;
-            const { mouseX, mouseY } = this.inputManager;
 
-            const scale = this.console.getBuiltInCVar("cv_ui_scale");
-
-            if (!this.inputManager.pingWheelMinimap) {
-                this.inputManager.pingWheelPosition = Vec.clone(this.inputManager.gameMousePosition);
-            }
-
-            this.uiManager.ui.emoteWheel
-                .css("left", `${mouseX / scale}px`)
-                .css("top", `${mouseY / scale}px`)
-                .css("background-image", 'url("./img/misc/emote_wheel.svg")')
-                .show();
-            this.inputManager.emoteWheelActive = true;
-            this.inputManager.emoteWheelPosition = Vec.create(mouseX, mouseY);
+            showEmoteWheel();
         },
         function() {
             if (!this.inputManager.emoteWheelActive) return;
@@ -807,10 +812,25 @@ export function setUpCommands(game: Game): void {
     Command.createInvertiblePair(
         "map_ping_wheel",
         function() {
+            if (
+                game.console.getBuiltInCVar("cv_hide_emotes")
+                && this.inputManager.emoteWheelActive
+                && !this.inputManager.pingWheelActive
+            ) {
+                showEmoteWheel();
+            }
+
             this.inputManager.pingWheelActive = true;
             this.uiManager.updateEmoteWheel();
         },
         function() {
+            if (game.console.getBuiltInCVar("cv_hide_emotes")) {
+                this.uiManager.ui.emoteWheel.hide();
+                this.inputManager.emoteWheelActive = false;
+                this.inputManager.pingWheelMinimap = false;
+                this.inputManager.selectedEmote = undefined;
+            }
+
             this.inputManager.pingWheelActive = false;
             this.uiManager.updateEmoteWheel();
         },
@@ -868,7 +888,7 @@ export function setUpCommands(game: Game): void {
             );
 
             const canvas = game.pixi.renderer.extract.canvas({
-                clearColor: COLORS.grass,
+                clearColor: game.colors.grass,
                 target: container,
                 frame: rectangle,
                 resolution: container.scale.x,
@@ -989,7 +1009,7 @@ export function setUpCommands(game: Game): void {
 
                 + "<li><details><summary>Alphanumeric keys (case insensitive)</summary>"
                 + `<table style="text-align: center"><thead><tr><td>Input</td><td>"Console" name</td></tr></thead><tbody>${(
-                    [..."ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"].map(
+                    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split("").map(
                         s => [s, s] as const
                     )
                 ).map(([name, code]) => `<tr><td>${name}</td><td><code>${code}</td></tr>`).join("")}</tbody></table>`
@@ -1055,7 +1075,7 @@ export function setUpCommands(game: Game): void {
                 + `<table style="text-align: center"><thead><tr><td>Input</td><td>"Console" name</td></tr></thead><tbody>${(
                     [
                         ["Hyphen-minus (<code>-</code>)", "Minus"],
-                        ["Equals (<code>=</code>)", "Equals"],
+                        ["Equals (<code>=</code>)", "Equal"],
                         ["Opening square bracket (<code>[</code>)", "BracketLeft"],
                         ["Closing square bracket (<code>]</code>)", "BracketRight"],
                         ["Semicolon (<code>;</code>)", "Semicolon"],
@@ -1576,7 +1596,7 @@ export function setUpCommands(game: Game): void {
                 };
             }
 
-            return gameConsole.variables.set(cvar.name, values[(index + 1) % values.length]);
+            return gameConsole.variables.set(cvar.name, values[(index + 1) % values.length], true);
         },
         game,
         {
@@ -1841,8 +1861,8 @@ export function setUpCommands(game: Game): void {
                                     k,
                                     {
                                         ...v,
-                                        ...(typeof v.nextSwitchTime === "number" ? { nextSwitchTime: new Date(v.nextSwitchTime) } : {}),
-                                        ...(typeof v.maxTeamSize === "number" ? { maxTeamSize: TeamSize[v.maxTeamSize] } : {})
+                                        ...(typeof v.teamSizeSwitchTime === "number" ? { teamSizeSwitchTime: new Date(v.teamSizeSwitchTime) } : {}),
+                                        ...(typeof v.teamSize === "number" ? { teamSize: TeamSize[v.teamSize] } : {})
                                     }
                                 ]
                             )

@@ -1,51 +1,45 @@
 import { GameConstants } from "@common/constants";
-import { ColorStyles, styleText } from "@common/utils/ansiColoring";
+import { Mode, Modes } from "@common/definitions/modes";
 import { halfπ, τ } from "@common/utils/math";
-import { NullString, type ObjectDefinition, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { ReferenceOrNull, ReferenceOrRandom, type ObjectDefinition } from "@common/utils/objectDefinitions";
 import { weightedRandom } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-import { Config } from "../config";
+import { Config, MapWithParams } from "../config";
+import { MapName, Maps } from "../data/maps";
 
-export const Logger = {
-    log(...message: string[]): void {
-        internalLog(message.join(" "));
-    },
-    warn(...message: string[]): void {
-        internalLog(styleText("[WARNING]", ColorStyles.foreground.yellow.normal), message.join(" "));
+export function modeFromMap(map: MapWithParams): Mode {
+    const mapName = map.split(":")[0];
+    const mapMode = Maps[mapName as MapName]?.mode;
+    if (mapMode) {
+        return mapMode;
+    } else if (mapName in Modes) {
+        return mapName as Mode;
+    } else {
+        return GameConstants.defaultMode;
     }
-};
-
-function internalLog(...message: string[]): void {
-    const date = new Date();
-
-    console.log(
-        styleText(`[${date.toLocaleDateString("en-US")} ${date.toLocaleTimeString("en-US")}]`, ColorStyles.foreground.green.bright),
-        message.join(" ")
-    );
 }
 
 export function cleanUsername(name?: string | null): string {
-    return (
+    if (
         !name?.length
-        || name.length > 16
+        || name.length > GameConstants.player.nameMaxLength
         || Config.protection?.usernameFilters?.some((regex: RegExp) => regex.test(name))
         || /[^\x20-\x7E]/g.test(name) // extended ASCII chars
-    )
-        ? GameConstants.player.defaultName
-        : name;
+    ) {
+        return GameConstants.player.defaultName;
+    } else {
+        return name;
+    }
 }
 
-export function getRandomIDString<
-    T extends ObjectDefinition,
-    Ref extends ReferenceTo<T> | typeof NullString
->(table: Record<Ref, number> | Ref): Ref {
-    if (typeof table !== "object") return table;
+export function getRandomIDString<T extends ObjectDefinition>(ref: ReferenceOrRandom<T>): ReferenceOrNull<T> {
+    if (typeof ref === "string") return ref;
 
-    const items: Ref[] = [];
+    const items: Array<ReferenceOrNull<T>> = [];
     const weights: number[] = [];
-    for (const item in table) {
+    for (const [item, weight] of Object.entries(ref) as ReadonlyArray<readonly [ReferenceOrNull<T>, number]>) {
         items.push(item);
-        weights.push(table[item]);
+        weights.push(weight);
     }
     return weightedRandom(items, weights);
 }

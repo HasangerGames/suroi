@@ -7,7 +7,7 @@
    viewBox="0 0 22.225 22.225"
    version="1.1"
    id="svg8"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
    sodipodi:docname="disappointed_face.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -82,9 +82,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4.0680236"
-     inkscape:cx="13.274259"
-     inkscape:cy="-27.531797"
+     inkscape:zoom="8.1360472"
+     inkscape:cx="29.498354"
+     inkscape:cy="24.090322"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -96,7 +96,7 @@
      inkscape:snap-grids="true"
      inkscape:snap-to-guides="true"
      inkscape:window-width="2560"
-     inkscape:window-height="1372"
+     inkscape:window-height="1368"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -111,7 +111,10 @@
        visible="false"
        empspacing="5"
        originx="0"
-       originy="0" />
+       originy="0"
+       spacingy="1"
+       spacingx="1"
+       units="px" />
   </sodipodi:namedview>
   <metadata
      id="metadata5">
@@ -132,12 +135,13 @@
     <g
        id="g862"
        transform="matrix(0.65624991,0,0,0.65624991,8.7283575e-6,62.914181)">
-      <circle
-         style="fill:#2fe1ff;fill-opacity:1;fill-rule:nonzero;stroke:#006779;stroke-width:3.10768;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+      <ellipse
+         style="fill:#2fe1ff;fill-opacity:1;fill-rule:nonzero;stroke:#006779;stroke-width:1.55384;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="path10"
-         cx="16.933361"
-         cy="199.95636"
-         r="15.379496" />
+         cx="16.933323"
+         cy="199.95633"
+         rx="16.156416"
+         ry="16.156418" />
       <path
          style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#006779;stroke-width:2.02;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
          d="m 11.63545,207.56391 c 0,0 5.200465,-7.37867 10.595767,0"
@@ -158,8 +162,8 @@
          transform="rotate(-90)"
          r="2.3307664" />
       <path
-         style="fill:#3479ff;fill-opacity:1;stroke:#0058e3;stroke-width:1.55384;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-         d="m 6.6605851,202.97101 c 0,0 -9.4722341,9.47223 -2.3680586,10.65626 7.1041755,1.18403 2.3680586,-10.65626 2.3680586,-10.65626"
+         style="fill:#3479ff;fill-opacity:1;stroke:#0058e3;stroke-width:0.776918;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+         d="m 6.8677212,202.5824 c 0,0 -10.6002341,10.15272 -2.6500586,11.4218 7.9501754,1.26911 2.6500586,-11.4218 2.6500586,-11.4218"
          id="path20635"
          sodipodi:nodetypes="csc" />
       <path

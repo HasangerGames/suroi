@@ -1,7 +1,7 @@
 import { InventoryMessages } from "../constants";
 import { Loots, type LootDefinition } from "../definitions/loots";
 import type { SDeepMutable } from "../utils/misc";
-import { createPacket } from "./packet";
+import { createPacket, DataSplitTypes } from "./packet";
 
 export type PickupPacketData = {
     readonly message?: InventoryMessages
@@ -29,7 +29,8 @@ export const PickupPacket = createPacket("PickupPacket")<PickupPacketData>({
         }
     },
 
-    deserialize(stream) {
+    deserialize(stream, [saveIndex, recordTo]) {
+        saveIndex();
         const pickupData = stream.readUint8();
 
         const hasItem = (pickupData & 128) !== 0;
@@ -43,6 +44,7 @@ export const PickupPacket = createPacket("PickupPacket")<PickupPacketData>({
             obj.message = (pickupData & 0b111) as InventoryMessages;
         }
 
+        recordTo(DataSplitTypes.GameObjects);
         return obj;
     }
 });

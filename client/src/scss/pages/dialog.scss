@@ -58,7 +58,7 @@
 
 #report-id {
     font-size: 50px;
-    font-family: monospace;
+    font-family: "JetBrains Mono", monospace;
 }
 
 #customize-menu {
@@ -191,7 +191,7 @@
 
                     input {
                         margin-left: auto;
-                        font-family: monospace;
+                        font-family: "JetBrains Mono", monospace;
                     }
                 }
             }
@@ -204,8 +204,8 @@
 
 #language-dropdown {
     position: absolute;
-    right: 20px;
-    top: 1rem;
+    right: 16px;
+    top: 16px;
 
     img {
         vertical-align: middle;
@@ -468,7 +468,6 @@
         }
 
         .emotes-list-item {
-            margin-top: auto;
             width: 84px;
             height: 84px;
             flex-shrink: 0;
