@@ -643,12 +643,12 @@ export class Game implements GameData {
                     // Set N dynamically based on player ct
                     // Each player gets a certain "area" allocated to them, and the radius is calculated from this area
                     // Currently does not account for "occupied" area (water, buildings, obstacles etc.)
-                    let validArea = this.map.width * this.map.height;
+                    const validArea = this.map.width * this.map.height;
                     // Huhhhh need to account for obstacles etc.
-                    let minSpawnDist = Math.sqrt(validArea/(this.aliveCount * Math.PI))
+                    let minSpawnDist = Math.sqrt(validArea / (this.aliveCount * Math.PI));
                     if (minSpawnDist < 60 || !isFinite(minSpawnDist) || tries > 150) minSpawnDist = 60;
                     // still wanna give 50 tries with a lower minSpawnDist
-                    //console.log("Alive:", this.aliveCount, "Min R:", minSpawnDist)
+                    // console.log("Alive:", this.aliveCount, "Min R:", minSpawnDist)
 
                     foundPosition = true;
                     const radiusHitbox = new CircleHitbox(minSpawnDist, spawnPosition);
