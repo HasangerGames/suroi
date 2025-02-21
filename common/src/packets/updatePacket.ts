@@ -1,4 +1,5 @@
-import { DEFAULT_INVENTORY, GameConstants, itemKeys, itemKeysLength, Layer, ObjectCategory, type GasState } from "../constants";
+import { GameConstants, Layer, ObjectCategory, type GasState } from "../constants";
+import { itemKeys, itemKeysLength, type DEFAULT_INVENTORY } from "../defaultInventory";
 import { Badges, type BadgeDefinition } from "../definitions/badges";
 import { EmoteDefinition, Emotes } from "../definitions/emotes";
 import { Explosions, type ExplosionDefinition } from "../definitions/explosions";

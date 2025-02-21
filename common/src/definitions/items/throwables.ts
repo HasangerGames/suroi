@@ -1,7 +1,8 @@
+import { ItemType, type InventoryItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
 import { Vec, type Vector } from "../../utils/vector";
 import { type ExplosionDefinition } from "../explosions";
-import { ItemType, ObjectDefinitions, type InventoryItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
 import { SyncedParticleDefinition } from "../syncedParticles";
+import { InventoryItemDefinitions } from "./items";
 
 export type ThrowableDefinition = InventoryItemDefinition & {
     readonly itemType: ItemType.Throwable
@@ -69,7 +70,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly c4?: boolean
 };
 
-export const Throwables = new ObjectDefinitions<ThrowableDefinition>([
+export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
     {
         idString: "frag_grenade",
         name: "Frag Grenade",
@@ -78,6 +79,7 @@ export const Throwables = new ObjectDefinitions<ThrowableDefinition>([
         fuseTime: 4000,
         cookTime: 150,
         throwTime: 150,
+        speedMultiplier: 1,
         cookSpeedMultiplier: 0.7,
         impactDamage: 1,
         obstacleMultiplier: 20,
@@ -113,6 +115,7 @@ export const Throwables = new ObjectDefinitions<ThrowableDefinition>([
         fuseTime: 2000,
         cookTime: 150,
         throwTime: 150,
+        speedMultiplier: 1,
         cookSpeedMultiplier: 0.7,
         impactDamage: 1,
         obstacleMultiplier: 20,
@@ -150,7 +153,7 @@ export const Throwables = new ObjectDefinitions<ThrowableDefinition>([
         cookTime: 150,
         noSkin: true,
         throwTime: 150,
-        speedMultiplier: 0.92,
+        speedMultiplier: 1,
         cookSpeedMultiplier: 0.7,
         impactDamage: 1,
         obstacleMultiplier: 20,
@@ -190,6 +193,7 @@ export const Throwables = new ObjectDefinitions<ThrowableDefinition>([
         throwTime: 0,
         cookSpeedMultiplier: 0,
         health: 40,
+        speedMultiplier: 1,
         hitboxRadius: 1,
         image: {
             position: Vec.create(60, 43),

@@ -1,28 +1,7 @@
-import { Ammos } from "./definitions/items/ammos";
-import { HealingItems } from "./definitions/items/healingItems";
-import { Scopes } from "./definitions/items/scopes";
-import { Throwables } from "./definitions/items/throwables";
+import type { WeaponTypes } from "./definitions/loots";
 import { type Mode } from "./definitions/modes";
 import { PlayerModifiers } from "./typings";
 import { ItemType } from "./utils/objectDefinitions";
-
-export const DEFAULT_INVENTORY: Record<string, number> = Object.create(null) as Record<string, number>;
-
-for (const item of [...HealingItems, ...Ammos, ...Scopes, ...Throwables]) {
-    let amount = 0;
-
-    switch (true) {
-        case item.itemType === ItemType.Ammo && item.ephemeral: amount = Infinity; break;
-        case item.itemType === ItemType.Scope && item.giveByDefault: amount = 1; break;
-    }
-
-    DEFAULT_INVENTORY[item.idString] = amount;
-}
-
-Object.freeze(DEFAULT_INVENTORY);
-
-export const itemKeys: readonly string[] = Object.keys(DEFAULT_INVENTORY);
-export const itemKeysLength = itemKeys.length;
 
 const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType.Melee, ItemType.Throwable] as const);
 export const GameConstants = {
@@ -81,6 +60,11 @@ export const GameConstants = {
         [ItemType.Skin]: 3,
         [ItemType.Perk]: 3
     } satisfies Record<ItemType, number>,
+    defaultSpeedModifiers: {
+        [ItemType.Gun]: 0.88,
+        [ItemType.Melee]: 1,
+        [ItemType.Throwable]: 0.92
+    } satisfies Record<WeaponTypes, number>,
     airdrop: {
         fallTime: 8000,
         flyTime: 30000,
