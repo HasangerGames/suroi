@@ -146,6 +146,11 @@ if (!Cluster.isPrimary) {
 
     process.on("uncaughtException", e => game.error("An unhandled error occurred. Details:", e));
 
+    setInterval(() => {
+        const memoryUsage = process.memoryUsage().rss;
+        game.log(`RAM usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`);
+    }, 60000);
+
     const server = new WebSocketServer({ noServer: true });
 
     const simultaneousConnections = Config.protection?.maxSimultaneousConnections
