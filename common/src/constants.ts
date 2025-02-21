@@ -15,7 +15,7 @@ export const GameConstants = {
     defaultMode: "normal" satisfies Mode as Mode,
     player: {
         radius: 2.25,
-        baseSpeed: 0.02655,
+        baseSpeed: 0.03,
         defaultHealth: 100,
         maxAdrenaline: 100,
         inventorySlotTypings,
