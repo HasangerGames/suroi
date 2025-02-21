@@ -262,10 +262,8 @@ export async function fetchServerData(game: Game): Promise<void> {
     });
 }
 
-export async function setUpUI(game: Game): Promise<void> {
-    const { inputManager, uiManager } = game;
-    const { ui } = uiManager;
-
+// Take the stuff that needs fetchServerData out of setUpUI and put it here
+export async function finalizeUI(game: Game): Promise<void> {
     // Change the menu based on the mode.
     $("#splash-ui").css("background-image", `url(./img/backgrounds/menu/${game.modeName}.png)`);
     if (game.mode.specialLogo) $("#splash-logo").children("img").attr("src", `./img/logos/suroi_beta_${game.modeName}.svg`);
@@ -287,6 +285,20 @@ export async function setUpUI(game: Game): Promise<void> {
             }
         }
     }
+
+    // Darken canvas (halloween mode)
+    if (game.mode.darkShaders) {
+        $("#game-canvas").css({
+            "filter": "brightness(0.65) saturate(0.85)",
+            "position": "relative",
+            "z-index": "-1"
+        });
+    }
+}
+
+export async function setUpUI(game: Game): Promise<void> {
+    const { inputManager, uiManager } = game;
+    const { ui } = uiManager;
 
     if (UI_DEBUG_MODE) {
         ui.inventoryMsg.show();
@@ -1222,15 +1234,6 @@ export async function setUpUI(game: Game): Promise<void> {
     const crosshairControls = $<HTMLDivElement>("#crosshair-controls");
     const crosshairTargets = $<HTMLDivElement>("#crosshair-preview, #game");
 
-    // Darken canvas (halloween mode)
-    if (game.mode.darkShaders) {
-        $("#game-canvas").css({
-            "filter": "brightness(0.65) saturate(0.85)",
-            "position": "relative",
-            "z-index": "-1"
-        });
-    }
-
     // Load crosshairs
     function loadCrosshair(): void {
         const size = 20 * game.console.getBuiltInCVar("cv_crosshair_size");
@@ -1429,7 +1432,7 @@ export async function setUpUI(game: Game): Promise<void> {
         });
 
         const value = game.console.getBuiltInCVar(settingName) as number;
-        callback?.(value);
+        // callback?.(value); why is this here?
         element.value = value.toString();
     }
 
