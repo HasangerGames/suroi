@@ -2,6 +2,7 @@ import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import { ServerResponse } from "node:http";
 import { StaticOrSwitched, Switchable } from "../config";
 import Cron from "croner";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 
 export function serverLog(...message: unknown[]): void {
     Logger.log(styleText("[Server]", ColorStyles.foreground.magenta.normal), ...message);
@@ -70,17 +71,23 @@ export class Switcher<T extends Switchable> {
 
     get nextSwitch(): number | undefined { return this._cron?.nextRun()?.getTime(); }
 
-    constructor(schedule: StaticOrSwitched<T>, callback: (current: T, next: T) => void) {
+    constructor(name: string, schedule: StaticOrSwitched<T>, callback: (current: T, next: T) => void) {
         if (typeof schedule === "object") {
             const rotation = schedule.rotation;
             const length = rotation.length;
 
-            this._current = rotation[0];
-            this._next = rotation[1];
+            const filename = `${name}.txt`;
+            const initialIndex = existsSync(filename)
+                ? parseInt(readFileSync(filename, "utf8"))
+                : 0;
+
+            this._current = rotation[initialIndex];
+            this._next = rotation[(initialIndex + 1) % length];
 
             this._cron = Cron(schedule.cron, () => {
                 this._current = rotation[++this._index % length];
                 this._next = rotation[(this._index + 1) % length];
+                writeFileSync(filename, this._index.toString());
                 callback(this._current, this._next);
             });
         } else {

@@ -50,7 +50,7 @@ if (Cluster.isPrimary && require.main === module) {
         teamsCreated?.reset();
     };
 
-    const teamSize = new Switcher(Config.teamSize, teamSize => {
+    const teamSize = new Switcher("teamSize", Config.teamSize, teamSize => {
         for (const game of games) {
             game?.sendMessage({ type: WorkerMessages.UpdateTeamSize, teamSize });
         }
@@ -63,7 +63,7 @@ if (Cluster.isPrimary && require.main === module) {
 
     let mode: Mode;
     let nextMode: Mode | undefined;
-    const map = new Switcher(Config.map, (map, nextMap) => {
+    const map = new Switcher("map", Config.map, (map, nextMap) => {
         mode = modeFromMap(map);
         nextMode = modeFromMap(nextMap);
 

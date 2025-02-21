@@ -325,11 +325,10 @@ void (async() => {
     console.log("scheduling joins");
 
     for (let i = 1; i <= botCount; i++) {
-        setTimeout(() => {
-            bots.push(new Bot(i));
-            if (i === botCount) allBotsJoined = true;
-            if (i === 1) console.log("here we go");
-        }, i * joinDelay);
+        bots.push(new Bot(i));
+        if (i === botCount) allBotsJoined = true;
+        if (i === 1) console.log("here we go");
+        await new Promise(resolve => setTimeout(resolve, joinDelay));
     }
 })();
 
