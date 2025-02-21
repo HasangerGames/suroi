@@ -7,18 +7,11 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    // map: {
-    //     rotation: ["normal", "fall"],
-    //     cron: "0 * * * * *"
-    // },
     map: "normal",
 
     spawn: { mode: SpawnMode.Default },
 
-    teamSize: {
-        rotation: [TeamSize.Duo, TeamSize.Squad],
-        cron: "0 * * * * *"
-    },
+    teamSize: TeamSize.Solo,
 
     maxPlayersPerGame: 80,
     maxGames: 5,
