@@ -920,7 +920,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         radius: 2.5,
         iceMultiplier: 0.1,
         offset: Vec.create(4.25, -0.8),
-        cooldown: 400,
+        cooldown: 350,
         fists: {
             animationDuration: 150,
             left: Vec.create(38, -35),
@@ -945,7 +945,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
                 }
             },
             {
-                duration: 125,
+                duration: 95,
                 fists: {
                     left: Vec.create(38, -35),
                     right: Vec.create(60, 10)
@@ -956,7 +956,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
                 }
             },
             {
-                duration: 125,
+                duration: 95,
                 fists: {
                     left: Vec.create(38, -35),
                     right: Vec.create(0, 45)
