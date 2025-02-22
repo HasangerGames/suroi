@@ -360,7 +360,11 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
                 { item: "basic_outfit", weight: 1 },
                 { item: "timeless", weight: 1 }
             ],
-            [{ table: "melee", weight: 1 }] // placeholder for the unique melee in this place
+            [
+                { table: "equipment", weight: 1 },
+                { table: "healing_items", weight: 1 }
+            ],
+            [{ item: "kukri", weight: 1 }]
         ],
         airdrop_crate: [
             [{ table: "airdrop_equipment", weight: 1 }],
