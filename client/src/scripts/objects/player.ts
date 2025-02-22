@@ -1544,12 +1544,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             ) as Array<Player | Obstacle>
                         ).sort((a, b) => {
                             if (
-                                (a.isObstacle && a.definition.noMeleeCollision)
+                                (a.isObstacle && (a.definition.noMeleeCollision || a.definition.indestructible))
+                                || a.isBuilding
                                 || (this.game.teamMode && a.isPlayer && a.teamID === this.teamID)
                             ) return Infinity;
 
                             if (
-                                (b.isObstacle && b.definition.noMeleeCollision)
+                                (b.isObstacle && (b.definition.noMeleeCollision || b.definition.indestructible))
+                                || b.isBuilding
                                 || (this.game.teamMode && b.isPlayer && b.teamID === this.teamID)
                             ) return -Infinity;
 
