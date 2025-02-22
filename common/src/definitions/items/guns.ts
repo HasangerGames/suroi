@@ -699,7 +699,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         recoilMultiplier: 0.75,
         recoilDuration: 60,
         fireMode: FireMode.Auto,
-        shotSpread: 2,
+        shotSpread: 3,
         moveSpread: 7,
         length: 6.1,
         fists: {
@@ -717,7 +717,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             damage: 9,
             obstacleMultiplier: 1,
             speed: 0.27,
-            range: 100
+            range: 80
         }
     },
     {
