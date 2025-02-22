@@ -54,6 +54,7 @@ export const CVarCasters = Object.freeze({
     cv_cooler_graphics: Casters.toBoolean,
     cv_ambient_particles: Casters.toBoolean,
     cv_blur_splash: Casters.toBoolean,
+    cv_record_res: Casters.generateUnionCaster(["480p", "720p", "1080p", "maximum"]),
 
     cv_rules_acknowledged: Casters.toBoolean,
     cv_hide_rules_button: Casters.toBoolean,
@@ -172,6 +173,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_high_res_textures: true,
     cv_cooler_graphics: false,
     cv_ambient_particles: true,
+    cv_record_res: "720p",
     cv_blur_splash: !isMobile.any, // blur kills splash screen performance on phones from my testing
 
     cv_rules_acknowledged: false,
@@ -278,5 +280,6 @@ export const defaultBinds = Object.freeze({
     "toggle_console": [],
     "+map_ping": [],
     "toggle_slot_lock": [],
+    "screen_record": [],
     "toggle pf_net_graph 0 1 2": []
 } as Record<string, string[]>);

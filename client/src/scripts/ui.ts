@@ -1513,6 +1513,7 @@ export async function setUpUI(game: Game): Promise<void> {
         "#slider-music-volume",
         "cv_music_volume",
         value => {
+            if (!game.music) return;
             game.music.volume = value;
         }
     );
@@ -1629,7 +1630,7 @@ export async function setUpUI(game: Game): Promise<void> {
     // render mode select menu
     const renderSelect = $<HTMLSelectElement>("#render-mode-select")[0];
     renderSelect.addEventListener("input", () => {
-        game.console.setBuiltInCVar("cv_renderer", renderSelect.value as unknown as "webgl1" | "webgl2" | "webgpu");
+        game.console.setBuiltInCVar("cv_renderer", renderSelect.value as "webgl1" | "webgl2" | "webgpu");
     });
     renderSelect.value = game.console.getBuiltInCVar("cv_renderer");
 
@@ -1640,9 +1641,15 @@ export async function setUpUI(game: Game): Promise<void> {
     // render resolution select menu
     const renderResSelect = $<HTMLSelectElement>("#render-res-select")[0];
     renderResSelect.addEventListener("input", () => {
-        game.console.setBuiltInCVar("cv_renderer_res", renderResSelect.value as unknown as "auto" | "0.5" | "1" | "2" | "3");
+        game.console.setBuiltInCVar("cv_renderer_res", renderResSelect.value as "auto" | "0.5" | "1" | "2" | "3");
     });
     renderResSelect.value = game.console.getBuiltInCVar("cv_renderer_res");
+
+    const recordSelect = $<HTMLSelectElement>("#record-res-select")[0];
+    recordSelect.addEventListener("input", () => {
+        game.console.setBuiltInCVar("cv_record_res", recordSelect.value as "480p" | "720p" | "1080p" | "maximum");
+    });
+    recordSelect.value = game.console.getBuiltInCVar("cv_record_res");
 
     // High resolution toggle
     $("#toggle-high-res").parent().parent().toggle(!inputManager.isMobile);

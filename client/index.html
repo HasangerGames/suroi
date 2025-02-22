@@ -524,6 +524,12 @@
           <div id="gas-msg" style="display: none">
             <div id="gas-msg-info"></div>
           </div>
+          <div id="recording-pill" style="display: none">
+            <i class="fa-solid fa-video" style="margin-top: -2px"></i>
+            <span translation="recording"></span>
+            <span id="recording-time">0:00</span>
+            <button id="stop-recording-button"><i class="fa-solid fa-stop"></i></button>
+          </div>
         </div>
 
         <div id="kill-msg" style="display: none">
@@ -792,6 +798,17 @@
             <label>
               <span class="setting-title" translation="settings_camera_shake"></span>
               <input type="checkbox" id="toggle-camera-shake">
+            </label>
+          </div>
+          <div class="modal-item select-setting">
+            <label>
+              <span class="setting-title" translation="settings_record_res"></span>
+              <select id="record-res-select">
+                <option value="480p">480p</option>
+                <option value="720p">720p</option>
+                <option value="1080p">1080p</option>
+                <option value="maximum">Maximum</option>
+              </select>
             </label>
           </div>
           <p style="color: red"><i translation="settings_require_reload"></i></p>

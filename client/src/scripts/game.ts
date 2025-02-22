@@ -63,6 +63,7 @@ import { DebugRenderer } from "./utils/debugRenderer";
 import { setUpNetGraph } from "./utils/graph/netGraph";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
+import { ScreenRecordManager } from "./managers/screenRecordManager";
 
 /* eslint-disable @stylistic/indent */
 
@@ -184,6 +185,7 @@ export class Game {
     readonly console = new GameConsole(this);
     readonly inputManager = new InputManager(this);
     soundManager!: SoundManager;
+    readonly screenRecordManager = new ScreenRecordManager(this);
 
     gasRender!: GasRender;
     readonly gas = new Gas(this);
@@ -611,6 +613,7 @@ export class Game {
 
             ui.splashUi.fadeIn(400, () => {
                 this.pixi.stop();
+                this.screenRecordManager.endRecording();
                 void this.music?.play();
                 ui.teamContainer.html("");
                 ui.actionContainer.hide();
@@ -992,6 +995,7 @@ export class Game {
             if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
             this.inputManager.update();
             this.soundManager.update();
+            this.screenRecordManager?.update();
 
             const player = this.activePlayer;
             if (!player) return;

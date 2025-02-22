@@ -583,6 +583,7 @@ export class UIManager {
         }
 
         this.gameOverScreenTimeout = window.setTimeout(() => gameOverOverlay.fadeIn(500), 500);
+        setTimeout(() => this.game.screenRecordManager.endRecording(), 2500);
 
         // Player rank
         gameOverRank.text(`#${packet.rank}`).toggleClass("won", packet.won);
