@@ -127,7 +127,7 @@ export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
         // when are we gonna have a perk that takes this mechanic and chucks it in the fucking trash where it belongs
 
         const offset = definition.isDual
-            ? ((this._altFire = !this._altFire) ? 1 : -1) * definition.leftRightOffset
+            ? (this._altFire ? -1 : 1) * definition.leftRightOffset
             : (definition.bulletOffset ?? 0);
 
         const startPosition = Vec.rotate(Vec.create(0, offset), owner.rotation);
@@ -337,13 +337,21 @@ export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
             return;
         }
 
-        if (definition.fireMode === FireMode.Burst && this._consecutiveShots >= definition.burstProperties.shotsPerBurst) {
-            this._consecutiveShots = 0;
-            this._burstTimeout = setTimeout(
-                this._useItemNoDelayCheck.bind(this, false),
-                definition.burstProperties.burstCooldown
-            );
-            return;
+        if (definition.fireMode === FireMode.Burst) {
+            if (this._consecutiveShots >= definition.burstProperties.shotsPerBurst) {
+                this._consecutiveShots = 0;
+                this._burstTimeout = setTimeout(
+                    this._useItemNoDelayCheck.bind(this, false),
+                    definition.burstProperties.burstCooldown
+                );
+
+                if (definition.isDual) {
+                    this._altFire = !this._altFire;
+                }
+                return;
+            }
+        } else if (definition.isDual) {
+            this._altFire = !this._altFire;
         }
 
         if (

@@ -322,7 +322,8 @@ export class Minimap {
                         const sprite = new SuroiSprite(image.key)
                             .setVPos(image.position)
                             .setRotation(image.rotation ?? 0)
-                            .setZIndex(image.zIndex ?? 0);
+                            .setZIndex(image.zIndex ?? 0)
+                            .setTint(image.beachTinted ? this.game.colors.beach : 0xffffff);
 
                         if (image.tint !== undefined) sprite.setTint(image.tint);
                         sprite.scale = Vec.scale(image.scale ?? Vec.create(1, 1), 1 / PIXI_SCALE);

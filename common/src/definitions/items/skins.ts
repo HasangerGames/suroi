@@ -36,7 +36,7 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
     skin("Zedaes",      0x052105, ["zedaes"]),
 
     // Role skins
-    skin("Developr Swag",      0x007a7f, ["developr", "pap", "error", "limenade"]),
+    skin("Developr Swag",      0x007a7f, ["developr", "pap", "error"]),
     skin("Designr Swag",       0x67cf00, ["designr", "solstice", "vip_designr"]),
     skin("Sound Designr Swag", 0x3e8476, ["sound_designr"]),
     ...([
@@ -86,6 +86,7 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         ["Peachy Breeze",         0xf2a263],
         ["Deep Sea",              0x284553],
         ["Basic Outfit",          0x816537],
+        ["Timeless",              0x1a1a1a],
         ["Peppermint",            0xb40030],
         ["Spearmint",             0x115724],
         ["Coal",                  0x424242],

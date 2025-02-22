@@ -230,6 +230,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     chest_particle:                { base: "wood_particle",    tint: 0xa87e5a },
     cooler_particle:               { base: "wood_particle",    tint: 0x406c65 },
     crate_particle:                { base: "wood_particle",    tint: 0x9e7437 },
+    memorial_crate_particle:       { base: "wood_particle",    tint: 0x763800 },
     flint_crate_particle:          { base: "wood_particle",    tint: 0xda6a0b },
     furniture_particle:            { base: "wood_particle",    tint: 0x785a2e },
     couch_part_particle:           { base: "wood_particle",    tint: 0x6a330b },
@@ -1141,22 +1142,42 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         name: "Monument",
         material: "stone",
         health: 200,
-        impenetrable: true,
-        hasLoot: true,
+        indestructible: true,
         noResidue: true,
+        doorSound: "monument_slide",
+        zIndex: ZIndexes.BuildingsCeiling + 1,
         scale: {
             spawnMin: 1,
             spawnMax: 1,
             destroy: 0.7
         },
         spawnMode: MapObjectSpawnMode.Beach,
-        hitbox: RectangleHitbox.fromRect(10.55, 10.55),
-        rotationMode: RotationMode.None,
+        isDoor: true,
+        openOnce: true,
+        operationStyle: "slide",
+        slideFactor: 0.8,
+        animationDuration: 1000,
+        isActivatable: true,
+        hitbox: RectangleHitbox.fromRect(19.25, 19.25),
+        rotationMode: RotationMode.Limited,
         frames: {
             particle: "clearing_boulder_particle"
         },
         particleVariations: 2
     },
+    /* {
+        idString: "monument_railing",
+        name: "Monument Railing",
+        indestructible: true,
+        health: 69,
+        material: "metal_heavy",
+        reflectBullets: true,
+        hitbox: RectangleHitbox.fromRect(1.5, 14),
+        rotationMode: RotationMode.Limited,
+        frames: {
+            particle: "monument_railing_particle"
+        }
+    }, */
     {
         idString: "bush",
         name: "Bush",
@@ -4201,6 +4222,25 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         zIndex: ZIndexes.BuildingsFloor
     },
     {
+        idString: "memorial_bunker_stair",
+        name: "Memorial Bunker Stair",
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        isStair: true,
+        activeEdges: {
+            high: 2,
+            low: 0
+        },
+        invisible: true,
+        hitbox: RectangleHitbox.fromRect(11, 12),
+        frames: {
+            particle: "metal_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        zIndex: ZIndexes.BuildingsFloor
+    },
+    {
         idString: "hq_stair",
         name: "HQ Stair",
         material: "metal_heavy",
@@ -4647,7 +4687,25 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     rshCase("rsh_case_single"),
-    rshCase("rsh_case_dual")
+    rshCase("rsh_case_dual"),
+    {
+        idString: "memorial_crate",
+        name: "Aged Memorial Crate",
+        material: "crate",
+        hasLoot: true,
+        health: 140,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.8
+        },
+        spawnMode: MapObjectSpawnMode.GrassAndSand,
+        rotationMode: RotationMode.None,
+        hitbox: RectangleHitbox.fromRect(9.2, 9.2),
+        frames: {
+            particle: "memorial_crate_particle"
+        }
+    }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));
     if (def.allowFlyover === undefined) def.allowFlyover = FlyoverPref.Sometimes;

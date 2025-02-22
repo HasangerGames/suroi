@@ -157,7 +157,8 @@ const maps = {
             container_7: 1,
             container_8: 2,
             container_9: 1,
-            container_10: 2
+            container_10: 2,
+            memorial: 1
         },
         majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
         quadBuildingLimit: {
@@ -318,7 +319,8 @@ const maps = {
             tent_3: 3,
             tent_4: 3,
             tent_5: 1,
-            outhouse: 10
+            outhouse: 10,
+            memorial: 1
         },
         majorBuildings: ["bombed_armory", "lodge", "plumpkin_bunker"],
         quadBuildingLimit: {
@@ -364,8 +366,7 @@ const maps = {
             loot_barrel: 1,
             flint_stone: 1,
             pumpkin: 200,
-            large_pumpkin: 5,
-            monument: 1
+            large_pumpkin: 5
         },
         obstacleClumps: [
             {
@@ -540,8 +541,7 @@ const maps = {
             flint_stone: 3,
             pumpkin: 300,
             large_pumpkin: 40,
-            plumpkin: 5,
-            monument: 1
+            plumpkin: 5
         },
         obstacleClumps: [
             {

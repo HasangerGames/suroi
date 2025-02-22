@@ -452,6 +452,10 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         };
         this.images.set(imageDef, image);
 
+        if (imageDef.beachTinted) {
+            image.sprite.setTint(this.game.colors.beach);
+        }
+
         const { sprite } = image;
 
         if (isNewSprite) {

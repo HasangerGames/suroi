@@ -724,7 +724,6 @@ export class Game {
         for (const plane of this.planes) plane.update();
 
         this.camera.update();
-
         this.debugRenderer.graphics.position = this.camera.container.position;
         this.debugRenderer.graphics.scale = this.camera.container.scale;
         this.debugRenderer.render();
@@ -1109,7 +1108,7 @@ export class Game {
                         let text;
                         switch (true) {
                             case object?.isObstacle: {
-                                if (object.definition.isDoor) {
+                                if (object.definition.isDoor && !object.definition.isActivatable) {
                                     text = object.door?.offset === 0
                                         ? getTranslatedString("action_open_door")
                                         : getTranslatedString("action_close_door");

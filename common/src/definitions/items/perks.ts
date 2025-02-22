@@ -253,7 +253,7 @@ const perks = [
         speedMod: 1.3,
         healthMod: 1.5,
         regenRate: 1,
-        damageMod: 2.5,
+        damageMod: 2,
         noDrop: true
     },
     {

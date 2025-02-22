@@ -3590,6 +3590,12 @@ logger.indent("Validating throwables", () => {
 
             tester.assertIsFiniteRealNumber({
                 obj: throwable,
+                field: "speedMultiplier",
+                baseErrorPath: errorPath
+            });
+
+            tester.assertIsFiniteRealNumber({
+                obj: throwable,
                 field: "cookSpeedMultiplier",
                 baseErrorPath: errorPath
             });
