@@ -704,63 +704,27 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             spawnMax: 1.2,
             destroy: 0.75
         },
+        hitbox: new CircleHitbox(3.5),
         spawnHitbox: new CircleHitbox(8.5),
         rotationMode: RotationMode.Full,
-        hitbox: new CircleHitbox(3.5),
-        variations: 6,
+        variations: 3,
+        allowFlyover: FlyoverPref.Never,
         zIndex: ZIndexes.ObstaclesLayer4
     },
     {
-        idString: "small_oak_tree",
-        name: "Small Oak Tree",
+        idString: "birch_tree",
+        name: "Birch Tree",
         material: "tree",
         health: 180,
-        scale: {
-            spawnMin: 0.9,
-            spawnMax: 1.2,
-            destroy: 0.75
-        },
-        spawnHitbox: new CircleHitbox(8.5),
-        rotationMode: RotationMode.Full,
-        hitbox: new CircleHitbox(3.5),
-        variations: 3,
-        zIndex: ZIndexes.ObstaclesLayer4,
-        frames: {
-            particle: "oak_tree_particle",
-            residue: "oak_tree_residue"
-        }
-    },
-    {
-        idString: "dormant_oak_tree",
-        name: "Dormant Oak Tree",
-        material: "tree",
-        health: 120,
         scale: {
             spawnMin: 0.9,
             spawnMax: 1.1,
             destroy: 0.75
         },
+        hitbox: new CircleHitbox(3.5),
         spawnHitbox: new CircleHitbox(8.5),
         rotationMode: RotationMode.Full,
-        hitbox: new CircleHitbox(2.5),
         variations: 2,
-        allowFlyover: FlyoverPref.Never,
-        zIndex: ZIndexes.ObstaclesLayer4
-    },
-    {
-        idString: "maple_tree",
-        name: "Maple Tree",
-        material: "tree",
-        health: 290,
-        scale: {
-            spawnMin: 0.9,
-            spawnMax: 1.2,
-            destroy: 0.75
-        },
-        spawnHitbox: new CircleHitbox(20),
-        rotationMode: RotationMode.Full,
-        hitbox: new CircleHitbox(5.5),
-        variations: 3,
         allowFlyover: FlyoverPref.Never,
         zIndex: ZIndexes.ObstaclesLayer4
     },
@@ -781,18 +745,55 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         zIndex: ZIndexes.ObstaclesLayer4
     },
     {
-        idString: "birch_tree",
-        name: "Birch Tree",
+        idString: "big_oak_tree",
+        name: "Big Oak Tree",
         material: "tree",
         health: 240,
+        scale: {
+            spawnMin: 0.9,
+            spawnMax: 1.2,
+            destroy: 0.75
+        },
+        spawnHitbox: new CircleHitbox(8.5),
+        rotationMode: RotationMode.Full,
+        hitbox: new CircleHitbox(3.5),
+        variations: 6,
+        zIndex: ZIndexes.ObstaclesLayer4,
+        frames: {
+            particle: "oak_tree_particle",
+            residue: "oak_tree_residue"
+        }
+    },
+    {
+        idString: "maple_tree",
+        name: "Maple Tree",
+        material: "tree",
+        health: 290,
+        scale: {
+            spawnMin: 0.9,
+            spawnMax: 1.2,
+            destroy: 0.75
+        },
+        spawnHitbox: new CircleHitbox(20),
+        rotationMode: RotationMode.Full,
+        hitbox: new CircleHitbox(5.5),
+        variations: 3,
+        allowFlyover: FlyoverPref.Never,
+        zIndex: ZIndexes.ObstaclesLayer4
+    },
+    {
+        idString: "dormant_oak_tree",
+        name: "Dormant Oak Tree",
+        material: "tree",
+        health: 120,
         scale: {
             spawnMin: 0.9,
             spawnMax: 1.1,
             destroy: 0.75
         },
-        hitbox: new CircleHitbox(3.5),
         spawnHitbox: new CircleHitbox(8.5),
         rotationMode: RotationMode.Full,
+        hitbox: new CircleHitbox(2.5),
         variations: 2,
         allowFlyover: FlyoverPref.Never,
         zIndex: ZIndexes.ObstaclesLayer4
