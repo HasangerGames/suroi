@@ -80,6 +80,11 @@ export class Tween<T extends object> {
                 this._endTime = this.startTime + this.duration;
                 [this.startValues, this.endValues] = [this.endValues, this.startValues];
             } else {
+                for (const key in this.startValues) {
+                    const endValue = this.endValues[key];
+
+                    (this.target[key as keyof T] as number) = endValue;
+                }
                 this.kill();
                 this.onComplete?.();
             }
