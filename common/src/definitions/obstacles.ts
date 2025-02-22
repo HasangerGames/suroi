@@ -1,5 +1,5 @@
 import { FlyoverPref, Layers, RotationMode, ZIndexes, MapObjectSpawnMode } from "../constants";
-import { type Variation } from "../typings";
+import { Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type Mutable } from "../utils/misc";
 import { ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
@@ -48,6 +48,8 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly reflectBullets?: boolean
     readonly hitSoundVariations?: number
     readonly noInteractMessage?: boolean
+    readonly customInteractMessage?: boolean
+    readonly interactOnlyFromSide?: Orientation
     readonly weaponSwap?: boolean
 
     readonly gunMount?: {
@@ -1144,6 +1146,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         health: 200,
         indestructible: true,
         noResidue: true,
+        hideOnMap: true,
         doorSound: "monument_slide",
         zIndex: ZIndexes.BuildingsCeiling + 1,
         scale: {
@@ -1151,13 +1154,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             spawnMax: 1,
             destroy: 0.7
         },
-        spawnMode: MapObjectSpawnMode.Beach,
+        customInteractMessage: true,
+        interactOnlyFromSide: 2,
         isDoor: true,
         openOnce: true,
         operationStyle: "slide",
         slideFactor: 0.8,
-        animationDuration: 1000,
-        isActivatable: true,
+        animationDuration: 6000,
         hitbox: RectangleHitbox.fromRect(19.25, 19.25),
         rotationMode: RotationMode.Limited,
         frames: {
@@ -1165,19 +1168,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         particleVariations: 2
     },
-    /* {
-        idString: "monument_railing",
-        name: "Monument Railing",
-        indestructible: true,
-        health: 69,
-        material: "metal_heavy",
-        reflectBullets: true,
-        hitbox: RectangleHitbox.fromRect(1.5, 14),
-        rotationMode: RotationMode.Limited,
-        frames: {
-            particle: "monument_railing_particle"
-        }
-    }, */
     {
         idString: "bush",
         name: "Bush",

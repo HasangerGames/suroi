@@ -276,19 +276,25 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     }
 
     canInteract(player?: Player): boolean {
-        return !this.dead && (
-            (
-                this.isDoor
-                && ( // Either the door must not be locked or automatic, or there must not be a player triggering it
-                    (!this.door?.locked && !(this.definition as { automatic?: boolean }).automatic)
-                    || player === undefined
-                )
-            ) || (
-                this.definition.isActivatable === true
-                && (this.definition.requiredItem === undefined || player?.activeItemDefinition.idString === this.definition.requiredItem)
-                && !this.activated
+        return !this.dead
+            && (
+                player === undefined
+                || this.definition.interactOnlyFromSide === undefined
+                || this.definition.interactOnlyFromSide === (this.hitbox as RectangleHitbox).getSide(player.position)
             )
-        );
+            && (
+                (
+                    this.isDoor
+                    && ( // Either the door must not be locked or automatic, or there must not be a player triggering it
+                        (!this.door?.locked && !(this.definition as { automatic?: boolean }).automatic)
+                        || player === undefined
+                    )
+                ) || (
+                    this.definition.isActivatable === true
+                    && (this.definition.requiredItem === undefined || player?.activeItemDefinition.idString === this.definition.requiredItem)
+                    && !this.activated
+                )
+            );
     }
 
     /**

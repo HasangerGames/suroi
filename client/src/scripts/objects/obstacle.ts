@@ -660,19 +660,23 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
     canInteract(player: Player): boolean {
         type DoorDef = { openOnce?: boolean, automatic?: boolean };
-        if (!this.dead && (this.definition as DoorDef).openOnce && this.door !== undefined && this.door.offset === 1) return false;
-        return !this.dead && (
-            (
-                this._door !== undefined
-                && !this._door.locked
-                && !(this.definition as DoorDef).openOnce
-                && !(this.definition as DoorDef).automatic
-            ) || (
-                this.definition.isActivatable === true
-                && (this.definition.requiredItem === undefined || player.activeItem.idString === this.definition.requiredItem)
-                && !this.activated
+        return !this.dead
+            && (
+                this.definition.interactOnlyFromSide === undefined
+                || this.definition.interactOnlyFromSide === (this.hitbox as RectangleHitbox).getSide(player.position)
             )
-        );
+            && (
+                (
+                    this._door !== undefined
+                    && !this._door.locked
+                    && !(this.definition as DoorDef).automatic
+                    && !((this.definition as DoorDef).openOnce && this._door.offset === 1)
+                ) || (
+                    this.definition.isActivatable === true
+                    && (this.definition.requiredItem === undefined || player.activeItem.idString === this.definition.requiredItem)
+                    && !this.activated
+                )
+            );
     }
 
     hitEffect(position: Vector, angle: number): void {

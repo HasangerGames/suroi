@@ -1108,12 +1108,12 @@ export class Game {
                         let text;
                         switch (true) {
                             case object?.isObstacle: {
-                                if (object.definition.isDoor && !object.definition.isActivatable) {
+                                if (object.definition.isActivatable || object.definition.customInteractMessage) {
+                                    text = getTranslatedString(`interact_${object.definition.idString}` as TranslationKeys);
+                                } else if (object.definition.isDoor) {
                                     text = object.door?.offset === 0
                                         ? getTranslatedString("action_open_door")
                                         : getTranslatedString("action_close_door");
-                                } else if (object.definition.isActivatable) {
-                                    text = getTranslatedString(`interact_${object.definition.idString}` as TranslationKeys);
                                 }
                                 break;
                             }

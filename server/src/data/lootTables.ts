@@ -272,9 +272,8 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "verified", weight: 0.5 },
             { item: "no_kil_pls", weight: 0.5 },
             { item: "ghillie_suit", weight: 0.15 },
-            { item: "basic_outfit", weight: 0.05 }
+            { item: "ancestral_garb", weight: 0.05 }
         ],
-        monument: [{ item: "basic_outfit", weight: 1 }],
         toilet: {
             min: 2,
             max: 3,
@@ -357,7 +356,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
                 { item: "dual_deagle", weight: 0.01 }
             ],
             [
-                { item: "basic_outfit", weight: 1 },
+                { item: "ancestral_garb", weight: 1 },
                 { item: "timeless", weight: 1 }
             ],
             [
@@ -693,7 +692,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "aurora", weight: 0.5 },
             { item: "nebula", weight: 0.4 },
             { item: "ghillie_suit", weight: 0.1 },
-            { item: "basic_outfit", weight: 0.001 }
+            { item: "ancestral_garb", weight: 0.001 }
         ],
         airdrop_melee: [
             { item: NullString, weight: 1 },
@@ -1103,7 +1102,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "sky", weight: 0.7 },
             { item: "nebula", weight: 0.6 },
             { item: "ghillie_suit", weight: 0.1 },
-            { item: "basic_outfit", weight: 0.001 }
+            { item: "ancestral_garb", weight: 0.001 }
         ],
         airdrop_melee: [
             { item: NullString, weight: 1 },
@@ -1232,7 +1231,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "coal", weight: 1 },
             { item: "henrys_little_helper", weight: 1 },
             { item: "ghillie_suit", weight: 0.1 },
-            { item: "basic_outfit", weight: 0.001 }
+            { item: "ancestral_garb", weight: 0.001 }
         ]
     },
 
@@ -1447,7 +1446,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "sky", weight: 0.7 },
             { item: "nebula", weight: 0.6 },
             { item: "ghillie_suit", weight: 0.1 },
-            { item: "basic_outfit", weight: 0.001 }
+            { item: "ancestral_garb", weight: 0.001 }
         ],
         airdrop_melee: [
             { item: NullString, weight: 1 },

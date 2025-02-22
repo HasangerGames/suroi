@@ -7123,9 +7123,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "memorial",
         name: "Memorial",
-        spawnHitbox: RectangleHitbox.fromRect(50, 50),
-        rotationMode: RotationMode.None, // dunno
-        spawnMode: MapObjectSpawnMode.Grass, // this shit cant fit in beach
+        spawnHitbox: RectangleHitbox.fromRect(30, 40, Vec.create(0, -10)),
+        rotationMode: RotationMode.None,
+        spawnMode: MapObjectSpawnMode.Grass,
+        hideOnMap: true,
         floorImages: [
             {
                 key: "memorial_bunker_stair",
