@@ -1002,13 +1002,45 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 1
             );
 
+        const adrenSpeedMod = (() => {
+            /*
+                The relation between speed and adrenaline is modelled around these three points:
+
+                adren. | speed multiplier
+                -------|---------------
+                   0   |       1
+                  30   |     1.10
+                  100  |     1.15
+
+                Using a logarithmic regression model, we obtain:
+
+                a = 0.944297822457
+                b = -0.0158132859327
+                c = 0.699999999995
+                d = 3.51269916486
+
+                y = b•log[c](x + d) + a
+
+                or, using the change of base law,
+                y = b•log(x + d) / log(c) + a
+
+                https://www.desmos.com/calculator/sgimzzda0b
+            */
+            const a = 0.944297822457;
+            const b = -0.0158132859327;
+            const c = 0.699999999995;
+            const d = 3.51269916486;
+
+            return b * Math.log(this._adrenaline + d) / Math.log(c) + a;
+        })();
+
         // Calculate speed
         const speed = this.baseSpeed                                                 // Base speed
             * (FloorTypes[this.floor].speedMultiplier ?? 1)                          // Speed multiplier from floor player is standing in
             * recoilMultiplier                                                       // Recoil from items
             * perkSpeedMod                                                           // See above
             * (this.action?.speedMultiplier ?? 1)                                    // Speed modifier from performing actions
-            * (1 + (this.adrenaline / 1000))                                         // Linear speed boost from adrenaline
+            * adrenSpeedMod                                                          // Speed boost from adrenaline
             * (this.downed ? 0.5 : (this.activeItemDefinition.speedMultiplier ?? 1)) // Active item/knocked out speed modifier
             * (this.beingRevivedBy ? 0.5 : 1)                                        // Being revived speed multiplier
             * this._modifiers.baseSpeed;                                             // Current on-wearer modifier
