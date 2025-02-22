@@ -352,9 +352,9 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
                 { item: "mosin_nagant", weight: 0.5 },
                 { item: "vss", weight: 0.2 },
                 { item: "vector", weight: 0.2 },
-                { item: "deagle", weight: 0.2},
+                { item: "deagle", weight: 0.2 },
                 { item: "m1_garand", weight: 0.01 },
-                { item: "dual_deagle", weight: 0.01}
+                { item: "dual_deagle", weight: 0.01 }
             ],
             [
                 { item: "basic_outfit", weight: 1 },
@@ -413,6 +413,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             loot: [
                 { item: "ak47", weight: 1 },
                 { item: "aug", weight: 1 },
+                { item: "mp5k", weight: 1 },
                 { item: "model_37", weight: 1 },
                 { item: "mp40", weight: 1 },
                 { item: "m3k", weight: 0.6 },
@@ -536,6 +537,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "hp18", weight: 1.25 },
             { item: "micro_uzi", weight: 1 },
             { item: "ak47", weight: 1 },
+            { item: "mp5k", weight: 0.85 },
             { item: "model_37", weight: 0.95 },
             { item: "aug", weight: 0.7 },
             { item: "sks", weight: 0.7 },
@@ -602,6 +604,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
         special_guns: [
             { item: "micro_uzi", weight: 1.25 },
             { item: "ak47", weight: 1.1 },
+            { item: "mp5k", weight: 1.07 },
             { item: "aug", weight: 1.05 },
             { item: "hp18", weight: 1 },
             { item: "mp40", weight: 1 },

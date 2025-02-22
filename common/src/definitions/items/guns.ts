@@ -152,6 +152,7 @@ type RawForDef<B extends BaseGunDefinition> = B & {
             | "moveSpread"
             | "fsaReset"
             | "burstProperties"
+            | "fists"
             | "leftRightOffset"
         >
         ]?: B[K]
@@ -499,6 +500,66 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             moveSpread: 8,
             capacity: 10,
             reloadTime: 4.2
+        }
+    },
+    {
+        idString: "mp5k",
+        name: "MP5k",
+        itemType: ItemType.Gun,
+        ammoType: "9mm",
+        ammoSpawnAmount: 80,
+        speedMultiplier: 1,
+        capacity: 20,
+        extendedCapacity: 30,
+        reloadTime: 1.8,
+        fireDelay: 60,
+        burstProperties: {
+            shotsPerBurst: 3,
+            burstCooldown: 250
+        },
+        switchDelay: 250,
+        recoilMultiplier: 0.75,
+        recoilDuration: 300,
+        fireMode: FireMode.Burst,
+        shotSpread: 3,
+        moveSpread: 6,
+        length: 5.6,
+        fists: {
+            left: Vec.create(85, -2),
+            right: Vec.create(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec.create(71, 0) },
+        casingParticles: [{
+            position: Vec.create(4, 0.35)
+        }],
+        gasParticles: gasParticlePresets.automatic,
+        ballistics: {
+            damage: 12.5,
+            obstacleMultiplier: 1,
+            speed: 0.25,
+            range: 130
+        },
+        dual: {
+            leftRightOffset: 1.3,
+            ammoSpawnAmount: 80,
+            fists: {
+                left: Vec.create(40, -1.3),
+                right: Vec.create(40, 1.3),
+                rightZIndex: 4,
+                leftZIndex: 4,
+                animationDuration: 100
+            },
+            burstProperties: {
+                shotsPerBurst: 3,
+                burstCooldown: 125
+            },
+            fireDelay: 60,
+            shotSpread: 3,
+            moveSpread: 6,
+            capacity: 40,
+            reloadTime: 3.6
         }
     },
 
@@ -2499,8 +2560,6 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
 
     // @ts-expect-error init code
     delete dualDef.dual;
-    // @ts-expect-error init code
-    delete dualDef.fists;
     // @ts-expect-error init code
     delete dualDef.image;
     // @ts-expect-error init code

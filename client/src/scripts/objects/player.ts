@@ -1108,10 +1108,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             return;
         }
 
-        const reference = this._getItemReference();
-
         type FistsRef = (SingleGunNarrowing | Exclude<WeaponDefinition, GunDefinition>)["fists"] & object;
-        const fists: FistsRef = reference.fists ?? DEFAULT_HAND_RIGGING;
+        const fists: FistsRef = this.activeItemDefinition.fists ?? DEFAULT_HAND_RIGGING;
 
         const offset = this._getOffset();
 
@@ -1140,6 +1138,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.rightFist.setPos(fists.right.x, fists.right.y + offset);
         }
 
+        const reference = this._getItemReference();
+
         if (reference.image) {
             const { image: { position, angle } } = reference;
 
@@ -1167,7 +1167,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         const weaponDef = this.activeItem;
         const reference = this._getItemReference();
 
-        const { fists, image } = reference;
+        const { image } = reference;
+        const { fists } = weaponDef;
 
         const imagePresent = image !== undefined;
         if (imagePresent) {
@@ -1634,12 +1635,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 const weaponDef = this.activeItem;
                 const {
                     idString,
-                    image: { position: { x: imgX } },
+                    image: { position: { x: imgX } }
+                } = this._getItemReference() as SingleGunNarrowing;
+                const {
                     fists: {
                         left: { x: leftFistX },
                         right: { x: rightFistX }
                     }
-                } = this._getItemReference() as SingleGunNarrowing;
+                } = weaponDef;
 
                 if (anim === AnimationType.LastShot) {
                     this.playSound(
