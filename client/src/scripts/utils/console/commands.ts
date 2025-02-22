@@ -1895,7 +1895,7 @@ export function setUpCommands(game: Game): void {
         "screen_record",
         function() {
             if (game.screenRecordManager?.recording) game.screenRecordManager?.endRecording();
-            else game.screenRecordManager?.beginRecording();
+            else void game.screenRecordManager?.beginRecording();
         },
         game,
         {
@@ -1904,7 +1904,7 @@ export function setUpCommands(game: Game): void {
             allowOnlyWhenGameStarted: true,
             signatures: [{ args: [], noexcept: false }]
         }
-    )
+    );
 
     gameConsole.handleQuery(`
         alias +map_ping "+emote_wheel; +map_ping_wheel" & alias -map_ping "-emote_wheel; -map_ping_wheel";\

@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Fri, 21 Feb 2025 16:22:44 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 22 Feb 2025 02:02:47 GMT
 
 ## 🇦🇱 Shqip (84% Complete) - ab.hjson
 
@@ -18,7 +18,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `wiki` is not defined
 - Key `recording` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
@@ -35,6 +35,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `finally` is not defined
 - Key `with` is not defined
@@ -51,7 +52,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇧🇷 Português (Brasil) (98% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (97% Complete) - br.hjson
 
 ### (No Invalid Keys)
 
@@ -61,10 +62,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
 - Key `recording` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 
-## 🇨🇿 Čeština (89% Complete) - cz.hjson
+## 🇨🇿 Čeština (88% Complete) - cz.hjson
 
 ### (No Invalid Keys)
 
@@ -82,7 +84,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
@@ -99,6 +101,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
@@ -114,7 +117,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `privacy` is not defined
 - Key `wiki` is not defined
 - Key `recording` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
@@ -122,6 +125,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_advancing` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🇪🇸 Español (95% Complete) - es.hjson
@@ -136,12 +140,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `privacy` is not defined
 - Key `wiki` is not defined
 - Key `recording` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🇪🇪 eesti (95% Complete) - et.hjson
@@ -158,12 +163,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `privacy` is not defined
 - Key `wiki` is not defined
 - Key `recording` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🇫🇮 suomi (93% Complete) - fi.hjson
@@ -179,7 +185,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `privacy` is not defined
 - Key `wiki` is not defined
 - Key `recording` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
@@ -189,6 +195,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_advancing` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🇫🇷 Français (96% Complete) - fr.hjson
@@ -204,11 +211,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
 - Key `recording` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 
 ## 🇬🇷 Ελληνικά (97% Complete) - gr.hjson
 
@@ -221,9 +229,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
 - Key `recording` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 
 ## 🇭🇰 🇲🇴 廣東話(香港/澳門) (87% Complete) - hk_mo.hjson
 
@@ -245,7 +254,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
@@ -262,6 +271,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
@@ -277,7 +287,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
 - Key `recording` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 
 ## 🇮🇹 Italiano (84% Complete) - it.hjson
 
@@ -313,7 +324,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
@@ -331,6 +342,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
@@ -338,7 +350,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `destroyer_of_worlds` is not defined
 - Key `m16a4` is not defined
 
-## 🇯🇵 日本語 (89% Complete) - jp.hjson
+## 🇯🇵 日本語 (88% Complete) - jp.hjson
 
 ### (No Invalid Keys)
 
@@ -356,7 +368,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
@@ -373,10 +385,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇱🇹 Lietuvių (89% Complete) - lt.hjson
+## 🇱🇹 Lietuvių (88% Complete) - lt.hjson
 
 ### (No Invalid Keys)
 
@@ -394,7 +407,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
@@ -411,10 +424,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇱🇻 Latviešu (89% Complete) - lv.hjson
+## 🇱🇻 Latviešu (88% Complete) - lv.hjson
 
 ### (No Invalid Keys)
 
@@ -432,7 +446,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
@@ -449,6 +463,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
@@ -465,7 +480,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `privacy` is not defined
 - Key `wiki` is not defined
 - Key `recording` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
@@ -475,6 +490,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_advancing` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🎀 Cute Engwish (99% Complete) - qen.hjson
@@ -484,8 +500,9 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `recording` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 
 ## 🇷🇴 Română (82% Complete) - ro.hjson
 
@@ -509,7 +526,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
@@ -526,6 +543,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `finally` is not defined
 - Key `with` is not defined
@@ -553,8 +571,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
 - Key `recording` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 - Key `m16a4` is not defined
 
 ## 🇮🇳 தமிழ் (93% Complete) - ta.hjson
@@ -569,7 +588,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `privacy` is not defined
 - Key `wiki` is not defined
 - Key `recording` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
@@ -579,10 +598,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_advancing` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇹🇷 Turkısh (95% Complete) - tr.hjson
+## 🇹🇷 Turkısh (94% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -595,7 +615,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_link` is not defined
 - Key `wiki` is not defined
 - Key `recording` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
@@ -603,6 +623,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_the_team_eliminated` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🇹🇼 中文（繁體） (81% Complete) - tw.hjson
@@ -628,7 +649,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_haptics` is not defined
@@ -645,6 +666,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
@@ -674,9 +696,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
 - Key `recording` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 
 ## 🇨🇳 中文（简体） (96% Complete) - zh.hjson
 
@@ -691,9 +714,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_link` is not defined
 - Key `wiki` is not defined
 - Key `recording` is not defined
-- Key `settings_record_mode` is not defined
+- Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
+- Key `bindings_toggle_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 

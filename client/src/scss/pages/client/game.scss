@@ -1162,18 +1162,27 @@
     background: palette.$bg;
     display: flex;
     flex-direction: row;
+    align-items: center;
     gap: 8px;
     padding: 8px 16px;
     border-radius: 9999px;
     filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.6));
 
+    #recording-time {
+        font-family: "JetBrains Mono", monospace;
+    }
+
     #stop-recording-button {
         color: red;
+    }
+
+    #stop-recording-button {
         border: none;
         outline: none;
         background: none;
         padding: none;
         margin: none;
+        cursor: pointer;
     }
 }
 

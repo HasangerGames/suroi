@@ -185,7 +185,7 @@ export class Game {
     readonly console = new GameConsole(this);
     readonly inputManager = new InputManager(this);
     soundManager!: SoundManager;
-    screenRecordManager?: ScreenRecordManager;
+    readonly screenRecordManager = new ScreenRecordManager(this);
 
     gasRender!: GasRender;
     readonly gas = new Gas(this);
@@ -328,9 +328,6 @@ export class Game {
             unlockPlayButtons();
             resetPlayButtons(game);
         });
-
-        game.screenRecordManager = new ScreenRecordManager(game);
-        if (game.screenRecordManager.streamMode === "canvas") await game.screenRecordManager.init();
 
         return game;
     }
@@ -616,6 +613,7 @@ export class Game {
 
             ui.splashUi.fadeIn(400, () => {
                 this.pixi.stop();
+                this.screenRecordManager.endRecording();
                 void this.music?.play();
                 ui.teamContainer.html("");
                 ui.actionContainer.hide();

@@ -525,10 +525,8 @@
             <div id="gas-msg-info"></div>
           </div>
           <div id="recording-pill" style="display: none">
-            <span>
-              <i class="fa-solid fa-camera"></i>
-              <span translation="recording"></span>
-            </span>
+            <i class="fa-solid fa-video" style="margin-top: -2px"></i>
+            <span translation="recording"></span>
             <span id="recording-time">0:00</span>
             <button id="stop-recording-button"><i class="fa-solid fa-stop"></i></button>
           </div>
@@ -804,10 +802,12 @@
           </div>
           <div class="modal-item select-setting">
             <label>
-              <span class="setting-title"><span translation="settings_record_mode"></span><i>*</i></span>
-              <select id="record-mode-select">
-                <option value="navigator">Navigator</option>
-                <option value="canvas">Canvas</option>
+              <span class="setting-title" translation="settings_record_res"></span>
+              <select id="record-res-select">
+                <option value="480p">480p</option>
+                <option value="720p">720p</option>
+                <option value="1080p">1080p</option>
+                <option value="maximum">Maximum</option>
               </select>
             </label>
           </div>

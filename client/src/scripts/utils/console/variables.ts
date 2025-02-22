@@ -76,7 +76,7 @@ export const Casters = Object.freeze({
     },
     generateUnionCaster: (<const T extends string | number>(options: readonly T[]) => {
         const errorStr = options.map((v, i, a) => `${i === a.length - 1 ? "or " : ""}'${v}'`).join(", ");
-        const isNumeric = !Number.isNaN(+options[0]);
+        const isNumeric = typeof options[0] === "number";
 
         return (val: string): Result<T, string> => {
             const v = (isNumeric ? +val : val) as T;
