@@ -508,7 +508,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         itemType: ItemType.Gun,
         ammoType: "9mm",
         ammoSpawnAmount: 80,
-        speedMultiplier: 1,
+        speedMultiplier: 1.136,
         capacity: 20,
         extendedCapacity: 30,
         reloadTime: 1.8,
@@ -518,7 +518,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             burstCooldown: 250
         },
         switchDelay: 250,
-        recoilMultiplier: 0.75,
+        recoilMultiplier: 0.8,
         recoilDuration: 300,
         fireMode: FireMode.Burst,
         shotSpread: 3,
@@ -536,7 +536,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         }],
         gasParticles: gasParticlePresets.automatic,
         ballistics: {
-            damage: 12.5,
+            damage: 13,
             obstacleMultiplier: 1,
             speed: 0.25,
             range: 130
