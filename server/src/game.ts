@@ -608,7 +608,7 @@ export class Game implements GameData {
         switch (spawnOptions.mode) {
             case SpawnMode.Normal: {
                 const hitbox = new CircleHitbox(5);
-                const gasPosition = this.gas.currentPosition;
+                const gasPosition = this.gas.newPosition;
                 const gasRadius = this.gas.newRadius ** 2;
                 const teamPosition = this.teamMode
                     // teamMode should guarantee the `team` object's existence
@@ -617,7 +617,11 @@ export class Game implements GameData {
                     : undefined;
 
                 let foundPosition = false;
-                for (let tries = 0; !foundPosition && tries < 200; tries++) {
+                const maxTries = 200;
+                const spawnDistance = 160;
+                const distanceInterval = 20;
+                const reduceDistanceAmount = 10;
+                for (let tries = 0; !foundPosition && tries < maxTries; tries++) {
                     const position = this.map.getRandomPosition(
                         hitbox,
                         {
@@ -634,16 +638,7 @@ export class Game implements GameData {
                     if (!position) break;
                     else spawnPosition = position;
 
-                    // Ensure the position is at least n units from other players
-                    // Set N dynamically based on player ct
-                    // Each player gets a certain "area" allocated to them, and the radius is calculated from this area
-                    // Currently does not account for "occupied" area (water, buildings, obstacles etc.)
-                    const validArea = this.map.width * this.map.height;
-                    // Huhhhh need to account for obstacles etc.
-                    let minSpawnDist = Math.sqrt(validArea / (this.aliveCount * Math.PI));
-                    if (minSpawnDist < 60 || !isFinite(minSpawnDist) || tries > 150) minSpawnDist = 60;
-                    // still wanna give 50 tries with a lower minSpawnDist
-                    // console.log("Alive:", this.aliveCount, "Min R:", minSpawnDist)
+                    const minSpawnDist = Numeric.clamp(spawnDistance - (Math.floor(tries / distanceInterval) * reduceDistanceAmount), 0, spawnDistance);
 
                     foundPosition = true;
                     const radiusHitbox = new CircleHitbox(minSpawnDist, spawnPosition);
@@ -661,6 +656,12 @@ export class Game implements GameData {
 
                 // Spawn on top of a random teammate if a valid position couldn't be found
                 if (!foundPosition && teamPosition) spawnPosition = teamPosition;
+
+                //! TODO: Remove this when done
+                this.mapPings.push({
+                    definition: MapPings.fromString("airdrop_ping"),
+                    position: spawnPosition
+                });
 
                 break;
             }
