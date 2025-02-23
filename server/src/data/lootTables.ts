@@ -136,7 +136,8 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             [{ table: "scopes", weight: 1 }]
         ],
         gold_rock: [
-            { item: "mosin_nagant", weight: 1 }
+            { item: "mosin_nagant", weight: 1 },
+            [{ table: "scopes", weight: 1 }]
         ],
         loot_tree: [
             [
