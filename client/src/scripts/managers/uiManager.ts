@@ -820,29 +820,8 @@ export class UIManager {
         }
 
         if (inventory?.weapons) {
-            const { weapons, activeWeaponIndex } = inventory;
-            const weaponDef = weapons[activeWeaponIndex]?.definition;
-
-            // Play switch sound
-            if (
-                weaponDef && (
-                    this.inventory.activeWeaponIndex !== activeWeaponIndex
-                    || this.inventory.weapons[activeWeaponIndex]?.definition.idString !== weaponDef?.idString
-                )
-            ) {
-                let soundID: string;
-                if (weaponDef.itemType === ItemType.Throwable) {
-                    soundID = "throwable";
-                } else if (weaponDef.itemType === ItemType.Gun && weaponDef.isDual) {
-                    soundID = weaponDef.idString.slice("dual_".length);
-                } else {
-                    soundID = weaponDef.idString;
-                }
-                this.game.soundManager.play(`${soundID}_switch`);
-            }
-
-            this.inventory.weapons = weapons;
-            this.inventory.activeWeaponIndex = activeWeaponIndex;
+            this.inventory.weapons = inventory.weapons;
+            this.inventory.activeWeaponIndex = inventory.activeWeaponIndex;
         }
 
         if (lockedSlots !== undefined) {

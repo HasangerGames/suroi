@@ -1246,6 +1246,53 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             range: 160
         }
     },
+    {
+        idString: "pk61",
+        name: "PK-61",
+        itemType: ItemType.Gun,
+        ammoType: "762mm",
+        ammoSpawnAmount: 200,
+        capacity: 100,
+        extendedCapacity: 150,
+        reloadTime: 4.8,
+        fireDelay: 110,
+        switchDelay: 400,
+        speedMultiplier: 0.85,
+        recoilMultiplier: 0.7,
+        recoilDuration: 200,
+        fireMode: FireMode.Auto,
+        shotSpread: 2,
+        moveSpread: 4,
+        length: 9.45,
+        fists: {
+            left: Vec.create(120, -4),
+            right: Vec.create(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec.create(100, 0) },
+        casingParticles: [{
+            frame: "casing_762x54mmR",
+            position: Vec.create(4.6, -0.8),
+            velocity: {
+                y: {
+                    min: -15,
+                    max: -10
+                }
+            }
+        }],
+        gasParticles: gasParticlePresets.automatic,
+        ballistics: {
+            damage: 17,
+            obstacleMultiplier: 2,
+            speed: 0.32,
+            range: 250,
+            tracer: {
+                width: 1.1,
+                length: 1.4
+            }
+        }
+    },
 
     //
     // Shotguns

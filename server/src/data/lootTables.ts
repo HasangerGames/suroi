@@ -347,6 +347,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
         ],
         memorial_crate: [
             [
+                { item: "pk61", weight: 1 },
                 { item: "ak47", weight: 1 },
                 { item: "mosin_nagant", weight: 0.5 },
                 { item: "vss", weight: 0.2 },
@@ -540,8 +541,8 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "hp18", weight: 1.25 },
             { item: "micro_uzi", weight: 1 },
             { item: "ak47", weight: 1 },
-            { item: "mp5k", weight: 0.85 },
             { item: "model_37", weight: 0.95 },
+            { item: "mp5k", weight: 0.85 },
             { item: "aug", weight: 0.7 },
             { item: "sks", weight: 0.7 },
             { item: "m3k", weight: 0.3 },
