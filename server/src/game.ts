@@ -601,7 +601,7 @@ export class Game implements GameData {
         switch (spawnOptions.mode) {
             case SpawnMode.Normal: {
                 const hitbox = new CircleHitbox(5);
-                const gasPosition = this.gas.currentPosition;
+                const gasPosition = this.gas.newPosition;
                 const gasRadius = this.gas.newRadius ** 2;
                 const teamPosition = this.teamMode
                     // teamMode should guarantee the `team` object's existence
@@ -610,7 +610,11 @@ export class Game implements GameData {
                     : undefined;
 
                 let foundPosition = false;
-                for (let tries = 0; !foundPosition && tries < 200; tries++) {
+                const maxTries = 200;
+                const spawnDistance = 160;
+                const distanceInterval = 20;
+                const reduceDistanceAmount = 10;
+                for (let tries = 0; !foundPosition && tries < maxTries; tries++) {
                     const position = this.map.getRandomPosition(
                         hitbox,
                         {
@@ -627,9 +631,10 @@ export class Game implements GameData {
                     if (!position) break;
                     else spawnPosition = position;
 
-                    // Ensure the position is at least 60 units from other players
+                    const minSpawnDist = Numeric.clamp(spawnDistance - (Math.floor(tries / distanceInterval) * reduceDistanceAmount), 0, spawnDistance);
+
                     foundPosition = true;
-                    const radiusHitbox = new CircleHitbox(60, spawnPosition);
+                    const radiusHitbox = new CircleHitbox(minSpawnDist, spawnPosition);
                     for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
                         if (
                             object.isPlayer
@@ -644,6 +649,7 @@ export class Game implements GameData {
 
                 // Spawn on top of a random teammate if a valid position couldn't be found
                 if (!foundPosition && teamPosition) spawnPosition = teamPosition;
+
                 break;
             }
             case SpawnMode.Radius: {
