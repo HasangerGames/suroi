@@ -657,12 +657,6 @@ export class Game implements GameData {
                 // Spawn on top of a random teammate if a valid position couldn't be found
                 if (!foundPosition && teamPosition) spawnPosition = teamPosition;
 
-                //! TODO: Remove this when done
-                this.mapPings.push({
-                    definition: MapPings.fromString("airdrop_ping"),
-                    position: spawnPosition
-                });
-
                 break;
             }
             case SpawnMode.Radius: {
