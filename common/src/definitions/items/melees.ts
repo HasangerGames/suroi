@@ -870,15 +870,15 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         offset: Vec.create(5.5, 2),
         cooldown: 800,
         reflectiveSurface: {
-            pointA: Vec.create(3.8, -2.5),
-            pointB: Vec.create(2.5, 1.025)
+            pointA: Vec.create(3.55, -2),
+            pointB: Vec.create(2.6, 0.66)
         },
         onBack: {
             angle: 35,
             position: Vec.create(-45, 30),
             reflectiveSurface: {
-                pointA: Vec.create(-3, 0.8),
-                pointB: Vec.create(0.25, 3)
+                pointA: Vec.create(-2.83, 0.96),
+                pointB: Vec.create(-0.35, 2.62)
             }
         },
         fists: {
