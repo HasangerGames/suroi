@@ -1170,7 +1170,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         recoilDuration: 200,
         fireMode: FireMode.Auto,
         shotSpread: 5,
-        moveSpread: 10,
+        moveSpread: 8,
         length: 7.15,
         fists: {
             left: Vec.create(109, -18),
