@@ -1333,6 +1333,25 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
                 { table: "healing_items", weight: 1 }
             ]
         ],
+        memorial_crate: [
+            [
+                { item: "mosin_nagant", weight: 1 },
+                { item: "vss", weight: 1 },
+                { item: "deagle", weight: 0.5 },
+                { item: "m1_garand", weight: 0.1 },
+                { item: "l115a1", weight: 0.1 },
+                { item: "dual_deagle", weight: 0.01 }
+            ],
+            [
+                { item: "ancestral_garb", weight: 1 },
+                { item: "timeless", weight: 1 }
+            ],
+            [
+                { table: "equipment", weight: 1 },
+                { table: "healing_items", weight: 1 }
+            ],
+            [{ item: "kukri", weight: 1 }]
+        ],
         gun_locker: {
             min: 1,
             max: 2,
