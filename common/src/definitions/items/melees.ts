@@ -914,7 +914,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         itemType: ItemType.Melee,
         swingSound: "soft_swing",
         hitSound: "kukri_stab",
-        damage: 33,
+        damage: 40,
         speedMultiplier: 1,
         obstacleMultiplier: 1,
         radius: 2.5,

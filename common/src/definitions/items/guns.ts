@@ -536,7 +536,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         }],
         gasParticles: gasParticlePresets.automatic,
         ballistics: {
-            damage: 13,
+            damage: 15,
             obstacleMultiplier: 1,
             speed: 0.25,
             range: 100
@@ -559,7 +559,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             shotSpread: 3,
             moveSpread: 6,
             capacity: 40,
-            reloadTime: 3.6
+            reloadTime: 3.0
         }
     },
 
