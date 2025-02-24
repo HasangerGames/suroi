@@ -522,7 +522,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         recoilDuration: 300,
         fireMode: FireMode.Burst,
         shotSpread: 3,
-        moveSpread: 6,
+        moveSpread: 7.5,
         length: 5.6,
         fists: {
             left: Vec.create(85, -2),
@@ -539,7 +539,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             damage: 13,
             obstacleMultiplier: 1,
             speed: 0.25,
-            range: 130
+            range: 100
         },
         dual: {
             leftRightOffset: 1.3,
@@ -602,8 +602,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         ballistics: {
             damage: 16,
             obstacleMultiplier: 1,
-            speed: 0.25,
-            range: 130
+            speed: 0.28,
+            range: 140
         }
     },
     {
