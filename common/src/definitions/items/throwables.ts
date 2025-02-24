@@ -111,7 +111,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         idString: "smoke_grenade",
         name: "Smoke Grenade",
         itemType: ItemType.Throwable,
-        cookable: true,
+        cookable: false,
         fuseTime: 2000,
         cookTime: 150,
         throwTime: 150,
