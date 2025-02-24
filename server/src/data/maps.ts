@@ -318,8 +318,7 @@ const maps = {
             tent_3: 3,
             tent_4: 3,
             tent_5: 1,
-            outhouse: 10,
-            memorial: 1
+            outhouse: 10
         },
         majorBuildings: ["bombed_armory", "lodge", "plumpkin_bunker"],
         quadBuildingLimit: {
