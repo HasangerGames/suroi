@@ -1257,7 +1257,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         reloadTime: 4.8,
         fireDelay: 110,
         switchDelay: 400,
-        speedMultiplier: 0.85,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.7,
         recoilDuration: 200,
         fireMode: FireMode.Auto,
