@@ -1147,7 +1147,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         health: 200,
         indestructible: true,
         noResidue: true,
-        hideOnMap: true,
         doorSound: "monument_slide",
         zIndex: ZIndexes.BuildingsCeiling + 1,
         scale: {
