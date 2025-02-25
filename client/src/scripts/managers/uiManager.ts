@@ -157,7 +157,8 @@ export class UIManager {
         serverList: $<HTMLUListElement>("#server-list"),
 
         ammoCounterContainer: $<HTMLDivElement>("#weapon-ammo-container"),
-        activeAmmo: $<HTMLSpanElement>("#weapon-clip-ammo-count"),
+        activeAmmo: $<HTMLSpanElement>("#weapon-clip-ammo"),
+        activeAmmoCount: $<HTMLSpanElement>("#weapon-clip-ammo-count"),
         reserveAmmo: $<HTMLDivElement>("#weapon-inventory-ammo"),
         reloadIcon: $("#weapon-clip-reload-icon"),
         killStreakIndicator: $<HTMLDivElement>("#killstreak-indicator-container"),
@@ -885,7 +886,7 @@ export class UIManager {
         } else {
             this.ui.ammoCounterContainer.show();
 
-            this.ui.activeAmmo
+            this.ui.activeAmmoCount
                 .text(count)
                 .css("color", count > 0 ? "inherit" : "red");
 
