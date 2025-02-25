@@ -229,6 +229,10 @@ export class Game {
         game.map = new Minimap(game);
         game.soundManager = new SoundManager(game);
 
+        game.gasRender = new GasRender(game, PIXI_SCALE);
+        game.map = new Minimap(game);
+        game.soundManager = new SoundManager(game);
+
         const initPixi = async(): Promise<void> => {
             const renderMode = game.console.getBuiltInCVar("cv_renderer");
             const renderRes = game.console.getBuiltInCVar("cv_renderer_res");
