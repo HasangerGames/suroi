@@ -85,8 +85,11 @@ export class GameContainer {
 }
 
 export const games: Array<GameContainer | undefined> = [];
+let creating: GameContainer | undefined;
 
 export async function findGame(teamSize: TeamSize, map: MapWithParams): Promise<GameContainer | undefined> {
+    if (creating) return creating;
+
     const eligibleGames = games.filter((g?: GameContainer): g is GameContainer =>
         g !== undefined
         && g.allowJoin
@@ -98,8 +101,6 @@ export async function findGame(teamSize: TeamSize, map: MapWithParams): Promise<
         : await newGame(undefined, teamSize, map);
 }
 
-let creating: GameContainer | undefined;
-
 export async function newGame(id: number | undefined, teamSize: TeamSize, map: MapWithParams): Promise<GameContainer | undefined> {
     return new Promise<GameContainer | undefined>(resolve => {
         if (creating !== undefined) {
@@ -108,10 +109,11 @@ export async function newGame(id: number | undefined, teamSize: TeamSize, map: M
             serverLog(`Creating new game with ID ${id}`);
             const game = games[id];
             if (!game) {
-                games[id] = new GameContainer(id, teamSize, map, resolve);
+                creating = games[id] = new GameContainer(id, teamSize, map, resolve);
             } else if (game.stopped) {
                 game.promiseCallbacks.push(resolve);
                 game.sendMessage({ type: WorkerMessages.Reset });
+                creating = game;
             } else {
                 serverWarn(`Game with ID ${id} already exists`);
                 resolve(game);
@@ -122,7 +124,7 @@ export async function newGame(id: number | undefined, teamSize: TeamSize, map: M
                 const game = games[i];
                 console.log("Game", i, "exists:", !!game, "stopped:", game?.stopped);
                 if (!game || game.stopped) {
-                    void newGame(i, teamSize, map).then(game => resolve(game));
+                    void newGame(i, teamSize, map).then(resolve);
                     return;
                 }
             }
