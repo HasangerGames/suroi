@@ -2309,8 +2309,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 if (def.noDrop || ("ephemeral" in def && def.ephemeral)) continue;
 
                 if (def.itemType === ItemType.Ammo && count !== Infinity) {
-                    this.game.addLoot(item, position, layer, { count: Math.floor(count / 2) });
-                    this.game.addLoot(item, position, layer, { count: Math.ceil(count / 2) });
+                    let left = count;
+                    let subtractAmount = 0;
+
+                    do {
+                        left -= subtractAmount = Numeric.min(left, def.maxStackSize);
+                        this.game.addLoot(item, position, layer, { count: subtractAmount });
+                    } while (left > 0);
+
                     continue;
                 }
 
