@@ -1,8 +1,8 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Tue, 25 Feb 2025 18:14:16 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Tue, 25 Feb 2025 18:57:00 GMT
 
-## 🇦🇱 Shqip (83% Complete) - ab.hjson
+## 🇦🇱 Shqip (82% Complete) - ab.hjson
 
 ### (No Invalid Keys)
 
@@ -23,6 +23,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -55,7 +60,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇧🇷 Português (Brasil) (96% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (95% Complete) - br.hjson
 
 ### (No Invalid Keys)
 
@@ -69,10 +74,15 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
 
-## 🇨🇿 Čeština (87% Complete) - cz.hjson
+## 🇨🇿 Čeština (86% Complete) - cz.hjson
 
 ### (No Invalid Keys)
 
@@ -95,6 +105,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -114,7 +129,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇩🇪 Deutsch (93% Complete) - de.hjson
+## 🇩🇪 Deutsch (91% Complete) - de.hjson
 
 ### (No Invalid Keys)
 
@@ -131,6 +146,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
@@ -140,7 +160,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
-## 🇪🇸 Español (94% Complete) - es.hjson
+## 🇪🇸 Español (92% Complete) - es.hjson
 
 ### (No Invalid Keys)
 
@@ -156,6 +176,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `interact_monument` is not defined
@@ -164,7 +189,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
-## 🇪🇪 eesti (94% Complete) - et.hjson
+## 🇪🇪 eesti (92% Complete) - et.hjson
 
 ### Invalid Keys
 
@@ -182,6 +207,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `interact_monument` is not defined
@@ -190,7 +220,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
-## 🇫🇮 suomi (92% Complete) - fi.hjson
+## 🇫🇮 suomi (90% Complete) - fi.hjson
 
 ### (No Invalid Keys)
 
@@ -208,6 +238,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -219,7 +254,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
-## 🇫🇷 Français (95% Complete) - fr.hjson
+## 🇫🇷 Français (93% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -235,6 +270,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `interact_monument` is not defined
@@ -242,7 +282,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `retry` is not defined
 - Key `bindings_screen_record` is not defined
 
-## 🇬🇷 Ελληνικά (96% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (94% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
@@ -256,12 +296,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (86% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (84% Complete) - hk_mo.hjson
 
 ### (No Invalid Keys)
 
@@ -286,6 +331,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -307,7 +357,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off_down` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇭🇺 Magyar (97% Complete) - hu.hjson
+## 🇭🇺 Magyar (95% Complete) - hu.hjson
 
 ### (No Invalid Keys)
 
@@ -320,10 +370,15 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
 
-## 🇮🇹 Italiano (83% Complete) - it.hjson
+## 🇮🇹 Italiano (82% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -362,6 +417,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -386,7 +446,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `destroyer_of_worlds` is not defined
 - Key `m16a4` is not defined
 
-## 🇯🇵 日本語 (87% Complete) - jp.hjson
+## 🇯🇵 日本語 (86% Complete) - jp.hjson
 
 ### (No Invalid Keys)
 
@@ -409,6 +469,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -428,7 +493,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇱🇹 Lietuvių (87% Complete) - lt.hjson
+## 🇱🇹 Lietuvių (86% Complete) - lt.hjson
 
 ### (No Invalid Keys)
 
@@ -451,6 +516,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -470,7 +540,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇱🇻 Latviešu (87% Complete) - lv.hjson
+## 🇱🇻 Latviešu (86% Complete) - lv.hjson
 
 ### (No Invalid Keys)
 
@@ -493,6 +563,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -512,7 +587,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇵🇱 Polski (92% Complete) - pl.hjson
+## 🇵🇱 Polski (90% Complete) - pl.hjson
 
 ### (No Invalid Keys)
 
@@ -530,6 +605,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -541,7 +621,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
-## 🎀 Cute Engwish (97% Complete) - qen.hjson
+## 🎀 Cute Engwish (96% Complete) - qen.hjson
 
 ### (No Invalid Keys)
 
@@ -551,11 +631,16 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `bindings_screen_record` is not defined
 
-## 🇷🇴 Română (81% Complete) - ro.hjson
+## 🇷🇴 Română (80% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
@@ -582,6 +667,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -614,7 +704,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇷🇺 Русский (96% Complete) - ru.hjson
+## 🇷🇺 Русский (94% Complete) - ru.hjson
 
 ### (No Invalid Keys)
 
@@ -629,11 +719,16 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `m16a4` is not defined
 
-## 🇮🇳 தமிழ் (92% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (90% Complete) - ta.hjson
 
 ### (No Invalid Keys)
 
@@ -650,6 +745,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -662,7 +762,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇹🇷 Turkısh (93% Complete) - tr.hjson
+## 🇹🇷 Turkısh (92% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -680,6 +780,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -689,7 +794,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
-## 🇹🇼 中文（繁體） (80% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (78% Complete) - tw.hjson
 
 ### (No Invalid Keys)
 
@@ -717,6 +822,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -751,7 +861,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇻🇳 Tiếng Việt (96% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (94% Complete) - vi.hjson
 
 ### (No Invalid Keys)
 
@@ -765,12 +875,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
 
-## 🇨🇳 中文（简体） (95% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (93% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -787,6 +902,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined

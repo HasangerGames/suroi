@@ -291,7 +291,6 @@ export class InputManager {
                     }
                     : {})
             });
-
             const rightJoystick = nipplejs.create({
                 zone: $("#right-joystick-container")[0],
                 size,
@@ -303,14 +302,11 @@ export class InputManager {
                     }
                     : {})
             });
-            let movementJoystick = leftJoystick;
-            let aimJoystick = rightJoystick;
-            const mbJoystickInfo = document.getElementById("mb-joystick-info");
-            if (game.console.getBuiltInCVar("mb_switch_joysticks")) {
-                movementJoystick = rightJoystick;
-                aimJoystick = leftJoystick;
-                if (mbJoystickInfo) mbJoystickInfo.textContent = "Right joystick moves, Left joystick aims";
-            } else if (mbJoystickInfo) mbJoystickInfo.textContent = "Left joystick moves, Right joystick aims";
+
+            const [movementJoystick, aimJoystick] = game.console.getBuiltInCVar("mb_switch_joysticks")
+                ? [rightJoystick, leftJoystick]
+                : [leftJoystick, rightJoystick];
+
             let aimJoystickUsed = false;
             let shootOnRelease = false;
 
@@ -367,6 +363,7 @@ export class InputManager {
                 shootOnRelease = false;
             });
         }
+
         // Gyro stuff
         const gyroAngle = game.console.getBuiltInCVar("mb_gyro_angle");
         if (gyroAngle > 0) {

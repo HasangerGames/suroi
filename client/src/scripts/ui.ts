@@ -1706,7 +1706,10 @@ export async function setUpUI(game: Game): Promise<void> {
     addCheckboxListener("#toggle-mobile-controls", "mb_controls_enabled");
     addSliderListener("#slider-joystick-size", "mb_joystick_size");
     addSliderListener("#slider-joystick-transparency", "mb_joystick_transparency");
-    addCheckboxListener("#toggle-mobile-joysticks", "mb_switch_joysticks");
+    const joystickInfo = $("#mb-joystick-info");
+    const updateJoystickInfo = (switchJoysticks: boolean): JQuery => joystickInfo.text(getTranslatedString(switchJoysticks ? "settings_switched_joystick_info" : "settings_normal_joystick_info"));
+    addCheckboxListener("#toggle-mobile-joysticks", "mb_switch_joysticks", updateJoystickInfo);
+    updateJoystickInfo(game.console.getBuiltInCVar("mb_switch_joysticks"));
     (document.getElementById("left-joystick-color-picker") as HTMLInputElement).value = game.console.getBuiltInCVar("mb_left_joystick_color");
     (document.getElementById("right-joystick-color-picker") as HTMLInputElement).value = game.console.getBuiltInCVar("mb_right_joystick_color");
     $<HTMLInputElement>("#left-joystick-color-picker").on("input", function() {
