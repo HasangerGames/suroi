@@ -52,7 +52,6 @@ export class Gas {
 
     updateFrom(data: UpdatePacketDataOut): void {
         const gas = data.gas;
-
         const gasProgress = data.gasProgress;
 
         if (gas) {
@@ -74,11 +73,11 @@ export class Gas {
             const finalStage = gas.finalStage;
             switch (this.state) {
                 case GasState.Waiting: {
-                    gasMessage = finalStage ? getTranslatedString("final_gas_waiting", { time: formatDate(time) }) : getTranslatedString("gas_waiting", { time: formatDate(time) });
+                    gasMessage = getTranslatedString(finalStage ? "final_gas_waiting" : "gas_waiting", { time: formatDate(time) });
                     break;
                 }
                 case GasState.Advancing: {
-                    gasMessage = finalStage ? getTranslatedString("final_gas_advancing") : getTranslatedString("gas_advancing");
+                    gasMessage = getTranslatedString(finalStage ? "final_gas_advancing" : "gas_advancing");
                     break;
                 }
                 case GasState.Inactive: {
