@@ -79,14 +79,12 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
                         ) as CollidableGameObject[]
                 ).sort((a, b) => {
                     if (
-                        (a.isObstacle && (a.definition.noMeleeCollision || a.definition.indestructible))
-                        || a.isBuilding
+                        (a.isObstacle && a.definition.noMeleeCollision)
                         || (owner.game.teamMode && a.isPlayer && a.teamID === this.owner.teamID)
                     ) return Infinity;
 
                     if (
-                        (b.isObstacle && (b.definition.noMeleeCollision || b.definition.indestructible))
-                        || b.isBuilding
+                        (b.isObstacle && b.definition.noMeleeCollision)
                         || (owner.game.teamMode && b.isPlayer && b.teamID === this.owner.teamID)
                     ) return -Infinity;
 
