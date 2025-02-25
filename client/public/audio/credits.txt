@@ -46,6 +46,10 @@ Guns:
 
   All other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
 
+Melees:
+  Kukri pickup - "Metal Blade Slice 46" from Pixabay: https://pixabay.com/sound-effects/metal-blade-slice-46-195333/
+  K-bar pickup - "Dagger Draw Fast" from Medieval sound effects - Weapon Textures: https://opengameart.org/content/medieval-sound-effects-weapon-textures
+
 Obstacles:
   Window punch: https://freesound.org/people/peter1984/sounds/414444/
   Window break: https://freesound.org/people/m1a2t3z4/sounds/112213/
@@ -92,7 +96,7 @@ Tablets:
   Use - hasanger
   Pickup - hasanger and 1092384
 
-Helmet pickup - "subircasco" from Pixabay: https://pixabay.com/sound-effects/subircasco-44661/
+Helmet pickup - Katloo
 Vest pickup - "Cloth Flapping On A Clothesline Thickly" from Pixabay: https://pixabay.com/sound-effects/cloth-flapping-on-a-clothesline-thickly-6025/
 Backpack pickup - "backpack" from Pixabay: https://pixabay.com/sound-effects/backpack-34942/
 
@@ -118,4 +122,9 @@ Footsteps:
   Sand - "foley_footsteps_desert_boots_sand" from Pixabay: https://pixabay.com/sound-effects/foley-footsteps-desert-boots-sand-6900/
   Water - "Footsteps in Water - Nature Sounds" from Pixabay: https://pixabay.com/sound-effects/footsteps-in-water-nature-sounds-8185/
 
-All other sound effects - Katloo
+Memorial open:
+  "Tomb_door" from Pixabay: https://pixabay.com/sound-effects/tomb-door-95246/
+  "impact riser 01" from Pixabay: https://pixabay.com/sound-effects/impact-riser-01-6908/
+  "Atomic Impact" from Pixabay: https://pixabay.com/sound-effects/atomic-impact-216308/
+
+Generic pickup sound - Katloo
