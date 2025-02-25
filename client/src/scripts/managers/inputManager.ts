@@ -275,11 +275,15 @@ export class InputManager {
         if (this.isMobile) {
             const size = game.console.getBuiltInCVar("mb_joystick_size");
             const transparency = game.console.getBuiltInCVar("mb_joystick_transparency");
+            function joystickColor(transparency: number, input: string): string {
+                const hexAlpha = Math.round(transparency * 255).toString(16).padStart(2, "0");
+                return input + hexAlpha;
+            }
 
             const leftJoystick = nipplejs.create({
                 zone: $("#left-joystick-container")[0],
                 size,
-                color: `rgba(255, 255, 255, ${transparency})`,
+                color: joystickColor(transparency, game.console.getBuiltInCVar("mb_left_joystick_color")),
                 ...(game.console.getBuiltInCVar("mb_joystick_lock")
                     ? {
                         position: { top: "50%", left: "25%" },
@@ -291,7 +295,7 @@ export class InputManager {
             const rightJoystick = nipplejs.create({
                 zone: $("#right-joystick-container")[0],
                 size,
-                color: `rgba(255, 255, 255, ${transparency})`,
+                color: joystickColor(transparency, game.console.getBuiltInCVar("mb_right_joystick_color")),
                 ...(game.console.getBuiltInCVar("mb_joystick_lock")
                     ? {
                         position: { top: "50%", right: "-25%" },
