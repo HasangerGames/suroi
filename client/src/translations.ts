@@ -1,5 +1,4 @@
 import { Badges } from "@common/definitions/badges";
-import { Emotes } from "@common/definitions/emotes";
 import { Loots } from "@common/definitions/loots";
 import { Numeric } from "@common/utils/math";
 import type { TranslationManifest, TranslationsManifest } from "../../translations/src/processTranslations";
@@ -7,13 +6,17 @@ import { type Game } from "./scripts/game";
 import { defaultClientCVars } from "./scripts/utils/console/defaultClientCVars";
 import TRANSLATIONS_MANIFEST from "./translationsManifest.json";
 import { type TranslationKeys } from "./typings/translations";
+import { Emotes } from "@common/definitions/emotes";
 
 export type TranslationMap = Partial<Record<TranslationKeys, string>> & TranslationManifest;
 
 let defaultLanguage: string;
 let selectedLanguage: string;
 
-export const TRANSLATIONS = {
+export const TRANSLATIONS: {
+    get defaultLanguage(): string
+    readonly translations: Record<string, TranslationMap>
+} = {
     get defaultLanguage(): string {
         if (!setup) {
             throw new Error("Translation API not yet setup");
@@ -24,16 +27,12 @@ export const TRANSLATIONS = {
     translations: {
         hp18: {
             name: "HP-18",
-            flag: "<img height=\"20\" src=\"./img/killfeed/hp18_killfeed.svg\" />",
-            percentage: "HP-18%"
+            flag: "<img height=\"20\" src=\"./img/game/shared/weapons/hp18.svg\" />",
+            percentage: "HP-18%",
+            no_resize: true
         }
     }
-} as {
-    get defaultLanguage(): string
-    translations: Record<string, TranslationMap>
 };
-
-export const NO_SPACE_LANGUAGES = ["zh", "tw", "hk_mo", "jp"];
 
 let setup = false;
 export async function initTranslation(game: Game): Promise<void> {
@@ -83,28 +82,29 @@ export function getTranslatedString(key: TranslationKeys, replacements?: Record<
     // Easter egg language
     if (selectedLanguage === "hp18") return "HP-18";
 
-    if (key.startsWith("emote_")) {
-        return Emotes.reify(key.slice("emote_".length)).name;
-    }
-
     if (key.startsWith("badge_")) {
-        return Badges.reify(key.slice("badge_".length)).name;
+        key = Badges.reify(key.slice("badge_".length)).idString.replace("bdg_", "badge_") as TranslationKeys;
     }
 
-    let foundTranslation: string;
-    try {
-        foundTranslation = TRANSLATIONS.translations[selectedLanguage]?.[key]
-        ?? TRANSLATIONS.translations[defaultLanguage]?.[key]
-        ?? Loots.reify(key).name;
-    } catch {
+    const languageData = TRANSLATIONS.translations[selectedLanguage];
+    const defaultLanguageData = TRANSLATIONS.translations[defaultLanguage];
+
+    if (!languageData) {
+        console.error(`Language ${selectedLanguage} does not exist`);
         return key;
     }
 
-    if (replacements === undefined) {
-        return foundTranslation;
-    }
+    let foundTranslation: string | undefined;
+    foundTranslation = languageData[key];
+    foundTranslation ??= defaultLanguageData[key];
+    foundTranslation ??= Loots.fromStringSafe(key)?.name;
 
-    for (const [search, replace] of Object.entries(replacements)) {
+    foundTranslation ??= key.startsWith("emote_") ? Emotes.fromStringSafe(key.slice("emote_".length))?.name : undefined;
+    foundTranslation ??= key.startsWith("bdg_") ? Badges.fromStringSafe(key)?.name : undefined;
+
+    foundTranslation ??= key;
+
+    for (const [search, replace] of Object.entries(replacements ?? {})) {
         foundTranslation = foundTranslation.replaceAll(`<${search}>`, replace);
     }
 
@@ -144,11 +144,12 @@ function adjustFontSize(element: HTMLElement): void {
     }
 
     element.style.fontSize = `${fontSize}px`;
+    element.style.verticalAlign = "middle";
 }
 
 function translateCurrentDOM(): void {
     let debugTranslationCounter = 0;
-
+    document.documentElement.lang = TRANSLATIONS.translations[selectedLanguage]?.html_lang ?? "";
     document.querySelectorAll("body *").forEach(element => {
         if (!(element instanceof HTMLElement)) return; // ignore non-html elements (like svg and mathml)
 
@@ -167,7 +168,7 @@ function translateCurrentDOM(): void {
         if (
             (element.classList.contains("btn") || element.parentElement?.classList.contains("btn") || element.parentElement?.classList.contains("tab"))
             && translatedString.length >= 10
-            && !["en", "hp18"].includes(selectedLanguage) // <- why? (because we do not want text measurements on English or HP-18)
+            && !TRANSLATIONS.translations[selectedLanguage].no_resize
         ) {
             adjustFontSize(element);
         }

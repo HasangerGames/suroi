@@ -1,6 +1,6 @@
-import { AnimationType, FireMode, InventoryMessages } from "@common/constants";
-import { type GunDefinition } from "@common/definitions/guns";
-import { PerkData, PerkIds } from "@common/definitions/perks";
+import { AnimationType, FireMode, GameConstants, InventoryMessages } from "@common/constants";
+import { type GunDefinition } from "@common/definitions/items/guns";
+import { PerkData, PerkIds } from "@common/definitions/items/perks";
 import { PickupPacket } from "@common/packets/pickupPacket";
 import { Orientation } from "@common/typings";
 import { type BulletOptions } from "@common/utils/baseBullet";
@@ -15,14 +15,12 @@ import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import { getPatterningShape } from "../utils/misc";
 import { ReloadAction } from "./action";
-import { InventoryItem } from "./inventoryItem";
+import { InventoryItemBase } from "./inventoryItem";
 
 /**
  * A class representing a firearm
  */
-export class GunItem extends InventoryItem<GunDefinition> {
-    declare readonly category: ItemType.Gun;
-
+export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
     ammo = 0;
 
     private _consecutiveShots = 0;
@@ -125,11 +123,11 @@ export class GunItem extends InventoryItem<GunDefinition> {
             : Angle.degreesToRadians((owner.isMoving ? moveSpread : shotSpread) / 2);
 
         this._lastUse = owner.game.now;
-        const jitter = definition.jitterRadius;
+        const jitter = definition.jitterRadius ?? 0;
         // when are we gonna have a perk that takes this mechanic and chucks it in the fucking trash where it belongs
 
         const offset = definition.isDual
-            ? ((this._altFire = !this._altFire) ? 1 : -1) * definition.leftRightOffset
+            ? (this._altFire ? -1 : 1) * definition.leftRightOffset
             : (definition.bulletOffset ?? 0);
 
         const startPosition = Vec.rotate(Vec.create(0, offset), owner.rotation);
@@ -159,7 +157,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
         }
 
         const rangeOverride = owner.distanceToMouse - this.definition.length;
-        const projCount = definition.bulletCount;
+        const projCount = definition.bulletCount ?? 1;
 
         const modifiers: DeepMutable<DeepRequired<BulletOptions["modifiers"]>> = {
             damage: 1,
@@ -319,13 +317,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
         if (definition.summonAirdrop) {
             owner.game.summonAirdrop(owner.position);
 
-            if (
-                this.owner.mapPerkOrDefault(
-                    PerkIds.InfiniteAmmo,
-                    ({ airdropCallerLimit }) => this._shots >= airdropCallerLimit,
-                    false
-                )
-            ) {
+            if (this._shots >= GameConstants.airdrop.callerLimit) {
                 owner.sendPacket(PickupPacket.create({ message: InventoryMessages.RadioOverused }));
                 this.owner.inventory.destroyWeapon(this.owner.inventory.activeWeaponIndex);
                 return;
@@ -345,13 +337,21 @@ export class GunItem extends InventoryItem<GunDefinition> {
             return;
         }
 
-        if (definition.fireMode === FireMode.Burst && this._consecutiveShots >= definition.burstProperties.shotsPerBurst) {
-            this._consecutiveShots = 0;
-            this._burstTimeout = setTimeout(
-                this._useItemNoDelayCheck.bind(this, false),
-                definition.burstProperties.burstCooldown
-            );
-            return;
+        if (definition.fireMode === FireMode.Burst) {
+            if (this._consecutiveShots >= definition.burstProperties.shotsPerBurst) {
+                this._consecutiveShots = 0;
+                this._burstTimeout = setTimeout(
+                    this._useItemNoDelayCheck.bind(this, false),
+                    definition.burstProperties.burstCooldown
+                );
+
+                if (definition.isDual) {
+                    this._altFire = !this._altFire;
+                }
+                return;
+            }
+        } else if (definition.isDual) {
+            this._altFire = !this._altFire;
         }
 
         if (

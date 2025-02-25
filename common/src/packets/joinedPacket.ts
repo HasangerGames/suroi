@@ -1,20 +1,20 @@
 import { TeamSize } from "../constants";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
-import { createPacket } from "./packet";
+import { createPacket, DataSplitTypes } from "./packet";
 
 export type JoinedPacketData = {
     readonly emotes: ReadonlyArray<EmoteDefinition | undefined>
 } & ({
-    readonly maxTeamSize: TeamSize.Solo
+    readonly teamSize: TeamSize.Solo
 } | {
-    readonly maxTeamSize: Exclude<TeamSize, TeamSize.Solo>
+    readonly teamSize: Exclude<TeamSize, TeamSize.Solo>
     readonly teamID: number
 });
 
 export const JoinedPacket = createPacket("JoinedPacket")<JoinedPacketData>({
     serialize(stream, data) {
-        stream.writeUint8(data.maxTeamSize);
-        if (data.maxTeamSize !== TeamSize.Solo) {
+        stream.writeUint8(data.teamSize);
+        if (data.teamSize !== TeamSize.Solo) {
             stream.writeUint8(data.teamID);
         }
 
@@ -36,16 +36,20 @@ export const JoinedPacket = createPacket("JoinedPacket")<JoinedPacketData>({
             }
         }
     },
-    deserialize(stream) {
-        const maxTeamSize: TeamSize = stream.readUint8();
-        const teamID = maxTeamSize !== TeamSize.Solo ? stream.readUint8() : undefined;
+    deserialize(stream, [saveIndex, recordTo]) {
+        saveIndex();
+        const teamSize: TeamSize = stream.readUint8();
+        const teamID = teamSize !== TeamSize.Solo ? stream.readUint8() : undefined;
 
         const emoteSlots = stream.readBooleanGroup();
 
-        return {
-            maxTeamSize,
+        const data = {
+            teamSize,
             teamID,
             emotes: Array.from({ length: 6 }, (_, i) => emoteSlots[i] ? Emotes.readFromStream(stream) : undefined)
         } as JoinedPacketData;
+
+        recordTo(DataSplitTypes.PlayerData);
+        return data;
     }
 });

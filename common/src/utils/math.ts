@@ -1,7 +1,6 @@
 import { type ObstacleDefinition } from "../definitions/obstacles";
 import { type Orientation } from "../typings";
 import { RectangleHitbox } from "./hitbox";
-import { ObstacleSpecialRoles } from "./objectDefinitions";
 import { Vec, type Vector } from "./vector";
 
 export const π = Math.PI;
@@ -751,15 +750,15 @@ export type CollisionResponse = {
 } | null;
 
 export function calculateDoorHitboxes<
-    U extends (ObstacleDefinition & { readonly role: ObstacleSpecialRoles.Door })["operationStyle"]
+    U extends (ObstacleDefinition & { readonly isDoor: true })["operationStyle"]
 >(
-    definition: ObstacleDefinition & { readonly role: ObstacleSpecialRoles.Door, readonly operationStyle?: U },
+    definition: ObstacleDefinition & { readonly isDoor: true, readonly operationStyle?: U },
     position: Vector,
     rotation: Orientation
 ): U extends "slide"
         ? { readonly openHitbox: RectangleHitbox }
         : { readonly openHitbox: RectangleHitbox, readonly openAltHitbox: RectangleHitbox } {
-    if (!(definition.hitbox instanceof RectangleHitbox) || definition.role !== ObstacleSpecialRoles.Door) {
+    if (!(definition.hitbox instanceof RectangleHitbox) || !definition.isDoor) {
         throw new Error("Unable to calculate hitboxes for door: Not a door or hitbox is non-rectangular");
     }
 

@@ -1,7 +1,7 @@
-import { defaultBulletTemplate } from "../constants";
-import { ObjectDefinitions, type BaseBulletDefinition, type ObjectDefinition } from "../utils/objectDefinitions";
+import { BaseBulletDefinition } from "../utils/baseBullet";
+import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
 import { Explosions } from "./explosions";
-import { Guns } from "./guns";
+import { Guns } from "./items/guns";
 
 export type BulletDefinition = BaseBulletDefinition & ObjectDefinition;
 
@@ -27,26 +27,24 @@ const saturatedBulletColors: Record<string, number> = {
     "shrapnel": 0x363636
 };
 
-export const Bullets = ObjectDefinitions.withDefault<BulletDefinition>()(
-    "Bullets",
-    defaultBulletTemplate,
-    () => [
+export const Bullets = new ObjectDefinitions<BulletDefinition>(
+    [
         ...Guns.definitions,
         ...Explosions.definitions
     ]
         .filter(def => !("isDual" in def) || !def.isDual)
         .map(def => {
-            let tracerColor = def.ballistics.tracer.color;
-            let saturatedColor = def.ballistics.tracer.saturatedColor;
+            let color = def.ballistics.tracer?.color;
+            let saturatedColor = def.ballistics.tracer?.saturatedColor;
 
             // if this bullet definition doesn't override the tracer color
             // calculate it based on ammo type or if it's shrapnel
-            if (tracerColor === undefined) {
+            if (color === undefined) {
                 if ("ammoType" in def && def.ammoType in bulletColors) {
-                    tracerColor = bulletColors[def.ammoType];
+                    color = bulletColors[def.ammoType];
                     saturatedColor ??= saturatedBulletColors[def.ammoType];
                 } else if (def.ballistics.shrapnel) {
-                    tracerColor = bulletColors.shrapnel;
+                    color = bulletColors.shrapnel;
                     saturatedColor = saturatedBulletColors.shrapnel;
                 }
             }
@@ -56,8 +54,8 @@ export const Bullets = ObjectDefinitions.withDefault<BulletDefinition>()(
                 name: `${def.name} Bullet`,
                 ...def.ballistics,
                 tracer: {
-                    color: tracerColor,
-                    saturatedColor,
+                    color: color ?? 0xffffff,
+                    saturatedColor: saturatedColor ?? 0xffffff,
                     ...def.ballistics.tracer
                 }
             };

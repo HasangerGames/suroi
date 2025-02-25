@@ -276,14 +276,14 @@
         on:pointerup={pointerUp}
         on:pointermove={pointermove}
         on:wheel={mouseWheel}
-        oncontextmenu="return false"
+        on:contextmenu={() => false}
     >
         <svg>
             <g transform="translate({x} {y}) scale({scale})">
                 <!-- svelte-ignore empty-block -->
                 {#await bgImage}
                 {:then img}
-                    <image x="{-(img.width / 2)}" y="{-(img.height / 2)}" href="{img.src}" onmousedown="return false"></image>
+                    <image x="{-(img.width / 2)}" y="{-(img.height / 2)}" href="{img.src}" on:mousedown={() => { return false; }}></image>
                 {/await}
                 {#each hitboxes as hitbox (hitbox)}
                     <Hitbox
@@ -301,7 +301,7 @@
 </main>
 
 <style lang="scss">
-    @import "../../src/scss/palette.scss";
+    @use "../../src/scss/palette.scss";
 
     main {
         display: flex;
@@ -313,7 +313,7 @@
         height: 100vh;
         width: 20vw;
         padding: 10px;
-        background-color: $transparent_bg;
+        background-color: palette.$transparent_bg;
         display: flex;
         flex-direction: column;
 

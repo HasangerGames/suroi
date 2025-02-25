@@ -8,6 +8,8 @@ import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
+import type { DebugRenderer } from "../utils/debugRenderer";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
 
 export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
     playerName!: string;
@@ -111,6 +113,19 @@ export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
             this.doOverlay() ? ZIndexes.UnderWaterDeadObstacles : ZIndexes.DeathMarkers,
             this.layer,
             this.game.layer
+        );
+    }
+
+    override update(): void { /* bleh */ }
+    override updateInterpolation(): void { /* bleh */ }
+    updateDebugGraphics(debugRenderer: DebugRenderer): void {
+        if (!DEBUG_CLIENT) return;
+
+        debugRenderer.addCircle(
+            0.1,
+            this.position,
+            HITBOX_COLORS.obstacleNoCollision,
+            this.layer === this.game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
         );
     }
 

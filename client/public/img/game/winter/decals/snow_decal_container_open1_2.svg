@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="139.97798"
+   height="202.67792"
+   viewBox="0 0 37.03584 53.625199"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="snow_decal_container_open1_2.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.71713664"
+     inkscape:cx="-149.9017"
+     inkscape:cy="244.72324"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Στρώση 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-144.46249,-83.872919)">
+    <path
+       style="fill:#c9d1d9;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:3.175;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="m 168.17676,111.1523 c -12.8391,-3.44019 -20.00717,-10.22454 -22.42527,-27.189743 l 35.53077,1.431691 -0.34545,50.251522 -3.57585,0.34315 -3.99324,-5.61874 z"
+       id="path9-1"
+       sodipodi:nodetypes="ccccccc" />
+    <path
+       style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#a2a5c0;stroke-width:3.175;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="m 181.49003,135.91046 c -14.49198,0.0758 -4.17586,-22.87427 -19.96567,-27.88238 -10.60412,-3.36336 -13.24846,-8.202971 -15.49025,-23.931153"
+       id="path9-3-0"
+       sodipodi:nodetypes="csc" />
+  </g>
+</svg>

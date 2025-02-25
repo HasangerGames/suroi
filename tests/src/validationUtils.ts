@@ -1,11 +1,13 @@
+import type { BaseBulletDefinition } from "@common/utils/baseBullet";
 import { Explosions } from "../../common/src/definitions/explosions";
 import { Loots } from "../../common/src/definitions/loots";
-import { SyncedParticles, type Animated, type NumericSpecifier, type SyncedParticleSpawnerDefinition, type ValueSpecifier } from "../../common/src/definitions/syncedParticles";
+import { type Animated, type SyncedParticleDefinition, type ValueSpecifier } from "../../common/src/definitions/syncedParticles";
 import { HitboxType, type Hitbox } from "../../common/src/utils/hitbox";
 import { type EaseFunctions } from "../../common/src/utils/math";
-import { NullString, type BaseBulletDefinition, type InventoryItemDefinition, type ObjectDefinitions, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
+import { NullString, type InventoryItemDefinition, type ObjectDefinition, type ObjectDefinitions, type ReferenceOrRandom, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../common/src/utils/vector";
-import { LootTables, type WeightedItem } from "../../server/src/data/lootTables";
+import { LootTables } from "../../server/src/data/lootTables";
+import type { WeightedItem } from "../../server/src/utils/lootHelpers";
 
 export function findDupes<
     K extends string | number | symbol
@@ -527,7 +529,7 @@ export const tester = (() => {
             }
         },
         // too lazy to extract common code out
-        runTestOnIdStringArray<T extends { readonly idString: string | Record<string, number> }>(
+        runTestOnIdStringArray<T extends { readonly idString: ReferenceOrRandom<ObjectDefinition> }>(
             array: readonly T[],
             cb: (obj: T, errorPath: string) => void,
             baseErrorPath: string
@@ -573,30 +575,51 @@ export const validators = Object.freeze({
             baseErrorPath
         });
 
-        if (ballistics.tracer) {
+        const tracer = ballistics.tracer;
+        if (tracer) {
             logger.indent("Validating tracer data", () => {
                 const errorPath = tester.createPath(baseErrorPath, "tracer data");
-                const tracer = ballistics.tracer;
 
-                tester.assertInBounds({
+                tester.assertValidOrNPV({
                     obj: tracer,
                     field: "opacity",
-                    min: 0,
-                    max: 1,
-                    includeMin: true,
-                    includeMax: true,
+                    defaultValue: 1,
+                    validatorIfPresent: (value, errorPath) => {
+                        tester.assertInBounds({
+                            value,
+                            min: 0,
+                            max: 1,
+                            includeMin: true,
+                            includeMax: true,
+                            errorPath
+                        });
+                    },
                     baseErrorPath: errorPath
                 });
 
-                tester.assertIsPositiveReal({
+                tester.assertValidOrNPV({
                     obj: tracer,
                     field: "width",
+                    defaultValue: 1,
+                    validatorIfPresent: (value, errorPath) => {
+                        tester.assertIsPositiveReal({
+                            value,
+                            errorPath
+                        });
+                    },
                     baseErrorPath: errorPath
                 });
 
-                tester.assertIsPositiveReal({
+                tester.assertValidOrNPV({
                     obj: tracer,
                     field: "length",
+                    defaultValue: 1,
+                    validatorIfPresent: (value, errorPath) => {
+                        tester.assertIsPositiveReal({
+                            value,
+                            errorPath
+                        });
+                    },
                     baseErrorPath: errorPath
                 });
 
@@ -1222,124 +1245,51 @@ export const validators = Object.freeze({
             return;
         }
 
-        if ("mean" in value) {
-            baseValidator(tester.createPath(baseErrorPath, "mean"), value.mean);
-            baseValidator(tester.createPath(baseErrorPath, "deviation"), value.deviation);
-            return;
-        }
-
         baseValidator(baseErrorPath, value);
     },
     animated<T>(
         baseErrorPath: string,
         animated: Animated<T>,
         baseValidator: (errorPath: string, value: T) => void,
-        durationValidator?: (errorPath: string, duration?: NumericSpecifier | "lifetime") => void,
         easingValidator?: (errorPath: string, easing?: keyof typeof EaseFunctions) => void
     ): void {
         this.valueSpecifier(tester.createPath(baseErrorPath, "start"), animated.start, baseValidator);
         this.valueSpecifier(tester.createPath(baseErrorPath, "end"), animated.end, baseValidator);
 
-        (durationValidator ?? (() => { /* no-op */ }))(tester.createPath(baseErrorPath, "duration"), animated.duration);
+        // (durationValidator ?? (() => { /* no-op */ }))(tester.createPath(baseErrorPath, "duration"), animated.duration);
         (easingValidator ?? (() => { /* no-op */ }))(tester.createPath(baseErrorPath, "easing"), animated.easing);
     },
-    syncedParticleSpawner(baseErrorPath: string, spawner: SyncedParticleSpawnerDefinition): void {
-        tester.assertReferenceExists({
-            obj: spawner,
-            field: "type",
-            collection: SyncedParticles,
-            collectionName: "SyncedParticles",
-            baseErrorPath
-        });
-
+    syncedParticleSpawner(baseErrorPath: string, spawner: NonNullable<SyncedParticleDefinition["spawner"]>): void {
         tester.assertIsNaturalFiniteNumber({
             obj: spawner,
             field: "count",
             baseErrorPath
         });
 
-        tester.assertNoPointlessValue({
-            obj: spawner,
-            field: "deployAnimation",
-            defaultValue: {},
-            equalityFunction: a => Object.keys(a).length === 0,
-            baseErrorPath
-        });
+        if (spawner.staggering !== undefined) {
+            const staggering = spawner.staggering;
 
-        if (spawner.deployAnimation !== undefined) {
-            const deployAnimation = spawner.deployAnimation;
+            logger.indent("Validating staggering", () => {
+                const errorPath2 = tester.createPath(baseErrorPath, "staggering");
 
-            logger.indent("Validating deploy animation", () => {
-                const errorPath = tester.createPath(baseErrorPath, "deploy animation");
-
-                tester.assertNoPointlessValue({
-                    obj: deployAnimation,
-                    field: "duration",
-                    defaultValue: 0,
-                    baseErrorPath: errorPath
+                tester.assertIsPositiveFiniteReal({
+                    obj: staggering,
+                    field: "delay",
+                    baseErrorPath: errorPath2
                 });
 
-                if (deployAnimation.duration !== undefined) {
-                    tester.assertIsPositiveReal({
-                        obj: deployAnimation,
-                        field: "duration",
-                        baseErrorPath: errorPath
-                    });
-                }
-
-                if (deployAnimation.staggering !== undefined) {
-                    const staggering = deployAnimation.staggering;
-
-                    logger.indent("Validating staggering", () => {
-                        const errorPath2 = tester.createPath(errorPath, "staggering");
-
-                        tester.assertIsPositiveFiniteReal({
-                            obj: staggering,
-                            field: "delay",
-                            baseErrorPath: errorPath2
-                        });
-
-                        tester.assertNoPointlessValue({
-                            obj: staggering,
-                            field: "spawnPerGroup",
-                            defaultValue: 1,
-                            baseErrorPath: errorPath2
-                        });
-
-                        if (staggering.spawnPerGroup !== undefined) {
-                            tester.assertIsNaturalNumber({
-                                obj: staggering,
-                                field: "spawnPerGroup",
-                                baseErrorPath: errorPath2
-                            });
-                        }
-
-                        tester.assertNoPointlessValue({
-                            obj: staggering,
-                            field: "initialAmount",
-                            defaultValue: 0,
-                            baseErrorPath: errorPath2
-                        });
-
-                        if (staggering.spawnPerGroup !== undefined) {
-                            tester.assertIntAndInBounds({
-                                obj: staggering,
-                                field: "spawnPerGroup",
-                                min: 0,
-                                max: spawner.count,
-                                includeMin: true,
-                                includeMax: true,
-                                baseErrorPath: errorPath2
-                            });
-                        }
-                    });
-                }
+                tester.assertNoPointlessValue({
+                    obj: staggering,
+                    field: "initialAmount",
+                    defaultValue: 0,
+                    baseErrorPath: errorPath2
+                });
             });
         }
 
         tester.assertIsPositiveReal({
             obj: spawner,
-            field: "spawnRadius",
+            field: "radius",
             baseErrorPath
         });
     }
