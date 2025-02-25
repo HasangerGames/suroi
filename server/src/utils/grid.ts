@@ -6,7 +6,6 @@ import { ObjectPool } from "@common/utils/objectPool";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { type GameObject, type ObjectMapping } from "../objects/gameObject";
-import { Logger } from "./misc";
 
 /**
  * A Grid to filter collision detection of game objects
@@ -40,7 +39,7 @@ export class Grid {
      */
     addObject(object: GameObject): void {
         if (this.pool.has(object)) {
-            Logger.warn(`[Grid] Tried to add object ${ObjectCategory[object.type]} again`);
+            this.game.warn(`[Grid] Tried to add object ${ObjectCategory[object.type]} again`);
             return;
         }
         this.pool.add(object);

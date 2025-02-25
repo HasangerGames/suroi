@@ -1,13 +1,13 @@
 import { GameConstants, InventoryMessages, ObjectCategory, PlayerActions } from "@common/constants";
-import { ArmorType } from "@common/definitions/armors";
-import { type GunDefinition } from "@common/definitions/guns";
+import { ArmorType } from "@common/definitions/items/armors";
+import { type GunDefinition } from "@common/definitions/items/guns";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
-import { PerkCategories } from "@common/definitions/perks";
+import { PerkCategories, type PerkDefinition } from "@common/definitions/items/perks";
 import { PickupPacket } from "@common/packets/pickupPacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Collision, Geometry, Numeric } from "@common/utils/math";
-import { ItemType, LootRadius, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { randomRotation } from "@common/utils/random";
 import { FloorNames } from "@common/utils/terrain";
@@ -71,7 +71,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         this.definition = Loots.reify(basis);
         this.itemData = data;
 
-        this.hitbox = new CircleHitbox(LootRadius[this.definition.itemType], Vec.clone(position));
+        this.hitbox = new CircleHitbox(GameConstants.lootRadius[this.definition.itemType], Vec.clone(position));
         this.layer = layer;
 
         if ((this._count = count ?? 1) <= 0) {
@@ -135,6 +135,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 (object.isObstacle || object.isBuilding)
                 && object.collidable
                 && object.hitbox?.collidesWith(this.hitbox)
+                && adjacentOrEqualLayer(this.layer, object.layer)
             ) {
                 if (object.isObstacle && object.definition.isStair) {
                     object.handleStairInteraction(this);
@@ -147,6 +148,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 object.isLoot
                 && object !== this
                 && object.hitbox.collidesWith(this.hitbox)
+                && adjacentOrEqualLayer(this.layer, object.layer)
             ) {
                 const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, object.position, object.hitbox.radius);
                 if (collision) {
@@ -189,7 +191,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
             case ItemType.Gun: {
                 for (const weapon of inventory.weapons) {
                     if (
-                        weapon instanceof GunItem
+                        weapon?.isGun === true
                         && !weapon.definition.isDual
                         && weapon.definition.dualVariant
                         && weapon.definition === definition
@@ -268,7 +270,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 loot: this,
                 canPickup,
                 player
-            })
+            }) !== undefined
         ) return;
 
         const createNewItem = <D extends LootDefinition = Def>(
@@ -321,7 +323,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                     const weapon = inventory.weapons[i];
 
                     if (
-                        weapon instanceof GunItem
+                        weapon?.isGun
                         && weapon.definition.dualVariant
                         && weapon.definition === definition
                     ) {
@@ -352,7 +354,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                         From here, the only way for the gun to make it into the inventory is for it to replace the active
                         weapon, which must be a different gun (dual weapons are already handled when we get here, so we ignore them)
                     */
-                    if (inventory.activeWeapon instanceof GunItem && definition !== inventory.activeWeapon.definition) {
+                    if (inventory.activeWeapon.isGun && definition !== inventory.activeWeapon.definition) {
                         if (player.action?.type === PlayerActions.Reload) {
                             player.action.cancel();
                         }
@@ -468,7 +470,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 const isNormalPerk = definition.category === PerkCategories.Normal;
 
                 // Variable to track which perk to remove
-                let perkToRemove = null;
+                let perkToRemove: PerkDefinition | undefined;
 
                 if (isHalloweenPerk) {
                     perkToRemove = currentPerks.find(perk => perk.category === PerkCategories.Halloween);
@@ -477,16 +479,15 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 }
 
                 // If a perk to remove has been identified, remove it
-                if (perkToRemove) {
+                if (perkToRemove !== undefined) {
                     if (!perkToRemove.noDrop) {
                         createNewItem({ type: perkToRemove, count: 1 });
                     }
-                    player.perks.removePerk(perkToRemove);
+                    player.perks.removeItem(perkToRemove);
                 }
 
                 // Add the new perk
-                player.perks.addPerk(definition);
-                player.updateAndApplyModifiers();
+                player.perks.addItem(definition);
                 break;
             }
 
@@ -531,7 +532,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         // Reload active gun if the player picks up the correct ammo
         const activeWeapon = player.inventory.activeWeapon;
         if (
-            activeWeapon instanceof GunItem
+            activeWeapon.isGun
             && activeWeapon.ammo === 0
             && idString === activeWeapon.definition.ammoType
         ) {

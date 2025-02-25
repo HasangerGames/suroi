@@ -1,7 +1,7 @@
 import { GameConstants, InputActions } from "@common/constants";
 import { type WeaponDefinition } from "@common/definitions/loots";
-import { Scopes } from "@common/definitions/scopes";
-import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
+import { Scopes } from "@common/definitions/items/scopes";
+import { Throwables, type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { areDifferent, PlayerInputPacket, type InputAction, type PlayerInputData, type SimpleInputActions } from "@common/packets/inputPacket";
 import { Angle, Geometry, Numeric } from "@common/utils/math";
 import { ItemType, type ItemDefinition } from "@common/utils/objectDefinitions";
@@ -10,12 +10,12 @@ import $ from "jquery";
 import nipplejs, { type JoystickOutputData } from "nipplejs";
 import { isMobile } from "pixi.js";
 import { getTranslatedString } from "../../translations";
+import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
 import { defaultBinds } from "../utils/console/defaultClientCVars";
 import { type GameSettings, type PossibleError } from "../utils/console/gameConsole";
 import { FORCE_MOBILE, PIXI_SCALE } from "../utils/constants";
 import { html } from "../utils/misc";
-import type { TranslationKeys } from "../../typings/translations";
 
 export class InputManager {
     readonly binds = new InputMapper();
@@ -118,7 +118,6 @@ export class InputManager {
     private _inputPacketTimer = 0;
 
     update(): void {
-        if (this.game.gameOver) return;
         const packet = {
             movement: { ...this.movement },
             attacking: this.attacking,
@@ -142,7 +141,8 @@ export class InputManager {
                     }
                     : {}
             ),
-            actions: this.actions
+            actions: this.actions,
+            pingSeq: this.game.takePingSeq() + (this.game.gameOver ? 128 : 0) // MSB = "seq only?"
         } as PlayerInputData;
 
         this.turning = false;
@@ -155,7 +155,7 @@ export class InputManager {
         this._inputPacketTimer += this.game.serverDt;
 
         if (
-            !this._lastInputPacket
+            this._lastInputPacket === undefined
             || areDifferent(this._lastInputPacket, packet)
             || this._inputPacketTimer >= 100
         ) {
@@ -212,6 +212,9 @@ export class InputManager {
 
         $("#emote-wheel > .button-center").on("click", () => {
             this.emoteWheelActive = false;
+            this.game.uiManager.ui.emoteButton
+                .removeClass("btn-alert")
+                .addClass("btn-primary");
             this.selectedEmote = undefined;
             this.pingWheelMinimap = false;
             $("#emote-wheel").hide();
@@ -229,7 +232,7 @@ export class InputManager {
 
             if (this.emoteWheelActive) {
                 const mousePosition = Vec.create(e.clientX, e.clientY);
-                if (Geometry.distanceSquared(this.emoteWheelPosition, mousePosition) > 500) {
+                if (Geometry.distanceSquared(this.emoteWheelPosition, mousePosition) > 500 && this.game.activePlayer && !this.game.activePlayer.blockEmoting) {
                     const angle = Angle.betweenPoints(this.emoteWheelPosition, mousePosition);
                     let slotName: string | undefined;
                     if (SECOND_EMOTE_ANGLE <= angle && angle <= FOURTH_EMOTE_ANGLE) {
@@ -301,13 +304,12 @@ export class InputManager {
             let shootOnRelease = false;
 
             leftJoyStick.on("move", (_, data: JoystickOutputData) => {
-                const movementAngle = -Math.atan2(data.vector.y, data.vector.x);
-
-                this.movementAngle = movementAngle;
+                const angle = -data.angle.radian;
+                this.movementAngle = angle;
                 this.movement.moving = true;
 
                 if (!rightJoyStickUsed && !shootOnRelease) {
-                    this.rotation = movementAngle;
+                    this.rotation = angle;
                     this.turning = true;
                     if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && game.activePlayer) {
                         game.activePlayer.container.rotation = this.rotation;
@@ -321,7 +323,7 @@ export class InputManager {
 
             rightJoyStick.on("move", (_, data) => {
                 rightJoyStickUsed = true;
-                this.rotation = -Math.atan2(data.vector.y, data.vector.x);
+                this.rotation = -data.angle.radian;
                 this.turning = true;
                 const activePlayer = game.activePlayer;
                 if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && activePlayer) {
@@ -354,6 +356,22 @@ export class InputManager {
                 shootOnRelease = false;
             });
         }
+        // Gyro stuff
+        const gyroAngle = game.console.getBuiltInCVar("mb_gyro_angle");
+        if (gyroAngle > 0) {
+            let a = false;
+            let b = false;
+            window.addEventListener("deviceorientation", gyro => {
+                const angle = gyro.beta;
+                if (angle === null) return;
+                a = (angle <= -gyroAngle)
+                    ? (a ? a : game.console.handleQuery("cycle_items -1", "always"), true)
+                    : false;
+                b = (angle >= gyroAngle)
+                    ? (b ? b : game.console.handleQuery("cycle_items 1", "always"), true)
+                    : false;
+            });
+        }
     }
 
     private handleInputEvent(down: boolean, event: KeyboardEvent | MouseEvent | WheelEvent): void {
@@ -381,13 +399,13 @@ export class InputManager {
 
             This only applies to keyboard events
 
-            Also we allow shift and alt to be used normally, because keyboard shortcuts usually involve
+            Also, we allow shift and alt to be used normally, because keyboard shortcuts usually involve
             the meta or control key
         */
 
         if (event instanceof KeyboardEvent) {
             const { key } = event;
-            // This statement cross references and updates focus checks for key presses.
+            // This statement cross-references and updates focus checks for key presses.
             if (down) {
                 this._focusController.add(key);
             } else {
@@ -462,6 +480,13 @@ export class InputManager {
                 }
             } else {
                 if (typeof query === "string") {
+                    /*
+                        corollary: queries starting with a group don't get modified
+                        thus, if you do `bind W "(+up)"`, pressing W will call "(+up)",
+                        but so too wll releasing W
+                        this is not true if you do `bind W +up`. here, the query does start
+                        with +, thus the command -up is invoked when W is released
+                    */
                     if (query.startsWith("+")) { // Invertible action
                         query = query.replace("+", "-");
                     } else continue; // If the action isn't invertible, then we do nothing
@@ -730,7 +755,7 @@ export class InputManager {
     }
 }
 
-export type CompiledAction = (() => void) & { readonly original: string };
+export type CompiledAction = (() => boolean) & { readonly original: string };
 export type CompiledTuple = readonly [CompiledAction, CompiledAction];
 
 class InputMapper {

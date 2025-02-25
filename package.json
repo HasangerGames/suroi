@@ -1,6 +1,6 @@
 {
   "name": "suroi",
-  "version": "0.21.7",
+  "version": "0.23.1",
   "description": "An open-source 2D battle royale game inspired by surviv.io",
   "private": true,
   "scripts": {
@@ -16,13 +16,16 @@
     "dev:client": "cd client && pnpm dev",
     "dev:server": "cd server && pnpm dev",
     "dev:test": "cd tests && pnpm stressTest",
+    "watch:server": "cd server && tsc --noEmit --watch",
     "typecheck": "tsc -v --noEmit",
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
     "lint:ci": "eslint . --max-warnings 0",
     "validateDefinitions": "cd tests && pnpm run build && pnpm validateDefinitions",
+    "validateSvgs": "cd tests && pnpm validateSvgs",
     "sanity-check": "pnpm lint:check && pnpm typecheck && pnpm validateDefinitions",
-    "full-reinstall": "rm -r node_modules pnpm-lock.yaml client/node_modules server/node_modules common/node_modules tests/node_modules translations/node_modules && pnpm install"
+    "full-reinstall": "rm -r node_modules pnpm-lock.yaml client/node_modules server/node_modules common/node_modules tests/node_modules translations/node_modules && pnpm install",
+    "full-reinstall-win": "del /f /s /q node_modules\\* pnpm-lock.yaml client\\node_modules\\* server\\node_modules\\* common\\node_modules\\* tests\\node_modules\\* translations\\node_modules\\* & pnpm install"
   },
   "engines": {
     "node": ">=20.0.0",
@@ -34,13 +37,13 @@
   ],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@eslint/js": "^9.15.0",
-    "@stylistic/eslint-plugin": "^2.10.1",
+    "@eslint/js": "^9.20.0",
+    "@stylistic/eslint-plugin": "^3.1.0",
     "@types/eslint__js": "^8.42.3",
-    "@types/node": "^22.9.0",
-    "eslint": "^9.14.0",
-    "typescript": "^5.6.3",
-    "typescript-eslint": "^8.14.0"
+    "@types/node": "^22.13.4",
+    "eslint": "^9.20.1",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.24.1"
   },
   "packageManager": "pnpm@9.5.0+sha512.140036830124618d624a2187b50d04289d5a087f326c9edfc0ccd733d76c4f52c3a313d4fc148794a2a9d81553016004e6742e8cf850670268a7387fc220c903"
 }

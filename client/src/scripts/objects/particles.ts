@@ -73,7 +73,7 @@ export type ParticleProperty = {
 } | number;
 
 export interface ParticleOptions {
-    readonly frames: string | string[]
+    readonly frames: string | readonly string[]
     readonly position: Vector
     readonly speed: Vector
     readonly lifetime: number

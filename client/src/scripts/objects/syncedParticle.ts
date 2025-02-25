@@ -1,53 +1,31 @@
 import { ObjectCategory } from "@common/constants";
-import { type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
+import { resolveNumericSpecifier, type InternalAnimation, type NumericSpecifier, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { getEffectiveZIndex } from "@common/utils/layer";
-import { Numeric } from "@common/utils/math";
+import { Angle, EaseFunctions, Numeric } from "@common/utils/math";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
+import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
-import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
 
 export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParticle) {
     readonly image = new SuroiSprite();
 
-    private _alpha = 1;
+    private _spawnTime = 0;
+    private _age = 0;
+    private _lifetime = 0;
+
+    private _positionAnim?: InternalAnimation<Vector>;
+    private _scaleAnim?: InternalAnimation<number>;
+    private _alphaAnim?: InternalAnimation<number>;
+
     private _alphaMult = 1;
 
-    private _oldScale?: number;
-    private _lastScaleChange?: number;
-    private _scaleManuallySet = false;
-    private _scale = 0;
-    get scale(): number { return this._scale; }
-    set scale(scale: number) {
-        if (this._scaleManuallySet) {
-            this._oldScale = this._scale;
-        }
-        this._scaleManuallySet = true;
-
-        this._lastScaleChange = Date.now();
-        this._scale = scale;
-    }
+    angularVelocity = 0;
 
     private _definition!: SyncedParticleDefinition;
     get definition(): SyncedParticleDefinition { return this._definition; }
-
-    updateContainerScale(): void {
-        if (
-            this._oldScale === undefined
-            || this._lastScaleChange === undefined
-            || this.container.scale === undefined
-        ) return;
-
-        this.container.scale.set(Numeric.lerp(
-            this._oldScale,
-            this._scale,
-            Numeric.min(
-                (Date.now() - this._lastScaleChange) / this.game.serverDt,
-                1
-            )
-        ));
-    }
 
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.SyncedParticle]) {
         super(game, id);
@@ -57,37 +35,70 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.SyncedParticle], isNew = false): void {
-        const full = data.full;
-        if (full) {
-            const { variant, definition } = full;
+        const {
+            definition,
+            startPosition,
+            endPosition,
+            layer,
+            age,
+            lifetime,
+            angularVelocity,
+            scale,
+            alpha,
+            variant,
+            creatorID
+        } = data;
 
-            this._definition = definition;
-            this.layer = data.layer;
+        this._definition = definition;
 
-            if (
-                full.creatorID === this.game.activePlayerID
-                && typeof definition.alpha === "object"
-                && "creatorMult" in definition.alpha
-                && definition.alpha.creatorMult !== undefined
-            ) this._alphaMult = definition.alpha.creatorMult;
+        const easing = EaseFunctions[definition.velocity.easing ?? "linear"];
+        this._positionAnim = {
+            start: toPixiCoords(startPosition),
+            end: toPixiCoords(endPosition),
+            easing,
+            duration: endPosition ? definition.velocity?.duration : undefined
+        };
+        this.container.position = startPosition;
 
-            this.image.setFrame(`${definition.frame}${variant !== undefined ? `_${variant}` : ""}`);
-            if (definition.tint) this.image.tint = definition.tint;
-            this.updateZIndex();
+        this.layer = layer;
+        this._lifetime = lifetime ?? definition.lifetime as number;
+        this._age = age;
+        this._spawnTime = Date.now() - this._age * this._lifetime;
+        this.angularVelocity = angularVelocity ?? definition.angularVelocity as number;
+
+        if (typeof definition.scale === "object" && "start" in definition.scale) {
+            this._scaleAnim = {
+                start: scale?.start ?? definition.scale.start as number,
+                end: scale?.end ?? definition.scale.end as number,
+                easing: EaseFunctions[definition.scale.easing ?? "linear"]
+            };
+            this.updateScale();
+        } else {
+            const scale = resolveNumericSpecifier(definition.scale as NumericSpecifier);
+            this.container.scale.set(scale, scale);
         }
 
-        this.position = data.position;
-        this.rotation = data.rotation;
-        this.scale = data.scale ?? this._scale;
-        this.container.alpha = (this._alpha = data.alpha ?? this._alpha) * this._alphaMult;
+        if (
+            creatorID === this.game.activePlayerID
+            && typeof definition.alpha === "object"
+            && "creatorMult" in definition.alpha
+            && definition.alpha.creatorMult !== undefined
+        ) this._alphaMult = definition.alpha.creatorMult;
 
-        if (!this.game.console.getBuiltInCVar("cv_movement_smoothing") || isNew) {
-            this.container.position = toPixiCoords(this.position);
-            this.container.rotation = this.rotation;
-            this.container.scale.set(this._scale);
+        if (typeof definition.alpha === "object" && "start" in definition.alpha) {
+            this._alphaAnim = {
+                start: alpha?.start ?? definition.alpha.start as number,
+                end: alpha?.end ?? definition.alpha.end as number,
+                easing: EaseFunctions[definition.alpha.easing ?? "linear"]
+            };
+            this.updateAlpha();
+        } else {
+            this.container.alpha = resolveNumericSpecifier(definition.alpha as NumericSpecifier);
         }
 
-        this.updateDebugGraphics();
+        this.image.setFrame(`${definition.frame}${variant !== undefined ? `_${variant}` : ""}`);
+        if (definition.tint) this.image.tint = definition.tint;
+        this.updateZIndex();
     }
 
     override updateZIndex(): void {
@@ -95,17 +106,46 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
     }
 
     override updateDebugGraphics(): void {
-        if (!HITBOX_DEBUG_MODE || !this.definition.hitbox) return;
+        if (!DEBUG_CLIENT) return;
+        if (!this.definition.hitbox) return;
 
-        this.debugGraphics.clear();
-
-        drawHitbox(
-            this.definition.hitbox.transform(this.position, this._scale),
+        this.game.debugRenderer.addHitbox(
+            this.definition.hitbox.transform(this.position, this.container.scale.x),
             HITBOX_COLORS.obstacleNoCollision,
-            this.debugGraphics,
-            this.layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY
+            this.layer === this.game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
         );
     }
+
+    updateScale(): void {
+        if (!this._scaleAnim) return;
+
+        const { start, end, easing } = this._scaleAnim;
+        this.container.scale.set(Numeric.lerp(start, end, easing(this._age)));
+    }
+
+    updateAlpha(): void {
+        if (!this._alphaAnim) return;
+
+        const { start, end, easing } = this._alphaAnim;
+        this.container.alpha = Numeric.lerp(start, end, easing(this._age)) * this._alphaMult;
+    }
+
+    override update(): void {
+        const ageMs = Date.now() - this._spawnTime;
+        this._age = ageMs / this._lifetime;
+        if (this._age > 1 || this._positionAnim === undefined) return;
+
+        const { start, end, easing, duration } = this._positionAnim;
+        const interpFactor = duration ? ageMs / duration : this._age;
+        this.container.position = Vec.lerp(start, end, easing(Numeric.clamp(interpFactor, 0, 1)));
+
+        this.container.rotation = Angle.normalize(this.angularVelocity * ageMs);
+
+        this.updateScale();
+        this.updateAlpha();
+    }
+
+    override updateInterpolation(): void { /* bleh */ }
 
     override destroy(): void {
         super.destroy();

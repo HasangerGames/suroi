@@ -83,9 +83,15 @@ jobs:
         working-directory: ./tests
         run: pnpm build
 
-      - name: Run Tests
+      - name: Validate Definitions
         working-directory: ./tests
         run: pnpm validateDefinitions
+
+      - name: Validate SVGs
+        if: always()
+        working-directory: ./tests
+        run: pnpm validateSvgs
+
   lint:
     name: Lint
     runs-on: ubuntu-latest

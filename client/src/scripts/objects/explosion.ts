@@ -1,4 +1,4 @@
-import { Layer, ZIndexes } from "@common/constants";
+import { GameConstants, Layer, ZIndexes } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
 import { adjacentOrEqualLayer, getEffectiveZIndex } from "@common/utils/layer";
 import { EaseFunctions } from "@common/utils/math";
@@ -6,8 +6,9 @@ import { randomFloat, randomPointInsideCircle } from "@common/utils/random";
 import { FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
-import { SHOCKWAVE_EXPLOSION_MULTIPLIERS } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, SHOCKWAVE_EXPLOSION_MULTIPLIERS } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { isMobile } from "pixi.js";
 
 export function explosion(game: Game, definition: ExplosionDefinition, position: Vector, layer: Layer): void {
     const pixiPos = toPixiCoords(position);
@@ -29,7 +30,21 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
         target: image.scale,
         to: { x: definition.animation.scale, y: definition.animation.scale },
         duration: definition.animation.duration,
-        ease: EaseFunctions.expoOut
+        ease: EaseFunctions.expoOut,
+        onUpdate: () => {
+            if (!DEBUG_CLIENT) return;
+            if (!game.console.getBuiltInCVar("db_show_hitboxes")) return;
+
+            const alpha = layer === game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY;
+
+            const step = Math.acos(1 - ((GameConstants.explosionRayDistance / definition.radius.max) ** 2) / 2);
+
+            for (let angle = -Math.PI; angle < Math.PI; angle += step) {
+                game.debugRenderer
+                    .addRay(position, angle, definition.radius.max, 0xff0000, alpha)
+                    .addRay(position, angle, definition.radius.min, 0x00ff00, alpha);
+            }
+        }
     });
 
     game.addTween({
@@ -67,7 +82,14 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
             pixiPos,
             definition.cameraShake.intensity * SHOCKWAVE_EXPLOSION_MULTIPLIERS.amplitude,
             definition.radius.min * 100 * SHOCKWAVE_EXPLOSION_MULTIPLIERS.wavelength,
-            definition.ballistics.speed * SHOCKWAVE_EXPLOSION_MULTIPLIERS.speed
+            definition.ballistics.speed * SHOCKWAVE_EXPLOSION_MULTIPLIERS.speed,
+            game.layer ?? Layer.Ground
+        );
+    }
+
+    if (game.console.getBuiltInCVar("mb_haptics") && isMobile.any) {
+        navigator.vibrate?.(
+            definition.animation.duration * 0.75
         );
     }
 

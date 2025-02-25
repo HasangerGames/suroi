@@ -6,10 +6,9 @@
    viewBox="0 0 264.5833 264.58334"
    id="svg56"
    sodipodi:docname="christmas_tree.svg"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <sodipodi:namedview
@@ -24,46 +23,16 @@
      inkscape:pageshadow="0"
      showgrid="false"
      inkscape:zoom="0.59506049"
-     inkscape:cx="223.50669"
-     inkscape:cy="573.05098"
-     inkscape:window-width="2560"
-     inkscape:window-height="1372"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:cx="224.34694"
+     inkscape:cy="572.21073"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg56" />
   <defs
-     id="defs60">
-    <linearGradient
-       id="linearGradient59"
-       inkscape:collect="always">
-      <stop
-         style="stop-color:#ffff00;stop-opacity:1;"
-         offset="0"
-         id="stop59" />
-      <stop
-         style="stop-color:#ffff00;stop-opacity:0;"
-         offset="1"
-         id="stop60" />
-    </linearGradient>
-    <radialGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient59"
-       id="radialGradient60"
-       cx="144.05559"
-       cy="132.22493"
-       fx="144.05559"
-       fy="132.22493"
-       r="176.06795"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.75136708,0,0,0.75136708,24.053033,32.942198)" />
-  </defs>
-  <circle
-     style="fill:url(#radialGradient60);fill-rule:evenodd;stroke:none;stroke-width:1.5904;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-     id="path59"
-     cx="132.29166"
-     cy="132.29166"
-     r="132.29166" />
+     id="defs60" />
   <g
      id="g883"
      style="opacity:0.948686;stroke-width:0.517502"

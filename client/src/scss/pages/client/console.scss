@@ -90,7 +90,7 @@
         }
 
         #console-in {
-            font-family: menlo, monospace;
+            font-family: "JetBrains Mono", monospace;
             position: sticky;
             bottom: 0;
             left: 0;
@@ -108,7 +108,7 @@
         }
 
         .console-entry {
-            font-family: monospace;
+            font-family: "JetBrains Mono", monospace;
             border-width: 2px;
             padding: 1px 0;
             border-style: solid none;
@@ -118,7 +118,7 @@
         }
 
         .console-entry-timestamp {
-            font-family: monospace;
+            font-family: "JetBrains Mono", monospace;
             background-color: #444;
             margin: 0 1% 0 0;
             padding: 0 0.5%;
@@ -137,36 +137,61 @@
             background-color: hsl(250, 50%, 30%);
             border-color: hsl(250, 50%, 35%);
             color: hsl(240, 100%, 80%);
+
+            .console-entry-content code {
+                background-color: hsl(250, 10%, 25%);
+                color: hsl(240, 100%, 70%);
+            }
         }
 
         .console-entry-warn {
             background-color: hsl(50, 50%, 30%);
             border-color: hsl(50, 50%, 35%);
             color: hsl(40, 100%, 60%);
+
+            .console-entry-content code {
+                background-color: hsl(50, 10%, 25%);
+                color: hsl(40, 100%, 70%);
+            }
         }
 
         .console-entry-severe_warn {
             background-color: hsl(40, 50%, 30%);
             border-color: hsl(40, 50%, 35%);
             color: hsl(30, 100%, 60%);
+
+            .console-entry-content code {
+                background-color: hsl(40, 10%, 25%);
+                color: hsl(30, 100%, 70%);
+            }
         }
 
         .console-entry-error {
             background-color: hsl(10, 50%, 30%);
             border-color: hsl(10, 50%, 35%);
             color: hsl(0, 100%, 75%);
+
+            .console-entry-content code {
+                background-color: hsl(10, 10%, 25%);
+                color: hsl(0, 100%, 70%);
+            }
         }
 
         .console-entry-fatal_error {
             background-color: hsl(310, 50%, 30%);
             border-color: hsl(310, 50%, 35%);
             color: hsl(300, 100%, 75%);
+
+            .console-entry-content code {
+                background-color: hsl(310, 10%, 25%);
+                color: hsl(300, 100%, 70%);
+            }
             animation: fatal-error-cycle 1s infinite linear;
         }
 
         .console-entry-content {
             * {
-                font-family: monospace;
+                font-family: "JetBrains Mono", monospace;
                 word-break: break-word;
             }
 
@@ -297,7 +322,7 @@
         }
 
         .console-detail-toggle {
-            font-family: monospace;
+            font-family: "JetBrains Mono", monospace;
             color: #AAA;
             display: flex;
             align-items: top;
@@ -330,7 +355,7 @@
         background-color: #666;
         overflow: auto;
         box-shadow: 5px 4px 3px 0px #0008;
-        font-family: menlo, monospace;
+        font-family: "JetBrains Mono", monospace;
         padding: 1px;
         color: white;
         border: 3px solid #999;
