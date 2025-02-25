@@ -150,10 +150,10 @@ if (Cluster.isPrimary && require.main === module) {
                 playerCount: games.reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
                 teamSize: teamSize.current,
                 nextTeamSize: teamSize.next,
-                teamSizeSwitchTime: teamSize.nextSwitch,
+                teamSizeSwitchTime: teamSize.nextSwitch ? teamSize.nextSwitch - Date.now() : undefined,
                 mode,
                 nextMode,
-                modeSwitchTime: map.nextSwitch,
+                modeSwitchTime: map.nextSwitch ? map.nextSwitch - Date.now() : undefined,
                 punishment: await checkPunishments(ip)
             }));
 

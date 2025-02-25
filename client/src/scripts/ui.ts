@@ -52,6 +52,7 @@ interface RegionInfo {
     readonly modeSwitchTime?: number
 
     readonly ping?: number
+    readonly retrievedTime?: number
 }
 
 let selectedRegion: RegionInfo | undefined;
@@ -186,10 +187,12 @@ export async function fetchServerData(game: Game): Promise<void> {
             ui.splashOptions.addClass("loading");
         }
 
+        const now = Date.now();
         regionInfo[regionID] = {
             ...region,
             ...info,
-            ping: Date.now() - pingStartTime
+            ping: now - pingStartTime,
+            retrievedTime: now
         };
 
         listItem.find(".server-player-count").text(info.playerCount ?? "-");
@@ -210,11 +213,12 @@ export async function fetchServerData(game: Game): Promise<void> {
     };
     const updateSwitchTime = (): void => {
         if (!selectedRegion) return;
-        const { teamSizeSwitchTime, modeSwitchTime } = selectedRegion;
+        const { teamSizeSwitchTime, modeSwitchTime, retrievedTime } = selectedRegion;
 
-        const now = Date.now();
-        const timeBeforeTeamSizeSwitch = (teamSizeSwitchTime ?? Infinity) - now;
-        const timeBeforeModeSwitch = (modeSwitchTime ?? Infinity) - now;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const offset = Date.now() - retrievedTime!;
+        const timeBeforeTeamSizeSwitch = (teamSizeSwitchTime ?? Infinity) - offset;
+        const timeBeforeModeSwitch = (modeSwitchTime ?? Infinity) - offset;
 
         if (
             (timeBeforeTeamSizeSwitch < 0 && !game.gameStarted)
