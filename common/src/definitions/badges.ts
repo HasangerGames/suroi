@@ -13,7 +13,7 @@ const badge = (name: string, roles: string[] = []): BadgeDefinition => ({
 export const Badges = new ObjectDefinitions<BadgeDefinition>([
     // Roles
     badge("Developr", ["developr", "pap", "error"]),
-    badge("Dev Managr", ["dev_managr", "solstice"]),
+    badge("Dev Managr", ["dev_managr"]),
     badge("Designr", ["designr"]),
     badge("VIP Designr", ["vip_designr"]),
     badge("Sound Designr", ["sound_designr"]),
