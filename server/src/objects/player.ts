@@ -2667,7 +2667,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 case InputActions.Emote: {
                     let isValid = false;
                     for (const definitionList of [Emotes, Ammos, HealingItems, Guns, Melees, Throwables]) {
-                        if (definitionList.hasString(action.emote.idString)) {
+                        if (this.game.teamMode && definitionList.hasString(action.emote.idString)) {
                             isValid = true;
                             break;
                         }

@@ -2005,7 +2005,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 const isTeamMode = game.teamMode;
 
                 if (isPrimary) {
-                    if (inputManager.pingWheelActive) {
+                    if (inputManager.pingWheelActive && game.teamMode) {
                         inputManager.addAction({
                             type: InputActions.Emote,
                             emote: Emotes.fromString(item.idString)
@@ -2059,7 +2059,7 @@ export async function setUpUI(game: Game): Promise<void> {
             const isTeamMode = game.teamMode;
 
             if (isPrimary) {
-                if (inputManager.pingWheelActive) {
+                if (inputManager.pingWheelActive && game.teamMode) {
                     inputManager.addAction({
                         type: InputActions.Emote,
                         emote: Emotes.fromString(ammo.idString)
