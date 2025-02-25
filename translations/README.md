@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 22 Feb 2025 02:19:01 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Tue, 25 Feb 2025 16:07:30 GMT
 
 ## 🇦🇱 Shqip (84% Complete) - ab.hjson
 
@@ -17,6 +17,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `privacy` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
@@ -36,7 +37,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `finally` is not defined
 - Key `with` is not defined
@@ -62,11 +63,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `interact_monument` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 
 ## 🇨🇿 Čeština (88% Complete) - cz.hjson
 
@@ -83,6 +85,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `privacy` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
@@ -104,11 +107,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇩🇪 Deutsch (94% Complete) - de.hjson
+## 🇩🇪 Deutsch (93% Complete) - de.hjson
 
 ### (No Invalid Keys)
 
@@ -119,6 +122,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
 - Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
@@ -129,7 +133,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🇪🇸 Español (94% Complete) - es.hjson
@@ -143,6 +147,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
 - Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
@@ -151,7 +156,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🇪🇪 eesti (94% Complete) - et.hjson
@@ -167,6 +172,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
 - Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
@@ -175,10 +181,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
-## 🇫🇮 suomi (93% Complete) - fi.hjson
+## 🇫🇮 suomi (92% Complete) - fi.hjson
 
 ### (No Invalid Keys)
 
@@ -190,6 +196,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
 - Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
@@ -202,10 +209,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
-## 🇫🇷 Français (96% Complete) - fr.hjson
+## 🇫🇷 Français (95% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -217,6 +224,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `final_gas_waiting` is not defined
@@ -224,7 +232,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 
 ## 🇬🇷 Ελληνικά (96% Complete) - gr.hjson
 
@@ -236,12 +244,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `interact_monument` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 
 ## 🇭🇰 🇲🇴 廣東話(香港/澳門) (86% Complete) - hk_mo.hjson
 
@@ -259,6 +268,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `privacy` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
@@ -281,7 +291,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
@@ -296,10 +306,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `interact_monument` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 
 ## 🇮🇹 Italiano (84% Complete) - it.hjson
 
@@ -332,6 +343,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `privacy` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
@@ -354,7 +366,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
@@ -377,6 +389,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `privacy` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
@@ -398,7 +411,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
@@ -417,6 +430,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `privacy` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
@@ -438,7 +452,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
@@ -457,6 +471,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `privacy` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
@@ -478,11 +493,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇵🇱 Polski (93% Complete) - pl.hjson
+## 🇵🇱 Polski (92% Complete) - pl.hjson
 
 ### (No Invalid Keys)
 
@@ -494,6 +509,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
 - Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
@@ -506,7 +522,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
 ## 🎀 Cute Engwish (98% Complete) - qen.hjson
@@ -515,13 +531,14 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_explode_c4` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 
-## 🇷🇴 Română (82% Complete) - ro.hjson
+## 🇷🇴 Română (81% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
@@ -540,6 +557,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `privacy` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
@@ -561,7 +579,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `finally` is not defined
 - Key `with` is not defined
@@ -588,14 +606,15 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `interact_monument` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 - Key `m16a4` is not defined
 
-## 🇮🇳 தமிழ் (93% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (92% Complete) - ta.hjson
 
 ### (No Invalid Keys)
 
@@ -606,6 +625,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
 - Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
@@ -618,7 +638,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
@@ -634,6 +654,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
 - Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
@@ -644,10 +665,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
-## 🇹🇼 中文（繁體） (81% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (80% Complete) - tw.hjson
 
 ### (No Invalid Keys)
 
@@ -666,6 +687,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `privacy` is not defined
 - Key `donate` is not defined
 - Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
@@ -688,7 +710,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_explode_c4` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
@@ -717,14 +739,15 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `interact_monument` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 
-## 🇨🇳 中文（简体） (96% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (95% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -736,12 +759,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
 - Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
-- Key `bindings_toggle_screen_record` is not defined
+- Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 

@@ -14,7 +14,7 @@ import { Rectangle, RendererType, Sprite, VERSION } from "pixi.js";
 import { Config, type ServerInfo } from "../../config";
 import { type Game } from "../../game";
 import { type CompiledAction, type CompiledTuple, type InputManager } from "../../managers/inputManager";
-import { sanitizeHTML, stringify } from "../misc";
+import { requestFullscreen, sanitizeHTML, stringify } from "../misc";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
 
@@ -1902,6 +1902,17 @@ export function setUpCommands(game: Game): void {
             short: "Use the screen recorder",
             long: "If the screen recorder is not recording, begin recording. If the screen recorder is recording, stop recording",
             allowOnlyWhenGameStarted: true,
+            signatures: [{ args: [], noexcept: false }]
+        }
+    );
+
+    Command.createCommand(
+        "fullscreen",
+        requestFullscreen,
+        game,
+        {
+            short: "Fullscreen",
+            long: "Activate fullscreen mode",
             signatures: [{ args: [], noexcept: false }]
         }
     );

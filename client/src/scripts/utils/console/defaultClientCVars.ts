@@ -277,6 +277,7 @@ export const defaultBinds = Object.freeze({
     "toggle_hud": [],
     "+emote_wheel": ["Mouse2"],
     "+map_ping_wheel": ["C"],
+    "fullscreen": [],
     "toggle_console": [],
     "+map_ping": [],
     "toggle_slot_lock": [],
