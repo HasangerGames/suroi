@@ -116,7 +116,6 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
                         multiplier *= definition.obstacleMultiplier;
                     }
 
-                    const damageObject = (): void => {
                         closestObject.damage({
                             amount: definition.damage * multiplier,
                             source: owner,
@@ -126,16 +125,6 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
                         if (closestObject.isObstacle && !closestObject.dead) {
                             closestObject.interact(this.owner);
                         }
-                    };
-
-                    if (definition.hitDelay === undefined) {
-                        damageObject();
-                    } else {
-                        clearTimeout(this._hitTimeoutID);
-                        this._hitTimeoutID = setTimeout((): void => {
-                            damageObject();
-                        }, definition.hitDelay);
-                    }
                 }
 
                 if (definition.fireMode === FireMode.Auto || owner.isMobile) {
@@ -148,7 +137,7 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
                     );
                 }
             }
-        }, 50);
+        }, 50 + (definition.hitDelay ?? 0));
     }
 
     override itemData(): ItemData<MeleeDefinition> {
