@@ -81,7 +81,7 @@ export class Switcher<T extends Switchable> {
                 ? parseInt(readFileSync(filename, "utf8"))
                 : 0;
 
-            this._current = rotation[initialIndex];
+            this._current = rotation[initialIndex % length];
             this._next = rotation[(initialIndex + 1) % length];
 
             this._cron = Cron(schedule.cron, () => {
