@@ -1,11 +1,11 @@
-import { ObjectCategory } from "../constants";
+import { ObjectCategory, RotationMode } from "../constants";
 import { Buildings } from "../definitions/buildings";
-import { Obstacles, RotationMode } from "../definitions/obstacles";
+import { Obstacles } from "../definitions/obstacles";
 import { type Orientation, type Variation } from "../typings";
 import type { CommonGameObject } from "../utils/gameObject";
 import { Angle, halfπ } from "../utils/math";
 import { type Vector } from "../utils/vector";
-import { createPacket } from "./packet";
+import { createPacket, DataSplitTypes } from "./packet";
 
 export type MapObject = {
     readonly scale?: number
@@ -88,12 +88,13 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
                 }
             }, 2)
             .writeArray(data.places ?? [], place => {
-                strm.writeString(24, place.name);
-                strm.writePosition(place.position);
+                strm.writeString(24, place.name)
+                    .writePosition(place.position);
             }, 1);
     },
-    deserialize(stream) {
-        return {
+    deserialize(stream, [saveIndex, recordTo]) {
+        saveIndex();
+        const obj = {
             seed: stream.readUint32(),
             width: stream.readUint16(),
             height: stream.readUint16(),
@@ -181,5 +182,8 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
                 position: stream.readPosition()
             }), 1)
         } as MapPacketData;
+
+        recordTo(DataSplitTypes.GameObjects);
+        return obj;
     }
 });

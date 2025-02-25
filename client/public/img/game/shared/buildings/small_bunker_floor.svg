@@ -8,7 +8,7 @@
    version="1.1"
    id="svg1"
    sodipodi:docname="small_bunker_floor.svg"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -25,12 +25,12 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="1.5895178"
-     inkscape:cx="221.45081"
-     inkscape:cy="273.98246"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
+     inkscape:cx="297.88908"
+     inkscape:cy="358.28476"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
@@ -40,9 +40,9 @@
        xlink:href="#pattern56-5"
        preserveAspectRatio="xMidYMid"
        id="pattern65-6"
-       patternTransform="matrix(0,0.32,-0.32,0,13750.801,17144.961)"
-       x="300"
-       y="25" />
+       patternTransform="matrix(0,0.32,-0.32,0,13742.801,17240.961)"
+       x="0"
+       y="0" />
     <pattern
        patternUnits="userSpaceOnUse"
        width="1409.481"
@@ -704,6 +704,75 @@
          cx="0"
          cy="0" />
     </mask>
+    <mask
+       id="b-3"
+       maskUnits="userSpaceOnUse"
+       x="-30"
+       y="-30"
+       width="60"
+       height="60">
+      <path
+         d="M -27,-27 H 27 V 27 H -27 Z"
+         fill="#ffffff"
+         id="path3-3" />
+      <path
+         d="m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4"
+         id="path4-6" />
+      <circle
+         cy="-15"
+         r="10.5"
+         id="circle4"
+         cx="0" />
+      <g
+         transform="rotate(120)"
+         id="g5">
+        <path
+           d="m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4"
+           id="path5-7" />
+        <circle
+           cy="-15"
+           r="10.5"
+           id="circle5"
+           cx="0" />
+      </g>
+      <g
+         transform="rotate(-120)"
+         id="g6">
+        <path
+           d="m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4"
+           id="path6-5" />
+        <circle
+           cy="-15"
+           r="10.5"
+           id="circle6"
+           cx="0" />
+      </g>
+      <circle
+         r="3"
+         id="circle7"
+         cx="0"
+         cy="0" />
+    </mask>
+    <clipPath
+       id="d-3">
+      <circle
+         cy="-15"
+         r="9.5"
+         id="circle1-6"
+         cx="0" />
+      <circle
+         transform="rotate(120)"
+         cy="-15"
+         r="9.5"
+         id="circle2-7"
+         cx="0" />
+      <circle
+         transform="rotate(-120)"
+         cy="-15"
+         r="9.5"
+         id="circle3-5"
+         cx="0" />
+    </clipPath>
   </defs>
   <g
      inkscape:label="Layer 1"
@@ -851,30 +920,44 @@
        cy="95.255913"
        r="40.42049" />
     <g
-       mask="url(#a-9)"
-       id="g936"
-       style="fill:#ff7500;fill-opacity:1;stroke:none;stroke-width:2.39173;stroke-dasharray:none;stroke-opacity:1"
-       transform="matrix(1.3274961,0,0,1.3274899,116.31104,96.121221)">
+       transform="matrix(1.3275148,0,0,1.3275148,116.31104,96.121289)"
+       id="g11"
+       style="stroke-width:0.606048">
+      <g
+         mask="url(#b-3)"
+         id="g10"
+         style="stroke-width:0.606048">
+        <circle
+           cy="-11"
+           r="15"
+           id="circle8-3"
+           cx="0"
+           style="fill:#404040;fill-opacity:1;stroke-width:0.606048" />
+        <circle
+           cy="-11"
+           r="15"
+           transform="rotate(120)"
+           id="circle9-5"
+           cx="0"
+           style="fill:#404040;fill-opacity:1;stroke-width:0.606048" />
+        <circle
+           cy="-11"
+           r="15"
+           transform="rotate(-120)"
+           id="circle10-6"
+           cx="0"
+           style="fill:#404040;fill-opacity:1;stroke-width:0.606048" />
+      </g>
       <circle
-         cy="-11"
-         r="15"
-         id="circle930"
-         style="fill:#404040;fill-opacity:1;stroke:none;stroke-width:2.39173;stroke-dasharray:none;stroke-opacity:1"
-         cx="0" />
-      <circle
-         cy="-11"
-         r="15"
-         transform="rotate(120)"
-         id="circle932"
-         style="fill:#404040;fill-opacity:1;stroke:none;stroke-width:2.39173;stroke-dasharray:none;stroke-opacity:1"
-         cx="0" />
-      <circle
-         cy="-11"
-         r="15"
-         transform="rotate(-120)"
-         id="circle934"
-         style="fill:#404040;fill-opacity:1;stroke:none;stroke-width:2.39173;stroke-dasharray:none;stroke-opacity:1"
-         cx="0" />
+         r="11.75"
+         clip-path="url(#d-3)"
+         fill="none"
+         stroke="#000000"
+         stroke-width="2.12117"
+         id="circle11-2"
+         cx="0"
+         cy="0"
+         style="stroke:#404040;stroke-opacity:1" />
     </g>
     <circle
        r="11.75"

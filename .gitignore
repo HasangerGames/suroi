@@ -1,11 +1,14 @@
 # Build
 dist/
+.spritesheet-cache
 
 # Node
 node_modules/
 
 server/reports
 punishments.json
+teamSize.txt
+map.txt
 
 # Vite
 vite.config.ts.timestamp-*
@@ -13,9 +16,11 @@ vite.config.ts.timestamp-*
 # IDE garbage
 .idea
 .DS_Store
+.vs/
 .vscode
 *.kate-swp
 .history
+.fleet/
 
 # node-gyp sometimes does this
 build/

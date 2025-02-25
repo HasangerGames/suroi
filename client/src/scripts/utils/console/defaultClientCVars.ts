@@ -54,6 +54,7 @@ export const CVarCasters = Object.freeze({
     cv_cooler_graphics: Casters.toBoolean,
     cv_ambient_particles: Casters.toBoolean,
     cv_blur_splash: Casters.toBoolean,
+    cv_record_res: Casters.generateUnionCaster(["480p", "720p", "1080p", "maximum"]),
 
     cv_rules_acknowledged: Casters.toBoolean,
     cv_hide_rules_button: Casters.toBoolean,
@@ -86,13 +87,22 @@ export const CVarCasters = Object.freeze({
     pf_show_fps: Casters.toBoolean,
     pf_show_ping: Casters.toBoolean,
     pf_show_pos: Casters.toBoolean,
+    pf_show_inout: Casters.toBoolean,
+    pf_net_graph: Casters.generateUnionCaster([0, 1, 2]),
+    // 0: off
+    // 1: label only
+    // 2: graph & label
+    db_show_hitboxes: Casters.toBoolean,
 
     mb_controls_enabled: Casters.toBoolean,
     mb_joystick_size: Casters.toNumber,
     mb_joystick_transparency: Casters.toNumber,
     mb_left_joystick_color: Casters.toString,
     mb_right_joystick_color: Casters.toString,
+    mb_gyro_angle: Casters.toNumber,
+    mb_haptics: Casters.toBoolean,
     mb_high_res_textures: Casters.toBoolean,
+    mb_antialias: Casters.toBoolean,
 
     dv_password: Casters.toString,
     dv_role: Casters.toString,
@@ -165,6 +175,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_high_res_textures: true,
     cv_cooler_graphics: false,
     cv_ambient_particles: true,
+    cv_record_res: "720p",
     cv_blur_splash: !isMobile.any, // blur kills splash screen performance on phones from my testing
 
     cv_rules_acknowledged: false,
@@ -215,13 +226,20 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     pf_show_fps: false,
     pf_show_ping: false,
     pf_show_pos: false,
+    pf_show_inout: false,
+    pf_net_graph: 1,
+
+    db_show_hitboxes: false,
 
     mb_controls_enabled: true,
     mb_joystick_size: 150,
     mb_joystick_transparency: 0.8,
     mb_left_joystick_color: "#FFFFFF",
     mb_right_joystick_color: "#FFFFFF",
+    mb_gyro_angle: 0,
+    mb_haptics: true,
     mb_high_res_textures: false,
+    mb_antialias: false,
 
     dv_password: "",
     dv_role: "",
@@ -263,7 +281,10 @@ export const defaultBinds = Object.freeze({
     "toggle_hud": [],
     "+emote_wheel": ["Mouse2"],
     "+map_ping_wheel": ["C"],
+    "fullscreen": [],
     "toggle_console": [],
     "+map_ping": [],
-    "toggle_slot_lock": []
+    "toggle_slot_lock": [],
+    "screen_record": [],
+    "toggle pf_net_graph 0 1 2": []
 } as Record<string, string[]>);

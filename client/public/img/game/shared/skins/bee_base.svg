@@ -7,7 +7,7 @@
    viewBox="0 0 23.812501 23.812501"
    version="1.1"
    id="svg5"
-   inkscape:version="1.3.2 (1:1.3.2+202311252150+091e20ef0f)"
+   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
    sodipodi:docname="bee_base.svg"
    xml:space="preserve"
    inkscape:export-filename="tigor_skin_base.svg"
@@ -30,7 +30,7 @@
      units="px"
      inkscape:zoom="6.2074636"
      inkscape:cx="38.985327"
-     inkscape:cy="52.920165"
+     inkscape:cy="52.839617"
      inkscape:window-width="2560"
      inkscape:window-height="1368"
      inkscape:window-x="0"
@@ -45,9 +45,7 @@
        xlink:href="#shading33"
        preserveAspectRatio="xMidYMid"
        id="pattern1"
-       patternTransform="translate(932.66761,1282.2992)"
-       x="-149"
-       y="-50" /><pattern
+       patternTransform="translate(783.66761,1232.2992)" /><pattern
        patternUnits="userSpaceOnUse"
        width="684.32459"
        height="639.79"

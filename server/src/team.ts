@@ -1,10 +1,11 @@
 import { CustomTeamMessages, type CustomTeamMessage } from "@common/typings";
 import { random } from "@common/utils/random";
-import { type WebSocket } from "uWebSockets.js";
 import { findGame } from "./gameManager";
 import { type Player } from "./objects/player";
-import { customTeams } from "./server";
 import { removeFrom } from "./utils/misc";
+import { WebSocket } from "ws";
+import { TeamSize } from "@common/constants";
+import { MapWithParams } from "./config";
 
 export class Team {
     readonly id: number;
@@ -133,7 +134,7 @@ export class Team {
 }
 
 export class CustomTeam {
-    private static readonly _idChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static readonly _idChars = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789";
     private static readonly _idCharMax = this._idChars.length - 1;
 
     readonly id: string;
@@ -146,11 +147,18 @@ export class CustomTeam {
     gameID?: number;
     resetTimeout?: NodeJS.Timeout;
 
-    constructor() {
+    // these are only used when creating games
+    teamSize: TeamSize;
+    map: MapWithParams;
+
+    constructor(teamSize: TeamSize, map: MapWithParams) {
         this.id = Array.from({ length: 4 }, () => CustomTeam._idChars.charAt(random(0, CustomTeam._idCharMax))).join("");
+        this.teamSize = teamSize;
+        this.map = map;
     }
 
     addPlayer(player: CustomTeamPlayer): void {
+        this.players.push(player);
         player.sendMessage({
             type: CustomTeamMessages.Join,
             teamID: this.id,
@@ -158,7 +166,6 @@ export class CustomTeam {
             autoFill: this.autoFill,
             locked: this.locked
         });
-
         this._publishPlayerUpdate();
     }
 
@@ -167,7 +174,6 @@ export class CustomTeam {
 
         if (!this.players.length) {
             clearTimeout(this.resetTimeout);
-            customTeams.delete(this.id);
             return;
         }
 
@@ -175,6 +181,8 @@ export class CustomTeam {
     }
 
     async onMessage(player: CustomTeamPlayer, message: CustomTeamMessage): Promise<void> {
+        if (!message) return;
+
         switch (message.type) {
             case CustomTeamMessages.Settings: {
                 if (!player.isLeader) break; // Only leader can change settings
@@ -191,9 +199,9 @@ export class CustomTeam {
             }
             case CustomTeamMessages.Start: {
                 if (player.isLeader) {
-                    const result = await findGame();
-                    if (result.success) {
-                        this.gameID = result.gameID;
+                    const result = await findGame(this.teamSize, this.map);
+                    if (result !== undefined) {
+                        this.gameID = result.id;
                         clearTimeout(this.resetTimeout);
                         this.resetTimeout = setTimeout(() => this.gameID = undefined, 10000);
 
@@ -241,35 +249,22 @@ export class CustomTeam {
 }
 
 export class CustomTeamPlayer {
-    socket!: WebSocket<CustomTeamPlayerContainer>;
-    team: CustomTeam;
     get id(): number { return this.team.players.indexOf(this); }
     get isLeader(): boolean { return this.id === 0; }
-    ready: boolean;
-    name: string;
-    skin: string;
-    badge?: string;
-    nameColor?: number;
+    ready = false;
 
     constructor(
-        team: CustomTeam,
-        name: string,
-        skin: string,
-        badge?: string,
-        nameColor?: number
+        readonly team: CustomTeam,
+        readonly socket: WebSocket,
+        readonly name: string,
+        readonly skin: string,
+        readonly badge?: string,
+        readonly nameColor?: number
     ) {
-        this.team = team;
-        team.players.push(this);
-        this.ready = false;
-        this.name = name;
-        this.skin = skin;
-        this.badge = badge;
-        this.nameColor = nameColor;
+        team.addPlayer(this);
     }
 
     sendMessage(message: CustomTeamMessage): void {
         this.socket.send(JSON.stringify(message));
     }
 }
-
-export interface CustomTeamPlayerContainer { player: CustomTeamPlayer }

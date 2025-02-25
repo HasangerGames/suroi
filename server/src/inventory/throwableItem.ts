@@ -1,6 +1,6 @@
 import { AnimationType, Layer } from "@common/constants";
-import { PerkData, PerkIds } from "@common/definitions/perks";
-import { type ThrowableDefinition } from "@common/definitions/throwables";
+import { PerkData, PerkIds } from "@common/definitions/items/perks";
+import { type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
@@ -11,9 +11,7 @@ import { type Player } from "../objects/player";
 import { type ThrowableProjectile } from "../objects/throwableProj";
 import { CountableInventoryItem } from "./inventoryItem";
 
-export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
-    declare readonly category: ItemType.Throwable;
-
+export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwable) {
     count: number;
 
     private _activeHandler?: GrenadeHandler;
@@ -74,7 +72,7 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
 
     override useItem(): void {
         super._bufferAttack(
-            this.definition.fireDelay,
+            this.definition.fireDelay ?? 250,
             this._useItemNoDelayCheck.bind(this, true)
         );
     }
@@ -101,8 +99,6 @@ class GrenadeHandler {
     private _detonate(): void {
         const { explosion } = this.definition.detonation;
 
-        const particles = (this.owner.halloweenThrowableSkin && this.definition.detonation.spookyParticles) ? this.definition.detonation.spookyParticles : this.definition.detonation.particles;
-
         const referencePosition = Vec.clone(this._projectile?.position ?? this.parent.owner.position);
         const game = this.game;
 
@@ -116,6 +112,10 @@ class GrenadeHandler {
                 (this._projectile?.halloweenSkin ?? false) ? PerkData[PerkIds.PlumpkinBomb].damageMod : 1
             );
         }
+
+        const particles = (this.owner.halloweenThrowableSkin && this.definition.detonation.spookyParticles)
+            ? this.definition.detonation.spookyParticles
+            : this.definition.detonation.particles;
 
         if (particles !== undefined) {
             game.addSyncedParticles(particles, referencePosition, this._projectile ? this._projectile.layer : Layer.Ground);
@@ -226,7 +226,7 @@ class GrenadeHandler {
                     soft
                         ? 0
                         : Numeric.min(
-                            definition.maxThrowDistance * this.owner.mapPerkOrDefault(PerkIds.DemoExpert, ({ rangeMod }) => rangeMod, 1),
+                            (definition.maxThrowDistance ?? 128) * this.owner.mapPerkOrDefault(PerkIds.DemoExpert, ({ rangeMod }) => rangeMod, 1),
                             0.9 * this.owner.distanceToMouse
                         //  ^^^ Grenades will consistently undershoot the mouse by 10% in order to make long-range shots harder
                         //      while not really affecting close-range shots

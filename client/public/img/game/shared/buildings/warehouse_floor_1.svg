@@ -7,11 +7,10 @@
    viewBox="0 0 285.74999 280.79587"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
    sodipodi:docname="warehouse_floor_1.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <sodipodi:namedview
@@ -24,22 +23,17 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.17928416"
-     inkscape:cx="845.02725"
-     inkscape:cy="1528.3001"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
+     inkscape:zoom="0.50709218"
+     inkscape:cx="579.77624"
+     inkscape:cy="1167.4406"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
      id="defs1">
-    <pattern
-       inkscape:collect="always"
-       xlink:href="#pattern60834"
-       id="pattern62642"
-       patternTransform="matrix(0.26460813,0,0,0.26457071,-172.87573,-132.49975)" />
     <pattern
        patternUnits="userSpaceOnUse"
        width="1079.8988"
@@ -840,8 +834,1187 @@
     <g
        id="g69918"
        transform="translate(118.10698,53.389338)">
+      <g
+         id="g293">
+        <g
+           id="rect1"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 386.22852,130.0293 v 42.8457 h 42.18945 v -42.8457 z m 4.5,4.5 h 33.1875 v 33.8457 h -33.1875 z"
+             id="path98" />
+          <path
+             style="fill:#616161;paint-order:markers stroke fill"
+             d="m 388.47836,132.27995 h 37.6886 v 38.34557 h -37.6886 z"
+             id="path99" />
+        </g>
+        <g
+           id="rect2"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 386.22852,89.578125 v 42.845705 h 42.18945 V 89.578125 Z m 4.5,4.5 h 33.1875 v 33.845705 h -33.1875 z"
+             id="path100" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 388.47836,91.828529 h 37.6886 V 130.1741 h -37.6886 z"
+             id="path101" />
+        </g>
+        <g
+           id="rect3"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 386.22852,49.046875 v 42.845703 h 42.18945 V 49.046875 Z m 4.5,4.5 h 33.1875 v 33.845703 h -33.1875 z"
+             id="path102" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 388.47836,51.296368 h 37.6886 v 38.345565 h -37.6886 z"
+             id="path103" />
+        </g>
+        <g
+           id="rect4"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 386.22852,8.5957031 V 51.441406 h 42.18945 V 8.5957031 Z m 4.5,4.4999999 h 33.1875 v 33.845703 h -33.1875 z"
+             id="path104" />
+          <path
+             style="fill:#5c5c5c;paint-order:markers stroke fill"
+             d="m 388.47836,10.844934 h 37.6886 V 49.1905 h -37.6886 z"
+             id="path105" />
+        </g>
+        <g
+           id="rect5"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 386.22852,-31.890625 v 42.845703 h 42.18945 v -42.845703 z m 4.5,4.5 h 33.1875 V 6.4550781 h -33.1875 z"
+             id="path106" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 388.47836,-29.640205 h 37.6886 V 8.7053604 h -37.6886 z"
+             id="path107" />
+        </g>
+        <g
+           id="rect6"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 386.22852,-72.341797 v 42.845703 h 42.18945 v -42.845703 z m 4.5,4.5 h 33.1875 v 33.845703 h -33.1875 z"
+             id="path108" />
+          <path
+             style="fill:#616161;paint-order:markers stroke fill"
+             d="m 388.47836,-70.091644 h 37.6886 v 38.345566 h -37.6886 z"
+             id="path109" />
+        </g>
+        <g
+           id="rect7"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 386.22852,-112.875 v 42.845703 h 42.18945 V -112.875 Z m 4.5,4.50195 h 33.1875 v 33.843753 h -33.1875 z"
+             id="path110" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 388.47836,-110.62404 h 37.6886 v 38.345567 h -37.6886 z"
+             id="path111" />
+        </g>
+        <g
+           id="rect8"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 346.35352,130.0293 v 42.8457 h 42.1875 v -42.8457 z m 4.5,4.5 h 33.1875 v 33.8457 h -33.1875 z"
+             id="path112" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 348.60309,132.27995 h 37.6886 v 38.34557 h -37.6886 z"
+             id="path113" />
+        </g>
+        <g
+           id="rect9"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 346.35352,89.578125 v 42.845705 h 42.1875 V 89.578125 Z m 4.5,4.5 h 33.1875 v 33.845705 h -33.1875 z"
+             id="path114" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 348.60309,91.828529 h 37.6886 V 130.1741 h -37.6886 z"
+             id="path115" />
+        </g>
+        <g
+           id="rect10"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 346.35352,49.046875 v 42.845703 h 42.1875 V 49.046875 Z m 4.5,4.5 h 33.1875 v 33.845703 h -33.1875 z"
+             id="path116" />
+          <path
+             style="fill:#616161;paint-order:markers stroke fill"
+             d="m 348.60309,51.296368 h 37.6886 v 38.345565 h -37.6886 z"
+             id="path117" />
+        </g>
+        <g
+           id="rect11"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 346.35352,8.5957031 V 51.441406 h 42.1875 V 8.5957031 Z m 4.5,4.4999999 h 33.1875 v 33.845703 h -33.1875 z"
+             id="path118" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 348.60309,10.844934 h 37.6886 V 49.1905 h -37.6886 z"
+             id="path119" />
+        </g>
+        <g
+           id="rect12"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 346.35352,-31.890625 v 42.845703 h 42.1875 v -42.845703 z m 4.5,4.5 h 33.1875 V 6.4550781 h -33.1875 z"
+             id="path120" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 348.60309,-29.640205 h 37.6886 V 8.7053604 h -37.6886 z"
+             id="path121" />
+        </g>
+        <g
+           id="rect13"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 346.35352,-72.341797 v 42.845703 h 42.1875 v -42.845703 z m 4.5,4.5 h 33.1875 v 33.845703 h -33.1875 z"
+             id="path122" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 348.60309,-70.091644 h 37.6886 v 38.345566 h -37.6886 z"
+             id="path123" />
+        </g>
+        <g
+           id="rect14"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 346.35352,-112.875 v 42.845703 h 42.1875 V -112.875 Z m 4.5,4.50195 h 33.1875 v 33.843753 h -33.1875 z"
+             id="path124" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 348.60309,-110.62404 h 37.6886 v 38.345567 h -37.6886 z"
+             id="path125" />
+        </g>
+        <g
+           id="rect15"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 306.43555,130.0293 V 172.875 H 348.625 v -42.8457 z m 4.5,4.5 H 344.125 v 33.8457 h -33.18945 z"
+             id="path126" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 308.68637,132.27995 h 37.6886 v 38.34557 h -37.6886 z"
+             id="path127" />
+        </g>
+        <g
+           id="rect16"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 306.43555,89.578125 V 132.42383 H 348.625 V 89.578125 Z m 4.5,4.5 H 344.125 v 33.845705 h -33.18945 z"
+             id="path128" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 308.68637,91.828529 h 37.6886 V 130.1741 h -37.6886 z"
+             id="path129" />
+        </g>
+        <g
+           id="rect17"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 306.43555,49.046875 V 91.892578 H 348.625 V 49.046875 Z m 4.5,4.5 H 344.125 v 33.845703 h -33.18945 z"
+             id="path130" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 308.68637,51.296368 h 37.6886 v 38.345565 h -37.6886 z"
+             id="path131" />
+        </g>
+        <g
+           id="rect18"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 306.43555,8.5957031 V 51.441406 H 348.625 V 8.5957031 Z m 4.5,4.4999999 H 344.125 v 33.845703 h -33.18945 z"
+             id="path132" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 308.68637,10.844934 h 37.6886 V 49.1905 h -37.6886 z"
+             id="path133" />
+        </g>
+        <g
+           id="rect19"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 306.43555,-31.890625 V 10.955078 H 348.625 v -42.845703 z m 4.5,4.5 H 344.125 V 6.4550781 h -33.18945 z"
+             id="path134" />
+          <path
+             style="fill:#5c5c5c;paint-order:markers stroke fill"
+             d="m 308.68637,-29.640205 h 37.6886 V 8.7053604 h -37.6886 z"
+             id="path135" />
+        </g>
+        <g
+           id="rect20"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 306.43555,-72.341797 v 42.845703 H 348.625 v -42.845703 z m 4.5,4.5 H 344.125 v 33.845703 h -33.18945 z"
+             id="path136" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 308.68637,-70.091644 h 37.6886 v 38.345566 h -37.6886 z"
+             id="path137" />
+        </g>
+        <g
+           id="rect21"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 306.43555,-112.875 v 42.845703 H 348.625 V -112.875 Z m 4.5,4.50195 H 344.125 v 33.843753 h -33.18945 z"
+             id="path138" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 308.68637,-110.62404 h 37.6886 v 38.345567 h -37.6886 z"
+             id="path139" />
+        </g>
+        <g
+           id="rect22"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 266.56055,130.0293 V 172.875 H 308.75 v -42.8457 z m 4.5,4.5 H 304.25 v 33.8457 h -33.18945 z"
+             id="path140" />
+          <path
+             style="fill:#616161;paint-order:markers stroke fill"
+             d="m 268.8111,132.27995 h 37.68859 v 38.34557 H 268.8111 Z"
+             id="path141" />
+        </g>
+        <g
+           id="rect23"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 266.56055,89.578125 V 132.42383 H 308.75 V 89.578125 Z m 4.5,4.5 H 304.25 v 33.845705 h -33.18945 z"
+             id="path142" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 268.8111,91.828529 h 37.68859 V 130.1741 H 268.8111 Z"
+             id="path143" />
+        </g>
+        <g
+           id="rect24"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 266.56055,49.046875 V 91.892578 H 308.75 V 49.046875 Z m 4.5,4.5 H 304.25 v 33.845703 h -33.18945 z"
+             id="path144" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 268.8111,51.296368 h 37.68859 V 89.641933 H 268.8111 Z"
+             id="path145" />
+        </g>
+        <g
+           id="rect25"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 266.56055,8.5957031 V 51.441406 H 308.75 V 8.5957031 Z m 4.5,4.4999999 H 304.25 v 33.845703 h -33.18945 z"
+             id="path146" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 268.8111,10.844934 h 37.68859 V 49.1905 H 268.8111 Z"
+             id="path147" />
+        </g>
+        <g
+           id="rect26"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 266.56055,-31.890625 V 10.955078 H 308.75 v -42.845703 z m 4.5,4.5 H 304.25 V 6.4550781 h -33.18945 z"
+             id="path148" />
+          <path
+             style="fill:#616161;paint-order:markers stroke fill"
+             d="m 268.8111,-29.640205 h 37.68859 V 8.7053604 H 268.8111 Z"
+             id="path149" />
+        </g>
+        <g
+           id="rect27"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 266.56055,-72.341797 v 42.845703 H 308.75 v -42.845703 z m 4.5,4.5 H 304.25 v 33.845703 h -33.18945 z"
+             id="path150" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 268.8111,-70.091644 h 37.68859 v 38.345566 H 268.8111 Z"
+             id="path151" />
+        </g>
+        <g
+           id="rect28"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 266.56055,-112.875 v 42.845703 H 308.75 V -112.875 Z m 4.5,4.50195 H 304.25 v 33.843753 h -33.18945 z"
+             id="path152" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 268.8111,-110.62404 h 37.68859 v 38.345567 H 268.8111 Z"
+             id="path153" />
+        </g>
+        <g
+           id="rect29"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 226.64648,130.0293 v 42.8457 h 42.1875 v -42.8457 z m 4.5,4.5 h 33.1875 v 33.8457 h -33.1875 z"
+             id="path154" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 228.89571,132.27995 h 37.68859 v 38.34557 h -37.68859 z"
+             id="path155" />
+        </g>
+        <g
+           id="rect30"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 226.64648,89.578125 v 42.845705 h 42.1875 V 89.578125 Z m 4.5,4.5 h 33.1875 v 33.845705 h -33.1875 z"
+             id="path156" />
+          <path
+             style="fill:#5c5c5c;paint-order:markers stroke fill"
+             d="M 228.89571,91.828529 H 266.5843 V 130.1741 h -37.68859 z"
+             id="path157" />
+        </g>
+        <g
+           id="rect31"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 226.64648,49.046875 v 42.845703 h 42.1875 V 49.046875 Z m 4.5,4.5 h 33.1875 v 33.845703 h -33.1875 z"
+             id="path158" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="M 228.89571,51.296368 H 266.5843 V 89.641933 H 228.89571 Z"
+             id="path159" />
+        </g>
+        <g
+           id="rect32"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 226.64648,8.5957031 V 51.441406 h 42.1875 V 8.5957031 Z m 4.5,4.4999999 h 33.1875 v 33.845703 h -33.1875 z"
+             id="path160" />
+          <path
+             style="fill:#616161;paint-order:markers stroke fill"
+             d="M 228.89571,10.844934 H 266.5843 V 49.1905 h -37.68859 z"
+             id="path161" />
+        </g>
+        <g
+           id="rect33"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 226.64648,-31.890625 v 42.845703 h 42.1875 v -42.845703 z m 4.5,4.5 h 33.1875 V 6.4550781 h -33.1875 z"
+             id="path162" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="M 228.89571,-29.640205 H 266.5843 V 8.7053604 h -37.68859 z"
+             id="path163" />
+        </g>
+        <g
+           id="rect34"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 226.64648,-72.341797 v 42.845703 h 42.1875 v -42.845703 z m 4.5,4.5 h 33.1875 v 33.845703 h -33.1875 z"
+             id="path164" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 228.89571,-70.091644 h 37.68859 v 38.345566 h -37.68859 z"
+             id="path165" />
+        </g>
+        <g
+           id="rect35"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 226.64648,-112.875 v 42.845703 h 42.1875 V -112.875 Z m 4.5,4.50195 h 33.1875 v 33.843753 h -33.1875 z"
+             id="path166" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 228.89571,-110.62404 h 37.68859 v 38.345567 h -37.68859 z"
+             id="path167" />
+        </g>
+        <g
+           id="rect36"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 186.76953,130.0293 v 42.8457 h 42.18945 v -42.8457 z m 4.5,4.5 h 33.18945 v 33.8457 h -33.18945 z"
+             id="path168" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 189.02039,132.27995 h 37.68859 v 38.34557 h -37.68859 z"
+             id="path169" />
+        </g>
+        <g
+           id="rect37"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 186.76953,89.578125 v 42.845705 h 42.18945 V 89.578125 Z m 4.5,4.5 h 33.18945 v 33.845705 h -33.18945 z"
+             id="path170" />
+          <path
+             style="fill:#616161;paint-order:markers stroke fill"
+             d="m 189.02039,91.828529 h 37.68859 V 130.1741 h -37.68859 z"
+             id="path171" />
+        </g>
+        <g
+           id="rect38"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 186.76953,49.046875 v 42.845703 h 42.18945 V 49.046875 Z m 4.5,4.5 h 33.18945 v 33.845703 h -33.18945 z"
+             id="path172" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 189.02039,51.296368 h 37.68859 v 38.345565 h -37.68859 z"
+             id="path173" />
+        </g>
+        <g
+           id="rect39"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 186.76953,8.5957031 V 51.441406 h 42.18945 V 8.5957031 Z m 4.5,4.4999999 h 33.18945 v 33.845703 h -33.18945 z"
+             id="path174" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 189.02039,10.844934 h 37.68859 V 49.1905 h -37.68859 z"
+             id="path175" />
+        </g>
+        <g
+           id="rect40"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 186.76953,-31.890625 v 42.845703 h 42.18945 v -42.845703 z m 4.5,4.5 h 33.18945 V 6.4550781 h -33.18945 z"
+             id="path176" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 189.02039,-29.640205 h 37.68859 V 8.7053604 h -37.68859 z"
+             id="path177" />
+        </g>
+        <g
+           id="rect41"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 186.76953,-72.341797 v 42.845703 h 42.18945 v -42.845703 z m 4.5,4.5 h 33.18945 v 33.845703 h -33.18945 z"
+             id="path178" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 189.02039,-70.091644 h 37.68859 v 38.345566 h -37.68859 z"
+             id="path179" />
+        </g>
+        <g
+           id="rect42"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 186.76953,-112.875 v 42.845703 h 42.18945 V -112.875 Z m 4.5,4.50195 h 33.18945 v 33.843753 h -33.18945 z"
+             id="path180" />
+          <path
+             style="fill:#5c5c5c;paint-order:markers stroke fill"
+             d="m 189.02039,-110.62404 h 37.68859 v 38.345567 h -37.68859 z"
+             id="path181" />
+        </g>
+        <g
+           id="rect43"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 146.85352,130.0293 v 42.8457 h 42.18945 v -42.8457 z m 4.5,4.5 h 33.18945 v 33.8457 h -33.18945 z"
+             id="path182" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 149.1037,132.27995 h 37.6886 v 38.34557 h -37.6886 z"
+             id="path183" />
+        </g>
+        <g
+           id="rect44"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 146.85352,89.578125 v 42.845705 h 42.18945 V 89.578125 Z m 4.5,4.5 h 33.18945 v 33.845705 h -33.18945 z"
+             id="path184" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 149.1037,91.828529 h 37.6886 V 130.1741 h -37.6886 z"
+             id="path185" />
+        </g>
+        <g
+           id="rect45"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 146.85352,49.046875 v 42.845703 h 42.18945 V 49.046875 Z m 4.5,4.5 h 33.18945 v 33.845703 h -33.18945 z"
+             id="path186" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 149.1037,51.296368 h 37.6886 v 38.345565 h -37.6886 z"
+             id="path187" />
+        </g>
+        <g
+           id="rect46"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 146.85352,8.5957031 V 51.441406 h 42.18945 V 8.5957031 Z m 4.5,4.4999999 h 33.18945 v 33.845703 h -33.18945 z"
+             id="path188" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 149.1037,10.844934 h 37.6886 V 49.1905 h -37.6886 z"
+             id="path189" />
+        </g>
+        <g
+           id="rect47"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 146.85352,-31.890625 v 42.845703 h 42.18945 v -42.845703 z m 4.5,4.5 h 33.18945 V 6.4550781 h -33.18945 z"
+             id="path190" />
+          <path
+             style="fill:#5c5c5c;paint-order:markers stroke fill"
+             d="m 149.1037,-29.640205 h 37.6886 V 8.7053604 h -37.6886 z"
+             id="path191" />
+        </g>
+        <g
+           id="rect48"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 146.85352,-72.341797 v 42.845703 h 42.18945 v -42.845703 z m 4.5,4.5 h 33.18945 v 33.845703 h -33.18945 z"
+             id="path192" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 149.1037,-70.091644 h 37.6886 v 38.345566 h -37.6886 z"
+             id="path193" />
+        </g>
+        <g
+           id="rect49"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 146.85352,-112.875 v 42.845703 h 42.18945 V -112.875 Z m 4.5,4.50195 h 33.18945 v 33.843753 h -33.18945 z"
+             id="path194" />
+          <path
+             style="fill:#616161;paint-order:markers stroke fill"
+             d="m 149.1037,-110.62404 h 37.6886 v 38.345567 h -37.6886 z"
+             id="path195" />
+        </g>
+        <g
+           id="rect50"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 106.97852,130.0293 v 42.8457 h 42.18945 v -42.8457 z m 4.5,4.5 h 33.1875 v 33.8457 h -33.1875 z"
+             id="path196" />
+          <path
+             style="fill:#5c5c5c;paint-order:markers stroke fill"
+             d="m 109.2284,132.27995 h 37.6886 v 38.34557 h -37.6886 z"
+             id="path197" />
+        </g>
+        <g
+           id="rect51"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 106.97852,89.578125 v 42.845705 h 42.18945 V 89.578125 Z m 4.5,4.5 h 33.1875 v 33.845705 h -33.1875 z"
+             id="path198" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="M 109.2284,91.828529 H 146.917 V 130.1741 h -37.6886 z"
+             id="path199" />
+        </g>
+        <g
+           id="rect52"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 106.97852,49.046875 v 42.845703 h 42.18945 V 49.046875 Z m 4.5,4.5 h 33.1875 v 33.845703 h -33.1875 z"
+             id="path200" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="M 109.2284,51.296368 H 146.917 V 89.641933 H 109.2284 Z"
+             id="path201" />
+        </g>
+        <g
+           id="rect53"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 106.97852,8.5957031 V 51.441406 h 42.18945 V 8.5957031 Z m 4.5,4.4999999 h 33.1875 v 33.845703 h -33.1875 z"
+             id="path202" />
+          <path
+             style="fill:#616161;paint-order:markers stroke fill"
+             d="M 109.2284,10.844934 H 146.917 V 49.1905 h -37.6886 z"
+             id="path203" />
+        </g>
+        <g
+           id="rect54"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 106.97852,-31.890625 v 42.845703 h 42.18945 v -42.845703 z m 4.5,4.5 h 33.1875 V 6.4550781 h -33.1875 z"
+             id="path204" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="M 109.2284,-29.640205 H 146.917 V 8.7053604 h -37.6886 z"
+             id="path205" />
+        </g>
+        <g
+           id="rect55"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 106.97852,-72.341797 v 42.845703 h 42.18945 v -42.845703 z m 4.5,4.5 h 33.1875 v 33.845703 h -33.1875 z"
+             id="path206" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 109.2284,-70.091644 h 37.6886 v 38.345566 h -37.6886 z"
+             id="path207" />
+        </g>
+        <g
+           id="rect56"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 106.97852,-112.875 v 42.845703 h 42.18945 V -112.875 Z m 4.5,4.50195 h 33.1875 v 33.843753 h -33.1875 z"
+             id="path208" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 109.2284,-110.62404 h 37.6886 v 38.345567 h -37.6886 z"
+             id="path209" />
+        </g>
+        <g
+           id="rect57"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 67.050781,130.0293 v 42.8457 h 42.189449 v -42.8457 z m 4.5,4.5 H 104.74023 V 168.375 H 71.550781 Z"
+             id="path210" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 69.30072,132.27995 h 37.6886 v 38.34557 h -37.6886 z"
+             id="path211" />
+        </g>
+        <g
+           id="rect58"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 67.050781,89.578125 V 132.42383 H 109.24023 V 89.578125 Z m 4.5,4.5 H 104.74023 V 127.92383 H 71.550781 Z"
+             id="path212" />
+          <path
+             style="fill:#616161;paint-order:markers stroke fill"
+             d="m 69.30072,91.828529 h 37.6886 V 130.1741 h -37.6886 z"
+             id="path213" />
+        </g>
+        <g
+           id="rect59"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 67.050781,49.046875 V 91.892578 H 109.24023 V 49.046875 Z m 4.5,4.5 H 104.74023 V 87.392578 H 71.550781 Z"
+             id="path214" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 69.30072,51.296368 h 37.6886 v 38.345565 h -37.6886 z"
+             id="path215" />
+        </g>
+        <g
+           id="rect60"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 67.050781,8.5957031 V 51.441406 H 109.24023 V 8.5957031 Z m 4.5,4.4999999 H 104.74023 V 46.941406 H 71.550781 Z"
+             id="path216" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 69.30072,10.844934 h 37.6886 V 49.1905 h -37.6886 z"
+             id="path217" />
+        </g>
+        <g
+           id="rect61"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 67.050781,-31.890625 v 42.845703 h 42.189449 v -42.845703 z m 4.5,4.5 H 104.74023 V 6.4550781 H 71.550781 Z"
+             id="path218" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 69.30072,-29.640205 h 37.6886 V 8.7053604 h -37.6886 z"
+             id="path219" />
+        </g>
+        <g
+           id="rect62"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 67.050781,-72.341797 v 42.845703 h 42.189449 v -42.845703 z m 4.5,4.5 h 33.189449 v 33.845703 H 71.550781 Z"
+             id="path220" />
+          <path
+             style="fill:#5c5c5c;paint-order:markers stroke fill"
+             d="m 69.30072,-70.091644 h 37.6886 v 38.345566 h -37.6886 z"
+             id="path221" />
+        </g>
+        <g
+           id="rect63"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 67.050781,-112.875 v 42.845703 H 109.24023 V -112.875 Z m 4.5,4.50195 h 33.189449 v 33.843753 H 71.550781 Z"
+             id="path222" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 69.30072,-110.62404 h 37.6886 v 38.345567 h -37.6886 z"
+             id="path223" />
+        </g>
+        <g
+           id="rect64"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 27.134766,130.0293 v 42.8457 h 42.189453 v -42.8457 z m 4.5,4.5 H 64.824219 V 168.375 H 31.634766 Z"
+             id="path224" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 29.385324,132.27995 h 37.688599 v 38.34557 H 29.385324 Z"
+             id="path225" />
+        </g>
+        <g
+           id="rect65"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 27.134766,89.578125 V 132.42383 H 69.324219 V 89.578125 Z m 4.5,4.5 H 64.824219 V 127.92383 H 31.634766 Z"
+             id="path226" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="M 29.385324,91.828529 H 67.073923 V 130.1741 H 29.385324 Z"
+             id="path227" />
+        </g>
+        <g
+           id="rect66"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 27.134766,49.046875 V 91.892578 H 69.324219 V 49.046875 Z m 4.5,4.5 H 64.824219 V 87.392578 H 31.634766 Z"
+             id="path228" />
+          <path
+             style="fill:#5c5c5c;paint-order:markers stroke fill"
+             d="M 29.385324,51.296368 H 67.073923 V 89.641933 H 29.385324 Z"
+             id="path229" />
+        </g>
+        <g
+           id="rect67"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M 27.134766,8.5957031 V 51.441406 H 69.324219 V 8.5957031 Z m 4.5,4.4999999 H 64.824219 V 46.941406 H 31.634766 Z"
+             id="path230" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="M 29.385324,10.844934 H 67.073923 V 49.1905 H 29.385324 Z"
+             id="path231" />
+        </g>
+        <g
+           id="rect68"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 27.134766,-31.890625 v 42.845703 h 42.189453 v -42.845703 z m 4.5,4.5 H 64.824219 V 6.4550781 H 31.634766 Z"
+             id="path232" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="M 29.385324,-29.640205 H 67.073923 V 8.7053604 H 29.385324 Z"
+             id="path233" />
+        </g>
+        <g
+           id="rect69"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 27.134766,-72.341797 v 42.845703 h 42.189453 v -42.845703 z m 4.5,4.5 h 33.189453 v 33.845703 H 31.634766 Z"
+             id="path234" />
+          <path
+             style="fill:#616161;paint-order:markers stroke fill"
+             d="m 29.385324,-70.091644 h 37.688599 v 38.345566 H 29.385324 Z"
+             id="path235" />
+        </g>
+        <g
+           id="rect70"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m 27.134766,-112.875 v 42.845703 H 69.324219 V -112.875 Z m 4.5,4.50195 h 33.189453 v 33.843753 H 31.634766 Z"
+             id="path236" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m 29.385324,-110.62404 h 37.688599 v 38.345567 H 29.385324 Z"
+             id="path237" />
+        </g>
+        <g
+           id="rect71"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -12.740234,130.0293 v 42.8457 h 42.189453 v -42.8457 z m 4.4999996,4.5 H 24.949219 V 168.375 H -8.2402344 Z"
+             id="path238" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m -10.489973,132.27995 h 37.688599 v 38.34557 h -37.688599 z"
+             id="path239" />
+        </g>
+        <g
+           id="rect72"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M -12.740234,89.578125 V 132.42383 H 29.449219 V 89.578125 Z m 4.4999996,4.5 H 24.949219 V 127.92383 H -8.2402344 Z"
+             id="path240" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="M -10.489973,91.828529 H 27.198626 V 130.1741 h -37.688599 z"
+             id="path241" />
+        </g>
+        <g
+           id="rect73"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M -12.740234,49.046875 V 91.892578 H 29.449219 V 49.046875 Z m 4.4999996,4.5 H 24.949219 V 87.392578 H -8.2402344 Z"
+             id="path242" />
+          <path
+             style="fill:#616161;paint-order:markers stroke fill"
+             d="M -10.489973,51.296368 H 27.198626 V 89.641933 H -10.489973 Z"
+             id="path243" />
+        </g>
+        <g
+           id="rect74"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M -12.740234,8.5957031 V 51.441406 H 29.449219 V 8.5957031 Z m 4.4999996,4.4999999 H 24.949219 V 46.941406 H -8.2402344 Z"
+             id="path244" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="M -10.489973,10.844934 H 27.198626 V 49.1905 h -37.688599 z"
+             id="path245" />
+        </g>
+        <g
+           id="rect75"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -12.740234,-31.890625 v 42.845703 h 42.189453 v -42.845703 z m 4.4999996,4.5 H 24.949219 V 6.4550781 H -8.2402344 Z"
+             id="path246" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="M -10.489973,-29.640205 H 27.198626 V 8.7053604 h -37.688599 z"
+             id="path247" />
+        </g>
+        <g
+           id="rect76"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -12.740234,-72.341797 v 42.845703 h 42.189453 v -42.845703 z m 4.4999996,4.5 H 24.949219 v 33.845703 H -8.2402344 Z"
+             id="path248" />
+          <path
+             style="fill:#5c5c5c;paint-order:markers stroke fill"
+             d="m -10.489973,-70.091644 h 37.688599 v 38.345566 h -37.688599 z"
+             id="path249" />
+        </g>
+        <g
+           id="rect77"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -12.740234,-112.875 v 42.845703 H 29.449219 V -112.875 Z m 4.4999996,4.50195 H 24.949219 v 33.843753 H -8.2402344 Z"
+             id="path250" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m -10.489973,-110.62404 h 37.688599 v 38.345567 h -37.688599 z"
+             id="path251" />
+        </g>
+        <g
+           id="rect78"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -52.65625,130.0293 v 42.8457 h 42.1875 v -42.8457 z m 4.5,4.5 h 33.1875 v 33.8457 h -33.1875 z"
+             id="path252" />
+          <path
+             style="fill:#5c5c5c;paint-order:markers stroke fill"
+             d="m -50.406666,132.27995 h 37.688599 v 38.34557 h -37.688599 z"
+             id="path253" />
+        </g>
+        <g
+           id="rect79"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -52.65625,89.578125 v 42.845705 h 42.1875 V 89.578125 Z m 4.5,4.5 h 33.1875 v 33.845705 h -33.1875 z"
+             id="path254" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m -50.406666,91.828529 h 37.688599 V 130.1741 h -37.688599 z"
+             id="path255" />
+        </g>
+        <g
+           id="rect80"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -52.65625,49.046875 v 42.845703 h 42.1875 V 49.046875 Z m 4.5,4.5 h 33.1875 v 33.845703 h -33.1875 z"
+             id="path256" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m -50.406666,51.296368 h 37.688599 v 38.345565 h -37.688599 z"
+             id="path257" />
+        </g>
+        <g
+           id="rect81"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M -52.65625,8.5957031 V 51.441406 h 42.1875 V 8.5957031 Z m 4.5,4.4999999 h 33.1875 v 33.845703 h -33.1875 z"
+             id="path258" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m -50.406666,10.844934 h 37.688599 V 49.1905 h -37.688599 z"
+             id="path259" />
+        </g>
+        <g
+           id="rect82"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -52.65625,-31.890625 v 42.845703 h 42.1875 v -42.845703 z m 4.5,4.5 h 33.1875 V 6.4550781 h -33.1875 z"
+             id="path260" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m -50.406666,-29.640205 h 37.688599 V 8.7053604 h -37.688599 z"
+             id="path261" />
+        </g>
+        <g
+           id="rect83"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -52.65625,-72.341797 v 42.845703 h 42.1875 v -42.845703 z m 4.5,4.5 h 33.1875 v 33.845703 h -33.1875 z"
+             id="path262" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m -50.406666,-70.091644 h 37.688599 v 38.345566 h -37.688599 z"
+             id="path263" />
+        </g>
+        <g
+           id="rect84"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -52.65625,-112.875 v 42.845703 h 42.1875 V -112.875 Z m 4.5,4.50195 h 33.1875 v 33.843753 h -33.1875 z"
+             id="path264" />
+          <path
+             style="fill:#616161;paint-order:markers stroke fill"
+             d="m -50.406666,-110.62404 h 37.688599 v 38.345567 h -37.688599 z"
+             id="path265" />
+        </g>
+        <g
+           id="rect85"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -92.53125,130.0293 v 42.8457 h 42.1875 v -42.8457 z m 4.5,4.5 h 33.1875 v 33.8457 h -33.1875 z"
+             id="path266" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m -90.281967,132.27995 h 37.688598 v 38.34557 h -37.688598 z"
+             id="path267" />
+        </g>
+        <g
+           id="rect86"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -92.53125,89.578125 v 42.845705 h 42.1875 V 89.578125 Z m 4.5,4.5 h 33.1875 v 33.845705 h -33.1875 z"
+             id="path268" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m -90.281967,91.828529 h 37.688598 V 130.1741 h -37.688598 z"
+             id="path269" />
+        </g>
+        <g
+           id="rect87"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -92.53125,49.046875 v 42.845703 h 42.1875 V 49.046875 Z m 4.5,4.5 h 33.1875 v 33.845703 h -33.1875 z"
+             id="path270" />
+          <path
+             style="fill:#5c5c5c;paint-order:markers stroke fill"
+             d="m -90.281967,51.296368 h 37.688598 v 38.345565 h -37.688598 z"
+             id="path271" />
+        </g>
+        <g
+           id="rect88"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M -92.53125,8.5957031 V 51.441406 h 42.1875 V 8.5957031 Z m 4.5,4.4999999 h 33.1875 v 33.845703 h -33.1875 z"
+             id="path272" />
+          <path
+             style="fill:#616161;paint-order:markers stroke fill"
+             d="m -90.281967,10.844934 h 37.688598 V 49.1905 h -37.688598 z"
+             id="path273" />
+        </g>
+        <g
+           id="rect89"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -92.53125,-31.890625 v 42.845703 h 42.1875 v -42.845703 z m 4.5,4.5 h 33.1875 V 6.4550781 h -33.1875 z"
+             id="path274" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m -90.281967,-29.640205 h 37.688598 V 8.7053604 h -37.688598 z"
+             id="path275" />
+        </g>
+        <g
+           id="rect90"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -92.53125,-72.341797 v 42.845703 h 42.1875 v -42.845703 z m 4.5,4.5 h 33.1875 v 33.845703 h -33.1875 z"
+             id="path276" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m -90.281967,-70.091644 h 37.688598 v 38.345566 h -37.688598 z"
+             id="path277" />
+        </g>
+        <g
+           id="rect91"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -92.53125,-112.875 v 42.845703 h 42.1875 V -112.875 Z m 4.5,4.50195 h 33.1875 v 33.843753 h -33.1875 z"
+             id="path278" />
+          <path
+             style="fill:#616161;paint-order:markers stroke fill"
+             d="m -90.281967,-110.62404 h 37.688598 v 38.345567 h -37.688598 z"
+             id="path279" />
+        </g>
+        <g
+           id="rect92"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -132.5,130.0293 v 42.8457 h 42.189453 v -42.8457 z m 4.5,4.5 h 33.189453 V 168.375 H -128 Z"
+             id="path280" />
+          <path
+             style="fill:#616161;paint-order:markers stroke fill"
+             d="m -130.24986,132.27995 h 37.688596 v 38.34557 h -37.688596 z"
+             id="path281" />
+        </g>
+        <g
+           id="rect93"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -132.5,89.578125 v 42.845705 h 42.189453 V 89.578125 Z m 4.5,4.5 h 33.189453 V 127.92383 H -128 Z"
+             id="path282" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m -130.24986,91.828529 h 37.688596 V 130.1741 h -37.688596 z"
+             id="path283" />
+        </g>
+        <g
+           id="rect94"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -132.5,49.046875 v 42.845703 h 42.189453 V 49.046875 Z m 4.5,4.5 h 33.189453 V 87.392578 H -128 Z"
+             id="path284" />
+          <path
+             style="fill:#5c5c5c;paint-order:markers stroke fill"
+             d="m -130.24986,51.296368 h 37.688596 v 38.345565 h -37.688596 z"
+             id="path285" />
+        </g>
+        <g
+           id="rect95"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="M -132.5,8.5957031 V 51.441406 h 42.189453 V 8.5957031 Z m 4.5,4.4999999 h 33.189453 V 46.941406 H -128 Z"
+             id="path286" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m -130.24986,10.844934 h 37.688596 V 49.1905 h -37.688596 z"
+             id="path287" />
+        </g>
+        <g
+           id="rect96"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -132.5,-31.890625 v 42.845703 h 42.189453 v -42.845703 z m 4.5,4.5 h 33.189453 V 6.4550781 H -128 Z"
+             id="path288" />
+          <path
+             style="fill:#5c5c5c;paint-order:markers stroke fill"
+             d="m -130.24986,-29.640205 h 37.688596 V 8.7053604 h -37.688596 z"
+             id="path289" />
+        </g>
+        <g
+           id="rect97"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -132.5,-72.341797 v 42.845703 h 42.189453 v -42.845703 z m 4.5,4.5 h 33.189453 v 33.845703 H -128 Z"
+             id="path290" />
+          <path
+             style="fill:#5e5e5e;paint-order:markers stroke fill"
+             d="m -130.24986,-70.091644 h 37.688596 v 38.345566 h -37.688596 z"
+             id="path291" />
+        </g>
+        <g
+           id="rect98"
+           transform="rotate(90)">
+          <path
+             style="fill:#4d4d4d;paint-order:markers stroke fill"
+             d="m -132.5,-112.875 v 42.845703 h 42.189453 V -112.875 Z m 4.5,4.50195 h 33.189453 v 33.843753 H -128 Z"
+             id="path292" />
+          <path
+             style="fill:#616161;paint-order:markers stroke fill"
+             d="m -130.24986,-110.62404 h 37.688596 v 38.345567 h -37.688596 z"
+             id="path293" />
+        </g>
+      </g>
       <rect
-         style="fill:url(#pattern62642);stroke:none;stroke-width:0.264583;stroke-dasharray:none"
+         style="fill:none;stroke:none;stroke-width:0.264583;stroke-dasharray:none"
          width="285.75"
          height="560.91669"
          x="-172.87573"

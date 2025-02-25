@@ -416,6 +416,18 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
             && that.max.y >= this.max.y
         );
     }
+
+    getSide(position: Vector): Orientation | -1 {
+        const { min, max } = this;
+        if (position.x > min.x && position.x < max.x) {
+            if (position.y < min.y) return 0;
+            else if (position.y > max.y) return 2;
+        } else if (position.y > min.y && position.y < max.y) {
+            if (position.x > max.x) return 1;
+            else if (position.x < min.x) return 3;
+        }
+        return -1;
+    }
 }
 
 export class GroupHitbox<GroupType extends Array<RectangleHitbox | CircleHitbox> = Array<RectangleHitbox | CircleHitbox>> extends BaseHitbox<HitboxType.Group> {

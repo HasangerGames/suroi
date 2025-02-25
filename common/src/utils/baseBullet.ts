@@ -1,12 +1,86 @@
-import { Layer } from "../constants";
+import { Layer, ZIndexes } from "../constants";
 import { Bullets, type BulletDefinition } from "../definitions/bullets";
+import { ExplosionDefinition } from "../definitions/explosions";
+import { type MeleeDefinition } from "../definitions/items/melees";
 import type { CommonGameObject } from "./gameObject";
 import { type Hitbox } from "./hitbox";
 import { adjacentOrEqualLayer, equivLayer } from "./layer";
-import { Geometry, Numeric } from "./math";
-import { type ReifiableDef } from "./objectDefinitions";
+import { Collision, Geometry, type IntersectionResponse, Numeric } from "./math";
+import { ItemType, ReferenceTo, type ReifiableDef } from "./objectDefinitions";
 import type { SuroiByteStream } from "./suroiByteStream";
 import { Vec, type Vector } from "./vector";
+
+export type BaseBulletDefinition = {
+    readonly damage: number
+    readonly obstacleMultiplier: number
+    readonly speed: number
+    readonly range: number
+    readonly rangeVariance?: number
+    readonly shrapnel?: boolean
+    readonly allowRangeOverride?: boolean
+    readonly lastShotFX?: boolean
+    readonly noCollision?: boolean
+
+    readonly tracer?: {
+        /**
+         * @default 1
+         */
+        readonly opacity?: number
+        /**
+         * @default 1
+         */
+        readonly width?: number
+        /**
+         * @default 1
+         */
+        readonly length?: number
+        readonly image?: string
+        /**
+         * Used by the radio bullet
+         * This will make it scale and fade in and out
+         */
+        readonly particle?: boolean
+        readonly zIndex?: ZIndexes
+        /**
+         * A value of `-1` causes a random color to be chosen
+         */
+        readonly color?: number
+        readonly saturatedColor?: number
+    }
+
+    readonly trail?: {
+        readonly interval: number
+        readonly amount?: number
+        readonly frame: string
+        readonly scale: {
+            readonly min: number
+            readonly max: number
+        }
+        readonly alpha: {
+            readonly min: number
+            readonly max: number
+        }
+        readonly spreadSpeed: {
+            readonly min: number
+            readonly max: number
+        }
+        readonly lifetime: {
+            readonly min: number
+            readonly max: number
+        }
+        readonly tint: number
+    }
+} & ({
+    readonly onHitExplosion?: never
+} | {
+    readonly onHitExplosion: ReferenceTo<ExplosionDefinition>
+    /**
+     * When hitting a reflective surface:
+     * - `true` causes the explosion to be spawned
+     * - `false` causes the projectile to be reflected (default)
+     */
+    readonly explodeOnImpact?: boolean
+});
 
 export interface BulletOptions {
     readonly position: Vector
@@ -39,12 +113,15 @@ type GameObject = {
     readonly id: number
 } & CommonGameObject;
 
-interface Collision {
+interface BulletCollision {
     readonly intersection: {
         readonly point: Vector
         readonly normal: Vector
     }
     readonly object: GameObject
+    readonly reflected: boolean
+    readonly dealDamage: boolean
+    readonly reflectedMeleeDefinition?: MeleeDefinition
 }
 
 export class BaseBullet {
@@ -67,7 +144,7 @@ export class BaseBullet {
 
     readonly sourceID: number;
 
-    readonly damagedIDs = new Set<number>();
+    readonly collidedIDs = new Set<number>();
 
     readonly rangeVariance: number;
 
@@ -126,7 +203,7 @@ export class BaseBullet {
      * @returns An array containing the objects that the bullet collided and the intersection data for each,
      * sorted by closest to furthest
      */
-    updateAndGetCollisions(delta: number, objects: Iterable<GameObject>): Collision[] {
+    updateAndGetCollisions(delta: number, objects: Iterable<GameObject>): BulletCollision[] {
         const oldPosition = this._oldPosition = Vec.clone(this.position);
 
         this.position = Vec.add(this.position, Vec.scale(this.velocity, delta));
@@ -138,7 +215,7 @@ export class BaseBullet {
 
         if (this.definition.noCollision) return [];
 
-        const collisions: Collision[] = [];
+        const collisions: BulletCollision[] = [];
 
         for (const object of objects) {
             const { isPlayer, isObstacle, isBuilding } = object;
@@ -150,14 +227,72 @@ export class BaseBullet {
                 || (isPlayer && !adjacentOrEqualLayer(this.layer, object.layer))
                 || !object.damageable
                 || object.dead
-                || this.damagedIDs.has(object.id)
+                || this.collidedIDs.has(object.id)
                 || (object.id === this.sourceID && !this.canHitShooter)
             ) continue;
+
+            if (isPlayer) {
+                const getIntersection = (surface: { pointA: Vector, pointB: Vector }): IntersectionResponse => {
+                    const pointA = Vec.add(
+                        object.position,
+                        Vec.rotate(surface.pointA, object.rotation)
+                    );
+                    const pointB = Vec.add(
+                        object.position,
+                        Vec.rotate(surface.pointB, object.rotation)
+                    );
+                    const point = Collision.lineIntersectsLine(
+                        oldPosition,
+                        this.position,
+                        pointA,
+                        pointB
+                    );
+                    if (!point) return null;
+                    const s = Vec.sub(pointA, pointB);
+                    const normal = Vec.normalize(Vec.create(-s.y, s.x));
+                    return { point, normal };
+                };
+
+                const activeDef = object.activeItemDefinition;
+                const backDef = object.backEquippedMelee;
+
+                if (activeDef.itemType === ItemType.Melee && activeDef.reflectiveSurface) {
+                    const intersection = getIntersection(activeDef.reflectiveSurface);
+                    if (intersection) {
+                        collisions.push({
+                            intersection: intersection,
+                            object,
+                            dealDamage: false,
+                            reflected: true,
+                            reflectedMeleeDefinition: activeDef
+                        });
+                    }
+                }
+
+                if (backDef?.onBack?.reflectiveSurface) {
+                    const intersection = getIntersection(backDef?.onBack.reflectiveSurface);
+                    if (intersection) {
+                        collisions.push({
+                            intersection: intersection,
+                            object,
+                            dealDamage: false,
+                            reflected: true,
+                            reflectedMeleeDefinition: backDef
+                        });
+                    }
+                }
+            }
 
             const intersection = object.hitbox?.intersectsLine(oldPosition, this.position);
 
             if (intersection) {
-                collisions.push({ intersection, object });
+                collisions.push({
+                    intersection,
+                    object,
+                    dealDamage: true,
+                    reflected: ((object.isObstacle || object.isBuilding)
+                        && object.definition.reflectBullets) ?? false
+                });
             }
         }
 
