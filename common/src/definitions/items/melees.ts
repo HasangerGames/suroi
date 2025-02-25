@@ -191,7 +191,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         swingSound: "heavy_swing",
         offset: Vec.create(5.4, -0.5),
         cooldown: 420,
-        hitDelay: 250,
+        hitDelay: 180,
         fists: {
             animationDuration: 150,
             left: Vec.create(40, -25),
@@ -251,7 +251,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         swingSound: "heavy_swing",
         offset: Vec.create(5.4, -0.5),
         cooldown: 420,
-        hitDelay: 250,
+        hitDelay: 180,
         fists: {
             animationDuration: 150,
             left: Vec.create(40, -25),
@@ -456,7 +456,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         radius: 2.7,
         offset: Vec.create(5.4, -0.5),
         cooldown: 450,
-        hitDelay: 250,
+        hitDelay: 180,
         fists: {
             animationDuration: 150,
             left: Vec.create(40, -25),
@@ -665,7 +665,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         radius: 2.8,
         offset: Vec.create(5.4, -0.5),
         cooldown: 350,
-        hitDelay: 250,
+        hitDelay: 180,
         fists: {
             animationDuration: 150,
             left: Vec.create(40, -30),
