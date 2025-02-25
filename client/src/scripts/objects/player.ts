@@ -23,7 +23,7 @@ import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { DashLine } from "pixi-dashed-line";
-import { Container, Graphics, Text, TilingSprite } from "pixi.js";
+import { Container, Graphics, Text } from "pixi.js";
 import { getTranslatedString } from "../../translations";
 import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
@@ -97,7 +97,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     private _skin: ReferenceTo<SkinDefinition> = "";
 
     readonly images: {
-        readonly aimTrail: TilingSprite
+        aimTrail?: Graphics
         readonly vest: SuroiSprite
         readonly body: SuroiSprite
         readonly leftFist: SuroiSprite
@@ -171,7 +171,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.game.camera.addObject(this.disguiseContainer = new Container());
 
         this.images = {
-            aimTrail: new TilingSprite({ texture: SuroiSprite.getTexture("aimTrail"), width: 20, height: 6000 }),
             vest: new SuroiSprite().setVisible(false),
             body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
@@ -189,8 +188,16 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             backMeleeSprite: new SuroiSprite().setZIndex(ZIndexes.Players + 0.1)
         };
 
+        if (this.game.inputManager.isMobile && this.isActivePlayer) {
+            const aimTrail = this.images.aimTrail = new Graphics();
+            for (let i = 0; i < 100; i++) {
+                aimTrail.circle((i * 50) + 20, 0, 8).fill({ color: 0xffffff, alpha: 0.35 });
+            }
+            aimTrail.alpha = 0;
+            this.container.addChild(aimTrail);
+        }
+
         this.container.addChild(
-            this.images.aimTrail,
             this.images.vest,
             this.images.body,
             this.images.leftFist,
@@ -215,11 +222,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.images.leftLeg!.scale = this.images.rightLeg!.scale = Vec.create(1.5, 0.8);
         }
-
-        this.images.aimTrail.angle = 90;
-        this.images.aimTrail.position = Vec.create(6000, -8);
-        this.images.aimTrail.alpha = 0;
-        if (!this.isActivePlayer) this.images.aimTrail.alpha = 0;
 
         let emote: this["emote"];
         this.emote = emote = {
@@ -2088,7 +2090,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         const { images, emote, teammateName, anims } = this;
 
-        images.aimTrail.destroy();
+        images.aimTrail?.destroy();
         images.vest.destroy();
         images.body.destroy();
         images.leftFist.destroy();
