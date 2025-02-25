@@ -1714,6 +1714,7 @@ export async function setUpUI(game: Game): Promise<void> {
     $<HTMLInputElement>("#right-joystick-color-picker").on("input", function() {
         game.console.setBuiltInCVar("mb_right_joystick_color", this.value);
     });
+    addCheckboxListener("#toggle-mobile-joystick-lock", "mb_joystick_lock");
     addSliderListener("#slider-gyro-angle", "mb_gyro_angle");
     addCheckboxListener("#toggle-haptics", "mb_haptics");
     addCheckboxListener("#toggle-high-res-mobile", "mb_high_res_textures");

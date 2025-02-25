@@ -1,8 +1,8 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Tue, 25 Feb 2025 16:07:30 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Tue, 25 Feb 2025 18:14:16 GMT
 
-## 🇦🇱 Shqip (84% Complete) - ab.hjson
+## 🇦🇱 Shqip (83% Complete) - ab.hjson
 
 ### (No Invalid Keys)
 
@@ -22,6 +22,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -54,7 +55,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇧🇷 Português (Brasil) (97% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (96% Complete) - br.hjson
 
 ### (No Invalid Keys)
 
@@ -67,10 +68,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
 
-## 🇨🇿 Čeština (88% Complete) - cz.hjson
+## 🇨🇿 Čeština (87% Complete) - cz.hjson
 
 ### (No Invalid Keys)
 
@@ -92,6 +94,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -127,6 +130,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `settings_haptics` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
@@ -151,6 +155,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `interact_monument` is not defined
@@ -176,6 +181,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `interact_monument` is not defined
@@ -201,6 +207,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -227,6 +234,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `interact_monument` is not defined
@@ -247,6 +255,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `interact_monument` is not defined
@@ -276,6 +285,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -309,10 +319,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
 
-## 🇮🇹 Italiano (84% Complete) - it.hjson
+## 🇮🇹 Italiano (83% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -350,6 +361,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -374,7 +386,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `destroyer_of_worlds` is not defined
 - Key `m16a4` is not defined
 
-## 🇯🇵 日本語 (88% Complete) - jp.hjson
+## 🇯🇵 日本語 (87% Complete) - jp.hjson
 
 ### (No Invalid Keys)
 
@@ -396,6 +408,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -415,7 +428,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇱🇹 Lietuvių (88% Complete) - lt.hjson
+## 🇱🇹 Lietuvių (87% Complete) - lt.hjson
 
 ### (No Invalid Keys)
 
@@ -437,6 +450,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -456,7 +470,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇱🇻 Latviešu (88% Complete) - lv.hjson
+## 🇱🇻 Latviešu (87% Complete) - lv.hjson
 
 ### (No Invalid Keys)
 
@@ -478,6 +492,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -514,6 +529,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -525,7 +541,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 
-## 🎀 Cute Engwish (98% Complete) - qen.hjson
+## 🎀 Cute Engwish (97% Complete) - qen.hjson
 
 ### (No Invalid Keys)
 
@@ -534,6 +550,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `bindings_screen_record` is not defined
@@ -564,6 +581,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -610,6 +628,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `m16a4` is not defined
@@ -630,6 +649,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -642,7 +662,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇹🇷 Turkısh (94% Complete) - tr.hjson
+## 🇹🇷 Turkısh (93% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -659,6 +679,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -695,6 +716,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
@@ -742,6 +764,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `interact_monument` is not defined
@@ -763,6 +786,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
+- Key `settings_lock_joysticks` is not defined
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined

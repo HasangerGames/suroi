@@ -219,11 +219,15 @@ export class Game {
 
         game.console.readFromLocalStorage();
         setUpCommands(game);
+        game.inputManager.generateBindsConfigScreen();
+        game.inputManager.setupInputs();
         await initTranslation(game);
         await setUpUI(game);
         await fetchServerData(game);
-        game.inputManager.generateBindsConfigScreen();
-        game.inputManager.setupInputs();
+
+        game.gasRender = new GasRender(game, PIXI_SCALE);
+        game.map = new Minimap(game);
+        game.soundManager = new SoundManager(game);
 
         game.gasRender = new GasRender(game, PIXI_SCALE);
         game.map = new Minimap(game);
