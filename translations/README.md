@@ -1,8 +1,8 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Tue, 25 Feb 2025 18:57:00 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Tue, 25 Feb 2025 21:27:15 GMT
 
-## 🇦🇱 Shqip (82% Complete) - ab.hjson
+## 🇦🇱 Shqip (81% Complete) - ab.hjson
 
 ### (No Invalid Keys)
 
@@ -59,8 +59,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
+- Key `region_oc` is not defined
 
-## 🇧🇷 Português (Brasil) (95% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (94% Complete) - br.hjson
 
 ### (No Invalid Keys)
 
@@ -81,8 +82,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_switched_joystick_info` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
+- Key `region_oc` is not defined
 
-## 🇨🇿 Čeština (86% Complete) - cz.hjson
+## 🇨🇿 Čeština (85% Complete) - cz.hjson
 
 ### (No Invalid Keys)
 
@@ -128,6 +130,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
+- Key `region_oc` is not defined
 
 ## 🇩🇪 Deutsch (91% Complete) - de.hjson
 
@@ -159,6 +162,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `retry` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `region_oc` is not defined
 
 ## 🇪🇸 Español (92% Complete) - es.hjson
 
@@ -188,6 +192,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `retry` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `region_oc` is not defined
 
 ## 🇪🇪 eesti (92% Complete) - et.hjson
 
@@ -219,6 +224,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `retry` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `region_oc` is not defined
 
 ## 🇫🇮 suomi (90% Complete) - fi.hjson
 
@@ -253,6 +259,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `retry` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `region_oc` is not defined
 
 ## 🇫🇷 Français (93% Complete) - fr.hjson
 
@@ -281,6 +288,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_screen_record` is not defined
+- Key `region_oc` is not defined
 
 ## 🇬🇷 Ελληνικά (94% Complete) - gr.hjson
 
@@ -305,6 +313,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_advancing` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
+- Key `region_oc` is not defined
 
 ## 🇭🇰 🇲🇴 廣東話(香港/澳門) (84% Complete) - hk_mo.hjson
 
@@ -356,6 +365,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
 - Key `create_team_ready` is not defined
+- Key `region_oc` is not defined
 
 ## 🇭🇺 Magyar (95% Complete) - hu.hjson
 
@@ -377,8 +387,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_switched_joystick_info` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
+- Key `region_oc` is not defined
 
-## 🇮🇹 Italiano (82% Complete) - it.hjson
+## 🇮🇹 Italiano (81% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -445,55 +456,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `destroyer_of_worlds` is not defined
 - Key `m16a4` is not defined
+- Key `region_oc` is not defined
 
-## 🇯🇵 日本語 (86% Complete) - jp.hjson
-
-### (No Invalid Keys)
-
-### Undefined Keys
-
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `msg_punishment_warn_agreement` is not defined
-- Key `warning_hw_accel_1` is not defined
-- Key `warning_hw_accel_2` is not defined
-- Key `warning_hw_accel_link` is not defined
-- Key `privacy` is not defined
-- Key `donate` is not defined
-- Key `wiki` is not defined
-- Key `bindings_fullscreen` is not defined
-- Key `recording` is not defined
-- Key `settings_ambience_volume` is not defined
-- Key `settings_ambient_particles` is not defined
-- Key `settings_record_res` is not defined
-- Key `settings_show_inout` is not defined
-- Key `settings_gyro_angle` is not defined
-- Key `settings_lock_joysticks` is not defined
-- Key `settings_switch_joysticks` is not defined
-- Key `settings_left_joystick_color` is not defined
-- Key `settings_right_joystick_color` is not defined
-- Key `settings_normal_joystick_info` is not defined
-- Key `settings_switched_joystick_info` is not defined
-- Key `settings_haptics` is not defined
-- Key `msg_your_team_eliminated` is not defined
-- Key `msg_the_team_eliminated` is not defined
-- Key `msg_not_enough_space` is not defined
-- Key `msg_item_already_equipped` is not defined
-- Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
-- Key `final_gas_waiting` is not defined
-- Key `final_gas_advancing` is not defined
-- Key `interact_speaker` is not defined
-- Key `interact_monument` is not defined
-- Key `loading_fetching_data_failed` is not defined
-- Key `retry` is not defined
-- Key `bindings_explode_c4` is not defined
-- Key `bindings_screen_record` is not defined
-- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
-- Key `create_team_ready` is not defined
-
-## 🇱🇹 Lietuvių (86% Complete) - lt.hjson
+## 🇯🇵 日本語 (85% Complete) - jp.hjson
 
 ### (No Invalid Keys)
 
@@ -539,8 +504,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
+- Key `region_oc` is not defined
 
-## 🇱🇻 Latviešu (86% Complete) - lv.hjson
+## 🇱🇹 Lietuvių (85% Complete) - lt.hjson
 
 ### (No Invalid Keys)
 
@@ -586,6 +552,55 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
+- Key `region_oc` is not defined
+
+## 🇱🇻 Latviešu (85% Complete) - lv.hjson
+
+### (No Invalid Keys)
+
+### Undefined Keys
+
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
+- Key `warning_hw_accel_1` is not defined
+- Key `warning_hw_accel_2` is not defined
+- Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
+- Key `donate` is not defined
+- Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_show_inout` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `settings_haptics` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `final_gas_waiting` is not defined
+- Key `final_gas_advancing` is not defined
+- Key `interact_speaker` is not defined
+- Key `interact_monument` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `create_team_ready` is not defined
+- Key `region_oc` is not defined
 
 ## 🇵🇱 Polski (90% Complete) - pl.hjson
 
@@ -620,8 +635,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `retry` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `region_oc` is not defined
 
-## 🎀 Cute Engwish (96% Complete) - qen.hjson
+## 🎀 Cute Engwish (95% Complete) - qen.hjson
 
 ### (No Invalid Keys)
 
@@ -639,8 +655,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_monument` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `bindings_screen_record` is not defined
+- Key `region_oc` is not defined
 
-## 🇷🇴 Română (80% Complete) - ro.hjson
+## 🇷🇴 Română (79% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
@@ -703,6 +720,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
+- Key `region_oc` is not defined
 
 ## 🇷🇺 Русский (94% Complete) - ru.hjson
 
@@ -727,6 +745,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `m16a4` is not defined
+- Key `region_oc` is not defined
 
 ## 🇮🇳 தமிழ் (90% Complete) - ta.hjson
 
@@ -761,8 +780,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `create_team_ready` is not defined
+- Key `region_oc` is not defined
 
-## 🇹🇷 Turkısh (92% Complete) - tr.hjson
+## 🇹🇷 Turkısh (91% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -793,6 +813,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `retry` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `region_oc` is not defined
 
 ## 🇹🇼 中文（繁體） (78% Complete) - tw.hjson
 
@@ -860,6 +881,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
+- Key `region_oc` is not defined
 
 ## 🇻🇳 Tiếng Việt (94% Complete) - vi.hjson
 
@@ -884,6 +906,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_advancing` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
+- Key `region_oc` is not defined
 
 ## 🇨🇳 中文（简体） (93% Complete) - zh.hjson
 
@@ -912,4 +935,5 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `retry` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `region_oc` is not defined
 

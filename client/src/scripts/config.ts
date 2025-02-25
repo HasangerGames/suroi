@@ -22,6 +22,10 @@ export const Config = {
         as: {
             name: "Asia",
             address: "https://as.suroi.io"
+        },
+        oc: {
+            name: "Oceania",
+            address: "https://oc.suroi.io"
         }
     },
     defaultRegion: "na"

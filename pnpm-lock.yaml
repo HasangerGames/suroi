@@ -44,15 +44,9 @@ importers:
       fontfaceobserver:
         specifier: ^2.3.0
         version: 2.3.0
-      front-matter:
-        specifier: ^4.0.2
-        version: 4.0.2
       jquery:
         specifier: ^3.7.1
         version: 3.7.1
-      marked:
-        specifier: ^15.0.7
-        version: 15.0.7
       nipplejs:
         specifier: ^0.10.2
         version: 0.10.2
@@ -84,6 +78,12 @@ importers:
       chokidar:
         specifier: ^4.0.3
         version: 4.0.3
+      front-matter:
+        specifier: ^4.0.2
+        version: 4.0.2
+      marked:
+        specifier: ^15.0.7
+        version: 15.0.7
       maxrects-packer:
         specifier: ^2.7.3
         version: 2.7.3

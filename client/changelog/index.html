@@ -28,52 +28,68 @@
 <body>
   <pre>
 # Changelog
-v0.23.2 - [RELEASE_DATE]
-- Games are now longer; the final zone has had its duration significantly increased.
+v0.24.0 - [2/25/2025]
+- Added the memorial.
+- Added 2 new guns: MP5k, PK-61.
+- Added an experimental screen recording feature.
+- Added more customization options for mobile joysticks.
+- Added leek and emoji_50 emotes.
+- Rebalanced the gas. Games are now 6 and a half minutes long, up from 5 and a half, and the gas is less aggressive with a more exciting final circle.
+- Player movement speed has been increased.
+- Adrenaline is now more effective at lower levels, and slightly less effective at higher levels.
+- Players now naturally regenerate health at a rate of 1/second.
+- Gauze now heals 20 health, up from 15.
+- The time to use tablets has been reduced to 4 seconds, down from 5.
 - 2x is now the default scope across all modes.
-- Renamed the 15x scope to "16x Scope".
-- Added new obstacle: surviv.io monument.
-- Optimized smoke grenade performance.
-- Reanimated the baseball bat, it now has a new animation.
+- All snipers except the CZ-600 now spawn with a scope.
+  - Mosin-Nagant, RG Scout, Mk-18 Mjölnir: 4x
+  - Tango 51, VKS Vykhlop: 8x
+  - L115A1: 16x
+- Made the pan smaller.
+- Buffed M590M, BLR 556, SAF-200, and Negev.
+- Nerfed Vector range.
+- The HP-18 is now twice as effective against obstacles (obstacle multiplier 0.5 -> 1).
 - Reduced the health of several obstacles, including the box, trash bag, dumpster, trash can, and large refinery barrel.
-- Added gun mounts for model 37 and sks, they can sometimes replace the hp-18 mount in the green house.
-- Updated DEagle loot images.
-- Added cracks to the breakable wall in the bombed armory to make it more obvious.
-- Updated several melee animations.
-- Tweaked several gun world images.
-- Fixed a bug with cooler graphics gun gas particles.
-- Fixed perks not showing when movement smoothing is disabled.
-- Fixed some issues with river obstacle generation.
-- Fixed a bug where perks wouldn't be displayed during spectating.
-- Fixed a bug where the action timer would show up between players during spectating.
-- Fixed a bug with the tear gas crate.
-- Fixed an issue where the gas area wouldn't be displayed correctly sometimes.
-- Fixed an issue where the rules and the tutorial button would be too wide on mobile.
-
-## Balance changes
-- Decreased tracer opacity of suppressed weapons
-- Gas is now much less aggressive.
-- During the final stages of the game, gas damage will now increase additively after staying in the zone for 10 seconds without leaving to stop zone campers.
 - Increased obstacle damage multiplier to 2x for most explosions.
+- Tweaked dumpster loot table.
 
-- All sniper rifles except the CZ-600 now spawn with a scope:
-   - mosin-nagant, rg scout, mk-18 mjölnir: 4x scope.
-   - tango 51, vks vykhlop: 8x scope.
-   - l115a1: 16x scope.
+- Redesigned scope sprites.
+- The 15x scope has been renamed to 16x.
+- Updated world sprites for 14 guns.
+- Reduced the bullet opacity of suppressed guns.
+- Rewrote code for the news page, and added pagination.
+- Added Model 37 and SKS gun mounts to the green house.
+- Decreased the chance for the pan stove to spawn from 5% to 3%.
+- Increased the chance for the Stoner 63 to spawn in the refinery from 1% to 5%.
+- Player names in team modes now match the color of the player indicator.
+- Optimized smoke grenade performance.
+- Added new melee weapon animations. They will be further improved in the next update.
+- Added cracks to the breakable wall in the bombed armory to make it more obvious.
+- Removed casing sounds from SAF-200 and VSS firing sounds.
+- Mobile UI tweaks.
+- Updated DEagle loot image.
+- Updated Negev killfeed image.
+- New K-bar switch sound.
+- Removed background noise from Stoner 63 reload sound.
+- In team modes, the death screen now shows "You died." instead of "Your team was eliminated." unless everyone on your team is dead.
+- The "your did it" badge is now only shown when winning with 0 kills and 0 damage.
+- Updated various translations.
+- Refactored server code, allowing for easier scalability and making the game easier to deploy for server hosters.
 
-- Hatchet
-   - damage decreased to 38 (from 45).
-   - cooldown increased to 420 (from 350).
-
-- M590M
-  - bullet damage increased to 40 (from 30).
-  - shrapnel damage increased to 3 (from 2).
-
-- HP-18
-  - Obstacle multiplier increased from 0.5 to 1.
-
-- Gauze
-  - healing increased from 15 to 20.
+- Fixed players spawning too close to each other.
+- Fixed the news and rules pages not being scrollable.
+- Fixed perks not showing when movement smoothing is disabled.
+- Fixed perks not updating when spectating.
+- Fixed some issues with river obstacle generation.
+- Fixed missing game over stats translations.
+- Fixed a pan collision bug.
+- Fixed the barn spawn hitbox not including the adjacent hay shed.
+- Fixed the action timer being hidden when switching between players when spectating.
+- Fixed switch sound not playing for dual guns.
+- Fixed some issues with reporting.
+- Fixed a bug with cooler graphics gun gas particles.
+- Fixed the plumpkin bunker mixers spinning too slowly.
+- Fixed the Rules & Tutorial close button being too wide on mobile.
 
 v0.23.1 - [1/27/2025]
 - Added the pan and the pan stove.
