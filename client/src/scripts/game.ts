@@ -184,7 +184,7 @@ export class Game {
     readonly camera = new Camera(this);
     readonly console = new GameConsole(this);
     readonly inputManager = new InputManager(this);
-    soundManager!: SoundManager;
+    readonly soundManager = new SoundManager(this);
     readonly screenRecordManager = new ScreenRecordManager(this);
 
     gasRender!: GasRender;
@@ -216,7 +216,6 @@ export class Game {
         Game._instantiated = true;
 
         const game = new Game();
-
         game.console.readFromLocalStorage();
         setUpCommands(game);
         await initTranslation(game);
@@ -224,10 +223,8 @@ export class Game {
         game.inputManager.setupInputs();
         await setUpUI(game);
         await fetchServerData(game);
-
         game.gasRender = new GasRender(game, PIXI_SCALE);
         game.map = new Minimap(game);
-        game.soundManager = new SoundManager(game);
 
         const initPixi = async(): Promise<void> => {
             const renderMode = game.console.getBuiltInCVar("cv_renderer");
