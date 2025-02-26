@@ -19,6 +19,7 @@ import { cleanUsername, modeFromMap } from "./utils/misc";
 import { getIP, RateLimiter, serverError, serverLog, serverWarn, Switcher } from "./utils/serverHelpers";
 import http from "node:http";
 import https from "node:https";
+import { readFileSync } from "node:fs";
 
 if (Cluster.isPrimary && require.main === module) {
     //                   ^^^^^^^^^^^^^^^^^^^^^^^ only starts server if called directly from command line (not imported)
@@ -130,7 +131,10 @@ if (Cluster.isPrimary && require.main === module) {
     }
 
     const server = Config.ssl
-        ? https.createServer({ key: Config.ssl.key, cert: Config.ssl.cert })
+        ? https.createServer({
+            key: readFileSync(Config.ssl.key, "utf8"),
+            cert: readFileSync(Config.ssl.cert, "utf8")
+        })
         : http.createServer();
 
     //
