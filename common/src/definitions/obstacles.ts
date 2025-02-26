@@ -666,7 +666,7 @@ const rshCase = (idString: string): RawObstacleDefinition => ({
     idString,
     name: "RSh-12 Case",
     material: "crate",
-    health: 200,
+    health: 80,
     hitbox: new GroupHitbox(
         RectangleHitbox.fromRect(8.5, 5.5),
         RectangleHitbox.fromRect(1.3, 6, Vec.create(-2.7, 0)),
