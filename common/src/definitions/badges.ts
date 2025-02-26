@@ -5,7 +5,7 @@ export interface BadgeDefinition extends ObjectDefinition {
 }
 
 const badge = (name: string, roles: string[] = []): BadgeDefinition => ({
-    idString: `bdg_${name.toLowerCase().replace(" ", "_")}`,
+    idString: `bdg_${name.toLowerCase().replaceAll(" ", "_")}`,
     name,
     roles
 });
