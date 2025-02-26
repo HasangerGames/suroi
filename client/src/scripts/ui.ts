@@ -275,6 +275,11 @@ export async function fetchServerData(game: Game): Promise<void> {
 
         updateServerSelectors();
     });
+
+    if (window.location.hash) {
+        teamID = window.location.hash.slice(1);
+        $("#btn-join-team").trigger("click");
+    }
 }
 
 // Take the stuff that needs fetchServerData out of setUpUI and put it here
@@ -2355,12 +2360,6 @@ export async function setUpUI(game: Game): Promise<void> {
     continueBtn.on("click", () => {
         ui.warningModal.hide();
     });
-
-    const joinTeam = $("#btn-join-team");
-    if (window.location.hash) {
-        teamID = window.location.hash.slice(1);
-        joinTeam.trigger("click");
-    }
 
     // Makes social buttons unclickable for 1.5 seconds after disconnecting, to prevent accidental clicks
     $(".btn-social").on("click", e => {
