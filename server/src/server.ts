@@ -133,7 +133,8 @@ if (Cluster.isPrimary && require.main === module) {
     const server = Config.ssl
         ? https.createServer({
             key: readFileSync(Config.ssl.key, "utf8"),
-            cert: readFileSync(Config.ssl.cert, "utf8")
+            cert: readFileSync(Config.ssl.cert, "utf8"),
+            ca: readFileSync(Config.ssl.ca, "utf8")
         })
         : http.createServer();
 

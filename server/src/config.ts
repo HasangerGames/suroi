@@ -104,6 +104,7 @@ export interface ConfigType {
     readonly ssl?: {
         readonly key: string
         readonly cert: string
+        readonly ca: string
     }
 
     /**
