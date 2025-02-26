@@ -6,7 +6,7 @@ import { CustomTeamMessage, PunishmentMessage } from "@common/typings";
 import { Logger } from "@common/utils/logging";
 import { Numeric } from "@common/utils/math";
 import Cluster from "node:cluster";
-import { IncomingMessage } from "node:http";
+import { createServer, IncomingMessage } from "node:http";
 import { URLSearchParams } from "node:url";
 import os from "os";
 import { WebSocketServer } from "ws";
@@ -17,9 +17,6 @@ import { CustomTeam, CustomTeamPlayer } from "./team";
 import IPChecker, { Punishment } from "./utils/apiHelper";
 import { cleanUsername, modeFromMap } from "./utils/misc";
 import { getIP, RateLimiter, serverError, serverLog, serverWarn, Switcher } from "./utils/serverHelpers";
-import http from "node:http";
-import https from "node:https";
-import { readFileSync } from "node:fs";
 
 if (Cluster.isPrimary && require.main === module) {
     //                   ^^^^^^^^^^^^^^^^^^^^^^^ only starts server if called directly from command line (not imported)
@@ -130,13 +127,7 @@ if (Cluster.isPrimary && require.main === module) {
         }
     }
 
-    const server = Config.ssl
-        ? https.createServer({
-            key: readFileSync(Config.ssl.key, "utf8"),
-            cert: readFileSync(Config.ssl.cert, "utf8"),
-            ca: readFileSync(Config.ssl.ca, "utf8")
-        })
-        : http.createServer();
+    const server = createServer();
 
     //
     // GET /serverInfo
