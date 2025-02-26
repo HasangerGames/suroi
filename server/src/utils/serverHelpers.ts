@@ -1,8 +1,8 @@
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
-import { ServerResponse } from "node:http";
-import { StaticOrSwitched, Switchable } from "../config";
 import Cron from "croner";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { Config, StaticOrSwitched, Switchable } from "../config";
+import { IncomingMessage } from "node:http";
 
 export function serverLog(...message: unknown[]): void {
     Logger.log(styleText("[Server]", ColorStyles.foreground.magenta.normal), ...message);
@@ -16,15 +16,7 @@ export function serverError(...message: unknown[]): void {
     Logger.warn(styleText("[Server] [ERROR]", ColorStyles.foreground.red.normal), ...message);
 }
 
-export function forbidden(res: ServerResponse): void {
-    res.statusCode = 403;
-    res.setHeader("Content-Type", "text/plain").end("403 Forbidden");
-}
-
-export function notFound(res: ServerResponse): void {
-    res.statusCode = 404;
-    res.setHeader("Content-Type", "text/plain").end("404 Not Found");
-}
+export const getIP = (req: IncomingMessage): string | undefined => Config.ipHeader ? req.headers[Config.ipHeader] as string : req.socket.remoteAddress;
 
 export class RateLimiter {
     private _ipMap: Record<string, number> = {};
