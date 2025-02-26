@@ -101,6 +101,11 @@ export interface ConfigType {
      */
     readonly port: number
 
+    readonly ssl?: {
+        readonly key: string
+        readonly cert: string
+    }
+
     /**
      * The map name. Must be a valid value from the server maps definitions (`maps.ts`).
      * Example: `"main"` for the main map or `"debug"` for the debug map.
