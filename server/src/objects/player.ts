@@ -1330,38 +1330,22 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             const dim = player.effectiveScope.zoomLevel * 2 + 8;
             this.screenHitbox = RectangleHitbox.fromRect(dim, dim, player.position);
 
-            const visCache = new ExtendedMap<GameObject, boolean>();
             const newVisibleObjects = game.grid.intersectsHitbox(this.screenHitbox);
 
-            packet.deletedObjects = [...this.visibleObjects]
-                .filter(
-                    object => (
-                        (
-                            !newVisibleObjects.has(object)
-                            || !isVisibleFromLayer(this.layer, object)
-                        )
-                        && (this.visibleObjects.delete(object), true)
-                    )
-                )
-                .map(({ id }) => id);
+            packet.deletedObjects = [];
+            for (const object of this.visibleObjects) {
+                if (newVisibleObjects.has(object)) continue;
 
-            newVisibleObjects
-                .forEach(
-                    object => {
-                        if (
-                            (
-                                this.visibleObjects.has(object)
-                                || !visCache.getAndGetDefaultIfAbsent(
-                                    object,
-                                    () => isVisibleFromLayer(this.layer, object)
-                                )
-                            )
-                        ) return;
+                this.visibleObjects.delete(object);
+                packet.deletedObjects.push(object.id);
+            }
 
-                        this.visibleObjects.add(object);
-                        fullObjects.add(object);
-                    }
-                );
+            for (const object of newVisibleObjects) {
+                if (this.visibleObjects.has(object)) continue;
+
+                this.visibleObjects.add(object);
+                fullObjects.add(object);
+            }
         }
 
         for (const object of game.fullDirtyObjects) {

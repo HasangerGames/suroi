@@ -528,7 +528,7 @@ export type PlayerData = {
 export type UpdatePacketDataCommon = {
     readonly flags: number
     readonly playerData?: PlayerData
-    readonly deletedObjects?: readonly number[]
+    readonly deletedObjects?: number[]
     readonly explosions?: readonly ExplosionSerialization[]
     readonly emotes?: readonly EmoteSerialization[]
     readonly gas?: {
