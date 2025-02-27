@@ -868,7 +868,7 @@ class InputMapper {
 
     private static readonly _generateGetter
         = <K, V>(map: Map<K, Set<V>>) =>
-            (key: K) => [...(map.get(key)?.values?.() ?? [])];
+            (key: K) => Array.from(map.get(key)?.values?.() ?? []);
 
     /**
      * Gets all the inputs bound to a particular action
@@ -898,7 +898,7 @@ class InputMapper {
 
     private static readonly _generateLister
         = <K, V>(map: Map<K, V>) =>
-            () => [...map.keys()];
+            () => Array.from(map.keys());
 
     /**
      * Lists all the inputs that are currently bound to at least one action
@@ -916,9 +916,9 @@ class InputMapper {
     readonly listBoundActions = InputMapper._generateLister(this._actionToInput);
 
     getAll(): GameSettings["binds"] {
-        return [...this._actionToInput.entries()].reduce<GameSettings["binds"]>(
+        return Array.from(this._actionToInput.entries()).reduce<GameSettings["binds"]>(
             (acc, [action, bindSet]) => {
-                acc[action] = [...bindSet];
+                acc[action] = Array.from(bindSet);
                 return acc;
             },
             {}

@@ -430,7 +430,7 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         let list: PerkDefinition[] | undefined;
         data.perks = {
             asBitfield: () => bitfield,
-            asList: () => [...(list ??= Perks.definitions.filter((_, i) => (bitfield & (1 << i)) !== 0))]
+            asList: () => Array.from(list ??= Perks.definitions.filter((_, i) => (bitfield & (1 << i)) !== 0))
         };
     }
 

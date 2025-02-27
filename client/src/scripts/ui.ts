@@ -1085,7 +1085,7 @@ export async function setUpUI(game: Game): Promise<void> {
     function updateEmotesList(): void {
         emoteList.empty();
 
-        const emotes = [...Emotes]
+        const emotes = Array.from(Emotes)
             .filter(({ hideInLoadout }) => !hideInLoadout)
             .sort((a, b) => a.category - b.category);
 

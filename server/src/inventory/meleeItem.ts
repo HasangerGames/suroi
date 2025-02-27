@@ -67,7 +67,7 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
 
                 // Damage the closest object
                 const damagedObjects: readonly CollidableGameObject[] = (
-                    [...owner.game.grid.intersectsHitbox(hitbox)]
+                    Array.from(owner.game.grid.intersectsHitbox(hitbox))
                         .filter(
                             object => !object.dead
                                 && object !== owner

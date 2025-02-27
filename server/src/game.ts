@@ -98,7 +98,7 @@ export class Game implements GameData {
     readonly teams = new (class SetArray<T> extends Set<T> {
         private _valueCache?: T[];
         get valueArray(): T[] {
-            return this._valueCache ??= [...super.values()];
+            return this._valueCache ??= Array.from(super.values());
         }
 
         add(value: T): this {
@@ -120,7 +120,7 @@ export class Game implements GameData {
 
         values(): IterableIterator<T> {
             const iterator = this.values();
-            this._valueCache ??= [...iterator];
+            this._valueCache ??= Array.from(iterator);
 
             return iterator;
         }

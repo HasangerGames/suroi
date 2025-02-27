@@ -839,7 +839,7 @@ export class ItemCollection<ItemDef extends LootDefinition> {
     private _recordCache?: Record<ReferenceTo<ItemDef>, number>;
 
     asRecord(): Record<ReferenceTo<ItemDef>, number> {
-        return this._recordCache ??= [...this._internal.entries()]
+        return this._recordCache ??= Array.from(this._internal.entries())
             .reduce(
                 (acc, [item, count]) => {
                     acc[item] = count;

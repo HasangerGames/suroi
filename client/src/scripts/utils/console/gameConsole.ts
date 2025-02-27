@@ -731,10 +731,10 @@ export class GameConsole {
                 let variables: string[] | undefined;
 
                 return {
-                    get commands() { return commands ??= [...T.commands.keys()]; },
+                    get commands() { return commands ??= Array.from(T.commands.keys()); },
                     invalidateCommands() { commands = undefined; },
 
-                    get aliases() { return aliases ??= [...T.aliases.keys()]; },
+                    get aliases() { return aliases ??= Array.from(T.aliases.keys()); },
                     invalidateAliases() { aliases = undefined; },
 
                     get variables() { return variables ??= Object.keys(T.variables.getAll()); },

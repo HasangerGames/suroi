@@ -65,7 +65,7 @@ export function getLootFromTable(mode: Mode, tableID: string): LootItem[] {
             loot: lootTable
         }
         : lootTable.noDuplicates
-            ? { ...lootTable, loot: [...lootTable.loot] } // cloning the array is necessary because noDuplicates mutates it
+            ? { ...lootTable, loot: Array.from(lootTable.loot) } // cloning the array is necessary because noDuplicates mutates it
             : lootTable;
 
     return (

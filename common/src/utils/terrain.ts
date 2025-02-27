@@ -272,7 +272,7 @@ export class Terrain {
                 }
             }
         }
-        return [...rivers];
+        return Array.from(rivers);
     }
 
     private _roundToCells(vector: Vector): Vector {

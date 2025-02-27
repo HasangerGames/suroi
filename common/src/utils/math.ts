@@ -203,9 +203,9 @@ export const Statistics = Object.freeze({
     },
     median(values: readonly number[]): number {
         if (values.length % 2) {
-            return [...values].sort((a, b) => a - b)[values.length >> 1];
+            return Array.from(values).sort((a, b) => a - b)[values.length >> 1];
         }
-        const sorted = [...values].sort((a, b) => a - b); // mfw no toSorted cuz lib < es2023
+        const sorted = Array.from(values).sort((a, b) => a - b); // mfw no toSorted cuz lib < es2023
 
         const halfLength = values.length / 2;
         return (sorted[halfLength] + sorted[halfLength - 1]) / 2;

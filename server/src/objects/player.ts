@@ -707,17 +707,17 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         inventory.scope = "4x_scope";
         inventory.backpack = max
-            ? [...Backpacks.definitions].sort(({ level: lvlA }, { level: lvlB }) => lvlB - lvlA)[0]
+            ? Array.from(Backpacks).sort(({ level: lvlA }, { level: lvlB }) => lvlB - lvlA)[0]
             : pickRandomInArray(Backpacks.definitions);
 
         this.inventory.vest = max
-            ? [...Armors.definitions.filter(({ armorType }) => armorType === ArmorType.Vest)].sort(({ level: lvlA }, { level: lvlB }) => lvlB - lvlA)[0]
+            ? Array.from(Armors).filter(({ armorType }) => armorType === ArmorType.Vest).sort(({ level: lvlA }, { level: lvlB }) => lvlB - lvlA)[0]
             : Math.random() > 0.9
                 ? undefined
                 : pickRandomInArray(Armors.definitions.filter(({ armorType }) => armorType === ArmorType.Vest));
 
         this.inventory.helmet = max
-            ? [...Armors.definitions.filter(({ armorType }) => armorType === ArmorType.Helmet)].sort(({ level: lvlA }, { level: lvlB }) => lvlB - lvlA)[0]
+            ? Array.from(Armors).filter(({ armorType }) => armorType === ArmorType.Helmet).sort(({ level: lvlA }, { level: lvlB }) => lvlB - lvlA)[0]
             : Math.random() > 0.9
                 ? undefined
                 : pickRandomInArray(Armors.definitions.filter(({ armorType }) => armorType === ArmorType.Helmet));
@@ -1353,7 +1353,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             fullObjects.add(object);
         }
 
-        packet.partialObjectsCache = [...game.partialDirtyObjects].filter(
+        packet.partialObjectsCache = Array.from(game.partialDirtyObjects).filter(
             object => this.visibleObjects.has(object as GameObject) && !fullObjects.has(object)
         );
 
@@ -1507,7 +1507,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         packet.gasProgress = gas.completionRatioDirty || this._firstPacket ? gas.completionRatio : undefined;
 
         const newPlayers = this._firstPacket
-            ? [...game.grid.pool.getCategory(ObjectCategory.Player)]
+            ? Array.from(game.grid.pool.getCategory(ObjectCategory.Player))
             : game.newPlayers;
 
         // new and deleted players
@@ -1525,7 +1525,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
-        packet.fullObjectsCache = [...fullObjects];
+        packet.fullObjectsCache = Array.from(fullObjects);
 
         packet.deletedPlayers = game.deletedPlayers;
 

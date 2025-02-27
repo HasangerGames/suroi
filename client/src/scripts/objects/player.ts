@@ -1541,7 +1541,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                     for (
                         const target of (
-                            [...this.game.objects].filter(
+                            Array.from(this.game.objects).filter(
                                 object => !object.dead
                                     && object !== this
                                     && (

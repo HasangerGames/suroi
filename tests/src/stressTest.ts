@@ -210,7 +210,7 @@ class Bot {
         if (
             this["admin he doing it sideways"]
             && (
-                target = [...objects.entries()]
+                target = Array.from(objects.entries())
                     .filter((([id, bot]) => id !== this._serverId && bot !== undefined && !bot._disconnected && bot._connected) as (entry: [number, Bot | undefined]) => entry is [number, Bot])
                     .sort(
                         ([, a], [, b]) => Geometry.distanceSquared(this.position, a.position) - Geometry.distanceSquared(this.position, b.position)

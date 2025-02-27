@@ -1702,11 +1702,11 @@ export function setUpCommands(game: Game): void {
             if (name === undefined) {
                 gameConsole.log({
                     main: "List of commands",
-                    detail: [...gameConsole.commands.keys()]
+                    detail: Array.from(gameConsole.commands.keys())
                 });
                 gameConsole.log({
                     main: "List of aliases",
-                    detail: [...gameConsole.aliases.keys()]
+                    detail: Array.from(gameConsole.aliases.keys())
                 });
                 return;
             }

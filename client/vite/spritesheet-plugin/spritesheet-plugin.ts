@@ -58,7 +58,7 @@ async function buildSpritesheets(
             pathMap.set(filename, imagePath);
         }
 
-        const images = [...pathMap.values()];
+        const images = Array.from(pathMap.values());
 
         const fileMap: Record<string, number> = images.reduce((fileMap, file) => {
             const { mtimeMs, ctimeMs } = statSync(file);

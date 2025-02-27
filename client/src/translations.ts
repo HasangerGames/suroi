@@ -183,7 +183,7 @@ function translateCurrentDOM(): void {
         const reference = new Set(Object.keys(TRANSLATIONS.translations[TRANSLATIONS.defaultLanguage]));
 
         console.table(
-            [...Object.entries(TRANSLATIONS.translations)].reduce<{
+            Array.from(Object.entries(TRANSLATIONS.translations)).reduce<{
                 [K in keyof typeof TRANSLATIONS.translations]: {
                     readonly "translation coverage (%)": number
                     readonly "missing keys": readonly string[]
@@ -198,7 +198,7 @@ function translateCurrentDOM(): void {
 
                     acc[language] = {
                         "translation coverage (%)": 100 * (1 - copy.size / reference.size),
-                        "missing keys": [...copy]
+                        "missing keys": Array.from(copy)
                     };
 
                     return acc;
