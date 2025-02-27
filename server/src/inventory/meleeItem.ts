@@ -16,7 +16,6 @@ import { InventoryItemBase } from "./inventoryItem";
  */
 export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
     private _autoUseTimeoutID?: NodeJS.Timeout;
-    private _hitTimeoutID?: NodeJS.Timeout;
 
     /**
      * Constructs a new melee weapon
@@ -114,15 +113,15 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
                         multiplier *= definition.obstacleMultiplier;
                     }
 
-                        closestObject.damage({
-                            amount: definition.damage * multiplier,
-                            source: owner,
-                            weaponUsed: this
-                        });
+                    closestObject.damage({
+                        amount: definition.damage * multiplier,
+                        source: owner,
+                        weaponUsed: this
+                    });
 
-                        if (closestObject.isObstacle && !closestObject.dead) {
-                            closestObject.interact(this.owner);
-                        }
+                    if (closestObject.isObstacle && !closestObject.dead) {
+                        closestObject.interact(this.owner);
+                    }
                 }
 
                 if (definition.fireMode === FireMode.Auto || owner.isMobile) {

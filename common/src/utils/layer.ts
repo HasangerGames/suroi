@@ -1,6 +1,6 @@
 import { Layer, Layers, ZIndexes } from "../constants";
 import { type CommonGameObject } from "./gameObject";
-import { HitboxType, type Hitbox, type RectangleHitbox } from "./hitbox";
+import { type Hitbox } from "./hitbox";
 import { type ObjectDefinition } from "./objectDefinitions";
 import { type Vector } from "./vector";
 

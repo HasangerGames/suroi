@@ -233,12 +233,7 @@ export class Bullet extends BaseBullet {
     private updateVisibility(): void {
         if (!this.game.activePlayer) return;
 
-        this._image.visible = isVisibleFromLayer(
-            this.game.activePlayer.layer,
-            this,
-            [...this.game.objects],
-            hitbox => hitbox.intersectsLine(this._oldPosition, this.position) !== null
-        );
+        this._image.visible = isVisibleFromLayer(this.game.activePlayer.layer, this);
     }
 
     destroy(): void {
