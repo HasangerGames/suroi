@@ -2,7 +2,7 @@
   "name": "Cute Engwish"
   "flag": "🎀"
   "no_resize": true,
-  "percentage": "OwO%",
+  "percentage": "OwO%"
   "msg_rotate": "Fow a bettew expewience, pwease wotate your device to wandscape. UwU"
   "msg_loading": "Connectwing >w<"
   "msg_err_joining": "Ewwow joining game. OwO"
@@ -288,5 +288,4 @@
   "region_sa": "South Amewica"
   "region_as": "Asia"
   "m16a4": "M16A2"
-  "destroyer_of_worlds": "Destroyer Of Worlds"
 }
