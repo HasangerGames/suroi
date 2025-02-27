@@ -3036,24 +3036,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
-        idString: "garage_door",
-        name: "Garage Door",
-        material: "wood",
-        health: 200,
-        scale: {
-            spawnMin: 1,
-            spawnMax: 1,
-            destroy: 0.95
-        },
-        hideOnMap: true,
-        hitbox: RectangleHitbox.fromRect(21.7, 1.5, Vec.create(0, -0.4)),
-        rotationMode: RotationMode.Limited,
-        allowFlyover: FlyoverPref.Never,
-        frames: {
-            particle: "furniture_particle"
-        }
-    },
-    {
         idString: "porta_potty_toilet_open",
         name: "Porta Potty Toilet Open",
         material: "porcelain",
