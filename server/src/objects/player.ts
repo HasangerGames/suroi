@@ -1338,11 +1338,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     object => (
                         (
                             !newVisibleObjects.has(object)
-                            || !isVisibleFromLayer(
-                                this.layer,
-                                object,
-                                object?.hitbox && [...game.grid.intersectsHitbox(object.hitbox)]
-                            )
+                            || !isVisibleFromLayer(this.layer, object)
                         )
                         && (this.visibleObjects.delete(object), true)
                     )
@@ -1357,11 +1353,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                                 this.visibleObjects.has(object)
                                 || !visCache.getAndGetDefaultIfAbsent(
                                     object,
-                                    () => isVisibleFromLayer(
-                                        this.layer,
-                                        object,
-                                        object?.hitbox && [...game.grid.intersectsHitbox(object.hitbox)]
-                                    )
+                                    () => isVisibleFromLayer(this.layer, object)
                                 )
                             )
                         ) return;

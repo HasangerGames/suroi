@@ -208,8 +208,6 @@ export class Game implements GameData {
     private _dt = this.idealDt;
     get dt(): number { return this._dt; }
 
-    private readonly _tickInterval: NodeJS.Timeout;
-
     private readonly _tickTimes: number[] = [];
 
     private readonly _idAllocator = new IDAllocator(16);
@@ -253,7 +251,7 @@ export class Game implements GameData {
         this.log(`Created in ${Date.now() - this._start} ms`);
 
         // Start the tick loop
-        this._tickInterval = setInterval(this.tick.bind(this), this.idealDt);
+        this.tick();
     }
 
     log(...message: unknown[]): void {
@@ -448,7 +446,7 @@ export class Game implements GameData {
         // Record performance and start the next tick
         // THIS TICK COUNTER IS WORKING CORRECTLY!
         // It measures the time it takes to calculate a tick, not the time between ticks.
-        const tickTime = Date.now() - this.now;
+        const tickTime = Date.now() - now;
         this._tickTimes.push(tickTime);
 
         if (this._tickTimes.length >= 200) {
@@ -460,10 +458,10 @@ export class Game implements GameData {
 
         this.pluginManager.emit("game_tick", this);
 
-        if (this.stopped) {
-            clearInterval(this._tickInterval);
+        if (!this.stopped) {
+            setTimeout(this.tick.bind(this), this.idealDt - (Date.now() - now));
         }
-    };
+    }
 
     setGameData(data: Partial<Omit<GameData, "aliveCount">>): void {
         for (const [key, value] of Object.entries(data)) {
