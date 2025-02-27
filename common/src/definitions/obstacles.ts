@@ -3459,7 +3459,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             names: ["button_press", "puzzle_solved"]
         },
         frames: {
-            activated: "control_panel_activated"
+            activated: "control_panel_activated",
+            particle: "metal_particle",
+            residue: "barrel_residue"
         }
     },
     controlPanel("control_panel2", "Control Panel"),
@@ -3475,7 +3477,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         frames: {
             activated: "recorder_used",
-            particle: "metal_particle"
+            particle: "metal_particle",
+            residue: "barrel_residue"
         }
     },
     {
