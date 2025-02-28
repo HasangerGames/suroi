@@ -627,7 +627,7 @@ export class Game implements GameData {
 
                     // Break if the above code couldn't find a valid position, as it's unlikely that subsequent loops will
                     if (!position) break;
-                    else spawnPosition = position;
+                    spawnPosition = position;
 
                     const minSpawnDist = Numeric.clamp(spawnDistance - (Math.floor(tries / distanceInterval) * reduceDistanceAmount), 0, spawnDistance);
 
@@ -636,6 +636,7 @@ export class Game implements GameData {
                     for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
                         if (
                             object.isPlayer
+                            && !object.dead
                             // teamMode should guarantee the `team` object's existence
                             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                             && (!this.teamMode || !team!.players.includes(object))
