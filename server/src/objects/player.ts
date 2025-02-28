@@ -28,7 +28,7 @@ import { PlayerModifiers } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
 import { Collision, Geometry, Numeric } from "@common/utils/math";
-import { ExtendedMap, type SDeepMutable, type SMutable, type Timeout } from "@common/utils/misc";
+import { type SDeepMutable, type SMutable, type Timeout } from "@common/utils/misc";
 import { ItemType, type EventModifiers, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray, randomPointInsideCircle, weightedRandom } from "@common/utils/random";

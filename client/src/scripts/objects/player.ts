@@ -52,6 +52,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     meleeAttackCounter = 0;
 
     blockEmoting = false;
+    bushID?: number;
 
     backEquippedMelee?: MeleeDefinition;
 

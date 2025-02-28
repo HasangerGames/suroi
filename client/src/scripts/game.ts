@@ -1,4 +1,4 @@
-import { InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize } from "@common/constants";
+import { InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize, ZIndexes } from "@common/constants";
 import { ArmorType } from "@common/definitions/items/armors";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { Emotes } from "@common/definitions/emotes";
@@ -18,14 +18,14 @@ import { PacketStream } from "@common/packets/packetStream";
 import { PickupPacket } from "@common/packets/pickupPacket";
 import { ReportPacket } from "@common/packets/reportPacket";
 import { UpdatePacket, type UpdatePacketDataOut } from "@common/packets/updatePacket";
-import { CircleHitbox } from "@common/utils/hitbox";
+import { CircleHitbox, HitboxType } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, equalLayer } from "@common/utils/layer";
-import { EaseFunctions, Geometry } from "@common/utils/math";
+import { EaseFunctions, Geometry, Numeric } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
 import { ItemType } from "@common/utils/objectDefinitions";
 import { ObjectPool } from "@common/utils/objectPool";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
-import { randomFloat, randomVector } from "@common/utils/random";
+import { random, randomFloat, randomRotation, randomVector } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { sound, type Sound } from "@pixi/sound";
 import FontFaceObserver from "fontfaceobserver";
@@ -1057,6 +1057,63 @@ export class Game {
 
                         object.notOnCoolDown = false;
                         setTimeout(() => object.notOnCoolDown = true, 1000);
+                    }
+                } else if (isObstacle && object.definition.material === "bush" && !object.dead) {
+                    const bushDetectionHitbox = object.hitbox.type === HitboxType.Circle ? new CircleHitbox(object.hitbox.radius / 6, object.position) : object.hitbox;
+                    for (const player of this.objects.getCategory(ObjectCategory.Player)) {
+                        if (
+                            (player.bushID === undefined && (!bushDetectionHitbox.collidesWith(player.hitbox)
+                                || !equalLayer(object.layer, player.layer)))
+                            || player.dead
+                            || (player.bushID !== undefined && object.id !== player.bushID)
+                        ) continue;
+
+                        const colliding = bushDetectionHitbox.collidesWith(player.hitbox) && equalLayer(object.layer, player.layer);
+
+                        const handleBushParticles = (): void => {
+                            let particle = object.definition.frames?.particle ?? `${object.definition.idString}_particle`;
+
+                            if (object.definition.particleVariations) particle += `_${random(1, object.definition.particleVariations)}`;
+
+                            this.particleManager.spawnParticles(2, () => ({
+                                frames: particle,
+                                position: object.hitbox.randomPoint(),
+                                zIndex: Numeric.max((object.definition.zIndex ?? ZIndexes.Players) + 1, 4),
+                                lifetime: 500,
+                                scale: {
+                                   start: randomFloat(0.85, 0.95),
+                                   end: 0,
+                                   ease: EaseFunctions.quarticIn
+                                },
+                                alpha: {
+                                    start: 1,
+                                    end: 0,
+                                    ease: EaseFunctions.sexticIn
+                                },
+                                rotation: { start: randomRotation(), end: randomRotation() },
+                                speed: Vec.fromPolar(randomRotation(), randomFloat(6, 9))
+                            }));
+                        };
+
+                        if (player.bushID === undefined) {
+                            // bush
+                            player.bushID = object.id;
+                            handleBushParticles();
+                            object.playSound("bush_hit_2", {
+                                falloff: 0.25,
+                                maxRange: 200
+                            });
+                        } else if (!colliding) {
+                            // in this case we exit bushh lol
+                            player.bushID = undefined;
+                            handleBushParticles();
+                            object.playSound("bush_hit_1", {
+                                falloff: 0.25,
+                                maxRange: 200
+                            });
+                        }
+
+                     //   console.log("sigma: " + player.inBush);
                     }
                 }
             }
