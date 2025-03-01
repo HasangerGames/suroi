@@ -4504,13 +4504,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 scale: Vec.create(1, 1.055)
             },
             {
-                key: "headquarters_ceiling_2",
-                position: Vec.create(-46.2, 5.8),
+                key: "headquarters_ceiling_1",
+                position: Vec.create(0.4, -66.722),
                 scale: Vec.create(2.15, 2.15)
             },
             {
-                key: "headquarters_ceiling_1",
-                position: Vec.create(0.4, -66.7),
+                key: "headquarters_ceiling_2",
+                position: Vec.create(-46.2, 5.85),
                 scale: Vec.create(2.15, 2.15)
             }
         ],

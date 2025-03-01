@@ -211,7 +211,8 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     super_barrel_particle:         { base: "metal_particle_1", tint: 0xce2b29 },
     propane_tank_particle:         { base: "metal_particle_1", tint: 0xb08b3f },
     dumpster_particle:             { base: "metal_particle_1", tint: 0x3c7033 },
-    washing_machine_particle:      { base: "metal_particle_1", tint: 0xcccccc },
+    washing_machine_particle:      { base: "metal_particle_1", tint: 0xb3b3b3 },
+    fridge_particle:               { base: "metal_particle_1", tint: 0x666666 },
     tv_particle:                   { base: "metal_particle_1", tint: 0x333333 },
     smokestack_particle:           { base: "metal_particle_1", tint: 0xb5b5b5 },
     distillation_column_particle:  { base: "metal_particle_1", tint: 0x1b5e98 },
@@ -230,7 +231,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     aegis_crate_particle:          { base: "wood_particle",    tint: 0x2687d9 },
     airdrop_crate_particle:        { base: "wood_particle",    tint: aidrTint },
     chest_particle:                { base: "wood_particle",    tint: 0xa87e5a },
-    cooler_particle:               { base: "wood_particle",    tint: 0x406c65 },
+    cooler_particle:               { base: "wood_particle",    tint: 0x357d99 },
     crate_particle:                { base: "wood_particle",    tint: 0x9e7437 },
     memorial_crate_particle:       { base: "wood_particle",    tint: 0x763800 },
     flint_crate_particle:          { base: "wood_particle",    tint: 0xda6a0b },
@@ -1953,7 +1954,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Limited,
         allowFlyover: FlyoverPref.Never,
         frames: {
-            particle: "metal_particle"
+            particle: "fridge_particle"
         },
         reflectBullets: true
     },
