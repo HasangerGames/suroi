@@ -341,7 +341,9 @@ export class InputManager {
 
                 const def = activePlayer.activeItem;
 
-                activePlayer.images.aimTrail.alpha = 1;
+                if (activePlayer.images.aimTrail !== undefined) {
+                    activePlayer.images.aimTrail.alpha = 1;
+                }
 
                 const attacking = data.distance > game.console.getBuiltInCVar("mb_joystick_size") / 3;
                 if (
@@ -357,7 +359,7 @@ export class InputManager {
 
             aimJoystick.on("end", () => {
                 aimJoystickUsed = false;
-                if (game.activePlayer) game.activePlayer.images.aimTrail.alpha = 0;
+                if (game.activePlayer?.images.aimTrail !== undefined) game.activePlayer.images.aimTrail.alpha = 0;
                 this.attacking = shootOnRelease;
                 this.resetAttacking = true;
                 shootOnRelease = false;
