@@ -1099,7 +1099,7 @@ export class Game {
                             // bush
                             player.bushID = object.id;
                             handleBushParticles();
-                            object.playSound("bush_hit_1", {
+                            object.playSound("bush_rustle_1", {
                                 falloff: 0.25,
                                 maxRange: 200
                             });
@@ -1107,7 +1107,7 @@ export class Game {
                             // in this case we exit bushh lol
                             player.bushID = undefined;
                             handleBushParticles();
-                            object.playSound("bush_hit_2", {
+                            object.playSound("bush_rustle_2", {
                                 falloff: 0.25,
                                 maxRange: 200
                             });
