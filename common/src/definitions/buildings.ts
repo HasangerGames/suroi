@@ -7071,10 +7071,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             type: FloorNames.Metal,
             hitbox: RectangleHitbox.fromRect(11, 15, Vec.create(0, 0.8))
         }],
-        ceilingImages: [{
-            key: "memorial_bunker_entrance_ceiling",
-            position: Vec.create(0, -3.4)
-        }],
         obstacles: [
             { idString: "memorial_bunker_stair", position: Vec.create(0, 2.5), rotation: 0, layer: -1 }
         ]
@@ -7141,6 +7137,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec.create(8.5, 0)
             }
         ],
+        ceilingHitbox: RectangleHitbox.fromRect(11, 8, Vec.create(0, 4.5)),
+        noCeilingScopeEffect: true,
+        ceilingImages: [{
+            key: "memorial_bunker_entrance_ceiling",
+            position: Vec.create(0, -3.4)
+        }],
         obstacles: [
             { idString: "monument", position: Vec.create(0, 0), rotation: 3 }
         ],
