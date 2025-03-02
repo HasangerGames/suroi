@@ -1,9 +1,8 @@
-import { Bullets } from "@common/definitions/bullets";
-import { type SingleGunNarrowing } from "@common/definitions/items/guns";
-import { Loots } from "@common/definitions/loots";
+import { Bullets, type BulletDefinition } from "@common/definitions/bullets";
 import { BaseBullet, type BulletOptions } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";
 import { Angle } from "@common/utils/math";
+import type { ReferenceTo } from "@common/utils/objectDefinitions";
 import { randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
@@ -25,6 +24,7 @@ export interface DamageRecord {
 }
 
 export interface ServerBulletOptions {
+    readonly idString: ReferenceTo<BulletDefinition>
     readonly position: Vector
     readonly rotation: number
     readonly layer: number
@@ -54,10 +54,7 @@ export class Bullet extends BaseBullet {
         shooter: GameObject,
         options: ServerBulletOptions
     ) {
-        const reference = source instanceof GunItem && source.definition.isDual
-            ? Loots.fromString<SingleGunNarrowing>(source.definition.singleVariant)
-            : source.definition;
-        const definition = Bullets.fromString(`${reference.idString}_bullet`);
+        const definition = Bullets.fromString(options.idString);
         const variance = definition.rangeVariance;
 
         super({
@@ -169,6 +166,7 @@ export class Bullet extends BaseBullet {
             this.sourceGun,
             this.shooter,
             {
+                idString: this.definition.idString,
                 position: Vec.clone(this.position),
                 rotation: direction,
                 layer: this.layer,
