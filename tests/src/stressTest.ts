@@ -1,14 +1,12 @@
+import { PacketDataOut, PacketType } from "@common/packets/packet";
 import { WebSocket, type MessageEvent } from "ws";
 import { GameConstants, InputActions, ObjectCategory } from "../../common/src/constants";
 import { EmoteCategory, Emotes, type EmoteDefinition } from "../../common/src/definitions/emotes";
-import { Loots } from "../../common/src/definitions/loots";
 import { Skins, type SkinDefinition } from "../../common/src/definitions/items/skins";
-import { GameOverPacket } from "../../common/src/packets/gameOverPacket";
-import { areDifferent, PlayerInputPacket, type InputAction, type PlayerInputData } from "../../common/src/packets/inputPacket";
+import { Loots } from "../../common/src/definitions/loots";
+import { InputPacket, areDifferent, type InputAction, type InputData } from "../../common/src/packets/inputPacket";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
-import { type InputPacket, type OutputPacket } from "../../common/src/packets/packet";
 import { PacketStream } from "../../common/src/packets/packetStream";
-import { UpdatePacket } from "../../common/src/packets/updatePacket";
 import { Geometry, π, τ } from "../../common/src/utils/math";
 import { ItemType, type ReferenceTo } from "../../common/src/utils/objectDefinitions";
 import { type FullData } from "../../common/src/utils/objectsSerializations";
@@ -76,7 +74,7 @@ class Bot {
 
     private readonly _ws: WebSocket;
 
-    private _lastInputPacket?: InputPacket<PlayerInputData>;
+    private _lastInputPacket?: InputData;
 
     constructor(readonly id: number) {
         this._ws = new WebSocket(`${config.address.replace("http", "ws")}/play`);
@@ -106,7 +104,7 @@ class Bot {
         };
     }
 
-    onPacket(packet: OutputPacket): void {
+    onPacket(packet: PacketDataOut): void {
         const updatePosition = (data: FullData<ObjectCategory>, object: Bot, id: number): void => {
             const { position } = data as FullData<ObjectCategory.Player>;
 
@@ -121,28 +119,25 @@ class Bot {
             }
         };
 
-        switch (true) {
-            case packet instanceof GameOverPacket: {
-                const { output } = packet;
+        switch (packet.type) {
+            case PacketType.GameOver: {
                 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-                const kills = output.teammates.find(teammate => { teammate.playerID === this.id; })?.kills;
-                console.log(`Bot ${this.id} ${output.won ? "won" : "died"} | kills: ${kills} | rank: ${output.rank}`);
+                const kills = packet.teammates.find(teammate => { teammate.playerID === this.id; })?.kills;
+                console.log(`Bot ${this.id} ${packet.rank === 1 ? "won" : "died"} | kills: ${kills} | rank: ${packet.rank}`);
                 this._disconnected = true;
                 this._connected = false;
                 this._ws.close();
                 break;
             }
-            case packet instanceof UpdatePacket: {
-                const { output } = packet;
+            case PacketType.Update: {
+                this._serverId ??= packet.playerData?.id?.id;
+                this._slot = packet.playerData?.inventory?.activeWeaponIndex ?? this._slot;
 
-                this._serverId ??= output.playerData?.id?.id;
-                this._slot = output.playerData?.inventory?.activeWeaponIndex ?? this._slot;
-
-                for (const { id } of output.newPlayers ?? []) {
+                for (const { id } of packet.newPlayers ?? []) {
                     objects.set(id, bots.find(({ _serverId }) => _serverId === id));
                 }
 
-                for (const { id, type, data } of output.fullDirtyObjects ?? []) {
+                for (const { id, type, data } of packet.fullDirtyObjects ?? []) {
                     if (type !== ObjectCategory.Player) continue;
 
                     const object: Bot | undefined = objects.get(id);
@@ -154,18 +149,18 @@ class Bot {
                     }
                 }
 
-                for (const { id, data } of output.partialDirtyObjects ?? []) {
+                for (const { id, data } of packet.partialDirtyObjects ?? []) {
                     const object = objects.get(id);
                     if (object === undefined) continue;
 
                     updatePosition(data, object, id);
                 }
 
-                for (const id of output.deletedObjects ?? []) {
+                for (const id of packet.deletedObjects ?? []) {
                     objects.delete(id);
                 }
 
-                for (const id of output.deletedPlayers ?? []) {
+                for (const id of packet.deletedPlayers ?? []) {
                     objects.delete(id);
                 }
 
@@ -254,7 +249,7 @@ class Bot {
             actions.push({ type: InputActions.EquipItem, slot: random(0, 1) });
         }
 
-        const inputPacket = PlayerInputPacket.create({
+        const inputPacket = InputPacket.create({
             movement: { ...this._moving },
             attacking: (this._shootStart || aimhax) && !this._grenadeSuicidePrevention,
             isMobile: false,

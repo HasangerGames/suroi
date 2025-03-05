@@ -1,5 +1,5 @@
 import { ObjectCategory } from "../constants";
-import { DeepPartial, SDeepMutable } from "../utils/misc";
+import { SDeepMutable, SDeepPartial } from "../utils/misc";
 import { SuroiByteStream } from "../utils/suroiByteStream";
 import { type Packets } from "./packetStream";
 
@@ -83,7 +83,7 @@ export class Packet<DataIn extends { readonly type: PacketType }, DataOut = Data
         };
     }
 
-    create(data = {} as DeepPartial<DataIn>): SDeepMutable<DataIn> {
+    create(data = {} as SDeepPartial<DataIn>): SDeepMutable<DataIn> {
         return { ...data, type: this.type } as SDeepMutable<DataIn>;
     }
 }
