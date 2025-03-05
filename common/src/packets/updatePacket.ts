@@ -568,7 +568,7 @@ export type ServerOnly = {
         get fullStream(): SuroiByteStream
     }>
 
-    readonly partialObjectsCache: ReadonlyArray<{
+    readonly partialObjectsCache: Array<{
         get partialStream(): SuroiByteStream
     }>
 };

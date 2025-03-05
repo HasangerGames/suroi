@@ -1353,9 +1353,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             fullObjects.add(object);
         }
 
-        packet.partialObjectsCache = Array.from(game.partialDirtyObjects).filter(
-            object => this.visibleObjects.has(object as GameObject) && !fullObjects.has(object)
-        );
+        packet.partialObjectsCache = [];
+        for (const object of game.partialDirtyObjects) {
+            if (!this.visibleObjects.has(object as GameObject) || fullObjects.has(object)) continue;
+            packet.partialObjectsCache.push(object);
+        }
 
         const inventory = player.inventory;
         let forceInclude = false;
