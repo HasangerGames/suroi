@@ -1,15 +1,17 @@
 import { Packet, PacketType } from "../packets/packet";
 
+export interface TeammateGameOverData {
+    readonly playerID: number
+    readonly kills: number
+    readonly damageDone: number
+    readonly damageTaken: number
+    readonly timeAlive: number
+}
+
 export interface GameOverData {
     readonly type: PacketType.GameOver
     readonly rank: number
-    readonly teammates: ReadonlyArray<{
-        readonly playerID: number
-        readonly kills: number
-        readonly damageDone: number
-        readonly damageTaken: number
-        readonly timeAlive: number
-    }>
+    readonly teammates: TeammateGameOverData[]
 }
 
 export const GameOverPacket = new Packet<GameOverData>(PacketType.GameOver, {

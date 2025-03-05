@@ -3,7 +3,7 @@ import { type BuildingDefinition } from "@common/definitions/buildings";
 import type { LootDefinition } from "@common/definitions/loots";
 import { type PlayerPing } from "@common/definitions/mapPings";
 import { type ObstacleDefinition } from "@common/definitions/obstacles";
-import { type PlayerInputData } from "@common/packets/inputPacket";
+import { type InputData } from "@common/packets/inputPacket";
 import { type JoinData } from "@common/packets/joinPacket";
 import { PlayerModifiers, Variation, type Orientation } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
@@ -452,7 +452,7 @@ export interface EventDataMap {
     readonly player_stop_attacking: Player
     readonly player_input: {
         readonly player: Player
-        readonly packet: PlayerInputData
+        readonly packet: InputData
     }
     readonly player_will_emote: {
         readonly player: Player

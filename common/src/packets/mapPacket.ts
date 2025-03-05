@@ -20,7 +20,11 @@ export interface MapData {
     readonly oceanSize: number
     readonly beachSize: number
 
-    readonly rivers: ReadonlyArray<{ readonly width: number, readonly points: readonly Vector[], readonly isTrail: boolean }>
+    readonly rivers: Array<{
+        readonly width: number
+        readonly points: readonly Vector[]
+        readonly isTrail: boolean
+    }>
     readonly objects: MapObject[]
     readonly places: ReadonlyArray<{ readonly position: Vector, readonly name: string }>
 }

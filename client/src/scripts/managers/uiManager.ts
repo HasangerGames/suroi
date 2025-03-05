@@ -427,14 +427,15 @@ export class UIManager {
 
         game.gameOver = true;
 
-        if (!packet.won) {
+        const won = packet.rank === 1;
+        if (!won) {
             this.ui.btnSpectate.removeClass("btn-disabled").show();
             game.map.indicator.setFrame("player_indicator_dead");
         } else {
             this.ui.btnSpectate.hide();
         }
 
-        chickenDinner.toggle(packet.won);
+        chickenDinner.toggle(won);
 
         const medals = {
             kills: {
@@ -464,7 +465,7 @@ export class UIManager {
             medalType = "";
 
         if (this.game.teamMode) {
-            for (let i = 0; i < packet.numberTeammates; i++) {
+            for (let i = 0; i < packet.teammates.length; i++) {
                 if (bestKills < packet.teammates[i].kills) {
                     bestKills = packet.teammates[i].kills;
                 }
@@ -479,7 +480,7 @@ export class UIManager {
             }
         }
 
-        for (let i = 0; i < packet.numberTeammates; i++) {
+        for (let i = 0; i < packet.teammates.length; i++) {
             const teammateID = packet.teammates[i].playerID;
 
             if (this.game.teamMode) {
@@ -571,9 +572,9 @@ export class UIManager {
             gameOverPlayerCards.append(card);
         }
 
-        if (packet.won) {
+        if (won) {
             void game.music.play();
-            if (this.game.teamMode && packet.numberTeammates > 1) {
+            if (this.game.teamMode && packet.teammates.length > 1) {
                 gameOverTeamKills.text(getTranslatedString("msg_kills", { kills: JSON.stringify(totalKills) }));
                 gameOverTeamKillsContainer.toggle(true);
             } else {
@@ -587,7 +588,7 @@ export class UIManager {
         setTimeout(() => this.game.screenRecordManager.endRecording(), 2500);
 
         // Player rank
-        gameOverRank.text(`#${packet.rank}`).toggleClass("won", packet.won);
+        gameOverRank.text(`#${packet.rank}`).toggleClass("won", won);
     }
 
     // I'd rewrite this as MapPings.filter(…), but it's not really clear how

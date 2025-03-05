@@ -1,12 +1,12 @@
 import { SuroiByteStream } from "../utils/suroiByteStream";
 import { DisconnectPacket } from "./disconnectPacket";
 import { GameOverPacket } from "./gameOverPacket";
-import { PlayerInputPacket } from "./inputPacket";
+import { InputPacket } from "./inputPacket";
 import { JoinPacket } from "./joinPacket";
 import { JoinedPacket } from "./joinedPacket";
 import { KillFeedPacket } from "./killFeedPacket";
 import { MapPacket } from "./mapPacket";
-import { BasePacket, DataSplit, PacketDataIn, PacketsDataIn, PacketType } from "./packet";
+import { DataSplit, MutablePacketDataIn, PacketDataOut } from "./packet";
 import { PickupPacket } from "./pickupPacket";
 import { ReportPacket } from "./reportPacket";
 import { SpectatePacket } from "./spectatePacket";
@@ -15,7 +15,7 @@ import { UpdatePacket } from "./updatePacket";
 export const Packets = [
     DisconnectPacket,
     GameOverPacket,
-    PlayerInputPacket,
+    InputPacket,
     JoinedPacket,
     JoinPacket,
     KillFeedPacket,
@@ -37,22 +37,17 @@ export class PacketStream {
         }
     }
 
-    serialize(packet: PacketsDataIn): void {
-        const type = packet.type;
-        if (type === undefined) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            throw new Error(`Unknown packet type: ${PacketType[packet.type]}, did you forget to register it?`);
-        }
-
+    serialize(data: MutablePacketDataIn): void {
+        const type = data.type;
         this.stream.writeUint8(type);
-        Packets[type].serialize(this.stream, packet as never);
+        Packets[type].serialize(this.stream, data as never);
     }
 
-    deserialize(splits?: DataSplit): BasePacket | undefined {
+    deserialize(splits?: DataSplit): PacketDataOut | undefined {
         if (this.stream.buffer.byteLength <= this.stream.index) return;
 
         const type = this.stream.readUint8();
-        return Packets[type].deserialize(this.stream, splits);
+        return Packets[type].deserialize(this.stream, splits) as PacketDataOut;
     }
 
     getBuffer(): ArrayBuffer {

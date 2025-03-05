@@ -2,7 +2,7 @@ import { GameConstants, InputActions } from "@common/constants";
 import { type WeaponDefinition } from "@common/definitions/loots";
 import { Scopes } from "@common/definitions/items/scopes";
 import { Throwables, type ThrowableDefinition } from "@common/definitions/items/throwables";
-import { areDifferent, PlayerInputPacket, type InputAction, type PlayerInputData, type SimpleInputActions } from "@common/packets/inputPacket";
+import { areDifferent, InputPacket, type InputAction, type InputData, type SimpleInputActions } from "@common/packets/inputPacket";
 import { Angle, Geometry, Numeric } from "@common/utils/math";
 import { ItemType, type ItemDefinition } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
@@ -16,6 +16,7 @@ import { defaultBinds } from "../utils/console/defaultClientCVars";
 import { type GameSettings, type PossibleError } from "../utils/console/gameConsole";
 import { FORCE_MOBILE, PIXI_SCALE } from "../utils/constants";
 import { html } from "../utils/misc";
+import { PacketType } from "@common/packets/packet";
 
 export class InputManager {
     readonly binds = new InputMapper();
@@ -114,11 +115,12 @@ export class InputManager {
     // Initialize an array to store focus state for keypresses
     private readonly _focusController = new Set<string>();
 
-    private _lastInputPacket: PlayerInputData | undefined;
+    private _lastInputPacket: InputData | undefined;
     private _inputPacketTimer = 0;
 
     update(): void {
         const packet = {
+            type: PacketType.Input,
             movement: { ...this.movement },
             attacking: this.attacking,
             turning: this.turning,
@@ -143,7 +145,7 @@ export class InputManager {
             ),
             actions: this.actions,
             pingSeq: this.game.takePingSeq() + (this.game.gameOver ? 128 : 0) // MSB = "seq only?"
-        } as PlayerInputData;
+        } as InputData;
 
         this.turning = false;
 
@@ -159,7 +161,7 @@ export class InputManager {
             || areDifferent(this._lastInputPacket, packet)
             || this._inputPacketTimer >= 100
         ) {
-            this.game.sendPacket(PlayerInputPacket.create(packet));
+            this.game.sendPacket(InputPacket.create(packet));
             this._lastInputPacket = packet;
             this._inputPacketTimer = 0;
         }

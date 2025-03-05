@@ -1,5 +1,5 @@
 import { ObjectCategory } from "../constants";
-import { SDeepMutable } from "../utils/misc";
+import { DeepPartial, SDeepMutable } from "../utils/misc";
 import { SuroiByteStream } from "../utils/suroiByteStream";
 import { type Packets } from "./packetStream";
 
@@ -45,17 +45,15 @@ export function getSplitTypeForCategory(category: ObjectCategory): DataSplitType
 
 export type DataSplit = Record<DataSplitTypes, number>;
 
-export interface BasePacket { readonly type: PacketType }
+export type AnyPacket = typeof Packets[number]; // Packets is declared in a separate file (packetStream.ts) to prevent circular imports
 
-type AnyData = typeof Packets[number]; // Packets is declared in a separate file (packetStream.ts) to prevent circular imports
+export type PacketDataIn<T extends AnyPacket = AnyPacket> = T extends Packet<infer DataIn> ? DataIn : never;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type PacketDataOut<T extends AnyPacket = AnyPacket> = T extends Packet<infer _DataIn, infer DataOut> ? DataOut : never;
 
-export type PacketDataIn<T extends AnyData> = T extends Packet<infer DataIn> ? DataIn : never;
-export type PacketDataOut<T extends AnyData> = T extends Packet<infer DataOut> ? DataOut : never;
+export type MutablePacketDataIn = PacketDataIn | SDeepMutable<PacketDataIn>;
 
-export type PacketsDataIn = PacketDataIn<AnyData>;
-export type PacketsDataOut = PacketDataOut<AnyData>;
-
-export class Packet<DataIn extends BasePacket, DataOut = DataIn> {
+export class Packet<DataIn extends { readonly type: PacketType }, DataOut = DataIn> {
     serialize: (stream: SuroiByteStream, data: DataIn) => void;
     deserialize: (stream: SuroiByteStream, splits?: DataSplit) => DataOut;
 
@@ -74,7 +72,7 @@ export class Packet<DataIn extends BasePacket, DataOut = DataIn> {
         this.serialize = serialize;
         this.deserialize = (stream, splits): DataOut => {
             let savedIndex: number;
-            const data = {} as SDeepMutable<DataOut>;
+            const data = { type: this.type } as unknown as SDeepMutable<DataOut>;
             deserialize(
                 stream,
                 data,
@@ -85,7 +83,7 @@ export class Packet<DataIn extends BasePacket, DataOut = DataIn> {
         };
     }
 
-    create(data = {} as SDeepMutable<DataIn>): SDeepMutable<DataIn> {
+    create(data = {} as DeepPartial<DataIn>): SDeepMutable<DataIn> {
         return { ...data, type: this.type } as SDeepMutable<DataIn>;
     }
 }

@@ -8,7 +8,7 @@ import { SyncedParticles, type SyncedParticleDefinition } from "@common/definiti
 import { type JoinData } from "@common/packets/joinPacket";
 import { JoinedPacket } from "@common/packets/joinedPacket";
 import { KillFeedPacket, type KillFeedData } from "@common/packets/killFeedPacket";
-import { PacketType, type InputPacket } from "@common/packets/packet";
+import { PacketDataIn, PacketType } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { type PingSerialization } from "@common/packets/updatePacket";
 import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
@@ -87,7 +87,7 @@ export class Game implements GameData {
     /**
      * Packets created this tick that will be sent to all players
      */
-    readonly packets: InputPacket[] = [];
+    readonly packets: PacketDataIn[] = [];
 
     readonly teamSize: TeamSize;
 

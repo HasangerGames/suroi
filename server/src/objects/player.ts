@@ -2,7 +2,7 @@ import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, Kill
 import { type BadgeDefinition } from "@common/definitions/badges";
 import { Emotes, type EmoteDefinition } from "@common/definitions/emotes";
 import { Ammos } from "@common/definitions/items/ammos";
-import { Armors, ArmorType } from "@common/definitions/items/armors";
+import { ArmorType, Armors } from "@common/definitions/items/armors";
 import { Backpacks } from "@common/definitions/items/backpacks";
 import { Guns, type GunDefinition } from "@common/definitions/items/guns";
 import { HealingItems } from "@common/definitions/items/healingItems";
@@ -16,19 +16,19 @@ import { type PlayerPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { DisconnectPacket } from "@common/packets/disconnectPacket";
-import { GameOverData, GameOverPacket, TeammateGameOverData } from "@common/packets/gameOverPacket";
-import { type NoMobile, type PlayerInputData } from "@common/packets/inputPacket";
-import { createKillfeedMessage, KillFeedPacket, type ForEventType } from "@common/packets/killFeedPacket";
-import { type InputPacket } from "@common/packets/packet";
+import { GameOverPacket, TeammateGameOverData } from "@common/packets/gameOverPacket";
+import { type InputData, type NoMobile } from "@common/packets/inputPacket";
+import { KillFeedPacket, createKillfeedMessage, type ForEventType } from "@common/packets/killFeedPacket";
+import { MutablePacketDataIn } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { ReportPacket } from "@common/packets/reportPacket";
-import { type SpectatePacketData } from "@common/packets/spectatePacket";
-import { UpdatePacket, type PlayerData, type UpdatePacketDataCommon, type UpdatePacketDataIn } from "@common/packets/updatePacket";
+import { type SpectateData } from "@common/packets/spectatePacket";
+import { UpdatePacket, type PlayerData, type UpdatePacketDataCommon } from "@common/packets/updatePacket";
 import { PlayerModifiers } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
 import { Collision, Geometry, Numeric } from "@common/utils/math";
-import { type SDeepMutable, type SMutable, type Timeout } from "@common/utils/misc";
+import { type SDeepMutable, type Timeout } from "@common/utils/misc";
 import { ItemType, type EventModifiers, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray, randomPointInsideCircle, weightedRandom } from "@common/utils/random";
@@ -36,6 +36,7 @@ import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { randomBytes } from "crypto";
+import { WebSocket } from "ws";
 import { Config } from "../config";
 import { type Game } from "../game";
 import { HealingAction, ReloadAction, ReviveAction, type Action } from "../inventory/action";
@@ -55,7 +56,6 @@ import { type Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { type SyncedParticle } from "./syncedParticle";
 import { type ThrowableProjectile } from "./throwableProj";
-import { WebSocket } from "ws";
 
 export interface PlayerJoinData {
     readonly ip?: string
@@ -1406,7 +1406,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             ),
             ...(
                 player.dirty.teammates || forceInclude
-                    ? { teammates: player._team?.players ?? [] }
+                    ? { teammates: player._team?.players as Player[] ?? [] }
                     : {}
             ),
             ...(
@@ -1542,7 +1542,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._mapPings.length = 0;
 
         // serialize and send update packet
-        this.sendPacket(packet);
+        this.sendPacket(packet as unknown as MutablePacketDataIn);
 
         if (this._firstPacket && killLeader) {
             this._packets.push(KillFeedPacket.create({
@@ -1608,7 +1608,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         return this.perks.mapOrDefault<Name, U>(perk, mapper, defaultValue);
     }
 
-    spectate(packet: SpectatePacketData): void {
+    spectate(packet: SpectateData): void {
         if (!this.dead) return;
         const game = this.game;
         if (game.now - this.lastSpectateActionTime < 200) return;
@@ -1744,9 +1744,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
     }
 
-    private readonly _packets: InputPacket[] = [];
+    private readonly _packets: MutablePacketDataIn[] = [];
 
-    sendPacket(packet: InputPacket): void {
+    sendPacket(packet: MutablePacketDataIn): void {
         this._packets.push(packet);
     }
 
@@ -2470,11 +2470,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }));
 
         const packet = GameOverPacket.create({
-            won,
             rank: won ? 1 as const : this.game.aliveCount + 1,
-            numberTeammates: teammates.length,
             teammates
-        } as GameOverData);
+        });
 
         this.sendPacket(packet);
 
@@ -2483,7 +2481,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
     }
 
-    processInputs(packet: PlayerInputData): void {
+    processInputs(packet: InputData): void {
         this.movement = {
             ...packet.movement,
             ...(packet.isMobile ? packet.mobile : { moving: false, angle: 0 })

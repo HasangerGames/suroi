@@ -78,7 +78,7 @@ type TurningMixin = {
     readonly distanceToMouse?: undefined
 }));
 
-export type PlayerInputData = {
+export type InputData = {
     readonly type: PacketType.Input
     readonly movement: {
         readonly up: boolean
@@ -91,10 +91,10 @@ export type PlayerInputData = {
     readonly pingSeq: number
 } & MobileMixin & TurningMixin;
 
-export type WithMobile = PlayerInputData & { readonly isMobile: true };
-export type NoMobile = PlayerInputData & { readonly isMobile: false };
+export type WithMobile = InputData & { readonly isMobile: true };
+export type NoMobile = InputData & { readonly isMobile: false };
 
-export const PlayerInputPacket = new Packet<PlayerInputData>(PacketType.Input, {
+export const InputPacket = new Packet<InputData>(PacketType.Input, {
     serialize(stream, data) {
         const { movement, isMobile, turning } = data;
 
@@ -248,11 +248,11 @@ export const PlayerInputPacket = new Packet<PlayerInputData>(PacketType.Input, {
 * @param newPacket The new packet to potentially sent
 * @param oldPacket The old packet (usually the last sent one) to compare against
 */
-export function areDifferent(newPacket: PlayerInputData, oldPacket: PlayerInputData): boolean {
+export function areDifferent(newPacket: InputData, oldPacket: InputData): boolean {
     if (newPacket.actions.length > 0) return true;
 
     for (const k in newPacket.movement) {
-        const key = k as keyof PlayerInputData["movement"];
+        const key = k as keyof InputData["movement"];
         if (oldPacket.movement[key] !== newPacket.movement[key]) return true;
     }
 
@@ -265,7 +265,7 @@ export function areDifferent(newPacket: PlayerInputData, oldPacket: PlayerInputD
         }
     }
 
-    for (const key of ["attacking", "turning", "rotation", "distanceToMouse"] as ReadonlyArray<keyof PlayerInputData>) {
+    for (const key of ["attacking", "turning", "rotation", "distanceToMouse"] as ReadonlyArray<keyof InputData>) {
         if (oldPacket[key] !== newPacket[key]) return true;
     }
 
