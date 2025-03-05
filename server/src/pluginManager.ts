@@ -4,7 +4,7 @@ import type { LootDefinition } from "@common/definitions/loots";
 import { type PlayerPing } from "@common/definitions/mapPings";
 import { type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type PlayerInputData } from "@common/packets/inputPacket";
-import { type JoinPacketData } from "@common/packets/joinPacket";
+import { type JoinData } from "@common/packets/joinPacket";
 import { PlayerModifiers, Variation, type Orientation } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
 import { Vector } from "@common/utils/vector";
@@ -439,11 +439,11 @@ export interface EventDataMap {
 
     readonly player_will_join: {
         readonly player: Player
-        readonly joinPacket: JoinPacketData
+        readonly joinPacket: JoinData
     }
     readonly player_did_join: {
         readonly player: Player
-        readonly joinPacket: JoinPacketData
+        readonly joinPacket: JoinData
     }
 
     readonly player_disconnect: Player

@@ -2,7 +2,7 @@ import { TeamSize } from "../constants";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
 import { DataSplitTypes, Packet, PacketType } from "./packet";
 
-export type JoinedPacketData = {
+export type JoinedData = {
     readonly type: PacketType.Joined
     readonly emotes: ReadonlyArray<EmoteDefinition | undefined>
 } & (
@@ -13,7 +13,7 @@ export type JoinedPacketData = {
     }
 );
 
-export const JoinedPacket = new Packet<JoinedPacketData>(PacketType.Joined, {
+export const JoinedPacket = new Packet<JoinedData>(PacketType.Joined, {
     serialize(stream, data) {
         stream.writeUint8(data.teamSize);
         if (data.teamSize !== TeamSize.Solo) {

@@ -186,7 +186,7 @@ export class GameMap {
         }
 
         const stream = new PacketStream(new ArrayBuffer(1 << 16));
-        stream.serializeServerPacket(MapPacket.create(packet));
+        stream.serialize(MapPacket.create(packet));
         this.buffer = stream.getBuffer();
     }
 

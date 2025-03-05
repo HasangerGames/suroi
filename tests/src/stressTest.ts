@@ -98,7 +98,7 @@ class Bot {
             const stream = new PacketStream(message.data as ArrayBuffer);
             while (true) {
                 try {
-                    const packet = stream.deserializeServerPacket();
+                    const packet = stream.deserialize();
                     if (packet === undefined) break;
                     this.onPacket(packet);
                 } catch (e) { console.error(e); continue; }
@@ -194,7 +194,7 @@ class Bot {
 
     sendPacket(packet: InputPacket): void {
         this._stream.stream.index = 0;
-        this._stream.serializeClientPacket(packet);
+        this._stream.serialize(packet);
 
         this._ws.send(this._stream.getBuffer());
     }

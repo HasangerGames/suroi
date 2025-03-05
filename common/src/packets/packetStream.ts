@@ -6,52 +6,25 @@ import { JoinPacket } from "./joinPacket";
 import { JoinedPacket } from "./joinedPacket";
 import { KillFeedPacket } from "./killFeedPacket";
 import { MapPacket } from "./mapPacket";
-import { Packet, type DataSplit } from "./packet";
+import { BasePacket, DataSplit, PacketDataIn, PacketsDataIn, PacketType } from "./packet";
 import { PickupPacket } from "./pickupPacket";
 import { ReportPacket } from "./reportPacket";
 import { SpectatePacket } from "./spectatePacket";
 import { UpdatePacket } from "./updatePacket";
 
-class PacketRegister {
-    private _nextTypeId = 0;
-    readonly typeToId = new Map<Packet, number>();
-    readonly idToTemplate: Packet[] = [];
-
-    constructor(...packets: Packet[]) {
-        for (const packet of packets) {
-            this._register(packet);
-        }
-    }
-
-    private _register(packet: Packet): void {
-        let name: string;
-        if ((name = packet.name) in this.typeToId) {
-            console.warn(`Packet ${name} registered multiple times`);
-            return;
-        }
-
-        const id = this._nextTypeId++;
-        this.typeToId.set(packet, id);
-        this.idToTemplate[id] = packet;
-    }
-}
-
-export const ClientToServerPackets = new PacketRegister(
-    PlayerInputPacket,
-    JoinPacket,
-    SpectatePacket
-);
-
-export const ServerToClientPackets = new PacketRegister(
-    UpdatePacket,
-    KillFeedPacket,
-    PickupPacket,
-    JoinedPacket,
-    MapPacket,
+export const Packets = [
+    DisconnectPacket,
     GameOverPacket,
+    PlayerInputPacket,
+    JoinedPacket,
+    JoinPacket,
+    KillFeedPacket,
+    MapPacket,
+    PickupPacket,
     ReportPacket,
-    DisconnectPacket
-);
+    SpectatePacket,
+    UpdatePacket
+] as const;
 
 export class PacketStream {
     readonly stream: SuroiByteStream;
@@ -64,39 +37,22 @@ export class PacketStream {
         }
     }
 
-    serializeServerPacket(packet: InputPacket): void {
-        this._serializePacket(packet, ServerToClientPackets);
-    }
-
-    deserializeServerPacket(splitData?: { splits: DataSplit, activePlayerId: number }): OutputPacket | undefined {
-        return this._deserializePacket(ServerToClientPackets, splitData);
-    }
-
-    serializeClientPacket(packet: InputPacket): void {
-        this._serializePacket(packet, ClientToServerPackets);
-    }
-
-    deserializeClientPacket(): OutputPacket | undefined {
-        return this._deserializePacket(ClientToServerPackets);
-    }
-
-    private _deserializePacket(register: PacketRegister, splitData?: { splits: DataSplit, activePlayerId: number }): OutputPacket | undefined {
-        if (this.stream.buffer.byteLength > this.stream.index) {
-            const idx = this.stream.readUint8();
-            return register.idToTemplate[idx].read(this.stream, splitData);
-        }
-        return undefined;
-    }
-
-    private _serializePacket(packet: InputPacket, register: PacketRegister): void {
-        const name = packet.constructor.name;
-        const type = register.typeToId.get(packet.constructor as PacketTemplate);
+    serialize(packet: PacketsDataIn): void {
+        const type = packet.type;
         if (type === undefined) {
-            throw new Error(`Unknown packet type: ${name}, did you forget to register it?`);
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            throw new Error(`Unknown packet type: ${PacketType[packet.type]}, did you forget to register it?`);
         }
 
         this.stream.writeUint8(type);
-        packet.serialize(this.stream);
+        Packets[type].serialize(this.stream, packet as never);
+    }
+
+    deserialize(splits?: DataSplit): BasePacket | undefined {
+        if (this.stream.buffer.byteLength <= this.stream.index) return;
+
+        const type = this.stream.readUint8();
+        return Packets[type].deserialize(this.stream, splits);
     }
 
     getBuffer(): ArrayBuffer {

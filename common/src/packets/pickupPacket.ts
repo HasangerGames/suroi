@@ -2,13 +2,13 @@ import { InventoryMessages } from "../constants";
 import { Loots, type LootDefinition } from "../definitions/loots";
 import { DataSplitTypes, Packet, PacketType } from "./packet";
 
-export interface PickupPacketData {
+export interface PickupData {
     readonly type: PacketType.Pickup
     readonly message?: InventoryMessages
     readonly item?: LootDefinition
 };
 
-export const PickupPacket = new Packet<PickupPacketData>(PacketType.Pickup, {
+export const PickupPacket = new Packet<PickupData>(PacketType.Pickup, {
     serialize(stream, data) {
         const { message, item } = data;
 

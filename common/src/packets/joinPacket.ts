@@ -5,7 +5,7 @@ import { type SkinDefinition } from "../definitions/items/skins";
 import { Loots } from "../definitions/loots";
 import { Packet, PacketType } from "./packet";
 
-export interface JoinPacketData {
+export interface JoinData {
     readonly type: PacketType.Join
     readonly protocolVersion: number
     readonly name: string
@@ -19,9 +19,9 @@ export interface JoinPacketData {
 
 // protocol version is automatically set; use this type when
 // creating an object for use by a JoinPacket
-export type JoinPacketCreation = Omit<JoinPacketData, "protocolVersion">;
+export type JoinPacketCreation = Omit<JoinData, "protocolVersion">;
 
-export const JoinPacket = new Packet<JoinPacketCreation, JoinPacketData>(PacketType.Join, {
+export const JoinPacket = new Packet<JoinPacketCreation, JoinData>(PacketType.Join, {
     serialize(stream, data) {
         const emotes = data.emotes;
         const hasBadge = data.badge !== undefined;

@@ -12,7 +12,7 @@ export type MapObject = {
     readonly variation?: Variation
 } & CommonGameObject;
 
-export interface MapPacketData {
+export interface MapData {
     readonly type: PacketType.Map
     readonly seed: number
     readonly width: number
@@ -25,7 +25,7 @@ export interface MapPacketData {
     readonly places: ReadonlyArray<{ readonly position: Vector, readonly name: string }>
 }
 
-export const MapPacket = new Packet<MapPacketData>(PacketType.Map, {
+export const MapPacket = new Packet<MapData>(PacketType.Map, {
     serialize(strm, data) {
         strm.writeUint32(data.seed)
             .writeUint16(data.width)
@@ -175,7 +175,7 @@ export const MapPacket = new Packet<MapPacketData>(PacketType.Map, {
                     };
                 }
             }
-        }, 2) as MapPacketData["objects"];
+        }, 2) as MapData["objects"];
 
         data.places = stream.readArray(() => ({
             name: stream.readString(24),

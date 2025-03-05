@@ -1,14 +1,15 @@
 import { ObjectCategory } from "../constants";
 import { SDeepMutable } from "../utils/misc";
 import { SuroiByteStream } from "../utils/suroiByteStream";
+import { type Packets } from "./packetStream";
 
-export const enum PacketType {
+export enum PacketType {
     Disconnect,
     GameOver,
     Input,
     Joined,
     Join,
-    Killfeed,
+    KillFeed,
     Map,
     Pickup,
     Report,
@@ -25,7 +26,6 @@ export const enum DataSplitTypes {
     GameObjects,
     Killfeed
 }
-export default DataSplitTypes;
 
 export function getSplitTypeForCategory(category: ObjectCategory): DataSplitTypes {
     /* eslint-disable @stylistic/no-multi-spaces */
@@ -45,11 +45,19 @@ export function getSplitTypeForCategory(category: ObjectCategory): DataSplitType
 
 export type DataSplit = Record<DataSplitTypes, number>;
 
-interface BasicPacket { readonly type: PacketType }
+export interface BasePacket { readonly type: PacketType }
 
-export class Packet<DataIn extends BasicPacket, DataOut extends BasicPacket = DataIn> {
+type AnyData = typeof Packets[number]; // Packets is declared in a separate file (packetStream.ts) to prevent circular imports
+
+export type PacketDataIn<T extends AnyData> = T extends Packet<infer DataIn> ? DataIn : never;
+export type PacketDataOut<T extends AnyData> = T extends Packet<infer DataOut> ? DataOut : never;
+
+export type PacketsDataIn = PacketDataIn<AnyData>;
+export type PacketsDataOut = PacketDataOut<AnyData>;
+
+export class Packet<DataIn extends BasePacket, DataOut = DataIn> {
     serialize: (stream: SuroiByteStream, data: DataIn) => void;
-    deserialize: (stream: SuroiByteStream, splits: DataSplit) => DataOut;
+    deserialize: (stream: SuroiByteStream, splits?: DataSplit) => DataOut;
 
     constructor(
         readonly type: PacketType,
@@ -71,13 +79,13 @@ export class Packet<DataIn extends BasicPacket, DataOut extends BasicPacket = Da
                 stream,
                 data,
                 () => savedIndex = stream.index,
-                target => splits[target] += stream.index - savedIndex
+                target => splits && (splits[target] += stream.index - savedIndex)
             );
             return data as DataOut;
         };
     }
 
-    create(): SDeepMutable<DataIn> {
-        return { type: this.type } as SDeepMutable<DataIn>;
+    create(data = {} as SDeepMutable<DataIn>): SDeepMutable<DataIn> {
+        return { ...data, type: this.type } as SDeepMutable<DataIn>;
     }
 }

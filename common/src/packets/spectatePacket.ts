@@ -1,7 +1,7 @@
 import { SpectateActions } from "../constants";
 import { Packet, PacketType } from "./packet";
 
-export type SpectatePacketData = {
+export type SpectateData = {
     readonly type: PacketType.Spectate
 } & (
     | {
@@ -14,7 +14,7 @@ export type SpectatePacketData = {
     }
 );
 
-export const SpectatePacket = new Packet<SpectatePacketData>(PacketType.Spectate, {
+export const SpectatePacket = new Packet<SpectateData>(PacketType.Spectate, {
     serialize(stream, data) {
         stream.writeUint8(data.spectateAction);
 

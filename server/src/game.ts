@@ -5,13 +5,11 @@ import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { SyncedParticles, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
-import { PlayerInputPacket } from "@common/packets/inputPacket";
-import { JoinPacket, type JoinPacketData } from "@common/packets/joinPacket";
+import { type JoinData } from "@common/packets/joinPacket";
 import { JoinedPacket } from "@common/packets/joinedPacket";
-import { KillFeedPacket, type KillFeedPacketData } from "@common/packets/killFeedPacket";
-import { type InputPacket } from "@common/packets/packet";
+import { KillFeedPacket, type KillFeedData } from "@common/packets/killFeedPacket";
+import { PacketType, type InputPacket } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
-import { SpectatePacket } from "@common/packets/spectatePacket";
 import { type PingSerialization } from "@common/packets/updatePacket";
 import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Geometry, Numeric, Statistics } from "@common/utils/math";
@@ -269,17 +267,21 @@ export class Game implements GameData {
     onMessage(message: ArrayBuffer, player: Player): void {
         const packetStream = new PacketStream(new SuroiByteStream(message));
         while (true) {
-            const packet = packetStream.deserializeClientPacket();
+            const packet = packetStream.deserialize();
             if (packet === undefined) break;
 
-            if (packet instanceof JoinPacket) {
-                this.activatePlayer(player, packet.output);
-            } else if (packet instanceof PlayerInputPacket) {
-                // Ignore input packets from players that haven't finished joining, dead players, or if the game is over
-                if (!player.joined || player.dead || this.over) return;
-                player.processInputs(packet.output);
-            } else if (packet instanceof SpectatePacket) {
-                player.spectate(packet.output);
+            switch (packet.type) {
+                case PacketType.Join:
+                    this.activatePlayer(player, packet);
+                    break;
+                case PacketType.Input:
+                    // Ignore input packets from players that haven't finished joining, dead players, or if the game is over
+                    if (!player.joined || player.dead || this.over) break;
+                    player.processInputs(packet);
+                    break;
+                case PacketType.Spectate:
+                    player.spectate(packet);
+                    break;
             }
         }
     }
@@ -540,7 +542,7 @@ export class Game implements GameData {
             | KillfeedMessageType.KillLeaderUpdated
     >(
         messageType: Message,
-        options?: Partial<Omit<KillFeedPacketData & { readonly messageType: NoInfer<Message> }, "messageType" | "playerID" | "attackerKills">>
+        options?: Partial<Omit<KillFeedData & { readonly messageType: NoInfer<Message> }, "messageType" | "playerID" | "attackerKills">>
     ): void {
         if (this._killLeader === undefined) return;
 
@@ -550,7 +552,7 @@ export class Game implements GameData {
                 victimId: this._killLeader.id,
                 attackerKills: this._killLeader.kills,
                 ...options
-            } as KillFeedPacketData & { readonly messageType: Message })
+            } as KillFeedData & { readonly messageType: Message })
         );
     }
 
@@ -679,7 +681,7 @@ export class Game implements GameData {
     }
 
     // Called when a JoinPacket is sent by the client
-    activatePlayer(player: Player, packet: JoinPacketData): void {
+    activatePlayer(player: Player, packet: JoinData): void {
         if (player.joined) return;
         const rejectedBy = this.pluginManager.emit("player_will_join", { player, joinPacket: packet });
         if (rejectedBy) {

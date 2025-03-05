@@ -1311,7 +1311,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
      * Calculate visible objects, check team, and send packets
      */
     secondUpdate(): void {
-        const packet: SMutable<Partial<UpdatePacketDataIn>> = {};
+        const packet = UpdatePacket.create();
 
         const player = this.spectating ?? this;
         if (this.spectating) {
@@ -1542,7 +1542,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._mapPings.length = 0;
 
         // serialize and send update packet
-        this.sendPacket(UpdatePacket.create(packet as UpdatePacketDataIn));
+        this.sendPacket(packet);
 
         if (this._firstPacket && killLeader) {
             this._packets.push(KillFeedPacket.create({
@@ -1557,11 +1557,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         this._packetStream.stream.index = 0;
         for (const packet of this._packets) {
-            this._packetStream.serializeServerPacket(packet);
+            this._packetStream.serialize(packet);
         }
 
         for (const packet of this.game.packets) {
-            this._packetStream.serializeServerPacket(packet);
+            this._packetStream.serialize(packet);
         }
 
         this._packets.length = 0;
@@ -1752,7 +1752,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     disconnect(reason: string): void {
         const stream = new PacketStream(new ArrayBuffer(128));
-        stream.serializeServerPacket(
+        stream.serialize(
             DisconnectPacket.create({
                 reason
             })

@@ -4,8 +4,8 @@ import { type GunDefinition } from "../definitions/items/guns";
 import { type MeleeDefinition } from "../definitions/items/melees";
 import { type ThrowableDefinition } from "../definitions/items/throwables";
 import { Weapons } from "../definitions/weapons";
-import { type DeepMutable, type Mutable } from "../utils/misc";
-import { createPacket, DataSplitTypes } from "./packet";
+import { type Mutable } from "../utils/misc";
+import { DataSplitTypes, Packet, PacketType } from "./packet";
 
 export type KillDamageSources = GunDefinition
     | MeleeDefinition
@@ -32,7 +32,7 @@ type ExcludeWeapon =
     | KillfeedEventType.BleedOut
     | KillfeedEventType.Airdrop;
 
-export type KillFeedPacketData = ({
+export type KillFeedData = { readonly type: PacketType.KillFeed } & (({
     readonly messageType: KillfeedMessageType.DeathOrDown
     readonly victimId: number
     readonly severity: KillfeedEventSeverity
@@ -72,7 +72,7 @@ export type KillFeedPacketData = ({
     readonly victimId: number
     readonly attackerId: number
     readonly disconnected?: boolean
-};
+});
 
 const attackerFilter: readonly IncludeAttacker[] = [
     KillfeedEventType.NormalTwoParty,
@@ -124,7 +124,7 @@ export type BaseDoDMessage<Ev extends KillfeedEventType | undefined> = {
     build(): DeathOrDownMessage // too lazy to narrow this based on Ev, someone else can do it lol
 };
 
-type DeathOrDownMessage = KillFeedPacketData & {
+type DeathOrDownMessage = KillFeedData & {
     readonly messageType: KillfeedMessageType.DeathOrDown
 };
 
@@ -222,7 +222,7 @@ const factories = Object.freeze({
         return base;
     },
     [KillfeedMessageType.KillLeaderAssigned]() {
-        type KillLeaderAssignedMessage = KillFeedPacketData & {
+        type KillLeaderAssignedMessage = KillFeedData & {
             readonly messageType: KillfeedMessageType.KillLeaderAssigned
         };
 
@@ -259,7 +259,7 @@ const factories = Object.freeze({
         return obj;
     },
     [KillfeedMessageType.KillLeaderDeadOrDisconnected]() {
-        type KillLeaderDeadMessage = KillFeedPacketData & {
+        type KillLeaderDeadMessage = KillFeedData & {
             readonly messageType: KillfeedMessageType.KillLeaderDeadOrDisconnected
         };
 
@@ -292,7 +292,7 @@ const factories = Object.freeze({
         return obj;
     },
     [KillfeedMessageType.KillLeaderUpdated]() {
-        type KillLeaderUpdatedMessage = KillFeedPacketData & {
+        type KillLeaderUpdatedMessage = KillFeedData & {
             readonly messageType: KillfeedMessageType.KillLeaderUpdated
         };
 
@@ -317,7 +317,7 @@ const factories = Object.freeze({
     }
 });
 
-export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>({
+export const KillFeedPacket = new Packet<KillFeedData>(PacketType.KillFeed, {
     serialize(stream, data) {
         // messageType is 2 bits. we put them as the LSB, and everything else takes
         // up the 6 other bits
@@ -412,14 +412,10 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
         stream.index = curIndex;
     },
 
-    deserialize(stream, [saveIndex, recordTo]) {
+    deserialize(stream, data, saveIndex, recordTo) {
         saveIndex();
         const kfData = stream.readUint8();
-        const messageType = (kfData & 3) as KillfeedMessageType;
-
-        const data = {
-            messageType
-        } as DeepMutable<KillFeedPacketData>;
+        data.messageType = (kfData & 3) as KillfeedMessageType;
 
         switch (data.messageType) {
             case KillfeedMessageType.DeathOrDown: {
@@ -433,12 +429,12 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
                     && ((kfData & 32) !== 0) // attacker present
                 ) {
                     data.attackerId = stream.readObjectId();
-                    (data as KillFeedPacketData & { attackerKills: number }).attackerKills = stream.readUint8();
+                    (data as KillFeedData & { attackerKills: number }).attackerKills = stream.readUint8();
                 }
                 data.severity = (kfData >> 6) & 1;
 
                 if ((kfData & 128) !== 0) { // used a weapon
-                    type WithWeapon = KillFeedPacketData & {
+                    type WithWeapon = KillFeedData & {
                         weaponUsed: KillDamageSources
                         killstreak?: number
                     };
@@ -470,6 +466,6 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
         }
 
         recordTo(DataSplitTypes.Killfeed);
-        return data as KillFeedPacketData;
+        return data as KillFeedData;
     }
 });

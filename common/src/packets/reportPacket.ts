@@ -1,12 +1,12 @@
 import { Packet, PacketType } from "./packet";
 
-export interface ReportPacketData {
+export interface ReportData {
     readonly type: PacketType.Report
     readonly playerID: number
     readonly reportID: string
 }
 
-export const ReportPacket = new Packet<ReportPacketData>(PacketType.Report, {
+export const ReportPacket = new Packet<ReportData>(PacketType.Report, {
     serialize(strm, data) {
         strm.writeObjectId(data.playerID)
             .writeString(8, data.reportID);
