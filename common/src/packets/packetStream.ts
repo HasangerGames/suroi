@@ -6,7 +6,7 @@ import { JoinPacket } from "./joinPacket";
 import { JoinedPacket } from "./joinedPacket";
 import { KillFeedPacket } from "./killFeedPacket";
 import { MapPacket } from "./mapPacket";
-import { type DataSplit, type InputPacket, type OutputPacket, type PacketTemplate } from "./packet";
+import { Packet, type DataSplit } from "./packet";
 import { PickupPacket } from "./pickupPacket";
 import { ReportPacket } from "./reportPacket";
 import { SpectatePacket } from "./spectatePacket";
@@ -14,16 +14,16 @@ import { UpdatePacket } from "./updatePacket";
 
 class PacketRegister {
     private _nextTypeId = 0;
-    readonly typeToId = new Map<PacketTemplate, number>();
-    readonly idToTemplate: PacketTemplate[] = [];
+    readonly typeToId = new Map<Packet, number>();
+    readonly idToTemplate: Packet[] = [];
 
-    constructor(...packets: PacketTemplate[]) {
+    constructor(...packets: Packet[]) {
         for (const packet of packets) {
             this._register(packet);
         }
     }
 
-    private _register(packet: PacketTemplate): void {
+    private _register(packet: Packet): void {
         let name: string;
         if ((name = packet.name) in this.typeToId) {
             console.warn(`Packet ${name} registered multiple times`);

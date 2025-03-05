@@ -1,15 +1,20 @@
 import { SpectateActions } from "../constants";
-import { createPacket } from "./packet";
+import { Packet, PacketType } from "./packet";
 
 export type SpectatePacketData = {
-    readonly spectateAction: SpectateActions.SpectateSpecific
-    readonly playerID: number
-} | {
-    readonly spectateAction: Exclude<SpectateActions, SpectateActions.SpectateSpecific>
-    readonly playerID?: undefined
-};
+    readonly type: PacketType.Spectate
+} & (
+    | {
+        readonly spectateAction: SpectateActions.SpectateSpecific
+        readonly playerID: number
+    }
+    | {
+        readonly spectateAction: Exclude<SpectateActions, SpectateActions.SpectateSpecific>
+        readonly playerID?: undefined
+    }
+);
 
-export const SpectatePacket = createPacket("SpectatePacket")<SpectatePacketData>({
+export const SpectatePacket = new Packet<SpectatePacketData>(PacketType.Spectate, {
     serialize(stream, data) {
         stream.writeUint8(data.spectateAction);
 
@@ -18,12 +23,11 @@ export const SpectatePacket = createPacket("SpectatePacket")<SpectatePacketData>
         }
     },
 
-    deserialize(stream) {
-        const spectateAction: SpectateActions = stream.readUint8();
+    deserialize(stream, data) {
+        data.spectateAction = stream.readUint8();
 
-        return {
-            spectateAction,
-            ...(spectateAction === SpectateActions.SpectateSpecific ? { playerID: stream.readObjectId() } : {})
-        } as SpectatePacketData;
+        if (data.spectateAction === SpectateActions.SpectateSpecific) {
+            data.playerID = stream.readObjectId();
+        }
     }
 });

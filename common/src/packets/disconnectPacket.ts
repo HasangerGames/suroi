@@ -1,17 +1,16 @@
-import { createPacket } from "./packet";
+import { Packet, PacketType } from "./packet";
 
-export type DisconnectData = {
+export interface DisconnectData {
+    readonly type: PacketType.Disconnect
     readonly reason: string
-};
+}
 
-export const DisconnectPacket = createPacket("DisconnectPacket")<DisconnectData>({
+export const DisconnectPacket = new Packet<DisconnectData>(PacketType.Disconnect, {
     serialize(stream, data) {
         stream.writeString(64, data.reason);
     },
 
-    deserialize(stream) {
-        return {
-            reason: stream.readString(64)
-        };
+    deserialize(stream, data) {
+        data.reason = stream.readString(64);
     }
 });

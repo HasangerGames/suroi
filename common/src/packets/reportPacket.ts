@@ -1,20 +1,19 @@
-import { createPacket } from "./packet";
+import { Packet, PacketType } from "./packet";
 
-export type ReportPacketData = {
+export interface ReportPacketData {
+    readonly type: PacketType.Report
     readonly playerID: number
     readonly reportID: string
-};
+}
 
-export const ReportPacket = createPacket("ReportPacket")<ReportPacketData>({
+export const ReportPacket = new Packet<ReportPacketData>(PacketType.Report, {
     serialize(strm, data) {
         strm.writeObjectId(data.playerID)
             .writeString(8, data.reportID);
     },
 
-    deserialize(stream) {
-        return {
-            playerID: stream.readObjectId(),
-            reportID: stream.readString(8)
-        };
+    deserialize(stream, data) {
+        data.playerID = stream.readObjectId();
+        data.reportID = stream.readString(8);
     }
 });
