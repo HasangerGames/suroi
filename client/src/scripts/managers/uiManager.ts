@@ -476,13 +476,17 @@ export class UIManager {
         const hasTeammates = teammates.length > 1;
         const teamEliminated = hasTeammates && teammates.every(teammate => !teammate.alive);
 
-        for (const { playerID, kills, damageDone, damageTaken, timeAlive } of teammates) {
+        for (const { playerID, kills, damageDone, damageTaken, timeAlive, alive } of teammates) {
             // Medals:
+            // Dead: Simply indicates the player is no longer alive
             // Kills: More than 10 kills + most kills on team
             // Damage Done: More than 1000 damage done + most on team
             // Damage Taken: More than 1000 damage taken + most on team
             // your did it: Won with 0 kills + 0 damage done
             let medal: string | undefined;
+            if (!alive) {
+                medal = "dead";
+            }
             if (this.game.teamMode) {
                 if (highestKillsIDs?.includes(playerID)) {
                     medal = "kills";
@@ -517,7 +521,7 @@ export class UIManager {
             gameOverText.html(message);
 
             const medalHTML = medal
-                ? html`<img class="medal" src="./img/misc/medal_${medal}.svg"/>`
+                ? html`<img class="medal${medal === "dead" ? " dead" : ""}" src="./img/misc/medal_${medal}.svg"/>`
                 : "";
 
             const badgeHTML = badge
