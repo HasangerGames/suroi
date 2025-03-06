@@ -1,4 +1,4 @@
-import { GameConstants, KillfeedMessageType, Layer, MapObjectSpawnMode, ObjectCategory, TeamSize } from "@common/constants";
+import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory, TeamSize } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
 import { type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
@@ -7,7 +7,7 @@ import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacle
 import { SyncedParticles, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { type JoinData } from "@common/packets/joinPacket";
 import { JoinedPacket } from "@common/packets/joinedPacket";
-import { KillFeedPacket, type KillFeedData } from "@common/packets/killFeedPacket";
+import { KillPacket, type KillData } from "@common/packets/killPacket";
 import { PacketDataIn, PacketType } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { type PingSerialization } from "@common/packets/updatePacket";
@@ -160,8 +160,7 @@ export class Game implements GameData {
      */
     readonly mapPings: PingSerialization[] = [];
 
-    private _killLeader: Player | undefined;
-    get killLeader(): Player | undefined { return this._killLeader; }
+    killLeader: Player | undefined;
     killLeaderDirty = false;
 
     private readonly _spawnableItemTypeCache = [] as Cache;
@@ -374,15 +373,14 @@ export class Game implements GameData {
         this.gas.tick();
 
         // First loop over players: movement, animations, & actions
-        for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
-            if (!player.dead) player.update();
+        for (const player of this.livingPlayers) {
+            player.update();
         }
 
         // Cache objects serialization
         for (const partialObject of this.partialDirtyObjects) {
-            if (!this.fullDirtyObjects.has(partialObject)) {
-                partialObject.serializePartial();
-            }
+            if (this.fullDirtyObjects.has(partialObject)) continue;
+            partialObject.serializePartial();
         }
         for (const fullObject of this.fullDirtyObjects) {
             fullObject.serializeFull();
@@ -412,6 +410,7 @@ export class Game implements GameData {
         this.packets.length = 0;
         this.planes.length = 0;
         this.mapPings.length = 0;
+        this.killLeaderDirty = false;
         this.aliveCountDirty = false;
         this.gas.dirty = false;
         this.gas.completionRatioDirty = false;
@@ -498,65 +497,33 @@ export class Game implements GameData {
     }
 
     updateKillLeader(player: Player): void {
-        const oldKillLeader = this._killLeader;
+        const killLeader = this.killLeader;
 
-        if (player.kills > (this._killLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
-            this._killLeader = player;
-
-            if (oldKillLeader !== this._killLeader) {
-                this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
-            }
-        } else if (player === oldKillLeader) {
-            this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderUpdated);
+        if (
+            player.kills > (killLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1))
+            && !player.dead
+            && player !== killLeader
+        ) {
+            this.killLeader = player;
+            this.killLeaderDirty = true;
+        } else if (player === killLeader) {
+            this.killLeaderDirty = true;
         }
     }
 
-    killLeaderDead(killer?: Player): void {
-        this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderDeadOrDisconnected, { attackerId: killer?.id });
+    findNewKillLeader(): void {
+        let mostKills = GameConstants.player.killLeaderMinKills - 1;
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
-            if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
+            if (player.kills > mostKills) {
+                mostKills = player.kills;
                 newKillLeader = player;
+            } else if (player.kills === mostKills) { // multiple players with the same kills means no leader
+                newKillLeader = undefined;
             }
         }
-        this._killLeader = newKillLeader;
-        this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
-    }
-
-    killLeaderDisconnected(leader: Player): void {
-        this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderDeadOrDisconnected, { disconnected: true });
-        let newKillLeader: Player | undefined;
-        for (const player of this.livingPlayers) {
-            if (player === leader) continue;
-            if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
-                newKillLeader = player;
-            }
-        }
-
-        if ((this._killLeader = newKillLeader) !== undefined) {
-            this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
-        }
-    }
-
-    private _sendKillLeaderKFPacket<
-        Message extends
-            | KillfeedMessageType.KillLeaderAssigned
-            | KillfeedMessageType.KillLeaderDeadOrDisconnected
-            | KillfeedMessageType.KillLeaderUpdated
-    >(
-        messageType: Message,
-        options?: Partial<Omit<KillFeedData & { readonly messageType: NoInfer<Message> }, "messageType" | "playerID" | "attackerKills">>
-    ): void {
-        if (this._killLeader === undefined) return;
-
-        this.packets.push(
-            KillFeedPacket.create({
-                messageType,
-                victimId: this._killLeader.id,
-                attackerKills: this._killLeader.kills,
-                ...options
-            } as KillFeedData & { readonly messageType: Message })
-        );
+        this.killLeader = newKillLeader;
+        this.killLeaderDirty = true;
     }
 
     addPlayer(socket: WebSocket | undefined, data: PlayerJoinData): Player | undefined {
@@ -786,7 +753,7 @@ export class Game implements GameData {
         this.log(`"${player.name}" left`);
 
         if (player === this.killLeader) {
-            this.killLeaderDisconnected(player);
+            this.findNewKillLeader();
         }
 
         player.disconnected = true;

@@ -223,13 +223,6 @@ export const enum AnimationType {
     Revive
 }
 
-export const enum KillfeedMessageType {
-    DeathOrDown,
-    KillLeaderAssigned,
-    KillLeaderDeadOrDisconnected,
-    KillLeaderUpdated
-}
-
 export const enum GasState {
     Inactive,
     Waiting,
@@ -275,21 +268,6 @@ export const enum PlayerActions {
     Reload,
     UseItem,
     Revive
-}
-
-export enum KillfeedEventType {
-    Suicide,
-    NormalTwoParty,
-    FinishedOff,
-    FinallyKilled,
-    Gas,
-    BleedOut,
-    Airdrop
-}
-
-export const enum KillfeedEventSeverity {
-    Kill,
-    Down
 }
 
 export enum InventoryMessages {

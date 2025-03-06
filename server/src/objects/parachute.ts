@@ -5,6 +5,7 @@ import { type FullData } from "@common/utils/objectsSerializations";
 import { type Vector } from "@common/utils/vector";
 import { type Airdrop, type Game } from "../game";
 import { BaseGameObject } from "./gameObject";
+import { KillEventType } from "@common/packets/killPacket";
 
 export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
     override readonly fullAllocBytes = 8;
@@ -46,7 +47,7 @@ export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
                         case object.isPlayer: {
                             object.piercingDamage({
                                 amount: GameConstants.airdrop.damage,
-                                source: KillfeedEventType.Airdrop
+                                source: KillEventType.Airdrop
                             });
                             break;
                         }

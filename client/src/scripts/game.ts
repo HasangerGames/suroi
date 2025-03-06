@@ -4,14 +4,14 @@ import { Emotes } from "@common/definitions/emotes";
 import { ArmorType } from "@common/definitions/items/armors";
 import { type DualGunNarrowing } from "@common/definitions/items/guns";
 import { Scopes } from "@common/definitions/items/scopes";
-import { Loots } from "@common/definitions/loots";
+import { Skins } from "@common/definitions/items/skins";
 import type { ColorKeys, Mode, ModeDefinition } from "@common/definitions/modes";
 import { Modes } from "@common/definitions/modes";
 import { type JoinedPacketData } from "@common/packets/joinedPacket";
-import { JoinPacket, type JoinPacketCreation } from "@common/packets/joinPacket";
-import { PacketType, type AnyPacket, type DataSplit, type PacketDataIn, type PacketDataOut } from "@common/packets/packet";
+import { JoinPacket } from "@common/packets/joinPacket";
+import { PacketType, type DataSplit, type PacketDataIn, type PacketDataOut } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
-import { type UpdatePacketDataOut } from "@common/packets/updatePacket";
+import { type UpdateDataOut } from "@common/packets/updatePacket";
 import { CircleHitbox, HitboxType } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, equalLayer } from "@common/utils/layer";
 import { EaseFunctions, Geometry, Numeric } from "@common/utils/math";
@@ -364,12 +364,12 @@ export class Game {
             }
 
             let skin: typeof defaultClientCVars["cv_loadout_skin"];
-            const joinPacket: JoinPacketCreation = {
+            this.sendPacket(JoinPacket.create({
                 isMobile: this.inputManager.isMobile,
                 name: this.console.getBuiltInCVar("cv_player_name"),
-                skin: Loots.fromStringSafe(
+                skin: Skins.fromStringSafe(
                     this.console.getBuiltInCVar("cv_loadout_skin")
-                ) ?? Loots.fromString(
+                ) ?? Skins.fromString(
                     typeof (skin = defaultClientCVars.cv_loadout_skin) === "object"
                         ? skin.value
                         : skin
@@ -378,9 +378,7 @@ export class Game {
                 emotes: EMOTE_SLOTS.map(
                     slot => Emotes.fromStringSafe(this.console.getBuiltInCVar(`cv_loadout_${slot}_emote`))
                 )
-            };
-
-            this.sendPacket(JoinPacket.create(joinPacket));
+            }));
 
             this.camera.addObject(this.gasRender.graphics);
             this.map.indicator.setFrame("player_indicator");
@@ -493,8 +491,8 @@ export class Game {
             case PacketType.GameOver:
                 this.uiManager.showGameOverScreen(packet);
                 break;
-            case PacketType.KillFeed:
-                this.uiManager.processKillFeedPacket(packet);
+            case PacketType.Kill:
+                this.uiManager.processKillPacket(packet);
                 break;
             case PacketType.Report: {
                 this.uiManager.processReportPacket(packet);
@@ -743,7 +741,7 @@ export class Game {
         return n;
     }
 
-    processUpdate(updateData: UpdatePacketDataOut): void {
+    processUpdate(updateData: UpdateDataOut): void {
         const now = Date.now();
         this._serverDt = now - this._lastUpdateTime;
         this._lastUpdateTime = now;
@@ -876,6 +874,10 @@ export class Game {
 
         for (const ping of updateData.mapPings ?? []) {
             this.map.addMapPing(ping);
+        }
+
+        if (updateData.killLeader) {
+            this.uiManager.updateKillLeader(updateData.killLeader);
         }
 
         this.tick();

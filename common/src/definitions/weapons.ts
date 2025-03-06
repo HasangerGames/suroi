@@ -1,4 +1,4 @@
-import { KillDamageSources } from "../packets/killFeedPacket";
+import { KillDamageSources } from "../packets/killPacket";
 import { ObjectDefinitions } from "../utils/objectDefinitions";
 import { Explosions } from "./explosions";
 import { Guns } from "./items/guns";

@@ -4,7 +4,7 @@ import { GameOverPacket } from "./gameOverPacket";
 import { InputPacket } from "./inputPacket";
 import { JoinPacket } from "./joinPacket";
 import { JoinedPacket } from "./joinedPacket";
-import { KillFeedPacket } from "./killFeedPacket";
+import { KillPacket } from "./killPacket";
 import { MapPacket } from "./mapPacket";
 import { DataSplit, MutablePacketDataIn, PacketDataOut } from "./packet";
 import { PickupPacket } from "./pickupPacket";
@@ -18,7 +18,7 @@ export const Packets = [
     InputPacket,
     JoinedPacket,
     JoinPacket,
-    KillFeedPacket,
+    KillPacket,
     MapPacket,
     PickupPacket,
     ReportPacket,

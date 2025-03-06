@@ -9,7 +9,7 @@ export enum PacketType {
     Input,
     Joined,
     Join,
-    KillFeed,
+    Kill,
     Map,
     Pickup,
     Report,
@@ -53,7 +53,8 @@ export type PacketDataOut<T extends AnyPacket = AnyPacket> = T extends Packet<in
 
 export type MutablePacketDataIn = PacketDataIn | SDeepMutable<PacketDataIn>;
 
-export class Packet<DataIn extends { readonly type: PacketType }, DataOut = DataIn> {
+interface BasePacketData { readonly type: PacketType }
+export class Packet<DataIn extends BasePacketData, DataOut extends BasePacketData = DataIn> {
     serialize: (stream: SuroiByteStream, data: DataIn) => void;
     deserialize: (stream: SuroiByteStream, splits?: DataSplit) => DataOut;
 

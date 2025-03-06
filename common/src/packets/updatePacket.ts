@@ -15,18 +15,6 @@ import { type SuroiByteStream } from "../utils/suroiByteStream";
 import { Vec, type Vector } from "../utils/vector";
 import { DataSplitTypes, getSplitTypeForCategory, Packet, PacketType } from "./packet";
 
-interface ObjectFullData {
-    readonly id: number
-    readonly type: ObjectCategory
-    readonly data: FullData<ObjectFullData["type"]>
-}
-
-interface ObjectPartialData {
-    readonly id: number
-    readonly type: ObjectCategory
-    readonly data: ObjectsNetData[ObjectCategory]
-}
-
 function serializePlayerData(
     strm: SuroiByteStream,
     {
@@ -483,6 +471,18 @@ export interface EmoteSerialization {
     readonly playerID: number
 }
 
+interface ObjectFullData {
+    readonly id: number
+    readonly type: ObjectCategory
+    readonly data: FullData<ObjectFullData["type"]>
+}
+
+interface ObjectPartialData {
+    readonly id: number
+    readonly type: ObjectCategory
+    readonly data: ObjectsNetData[ObjectCategory]
+}
+
 export interface PlayerData {
     readonly pingSeq: number
     readonly minMax?: {
@@ -526,7 +526,7 @@ export interface PlayerData {
     readonly teamID?: number
 }
 
-export interface UpdatePacketDataCommon {
+export interface UpdateDataCommon {
     readonly type: PacketType.Update
     readonly flags: number
     readonly playerData?: PlayerData
@@ -588,11 +588,11 @@ export interface ClientOnly {
 /**
  * For server use
  */
-export type UpdateDataIn = UpdatePacketDataCommon & ServerOnly;
+export type UpdateDataIn = UpdateDataCommon & ServerOnly;
 /**
  * For client use
  */
-export type UpdateDataOut = UpdatePacketDataCommon & ClientOnly;
+export type UpdateDataOut = UpdateDataCommon & ClientOnly;
 
 const planeMinPos = -GameConstants.maxPosition;
 const planeMaxPos = GameConstants.maxPosition * 2;
@@ -887,7 +887,7 @@ export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.U
                     hasColor,
                     nameColor: hasColor ? stream.readUint24() : undefined,
                     badge: (decorations & 1) !== 0 ? Badges.readFromStream(stream) : undefined
-                } as (UpdatePacketDataCommon["newPlayers"] & object)[number];
+                } as (UpdateDataCommon["newPlayers"] & object)[number];
             }, 1);
         }
 
