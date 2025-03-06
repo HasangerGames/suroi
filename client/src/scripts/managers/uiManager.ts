@@ -398,6 +398,7 @@ export class UIManager {
 
     showGameOverScreen(packet: GameOverData): void {
         const game = this.game;
+        game.gameOver = true;
 
         this.ui.interactMsg.hide();
         this.ui.spectatingContainer.hide();
@@ -418,16 +419,10 @@ export class UIManager {
             gameOverRank,
             gameOverTeamKills,
             gameOverTeamKillsContainer
-            /* gameOverPlayerName,
-            gameOverKills,
-            gameOverDamageDone,
-            gameOverDamageTaken,
-            gameOverTime */
         } = this.ui;
 
-        game.gameOver = true;
-
-        const won = packet.rank === 1;
+        const { rank, teammates } = packet;
+        const won = rank === 1;
         if (!won) {
             this.ui.btnSpectate.removeClass("btn-disabled").show();
             game.map.indicator.setFrame("player_indicator_dead");
@@ -437,158 +432,142 @@ export class UIManager {
 
         chickenDinner.toggle(won);
 
-        const medals = {
-            kills: {
-                id: "kills",
-                assigned: false
-            },
-            damageDone: {
-                id: "skull",
-                assigned: false
-            },
-            damageTaken: {
-                id: "shield",
-                assigned: false
-            },
-            youdidit: {
-                id: "youdidit"
-                //  assigned: false
-            }
-        };
+        let totalKills = 0;
 
-        let bestKills = packet.teammates[0].kills,
-            totalKills = 0,
-            bestDamageDone = packet.teammates[0].damageDone,
-            bestDamageTaken = packet.teammates[0].damageTaken,
-            wonMedal = false,
-            medal = "",
-            medalType = "";
+        let highestKills = 0;
+        let highestKillsIDs: number[] | undefined = [];
+
+        let mostDamageDone = 0;
+        let mostDamageDoneIDs: number[] | undefined = [];
+
+        let mostDamageTaken = 0;
+        let mostDamageTakenIDs: number[] | undefined = [];
 
         if (this.game.teamMode) {
-            for (let i = 0; i < packet.teammates.length; i++) {
-                if (bestKills < packet.teammates[i].kills) {
-                    bestKills = packet.teammates[i].kills;
+            for (const { playerID, kills, damageDone, damageTaken } of teammates) {
+                if (kills > highestKills) {
+                    highestKills = kills;
+                    highestKillsIDs = [playerID];
+                } else if (kills === highestKills) {
+                    highestKillsIDs.push(playerID);
                 }
 
-                if (bestDamageDone < packet.teammates[i].damageDone) {
-                    bestDamageDone = packet.teammates[i].damageDone;
+                if (damageDone > mostDamageDone) {
+                    mostDamageDone = damageDone;
+                    mostDamageDoneIDs = [playerID];
+                } else if (damageDone === mostDamageDone) {
+                    mostDamageDoneIDs.push(playerID);
                 }
 
-                if (bestDamageTaken < packet.teammates[i].damageTaken) {
-                    bestDamageTaken = packet.teammates[i].damageTaken;
+                if (damageTaken > mostDamageTaken) {
+                    mostDamageTaken = damageTaken;
+                    mostDamageTakenIDs = [playerID];
+                } else if (damageTaken === mostDamageTaken) {
+                    mostDamageTakenIDs.push(playerID);
                 }
             }
+
+            // Only award medals under certain conditions (defined below)
+            if (highestKills < 10) highestKillsIDs = undefined;
+            if (mostDamageDone < 1000) mostDamageDoneIDs = undefined;
+            if (mostDamageTaken < 1000) mostDamageTakenIDs = undefined;
         }
 
-        for (let i = 0; i < packet.teammates.length; i++) {
-            const teammateID = packet.teammates[i].playerID;
+        const hasTeammates = teammates.length > 1;
+        const teamEliminated = hasTeammates && teammates.every(teammate => !teammate.alive);
 
+        for (const { playerID, kills, damageDone, damageTaken, timeAlive } of teammates) {
+            // Medals:
+            // Kills: More than 10 kills + most kills on team
+            // Damage Done: More than 1000 damage done + most on team
+            // Damage Taken: More than 1000 damage taken + most on team
+            // your did it: Won with 0 kills + 0 damage done
+            let medal: string | undefined;
             if (this.game.teamMode) {
-                const killsMedal = bestKills === packet.teammates[i].kills && bestKills >= 10 && !medals.kills.assigned;
-                const damageDoneMedal = bestDamageDone === packet.teammates[i].damageDone && bestDamageDone >= 1000 && !medals.damageDone.assigned;
-                const damageTakenMedal = bestDamageTaken === packet.teammates[i].damageTaken && bestDamageTaken >= 1000 && !medals.damageTaken.assigned;
-                const wellDone = packet.teammates[i].kills === 0 && packet.teammates[i].damageDone === 0 && packet.won;
-
-                wonMedal = (
-                    // Kills (More than 10 kills + most kills on team)
-                    killsMedal
-                    // Damage Dealt/Done (Must be more than 1000)
-                    || damageDoneMedal
-                    // Damage Taken (Must be more than 1000)
-                    || damageTakenMedal
-                    // you did it
-                    || wellDone
-                );
-
-                if (wonMedal) {
-                    switch (true) {
-                        case wellDone: {
-                            medalType = medals.youdidit.id;
-                            break;
-                        }
-                        case killsMedal: {
-                            medalType = medals.kills.id;
-                            medals.kills.assigned = true;
-                            break;
-                        }
-                        case damageDoneMedal: {
-                            medalType = medals.damageDone.id;
-                            medals.damageDone.assigned = true;
-                            break;
-                        }
-                        case damageTakenMedal: {
-                            medalType = medals.damageTaken.id;
-                            medals.damageTaken.assigned = true;
-                            break;
-                        }
-                    }
-
-                    medal = `<img class="medal" src="./img/misc/medal_${medalType}.svg"/>`;
+                if (highestKillsIDs?.includes(playerID)) {
+                    medal = "kills";
+                } else if (mostDamageDoneIDs?.includes(playerID)) {
+                    medal = "skull";
+                } else if (mostDamageTakenIDs?.includes(playerID)) {
+                    medal = "shield";
                 }
-
-                totalKills += packet.teammates[i].kills;
+            }
+            if (won && kills === 0 && damageDone === 0) {
+                medal = "youdidit";
             }
 
-            gameOverText.html(
-                packet.won
-                    ? getTranslatedString("msg_win")
-                    : (this.game.spectating
-                        ? packet.numberTeammates > 1
-                            ? getTranslatedString("msg_the_team_eliminated")
-                            : getTranslatedString("msg_player_died", {
-                                player: this.getPlayerData(packet.teammates[i].playerID).name
-                            })
-                        : packet.numberTeammates > 1 && packet.teammates.every(teammate => !teammate.alive) ? getTranslatedString("msg_your_team_eliminated") : getTranslatedString("msg_you_died"))
-            );
+            totalKills += kills;
 
-            const teammateName = this.getPlayerData(teammateID).name;
-            const teammateBadge = this.getPlayerData(teammateID).badge;
-            const teammateBadgeText = teammateBadge
-                ? html`<img class="badge-icon" src="./img/game/shared/badges/${teammateBadge.idString}.svg" alt="${teammateBadge.name} badge">`
+            const { name, badge } = this.getPlayerData(playerID);
+
+            let message: string;
+            if (won) {
+                message = getTranslatedString("msg_win");
+            } else {
+                if (this.game.spectating) {
+                    message = teamEliminated
+                        ? getTranslatedString("msg_the_team_eliminated")
+                        : getTranslatedString("msg_player_died", { player: name });
+                } else {
+                    message = teamEliminated
+                        ? getTranslatedString("msg_your_team_eliminated")
+                        : getTranslatedString("msg_you_died");
+                }
+            }
+            gameOverText.html(message);
+
+            const medalHTML = medal
+                ? html`<img class="medal" src="./img/misc/medal_${medal}.svg"/>`
                 : "";
 
-            const card = html` <div class="game-over-screen">
-                <h1 class="game-over-player-name" class="modal-item">${(wonMedal ? medal : "") + teammateName + teammateBadgeText}</h1>
+            const badgeHTML = badge
+                ? html`<img class="badge-icon" src="./img/game/shared/badges/${badge.idString}.svg" alt="${badge.name} badge">`
+                : "";
+
+            const card = html`
+            <div class="game-over-screen">
+              <h1 class="game-over-player-name" class="modal-item">${medalHTML}${name}${badgeHTML}</h1>
                 <div class="modal-item game-over-stats">
-                  <div class="stat">
-                    <span class="stat-name" translation="go_kills">${getTranslatedString("go_kills")}</span>
-                    <span class="stat-value">${packet.teammates[i].kills}</span>
-                  </div>
-                  <div class="stat">
-                    <span class="stat-name" translation="go_damage_done">${getTranslatedString("go_damage_done")}</span>
-                    <span class="stat-value">${packet.teammates[i].damageDone}</span>
-                  </div>
-                  <div class="stat">
-                    <span class="stat-name" translation="go_damage_taken">${getTranslatedString("go_damage_taken")}</span>
-                    <span class="stat-value">${packet.teammates[i].damageTaken}</span>
-                  </div>
-                  <div class="stat">
-                    <span class="stat-name" translation="go_time_alive">${getTranslatedString("go_time_alive")}</span>
-                    <span class="stat-value">${formatDate(packet.teammates[i].timeAlive)}</span>
-                  </div>
+                <div class="stat">
+                  <span class="stat-name" translation="go_kills">${getTranslatedString("go_kills")}</span>
+                  <span class="stat-value">${kills}</span>
                 </div>
-              </div>`;
+                <div class="stat">
+                  <span class="stat-name" translation="go_damage_done">${getTranslatedString("go_damage_done")}</span>
+                  <span class="stat-value">${damageDone}</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-name" translation="go_damage_taken">${getTranslatedString("go_damage_taken")}</span>
+                    <span class="stat-value">${damageTaken}</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-name" translation="go_time_alive">${getTranslatedString("go_time_alive")}</span>
+                  <span class="stat-value">${formatDate(timeAlive)}</span>
+                </div>
+              </div>
+            </div>
+            `;
 
             gameOverPlayerCards.append(card);
         }
 
+        // Player rank
+        gameOverRank.text(`#${rank}`).toggleClass("won", won);
+
         if (won) {
             void game.music.play();
-            if (this.game.teamMode && packet.teammates.length > 1) {
-                gameOverTeamKills.text(getTranslatedString("msg_kills", { kills: JSON.stringify(totalKills) }));
-                gameOverTeamKillsContainer.toggle(true);
+            if (hasTeammates) {
+                gameOverTeamKills.text(getTranslatedString("msg_kills", { kills: totalKills.toString() }));
+                gameOverTeamKillsContainer.show();
             } else {
-                gameOverTeamKillsContainer.toggle(false);
+                gameOverTeamKillsContainer.hide();
             }
         } else {
-            gameOverTeamKillsContainer.toggle(false);
+            gameOverTeamKillsContainer.hide();
         }
 
         this.gameOverScreenTimeout = window.setTimeout(() => gameOverOverlay.fadeIn(500), 500);
         setTimeout(() => this.game.screenRecordManager.endRecording(), 2500);
-
-        // Player rank
-        gameOverRank.text(`#${packet.rank}`).toggleClass("won", won);
     }
 
     // I'd rewrite this as MapPings.filter(…), but it's not really clear how

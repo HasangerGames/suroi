@@ -6,6 +6,7 @@ export interface TeammateGameOverData {
     readonly damageDone: number
     readonly damageTaken: number
     readonly timeAlive: number
+    readonly alive: boolean
 }
 
 export interface GameOverData {
@@ -23,6 +24,7 @@ export const GameOverPacket = new Packet<GameOverData>(PacketType.GameOver, {
                 .writeUint16(teammate.damageDone)
                 .writeUint16(teammate.damageTaken)
                 .writeUint16(teammate.timeAlive)
+                .writeUint8(teammate.alive ? 1 : 0)
         );
     },
 
@@ -33,7 +35,8 @@ export const GameOverPacket = new Packet<GameOverData>(PacketType.GameOver, {
             kills: stream.readUint8(),
             damageDone: stream.readUint16(),
             damageTaken: stream.readUint16(),
-            timeAlive: stream.readUint16()
+            timeAlive: stream.readUint16(),
+            alive: stream.readUint8() === 1
         }));
     }
 });
