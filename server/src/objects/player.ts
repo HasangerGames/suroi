@@ -1538,8 +1538,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const killLeader = game.killLeader;
 
         packet.planes = game.planes;
+
         packet.mapPings = [...game.mapPings, ...this._mapPings];
         this._mapPings.length = 0;
+
+        packet.killLeader = game.killLeaderDirty || this._firstPacket ? game.killLeader : undefined;
 
         // serialize and send update packet
         this.sendPacket(packet as unknown as MutablePacketDataIn);

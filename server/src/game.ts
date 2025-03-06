@@ -46,6 +46,7 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getSpawnableLoots, SpawnableItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap, removeFrom } from "./utils/misc";
+import { GameOverPacket } from "@common/packets/gameOverPacket";
 
 /*
     eslint-disable
@@ -159,6 +160,10 @@ export class Game implements GameData {
      */
     readonly mapPings: PingSerialization[] = [];
 
+    private _killLeader: Player | undefined;
+    get killLeader(): Player | undefined { return this._killLeader; }
+    killLeaderDirty = false;
+
     private readonly _spawnableItemTypeCache = [] as Cache;
 
     private _spawnableLoots: SpawnableItemRegistry | undefined;
@@ -182,15 +187,16 @@ export class Game implements GameData {
     allowJoin = false;
     over = false;
     stopped = false;
+
     get aliveCount(): number {
         return this.livingPlayers.size;
     }
 
+    aliveCountDirty = false;
+
     // #endregion
 
     startTimeout?: Timeout;
-
-    aliveCountDirty = false;
 
     /**
      * The value of `Date.now()`, as of the start of the tick.
@@ -490,9 +496,6 @@ export class Game implements GameData {
 
         this.log("Killed");
     }
-
-    private _killLeader: Player | undefined;
-    get killLeader(): Player | undefined { return this._killLeader; }
 
     updateKillLeader(player: Player): void {
         const oldKillLeader = this._killLeader;

@@ -455,7 +455,8 @@ export const enum UpdateFlags {
     DeletedPlayers = 1 << 10,
     AliveCount = 1 << 11,
     Planes = 1 << 12,
-    MapPings = 1 << 13
+    MapPings = 1 << 13,
+    KillLeader = 1 << 14
 }
 
 export interface MapPingSerialization {
@@ -560,6 +561,10 @@ export interface UpdatePacketDataCommon {
         readonly direction: number
     }>
     readonly mapPings?: readonly PingSerialization[]
+    readonly killLeader?: {
+        id: number
+        kills: number
+    }
 }
 
 export interface ServerOnly {
@@ -764,6 +769,12 @@ export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.U
             flags |= UpdateFlags.MapPings;
         }
 
+        if (data.killLeader) {
+            strm.writeObjectId(data.killLeader.id)
+                .writeUint8(data.killLeader.kills);
+            flags |= UpdateFlags.KillLeader;
+        }
+
         const idx = strm.index;
         strm.index = flagsIdx;
         strm.writeUint16(flags);
@@ -912,6 +923,13 @@ export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.U
                     ...(definition.isPlayerPing ? { playerId: stream.readObjectId() } : {})
                 } as MapPingSerialization;
             }, 1);
+        }
+
+        if ((flags & UpdateFlags.KillLeader) !== 0) {
+            data.killLeader = {
+                id: stream.readObjectId(),
+                kills: stream.readUint8()
+            };
         }
     }
 });
