@@ -1,5 +1,4 @@
 import { SuroiByteStream } from "../utils/suroiByteStream";
-import { DisconnectPacket } from "./disconnectPacket";
 import { GameOverPacket } from "./gameOverPacket";
 import { InputPacket } from "./inputPacket";
 import { JoinPacket } from "./joinPacket";
@@ -13,7 +12,6 @@ import { SpectatePacket } from "./spectatePacket";
 import { UpdatePacket } from "./updatePacket";
 
 export const Packets = [
-    DisconnectPacket,
     GameOverPacket,
     InputPacket,
     JoinedPacket,

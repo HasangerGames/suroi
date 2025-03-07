@@ -15,10 +15,8 @@ import { Loots, type WeaponDefinition } from "@common/definitions/loots";
 import { type PlayerPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
-import { DisconnectPacket } from "@common/packets/disconnectPacket";
 import { GameOverPacket, TeammateGameOverData } from "@common/packets/gameOverPacket";
 import { type InputData, type NoMobile } from "@common/packets/inputPacket";
-import { KillFeedPacket, createKillfeedMessage, type ForEventType } from "@common/packets/killFeedPacket";
 import { MutablePacketDataIn } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { ReportPacket } from "@common/packets/reportPacket";
@@ -1745,22 +1743,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._packets.push(packet);
     }
 
-    disconnect(reason: string): void {
-        if (this.disconnected) return;
-        this.disconnected = true;
-
-        const stream = new PacketStream(new ArrayBuffer(128));
-        stream.serialize(
-            DisconnectPacket.create({
-                reason
-            })
-        );
-
-        this.sendData(stream.getBuffer());
-        // timeout to make sure disconnect packet is sent
-        setTimeout(() => {
-            this.game.removePlayer(this);
-        }, 10);
+    disconnect(reason?: string): void {
+        this.game.removePlayer(this, reason);
     }
 
     sendData(buffer: ArrayBuffer): void {

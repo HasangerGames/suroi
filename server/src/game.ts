@@ -377,7 +377,7 @@ export class Game implements GameData {
             player.update();
         }
 
-        // Cache objects serialization
+        // Serialize dirty objects
         for (const partialObject of this.partialDirtyObjects) {
             if (this.fullDirtyObjects.has(partialObject)) continue;
             partialObject.serializePartial();
@@ -388,14 +388,11 @@ export class Game implements GameData {
 
         // Second loop over players: calculate visible objects & send updates
         for (const player of this.connectedPlayers) {
-            if (!player.joined) continue;
             player.secondUpdate();
         }
 
         // Third loop over players: clean up after all packets have been sent
         for (const player of this.connectedPlayers) {
-            if (!player.joined) continue;
-
             player.postPacket();
         }
 
@@ -749,16 +746,17 @@ export class Game implements GameData {
         this.pluginManager.emit("player_did_join", { player, joinPacket: packet });
     }
 
-    removePlayer(player: Player): void {
+    removePlayer(player: Player, reason?: string): void {
+        if (player.disconnected) return;
+        player.disconnected = true;
+        this.aliveCountDirty = true;
+        this.connectedPlayers.delete(player);
+
         this.log(`"${player.name}" left`);
 
         if (player === this.killLeader) {
             this.findNewKillLeader();
         }
-
-        player.disconnected = true;
-        this.aliveCountDirty = true;
-        this.connectedPlayers.delete(player);
 
         if (player.canDespawn) {
             this.livingPlayers.delete(player);
@@ -798,7 +796,11 @@ export class Game implements GameData {
         }
 
         try {
-            player.socket?.close();
+            if (reason) {
+                player.socket?.close(1000, reason);
+            } else {
+                player.socket?.close();
+            }
         } catch {
             // not a really big deal if we can't close the socket (when does this ever fail?)
         }

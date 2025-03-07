@@ -47,7 +47,7 @@ type ExcludeWeapon =
 
 export type KillData = { readonly type: PacketType.Kill } & (({
     readonly victimId: number
-    readonly severity: KillfeedEventSeverity
+    readonly severity: KillEventSeverity
 } & (({
     readonly eventType: IncludeAttacker
 } & ({

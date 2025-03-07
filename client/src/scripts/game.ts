@@ -169,8 +169,6 @@ export class Game {
     spectating = false;
     error = false;
 
-    disconnectReason = "";
-
     readonly uiManager = new UIManager(this);
     readonly pixi = new Application();
     readonly particleManager = new ParticleManager(this);
@@ -343,7 +341,6 @@ export class Game {
             this.gameStarted = true;
             this.gameOver = false;
             this.spectating = false;
-            this.disconnectReason = "";
 
             for (const graph of Object.values(this.netGraph)) graph.clear();
 
@@ -450,12 +447,12 @@ export class Game {
             resetPlayButtons(this);
         };
 
-        this._socket.onclose = (): void => {
+        this._socket.onclose = (e: CloseEvent): void => {
             this.pixi.stop();
             this.connecting = false;
             resetPlayButtons(this);
 
-            const reason = this.disconnectReason || "Connection lost";
+            const reason = e.reason || "Connection lost";
 
             if (reason.startsWith("Invalid game version")) {
                 alert(reason);
@@ -547,9 +544,6 @@ export class Game {
                 }
                 break;
             }
-            case PacketType.Disconnect:
-                this.disconnectReason = packet.reason;
-                break;
         }
     }
 
