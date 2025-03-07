@@ -39,9 +39,13 @@ export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwa
             || owner.dead
             || owner.downed
             || owner.disconnected
-            || this !== this.owner.activeItem
+            || this !== owner.activeItem
             || this._activeHandler
         ) {
+            return;
+        }
+
+        if (owner.game.pluginManager.emit("inv_item_use", this) !== undefined) {
             return;
         }
 
@@ -56,6 +60,7 @@ export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwa
     }
 
     override stopUse(): void {
+        if (this.owner.game.pluginManager.emit("inv_item_stop_use", this) !== undefined) return;
         this._activeHandler?.throw(!this.isActive);
     }
 
