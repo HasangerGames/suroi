@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 08 Mar 2025 01:18:23 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 08 Mar 2025 17:24:10 GMT
 
 ## 🇦🇱 Shqip (81% Complete) - ab.hjson
 
@@ -639,70 +639,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_screen_record` is not defined
 - Key `region_oc` is not defined
 
-## 🇷🇴 Română (79% Complete) - ro.hjson
+## 🇷🇴 Română (100% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
-### Undefined Keys
-
-- Key `msg_spectating` is not defined
-- Key `msg_enter_team_code` is not defined
-- Key `msg_lost_team_connection` is not defined
-- Key `msg_error_joining_team` is not defined
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `msg_punishment_warn_agreement` is not defined
-- Key `warning_hw_accel_1` is not defined
-- Key `warning_hw_accel_2` is not defined
-- Key `warning_hw_accel_link` is not defined
-- Key `privacy` is not defined
-- Key `donate` is not defined
-- Key `wiki` is not defined
-- Key `bindings_fullscreen` is not defined
-- Key `recording` is not defined
-- Key `settings_ambience_volume` is not defined
-- Key `settings_ambient_particles` is not defined
-- Key `settings_record_res` is not defined
-- Key `settings_show_inout` is not defined
-- Key `settings_gyro_angle` is not defined
-- Key `settings_lock_joysticks` is not defined
-- Key `settings_switch_joysticks` is not defined
-- Key `settings_left_joystick_color` is not defined
-- Key `settings_right_joystick_color` is not defined
-- Key `settings_normal_joystick_info` is not defined
-- Key `settings_switched_joystick_info` is not defined
-- Key `settings_haptics` is not defined
-- Key `msg_your_team_eliminated` is not defined
-- Key `msg_the_team_eliminated` is not defined
-- Key `msg_not_enough_space` is not defined
-- Key `msg_item_already_equipped` is not defined
-- Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
-- Key `final_gas_waiting` is not defined
-- Key `final_gas_advancing` is not defined
-- Key `interact_speaker` is not defined
-- Key `interact_monument` is not defined
-- Key `loading_fetching_data_failed` is not defined
-- Key `retry` is not defined
-- Key `bindings_explode_c4` is not defined
-- Key `bindings_screen_record` is not defined
-- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
-- Key `finally` is not defined
-- Key `with` is not defined
-- Key `you` is not defined
-- Key `yourself` is not defined
-- Key `km_killed` is not defined
-- Key `km_knocked` is not defined
-- Key `km_message` is not defined
-- Key `kf_killed` is not defined
-- Key `kf_knocked` is not defined
-- Key `kf_finished_off` is not defined
-- Key `themselves` is not defined
-- Key `kf_message` is not defined
-- Key `create_team_ready` is not defined
-- Key `m16a4` is not defined
-- Key `region_oc` is not defined
+### (No Undefined Keys)
 
 ## 🇷🇺 Русский (95% Complete) - ru.hjson
 
@@ -796,73 +737,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `region_oc` is not defined
 
-## 🇹🇼 中文（繁體） (78% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (100% Complete) - tw.hjson
 
 ### (No Invalid Keys)
 
-### Undefined Keys
-
-- Key `msg_spectating` is not defined
-- Key `msg_enter_team_code` is not defined
-- Key `msg_lost_team_connection` is not defined
-- Key `msg_error_joining_team` is not defined
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `msg_punishment_warn_agreement` is not defined
-- Key `warning_hw_accel_1` is not defined
-- Key `warning_hw_accel_2` is not defined
-- Key `warning_hw_accel_link` is not defined
-- Key `privacy` is not defined
-- Key `donate` is not defined
-- Key `wiki` is not defined
-- Key `bindings_fullscreen` is not defined
-- Key `recording` is not defined
-- Key `copied` is not defined
-- Key `settings_ambience_volume` is not defined
-- Key `settings_ambient_particles` is not defined
-- Key `settings_record_res` is not defined
-- Key `settings_show_inout` is not defined
-- Key `settings_gyro_angle` is not defined
-- Key `settings_lock_joysticks` is not defined
-- Key `settings_switch_joysticks` is not defined
-- Key `settings_left_joystick_color` is not defined
-- Key `settings_right_joystick_color` is not defined
-- Key `settings_normal_joystick_info` is not defined
-- Key `settings_switched_joystick_info` is not defined
-- Key `settings_haptics` is not defined
-- Key `msg_your_team_eliminated` is not defined
-- Key `msg_the_team_eliminated` is not defined
-- Key `msg_not_enough_space` is not defined
-- Key `msg_item_already_equipped` is not defined
-- Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
-- Key `final_gas_waiting` is not defined
-- Key `final_gas_advancing` is not defined
-- Key `interact_speaker` is not defined
-- Key `interact_monument` is not defined
-- Key `loading_fetching_data_failed` is not defined
-- Key `retry` is not defined
-- Key `bindings_explode_c4` is not defined
-- Key `bindings_screen_record` is not defined
-- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
-- Key `kf_finished_off_kill` is not defined
-- Key `kf_finished_off_down` is not defined
-- Key `finally` is not defined
-- Key `with` is not defined
-- Key `you` is not defined
-- Key `yourself` is not defined
-- Key `km_killed` is not defined
-- Key `km_knocked` is not defined
-- Key `km_message` is not defined
-- Key `kf_killed` is not defined
-- Key `kf_knocked` is not defined
-- Key `kf_finished_off` is not defined
-- Key `themselves` is not defined
-- Key `kf_message` is not defined
-- Key `create_team_ready` is not defined
-- Key `m16a4` is not defined
-- Key `region_oc` is not defined
+### (No Undefined Keys)
 
 ## 🇻🇳 Tiếng Việt (94% Complete) - vi.hjson
 
