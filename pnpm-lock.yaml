@@ -145,8 +145,8 @@ importers:
         specifier: ^4.0.9
         version: 4.0.9
       croner:
-        specifier: ^9.0.0
-        version: 9.0.0
+        specifier: ^8.1.2
+        version: 8.1.2
       dotenv:
         specifier: ^16.4.7
         version: 16.4.7
@@ -1730,6 +1730,10 @@ packages:
 
   create-require@1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
+
+  croner@8.1.2:
+    resolution: {integrity: sha512-ypfPFcAXHuAZRCzo3vJL6ltENzniTjwe/qsLleH1V2/7SRDjgvRQyrLmumFTLmjFax4IuSxfGXEn79fozXcJog==}
+    engines: {node: '>=18.0'}
 
   croner@9.0.0:
     resolution: {integrity: sha512-onMB0OkDjkXunhdW9htFjEhqrD54+M94i6ackoUkjHKbRnXdyEyKRelp4nJ1kAz32+s27jP1FsebpJCVl0BsvA==}
@@ -4962,6 +4966,8 @@ snapshots:
       - ts-node
 
   create-require@1.1.1: {}
+
+  croner@8.1.2: {}
 
   croner@9.0.0: {}
 
