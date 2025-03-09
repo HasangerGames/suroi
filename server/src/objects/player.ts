@@ -54,7 +54,7 @@ import { type Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { type SyncedParticle } from "./syncedParticle";
 import { type ThrowableProjectile } from "./throwableProj";
-import { KillEventType } from "@common/packets/killPacket";
+import { DamageSources, KillPacket } from "@common/packets/killPacket";
 
 export interface PlayerJoinData {
     readonly ip?: string
@@ -1196,7 +1196,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if (gas.doDamage && gas.isInGas(this.position)) {
             this.piercingDamage({
                 amount: gas.scaledDamage(this.position) + (applyScaleDamageFactor ? (gas.getDef().scaleDamageFactor ?? 0) + this.additionalGasDamage : 0),
-                source: KillEventType.Gas
+                source: DamageSources.Gas
             });
             if (applyScaleDamageFactor) {
                 this.additionalGasDamage = this.additionalGasDamage + (gas.getDef().scaleDamageFactor ?? 0);
@@ -1210,7 +1210,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if (this.downed && !this.beingRevivedBy) {
             this.piercingDamage({
                 amount: GameConstants.player.bleedOutDPMs * dt,
-                source: KillEventType.BleedOut
+                source: DamageSources.BleedOut
             });
         }
 
@@ -1243,8 +1243,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             if (depletion?.health) {
                 this.piercingDamage({
                     amount: depletion.health * dt,
-                    source: KillEventType.Gas
-                //          ^^^^^^^^^^^^^^^^^^^^^ dubious
+                    source: DamageSources.Gas
+                //          ^^^^^^^^^^^^^ dubious
                 });
             }
 
@@ -2053,6 +2053,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
     }
 
+    private static _itemToDamageSource(item: NonNullable<DamageParams["weaponUsed"]>): DamageSources {
+        if (item instanceof Explosion) return DamageSources.Explosion;
+        else if (item.isGun) return DamageSources.Gun;
+        else if (item.isMelee) return DamageSources.Melee;
+        else /* if (item.isThrowable) */ return DamageSources.Throwable;
+    }
+
     // dies of death
     die(params: Omit<DamageParams, "amount">): void {
         if (this.health > 0 || this.dead) return;
@@ -2071,17 +2078,44 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.canDespawn = false;
         this._team?.setDirty();
 
-        let action: Action | undefined;
-        if ((action = this.beingRevivedBy?.action) instanceof ReviveAction) {
+        let action = this.beingRevivedBy?.action;
+        if (action instanceof ReviveAction) {
             action.cancel();
         }
 
-        const sourceIsPlayer = source instanceof Player;
+        const packet = KillPacket.create();
+        packet.victimId = this.id;
+        packet.downed = wasDowned;
+        packet.killed = true;
 
-        if (sourceIsPlayer) {
+        if (weaponUsed) {
+            packet.weaponUsed = weaponUsed.definition;
+            packet.damageSource = Player._itemToDamageSource(weaponUsed);
+        }
+
+        const downedBy = this.downedBy?.player;
+        if (source === DamageSources.Gas || source === DamageSources.BleedOut || source === DamageSources.FinallyKilled) {
+            packet.damageSource = source;
+
+            if (downedBy !== undefined) {
+                packet.creditedId = downedBy.id;
+                packet.kills = ++downedBy.kills;
+            }
+        } else if (source instanceof Player && source !== this) {
             this.killedBy = source;
-            source.kills++;
 
+            packet.attackerId = source.id;
+
+            // Give kill credit to the player who downed if they're on the same team as the killer.
+            // Otherwise, the killer always gets credit.
+            if (downedBy && downedBy.teamID === source.teamID) {
+                packet.creditedId = downedBy.id;
+                packet.kills = ++downedBy.kills;
+            } else {
+                packet.kills = ++source.kills;
+            }
+
+            // Apply perk effects. Perk effects are always applied to the killer regardless of the above.
             for (const perk of source.perks) {
                 switch (perk.idString) {
                     case PerkIds.BabyPlumpkinPie: {
@@ -2114,119 +2148,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     }
                 }
             }
+
+            source.updateAndApplyModifiers();
         }
 
-        // if (
-        //     sourceIsPlayer
-        //     // firstly, 'GameObject in KillEventType' returns false;
-        //     // secondly, so does 'undefined in KillEventType';
-        //     // thirdly, enum double-indexing means that 'KillEventType.<whatever> in KillEventType' returns true
-        //     // @ts-expect-error see above
-        //     || source in KillEventType
-        // ) {
-        //     const message = createKillfeedMessage(KillfeedMessageType.DeathOrDown)
-        //         .victimId(this.id);
-
-        //     const attributeToPlayer = (player: Player, item: InventoryItem | null = player.activeItem): void => {
-        //         ++player.kills;
-
-        //         (
-        //             message as ForEventType<
-        //                 | KillEventType.NormalTwoParty
-        //                 | KillEventType.FinishedOff
-        //                 | KillEventType.FinallyKilled
-        //                 | KillEventType.Gas
-        //                 | KillEventType.BleedOut
-        //                 | KillEventType.Airdrop
-        //             >
-        //         ).attackerId(player.id)
-        //             .attackerKills(player.kills);
-
-        //         if (item !== null) {
-        //             if (
-        //                 [
-        //                     KillEventType.Suicide,
-        //                     KillEventType.NormalTwoParty,
-        //                     KillEventType.FinishedOff
-        //                 ].includes(message.eventType() as DamageParams["source"] & KillEventType)
-        //             ) {
-        //                 const msg = (message as ForEventType<
-        //                     KillEventType.Suicide |
-        //                     KillEventType.NormalTwoParty |
-        //                     KillEventType.FinishedOff
-        //                 >).weaponUsed(item.definition);
-
-        //                 if (item.definition.killstreak) {
-        //                     msg.killstreak(item.stats.kills);
-        //                 }
-        //             }
-        //         }
-        //     };
-
-        //     const attributeToDowner = (): boolean => {
-        //         const downer = this.downedBy;
-        //         if (downer === undefined) return false;
-
-        //         const { player, item } = downer;
-
-        //         ++player.kills;
-        //         if (
-        //             (item?.isGun || item?.isMelee)
-        //             && player.inventory.weapons.includes(item)
-        //         ) {
-        //             const kills = ++item.stats.kills;
-
-        //             for (const entry of item.definition.wearerAttributes?.on?.kill ?? []) {
-        //                 if (kills >= (entry.limit ?? Infinity)) continue;
-
-        //                 player.health += entry.healthRestored ?? 0;
-        //                 player.adrenaline += entry.adrenalineRestored ?? 0;
-        //             }
-        //         }
-
-        //         return true;
-        //     };
-
-        //     if (
-        //         (
-        //             [
-        //                 KillEventType.FinallyKilled,
-        //                 KillEventType.Gas,
-        //                 KillEventType.BleedOut
-        //             ].includes as (arg: DamageParams["source"]) => arg is DamageParams["source"] & KillEventType
-        //         )(source)
-        //     ) {
-        //         message.eventType(source);
-
-        //         const downer = this.downedBy;
-        //         if (downer !== undefined) {
-        //             attributeToPlayer(downer.player);
-        //         }
-        //     } else if (sourceIsPlayer) {
-        //         if (source === this) {
-        //             message.eventType(KillEventType.Suicide)
-        //                 .weaponUsed(weaponUsed?.definition);
-        //         } else {
-        //             message.eventType(
-        //                 wasDowned
-        //                     ? KillEventType.FinishedOff
-        //                     : KillEventType.NormalTwoParty
-        //             ).weaponUsed(weaponUsed?.definition);
-
-        //             if (source.teamID === this.downedBy?.player.teamID) {
-        //                 attributeToDowner();
-        //             }
-
-        //             attributeToPlayer(source, weaponUsed instanceof Explosion ? null : weaponUsed); // …then attribute to the killer
-        //         }
-        //     } else if (source instanceof BaseGameObject) {
-        //         console.warn(`Unexpected source of death for player '${this.name}' (id: ${this.id}); source is of category ${ObjectCategory[source.type]}`);
-        //     }
-
-        //     this.game.packets.push(
-        //         KillFeedPacket.create(message.build())
-        //     );
-        // }
+        this.game.packets.push(packet);
 
         // Reset movement and attacking variables
         this.movement.up = this.movement.down = this.movement.left = this.movement.right = false;
@@ -2301,6 +2227,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.game.addLoot(skin, position, layer);
         }
 
+        // Drop perks
         for (const perk of this.perks) {
             if (!perk.noDrop) {
                 this.game.addLoot(perk, position, layer);
@@ -2344,9 +2271,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.game.findNewKillLeader();
         }
 
-        this.updateAndApplyModifiers();
-        if (sourceIsPlayer) source.updateAndApplyModifiers();
-
         this.game.pluginManager.emit("player_did_die", {
             player: this,
             ...params
@@ -2362,7 +2286,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 player.health = 0;
                 player.die({
-                    source: KillEventType.FinallyKilled
+                    source: DamageSources.FinallyKilled
                 });
             }
 
@@ -2373,35 +2297,33 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     down(
-        source?: GameObject | (typeof KillEventType)["Gas" | "Airdrop" | "BleedOut" | "FinallyKilled"],
+        source?: GameObject | (typeof DamageSources)["Gas" | "Airdrop" | "BleedOut" | "FinallyKilled"],
         weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
     ): void {
-        const sourceIsPlayer = source instanceof Player;
+        const packet = KillPacket.create();
+        packet.victimId = this.id;
+        packet.downed = true;
+        packet.killed = false;
 
-        // if (sourceIsPlayer || source === KillEventType.Gas || source === KillEventType.Airdrop) {
-        //     const message = createKillfeedMessage(KillfeedMessageType.DeathOrDown)
-        //         .severity(KillfeedEventSeverity.Down)
-        //         .victimId(this.id);
+        if (source instanceof Player) {
+            this.downedBy = {
+                player: source,
+                item: weaponUsed instanceof InventoryItemBase ? weaponUsed : undefined
+            };
 
-        //     if (sourceIsPlayer) {
-        //         this.downedBy = {
-        //             player: source,
-        //             item: weaponUsed instanceof InventoryItemBase ? weaponUsed : undefined
-        //         };
+            if (weaponUsed) {
+                packet.weaponUsed = weaponUsed.definition;
+                packet.damageSource = Player._itemToDamageSource(weaponUsed);
+            }
 
-        //         if (source !== this) {
-        //             message.eventType(KillEventType.NormalTwoParty)
-        //                 .attackerId(source.id)
-        //                 .weaponUsed(weaponUsed?.definition);
-        //         }
-        //     } else {
-        //         message.eventType(source);
-        //     }
+            if (source !== this) {
+                packet.attackerId = source.id;
+            }
+        } else if (source === DamageSources.Gas || source === DamageSources.Airdrop) {
+            packet.damageSource = source;
+        }
 
-        //     this.game.packets.push(
-        //         KillFeedPacket.create(message.build())
-        //     );
-        // }
+        this.game.packets.push(packet);
 
         this.canDespawn = false;
         this.downed = true;

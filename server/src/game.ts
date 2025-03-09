@@ -7,7 +7,6 @@ import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacle
 import { SyncedParticles, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { type JoinData } from "@common/packets/joinPacket";
 import { JoinedPacket } from "@common/packets/joinedPacket";
-import { KillPacket, type KillData } from "@common/packets/killPacket";
 import { PacketDataIn, PacketType } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { type PingSerialization } from "@common/packets/updatePacket";
@@ -46,17 +45,7 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getSpawnableLoots, SpawnableItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap, removeFrom } from "./utils/misc";
-import { GameOverPacket } from "@common/packets/gameOverPacket";
 
-/*
-    eslint-disable
-
-    @stylistic/indent-binary-ops
-*/
-
-/*
-    `@stylistic/indent-binary-ops`: eslint sucks at indenting ts types
- */
 export class Game implements GameData {
     public readonly id: number;
 
