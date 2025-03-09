@@ -56,8 +56,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
         this.container.sortableChildren = true;
 
-        this.game.camera.addObject(this.ceilingContainer);
-
         this.updateFromData(data, true);
     }
 

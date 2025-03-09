@@ -112,15 +112,7 @@ export class Game {
 
     readonly spinningImages = new Map<SuroiSprite, number>();
 
-   // activeLayer = Layer.Ground;
-
     containerLayers: Partial<Record<Layer, Container>> = {};
-      /*  [Layer.Basement1]: new Container(),
-        [Layer.ToBasement1]: new Container(),
-        [Layer.Ground]: new Container(),
-        [Layer.ToFloor1]: new Container(),
-        [Layer.Floor1]: new Container()
-    }; */
 
     readonly playerNames = new Map<number, {
         readonly name: string
@@ -879,26 +871,34 @@ export class Game {
     backgroundTween?: Tween<{ readonly r: number, readonly g: number, readonly b: number }>;
     volumeTween?: Tween<GameSound>;
 
-    changeLayer(layer: Layer): void {
+    changeLayer(layer: Layer/* , doTransition: boolean */): void {
         // [containerLayer]: Setup
         let containerLayer = this.containerLayers[this.layer ?? Layer.Ground];
 
         if (containerLayer === undefined) {
             containerLayer = new Container();
             this.camera.addObject(containerLayer);
+
+            // For objects, we update their z-index and add them to the container layer.
             for (const object of this.objects) {
                 object.updateZIndex();
                 containerLayer.addChild(object.container);
+
+                // We add the ceiling container into the container layer and not the camera container.
+                if (object.isBuilding) {
+                    containerLayer.addChild(object.ceilingContainer);
+                }
             }
 
-          // TODO: Layer Transition
-          /*  if (adjacentOrEqualLayer(this.layer ?? Layer.Ground, layer) && isGroundLayer(layer)) {
+            // TODO: Layer Transition
+            /* if (doTransition) {
                 containerLayer.alpha = 0;
+                console.log(this.containerLayers[layer]);
                 this.layerTween?.kill();
                 this.layerTween = this.addTween({
                     target: containerLayer,
                     to: { alpha: 1 },
-                    duration: LAYER_TRANSITION_DELAY,
+                    duration: LAYER_TRANSITION_DELAY * 2,
                     onComplete: () => { this.layerTween = undefined; }
                 });
             } */
