@@ -236,6 +236,32 @@ export const Events = {
     inv_item_unequip: makeEvent(),
 
     /**
+     * Emitted whenever an inventory item is 'used'. For firearms
+     * and melees, this corresponds to attacking with them. For
+     * grenades, this corresponds to starting the cooking process.
+     *
+     * In all cases, this event is emitted after any input buffering
+     * has potentially been applied, and emitted after any pre-flight
+     * checks have been performed (ex: item is active? owner is not
+     * dead? etc) If the pre-flight checks fail, this event is not
+     * emitted. If you wish to be informed of these, use
+     * {@link Events.player_start_attacking} Cancelling this event
+     * emulates a pre-flight check fail. Among other things, this
+     * means that side-effects (such as setting `lastUse`) do not
+     * occur.
+     */
+    inv_item_use: makeEvent(true),
+    /**
+     * Emitted whenever an inventory item stops being 'used'. For
+     * all items, this is fired when the {@link InventoryItem#stopUse}
+     * method is called.
+     *
+     * Cancelling this event will prevent the rest of the `stopUse`
+     * method from running, but will *not* reset the `attacking` flag.
+     */
+    inv_item_stop_use: makeEvent(true),
+
+    /**
      * Emitted whenever a weapon's stats have been changed
      */
     inv_item_stats_changed: makeEvent(),
@@ -481,6 +507,8 @@ export interface EventDataMap {
 
     readonly inv_item_equip: InventoryItem
     readonly inv_item_unequip: InventoryItem
+    readonly inv_item_use: InventoryItem
+    readonly inv_item_stop_use: InventoryItem
     readonly inv_item_stats_changed: {
         readonly item: InventoryItem
         /**

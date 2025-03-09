@@ -100,6 +100,11 @@ export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
             return;
         }
 
+        if (this.owner.game.pluginManager.emit("inv_item_use", this) !== undefined) {
+            this._consecutiveShots = 0;
+            return;
+        }
+
         owner.action?.cancel();
         clearTimeout(this._burstTimeout);
 
@@ -383,6 +388,14 @@ export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
                 : def.fireDelay,
             this._useItemNoDelayCheck.bind(this, true)
         );
+    }
+
+    stopUse(): void {
+        // if (this.owner.game.pluginManager.emit("inv_item_stop_use", this) !== undefined) return;
+        // there's no logic in this method, so just emit the event and exit. if there ever comes
+        // the need to put logic here, uncomment the line above and remove the current one
+
+        this.owner.game.pluginManager.emit("inv_item_stop_use", this);
     }
 
     reload(skipFireDelayCheck = false): void {

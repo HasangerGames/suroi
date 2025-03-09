@@ -42,6 +42,10 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
      * namely setTimeout
      */
     private _useItemNoDelayCheck(skipAttackCheck: boolean): void {
+        if (this.owner.game.pluginManager.emit("inv_item_use", this) !== undefined) {
+            return;
+        }
+
         const owner = this.owner;
         const definition = this.definition;
 
@@ -135,6 +139,14 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
                 }
             }
         }, 50 + (definition.hitDelay ?? 0));
+    }
+
+    stopUse(): void {
+        // if (this.owner.game.pluginManager.emit("inv_item_stop_use", this) !== undefined) return;
+        // there's no logic in this method, so just emit the event and exit. if there ever comes
+        // the need to put logic here, uncomment the line above and remove the current one
+
+        this.owner.game.pluginManager.emit("inv_item_stop_use", this);
     }
 
     override itemData(): ItemData<MeleeDefinition> {

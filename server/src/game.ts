@@ -18,6 +18,8 @@ import { pickRandomInArray, randomPointInsideCircle, randomRotation } from "@com
 import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { Vec, type Vector } from "@common/utils/vector";
 
+import { Bullets, type BulletDefinition } from "@common/definitions/bullets";
+import type { SingleGunNarrowing } from "@common/definitions/items/guns";
 import { Mode, ModeDefinition, Modes } from "@common/definitions/modes";
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import type { WebSocket } from "ws";
@@ -905,12 +907,33 @@ export class Game implements GameData {
         this.removeObject(loot);
     }
 
-    addBullet(source: GunItem | Explosion, shooter: GameObject, options: ServerBulletOptions): Bullet {
+    addBullet(
+        source: GunItem | Explosion,
+        shooter: GameObject,
+        options: Omit<ServerBulletOptions, "idString"> & { readonly idString?: ReferenceTo<BulletDefinition> }
+    ): Bullet | undefined {
+        const reference = source instanceof GunItem && source.definition.isDual
+            ? Loots.fromString<SingleGunNarrowing>(source.definition.singleVariant)
+            : source.definition;
+
+        const idString = options.idString ?? `${reference.idString}_bullet`;
+
+        const def = Bullets.fromString(idString);
+        let range = def.range * (options.modifiers?.range ?? 1);
+        if (def.allowRangeOverride && options.rangeOverride !== undefined) {
+            range = Numeric.clamp(options.rangeOverride, 0, range);
+        }
+
+        if (range <= 0) return;
+
         const bullet = new Bullet(
             this,
             source,
             shooter,
-            options
+            {
+                ...options,
+                idString
+            }
         );
 
         this.bullets.add(bullet);

@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Tue, 25 Feb 2025 21:27:15 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 08 Mar 2025 19:06:58 GMT
 
 ## 🇦🇱 Shqip (81% Complete) - ab.hjson
 
@@ -61,19 +61,15 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `m16a4` is not defined
 - Key `region_oc` is not defined
 
-## 🇧🇷 Português (Brasil) (94% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (96% Complete) - br.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
-- Key `warning_hw_accel_1` is not defined
-- Key `warning_hw_accel_2` is not defined
-- Key `warning_hw_accel_link` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
-- Key `settings_show_inout` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
 - Key `settings_left_joystick_color` is not defined
@@ -367,29 +363,16 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `region_oc` is not defined
 
-## 🇭🇺 Magyar (95% Complete) - hu.hjson
+## 🇭🇺 Magyar (99% Complete) - hu.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
-- Key `warning_hw_accel_1` is not defined
-- Key `warning_hw_accel_2` is not defined
-- Key `warning_hw_accel_link` is not defined
-- Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
-- Key `settings_record_res` is not defined
-- Key `settings_lock_joysticks` is not defined
-- Key `settings_switch_joysticks` is not defined
-- Key `settings_left_joystick_color` is not defined
-- Key `settings_right_joystick_color` is not defined
-- Key `settings_normal_joystick_info` is not defined
-- Key `settings_switched_joystick_info` is not defined
 - Key `interact_monument` is not defined
-- Key `bindings_screen_record` is not defined
-- Key `region_oc` is not defined
 
-## 🇮🇹 Italiano (81% Complete) - it.hjson
+## 🇮🇹 Italiano (82% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -454,7 +437,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
 - Key `create_team_ready` is not defined
-- Key `destroyer_of_worlds` is not defined
 - Key `m16a4` is not defined
 - Key `region_oc` is not defined
 
@@ -657,80 +639,20 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_screen_record` is not defined
 - Key `region_oc` is not defined
 
-## 🇷🇴 Română (79% Complete) - ro.hjson
+## 🇷🇴 Română (100% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
-### Undefined Keys
+### (No Undefined Keys)
 
-- Key `msg_spectating` is not defined
-- Key `msg_enter_team_code` is not defined
-- Key `msg_lost_team_connection` is not defined
-- Key `msg_error_joining_team` is not defined
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `msg_punishment_warn_agreement` is not defined
-- Key `warning_hw_accel_1` is not defined
-- Key `warning_hw_accel_2` is not defined
-- Key `warning_hw_accel_link` is not defined
-- Key `privacy` is not defined
-- Key `donate` is not defined
-- Key `wiki` is not defined
-- Key `bindings_fullscreen` is not defined
-- Key `recording` is not defined
-- Key `settings_ambience_volume` is not defined
-- Key `settings_ambient_particles` is not defined
-- Key `settings_record_res` is not defined
-- Key `settings_show_inout` is not defined
-- Key `settings_gyro_angle` is not defined
-- Key `settings_lock_joysticks` is not defined
-- Key `settings_switch_joysticks` is not defined
-- Key `settings_left_joystick_color` is not defined
-- Key `settings_right_joystick_color` is not defined
-- Key `settings_normal_joystick_info` is not defined
-- Key `settings_switched_joystick_info` is not defined
-- Key `settings_haptics` is not defined
-- Key `msg_your_team_eliminated` is not defined
-- Key `msg_the_team_eliminated` is not defined
-- Key `msg_not_enough_space` is not defined
-- Key `msg_item_already_equipped` is not defined
-- Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
-- Key `final_gas_waiting` is not defined
-- Key `final_gas_advancing` is not defined
-- Key `interact_speaker` is not defined
-- Key `interact_monument` is not defined
-- Key `loading_fetching_data_failed` is not defined
-- Key `retry` is not defined
-- Key `bindings_explode_c4` is not defined
-- Key `bindings_screen_record` is not defined
-- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
-- Key `finally` is not defined
-- Key `with` is not defined
-- Key `you` is not defined
-- Key `yourself` is not defined
-- Key `km_killed` is not defined
-- Key `km_knocked` is not defined
-- Key `km_message` is not defined
-- Key `kf_killed` is not defined
-- Key `kf_knocked` is not defined
-- Key `kf_finished_off` is not defined
-- Key `themselves` is not defined
-- Key `kf_message` is not defined
-- Key `create_team_ready` is not defined
-- Key `m16a4` is not defined
-- Key `region_oc` is not defined
+## 🇷🇺 Русский (95% Complete) - ru.hjson
 
-## 🇷🇺 Русский (94% Complete) - ru.hjson
+### Invalid Keys
 
-### (No Invalid Keys)
+- Key `Pan` is not a valid key
 
 ### Undefined Keys
 
-- Key `warning_hw_accel_1` is not defined
-- Key `warning_hw_accel_2` is not defined
-- Key `warning_hw_accel_link` is not defined
 - Key `privacy` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
@@ -815,73 +737,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `region_oc` is not defined
 
-## 🇹🇼 中文（繁體） (78% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (100% Complete) - tw.hjson
 
 ### (No Invalid Keys)
 
-### Undefined Keys
-
-- Key `msg_spectating` is not defined
-- Key `msg_enter_team_code` is not defined
-- Key `msg_lost_team_connection` is not defined
-- Key `msg_error_joining_team` is not defined
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `msg_punishment_warn_agreement` is not defined
-- Key `warning_hw_accel_1` is not defined
-- Key `warning_hw_accel_2` is not defined
-- Key `warning_hw_accel_link` is not defined
-- Key `privacy` is not defined
-- Key `donate` is not defined
-- Key `wiki` is not defined
-- Key `bindings_fullscreen` is not defined
-- Key `recording` is not defined
-- Key `copied` is not defined
-- Key `settings_ambience_volume` is not defined
-- Key `settings_ambient_particles` is not defined
-- Key `settings_record_res` is not defined
-- Key `settings_show_inout` is not defined
-- Key `settings_gyro_angle` is not defined
-- Key `settings_lock_joysticks` is not defined
-- Key `settings_switch_joysticks` is not defined
-- Key `settings_left_joystick_color` is not defined
-- Key `settings_right_joystick_color` is not defined
-- Key `settings_normal_joystick_info` is not defined
-- Key `settings_switched_joystick_info` is not defined
-- Key `settings_haptics` is not defined
-- Key `msg_your_team_eliminated` is not defined
-- Key `msg_the_team_eliminated` is not defined
-- Key `msg_not_enough_space` is not defined
-- Key `msg_item_already_equipped` is not defined
-- Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
-- Key `final_gas_waiting` is not defined
-- Key `final_gas_advancing` is not defined
-- Key `interact_speaker` is not defined
-- Key `interact_monument` is not defined
-- Key `loading_fetching_data_failed` is not defined
-- Key `retry` is not defined
-- Key `bindings_explode_c4` is not defined
-- Key `bindings_screen_record` is not defined
-- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
-- Key `kf_finished_off_kill` is not defined
-- Key `kf_finished_off_down` is not defined
-- Key `finally` is not defined
-- Key `with` is not defined
-- Key `you` is not defined
-- Key `yourself` is not defined
-- Key `km_killed` is not defined
-- Key `km_knocked` is not defined
-- Key `km_message` is not defined
-- Key `kf_killed` is not defined
-- Key `kf_knocked` is not defined
-- Key `kf_finished_off` is not defined
-- Key `themselves` is not defined
-- Key `kf_message` is not defined
-- Key `create_team_ready` is not defined
-- Key `m16a4` is not defined
-- Key `region_oc` is not defined
+### (No Undefined Keys)
 
 ## 🇻🇳 Tiếng Việt (94% Complete) - vi.hjson
 
@@ -908,32 +768,255 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_screen_record` is not defined
 - Key `region_oc` is not defined
 
-## 🇨🇳 中文（简体） (93% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
 
 ### Invalid Keys
 
 - Key `developr_vest` is not a valid key
+- Key `destroyer_of_worlds` is not a valid key
+- Key `deathray` is not a valid key
+- Key `12g` is not a valid key
+- Key `556mm` is not a valid key
+- Key `762mm` is not a valid key
+- Key `9mm` is not a valid key
+- Key `50cal` is not a valid key
+- Key `338lap` is not a valid key
+- Key `curadell` is not a valid key
+- Key `firework_rocket` is not a valid key
+- Key `power_cell` is not a valid key
+- Key `bb` is not a valid key
+- Key `bdg_developr` is not a valid key
+- Key `bdg_dev_managr` is not a valid key
+- Key `bdg_designr` is not a valid key
+- Key `bdg_lead_designr` is not a valid key
+- Key `bdg_vip_designr` is not a valid key
+- Key `bdg_composr` is not a valid key
+- Key `bdg_lead_composr` is not a valid key
+- Key `bdg_moderatr` is not a valid key
+- Key `bdg_administratr` is not a valid key
+- Key `bdg_youtubr` is not a valid key
+- Key `bdg_boostr` is not a valid key
+- Key `bdg_ownr` is not a valid key
+- Key `bdg_bleh` is not a valid key
+- Key `bdg_froog` is not a valid key
+- Key `bdg_aegis_logo` is not a valid key
+- Key `bdg_flint_logo` is not a valid key
+- Key `bdg_duel` is not a valid key
+- Key `bdg_suroi_logo` is not a valid key
+- Key `bdg_fire` is not a valid key
+- Key `bdg_colon_three` is not a valid key
+- Key `bdg_suroi_general_chat` is not a valid key
+- Key `happy_face` is not a valid key
+- Key `sad_face` is not a valid key
+- Key `thumbs_up` is not a valid key
+- Key `thumbs_down` is not a valid key
+- Key `wave` is not a valid key
+- Key `disappointed_face` is not a valid key
+- Key `sobbing_face` is not a valid key
+- Key `angry_face` is not a valid key
+- Key `heart_face` is not a valid key
+- Key `joyful_face` is not a valid key
+- Key `cool_face` is not a valid key
+- Key `upside_down_face` is not a valid key
+- Key `picasso_face` is not a valid key
+- Key `alien` is not a valid key
+- Key `headshot` is not a valid key
+- Key `dab` is not a valid key
+- Key `devil_face` is not a valid key
+- Key `bandaged_face` is not a valid key
+- Key `cold_face` is not a valid key
+- Key `thinking_face` is not a valid key
+- Key `nervous_face` is not a valid key
+- Key `sweating_face` is not a valid key
+- Key `greedy_face` is not a valid key
+- Key `creepy_clown` is not a valid key
+- Key `lying_face` is not a valid key
+- Key `nerd_face` is not a valid key
+- Key `skull` is not a valid key
+- Key `melting_face` is not a valid key
+- Key `grimacing_face` is not a valid key
+- Key `vomiting_face` is not a valid key
+- Key `screaming_face` is not a valid key
+- Key `pleading_face` is not a valid key
+- Key `sad_smiling_face` is not a valid key
+- Key `triumphant_face` is not a valid key
+- Key `questioning_face` is not a valid key
+- Key `smirking_face` is not a valid key
+- Key `blushing_face` is not a valid key
+- Key `saluting_face` is not a valid key
+- Key `neutral_face` is not a valid key
+- Key `relieved_face` is not a valid key
+- Key `monocle_face` is not a valid key
+- Key `partying_face` is not a valid key
+- Key `shushing_face` is not a valid key
+- Key `zipper_mouth_face` is not a valid key
+- Key `sighing_face` is not a valid key
+- Key `frustrated_face` is not a valid key
+- Key `suroi_logo` is not a valid key
+- Key `aegis_logo` is not a valid key
+- Key `flint_logo` is not a valid key
+- Key `duel` is not a valid key
+- Key `chicken_dinner` is not a valid key
+- Key `trophy` is not a valid key
+- Key `troll_face` is not a valid key
+- Key `clueless` is not a valid key
+- Key `pog` is not a valid key
+- Key `froog` is not a valid key
+- Key `bleh` is not a valid key
+- Key `muller` is not a valid key
+- Key `suroi_general_chat` is not a valid key
+- Key `fire` is not a valid key
+- Key `rip` is not a valid key
+- Key `leosmug` is not a valid key
+- Key `socks` is not a valid key
+- Key `archimedes` is not a valid key
+- Key `awhhmahgawd` is not a valid key
+- Key `boykisser` is not a valid key
+- Key `question_mark` is not a valid key
+- Key `team_=_ban` is not a valid key
+- Key `hack_=_ban` is not a valid key
+- Key `gg` is not a valid key
+- Key `ez` is not a valid key
+- Key `hi5` is not a valid key
+- Key `oof` is not a valid key
+- Key `real` is not a valid key
+- Key `fake` is not a valid key
+- Key `colon_three` is not a valid key
+- Key `monkey` is not a valid key
+- Key `carrot` is not a valid key
+- Key `tomato` is not a valid key
+- Key `egg` is not a valid key
+- Key `penguin` is not a valid key
+- Key `squid` is not a valid key
+- Key `barrel_explosion` is not a valid key
+- Key `stove_explosion` is not a valid key
+- Key `fireplace_explosion` is not a valid key
+- Key `control_panel_explosion` is not a valid key
+- Key `super_barrel_explosion` is not a valid key
+- Key `small_refinery_barrel_explosion` is not a valid key
+- Key `large_refinery_barrel_explosion` is not a valid key
+- Key `firework_launcher_explosion` is not a valid key
+- Key `confetti_grenade_explosion` is not a valid key
+- Key `frag_grenade_explosion` is not a valid key
+- Key `pumpkin_explosion` is not a valid key
+- Key `feral_claws` is not a valid key
+- Key `1st_birthday` is not a valid key
+- Key `algae` is not a valid key
+- Key `aquatic` is not a valid key
+- Key `arctic_camo` is not a valid key
+- Key `armadillo` is not a valid key
+- Key `ashfall` is not a valid key
+- Key `aurora` is not a valid key
+- Key `basic_outfit` is not a valid key
+- Key `beacon` is not a valid key
+- Key `bee` is not a valid key
+- Key `bloodlust` is not a valid key
+- Key `blue_blood` is not a valid key
+- Key `bubblegum` is not a valid key
+- Key `candy_cane` is not a valid key
+- Key `coal` is not a valid key
+- Key `composr_swag` is not a valid key
+- Key `deep_sea` is not a valid key
+- Key `deer_season` is not a valid key
+- Key `desert_camo` is not a valid key
+- Key `designr_swag` is not a valid key
+- Key `developr_swag` is not a valid key
+- Key `diseased` is not a valid key
+- Key `distant_shores` is not a valid key
+- Key `flamingo` is not a valid key
+- Key `floral` is not a valid key
+- Key `forest_camo` is not a valid key
+- Key `full_moon` is not a valid key
+- Key `ghillie_suit` is not a valid key
+- Key `gingerbread` is not a valid key
+- Key `gold_tie_event` is not a valid key
+- Key `greenhorn` is not a valid key
+- Key `gunmetal` is not a valid key
+- Key `hazel_jumpsuit` is not a valid key
+- Key `henrys_little_helper` is not a valid key
+- Key `holiday_tree` is not a valid key
+- Key `lemon` is not a valid key
+- Key `lumberjack` is not a valid key
+- Key `mango` is not a valid key
+- Key `nebula` is not a valid key
+- Key `no_kil_pls` is not a valid key
+- Key `nsd_uniform` is not a valid key
+- Key `one_at_nsd` is not a valid key
+- Key `peachy_breeze` is not a valid key
+- Key `peppermint` is not a valid key
+- Key `pot_o_gold` is not a valid key
+- Key `printer` is not a valid key
+- Key `pumpkified` is not a valid key
+- Key `ship_carrier` is not a valid key
+- Key `silver_lining` is not a valid key
+- Key `sky` is not a valid key
+- Key `snow_cone` is not a valid key
+- Key `solar_flare` is not a valid key
+- Key `spearmint` is not a valid key
+- Key `stardust` is not a valid key
+- Key `stratosphere` is not a valid key
+- Key `sunny` is not a valid key
+- Key `sunrise` is not a valid key
+- Key `sunset` is not a valid key
+- Key `swiss_cheese` is not a valid key
+- Key `target_practice` is not a valid key
+- Key `the_amateur` is not a valid key
+- Key `the_pro` is not a valid key
+- Key `tiger` is not a valid key
+- Key `toadstool` is not a valid key
+- Key `red_tomato` is not a valid key
+- Key `twilight_zone` is not a valid key
+- Key `verified` is not a valid key
+- Key `volcanic` is not a valid key
+- Key `wave_jumpsuit` is not a valid key
+- Key `werewolf` is not a valid key
+- Key `zebra` is not a valid key
+- Key `fps` is not a valid key
+- Key `msg_lost_connection` is not a valid key
+- Key `ping` is not a valid key
+- Key `special_developer_cheats` is not a valid key
+- Key `special_login` is not a valid key
+- Key `special_name_color` is not a valid key
+- Key `special_note_1` is not a valid key
+- Key `special_note_2` is not a valid key
+- Key `special_role_name` is not a valid key
+- Key `special_role_password` is not a valid key
+- Key `special_weapon_preset` is not a valid key
+- Key `special_weapon_preset_placeholder` is not a valid key
+- Key `special_weapon_preset_title` is not a valid key
+- Key `time_minute` is not a valid key
+- Key `time_second` is not a valid key
+- Key `username_input_placeholder` is not a valid key
+- Key `32x_scope` is not a valid key
+- Key `barrett_m95` is not a valid key
+- Key `bdg_bot` is not a valid key
+- Key `bdg_translatr` is not a valid key
+- Key `blueberry_smoothie` is not a valid key
+- Key `fireball` is not a valid key
+- Key `news_1731245400000_content` is not a valid key
+- Key `news_pinned` is not a valid key
+- Key `region_hk` is not a valid key
+- Key `settings_brightness` is not a valid key
+- Key `settings_chicken_dinner_picture` is not a valid key
+- Key `settings_colorful_bullets` is not a valid key
+- Key `settings_menu_music` is not a valid key
+- Key `settings_menu_music_follow_the_mode` is not a valid key
+- Key `settings_menu_music_halloween` is not a valid key
+- Key `settings_menu_music_main` is not a valid key
+- Key `settings_menu_music_main_full` is not a valid key
+- Key `settings_menu_music_old` is not a valid key
+- Key `settings_menu_music_random` is not a valid key
+- Key `settings_menu_music_speaker` is not a valid key
+- Key `settings_menu_music_survivio` is not a valid key
+- Key `settings_menu_music_survivio_halloween` is not a valid key
+- Key `settings_menu_music_winter` is not a valid key
+- Key `settings_saturate` is not a valid key
+- Key `settings_self_deception_ping` is not a valid key
+- Key `watermelon` is not a valid key
 
 ### Undefined Keys
 
-- Key `warning_hw_accel_1` is not defined
-- Key `warning_hw_accel_2` is not defined
-- Key `warning_hw_accel_link` is not defined
-- Key `wiki` is not defined
-- Key `bindings_fullscreen` is not defined
-- Key `recording` is not defined
-- Key `settings_record_res` is not defined
-- Key `settings_show_inout` is not defined
-- Key `settings_lock_joysticks` is not defined
-- Key `settings_switch_joysticks` is not defined
-- Key `settings_left_joystick_color` is not defined
-- Key `settings_right_joystick_color` is not defined
-- Key `settings_normal_joystick_info` is not defined
-- Key `settings_switched_joystick_info` is not defined
-- Key `interact_monument` is not defined
-- Key `loading_fetching_data_failed` is not defined
-- Key `retry` is not defined
-- Key `bindings_screen_record` is not defined
-- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
-- Key `region_oc` is not defined
+- Key `final_gas_waiting` is not defined
+- Key `final_gas_advancing` is not defined
+- Key `m16a4` is not defined
 
