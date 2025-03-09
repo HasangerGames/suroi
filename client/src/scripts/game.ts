@@ -789,6 +789,19 @@ export class Game {
                     ObjectClassMapping[type] as new (game: Game, id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
                 )(this, id, data);
                 this.objects.add(_object);
+
+                const containerLayer = this.containerLayers[_object.layer];
+                if (containerLayer && _object.layer !== (this.layer ?? Layer.Ground)) {
+                    console.log("running");
+                    containerLayer.alpha = 0;
+                    this.layerTween?.kill();
+                    this.layerTween = this.addTween({
+                        target: containerLayer,
+                        to: { alpha: 1 },
+                        duration: LAYER_TRANSITION_DELAY,
+                        onComplete: () => { this.layerTween = undefined; }
+                    });
+                }
             } else {
                 object.updateFromData(data, false);
             }
@@ -871,39 +884,33 @@ export class Game {
     backgroundTween?: Tween<{ readonly r: number, readonly g: number, readonly b: number }>;
     volumeTween?: Tween<GameSound>;
 
-    changeLayer(layer: Layer/* , doTransition: boolean */): void {
-        // [containerLayer]: Setup
+    changeLayer(layer: Layer): void {
+        // ------------------------------------------------------------------------------------------------------------------------
+        // [containerLayer]: Ensure that we have a container.
+        // ------------------------------------------------------------------------------------------------------------------------
         let containerLayer = this.containerLayers[this.layer ?? Layer.Ground];
 
+        // If it does not exist, create it.
         if (containerLayer === undefined) {
             containerLayer = new Container();
-            this.camera.addObject(containerLayer);
-
-            // For objects, we update their z-index and add them to the container layer.
-            for (const object of this.objects) {
-                object.updateZIndex();
-                containerLayer.addChild(object.container);
-
-                // We add the ceiling container into the container layer and not the camera container.
-                if (object.isBuilding) {
-                    containerLayer.addChild(object.ceilingContainer);
-                }
-            }
-
-            // TODO: Layer Transition
-            /* if (doTransition) {
-                containerLayer.alpha = 0;
-                console.log(this.containerLayers[layer]);
-                this.layerTween?.kill();
-                this.layerTween = this.addTween({
-                    target: containerLayer,
-                    to: { alpha: 1 },
-                    duration: LAYER_TRANSITION_DELAY * 2,
-                    onComplete: () => { this.layerTween = undefined; }
-                });
-            } */
+            this.containerLayers[layer] = containerLayer;
         }
 
+        // For objects, we update their z-index and add them to the container layer.
+        for (const object of this.objects) {
+            object.updateZIndex();
+            containerLayer.addChild(object.container);
+
+            // We add the ceiling container into the container layer and not the camera container.
+            if (object.isBuilding) {
+                containerLayer.addChild(object.ceilingContainer);
+            }
+        }
+
+        this.camera.addObject(containerLayer);
+        // ------------------------------------------------------------------------------------------------------------------------
+
+        // [Renderer]
         const basement = layer === Layer.Basement1;
         this.map.terrainGraphics.visible = !basement;
         const { red, green, blue } = this.pixi.renderer.background.color;
