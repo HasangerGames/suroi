@@ -24,10 +24,10 @@
     "ts-jest": "^29.2.6",
     "tsc-alias": "^1.8.11",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.3"
+    "typescript": "^5.8.2"
   },
   "dependencies": {
-    "croner": "^9.0.0",
+    "croner": "8.1.2",
     "svg-parser": "^2.0.4",
     "ts-node": "^10.9.2",
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.51.0",
