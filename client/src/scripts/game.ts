@@ -7,7 +7,6 @@ import { Scopes } from "@common/definitions/items/scopes";
 import { Skins } from "@common/definitions/items/skins";
 import type { ColorKeys, Mode, ModeDefinition } from "@common/definitions/modes";
 import { Modes } from "@common/definitions/modes";
-import { type JoinedPacketData } from "@common/packets/joinedPacket";
 import { JoinPacket } from "@common/packets/joinPacket";
 import { PacketType, type DataSplit, type PacketDataIn, type PacketDataOut } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
@@ -618,6 +617,8 @@ export class Game {
                 this.particleManager.clear();
                 this.uiManager.clearTeammateCache();
                 this.uiManager.reportedPlayerIDs.clear();
+                this.uiManager.killLeaderCache = undefined;
+                this.uiManager.oldKillLeaderId = undefined;
 
                 const map = this.map;
                 map.safeZone.clear();

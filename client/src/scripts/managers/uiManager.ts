@@ -1231,6 +1231,7 @@ export class UIManager {
         const activeId = this.game.activePlayerID;
         const weaponPresent = weaponUsed !== undefined;
         const hasKillstreak = !!killstreak;
+        const gotKillCredit = creditedId !== undefined ? activeId === creditedId : activeId === attackerId;
         const grenadeImpactKill = (
             weaponPresent
             && "itemType" in weaponUsed
@@ -1444,6 +1445,45 @@ export class UIManager {
         if (messageText) this._addKillFeedMessage(messageText, classes);
 
         //
+        // Kill leader stuff
+        //
+
+        if (killed && (victimId === this.killLeaderCache?.id || victimId === this.oldKillLeaderId)) {
+            let messageInner: string;
+            switch (damageSource) {
+                case DamageSources.Gun:
+                case DamageSources.Melee:
+                case DamageSources.Throwable:
+                case DamageSources.Explosion:
+                    messageInner = attackerId !== undefined
+                        ? getTranslatedString("kf_kl_killed", { player: attackerText })
+                        : getTranslatedString("kf_kl_suicide");
+                    break;
+                case DamageSources.Gas:
+                case DamageSources.Airdrop:
+                case DamageSources.BleedOut:
+                case DamageSources.FinallyKilled:
+                    messageInner = getTranslatedString("kf_kl_dead");
+                    break;
+            }
+            messageText = html`<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${messageInner}`;
+
+            let clazz: string;
+            if (gotKillCredit) {
+                clazz = "kill-feed-item-killer";
+            } else if (activeId === victimId) {
+                clazz = "kill-feed-item-victim";
+            } else {
+                clazz = "kill-feed-kill-leader";
+            }
+
+            this._addKillFeedMessage(messageText, [clazz]);
+
+            this.game.soundManager.play("kill_leader_dead");
+            this.ui.spectateKillLeader.addClass("btn-disabled");
+        }
+
+        //
         // Kill modal
         //
 
@@ -1575,7 +1615,7 @@ export class UIManager {
         if (
             killed
             && kills !== undefined
-            && (creditedId !== undefined ? activeId === creditedId : activeId === attackerId)
+            && gotKillCredit
         ) {
             this.ui.killMsgHeader.text(getTranslatedString("msg_kills", { kills: kills.toString() }));
             this.ui.killMsgCounter.text(kills);
@@ -1598,91 +1638,31 @@ export class UIManager {
         });
     }
 
+    killLeaderCache: UpdateDataCommon["killLeader"] | undefined;
+    oldKillLeaderId: number | undefined;
+
     updateKillLeader(data: UpdateDataCommon["killLeader"]): void {
         if (!data) return;
         const { id, kills } = data;
 
-        let messageText: string | undefined;
-        const classes: string[] = [];
-        const {
-            killLeaderLeader: leader,
-            killLeaderCount: count,
-            spectateKillLeader: spectateLeader
-        } = this.ui;
+        const hasLeader = id !== 65535; // means no leader: server sent -1, value wrapped around to 65535
+        let leaderText = hasLeader
+            ? this._getNameAndBadge(id)
+            : getTranslatedString("msg_waiting_for_leader");
 
-        let leaderText: string;
-        if (id === 65535) { // means no leader: server sent -1, value wrapped around to 65535
-            leaderText = getTranslatedString("msg_waiting_for_leader");
-        } else {
-            leaderText = this._getNameAndBadge(id);
+        this.ui.killLeaderLeader.html(leaderText);
+        this.ui.killLeaderCount.text(kills);
+
+        this.ui.spectateKillLeader.removeClass("btn-disabled");
+
+        if (hasLeader && this.killLeaderCache && this.killLeaderCache.id !== id) {
+            const messageText = html`<i class="fa-solid fa-crown"></i> ${getTranslatedString("kf_kl_promotion", { player: leaderText })}`;
+            this._addKillFeedMessage(messageText, [id === this.game.activePlayerID ? "kill-feed-item-killer" : "kill-feed-kill-leader"]);
+            this.game.soundManager.play("kill_leader_assigned");
         }
 
-        classes.push(
-            id === this.game.activePlayerID
-                ? "kill-feed-item-killer"
-                : "kill-feed-kill-leader"
-        );
-
-        leader.html(leaderText);
-        count.text(kills);
-
-        // if (!hideFromKillfeed) {
-        //     messageText = html`<i class="fa-solid fa-crown"></i> ${getTranslatedString("kf_kl_promotion", { player: victimText })}`;
-        //     this.game.soundManager.play("kill_leader_assigned");
-        // }
-
-        // spectateLeader.removeClass("btn-disabled");
-
-        // // disconnected
-
-        // const {
-        //     attackerId,
-        //     victimId
-        // } = message;
-
-        // if (message.disconnected === true) {
-        //     leader.text(getTranslatedString("msg_waiting_for_leader"));
-        //     count.text("0");
-        //     this.game.soundManager.play("kill_leader_dead");
-        //     spectateLeader.addClass("btn-disabled");
-        //     break;
-        // }
-
-        // const {
-        //     name: attackerName,
-        //     badgeText: attackerBadgeText
-        // } = attackerId !== undefined ? getNameAndBadge(attackerId) : { name: "", badgeText: "" };
-
-        // const attackerText = attackerName + attackerBadgeText;
-
-        // leader.text(getTranslatedString("msg_waiting_for_leader"));
-        // count.text("0");
-
-        // // noinspection HtmlUnknownTarget
-        // messageText = html`<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${attackerId
-        //     ? attackerId !== victimId
-        //         ? getTranslatedString("kf_kl_killed", { player: attackerText })
-        //         : getTranslatedString("kf_kl_dead")
-        //     : getTranslatedString("kf_kl_suicide")
-        // }`;
-
-        // switch (this.game.activePlayerID) {
-        //     case attackerId: {
-        //         classes.push("kill-feed-item-killer");
-        //         break;
-        //     }
-        //     case victimId: {
-        //         classes.push("kill-feed-item-victim");
-        //         break;
-        //     }
-        //     default: {
-        //         classes.push("kill-feed-kill-leader");
-        //         break;
-        //     }
-        // }
-
-        // this.game.soundManager.play("kill_leader_dead");
-        // spectateLeader.addClass("btn-disabled");
+        this.oldKillLeaderId = this.killLeaderCache?.id ?? id;
+        this.killLeaderCache = data;
     }
 }
 
