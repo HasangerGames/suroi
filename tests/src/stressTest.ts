@@ -1,9 +1,8 @@
-import { PacketDataOut, PacketType } from "@common/packets/packet";
+import { PacketDataIn, PacketDataOut, PacketType } from "@common/packets/packet";
 import { WebSocket, type MessageEvent } from "ws";
 import { GameConstants, InputActions, ObjectCategory } from "../../common/src/constants";
 import { EmoteCategory, Emotes, type EmoteDefinition } from "../../common/src/definitions/emotes";
 import { Skins, type SkinDefinition } from "../../common/src/definitions/items/skins";
-import { Loots } from "../../common/src/definitions/loots";
 import { InputPacket, areDifferent, type InputAction, type InputData } from "../../common/src/packets/inputPacket";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
 import { PacketStream } from "../../common/src/packets/packetStream";
@@ -181,13 +180,13 @@ class Bot {
             JoinPacket.create({
                 name,
                 isMobile: false,
-                skin: Loots.reify(pickRandomInArray(skins)),
+                skin: Skins.reify(pickRandomInArray(skins)),
                 emotes: this._emotes
             })
         );
     }
 
-    sendPacket(packet: InputPacket): void {
+    sendPacket(packet: PacketDataIn): void {
         this._stream.stream.index = 0;
         this._stream.serialize(packet);
 
