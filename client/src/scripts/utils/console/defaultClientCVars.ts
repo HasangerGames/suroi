@@ -288,7 +288,7 @@ export const defaultBinds = Object.freeze({
     "fullscreen": [],
     "toggle_console": [],
     "+map_ping": [],
-    "toggle_slot_lock": [],
+    "toggle_slot_lock": ["L"],
     "screen_record": [],
     "toggle pf_net_graph 0 1 2": []
 } as Record<string, string[]>);

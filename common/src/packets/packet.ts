@@ -1,19 +1,25 @@
 import { ObjectCategory } from "../constants";
-import { type SuroiByteStream } from "../utils/suroiByteStream";
+import { SDeepMutable, SDeepPartial } from "../utils/misc";
+import { SuroiByteStream } from "../utils/suroiByteStream";
+import { type Packets } from "./packetStream";
 
-/*
-    eslint-disable
-
-    @typescript-eslint/explicit-function-return-type
-*/
-
-/*
-    `@typescript-eslint/explicit-function-return-type`: Most of the return types in this file can't be written out if you wanted to
-*/
+export enum PacketType {
+    Disconnect,
+    GameOver,
+    Input,
+    Joined,
+    Join,
+    Kill,
+    Map,
+    Pickup,
+    Report,
+    Spectate,
+    Update
+}
 
 export const enum DataSplitTypes {
     PlayerData,
-    OtherPlayers,
+    Players,
     Obstacles,
     Loots,
     SyncedParticles,
@@ -24,7 +30,7 @@ export const enum DataSplitTypes {
 export function getSplitTypeForCategory(category: ObjectCategory): DataSplitTypes {
     /* eslint-disable @stylistic/no-multi-spaces */
     switch (category) {
-        case ObjectCategory.Player:              return DataSplitTypes.OtherPlayers;
+        case ObjectCategory.Player:              return DataSplitTypes.Players;
         case ObjectCategory.Obstacle:            return DataSplitTypes.Obstacles;
         case ObjectCategory.DeathMarker:         return DataSplitTypes.GameObjects;
         case ObjectCategory.Loot:                return DataSplitTypes.Loots;
@@ -39,89 +45,46 @@ export function getSplitTypeForCategory(category: ObjectCategory): DataSplitType
 
 export type DataSplit = Record<DataSplitTypes, number>;
 
-/**
- * `Input` refers to the type associated with serialization, while `Output`
- * refers to the type associated with deserialization
- */
-export type PacketTemplate<Input = unknown, Output = Input> = (new (...args: never[]) => InputPacket<Input> & OutputPacket<Output>) & {
-    readonly name: string // === Function.name
-    create(value: Input): InputPacket<Input>
-    read(stream: SuroiByteStream, splitData?: { splits: DataSplit, activePlayerId: number }): OutputPacket<Output>
-};
+export type AnyPacket = typeof Packets[number]; // Packets is declared in a separate file (packetStream.ts) to prevent circular imports
 
-export type InputPacket<Input = unknown> = {
-    readonly input: Input
-    serialize(stream: SuroiByteStream): void
-};
+export type PacketDataIn<T extends AnyPacket = AnyPacket> = T extends Packet<infer DataIn> ? DataIn : never;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type PacketDataOut<T extends AnyPacket = AnyPacket> = T extends Packet<infer _DataIn, infer DataOut> ? DataOut : never;
 
-export type OutputPacket<Output = unknown> = {
-    readonly output: Output
-};
+export type MutablePacketDataIn = PacketDataIn | SDeepMutable<PacketDataIn>;
 
-export type Packet<Input = never, Output = unknown> = {
-    readonly value: Input | Output
-};
+interface BasePacketData { readonly type: PacketType }
+export class Packet<DataIn extends BasePacketData, DataOut extends BasePacketData = DataIn> {
+    serialize: (stream: SuroiByteStream, data: DataIn) => void;
+    deserialize: (stream: SuroiByteStream, splits?: DataSplit) => DataOut;
 
-export function createPacket<const Name extends string = string>(name: Name) {
-    return <const Input, const Output = Input>(
+    constructor(
+        readonly type: PacketType,
         { serialize, deserialize }: {
-            serialize: (stream: SuroiByteStream, value: Input) => void
+            serialize: (stream: SuroiByteStream, data: DataIn) => void
             deserialize: (
                 stream: SuroiByteStream,
-                [
-                    saveIndex,
-                    recordTo,
-                    activePlayerId
-                ]: readonly [() => void, (target: DataSplitTypes) => void, number]
-            ) => Output
+                data: SDeepMutable<DataOut>,
+                saveIndex: () => void,
+                recordTo: (target: DataSplitTypes) => void
+            ) => void
         }
-    ) => {
-        let constructing = false;
-        const cls = {
-            [name]: class implements InputPacket<Input>, OutputPacket<Output> {
-                static create(value: Input) {
-                    constructing = true;
-                    const inst = new this(value);
-                    constructing = false;
-                    return inst;
-                }
+    ) {
+        this.serialize = serialize;
+        this.deserialize = (stream, splits): DataOut => {
+            let savedIndex: number;
+            const data = { type: this.type } as unknown as SDeepMutable<DataOut>;
+            deserialize(
+                stream,
+                data,
+                () => savedIndex = stream.index,
+                target => splits && (splits[target] += stream.index - savedIndex)
+            );
+            return data as DataOut;
+        };
+    }
 
-                static read(stream: SuroiByteStream, splitData?: { splits: DataSplit, activePlayerId: number }) {
-                    const { splits, activePlayerId } = splitData ?? {};
-
-                    constructing = true;
-                    const inst = new this(deserialize(
-                        stream,
-                        (() => {
-                            let ref = 0;
-
-                            return [
-                                () => { ref = stream.index; },
-                                splits === undefined
-                                    ? () => { /* noop */ }
-                                    : (target: DataSplitTypes) => { splits[target] += stream.index - ref; },
-                                activePlayerId ?? NaN
-                            ];
-                        })()
-                    ));
-                    constructing = false;
-                    return inst;
-                }
-
-                // unsafe—proper usage is up to the caller
-                get input(): Input { return this._value as Input; }
-                get output(): Output { return this._value as Output; }
-
-                constructor(private readonly _value: Input | Output) {
-                    if (!constructing) {
-                        throw new Error("Do not manually instantiate a packet, use its static 'create' method instead");
-                    }
-                }
-
-                serialize(stream: SuroiByteStream): void { serialize(stream, this.input); }
-            }
-        }[name];
-
-        return cls as PacketTemplate<Input, Output>;
-    };
+    create(data = {} as SDeepPartial<DataIn>): SDeepMutable<DataIn> {
+        return { ...data, type: this.type } as SDeepMutable<DataIn>;
+    }
 }

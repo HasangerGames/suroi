@@ -1,17 +1,14 @@
-import { GameConstants, KillfeedMessageType, Layer, MapObjectSpawnMode, ObjectCategory, TeamSize } from "@common/constants";
+import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory, TeamSize } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
 import { type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { SyncedParticles, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
-import { PlayerInputPacket } from "@common/packets/inputPacket";
-import { JoinPacket, type JoinPacketData } from "@common/packets/joinPacket";
+import { type JoinData } from "@common/packets/joinPacket";
 import { JoinedPacket } from "@common/packets/joinedPacket";
-import { KillFeedPacket, type KillFeedPacketData } from "@common/packets/killFeedPacket";
-import { type InputPacket } from "@common/packets/packet";
+import { PacketDataIn, PacketType } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
-import { SpectatePacket } from "@common/packets/spectatePacket";
 import { type PingSerialization } from "@common/packets/updatePacket";
 import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Geometry, Numeric, Statistics } from "@common/utils/math";
@@ -51,15 +48,6 @@ import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getSpawnableLoots, SpawnableItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap, removeFrom } from "./utils/misc";
 
-/*
-    eslint-disable
-
-    @stylistic/indent-binary-ops
-*/
-
-/*
-    `@stylistic/indent-binary-ops`: eslint sucks at indenting ts types
- */
 export class Game implements GameData {
     public readonly id: number;
 
@@ -91,7 +79,7 @@ export class Game implements GameData {
     /**
      * Packets created this tick that will be sent to all players
      */
-    readonly packets: InputPacket[] = [];
+    readonly packets: PacketDataIn[] = [];
 
     readonly teamSize: TeamSize;
 
@@ -163,6 +151,9 @@ export class Game implements GameData {
      */
     readonly mapPings: PingSerialization[] = [];
 
+    killLeader: Player | undefined;
+    killLeaderDirty = false;
+
     private readonly _spawnableItemTypeCache = [] as Cache;
 
     private _spawnableLoots: SpawnableItemRegistry | undefined;
@@ -186,15 +177,16 @@ export class Game implements GameData {
     allowJoin = false;
     over = false;
     stopped = false;
+
     get aliveCount(): number {
         return this.livingPlayers.size;
     }
 
+    aliveCountDirty = false;
+
     // #endregion
 
     startTimeout?: Timeout;
-
-    aliveCountDirty = false;
 
     /**
      * The value of `Date.now()`, as of the start of the tick.
@@ -271,17 +263,21 @@ export class Game implements GameData {
     onMessage(message: ArrayBuffer, player: Player): void {
         const packetStream = new PacketStream(new SuroiByteStream(message));
         while (true) {
-            const packet = packetStream.deserializeClientPacket();
+            const packet = packetStream.deserialize();
             if (packet === undefined) break;
 
-            if (packet instanceof JoinPacket) {
-                this.activatePlayer(player, packet.output);
-            } else if (packet instanceof PlayerInputPacket) {
-                // Ignore input packets from players that haven't finished joining, dead players, or if the game is over
-                if (!player.joined || player.dead || this.over) return;
-                player.processInputs(packet.output);
-            } else if (packet instanceof SpectatePacket) {
-                player.spectate(packet.output);
+            switch (packet.type) {
+                case PacketType.Join:
+                    this.activatePlayer(player, packet);
+                    break;
+                case PacketType.Input:
+                    // Ignore input packets from players that haven't finished joining, dead players, or if the game is over
+                    if (!player.joined || player.dead || this.over) break;
+                    player.processInputs(packet);
+                    break;
+                case PacketType.Spectate:
+                    player.spectate(packet);
+                    break;
             }
         }
     }
@@ -368,15 +364,14 @@ export class Game implements GameData {
         this.gas.tick();
 
         // First loop over players: movement, animations, & actions
-        for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
-            if (!player.dead) player.update();
+        for (const player of this.livingPlayers) {
+            player.update();
         }
 
-        // Cache objects serialization
+        // Serialize dirty objects
         for (const partialObject of this.partialDirtyObjects) {
-            if (!this.fullDirtyObjects.has(partialObject)) {
-                partialObject.serializePartial();
-            }
+            if (this.fullDirtyObjects.has(partialObject)) continue;
+            partialObject.serializePartial();
         }
         for (const fullObject of this.fullDirtyObjects) {
             fullObject.serializeFull();
@@ -384,14 +379,11 @@ export class Game implements GameData {
 
         // Second loop over players: calculate visible objects & send updates
         for (const player of this.connectedPlayers) {
-            if (!player.joined) continue;
             player.secondUpdate();
         }
 
         // Third loop over players: clean up after all packets have been sent
         for (const player of this.connectedPlayers) {
-            if (!player.joined) continue;
-
             player.postPacket();
         }
 
@@ -406,6 +398,7 @@ export class Game implements GameData {
         this.packets.length = 0;
         this.planes.length = 0;
         this.mapPings.length = 0;
+        this.killLeaderDirty = false;
         this.aliveCountDirty = false;
         this.gas.dirty = false;
         this.gas.completionRatioDirty = false;
@@ -491,69 +484,34 @@ export class Game implements GameData {
         this.log("Killed");
     }
 
-    private _killLeader: Player | undefined;
-    get killLeader(): Player | undefined { return this._killLeader; }
-
     updateKillLeader(player: Player): void {
-        const oldKillLeader = this._killLeader;
+        const killLeader = this.killLeader;
 
-        if (player.kills > (this._killLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
-            this._killLeader = player;
-
-            if (oldKillLeader !== this._killLeader) {
-                this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
-            }
-        } else if (player === oldKillLeader) {
-            this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderUpdated);
+        if (
+            player.kills > (killLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1))
+            && !player.dead
+            && player !== killLeader
+        ) {
+            this.killLeader = player;
+            this.killLeaderDirty = true;
+        } else if (player === killLeader) {
+            this.killLeaderDirty = true;
         }
     }
 
-    killLeaderDead(killer?: Player): void {
-        this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderDeadOrDisconnected, { attackerId: killer?.id });
+    findNewKillLeader(): void {
+        let mostKills = GameConstants.player.killLeaderMinKills - 1;
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
-            if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
+            if (player.kills > mostKills) {
+                mostKills = player.kills;
                 newKillLeader = player;
+            } else if (player.kills === mostKills) { // multiple players with the same kills means no leader
+                newKillLeader = undefined;
             }
         }
-        this._killLeader = newKillLeader;
-        this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
-    }
-
-    killLeaderDisconnected(leader: Player): void {
-        this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderDeadOrDisconnected, { disconnected: true });
-        let newKillLeader: Player | undefined;
-        for (const player of this.livingPlayers) {
-            if (player === leader) continue;
-            if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
-                newKillLeader = player;
-            }
-        }
-
-        if ((this._killLeader = newKillLeader) !== undefined) {
-            this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
-        }
-    }
-
-    private _sendKillLeaderKFPacket<
-        Message extends
-            | KillfeedMessageType.KillLeaderAssigned
-            | KillfeedMessageType.KillLeaderDeadOrDisconnected
-            | KillfeedMessageType.KillLeaderUpdated
-    >(
-        messageType: Message,
-        options?: Partial<Omit<KillFeedPacketData & { readonly messageType: NoInfer<Message> }, "messageType" | "playerID" | "attackerKills">>
-    ): void {
-        if (this._killLeader === undefined) return;
-
-        this.packets.push(
-            KillFeedPacket.create({
-                messageType,
-                victimId: this._killLeader.id,
-                attackerKills: this._killLeader.kills,
-                ...options
-            } as KillFeedPacketData & { readonly messageType: Message })
-        );
+        this.killLeader = newKillLeader;
+        this.killLeaderDirty = true;
     }
 
     addPlayer(socket: WebSocket | undefined, data: PlayerJoinData): Player | undefined {
@@ -681,7 +639,7 @@ export class Game implements GameData {
     }
 
     // Called when a JoinPacket is sent by the client
-    activatePlayer(player: Player, packet: JoinPacketData): void {
+    activatePlayer(player: Player, packet: JoinData): void {
         if (player.joined) return;
         const rejectedBy = this.pluginManager.emit("player_will_join", { player, joinPacket: packet });
         if (rejectedBy) {
@@ -779,16 +737,17 @@ export class Game implements GameData {
         this.pluginManager.emit("player_did_join", { player, joinPacket: packet });
     }
 
-    removePlayer(player: Player): void {
-        this.log(`"${player.name}" left`);
-
-        if (player === this.killLeader) {
-            this.killLeaderDisconnected(player);
-        }
-
+    removePlayer(player: Player, reason?: string): void {
+        if (player.disconnected) return;
         player.disconnected = true;
         this.aliveCountDirty = true;
         this.connectedPlayers.delete(player);
+
+        this.log(`"${player.name}" left`);
+
+        if (player === this.killLeader) {
+            this.findNewKillLeader();
+        }
 
         if (player.canDespawn) {
             this.livingPlayers.delete(player);
@@ -828,7 +787,11 @@ export class Game implements GameData {
         }
 
         try {
-            player.socket?.close();
+            if (reason) {
+                player.socket?.close(1000, reason);
+            } else {
+                player.socket?.close();
+            }
         } catch {
             // not a really big deal if we can't close the socket (when does this ever fail?)
         }

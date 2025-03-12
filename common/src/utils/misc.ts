@@ -44,6 +44,12 @@ export type DeepPartial<T> = {
     [K in keyof T]?: DeepPartial<T[K]>;
 };
 
+export type SDeepPartial<T> = T extends ObjectDefinition
+    ? T
+    : {
+        [K in keyof T]?: SDeepPartial<T[K]>;
+    };
+
 export type DeepRequired<T> = (T extends Fn ? T : unknown) & (
     T extends Array<infer R>
         ? Array<DeepRequired<NonNullable<R>>>

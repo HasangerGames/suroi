@@ -24,8 +24,8 @@ export function setUpNetGraph(game: Game) {
         background: { stroke: { color: "transparent" } },
         segments: (
             [
-                ["player data", "red"],
-                ["other players", "lime"],
+                ["active player data", "red"],
+                ["players", "lime"],
                 ["obstacles", "blue"],
                 ["loot", "yellow"],
                 ["particles", "magenta"],

@@ -1043,9 +1043,10 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "mosin_nagant", weight: 0.0133 },
 
             // 2% chance for one of these
-            { item: "tango_51", weight: 0.0066 },
-            { item: "model_89", weight: 0.0066 },
-            { item: "vepr12", weight: 0.0066 },
+            { item: "tango_51", weight: 0.005 },
+            { item: "model_89", weight: 0.005 },
+            { item: "vepr12", weight: 0.005 },
+            { item: "rgs", weight: 0.005 },
 
             // very rare shit
             { item: "rsh12", weight: 0.001 },
@@ -1075,9 +1076,10 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "mosin_nagant", weight: 0.033 },
 
             // 5% chance for one of these
-            { item: "tango_51", weight: 0.0166 },
-            { item: "model_89", weight: 0.0166 },
-            { item: "vepr12", weight: 0.0166 },
+            { item: "tango_51", weight: 0.0125 },
+            { item: "model_89", weight: 0.0125 },
+            { item: "vepr12", weight: 0.0125 },
+            { item: "rgs", weight: 0.0125 },
 
             // 1% chance for one of these
             { item: "m590m", weight: 0.002 },
@@ -1406,9 +1408,10 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "mosin_nagant", weight: 0.0133 },
 
             // 2% chance for one of these
-            { item: "tango_51", weight: 0.0066 },
-            { item: "model_89", weight: 0.0066 },
-            { item: "vepr12", weight: 0.0066 },
+            { item: "tango_51", weight: 0.005 },
+            { item: "model_89", weight: 0.005 },
+            { item: "vepr12", weight: 0.005 },
+            { item: "rgs", weight: 0.005 },
 
             // very rare shit
             { item: "rsh12", weight: 0.001 },
@@ -1438,9 +1441,10 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "mosin_nagant", weight: 0.033 },
 
             // 5% chance for one of these
-            { item: "tango_51", weight: 0.0166 },
-            { item: "model_89", weight: 0.0166 },
-            { item: "vepr12", weight: 0.0166 },
+            { item: "tango_51", weight: 0.0125 },
+            { item: "model_89", weight: 0.0125 },
+            { item: "vepr12", weight: 0.0125 },
+            { item: "rgs", weight: 0.0125 },
 
             // 1% chance for one of these
             { item: "m590m", weight: 0.002 },

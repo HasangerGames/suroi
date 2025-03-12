@@ -1,4 +1,4 @@
-import { KillfeedEventType, Layer, ObjectCategory } from "@common/constants";
+import { Layer, ObjectCategory } from "@common/constants";
 import { makeGameObjectTemplate } from "@common/utils/gameObject";
 import { type Hitbox } from "@common/utils/hitbox";
 import { ObjectSerializations, type FullData } from "@common/utils/objectsSerializations";
@@ -18,6 +18,7 @@ import { type Parachute } from "./parachute";
 import { type Player } from "./player";
 import { type SyncedParticle } from "./syncedParticle";
 import { type ThrowableProjectile } from "./throwableProj";
+import { DamageSources } from "@common/packets/killPacket";
 
 export interface ObjectMapping {
     [ObjectCategory.Player]: Player
@@ -35,7 +36,7 @@ export type GameObject = ObjectMapping[ObjectCategory];
 
 export interface DamageParams {
     readonly amount: number
-    readonly source?: GameObject | KillfeedEventType.Gas | KillfeedEventType.Airdrop | KillfeedEventType.BleedOut | KillfeedEventType.FinallyKilled
+    readonly source?: GameObject | DamageSources.Gas | DamageSources.Airdrop | DamageSources.BleedOut | DamageSources.FinallyKilled
     readonly weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
 }
 

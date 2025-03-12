@@ -2131,6 +2131,12 @@
             z-index: -1;
             opacity: 0.95;
 
+            &.dead {
+                width: 175px;
+                height: 175px;
+                transform: translate(0%, 50%);
+            }
+
             @media screen and (max-width: variables.$screen-large) {
                 @media screen and (max-height: variables.$screen_medium) {
                     transform: translate(0%, 45%) rotate(15deg);

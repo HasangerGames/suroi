@@ -27,7 +27,7 @@ export const GameConstants = {
         maxMouseDist: 256,
         reviveTime: 8,
         maxReviveDist: 5,
-        bleedOutDPMs: 0.002, // === 2 dps
+        bleedOutDPMs: 0.02, // === 2 dps
         maxPerkCount: 1,
         rateLimitPunishmentTrigger: 10,
         emotePunishmentTime: 5000, // ms
@@ -223,13 +223,6 @@ export const enum AnimationType {
     Revive
 }
 
-export const enum KillfeedMessageType {
-    DeathOrDown,
-    KillLeaderAssigned,
-    KillLeaderDeadOrDisconnected,
-    KillLeaderUpdated
-}
-
 export const enum GasState {
     Inactive,
     Waiting,
@@ -275,21 +268,6 @@ export const enum PlayerActions {
     Reload,
     UseItem,
     Revive
-}
-
-export enum KillfeedEventType {
-    Suicide,
-    NormalTwoParty,
-    FinishedOff,
-    FinallyKilled,
-    Gas,
-    BleedOut,
-    Airdrop
-}
-
-export const enum KillfeedEventSeverity {
-    Kill,
-    Down
 }
 
 export enum InventoryMessages {

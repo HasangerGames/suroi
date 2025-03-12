@@ -1,5 +1,5 @@
 import { GasState } from "@common/constants";
-import { type UpdatePacketDataOut } from "@common/packets/updatePacket";
+import { type UpdateDataOut } from "@common/packets/updatePacket";
 import { Numeric } from "@common/utils/math";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
@@ -50,7 +50,7 @@ export class Gas {
 
     private _gasMsgFadeTimeout: number | undefined;
 
-    updateFrom(data: UpdatePacketDataOut): void {
+    updateFrom(data: UpdateDataOut): void {
         const gas = data.gas;
         const gasProgress = data.gasProgress;
 
