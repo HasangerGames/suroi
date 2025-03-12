@@ -13,7 +13,7 @@ import type { ReportData } from "@common/packets/reportPacket";
 import type { KillData } from "@common/packets/killPacket";
 import { type PlayerData, type UpdateDataCommon } from "@common/packets/updatePacket";
 import { Numeric } from "@common/utils/math";
-import { ExtendedMap, freezeDeep } from "@common/utils/misc";
+import { ExtendedMap } from "@common/utils/misc";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
@@ -1236,7 +1236,9 @@ export class UIManager {
             weaponPresent
             && "itemType" in weaponUsed
             && weaponUsed.itemType === ItemType.Throwable
-        ) ? getTranslatedString("kf_impact_of") : "";
+        )
+            ? getTranslatedString("kf_impact_of")
+            : "";
         let weaponName: string | undefined;
         const weapon = weaponPresent ? `${grenadeImpactKill}${(weaponName = getTranslatedString(weaponUsed.idString as TranslationKeys)) === weaponUsed.idString ? weaponUsed.name : weaponName}` : "";
 
@@ -1278,7 +1280,7 @@ export class UIManager {
                                 event = "kf_killed";
                             }
 
-                            feedMessage = getTranslatedString(`kf_message`, {
+                            feedMessage = getTranslatedString("kf_message", {
                                 player: attackerText,
                                 event: event ? getTranslatedString(event) : "",
                                 victim: victimText,
@@ -1646,7 +1648,7 @@ export class UIManager {
         const { id, kills } = data;
 
         const hasLeader = id !== 65535; // means no leader: server sent -1, value wrapped around to 65535
-        let leaderText = hasLeader
+        const leaderText = hasLeader
             ? this._getNameAndBadge(id)
             : getTranslatedString("msg_waiting_for_leader");
 
