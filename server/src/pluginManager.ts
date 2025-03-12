@@ -199,7 +199,7 @@ export const Events = {
      * emitted, all player cleanup will have been finished;
      * the current action will have been cancelled; `health`,
      * `dead`, `downed`, and `canDespawn` flags will have been
-     * set; `KillFeedPacket` will have been created; and the
+     * set; `KillPacket` will have been created; and the
      * killer's kill count incremented. Movement variables,
      * attacking variables, and adrenaline will have been set,
      * A death emote will have been sent, and the inventory will

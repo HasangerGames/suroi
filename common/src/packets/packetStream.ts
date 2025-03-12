@@ -5,7 +5,7 @@ import { JoinPacket } from "./joinPacket";
 import { JoinedPacket } from "./joinedPacket";
 import { KillPacket } from "./killPacket";
 import { MapPacket } from "./mapPacket";
-import { DataSplit, MutablePacketDataIn, PacketDataOut } from "./packet";
+import { DataSplit, MutablePacketDataIn, PacketDataOut, PacketType } from "./packet";
 import { PickupPacket } from "./pickupPacket";
 import { ReportPacket } from "./reportPacket";
 import { SpectatePacket } from "./spectatePacket";
@@ -36,7 +36,7 @@ export class PacketStream {
     }
 
     serialize(data: MutablePacketDataIn): void {
-        const type = data.type;
+        const type = data.type - 1;
         this.stream.writeUint8(type);
         Packets[type].serialize(this.stream, data as never);
     }

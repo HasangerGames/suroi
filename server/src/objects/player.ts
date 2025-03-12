@@ -2094,12 +2094,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         const downedBy = this.downedBy?.player;
-        if (source === DamageSources.Gas || source === DamageSources.BleedOut || source === DamageSources.FinallyKilled) {
+        if (source === DamageSources.Gas || source === DamageSources.Airdrop || source === DamageSources.BleedOut || source === DamageSources.FinallyKilled) {
             packet.damageSource = source;
 
             if (downedBy !== undefined) {
                 packet.creditedId = downedBy.id;
-                packet.kills = ++downedBy.kills;
+                if (downedBy !== this) packet.kills = ++downedBy.kills;
             }
         } else if (source instanceof Player && source !== this) {
             this.killedBy = source;
@@ -2115,7 +2115,16 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 packet.kills = ++source.kills;
             }
 
-            // Apply perk effects. Perk effects are always applied to the killer regardless of the above.
+            // Killstreak credit always goes to the killer regardless of the above.
+            if (
+                weaponUsed
+                && "killstreak" in weaponUsed.definition
+                && weaponUsed instanceof InventoryItemBase
+            ) {
+                packet.killstreak = weaponUsed.stats.kills;
+            }
+
+            // Apply perk effects. Perk effects are also always applied to the killer.
             for (const perk of source.perks) {
                 switch (perk.idString) {
                     case PerkIds.BabyPlumpkinPie: {

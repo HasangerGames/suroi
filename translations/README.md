@@ -1,8 +1,8 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 08 Mar 2025 19:06:58 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Wed, 12 Mar 2025 02:52:43 GMT
 
-## 🇦🇱 Shqip (81% Complete) - ab.hjson
+## 🇦🇱 Shqip (78% Complete) - ab.hjson
 
 ### (No Invalid Keys)
 
@@ -45,6 +45,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
 - Key `finally` is not defined
 - Key `with` is not defined
 - Key `you` is not defined
@@ -55,13 +57,24 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_killed` is not defined
 - Key `kf_knocked` is not defined
 - Key `kf_finished_off` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 - Key `region_oc` is not defined
 
-## 🇧🇷 Português (Brasil) (96% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (91% Complete) - br.hjson
 
 ### (No Invalid Keys)
 
@@ -78,9 +91,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_switched_joystick_info` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 - Key `region_oc` is not defined
 
-## 🇨🇿 Čeština (85% Complete) - cz.hjson
+## 🇨🇿 Čeština (82% Complete) - cz.hjson
 
 ### (No Invalid Keys)
 
@@ -125,10 +151,23 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 - Key `create_team_ready` is not defined
 - Key `region_oc` is not defined
 
-## 🇩🇪 Deutsch (91% Complete) - de.hjson
+## 🇩🇪 Deutsch (87% Complete) - de.hjson
 
 ### (No Invalid Keys)
 
@@ -158,9 +197,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `retry` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 - Key `region_oc` is not defined
 
-## 🇪🇸 Español (92% Complete) - es.hjson
+## 🇪🇸 Español (88% Complete) - es.hjson
 
 ### (No Invalid Keys)
 
@@ -188,9 +240,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `retry` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 - Key `region_oc` is not defined
 
-## 🇪🇪 eesti (92% Complete) - et.hjson
+## 🇪🇪 eesti (88% Complete) - et.hjson
 
 ### Invalid Keys
 
@@ -220,9 +285,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `retry` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 - Key `region_oc` is not defined
 
-## 🇫🇮 suomi (90% Complete) - fi.hjson
+## 🇫🇮 suomi (86% Complete) - fi.hjson
 
 ### (No Invalid Keys)
 
@@ -255,9 +333,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `retry` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 - Key `region_oc` is not defined
 
-## 🇫🇷 Français (93% Complete) - fr.hjson
+## 🇫🇷 Français (89% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -284,9 +375,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_screen_record` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 - Key `region_oc` is not defined
 
-## 🇬🇷 Ελληνικά (94% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (89% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
@@ -309,9 +413,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_advancing` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 - Key `region_oc` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (84% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (80% Complete) - hk_mo.hjson
 
 ### (No Invalid Keys)
 
@@ -358,12 +475,25 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 - Key `create_team_ready` is not defined
 - Key `region_oc` is not defined
 
-## 🇭🇺 Magyar (99% Complete) - hu.hjson
+## 🇭🇺 Magyar (95% Complete) - hu.hjson
 
 ### (No Invalid Keys)
 
@@ -371,8 +501,21 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `recording` is not defined
 - Key `interact_monument` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 
-## 🇮🇹 Italiano (82% Complete) - it.hjson
+## 🇮🇹 Italiano (78% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -434,13 +577,26 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 - Key `create_team_ready` is not defined
 - Key `m16a4` is not defined
 - Key `region_oc` is not defined
 
-## 🇯🇵 日本語 (85% Complete) - jp.hjson
+## 🇯🇵 日本語 (82% Complete) - jp.hjson
 
 ### (No Invalid Keys)
 
@@ -485,10 +641,23 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 - Key `create_team_ready` is not defined
 - Key `region_oc` is not defined
 
-## 🇱🇹 Lietuvių (85% Complete) - lt.hjson
+## 🇱🇹 Lietuvių (82% Complete) - lt.hjson
 
 ### (No Invalid Keys)
 
@@ -533,10 +702,23 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 - Key `create_team_ready` is not defined
 - Key `region_oc` is not defined
 
-## 🇱🇻 Latviešu (85% Complete) - lv.hjson
+## 🇱🇻 Latviešu (82% Complete) - lv.hjson
 
 ### (No Invalid Keys)
 
@@ -581,10 +763,23 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 - Key `create_team_ready` is not defined
 - Key `region_oc` is not defined
 
-## 🇵🇱 Polski (90% Complete) - pl.hjson
+## 🇵🇱 Polski (86% Complete) - pl.hjson
 
 ### (No Invalid Keys)
 
@@ -617,9 +812,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `retry` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 - Key `region_oc` is not defined
 
-## 🎀 Cute Engwish (95% Complete) - qen.hjson
+## 🎀 Cute Engwish (91% Complete) - qen.hjson
 
 ### (No Invalid Keys)
 
@@ -637,13 +845,40 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_monument` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `bindings_screen_record` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 - Key `region_oc` is not defined
 
-## 🇷🇴 Română (100% Complete) - ro.hjson
+## 🇷🇴 Română (96% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
-### (No Undefined Keys)
+### Undefined Keys
+
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 
 ## 🇷🇺 Русский (95% Complete) - ru.hjson
 
@@ -653,58 +888,43 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `privacy` is not defined
-- Key `bindings_fullscreen` is not defined
-- Key `recording` is not defined
-- Key `settings_record_res` is not defined
 - Key `settings_show_inout` is not defined
-- Key `settings_lock_joysticks` is not defined
-- Key `settings_switch_joysticks` is not defined
-- Key `settings_left_joystick_color` is not defined
-- Key `settings_right_joystick_color` is not defined
-- Key `settings_normal_joystick_info` is not defined
-- Key `settings_switched_joystick_info` is not defined
-- Key `interact_monument` is not defined
-- Key `bindings_screen_record` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 - Key `m16a4` is not defined
-- Key `region_oc` is not defined
 
-## 🇮🇳 தமிழ் (90% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (96% Complete) - ta.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
-- Key `warning_hw_accel_1` is not defined
-- Key `warning_hw_accel_2` is not defined
-- Key `warning_hw_accel_link` is not defined
-- Key `privacy` is not defined
-- Key `wiki` is not defined
-- Key `bindings_fullscreen` is not defined
-- Key `recording` is not defined
-- Key `settings_record_res` is not defined
-- Key `settings_show_inout` is not defined
-- Key `settings_gyro_angle` is not defined
-- Key `settings_lock_joysticks` is not defined
-- Key `settings_switch_joysticks` is not defined
-- Key `settings_left_joystick_color` is not defined
-- Key `settings_right_joystick_color` is not defined
-- Key `settings_normal_joystick_info` is not defined
-- Key `settings_switched_joystick_info` is not defined
-- Key `settings_haptics` is not defined
-- Key `msg_your_team_eliminated` is not defined
-- Key `msg_the_team_eliminated` is not defined
-- Key `final_gas_waiting` is not defined
-- Key `final_gas_advancing` is not defined
-- Key `interact_monument` is not defined
-- Key `loading_fetching_data_failed` is not defined
-- Key `retry` is not defined
-- Key `bindings_screen_record` is not defined
-- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
-- Key `create_team_ready` is not defined
-- Key `region_oc` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 
-## 🇹🇷 Turkısh (91% Complete) - tr.hjson
+## 🇹🇷 Turkısh (96% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -712,38 +932,41 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `warning_hw_accel_1` is not defined
-- Key `warning_hw_accel_2` is not defined
-- Key `warning_hw_accel_link` is not defined
-- Key `wiki` is not defined
-- Key `bindings_fullscreen` is not defined
-- Key `recording` is not defined
-- Key `settings_record_res` is not defined
-- Key `settings_show_inout` is not defined
-- Key `settings_gyro_angle` is not defined
-- Key `settings_lock_joysticks` is not defined
-- Key `settings_switch_joysticks` is not defined
-- Key `settings_left_joystick_color` is not defined
-- Key `settings_right_joystick_color` is not defined
-- Key `settings_normal_joystick_info` is not defined
-- Key `settings_switched_joystick_info` is not defined
-- Key `settings_haptics` is not defined
-- Key `msg_your_team_eliminated` is not defined
-- Key `msg_the_team_eliminated` is not defined
-- Key `interact_monument` is not defined
-- Key `loading_fetching_data_failed` is not defined
-- Key `retry` is not defined
-- Key `bindings_screen_record` is not defined
-- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
-- Key `region_oc` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 
-## 🇹🇼 中文（繁體） (100% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (96% Complete) - tw.hjson
 
 ### (No Invalid Keys)
 
-### (No Undefined Keys)
+### Undefined Keys
 
-## 🇻🇳 Tiếng Việt (94% Complete) - vi.hjson
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+
+## 🇻🇳 Tiếng Việt (89% Complete) - vi.hjson
 
 ### (No Invalid Keys)
 
@@ -766,9 +989,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_advancing` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 - Key `region_oc` is not defined
 
-## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (95% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -1018,5 +1254,18 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
 - Key `m16a4` is not defined
 

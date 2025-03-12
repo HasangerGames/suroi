@@ -30,34 +30,45 @@ export interface KillData {
 
 export const KillPacket = new Packet<KillData>(PacketType.Kill, {
     serialize(stream, data) {
+        const hasAttackerId = data.attackerId !== undefined;
+        const victimIsCreditedId = data.victimId === data.creditedId;
+        const hasCreditedId = data.creditedId !== undefined;
+
         /*
             for this message type, kfData has the following format:
 
-            u a c d k s s s
+            a v c d k s s s
 
-            u = unused
-            a = attackerId present
-            c = creditedId present
+            a = attackerId present (hasAttackerId)
+            v = victimId === creditedId (victimIsCreditedId)
+            c = creditedId present (hasCreditedId)
             d = downed
             k = killed
             s = damageSource
         */
         let kfData = data.damageSource;
-        if (data.attackerId !== undefined) kfData += 64;
-        if (data.creditedId !== undefined) kfData += 32;
+        if (hasAttackerId) kfData += 128;
+        if (victimIsCreditedId) {
+            kfData += 64;
+        } else if (hasCreditedId) {
+            kfData += 32;
+        }
         if (data.downed) kfData += 16;
         if (data.killed) kfData += 8;
         stream.writeUint8(kfData);
 
         stream.writeObjectId(data.victimId);
 
-        if (data.attackerId !== undefined) {
+        if (hasAttackerId) {
             stream.writeObjectId(data.attackerId);
-            stream.writeUint8(data.kills ?? 0);
         }
 
-        if (data.creditedId !== undefined) {
+        if (hasCreditedId && !victimIsCreditedId) {
             stream.writeObjectId(data.creditedId);
+        }
+
+        if (hasAttackerId || hasCreditedId) {
+            stream.writeUint8(data.kills ?? 0);
         }
 
         switch (data.damageSource) {
@@ -76,12 +87,11 @@ export const KillPacket = new Packet<KillData>(PacketType.Kill, {
         }
 
         if (
-            data.killstreak !== undefined
-            && data.weaponUsed
+            data.weaponUsed
             && "killstreak" in data.weaponUsed
             && data.weaponUsed.killstreak
         ) {
-            stream.writeUint8(data.killstreak);
+            stream.writeUint8(data.killstreak ?? 0);
         }
     },
 
@@ -92,19 +102,28 @@ export const KillPacket = new Packet<KillData>(PacketType.Kill, {
         // understand the format and what's going on
         const kfData = stream.readUint8();
 
+        const hasAttackerId = (kfData & 128) !== 0;
+        const victimIsCreditedId = (kfData & 64) !== 0;
+        const hasCreditedId = (kfData & 32) !== 0;
+
         data.damageSource = kfData & 0b111;
         data.downed = (kfData & 16) !== 0;
         data.killed = (kfData & 8) !== 0;
 
         data.victimId = stream.readObjectId();
 
-        if ((kfData & 64) !== 0) {
+        if (hasAttackerId) {
             data.attackerId = stream.readObjectId();
-            data.kills = stream.readUint8();
         }
 
-        if ((kfData & 32) !== 0) {
+        if (victimIsCreditedId) {
+            data.creditedId = data.victimId;
+        } else if (hasCreditedId) {
             data.creditedId = stream.readObjectId();
+        }
+
+        if (hasAttackerId || hasCreditedId) {
+            data.kills = stream.readUint8();
         }
 
         switch (data.damageSource) {
@@ -131,6 +150,5 @@ export const KillPacket = new Packet<KillData>(PacketType.Kill, {
         }
 
         recordTo(DataSplitTypes.Killfeed);
-        console.log({ ...data, damageSource: DamageSources[data.damageSource] });
     }
 });
