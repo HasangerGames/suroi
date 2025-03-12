@@ -1,23 +1,16 @@
 import { InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize, ZIndexes } from "@common/constants";
-import { ArmorType } from "@common/definitions/items/armors";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { Emotes } from "@common/definitions/emotes";
+import { ArmorType } from "@common/definitions/items/armors";
 import { type DualGunNarrowing } from "@common/definitions/items/guns";
-import { Loots } from "@common/definitions/loots";
+import { Scopes } from "@common/definitions/items/scopes";
+import { Skins } from "@common/definitions/items/skins";
 import type { ColorKeys, Mode, ModeDefinition } from "@common/definitions/modes";
 import { Modes } from "@common/definitions/modes";
-import { Scopes } from "@common/definitions/items/scopes";
-import { DisconnectPacket } from "@common/packets/disconnectPacket";
-import { GameOverPacket } from "@common/packets/gameOverPacket";
-import { JoinedPacket, type JoinedPacketData } from "@common/packets/joinedPacket";
-import { JoinPacket, type JoinPacketCreation } from "@common/packets/joinPacket";
-import { KillFeedPacket } from "@common/packets/killFeedPacket";
-import { MapPacket } from "@common/packets/mapPacket";
-import { type DataSplit, type InputPacket, type OutputPacket } from "@common/packets/packet";
+import { JoinPacket } from "@common/packets/joinPacket";
+import { PacketType, type DataSplit, type PacketDataIn, type PacketDataOut } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
-import { PickupPacket } from "@common/packets/pickupPacket";
-import { ReportPacket } from "@common/packets/reportPacket";
-import { UpdatePacket, type UpdatePacketDataOut } from "@common/packets/updatePacket";
+import { type UpdateDataOut } from "@common/packets/updatePacket";
 import { CircleHitbox, HitboxType } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, equalLayer } from "@common/utils/layer";
 import { EaseFunctions, Geometry, Numeric } from "@common/utils/math";
@@ -35,6 +28,7 @@ import "pixi.js/prepare";
 import { getTranslatedString, initTranslation } from "../translations";
 import { type TranslationKeys } from "../typings/translations";
 import { InputManager } from "./managers/inputManager";
+import { ScreenRecordManager } from "./managers/screenRecordManager";
 import { GameSound, SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
 import { Building } from "./objects/building";
@@ -54,7 +48,7 @@ import { ThrowableProjectile } from "./objects/throwableProj";
 import { Camera } from "./rendering/camera";
 import { Gas, GasRender } from "./rendering/gas";
 import { Minimap } from "./rendering/minimap";
-import { autoPickup, fetchServerData, resetPlayButtons, setUpUI, finalizeUI, teamSocket, unlockPlayButtons, updateDisconnectTime } from "./ui";
+import { autoPickup, fetchServerData, finalizeUI, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, updateDisconnectTime } from "./ui";
 import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
@@ -63,7 +57,6 @@ import { DebugRenderer } from "./utils/debugRenderer";
 import { setUpNetGraph } from "./utils/graph/netGraph";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
-import { ScreenRecordManager } from "./managers/screenRecordManager";
 
 /* eslint-disable @stylistic/indent */
 
@@ -174,8 +167,6 @@ export class Game {
     gameOver = false;
     spectating = false;
     error = false;
-
-    disconnectReason = "";
 
     readonly uiManager = new UIManager(this);
     readonly pixi = new Application();
@@ -349,7 +340,6 @@ export class Game {
             this.gameStarted = true;
             this.gameOver = false;
             this.spectating = false;
-            this.disconnectReason = "";
 
             for (const graph of Object.values(this.netGraph)) graph.clear();
 
@@ -370,12 +360,12 @@ export class Game {
             }
 
             let skin: typeof defaultClientCVars["cv_loadout_skin"];
-            const joinPacket: JoinPacketCreation = {
+            this.sendPacket(JoinPacket.create({
                 isMobile: this.inputManager.isMobile,
                 name: this.console.getBuiltInCVar("cv_player_name"),
-                skin: Loots.fromStringSafe(
+                skin: Skins.fromStringSafe(
                     this.console.getBuiltInCVar("cv_loadout_skin")
-                ) ?? Loots.fromString(
+                ) ?? Skins.fromString(
                     typeof (skin = defaultClientCVars.cv_loadout_skin) === "object"
                         ? skin.value
                         : skin
@@ -384,9 +374,7 @@ export class Game {
                 emotes: EMOTE_SLOTS.map(
                     slot => Emotes.fromStringSafe(this.console.getBuiltInCVar(`cv_loadout_${slot}_emote`))
                 )
-            };
-
-            this.sendPacket(JoinPacket.create(joinPacket));
+            }));
 
             this.camera.addObject(this.gasRender.graphics);
             this.map.indicator.setFrame("player_indicator");
@@ -438,7 +426,7 @@ export class Game {
                 if (++iterationCount === 1e3) {
                     console.warn("1000 iterations of packet reading; possible infinite loop");
                 }
-                const packet = stream.deserializeServerPacket({ splits, activePlayerId: this.activePlayerID });
+                const packet = stream.deserialize(splits);
                 if (packet === undefined) break;
                 this.onPacket(packet);
             }
@@ -458,12 +446,12 @@ export class Game {
             resetPlayButtons(this);
         };
 
-        this._socket.onclose = (): void => {
+        this._socket.onclose = (e: CloseEvent): void => {
             this.pixi.stop();
             this.connecting = false;
             resetPlayButtons(this);
 
-            const reason = this.disconnectReason || "Connection lost";
+            const reason = e.reason || "Connection lost";
 
             if (reason.startsWith("Invalid game version")) {
                 alert(reason);
@@ -485,29 +473,29 @@ export class Game {
 
     inventoryMsgTimeout: number | undefined;
 
-    onPacket(packet: OutputPacket): void {
-        switch (true) {
-            case packet instanceof JoinedPacket:
-                this.startGame(packet.output);
+    onPacket(packet: PacketDataOut): void {
+        switch (packet.type) {
+            case PacketType.Joined:
+                this.startGame(packet);
                 break;
-            case packet instanceof MapPacket:
-                this.map.updateFromPacket(packet.output);
+            case PacketType.Map:
+                this.map.updateFromPacket(packet);
                 break;
-            case packet instanceof UpdatePacket:
-                this.processUpdate(packet.output);
+            case PacketType.Update:
+                this.processUpdate(packet);
                 break;
-            case packet instanceof GameOverPacket:
-                this.uiManager.showGameOverScreen(packet.output);
+            case PacketType.GameOver:
+                this.uiManager.showGameOverScreen(packet);
                 break;
-            case packet instanceof KillFeedPacket:
-                this.uiManager.processKillFeedPacket(packet.output);
+            case PacketType.Kill:
+                this.uiManager.processKillPacket(packet);
                 break;
-            case packet instanceof ReportPacket: {
-                this.uiManager.processReportPacket(packet.output);
+            case PacketType.Report: {
+                this.uiManager.processReportPacket(packet);
                 break;
             }
-            case packet instanceof PickupPacket: {
-                const { output: { message, item } } = packet;
+            case PacketType.Pickup: {
+                const { message, item } = packet;
 
                 if (message !== undefined) {
                     const inventoryMsg = this.uiManager.ui.inventoryMsg;
@@ -555,9 +543,6 @@ export class Game {
                 }
                 break;
             }
-            case packet instanceof DisconnectPacket:
-                this.disconnectReason = packet.output.reason;
-                break;
         }
     }
 
@@ -632,6 +617,8 @@ export class Game {
                 this.particleManager.clear();
                 this.uiManager.clearTeammateCache();
                 this.uiManager.reportedPlayerIDs.clear();
+                this.uiManager.killLeaderCache = undefined;
+                this.uiManager.oldKillLeaderId = undefined;
 
                 const map = this.map;
                 map.safeZone.clear();
@@ -654,9 +641,9 @@ export class Game {
     }
 
     private readonly _packetStream = new PacketStream(new ArrayBuffer(1024));
-    sendPacket(packet: InputPacket): void {
+    sendPacket(packet: PacketDataIn): void {
         this._packetStream.stream.index = 0;
-        this._packetStream.serializeClientPacket(packet);
+        this._packetStream.serialize(packet);
         this.sendData(this._packetStream.getBuffer());
     }
 
@@ -749,7 +736,7 @@ export class Game {
         return n;
     }
 
-    processUpdate(updateData: UpdatePacketDataOut): void {
+    processUpdate(updateData: UpdateDataOut): void {
         const now = Date.now();
         this._serverDt = now - this._lastUpdateTime;
         this._lastUpdateTime = now;
@@ -882,6 +869,10 @@ export class Game {
 
         for (const ping of updateData.mapPings ?? []) {
             this.map.addMapPing(ping);
+        }
+
+        if (updateData.killLeader) {
+            this.uiManager.updateKillLeader(updateData.killLeader);
         }
 
         this.tick();

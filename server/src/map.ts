@@ -1,13 +1,13 @@
 import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory, RotationMode } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { MapPacket, type MapPacketData } from "@common/packets/mapPacket";
+import { MapPacket, type MapData } from "@common/packets/mapPacket";
 import { PacketStream } from "@common/packets/packetStream";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, GroupHitbox, HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { equalLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
-import { type Mutable, type SMutable } from "@common/utils/misc";
+import { SDeepMutable, type Mutable, type SMutable } from "@common/utils/misc";
 import { NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
 import { River, Terrain } from "@common/utils/terrain";
@@ -44,7 +44,7 @@ export class GameMap {
 
     readonly terrain: Terrain;
 
-    private readonly _packet: Omit<MapPacketData, "objects"> & { readonly objects: Mutable<MapPacketData["objects"]> };
+    private readonly _packet: SDeepMutable<MapData>;
 
     /**
      * A cached map packet buffer
@@ -86,12 +86,7 @@ export class GameMap {
         const [name, ...params] = mapData.split(":") as [MapName, ...string[]];
         const mapDef: MapDefinition = Maps[name];
 
-        // @ts-expect-error I don't know why this rule exists
-        type PacketType = this["_packet"];
-
-        const packet = {
-            objects: []
-        } as SMutable<PacketType>;
+        const packet = MapPacket.create({ objects: [] });
         this._packet = packet;
 
         this.seed = packet.seed = random(0, 2 ** 31);
@@ -186,7 +181,7 @@ export class GameMap {
         }
 
         const stream = new PacketStream(new ArrayBuffer(1 << 16));
-        stream.serializeServerPacket(MapPacket.create(packet));
+        stream.serialize(packet);
         this.buffer = stream.getBuffer();
     }
 

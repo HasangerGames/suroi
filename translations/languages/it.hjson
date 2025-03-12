@@ -215,7 +215,7 @@
 "km_killed": "ucciso"
 "km_knocked": "tramortito"
 
-"km_message": "<you> <finally> <event> <victim> <with> <weapon>"
+"km_message": "<you> <event> <victim> <with> <weapon>"
 
 // Killfeed.
 "kf_killed": "ha ucciso"
@@ -223,7 +223,7 @@
 "kf_finished_off": "ha finito"
 "themselves": "se stesso/a"
 
-"kf_message": "<player> <event> <finally> <victim> <with> <weapon>"
+"kf_message": "<player> <event> <victim> <with> <weapon>"
 // ------------------------------------------------------------------
 
 // Kill Leader stuff

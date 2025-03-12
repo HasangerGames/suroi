@@ -548,34 +548,15 @@ export class ByteStream {
      * Writes an array's elements to the stream, with a maximum length depending on the chosen byte count
      * @param source The source array. Arrays exceeding the maximum length will be truncated silently (see below for maximum lengths)
      * @param elementWriter A function allowing the serialization of any given element in the array
-     * @param bytes The amount of bytes to use to signal the array's length. The maximum lengths for a given byte count are as follows:
-     * | Bytes             | Max. array length |
-     * | :---------------: | :---------------: |
-     * | 1                 | 255               |
-     * | 2                 | 65535             |
-     * | 3                 | 16777215          |
-     * | 4                 | 4294967295        |
-     * | `n`               | 2 ** 8`n`         |
+     * @param bytes The amount of bytes to use to signal the array's length. 1 byte allows for up to 255 elements, while 2 bytes allows for up to 65,535.
      */
-    writeArray<T>(source: ArrayLike<T>, elementWriter: (item: T, stream: this) => void, bytes: 1 | 2 | 3 | 4 = 1): this {
-        const length = Numeric.min(source.length, 2 ** (8 * bytes) - 1);
-        switch (bytes) {
-            case 1: {
-                this.writeUint8(length);
-                break;
-            }
-            case 2: {
-                this.writeUint16(length);
-                break;
-            }
-            case 3: {
-                this.writeUint24(length);
-                break;
-            }
-            case 4: {
-                this.writeUint32(length);
-                break;
-            }
+    writeArray<T>(source: ArrayLike<T>, elementWriter: (item: T, stream: this) => void, bytes: 1 | 2 = 1): this {
+        const length = Numeric.min(source.length, bytes === 1 ? 255 : 65535);
+
+        if (bytes === 1) {
+            this.writeUint8(length);
+        } else if (bytes === 2) {
+            this.writeUint16(length);
         }
 
         for (let i = 0; i < length; i++) {
@@ -590,21 +571,84 @@ export class ByteStream {
      * @param bytes The number of bytes to read to obtain the array's length
      * @param elementReader A function allowing to read any given element from the stream
      */
-    readArray<T>(elementReader: (stream: this) => T, bytes: 1 | 2 | 3 | 4): T[] {
-        return Array.from(
-            {
-                length: (() => {
-                    switch (bytes) {
-                        case 1: return this.readUint8();
-                        case 2: return this.readUint16();
-                        case 3: return this.readUint24();
-                        case 4: return this.readUint32();
-                    }
-                })()
-            },
-            () => elementReader(this)
-        );
+    readArray<T>(elementReader: (stream: this) => T, bytes: 1 | 2 = 1): T[] {
+        let length: number;
+
+        if (bytes === 1) {
+            length = this.readUint8();
+        } else { // if (bytes === 2) {
+            length = this.readUint16();
+        }
+
+        const array = new Array<T>(length);
+        for (let i = 0; i < length; i++) {
+            array[i] = elementReader(this);
+        }
+        return array;
     }
+
+    // full implementations of writeArray and readArray for >65535 elements below (currently unused)
+    // /**
+    //  * Writes an array's elements to the stream, with a maximum length depending on the chosen byte count
+    //  * @param source The source array. Arrays exceeding the maximum length will be truncated silently (see below for maximum lengths)
+    //  * @param elementWriter A function allowing the serialization of any given element in the array
+    //  * @param bytes The amount of bytes to use to signal the array's length. The maximum lengths for a given byte count are as follows:
+    //  * | Bytes             | Max. array length |
+    //  * | :---------------: | :---------------: |
+    //  * | 1                 | 255               |
+    //  * | 2                 | 65535             |
+    //  * | 3                 | 16777215          |
+    //  * | 4                 | 4294967295        |
+    //  * | `n`               | 2 ** 8`n`         |
+    //  */
+    // writeArray<T>(source: ArrayLike<T>, elementWriter: (item: T, stream: this) => void, bytes: 1 | 2 | 3 | 4 = 1): this {
+    //     const length = Numeric.min(source.length, 2 ** (8 * bytes) - 1);
+    //     switch (bytes) {
+    //         case 1: {
+    //             this.writeUint8(length);
+    //             break;
+    //         }
+    //         case 2: {
+    //             this.writeUint16(length);
+    //             break;
+    //         }
+    //         case 3: {
+    //             this.writeUint24(length);
+    //             break;
+    //         }
+    //         case 4: {
+    //             this.writeUint32(length);
+    //             break;
+    //         }
+    //     }
+
+    //     for (let i = 0; i < length; i++) {
+    //         elementWriter(source[i], this);
+    //     }
+
+    //     return this;
+    // }
+
+    // /**
+    //  * Reads and creates an array based on the contents of this stream. The length depends on the byte count provided
+    //  * @param bytes The number of bytes to read to obtain the array's length
+    //  * @param elementReader A function allowing to read any given element from the stream
+    //  */
+    // readArray<T>(elementReader: (stream: this) => T, bytes: 1 | 2 | 3 | 4): T[] {
+    //     return Array.from(
+    //         {
+    //             length: (() => {
+    //                 switch (bytes) {
+    //                     case 1: return this.readUint8();
+    //                     case 2: return this.readUint16();
+    //                     case 3: return this.readUint24();
+    //                     case 4: return this.readUint32();
+    //                 }
+    //             })()
+    //         },
+    //         () => elementReader(this)
+    //     );
+    // }
 
     /**
      * Copies a section of a stream into this one. By default, the entire source stream is read and copied

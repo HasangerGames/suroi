@@ -50,10 +50,13 @@
 "msg_locked_tooltip": "Режим игры переключается между Напарниками, Одиночным и Отрядом каждые 24 часа, потому-что игроков недостаточно для игры во все режимы."
 "rules_and_tutorial": "Правила и обучение"
 "news": "Новости"
+"privacy": "Политика конфиденциальности"
 "loadout": "Экипировка"
 "settings": "Настройки"
 "fullscreen": "Полноэкранный режим"
+"bindings_fullscreen": "Полный экран"
 "resume": "Продолжить"
+"recording": "Идёт запись"
 "quit": "Выйти"
 "none": "Никакой"
 "copy": "Копировать"
@@ -95,6 +98,7 @@
 "settings_movement_smoothing": "Сглаживание ходьбы в игре"
 "settings_responsive_rotation": "Отзывчивые движения мышью"
 "settings_camera_shake": "Тряска экрана"
+"settings_record_res": "Разрешение экрана записи"
 "settings_ambient_particles": "Включить частицы режима"
 "settings_interface_scale": "Размер интерфейса"
 "settings_minimap_opacity": "Прозрачность мини-карты"
@@ -124,6 +128,12 @@
 "settings_joystick_size": "Размер джойстика"
 "settings_joystick_opacity": "Прозрачность джойстика"
 "settings_gyro_angle": "Угол наклона устройства для быстрой смены оружия"
+"settings_lock_joysticks": "Заблокировать позицию джойстика"
+"settings_switch_joysticks": "Поменять джойстики местами"
+"settings_left_joystick_color": "Цвет левого джойстика"
+"settings_right_joystick_color": "Цвет правого джойстика"
+"settings_normal_joystick_info": "Левый джойстик отвечает за движение, правый джойстик за наведение"
+"settings_switched_joystick_info": "Левый джойстик отвечает за наведение, правый джойстик за движение"
 "settings_haptics": "Вибрации устройства"
 
 "loadout_skins": "Скины"
@@ -182,6 +192,7 @@
 "interact_generator": "Включить генератор"
 "interact_button": "Нажать на кнопку"
 "interact_speaker": "Включить магнитофон"
+"interact_monument": "Отдать дань уважения"
 
 
 "loading_spritesheets": "Загрузка спрайтов <progress>"
@@ -227,6 +238,7 @@
 "bindings_+map_ping": "Колесо меток"
 "bindings_toggle_console": "Выключить/Включить консоль"
 "bindings_toggle_slot_lock": "Выключить/Включить блокировку слота"
+"bindings_screen_record": "Начать/Остановить запись"
 "bindings_explode_c4": "Взорвать С4"
 
 
@@ -256,7 +268,7 @@
 "km_killed": "убили"
 "km_knocked": "сбили с ног"
 
-"km_message": "<you> <finally> <event> <victim> <with> <weapon>"
+"km_message": "<you> <event> <victim> <with> <weapon>"
 
 "kf_killed": "убил"
 "kf_knocked": "сбил с ног"
@@ -265,7 +277,7 @@
 "kf_finished_off_down": "<player> гладко убил <victim>"
 "themselves": "себя"
 
-"kf_message": "<player> <finally> <event> <victim> <with> <weapon>"
+"kf_message": "<player> <event> <victim> <with> <weapon>"
 
 "tt_restores": "<item> восстанавливает <amount> <type>"
 "tt_reduces": "<item> уменьшает <percent>% входящего урона"
@@ -320,6 +332,7 @@
 "region_eu": "Европа"
 "region_sa": "Южная Америка"
 "region_as": "Азия"
+"region_oc": "Океания"
 
 
 "frag_grenade": "Осколочная граната"

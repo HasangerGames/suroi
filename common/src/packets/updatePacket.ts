@@ -8,24 +8,12 @@ import { Scopes, type ScopeDefinition } from "../definitions/items/scopes";
 import { Loots, type WeaponDefinition } from "../definitions/loots";
 import { MapPings, type MapPing, type PlayerPing } from "../definitions/mapPings";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
-import { type Mutable, type SDeepMutable } from "../utils/misc";
+import { type SDeepMutable } from "../utils/misc";
 import { ObjectSerializations, type FullData, type ObjectsNetData } from "../utils/objectsSerializations";
 import type { PerkCollection } from "../utils/perkManager";
 import { type SuroiByteStream } from "../utils/suroiByteStream";
 import { Vec, type Vector } from "../utils/vector";
-import { createPacket, DataSplitTypes, getSplitTypeForCategory } from "./packet";
-
-interface ObjectFullData {
-    readonly id: number
-    readonly type: ObjectCategory
-    readonly data: FullData<ObjectFullData["type"]>
-}
-
-interface ObjectPartialData {
-    readonly id: number
-    readonly type: ObjectCategory
-    readonly data: ObjectsNetData[ObjectCategory]
-}
+import { DataSplitTypes, getSplitTypeForCategory, Packet, PacketType } from "./packet";
 
 function serializePlayerData(
     strm: SuroiByteStream,
@@ -455,34 +443,47 @@ export const enum UpdateFlags {
     DeletedPlayers = 1 << 10,
     AliveCount = 1 << 11,
     Planes = 1 << 12,
-    MapPings = 1 << 13
+    MapPings = 1 << 13,
+    KillLeader = 1 << 14
 }
 
-export type MapPingSerialization = {
+export interface MapPingSerialization {
     readonly position: Vector
     readonly definition: MapPing
-};
+}
 
-export type PlayerPingSerialization = {
+export interface PlayerPingSerialization {
     readonly position: Vector
     readonly definition: PlayerPing
     readonly playerId: number
-};
+}
 
 export type PingSerialization = MapPingSerialization | PlayerPingSerialization;
 
-export type ExplosionSerialization = {
+export interface ExplosionSerialization {
     readonly definition: ExplosionDefinition
     readonly position: Vector
     readonly layer: Layer
-};
+}
 
-export type EmoteSerialization = {
+export interface EmoteSerialization {
     readonly definition: EmoteDefinition
     readonly playerID: number
-};
+}
 
-export type PlayerData = {
+interface ObjectFullData {
+    readonly id: number
+    readonly type: ObjectCategory
+    readonly data: FullData<ObjectFullData["type"]>
+}
+
+interface ObjectPartialData {
+    readonly id: number
+    readonly type: ObjectCategory
+    readonly data: ObjectsNetData[ObjectCategory]
+}
+
+export interface PlayerData {
     readonly pingSeq: number
     readonly minMax?: {
         readonly maxHealth: number
@@ -497,7 +498,7 @@ export type PlayerData = {
         readonly id: number
         readonly spectating: boolean
     }
-    readonly teammates?: ReadonlyArray<{
+    readonly teammates?: Array<{
         readonly id: number
         readonly position: Vector
         readonly normalizedHealth: number
@@ -507,7 +508,7 @@ export type PlayerData = {
     }>
     readonly inventory?: {
         readonly activeWeaponIndex: number
-        readonly weapons?: ReadonlyArray<undefined | {
+        readonly weapons?: Array<undefined | {
             readonly definition: WeaponDefinition
             readonly count?: number
             readonly stats?: {
@@ -523,9 +524,10 @@ export type PlayerData = {
     readonly activeC4s?: boolean
     readonly perks?: PerkCollection
     readonly teamID?: number
-};
+}
 
-export type UpdatePacketDataCommon = {
+export interface UpdateDataCommon {
+    readonly type: PacketType.Update
     readonly flags: number
     readonly playerData?: PlayerData
     readonly deletedObjects?: number[]
@@ -559,9 +561,13 @@ export type UpdatePacketDataCommon = {
         readonly direction: number
     }>
     readonly mapPings?: readonly PingSerialization[]
-};
+    readonly killLeader?: {
+        id: number
+        kills: number
+    }
+}
 
-export type ServerOnly = {
+export interface ServerOnly {
     readonly bullets?: readonly BaseBullet[]
     readonly fullObjectsCache: ReadonlyArray<{
         get partialStream(): SuroiByteStream
@@ -571,27 +577,27 @@ export type ServerOnly = {
     readonly partialObjectsCache: Array<{
         get partialStream(): SuroiByteStream
     }>
-};
+}
 
-export type ClientOnly = {
+export interface ClientOnly {
     readonly deserializedBullets?: readonly BulletOptions[]
     readonly fullDirtyObjects?: readonly ObjectFullData[]
     readonly partialDirtyObjects?: readonly ObjectPartialData[]
-};
+}
 
 /**
  * For server use
  */
-export type UpdatePacketDataIn = UpdatePacketDataCommon & ServerOnly;
+export type UpdateDataIn = UpdateDataCommon & ServerOnly;
 /**
  * For client use
  */
-export type UpdatePacketDataOut = UpdatePacketDataCommon & ClientOnly;
+export type UpdateDataOut = UpdateDataCommon & ClientOnly;
 
 const planeMinPos = -GameConstants.maxPosition;
 const planeMaxPos = GameConstants.maxPosition * 2;
 
-export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, UpdatePacketDataOut>({
+export const UpdatePacket = new Packet<UpdateDataIn, UpdateDataOut>(PacketType.Update, {
     serialize(strm, data) {
         let flags = 0;
         // save the current index to write flags later
@@ -763,6 +769,12 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
             flags |= UpdateFlags.MapPings;
         }
 
+        if (data.killLeader) {
+            strm.writeObjectId(data.killLeader.id)
+                .writeUint8(data.killLeader.kills);
+            flags |= UpdateFlags.KillLeader;
+        }
+
         const idx = strm.index;
         strm.index = flagsIdx;
         strm.writeUint16(flags);
@@ -770,9 +782,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
         strm.index = idx;
     },
 
-    deserialize(stream, [saveIndex, recordTo, activeId]) {
-        const data = {} as Mutable<UpdatePacketDataOut>;
-
+    deserialize(stream, data, saveIndex, recordTo) {
         const flags = stream.readUint16();
 
         if ((flags & UpdateFlags.PlayerData) !== 0) {
@@ -803,11 +813,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
                     } as ObjectsNetData[typeof type]
                 };
 
-                recordTo(
-                    type === ObjectCategory.Player && id === activeId
-                        ? DataSplitTypes.PlayerData
-                        : getSplitTypeForCategory(type)
-                );
+                recordTo(getSplitTypeForCategory(type));
 
                 return obj;
             }, 2);
@@ -824,11 +830,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
                     data: ObjectSerializations[type].deserializePartial(stream)
                 };
 
-                recordTo(
-                    type === ObjectCategory.Player && id === activeId
-                        ? DataSplitTypes.PlayerData
-                        : getSplitTypeForCategory(type)
-                );
+                recordTo(getSplitTypeForCategory(type));
 
                 return obj;
             }, 2);
@@ -885,7 +887,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
                     hasColor,
                     nameColor: hasColor ? stream.readUint24() : undefined,
                     badge: (decorations & 1) !== 0 ? Badges.readFromStream(stream) : undefined
-                } as (UpdatePacketDataCommon["newPlayers"] & object)[number];
+                } as (UpdateDataCommon["newPlayers"] & object)[number];
             }, 1);
         }
 
@@ -923,6 +925,11 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
             }, 1);
         }
 
-        return data as UpdatePacketDataOut;
+        if ((flags & UpdateFlags.KillLeader) !== 0) {
+            data.killLeader = {
+                id: stream.readObjectId(),
+                kills: stream.readUint8()
+            };
+        }
     }
 });
