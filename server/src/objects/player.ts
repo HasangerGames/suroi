@@ -2078,7 +2078,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.canDespawn = false;
         this._team?.setDirty();
 
-        let action = this.beingRevivedBy?.action;
+        const action = this.beingRevivedBy?.action;
         if (action instanceof ReviveAction) {
             action.cancel();
         }

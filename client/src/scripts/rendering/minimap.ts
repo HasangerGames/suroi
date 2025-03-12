@@ -1,6 +1,6 @@
 import { GameConstants, GasState, Layer, ObjectCategory, ZIndexes } from "@common/constants";
 import { type MapPingDefinition } from "@common/definitions/mapPings";
-import { type MapPacketData } from "@common/packets/mapPacket";
+import { type MapData } from "@common/packets/mapPacket";
 import { type PingSerialization, type PlayerPingSerialization } from "@common/packets/updatePacket";
 import { RectangleHitbox } from "@common/utils/hitbox";
 import { Numeric } from "@common/utils/math";
@@ -87,8 +87,8 @@ export class Minimap {
 
     readonly terrainGraphics = new Graphics();
 
-    private _objects: MapPacketData["objects"] = [];
-    private _places: MapPacketData["places"] = [];
+    private _objects: MapData["objects"] = [];
+    private _places: MapData["places"] = [];
 
     readonly debugGraphics = new Graphics();
 
@@ -464,7 +464,7 @@ export class Minimap {
         this.game.camera.addObject(debugGraphics);
     }
 
-    updateFromPacket(mapPacket: MapPacketData): void {
+    updateFromPacket(mapPacket: MapData): void {
         console.log(`Joining game with seed: ${mapPacket.seed}`);
         this.game.uiManager.ui.loaderText.text(getTranslatedString("loading_joining_game"));
 
@@ -479,7 +479,7 @@ export class Minimap {
         );
 
         const rivers: River[] = [];
-        rivers.push(...mapPacket.rivers.map(({ width, points, isTrail }) => new River(width, points, rivers, mapBounds, isTrail)));
+        rivers.push(...mapPacket.rivers.map(({ width, points, isTrail }) => new River(width, points as Vector[], rivers, mapBounds, isTrail)));
 
         this._terrain = new Terrain(
             width,

@@ -20,8 +20,6 @@ import { Player } from "../objects/player";
 import { GamePlugin } from "../pluginManager";
 import { getLootFromTable } from "../utils/lootHelpers";
 import { LootTables } from "./lootTables";
-import { JoinedPacket } from "@common/packets/joinedPacket";
-import { JoinPacket } from "@common/packets/joinPacket";
 import { PacketType } from "@common/packets/packet";
 
 export interface RiverDefinition {

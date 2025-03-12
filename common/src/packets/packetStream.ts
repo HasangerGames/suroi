@@ -5,7 +5,7 @@ import { JoinPacket } from "./joinPacket";
 import { JoinedPacket } from "./joinedPacket";
 import { KillPacket } from "./killPacket";
 import { MapPacket } from "./mapPacket";
-import { DataSplit, MutablePacketDataIn, PacketDataOut, PacketType } from "./packet";
+import { DataSplit, MutablePacketDataIn, PacketDataOut } from "./packet";
 import { PickupPacket } from "./pickupPacket";
 import { ReportPacket } from "./reportPacket";
 import { SpectatePacket } from "./spectatePacket";
