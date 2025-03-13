@@ -32,7 +32,7 @@ import { CameraManager } from "./managers/cameraManager";
 import { InputManager } from "./managers/inputManager";
 import { MapManager } from "./managers/mapManager";
 import { SoundManager } from "./managers/soundManager";
-import { defaultClientCVars } from "./console/variables";
+import { defaultClientCVars, type CVarTypeMapping } from "./console/variables";
 
 /*
     eslint-disable
@@ -864,11 +864,6 @@ export async function setUpUI(): Promise<void> {
     toggleRotateMessage();
     $(window).on("resize", toggleRotateMessage);
 
-    GameConsole.variables.addChangeListener(
-        "cv_console_open",
-        (_, val) => GameConsole.isOpen = val
-    );
-
     const gameMenu = ui.gameMenu;
     const settingsMenu = $("#settings-menu");
 
@@ -1059,12 +1054,7 @@ export async function setUpUI(): Promise<void> {
         skinList.append(skinItem);
     }
 
-    GameConsole.variables.addChangeListener(
-        "cv_loadout_skin",
-        (_, newSkin) => {
-            selectSkin(newSkin);
-        }
-    );
+    GameConsole.variables.addChangeListener("cv_loadout_skin", val => selectSkin(val));
 
     // Load emotes
     function handleEmote(slot: "win" | "death"): void { // eipi can you improve this so that it uses `emoteSlots` items with index >3
@@ -1675,7 +1665,7 @@ export async function setUpUI(): Promise<void> {
 
     GameConsole.variables.addChangeListener(
         "cv_cooler_graphics",
-        (_, newVal, oldVal) => {
+        (newVal, oldVal) => {
             if (newVal !== oldVal && !newVal) {
                 for (const player of Game.objects.getCategory(ObjectCategory.Player)) {
                     const { images: { blood: { children } }, bloodDecals } = player;
@@ -1776,12 +1766,12 @@ export async function setUpUI(): Promise<void> {
     addCheckboxListener(
         "#toggle-hide-minimap",
         "cv_minimap_minimized",
-        value => MapManager.visible = !value
+        val => MapManager.visible = !val
     );
 
     GameConsole.variables.addChangeListener(
         "cv_map_expanded",
-        (_, newValue) => MapManager.expanded = newValue
+        val => MapManager.expanded = val
     );
 
     // Leave warning

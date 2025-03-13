@@ -146,12 +146,12 @@ export const MapManager = new (class MapManager {
         });
 
         if (DEBUG_CLIENT) {
-            GameConsole.variables.addChangeListener("db_show_hitboxes", (_, newValue) => {
+            GameConsole.variables.addChangeListener("db_show_hitboxes", val => {
                 if (!Game.gameStarted) return;
-                if (newValue) {
+                if (val) {
                     this.renderMapDebug();
                 }
-                this.debugGraphics.visible = newValue;
+                this.debugGraphics.visible = val;
             });
         }
     }

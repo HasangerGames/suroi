@@ -58,7 +58,7 @@ export class Command<
 
     run(args: ReadonlyArray<string | undefined> = []): PossibleError<ErrorType> {
         if (!this._info.allowOnlyWhenGameStarted || Game.gameStarted) {
-            return this._executor.call(...args) as PossibleError<ErrorType>;
+            return this._executor(...args) as PossibleError<ErrorType>;
         }
     }
 

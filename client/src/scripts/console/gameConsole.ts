@@ -520,40 +520,38 @@ export const GameConsole = new (class GameConsole {
         const addChangeListener = this.variables.addChangeListener.bind(this.variables);
         addChangeListener(
             "cv_console_left",
-            (_, value) => {
-                this._position.left = value;
-            }
+            val => this._position.left = val
         );
 
         addChangeListener(
             "cv_console_top",
-            (_, value) => {
-                this._position.top = value;
-            }
+            val => this._position.top = val
         );
 
         const { container, autocomplete } = this._ui;
         addChangeListener(
             "cv_console_width",
-            (_, value) => {
+            val => {
                 if (!noWidthAdjust) {
-                    container.css("width", value);
+                    container.css("width", val);
                 }
 
-                autocomplete.css("width", value);
+                autocomplete.css("width", val);
             }
         );
 
         addChangeListener(
             "cv_console_height",
-            (_, value) => {
+            val => {
                 if (!noHeightAdjust) {
-                    container.css("height", value);
+                    container.css("height", val);
                 }
 
-                autocomplete.css("top", this._position.top + value);
+                autocomplete.css("top", this._position.top + val);
             }
         );
+
+        addChangeListener("cv_console_open", val => this.isOpen = val);
 
         this.isOpen = this._isOpen;
         // sanity check

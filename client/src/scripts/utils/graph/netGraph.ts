@@ -170,7 +170,7 @@ export function setUpNetGraph() {
         self: BaseGraph<any[], any>,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         other: BaseGraph<any[], any>
-    ): CVarChangeListener<boolean> => (_, val) => {
+    ): CVarChangeListener<boolean> => val => {
         if (val) {
             updateGraphVis(self, getBuiltInCVar("pf_net_graph"), false);
             updatePositionsForGraphs(getBuiltInCVar("pf_net_graph"));
@@ -191,7 +191,7 @@ export function setUpNetGraph() {
 
     addChangeListener("pf_show_ping", generateListener(-38, ping, fps));
     addChangeListener("pf_show_fps", generateListener(-34, fps, ping));
-    addChangeListener("pf_show_inout", (_, val) => {
+    addChangeListener("pf_show_inout", val => {
         const ng = getBuiltInCVar("pf_net_graph");
         if (val) {
             updateGraphVis(sending, ng, false);
@@ -205,7 +205,7 @@ export function setUpNetGraph() {
         updatePositionsForGraphs(ng);
     });
     updateForNetGraph(getBuiltInCVar("pf_net_graph"), false);
-    addChangeListener("pf_net_graph", (_, val) => updateForNetGraph(val));
+    addChangeListener("pf_net_graph", val => updateForNetGraph(val));
 
     return obj;
 }
