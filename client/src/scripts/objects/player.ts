@@ -1,6 +1,5 @@
 import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "@common/constants";
 import { type EmoteDefinition } from "@common/definitions/emotes";
-import { Explosions } from "@common/definitions/explosions";
 import { Ammos } from "@common/definitions/items/ammos";
 import { type ArmorDefinition } from "@common/definitions/items/armors";
 import { type BackpackDefinition } from "@common/definitions/items/backpacks";
@@ -14,7 +13,7 @@ import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obs
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, getEffectiveZIndex } from "@common/utils/layer";
-import { Angle, EaseFunctions, Geometry, Numeric } from "@common/utils/math";
+import { Angle, EaseFunctions, Geometry } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
@@ -22,25 +21,24 @@ import { random, randomBoolean, randomFloat, randomPointInsideCircle, randomRota
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
-import { DashLine } from "pixi-dashed-line";
 import { Container, Graphics, Text } from "pixi.js";
 import { getTranslatedString } from "../../translations";
 import { type TranslationKeys } from "../../typings/translations";
+import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
+import { CameraManager } from "../managers/cameraManager";
+import { InputManager } from "../managers/inputManager";
+import { MapManager } from "../managers/mapManager";
+import { ParticleManager, type Particle, type ParticleEmitter, type ParticleOptions } from "../managers/particleManager";
+import { ClientPerkManager } from "../managers/perkManager";
 import { SoundManager, type GameSound } from "../managers/soundManager";
+import { UIManager } from "../managers/uiManager";
 import { BULLET_WHIZ_SCALE, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
+import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
-import { ParticleManager, type Particle, type ParticleEmitter, type ParticleOptions } from "../managers/particleManager";
-import { DebugRenderer } from "../utils/debugRenderer";
-import { CameraManager } from "../managers/cameraManager";
-import { InputManager } from "../managers/inputManager";
-import { GameConsole } from "../console/gameConsole";
-import { MapManager } from "../managers/mapManager";
-import { UIManager } from "../managers/uiManager";
-import { ClientPerkManager } from "../managers/perkManager";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -169,8 +167,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     floorType: FloorNames = FloorNames.Grass;
 
     sizeMod = 1;
-
-    private grenadeImpactPreview?: Graphics;
 
     constructor(id: number, data: ObjectsNetData[ObjectCategory.Player]) {
         super(id);
@@ -302,9 +298,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         }
     }
 
-    override update(): void {
-        this.updateGrenadePreview();
-    }
+    override update(): void { /* bleh */ }
 
     override updateInterpolation(): void {
         this.updateContainerPosition();
@@ -532,8 +526,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.animationChangeTime = Date.now();
             this.playAnimation(data.animation);
         }
-
-        this.updateGrenadePreview();
 
         if (data.full) {
             const {
@@ -828,110 +820,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             // @ts-expect-error 'item' not existing is okay
             this.action = action;
-        }
-    }
-
-    updateGrenadePreview(): void {
-        this.grenadeImpactPreview?.clear();
-        if (
-            this.animation === AnimationType.ThrowableCook
-            && this.activeItem.itemType === ItemType.Throwable
-            && this.isActivePlayer
-        ) {
-            // prediction for impact point is basically just done by yoinking sever
-            // code and plopping it client-side lol
-            if (ClientPerkManager.hasItem(PerkIds.DemoExpert)) {
-                if (this.grenadeImpactPreview === undefined) {
-                    this.grenadeImpactPreview = new Graphics();
-                    this.grenadeImpactPreview.zIndex = 999;
-                    CameraManager.addObject(this.grenadeImpactPreview);
-                }
-
-                const graphics = this.grenadeImpactPreview;
-                const def = this.activeItem;
-
-                // mirrors server logic
-                const pos = Vec.add(
-                    toPixiCoords(this.position),
-                    Vec.rotate(toPixiCoords(def.animation.cook.rightFist), this.rotation)
-                );
-
-                const range = def.c4
-                    ? 0
-                    : Numeric.min(
-                        InputManager.distanceToMouse * 0.9, // <- this constant is defined server-side
-                        (def.maxThrowDistance ?? 128) * PerkData[PerkIds.DemoExpert].rangeMod
-                    );
-
-                const cookMod = def.cookable ? Date.now() - this.animationChangeTime : 0;
-                const drag = 0.001; // defined server-side
-                const physDist = (range / (985 * drag)) * (1 - Math.exp(-drag * (def.fuseTime - cookMod))); // also defined server-side
-
-                const { x, y } = Vec.add(
-                    pos,
-                    Vec.fromPolar(
-                        this.rotation,
-                        physDist * PIXI_SCALE
-                    )
-                );
-
-                const ln = new DashLine(graphics, { dash: [100, 50] });
-
-                graphics.clear()
-                    .setFillStyle({
-                        color: 0xff0000,
-                        alpha: 0.3
-                    })
-                    .setStrokeStyle({
-                        color: 0xff0000,
-                        width: 8,
-                        alpha: 0.7
-                    })
-                    .beginPath();
-
-                ln.moveTo(pos.x, pos.y)
-                    .lineTo(x, y);
-
-                graphics.stroke()
-                    .setStrokeStyle({
-                        color: 0xff0000,
-                        width: 3,
-                        alpha: 0.5
-                    })
-                    .beginPath();
-
-                const explosionDef = Explosions.fromStringSafe(def.detonation.explosion ?? "");
-                if (explosionDef !== undefined
-                    && explosionDef.damage !== 0
-                    && explosionDef.radius.min + explosionDef.radius.max !== 0) {
-                    graphics.circle(x, y, explosionDef.radius.min * PIXI_SCALE)
-                        .closePath()
-                        .fill()
-                        .stroke()
-                        .beginPath()
-                        .setFillStyle({
-                            color: 0xFFFF00,
-                            alpha: 0.8
-                        })
-                        .setStrokeStyle({
-                            color: 0xFFFF00,
-                            width: 3,
-                            alpha: 0.1
-                        })
-                        .circle(x, y, 0.5 * PIXI_SCALE)
-                        .closePath()
-                        .fill()
-                        .stroke();
-                } else {
-                    graphics.circle(x, y, 1.5 * PIXI_SCALE)
-                        .closePath()
-                        .fill()
-                        .stroke();
-                }
-            } else {
-                this.grenadeImpactPreview?.destroy();
-                this.grenadeImpactPreview = undefined;
-            }
         }
     }
 
@@ -2126,8 +2014,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         anims.weapon?.kill();
         anims.muzzleFlashFade?.kill();
         anims.muzzleFlashRecoil?.kill();
-
-        this.grenadeImpactPreview?.destroy();
 
         this.disguiseContainer.destroy();
         images.backMeleeSprite?.destroy();

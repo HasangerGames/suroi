@@ -48,7 +48,6 @@
     "fontfaceobserver": "^2.3.0",
     "jquery": "^3.7.1",
     "nipplejs": "^0.10.2",
-    "pixi-dashed-line": "^1.4.2",
     "pixi-filters": "^6.1.0",
     "pixi.js": "^8.8.1"
   }
