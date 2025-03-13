@@ -27,7 +27,7 @@ export const GameConstants = {
         maxMouseDist: 256,
         reviveTime: 8,
         maxReviveDist: 5,
-        bleedOutDPMs: 0.02, // === 2 dps
+        bleedOutDPMs: 0.002, // === 2 dps
         maxPerkCount: 1,
         rateLimitPunishmentTrigger: 10,
         emotePunishmentTime: 5000, // ms
