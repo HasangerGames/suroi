@@ -371,7 +371,7 @@ export const InputManager = new (class InputManager {
         window.addEventListener("keyup", this.handleInputEvent.bind(this, false));
         gameContainer.addEventListener("pointerdown", this.handleInputEvent.bind(this, true));
         gameContainer.addEventListener("pointerup", this.handleInputEvent.bind(this, false));
-        gameContainer.addEventListener("wheel", this.handleInputEvent.bind(this, true));
+        gameContainer.addEventListener("wheel", this.handleInputEvent.bind(this, true), { passive: true });
 
         $("#emote-wheel > .button-center").on("click", () => {
             this.emoteWheelActive = false;
@@ -863,7 +863,7 @@ export const InputManager = new (class InputManager {
 
                 bindButton.addEventListener("keydown", setKeyBind);
                 bindButton.addEventListener("mousedown", setKeyBind);
-                bindButton.addEventListener("wheel", setKeyBind);
+                bindButton.addEventListener("wheel", setKeyBind, { passive: true });
                 bindButton.addEventListener("contextmenu", e => { e.preventDefault(); });
 
                 bindButton.addEventListener("scroll", evt => {
