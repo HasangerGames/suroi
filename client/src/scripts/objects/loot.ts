@@ -8,13 +8,16 @@ import { EaseFunctions } from "@common/utils/math";
 import { ItemType } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { type Vector } from "@common/utils/vector";
-import { type Game } from "../game";
+import { Game } from "../game";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { type Player } from "./player";
-import type { DebugRenderer } from "../utils/debugRenderer";
+import { DebugRenderer } from "../utils/debugRenderer";
+import { GameConsole } from "../console/gameConsole";
+import { UIManager } from "../managers/uiManager";
+import { ClientPerkManager } from "../managers/perkManager";
 
 export class Loot extends GameObject.derive(ObjectCategory.Loot) {
     definition!: LootDefinition;
@@ -33,8 +36,8 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
 
     animation?: Tween<Vector>;
 
-    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Loot]) {
-        super(game, id);
+    constructor(id: number, data: ObjectsNetData[ObjectCategory.Loot]) {
+        super(id);
 
         this.images = {
             background: new SuroiSprite(),
@@ -75,7 +78,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                     .setAngle(90);
 
                 if (definition.grassTint) {
-                    const ghillieTint = this.game.colors.ghillie;
+                    const ghillieTint = Game.colors.ghillie;
                     this.images.item.setTint(ghillieTint);
                     this.images.skinFistLeft.setTint(ghillieTint);
                     this.images.skinFistRight.setTint(ghillieTint);
@@ -147,7 +150,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
             // Play an animation if this is new loot
             if (data.full.isNew && isNew) {
                 this.container.scale.set(0);
-                this.animation = this.game.addTween({
+                this.animation = Game.addTween({
                     target: this.container.scale,
                     to: { x: 1, y: 1 },
                     duration: 1000,
@@ -165,22 +168,22 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
 
         this.updateZIndex();
 
-        if (!this.game.console.getBuiltInCVar("cv_movement_smoothing") || isNew) {
+        if (!GameConsole.getBuiltInCVar("cv_movement_smoothing") || isNew) {
             this.container.position = toPixiCoords(this.position);
         }
     }
 
     override updateZIndex(): void {
-        this.container.zIndex = getEffectiveZIndex(this.doOverlay() ? ZIndexes.UnderWaterLoot : ZIndexes.Loot, this.layer, this.game.layer);
+        this.container.zIndex = getEffectiveZIndex(this.doOverlay() ? ZIndexes.UnderWaterLoot : ZIndexes.Loot, this.layer, Game.layer);
     }
 
-    override updateDebugGraphics(debugRenderer: DebugRenderer): void {
+    override updateDebugGraphics(): void {
         if (!DEBUG_CLIENT) return;
 
-        debugRenderer.addHitbox(
+        DebugRenderer.addHitbox(
             this.hitbox,
             HITBOX_COLORS.loot,
-            this.layer === this.game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
+            this.layer === Game.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
         );
     }
 
@@ -199,7 +202,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
     canInteract(player: Player): boolean {
         if (player.dead || player.downed) return false;
 
-        const inventory = this.game.uiManager.inventory;
+        const inventory = UIManager.inventory;
         const { weapons, lockedSlots } = inventory;
         const definition = this.definition;
 
@@ -252,8 +255,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                 return true;
             }
             case ItemType.Perk: {
-                const perks = this.game.uiManager.perks;
-                return !perks.asList()[0]?.noSwap && !perks.hasItem(definition);
+                return !ClientPerkManager.asList()[0]?.noSwap && !ClientPerkManager.hasItem(definition);
             }
         }
     }

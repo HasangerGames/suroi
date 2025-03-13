@@ -5,49 +5,55 @@ import { EaseFunctions } from "@common/utils/math";
 import { randomFloat, randomPointInsideCircle } from "@common/utils/random";
 import { FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
-import { type Game } from "../game";
+import { Game } from "../game";
 import { DIFF_LAYER_HITBOX_OPACITY, SHOCKWAVE_EXPLOSION_MULTIPLIERS } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { isMobile } from "pixi.js";
+import { CameraManager } from "../managers/cameraManager";
+import { GameConsole } from "../console/gameConsole";
+import { DebugRenderer } from "../utils/debugRenderer";
+import { MapManager } from "../managers/mapManager";
+import { ParticleManager } from "../managers/particleManager";
+import { SoundManager } from "../managers/soundManager";
 
-export function explosion(game: Game, definition: ExplosionDefinition, position: Vector, layer: Layer): void {
+export function explosion(definition: ExplosionDefinition, position: Vector, layer: Layer): void {
     const pixiPos = toPixiCoords(position);
 
     const image = new SuroiSprite("explosion_1");
 
-    const isOnSameLayer = adjacentOrEqualLayer(layer, game.layer ?? Layer.Ground);
+    const isOnSameLayer = adjacentOrEqualLayer(layer, Game.layer ?? Layer.Ground);
 
     image.scale.set(0);
     image.tint = definition.animation.tint;
     image.setVPos(pixiPos);
 
-    image.zIndex = getEffectiveZIndex(ZIndexes.Explosions, layer, game.layer);
+    image.zIndex = getEffectiveZIndex(ZIndexes.Explosions, layer, Game.layer);
     image.setVisible(isOnSameLayer);
 
-    game.camera.addObject(image);
+    CameraManager.addObject(image);
 
-    game.addTween({
+    Game.addTween({
         target: image.scale,
         to: { x: definition.animation.scale, y: definition.animation.scale },
         duration: definition.animation.duration,
         ease: EaseFunctions.expoOut,
         onUpdate: () => {
             if (!DEBUG_CLIENT) return;
-            if (!game.console.getBuiltInCVar("db_show_hitboxes")) return;
+            if (!GameConsole.getBuiltInCVar("db_show_hitboxes")) return;
 
-            const alpha = layer === game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY;
+            const alpha = layer === Game.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY;
 
             const step = Math.acos(1 - ((GameConstants.explosionRayDistance / definition.radius.max) ** 2) / 2);
 
             for (let angle = -Math.PI; angle < Math.PI; angle += step) {
-                game.debugRenderer
+                DebugRenderer
                     .addRay(position, angle, definition.radius.max, 0xff0000, alpha)
                     .addRay(position, angle, definition.radius.min, 0x00ff00, alpha);
             }
         }
     });
 
-    game.addTween({
+    Game.addTween({
         target: image,
         to: { alpha: 0 },
         duration: definition.animation.duration * 1.5, // the alpha animation is a bit longer so it looks nicer
@@ -57,8 +63,8 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
         }
     });
 
-    if (FloorTypes[game.map.terrain.getFloor(position, (game.layer as number))].particles) {
-        game.particleManager.spawnParticles(4, () => ({
+    if (FloorTypes[MapManager.terrain.getFloor(position, (Game.layer as number))].particles) {
+        ParticleManager.spawnParticles(4, () => ({
             frames: "ripple_particle",
             zIndex: ZIndexes.Ground,
             position: randomPointInsideCircle(position, 6),
@@ -75,26 +81,26 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
         }));
     }
 
-    game.camera.shake(definition.cameraShake.duration, !isOnSameLayer ? (definition.cameraShake.intensity / 2) : definition.cameraShake.intensity);
-    if (game.console.getBuiltInCVar("cv_cooler_graphics") && isOnSameLayer) {
-        game.camera.shockwave(
+    CameraManager.shake(definition.cameraShake.duration, !isOnSameLayer ? (definition.cameraShake.intensity / 2) : definition.cameraShake.intensity);
+    if (GameConsole.getBuiltInCVar("cv_cooler_graphics") && isOnSameLayer) {
+        CameraManager.shockwave(
             definition.cameraShake.duration * SHOCKWAVE_EXPLOSION_MULTIPLIERS.time,
             pixiPos,
             definition.cameraShake.intensity * SHOCKWAVE_EXPLOSION_MULTIPLIERS.amplitude,
             definition.radius.min * 100 * SHOCKWAVE_EXPLOSION_MULTIPLIERS.wavelength,
             definition.ballistics.speed * SHOCKWAVE_EXPLOSION_MULTIPLIERS.speed,
-            game.layer ?? Layer.Ground
+            Game.layer ?? Layer.Ground
         );
     }
 
-    if (game.console.getBuiltInCVar("mb_haptics") && isMobile.any) {
+    if (GameConsole.getBuiltInCVar("mb_haptics") && isMobile.any) {
         navigator.vibrate?.(
             definition.animation.duration * 0.75
         );
     }
 
     if (definition.sound !== undefined) {
-        game.soundManager.play(
+        SoundManager.play(
             definition.sound,
             {
                 position,

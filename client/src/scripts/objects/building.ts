@@ -9,13 +9,15 @@ import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Container, Graphics } from "pixi.js";
-import { type Game } from "../game";
-import { type GameSound } from "../managers/soundManager";
+import { SoundManager, type GameSound } from "../managers/soundManager";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE } from "../utils/constants";
 import { drawGroundGraphics, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
-import type { DebugRenderer } from "../utils/debugRenderer";
+import { CameraManager } from "../managers/cameraManager";
+import { Game } from "../game";
+import { ParticleManager } from "../managers/particleManager";
+import { DebugRenderer } from "../utils/debugRenderer";
 
 export class Building extends GameObject.derive(ObjectCategory.Building) {
     definition!: BuildingDefinition;
@@ -49,21 +51,21 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         sprite: SuroiSprite
     }>();
 
-    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Building]) {
-        super(game, id);
+    constructor(id: number, data: ObjectsNetData[ObjectCategory.Building]) {
+        super(id);
 
         this.layer = data.layer;
 
         this.container.sortableChildren = true;
 
-        this.game.camera.container.addChild(this.ceilingContainer);
+        CameraManager.addObject(this.ceilingContainer);
 
         this.updateFromData(data, true);
     }
 
     toggleCeiling(duration = 200): void {
         if (this.ceilingHitbox === undefined || this.ceilingTween || this.dead) return;
-        const player = this.game.activePlayer;
+        const player = Game.activePlayer;
         if (player === undefined) return;
 
         let visible = true;
@@ -137,8 +139,8 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                         if (!(
                             collided
                                 ||= [
-                                    ...this.game.objects.getCategory(ObjectCategory.Obstacle),
-                                    ...this.game.objects.getCategory(ObjectCategory.Building)
+                                    ...Game.objects.getCategory(ObjectCategory.Obstacle),
+                                    ...Game.objects.getCategory(ObjectCategory.Building)
                                 ].some(
                                     ({ damageable, dead, definition, hitbox, layer }) =>
                                         damageable
@@ -164,7 +166,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
         if (this.ceilingContainer.alpha === alpha || this.ceilingTween) return;
 
-        this.ceilingTween = this.game.addTween({
+        this.ceilingTween = Game.addTween({
             target: this.ceilingContainer,
             to: { alpha },
             duration,
@@ -200,14 +202,14 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
             if (definition.graphics?.length) {
                 this.graphics = new Graphics();
-                this.graphics.zIndex = getEffectiveZIndex(definition.graphicsZIndex ?? ZIndexes.BuildingsFloor, this.layer, this.game.layer);
+                this.graphics.zIndex = getEffectiveZIndex(definition.graphicsZIndex ?? ZIndexes.BuildingsFloor, this.layer, Game.layer);
                 for (const graphics of definition.graphics) {
                     this.graphics.beginPath();
                     drawGroundGraphics(graphics.hitbox.transform(this.position, 1, this.orientation), this.graphics);
                     this.graphics.closePath();
                     this.graphics.fill(graphics.color);
                 }
-                this.game.camera.container.addChild(this.graphics);
+                CameraManager.addObject(this.graphics);
             }
 
             for (const override of definition.visibilityOverrides ?? []) {
@@ -230,7 +232,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             if (this.maskHitbox) {
                 this.mask = new Graphics();
                 this.mask.alpha = 0;
-                this.game.camera.container.addChild(this.mask);
+                CameraManager.addObject(this.mask);
 
                 for (const hitbox of this.maskHitbox.hitboxes) {
                     const { min, max } = hitbox;
@@ -275,7 +277,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 && this.sound?.name !== sounds.normal
             ) {
                 this.sound?.stop();
-                this.sound = this.game.soundManager.play(sounds.normal, soundOptions);
+                this.sound = SoundManager.play(sounds.normal, soundOptions);
             }
 
             if (
@@ -284,7 +286,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 && this.sound?.name !== sounds.solved
             ) {
                 this.sound?.stop();
-                this.sound = this.game.soundManager.play(sounds.solved, soundOptions);
+                this.sound = SoundManager.play(sounds.solved, soundOptions);
             }
         }
 
@@ -296,7 +298,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                     particleFrame += `_${Math.floor(Math.random() * definition.ceilingCollapseParticleVariations) + 1}`;
                 }
 
-                this.game.particleManager.spawnParticles(10, () => ({
+                ParticleManager.spawnParticles(10, () => ({
                     frames: particleFrame,
                     position: this.ceilingHitbox?.randomPoint() ?? { x: 0, y: 0 },
                     zIndex: Numeric.max(ZIndexes.Players + 1, 4),
@@ -335,7 +337,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
             if (!isNew && data.puzzle.solved) {
                 if (definition.puzzle?.solvedSound) {
-                    this.game.soundManager.play("puzzle_solved", {
+                    SoundManager.play("puzzle_solved", {
                         position: definition.puzzle.soundPosition
                             ? Vec.addAdjust(this.position, definition.puzzle.soundPosition, this.orientation)
                             : this.position,
@@ -355,7 +357,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
     override updateZIndex(): void {
         if (this.dead) {
-            this.ceilingContainer.zIndex = getEffectiveZIndex(ZIndexes.DeadObstacles, this.layer, this.game.layer);
+            this.ceilingContainer.zIndex = getEffectiveZIndex(ZIndexes.DeadObstacles, this.layer, Game.layer);
         } else {
             const { obstacles = [], subBuildings = [] } = this.definition;
             this.ceilingContainer.zIndex = getEffectiveZIndex(
@@ -364,34 +366,34 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                     ...obstacles.map(({ layer }) => layer ?? 0),
                     ...subBuildings.map(({ layer }) => layer ?? 0)
                 ), 0, Infinity),
-                this.game.layer
+                Game.layer
             );
         }
-        this.container.zIndex = getEffectiveZIndex(this.definition.floorZIndex ?? ZIndexes.BuildingsFloor, this.layer, this.game.layer);
+        this.container.zIndex = getEffectiveZIndex(this.definition.floorZIndex ?? ZIndexes.BuildingsFloor, this.layer, Game.layer);
     }
 
-    override updateDebugGraphics(debugRender: DebugRenderer): void {
+    override updateDebugGraphics(): void {
         if (!DEBUG_CLIENT) return;
 
         const definition = this.definition;
-        const alpha = this.layer === this.game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY;
+        const alpha = this.layer === Game.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY;
 
         if (this.hitbox) {
-            debugRender.addHitbox(
+            DebugRenderer.addHitbox(
                 this.hitbox,
                 HITBOX_COLORS.obstacle,
-                this.game.activePlayer !== undefined && equivLayer(this, this.game.activePlayer) ? 1 : DIFF_LAYER_HITBOX_OPACITY
+                alpha
             );
         }
 
-        debugRender.addHitbox(
+        DebugRenderer.addHitbox(
             definition.spawnHitbox.transform(this.position, 1, this.orientation),
             HITBOX_COLORS.spawnHitbox,
             alpha
         );
 
         if (definition.ceilingHitbox) {
-            debugRender.addHitbox(
+            DebugRenderer.addHitbox(
                 definition.ceilingHitbox.transform(this.position, 1, this.orientation),
                 definition.noCeilingScopeEffect ? HITBOX_COLORS.buildingScopeCeiling : HITBOX_COLORS.buildingZoomCeiling,
                 alpha
@@ -399,7 +401,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         }
 
         if (definition.bulletMask) {
-            debugRender.addHitbox(
+            DebugRenderer.addHitbox(
                 definition.bulletMask.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.bulletMask,
                 alpha
@@ -407,7 +409,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         }
 
         if (definition.bridgeHitbox) {
-            debugRender.addHitbox(
+            DebugRenderer.addHitbox(
                 definition.bridgeHitbox.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.landHitbox,
                 alpha
@@ -415,10 +417,10 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         }
 
         for (const { collider, layer } of definition.visibilityOverrides ?? []) {
-            debugRender.addHitbox(
+            DebugRenderer.addHitbox(
                 collider.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.buildingVisOverride,
-                layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY
+                layer === Game.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY
             );
         }
     }
@@ -453,7 +455,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         this.images.set(imageDef, image);
 
         if (imageDef.beachTinted) {
-            image.sprite.setTint(this.game.colors.beach);
+            image.sprite.setTint(Game.colors.beach);
         }
 
         const { sprite } = image;
@@ -497,7 +499,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
     override updateInterpolation(): void { /* bleh */ }
 
     hitEffect(position: Vector, angle: number): void {
-        this.game.particleManager.spawnParticle({
+        ParticleManager.spawnParticle({
             frames: this.particleFrames,
             position,
             zIndex: ZIndexes.Players + 1,
@@ -511,7 +513,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         this.hitSound?.stop();
         const { material } = this.definition;
         if (!material) return;
-        this.hitSound = this.game.soundManager.play(
+        this.hitSound = SoundManager.play(
             `${MaterialSounds[material]?.hit ?? material}_hit_${randomBoolean() ? "1" : "2"}`,
             {
                 position,

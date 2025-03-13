@@ -4,15 +4,16 @@ import { randomPointInsideCircle } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { ShockwaveFilter } from "pixi-filters";
 import { Container, type Application } from "pixi.js";
-import { type Game } from "../game";
+import { Game } from "../game";
 import { PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import type { Layer } from "@common/constants";
+import { GameConsole } from "../console/gameConsole";
 
-export class Camera {
-    readonly pixi: Application;
-    readonly container: Container;
+export const CameraManager = new (class CameraManager {
+    pixi!: Application;
+    container!: Container;
 
     position = Vec.create(0, 0);
 
@@ -35,14 +36,14 @@ export class Camera {
     width = 1;
     height = 1;
 
-    private static _instantiated = false;
-    constructor(readonly game: Game) {
-        if (Camera._instantiated) {
-            throw new Error("Class 'Camera' has already been instantiated");
+    private _initialized = false;
+    init(): void {
+        if (this._initialized) {
+            throw new Error("CameraManager has already been initialized");
         }
-        Camera._instantiated = true;
+        this._initialized = true;
 
-        this.pixi = game.pixi;
+        this.pixi = Game.pixi;
         this.container = new Container({
             isRenderGroup: true,
             sortableChildren: true,
@@ -62,7 +63,7 @@ export class Camera {
         this.zoomTween?.kill();
 
         if (animation) {
-            this.zoomTween = this.game.addTween(
+            this.zoomTween = Game.addTween(
                 {
                     target: this.container.scale,
                     to: { x: scale, y: scale },
@@ -99,7 +100,7 @@ export class Camera {
     }
 
     shake(duration: number, intensity: number): void {
-        if (!this.game.console.getBuiltInCVar("cv_camera_shake_fx")) return;
+        if (!GameConsole.getBuiltInCVar("cv_camera_shake_fx")) return;
         this.shaking = true;
         this.shakeStart = Date.now();
         this.shakeDuration = duration;
@@ -107,14 +108,14 @@ export class Camera {
     }
 
     shockwave(duration: number, position: Vector, amplitude: number, wavelength: number, speed: number, layer: Layer): void {
-        if (!this.game.console.getBuiltInCVar("cv_cooler_graphics")) return;
-        this.shockwaves.add(new Shockwave(this.game, duration, position, amplitude, wavelength, speed, layer));
+        if (!GameConsole.getBuiltInCVar("cv_cooler_graphics")) return;
+        this.shockwaves.add(new Shockwave(duration, position, amplitude, wavelength, speed, layer));
     }
 
     addObject(...objects: Container[]): void {
         this.container.addChild(...objects);
     }
-}
+})();
 
 export class Shockwave {
     lifeStart: number;
@@ -123,7 +124,6 @@ export class Shockwave {
     anchorContainer: SuroiSprite;
 
     constructor(
-        readonly game: Game,
         lifetime: number,
         position: Vector,
         public amplitude: number,
@@ -136,14 +136,14 @@ export class Shockwave {
         this.anchorContainer = new SuroiSprite();
         this.wavelength = wavelength;
 
-        this.game.camera.addObject(this.anchorContainer);
+        CameraManager.addObject(this.anchorContainer);
         this.anchorContainer.setVPos(position);
 
         this.filter = new ShockwaveFilter();
 
         this.update();
 
-        this.game.camera.container.filters = [this.game.camera.container.filters].flat().concat(this.filter);
+        CameraManager.container.filters = [CameraManager.container.filters].flat().concat(this.filter);
     }
 
     update(): void {
@@ -170,12 +170,12 @@ export class Shockwave {
     }
 
     scale(): number {
-        return PIXI_SCALE / this.game.camera.zoom;
+        return PIXI_SCALE / CameraManager.zoom;
     }
 
     destroy(): void {
-        this.game.camera.container.filters = [this.game.camera.container.filters].flat().filter(filter => this.filter !== filter);
-        this.game.camera.shockwaves.delete(this);
+        CameraManager.container.filters = [CameraManager.container.filters].flat().filter(filter => this.filter !== filter);
+        CameraManager.shockwaves.delete(this);
         this.anchorContainer.destroy();
     }
 }

@@ -1,13 +1,22 @@
 import { Numeric } from "@common/utils/math";
 import { Container } from "pixi.js";
-import { type Game } from "../game";
+import { Game } from "../game";
+
+export interface TweenOptions<T> {
+    target: T
+    to: Partial<T>
+    duration: number
+    ease?: (x: number) => number
+    yoyo?: boolean
+    infinite?: boolean
+    onUpdate?: () => void
+    onComplete?: () => void
+}
 
 /**
  * @template T Covariant
  */
 export class Tween<T extends object> {
-    readonly game: Game;
-
     startTime = Date.now();
     private _endTime: number;
     get endTime(): number { return this._endTime; }
@@ -26,20 +35,7 @@ export class Tween<T extends object> {
     readonly onUpdate?: () => void;
     readonly onComplete?: () => void;
 
-    constructor(
-        game: Game,
-        config: {
-            target: T
-            to: Partial<T>
-            duration: number
-            ease?: (x: number) => number
-            yoyo?: boolean
-            infinite?: boolean
-            onUpdate?: () => void
-            onComplete?: () => void
-        }
-    ) {
-        this.game = game;
+    constructor(config: TweenOptions<T>) {
         this.target = config.target;
         for (const key in config.to) {
             this.startValues[key] = config.target[key] as number;
@@ -92,6 +88,6 @@ export class Tween<T extends object> {
     }
 
     kill(): void {
-        this.game.removeTween(this);
+        Game.removeTween(this);
     }
 }

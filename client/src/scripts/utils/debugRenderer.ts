@@ -35,7 +35,7 @@ interface HitboxShape extends BaseShape {
 
 type Shape = LineShape | RayShape | HitboxShape;
 
-export class DebugRenderer {
+export const DebugRenderer = new (class DebugRenderer {
     private readonly _shapes: Shape[] = [];
 
     readonly graphics = new Graphics();
@@ -165,4 +165,4 @@ export class DebugRenderer {
 
         this._shapes.length = 0;
     }
-}
+})();

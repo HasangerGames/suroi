@@ -4,12 +4,14 @@ import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { randomFloat, randomPointInsideCircle } from "@common/utils/random";
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
-import { type Game } from "../game";
+import { Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
-import type { DebugRenderer } from "../utils/debugRenderer";
+import { DebugRenderer } from "../utils/debugRenderer";
+import { MapManager } from "../managers/mapManager";
+import { ParticleManager } from "../managers/particleManager";
 
 export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
     private readonly image = new SuroiSprite("airdrop_parachute");
@@ -20,8 +22,8 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
 
     height = 0;
 
-    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Parachute]) {
-        super(game, id);
+    constructor(id: number, data: ObjectsNetData[ObjectCategory.Parachute]) {
+        super(id);
 
         this.container.addChild(this.image);
         this.updateZIndex();
@@ -48,13 +50,13 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
             this.container.scale.set(scale);
         } else {
             this.scaleAnim?.kill();
-            this.scaleAnim = this.game.addTween({
+            this.scaleAnim = Game.addTween({
                 target: this.container.scale,
                 to: {
                     x: scale,
                     y: scale
                 },
-                duration: this.game.serverDt,
+                duration: Game.serverDt,
                 onComplete: () => {
                     this.scaleAnim = undefined;
                 }
@@ -62,12 +64,12 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
         }
 
         if (data.height === 0) {
-            const floor = this.game.map.terrain.getFloor(this.position, 0);
+            const floor = MapManager.terrain.getFloor(this.position, 0);
 
             this.playSound(floor === FloorNames.Water ? "airdrop_land_water" : "airdrop_land");
 
             if (FloorTypes[floor].particles) {
-                this.game.particleManager.spawnParticles(6, () => ({
+                ParticleManager.spawnParticles(6, () => ({
                     frames: "ripple_particle",
                     zIndex: ZIndexes.Ground,
                     position: randomPointInsideCircle(this.position, 6),
@@ -94,10 +96,10 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
 
     override updateInterpolation(): void { /* bleh */ }
 
-    override updateDebugGraphics(debugRenderer: DebugRenderer): void {
+    override updateDebugGraphics(): void {
         if (!DEBUG_CLIENT) return;
 
-        debugRenderer.addCircle(this.height, this.position);
+        DebugRenderer.addCircle(this.height, this.position);
     }
 
     destroy(): void {

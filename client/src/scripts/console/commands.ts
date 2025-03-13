@@ -11,15 +11,18 @@ import { handleResult, type Result } from "@common/utils/misc";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
 import { Rectangle, RendererType, Sprite, VERSION } from "pixi.js";
-import { Config, type ServerInfo } from "../../config";
-import { type Game } from "../../game";
-import { type CompiledAction, type CompiledTuple, type InputManager } from "../../managers/inputManager";
-import { requestFullscreen, sanitizeHTML, stringify } from "../misc";
-import { type PossibleError, type Stringable } from "./gameConsole";
+import { Config, type ServerInfo } from "../config";
+import { Game } from "../game";
+import { InputManager, type CompiledAction, type CompiledTuple } from "../managers/inputManager";
+import { requestFullscreen, sanitizeHTML, stringify } from "../utils/misc";
+import { GameConsole, type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
+import { UIManager } from "../managers/uiManager";
+import { ScreenRecordManager } from "../managers/screenRecordManager";
+import { MapManager } from "../managers/mapManager";
+import { CameraManager } from "../managers/cameraManager";
 
 export type CommandExecutor<ErrorType> = (
-    this: Game,
     ...args: Array<string | undefined>
     // this a return type bruh
     // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
@@ -54,12 +57,10 @@ export class Command<
     get executor(): CommandExecutor<ErrorType> { return this._executor; }
 
     run(args: ReadonlyArray<string | undefined> = []): PossibleError<ErrorType> {
-        if (!this._info.allowOnlyWhenGameStarted || this._game.gameStarted) {
-            return this._executor.call(this._game, ...args) as PossibleError<ErrorType>;
+        if (!this._info.allowOnlyWhenGameStarted || Game.gameStarted) {
+            return this._executor.call(...args) as PossibleError<ErrorType>;
         }
     }
-
-    private readonly _game: Game;
 
     private readonly _inverse!: Invertible extends true
         ? Command<true>
@@ -78,21 +79,18 @@ export class Command<
         name: string,
         on: CommandExecutor<ErrorType>,
         off: CommandExecutor<ErrorType>,
-        game: Game,
         infoOn: CommandInfo,
         infoOff?: CommandInfo
     ): void {
         const plus = new Command<true, ErrorType>(
             `+${name}`,
             on,
-            game,
             infoOn,
             true
         );
         const minus = new Command<true, ErrorType>(
             `-${name}`,
             off,
-            game,
             infoOff ?? infoOn,
             true
         );
@@ -106,16 +104,14 @@ export class Command<
     static createCommand<ErrorType extends Stringable = undefined>(
         name: string,
         executor: CommandExecutor<ErrorType>,
-        game: Game,
         info: CommandInfo
     ): void {
-        new Command(name, executor, game, info);
+        new Command(name, executor, info);
     }
 
     private constructor(
         name: string,
         executor: CommandExecutor<ErrorType>,
-        game: Game,
         info: CommandInfo,
         creatingPair?: boolean
     ) {
@@ -135,8 +131,7 @@ export class Command<
         }
 
         this._name = name;
-        this._executor = executor.bind(game);
-        this._game = game;
+        this._executor = executor;
         this._info = info;
 
         if (this._info.signatures.length === 0) {
@@ -169,10 +164,10 @@ export class Command<
             });
         }
 
-        if (game.console.commands.has(this._name)) {
+        if (GameConsole.commands.has(this._name)) {
             console.warn(`Overwriting command '${this._name}'`);
         }
-        game.console.commands.set(this._name, this);
+        GameConsole.commands.set(this._name, this);
     }
 
     toString(): string {
@@ -180,34 +175,32 @@ export class Command<
     }
 }
 
-export function setUpCommands(game: Game): void {
-    const gameConsole = game.console;
-    const keybinds = game.inputManager.binds;
+export function setUpCommands(): void {
+    const keybinds = InputManager.binds;
 
     const createMovementCommand = (
-        name: keyof InputManager["movement"],
+        name: keyof typeof InputManager["movement"],
         spectateAction?: Exclude<SpectateActions, SpectateActions.SpectateSpecific>
     ): void => {
         Command.createInvertiblePair(
             name,
             spectateAction
-                ? function() {
-                    this.inputManager.movement[name] = true;
-                    if (this.spectating) {
-                        this.sendPacket(
+                ? () => {
+                    InputManager.movement[name] = true;
+                    if (Game.spectating) {
+                        Game.sendPacket(
                             SpectatePacket.create({
                                 spectateAction
                             })
                         );
                     }
                 }
-                : function() {
-                    this.inputManager.movement[name] = true;
+                : () => {
+                    InputManager.movement[name] = true;
                 },
-            function() {
-                this.inputManager.movement[name] = false;
+            () => {
+                InputManager.movement[name] = false;
             },
-            game,
             {
                 short: `Moves the player in the '${name}' direction`,
                 long: `Starts moving the player in the '${name}' direction when invoked`,
@@ -255,12 +248,11 @@ export function setUpCommands(game: Game): void {
                 return { err: `Attempted to swap to invalid slot '${slot}'` };
             }
 
-            this.inputManager.addAction({
+            InputManager.addAction({
                 type: InputActions.EquipItem,
                 slot: slotNumber.res
             });
         },
-        game,
         {
             short: "Attempts to switch to the item in a given slot. The slot number is 0-indexed",
             long:
@@ -284,9 +276,8 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "last_item",
         function() {
-            this.inputManager.addAction(InputActions.EquipLastItem);
+            InputManager.addAction(InputActions.EquipLastItem);
         },
-        game,
         {
             short: "Attempts to switch to the last item the player deployed",
             long: "When invoked, the player's last active slot will be switched to, if possible",
@@ -298,22 +289,22 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "other_weapon",
         function() {
+            const { weapons, activeWeaponIndex } = UIManager.inventory;
             let index
-                = this.uiManager.inventory.activeWeaponIndex === 0 || (
-                    this.uiManager.inventory.weapons[0] === undefined
-                    && this.uiManager.inventory.activeWeaponIndex !== 1
+                = activeWeaponIndex === 0 || (
+                    weapons[0] === undefined
+                    && activeWeaponIndex !== 1
                 )
                     ? 1
                     : 0;
 
             // fallback to melee if there's no weapon on the slot
-            if (this.uiManager.inventory.weapons[index] === undefined) { index = 2; }
-            this.inputManager.addAction({
+            if (weapons[index] === undefined) { index = 2; }
+            InputManager.addAction({
                 type: InputActions.EquipItem,
                 slot: index
             });
         },
-        game,
         {
             short: "Attempts to switch to the other weapon in the player's inventory",
             long: "When invoked, the player will swap to the other weapon slot if there is a weapon there. If not, melee will be switched to",
@@ -325,9 +316,8 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "swap_gun_slots",
         function() {
-            this.inputManager.addAction(InputActions.SwapGunSlots);
+            InputManager.addAction(InputActions.SwapGunSlots);
         },
-        game,
         {
             short: "Exchanges the guns' slots in the player's inventory",
             long:
@@ -350,12 +340,12 @@ export function setUpCommands(game: Game): void {
             }
 
             let index = Numeric.absMod(
-                this.uiManager.inventory.activeWeaponIndex + step.res,
+                UIManager.inventory.activeWeaponIndex + step.res,
                 GameConstants.player.maxWeapons
             );
 
             let iterationCount = 0;
-            while (!this.uiManager.inventory.weapons[index]) {
+            while (!UIManager.inventory.weapons[index]) {
                 index = Numeric.absMod(index + step.res, GameConstants.player.maxWeapons);
 
                 /*
@@ -363,17 +353,16 @@ export function setUpCommands(game: Game): void {
                     to run forever, this would prevent that
                 */
                 if (++iterationCount > 100) {
-                    index = this.uiManager.inventory.activeWeaponIndex;
+                    index = UIManager.inventory.activeWeaponIndex;
                     break;
                 }
             }
 
-            this.inputManager.addAction({
+            InputManager.addAction({
                 type: InputActions.EquipItem,
                 slot: index
             });
         },
-        game,
         {
             short: "Switches to the item <em>n</em> slots over, where <em>n</em> is some integer",
             long:
@@ -398,9 +387,8 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "interact",
         function() {
-            this.inputManager.addAction(InputActions.Interact);
+            InputManager.addAction(InputActions.Interact);
         },
-        game,
         {
             short: "Interacts with an object, if there is one",
             long: "When invoked, the player will attempt to interact with the closest interactable object that is in range.",
@@ -453,7 +441,7 @@ export function setUpCommands(game: Game): void {
         Command.createCommand(
             cmdName,
             function(slot) {
-                let target = this.uiManager.inventory.activeWeaponIndex;
+                let target = UIManager.inventory.activeWeaponIndex;
 
                 if (slot) { // <- excludes explicit empty string
                     const newTarget = Casters.toInt(slot ?? "NaN");
@@ -467,12 +455,11 @@ export function setUpCommands(game: Game): void {
                     target = newTarget.res;
                 }
 
-                this.inputManager.addAction({
+                InputManager.addAction({
                     type: action,
                     slot: target
                 });
             },
-            game,
             {
                 short: shortDesc,
                 long: longDesc,
@@ -496,9 +483,8 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "loot",
         function() {
-            this.inputManager.addAction(InputActions.Loot);
+            InputManager.addAction(InputActions.Loot);
         },
-        game,
         {
             short: "Loots closest object",
             long: "When invoked, the player will attempt to pick up the closest loot that is in range.",
@@ -510,16 +496,15 @@ export function setUpCommands(game: Game): void {
     Command.createInvertiblePair(
         "attack",
         function() {
-            if (this.inputManager.attacking) return;
+            if (InputManager.attacking) return;
 
-            this.inputManager.attacking = true;
+            InputManager.attacking = true;
         },
         function() {
-            if (!this.inputManager.attacking) return;
+            if (!InputManager.attacking) return;
 
-            this.inputManager.attacking = false;
+            InputManager.attacking = false;
         },
-        game,
         {
             short: "Starts attacking",
             long: "When invoked, the player will start trying to attack as if the attack button was held down. Does nothing if the player is attacking",
@@ -537,12 +522,11 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "drop",
         function() {
-            this.inputManager.addAction({
+            InputManager.addAction({
                 type: InputActions.DropWeapon,
-                slot: this.uiManager.inventory.activeWeaponIndex
+                slot: UIManager.inventory.activeWeaponIndex
             });
         },
-        game,
         {
             short: "Drops the current active item",
             long: "When invoked, the player will attempt to drop the item they're currently holding",
@@ -561,9 +545,8 @@ export function setUpCommands(game: Game): void {
                     err: `Attempted to cycle scopes by an invalid offset of '${offset}'`
                 };
             }
-            game.inputManager.cycleScope(step.res);
+            InputManager.cycleScope(step.res);
         },
-        game,
         {
             short: "Switches to the scope <em>n</em> slots over, where <em>n</em> is some integer",
             long:
@@ -589,7 +572,7 @@ export function setUpCommands(game: Game): void {
         "equip_or_cycle_throwables",
         function(offset) {
             // If we're already on a throwable slot, start cycling. Otherwise, make that slot active
-            if (this.activePlayer?.activeItem.itemType === ItemType.Throwable) {
+            if (Game.activePlayer?.activeItem.itemType === ItemType.Throwable) {
                 const step = Casters.toInt(offset ?? "NaN");
 
                 if ("err" in step) {
@@ -598,19 +581,18 @@ export function setUpCommands(game: Game): void {
                     };
                 }
 
-                game.inputManager.cycleThrowable(step.res);
+                InputManager.cycleThrowable(step.res);
             } else {
                 const throwableSlot = GameConstants.player.inventorySlotTypings.findIndex(slot => slot === ItemType.Throwable);
 
                 if (throwableSlot !== -1) {
-                    this.inputManager.addAction({
+                    InputManager.addAction({
                         type: InputActions.EquipItem,
                         slot: throwableSlot
                     });
                 }
             }
         },
-        game,
         {
             short: "Selects the throwable slot, but if it already is, then switches to the throwable <em>n</em> slots over, where <em>n</em> is some integer",
             long:
@@ -650,12 +632,11 @@ export function setUpCommands(game: Game): void {
                 };
             }
 
-            game.inputManager.addAction({
+            InputManager.addAction({
                 type: InputActions.UseItem,
                 item: Loots.fromString(idString)
             });
         },
-        game,
         {
             short: "Uses the item designated by the given <code>idString</code>",
             long: "When invoked with a string argument, an attempt will be made to use the consumable, scope, or throwable whose <code>idString</code> matches it",
@@ -677,9 +658,8 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "cancel_action",
         function() {
-            game.inputManager.addAction(InputActions.Cancel);
+            InputManager.addAction(InputActions.Cancel);
         },
-        game,
         {
             short: "Cancels the action (reloading and or consuming) the player is currently executing",
             long: "When invoked, the current action the player is executing will be stopped, if there is one",
@@ -691,12 +671,11 @@ export function setUpCommands(game: Game): void {
     Command.createInvertiblePair(
         "view_map",
         function() {
-            game.map.switchToBigMap();
+            MapManager.switchToBigMap();
         },
         function() {
-            game.map.switchToSmallMap();
+            MapManager.switchToSmallMap();
         },
-        game,
         {
             short: "Shows the game map",
             long: "When invoked, the fullscreen map will be toggled",
@@ -714,9 +693,8 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "reload",
         function() {
-            game.inputManager.addAction(InputActions.Reload);
+            InputManager.addAction(InputActions.Reload);
         },
-        game,
         {
             short: "Reloads the current active item",
             long: "When invoked, the player will attempt to reload the item they're currently holding",
@@ -728,9 +706,8 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "explode_c4",
         function() {
-            game.inputManager.addAction(InputActions.ExplodeC4);
+            InputManager.addAction(InputActions.ExplodeC4);
         },
-        game,
         {
             short: "Explodes all deployed pieces of C4 belonging to this player",
             long: "When invoked, the game will attempt to detonate all pieces of C4 this player has deployed.",
@@ -740,61 +717,60 @@ export function setUpCommands(game: Game): void {
     );
 
     const showEmoteWheel = (): void => {
-        if (!game.inputManager.pingWheelMinimap) {
-            game.inputManager.pingWheelPosition = Vec.clone(game.inputManager.gameMousePosition);
+        if (!InputManager.pingWheelMinimap) {
+            InputManager.pingWheelPosition = Vec.clone(InputManager.gameMousePosition);
         }
 
-        const { mouseX, mouseY } = game.inputManager;
-        const scale = game.console.getBuiltInCVar("cv_ui_scale");
+        const { mouseX, mouseY } = InputManager;
+        const scale = GameConsole.getBuiltInCVar("cv_ui_scale");
 
-        game.uiManager.ui.emoteWheel
+        UIManager.ui.emoteWheel
             .css("left", `${mouseX / scale}px`)
             .css("top", `${mouseY / scale}px`)
             .css("background-image", 'url("./img/misc/emote_wheel.svg")')
             .show();
-        game.inputManager.emoteWheelPosition = Vec.create(mouseX, mouseY);
+        InputManager.emoteWheelPosition = Vec.create(mouseX, mouseY);
     };
 
     Command.createInvertiblePair(
         "emote_wheel",
         function() {
-            if (game.inputManager.emoteWheelActive) return;
+            if (InputManager.emoteWheelActive) return;
 
-            game.inputManager.emoteWheelActive = true;
+            InputManager.emoteWheelActive = true;
 
             if (
-                (game.console.getBuiltInCVar("cv_hide_emotes") && !this.inputManager.pingWheelActive)
-                || this.gameOver
+                (GameConsole.getBuiltInCVar("cv_hide_emotes") && !InputManager.pingWheelActive)
+                || Game.gameOver
             ) return;
 
             showEmoteWheel();
         },
         function() {
-            if (!this.inputManager.emoteWheelActive) return;
+            if (!InputManager.emoteWheelActive) return;
 
-            this.inputManager.emoteWheelActive = false;
-            this.inputManager.pingWheelMinimap = false;
+            InputManager.emoteWheelActive = false;
+            InputManager.pingWheelMinimap = false;
 
-            this.uiManager.ui.emoteWheel.hide();
+            UIManager.ui.emoteWheel.hide();
 
-            if (this.inputManager.selectedEmote === undefined) return;
+            if (InputManager.selectedEmote === undefined) return;
 
-            const emote = this.uiManager.emotes[this.inputManager.selectedEmote];
-            if (emote && !this.inputManager.pingWheelActive) {
-                this.inputManager.addAction({
+            const emote = UIManager.emotes[InputManager.selectedEmote];
+            if (emote && !InputManager.pingWheelActive) {
+                InputManager.addAction({
                     type: InputActions.Emote,
                     emote
                 });
-            } else if (this.inputManager.pingWheelActive) {
-                this.inputManager.addAction({
+            } else if (InputManager.pingWheelActive) {
+                InputManager.addAction({
                     type: InputActions.MapPing,
-                    ping: this.uiManager.mapPings[this.inputManager.selectedEmote],
-                    position: this.inputManager.pingWheelPosition
+                    ping: UIManager.mapPings[InputManager.selectedEmote],
+                    position: InputManager.pingWheelPosition
                 });
             }
-            this.inputManager.selectedEmote = undefined;
+            InputManager.selectedEmote = undefined;
         },
-        game,
         {
             short: "Opens the emote wheel",
             long: "When invoked, the emote wheel will be opened, allowing the user to pick an emote",
@@ -813,28 +789,27 @@ export function setUpCommands(game: Game): void {
         "map_ping_wheel",
         function() {
             if (
-                game.console.getBuiltInCVar("cv_hide_emotes")
-                && this.inputManager.emoteWheelActive
-                && !this.inputManager.pingWheelActive
+                GameConsole.getBuiltInCVar("cv_hide_emotes")
+                && InputManager.emoteWheelActive
+                && !InputManager.pingWheelActive
             ) {
                 showEmoteWheel();
             }
 
-            this.inputManager.pingWheelActive = true;
-            this.uiManager.updateEmoteWheel();
+            InputManager.pingWheelActive = true;
+            UIManager.updateEmoteWheel();
         },
         function() {
-            if (game.console.getBuiltInCVar("cv_hide_emotes")) {
-                this.uiManager.ui.emoteWheel.hide();
-                this.inputManager.emoteWheelActive = false;
-                this.inputManager.pingWheelMinimap = false;
-                this.inputManager.selectedEmote = undefined;
+            if (GameConsole.getBuiltInCVar("cv_hide_emotes")) {
+                UIManager.ui.emoteWheel.hide();
+                InputManager.emoteWheelActive = false;
+                InputManager.pingWheelMinimap = false;
+                InputManager.selectedEmote = undefined;
             }
 
-            this.inputManager.pingWheelActive = false;
-            this.uiManager.updateEmoteWheel();
+            InputManager.pingWheelActive = false;
+            UIManager.updateEmoteWheel();
         },
-        game,
         {
             short: "Enables the emote wheel's ping mode",
             long: "When invoked, the emote wheel will switch from triggering emotes to triggering map pings",
@@ -854,8 +829,8 @@ export function setUpCommands(game: Game): void {
         function() {
             // create a new sprite since the map one has opacity
             const sprite = new Sprite();
-            sprite.texture = game.map.sprite.texture;
-            const canvas = game.pixi.renderer.extract.canvas(sprite);
+            sprite.texture = MapManager.sprite.texture;
+            const canvas = Game.pixi.renderer.extract.canvas(sprite);
             if (canvas.toBlob) {
                 canvas.toBlob(blob => {
                     if (blob) window.open(URL.createObjectURL(blob));
@@ -865,7 +840,6 @@ export function setUpCommands(game: Game): void {
             }
             sprite.destroy();
         },
-        game,
         {
             short: "Screenshot the game map texture and open it on a new tab as a blob image",
             long: "Attempts to generate a downloadable image from the minimap's contents, then opening that image in a new tab",
@@ -877,18 +851,17 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "screenshot_game",
         function() {
-            const { width, height } = game.camera;
-            const container = game.camera.container;
+            const { width, height, container } = CameraManager;
 
             const rectangle = new Rectangle(
-                game.camera.position.x - (width / 2 / container.scale.x),
-                game.camera.position.y - (height / 2 / container.scale.y),
+                CameraManager.position.x - (width / 2 / container.scale.x),
+                CameraManager.position.y - (height / 2 / container.scale.y),
                 width / container.scale.x,
                 height / container.scale.y
             );
 
-            const canvas = game.pixi.renderer.extract.canvas({
-                clearColor: game.colors.grass,
+            const canvas = Game.pixi.renderer.extract.canvas({
+                clearColor: Game.colors.grass,
                 target: container,
                 frame: rectangle,
                 resolution: container.scale.x,
@@ -903,7 +876,6 @@ export function setUpCommands(game: Game): void {
                 return { err: "canvas.toBlob is undefined" };
             }
         },
-        game,
         {
             short: "Screenshot the game camera and open it on a new tab as a blob image",
             long: "Attempts to take a screenshot of the game without any of its HUD elements, and then attempts to open this image in a new tab",
@@ -915,9 +887,8 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "disconnect",
         function() {
-            void this.endGame();
+            void Game.endGame();
         },
-        game,
         {
             short: "Leaves the current game",
             long: "When invoked, the player is disconnected from their current game",
@@ -929,9 +900,8 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "clear",
         function() {
-            gameConsole.clear();
+            GameConsole.clear();
         },
-        game,
         {
             short: "Clears the console",
             long: "When invoked, the game console's contents will be erased",
@@ -942,9 +912,8 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "clear_history",
         function() {
-            gameConsole.clearHistory();
+            GameConsole.clearHistory();
         },
-        game,
         {
             short: "Clears the query history",
             long: "When invoked, the game console's history is cleared",
@@ -955,9 +924,8 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "echo",
         function(...messages): undefined {
-            gameConsole.log.raw(messages.join(" "));
+            GameConsole.log.raw(messages.join(" "));
         },
-        game,
         {
             short: "Echoes whatever is passed to it",
             long: "When invoked with any number of arguments, the arguments will be re-printed to the console in same order they were given",
@@ -988,10 +956,9 @@ export function setUpCommands(game: Game): void {
             }
 
             keybinds.addActionsToInput(key.length > 1 ? key : key.toUpperCase(), query);
-            gameConsole.writeToLocalStorage();
-            this.inputManager.generateBindsConfigScreen();
+            GameConsole.writeToLocalStorage();
+            InputManager.generateBindsConfigScreen();
         },
-        game,
         {
             short: "Binds an input to an action",
             long:
@@ -1150,10 +1117,9 @@ export function setUpCommands(game: Game): void {
             }
 
             keybinds.unbindInput(key.length > 1 ? key : key.toUpperCase());
-            gameConsole.writeToLocalStorage();
-            this.inputManager.generateBindsConfigScreen();
+            GameConsole.writeToLocalStorage();
+            InputManager.generateBindsConfigScreen();
         },
-        game,
         {
             short: "Removes all actions from a given input",
             long: "Given the name of an input (refer to the <code>bind</code> command for more information on naming), this command removes all actions bound to it",
@@ -1175,10 +1141,9 @@ export function setUpCommands(game: Game): void {
         "unbind_all",
         function() {
             keybinds.unbindAll();
-            gameConsole.writeToLocalStorage();
-            this.inputManager.generateBindsConfigScreen();
+            GameConsole.writeToLocalStorage();
+            InputManager.generateBindsConfigScreen();
         },
-        game,
         {
             short: "Removes all keybinds",
             long: "When invoked, all inputs will have their actions removed. <b>This is a very dangerous command!!</b>",
@@ -1195,11 +1160,11 @@ export function setUpCommands(game: Game): void {
                 };
             }
 
-            if (gameConsole.commands.has(name)) {
+            if (GameConsole.commands.has(name)) {
                 return { err: `Cannot override built-in command '${name}'` };
             }
 
-            if (gameConsole.variables.has(name)) {
+            if (GameConsole.variables.has(name)) {
                 return { err: `Cannot shadow cvar '${name}'` };
             }
 
@@ -1207,11 +1172,10 @@ export function setUpCommands(game: Game): void {
                 return { err: "Alias name must not match regular expression <code>^\\w{2}_</code>" };
             }
 
-            gameConsole.aliases.set(name, query);
+            GameConsole.aliases.set(name, query);
 
-            gameConsole.writeToLocalStorage();
+            GameConsole.writeToLocalStorage();
         },
-        game,
         {
             short: "Creates a shorthand for a console query",
             long:
@@ -1247,7 +1211,7 @@ export function setUpCommands(game: Game): void {
             }
 
             if (
-                !gameConsole.aliases.delete(
+                !GameConsole.aliases.delete(
                     name,
                     handleResult(Casters.toBoolean(removeInverse ?? "false"), () => false)
                 )
@@ -1255,9 +1219,8 @@ export function setUpCommands(game: Game): void {
                 return { err: `No alias by the name of '${name}' exists` };
             }
 
-            gameConsole.writeToLocalStorage();
+            GameConsole.writeToLocalStorage();
         },
-        game,
         {
             short: "Removes an alias from the list of aliases",
             long:
@@ -1297,7 +1260,7 @@ export function setUpCommands(game: Game): void {
             ): void => {
                 if (key === "") return;
 
-                gameConsole.log.raw({
+                GameConsole.log.raw({
                     main: `Actions bound to input '${key}'`,
                     detail: actions
                         .map(bind => {
@@ -1359,10 +1322,9 @@ export function setUpCommands(game: Game): void {
                         )
                 );
 
-                gameConsole.log.raw(ul.outerHTML);
+                GameConsole.log.raw(ul.outerHTML);
             }
         },
-        game,
         {
             short: "Lists all the actions bound to a key, or all the keys and their respective actions",
             long:
@@ -1390,12 +1352,11 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "list_cvars",
         (): undefined => {
-            gameConsole.log.raw({
+            GameConsole.log.raw({
                 main: "List of CVars",
-                detail: `<ul>${gameConsole.variables.dump()}</ul>`
+                detail: `<ul>${GameConsole.variables.dump()}</ul>`
             });
         },
-        game,
         {
             short: "Prints out the values of CVars",
             long: "When invoked, will print out every at-the-time registered CVar and its value. The value's color corresponds to its type:"
@@ -1437,7 +1398,7 @@ export function setUpCommands(game: Game): void {
                 };
             }
 
-            if (gameConsole.variables.has.custom(name)) {
+            if (GameConsole.variables.has.custom(name)) {
                 return {
                     err: `Custom CVar '${name}' already exists. (To change its value to ${value}, do 'assign ${name} ${value}')`
                 };
@@ -1460,11 +1421,10 @@ export function setUpCommands(game: Game): void {
             }
             const casted = cast.res;
 
-            gameConsole.variables.declareCVar(
+            GameConsole.variables.declareCVar(
                 new ConVar<Stringable>(
                     name,
                     casted,
-                    gameConsole,
                     caster,
                     {
                         archive: handleResult(Casters.toBoolean(archive ?? "0"), () => false),
@@ -1472,9 +1432,8 @@ export function setUpCommands(game: Game): void {
                     }
                 )
             );
-            gameConsole.writeToLocalStorage();
+            GameConsole.writeToLocalStorage();
         },
-        game,
         {
             short: "Creates a new custom console variable, with a name and value",
             long:
@@ -1525,7 +1484,7 @@ export function setUpCommands(game: Game): void {
                 };
             }
 
-            if (!gameConsole.variables.has(name)) {
+            if (!GameConsole.variables.has(name)) {
                 return {
                     err: `CVar '${name}' doesn't exist`
                 };
@@ -1533,12 +1492,11 @@ export function setUpCommands(game: Game): void {
 
             const doForceWrite = Casters.toBoolean(forceWrite ?? "false");
 
-            const retVal = gameConsole.variables.set(name, value);
-            gameConsole.writeToLocalStorage({ includeNoArchive: "res" in doForceWrite && doForceWrite.res });
+            const retVal = GameConsole.variables.set(name, value);
+            GameConsole.writeToLocalStorage({ includeNoArchive: "res" in doForceWrite && doForceWrite.res });
 
             return retVal;
         },
-        game,
         {
             short: "Assigns a value to a CVar",
             long:
@@ -1578,7 +1536,7 @@ export function setUpCommands(game: Game): void {
             }
 
             let cvar: ConVar<Stringable> | undefined;
-            if ((cvar = gameConsole.variables.get(name)) === undefined) {
+            if ((cvar = GameConsole.variables.get(name)) === undefined) {
                 return {
                     err: `CVar '${name}' doesn't exist`
                 };
@@ -1596,9 +1554,8 @@ export function setUpCommands(game: Game): void {
                 };
             }
 
-            return gameConsole.variables.set(cvar.name, values[(index + 1) % values.length], true);
+            return GameConsole.variables.set(cvar.name, values[(index + 1) % values.length], true);
         },
-        game,
         {
             short: "Cycles a CVar's value through a set of values",
             long:
@@ -1634,16 +1591,15 @@ export function setUpCommands(game: Game): void {
                 return { err: "Expected a string argument, received nothing" };
             }
 
-            if (gameConsole.variables.has.builtIn(name)) {
+            if (GameConsole.variables.has.builtIn(name)) {
                 return { err: `Cannot delete built-in CVar '${name}'` };
             }
 
-            const err = gameConsole.variables.removeCVar(name);
-            if (err === undefined) gameConsole.writeToLocalStorage();
+            const err = GameConsole.variables.removeCVar(name);
+            if (err === undefined) GameConsole.writeToLocalStorage();
 
             return err;
         },
-        game,
         {
             short: "Removes a user CVar from the list of variables",
             long:
@@ -1670,15 +1626,14 @@ export function setUpCommands(game: Game): void {
                 return { err: "Expected a string argument, received nothing" };
             }
 
-            const alias = gameConsole.aliases.get(name);
+            const alias = GameConsole.aliases.get(name);
 
             if (alias !== undefined) {
-                gameConsole.log.raw(`Alias '${name}' is defined as <code>${sanitizeHTML(alias)}</code>`);
+                GameConsole.log.raw(`Alias '${name}' is defined as <code>${sanitizeHTML(alias)}</code>`);
             } else {
                 return { err: `No alias named '${name}' exists` };
             }
         },
-        game,
         {
             short: "Gives the definition of an alias",
             long: "When given the name of an alias, if that alias exists, this command will print the query associated with it",
@@ -1700,25 +1655,25 @@ export function setUpCommands(game: Game): void {
         "help",
         function(name) {
             if (name === undefined) {
-                gameConsole.log({
+                GameConsole.log({
                     main: "List of commands",
-                    detail: Array.from(gameConsole.commands.keys())
+                    detail: Array.from(GameConsole.commands.keys())
                 });
-                gameConsole.log({
+                GameConsole.log({
                     main: "List of aliases",
-                    detail: Array.from(gameConsole.aliases.keys())
+                    detail: Array.from(GameConsole.aliases.keys())
                 });
                 return;
             }
 
-            const command = gameConsole.commands.get(name);
+            const command = GameConsole.commands.get(name);
 
             if (!command) {
                 return { err: `Cannot find command named '${name}'` };
             }
 
             const info = command.info;
-            gameConsole.log.raw({
+            GameConsole.log.raw({
                 main: info.short,
                 detail: [
                     info.long,
@@ -1744,7 +1699,6 @@ export function setUpCommands(game: Game): void {
                 ]
             });
         },
-        game,
         {
             short: "Displays help about a certain command, or a list of commands and aliases",
             long:
@@ -1791,7 +1745,6 @@ export function setUpCommands(game: Game): void {
                 return { err: "Thrown error" };
             }
         },
-        game,
         {
             short: "Optionally throws a value. For debugging purposes",
             long: "If supplied with a truthy argument, this command raises an exception; otherwise, it does nothing.",
@@ -1821,8 +1774,8 @@ export function setUpCommands(game: Game): void {
                 pixi: {
                     version: VERSION,
                     renderer_info: {
-                        type: RendererType[game.pixi.renderer.type],
-                        resolution: game.pixi.renderer.resolution
+                        type: RendererType[Game.pixi.renderer.type],
+                        resolution: Game.pixi.renderer.resolution
                     }
                 },
                 user_agent: {
@@ -1835,12 +1788,12 @@ export function setUpCommands(game: Game): void {
             };
 
             if (handleResult(Casters.toBoolean(raw ?? "false"), () => false)) {
-                game.console.log.raw(
+                GameConsole.log.raw(
                     JSON.stringify(data, null, 2)
                         .replace(/\n| /g, r => ({ "\n": "<br>", " ": "&nbsp;" }[r] ?? ""))
                 );
             } else {
-                game.console.log.raw(
+                GameConsole.log.raw(
                     (function construct(obj: Record<string, unknown>): string {
                         let retVal = "<ul>";
 
@@ -1871,7 +1824,6 @@ export function setUpCommands(game: Game): void {
                 );
             }
         },
-        game,
         {
             short: "Gives info about the client",
             long: "Dumps a variety of information about the current client. For debugging purposes. If <code>raw</code> is set to true, "
@@ -1894,10 +1846,9 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "screen_record",
         function() {
-            if (game.screenRecordManager?.recording) game.screenRecordManager?.endRecording();
-            else void game.screenRecordManager?.beginRecording();
+            if (ScreenRecordManager.recording) ScreenRecordManager.endRecording();
+            else void ScreenRecordManager.beginRecording();
         },
-        game,
         {
             short: "Use the screen recorder",
             long: "If the screen recorder is not recording, begin recording. If the screen recorder is recording, stop recording",
@@ -1909,7 +1860,6 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "fullscreen",
         requestFullscreen,
-        game,
         {
             short: "Fullscreen",
             long: "Activate fullscreen mode",
@@ -1917,7 +1867,7 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    gameConsole.handleQuery(`
+    GameConsole.handleQuery(`
         alias +map_ping "+emote_wheel; +map_ping_wheel" & alias -map_ping "-emote_wheel; -map_ping_wheel";\
         alias toggle_minimap "toggle cv_minimap_minimized";\
         alias toggle_hud "toggle cv_draw_hud";\

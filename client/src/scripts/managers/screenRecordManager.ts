@@ -1,7 +1,7 @@
-import type { Game } from "../game";
 import $ from "jquery";
+import { GameConsole } from "../console/gameConsole";
 
-export class ScreenRecordManager {
+export const ScreenRecordManager = new (class ScreenRecordManager {
     mediaRecorder?: MediaRecorder;
     recording = false;
     startedTime = 0;
@@ -10,13 +10,19 @@ export class ScreenRecordManager {
     readonly recordingTime = $("#recording-time");
     readonly recordingStopBtn = $("#stop-recording-button");
 
-    constructor(public game: Game) {
+    private _initialized = false;
+    init(): void {
+        if (this._initialized) {
+            throw new Error("ScreenRecordManager has already been initialized");
+        }
+        this._initialized = true;
+
         this.recordingStopBtn.on("click", () => this.endRecording());
     }
 
     async beginRecording(): Promise<void> {
         this.recording = true;
-        const res = this.game.console.getBuiltInCVar("cv_record_res");
+        const res = GameConsole.getBuiltInCVar("cv_record_res");
         this.mediaRecorder = new MediaRecorder(await navigator.mediaDevices.getDisplayMedia({
             audio: true,
             video: {
@@ -80,4 +86,4 @@ export class ScreenRecordManager {
             this.recordingTime.text(`${Math.floor(duration / 60000)}:${(Math.floor(duration / 1000) % 60).toString().padStart(2, "0")}`);
         }
     }
-}
+})();

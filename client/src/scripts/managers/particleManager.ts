@@ -4,20 +4,13 @@ import { getEffectiveZIndex } from "@common/utils/layer";
 import { Numeric } from "@common/utils/math";
 import { random, randomRotation } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { Game } from "../game";
+import { CameraManager } from "./cameraManager";
 
-export class ParticleManager {
+export const ParticleManager = new (class ParticleManager {
     readonly particles = new Set<Particle>();
     readonly emitters = new Set<ParticleEmitter>();
-
-    private static _instantiated = false;
-    constructor(readonly game: Game) {
-        if (ParticleManager._instantiated) {
-            throw new Error("Class 'ParticleManager' has already been instantiated");
-        }
-        ParticleManager._instantiated = true;
-    }
 
     update(delta: number): void {
         for (const particle of this.particles) {
@@ -44,9 +37,9 @@ export class ParticleManager {
     }
 
     spawnParticle(options: ParticleOptions): Particle {
-        const particle = new Particle(this, options);
+        const particle = new Particle(options);
         this.particles.add(particle);
-        this.game.camera.addObject(particle.image);
+        CameraManager.addObject(particle.image);
         return particle;
     }
 
@@ -64,7 +57,7 @@ export class ParticleManager {
         this.particles.clear();
         this.emitters.clear();
     }
-}
+})();
 
 export type ParticleProperty = {
     readonly start: number
@@ -106,7 +99,7 @@ export class Particle {
     alpha: number;
     rotation: number;
 
-    constructor(readonly manager: ParticleManager, options: ParticleOptions) {
+    constructor(options: ParticleOptions) {
         this._deathTime = this._spawnTime + options.lifetime;
         this.position = options.position;
         this.layer = options.layer ?? Layer.Ground;
@@ -115,7 +108,7 @@ export class Particle {
         const tintedParticle = TintedParticles[frame];
         this.image = new SuroiSprite(tintedParticle?.base ?? frame);
         this.image.tint = options.tint ?? tintedParticle?.tint ?? 0xffffff;
-        this.image.setZIndex(getEffectiveZIndex(options.zIndex, this.layer, this.manager.game.layer));
+        this.image.setZIndex(getEffectiveZIndex(options.zIndex, this.layer, Game.layer));
 
         this.scale = typeof options.scale === "number" ? options.scale : 1;
         this.alpha = typeof options.alpha === "number" ? options.alpha : 1;
@@ -149,7 +142,7 @@ export class Particle {
             this.rotation = Numeric.lerp(options.rotation.start, options.rotation.end, (options.rotation.ease ?? (t => t))(interpFactor));
         }
 
-        this.image.setZIndex(getEffectiveZIndex(options.zIndex, this.layer, this.manager.game.layer));
+        this.image.setZIndex(getEffectiveZIndex(options.zIndex, this.layer, Game.layer));
 
         this.image.position.copyFrom(toPixiCoords(this.position));
         this.image.scale.set(this.scale);
@@ -158,7 +151,7 @@ export class Particle {
 
     kill(): void {
         this._dead = true;
-        this.manager.particles.delete(this);
+        ParticleManager.particles.delete(this);
         this.image.destroy();
     }
 }

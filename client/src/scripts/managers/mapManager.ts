@@ -9,12 +9,17 @@ import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
 import { getTranslatedString } from "../../translations";
-import { type Game } from "../game";
+import { Game } from "../game";
 import { DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, drawGroundGraphics, drawHitbox, setOnSpritesheetsLoaded, spritesheetsLoaded, toPixiCoords } from "../utils/pixi";
-import { GasRender } from "./gas";
+import { GasManager, GasRender } from "./gasManager";
+import { SoundManager } from "./soundManager";
+import { InputManager } from "./inputManager";
+import { UIManager } from "./uiManager";
+import { GameConsole } from "../console/gameConsole";
+import { CameraManager } from "./cameraManager";
 
-export class Minimap {
+export const MapManager = new (class MapManager {
     private _expanded = false;
     get expanded(): boolean { return this._expanded; }
     set expanded(expand: boolean) {
@@ -74,10 +79,10 @@ export class Minimap {
 
     private _margins = Vec.create(0, 0);
 
-    gasRender: GasRender;
+    gasRender!: GasRender;
     readonly placesContainer = new Container();
 
-    private _terrain: Terrain;
+    private _terrain!: Terrain;
     get terrain(): Terrain { return this._terrain; }
 
     readonly pings = new Set<MapPing>();
@@ -92,14 +97,14 @@ export class Minimap {
 
     readonly debugGraphics = new Graphics();
 
-    private static _instantiated = false;
-    constructor(readonly game: Game) {
-        if (Minimap._instantiated) {
-            throw new Error("Class 'Minimap' has already been instantiated");
+    private _initialized = false;
+    init(): void {
+        if (this._initialized) {
+            throw new Error("Minimap has already been instantiated");
         }
-        Minimap._instantiated = true;
+        this._initialized = true;
 
-        this.gasRender = new GasRender(game, 1);
+        this.gasRender = new GasRender(1);
         this._terrain = new Terrain(0, 0, 0, 0, 0, []);
 
         this._objectsContainer.mask = this.mask;
@@ -123,7 +128,7 @@ export class Minimap {
         ).sortChildren();
 
         this._borderContainer.on("click", e => {
-            if (!this.game.inputManager.isMobile) return;
+            if (!InputManager.isMobile) return;
             this.switchToBigMap();
             e.stopImmediatePropagation();
         });
@@ -131,8 +136,8 @@ export class Minimap {
         this.sprite.eventMode = "static";
 
         this.sprite.on("pointerdown", e => {
-            this.game.inputManager.pingWheelPosition = this.sprite.toLocal(e);
-            this.game.inputManager.pingWheelMinimap = true;
+            InputManager.pingWheelPosition = this.sprite.toLocal(e);
+            InputManager.pingWheelMinimap = true;
         });
 
         $("#btn-close-minimap").on("pointerdown", e => {
@@ -141,8 +146,8 @@ export class Minimap {
         });
 
         if (DEBUG_CLIENT) {
-            game.console.variables.addChangeListener("db_show_hitboxes", (_, newValue) => {
-                if (!this.game.gameStarted) return;
+            GameConsole.variables.addChangeListener("db_show_hitboxes", (_, newValue) => {
+                if (!Game.gameStarted) return;
                 if (newValue) {
                     this.renderMapDebug();
                 }
@@ -160,7 +165,7 @@ export class Minimap {
             { points: grassPoints }
         ] = [this._terrain.beachHitbox, this._terrain.grassHitbox];
 
-        const colors = this.game.colors;
+        const colors = Game.colors;
 
         const beach = scale === 1 ? beachPoints : beachPoints.map(point => Vec.scale(point, scale));
         // The grass is a hole in the map shape, the background clear color is the grass color
@@ -243,7 +248,7 @@ export class Minimap {
         }
 
         if (DEBUG_CLIENT) {
-            if (this.game.console.getBuiltInCVar("db_show_hitboxes")) {
+            if (GameConsole.getBuiltInCVar("db_show_hitboxes")) {
                 this.renderMapDebug();
                 this.debugGraphics.visible = true;
             }
@@ -256,7 +261,7 @@ export class Minimap {
         terrainGraphics.clear();
         const mapGraphics = new Graphics();
 
-        const colors = this.game.colors;
+        const colors = Game.colors;
 
         this.drawTerrain(terrainGraphics, PIXI_SCALE, 6);
         this.drawTerrain(mapGraphics, 1, 2);
@@ -276,7 +281,7 @@ export class Minimap {
         terrainGraphics.rect(realWidth, -margin, margin, realHeight + doubleMargin);
         terrainGraphics.fill(colors.border);
 
-        this.game.camera.addObject(terrainGraphics);
+        CameraManager.addObject(terrainGraphics);
 
         if (!spritesheetsLoaded) {
             await new Promise(resolve => setOnSpritesheetsLoaded(resolve));
@@ -323,7 +328,7 @@ export class Minimap {
                             .setVPos(image.position)
                             .setRotation(image.rotation ?? 0)
                             .setZIndex(image.zIndex ?? 0)
-                            .setTint(image.beachTinted ? this.game.colors.beach : 0xffffff);
+                            .setTint(image.beachTinted ? Game.colors.beach : 0xffffff);
 
                         if (image.tint !== undefined) sprite.setTint(image.tint);
                         sprite.scale = Vec.scale(image.scale ?? Vec.create(1, 1), 1 / PIXI_SCALE);
@@ -378,7 +383,7 @@ export class Minimap {
             resolution: isMobile.any ? 1 : 2
         });
 
-        this.game.pixi.renderer.render({ container: mapRender, target: this._texture, clearColor: colors.grass });
+        Game.pixi.renderer.render({ container: mapRender, target: this._texture, clearColor: colors.grass });
         this.sprite.texture.destroy(true);
         this.sprite.texture = this._texture;
         mapRender.destroy({
@@ -387,7 +392,7 @@ export class Minimap {
         });
 
         // Wait for font to load
-        await this.game.fontObserver;
+        await Game.fontObserver;
 
         // Add the places
         this.placesContainer.removeChildren();
@@ -461,12 +466,12 @@ export class Minimap {
             }
         }
 
-        this.game.camera.addObject(debugGraphics);
+        CameraManager.addObject(debugGraphics);
     }
 
     updateFromPacket(mapPacket: MapData): void {
         console.log(`Joining game with seed: ${mapPacket.seed}`);
-        this.game.uiManager.ui.loaderText.text(getTranslatedString("loading_joining_game"));
+        UIManager.ui.loaderText.text(getTranslatedString("loading_joining_game"));
 
         const width = this._width = mapPacket.width;
         const height = this._height = mapPacket.height;
@@ -505,8 +510,8 @@ export class Minimap {
 
     update(): void {
         // Hide the map while spectating in mobile
-        if (this.game.inputManager.isMobile && this._visible) {
-            if (this.game.uiManager.ui.spectatingContainer.css("display") !== "none") { // class check wont work here for some reason
+        if (InputManager.isMobile && this._visible) {
+            if (UIManager.ui.spectatingContainer.css("display") !== "none") { // class check wont work here for some reason
                 this._borderContainer.hide();
                 this.container.visible = false;
             } else if (!this._expanded) {
@@ -514,7 +519,7 @@ export class Minimap {
                 this.container.visible = true;
             }
 
-            this.game.uiManager.ui.gasAndDebug.toggleClass("spectating-mode", !this.container.visible);
+            UIManager.ui.gasAndDebug.toggleClass("spectating-mode", !this.container.visible);
         }
 
         if (this.pings.size > 0) {
@@ -543,22 +548,21 @@ export class Minimap {
             }
         }
 
-        const gas = this.game.gas;
-        this.gasRender.update(gas);
+        this.gasRender.update();
         // only re-render gas line and circle if something changed
         if (
-            gas.state === GasState.Inactive || (
+            GasManager.state === GasState.Inactive || (
                 this._position.x === this._lastPosition.x
                 && this._position.y === this._lastPosition.y
-                && gas.newRadius === this._gasRadius
-                && gas.newPosition.x === this._gasPos.x
-                && gas.newPosition.y === this._gasPos.y
+                && GasManager.newRadius === this._gasRadius
+                && GasManager.newPosition.x === this._gasPos.x
+                && GasManager.newPosition.y === this._gasPos.y
             )
         ) return;
 
         this._lastPosition = this._position;
-        this._gasPos = gas.newPosition;
-        this._gasRadius = gas.newRadius;
+        this._gasPos = GasManager.newPosition;
+        this._gasRadius = GasManager.newRadius;
 
         this.safeZone.clear();
 
@@ -589,10 +593,10 @@ export class Minimap {
 
     resize(): void {
         this._border.visible = this._expanded;
-        const uiScale = this.game.console.getBuiltInCVar("cv_ui_scale");
+        const uiScale = GameConsole.getBuiltInCVar("cv_ui_scale");
 
-        if (this.game.spectating) {
-            this.game.uiManager.ui.spectatingContainer.toggle(this.game.uiManager.ui.spectatingOptions.hasClass("fa-eye-slash"));
+        if (Game.spectating) {
+            UIManager.ui.spectatingContainer.toggle(UIManager.ui.spectatingOptions.hasClass("fa-eye-slash"));
         }
 
         if (this._expanded) {
@@ -689,7 +693,7 @@ export class Minimap {
     switchToBigMap(): void {
         this._expanded = true;
 
-        const ui = this.game.uiManager.ui;
+        const ui = UIManager.ui;
         this.container.visible = true;
         this._borderContainer.hide();
 
@@ -708,7 +712,7 @@ export class Minimap {
     switchToSmallMap(): void {
         this._expanded = false;
 
-        const ui = this.game.uiManager.ui;
+        const ui = UIManager.ui;
 
         this._uiCache.closeMinimap.hide();
         this._uiCache.centerBottom.show();
@@ -716,16 +720,16 @@ export class Minimap {
         this._uiCache.scopes.show();
         ui.killFeed.show();
 
-        if (this.game.spectating) ui.spectatingContainer.show();
+        if (Game.spectating) ui.spectatingContainer.show();
         const width = window.innerWidth;
         if (width > 768) this._uiCache.killLeader.show();
         this._uiCache.killCounter.hide();
 
         // We check again for the mobile spectating stuff due to a bug
-        if (this.game.inputManager.isMobile && this.game.spectating && this._visible) {
-            this.game.uiManager.ui.spectatingContainer.toggleClass("mobile-visible", false);
-            this.game.uiManager.ui.spectatingContainer.hide();
-            this.container.visible = this.game.uiManager.ui.spectatingContainer.hasClass("mobile-visible");
+        if (InputManager.isMobile && Game.spectating && this._visible) {
+            UIManager.ui.spectatingContainer.toggleClass("mobile-visible", false);
+            UIManager.ui.spectatingContainer.hide();
+            this.container.visible = UIManager.ui.spectatingContainer.hasClass("mobile-visible");
         }
 
         if (!this._visible) {
@@ -738,7 +742,7 @@ export class Minimap {
     }
 
     updateTransparency(): void {
-        this.container.alpha = this.game.console.getBuiltInCVar(
+        this.container.alpha = GameConsole.getBuiltInCVar(
             this._expanded
                 ? "cv_map_transparency"
                 : "cv_minimap_transparency"
@@ -746,9 +750,9 @@ export class Minimap {
     }
 
     addMapPing(data: PingSerialization): void {
-        if (this.game.inputManager.isMobile) {
-            this.game.inputManager.emoteWheelActive = false;
-            this.game.uiManager.ui.emoteButton
+        if (InputManager.isMobile) {
+            InputManager.emoteWheelActive = false;
+            UIManager.ui.emoteButton
                 .removeClass("btn-alert")
                 .addClass("btn-primary");
         }
@@ -759,14 +763,13 @@ export class Minimap {
         const ping = new MapPing(
             position,
             definition,
-            this.game,
             playerId
         );
 
-        if (definition.sound !== undefined) this.game.soundManager.play(definition.sound);
+        if (definition.sound !== undefined) SoundManager.play(definition.sound);
 
         this.pingsContainer.addChild(ping.mapImage);
-        if (ping.inGameImage) this.game.camera.addObject(ping.inGameImage);
+        if (ping.inGameImage) CameraManager.addObject(ping.inGameImage);
 
         // delete previous pings from the same player
         if (ping.definition.isPlayerPing) {
@@ -783,12 +786,12 @@ export class Minimap {
 
         this.pings.add(ping);
         if (!ping.definition.ignoreExpiration) {
-            this.game.addTimeout(() => {
+            Game.addTimeout(() => {
                 ping.destroy();
             }, 10000);
         }
     }
-}
+})();
 
 export class MapPing {
     readonly startTime: number;
@@ -800,7 +803,6 @@ export class MapPing {
     constructor(
         readonly position: Vector,
         readonly definition: MapPingDefinition,
-        readonly game: Game,
         readonly playerId?: number
     ) {
         this.startTime = Date.now();
@@ -809,7 +811,7 @@ export class MapPing {
         this.color = definition.color;
 
         if (definition.isPlayerPing && playerId) {
-            this.color = TEAMMATE_COLORS[this.game.uiManager.getTeammateColorIndex(playerId) ?? game.uiManager.teammates.findIndex(({ id }) => id === playerId)];
+            this.color = TEAMMATE_COLORS[UIManager.getTeammateColorIndex(playerId) ?? UIManager.teammates.findIndex(({ id }) => id === playerId)];
         }
 
         this.mapImage = new SuroiSprite(definition.idString)

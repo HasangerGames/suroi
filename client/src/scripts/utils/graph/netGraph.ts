@@ -2,11 +2,12 @@ import type { DataSplitTypes } from "@common/packets/packet";
 import { Vec } from "@common/utils/vector";
 import type { ColorSource } from "pixi.js";
 import { SegmentedBarGraph, SingleGraph, type BaseGraph } from "./graph";
-import type { Game } from "../../game";
-import type { CVarChangeListener } from "../console/variables";
+import type { CVarChangeListener } from "../../console/variables";
+import { GameConsole } from "../../console/gameConsole";
+import { Game } from "../../game";
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function setUpNetGraph(game: Game) {
+export function setUpNetGraph() {
     const makeFormatter = ([big, small]: readonly [big: string, small: string], cutoff = 1000, fixedPlaces = 2) =>
         (n: number): string => n > cutoff
             ? `${(n / 1000).toFixed(fixedPlaces)} ${big}`
@@ -62,8 +63,8 @@ export function setUpNetGraph(game: Game) {
         background: { stroke: { color: "transparent" } }
     });
 
-    const addChangeListener = game.console.variables.addChangeListener.bind(game.console.variables);
-    const getBuiltInCVar = game.console.getBuiltInCVar.bind(game.console);
+    const addChangeListener = GameConsole.variables.addChangeListener.bind(GameConsole.variables);
+    const getBuiltInCVar = GameConsole.getBuiltInCVar.bind(GameConsole);
 
     const obj = Object.freeze({
         receiving: receiving
@@ -81,7 +82,7 @@ export function setUpNetGraph(game: Game) {
         ping: ping
             .addLabel(({ last }) => `ping:${time(last).padStart(9)}`, { style: { fill: "lightgreen" } }, { y: -34 })
             .addLabel(({ mean }) => `avg:${time(mean).padStart(9)}`, { style: { fill: "lightgreen" } }, { y: -34 })
-            .addLabel(() => `lerp: ${time(game.serverDt).padStart(5)}`, { style: { fill: "lightgreen" } }, { y: -34 }),
+            .addLabel(() => `lerp: ${time(Game.serverDt).padStart(5)}`, { style: { fill: "lightgreen" } }, { y: -34 }),
 
         fps: fps
             .addLabel(({ last }) => `fps : ${last.toFixed(2).padStart(5)}`, { style: { fill: "pink" } }, { y: -38 })

@@ -29,7 +29,6 @@ import "pixi.js/prepare";
 import { getTranslatedString, initTranslation } from "../translations";
 import { type TranslationKeys } from "../typings/translations";
 import { InputManager } from "./managers/inputManager";
-import { ScreenRecordManager } from "./managers/screenRecordManager";
 import { GameSound, SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
 import { Building } from "./objects/building";
@@ -41,23 +40,24 @@ import { type GameObject } from "./objects/gameObject";
 import { Loot } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { Parachute } from "./objects/parachute";
-import { ParticleManager } from "./objects/particles";
 import { Plane } from "./objects/plane";
 import { Player } from "./objects/player";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { ThrowableProjectile } from "./objects/throwableProj";
-import { Camera } from "./rendering/camera";
-import { Gas, GasRender } from "./rendering/gas";
-import { Minimap } from "./rendering/minimap";
+import { CameraManager } from "./managers/cameraManager";
+import { GasManager, GasRender } from "./managers/gasManager";
+import { MapManager } from "./managers/mapManager";
 import { autoPickup, fetchServerData, finalizeUI, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, updateDisconnectTime } from "./ui";
-import { setUpCommands } from "./utils/console/commands";
-import { defaultClientCVars } from "./utils/console/defaultClientCVars";
-import { GameConsole } from "./utils/console/gameConsole";
+import { setUpCommands } from "./console/commands";
+import { GameConsole } from "./console/gameConsole";
 import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
-import { DebugRenderer } from "./utils/debugRenderer";
 import { setUpNetGraph } from "./utils/graph/netGraph";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
-import { Tween } from "./utils/tween";
+import { Tween, type TweenOptions } from "./utils/tween";
+import { ParticleManager } from "./managers/particleManager";
+import { DebugRenderer } from "./utils/debugRenderer";
+import { ScreenRecordManager } from "./managers/screenRecordManager";
+import type { defaultClientCVars } from "./console/variables";
 
 /* eslint-disable @stylistic/indent */
 
@@ -74,7 +74,7 @@ type ObjectClassMapping = {
 };
 
 const ObjectClassMapping: ObjectClassMapping = Object.freeze<{
-    readonly [K in ObjectCategory]: new (game: Game, id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
+    readonly [K in ObjectCategory]: new (id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
 }>({
     [ObjectCategory.Player]: Player,
     [ObjectCategory.Obstacle]: Obstacle,
@@ -93,7 +93,7 @@ type ObjectMapping = {
 
 type Colors = Record<ColorKeys | "ghillie", Color>;
 
-export class Game {
+export const Game = new (class Game {
     private _socket?: WebSocket;
 
     readonly objects = new ObjectPool<ObjectMapping>();
@@ -171,21 +171,11 @@ export class Game {
     spectating = false;
     error = false;
 
-    readonly uiManager = new UIManager(this);
     readonly pixi = new Application();
-    readonly particleManager = new ParticleManager(this);
-    map!: Minimap;
-    readonly camera = new Camera(this);
-    readonly console = new GameConsole(this);
-    readonly inputManager = new InputManager(this);
-    readonly soundManager = new SoundManager(this);
-    readonly screenRecordManager = new ScreenRecordManager(this);
 
     gasRender!: GasRender;
-    readonly gas = new Gas(this);
 
-    readonly netGraph = setUpNetGraph(this);
-    readonly debugRenderer = new DebugRenderer();
+    readonly netGraph = setUpNetGraph();
 
     readonly fontObserver = new FontFaceObserver("Inter", { weight: 600 }).load();
 
@@ -201,35 +191,35 @@ export class Game {
         return timeout;
     }
 
-    private static _instantiated = false;
-
-    static async init(): Promise<Game> {
-        if (Game._instantiated) {
-            throw new Error("Class 'Game' has already been instantiated.");
+    private _initialized = false;
+    async init(): Promise<void> {
+        if (this._initialized) {
+            throw new Error("'Game' has already been initialized.");
         }
-        Game._instantiated = true;
+        this._initialized = true;
 
-        const game = new Game();
-        game.console.readFromLocalStorage();
-        setUpCommands(game);
-        await initTranslation(game);
-        game.inputManager.generateBindsConfigScreen();
-        game.inputManager.setupInputs();
-        await setUpUI(game);
-        await fetchServerData(game);
-        game.gasRender = new GasRender(game, PIXI_SCALE);
-        game.map = new Minimap(game);
+        GameConsole.init();
+        setUpCommands();
+        await initTranslation();
+        InputManager.init();
+        await setUpUI();
+        await fetchServerData();
+        this.gasRender = new GasRender(PIXI_SCALE);
+        SoundManager.init();
+        MapManager.init();
+        CameraManager.init();
+        GasManager.init();
 
         const initPixi = async(): Promise<void> => {
-            const renderMode = game.console.getBuiltInCVar("cv_renderer");
-            const renderRes = game.console.getBuiltInCVar("cv_renderer_res");
+            const renderMode = GameConsole.getBuiltInCVar("cv_renderer");
+            const renderRes = GameConsole.getBuiltInCVar("cv_renderer_res");
 
-            await game.pixi.init({
+            await this.pixi.init({
                 resizeTo: window,
-                background: game.colors.grass,
-                antialias: game.inputManager.isMobile
-                    ? game.console.getBuiltInCVar("mb_antialias")
-                    : game.console.getBuiltInCVar("cv_antialias"),
+                background: this.colors.grass,
+                antialias: InputManager.isMobile
+                    ? GameConsole.getBuiltInCVar("mb_antialias")
+                    : GameConsole.getBuiltInCVar("cv_antialias"),
                 autoDensity: true,
                 preferWebGLVersion: renderMode === "webgl1" ? 1 : 2,
                 preference: renderMode === "webgpu" ? "webgpu" : "webgl",
@@ -246,19 +236,19 @@ export class Game {
                 }
             });
 
-            const pixi = game.pixi;
+            const pixi = this.pixi;
             pixi.stop();
             void loadTextures(
-                game.modeName,
+                this.modeName,
                 pixi.renderer,
-                game.inputManager.isMobile
-                    ? game.console.getBuiltInCVar("mb_high_res_textures")
-                    : game.console.getBuiltInCVar("cv_high_res_textures")
+                InputManager.isMobile
+                    ? GameConsole.getBuiltInCVar("mb_high_res_textures")
+                    : GameConsole.getBuiltInCVar("cv_high_res_textures")
             );
 
             // HACK: the game ui covers the canvas
             // so send pointer events manually to make clicking to spectate players work
-            game.uiManager.ui.gameUi[0].addEventListener("pointerdown", e => {
+            UIManager.ui.gameUi[0].addEventListener("pointerdown", e => {
                 pixi.canvas.dispatchEvent(new PointerEvent("pointerdown", {
                     pointerId: e.pointerId,
                     button: e.button,
@@ -270,62 +260,60 @@ export class Game {
             });
 
             pixi.ticker.add(() => {
-                game.render();
+                this.render();
 
-                if (game.console.getBuiltInCVar("pf_show_fps")) {
-                    const fps = Math.round(game.pixi.ticker.FPS);
-                    game.netGraph.fps.addEntry(fps);
+                if (GameConsole.getBuiltInCVar("pf_show_fps")) {
+                    const fps = Math.round(this.pixi.ticker.FPS);
+                    this.netGraph.fps.addEntry(fps);
                 }
             });
 
             pixi.stage.addChild(
-                game.camera.container,
-                game.debugRenderer.graphics,
-                game.map.container,
-                game.map.mask,
-                ...Object.values(game.netGraph).map(g => g.container)
+                CameraManager.container,
+                DebugRenderer.graphics,
+                MapManager.container,
+                MapManager.mask,
+                ...Object.values(this.netGraph).map(g => g.container)
             );
 
-            game.map.visible = !game.console.getBuiltInCVar("cv_minimap_minimized");
-            game.map.expanded = game.console.getBuiltInCVar("cv_map_expanded");
-            game.uiManager.ui.gameUi.toggle(game.console.getBuiltInCVar("cv_draw_hud"));
+            MapManager.visible = !GameConsole.getBuiltInCVar("cv_minimap_minimized");
+            MapManager.expanded = GameConsole.getBuiltInCVar("cv_map_expanded");
+            UIManager.ui.gameUi.toggle(GameConsole.getBuiltInCVar("cv_draw_hud"));
 
-            pixi.renderer.on("resize", () => game.resize());
-            game.resize();
+            pixi.renderer.on("resize", () => this.resize());
+            this.resize();
         };
 
         let menuMusicSuffix: string;
-        if (game.console.getBuiltInCVar("cv_use_old_menu_music")) {
+        if (GameConsole.getBuiltInCVar("cv_use_old_menu_music")) {
             menuMusicSuffix = "_old";
-        } else if (game.mode.sounds?.replaceMenuMusic) {
-            menuMusicSuffix = `_${game.modeName}`;
+        } else if (this.mode.sounds?.replaceMenuMusic) {
+            menuMusicSuffix = `_${this.modeName}`;
         } else {
             menuMusicSuffix = "";
         }
-        game.music = sound.add("menu_music", {
+        this.music = sound.add("menu_music", {
             url: `./audio/music/menu_music${menuMusicSuffix}.mp3`,
             singleInstance: true,
             preload: true,
             autoPlay: true,
             loop: true,
-            volume: game.console.getBuiltInCVar("cv_music_volume")
+            volume: GameConsole.getBuiltInCVar("cv_music_volume")
         });
 
         void Promise.all([
             initPixi(),
-            game.soundManager.loadSounds(game),
-            finalizeUI(game)
+            SoundManager.loadSounds(),
+            finalizeUI()
         ]).then(() => {
             unlockPlayButtons();
-            resetPlayButtons(game);
+            resetPlayButtons();
         });
-
-        return game;
     }
 
     resize(): void {
-        this.map.resize();
-        this.camera.resize(true);
+        MapManager.resize();
+        CameraManager.resize(true);
     }
 
     connect(address: string): void {
@@ -347,8 +335,8 @@ export class Game {
             for (const graph of Object.values(this.netGraph)) graph.clear();
 
             if (!UI_DEBUG_MODE) {
-                clearTimeout(this.uiManager.gameOverScreenTimeout);
-                const ui = this.uiManager.ui;
+                clearTimeout(UIManager.gameOverScreenTimeout);
+                const ui = UIManager.ui;
 
                 ui.gameOverOverlay.hide();
                 ui.killMsgModal.hide();
@@ -357,44 +345,44 @@ export class Game {
                 ui.spectatingContainer.hide();
                 ui.joystickContainer.show();
 
-                this.inputManager.emoteWheelActive = false;
-                this.inputManager.pingWheelMinimap = false;
-                this.uiManager.ui.emoteWheel.hide();
+                InputManager.emoteWheelActive = false;
+                InputManager.pingWheelMinimap = false;
+                UIManager.ui.emoteWheel.hide();
             }
 
             let skin: typeof defaultClientCVars["cv_loadout_skin"];
             this.sendPacket(JoinPacket.create({
-                isMobile: this.inputManager.isMobile,
-                name: this.console.getBuiltInCVar("cv_player_name"),
+                isMobile: InputManager.isMobile,
+                name: GameConsole.getBuiltInCVar("cv_player_name"),
                 skin: Skins.fromStringSafe(
-                    this.console.getBuiltInCVar("cv_loadout_skin")
+                    GameConsole.getBuiltInCVar("cv_loadout_skin")
                 ) ?? Skins.fromString(
                     typeof (skin = defaultClientCVars.cv_loadout_skin) === "object"
                         ? skin.value
                         : skin
                 ),
-                badge: Badges.fromStringSafe(this.console.getBuiltInCVar("cv_loadout_badge")),
+                badge: Badges.fromStringSafe(GameConsole.getBuiltInCVar("cv_loadout_badge")),
                 emotes: EMOTE_SLOTS.map(
-                    slot => Emotes.fromStringSafe(this.console.getBuiltInCVar(`cv_loadout_${slot}_emote`))
+                    slot => Emotes.fromStringSafe(GameConsole.getBuiltInCVar(`cv_loadout_${slot}_emote`))
                 )
             }));
 
-            this.camera.addObject(this.gasRender.graphics);
-            this.map.indicator.setFrame("player_indicator");
+            CameraManager.addObject(this.gasRender.graphics);
+            MapManager.indicator.setFrame("player_indicator");
 
             const particleEffects = this.mode.particleEffects;
 
             if (particleEffects !== undefined) {
                 const This = this;
                 const gravityOn = particleEffects.gravity;
-                this.particleManager.addEmitter({
+                ParticleManager.addEmitter({
                     delay: particleEffects.delay,
-                    active: this.console.getBuiltInCVar("cv_ambient_particles"),
+                    active: GameConsole.getBuiltInCVar("cv_ambient_particles"),
                     spawnOptions: () => ({
                         frames: particleEffects.frames,
                         get position(): Vector {
-                            const width = This.camera.width / PIXI_SCALE;
-                            const height = This.camera.height / PIXI_SCALE;
+                            const width = CameraManager.width / PIXI_SCALE;
+                            const height = CameraManager.height / PIXI_SCALE;
                             const player = This.activePlayer;
                             if (!player) return Vec.create(0, 0);
                             const { x, y } = player.position;
@@ -438,7 +426,7 @@ export class Game {
             this.netGraph.receiving.addEntry(msgLength, splits);
         };
 
-        const ui = this.uiManager.ui;
+        const ui = UIManager.ui;
 
         this._socket.onerror = (): void => {
             this.pixi.stop();
@@ -446,13 +434,13 @@ export class Game {
             this.connecting = false;
             ui.splashMsgText.html(getTranslatedString("msg_err_joining"));
             ui.splashMsg.show();
-            resetPlayButtons(this);
+            resetPlayButtons();
         };
 
         this._socket.onclose = (e: CloseEvent): void => {
             this.pixi.stop();
             this.connecting = false;
-            resetPlayButtons(this);
+            resetPlayButtons();
 
             const reason = e.reason || "Connection lost";
 
@@ -468,7 +456,7 @@ export class Game {
                     ui.splashMsgText.html(reason);
                     ui.splashMsg.show();
                 }
-                this.uiManager.ui.btnSpectate.addClass("btn-disabled");
+                ui.btnSpectate.addClass("btn-disabled");
                 if (!this.error) void this.endGame();
             }
         };
@@ -482,30 +470,30 @@ export class Game {
                 this.startGame(packet);
                 break;
             case PacketType.Map:
-                this.map.updateFromPacket(packet);
+                MapManager.updateFromPacket(packet);
                 break;
             case PacketType.Update:
                 this.processUpdate(packet);
                 break;
             case PacketType.GameOver:
-                this.uiManager.showGameOverScreen(packet);
+                UIManager.showGameOverScreen(packet);
                 break;
             case PacketType.Kill:
-                this.uiManager.processKillPacket(packet);
+                UIManager.processKillPacket(packet);
                 break;
             case PacketType.Report: {
-                this.uiManager.processReportPacket(packet);
+                UIManager.processReportPacket(packet);
                 break;
             }
             case PacketType.Pickup: {
                 const { message, item } = packet;
 
                 if (message !== undefined) {
-                    const inventoryMsg = this.uiManager.ui.inventoryMsg;
+                    const inventoryMsg = UIManager.ui.inventoryMsg;
 
                     inventoryMsg.text(getTranslatedString(this._inventoryMessageMap[message])).fadeIn(250);
                     if (message === InventoryMessages.RadioOverused) {
-                        this.soundManager.play("metal_light_destroyed");
+                        SoundManager.play("metal_light_destroyed");
                     }
 
                     clearTimeout(this.inventoryMsgTimeout);
@@ -540,7 +528,7 @@ export class Game {
                             break;
                     }
 
-                    this.soundManager.play(soundID);
+                    SoundManager.play(soundID);
                 } else {
                     console.warn("Unexpected PickupPacket with neither message nor item");
                 }
@@ -560,24 +548,24 @@ export class Game {
     startGame(packet: JoinedData): void {
         // Sound which notifies the player that the
         // game started if page is out of focus.
-        if (!document.hasFocus()) this.soundManager.play("join_notification");
+        if (!document.hasFocus()) SoundManager.play("join_notification");
 
         const ambience = this.mode.sounds?.ambience;
         if (ambience) {
-            this.ambience = this.soundManager.play(ambience, { loop: true, ambient: true });
+            this.ambience = SoundManager.play(ambience, { loop: true, ambient: true });
         }
 
-        this.uiManager.emotes = packet.emotes;
-        this.uiManager.updateEmoteWheel();
+        UIManager.emotes = packet.emotes;
+        UIManager.updateEmoteWheel();
 
-        const ui = this.uiManager.ui;
+        const ui = UIManager.ui;
 
         if (this.teamMode = packet.teamSize !== TeamSize.Solo) {
             this.teamID = packet.teamID;
         }
 
         ui.canvas.addClass("active");
-        ui.splashUi.fadeOut(400, () => resetPlayButtons(this));
+        ui.splashUi.fadeOut(400, () => resetPlayButtons());
 
         ui.killLeaderLeader.html(getTranslatedString("msg_waiting_for_leader"));
         ui.killLeaderCount.text("0");
@@ -587,18 +575,18 @@ export class Game {
     }
 
     async endGame(): Promise<void> {
-        const ui = this.uiManager.ui;
+        const ui = UIManager.ui;
 
         return await new Promise(resolve => {
             ui.gameMenu.fadeOut(250);
             ui.splashOptions.addClass("loading");
             ui.loaderText.text("");
 
-            this.soundManager.stopAll();
+            SoundManager.stopAll();
 
             ui.splashUi.fadeIn(400, () => {
                 this.pixi.stop();
-                this.screenRecordManager.endRecording();
+                ScreenRecordManager.endRecording();
                 void this.music?.play();
                 ui.teamContainer.html("");
                 ui.actionContainer.hide();
@@ -616,27 +604,26 @@ export class Game {
                 this.objects.clear();
                 this.bullets.clear();
                 this.planes.clear();
-                this.camera.container.removeChildren();
-                this.particleManager.clear();
-                this.uiManager.clearTeammateCache();
-                this.uiManager.reportedPlayerIDs.clear();
-                this.uiManager.killLeaderCache = undefined;
-                this.uiManager.oldKillLeaderId = undefined;
+                CameraManager.container.removeChildren();
+                ParticleManager.clear();
+                UIManager.clearTeammateCache();
+                UIManager.reportedPlayerIDs.clear();
+                UIManager.killLeaderCache = undefined;
+                UIManager.oldKillLeaderId = undefined;
 
-                const map = this.map;
-                map.safeZone.clear();
-                map.pingGraphics.clear();
-                map.pings.clear();
-                map.pingsContainer.removeChildren();
-                map.teammateIndicators.clear();
-                map.teammateIndicatorContainer.removeChildren();
+                MapManager.safeZone.clear();
+                MapManager.pingGraphics.clear();
+                MapManager.pings.clear();
+                MapManager.pingsContainer.removeChildren();
+                MapManager.teammateIndicators.clear();
+                MapManager.teammateIndicatorContainer.removeChildren();
 
                 this.playerNames.clear();
                 this._timeouts.clear();
 
-                this.camera.zoom = Scopes.definitions[0].zoomLevel;
+                CameraManager.zoom = Scopes.definitions[0].zoomLevel;
                 updateDisconnectTime();
-                resetPlayButtons(this);
+                resetPlayButtons();
                 if (teamSocket) ui.createTeamMenu.fadeIn(250, resolve);
                 else resolve();
             });
@@ -678,21 +665,21 @@ export class Game {
             }
         }
 
-        const hasMovementSmoothing = this.console.getBuiltInCVar("cv_movement_smoothing");
+        const hasMovementSmoothing = GameConsole.getBuiltInCVar("cv_movement_smoothing");
 
-        const showHitboxes = this.console.getBuiltInCVar("db_show_hitboxes");
+        const showHitboxes = GameConsole.getBuiltInCVar("db_show_hitboxes");
 
         for (const object of this.objects) {
             object.update();
             if (hasMovementSmoothing) object.updateInterpolation();
 
             if (DEBUG_CLIENT) {
-                if (showHitboxes) object.updateDebugGraphics(this.debugRenderer);
+                if (showHitboxes) object.updateDebugGraphics();
             }
         }
 
         if (hasMovementSmoothing && this.activePlayer) {
-            this.camera.position = this.activePlayer.container.position;
+            CameraManager.position = this.activePlayer.container.position;
         }
 
         for (const [image, spinSpeed] of this.spinningImages.entries()) {
@@ -703,17 +690,17 @@ export class Game {
 
         for (const bullet of this.bullets) bullet.update(delta);
 
-        this.particleManager.update(delta);
+        ParticleManager.update(delta);
 
-        this.map.update();
-        this.gasRender.update(this.gas);
+        MapManager.update();
+        this.gasRender.update();
 
         for (const plane of this.planes) plane.update();
 
-        this.camera.update();
-        this.debugRenderer.graphics.position = this.camera.container.position;
-        this.debugRenderer.graphics.scale = this.camera.container.scale;
-        this.debugRenderer.render();
+        CameraManager.update();
+        DebugRenderer.graphics.position = CameraManager.container.position;
+        DebugRenderer.graphics.scale = CameraManager.container.scale;
+        DebugRenderer.render();
     }
 
     private _lastUpdateTime = 0;
@@ -755,8 +742,8 @@ export class Game {
 
         const playerData = updateData.playerData;
         if (playerData) {
-            this.uiManager.updateUI(playerData);
-            this.uiManager.updateWeaponSlots(); // to load reskins
+            UIManager.updateUI(playerData);
+            UIManager.updateWeaponSlots(); // to load reskins
 
             if (this.spectating && playerData.teamID !== undefined && playerData.id !== undefined) {
                 this.teamID = playerData.teamID;
@@ -774,8 +761,8 @@ export class Game {
                 type K = typeof type;
 
                 const _object = new (
-                    ObjectClassMapping[type] as new (game: Game, id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
-                )(this, id, data);
+                    ObjectClassMapping[type] as new (id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
+                )(id, data);
                 this.objects.add(_object);
 
                 const containerLayer = this.containerLayers[_object.layer];
@@ -817,16 +804,16 @@ export class Game {
         }
 
         for (const bullet of updateData.deserializedBullets ?? []) {
-            this.bullets.add(new Bullet(this, bullet));
+            this.bullets.add(new Bullet(bullet));
         }
 
         for (const explosionData of updateData.explosions ?? []) {
-            explosion(this, explosionData.definition, explosionData.position, explosionData.layer);
+            explosion(explosionData.definition, explosionData.position, explosionData.layer);
         }
 
         for (const emote of updateData.emotes ?? []) {
             if (
-                this.console.getBuiltInCVar("cv_hide_emotes")
+                GameConsole.getBuiltInCVar("cv_hide_emotes")
                 && !("itemType" in emote.definition) // Never hide team emotes (ammo & healing items)
             ) break;
 
@@ -839,32 +826,31 @@ export class Game {
             }
         }
 
-        this.gas.updateFrom(updateData);
+        GasManager.updateFrom(updateData);
 
         if (updateData.aliveCount !== undefined) {
-            const ui = this.uiManager.ui;
-            ui.playerAlive.text(updateData.aliveCount);
-            ui.btnSpectate.toggle(updateData.aliveCount > 1);
+            const { playerAlive, btnSpectate } = UIManager.ui;
+            playerAlive.text(updateData.aliveCount);
+            btnSpectate.toggle(updateData.aliveCount > 1);
         }
 
         for (const plane of updateData.planes ?? []) {
-            this.planes.add(new Plane(this, plane.position, plane.direction));
+            this.planes.add(new Plane(plane.position, plane.direction));
         }
 
         for (const ping of updateData.mapPings ?? []) {
-            this.map.addMapPing(ping);
+            MapManager.addMapPing(ping);
         }
 
         if (updateData.killLeader) {
-            this.uiManager.updateKillLeader(updateData.killLeader);
+            UIManager.updateKillLeader(updateData.killLeader);
         }
 
         this.tick();
     }
 
-    addTween<T extends object>(config: ConstructorParameters<typeof Tween<T>>[1]): Tween<T> {
-        const tween = new Tween(this, config);
-
+    addTween<T extends object>(config: TweenOptions<T>): Tween<T> {
+        const tween = new Tween(config);
         this.tweens.add(tween);
         return tween;
     }
@@ -899,12 +885,12 @@ export class Game {
             }
         }
 
-        this.camera.addObject(containerLayer);
+        CameraManager.addObject(containerLayer);
         // ------------------------------------------------------------------------------------------------------------------------
 
         // [Renderer]
         const basement = layer === Layer.Basement1;
-        this.map.terrainGraphics.visible = !basement;
+        MapManager.terrainGraphics.visible = !basement;
         const { red, green, blue } = this.pixi.renderer.background.color;
         const color = { r: red * 255, g: green * 255, b: blue * 255 };
         const targetColor = basement ? this.colors.void : this.colors.grass;
@@ -987,19 +973,19 @@ export class Game {
 
         return () => {
             if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
-            this.inputManager.update();
-            this.soundManager.update();
-            this.screenRecordManager?.update();
+            InputManager.update();
+            SoundManager.update();
+            ScreenRecordManager?.update();
 
             const player = this.activePlayer;
             if (!player) return;
 
-            const isAction = this.uiManager.action.active;
-            const showCancel = isAction && !this.uiManager.action.fake;
+            const isAction = UIManager.action.active;
+            const showCancel = isAction && !UIManager.action.fake;
             let canInteract = true;
 
             if (isAction) {
-                this.uiManager.updateAction();
+                UIManager.updateAction();
             }
 
             interface CloseObject {
@@ -1046,7 +1032,7 @@ export class Game {
                             || player.dead
                         ) continue;
 
-                        this.soundManager.play("detection", {
+                        SoundManager.play("detection", {
                             falloff: 0.25,
                             position: Vec.create(object.position.x + 20, object.position.y - 20),
                             maxRange: 200
@@ -1072,7 +1058,7 @@ export class Game {
 
                             if (object.definition.particleVariations) particle += `_${random(1, object.definition.particleVariations)}`;
 
-                            this.particleManager.spawnParticles(2, () => ({
+                            ParticleManager.spawnParticles(2, () => ({
                                 frames: particle,
                                 position: object.hitbox.randomPoint(),
                                 zIndex: Numeric.max((object.definition.zIndex ?? ZIndexes.Players) + 1, 4),
@@ -1117,7 +1103,7 @@ export class Game {
             const offset = object?.isObstacle ? object.door?.offset : undefined;
             canInteract = interactable.object !== undefined;
 
-            const bind: string | undefined = this.inputManager.binds.getInputsBoundToAction(object === undefined ? "cancel_action" : "interact")[0];
+            const bind: string | undefined = InputManager.binds.getInputsBoundToAction(object === undefined ? "cancel_action" : "interact")[0];
 
             const differences = {
                 object: cache.object?.id !== object?.id,
@@ -1147,7 +1133,7 @@ export class Game {
                     interactKey,
                     interactMsg,
                     interactText
-                } = this.uiManager.ui;
+                } = UIManager.ui;
                 const type = object?.isLoot ? object.definition.itemType : undefined;
 
                 // Update interact message
@@ -1179,7 +1165,7 @@ export class Game {
                                 break;
                             }
                             case object?.isPlayer: {
-                                text = getTranslatedString("action_revive", { player: this.uiManager.getRawPlayerName(object.id) });
+                                text = getTranslatedString("action_revive", { player: UIManager.getRawPlayerName(object.id) });
                                 break;
                             }
                             case isAction: {
@@ -1191,7 +1177,7 @@ export class Game {
                         if (text) interactText.text(text);
                     }
 
-                    if (!this.inputManager.isMobile && (!bindChangeAcknowledged || (object === undefined && isAction))) {
+                    if (!InputManager.isMobile && (!bindChangeAcknowledged || (object === undefined && isAction))) {
                         bindChangeAcknowledged = true;
 
                         const icon = bind === undefined ? undefined : InputManager.getIconFromInputName(bind);
@@ -1226,12 +1212,12 @@ export class Game {
                 }
 
                 // Mobile stuff
-                if (this.inputManager.isMobile && canInteract) {
-                    const weapons = this.uiManager.inventory.weapons;
+                if (InputManager.isMobile && canInteract) {
+                    const weapons = UIManager.inventory.weapons;
 
                     // Auto pickup (top 10 conditionals)
                     if (
-                        this.console.getBuiltInCVar("cv_autopickup")
+                        GameConsole.getBuiltInCVar("cv_autopickup")
                         && object?.isLoot
                         && autoPickup
                         && (
@@ -1280,22 +1266,22 @@ export class Game {
                             )
                         )
                     ) {
-                        this.inputManager.addAction(InputActions.Loot);
+                        InputManager.addAction(InputActions.Loot);
                     } else if ( // Auto open doors
                         object?.isObstacle
                         && object.canInteract(player)
                         && object.definition.isDoor
                         && object.door?.offset === 0
                     ) {
-                        this.inputManager.addAction(InputActions.Interact);
+                        InputManager.addAction(InputActions.Interact);
                     }
                 }
             }
 
             // funny detonate button stuff
-            const detonateKey = this.uiManager.ui.detonateKey;
-            if (!this.inputManager.isMobile) {
-                const boomBind: string | undefined = this.inputManager.binds.getInputsBoundToAction("explode_c4")[0];
+            const detonateKey = UIManager.ui.detonateKey;
+            if (!InputManager.isMobile) {
+                const boomBind: string | undefined = InputManager.binds.getInputsBoundToAction("explode_c4")[0];
 
                 if (funnyDetonateButtonCache.bind !== boomBind) {
                     funnyDetonateButtonCache.bind = bind;
@@ -1329,4 +1315,4 @@ export class Game {
             }
         };
     })();
-}
+})();

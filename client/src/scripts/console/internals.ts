@@ -1,5 +1,5 @@
 import { Stack } from "@common/utils/misc";
-import { type GameConsole } from "./gameConsole";
+import { GameConsole } from "./gameConsole";
 
 /**
  * General error type for console-related affairs
@@ -837,7 +837,7 @@ export function extractCommandsAndArgs(input: string): ParserNode {
  * A "constant argument list" is one that references no variables (and thus would
  * always be resolved identically)
  */
-function makeArgsResolver(gameConsole: GameConsole) {
+function makeArgsResolver() {
     /**
      * Resolves an array of argument parts. Raw parts are appended as-is, and variables
      * are dereferenced. Dereferencing a CVar that does not exist leads to a {@link CVarReferenceError}
@@ -853,7 +853,7 @@ function makeArgsResolver(gameConsole: GameConsole) {
                 if (cur.type === "raw") return acc + cur.content;
 
                 isConst = false;
-                const cvar = gameConsole.variables.get(cur.content);
+                const cvar = GameConsole.variables.get(cur.content);
                 if (cvar === undefined) {
                     throw new CVarReferenceError(`Variable '${cur.content}' not found`, cur.startIndex, cur.content.length);
                 }
@@ -892,10 +892,7 @@ function makeArgsResolver(gameConsole: GameConsole) {
  * @returns A boolean indicating whether the query was evaluated without error (which is
  *          to say, none of the invocations raised errors)
  */
-export function evalQuery(
-    gameConsole: GameConsole,
-    query: ParserNode
-): boolean {
+export function evalQuery(query: ParserNode): boolean {
     /**
      * Reference to the current parser node being processed. A value of `undefined`
      * signifies that we're done with the query and that no more processing is to be done
@@ -1008,7 +1005,7 @@ export function evalQuery(
         }
     };
 
-    const resolveArgs = makeArgsResolver(gameConsole);
+    const resolveArgs = makeArgsResolver();
 
     /*
         Handles cases like `(a & b); c`, where we need to add a group anchor immediately
@@ -1024,36 +1021,35 @@ export function evalQuery(
         error = false;
         const { name, args } = currentNode.cmd;
 
-        const cmd = gameConsole.commands.get(name);
+        const cmd = GameConsole.commands.get(name);
         if (cmd) {
             const result = cmd.run(resolveArgs(args)[1]);
 
             if (typeof result === "object") {
                 error = true;
-                gameConsole.error.raw(`${result.err}`);
+                GameConsole.error.raw(`${result.err}`);
             }
             stepForward();
             continue;
         }
 
-        const alias = gameConsole.aliases.get(name);
+        const alias = GameConsole.aliases.get(name);
         if (alias !== undefined) {
-            error = !evalQuery(gameConsole, extractCommandsAndArgs(alias));
+            error = !evalQuery(extractCommandsAndArgs(alias));
             stepForward();
             continue;
         }
 
-        const cvar = gameConsole.variables.get(name);
+        const cvar = GameConsole.variables.get(name);
         if (cvar) {
             if (args.length) {
                 error = !evalQuery(
-                    gameConsole,
                     extractCommandsAndArgs(
                         `assign ${name} "${resolveArgs(args)[1].join(" ")}"`
                     )
                 );
             } else {
-                gameConsole.log(`${cvar.name} = ${cvar.value}`);
+                GameConsole.log(`${cvar.name} = ${cvar.value}`);
             }
 
             stepForward();
@@ -1061,7 +1057,7 @@ export function evalQuery(
         }
 
         error = true;
-        gameConsole.error(`Unknown console entity '${name}'`);
+        GameConsole.error(`Unknown console entity '${name}'`);
         stepForward();
     }
 

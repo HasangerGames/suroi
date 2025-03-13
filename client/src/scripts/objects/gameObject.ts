@@ -6,16 +6,13 @@ import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Container } from "pixi.js";
-import { type Game } from "../game";
-import { type GameSound, type SoundOptions } from "../managers/soundManager";
+import { Game } from "../game";
+import { CameraManager } from "../managers/cameraManager";
+import { MapManager } from "../managers/mapManager";
+import { SoundManager, type GameSound, type SoundOptions } from "../managers/soundManager";
 import { toPixiCoords } from "../utils/pixi";
-import type { DebugRenderer } from "../utils/debugRenderer";
 
 export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> extends makeGameObjectTemplate() {
-    id: number;
-
-    readonly game: Game;
-
     damageable = false;
     destroyed = false;
 
@@ -48,7 +45,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
                 this._oldPosition,
                 this.position,
                 Numeric.min(
-                    (Date.now() - this._lastPositionChange) / this.game.serverDt,
+                    (Date.now() - this._lastPositionChange) / Game.serverDt,
                     1
                 )
             )
@@ -80,7 +77,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
             this._oldRotation,
             this._oldRotation + Angle.minimize(this._oldRotation, this._rotation),
             Numeric.min(
-                (Date.now() - this._lastRotationChange) / this.game.serverDt,
+                (Date.now() - this._lastRotationChange) / Game.serverDt,
                 1
             )
         );
@@ -88,25 +85,19 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
 
     dead = false;
 
-    readonly container: Container;
+    readonly container = new Container();
 
     readonly timeouts = new Set<Timeout>();
 
     addTimeout(callback: () => void, delay?: number): Timeout {
-        const timeout = this.game.addTimeout(callback, delay);
+        const timeout = Game.addTimeout(callback, delay);
         this.timeouts.add(timeout);
         return timeout;
     }
 
-    constructor(game: Game, id: number) {
+    constructor(readonly id: number) {
         super();
-
-        this.game = game;
-        this.id = id;
-
-        this.container = new Container();
-
-        this.game.camera.addObject(this.container);
+        CameraManager.addObject(this.container);
     }
 
     destroy(): void {
@@ -118,7 +109,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
     }
 
     playSound(name: string, options?: Partial<Omit<SoundOptions, "position">>): GameSound {
-        return this.game.soundManager.play(name, {
+        return SoundManager.play(name, {
             position: this.position,
             layer: this.layer,
             ...options
@@ -126,7 +117,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
     }
 
     doOverlay(): boolean {
-        return FloorTypes[this.game.map.terrain.getFloor(this.position, this.layer)]?.overlay ?? false;
+        return FloorTypes[MapManager.terrain.getFloor(this.position, this.layer)]?.overlay ?? false;
     }
 
     abstract updateFromData(data: ObjectsNetData[Cat], isNew: boolean): void;
@@ -136,5 +127,5 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
     abstract update(): void;
     abstract updateInterpolation(): void;
 
-    abstract updateDebugGraphics(debugRenderer: DebugRenderer): void;
+    abstract updateDebugGraphics(): void;
 }
