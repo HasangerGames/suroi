@@ -45,7 +45,33 @@ export async function loadTextures(modeName: Mode, renderer: Renderer, highResol
             console.log(`Loading spritesheet ${location.origin}/${image}`);
 
             try {
-                const sheetTexture = await Assets.load<Texture>(image);
+                let sheetTexture: Texture;
+                // Workaround to reduce memory usage in Chromium-based browsers
+                // This actually increases usage in Firefox and has strange effects in WebKit,
+                // so we use the usual loading method for everything else
+                if ("chrome" in window) {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    const { w: width, h: height } = spritesheet.meta.size!;
+                    const canvas = new OffscreenCanvas(width, height);
+                    const ctx = canvas.getContext("2d");
+                    if (ctx === null) {
+                        throw new Error("Unable to initialize canvas");
+                    }
+
+                    const img: HTMLImageElement = await new Promise(resolve => {
+                        const img = new Image();
+                        img.src = image;
+                        img.onload = () => resolve(img);
+                    });
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const resource = canvas.transferToImageBitmap();
+                    sheetTexture = new Texture({
+                        source: new ImageSource({ resource, width, height })
+                    });
+                } else {
+                    sheetTexture = await Assets.load<Texture>(image);
+                }
                 await renderer.prepare.upload(sheetTexture);
                 const textures = await new Spritesheet(sheetTexture, spritesheet).parse();
                 for (const [key, texture] of Object.entries(textures)) {
