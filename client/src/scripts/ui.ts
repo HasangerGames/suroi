@@ -1661,6 +1661,8 @@ export async function setUpUI(): Promise<void> {
     // High resolution toggle
     $("#toggle-high-res").parent().parent().toggle(!InputManager.isMobile);
     addCheckboxListener("#toggle-high-res", "cv_high_res_textures");
+    $("#alt-texture-loading-item").toggle("chrome" in window); // this workaround only helps in chromium based browsers
+    addCheckboxListener("#toggle-alt-texture-loading", "cv_alt_texture_loading");
     addCheckboxListener("#toggle-cooler-graphics", "cv_cooler_graphics");
 
     GameConsole.variables.addChangeListener(

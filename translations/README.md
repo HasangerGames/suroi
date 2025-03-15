@@ -1,8 +1,8 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Wed, 12 Mar 2025 05:57:20 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 15 Mar 2025 00:34:35 GMT
 
-## 🇦🇱 Shqip (78% Complete) - ab.hjson
+## 🇦🇱 Shqip (77% Complete) - ab.hjson
 
 ### (No Invalid Keys)
 
@@ -20,6 +20,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
@@ -83,6 +84,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
 - Key `settings_left_joystick_color` is not defined
@@ -106,7 +108,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_finished_off` is not defined
 - Key `region_oc` is not defined
 
-## 🇨🇿 Čeština (82% Complete) - cz.hjson
+## 🇨🇿 Čeština (81% Complete) - cz.hjson
 
 ### (No Invalid Keys)
 
@@ -126,6 +128,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
@@ -181,6 +184,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
@@ -212,7 +216,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_finished_off` is not defined
 - Key `region_oc` is not defined
 
-## 🇪🇸 Español (88% Complete) - es.hjson
+## 🇪🇸 Español (87% Complete) - es.hjson
 
 ### (No Invalid Keys)
 
@@ -226,6 +230,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
@@ -255,7 +260,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_finished_off` is not defined
 - Key `region_oc` is not defined
 
-## 🇪🇪 eesti (88% Complete) - et.hjson
+## 🇪🇪 eesti (87% Complete) - et.hjson
 
 ### Invalid Keys
 
@@ -271,6 +276,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
@@ -315,6 +321,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
@@ -348,7 +355,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_finished_off` is not defined
 - Key `region_oc` is not defined
 
-## 🇫🇷 Français (89% Complete) - fr.hjson
+## 🇫🇷 Français (88% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -363,6 +370,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
 - Key `settings_left_joystick_color` is not defined
@@ -403,6 +411,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
 - Key `settings_left_joystick_color` is not defined
@@ -450,6 +459,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
@@ -500,6 +510,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `recording` is not defined
+- Key `settings_alt_texture_loading` is not defined
 - Key `interact_monument` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_impact_of` is not defined
@@ -551,6 +562,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
@@ -596,7 +608,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `m16a4` is not defined
 - Key `region_oc` is not defined
 
-## 🇯🇵 日本語 (82% Complete) - jp.hjson
+## 🇯🇵 日本語 (81% Complete) - jp.hjson
 
 ### (No Invalid Keys)
 
@@ -616,6 +628,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
@@ -657,7 +670,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `region_oc` is not defined
 
-## 🇱🇹 Lietuvių (82% Complete) - lt.hjson
+## 🇱🇹 Lietuvių (81% Complete) - lt.hjson
 
 ### (No Invalid Keys)
 
@@ -677,6 +690,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
@@ -718,7 +732,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `region_oc` is not defined
 
-## 🇱🇻 Latviešu (82% Complete) - lv.hjson
+## 🇱🇻 Latviešu (81% Complete) - lv.hjson
 
 ### (No Invalid Keys)
 
@@ -738,6 +752,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
@@ -794,6 +809,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
 - Key `settings_gyro_angle` is not defined
 - Key `settings_lock_joysticks` is not defined
@@ -836,6 +852,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
 - Key `settings_left_joystick_color` is not defined
@@ -860,12 +877,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_finished_off` is not defined
 - Key `region_oc` is not defined
 
-## 🇷🇴 Română (96% Complete) - ro.hjson
+## 🇷🇴 Română (95% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `settings_alt_texture_loading` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_impact_of` is not defined
 - Key `km_finally_ended_yourself` is not defined
@@ -888,6 +906,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `settings_alt_texture_loading` is not defined
 - Key `settings_show_inout` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_impact_of` is not defined
@@ -904,12 +923,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_finished_off` is not defined
 - Key `m16a4` is not defined
 
-## 🇮🇳 தமிழ் (96% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (95% Complete) - ta.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `settings_alt_texture_loading` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_impact_of` is not defined
 - Key `km_finally_ended_yourself` is not defined
@@ -924,7 +944,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
 
-## 🇹🇷 Turkısh (96% Complete) - tr.hjson
+## 🇹🇷 Turkısh (95% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -932,6 +952,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `settings_alt_texture_loading` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_impact_of` is not defined
 - Key `km_finally_ended_yourself` is not defined
@@ -946,12 +967,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
 
-## 🇹🇼 中文（繁體） (96% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (95% Complete) - tw.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `settings_alt_texture_loading` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_impact_of` is not defined
 - Key `km_finally_ended_yourself` is not defined
@@ -979,6 +1001,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
 - Key `settings_left_joystick_color` is not defined
@@ -1004,7 +1027,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_finished_off` is not defined
 - Key `region_oc` is not defined
 
-## 🇨🇳 中文（简体） (95% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (94% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -1252,6 +1275,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `settings_alt_texture_loading` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `kf_suicide_finished_off` is not defined
