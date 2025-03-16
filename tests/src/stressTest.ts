@@ -342,7 +342,8 @@ void (async() => {
 })();
 
 console.log("setting up loop");
-setInterval(() => {
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+setInterval(async() => {
     for (const bot of bots) {
         if (Math.random() < 0.02) bot.updateInputs();
 
@@ -353,7 +354,7 @@ setInterval(() => {
             if (index === -1) continue;
 
             if (config.rejoinOnDeath) {
-                bots[index] = new Bot(index + 1);
+                bots[index] = await createBot(index + 1);
             } else {
                 bots.splice(index, 1);
             }
