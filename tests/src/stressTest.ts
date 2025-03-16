@@ -16,9 +16,10 @@ console.log("start");
 
 const config = {
     mainAddress: "http://127.0.0.1:8000",
-    gameAddress: "ws://127.0.0.1:800<ID>",
-    botCount: 79,
-    joinDelay: 10,
+    gameAddress: "ws://127.0.0.1:<gameID>",
+    offset: 8001,
+    botCount: 70,
+    joinDelay: 1000,
     rejoinOnDeath: false
 };
 
@@ -80,7 +81,7 @@ class Bot {
 
     constructor(readonly id: number, gameID: number) {
         this.gameID = gameID;
-        this._ws = new WebSocket(`${config.gameAddress.replace("<ID>", (gameID + 1).toString())}/play`);
+        this._ws = new WebSocket(`${config.gameAddress.replace("<gameID>", (gameID + config.offset).toString())}/play`);
         this._ws.addEventListener("error", console.error);
 
         this._ws.addEventListener("open", this.join.bind(this));

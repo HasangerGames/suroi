@@ -48,6 +48,7 @@ interface RegionInfo {
     readonly name: string
     readonly mainAddress: string
     readonly gameAddress: string
+    readonly offset: number
     readonly playerCount?: number
 
     readonly teamSize?: TeamSize
@@ -477,7 +478,7 @@ export async function setUpUI(): Promise<void> {
             }
         }
 
-        Game.connect(`${selectedRegion.gameAddress.replace("<ID>", (response.gameID + 1).toString())}/play?${params.toString()}`);
+        Game.connect(`${selectedRegion.gameAddress.replace("<ID>", (response.gameID + selectedRegion.offset).toString())}/play?${params.toString()}`);
         ui.splashMsg.hide();
 
         // Check again because there is a small chance that the create-team-menu element won't hide.
