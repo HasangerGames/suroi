@@ -134,24 +134,46 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         },
         animation: [
             {
-                duration: 150,
+                duration: 100,
                 fists: {
-                    left: Vec.create(28, -15),
-                    right: Vec.create(50, -15)
+                    left: Vec.create(65, -30),
+                    right: Vec.create(75, -50)
                 },
                 image: {
-                    position: Vec.create(115, -14),
-                    angle: 45
+                    position: Vec.create(65, -40),
+                    angle: -20
                 }
             },
             {
-                duration: 150,
+                duration: 100,
                 fists: {
-                    left: Vec.create(55, -15),
-                    right: Vec.create(45, 0)
+                    left: Vec.create(65, -40),
+                    right: Vec.create(45, -50)
                 },
                 image: {
-                    position: Vec.create(35, 45),
+                    position: Vec.create(65, -40),
+                    angle: -120
+                }
+            },
+            {
+                duration: 100,
+                fists: {
+                    left: Vec.create(65, -30),
+                    right: Vec.create(75, -50)
+                },
+                image: {
+                    position: Vec.create(65, -40),
+                    angle: -20
+                }
+            },
+            {
+                duration: 100,
+                fists: {
+                    left: Vec.create(55, -10),
+                    right: Vec.create(45, 10)
+                },
+                image: {
+                    position: Vec.create(55, -5),
                     angle: 155
                 }
             }
