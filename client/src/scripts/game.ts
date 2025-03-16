@@ -106,7 +106,15 @@ export const Game = new (class Game {
 
     readonly spinningImages = new Map<SuroiSprite, number>();
 
-    containerLayers: Partial<Record<Layer, Container>> = {};
+   // activeLayer = Layer.Ground;
+
+    containerLayers: Partial<Record<Layer, Container>> = {
+        [Layer.Basement1]: new Container(),
+        [Layer.ToBasement1]: new Container(),
+        [Layer.Ground]: new Container(),
+        [Layer.ToFloor1]: new Container(),
+        [Layer.Floor1]: new Container()
+    };
 
     readonly playerNames = new Map<number, {
         readonly name: string
@@ -276,9 +284,14 @@ export const Game = new (class Game {
                 ...Object.values(this.netGraph).map(g => g.container)
             );
 
-            MapManager.visible = !GameConsole.getBuiltInCVar("cv_minimap_minimized");
-            MapManager.expanded = GameConsole.getBuiltInCVar("cv_map_expanded");
-            UIManager.ui.gameUi.toggle(GameConsole.getBuiltInCVar("cv_draw_hud"));
+            // otherwise we will have invisible objects at start of games/when the player joins
+            /* Object.values(game.containerLayers).forEach(containerLayer => {
+                game.camera.container.addChild(containerLayer);
+            }); */
+
+            game.map.visible = !game.console.getBuiltInCVar("cv_minimap_minimized");
+            game.map.expanded = game.console.getBuiltInCVar("cv_map_expanded");
+            game.uiManager.ui.gameUi.toggle(game.console.getBuiltInCVar("cv_draw_hud"));
 
             pixi.renderer.on("resize", () => this.resize());
             this.resize();
@@ -849,37 +862,27 @@ export const Game = new (class Game {
     backgroundTween?: Tween<{ readonly r: number, readonly g: number, readonly b: number }>;
     volumeTween?: Tween<GameSound>;
 
-    changeLayer(layer: Layer/* , doTransition: boolean */): void {
-        // [containerLayer]: Setup
-        let containerLayer = this.containerLayers[this.layer ?? Layer.Ground];
+    changeLayer(layer: Layer): void {
+        const containerLayer = this.containerLayers[layer];
 
-        if (containerLayer === undefined) {
-            containerLayer = new Container();
-            this.camera.addObject(containerLayer);
+        for (const object of this.objects) {
+            object.updateZIndex();
+        }
 
-            // For objects, we update their z-index and add them to the container layer.
-            for (const object of this.objects) {
-                object.updateZIndex();
-                containerLayer.addChild(object.container);
+        // todo: figure out why adding object containers to the container layer (container?) breaks their z index
+        // "layering" them below the grid lines of the map (???)
 
-                // We add the ceiling container into the container layer and not the camera container.
-                if (object.isBuilding) {
-                    containerLayer.addChild(object.ceilingContainer);
-                }
-            }
+        if (containerLayer) {
+            const visible = adjacentOrEqualLayer(this.layer as number, layer);
 
-            // TODO: Layer Transition
-            /* if (doTransition) {
-                containerLayer.alpha = 0;
-                console.log(this.containerLayers[layer]);
-                this.layerTween?.kill();
-                this.layerTween = this.addTween({
-                    target: containerLayer,
-                    to: { alpha: 1 },
-                    duration: LAYER_TRANSITION_DELAY * 2,
-                    onComplete: () => { this.layerTween = undefined; }
-                });
-            } */
+            containerLayer.alpha = visible ? 0 : 1;
+            this.layerTween?.kill();
+            this.layerTween = this.addTween({
+                target: containerLayer,
+                to: { alpha: visible ? 0 : 1 },
+                duration: LAYER_TRANSITION_DELAY,
+                onComplete: () => { this.layerTween = undefined; }
+            });
         }
 
         CameraManager.addObject(containerLayer);
