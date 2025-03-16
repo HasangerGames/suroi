@@ -183,6 +183,7 @@ if (!Cluster.isPrimary) {
             }
 
             const ip = getIP(res, req);
+            const searchParams = new URLSearchParams(req.getQuery()); // needs to be before the await to prevent uWS errors
 
             if (simultaneousConnections?.isLimited(ip)) {
                 game.warn(ip, "exceeded maximum simultaneous connections");
@@ -201,7 +202,6 @@ if (!Cluster.isPrimary) {
                 return;
             }
 
-            const searchParams = new URLSearchParams(req.getQuery());
             const { role, isDev, nameColor } = parseRole(searchParams);
             res.upgrade(
                 {

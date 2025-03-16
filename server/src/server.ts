@@ -123,6 +123,7 @@ if (Cluster.isPrimary && require.main === module) {
             res.onAborted((): void => { /* no-op */ });
 
             const ip = getIP(res, req);
+            const searchParams = new URLSearchParams(req.getQuery()); // needs to be before the await to prevent uWS errors
 
             // Prevent connection if it's solos + check rate limits & punishments
             if (
@@ -135,7 +136,6 @@ if (Cluster.isPrimary && require.main === module) {
             }
 
             // Get team
-            const searchParams = new URLSearchParams(req.getQuery());
             const teamID = searchParams.get("teamID");
             let team: CustomTeam;
             if (teamID !== null) {
