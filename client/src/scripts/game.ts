@@ -106,16 +106,6 @@ export const Game = new (class Game {
 
     readonly spinningImages = new Map<SuroiSprite, number>();
 
-   // activeLayer = Layer.Ground;
-
-    containerLayers: Partial<Record<Layer, Container>> = {
-        [Layer.Basement1]: new Container(),
-        [Layer.ToBasement1]: new Container(),
-        [Layer.Ground]: new Container(),
-        [Layer.ToFloor1]: new Container(),
-        [Layer.Floor1]: new Container()
-    };
-
     readonly playerNames = new Map<number, {
         readonly name: string
         readonly hasColor: boolean
@@ -284,14 +274,9 @@ export const Game = new (class Game {
                 ...Object.values(this.netGraph).map(g => g.container)
             );
 
-            // otherwise we will have invisible objects at start of games/when the player joins
-            /* Object.values(game.containerLayers).forEach(containerLayer => {
-                game.camera.container.addChild(containerLayer);
-            }); */
-
-            game.map.visible = !game.console.getBuiltInCVar("cv_minimap_minimized");
-            game.map.expanded = game.console.getBuiltInCVar("cv_map_expanded");
-            game.uiManager.ui.gameUi.toggle(game.console.getBuiltInCVar("cv_draw_hud"));
+            MapManager.visible = !GameConsole.getBuiltInCVar("cv_minimap_minimized");
+            MapManager.expanded = GameConsole.getBuiltInCVar("cv_map_expanded");
+            UIManager.ui.gameUi.toggle(GameConsole.getBuiltInCVar("cv_draw_hud"));
 
             pixi.renderer.on("resize", () => this.resize());
             this.resize();
@@ -777,6 +762,21 @@ export const Game = new (class Game {
                     ObjectClassMapping[type] as new (id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
                 )(id, data);
                 this.objects.add(_object);
+
+                // Layer Transition
+                if (_object.layer !== (this.layer ?? Layer.Ground)) {
+                    _object.container.alpha = 0;
+
+                    this.layerTween = this.addTween({
+                        target: _object.container,
+                        to: { alpha: 1 },
+                        duration: LAYER_TRANSITION_DELAY,
+                        ease: EaseFunctions.sineIn,
+                        onComplete: () => {
+                            this.layerTween = undefined;
+                        }
+                    });
+                }
             } else {
                 object.updateFromData(data, false);
             }
@@ -799,8 +799,25 @@ export const Game = new (class Game {
                 continue;
             }
 
-            object.destroy();
-            this.objects.delete(object);
+            // Layer Transition
+            if (object.layer !== (this.layer ?? Layer.Ground)) {
+                object.container.alpha = 1;
+
+                this.layerTween = this.addTween({
+                    target: object.container,
+                    to: { alpha: 0 },
+                    duration: LAYER_TRANSITION_DELAY,
+                    ease: EaseFunctions.sineOut,
+                    onComplete: () => {
+                        this.layerTween = undefined;
+                        object.destroy();
+                        this.objects.delete(object);
+                    }
+                });
+            } else {
+                object.destroy();
+                this.objects.delete(object);
+            }
         }
 
         for (const bullet of updateData.deserializedBullets ?? []) {
@@ -863,32 +880,10 @@ export const Game = new (class Game {
     volumeTween?: Tween<GameSound>;
 
     changeLayer(layer: Layer): void {
-        const containerLayer = this.containerLayers[layer];
-
         for (const object of this.objects) {
             object.updateZIndex();
         }
 
-        // todo: figure out why adding object containers to the container layer (container?) breaks their z index
-        // "layering" them below the grid lines of the map (???)
-
-        if (containerLayer) {
-            const visible = adjacentOrEqualLayer(this.layer as number, layer);
-
-            containerLayer.alpha = visible ? 0 : 1;
-            this.layerTween?.kill();
-            this.layerTween = this.addTween({
-                target: containerLayer,
-                to: { alpha: visible ? 0 : 1 },
-                duration: LAYER_TRANSITION_DELAY,
-                onComplete: () => { this.layerTween = undefined; }
-            });
-        }
-
-        CameraManager.addObject(containerLayer);
-        // ------------------------------------------------------------------------------------------------------------------------
-
-        // [Renderer]
         const basement = layer === Layer.Basement1;
         MapManager.terrainGraphics.visible = !basement;
         const { red, green, blue } = this.pixi.renderer.background.color;
