@@ -27,9 +27,11 @@ export function writeCorsHeaders(resp: HttpResponse): void {
 }
 
 export function forbidden(resp: HttpResponse): void {
-    resp.writeStatus("403 Forbidden")
-        .writeHeader("Content-Type", "text/plain")
-        .end("403 Forbidden");
+    resp.cork(() => {
+        resp.writeStatus("403 Forbidden")
+            .writeHeader("Content-Type", "text/plain")
+            .end("403 Forbidden");
+    });
 }
 
 export const textDecoder = new TextDecoder();
