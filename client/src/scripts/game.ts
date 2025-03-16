@@ -57,7 +57,7 @@ import { Tween, type TweenOptions } from "./utils/tween";
 import { ParticleManager } from "./managers/particleManager";
 import { DebugRenderer } from "./utils/debugRenderer";
 import { ScreenRecordManager } from "./managers/screenRecordManager";
-import type { defaultClientCVars } from "./console/variables";
+import { defaultClientCVars } from "./console/variables";
 
 /* eslint-disable @stylistic/indent */
 

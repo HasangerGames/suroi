@@ -2,7 +2,7 @@ import { GameConstants, TeamSize } from "@common/constants";
 import { Badges } from "@common/definitions/badges";
 import { Skins } from "@common/definitions/items/skins";
 import { Mode } from "@common/definitions/modes";
-import { CustomTeamMessage } from "@common/typings";
+import { CustomTeamMessage, PunishmentMessage } from "@common/typings";
 import Cluster from "node:cluster";
 import { URLSearchParams } from "node:url";
 import os from "os";
@@ -12,7 +12,7 @@ import { Config } from "./config";
 import { findGame, games, newGame, WorkerMessages } from "./gameManager";
 import { CustomTeam, CustomTeamPlayer, CustomTeamPlayerContainer } from "./team";
 import { cleanUsername, modeFromMap } from "./utils/misc";
-import { forbidden, getIP, hasPunishment, parseRole, RateLimiter, serverError, serverLog, Switcher, textDecoder, writeCorsHeaders } from "./utils/serverHelpers";
+import { forbidden, getIP, getPunishment, parseRole, RateLimiter, serverError, serverLog, Switcher, textDecoder, writeCorsHeaders } from "./utils/serverHelpers";
 
 if (Cluster.isPrimary && require.main === module) {
     //                   ^^^^^^^^^^^^^^^^^^^^^^^ only starts server if called directly from command line (not imported)
@@ -77,20 +77,27 @@ if (Cluster.isPrimary && require.main === module) {
 
     const app = App();
 
-    app.get("/api/serverInfo", res => void res.cork(() => {
-        writeCorsHeaders(res);
+    app.get("/api/serverInfo", async(res, req) => {
+        let punishment: PunishmentMessage | undefined;
+        if (new URLSearchParams(req.getQuery()).get("checkPunishments") === "true") {
+            punishment = await getPunishment(getIP(res, req));
+        }
 
-        res.writeHeader("Content-Type", "application/json").end(JSON.stringify({
-            protocolVersion: GameConstants.protocolVersion,
-            playerCount: games.reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
-            teamSize: teamSize.current,
-            nextTeamSize: teamSize.next,
-            teamSizeSwitchTime: teamSize.nextSwitch ? teamSize.nextSwitch - Date.now() : undefined,
-            mode,
-            nextMode,
-            modeSwitchTime: map.nextSwitch ? map.nextSwitch - Date.now() : undefined
-        }));
-    }));
+        res.cork(() => {
+            writeCorsHeaders(res);
+            res.writeHeader("Content-Type", "application/json").end(JSON.stringify({
+                protocolVersion: GameConstants.protocolVersion,
+                playerCount: games.reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
+                teamSize: teamSize.current,
+                nextTeamSize: teamSize.next,
+                teamSizeSwitchTime: teamSize.nextSwitch ? teamSize.nextSwitch - Date.now() : undefined,
+                mode,
+                nextMode,
+                modeSwitchTime: map.nextSwitch ? map.nextSwitch - Date.now() : undefined,
+                punishment
+            }));
+        });
+    });
 
     app.get("/api/getGame", async(res, req) => {
         let gameID: number | undefined;
@@ -121,7 +128,7 @@ if (Cluster.isPrimary && require.main === module) {
             if (
                 teamSize.current === TeamSize.Solo
                 || teamsCreated?.isLimited(ip)
-                || await hasPunishment(ip)
+                || await getPunishment(ip)
             ) {
                 forbidden(res);
                 return;

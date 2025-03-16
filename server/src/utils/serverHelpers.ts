@@ -4,6 +4,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { Config, StaticOrSwitched, Switchable } from "../config";
 import { HttpRequest, HttpResponse } from "uWebSockets.js";
 import { Numeric } from "@common/utils/math";
+import { PunishmentMessage } from "@common/typings";
 
 export function serverLog(...message: unknown[]): void {
     Logger.log(styleText("[Server]", ColorStyles.foreground.magenta.normal), ...message);
@@ -52,8 +53,8 @@ interface Punishment {
     readonly punishmentType: "warn" | "temp" | "perma"
 }
 
-export async function hasPunishment(ip: string, res?: HttpResponse): Promise<boolean> {
-    if (!Config.apiServer) return false;
+export async function getPunishment(ip: string): Promise<PunishmentMessage | undefined> {
+    if (!Config.apiServer) return;
 
     const url = Config.apiServer.url;
     const opts: RequestInit = { headers: { "api-key": Config.apiServer.apiKey } };
@@ -63,29 +64,21 @@ export async function hasPunishment(ip: string, res?: HttpResponse): Promise<boo
         await fetch(`${url}/ipcheck/${ip}`, opts)
     ).json() as IPCheckResponse;
     if (ipCheck.flagged) {
-        res?.writeStatus("403 Forbidden")
-            .writeHeader("Content-Type", "application/json")
-            .end('{"message":"vpn"}');
-        return true;
+        return { message: "vpn" };
     }
 
     // Check punishments
     const punishments = await (
         await fetch(`${url}/punishments/${ip}`, opts)
     ).json() as Punishment[];
-    if (punishments.length) {
+    if (Array.isArray(punishments) && punishments.length) {
         const punishment = punishments[0];
-        res?.writeStatus("403 Forbidden")
-            .writeHeader("Content-Type", "application/json")
-            .end(JSON.stringify({
-                message: punishment.punishmentType,
-                reason: punishment.reason,
-                reportID: punishment.reportId
-            }));
-        return true;
+        return {
+            message: punishment.punishmentType,
+            reason: punishment.reason,
+            reportID: punishment.reportId
+        };
     }
-
-    return false;
 }
 
 export function parseRole(searchParams: URLSearchParams): { readonly role?: string, readonly isDev: boolean, readonly nameColor?: number } {

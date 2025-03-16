@@ -5,7 +5,7 @@ import { App, WebSocket } from "uWebSockets.js";
 import { Config, MapWithParams } from "./config";
 import { Game } from "./game";
 import { PlayerSocketData } from "./objects/player";
-import { hasPunishment, forbidden, getIP, parseRole, RateLimiter, serverLog, serverWarn } from "./utils/serverHelpers";
+import { getPunishment, forbidden, getIP, parseRole, RateLimiter, serverLog, serverWarn } from "./utils/serverHelpers";
 
 export enum WorkerMessages {
     UpdateTeamSize,
@@ -196,7 +196,10 @@ if (!Cluster.isPrimary) {
             }
             joinAttempts?.increment(ip);
 
-            if (await hasPunishment(ip, res)) return;
+            if (await getPunishment(ip)) {
+                forbidden(res);
+                return;
+            }
 
             const searchParams = new URLSearchParams(req.getQuery());
             const { role, isDev, nameColor } = parseRole(searchParams);

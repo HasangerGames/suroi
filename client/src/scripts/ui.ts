@@ -149,8 +149,8 @@ export async function fetchServerData(): Promise<void> {
         );
     }
 
-    let receivedPunishment = false;
     ui.loaderText.text(getTranslatedString("loading_fetching_data"));
+    const selectedRegionID = GameConsole.getBuiltInCVar("cv_region");
     const regionPromises = Object.entries(regionMap).map(async([_, [regionID, region]]) => {
         const listItem = regionUICache[regionID];
 
@@ -162,7 +162,7 @@ export async function fetchServerData(): Promise<void> {
         for (let attempts = 0; attempts < 3; attempts++) {
             console.log(`Loading server info for region ${regionID}: ${region.mainAddress} (attempt ${attempts + 1} of 3)`);
             try {
-                const response = await fetch(`${region.mainAddress}/api/serverInfo`, { signal: AbortSignal.timeout(10000) });
+                const response = await fetch(`${region.mainAddress}/api/serverInfo${regionID === selectedRegionID ? "?checkPunishments=true" : ""}`, { signal: AbortSignal.timeout(10000) });
                 info = await response.json() as ServerInfoResponse;
                 if (info) break;
             } catch (e) {
@@ -180,8 +180,7 @@ export async function fetchServerData(): Promise<void> {
             return;
         }
 
-        if (info.punishment && !receivedPunishment) {
-            receivedPunishment = true;
+        if (info.punishment) {
             const punishment = info.punishment;
             const reportID = punishment.reportID ?? "No report ID provided.";
             const message = getTranslatedString(`msg_punishment_${punishment.message}_reason`, { reason: punishment.reason ?? getTranslatedString("msg_no_reason") });

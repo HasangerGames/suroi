@@ -11,7 +11,7 @@ export const Config = {
 
     spawn: { mode: SpawnMode.Default },
 
-    teamSize: TeamSize.Duo,
+    teamSize: TeamSize.Solo,
 
     maxPlayersPerGame: 80,
     maxGames: 5,
@@ -173,6 +173,14 @@ export interface ConfigType {
     }
 
     /**
+     * If this option is specified, the given HTTP header will be used to determine IP addresses.
+     * If using nginx with the sample config, set it to `"X-Real-IP"`.
+     * If using Cloudflare, set it to `"CF-Connecting-IP"`.
+     * If not using a reverse proxy, this option should be omitted.
+     */
+    readonly ipHeader?: string
+
+    /**
      * Limits the number of simultaneous connections from each IP address.
      */
     readonly maxSimultaneousConnections?: number
@@ -194,14 +202,6 @@ export interface ConfigType {
      * If a player's username matches one of the regexes in this array, it will be replaced with the default username.
      */
     readonly usernameFilters?: readonly RegExp[]
-
-    /**
-     * If this option is specified, the given HTTP header will be used to determine IP addresses.
-     * If using nginx with the sample config, set it to `"X-Real-IP"`.
-     * If using Cloudflare, set it to `"CF-Connecting-IP"`.
-     * If not using a reverse proxy, this option should be omitted.
-     */
-    readonly ipHeader?: string
 
     /**
      * Roles. Each role has a different password and can give exclusive skins and cheats.
