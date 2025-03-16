@@ -122,8 +122,13 @@ if (Cluster.isPrimary && require.main === module) {
         async upgrade(res, req, context) {
             res.onAborted((): void => { /* no-op */ });
 
+            // These lines must be before the await to prevent uWS errors
+            // Accessing req isn't allowed after an await
             const ip = getIP(res, req);
-            const searchParams = new URLSearchParams(req.getQuery()); // needs to be before the await to prevent uWS errors
+            const searchParams = new URLSearchParams(req.getQuery());
+            const webSocketKey = req.getHeader("sec-websocket-key");
+            const webSocketProtocol = req.getHeader("sec-websocket-protocol");
+            const webSocketExtensions = req.getHeader("sec-websocket-extensions");
 
             // Prevent connection if it's solos + check rate limits & punishments
             if (
@@ -172,9 +177,9 @@ if (Cluster.isPrimary && require.main === module) {
             // Upgrade the connection
             res.upgrade(
                 { player: new CustomTeamPlayer(ip, team, name, skin, badge, nameColor) },
-                req.getHeader("sec-websocket-key"),
-                req.getHeader("sec-websocket-protocol"),
-                req.getHeader("sec-websocket-extensions"),
+                webSocketKey,
+                webSocketProtocol,
+                webSocketExtensions,
                 context
             );
         },

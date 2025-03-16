@@ -182,8 +182,13 @@ if (!Cluster.isPrimary) {
                 return;
             }
 
+            // These lines must be before the await to prevent uWS errors
+            // Accessing req isn't allowed after an await
             const ip = getIP(res, req);
-            const searchParams = new URLSearchParams(req.getQuery()); // needs to be before the await to prevent uWS errors
+            const searchParams = new URLSearchParams(req.getQuery());
+            const webSocketKey = req.getHeader("sec-websocket-key");
+            const webSocketProtocol = req.getHeader("sec-websocket-protocol");
+            const webSocketExtensions = req.getHeader("sec-websocket-extensions");
 
             if (simultaneousConnections?.isLimited(ip)) {
                 game.warn(ip, "exceeded maximum simultaneous connections");
@@ -214,9 +219,9 @@ if (!Cluster.isPrimary) {
                     lobbyClearing: searchParams.get("lobbyClearing") === "true",
                     weaponPreset: searchParams.get("weaponPreset") ?? ""
                 } satisfies PlayerSocketData,
-                req.getHeader("sec-websocket-key"),
-                req.getHeader("sec-websocket-protocol"),
-                req.getHeader("sec-websocket-extensions"),
+                webSocketKey,
+                webSocketProtocol,
+                webSocketExtensions,
                 context
             );
         },
