@@ -34,7 +34,7 @@ import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { randomBytes } from "crypto";
-import { WebSocket } from "ws";
+import { WebSocket } from "uWebSockets.js";
 import { Config } from "../config";
 import { type Game } from "../game";
 import { HealingAction, ReloadAction, ReviveAction, type Action } from "../inventory/action";
@@ -56,7 +56,8 @@ import { type SyncedParticle } from "./syncedParticle";
 import { type ThrowableProjectile } from "./throwableProj";
 import { DamageSources, KillPacket } from "@common/packets/killPacket";
 
-export interface PlayerJoinData {
+export interface PlayerSocketData {
+    player?: Player
     readonly ip?: string
     readonly teamID?: string
     readonly autoFill: boolean
@@ -357,7 +358,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.dirty.zoom = true;
     }
 
-    readonly socket: WebSocket | undefined;
+    readonly socket: WebSocket<PlayerSocketData> | undefined;
 
     private readonly _action: { type?: Action, dirty: boolean } = {
         type: undefined,
@@ -452,7 +453,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     private _pingSeq = 0;
 
-    constructor(game: Game, socket: WebSocket | undefined, data: PlayerJoinData, position: Vector, layer?: Layer, team?: Team) {
+    constructor(game: Game, socket: WebSocket<PlayerSocketData> | undefined, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
 
         if (layer !== undefined) {
@@ -469,10 +470,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         this.socket = socket;
+        const data = socket?.getUserData() ?? {} as Partial<PlayerSocketData>;
         this.name = GameConstants.player.defaultName;
         this.ip = data.ip;
         this.role = data.role;
-        this.isDev = data.isDev;
+        this.isDev = data.isDev ?? false;
         this.nameColor = data.nameColor ?? 0;
         this.hasColor = data.nameColor !== undefined;
 
@@ -504,9 +506,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.inventory.scope = "2x_scope";
         this.effectiveScope = "2x_scope";
 
-        const specialFunnies = this.isDev && data.lobbyClearing && !Config.disableLobbyClearing;
-        // Inventory preset
-        if (specialFunnies) {
+        // Weapon preset
+        if (
+            this.isDev
+            && data.lobbyClearing
+            && data.weaponPreset
+            && !Config.disableLobbyClearing
+        ) {
             const [
                 weaponA, weaponB, melee,
                 killsA, killB, killsM
@@ -1651,21 +1657,34 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.reportedPlayerIDs.set(this.spectating.id, true);
 
                 const reportID = randomBytes(4).toString("hex");
-                // SERVER HOSTERS assign your custom server an ID somewhere then pass it into the report body region: region
-                const reportJson = {
-                    id: reportID,
-                    reporterName: this.name,
-                    suspectName: this.spectating.name,
-                    suspectIP: this.spectating.ip,
-                    reporterIP: this.ip
-                };
 
                 this.sendPacket(ReportPacket.create({
                     playerID: this.spectating.id,
                     reportID: reportID
                 }));
-                if (Config.protection) {
-                    const reportURL = String(Config.protection?.ipChecker?.logURL);
+
+                // Send the report to the API server
+                if (Config.apiServer) {
+                    // SERVER HOSTERS assign your custom server an ID somewhere then pass it into the report body region: region
+                    const reportJson = {
+                        id: reportID,
+                        reporterName: this.name,
+                        suspectName: this.spectating.name,
+                        suspectIP: this.spectating.ip,
+                        reporterIP: this.ip
+                    };
+
+                    fetch(`${Config.apiServer.url}/reports`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", "api-key": Config.apiServer.apiKey },
+                        body: JSON.stringify(reportJson)
+                    }).then(response => response.json())
+                        .then(console.log)
+                        .catch((e: unknown) => console.error(e));
+                }
+
+                // Send the report to Discord
+                if (Config.apiServer?.reportWebhookURL) {
                     const reportData = {
                         embeds: [
                             {
@@ -1685,29 +1704,18 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                                         name: "Reporter",
                                         value: this.name
                                     }
-
                                 ]
                             }
                         ]
                     };
 
-                    // Send report to Discord
-                    fetch(reportURL, {
+                    fetch(Config.apiServer.reportWebhookURL, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(reportData)
                     }).catch(error => {
                         console.error("Error: ", error);
                     });
-
-                    // Post the report to the server
-                    fetch(`${Config.protection?.punishments?.url}/reports`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json", "api-key": Config?.protection?.punishments?.password || "" },
-                        body: JSON.stringify(reportJson)
-                    }).then(response => response.json())
-                        .then(console.log)
-                        .catch((e: unknown) => console.error(e));
                 }
             }
         }
@@ -1749,7 +1757,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     sendData(buffer: ArrayBuffer): void {
         try {
-            this.socket?.send(buffer);
+            this.socket?.send(buffer, true, false);
         } catch (e) {
             console.warn("Error sending packet. Details:", e);
         }

@@ -46,7 +46,8 @@ import { defaultClientCVars, type CVarTypeMapping } from "./console/variables";
 
 interface RegionInfo {
     readonly name: string
-    readonly address: string
+    readonly mainAddress: string
+    readonly gameAddress: string
     readonly playerCount?: number
 
     readonly teamSize?: TeamSize
@@ -159,9 +160,9 @@ export async function fetchServerData(): Promise<void> {
         let info: ServerInfoResponse | undefined;
 
         for (let attempts = 0; attempts < 3; attempts++) {
-            console.log(`Loading server info for region ${regionID}: ${region.address} (attempt ${attempts + 1} of 3)`);
+            console.log(`Loading server info for region ${regionID}: ${region.mainAddress} (attempt ${attempts + 1} of 3)`);
             try {
-                const response = await fetch(`${region.address}/api/serverInfo`, { signal: AbortSignal.timeout(10000) });
+                const response = await fetch(`${region.mainAddress}/api/serverInfo`, { signal: AbortSignal.timeout(10000) });
                 info = await response.json() as ServerInfoResponse;
                 if (info) break;
             } catch (e) {
@@ -421,7 +422,7 @@ export async function setUpUI(): Promise<void> {
 
     ui.lockedInfo.on("click", () => ui.lockedTooltip.fadeToggle(250));
 
-    const joinGame = (): void => {
+    const joinGame = async(): Promise<void> => {
         if (
             Game.gameStarted
             || Game.connecting
@@ -433,7 +434,22 @@ export async function setUpUI(): Promise<void> {
         ui.loaderText.text(getTranslatedString("loading_finding_game"));
         // ui.cancelFindingGame.css("display", "");
 
-        const target = selectedRegion;
+        type GetGameResponse = { success: true, gameID: number } | { success: false };
+        let response: GetGameResponse | undefined;
+        try {
+            const res = await fetch(`${selectedRegion.mainAddress}/api/getGame${teamID ? `?teamID=${teamID}` : ""}`);
+            if (res.ok) response = await res.json() as GetGameResponse;
+        } catch (e) {
+            console.error("Error finding game. Details:", e);
+        }
+
+        if (!response?.success) {
+            Game.connecting = false;
+            ui.splashMsgText.html(getTranslatedString("msg_err_finding"));
+            ui.splashMsg.show();
+            resetPlayButtons();
+            return;
+        }
 
         const params = new URLSearchParams();
 
@@ -462,7 +478,7 @@ export async function setUpUI(): Promise<void> {
             }
         }
 
-        Game.connect(`${target.address.replace("http", "ws")}/play?${params.toString()}`);
+        Game.connect(`${selectedRegion.gameAddress.replace("<ID>", (response.gameID + 1).toString())}/play?${params.toString()}`);
         ui.splashMsg.hide();
 
         // Check again because there is a small chance that the create-team-menu element won't hide.
@@ -476,7 +492,7 @@ export async function setUpUI(): Promise<void> {
         const now = Date.now();
         if (now - lastPlayButtonClickTime < 1500) return; // Play button rate limit
         lastPlayButtonClickTime = now;
-        joinGame();
+        void joinGame();
     });
 
     const createTeamMenu = $("#create-team-menu");
@@ -539,7 +555,7 @@ export async function setUpUI(): Promise<void> {
             }
         }
 
-        teamSocket = new WebSocket(`${selectedRegion.address.replace("http", "ws")}/team?${params.toString()}`);
+        teamSocket = new WebSocket(`${selectedRegion.mainAddress.replace("http", "ws")}/team?${params.toString()}`);
 
         teamSocket.onmessage = (message: MessageEvent<string>): void => {
             const data = JSON.parse(message.data) as CustomTeamMessage;
@@ -596,7 +612,7 @@ export async function setUpUI(): Promise<void> {
                 }
                 case CustomTeamMessages.Started: {
                     createTeamMenu.hide();
-                    joinGame();
+                    void joinGame();
                     break;
                 }
             }
@@ -924,7 +940,7 @@ export async function setUpUI(): Promise<void> {
     $("#btn-play-again, #btn-spectate-replay").on("click", async() => {
         await Game.endGame();
         if (teamSocket) teamSocket.send(JSON.stringify({ type: CustomTeamMessages.Start })); // TODO Check if player is team leader
-        else joinGame();
+        else await joinGame();
     });
 
     const sendSpectatePacket = (action: Exclude<SpectateActions, SpectateActions.SpectateSpecific>): void => {

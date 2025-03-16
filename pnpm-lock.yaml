@@ -141,21 +141,12 @@ importers:
 
   server:
     dependencies:
-      bufferutil:
-        specifier: ^4.0.9
-        version: 4.0.9
       croner:
         specifier: ^8.1.2
         version: 8.1.2
-      dotenv:
-        specifier: ^16.4.7
-        version: 16.4.7
-      ts-node:
-        specifier: ^10.9.2
-        version: 10.9.2(@swc/core@1.11.8(@swc/helpers@0.5.15))(@types/node@22.13.10)(typescript@5.8.2)
-      ws:
-        specifier: ^8.18.1
-        version: 8.18.1(bufferutil@4.0.9)
+      uWebSockets.js:
+        specifier: github:uNetworking/uWebSockets.js#v20.51.0
+        version: https://codeload.github.com/uNetworking/uWebSockets.js/tar.gz/6609a88ffa9a16ac5158046761356ce03250a0df
     devDependencies:
       '@swc/core':
         specifier: ^1.11.4
@@ -169,15 +160,15 @@ importers:
       '@types/sanitize-html':
         specifier: ^2.13.0
         version: 2.13.0
-      '@types/ws':
-        specifier: ^8.5.14
-        version: 8.18.0
       nodemon:
         specifier: ^3.1.9
         version: 3.1.9
       regenerator-runtime:
         specifier: ^0.14.1
         version: 0.14.1
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@swc/core@1.11.8(@swc/helpers@0.5.15))(@types/node@22.13.10)(typescript@5.8.2)
       tsc-alias:
         specifier: ^1.8.11
         version: 1.8.11
@@ -1879,10 +1870,6 @@ packages:
 
   dot-case@3.0.4:
     resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
-
-  dotenv@16.4.7:
-    resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
-    engines: {node: '>=12'}
 
   earcut@2.2.4:
     resolution: {integrity: sha512-/pjZsA1b4RPHbeWZQn66SWS8nZZWLQQ23oE3Eam7aroEFGEvwKAsJfZ9ytiEMycfzXWpca4FA9QIOehf7PocBQ==}
@@ -4928,6 +4915,7 @@ snapshots:
   bufferutil@4.0.9:
     dependencies:
       node-gyp-build: 4.8.4
+    optional: true
 
   callsites@3.1.0: {}
 
@@ -5148,8 +5136,6 @@ snapshots:
     dependencies:
       no-case: 3.0.4
       tslib: 2.8.1
-
-  dotenv@16.4.7: {}
 
   earcut@2.2.4: {}
 
@@ -6082,7 +6068,8 @@ snapshots:
     dependencies:
       whatwg-url: 5.0.0
 
-  node-gyp-build@4.8.4: {}
+  node-gyp-build@4.8.4:
+    optional: true
 
   node-int64@0.4.0: {}
 

@@ -22,7 +22,7 @@ import { Bullets, type BulletDefinition } from "@common/definitions/bullets";
 import type { SingleGunNarrowing } from "@common/definitions/items/guns";
 import { Mode, ModeDefinition, Modes } from "@common/definitions/modes";
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
-import type { WebSocket } from "ws";
+import type { WebSocket } from "uWebSockets.js";
 import { Config, MapWithParams, SpawnMode } from "./config";
 import { GAME_SPAWN_WINDOW } from "./data/gasStages";
 import { MapName, Maps } from "./data/maps";
@@ -38,7 +38,7 @@ import { Explosion } from "./objects/explosion";
 import { type BaseGameObject, type GameObject } from "./objects/gameObject";
 import { Loot, type ItemData } from "./objects/loot";
 import { Parachute } from "./objects/parachute";
-import { Player, type PlayerJoinData } from "./objects/player";
+import { Player, type PlayerSocketData } from "./objects/player";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { ThrowableProjectile } from "./objects/throwableProj";
 import { PluginManager } from "./pluginManager";
@@ -260,7 +260,9 @@ export class Game implements GameData {
         Logger.log(styleText(`[Game ${this.id}] [ERROR]`, ColorStyles.foreground.red.normal), ...message);
     }
 
-    onMessage(message: ArrayBuffer, player: Player): void {
+    onMessage(player: Player | undefined, message: ArrayBuffer): void {
+        if (!player) return;
+
         const packetStream = new PacketStream(new SuroiByteStream(message));
         while (true) {
             const packet = packetStream.deserialize();
@@ -514,10 +516,11 @@ export class Game implements GameData {
         this.killLeaderDirty = true;
     }
 
-    addPlayer(socket: WebSocket | undefined, data: PlayerJoinData): Player | undefined {
-        if (this.pluginManager.emit("player_will_connect")) {
-            socket?.close();
-            return undefined;
+    addPlayer(socket?: WebSocket<PlayerSocketData>): Player | undefined {
+        const rejectedBy = this.pluginManager.emit("player_will_connect");
+        if (rejectedBy) {
+            socket?.end(1000, `Connection rejected by server plugin '${rejectedBy.constructor.name}'`);
+            return;
         }
 
         let spawnPosition = Vec.create(this.map.width / 2, this.map.height / 2);
@@ -525,7 +528,7 @@ export class Game implements GameData {
 
         let team: Team | undefined;
         if (this.teamMode) {
-            const { teamID, autoFill } = data;
+            const { teamID, autoFill } = socket?.getUserData() ?? {};
 
             if (teamID) {
                 team = this.customTeams.get(teamID);
@@ -633,7 +636,7 @@ export class Game implements GameData {
         }
 
         // Player is added to the players array when a JoinPacket is received from the client
-        const player = new Player(this, socket, data, spawnPosition, spawnLayer, team);
+        const player = new Player(this, socket, spawnPosition, spawnLayer, team);
         this.pluginManager.emit("player_did_connect", player);
         return player;
     }
@@ -717,19 +720,19 @@ export class Game implements GameData {
         }
 
         this.log(`"${player.name}" joined`);
-        // AccessLog to store usernames for this connection
-        if (Config.protection?.punishments) {
+        // Access log to store usernames for this connection
+        if (Config.apiServer) {
             const username = player.name;
             if (username) {
                 fetch(
-                    `${Config.protection.punishments.url}/accesslog/${player.ip || "none"}`,
+                    `${Config.apiServer.url}/accesslog/${player.ip || "none"}`,
                     {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
-                            "api-key": Config.protection.punishments.password || "none"
+                            "api-key": Config.apiServer.apiKey || "none"
                         },
-                        body: `{ "username": "${username}" }`
+                        body: JSON.stringify({ username })
                     }
                 ).catch(console.error);
             }
@@ -788,7 +791,7 @@ export class Game implements GameData {
 
         try {
             if (reason) {
-                player.socket?.close(1000, reason);
+                player.socket?.end(1000, reason);
             } else {
                 player.socket?.close();
             }

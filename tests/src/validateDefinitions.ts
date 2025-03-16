@@ -3922,13 +3922,6 @@ logger.indent("Validating configurations", () => {
             baseErrorPath: errorPath
         });
 
-        tester.assertNoPointlessValue({
-            obj: ServerConfig,
-            field: "disableUsernameFilter",
-            defaultValue: false,
-            baseErrorPath: errorPath
-        });
-
         if (ServerConfig.protection) {
             const protection = ServerConfig.protection;
             logger.indent("Validating protection settings", () => {
