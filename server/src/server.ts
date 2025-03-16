@@ -78,6 +78,8 @@ if (Cluster.isPrimary && require.main === module) {
     const app = App();
 
     app.get("/api/serverInfo", async(res, req) => {
+        res.onAborted(() => { /* no-op */ });
+
         let punishment: PunishmentMessage | undefined;
         if (new URLSearchParams(req.getQuery()).get("checkPunishments") === "true") {
             punishment = await getPunishment(getIP(res, req));
@@ -100,6 +102,8 @@ if (Cluster.isPrimary && require.main === module) {
     });
 
     app.get("/api/getGame", async(res, req) => {
+        res.onAborted(() => { /* no-op */ });
+
         let gameID: number | undefined;
         const teamID = teamSize.current !== TeamSize.Solo && new URLSearchParams(req.getQuery()).get("teamID");
         if (teamID) {

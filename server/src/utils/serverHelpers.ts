@@ -19,8 +19,7 @@ export function serverError(...message: unknown[]): void {
 }
 
 export function writeCorsHeaders(resp: HttpResponse): void {
-    resp.onAborted(() => { /* no-op */ })
-        .writeHeader("Access-Control-Allow-Origin", "*")
+    resp.writeHeader("Access-Control-Allow-Origin", "*")
         .writeHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
         .writeHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with")
         .writeHeader("Access-Control-Max-Age", "3600");
