@@ -77,7 +77,7 @@ if (Cluster.isPrimary && require.main === module) {
 
     const app = App();
 
-    app.get("/api/serverInfo", res => {
+    app.get("/api/serverInfo", res => void res.cork(() => {
         writeCorsHeaders(res);
 
         res.writeHeader("Content-Type", "application/json").end(JSON.stringify({
@@ -90,11 +90,9 @@ if (Cluster.isPrimary && require.main === module) {
             nextMode,
             modeSwitchTime: map.nextSwitch ? map.nextSwitch - Date.now() : undefined
         }));
-    });
+    }));
 
     app.get("/api/getGame", async(res, req) => {
-        writeCorsHeaders(res);
-
         let gameID: number | undefined;
         const teamID = teamSize.current !== TeamSize.Solo && new URLSearchParams(req.getQuery()).get("teamID");
         if (teamID) {
@@ -103,11 +101,14 @@ if (Cluster.isPrimary && require.main === module) {
             gameID = await findGame(teamSize.current, map.current);
         }
 
-        res.writeHeader("Content-Type", "application/json").end(JSON.stringify(
-            gameID !== undefined
-                ? { success: true, gameID }
-                : { success: false }
-        ));
+        res.cork(() => {
+            writeCorsHeaders(res);
+            res.writeHeader("Content-Type", "application/json").end(JSON.stringify(
+                gameID !== undefined
+                    ? { success: true, gameID }
+                    : { success: false }
+            ));
+        });
     });
 
     app.ws("/team", {
