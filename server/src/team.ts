@@ -1,11 +1,11 @@
+import { TeamSize } from "@common/constants";
 import { CustomTeamMessages, type CustomTeamMessage } from "@common/typings";
 import { random } from "@common/utils/random";
+import { WebSocket } from "uWebSockets.js";
+import { MapWithParams } from "./config";
 import { findGame } from "./gameManager";
 import { type Player } from "./objects/player";
 import { removeFrom } from "./utils/misc";
-import { WebSocket } from "ws";
-import { TeamSize } from "@common/constants";
-import { MapWithParams } from "./config";
 
 export class Team {
     readonly id: number;
@@ -133,6 +133,8 @@ export class Team {
     }
 }
 
+export interface CustomTeamPlayerContainer { player: CustomTeamPlayer }
+
 export class CustomTeam {
     private static readonly _idChars = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789";
     private static readonly _idCharMax = this._idChars.length - 1;
@@ -201,7 +203,7 @@ export class CustomTeam {
                 if (player.isLeader) {
                     const result = await findGame(this.teamSize, this.map);
                     if (result !== undefined) {
-                        this.gameID = result.id;
+                        this.gameID = result;
                         clearTimeout(this.resetTimeout);
                         this.resetTimeout = setTimeout(() => this.gameID = undefined, 10000);
 
@@ -251,20 +253,19 @@ export class CustomTeam {
 export class CustomTeamPlayer {
     get id(): number { return this.team.players.indexOf(this); }
     get isLeader(): boolean { return this.id === 0; }
+    socket?: WebSocket<CustomTeamPlayerContainer>;
     ready = false;
 
     constructor(
+        readonly ip: string,
         readonly team: CustomTeam,
-        readonly socket: WebSocket,
         readonly name: string,
         readonly skin: string,
         readonly badge?: string,
         readonly nameColor?: number
-    ) {
-        team.addPlayer(this);
-    }
+    ) {}
 
     sendMessage(message: CustomTeamMessage): void {
-        this.socket.send(JSON.stringify(message));
+        this.socket?.send(JSON.stringify(message));
     }
 }

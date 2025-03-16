@@ -940,21 +940,20 @@ const maps = {
                             this.on("game_created", _game => {
                                 if (_game !== game) return;
                                 const createBot = (name: string): Player | undefined => {
-                                    const bot = game.addPlayer(undefined, { isDev: false, autoFill: false, ip: undefined, lobbyClearing: false, weaponPreset: "" });
+                                    const bot = game.addPlayer();
+                                    if (!bot) return;
 
-                                    if (bot !== undefined) {
-                                        game.activatePlayer(
-                                            bot,
-                                            {
-                                                type: PacketType.Join,
-                                                name,
-                                                isMobile: false,
-                                                skin: Loots.fromString("hazel_jumpsuit"),
-                                                emotes: Array.from({ length: 6 }, () => undefined),
-                                                protocolVersion: GameConstants.protocolVersion
-                                            }
-                                        );
-                                    }
+                                    game.activatePlayer(
+                                        bot,
+                                        {
+                                            type: PacketType.Join,
+                                            name,
+                                            isMobile: false,
+                                            skin: Loots.fromString("hazel_jumpsuit"),
+                                            emotes: Array.from({ length: 6 }, () => undefined),
+                                            protocolVersion: GameConstants.protocolVersion
+                                        }
+                                    );
 
                                     return bot;
                                 };

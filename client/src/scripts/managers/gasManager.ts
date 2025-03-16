@@ -5,11 +5,12 @@ import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Graphics } from "pixi.js";
 import { getTranslatedString } from "../../translations";
-import { type Game } from "../game";
+import { Game } from "../game";
 import { UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate } from "../utils/misc";
+import { UIManager } from "./uiManager";
 
-export class Gas {
+export const GasManager = new (class GasManager {
     state = GasState.Inactive;
     currentDuration = 0;
     oldPosition = Vec.create(0, 0);
@@ -23,7 +24,7 @@ export class Gas {
 
     lastUpdateTime = Date.now();
 
-    private readonly _ui: {
+    private _ui!: {
         readonly msgText: JQuery<HTMLDivElement>
         readonly msgContainer: JQuery<HTMLDivElement>
         readonly timer: JQuery<HTMLDivElement>
@@ -31,16 +32,16 @@ export class Gas {
         readonly timerImg: JQuery<HTMLImageElement>
     };
 
-    private static _instantiated = false;
-    constructor(readonly game: Game) {
-        if (Gas._instantiated) {
-            throw new Error("Class 'Gas' has already been instantiated");
+    private _initialized = false;
+    init(): void {
+        if (this._initialized) {
+            throw new Error("GasManager has already been initialized");
         }
-        Gas._instantiated = true;
+        this._initialized = true;
 
         this._ui = {
-            msgText: this.game.uiManager.ui.gasMsgInfo,
-            msgContainer: this.game.uiManager.ui.gasMsg,
+            msgText: UIManager.ui.gasMsgInfo,
+            msgContainer: UIManager.ui.gasMsg,
 
             timer: $<HTMLDivElement>("#gas-timer"),
             timerText: $<HTMLSpanElement>("#gas-timer-text"),
@@ -97,7 +98,7 @@ export class Gas {
             if (
                 (isInactive || gas.currentDuration !== 0)
                 && !UI_DEBUG_MODE
-                && (!this.game.gameOver || this.game.spectating)
+                && (!Game.gameOver || Game.spectating)
             ) {
                 this._ui.msgText.text(gasMessage);
                 this._ui.msgContainer.fadeIn();
@@ -129,7 +130,7 @@ export class Gas {
             }
         }
     }
-}
+})();
 
 export class GasRender {
     private readonly _graphics: Graphics;
@@ -140,7 +141,7 @@ export class GasRender {
     private static readonly _overdraw = 100 * 1000;
     private static readonly _segments = 512;
 
-    constructor(game: Game, scale: number) {
+    constructor(scale: number) {
         this._scale = scale;
 
         this._graphics = new Graphics();
@@ -156,7 +157,7 @@ export class GasRender {
             .lineTo(GasRender._overdraw, GasRender._overdraw)
             .lineTo(-GasRender._overdraw, GasRender._overdraw)
             .closePath()
-            .fill(game.colors.gas)
+            .fill(Game.colors.gas)
             .moveTo(0, 1);
 
         const tau = 2 * Math.PI;
@@ -172,17 +173,17 @@ export class GasRender {
             .cut();
     }
 
-    update(gas: Gas): void {
+    update(): void {
         let position: Vector;
         let radius: number;
 
-        if (gas.state === GasState.Advancing) {
-            const interpFactor = Numeric.clamp((Date.now() - gas.lastUpdateTime) / gas.game.serverDt, 0, 1);
-            position = Vec.lerp(gas.lastPosition, gas.position, interpFactor);
-            radius = Numeric.lerp(gas.lastRadius, gas.radius, interpFactor);
+        if (GasManager.state === GasState.Advancing) {
+            const interpFactor = Numeric.clamp((Date.now() - GasManager.lastUpdateTime) / Game.serverDt, 0, 1);
+            position = Vec.lerp(GasManager.lastPosition, GasManager.position, interpFactor);
+            radius = Numeric.lerp(GasManager.lastRadius, GasManager.radius, interpFactor);
         } else {
-            position = gas.position;
-            radius = gas.radius;
+            position = GasManager.position;
+            radius = GasManager.radius;
         }
 
         const center = Vec.scale(position, this._scale);

@@ -2,13 +2,12 @@
 import { Badges } from "@common/definitions/badges";
 import { Numeric } from "@common/utils/math";
 import $ from "jquery";
-import { type Game } from "../../game";
-import { type CompiledAction, type CompiledTuple } from "../../managers/inputManager";
-import { sanitizeHTML } from "../misc";
+import { Game } from "../game";
+import { InputManager, type CompiledAction, type CompiledTuple } from "../managers/inputManager";
+import { sanitizeHTML } from "../utils/misc";
 import { type Command } from "./commands";
-import { defaultBinds, defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
 import { evalQuery, extractCommandsAndArgs } from "./internals";
-import { Casters, ConsoleVariables, ConVar, flagBitfieldToInterface } from "./variables";
+import { Casters, ConsoleVariables, ConVar, defaultBinds, defaultClientCVars, flagBitfieldToInterface, type CVarTypeMapping } from "./variables";
 
 const enum MessageType {
     Log = "log",
@@ -44,7 +43,7 @@ let invalidateNextCharacter = false;
 let noWidthAdjust = false;
 let noHeightAdjust = false;
 
-export class GameConsole {
+export const GameConsole = new (class GameConsole {
     private _isOpen = false;
     get isOpen(): boolean { return this._isOpen; }
     set isOpen(value: boolean) {
@@ -58,7 +57,7 @@ export class GameConsole {
             this._ui.globalContainer.show();
             this._ui.input.trigger("focus");
 
-            invalidateNextCharacter = !this.game.gameStarted;
+            invalidateNextCharacter = !Game.gameStarted;
         } else {
             this._ui.globalContainer.hide();
         }
@@ -193,7 +192,7 @@ export class GameConsole {
         const settings: GameSettings = {
             variables: this.variables.getAll({ defaults: !includeDefaults, noArchive: !includeNoArchive }),
             aliases: Object.fromEntries(this.aliases),
-            binds: this.game.inputManager.binds.getAll()
+            binds: InputManager.binds.getAll()
         };
 
         localStorage.setItem(this._localStorageKey, JSON.stringify(settings));
@@ -232,7 +231,6 @@ export class GameConsole {
                     new ConVar(
                         name,
                         value,
-                        this,
                         Casters.toString,
                         {
                             archive: true,
@@ -289,7 +287,7 @@ export class GameConsole {
             "`": "Backquote"
         };
 
-        const bindManager = this.game.inputManager.binds;
+        const bindManager = InputManager.binds;
         for (const command in binds) {
             const bindList = binds[command];
             if (bindList.length === 0) {
@@ -411,7 +409,7 @@ export class GameConsole {
     })();
 
     readonly variables = (() => {
-        const varCollection = new ConsoleVariables(this);
+        const varCollection = new ConsoleVariables();
 
         const nativeDeclare = varCollection.declareCVar.bind(varCollection);
         const nativeRemove = varCollection.removeCVar.bind(varCollection);
@@ -457,12 +455,12 @@ export class GameConsole {
         this.variables.set.builtIn(name, value);
     }
 
-    private static _instantiated = false;
-    constructor(readonly game: Game) {
-        if (GameConsole._instantiated) {
-            throw new Error("Class 'GameConsole' has already been instantiated");
+    private _instantiated = false;
+    init(): void {
+        if (this._instantiated) {
+            throw new Error("GameConsole has already been instantiated");
         }
-        GameConsole._instantiated = true;
+        this._instantiated = true;
 
         this._attachListeners();
 
@@ -522,43 +520,43 @@ export class GameConsole {
         const addChangeListener = this.variables.addChangeListener.bind(this.variables);
         addChangeListener(
             "cv_console_left",
-            (_, value) => {
-                this._position.left = value;
-            }
+            val => this._position.left = val
         );
 
         addChangeListener(
             "cv_console_top",
-            (_, value) => {
-                this._position.top = value;
-            }
+            val => this._position.top = val
         );
 
         const { container, autocomplete } = this._ui;
         addChangeListener(
             "cv_console_width",
-            (_, value) => {
+            val => {
                 if (!noWidthAdjust) {
-                    container.css("width", value);
+                    container.css("width", val);
                 }
 
-                autocomplete.css("width", value);
+                autocomplete.css("width", val);
             }
         );
 
         addChangeListener(
             "cv_console_height",
-            (_, value) => {
+            val => {
                 if (!noHeightAdjust) {
-                    container.css("height", value);
+                    container.css("height", val);
                 }
 
-                autocomplete.css("top", this._position.top + value);
+                autocomplete.css("top", this._position.top + val);
             }
         );
 
+        addChangeListener("cv_console_open", val => this.isOpen = val);
+
         this.isOpen = this._isOpen;
         // sanity check
+
+        this.readFromLocalStorage();
     }
 
     private _attachListeners(): void {
@@ -944,7 +942,7 @@ export class GameConsole {
         query: string,
         _compileHint: "never" | "normal" | "always" = "normal"
     ): { readonly success: boolean, readonly compiled?: CompiledAction | CompiledTuple } {
-        return { success: evalQuery(this, extractCommandsAndArgs(query)) };
+        return { success: evalQuery(extractCommandsAndArgs(query)) };
     }
 
     open(): void { this.isOpen = true; }
@@ -1106,4 +1104,4 @@ export class GameConsole {
         this._entries.length = 0;
         this._ui.output.html("");
     }
-}
+})();

@@ -3,48 +3,45 @@ import { Badges } from "@common/definitions/badges";
 import { Skins } from "@common/definitions/items/skins";
 import { Mode } from "@common/definitions/modes";
 import { CustomTeamMessage, PunishmentMessage } from "@common/typings";
-import { Logger } from "@common/utils/logging";
-import { Numeric } from "@common/utils/math";
 import Cluster from "node:cluster";
-import { createServer, IncomingMessage } from "node:http";
 import { URLSearchParams } from "node:url";
 import os from "os";
-import { WebSocketServer } from "ws";
+import { App, WebSocket } from "uWebSockets.js";
 import { version } from "../../package.json";
 import { Config } from "./config";
-import { findGame, GameContainer, games, newGame, WorkerMessage, WorkerMessages } from "./gameManager";
-import { CustomTeam, CustomTeamPlayer } from "./team";
-import IPChecker, { Punishment } from "./utils/apiHelper";
+import { findGame, games, newGame, WorkerMessages } from "./gameManager";
+import { CustomTeam, CustomTeamPlayer, CustomTeamPlayerContainer } from "./team";
 import { cleanUsername, modeFromMap } from "./utils/misc";
-import { getIP, RateLimiter, serverError, serverLog, serverWarn, Switcher } from "./utils/serverHelpers";
+import { forbidden, getIP, getPunishment, parseRole, RateLimiter, serverError, serverLog, Switcher, textDecoder, writeCorsHeaders } from "./utils/serverHelpers";
 
 if (Cluster.isPrimary && require.main === module) {
     //                   ^^^^^^^^^^^^^^^^^^^^^^^ only starts server if called directly from command line (not imported)
 
     process.on("uncaughtException", e => serverError("An unhandled error occurred. Details:", e));
 
-    let punishments: Punishment[] = [];
+    setInterval(() => {
+        const memoryUsage = process.memoryUsage().rss;
 
-    const protection = Config.protection;
+        let perfString = `RAM usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`;
 
-    const ipCheck = protection?.ipChecker
-        ? new IPChecker(protection.ipChecker.baseUrl, protection.ipChecker.key)
-        : undefined;
+        // windows L
+        if (os.platform() !== "win32") {
+            const load = os.loadavg().join("%, ");
+            perfString += ` | CPU usage (1m, 5m, 15m): ${load}%`;
+        }
 
-    const joinAttempts = protection?.maxJoinAttempts
-        ? new RateLimiter(protection.maxJoinAttempts.count, protection.maxJoinAttempts.duration)
-        : undefined;
+        serverLog(perfString);
+    }, 60000);
 
-    const teamsCreated = protection?.maxTeams
-        ? new RateLimiter(protection.maxTeams)
+    const teamsCreated = Config.maxTeams
+        ? new RateLimiter(Config.maxTeams)
         : undefined;
 
     const customTeams: Map<string, CustomTeam> = new Map<string, CustomTeam>();
-    const customTeamWs = new WebSocketServer({ noServer: true });
 
     const resetTeams = (): void => {
         for (const team of customTeams.values()) {
-            for (const player of team.players) player.socket.close();
+            for (const player of team.players) player.socket?.close();
         }
         customTeams.clear();
         teamsCreated?.reset();
@@ -78,165 +75,78 @@ if (Cluster.isPrimary && require.main === module) {
     mode = modeFromMap(map.current);
     nextMode = map.next ? modeFromMap(map.next) : undefined;
 
-    function parseRole(searchParams: URLSearchParams): { readonly role?: string, readonly isDev: boolean, readonly nameColor?: number } {
-        const password = searchParams.get("password");
-        const givenRole = searchParams.get("role");
-        let role: string | undefined;
-        let isDev = false;
-        let nameColor: number | undefined;
-        if (
-            password !== null
-            && givenRole !== null
-            && givenRole in Config.roles
-            && Config.roles[givenRole].password === password
-        ) {
-            role = givenRole;
-            isDev = Config.roles[givenRole].isDev ?? false;
+    const app = App();
 
-            if (isDev) {
-                try {
-                    const colorString = searchParams.get("nameColor");
-                    if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
-                } catch { /* guess your color sucks lol */ }
-            }
-        }
-        return { role, isDev, nameColor };
-    }
-
-    async function checkPunishments(ip?: string): Promise<PunishmentMessage | undefined> {
-        if (!ip) return;
-
-        const punishment = punishments.find(p => p.ip === ip);
-        if (punishment) {
-            if (punishment.punishmentType === "warn") {
-                punishments = punishments.filter(p => p.ip !== ip);
-                if (protection?.punishments?.url) {
-                    fetch(
-                        `${protection.punishments.url}/punishments/${ip}`,
-                        { method: "DELETE", headers: { "api-key": protection.punishments.password } }
-                    ).catch(err => console.error("Error acknowledging warning. Details:", err));
-                }
-            }
-            return {
-                message: punishment.punishmentType,
-                reason: punishment.reason,
-                reportID: punishment.reportId
-            };
-        } else if (ipCheck && ip && (await ipCheck.check(ip)).flagged) {
-            return { message: "vpn" };
-        }
-    }
-
-    const server = createServer();
-
-    //
-    // GET /serverInfo
-    //
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    server.on("request", async(req, res) => {
-        res.setHeader("Access-Control-Allow-Origin", "*");
-        res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        res.setHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with");
-        res.setHeader("Access-Control-Max-Age", "3600");
-
-        if (req.method !== "GET" || !req.url?.startsWith("/api/serverInfo")) {
-            res.statusCode = 404;
-            res.setHeader("Content-Type", "text/plain").end("404 Not Found");
-            return;
+    app.get("/api/serverInfo", async(res, req) => {
+        let punishment: PunishmentMessage | undefined;
+        if (new URLSearchParams(req.getQuery()).get("checkPunishments") === "true") {
+            punishment = await getPunishment(getIP(res, req));
         }
 
-        res.setHeader("Content-Type", "application/json").end(JSON.stringify({
-            protocolVersion: GameConstants.protocolVersion,
-            playerCount: games.reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
-            teamSize: teamSize.current,
-            nextTeamSize: teamSize.next,
-            teamSizeSwitchTime: teamSize.nextSwitch ? teamSize.nextSwitch - Date.now() : undefined,
-            mode,
-            nextMode,
-            modeSwitchTime: map.nextSwitch ? map.nextSwitch - Date.now() : undefined,
-            punishment: await checkPunishments(getIP(req))
-        }));
+        res.cork(() => {
+            writeCorsHeaders(res);
+            res.writeHeader("Content-Type", "application/json").end(JSON.stringify({
+                protocolVersion: GameConstants.protocolVersion,
+                playerCount: games.reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
+                teamSize: teamSize.current,
+                nextTeamSize: teamSize.next,
+                teamSizeSwitchTime: teamSize.nextSwitch ? teamSize.nextSwitch - Date.now() : undefined,
+                mode,
+                nextMode,
+                modeSwitchTime: map.nextSwitch ? map.nextSwitch - Date.now() : undefined,
+                punishment
+            }));
+        });
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    server.on("upgrade", async(req, socket, head) => {
-        const ip = getIP(req);
+    app.get("/api/getGame", async(res, req) => {
+        let gameID: number | undefined;
+        const teamID = teamSize.current !== TeamSize.Solo && new URLSearchParams(req.getQuery()).get("teamID");
+        if (teamID) {
+            gameID = customTeams.get(teamID)?.gameID;
+        } else {
+            gameID = await findGame(teamSize.current, map.current);
+        }
 
-        //
-        // WS /play
-        //
-        if (req.url?.startsWith("/play")) {
-            // Rate limit join attempts
-            if (joinAttempts?.isLimited(ip)) {
-                serverWarn(ip, "exceeded join attempt limit");
-                socket.emit("close");
-                return;
-            }
-            joinAttempts?.increment(ip);
+        res.cork(() => {
+            writeCorsHeaders(res);
+            res.writeHeader("Content-Type", "application/json").end(JSON.stringify(
+                gameID !== undefined
+                    ? { success: true, gameID }
+                    : { success: false }
+            ));
+        });
+    });
 
-            // Check punishments
-            const punishment = await checkPunishments(ip);
-            if (punishment) {
-                socket.emit("close");
-                return;
-            }
+    app.ws("/team", {
+        async upgrade(res, req, context) {
+            res.onAborted((): void => { /* no-op */ });
 
-            // Find game
-            const searchParams = new URLSearchParams(req.url.slice(req.url.indexOf("?")));
-            const teamID = teamSize.current !== TeamSize.Solo ? (searchParams.get("teamID") ?? undefined) : undefined;
-            let game: GameContainer | undefined;
-            if (teamID) {
-                const gameID = customTeams.get(teamID)?.gameID;
-                if (gameID !== undefined) {
-                    game = games[gameID];
-                }
-            } else {
-                game = await findGame(teamSize.current, map.current);
-            }
-            if (!game?.allowJoin) {
-                socket.emit("close");
-                return;
-            }
+            // These lines must be before the await to prevent uWS errors
+            // Accessing req isn't allowed after an await
+            const ip = getIP(res, req);
+            const searchParams = new URLSearchParams(req.getQuery());
+            const webSocketKey = req.getHeader("sec-websocket-key");
+            const webSocketProtocol = req.getHeader("sec-websocket-protocol");
+            const webSocketExtensions = req.getHeader("sec-websocket-extensions");
 
-            // Upgrade the connection
-            const { role, isDev, nameColor } = parseRole(searchParams);
-            game.worker.send({
-                type: WorkerMessages.AddPlayer,
-                request: { headers: req.headers, method: req.method } as IncomingMessage,
-                playerData: {
-                    ip,
-                    teamID,
-                    autoFill: Boolean(searchParams.get("autoFill")),
-                    role,
-                    isDev,
-                    nameColor,
-                    lobbyClearing: searchParams.get("lobbyClearing") === "true",
-                    weaponPreset: searchParams.get("weaponPreset") ?? ""
-                }
-            } satisfies WorkerMessage, req.socket);
-
-        //
-        // WS /team
-        //
-        } else if (req.url?.startsWith("/team")) {
-            // Prevent connection if it's solos + check punishments & rate limits
+            // Prevent connection if it's solos + check rate limits & punishments
             if (
                 teamSize.current === TeamSize.Solo
                 || teamsCreated?.isLimited(ip)
-                || await checkPunishments(ip)
+                || await getPunishment(ip)
             ) {
-                socket.emit("close");
+                forbidden(res);
                 return;
             }
 
             // Get team
-            const searchParams = new URLSearchParams(req.url.slice(req.url.indexOf("?")));
             const teamID = searchParams.get("teamID");
             let team: CustomTeam;
             if (teamID !== null) {
                 const givenTeam = customTeams.get(teamID);
                 if (!givenTeam || givenTeam.locked || givenTeam.players.length >= (teamSize.current as number)) {
-                    socket.emit("close"); // TODO "Team is locked" and "Team is full" messages
+                    forbidden(res); // TODO "Team is locked" and "Team is full" messages
                     return;
                 }
                 team = givenTeam;
@@ -265,72 +175,52 @@ if (Cluster.isPrimary && require.main === module) {
             }
 
             // Upgrade the connection
-            customTeamWs.handleUpgrade(req, socket, head, socket => {
-                teamsCreated?.increment(ip);
-                const player = new CustomTeamPlayer(team, socket, name, skin, badge, nameColor);
+            res.upgrade(
+                { player: new CustomTeamPlayer(ip, team, name, skin, badge, nameColor) },
+                webSocketKey,
+                webSocketProtocol,
+                webSocketExtensions,
+                context
+            );
+        },
 
-                socket.on("message", (message: string) => {
-                    try {
-                        void player.team.onMessage(player, JSON.parse(message) as CustomTeamMessage);
-                    } catch (e) {
-                        serverError("Error parsing team socket message. Details:", e);
-                    }
-                });
+        open(socket: WebSocket<CustomTeamPlayerContainer>) {
+            const { player } = socket.getUserData();
+            player.socket = socket;
+            player.team.addPlayer(player);
+        },
 
-                socket.on("close", () => {
-                    teamsCreated?.decrement(ip);
-                    const team = player.team;
-                    team.removePlayer(player);
-                    if (!team.players.length) {
-                        customTeams.delete(team.id);
-                    }
-                });
-            });
-
-        //
-        // Invalid/unknown route
-        //
-        } else {
-            socket.emit("close");
-        }
-    }).listen(Config.port, Config.host);
-
-    process.stdout.write("\x1Bc"); // clears screen
-    serverLog(`Suroi Server v${version}`);
-    serverLog(`Listening on ${Config.host}:${Config.port}`);
-    serverLog("Press Ctrl+C to exit.");
-
-    void newGame(0, teamSize.current, map.current);
-
-    setInterval(() => {
-        const memoryUsage = process.memoryUsage().rss;
-
-        let perfString = `RAM usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`;
-
-        // windows L
-        if (os.platform() !== "win32") {
-            const load = os.loadavg().join("%, ");
-            perfString += ` | CPU usage (1m, 5m, 15m): ${load}%`;
-        }
-
-        serverLog(perfString);
-    }, 60000);
-
-    if (protection?.punishments) {
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        setInterval(async() => {
-            if (!protection.punishments) return; // should never happen, but adding this check makes ts shut up
+        message(socket: WebSocket<CustomTeamPlayerContainer>, message: ArrayBuffer) {
             try {
-                const response = await fetch(`${protection.punishments.url}/punishments`, { headers: { "api-key": protection.punishments.password } });
-
-                // we hope that this is safe
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                if (response.ok) punishments = await response.json();
-                else console.error("Error: Unable to fetch punishment list.");
+                const { player } = socket.getUserData();
+                void player.team.onMessage(player, JSON.parse(textDecoder.decode(message)) as CustomTeamMessage);
             } catch (e) {
-                console.error("Error: Unable to fetch punishment list. Details:", e);
+                serverError("Error parsing team socket message. Details:", e);
             }
-            Logger.log("Reloaded punishment list");
-        }, protection.punishments.refreshDuration);
-    }
+        },
+
+        close(socket: WebSocket<CustomTeamPlayerContainer>) {
+            const { player } = socket.getUserData();
+            const team = player.team;
+            team.removePlayer(player);
+            if (!team.players.length) {
+                customTeams.delete(team.id);
+            }
+            teamsCreated?.decrement(player.ip);
+        }
+    });
+
+    app.listen(Config.host, Config.port, token => {
+        if (!token) {
+            serverError("Unable to start server.");
+            process.exit(1);
+        }
+
+        process.stdout.write("\x1Bc"); // clears screen
+        serverLog(`Suroi Server v${version}`);
+        serverLog(`Listening on ${Config.host}:${Config.port}`);
+        serverLog("Press Ctrl+C to exit.");
+
+        void newGame(0, teamSize.current, map.current);
+    });
 }

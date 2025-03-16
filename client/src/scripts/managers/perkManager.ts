@@ -1,13 +1,7 @@
-import type { PerkDefinition } from "@common/definitions/items/perks";
 import { PerkManager, type PerkCollection } from "@common/utils/perkManager";
-import type { Game } from "../game";
 
-export class ClientPerkManager extends PerkManager {
-    constructor(readonly game: Game, perks?: number | readonly PerkDefinition[]) {
-        super(perks);
-    }
-
+export const ClientPerkManager = new (class ClientPerkManager extends PerkManager {
     overwrite(perks: PerkCollection): void {
         this._items = perks.asBitfield();
     }
-}
+})();

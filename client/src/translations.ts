@@ -2,11 +2,11 @@ import { Badges } from "@common/definitions/badges";
 import { Loots } from "@common/definitions/loots";
 import { Numeric } from "@common/utils/math";
 import type { TranslationManifest, TranslationsManifest } from "../../translations/src/processTranslations";
-import { type Game } from "./scripts/game";
-import { defaultClientCVars } from "./scripts/utils/console/defaultClientCVars";
 import TRANSLATIONS_MANIFEST from "./translationsManifest.json";
 import { type TranslationKeys } from "./typings/translations";
 import { Emotes } from "@common/definitions/emotes";
+import { GameConsole } from "./scripts/console/gameConsole";
+import { defaultClientCVars } from "./scripts/console/variables";
 
 export type TranslationMap = Partial<Record<TranslationKeys, string>> & TranslationManifest;
 
@@ -35,7 +35,7 @@ export const TRANSLATIONS: {
 };
 
 let setup = false;
-export async function initTranslation(game: Game): Promise<void> {
+export async function initTranslation(): Promise<void> {
     if (setup) {
         console.error("Translation API already setup");
         return;
@@ -47,7 +47,7 @@ export async function initTranslation(game: Game): Promise<void> {
         ? defaultClientCVars.cv_language.value
         : defaultClientCVars.cv_language;
 
-    selectedLanguage = game.console.getBuiltInCVar("cv_language");
+    selectedLanguage = GameConsole.getBuiltInCVar("cv_language");
 
     const loadRightNow = (language: string, content: TranslationManifest): boolean => content.mandatory || language === selectedLanguage || language === defaultLanguage;
 

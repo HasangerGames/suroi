@@ -15,7 +15,8 @@ import { Vec, type Vector } from "../../common/src/utils/vector";
 console.log("start");
 
 const config = {
-    address: "http://127.0.0.1:8000",
+    mainAddress: "http://127.0.0.1:8000",
+    gameAddress: "ws://127.0.0.1:800<ID>",
     botCount: 79,
     joinDelay: 10,
     rejoinOnDeath: false
@@ -42,6 +43,8 @@ class Bot {
     };
 
     private _serverId?: number;
+
+    readonly gameID: number;
 
     position = Vec.create(0, 0);
 
@@ -75,9 +78,9 @@ class Bot {
 
     private _lastInputPacket?: InputData;
 
-    constructor(readonly id: number) {
-        this._ws = new WebSocket(`${config.address.replace("http", "ws")}/play`);
-
+    constructor(readonly id: number, gameID: number) {
+        this.gameID = gameID;
+        this._ws = new WebSocket(`${config.gameAddress.replace("<ID>", (gameID + 1).toString())}/play`);
         this._ws.addEventListener("error", console.error);
 
         this._ws.addEventListener("open", this.join.bind(this));
@@ -174,7 +177,7 @@ class Bot {
         this._connected = true;
 
         const name = `BOT_${this.id}`;
-        console.log(`${name} connected`);
+        console.log(`${name} connected to game ${this.gameID}`);
 
         this.sendPacket(
             JoinPacket.create({
@@ -314,12 +317,24 @@ class Bot {
     }
 }
 
+const createBot = async(id: number): Promise<Bot> => {
+    const gameData = await (
+        await fetch(`${config.mainAddress}/api/getGame`)
+    ).json() as { success: true, gameID: number } | { success: false };
+
+    if (!gameData.success) {
+        throw new Error("Error finding game.");
+    }
+
+    return new Bot(id, gameData.gameID);
+};
+
 void (async() => {
     const { botCount, joinDelay } = config;
     console.log("scheduling joins");
 
     for (let i = 1; i <= botCount; i++) {
-        bots.push(new Bot(i));
+        bots.push(await createBot(i));
         if (i === botCount) allBotsJoined = true;
         if (i === 1) console.log("here we go");
         await new Promise(resolve => setTimeout(resolve, joinDelay));
@@ -327,7 +342,8 @@ void (async() => {
 })();
 
 console.log("setting up loop");
-setInterval(() => {
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+setInterval(async() => {
     for (const bot of bots) {
         if (Math.random() < 0.02) bot.updateInputs();
 
@@ -338,7 +354,7 @@ setInterval(() => {
             if (index === -1) continue;
 
             if (config.rejoinOnDeath) {
-                bots[index] = new Bot(index + 1);
+                bots[index] = await createBot(index + 1);
             } else {
                 bots.splice(index, 1);
             }

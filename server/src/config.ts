@@ -164,69 +164,44 @@ export interface ConfigType {
     readonly plugins: ReadonlyArray<new (game: Game) => GamePlugin>
 
     /**
-     * Allows scopes and radios to work in buildings.
+     * API server options.
      */
-    readonly disableBuildingCheck?: boolean
-
-    /**
-     * Disables the username filter.
-     * The filter is very basic, censoring only the most extreme slurs and the like.
-     */
-    readonly disableUsernameFilter?: boolean
-
-    /**
-     * If this option is present, various options to mitigate bots and cheaters are enabled.
-     */
-    readonly protection?: {
-        /**
-         * Limits the number of simultaneous connections from each IP address.
-         */
-        readonly maxSimultaneousConnections?: number
-
-        /**
-         * Limits the number of join attempts (`count`) within the given duration (`duration`, in milliseconds) from each IP address.
-         */
-        readonly maxJoinAttempts?: {
-            readonly count: number
-            readonly duration: number
-        }
-
-        /**
-         * Limits the number of teams that can be created by any one IP address.
-         */
-        readonly maxTeams?: number
-
-        /**
-         * If this option is present, a list of punishments will be loaded from the specified URL. Trailing slash not allowed.
-         * The specified `password` is sent in the `Password` header.
-         */
-        readonly punishments?: {
-            readonly url: string
-            readonly password: string
-            readonly refreshDuration: number
-        }
-
-        /**
-         * If a player's username matches one of the regexes in this array, it will be replaced with the default username.
-         */
-        readonly usernameFilters?: readonly RegExp[]
-
-        /**
-         * If specified, the proxycheck.io API will be used to detect and block VPNs and proxies.
-         */
-        readonly ipChecker?: {
-            readonly key: string
-            readonly baseUrl: string
-            readonly logURL: string
-        }
+    readonly apiServer?: {
+        readonly url: string
+        readonly apiKey: string
+        readonly reportWebhookURL?: string
     }
 
     /**
      * If this option is specified, the given HTTP header will be used to determine IP addresses.
      * If using nginx with the sample config, set it to `"X-Real-IP"`.
      * If using Cloudflare, set it to `"CF-Connecting-IP"`.
+     * If not using a reverse proxy, this option should be omitted.
      */
     readonly ipHeader?: string
+
+    /**
+     * Limits the number of simultaneous connections from each IP address.
+     */
+    readonly maxSimultaneousConnections?: number
+
+    /**
+     * Limits the number of join attempts (`count`) within the given duration (`duration`, in milliseconds) from each IP address.
+     */
+    readonly maxJoinAttempts?: {
+        readonly count: number
+        readonly duration: number
+    }
+
+    /**
+     * Limits the number of teams that can be created by any one IP address.
+     */
+    readonly maxTeams?: number
+
+    /**
+     * If a player's username matches one of the regexes in this array, it will be replaced with the default username.
+     */
+    readonly usernameFilters?: readonly RegExp[]
 
     /**
      * Roles. Each role has a different password and can give exclusive skins and cheats.
@@ -241,7 +216,12 @@ export interface ConfigType {
     }>
 
     /**
-     * Disables the lobbyClearing option if set to `true`
+     * Disables the lobbyClearing option (i.e. dev cheats).
      */
     readonly disableLobbyClearing?: boolean
+
+    /**
+     * Allows scopes and radios to work in buildings.
+     */
+    readonly disableBuildingCheck?: boolean
 }

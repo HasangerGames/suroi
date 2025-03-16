@@ -20,7 +20,7 @@ import $ from "jquery";
 import { Color } from "pixi.js";
 import { getTranslatedString, TRANSLATIONS } from "../../translations";
 import { type TranslationKeys } from "../../typings/translations";
-import { type Game } from "../game";
+import { Game } from "../game";
 import { type GameObject } from "../objects/gameObject";
 import { Player } from "../objects/player";
 import { TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
@@ -28,6 +28,12 @@ import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
 import { ClientPerkManager } from "./perkManager";
 import { DamageSources } from "@common/packets/killPacket";
+import { GameConsole } from "../console/gameConsole";
+import { ScreenRecordManager } from "./screenRecordManager";
+import { InputManager } from "./inputManager";
+import { SoundManager } from "./soundManager";
+import { MapManager } from "./mapManager";
+import { CameraManager } from "./cameraManager";
 
 function safeRound(value: number): number {
     if (0 < value && value <= 1) return 1;
@@ -37,7 +43,7 @@ function safeRound(value: number): number {
 /**
  * This class manages the game UI
  */
-export class UIManager {
+export const UIManager = new (class UIManager {
     private maxHealth = GameConstants.player.defaultHealth;
     private health = GameConstants.player.defaultHealth;
 
@@ -63,27 +69,15 @@ export class UIManager {
 
     teammates: PlayerData["teammates"] & object = [];
 
-    readonly perks: ClientPerkManager;
-
     public hasC4s = false;
 
-    private static _instantiated = false;
-    constructor(readonly game: Game) {
-        if (UIManager._instantiated) {
-            throw new Error("Class 'UIManager' has already been instantiated");
-        }
-        UIManager._instantiated = true;
-
-        this.perks = new ClientPerkManager(this.game);
-    }
-
     getRawPlayerNameNullish(id: number): string | undefined {
-        const player = this.game.playerNames.get(id) ?? this._teammateDataCache.get(id);
+        const player = Game.playerNames.get(id) ?? this._teammateDataCache.get(id);
         let name: string | undefined;
 
         if (!player) {
             console.warn(`Unknown player name with id ${id}`);
-        } else if (this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
+        } else if (GameConsole.getBuiltInCVar("cv_anonymize_player_names")) {
             name = `${GameConstants.player.defaultName}_${id}`;
         } else {
             name = player.name;
@@ -99,11 +93,11 @@ export class UIManager {
     getPlayerData(id: number): { name: string, badge: BadgeDefinition | undefined } {
         // Name
         const element = $<HTMLSpanElement>("<span>");
-        const player = this.game.playerNames.get(id) ?? this._teammateDataCache.get(id);
+        const player = Game.playerNames.get(id) ?? this._teammateDataCache.get(id);
 
         const name = this.getRawPlayerName(id);
 
-        if (player && player.hasColor && !this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
+        if (player && player.hasColor && !GameConsole.getBuiltInCVar("cv_anonymize_player_names")) {
             element.css("color", player.nameColor?.toHex() ?? "");
         }
 
@@ -115,7 +109,7 @@ export class UIManager {
         // Badge
         let playerBadge: BadgeDefinition | undefined = undefined;
 
-        if (!this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
+        if (!GameConsole.getBuiltInCVar("cv_anonymize_player_names")) {
             if (player !== undefined) {
                 playerBadge = player.badge;
             } else {
@@ -129,7 +123,7 @@ export class UIManager {
         };
     }
 
-    static getHealthColor(normalizedHealth: number, downed?: boolean): string {
+    getHealthColor(normalizedHealth: number, downed?: boolean): string {
         switch (true) {
             case normalizedHealth <= 0.25:
             case downed:
@@ -144,11 +138,11 @@ export class UIManager {
     }
 
     getTeammateColorIndex(id: number): number | undefined {
-        const teammate = this.game.uiManager.teammates.find(teammate => {
+        const teammate = this.teammates.find(teammate => {
             return teammate.id === id;
         });
 
-        const colorIndex = teammate ? teammate.colorIndex : (this.game.teamMode ? undefined : 0);
+        const colorIndex = teammate ? teammate.colorIndex : (Game.teamMode ? undefined : 0);
         return colorIndex;
     }
 
@@ -398,14 +392,13 @@ export class UIManager {
     gameOverScreenTimeout: number | undefined;
 
     showGameOverScreen(packet: GameOverData): void {
-        const game = this.game;
-        game.gameOver = true;
+        Game.gameOver = true;
 
         this.ui.interactMsg.hide();
         this.ui.spectatingContainer.hide();
         this.ui.gameOverPlayerCards.empty();
 
-        game.activePlayer?.actionSound?.stop();
+        Game.activePlayer?.actionSound?.stop();
 
         this.ui.gasMsg.fadeOut(500);
 
@@ -426,7 +419,7 @@ export class UIManager {
         const won = rank === 1;
         if (!won) {
             this.ui.btnSpectate.removeClass("btn-disabled").show();
-            game.map.indicator.setFrame("player_indicator_dead");
+            MapManager.indicator.setFrame("player_indicator_dead");
         } else {
             this.ui.btnSpectate.hide();
         }
@@ -444,7 +437,7 @@ export class UIManager {
         let mostDamageTaken = 0;
         let mostDamageTakenIDs: number[] | undefined = [];
 
-        if (this.game.teamMode) {
+        if (Game.teamMode) {
             for (const { playerID, kills, damageDone, damageTaken } of teammates) {
                 if (kills > highestKills) {
                     highestKills = kills;
@@ -488,7 +481,7 @@ export class UIManager {
             if (!alive) {
                 medal = "dead";
             }
-            if (this.game.teamMode) {
+            if (Game.teamMode) {
                 if (highestKillsIDs?.includes(playerID)) {
                     medal = "kills";
                 } else if (mostDamageDoneIDs?.includes(playerID)) {
@@ -509,7 +502,7 @@ export class UIManager {
             if (won) {
                 message = getTranslatedString("msg_win");
             } else {
-                if (this.game.spectating) {
+                if (Game.spectating) {
                     message = teamEliminated
                         ? getTranslatedString("msg_the_team_eliminated")
                         : getTranslatedString("msg_player_died", { player: name });
@@ -560,7 +553,7 @@ export class UIManager {
         gameOverRank.text(`#${rank}`).toggleClass("won", won);
 
         if (won) {
-            void game.music.play();
+            void Game.music.play();
             if (hasTeammates) {
                 gameOverTeamKills.text(getTranslatedString("msg_kills", { kills: totalKills.toString() }));
                 gameOverTeamKillsContainer.show();
@@ -572,7 +565,7 @@ export class UIManager {
         }
 
         this.gameOverScreenTimeout = window.setTimeout(() => gameOverOverlay.fadeIn(500), 500);
-        setTimeout(() => this.game.screenRecordManager.endRecording(), 2500);
+        setTimeout(() => ScreenRecordManager.endRecording(), 2500);
     }
 
     // I'd rewrite this as MapPings.filter(…), but it's not really clear how
@@ -585,8 +578,8 @@ export class UIManager {
     ].map(ping => MapPings.fromString<PlayerPing>(ping));
 
     updateEmoteWheel(): void {
-        const { pingWheelActive } = this.game.inputManager;
-        if (this.game.teamMode) {
+        const { pingWheelActive } = InputManager;
+        if (Game.teamMode) {
             $("#ammos-container, #healing-items-container").toggleClass("active", pingWheelActive);
             for (const ammo of Ammos) {
                 const itemSlot = this._itemSlotCache[ammo.idString] ??= $(`#${ammo.idString}-slot`);
@@ -604,7 +597,7 @@ export class UIManager {
         }
     }
 
-    private readonly _teammateDataCache = new Map<number, PlayerHealthUI>();
+    private readonly _teammateDataCache = new Map<number, TeammateIndicatorUI>();
     clearTeammateCache(): void {
         for (const [, entry] of this._teammateDataCache) {
             entry.destroy();
@@ -631,18 +624,18 @@ export class UIManager {
             perks
         } = data;
 
-        const sentTime = this.game.seqsSent[pingSeq];
+        const sentTime = Game.seqsSent[pingSeq];
         if (sentTime !== undefined) {
             const ping = Date.now() - sentTime;
-            this.game.netGraph.ping.addEntry(ping);
-            this.game.seqsSent[pingSeq] = undefined;
+            Game.netGraph.ping.addEntry(ping);
+            Game.seqsSent[pingSeq] = undefined;
         }
 
         if (id !== undefined) {
-            const oldID = this.game.activePlayerID;
-            this.game.activePlayerID = id.id;
+            const oldID = Game.activePlayerID;
+            Game.activePlayerID = id.id;
             if (oldID !== id.id) {
-                for (const player of this.game.objects.getCategory(ObjectCategory.Player)) {
+                for (const player of Game.objects.getCategory(ObjectCategory.Player)) {
                     player.updateTeammateName();
                 }
                 this.cancelAction();
@@ -650,7 +643,7 @@ export class UIManager {
             this.ui.btnReport.toggleClass("btn-disabled", !!this.reportedPlayerIDs.get(id.id));
 
             const spectating = id.spectating;
-            this.game.spectating = spectating;
+            Game.spectating = spectating;
 
             if (spectating) {
                 const playerName = this.getPlayerData(id.id).name;
@@ -664,7 +657,7 @@ export class UIManager {
             this.ui.spectatingMsg.toggle(spectating);
             this.clearTeammateCache();
 
-            if (this.game.inputManager.isMobile) {
+            if (InputManager.isMobile) {
                 this.ui.emoteButton.toggle(!spectating);
                 this.ui.pingToggle.toggle(!spectating);
                 this.ui.menuButton.toggle(!spectating);
@@ -711,7 +704,7 @@ export class UIManager {
 
             this.ui.healthBar
                 .width(`${healthPercent}%`)
-                .css("background-color", UIManager.getHealthColor(normalizedHealth, this.game.activePlayer?.downed))
+                .css("background-color", this.getHealthColor(normalizedHealth, Game.activePlayer?.downed))
                 .toggleClass("flashing", healthPercent <= 25);
 
             this.ui.healthAnim.stop();
@@ -726,10 +719,10 @@ export class UIManager {
 
             this.ui.healthBarAmount
                 .text(safeRound(this.health))
-                .css("color", healthPercent <= 40 || this.game.activePlayer?.downed ? "#ffffff" : "#000000");
+                .css("color", healthPercent <= 40 || Game.activePlayer?.downed ? "#ffffff" : "#000000");
         }
 
-        if (teammates && this.game.teamMode) {
+        if (teammates && Game.teamMode) {
             this.teammates = teammates;
 
             const _teammateDataCache = this._teammateDataCache;
@@ -737,9 +730,9 @@ export class UIManager {
 
             [
                 {
-                    id: this.game.activePlayerID,
+                    id: Game.activePlayerID,
                     normalizedHealth: this.health / this.maxHealth,
-                    downed: this.game.activePlayer?.downed,
+                    downed: Game.activePlayer?.downed,
                     disconnected: false,
                     position: undefined
                 },
@@ -749,7 +742,7 @@ export class UIManager {
                 notVisited.delete(id);
 
                 const cacheEntry = _teammateDataCache.get(id);
-                const nameData = this.game.playerNames.get(id);
+                const nameData = Game.playerNames.get(id);
                 const nameObj = {
                     hasColor: nameData?.hasColor,
                     nameColor: nameData?.hasColor ? nameData.nameColor : null,
@@ -766,17 +759,14 @@ export class UIManager {
                     return;
                 }
 
-                const ele = new PlayerHealthUI(
-                    this.game,
-                    {
-                        id,
-                        colorIndex: index,
-                        downed: player.downed,
-                        normalizedHealth: player.normalizedHealth,
-                        position: player.position,
-                        ...nameObj
-                    }
-                );
+                const ele = new TeammateIndicatorUI({
+                    id,
+                    colorIndex: index,
+                    downed: player.downed,
+                    normalizedHealth: player.normalizedHealth,
+                    position: player.position,
+                    ...nameObj
+                });
                 _teammateDataCache.set(id, ele);
 
                 this.ui.teamContainer.append(ele.container);
@@ -790,7 +780,7 @@ export class UIManager {
             }
         }
 
-        if (zoom) this.game.camera.zoom = zoom;
+        if (zoom) CameraManager.zoom = zoom;
 
         if (adrenaline !== undefined) {
             this.adrenaline = Numeric.remap(adrenaline, 0, 1, this.minAdrenaline, this.maxAdrenaline);
@@ -829,9 +819,9 @@ export class UIManager {
         }
 
         if (perks) {
-            const oldPerks = this.perks.asList();
-            this.perks.overwrite(perks);
-            const newPerks = this.perks.asList();
+            const oldPerks = ClientPerkManager.asList();
+            ClientPerkManager.overwrite(perks);
+            const newPerks = ClientPerkManager.asList();
             for (let i = 0; i < 3; i++) { // TODO make a constant for max perks
                 const newPerk = newPerks[i];
                 if (newPerk === undefined) {
@@ -876,7 +866,7 @@ export class UIManager {
             let showReserve = false;
             if (activeWeapon.definition.itemType === ItemType.Gun) {
                 const ammoType = activeWeapon.definition.ammoType;
-                let totalAmmo: number | string = this.perks.hasItem(PerkIds.InfiniteAmmo)
+                let totalAmmo: number | string = ClientPerkManager.hasItem(PerkIds.InfiniteAmmo)
                     ? "∞"
                     : this.inventory.items[ammoType];
 
@@ -899,7 +889,7 @@ export class UIManager {
                 this.ui.reserveAmmo.hide();
             }
 
-            if (this.game.inputManager.isMobile) {
+            if (InputManager.isMobile) {
                 this.ui.reloadIcon.toggle(activeWeapon.definition.itemType !== ItemType.Throwable);
             }
         }
@@ -969,7 +959,7 @@ export class UIManager {
                 if (!hadItem) container.addClass(ClassNames.HasItem);
                 if (activityChanged) container.toggleClass(ClassNames.IsActive, isActive);
 
-                container.css(isGun && this.game.console.getBuiltInCVar("cv_weapon_slot_style") === "colored"
+                container.css(isGun && GameConsole.getBuiltInCVar("cv_weapon_slot_style") === "colored"
                     ? {
                         "outline-color": `hsl(${color.hue}, ${color.saturation}%, ${(color.lightness + 50) / 3}%)`,
                         "background-color": `hsla(${color.hue}, ${color.saturation}%, ${color.lightness / 2}%, 50%)`,
@@ -994,11 +984,11 @@ export class UIManager {
                 const oldSrc = itemImage.attr("src");
 
                 let frame = definition.idString;
-                if (this.perks.hasItem(PerkIds.PlumpkinBomb) && definition.itemType === ItemType.Throwable && !definition.noSkin) {
+                if (ClientPerkManager.hasItem(PerkIds.PlumpkinBomb) && definition.itemType === ItemType.Throwable && !definition.noSkin) {
                     frame += "_halloween";
                 }
 
-                const location = definition.itemType === ItemType.Melee && definition.reskins?.includes(this.game.modeName) ? this.game.modeName : "shared";
+                const location = definition.itemType === ItemType.Melee && definition.reskins?.includes(Game.modeName) ? Game.modeName : "shared";
                 const newSrc = `./img/game/${location}/weapons/${frame}.svg`;
                 if (oldSrc !== newSrc) {
                     this._playSlotAnimation(container);
@@ -1008,8 +998,8 @@ export class UIManager {
                 const backgroundImage
                     = isFists
                         ? this.skinID !== undefined && Skins.fromStringSafe(this.skinID)?.grassTint
-                            ? `url("data:image/svg+xml,${encodeURIComponent(`<svg width="34" height="34" viewBox="0 0 8.996 8.996" xmlns="http://www.w3.org/2000/svg"><circle fill="${this.game.colors.ghillie.toHex()}" stroke="${new Color(this.game.colors.ghillie).multiply("#111").toHex()}" stroke-width="1.05833" cx="4.498" cy="4.498" r="3.969"/></svg>`)}")`
-                            : `url(./img/game/shared/skins/${this.skinID ?? this.game.console.getBuiltInCVar("cv_loadout_skin")}_fist.svg)`
+                            ? `url("data:image/svg+xml,${encodeURIComponent(`<svg width="34" height="34" viewBox="0 0 8.996 8.996" xmlns="http://www.w3.org/2000/svg"><circle fill="${Game.colors.ghillie.toHex()}" stroke="${new Color(Game.colors.ghillie).multiply("#111").toHex()}" stroke-width="1.05833" cx="4.498" cy="4.498" r="3.969"/></svg>`)}")`
+                            : `url(./img/game/shared/skins/${this.skinID ?? GameConsole.getBuiltInCVar("cv_loadout_skin")}_fist.svg)`
                         : "none";
 
                 itemImage
@@ -1065,7 +1055,7 @@ export class UIManager {
         container.attr("data-idString", perkDef.idString);
         container.children(".item-tooltip").html(`<strong>${perkDef.name}</strong><br>${perkDef.description}`);
         container.children(".item-image").attr("src", `./img/game/${perkDef.category === PerkCategories.Halloween ? "halloween" : "shared"}/perks/${perkDef.idString}.svg`);
-        container.css("visibility", this.perks.hasItem(perkDef.idString) ? "visible" : "hidden");
+        container.css("visibility", ClientPerkManager.hasItem(perkDef.idString) ? "visible" : "hidden");
 
         container.css("outline", !perkDef.noDrop ? "" : "none");
 
@@ -1075,7 +1065,7 @@ export class UIManager {
 
         container.css("animation", `perk-${perkDef.type ?? "normal"}-colors 1.5s linear infinite`);
 
-        // if (perkDef.type !== undefined) this.game.soundManager.play(`perk_pickup_${perkDef.type}`);
+        // if (perkDef.type !== undefined) Game.soundManager.play(`perk_pickup_${perkDef.type}`);
 
         this._animationTimeouts[index] = window.setTimeout(() => {
             container.css("animation", "none");
@@ -1096,8 +1086,8 @@ export class UIManager {
 
             countElem.text(count);
 
-            if (this.game.activePlayer) {
-                const backpack = this.game.activePlayer.equipment.backpack;
+            if (Game.activePlayer) {
+                const backpack = Game.activePlayer.equipment.backpack;
                 itemSlot.toggleClass("full", count >= backpack.maxCapacity[item]);
             }
             const isPresent = count > 0;
@@ -1228,7 +1218,7 @@ export class UIManager {
             killed
         } = data;
 
-        const activeId = this.game.activePlayerID;
+        const activeId = Game.activePlayerID;
         const weaponPresent = weaponUsed !== undefined;
         const hasKillstreak = !!killstreak;
         const gotKillCredit = creditedId !== undefined ? activeId === creditedId : activeId === attackerId;
@@ -1245,13 +1235,13 @@ export class UIManager {
         let victimText = this._getNameAndBadge(victimId);
         const attackerText = this._getNameAndBadge(attackerId);
 
-        const language = this.game.console.getBuiltInCVar("cv_language");
+        const language = GameConsole.getBuiltInCVar("cv_language");
 
         //
         // Killfeed message
         //
 
-        switch (this.game.console.getBuiltInCVar("cv_killfeed_style")) {
+        switch (GameConsole.getBuiltInCVar("cv_killfeed_style")) {
             case "text": {
                 let feedMessage = "";
 
@@ -1423,9 +1413,9 @@ export class UIManager {
                 && (
                     this._teammateDataCache.has(id)
                     || (
-                        (target = this.game.objects.get(id))
+                        (target = Game.objects.get(id))
                         && target.isPlayer
-                        && (target as Player).teamID === this.game.teamID
+                        && (target as Player).teamID === Game.teamID
                     )
                 )
             );
@@ -1440,7 +1430,7 @@ export class UIManager {
         }
 
         // Disable spaces in chinese languages.
-        if (TRANSLATIONS.translations[this.game.console.getBuiltInCVar("cv_language")].no_space) {
+        if (TRANSLATIONS.translations[GameConsole.getBuiltInCVar("cv_language")].no_space) {
             classes.push("no-spaces");
         }
 
@@ -1481,7 +1471,7 @@ export class UIManager {
 
             this._addKillFeedMessage(messageText, [clazz]);
 
-            this.game.soundManager.play("kill_leader_dead");
+            SoundManager.play("kill_leader_dead");
             this.ui.spectateKillLeader.addClass("btn-disabled");
         }
 
@@ -1659,14 +1649,14 @@ export class UIManager {
 
         if (hasLeader && this.killLeaderCache && this.killLeaderCache.id !== id) {
             const messageText = html`<i class="fa-solid fa-crown"></i> ${getTranslatedString("kf_kl_promotion", { player: leaderText })}`;
-            this._addKillFeedMessage(messageText, [id === this.game.activePlayerID ? "kill-feed-item-killer" : "kill-feed-kill-leader"]);
-            this.game.soundManager.play("kill_leader_assigned");
+            this._addKillFeedMessage(messageText, [id === Game.activePlayerID ? "kill-feed-item-killer" : "kill-feed-kill-leader"]);
+            SoundManager.play("kill_leader_assigned");
         }
 
         this.oldKillLeaderId = this.killLeaderCache?.id ?? id;
         this.killLeaderCache = data;
     }
-}
+})();
 
 class Wrapper<T> {
     private _dirty = true;
@@ -1704,9 +1694,7 @@ interface UpdateDataType {
     readonly badge?: BadgeDefinition | null
 }
 
-class PlayerHealthUI {
-    readonly game: Game;
-
+class TeammateIndicatorUI {
     readonly container: JQuery<HTMLDivElement>;
 
     readonly svgContainer: JQuery<SVGElement>;
@@ -1763,8 +1751,7 @@ class PlayerHealthUI {
     private readonly _badge = new Wrapper<BadgeDefinition | undefined>(undefined);
     get badge(): BadgeDefinition | undefined { return this._badge.value; }
 
-    constructor(game: Game, data?: UpdateDataType) {
-        this.game = game;
+    constructor(data?: UpdateDataType) {
         this.container = $<HTMLDivElement>('<div class="teammate-container"></div>');
         this.svgContainer = $<SVGElement>('<svg class="teammate-health-indicator" width="48" height="48" xmlns="http://www.w3.org/2000/svg"></svg>');
 
@@ -1842,7 +1829,7 @@ class PlayerHealthUI {
         if (this._disconnected.dirty) {
             this.container.toggleClass("disconnected", this._disconnected.value);
 
-            const teammateIndicator = this.game.map.teammateIndicators.get(id);
+            const teammateIndicator = MapManager.teammateIndicators.get(id);
 
             teammateIndicator?.setAlpha(this._disconnected.value ? 0.5 : 1);
             recalcIndicatorFrame = true;
@@ -1850,26 +1837,26 @@ class PlayerHealthUI {
 
         let indicator: SuroiSprite | undefined;
 
-        if (id === this.game.activePlayerID) {
-            indicator = this.game.map.indicator;
+        if (id === Game.activePlayerID) {
+            indicator = MapManager.indicator;
         } else {
-            const { teammateIndicators } = this.game.map;
+            const teammateIndicators = MapManager.teammateIndicators;
 
             if (this._position.dirty && this._position.value) {
                 if ((indicator = teammateIndicators.get(id)) === undefined) {
-                    const color = TEAMMATE_COLORS[this.game.uiManager.getTeammateColorIndex(id) ?? this._colorIndex.value];
+                    const color = TEAMMATE_COLORS[UIManager.getTeammateColorIndex(id) ?? this._colorIndex.value];
 
                     teammateIndicators.set(
                         id,
                         indicator = new SuroiSprite("player_indicator")
                             .setTint(color)
                     );
-                    this.game.map.teammateIndicatorContainer.addChild(indicator);
+                    MapManager.teammateIndicatorContainer.addChild(indicator);
                 }
 
                 indicator
                     .setVPos(this._position.value)
-                    .setScale(this.game.map.expanded ? 1 : 0.75);
+                    .setScale(MapManager.expanded ? 1 : 0.75);
             }
 
             indicator ??= teammateIndicators.get(id);
@@ -1885,7 +1872,7 @@ class PlayerHealthUI {
         }
 
         if (this._colorIndex.dirty) {
-            const color = TEAMMATE_COLORS[this.game.uiManager.getTeammateColorIndex(id) ?? this._colorIndex.value];
+            const color = TEAMMATE_COLORS[UIManager.getTeammateColorIndex(id) ?? this._colorIndex.value];
 
             this.indicatorContainer.css(
                 "background-color",
@@ -1895,7 +1882,7 @@ class PlayerHealthUI {
         }
 
         if (this._name.dirty) {
-            this.nameLabel.text((this.game.uiManager.getRawPlayerNameNullish(id) ?? this._name.value) || "Loading…");
+            this.nameLabel.text((UIManager.getRawPlayerNameNullish(id) ?? this._name.value) || "Loading…");
         }
 
         if (
@@ -1910,7 +1897,7 @@ class PlayerHealthUI {
         }
 
         if (this._badge.dirty) {
-            const teammate = this.game.playerNames.get(id);
+            const teammate = Game.playerNames.get(id);
 
             if (teammate?.badge) {
                 const src = `./img/game/shared/badges/${teammate.badge.idString}.svg`;
@@ -1946,7 +1933,7 @@ class PlayerHealthUI {
     destroy(): void {
         this.container.remove();
         const id = this._id.value;
-        const teammateIndicators = this.game.map.teammateIndicators;
+        const teammateIndicators = MapManager.teammateIndicators;
         teammateIndicators.get(id)?.destroy();
         teammateIndicators.delete(id);
     }

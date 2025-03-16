@@ -4,6 +4,7 @@ import { HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Assets, Container, Graphics, ImageSource, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
 import { PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
+import { GameConsole } from "../console/gameConsole";
 
 export let spritesheetsLoaded = false;
 
@@ -49,7 +50,7 @@ export async function loadTextures(modeName: Mode, renderer: Renderer, highResol
                 // Workaround to reduce memory usage in Chromium-based browsers
                 // This actually increases usage in Firefox and has strange effects in WebKit,
                 // so we use the usual loading method for everything else
-                if ("chrome" in window) {
+                if (GameConsole.getBuiltInCVar("cv_alt_texture_loading")) {
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     const { w: width, h: height } = spritesheet.meta.size!;
                     const canvas = new OffscreenCanvas(width, height);

@@ -7,13 +7,16 @@ import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { randomBoolean, randomFloat } from "@common/utils/random";
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
-import { type Game } from "../game";
-import { type GameSound } from "../managers/soundManager";
+import { Game } from "../game";
+import { SoundManager, type GameSound } from "../managers/soundManager";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
-import type { DebugRenderer } from "../utils/debugRenderer";
+import { DebugRenderer } from "../utils/debugRenderer";
+import { MapManager } from "../managers/mapManager";
+import { GameConsole } from "../console/gameConsole";
+import { ParticleManager } from "../managers/particleManager";
 
 export class ThrowableProjectile extends GameObject.derive(ObjectCategory.ThrowableProjectile) {
     readonly image = new SuroiSprite();
@@ -32,12 +35,12 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
 
     floorType: FloorNames = FloorNames.Grass;
 
-    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.ThrowableProjectile]) {
-        super(game, id);
+    constructor(id: number, data: ObjectsNetData[ObjectCategory.ThrowableProjectile]) {
+        super(id);
 
         this.hitbox = new CircleHitbox(1, this.position);
 
-        this.waterOverlay.setTint(game.colors.water);
+        this.waterOverlay.setTint(Game.colors.water);
         this.container.addChild(this.image, this.waterOverlay);
         this.layer = data.layer;
         this.updateFromData(data, true);
@@ -57,7 +60,7 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
             const tintIndex = data.full.tintIndex;
 
             // Tint the C4 if it's a teammate's one, based on their position color on the team.
-            if (this.game.teamMode && this.game.teamID === throwerTeamID && this.definition.c4) {
+            if (Game.teamMode && Game.teamID === throwerTeamID && this.definition.c4) {
                 this.image.setTint(TEAMMATE_COLORS[tintIndex]);
             }
         }
@@ -79,18 +82,18 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
         this.layer = data.layer;
 
         if (data.airborne) {
-            this.container.zIndex = getEffectiveZIndex(ZIndexes.AirborneThrowables, this.layer, this.game.layer);
+            this.container.zIndex = getEffectiveZIndex(ZIndexes.AirborneThrowables, this.layer, Game.layer);
         } else {
-            const floorType = this.game.map.terrain.getFloor(this.position, this.layer);
+            const floorType = MapManager.terrain.getFloor(this.position, this.layer);
             const doOverlay = FloorTypes[floorType].overlay;
 
-            this.container.zIndex = getEffectiveZIndex(doOverlay ? ZIndexes.UnderwaterGroundedThrowables : ZIndexes.GroundedThrowables, this.layer, this.game.layer);
+            this.container.zIndex = getEffectiveZIndex(doOverlay ? ZIndexes.UnderwaterGroundedThrowables : ZIndexes.GroundedThrowables, this.layer, Game.layer);
 
             if (floorType !== this.floorType) {
                 if (doOverlay) this.waterOverlay.setVisible(true);
 
                 this._waterAnim?.kill();
-                this._waterAnim = this.game.addTween({
+                this._waterAnim = Game.addTween({
                     target: this.waterOverlay,
                     to: {
                         alpha: doOverlay ? 1 : 0
@@ -105,23 +108,23 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
             this.floorType = floorType;
         }
 
-        if (!this.game.console.getBuiltInCVar("cv_movement_smoothing") || isNew) {
+        if (!GameConsole.getBuiltInCVar("cv_movement_smoothing") || isNew) {
             this.container.position = toPixiCoords(this.position);
             this.container.rotation = this.rotation;
         }
     }
 
     override updateZIndex(): void {
-        this.container.zIndex = getEffectiveZIndex(this.doOverlay() ? ZIndexes.UnderwaterGroundedThrowables : ZIndexes.GroundedThrowables, this.layer, this.game.layer);
+        this.container.zIndex = getEffectiveZIndex(this.doOverlay() ? ZIndexes.UnderwaterGroundedThrowables : ZIndexes.GroundedThrowables, this.layer, Game.layer);
     }
 
-    override updateDebugGraphics(debugRenderer: DebugRenderer): void {
+    override updateDebugGraphics(): void {
         if (!DEBUG_CLIENT) return;
         if (!this.radius) return;
-        debugRenderer.addHitbox(
+        DebugRenderer.addHitbox(
             this.hitbox,
             HITBOX_COLORS.projectiles,
-            this.layer === this.game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
+            this.layer === Game.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
         );
     }
 
@@ -136,7 +139,7 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
         if (!this.definition.c4) return;
 
         this.hitSound?.stop();
-        this.hitSound = this.game.soundManager.play(
+        this.hitSound = SoundManager.play(
             `stone_hit_${randomBoolean() ? "1" : "2"}`,
             {
                 position,
@@ -145,7 +148,7 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
             }
         );
 
-        this.game.particleManager.spawnParticles(4, () => {
+        ParticleManager.spawnParticles(4, () => {
             return {
                 frames: this.halloweenSkin ? "plumpkin_particle" : "metal_particle",
                 position,

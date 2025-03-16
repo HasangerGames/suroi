@@ -5,28 +5,34 @@ export const Config = {
     regions: {
         dev: {
             name: "Local Server",
-            address: "http://127.0.0.1:8000"
-        },
+            mainAddress: "http://127.0.0.1:8000",
+            gameAddress: "ws://127.0.0.1:800<ID>"
+        }/* ,
         na: {
             name: "North America",
-            address: "https://na.suroi.io"
+            mainAddress: "https://na.suroi.io",
+            gameAddress: "wss://na.suroi.io/game/<ID>"
         },
         eu: {
             name: "Europe",
-            address: "https://eu.suroi.io"
+            mainAddress: "https://eu.suroi.io",
+            gameAddress: "wss://eu.suroi.io/game/<ID>"
         },
         sa: {
             name: "South America",
-            address: "https://sa.suroi.io"
+            mainAddress: "https://sa.suroi.io",
+            gameAddress: "wss://sa.suroi.io/game/<ID>"
         },
         as: {
             name: "Asia",
-            address: "https://as.suroi.io"
+            mainAddress: "https://as.suroi.io",
+            gameAddress: "wss://as.suroi.io/game/<ID>"
         },
         oc: {
             name: "Oceania",
-            address: "https://oc.suroi.io"
-        }
+            mainAddress: "https://oc.suroi.io",
+            gameAddress: "wss://oc.suroi.io/game/<ID>"
+        } */
     },
     defaultRegion: "na"
 } satisfies ConfigType as ConfigType;
@@ -43,9 +49,16 @@ export interface Region {
     readonly name: string
 
     /**
-     * The address of the region's server.
+     * The address of the region's main server.
      */
-    readonly address: string
+    readonly mainAddress: string
+
+    /**
+     * Pattern used to determine the address of the region's game servers.
+     * The string <ID> is replaced by the gameID given by the /getGame API, plus one.
+     * For example, if gameID is 0, and gameAddress is "ws://127.0.0.1:800<ID>", the resulting address will be ws://127.0.0.1:8001.
+     */
+    readonly gameAddress: string
 }
 
 export interface ServerInfo {
