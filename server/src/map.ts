@@ -453,6 +453,7 @@ export class GameMap {
 
                     if (position === undefined) {
                         this.game.warn(`Failed to find valid position for building ${idString}`);
+                        attempts++;
                         continue;
                     }
 
