@@ -83,7 +83,7 @@ export class Gas {
         const isDebug = gas.mode === GasMode.Debug;
         const duration = isDebug && gas.overrideDuration !== undefined && currentStage.duration !== 0
             ? gas.overrideDuration
-            : currentStage.duration;
+            : currentStage.duration * (this.game.map.mapDef.gasDurationMultiplier ?? 1);
 
         this.stage++;
         this.state = currentStage.state;
