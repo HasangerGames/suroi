@@ -1,4 +1,4 @@
-import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory, RotationMode } from "@common/constants";
+import { GameConstants, Layer, MapObjectSpawnMode, RotationMode } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Armors } from "@common/definitions/items/armors";
 import { Backpacks } from "@common/definitions/items/backpacks";
@@ -11,7 +11,7 @@ import { Orientation, type Variation } from "@common/typings";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Collision } from "@common/utils/math";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
-import { pickRandomInArray, random, randomFloat, randomPointInsideCircle } from "@common/utils/random";
+import { random, randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { SpawnMode, SpawnOptions } from "../config";
 import { type GunItem } from "../inventory/gunItem";
@@ -21,8 +21,6 @@ import { GamePlugin } from "../pluginManager";
 import { getLootFromTable } from "../utils/lootHelpers";
 import { LootTables } from "./lootTables";
 import { PacketType } from "@common/packets/packet";
-import { Ammos } from "@common/definitions/items/ammos";
-import { HealingItems } from "@common/definitions/items/healingItems";
 
 export interface RiverDefinition {
     readonly minAmount: number
@@ -85,8 +83,6 @@ export interface MapDefinition {
         readonly name: string
         readonly position: Vector
     }>
-
-    readonly gasDurationMultiplier?: number
 
     readonly onGenerate?: (map: GameMap, params: string[]) => void
 }
@@ -247,164 +243,6 @@ const maps = {
             { name: "Mt. Sanger", position: Vec.create(0.5, 0.35) },
             { name: "Deepwood", position: Vec.create(0.5, 0.65) }
         ]
-    },
-    "1v1": {
-        width: 816,
-        height: 816,
-        oceanSize: 64,
-        beachSize: 16,
-        rivers: {
-            minAmount: 1,
-            maxAmount: 1,
-            maxWideAmount: 0,
-            wideChance: 0.2,
-            minWidth: 12,
-            maxWidth: 18,
-            minWideWidth: 25,
-            maxWideWidth: 30,
-            obstacles: {
-                river_rock: 8,
-                lily_pad: 3
-            }
-        },
-        buildings: {
-            small_bridge: Infinity,
-            "1v1_clearing": 2,
-            river_hut_1: 1,
-            river_hut_2: 1,
-            river_hut_3: 1,
-            sea_traffic_control: 1,
-            small_bunker: 1,
-            [pickRandomInArray(["refinery", "armory", "headquarters"])]: 1,
-            green_house: 1,
-            [pickRandomInArray(["blue_house", "blue_house_special"])]: 1,
-            [pickRandomInArray(["red_house", "red_house_v2"])]: 1,
-            construction_site: 1,
-            mobile_home: 5,
-            porta_potty: 6,
-            [pickRandomInArray(["container_3", "container_4"])]: 2,
-            [pickRandomInArray(["container_5", "container_6"])]: 2,
-            [pickRandomInArray(["container_7", "container_8"])]: 1,
-            [pickRandomInArray(["container_9", "container_10"])]: 1,
-            memorial: 1
-        },
-        majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
-        quadBuildingLimit: {
-            "1v1_clearing": 1,
-            river_hut_1: 1,
-            river_hut_2: 1,
-            river_hut_3: 1,
-            red_house: 1,
-            red_house_v2: 1,
-            warehouse: 2,
-            green_house: 1,
-            blue_house: 1,
-            mobile_home: 2,
-            porta_potty: 2,
-            construction_site: 1,
-            blue_house_special: 1
-        },
-        obstacles: {
-            oil_tank: 3,
-            big_oak_tree: 7,
-            oak_tree: 20,
-            birch_tree: 5,
-            pine_tree: 2,
-            loot_tree: 1,
-            regular_crate: 40,
-            flint_crate: 2,
-            aegis_crate: 2,
-            grenade_crate: 8,
-            rock: 36,
-            river_chest: 1,
-            bush: 25,
-            // birthday_cake: 100, // birthday mode
-            blueberry_bush: 10,
-            barrel: 20,
-            viking_chest: 1,
-            super_barrel: 10,
-            melee_crate: 1,
-            gold_rock: 1,
-            loot_barrel: 1,
-            flint_stone: 1
-        },
-        obstacleClumps: [
-            {
-                clumpAmount: 25,
-                clump: {
-                    minAmount: 2,
-                    maxAmount: 3,
-                    jitter: 5,
-                    obstacles: ["oak_tree"],
-                    radius: 12
-                }
-            },
-            {
-                clumpAmount: 6,
-                clump: {
-                    minAmount: 2,
-                    maxAmount: 3,
-                    jitter: 5,
-                    obstacles: ["birch_tree"],
-                    radius: 12
-                }
-            },
-            {
-                clumpAmount: 1,
-                clump: {
-                    minAmount: 2,
-                    maxAmount: 3,
-                    jitter: 5,
-                    obstacles: ["pine_tree"],
-                    radius: 12
-                }
-            }
-        ],
-        loots: {
-            ground_loot: 15
-        },
-        places: [
-            { name: "Banana", position: Vec.create(0.23, 0.2) },
-            { name: "Takedown", position: Vec.create(0.23, 0.8) },
-            { name: "Lavlandet", position: Vec.create(0.75, 0.2) },
-            { name: "Noskin Narrows", position: Vec.create(0.72, 0.8) },
-            { name: "Mt. Sanger", position: Vec.create(0.5, 0.35) },
-            { name: "Deepwood", position: Vec.create(0.5, 0.65) }
-        ],
-        onGenerate: (map: GameMap) => {
-            const game = map.game;
-            for (const building of game.grid.pool.getCategory(ObjectCategory.Building)) {
-                if (building.definition.idString !== "1v1_clearing") continue;
-                let { x, y } = Vec.add(building.position, Vec.create(-48, -35.5));
-                let originalX = x;
-                const pos = (): Vector => {
-                    const val = Vec.create(x, y);
-                    x += 8;
-                    if (x - originalX >= 100) {
-                        x = originalX;
-                        y += 8;
-                    }
-                    return val;
-                };
-                for (const gun of Guns) {
-                    if (gun.devItem) continue;
-                    game.addLoot(gun, pos(), 0, { pushVel: 0, jitterSpawn: false });
-                    if (!gun.isDual) game.addLoot(gun, pos(), 0, { pushVel: 0, jitterSpawn: false });
-                }
-                for (const ammo of Ammos) {
-                    if (ammo.ephemeral) continue;
-                    game.addLoot(ammo, pos(), 0, { pushVel: 0, jitterSpawn: false, count: Backpacks.fromString("tactical_pack").maxCapacity[ammo.idString] });
-                }
-                for (const equipment of [...Armors, ...Backpacks, ...HealingItems]) {
-                    if (equipment.idString === "bag" || equipment.idString === "developr_vest") continue;
-                    game.addLoot(equipment, pos(), 0, { pushVel: 0, jitterSpawn: false });
-                }
-                for (const healingItem of HealingItems) {
-                    game.addLoot(healingItem, pos(), 0, { pushVel: 0, jitterSpawn: false, count: Backpacks.fromString("tactical_pack").maxCapacity[healingItem.idString] });
-                }
-            }
-        },
-        gasDurationMultiplier: 0.5
     },
     fall: {
         width: 1924,

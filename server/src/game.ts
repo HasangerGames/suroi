@@ -516,8 +516,6 @@ export class Game implements GameData {
         this.killLeaderDirty = true;
     }
 
-    private readonly _assignedBuildings: number[] = [];
-
     addPlayer(socket?: WebSocket<PlayerSocketData>): Player | undefined {
         const rejectedBy = this.pluginManager.emit("player_will_connect");
         if (rejectedBy) {
@@ -558,23 +556,11 @@ export class Game implements GameData {
             }
         }
 
-        const mapDef = this.map.mapDef;
         const spawnOptions = Config.spawn.mode === SpawnMode.Default
-            ? mapDef.spawn ?? { mode: SpawnMode.Normal }
+            ? this.map.mapDef.spawn ?? { mode: SpawnMode.Normal }
             : Config.spawn;
         switch (spawnOptions.mode) {
             case SpawnMode.Normal: {
-                // hack for 1v1 mode
-                if (mapDef.gasDurationMultiplier === 0.5) {
-                    for (const building of this.grid.pool.getCategory(ObjectCategory.Building)) {
-                        if (building.definition.idString !== "1v1_clearing" || this._assignedBuildings.includes(building.id)) continue;
-                        this._assignedBuildings.push(building.id);
-                        spawnPosition = building.position;
-                        break;
-                    }
-                    if (spawnPosition) break;
-                }
-
                 const hitbox = new CircleHitbox(5);
                 const gasPosition = this.gas.newPosition;
                 const gasRadius = this.gas.newRadius ** 2;

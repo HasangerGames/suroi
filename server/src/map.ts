@@ -891,7 +891,7 @@ export class GameMap {
                     // rivers that aren't trails must have a waterHitbox
                     return () => {
                         river ??= pickRandomInArray(this.terrain.rivers.filter(({ isTrail }) => !isTrail));
-                        return river?.getRandomPosition(
+                        return river.getRandomPosition(
                             false,
                             initialHitbox.type === HitboxType.Circle ? initialHitbox.radius : 0
                         );

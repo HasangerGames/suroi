@@ -7150,25 +7150,5 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "memorial_bunker_entrance", position: Vec.create(0, 0) },
             { idString: "memorial_bunker_main", position: Vec.create(0, -8.5), layer: -2 }
         ]
-    },
-    {
-        idString: "1v1_clearing",
-        name: "1v1 Clearing",
-        spawnHitbox: RectangleHitbox.fromRect(104.50, 79.50),
-        rotationMode: RotationMode.None,
-        groundGraphics: [
-            {
-                color: "#666",
-                hitbox: RectangleHitbox.fromRect(107.50, 82.50)
-            },
-            {
-                color: "#595959",
-                hitbox: RectangleHitbox.fromRect(104.50, 79.50)
-            }
-        ],
-        floors: [{
-            type: FloorNames.Stone,
-            hitbox: RectangleHitbox.fromRect(107.50, 82.50)
-        }]
     }
 ]);
