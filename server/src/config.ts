@@ -7,7 +7,7 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "normal",
+    map: "singleBuilding:port",
 
     spawn: { mode: SpawnMode.Default },
 
@@ -24,7 +24,7 @@ export const Config = {
 
     plugins: [],
 
-    disableLobbyClearing: true,
+    //  disableLobbyClearing: true,
 
     roles: {
         developr: { password: "developr", isDev: true },

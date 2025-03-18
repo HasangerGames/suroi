@@ -123,6 +123,10 @@
         }
     }
 
+    function contextMenu_(event) {
+        event.preventDefault();
+    }
+
     function mouseWheel(e: WheelEvent) {
         const oldScale = scale;
         const { x: rectX, y: rectY } = hitboxesContainer.getBoundingClientRect();
@@ -191,7 +195,7 @@
         hitboxes.push(JSON.parse(JSON.stringify(selected)));
     }
 
-    const bgImage = loadImage("/img/game/fall/obstacles/outhouse_door.svg");
+    const bgImage = loadImage("/img/game/shared/buildings/port_new_layout_noalpha.png");
 </script>
 
 <main>
@@ -276,7 +280,7 @@
         on:pointerup={pointerUp}
         on:pointermove={pointermove}
         on:wheel={mouseWheel}
-        on:contextmenu={() => false}
+        on:contextmenu={contextMenu_}
     >
         <svg>
             <g transform="translate({x} {y}) scale({scale})">
