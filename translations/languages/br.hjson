@@ -71,6 +71,7 @@
 "settings_render_resolution": "Resolução de renderização"
 "settings_render_resolution_auto": "Automático"
 "settings_hires_textures": "Texturas de alta resolução"
+ "settings_alt_texture_loading": "Alternar método de carregamento de textura"
 "settings_cooler_graphics": "Gráficos mais legais"
 "settings_ambient_particles": "Partículas de ambiente"
 "settings_antialias": "Anti-aliasing"
@@ -238,6 +239,20 @@
 
 "kf_airdrop_kill": "<player> foi fatalmente esmagado por uma entrega aérea"
 "kf_airdrop_down": "<player> foi nocauteado por uma entrega aérea"
+
+"kf_suicide_finished_off": "<player> acabou com ele mesmo"
+"kf_impact_of": "o impacto de " // space is a must
+"km_finally_ended_yourself": "Você finalmente acabou com você mesmo"
+"km_finally_killed": "Você finalmente foi morto"
+"km_gas_kill_you": "Você morreu para o gás"
+"km_gas_down_you": "Você foi nocauteado pelo gás "
+"km_airdrop_kill_you": "Você foi fatalmente esmagado por uma caixa de suprimentos"
+"km_airdrop_down_you": "Você foi nocauteado por uma caixa de suprimentos "
+"km_knocked_you": "Te nocauteou"
+"km_finished_off_you": "Acabou com você"
+"km_killed_you": "Matou você"
+"km_suicide_down": "Se nocauteou"
+"km_suicide_finished_off": "Acabou com você mesmo"
 
 "finally": "finalmente"
 "with": "com"
