@@ -1,7 +1,7 @@
 import { Layers, ZIndexes, FlyoverPref, MapObjectSpawnMode, RotationMode } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
-import { NullString, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
+import { ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { pickRandomInArray, randomBoolean } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
@@ -188,7 +188,7 @@ const randomCelebrationWinterTree = {
     pine_tree: 0.9
 };
 
-const randomContainer1 = {
+/* const randomContainer1 = {
     container_1: 1,
     container_2: 2,
     container_3: 3,
@@ -198,12 +198,12 @@ const randomContainer1 = {
     container_7: 3,
     container_8: 4,
     container_10: 3
-};
+}; */
 
-const randomContainer2 = {
+/* const randomContainer2 = {
     ...randomContainer1,
     [NullString]: 7
-};
+}; */
 
 const warehouseObstacle = {
     regular_crate: 2,
@@ -2739,15 +2739,46 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 color: 0xe6e6e6,
                 hitbox: new GroupHitbox(
-                    // forklift parking area (left)
+                    // forklift parking area (L)
                     RectangleHitbox.fromRect(47.8, 1.19, Vec.create(-139.61, 52.12)),
                     RectangleHitbox.fromRect(1.19, 31.48, Vec.create(-162.92, 39.01)),
                     RectangleHitbox.fromRect(1.19, 29.47, Vec.create(-147.41, 37.97)),
-                    RectangleHitbox.fromRect(1.17, 29.47, Vec.create(-131.89, 37.97)),
+                    RectangleHitbox.fromRect(1.19, 29.47, Vec.create(-131.89, 37.97)),
                     RectangleHitbox.fromRect(1.19, 71.23, Vec.create(-116.3, 58.87)),
                     RectangleHitbox.fromRect(2.66, 1.19, Vec.create(-117.25, 93.9)),
                     RectangleHitbox.fromRect(1.19, 3.34, Vec.create(-190.09, 53.19)),
-                    RectangleHitbox.fromRect(11.98, 1.19, Vec.create(-195.52, 52.12))
+                    RectangleHitbox.fromRect(11.98, 1.19, Vec.create(-195.52, 52.12)),
+                    RectangleHitbox.fromRect(1.19, 58.23, Vec.create(-200.95, 23.59)),
+                    RectangleHitbox.fromRect(12.02, 1.19, Vec.create(-195.46, -4.94)),
+                    RectangleHitbox.fromRect(1.19, 2.97, Vec.create(-190.04, -6.2)),
+                    RectangleHitbox.fromRect(1.19, 2.97, Vec.create(-162.95, -6.2)),
+                    RectangleHitbox.fromRect(47.75, 1.19, Vec.create(-139.67, -4.94)),
+                    RectangleHitbox.fromRect(1.19, 29.03, Vec.create(-116.39, -19.02)),
+                    RectangleHitbox.fromRect(3.06, 1.19, Vec.create(-117.35, -32.96)),
+
+                    // top & center (L)
+                    // these are mostly for the gates on the large warehouse
+                    RectangleHitbox.fromRect(3.12, 1.19, Vec.create(-117.32, -60.11)),
+                    RectangleHitbox.fromRect(1.19, 37.74, Vec.create(-116.35, -78.44)),
+                    RectangleHitbox.fromRect(3.12, 1.19, Vec.create(-117.32, -96.74)),
+                    RectangleHitbox.fromRect(3.12, 1.19, Vec.create(-117.32, -123.87)),
+                    RectangleHitbox.fromRect(1.19, 36.89, Vec.create(-116.35, -141.74)),
+                    RectangleHitbox.fromRect(3.12, 1.19, Vec.create(-117.32, -159.58)),
+                    RectangleHitbox.fromRect(3.12, 1.19, Vec.create(-117.32, -183)),
+                    RectangleHitbox.fromRect(1.19, 35.4, Vec.create(-116.35, -200.37)),
+                    RectangleHitbox.fromRect(100.22, 1.19, Vec.create(-66.54, -217.49)),
+
+                    // bottom (L)
+                    RectangleHitbox.fromRect(35.31, 1.19, Vec.create(-99.28, 173.26)), // connects to main L
+                    RectangleHitbox.fromRect(1.19, 37.68, Vec.create(-116.35, 155.03)),
+                    RectangleHitbox.fromRect(2.9, 1.19, Vec.create(-117.25, 136.69)),
+
+                    // bottom (R)
+                    RectangleHitbox.fromRect(35.31, 1.19, Vec.create(99.28, 173.26)), // connects to main R
+
+                    // main
+                    RectangleHitbox.fromRect(1.19, 357.83, Vec.create(-82.13, -5.02)), // L
+                    RectangleHitbox.fromRect(1.19, 357.83, Vec.create(82.13, -5.02)) // R
                 )
             }
         ]
