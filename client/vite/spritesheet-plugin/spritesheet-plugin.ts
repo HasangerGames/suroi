@@ -223,9 +223,9 @@ export function spritesheet(enableDevMode: boolean): Plugin[] {
 
                     buildTimeout = setTimeout(() => {
                         buildSheets().then(() => {
-                            const module = server.moduleGraph.getModuleById(highResResolvedVirtualModuleId);
+                            const module = server.moduleGraph.getModuleById(highResVirtualModuleId);
                             if (module !== undefined) void server.reloadModule(module);
-                            const module2 = server.moduleGraph.getModuleById(lowResResolvedVirtualModuleId);
+                            const module2 = server.moduleGraph.getModuleById(lowResVirtualModuleId);
                             if (module2 !== undefined) void server.reloadModule(module2);
                         }).catch(e => console.error(e));
                     }, 500);
