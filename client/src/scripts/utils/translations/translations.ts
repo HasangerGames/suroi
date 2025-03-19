@@ -2,10 +2,10 @@ import { Badges } from "@common/definitions/badges";
 import { Emotes } from "@common/definitions/emotes";
 import { Loots } from "@common/definitions/loots";
 import { Numeric } from "@common/utils/math";
-import type { TranslationManifest } from "../../translations/src/processTranslations";
-import { GameConsole } from "./scripts/console/gameConsole";
-import { defaultClientCVars } from "./scripts/console/variables";
-import { type TranslationKeys } from "./typings/translations";
+import type { TranslationManifest } from "../../../../vite/translations-plugin/translations-plugin";
+import { GameConsole } from "../../console/gameConsole";
+import { defaultClientCVars } from "../../console/variables";
+import { type TranslationKeys } from "./typings";
 
 export type TranslationMap = Partial<Record<TranslationKeys, string>> & TranslationManifest;
 

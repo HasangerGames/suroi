@@ -6,6 +6,7 @@ import { readFileSync } from "fs";
 import { parse } from "hjson";
 import { readdirSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
 import type { Plugin } from "vite";
 
 const PLUGIN_NAME = "vite-translations-plugin";
@@ -16,15 +17,16 @@ export const LANGUAGES_DIRECTORY = "src/translations/";
 const files = readdirSync(LANGUAGES_DIRECTORY).filter(file => file.endsWith(".hjson")).sort();
 
 const virtualModuleIds = ["virtual:translations-manifest", ...files.map(f => `virtual:translations-${f.slice(0, -".hjson".length)}`)];
-const resolvedVirtualModuleIds = new Map<string, string>(virtualModuleIds.map(m => [m, `\0${m}`]));
 
-const translationsCache = new Map<string, string>();
-
-const resolveId = (id: string): string | undefined => id;
+const resolveId = (id: string): string | undefined => {
+    if (virtualModuleIds.includes(id)) return id;
+};
 
 const load = (id: string): string | undefined => {
     if (virtualModuleIds.includes(id)) return translationsCache.get(id);
 };
+
+const translationsCache = new Map<string, string>();
 
 const METADATA_KEYS = ["name", "flag", "mandatory", "no_space", "no_resize", "percentage", "html_lang"];
 
@@ -35,11 +37,8 @@ const keyFilter = (key: string): boolean => (
     && !Throwables.hasString(key)
 );
 
-const ValidKeys: readonly string[] = Object.keys(parse(readFileSync(`${LANGUAGES_DIRECTORY + REFERENCE_LANGUAGE}.hjson`, "utf8")) as Record<string, unknown>)
-    .filter(keyFilter);
-
-function calculateValidRatio(keys: string[]): number {
-    return keys.filter(key => ValidKeys.includes(key)).length / ValidKeys.length;
+function calculateValidRatio(keys: string[], validKeys: readonly string[]): number {
+    return keys.filter(key => validKeys.includes(key)).length / validKeys.length;
 }
 
 export interface TranslationManifest {
@@ -62,9 +61,12 @@ export async function buildTranslations(): Promise<void> {
 
     let reportBuffer = `# Translation File Reports
 
-    This file is a report of all errors and missing keys in the translation files of this game.
+This file is a report of all errors and missing keys in the translation files of this game.
 
-    `;
+`;
+
+    const ValidKeys: readonly string[] = Object.keys(parse(readFileSync(`${LANGUAGES_DIRECTORY + REFERENCE_LANGUAGE}.hjson`, "utf8")) as Record<string, unknown>)
+        .filter(keyFilter);
 
     for (const filename of files) {
         const language = filename.slice(0, -".hjson".length);
@@ -76,26 +78,30 @@ export async function buildTranslations(): Promise<void> {
             mandatory: Boolean(content.mandatory),
             no_resize: Boolean(content.no_resize),
             no_space: Boolean(content.no_space),
-            percentage: content.percentage ?? `${Math.round(100 * calculateValidRatio(Object.keys(content)))}%`
+            percentage: content.percentage ?? `${Math.round(100 * calculateValidRatio(Object.keys(content), ValidKeys))}%`
         };
 
         translationsCache.set(`virtual:translations-${language}`, `export const translations=${JSON.stringify(content)}`);
 
         const keys = Object.keys(content).filter(keyFilter);
 
-        let languageReportBuffer = `## ${content.flag} ${content.name} (${Math.round(100 * calculateValidRatio(keys))}% Complete) - ${filename}\n\n`;
+        let languageReportBuffer = `## ${content.flag} ${content.name} (${Math.round(100 * calculateValidRatio(keys, ValidKeys))}% Complete) - ${filename}\n\n`;
 
         // Find invalid keys
         const invalidKeys = keys.filter(k => !ValidKeys.includes(k)).map(key => `- Key \`${key}\` is not a valid key`).join("\n");
         if (invalidKeys.length > 0) {
             languageReportBuffer += `### Invalid Keys\n\n${invalidKeys}\n\n`;
-        } else { languageReportBuffer += "### (No Invalid Keys)\n\n"; }
+        } else {
+            languageReportBuffer += "### (No Invalid Keys)\n\n";
+        }
 
         // Find undefined keys
         const undefinedKeys = ValidKeys.filter(k => !keys.includes(k)).map(key => `- Key \`${key}\` is not defined`).join("\n");
         if (undefinedKeys.length > 0) {
             languageReportBuffer += `### Undefined Keys\n\n${undefinedKeys}\n\n`;
-        } else { languageReportBuffer += "### (No Undefined Keys)\n\n"; }
+        } else {
+            languageReportBuffer += "### (No Undefined Keys)\n\n";
+        }
 
         reportBuffer += languageReportBuffer;
     }
@@ -107,6 +113,7 @@ export async function buildTranslations(): Promise<void> {
     translationsCache.set("virtual:translations-manifest", `export const manifest=${JSON.stringify(manifest)};export const importTranslation=async t=>{switch(t){${cases}}}`);
 
     await writeFile("../TRANSLATIONS_REPORT.md", reportBuffer);
+    await buildTypings(ValidKeys);
 
     console.log(`Finished building translations in ${Math.round(performance.now() - start) / 1000}s`);
 }
@@ -120,10 +127,10 @@ export async function buildTypings(keys: readonly string[]): Promise<void> {
         ...Guns.definitions.map(({ idString }) => idString),
         ...Melees.definitions.map(({ idString }) => idString),
         ...Throwables.definitions.map(({ idString }) => idString)
-    ].map(key => `"${key}"`).join("|\n");
+    ].map(key => `"${key}"`).join("|");
     buffer += ";";
 
-    await writeFile("src/typings/translations.ts", buffer);
+    await writeFile("src/scripts/utils/translations/typings.ts", buffer);
 }
 
 export function translations(): Plugin[] {
@@ -144,22 +151,19 @@ export function translations(): Plugin[] {
             name: `${PLUGIN_NAME}:serve`,
             apply: "serve",
             async configureServer(server) {
-                const reloadPage = (): void => {
+                const reloadPage = (filename: string): void => {
                     clearTimeout(buildTimeout);
 
                     buildTimeout = setTimeout(() => {
                         void buildTranslations().then(() => {
-                            // const module = server.moduleGraph.getModuleById(RESOLVED_VIRTUAL_MODULE_ID);
-                            // if (module !== undefined) void server.reloadModule(module);
+                            const id = filename.slice(filename.lastIndexOf(path.sep) + 1, -".hjson".length);
+                            const module = server.moduleGraph.getModuleById(`virtual:translations-${id}`);
+                            if (module !== undefined) void server.reloadModule(module);
                         });
                     }, 500);
                 };
 
-                watcher = watch("src/translations", {
-                    ignoreInitial: true
-                })
-                    .on("change", f => console.log(f))
-                    .on("unlink", f => console.log(f));
+                watcher = watch("src/translations").on("change", reloadPage);
 
                 await buildTranslations();
             },

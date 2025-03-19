@@ -1,8 +1,8 @@
 # Translation File Reports
 
-    This file is a report of all errors and missing keys in the translation files of this game.
+This file is a report of all errors and missing keys in the translation files of this game.
 
-    ## 🇦🇱 Shqip (77% Complete) - ab.hjson
+## 🇦🇱 Shqip (77% Complete) - ab.hjson
 
 ### (No Invalid Keys)
 

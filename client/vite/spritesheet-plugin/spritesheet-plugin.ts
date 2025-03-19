@@ -126,10 +126,7 @@ async function buildSpritesheets(
 const max = (a: number, b: number): number => a > b ? a : b;
 
 const highResVirtualModuleId = "virtual:spritesheets-jsons-high-res";
-const highResResolvedVirtualModuleId = `${highResVirtualModuleId}`;
-
 const lowResVirtualModuleId = "virtual:spritesheets-jsons-low-res";
-const lowResResolvedVirtualModuleId = `${lowResVirtualModuleId}`;
 
 const resolveId = (id: string): string | undefined => {
     switch (id) {
@@ -176,8 +173,8 @@ export function spritesheet(enableDevMode: boolean): Plugin[] {
 
     const load = (id: string): string | undefined => {
         switch (id) {
-            case highResResolvedVirtualModuleId: return `export const atlases=${JSON.stringify(exportedAtlases.high)}`;
-            case lowResResolvedVirtualModuleId: return `export const atlases=${JSON.stringify(exportedAtlases.low)}`;
+            case highResVirtualModuleId: return `export const atlases=${JSON.stringify(exportedAtlases.high)}`;
+            case lowResVirtualModuleId: return `export const atlases=${JSON.stringify(exportedAtlases.low)}`;
         }
     };
 
