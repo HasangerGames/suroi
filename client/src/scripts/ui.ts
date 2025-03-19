@@ -17,7 +17,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { sound } from "@pixi/sound";
 import $ from "jquery";
 import { Color, isWebGPUSupported } from "pixi.js";
-import type { NewsPost } from "../../vite/news-posts-plugin/news-posts-plugin";
+import type { NewsPost } from "../../vite/plugins/news-posts-plugin";
 import { TRANSLATIONS, getTranslatedString } from "./utils/translations/translations";
 import type { TranslationKeys } from "./utils/translations/typings";
 import { Config, type ServerInfo } from "./config";

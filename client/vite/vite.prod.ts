@@ -1,7 +1,7 @@
 import { mergeConfig, type UserConfig } from "vite";
 
 import common from "./vite.common";
-import { spritesheet } from "./spritesheet-plugin/spritesheet-plugin";
+import { spritesheet } from "./plugins/spritesheet-plugin";
 import { ViteMinifyPlugin } from "vite-plugin-minify";
 
 const config: UserConfig = {
