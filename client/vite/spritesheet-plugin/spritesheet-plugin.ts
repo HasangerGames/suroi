@@ -126,15 +126,15 @@ async function buildSpritesheets(
 const max = (a: number, b: number): number => a > b ? a : b;
 
 const highResVirtualModuleId = "virtual:spritesheets-jsons-high-res";
-const highResResolvedVirtualModuleId = `\0${highResVirtualModuleId}`;
+const highResResolvedVirtualModuleId = `${highResVirtualModuleId}`;
 
 const lowResVirtualModuleId = "virtual:spritesheets-jsons-low-res";
-const lowResResolvedVirtualModuleId = `\0${lowResVirtualModuleId}`;
+const lowResResolvedVirtualModuleId = `${lowResVirtualModuleId}`;
 
 const resolveId = (id: string): string | undefined => {
     switch (id) {
-        case highResVirtualModuleId: return highResResolvedVirtualModuleId;
-        case lowResVirtualModuleId: return lowResResolvedVirtualModuleId;
+        case highResVirtualModuleId: return highResVirtualModuleId;
+        case lowResVirtualModuleId: return lowResVirtualModuleId;
     }
 };
 

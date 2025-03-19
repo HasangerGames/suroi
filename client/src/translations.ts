@@ -1,12 +1,11 @@
 import { Badges } from "@common/definitions/badges";
+import { Emotes } from "@common/definitions/emotes";
 import { Loots } from "@common/definitions/loots";
 import { Numeric } from "@common/utils/math";
-import type { TranslationManifest, TranslationsManifest } from "../../translations/src/processTranslations";
-import TRANSLATIONS_MANIFEST from "./translationsManifest.json";
-import { type TranslationKeys } from "./typings/translations";
-import { Emotes } from "@common/definitions/emotes";
+import type { TranslationManifest } from "../../translations/src/processTranslations";
 import { GameConsole } from "./scripts/console/gameConsole";
 import { defaultClientCVars } from "./scripts/console/variables";
+import { type TranslationKeys } from "./typings/translations";
 
 export type TranslationMap = Partial<Record<TranslationKeys, string>> & TranslationManifest;
 
@@ -49,23 +48,24 @@ export async function initTranslation(): Promise<void> {
 
     selectedLanguage = GameConsole.getBuiltInCVar("cv_language");
 
-    const loadRightNow = (language: string, content: TranslationManifest): boolean => content.mandatory || language === selectedLanguage || language === defaultLanguage;
+    const { manifest, importTranslation } = await import("virtual:translations-manifest") as {
+        manifest: Record<string, TranslationManifest>
+        importTranslation: (t: string) => Promise<TranslationMap>
+    };
 
     for (
         const [language, content] of await Promise.all(
-            Object.entries(TRANSLATIONS_MANIFEST as TranslationsManifest)
-                .map(
-                    async([language, content]): Promise<[string, TranslationMap]> => [
-                        language,
-                        loadRightNow(language, content)
-                            ? await (await fetch(`/translations/${language}.json`)).json()
-                            : content
-                    ]
-                )
+            Object.entries(manifest)
+                .map(async([language, content]): Promise<[string, TranslationMap]> => [
+                    language,
+                    content.mandatory || language === selectedLanguage || language === defaultLanguage
+                        ? await importTranslation(language)
+                        : content
+                ])
         )
     ) {
         TRANSLATIONS.translations[language] = {
-            ...(TRANSLATIONS_MANIFEST as TranslationsManifest)[language],
+            ...manifest[language],
             ...content
         };
     }
