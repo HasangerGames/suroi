@@ -297,13 +297,11 @@ async function buildSpritesheets(
             pathMap.set(filename, imagePath);
         }
 
-        const images = Array.from(pathMap.values());
-
-        const fileMap: Record<string, number> = images.reduce((fileMap, file) => {
+        const fileMap: Record<string, number> = {};
+        for (const file of pathMap.values()) {
             const { mtimeMs, ctimeMs } = statSync(file);
             fileMap[file] = max(mtimeMs, ctimeMs);
-            return fileMap;
-        }, {});
+        }
 
         const getCacheData = (): CacheData | undefined => {
             const dataFile = path.join(cacheDir, mode, "data.json");
