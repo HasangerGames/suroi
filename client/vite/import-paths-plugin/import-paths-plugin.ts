@@ -25,7 +25,7 @@ export function importPathsPlugin(
 
     const load = (id: string): string | undefined => {
         if (id === pluginResolvedVirtualModuleId) {
-            return `export const paths = ${JSON.stringify(paths)}`;
+            return `export const paths=${JSON.stringify(paths)}`;
         }
     };
 

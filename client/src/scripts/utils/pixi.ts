@@ -24,13 +24,13 @@ export async function loadTextures(modeName: Mode, renderer: Renderer, highResol
         }
     }
 
+    const atlases: Record<string, SpritesheetData[]> = (
+        highResolution
+            ? await import("virtual:spritesheets-jsons-high-res")
+            : await import("virtual:spritesheets-jsons-low-res")
     // we pray
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const atlases: Record<string, SpritesheetData[]> = highResolution
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        ? (await import("virtual:spritesheets-jsons-high-res")).atlases
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        : (await import("virtual:spritesheets-jsons-low-res")).atlases;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    ).atlases as Record<string, SpritesheetData[]>;
 
     const spritesheets = atlases[modeName];
 

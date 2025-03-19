@@ -176,8 +176,8 @@ export function spritesheet(enableDevMode: boolean): Plugin[] {
 
     const load = (id: string): string | undefined => {
         switch (id) {
-            case highResResolvedVirtualModuleId: return `export const atlases = JSON.parse('${JSON.stringify(exportedAtlases.high)}')`;
-            case lowResResolvedVirtualModuleId: return `export const atlases = JSON.parse('${JSON.stringify(exportedAtlases.low)}')`;
+            case highResResolvedVirtualModuleId: return `export const atlases=${JSON.stringify(exportedAtlases.high)}`;
+            case lowResResolvedVirtualModuleId: return `export const atlases=${JSON.stringify(exportedAtlases.low)}`;
         }
     };
 
