@@ -4692,7 +4692,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             spawnMax: 1,
             destroy: 0.5
         },
-        hitbox: new CircleHitbox(16, Vec.create(-2, 0)),
+        hitbox: new CircleHitbox(17, Vec.create(-2, 0)),
         rotationMode: RotationMode.None,
         allowFlyover: FlyoverPref.Never,
         explosion: "silo_explosion",
