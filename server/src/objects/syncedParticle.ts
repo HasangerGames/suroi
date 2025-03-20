@@ -1,4 +1,4 @@
-import { ObjectCategory } from "@common/constants";
+import { GameConstants, ObjectCategory } from "@common/constants";
 import { InternalAnimation, resolveNumericSpecifier, resolveVectorSpecifier, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { type Variation } from "@common/typings";
 import { CircleHitbox } from "@common/utils/hitbox";
@@ -47,6 +47,14 @@ export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedP
 
         this.layer = layer ?? 0;
 
+        const clampToMapBounds = (position: Vector): Vector => Vec.create(
+            Numeric.clamp(position.x, 0, GameConstants.maxPosition),
+            Numeric.clamp(position.y, 0, GameConstants.maxPosition)
+        );
+
+        position = clampToMapBounds(position);
+        if (endPosition) endPosition = clampToMapBounds(endPosition);
+
         this.creatorID = creatorID;
         if (definition.hasCreatorID && creatorID === undefined) {
             throw new Error("creatorID not specified for SyncedParticle which requires it");
@@ -61,7 +69,7 @@ export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedP
         const easing = EaseFunctions[velocity?.easing ?? "linear"];
         this._positionAnim = {
             start: position,
-            end: endPosition ?? Vec.add(position, Vec.scale(resolveVectorSpecifier(velocity), this._lifetime)),
+            end: endPosition ?? clampToMapBounds(Vec.add(position, Vec.scale(resolveVectorSpecifier(velocity), this._lifetime))),
             easing,
             duration: endPosition ? definition.velocity?.duration : undefined
         };
