@@ -80,7 +80,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `m16a4` is not defined
 - Key `region_oc` is not defined
 
-## 🇧🇷 Português (Brasil) (95% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (96% Complete) - br.hjson
 
 ### Invalid Keys
 
@@ -88,7 +88,6 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `msg_error_kicked_team` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
@@ -100,8 +99,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_switched_joystick_info` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
-- Key `create_team_force_start` is not defined
-- Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
 
 ## 🇨🇿 Čeština (80% Complete) - cz.hjson
