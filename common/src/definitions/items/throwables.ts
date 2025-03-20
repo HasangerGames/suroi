@@ -215,5 +215,39 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
                 rightFist: Vec.create(4, 2.15)
             }
         }
-    }
+    },
+     {
+        idString: "satchel",
+        name: "Satchel Charge",
+        itemType: ItemType.Throwable,
+        cookable: false,
+        fuseTime: 8500,
+        cookTime: 150,
+        throwTime: 150,
+        speedMultiplier: 1,
+        cookSpeedMultiplier: 0.7,
+        impactDamage: 1,
+        obstacleMultiplier: 20,
+        hitboxRadius: 1,
+        image: {
+            position: Vec.create(60, 43),
+            angle: 60,
+            zIndex: 5
+        },
+        detonation: {
+            explosion: "super_barrel_explosion"
+        },
+        animation: {
+            liveImage: "proj_satchel",
+            cook: {
+                cookingImage: "proj_frag_nopin",
+                leftFist: Vec.create(2.5, 0),
+                rightFist: Vec.create(-0.5, 2.15)
+            },
+            throw: {
+                leftFist: Vec.create(1.9, -1.75),
+                rightFist: Vec.create(4, 2.15)
+            }
+        }
+    },
 ]);
