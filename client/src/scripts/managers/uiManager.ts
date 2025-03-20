@@ -283,6 +283,7 @@ export const UIManager = new (class UIManager {
         createTeamUrl: $<HTMLInputElement>("#create-team-url-field"),
         createTeamAutoFill: $<HTMLInputElement>("#create-team-toggle-auto-fill"),
         createTeamLock: $<HTMLInputElement>("#create-team-toggle-lock"),
+        createTeamForceStart: $<HTMLInputElement>("#create-team-toggle-force-start"),
         createTeamPlayers: $<HTMLDivElement>("#create-team-players"),
         closeCreateTeam: $<HTMLButtonElement>("#close-create-team"),
 

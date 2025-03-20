@@ -4,10 +4,13 @@ This file is a report of all errors and missing keys in the translation files of
 
 ## 🇦🇱 Shqip (77% Complete) - ab.hjson
 
-### (No Invalid Keys)
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
 
 ### Undefined Keys
 
+- Key `msg_error_kicked_team` is not defined
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
@@ -71,16 +74,21 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_finished_off` is not defined
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
+- Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
+- Key `create_team_not_ready` is not defined
 - Key `m16a4` is not defined
 - Key `region_oc` is not defined
 
-## 🇧🇷 Português (Brasil) (96% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (95% Complete) - br.hjson
 
-### (No Invalid Keys)
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
 
 ### Undefined Keys
 
+- Key `msg_error_kicked_team` is not defined
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
@@ -92,14 +100,19 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_switched_joystick_info` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
 
-## 🇨🇿 Čeština (81% Complete) - cz.hjson
+## 🇨🇿 Čeština (80% Complete) - cz.hjson
 
-### (No Invalid Keys)
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
 
 ### Undefined Keys
 
+- Key `msg_error_kicked_team` is not defined
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
@@ -153,15 +166,20 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
+- Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
 
 ## 🇩🇪 Deutsch (91% Complete) - de.hjson
 
-### (No Invalid Keys)
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
 
 ### Undefined Keys
 
+- Key `msg_error_kicked_team` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
@@ -186,6 +204,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `retry` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
 
 ## 🇬🇧 English (100% Complete) - en.hjson
@@ -194,12 +214,15 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### (No Undefined Keys)
 
-## 🇪🇸 Español (87% Complete) - es.hjson
+## 🇪🇸 Español (86% Complete) - es.hjson
 
-### (No Invalid Keys)
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
 
 ### Undefined Keys
 
+- Key `msg_error_kicked_team` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
@@ -236,16 +259,20 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
 
-## 🇪🇪 eesti (87% Complete) - et.hjson
+## 🇪🇪 eesti (86% Complete) - et.hjson
 
 ### Invalid Keys
 
 - Key `kf_message_grammar` is not a valid key
+- Key `create_team_waiting` is not a valid key
 
 ### Undefined Keys
 
+- Key `msg_error_kicked_team` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
@@ -282,14 +309,19 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
 
-## 🇫🇮 suomi (86% Complete) - fi.hjson
+## 🇫🇮 suomi (85% Complete) - fi.hjson
 
-### (No Invalid Keys)
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
 
 ### Undefined Keys
 
+- Key `msg_error_kicked_team` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
@@ -331,16 +363,20 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
 
-## 🇫🇷 Français (88% Complete) - fr.hjson
+## 🇫🇷 Français (87% Complete) - fr.hjson
 
 ### Invalid Keys
 
+- Key `create_team_waiting` is not a valid key
 - Key `create_team_share` is not a valid key
 
 ### Undefined Keys
 
+- Key `msg_error_kicked_team` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
@@ -374,14 +410,19 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
 
-## 🇬🇷 Ελληνικά (89% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (88% Complete) - gr.hjson
 
-### (No Invalid Keys)
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
 
 ### Undefined Keys
 
+- Key `msg_error_kicked_team` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
@@ -413,15 +454,20 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (80% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (79% Complete) - hk_mo.hjson
 
-### (No Invalid Keys)
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
 
 ### Undefined Keys
 
 - Key `msg_error_joining_team` is not defined
+- Key `msg_error_kicked_team` is not defined
 - Key `msg_punishment_vpn` is not defined
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
@@ -478,15 +524,20 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
+- Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
 
-## 🇭🇺 Magyar (95% Complete) - hu.hjson
+## 🇭🇺 Magyar (94% Complete) - hu.hjson
 
-### (No Invalid Keys)
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
 
 ### Undefined Keys
 
+- Key `msg_error_kicked_team` is not defined
 - Key `recording` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `interact_monument` is not defined
@@ -503,8 +554,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
 
-## 🇮🇹 Italiano (78% Complete) - it.hjson
+## 🇮🇹 Italiano (77% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -514,12 +567,14 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_temp_ban_msg` is not a valid key
 - Key `msg_perma_ban` is not a valid key
 - Key `msg_perma_ban_msg` is not a valid key
+- Key `create_team_waiting` is not a valid key
 - Key `saf_200` is not a valid key
 - Key `desstroyer_of_worlds` is not a valid key
 - Key `s_g17` is not a valid key
 
 ### Undefined Keys
 
+- Key `msg_error_kicked_team` is not defined
 - Key `msg_punishment_warn` is not defined
 - Key `msg_punishment_warn_reason` is not defined
 - Key `msg_punishment_temp` is not defined
@@ -582,302 +637,342 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
+- Key `create_team_not_ready` is not defined
 - Key `m16a4` is not defined
 - Key `region_oc` is not defined
 
-## 🇯🇵 日本語 (81% Complete) - jp.hjson
-
-### (No Invalid Keys)
-
-### Undefined Keys
-
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `msg_punishment_warn_agreement` is not defined
-- Key `warning_hw_accel_1` is not defined
-- Key `warning_hw_accel_2` is not defined
-- Key `warning_hw_accel_link` is not defined
-- Key `privacy` is not defined
-- Key `donate` is not defined
-- Key `wiki` is not defined
-- Key `bindings_fullscreen` is not defined
-- Key `recording` is not defined
-- Key `settings_ambience_volume` is not defined
-- Key `settings_ambient_particles` is not defined
-- Key `settings_record_res` is not defined
-- Key `settings_alt_texture_loading` is not defined
-- Key `settings_show_inout` is not defined
-- Key `settings_gyro_angle` is not defined
-- Key `settings_lock_joysticks` is not defined
-- Key `settings_switch_joysticks` is not defined
-- Key `settings_left_joystick_color` is not defined
-- Key `settings_right_joystick_color` is not defined
-- Key `settings_normal_joystick_info` is not defined
-- Key `settings_switched_joystick_info` is not defined
-- Key `settings_haptics` is not defined
-- Key `msg_your_team_eliminated` is not defined
-- Key `msg_the_team_eliminated` is not defined
-- Key `msg_not_enough_space` is not defined
-- Key `msg_item_already_equipped` is not defined
-- Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
-- Key `final_gas_waiting` is not defined
-- Key `final_gas_advancing` is not defined
-- Key `interact_speaker` is not defined
-- Key `interact_monument` is not defined
-- Key `loading_fetching_data_failed` is not defined
-- Key `retry` is not defined
-- Key `bindings_explode_c4` is not defined
-- Key `bindings_screen_record` is not defined
-- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
-- Key `kf_suicide_finished_off` is not defined
-- Key `kf_impact_of` is not defined
-- Key `km_finally_ended_yourself` is not defined
-- Key `km_finally_killed` is not defined
-- Key `km_gas_kill_you` is not defined
-- Key `km_gas_down_you` is not defined
-- Key `km_airdrop_kill_you` is not defined
-- Key `km_airdrop_down_you` is not defined
-- Key `km_knocked_you` is not defined
-- Key `km_finished_off_you` is not defined
-- Key `km_killed_you` is not defined
-- Key `km_suicide_down` is not defined
-- Key `km_suicide_finished_off` is not defined
-- Key `create_team_ready` is not defined
-- Key `region_oc` is not defined
-
-## 🇱🇹 Lietuvių (81% Complete) - lt.hjson
-
-### (No Invalid Keys)
-
-### Undefined Keys
-
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `msg_punishment_warn_agreement` is not defined
-- Key `warning_hw_accel_1` is not defined
-- Key `warning_hw_accel_2` is not defined
-- Key `warning_hw_accel_link` is not defined
-- Key `privacy` is not defined
-- Key `donate` is not defined
-- Key `wiki` is not defined
-- Key `bindings_fullscreen` is not defined
-- Key `recording` is not defined
-- Key `settings_ambience_volume` is not defined
-- Key `settings_ambient_particles` is not defined
-- Key `settings_record_res` is not defined
-- Key `settings_alt_texture_loading` is not defined
-- Key `settings_show_inout` is not defined
-- Key `settings_gyro_angle` is not defined
-- Key `settings_lock_joysticks` is not defined
-- Key `settings_switch_joysticks` is not defined
-- Key `settings_left_joystick_color` is not defined
-- Key `settings_right_joystick_color` is not defined
-- Key `settings_normal_joystick_info` is not defined
-- Key `settings_switched_joystick_info` is not defined
-- Key `settings_haptics` is not defined
-- Key `msg_your_team_eliminated` is not defined
-- Key `msg_the_team_eliminated` is not defined
-- Key `msg_not_enough_space` is not defined
-- Key `msg_item_already_equipped` is not defined
-- Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
-- Key `final_gas_waiting` is not defined
-- Key `final_gas_advancing` is not defined
-- Key `interact_speaker` is not defined
-- Key `interact_monument` is not defined
-- Key `loading_fetching_data_failed` is not defined
-- Key `retry` is not defined
-- Key `bindings_explode_c4` is not defined
-- Key `bindings_screen_record` is not defined
-- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
-- Key `kf_suicide_finished_off` is not defined
-- Key `kf_impact_of` is not defined
-- Key `km_finally_ended_yourself` is not defined
-- Key `km_finally_killed` is not defined
-- Key `km_gas_kill_you` is not defined
-- Key `km_gas_down_you` is not defined
-- Key `km_airdrop_kill_you` is not defined
-- Key `km_airdrop_down_you` is not defined
-- Key `km_knocked_you` is not defined
-- Key `km_finished_off_you` is not defined
-- Key `km_killed_you` is not defined
-- Key `km_suicide_down` is not defined
-- Key `km_suicide_finished_off` is not defined
-- Key `create_team_ready` is not defined
-- Key `region_oc` is not defined
-
-## 🇱🇻 Latviešu (81% Complete) - lv.hjson
-
-### (No Invalid Keys)
-
-### Undefined Keys
-
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `msg_punishment_warn_agreement` is not defined
-- Key `warning_hw_accel_1` is not defined
-- Key `warning_hw_accel_2` is not defined
-- Key `warning_hw_accel_link` is not defined
-- Key `privacy` is not defined
-- Key `donate` is not defined
-- Key `wiki` is not defined
-- Key `bindings_fullscreen` is not defined
-- Key `recording` is not defined
-- Key `settings_ambience_volume` is not defined
-- Key `settings_ambient_particles` is not defined
-- Key `settings_record_res` is not defined
-- Key `settings_alt_texture_loading` is not defined
-- Key `settings_show_inout` is not defined
-- Key `settings_gyro_angle` is not defined
-- Key `settings_lock_joysticks` is not defined
-- Key `settings_switch_joysticks` is not defined
-- Key `settings_left_joystick_color` is not defined
-- Key `settings_right_joystick_color` is not defined
-- Key `settings_normal_joystick_info` is not defined
-- Key `settings_switched_joystick_info` is not defined
-- Key `settings_haptics` is not defined
-- Key `msg_your_team_eliminated` is not defined
-- Key `msg_the_team_eliminated` is not defined
-- Key `msg_not_enough_space` is not defined
-- Key `msg_item_already_equipped` is not defined
-- Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
-- Key `final_gas_waiting` is not defined
-- Key `final_gas_advancing` is not defined
-- Key `interact_speaker` is not defined
-- Key `interact_monument` is not defined
-- Key `loading_fetching_data_failed` is not defined
-- Key `retry` is not defined
-- Key `bindings_explode_c4` is not defined
-- Key `bindings_screen_record` is not defined
-- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
-- Key `kf_suicide_finished_off` is not defined
-- Key `kf_impact_of` is not defined
-- Key `km_finally_ended_yourself` is not defined
-- Key `km_finally_killed` is not defined
-- Key `km_gas_kill_you` is not defined
-- Key `km_gas_down_you` is not defined
-- Key `km_airdrop_kill_you` is not defined
-- Key `km_airdrop_down_you` is not defined
-- Key `km_knocked_you` is not defined
-- Key `km_finished_off_you` is not defined
-- Key `km_killed_you` is not defined
-- Key `km_suicide_down` is not defined
-- Key `km_suicide_finished_off` is not defined
-- Key `create_team_ready` is not defined
-- Key `region_oc` is not defined
-
-## 🇵🇱 Polski (86% Complete) - pl.hjson
-
-### (No Invalid Keys)
-
-### Undefined Keys
-
-- Key `msg_punishment_warn_agreement` is not defined
-- Key `warning_hw_accel_1` is not defined
-- Key `warning_hw_accel_2` is not defined
-- Key `warning_hw_accel_link` is not defined
-- Key `privacy` is not defined
-- Key `wiki` is not defined
-- Key `bindings_fullscreen` is not defined
-- Key `recording` is not defined
-- Key `settings_record_res` is not defined
-- Key `settings_alt_texture_loading` is not defined
-- Key `settings_show_inout` is not defined
-- Key `settings_gyro_angle` is not defined
-- Key `settings_lock_joysticks` is not defined
-- Key `settings_switch_joysticks` is not defined
-- Key `settings_left_joystick_color` is not defined
-- Key `settings_right_joystick_color` is not defined
-- Key `settings_normal_joystick_info` is not defined
-- Key `settings_switched_joystick_info` is not defined
-- Key `settings_haptics` is not defined
-- Key `msg_your_team_eliminated` is not defined
-- Key `msg_the_team_eliminated` is not defined
-- Key `final_gas_waiting` is not defined
-- Key `final_gas_advancing` is not defined
-- Key `interact_monument` is not defined
-- Key `loading_fetching_data_failed` is not defined
-- Key `retry` is not defined
-- Key `bindings_screen_record` is not defined
-- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
-- Key `kf_suicide_finished_off` is not defined
-- Key `kf_impact_of` is not defined
-- Key `km_finally_ended_yourself` is not defined
-- Key `km_finally_killed` is not defined
-- Key `km_gas_kill_you` is not defined
-- Key `km_gas_down_you` is not defined
-- Key `km_airdrop_kill_you` is not defined
-- Key `km_airdrop_down_you` is not defined
-- Key `km_knocked_you` is not defined
-- Key `km_finished_off_you` is not defined
-- Key `km_killed_you` is not defined
-- Key `km_suicide_down` is not defined
-- Key `km_suicide_finished_off` is not defined
-- Key `region_oc` is not defined
-
-## 🎀 Cute Engwish (91% Complete) - qen.hjson
-
-### (No Invalid Keys)
-
-### Undefined Keys
-
-- Key `bindings_fullscreen` is not defined
-- Key `recording` is not defined
-- Key `settings_record_res` is not defined
-- Key `settings_alt_texture_loading` is not defined
-- Key `settings_lock_joysticks` is not defined
-- Key `settings_switch_joysticks` is not defined
-- Key `settings_left_joystick_color` is not defined
-- Key `settings_right_joystick_color` is not defined
-- Key `settings_normal_joystick_info` is not defined
-- Key `settings_switched_joystick_info` is not defined
-- Key `interact_monument` is not defined
-- Key `bindings_explode_c4` is not defined
-- Key `bindings_screen_record` is not defined
-- Key `kf_suicide_finished_off` is not defined
-- Key `kf_impact_of` is not defined
-- Key `km_finally_ended_yourself` is not defined
-- Key `km_finally_killed` is not defined
-- Key `km_gas_kill_you` is not defined
-- Key `km_gas_down_you` is not defined
-- Key `km_airdrop_kill_you` is not defined
-- Key `km_airdrop_down_you` is not defined
-- Key `km_knocked_you` is not defined
-- Key `km_finished_off_you` is not defined
-- Key `km_killed_you` is not defined
-- Key `km_suicide_down` is not defined
-- Key `km_suicide_finished_off` is not defined
-- Key `region_oc` is not defined
-
-## 🇷🇴 Română (100% Complete) - ro.hjson
-
-### (No Invalid Keys)
-
-### (No Undefined Keys)
-
-## 🇷🇺 Русский (99% Complete) - ru.hjson
+## 🇯🇵 日本語 (80% Complete) - jp.hjson
 
 ### Invalid Keys
 
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
+- Key `warning_hw_accel_1` is not defined
+- Key `warning_hw_accel_2` is not defined
+- Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
+- Key `donate` is not defined
+- Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
+- Key `settings_show_inout` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `settings_haptics` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `final_gas_waiting` is not defined
+- Key `final_gas_advancing` is not defined
+- Key `interact_speaker` is not defined
+- Key `interact_monument` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_ready` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `region_oc` is not defined
+
+## 🇱🇹 Lietuvių (80% Complete) - lt.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
+- Key `warning_hw_accel_1` is not defined
+- Key `warning_hw_accel_2` is not defined
+- Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
+- Key `donate` is not defined
+- Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
+- Key `settings_show_inout` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `settings_haptics` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `final_gas_waiting` is not defined
+- Key `final_gas_advancing` is not defined
+- Key `interact_speaker` is not defined
+- Key `interact_monument` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_ready` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `region_oc` is not defined
+
+## 🇱🇻 Latviešu (80% Complete) - lv.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
+- Key `warning_hw_accel_1` is not defined
+- Key `warning_hw_accel_2` is not defined
+- Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
+- Key `donate` is not defined
+- Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
+- Key `settings_show_inout` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `settings_haptics` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `final_gas_waiting` is not defined
+- Key `final_gas_advancing` is not defined
+- Key `interact_speaker` is not defined
+- Key `interact_monument` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_ready` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `region_oc` is not defined
+
+## 🇵🇱 Polski (85% Complete) - pl.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
+- Key `warning_hw_accel_1` is not defined
+- Key `warning_hw_accel_2` is not defined
+- Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
+- Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
+- Key `settings_show_inout` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `settings_haptics` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
+- Key `final_gas_waiting` is not defined
+- Key `final_gas_advancing` is not defined
+- Key `interact_monument` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `region_oc` is not defined
+
+## 🎀 Cute Engwish (90% Complete) - qen.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `interact_monument` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `region_oc` is not defined
+
+## 🇷🇴 Română (99% Complete) - ro.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
+
+## 🇷🇺 Русский (98% Complete) - ru.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
 - Key `Pan` is not a valid key
 
 ### Undefined Keys
 
+- Key `msg_error_kicked_team` is not defined
 - Key `settings_show_inout` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
 - Key `m16a4` is not defined
 
-## 🇮🇳 தமிழ் (95% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (94% Complete) - ta.hjson
 
-### (No Invalid Keys)
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
 
 ### Undefined Keys
 
+- Key `msg_error_kicked_team` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_impact_of` is not defined
@@ -892,21 +987,31 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
 
-## 🇹🇷 Turkısh (100% Complete) - tr.hjson
+## 🇹🇷 Turkısh (99% Complete) - tr.hjson
 
 ### Invalid Keys
 
 - Key `kf_message_grammar` is not a valid key
-
-### (No Undefined Keys)
-
-## 🇹🇼 中文（繁體） (95% Complete) - tw.hjson
-
-### (No Invalid Keys)
+- Key `create_team_waiting` is not a valid key
 
 ### Undefined Keys
 
+- Key `msg_error_kicked_team` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
+
+## 🇹🇼 中文（繁體） (94% Complete) - tw.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
 - Key `settings_alt_texture_loading` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_impact_of` is not defined
@@ -921,13 +1026,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
 
-## 🇻🇳 Tiếng Việt (89% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (88% Complete) - vi.hjson
 
-### (No Invalid Keys)
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
 
 ### Undefined Keys
 
+- Key `msg_error_kicked_team` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
@@ -959,12 +1069,15 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
 
-## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
 
 ### Invalid Keys
 
+- Key `create_team_waiting` is not a valid key
 - Key `developr_vest` is not a valid key
 - Key `destroyer_of_worlds` is not a valid key
 - Key `deathray` is not a valid key
@@ -1182,5 +1295,8 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `msg_error_kicked_team` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_not_ready` is not defined
 - Key `m16a4` is not defined
 

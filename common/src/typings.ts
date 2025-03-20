@@ -24,11 +24,13 @@ export const enum CustomTeamMessages {
     Join,
     Update,
     Settings,
+    KickPlayer,
     Start,
     Started
 }
 
 export interface CustomTeamPlayerInfo {
+    id: number
     isLeader?: boolean
     ready: boolean
     name: string
@@ -44,17 +46,24 @@ export type CustomTeamMessage =
         isLeader: boolean
         autoFill: boolean
         locked: boolean
+        forceStart: boolean
     }
     | {
         type: CustomTeamMessages.Update
         players: CustomTeamPlayerInfo[]
         isLeader: boolean
         ready: boolean
+        forceStart: boolean
     }
     | {
         type: CustomTeamMessages.Settings
         autoFill?: boolean
         locked?: boolean
+        forceStart?: boolean
+    }
+    | {
+        type: CustomTeamMessages.KickPlayer
+        playerId: number
     }
     | {
         type: CustomTeamMessages.Start | CustomTeamMessages.Started

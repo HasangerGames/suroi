@@ -1,5 +1,5 @@
 import { TeamSize } from "@common/constants";
-import { CustomTeamMessages, type CustomTeamMessage } from "@common/typings";
+import { CustomTeamMessages, CustomTeamPlayerInfo, type CustomTeamMessage } from "@common/typings";
 import { random } from "@common/utils/random";
 import { WebSocket } from "uWebSockets.js";
 import { MapWithParams } from "./config";
@@ -136,7 +136,7 @@ export class Team {
 export interface CustomTeamPlayerContainer { player: CustomTeamPlayer }
 
 export class CustomTeam {
-    private static readonly _idChars = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789";
+    private static readonly _idChars = "abcdefghijklmnopqrstuvwxyz0123456789";
     private static readonly _idCharMax = this._idChars.length - 1;
 
     readonly id: string;
@@ -145,6 +145,7 @@ export class CustomTeam {
 
     autoFill = false;
     locked = false;
+    forceStart = false;
 
     gameID?: number;
     resetTimeout?: NodeJS.Timeout;
@@ -166,7 +167,8 @@ export class CustomTeam {
             teamID: this.id,
             isLeader: player.isLeader,
             autoFill: this.autoFill,
-            locked: this.locked
+            locked: this.locked,
+            forceStart: this.forceStart
         });
         this._publishPlayerUpdate();
     }
@@ -191,54 +193,83 @@ export class CustomTeam {
 
                 if (message.autoFill !== undefined) this.autoFill = message.autoFill;
                 if (message.locked !== undefined) this.locked = message.locked;
+                if (message.forceStart !== undefined) {
+                    this.forceStart = player.ready = message.forceStart;
+                    this._publishPlayerUpdate();
+                }
 
                 this._publishMessage({
                     type: CustomTeamMessages.Settings,
                     autoFill: this.autoFill,
-                    locked: this.locked
+                    locked: this.locked,
+                    forceStart: this.forceStart
                 });
                 break;
             }
+            case CustomTeamMessages.KickPlayer: {
+                if (!player.isLeader) break;
+
+                const id = message.playerId;
+                const toRemove = this.players[id];
+                if (!toRemove || toRemove.isLeader) break;
+
+                toRemove.socket?.end(1000, "kicked");
+                this.players.splice(id, 1);
+                this._publishPlayerUpdate();
+                break;
+            }
             case CustomTeamMessages.Start: {
-                if (player.isLeader) {
-                    const result = await findGame(this.teamSize, this.map);
-                    if (result !== undefined) {
-                        this.gameID = result;
-                        clearTimeout(this.resetTimeout);
-                        this.resetTimeout = setTimeout(() => this.gameID = undefined, 10000);
-
-                        for (const player of this.players) {
-                            player.ready = false;
-                        }
-
-                        this._publishMessage({ type: CustomTeamMessages.Started });
-                        this._publishPlayerUpdate();
-                    }
+                if (player.isLeader && this.forceStart) {
+                    await this._startGame();
                 } else {
-                    player.ready = true;
-                    this._publishPlayerUpdate();
+                    player.ready = !player.ready;
+                    if (this.players.every(p => p.ready)) {
+                        await this._startGame();
+                    }
                 }
+                this._publishPlayerUpdate();
                 break;
             }
         }
     }
 
+    private async _startGame(): Promise<void> {
+        const result = await findGame(this.teamSize, this.map);
+        if (result === undefined) return;
+
+        this.gameID = result;
+        clearTimeout(this.resetTimeout);
+        this.resetTimeout = setTimeout(() => this.gameID = undefined, 10000);
+
+        for (const player of this.players) {
+            player.ready = false;
+        }
+
+        this._publishMessage({ type: CustomTeamMessages.Started });
+    }
+
     private _publishPlayerUpdate(): void {
-        const players = this.players.map(p => ({
-            isLeader: p.isLeader,
-            ready: p.ready,
-            name: p.name,
-            skin: p.skin,
-            badge: p.badge,
-            nameColor: p.nameColor
-        }));
+        const players: CustomTeamPlayerInfo[] = [];
+        for (let id = 0, len = this.players.length; id < len; id++) {
+            const p = this.players[id];
+            players.push({
+                id,
+                isLeader: p.isLeader,
+                ready: p.ready,
+                name: p.name,
+                skin: p.skin,
+                badge: p.badge,
+                nameColor: p.nameColor
+            });
+        }
 
         for (const player of this.players) {
             player.sendMessage({
                 type: CustomTeamMessages.Update,
                 players,
                 isLeader: player.isLeader,
-                ready: player.ready
+                ready: player.ready,
+                forceStart: this.forceStart
             });
         }
     }
