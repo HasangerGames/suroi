@@ -7,7 +7,7 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "arena",
+    map: "normal",
 
     spawn: { mode: SpawnMode.Default },
 
@@ -17,8 +17,6 @@ export const Config = {
     maxGames: 5,
 
     gas: { mode: GasMode.Normal },
-
-    // startImmediately: true,
 
     tps: 40,
 
