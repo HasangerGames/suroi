@@ -937,19 +937,15 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
 
-## 🇷🇴 Română (99% Complete) - ro.hjson
+## 🇷🇴 Română (100% Complete) - ro.hjson
 
 ### Invalid Keys
 
 - Key `create_team_waiting` is not a valid key
 
-### Undefined Keys
+### (No Undefined Keys)
 
-- Key `msg_error_kicked_team` is not defined
-- Key `create_team_force_start` is not defined
-- Key `create_team_not_ready` is not defined
-
-## 🇷🇺 Русский (98% Complete) - ru.hjson
+## 🇷🇺 Русский (99% Complete) - ru.hjson
 
 ### Invalid Keys
 
@@ -958,10 +954,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `msg_error_kicked_team` is not defined
 - Key `settings_show_inout` is not defined
-- Key `create_team_force_start` is not defined
-- Key `create_team_not_ready` is not defined
 - Key `m16a4` is not defined
 
 ## 🇮🇳 தமிழ் (94% Complete) - ta.hjson
