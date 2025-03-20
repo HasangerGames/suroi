@@ -2687,10 +2687,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "port",
         name: "Port",
         spawnHitbox: RectangleHitbox.fromRect(480, 490, Vec.create(0, -20)),
-        // floorImages: [{
-        //     key: "port_new_layout_alpha",
-        //     position: Vec.create(0, 0)
-        // }],
+        floorImages: [{
+            key: "port_new_layout_alpha",
+            position: Vec.create(0, 0)
+        }],
+        subBuildings: [
+            { idString: "warehouse", position: Vec.create(-176.5, 98.75), layer: 0 }
+        ],
         floors: [ // Follows ground graphics for most part
             {
                 type: FloorNames.Stone,
