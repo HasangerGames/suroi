@@ -231,6 +231,35 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         }
     },
     {
+        idString: "silo_explosion",
+        name: "Silo",
+        damage: 500,
+        obstacleMultiplier: 3,
+        radius: {
+            min: 35,
+            max: 45
+        },
+        cameraShake: {
+            duration: 1500,
+            intensity: 90
+        },
+        animation: {
+            duration: 1500,
+            tint: 0xff0000,
+            scale: 5
+        },
+        killfeedFrame: "explosion_big",
+        shrapnelCount: 50,
+        ballistics: {
+            shrapnel: true,
+            damage: 15,
+            obstacleMultiplier: 3,
+            speed: 0.08,
+            range: 60,
+            rangeVariance: 1
+        }
+    },
+    {
         idString: "propane_tank_explosion",
         name: "Propane Tank",
         damage: 80,

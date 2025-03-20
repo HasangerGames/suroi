@@ -2687,12 +2687,16 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "port",
         name: "Port",
         spawnHitbox: RectangleHitbox.fromRect(480, 490, Vec.create(0, -20)),
-        floorImages: [{
-            key: "port_new_layout_alpha",
-            position: Vec.create(0, 0)
-        }],
+        // floorImages: [{
+        //    key: "port_new_layout_alpha",
+        //    position: Vec.create(0, 0)
+        // }],
         subBuildings: [
-            { idString: "warehouse", position: Vec.create(-176.5, 98.75), layer: 0 }
+            { idString: "warehouse", position: Vec.create(-176.5, 98.75) }
+        ],
+        obstacles: [
+            // uncomment to add silo in upper left
+            // { idString: "silo", position: Vec.create(-182, -167.5) }
         ],
         floors: [ // Follows ground graphics for most part
             {

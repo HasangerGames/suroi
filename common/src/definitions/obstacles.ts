@@ -4681,6 +4681,27 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "memorial_crate_particle"
         }
+    },
+    {
+        idString: "silo",
+        name: "Silo",
+        material: "metal_heavy",
+        health: 1000,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.5
+        },
+        hitbox: new CircleHitbox(16, Vec.create(-2, 0)),
+        rotationMode: RotationMode.None,
+        allowFlyover: FlyoverPref.Never,
+        explosion: "silo_explosion",
+        reflectBullets: true,
+        zIndex: ZIndexes.ObstaclesLayer5,
+        frames: {
+            particle: "metal_particle"
+        }
+        // winterVariations: 1
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));
