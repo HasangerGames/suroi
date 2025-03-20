@@ -168,7 +168,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
 
-## 🇩🇪 Deutsch (91% Complete) - de.hjson
+## 🇩🇪 Deutsch (92% Complete) - de.hjson
 
 ### Invalid Keys
 
@@ -176,7 +176,6 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `msg_error_kicked_team` is not defined
 - Key `warning_hw_accel_1` is not defined
 - Key `warning_hw_accel_2` is not defined
 - Key `warning_hw_accel_link` is not defined
@@ -201,8 +200,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `retry` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
-- Key `create_team_force_start` is not defined
-- Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
 
 ## 🇬🇧 English (100% Complete) - en.hjson
