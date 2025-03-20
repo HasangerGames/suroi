@@ -151,7 +151,7 @@ export function translations(): Plugin[] {
             name: `${PLUGIN_NAME}:serve`,
             apply: "serve",
             async configureServer(server) {
-                const reloadPage = (filename: string): void => {
+                watcher = watch("src/translations").on("change", (filename: string): void => {
                     clearTimeout(buildTimeout);
 
                     buildTimeout = setTimeout(() => {
@@ -159,11 +159,11 @@ export function translations(): Plugin[] {
                             const id = filename.slice(filename.lastIndexOf(path.sep) + 1, -".hjson".length);
                             const module = server.moduleGraph.getModuleById(`virtual:translations-${id}`);
                             if (module !== undefined) void server.reloadModule(module);
+                            const module2 = server.moduleGraph.getModuleById("virtual:translations-manifest");
+                            if (module2 !== undefined) void server.reloadModule(module2);
                         });
                     }, 500);
-                };
-
-                watcher = watch("src/translations").on("change", reloadPage);
+                });
 
                 await buildTranslations();
             },
