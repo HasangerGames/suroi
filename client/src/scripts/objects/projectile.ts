@@ -1,18 +1,18 @@
 import { GameConstants, ObjectCategory, ZIndexes } from "@common/constants";
 import { type ThrowableDefinition } from "@common/definitions/items/throwables";
-import { CircleHitbox } from "@common/utils/hitbox";
 import { getEffectiveZIndex } from "@common/utils/layer";
-import { Numeric } from "@common/utils/math";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
-import { randomFloat, randomPointInsideCircle } from "@common/utils/random";
-import { FloorTypes } from "@common/utils/terrain";
-import { Vec } from "@common/utils/vector";
 import { type Game } from "../game";
-import type { GameSound } from "../managers/soundManager";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
-import type { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
+import type { DebugRenderer } from "../utils/debugRenderer";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, TEAMMATE_COLORS } from "../utils/constants";
+import { CircleHitbox } from "@common/utils/hitbox";
+import { Numeric } from "@common/utils/math";
+import { Vec, type Vector } from "@common/utils/vector";
+import { FloorTypes } from "@common/utils/terrain";
+import { randomBoolean, randomFloat, randomPointInsideCircle } from "@common/utils/random";
+import type { GameSound } from "../managers/soundManager";
 
 export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
     definition!: ThrowableDefinition;
@@ -26,6 +26,8 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
     halloweenSkin!: boolean;
 
     activated!: boolean;
+    throwerTeamID?: number;
+    tintIndex?: number;
 
     onFloor = false;
     onWater = false;
@@ -48,8 +50,20 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
             const def = this.definition = full.definition;
 
             this.halloweenSkin = full.halloweenSkin;
+            this.activated = full.activated;
+
+            this.throwerTeamID = full.c4?.throwerTeamID;
+            this.tintIndex = full.c4?.tintIndex;
 
             this.hitbox.radius = def.hitboxRadius;
+
+            if (this.game.teamMode
+                && this.throwerTeamID !== undefined
+                && this.tintIndex !== undefined
+                && this.game.teamID === this.throwerTeamID
+            ) {
+                this.image.setTint(TEAMMATE_COLORS[this.tintIndex]);
+            }
 
             let sprite = def.animation.liveImage;
             if (this.activated && def.animation.activatedImage) {
@@ -134,6 +148,33 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
             HITBOX_COLORS.projectiles,
             this.layer === this.game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
         );
+    }
+
+    hitEffect(position: Vector, angle: number): void {
+        if (!this.definition.c4) return;
+
+        this.hitSound?.stop();
+        this.hitSound = this.game.soundManager.play(
+            `stone_hit_${randomBoolean() ? "1" : "2"}`,
+            {
+                position,
+                falloff: 0.2,
+                maxRange: 96
+            }
+        );
+
+        this.game.particleManager.spawnParticles(4, () => {
+            return {
+                frames: this.halloweenSkin ? "plumpkin_particle" : "metal_particle",
+                position,
+                layer: this.layer,
+                zIndex: Numeric.max(ZIndexes.Players + 1, 4),
+                lifetime: 600,
+                scale: { start: 0.9, end: 0.2 },
+                alpha: { start: 1, end: 0.65 },
+                speed: Vec.fromPolar((angle + randomFloat(0, 2 * Math.PI)), randomFloat(2.5, 4.5))
+            };
+        });
     }
 
     override destroy(): void {

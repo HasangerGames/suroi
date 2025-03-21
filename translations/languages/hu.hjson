@@ -175,6 +175,7 @@
   "bindings_+attack": "Fegyver használata"
   "bindings_drop": "Aktív fegyver eldobása"
   "bindings_reload": "Újratöltés"
+  "bindings_explode_c4": "C4 felrobbantása"
   "bindings_cycle_scopes -1": "Előző scope"
   "bindings_cycle_scopes 1": "Következő scope"
   "bindings_use_consumable gauze": "Kötszer használ."

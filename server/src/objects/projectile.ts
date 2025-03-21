@@ -31,6 +31,10 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
 
     halloweenSkin: boolean;
 
+    // can we remove the c4 🥺
+    activated = false;
+    throwerTeamID = 0;
+    tintIndex = 0;
     health: number;
 
     source: GameObject;
@@ -64,6 +68,10 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         this.health = this.definition.health ?? Infinity;
 
         this.source = params.source;
+        if (this.source.isPlayer) {
+            this.throwerTeamID = this.source.teamID ?? 0;
+            this.tintIndex = this.source.colorIndex;
+        }
 
         this.halloweenSkin = params.halloweenSkin ?? false;
 
@@ -77,12 +85,16 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
     }
 
     update(): void {
+        if (this.definition.c4 && !this.activated) return;
+
         this._fuseTime -= this.game.dt;
 
         if (this._fuseTime < 0) {
             this._detonate();
             return;
         }
+
+        if (this.definition.c4) return;
 
         const dt = this.game.dt / 1000;
 
@@ -292,7 +304,12 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
             height: this._height,
             full: {
                 definition: this.definition,
-                halloweenSkin: this.halloweenSkin
+                halloweenSkin: this.halloweenSkin,
+                activated: this.activated,
+                c4: {
+                    throwerTeamID: this.throwerTeamID,
+                    tintIndex: this.tintIndex
+                }
             }
         };
     }
@@ -300,6 +317,14 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
     push(angle: number, speed: number): void {
         this._velocity = Vec.add(this._velocity, Vec.fromPolar(angle, speed * 1000));
         this._angularVelocity = 10;
+    }
+
+    activateC4(): void {
+        if (!this.definition.c4) {
+            throw new Error("Tried to activate non c4 projectile");
+        }
+        this.activated = true;
+        this.setDirty();
     }
 
     override damage({ amount }: DamageParams): void {
@@ -315,5 +340,10 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
     destroy(): void {
         if (this.dead) return;
         this.dead = true;
+
+        if (this.source.isPlayer) {
+            this.source.c4s.delete(this);
+            this.source.dirty.activeC4s = true;
+        }
     }
 }

@@ -170,6 +170,7 @@
   "bindings_+attack": "Usar Arma"
   "bindings_drop": "Soltar Arma Activa"
   "bindings_reload": "Recargar"
+  "bindings_explode_c4": "Detonar C4"
   "bindings_cycle_scopes -1": "Visor Anterior"
   "bindings_cycle_scopes 1": "Siguiente Visor"
   "bindings_use_consumable gauze": "Usar Gasa"

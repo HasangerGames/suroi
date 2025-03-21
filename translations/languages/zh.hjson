@@ -173,6 +173,7 @@
   "bindings_+attack": "使用武器"
   "bindings_drop": "丢弃武器"
   "bindings_reload": "装填弹药"
+  "bindings_explode_c4": "引爆C4"
   "bindings_cycle_scopes -1": "前一倍镜"
   "bindings_cycle_scopes 1": "后一倍镜"
   "bindings_use_consumable gauze": "使用纱布"

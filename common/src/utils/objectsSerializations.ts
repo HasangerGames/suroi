@@ -150,6 +150,12 @@ export interface ObjectsNetData extends BaseObjectsNetData {
         readonly full?: {
             readonly definition: ThrowableDefinition
             readonly halloweenSkin: boolean
+            readonly activated: boolean
+
+            readonly c4?: {
+                readonly throwerTeamID: number
+                readonly tintIndex: number
+            }
         }
     }
     //
@@ -817,7 +823,12 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         },
         serializeFull(stream, { full }) {
             Throwables.writeToStream(stream, full.definition);
-            stream.writeBooleanGroup(full.halloweenSkin);
+            stream.writeBooleanGroup(full.halloweenSkin, full.activated);
+
+            if (full.definition.c4 && full.c4) {
+                stream.writeUint8(full.c4.throwerTeamID);
+                stream.writeUint8(full.c4.tintIndex);
+            }
         },
         deserializePartial(stream) {
             return {
@@ -829,8 +840,22 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         },
         deserializeFull(stream) {
             const definition = Throwables.readFromStream(stream);
-            const [halloweenSkin] = stream.readBooleanGroup();
-            return { definition, halloweenSkin };
+            const [halloweenSkin, activated] = stream.readBooleanGroup();
+
+            const data: Mutable<ObjectsNetData[ObjectCategory.Projectile]["full"]> = {
+                definition,
+                halloweenSkin,
+                activated
+            };
+
+            if (definition.c4) {
+                data.c4 = {
+                    throwerTeamID: stream.readUint8(),
+                    tintIndex: stream.readUint8()
+                };
+            }
+
+            return data;
         }
     }
 };

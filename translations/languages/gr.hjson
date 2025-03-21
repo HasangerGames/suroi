@@ -173,6 +173,7 @@
   "bindings_+attack": "Χρησιμοποίηση Όπλου"
   "bindings_drop": "Άφησε το όπλο που χρησιμοποιείς"
   "bindings_reload": "Γέμισμα"
+  "bindings_explode_c4": "Έκρηξη C4"
   "bindings_cycle_scopes -1": "Προηγούμενη Διόπτρα"
   "bindings_cycle_scopes 1": "Επόμενη Διόπτρα"
   "bindings_use_consumable gauze": "Χρησιμοποίηση Γάζας"

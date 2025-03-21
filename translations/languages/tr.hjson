@@ -305,5 +305,6 @@
   "msg_cannot_use_radio": "Radyo binaların içinde kullanılamaz!"
   "msg_radio_overused": "Radyo aşırı kullanımdan dolayı kırıldı!"
   "interact_speaker": "Hoparlörü Başlat"
+  "bindings_explode_c4": "C4'ü Patlat"
   "create_team_ready": "Hazır"
 }

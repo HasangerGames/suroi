@@ -55,6 +55,7 @@ import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject
 import { type Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { type SyncedParticle } from "./syncedParticle";
+import { Projectile } from "./projectile";
 
 export interface PlayerContainer {
     readonly teamID?: string
@@ -283,6 +284,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         items: true,
         zoom: true,
         layer: true,
+        activeC4s: true,
         perks: true,
         teamID: true
     };
@@ -443,6 +445,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     spawnPosition: Vector = Vec.create(this.game.map.width / 2, this.game.map.height / 2);
 
     private readonly _mapPings: Game["mapPings"] = [];
+
+    c4s = new Set<Projectile>();
 
     backEquippedMelee?: MeleeDefinition;
 
@@ -1437,6 +1441,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     : {}
             ),
             ...(
+                player.dirty.activeC4s || forceInclude
+                    ? { activeC4s: this.c4s.size > 0 }
+                    : {}
+            ),
+            ...(
                 player.dirty.perks || forceInclude
                     ? { perks: player.perks }
                     : {}
@@ -2326,6 +2335,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // Create death marker
         this.game.grid.addObject(new DeathMarker(this, layer));
 
+        // remove all c4s
+        for (const c4 of this.c4s) {
+            c4.damage({ amount: Infinity });
+        }
+
         if (!this.disconnected) {
             this.sendGameOverPacket();
         }
@@ -2629,6 +2643,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     break;
                 case InputActions.MapPing:
                     this.sendMapPing(action.ping, action.position);
+                    break;
+                case InputActions.ExplodeC4:
+                    for (const c4 of this.c4s) {
+                        c4.activateC4();
+                    }
+                    this.c4s.clear();
+                    this.dirty.activeC4s = true;
                     break;
             }
         }

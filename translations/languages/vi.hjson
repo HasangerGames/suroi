@@ -173,6 +173,7 @@
   "bindings_+attack": "Dùng Vũ Khí"
   "bindings_drop": "Bỏ Vũ Khí Đang Cầm"
   "bindings_reload": "Thay Đạn"
+  "bindings_explode_c4": "Kích Nổ C4",
   "bindings_cycle_scopes -1": "Đổi Ống Nhòm Trước"
   "bindings_cycle_scopes 1": "Đổi Ống Nhòm Sau"
   "bindings_use_consumable gauze": "Sử dụng Bông băng"

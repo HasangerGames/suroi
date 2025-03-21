@@ -170,6 +170,7 @@
   "bindings_+attack": "Kasuta Relva"
   "bindings_drop": "Kukuta Relv"
   "bindings_reload": "Laadi Relva"
+  "bindings_explode_c4": "Detoneeri C4"
   "bindings_cycle_scopes -1": "Eelmine Sihik"
   "bindings_cycle_scopes 1": "Järgmine Sihik"
   "bindings_use_consumable gauze": "Kasuta Sidet"

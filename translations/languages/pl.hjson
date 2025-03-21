@@ -163,6 +163,7 @@
   "bindings_+attack": "Użyj Broni"
   "bindings_drop": "Wyrzuć Wyposażoną Broń"
   "bindings_reload": "Przeładuj"
+  "bindings_explode_c4": "Zdetonuj C4"
   "bindings_cycle_scopes -1": "Ostatnia Luneta"
   "bindings_cycle_scopes 1": "Następna Luneta"
   "bindings_use_consumable gauze": "Zastosuj Bandaż"

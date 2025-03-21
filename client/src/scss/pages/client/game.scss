@@ -17,6 +17,108 @@
     left: 0;
     position: absolute;
     transform-origin: 0 0;
+
+    #c4-detonate-btn {
+        right: 8.5px;
+        bottom: 370.5px;
+        z-index: 1001;
+        position: absolute;
+        cursor: pointer !important;
+        display: flex;
+        justify-content: space-between;
+        gap: 5px;
+        box-sizing: border-box;
+        height: 40px;
+        width: 100px;
+        background: palette.$transparent_bg;
+        border-radius: 10px;
+        font-size: 15px;
+        align-items: center;
+        padding: 0 8px 0 8px;
+
+        &:hover {
+            outline: 2px solid palette.$danger !important;
+        }
+
+        #detonate-key {
+            opacity: 1;
+            float: right;
+            margin-left: auto;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            vertical-align: middle;
+            width: 20px;
+            height: 20px;
+            background-color: #eee;
+            border-radius: 3px;
+            border: 1px solid #b4b4b4;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2),
+                0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
+            color: #333;
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1;
+            padding: 2px 4px;
+            margin-right: 3px;
+            white-space: nowrap;
+        }
+
+        .item-image {
+            opacity: 1;
+            pointer-events: none;
+            float: left;
+            width: 50px;
+            height: 35px;
+            @include variables.drop-shadow;
+
+            @media screen and (max-width: variables.$screen_large) {
+                width: 40px;
+                height: 30px;
+            }
+        }
+
+        @media screen and (min-width: variables.$screen_large) and (max-height: 720px) {
+            bottom: 370px;
+        }
+
+        @media screen and (max-width: variables.$screen_large) {
+            width: auto;
+            height: auto;
+            bottom: 220px;
+            right: 5px;
+
+            #detonate-key {
+                display: none;
+                width: 14px;
+                height: 14px;
+                font-size: 10px;
+                text-align: center;
+                padding-right: 1px;
+                padding-left: 1px;
+            }
+        }
+
+        @media screen and (max-width: variables.$screen_medium) {
+            bottom: 176px;
+        }
+
+        @media screen and (max-width: 460px) {
+            bottom: 245px;
+        }
+
+        @media screen and (max-height: 465px) and (max-width: variables.$screen_large) {
+            right: 85px;
+            width: auto;
+            border-radius: 5px;
+            padding: 0;
+            bottom: 200px;
+        }
+
+        @media screen and (min-width: variables.$screen_large) and (max-height: 720px) {
+            justify-content: center;
+        }
+    }
 }
 
 #btn-close-minimap {

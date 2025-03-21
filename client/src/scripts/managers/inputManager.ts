@@ -93,6 +93,10 @@ export class InputManager {
             if (playSound) this.game.soundManager.play("pickup");
         }
 
+        if (action.type === InputActions.ExplodeC4 && this.game.uiManager.hasC4s) {
+            this.game.soundManager.play("c4_beep");
+        }
+
         this.actions.push(action);
     }
 

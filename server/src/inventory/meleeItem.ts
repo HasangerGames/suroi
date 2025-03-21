@@ -72,8 +72,8 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
                         .filter(
                             object => !object.dead
                                 && object !== owner
-                                && object.damageable
-                                && (!object.isObstacle || !object.definition.isStair)
+                                && (object.damageable || (object.isProjectile && object.definition.c4))
+                                && (!object.isObstacle || (!object.definition.isStair))
                                 && object.hitbox?.collidesWith(hitbox)
                                 && adjacentOrEqualLayer(object.layer, this.owner.layer)
                         ) as CollidableGameObject[]

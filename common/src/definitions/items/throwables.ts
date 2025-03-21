@@ -71,6 +71,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
             readonly rightFist: Vector
         }
     }
+    readonly c4?: boolean
 };
 
 export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
@@ -200,6 +201,47 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
                 cookingImage: "proj_confetti_nopin",
                 leftFist: Vec.create(2.5, 0),
                 rightFist: Vec.create(-0.5, 2.15)
+            },
+            throw: {
+                leftFist: Vec.create(1.9, -1.75),
+                rightFist: Vec.create(4, 2.15)
+            }
+        }
+    },
+    {
+        idString: "c4",
+        name: "C4",
+        itemType: ItemType.Throwable,
+        c4: true,
+        cookable: false,
+        fuseTime: 750,
+        cookTime: 250,
+        throwTime: 150,
+        cookSpeedMultiplier: 0.7,
+        health: 40,
+        speedMultiplier: 1,
+        hitboxRadius: 1,
+        fireDelay: 250,
+        physics: {
+            maxThrowDistance: 0,
+            initialZVelocity: 0,
+            initialAngularVelocity: 0,
+            initialHeight: 0
+        },
+        image: {
+            position: Vec.create(60, 43),
+            angle: 60,
+            zIndex: 5
+        },
+        detonation: {
+            explosion: "c4_explosion"
+        },
+        animation: {
+            liveImage: "proj_c4",
+            activatedImage: "proj_c4_activated",
+            cook: {
+                leftFist: Vec.create(2, -1),
+                rightFist: Vec.create(3, 0)
             },
             throw: {
                 leftFist: Vec.create(1.9, -1.75),

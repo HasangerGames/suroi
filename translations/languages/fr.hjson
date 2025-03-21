@@ -170,6 +170,7 @@
   "bindings_+attack": "Utiliser l'arme"
   "bindings_drop": "Abandonner l'arme équipée'"
   "bindings_reload": "Recharger"
+  "bindings_explode_c4": "Faire exploser les C4"
   "bindings_cycle_scopes -1": "Viseur précédent"
   "bindings_cycle_scopes 1": "Viseur suivant"
   "bindings_use_consumable gauze": "Utiliser des bandages"
