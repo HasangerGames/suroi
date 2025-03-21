@@ -3590,6 +3590,12 @@ logger.indent("Validating throwables", () => {
 
             tester.assertIsFiniteRealNumber({
                 obj: throwable,
+                field: "speedMultiplier",
+                baseErrorPath: errorPath
+            });
+
+            tester.assertIsFiniteRealNumber({
+                obj: throwable,
                 field: "cookSpeedMultiplier",
                 baseErrorPath: errorPath
             });
@@ -3927,68 +3933,6 @@ logger.indent("Validating configurations", () => {
             defaultValue: false,
             baseErrorPath: errorPath
         });
-
-        tester.assertNoPointlessValue({
-            obj: ServerConfig,
-            field: "disableUsernameFilter",
-            defaultValue: false,
-            baseErrorPath: errorPath
-        });
-
-        if (ServerConfig.protection) {
-            const protection = ServerConfig.protection;
-            logger.indent("Validating protection settings", () => {
-                const errorPath2 = tester.createPath(errorPath, "protection settings");
-
-                tester.assertValidOrNPV({
-                    obj: protection,
-                    field: "maxSimultaneousConnections",
-                    defaultValue: Infinity,
-                    validatorIfPresent: (maxSimultaneousConnections, errorPath) => {
-                        tester.assertIsNaturalFiniteNumber({
-                            value: maxSimultaneousConnections,
-                            errorPath
-                        });
-                    },
-                    baseErrorPath: errorPath2
-                });
-
-                if (protection.maxJoinAttempts) {
-                    const errorPath3 = tester.createPath(errorPath2, "max join attempts");
-
-                    tester.assertIsNaturalFiniteNumber({
-                        obj: protection.maxJoinAttempts,
-                        field: "count",
-                        baseErrorPath: errorPath3
-                    });
-
-                    tester.assertIsPositiveFiniteReal({
-                        obj: protection.maxJoinAttempts,
-                        field: "duration",
-                        baseErrorPath: errorPath3
-                    });
-                }
-
-                tester.assertIsPositiveReal({
-                    obj: protection,
-                    field: "refreshDuration",
-                    baseErrorPath: errorPath2
-                });
-
-                tester.assertValidOrNPV({
-                    obj: protection,
-                    field: "maxTeams",
-                    defaultValue: Infinity,
-                    validatorIfPresent(value, errorPath) {
-                        tester.assertIsPositiveFiniteReal({
-                            value,
-                            errorPath
-                        });
-                    },
-                    baseErrorPath: errorPath2
-                });
-            });
-        }
 
         logger.indent("Validating roles", () => {
             for (const [name, role] of Object.entries(ServerConfig.roles)) {

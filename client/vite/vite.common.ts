@@ -3,8 +3,9 @@ import path, { resolve } from "path";
 import { type UserConfig } from "vite";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 import pkg from "../../package.json";
-import { importPathsPlugin } from "./import-paths-plugin/import-paths-plugin";
-import { newsPosts } from "./news-posts-plugin/news-posts-plugin";
+import { importPathsPlugin } from "./plugins/import-paths-plugin";
+import { newsPosts } from "./plugins/news-posts-plugin";
+import { translations } from "./plugins/translations-plugin";
 
 const commonConfig: UserConfig = {
     server: {
@@ -34,6 +35,7 @@ const commonConfig: UserConfig = {
                             path = "styles";
                             break;
                         case "ttf":
+                        case "woff":
                         case "woff2":
                             path = "fonts";
                     }
@@ -67,7 +69,8 @@ const commonConfig: UserConfig = {
             folders: ["public/audio/game/"],
             moduleName: "game-sounds"
         }),
-        newsPosts()
+        newsPosts(),
+        translations()
     ],
 
     css: {

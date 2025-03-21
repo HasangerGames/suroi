@@ -21,9 +21,9 @@ export function modeFromMap(map: MapWithParams): Mode {
 
 export function cleanUsername(name?: string | null): string {
     if (
-        !name?.length
+        !name?.trim().length
         || name.length > GameConstants.player.nameMaxLength
-        || Config.protection?.usernameFilters?.some((regex: RegExp) => regex.test(name))
+        || Config.usernameFilters?.some(regex => regex.test(name))
         || /[^\x20-\x7E]/g.test(name) // extended ASCII chars
     ) {
         return GameConstants.player.defaultName;

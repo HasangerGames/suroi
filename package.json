@@ -1,6 +1,6 @@
 {
   "name": "suroi",
-  "version": "0.23.1",
+  "version": "0.24.1",
   "description": "An open-source 2D battle royale game inspired by surviv.io",
   "private": true,
   "scripts": {
@@ -8,7 +8,6 @@
     "build:client": "cd client && pnpm build",
     "build:server": "cd server && pnpm build",
     "start": "node --enable-source-maps server/dist/server/src/server.js",
-    "moderation": "node --enable-source-maps server/dist/server/src/moderation.js",
     "warn": "pnpm moderation warn",
     "ban": "pnpm moderation ban",
     "unban": "pnpm moderation unban",
@@ -37,13 +36,13 @@
   ],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@eslint/js": "^9.20.0",
+    "@eslint/js": "^9.21.0",
     "@stylistic/eslint-plugin": "^3.1.0",
     "@types/eslint__js": "^8.42.3",
-    "@types/node": "^22.13.4",
-    "eslint": "^9.20.1",
-    "typescript": "^5.7.3",
-    "typescript-eslint": "^8.24.1"
+    "@types/node": "^22.13.5",
+    "eslint": "^9.21.0",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.25.0"
   },
   "packageManager": "pnpm@9.5.0+sha512.140036830124618d624a2187b50d04289d5a087f326c9edfc0ccd733d76c4f52c3a313d4fc148794a2a9d81553016004e6742e8cf850670268a7387fc220c903"
 }

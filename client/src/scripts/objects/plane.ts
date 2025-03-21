@@ -2,14 +2,13 @@ import { GameConstants, Layer } from "@common/constants";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Geometry } from "@common/utils/math";
 import { Vec, type Vector } from "@common/utils/vector";
-import { type Game } from "../game";
-import { type GameSound } from "../managers/soundManager";
+import { SoundManager, type GameSound } from "../managers/soundManager";
 import { PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite } from "../utils/pixi";
+import { CameraManager } from "../managers/cameraManager";
+import { Game } from "../game";
 
 export class Plane {
-    readonly game: Game;
-
     readonly startPosition: Vector;
     readonly endPosition: Vector;
     readonly image: SuroiSprite;
@@ -19,9 +18,7 @@ export class Plane {
 
     static readonly maxDistanceSquared = (GameConstants.maxPosition * 2) ** 2;
 
-    constructor(game: Game, startPosition: Vector, direction: number) {
-        this.game = game;
-
+    constructor(startPosition: Vector, direction: number) {
         this.startPosition = startPosition;
 
         this.endPosition = Vec.add(
@@ -34,7 +31,7 @@ export class Plane {
             .setRotation(direction)
             .setScale(4);
 
-        this.sound = game.soundManager.play(
+        this.sound = SoundManager.play(
             "airdrop_plane",
             {
                 position: startPosition,
@@ -45,7 +42,7 @@ export class Plane {
             }
         );
 
-        game.camera.addObject(this.image);
+        CameraManager.addObject(this.image);
     }
 
     update(): void {
@@ -59,12 +56,12 @@ export class Plane {
 
         if (Geometry.distanceSquared(position, this.startPosition) > Plane.maxDistanceSquared) {
             this.destroy();
-            this.game.planes.delete(this);
+            Game.planes.delete(this);
         }
 
-        if (this.game.layer && this.game.layer !== Layer.Floor1) {
-            this.image.visible = adjacentOrEqualLayer(Layer.Ground, this.game.layer);
-            this.sound.maxRange = adjacentOrEqualLayer(Layer.Ground, this.game.layer) ? 256 : 0;
+        if (Game.layer && Game.layer !== Layer.Floor1) {
+            this.image.visible = adjacentOrEqualLayer(Layer.Ground, Game.layer);
+            this.sound.maxRange = adjacentOrEqualLayer(Layer.Ground, Game.layer) ? 256 : 0;
         }
     }
 

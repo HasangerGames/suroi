@@ -272,9 +272,8 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "verified", weight: 0.5 },
             { item: "no_kil_pls", weight: 0.5 },
             { item: "ghillie_suit", weight: 0.15 },
-            { item: "basic_outfit", weight: 0.05 }
+            { item: "ancestral_garb", weight: 0.05 }
         ],
-        monument: [{ item: "basic_outfit", weight: 1 }],
         toilet: {
             min: 2,
             max: 3,
@@ -346,6 +345,27 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
         rsh_case_dual: [
             { item: "dual_rsh12", weight: 1 }
         ],
+        memorial_crate: [
+            [
+                { item: "pk61", weight: 1 },
+                { item: "ak47", weight: 1 },
+                { item: "mosin_nagant", weight: 0.5 },
+                { item: "vss", weight: 0.2 },
+                { item: "vector", weight: 0.2 },
+                { item: "deagle", weight: 0.2 },
+                { item: "m1_garand", weight: 0.01 },
+                { item: "dual_deagle", weight: 0.01 }
+            ],
+            [
+                { item: "ancestral_garb", weight: 1 },
+                { item: "timeless", weight: 1 }
+            ],
+            [
+                { table: "equipment", weight: 1 },
+                { table: "healing_items", weight: 1 }
+            ],
+            [{ item: "kukri", weight: 1 }]
+        ],
         airdrop_crate: [
             [{ table: "airdrop_equipment", weight: 1 }],
             [{ table: "airdrop_scopes", weight: 1 }],
@@ -397,6 +417,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             loot: [
                 { item: "ak47", weight: 1 },
                 { item: "aug", weight: 1 },
+                { item: "mp5k", weight: 1 },
                 { item: "model_37", weight: 1 },
                 { item: "mp40", weight: 1 },
                 { item: "m3k", weight: 0.6 },
@@ -521,6 +542,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "micro_uzi", weight: 1 },
             { item: "ak47", weight: 1 },
             { item: "model_37", weight: 0.95 },
+            { item: "mp5k", weight: 0.85 },
             { item: "aug", weight: 0.7 },
             { item: "sks", weight: 0.7 },
             { item: "m3k", weight: 0.3 },
@@ -586,6 +608,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
         special_guns: [
             { item: "micro_uzi", weight: 1.25 },
             { item: "ak47", weight: 1.1 },
+            { item: "mp5k", weight: 1.07 },
             { item: "aug", weight: 1.05 },
             { item: "hp18", weight: 1 },
             { item: "mp40", weight: 1 },
@@ -670,7 +693,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "aurora", weight: 0.5 },
             { item: "nebula", weight: 0.4 },
             { item: "ghillie_suit", weight: 0.1 },
-            { item: "basic_outfit", weight: 0.001 }
+            { item: "ancestral_garb", weight: 0.001 }
         ],
         airdrop_melee: [
             { item: NullString, weight: 1 },
@@ -1020,9 +1043,10 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "mosin_nagant", weight: 0.0133 },
 
             // 2% chance for one of these
-            { item: "tango_51", weight: 0.0066 },
-            { item: "model_89", weight: 0.0066 },
-            { item: "vepr12", weight: 0.0066 },
+            { item: "tango_51", weight: 0.005 },
+            { item: "model_89", weight: 0.005 },
+            { item: "vepr12", weight: 0.005 },
+            { item: "rgs", weight: 0.005 },
 
             // very rare shit
             { item: "rsh12", weight: 0.001 },
@@ -1052,9 +1076,10 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "mosin_nagant", weight: 0.033 },
 
             // 5% chance for one of these
-            { item: "tango_51", weight: 0.0166 },
-            { item: "model_89", weight: 0.0166 },
-            { item: "vepr12", weight: 0.0166 },
+            { item: "tango_51", weight: 0.0125 },
+            { item: "model_89", weight: 0.0125 },
+            { item: "vepr12", weight: 0.0125 },
+            { item: "rgs", weight: 0.0125 },
 
             // 1% chance for one of these
             { item: "m590m", weight: 0.002 },
@@ -1080,7 +1105,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "sky", weight: 0.7 },
             { item: "nebula", weight: 0.6 },
             { item: "ghillie_suit", weight: 0.1 },
-            { item: "basic_outfit", weight: 0.001 }
+            { item: "ancestral_garb", weight: 0.001 }
         ],
         airdrop_melee: [
             { item: NullString, weight: 1 },
@@ -1209,7 +1234,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "coal", weight: 1 },
             { item: "henrys_little_helper", weight: 1 },
             { item: "ghillie_suit", weight: 0.1 },
-            { item: "basic_outfit", weight: 0.001 }
+            { item: "ancestral_garb", weight: 0.001 }
         ]
     },
 
@@ -1310,6 +1335,25 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
                 { table: "healing_items", weight: 1 }
             ]
         ],
+        memorial_crate: [
+            [
+                { item: "mosin_nagant", weight: 1 },
+                { item: "vss", weight: 1 },
+                { item: "deagle", weight: 0.5 },
+                { item: "m1_garand", weight: 0.1 },
+                { item: "l115a1", weight: 0.1 },
+                { item: "dual_deagle", weight: 0.01 }
+            ],
+            [
+                { item: "ancestral_garb", weight: 1 },
+                { item: "timeless", weight: 1 }
+            ],
+            [
+                { table: "equipment", weight: 1 },
+                { table: "healing_items", weight: 1 }
+            ],
+            [{ item: "kukri", weight: 1 }]
+        ],
         gun_locker: {
             min: 1,
             max: 2,
@@ -1364,9 +1408,10 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "mosin_nagant", weight: 0.0133 },
 
             // 2% chance for one of these
-            { item: "tango_51", weight: 0.0066 },
-            { item: "model_89", weight: 0.0066 },
-            { item: "vepr12", weight: 0.0066 },
+            { item: "tango_51", weight: 0.005 },
+            { item: "model_89", weight: 0.005 },
+            { item: "vepr12", weight: 0.005 },
+            { item: "rgs", weight: 0.005 },
 
             // very rare shit
             { item: "rsh12", weight: 0.001 },
@@ -1396,9 +1441,10 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "mosin_nagant", weight: 0.033 },
 
             // 5% chance for one of these
-            { item: "tango_51", weight: 0.0166 },
-            { item: "model_89", weight: 0.0166 },
-            { item: "vepr12", weight: 0.0166 },
+            { item: "tango_51", weight: 0.0125 },
+            { item: "model_89", weight: 0.0125 },
+            { item: "vepr12", weight: 0.0125 },
+            { item: "rgs", weight: 0.0125 },
 
             // 1% chance for one of these
             { item: "m590m", weight: 0.002 },
@@ -1424,7 +1470,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "sky", weight: 0.7 },
             { item: "nebula", weight: 0.6 },
             { item: "ghillie_suit", weight: 0.1 },
-            { item: "basic_outfit", weight: 0.001 }
+            { item: "ancestral_garb", weight: 0.001 }
         ],
         airdrop_melee: [
             { item: NullString, weight: 1 },

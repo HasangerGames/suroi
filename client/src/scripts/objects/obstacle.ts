@@ -9,15 +9,15 @@ import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { random, randomBoolean, randomFloat, randomRotation } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Graphics } from "pixi.js";
-import { type Game } from "../game";
-import { type GameSound } from "../managers/soundManager";
+import { Game } from "../game";
+import { SoundManager, type GameSound } from "../managers/soundManager";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
-import { type Particle, type ParticleEmitter, type ParticleOptions } from "./particles";
+import { ParticleManager, type Particle, type ParticleEmitter, type ParticleOptions } from "../managers/particleManager";
 import { type Player } from "./player";
-import type { DebugRenderer } from "../utils/debugRenderer";
+import { DebugRenderer } from "../utils/debugRenderer";
 
 export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     override readonly damageable = true;
@@ -70,8 +70,8 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     private _flickerTimeout?: Timeout;
     private _glow?: Particle;
 
-    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Obstacle]) {
-        super(game, id);
+    constructor(id: number, data: ObjectsNetData[ObjectCategory.Obstacle]) {
+        super(id);
 
         this.image = new SuroiSprite();
         this.container.addChild(this.image);
@@ -119,7 +119,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 : [particleImage];
 
             if ((definition.explosion ?? ("emitParticles" in definition)) && !this.smokeEmitter) {
-                this.smokeEmitter = this.game.particleManager.addEmitter({
+                this.smokeEmitter = ParticleManager.addEmitter({
                     delay: 400,
                     active: false,
                     spawnOptions: () => ({
@@ -174,7 +174,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                             speed: Vec.fromPolar(randomRotation(), randomFloat(minSpeed, maxSpeed))
                         });
 
-                        this.game.particleManager.spawnParticle({
+                        ParticleManager.spawnParticle({
                             frames: "airdrop_particle_1",
                             position: this.position,
                             ...options(8, 18),
@@ -183,13 +183,13 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
                         texture = "airdrop_crate_unlocking";
 
-                        if (this.game.modeName === "winter") {
-                            this.game.particleManager.spawnParticles(1, () => ({
+                        if (Game.modeName === "winter") {
+                            ParticleManager.spawnParticles(1, () => ({
                                 frames: "airdrop_particle_4",
                                 position: this.hitbox.randomPoint(),
                                 ...options(7, 9)
                             } as ParticleOptions));
-                            this.game.particleManager.spawnParticles(2, () => ({
+                            ParticleManager.spawnParticles(2, () => ({
                                 frames: "airdrop_particle_5",
                                 position: this.hitbox.randomPoint(),
                                 ...options(4, 9)
@@ -197,12 +197,12 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         }
 
                         this.addTimeout(() => {
-                            this.game.particleManager.spawnParticles(2, () => ({
+                            ParticleManager.spawnParticles(2, () => ({
                                 frames: "airdrop_particle_2",
                                 position: this.hitbox.randomPoint(),
                                 ...options(4, 9)
                             } as ParticleOptions));
-                            this.game.particleManager.spawnParticles(2, () => ({
+                            ParticleManager.spawnParticles(2, () => ({
                                 frames: "airdrop_particle_3",
                                 position: this.hitbox.randomPoint(),
                                 ...options(4, 9)
@@ -236,7 +236,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             if (definition.glow !== undefined) {
                 const glow = definition.glow;
 
-                const particle = this._glow ??= this.game.particleManager.spawnParticle({
+                const particle = this._glow ??= ParticleManager.spawnParticle({
                     frames: "_glow_",
                     position: glow.position !== undefined
                         ? Vec.add(this.position, glow.position)
@@ -256,7 +256,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     window.setTimeout(() => {
                         if (this.dead) return;
 
-                        this._glowTween ??= this.game.addTween({
+                        this._glowTween ??= Game.addTween({
                             target: particle,
                             to: {
                                 scale: to
@@ -275,18 +275,18 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     // "i will write bad code but make it look pretty so that it doesn't look like bad code"
                     // -eiπ
 
-                    this._flickerTimeout ??= this.game.addTimeout(function flicker(): void {
+                    this._flickerTimeout ??= Game.addTimeout(function flicker(): void {
                         if (particle.dead) return;
                         if (Math.random() < chance) {
                             const old = particle.alpha;
                             particle.alpha *= strength;
-                            This._flickerTimeout = This.game.addTimeout(() => {
+                            This._flickerTimeout = Game.addTimeout(() => {
                                 if (particle.dead) return;
                                 particle.alpha = old;
-                                This._flickerTimeout = This.game.addTimeout(flicker, interval);
+                                This._flickerTimeout = Game.addTimeout(flicker, interval);
                             }, 50);
                         } else {
-                            This._flickerTimeout = This.game.addTimeout(flicker, interval);
+                            This._flickerTimeout = Game.addTimeout(flicker, interval);
                         }
                     }, interval);
                 }
@@ -329,7 +329,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     this.smokeEmitter.destroy();
                 }
 
-                this.game.particleManager.spawnParticles(10, () => ({
+                ParticleManager.spawnParticles(10, () => ({
                     frames: this.particleFrames,
                     position: this.hitbox.randomPoint(),
                     layer: this.layer,
@@ -397,19 +397,19 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 : ZIndexes.DeadObstacles
             : this.definition.zIndex ?? ZIndexes.ObstaclesLayer1;
 
-        this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, this.game.layer);
+        this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, Game.layer);
 
         // hides bunker doors on ground layer
-        if (this.definition.visibleFromLayers === Layers.All && this.game.activePlayer !== undefined) {
-            this.container.visible = adjacentOrEqualLayer(this.layer, this.game.layer ?? Layer.Ground);
+        if (this.definition.visibleFromLayers === Layers.All && Game.activePlayer !== undefined) {
+            this.container.visible = adjacentOrEqualLayer(this.layer, Game.layer ?? Layer.Ground);
         }
     }
 
-    override updateDebugGraphics(debugRenderer: DebugRenderer): void {
+    override updateDebugGraphics(): void {
         if (!DEBUG_CLIENT) return;
 
         const definition = this.definition;
-        const alpha = this.game.activePlayer !== undefined && equivLayer(this, this.game.activePlayer) ? 1 : DIFF_LAYER_HITBOX_OPACITY;
+        const alpha = Game.activePlayer !== undefined && equivLayer(this, Game.activePlayer) ? 1 : DIFF_LAYER_HITBOX_OPACITY;
 
         if (definition.isStair) {
             const hitbox = this.hitbox as RectangleHitbox;
@@ -465,7 +465,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         }
                     }
 
-                    debugRenderer.addLine(sides[i][0], sides[i][1], color, alpha);
+                    DebugRenderer.addLine(sides[i][0], sides[i][1], color, alpha);
                 }
 
                 // determine the line's endpoints
@@ -478,7 +478,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 const ratio = (vertexB.y - vertexA.y) / (vertexB.x - vertexA.x);
                 const protrusion = Numeric.min(2.5, 2.5 / ratio);
 
-                debugRenderer.addLine(
+                DebugRenderer.addLine(
                     Vec.create(vertexA.x - protrusion, vertexA.y - protrusion * ratio),
                     vertexA,
                     0xffff00,
@@ -495,26 +495,26 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     0.25 * alpha
                 );
             } else {
-                debugRenderer.addHitbox(hitbox,
+                DebugRenderer.addHitbox(hitbox,
                     definition.noCollisions || this.dead
                         ? HITBOX_COLORS.obstacleNoCollision
                         : HITBOX_COLORS.stair,
                     alpha
                 );
 
-                debugRenderer.addLine(
+                DebugRenderer.addLine(
                     sides[high][0],
                     sides[high][1],
                     0xff0000
                 );
-                debugRenderer.addLine(
+                DebugRenderer.addLine(
                     sides[low][0],
                     sides[low][1],
                     0x00ff00
                 );
             }
         } else {
-            debugRenderer.addHitbox(this.hitbox,
+            DebugRenderer.addHitbox(this.hitbox,
                 definition.noCollisions || this.dead
                     ? HITBOX_COLORS.obstacleNoCollision
                     : HITBOX_COLORS.obstacle,
@@ -523,7 +523,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         }
 
         if (definition.isDoor && definition.operationStyle !== "slide") {
-            debugRenderer.addCircle(
+            DebugRenderer.addCircle(
                 0.2,
                 Vec.addAdjust(this.position, definition.hingeOffset, this.orientation),
                 HITBOX_COLORS.obstacleNoCollision,
@@ -532,7 +532,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         }
 
         if (definition.spawnHitbox) {
-            debugRenderer.addHitbox(
+            DebugRenderer.addHitbox(
                 definition.spawnHitbox.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.spawnHitbox,
                 alpha
@@ -635,7 +635,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             );
 
             if (definition.operationStyle !== "slide") {
-                this.game.addTween({
+                Game.addTween({
                     target: this.image,
                     to: { rotation: Angle.orientationToRotation(offset) },
                     duration: definition.animationDuration ?? 150
@@ -649,10 +649,10 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     ) * PIXI_SCALE
                     : 0;
 
-                this.game.addTween({
+                Game.addTween({
                     target: this.image.position,
                     to: { x, y: 0 },
-                    duration: 150
+                    duration: definition.animationDuration ?? 150
                 });
             }
         }
@@ -660,18 +660,23 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
     canInteract(player: Player): boolean {
         type DoorDef = { openOnce?: boolean, automatic?: boolean };
-        return !this.dead && (
-            (
-                this._door !== undefined
-                && !this._door.locked
-                && !(this.definition as DoorDef).openOnce
-                && !(this.definition as DoorDef).automatic
-            ) || (
-                this.definition.isActivatable === true
-                && (this.definition.requiredItem === undefined || player.activeItem.idString === this.definition.requiredItem)
-                && !this.activated
+        return !this.dead
+            && (
+                this.definition.interactOnlyFromSide === undefined
+                || this.definition.interactOnlyFromSide === (this.hitbox as RectangleHitbox).getSide(player.position)
             )
-        );
+            && (
+                (
+                    this._door !== undefined
+                    && !this._door.locked
+                    && !(this.definition as DoorDef).automatic
+                    && !((this.definition as DoorDef).openOnce && this._door.offset === 1)
+                ) || (
+                    this.definition.isActivatable === true
+                    && (this.definition.requiredItem === undefined || player.activeItem.idString === this.definition.requiredItem)
+                    && !this.activated
+                )
+            );
     }
 
     hitEffect(position: Vector, angle: number): void {
@@ -680,7 +685,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         if (!this.definition.hitSoundVariations) this.hitSound?.stop();
 
         const { material } = this.definition;
-        this.hitSound = this.game.soundManager.play(
+        this.hitSound = SoundManager.play(
             `${MaterialSounds[material]?.hit ?? material}_hit_${this.definition.hitSoundVariations ? random(1, this.definition.hitSoundVariations) : randomBoolean() ? "1" : "2"}`,
             {
                 position,
@@ -690,7 +695,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             }
         );
 
-        this.game.particleManager.spawnParticle({
+        ParticleManager.spawnParticle({
             frames: this.particleFrames,
             position,
             zIndex: Numeric.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),

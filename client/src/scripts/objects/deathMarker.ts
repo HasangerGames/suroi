@@ -4,12 +4,13 @@ import { getEffectiveZIndex } from "@common/utils/layer";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Text, type Container } from "pixi.js";
-import { type Game } from "../game";
+import { Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
-import type { DebugRenderer } from "../utils/debugRenderer";
+import { DebugRenderer } from "../utils/debugRenderer";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
+import { UIManager } from "../managers/uiManager";
 
 export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
     playerName!: string;
@@ -22,8 +23,8 @@ export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
     scaleAnim?: Tween<Vector>;
     alphaAnim?: Tween<Container>;
 
-    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.DeathMarker]) {
-        super(game, id);
+    constructor(id: number, data: ObjectsNetData[ObjectCategory.DeathMarker]) {
+        super(id);
 
         this.image = new SuroiSprite("death_marker");
         this.playerNameText = new Text({
@@ -55,9 +56,9 @@ export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
 
         this.updateZIndex();
 
-        const player = this.game.playerNames.get(data.playerID);
+        const player = Game.playerNames.get(data.playerID);
 
-        const playerName = this.game.uiManager.getRawPlayerName(data.playerID);
+        const playerName = UIManager.getRawPlayerName(data.playerID);
 
         if (player) {
             this.playerName = playerName;
@@ -88,7 +89,7 @@ export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
         if (data.isNew && isNew) {
             this.container.scale.set(0.5);
             this.container.alpha = 0;
-            this.scaleAnim = this.game.addTween({
+            this.scaleAnim = Game.addTween({
                 target: this.container.scale,
                 to: { x: 1, y: 1 },
                 duration: 400,
@@ -97,7 +98,7 @@ export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
                 }
             });
 
-            this.alphaAnim = this.game.addTween({
+            this.alphaAnim = Game.addTween({
                 target: this.container,
                 to: { alpha: 1 },
                 duration: 400,
@@ -112,20 +113,20 @@ export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
         this.container.zIndex = getEffectiveZIndex(
             this.doOverlay() ? ZIndexes.UnderWaterDeadObstacles : ZIndexes.DeathMarkers,
             this.layer,
-            this.game.layer
+            Game.layer
         );
     }
 
     override update(): void { /* bleh */ }
     override updateInterpolation(): void { /* bleh */ }
-    updateDebugGraphics(debugRenderer: DebugRenderer): void {
+    updateDebugGraphics(): void {
         if (!DEBUG_CLIENT) return;
 
-        debugRenderer.addCircle(
+        DebugRenderer.addCircle(
             0.1,
             this.position,
             HITBOX_COLORS.obstacleNoCollision,
-            this.layer === this.game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
+            this.layer === Game.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
         );
     }
 

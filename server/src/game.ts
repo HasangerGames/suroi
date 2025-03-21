@@ -1,32 +1,31 @@
-import { GameConstants, KillfeedMessageType, Layer, MapObjectSpawnMode, ObjectCategory, TeamSize } from "@common/constants";
+import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory, TeamSize } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { SyncedParticles, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
-import { PlayerInputPacket } from "@common/packets/inputPacket";
-import { JoinPacket, type JoinPacketData } from "@common/packets/joinPacket";
+import { type JoinData } from "@common/packets/joinPacket";
 import { JoinedPacket } from "@common/packets/joinedPacket";
-import { KillFeedPacket, type KillFeedPacketData } from "@common/packets/killFeedPacket";
-import { type InputPacket, type OutputPacket } from "@common/packets/packet";
+import { PacketDataIn, PacketType } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
-import { SpectatePacket } from "@common/packets/spectatePacket";
 import { type PingSerialization } from "@common/packets/updatePacket";
 import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Geometry, Numeric, Statistics } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
 import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray, randomPointInsideCircle, randomRotation } from "@common/utils/random";
-import { type SuroiByteStream } from "@common/utils/suroiByteStream";
+import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { Vec, type Vector } from "@common/utils/vector";
-import { type WebSocket } from "uWebSockets.js";
-import { parentPort } from "worker_threads";
 
+import { Bullets, type BulletDefinition } from "@common/definitions/bullets";
+import type { SingleGunNarrowing } from "@common/definitions/items/guns";
 import { Mode, ModeDefinition, Modes } from "@common/definitions/modes";
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
+import type { WebSocket } from "uWebSockets.js";
 import { Config, MapWithParams, SpawnMode } from "./config";
+import { GAME_SPAWN_WINDOW } from "./data/gasStages";
 import { MapName, Maps } from "./data/maps";
-import { WorkerMessages, type GameData, type WorkerMessage } from "./gameManager";
+import { type GameData } from "./gameManager";
 import { Gas } from "./gas";
 import { GunItem } from "./inventory/gunItem";
 import type { MeleeItem } from "./inventory/meleeItem";
@@ -38,7 +37,7 @@ import { Explosion } from "./objects/explosion";
 import { type BaseGameObject, type GameObject } from "./objects/gameObject";
 import { Loot, type ItemData } from "./objects/loot";
 import { Parachute } from "./objects/parachute";
-import { Player, type PlayerContainer } from "./objects/player";
+import { Player, type PlayerSocketData } from "./objects/player";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { Projectile, ProjectileParams } from "./objects/projectile";
 import { PluginManager } from "./pluginManager";
@@ -47,17 +46,7 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getSpawnableLoots, SpawnableItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap, removeFrom } from "./utils/misc";
-import { GAME_SPAWN_WINDOW } from "./data/gasStages";
 
-/*
-    eslint-disable
-
-    @stylistic/indent-binary-ops
-*/
-
-/*
-    `@stylistic/indent-binary-ops`: eslint sucks at indenting ts types
- */
 export class Game implements GameData {
     public readonly id: number;
 
@@ -89,16 +78,16 @@ export class Game implements GameData {
     /**
      * Packets created this tick that will be sent to all players
      */
-    readonly packets: InputPacket[] = [];
+    readonly packets: PacketDataIn[] = [];
 
-    readonly maxTeamSize: TeamSize;
+    readonly teamSize: TeamSize;
 
     readonly teamMode: boolean;
 
     readonly teams = new (class SetArray<T> extends Set<T> {
         private _valueCache?: T[];
         get valueArray(): T[] {
-            return this._valueCache ??= [...super.values()];
+            return this._valueCache ??= Array.from(super.values());
         }
 
         add(value: T): this {
@@ -120,7 +109,7 @@ export class Game implements GameData {
 
         values(): IterableIterator<T> {
             const iterator = this.values();
-            this._valueCache ??= [...iterator];
+            this._valueCache ??= Array.from(iterator);
 
             return iterator;
         }
@@ -161,6 +150,9 @@ export class Game implements GameData {
      */
     readonly mapPings: PingSerialization[] = [];
 
+    killLeader: Player | undefined;
+    killLeaderDirty = false;
+
     private readonly _spawnableItemTypeCache = [] as Cache;
 
     private _spawnableLoots: SpawnableItemRegistry | undefined;
@@ -184,15 +176,16 @@ export class Game implements GameData {
     allowJoin = false;
     over = false;
     stopped = false;
+
     get aliveCount(): number {
         return this.livingPlayers.size;
     }
 
+    aliveCountDirty = false;
+
     // #endregion
 
     startTimeout?: Timeout;
-
-    aliveCountDirty = false;
 
     /**
      * The value of `Date.now()`, as of the start of the tick.
@@ -207,8 +200,6 @@ export class Game implements GameData {
      */
     private _dt = this.idealDt;
     get dt(): number { return this._dt; }
-
-    private readonly _tickInterval: NodeJS.Timeout;
 
     private readonly _tickTimes: number[] = [];
 
@@ -226,10 +217,10 @@ export class Game implements GameData {
         return this._idAllocator.takeNext();
     }
 
-    constructor(id: number, maxTeamSize: TeamSize, map: MapWithParams) {
+    constructor(id: number, teamSize: TeamSize, map: MapWithParams) {
         this.id = id;
-        this.maxTeamSize = maxTeamSize;
-        this.teamMode = this.maxTeamSize > TeamSize.Solo;
+        this.teamSize = teamSize;
+        this.teamMode = this.teamSize > TeamSize.Solo;
         this.updateGameData({
             aliveCount: 0,
             allowJoin: false,
@@ -253,7 +244,7 @@ export class Game implements GameData {
         this.log(`Created in ${Date.now() - this._start} ms`);
 
         // Start the tick loop
-        this._tickInterval = setInterval(this.tick.bind(this), this.idealDt);
+        this.tick();
     }
 
     log(...message: unknown[]): void {
@@ -268,28 +259,27 @@ export class Game implements GameData {
         Logger.log(styleText(`[Game ${this.id}] [ERROR]`, ColorStyles.foreground.red.normal), ...message);
     }
 
-    onMessage(stream: SuroiByteStream, player: Player): void {
-        const packetStream = new PacketStream(stream);
-        while (true) {
-            const packet = packetStream.deserializeClientPacket();
-            if (packet === undefined) break;
-            this.onPacket(packet, player);
-        }
-    }
+    onMessage(player: Player | undefined, message: ArrayBuffer): void {
+        if (!player) return;
 
-    onPacket(packet: OutputPacket, player: Player): void {
-        switch (true) {
-            case packet instanceof JoinPacket:
-                this.activatePlayer(player, packet.output);
-                break;
-            case packet instanceof PlayerInputPacket:
-                // Ignore input packets from players that haven't finished joining, dead players, or if the game is over
-                if (!player.joined || player.dead || this.over) return;
-                player.processInputs(packet.output);
-                break;
-            case packet instanceof SpectatePacket:
-                player.spectate(packet.output);
-                break;
+        const packetStream = new PacketStream(new SuroiByteStream(message));
+        while (true) {
+            const packet = packetStream.deserialize();
+            if (packet === undefined) break;
+
+            switch (packet.type) {
+                case PacketType.Join:
+                    this.activatePlayer(player, packet);
+                    break;
+                case PacketType.Input:
+                    // Ignore input packets from players that haven't finished joining, dead players, or if the game is over
+                    if (!player.joined || player.dead || this.over) break;
+                    player.processInputs(packet);
+                    break;
+                case PacketType.Spectate:
+                    player.spectate(packet);
+                    break;
+            }
         }
     }
 
@@ -375,15 +365,14 @@ export class Game implements GameData {
         this.gas.tick();
 
         // First loop over players: movement, animations, & actions
-        for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
-            if (!player.dead) player.update();
+        for (const player of this.livingPlayers) {
+            player.update();
         }
 
-        // Cache objects serialization
+        // Serialize dirty objects
         for (const partialObject of this.partialDirtyObjects) {
-            if (!this.fullDirtyObjects.has(partialObject)) {
-                partialObject.serializePartial();
-            }
+            if (this.fullDirtyObjects.has(partialObject)) continue;
+            partialObject.serializePartial();
         }
         for (const fullObject of this.fullDirtyObjects) {
             fullObject.serializeFull();
@@ -391,14 +380,11 @@ export class Game implements GameData {
 
         // Second loop over players: calculate visible objects & send updates
         for (const player of this.connectedPlayers) {
-            if (!player.joined) continue;
             player.secondUpdate();
         }
 
         // Third loop over players: clean up after all packets have been sent
         for (const player of this.connectedPlayers) {
-            if (!player.joined) continue;
-
             player.postPacket();
         }
 
@@ -413,6 +399,7 @@ export class Game implements GameData {
         this.packets.length = 0;
         this.planes.length = 0;
         this.mapPings.length = 0;
+        this.killLeaderDirty = false;
         this.aliveCountDirty = false;
         this.gas.dirty = false;
         this.gas.completionRatioDirty = false;
@@ -425,7 +412,7 @@ export class Game implements GameData {
             && !Config.startImmediately
             && (
                 this.teamMode
-                    ? this.aliveCount <= (this.maxTeamSize as number) && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
+                    ? this.aliveCount <= (this.teamSize as number) && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
                     : this.aliveCount <= 1
             )
         ) {
@@ -455,7 +442,7 @@ export class Game implements GameData {
         // Record performance and start the next tick
         // THIS TICK COUNTER IS WORKING CORRECTLY!
         // It measures the time it takes to calculate a tick, not the time between ticks.
-        const tickTime = Date.now() - this.now;
+        const tickTime = Date.now() - now;
         this._tickTimes.push(tickTime);
 
         if (this._tickTimes.length >= 200) {
@@ -467,10 +454,10 @@ export class Game implements GameData {
 
         this.pluginManager.emit("game_tick", this);
 
-        if (this.stopped) {
-            clearInterval(this._tickInterval);
+        if (!this.stopped) {
+            setTimeout(this.tick.bind(this), this.idealDt - (Date.now() - now));
         }
-    };
+    }
 
     setGameData(data: Partial<Omit<GameData, "aliveCount">>): void {
         for (const [key, value] of Object.entries(data)) {
@@ -481,7 +468,7 @@ export class Game implements GameData {
     }
 
     updateGameData(data: Partial<GameData>): void {
-        parentPort?.postMessage({ type: WorkerMessages.UpdateGameData, data } satisfies WorkerMessage);
+        process.send?.(data);
     }
 
     kill(): void {
@@ -498,74 +485,41 @@ export class Game implements GameData {
         this.log("Killed");
     }
 
-    private _killLeader: Player | undefined;
-    get killLeader(): Player | undefined { return this._killLeader; }
-
     updateKillLeader(player: Player): void {
-        const oldKillLeader = this._killLeader;
+        const killLeader = this.killLeader;
 
-        if (player.kills > (this._killLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
-            this._killLeader = player;
-
-            if (oldKillLeader !== this._killLeader) {
-                this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
-            }
-        } else if (player === oldKillLeader) {
-            this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderUpdated);
+        if (
+            player.kills > (killLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1))
+            && !player.dead
+            && player !== killLeader
+        ) {
+            this.killLeader = player;
+            this.killLeaderDirty = true;
+        } else if (player === killLeader) {
+            this.killLeaderDirty = true;
         }
     }
 
-    killLeaderDead(killer?: Player): void {
-        this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderDeadOrDisconnected, { attackerId: killer?.id });
+    findNewKillLeader(): void {
+        let mostKills = GameConstants.player.killLeaderMinKills - 1;
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
-            if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
+            if (player.kills > mostKills) {
+                mostKills = player.kills;
                 newKillLeader = player;
+            } else if (player.kills === mostKills) { // multiple players with the same kills means no leader
+                newKillLeader = undefined;
             }
         }
-        this._killLeader = newKillLeader;
-        this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
+        this.killLeader = newKillLeader;
+        this.killLeaderDirty = true;
     }
 
-    killLeaderDisconnected(leader: Player): void {
-        this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderDeadOrDisconnected, { disconnected: true });
-        let newKillLeader: Player | undefined;
-        for (const player of this.livingPlayers) {
-            if (player === leader) continue;
-            if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
-                newKillLeader = player;
-            }
-        }
-
-        if ((this._killLeader = newKillLeader) !== undefined) {
-            this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
-        }
-    }
-
-    private _sendKillLeaderKFPacket<
-        Message extends
-            | KillfeedMessageType.KillLeaderAssigned
-            | KillfeedMessageType.KillLeaderDeadOrDisconnected
-            | KillfeedMessageType.KillLeaderUpdated
-    >(
-        messageType: Message,
-        options?: Partial<Omit<KillFeedPacketData & { readonly messageType: NoInfer<Message> }, "messageType" | "playerID" | "attackerKills">>
-    ): void {
-        if (this._killLeader === undefined) return;
-
-        this.packets.push(
-            KillFeedPacket.create({
-                messageType,
-                victimId: this._killLeader.id,
-                attackerKills: this._killLeader.kills,
-                ...options
-            } as KillFeedPacketData & { readonly messageType: Message })
-        );
-    }
-
-    addPlayer(socket: WebSocket<PlayerContainer>): Player | undefined {
-        if (this.pluginManager.emit("player_will_connect")) {
-            return undefined;
+    addPlayer(socket?: WebSocket<PlayerSocketData>): Player | undefined {
+        const rejectedBy = this.pluginManager.emit("player_will_connect");
+        if (rejectedBy) {
+            socket?.end(1000, `Connection rejected by server plugin '${rejectedBy.constructor.name}'`);
+            return;
         }
 
         let spawnPosition = Vec.create(this.map.width / 2, this.map.height / 2);
@@ -573,7 +527,7 @@ export class Game implements GameData {
 
         let team: Team | undefined;
         if (this.teamMode) {
-            const { teamID, autoFill } = socket.getUserData();
+            const { teamID, autoFill } = socket?.getUserData() ?? {};
 
             if (teamID) {
                 team = this.customTeams.get(teamID);
@@ -581,7 +535,7 @@ export class Game implements GameData {
                 if (
                     !team // team doesn't exist
                     || (team.players.length && !team.hasLivingPlayers()) // team isn't empty but has no living players
-                    || team.players.length >= (this.maxTeamSize as number) // team is full
+                    || team.players.length >= (this.teamSize as number) // team is full
                 ) {
                     this.teams.add(team = new Team(this.nextTeamID, autoFill));
                     this.customTeams.set(teamID, team);
@@ -590,7 +544,7 @@ export class Game implements GameData {
                 const vacantTeams = this.teams.valueArray.filter(
                     team =>
                         team.autoFill
-                        && team.players.length < (this.maxTeamSize as number)
+                        && team.players.length < (this.teamSize as number)
                         && team.hasLivingPlayers()
                 );
                 if (vacantTeams.length) {
@@ -607,7 +561,7 @@ export class Game implements GameData {
         switch (spawnOptions.mode) {
             case SpawnMode.Normal: {
                 const hitbox = new CircleHitbox(5);
-                const gasPosition = this.gas.currentPosition;
+                const gasPosition = this.gas.newPosition;
                 const gasRadius = this.gas.newRadius ** 2;
                 const teamPosition = this.teamMode
                     // teamMode should guarantee the `team` object's existence
@@ -616,7 +570,11 @@ export class Game implements GameData {
                     : undefined;
 
                 let foundPosition = false;
-                for (let tries = 0; !foundPosition && tries < 200; tries++) {
+                const maxTries = 200;
+                const spawnDistance = 160;
+                const distanceInterval = 20;
+                const reduceDistanceAmount = 10;
+                for (let tries = 0; !foundPosition && tries < maxTries; tries++) {
                     const position = this.map.getRandomPosition(
                         hitbox,
                         {
@@ -631,14 +589,16 @@ export class Game implements GameData {
 
                     // Break if the above code couldn't find a valid position, as it's unlikely that subsequent loops will
                     if (!position) break;
-                    else spawnPosition = position;
+                    spawnPosition = position;
 
-                    // Ensure the position is at least 60 units from other players
+                    const minSpawnDist = Numeric.clamp(spawnDistance - (Math.floor(tries / distanceInterval) * reduceDistanceAmount), 0, spawnDistance);
+
                     foundPosition = true;
-                    const radiusHitbox = new CircleHitbox(60, spawnPosition);
+                    const radiusHitbox = new CircleHitbox(minSpawnDist, spawnPosition);
                     for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
                         if (
                             object.isPlayer
+                            && !object.dead
                             // teamMode should guarantee the `team` object's existence
                             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                             && (!this.teamMode || !team!.players.includes(object))
@@ -650,6 +610,7 @@ export class Game implements GameData {
 
                 // Spawn on top of a random teammate if a valid position couldn't be found
                 if (!foundPosition && teamPosition) spawnPosition = teamPosition;
+
                 break;
             }
             case SpawnMode.Radius: {
@@ -680,7 +641,7 @@ export class Game implements GameData {
     }
 
     // Called when a JoinPacket is sent by the client
-    activatePlayer(player: Player, packet: JoinPacketData): void {
+    activatePlayer(player: Player, packet: JoinData): void {
         if (player.joined) return;
         const rejectedBy = this.pluginManager.emit("player_will_join", { player, joinPacket: packet });
         if (rejectedBy) {
@@ -729,7 +690,7 @@ export class Game implements GameData {
         player.sendPacket(
             JoinedPacket.create(
                 {
-                    maxTeamSize: this.maxTeamSize,
+                    teamSize: this.teamSize,
                     teamID: player.teamID ?? 0,
                     emotes: player.loadout.emotes
                 }
@@ -758,19 +719,19 @@ export class Game implements GameData {
         }
 
         this.log(`"${player.name}" joined`);
-        // AccessLog to store usernames for this connection
-        if (Config.protection?.punishments) {
+        // Access log to store usernames for this connection
+        if (Config.apiServer) {
             const username = player.name;
             if (username) {
                 fetch(
-                    `${Config.protection.punishments.url}/accesslog/${player.ip || "none"}`,
+                    `${Config.apiServer.url}/accesslog/${player.ip || "none"}`,
                     {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
-                            "api-key": Config.protection.punishments.password || "none"
+                            "api-key": Config.apiServer.apiKey || "none"
                         },
-                        body: `{ "username": "${username}" }`
+                        body: JSON.stringify({ username })
                     }
                 ).catch(console.error);
             }
@@ -778,16 +739,17 @@ export class Game implements GameData {
         this.pluginManager.emit("player_did_join", { player, joinPacket: packet });
     }
 
-    removePlayer(player: Player): void {
-        this.log(`"${player.name}" left`);
-
-        if (player === this.killLeader) {
-            this.killLeaderDisconnected(player);
-        }
-
+    removePlayer(player: Player, reason?: string): void {
+        if (player.disconnected) return;
         player.disconnected = true;
         this.aliveCountDirty = true;
         this.connectedPlayers.delete(player);
+
+        this.log(`"${player.name}" left`);
+
+        if (player === this.killLeader) {
+            this.findNewKillLeader();
+        }
 
         if (player.canDespawn) {
             this.livingPlayers.delete(player);
@@ -827,11 +789,13 @@ export class Game implements GameData {
         }
 
         try {
-            player.socket.close();
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (_) {
-            /* not a really big deal if we can't close the socket */
-            // when does this ever fail?
+            if (reason) {
+                player.socket?.end(1000, reason);
+            } else {
+                player.socket?.close();
+            }
+        } catch {
+            // not a really big deal if we can't close the socket (when does this ever fail?)
         }
         this.pluginManager.emit("player_disconnect", player);
     }
@@ -945,12 +909,33 @@ export class Game implements GameData {
         this.removeObject(loot);
     }
 
-    addBullet(source: GunItem | Explosion, shooter: GameObject, options: ServerBulletOptions): Bullet {
+    addBullet(
+        source: GunItem | Explosion,
+        shooter: GameObject,
+        options: Omit<ServerBulletOptions, "idString"> & { readonly idString?: ReferenceTo<BulletDefinition> }
+    ): Bullet | undefined {
+        const reference = source instanceof GunItem && source.definition.isDual
+            ? Loots.fromString<SingleGunNarrowing>(source.definition.singleVariant)
+            : source.definition;
+
+        const idString = options.idString ?? `${reference.idString}_bullet`;
+
+        const def = Bullets.fromString(idString);
+        let range = def.range * (options.modifiers?.range ?? 1);
+        if (def.allowRangeOverride && options.rangeOverride !== undefined) {
+            range = Numeric.clamp(options.rangeOverride, 0, range);
+        }
+
+        if (range <= 0) return;
+
         const bullet = new Bullet(
             this,
             source,
             shooter,
-            options
+            {
+                ...options,
+                idString
+            }
         );
 
         this.bullets.add(bullet);

@@ -524,6 +524,12 @@
           <div id="gas-msg" style="display: none">
             <div id="gas-msg-info"></div>
           </div>
+          <div id="recording-pill" style="display: none">
+            <i class="fa-solid fa-video" style="margin-top: -2px"></i>
+            <span translation="recording"></span>
+            <span id="recording-time">0:00</span>
+            <button id="stop-recording-button"><i class="fa-solid fa-stop"></i></button>
+          </div>
         </div>
 
         <div id="kill-msg" style="display: none">
@@ -671,7 +677,7 @@
         <input type="checkbox" class="regular-checkbox" id="warning-modal-agree-checkbox">
         <label for="warning-modal-agree-checkbox" translation="msg_punishment_warn_agreement"></label>
         <br><br>
-        <button class="btn btn-lg btn-darken btn-primary btn-disabled" id="warning-btn-play-solo" style="width: 100%"><strong>Continue</strong></button>
+        <button class="btn btn-lg btn-darken btn-primary btn-disabled" id="warning-continue-btn" style="width: 100%"><strong>Continue</strong></button>
       </div>
     </div>
   </div>
@@ -758,6 +764,12 @@
               <input type="checkbox" id="toggle-high-res">
             </label>
           </div>
+          <div id="alt-texture-loading-item" class="modal-item checkbox-setting">
+            <label>
+              <span class="setting-title"><span translation="settings_alt_texture_loading"></span><i>*</i></span>
+              <input type="checkbox" id="toggle-alt-texture-loading">
+            </label>
+          </div>
           <div class="modal-item checkbox-setting">
             <label>
               <span class="setting-title" translation="settings_cooler_graphics"></span>
@@ -792,6 +804,17 @@
             <label>
               <span class="setting-title" translation="settings_camera_shake"></span>
               <input type="checkbox" id="toggle-camera-shake">
+            </label>
+          </div>
+          <div class="modal-item select-setting">
+            <label>
+              <span class="setting-title" translation="settings_record_res"></span>
+              <select id="record-res-select">
+                <option value="480p">480p</option>
+                <option value="720p">720p</option>
+                <option value="1080p">1080p</option>
+                <option value="maximum">Maximum</option>
+              </select>
             </label>
           </div>
           <p style="color: red"><i translation="settings_require_reload"></i></p>
@@ -963,6 +986,17 @@
           </div>
           <div class="modal-item">
             <label>
+              <span class="setting-title" translation="settings_left_joystick_color"></span>
+              <input type="color" style="margin-right: 135px" id="left-joystick-color-picker">
+            </label>
+          </div>
+          <div style="margin-top: 25px" class="modal-item">
+            <label>
+              <span class="setting-title" translation="settings_right_joystick_color"></span>
+              <input type="color" style="margin-right: 135px" id="right-joystick-color-picker">
+            </label>
+          </div>
+          <div class="modal-item checkbox-setting" style="margin-top: 25px">
               <span class="setting-title" translation="settings_gyro_angle"></span>
               <span class="range-input-value"></span>
               <input type="range" max="45" min="0" id="slider-gyro-angle" step="1">
@@ -970,8 +1004,21 @@
           </div>
           <div class="modal-item checkbox-setting">
             <label>
+              <span class="setting-title" translation="settings_switch_joysticks"></span>
+              <input type="checkbox" id="toggle-mobile-joysticks">
+            </label>
+          </div>
+          <p style="color: red; font-size: 15px"><i id="mb-joystick-info"></i></p>
+          <div class="modal-item checkbox-setting">
+            <label>
               <span class="setting-title" translation="settings_autopickup"></span>
               <input type="checkbox" id="toggle-auto-pickup">
+            </label>
+          </div>
+          <div class="modal-item checkbox-setting">
+            <label>
+              <span class="setting-title" translation="settings_lock_joysticks"></span>
+              <input type="checkbox" id="toggle-mobile-joystick-lock">
             </label>
           </div>
           <div class="modal-item checkbox-setting">
@@ -1149,6 +1196,10 @@
           <label>
             <span class="setting-title" translation="create_team_lock"></span>
             <input type="checkbox" id="create-team-toggle-lock">
+          </label>
+          <label>
+            <span class="setting-title" translation="create_team_force_start"></span>
+            <input type="checkbox" id="create-team-toggle-force-start">
           </label>
         </div>
         <button class="btn btn-lg btn-darken btn-primary" id="btn-start-game">

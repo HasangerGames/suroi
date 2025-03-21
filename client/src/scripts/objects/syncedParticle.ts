@@ -4,10 +4,11 @@ import { getEffectiveZIndex } from "@common/utils/layer";
 import { Angle, EaseFunctions, Numeric } from "@common/utils/math";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { Vec, type Vector } from "@common/utils/vector";
-import { type Game } from "../game";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
+import { Game } from "../game";
+import { DebugRenderer } from "../utils/debugRenderer";
 
 export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParticle) {
     readonly image = new SuroiSprite();
@@ -27,8 +28,8 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
     private _definition!: SyncedParticleDefinition;
     get definition(): SyncedParticleDefinition { return this._definition; }
 
-    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.SyncedParticle]) {
-        super(game, id);
+    constructor(id: number, data: ObjectsNetData[ObjectCategory.SyncedParticle]) {
+        super(id);
 
         this.container.addChild(this.image);
         this.updateFromData(data, true);
@@ -79,7 +80,7 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
         }
 
         if (
-            creatorID === this.game.activePlayerID
+            creatorID === Game.activePlayerID
             && typeof definition.alpha === "object"
             && "creatorMult" in definition.alpha
             && definition.alpha.creatorMult !== undefined
@@ -102,17 +103,17 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
     }
 
     override updateZIndex(): void {
-        this.container.zIndex = getEffectiveZIndex(this.definition.zIndex, this.layer, this.game.layer);
+        this.container.zIndex = getEffectiveZIndex(this.definition.zIndex, this.layer, Game.layer);
     }
 
     override updateDebugGraphics(): void {
         if (!DEBUG_CLIENT) return;
         if (!this.definition.hitbox) return;
 
-        this.game.debugRenderer.addHitbox(
+        DebugRenderer.addHitbox(
             this.definition.hitbox.transform(this.position, this.container.scale.x),
             HITBOX_COLORS.obstacleNoCollision,
-            this.layer === this.game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
+            this.layer === Game.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
         );
     }
 

@@ -118,57 +118,90 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         damage: 34,
         speedMultiplier: 1,
         obstacleMultiplier: 1.5,
-        radius: 3.8,
-        offset: Vec.create(4.5, 2.2),
+        radius: 4,
+        offset: Vec.create(3.8, 2.2),
         cooldown: 450,
-        hitDelay: 150,
         fists: {
             animationDuration: 150,
-            left: Vec.create(-30, 40),
-            right: Vec.create(-10, 50)
-        },
-        image: {
-            position: Vec.create(-30, 19),
-            angle: -110,
-            pivot: Vec.create(-20, 50),
-            lootScale: 0.55
+            left: Vec.create(55, -15),
+            right: Vec.create(45, 0)
         },
         animation: [
-            { // warmup
+            {
                 duration: 150,
                 fists: {
-                    left: Vec.create(-40, 35),
-                    right: Vec.create(-25, 55)
+                    left: Vec.create(28, -15),
+                    right: Vec.create(50, -15)
                 },
                 image: {
-                    position: Vec.create(-25, 20),
-                    angle: -65
-                }
-            },
-            { // swing
-                duration: 150,
-                fists: {
-                    left: Vec.create(50, -5),
-                    right: Vec.create(60, -10)
-                },
-                image: {
-                    position: Vec.create(65, 27),
-                    angle: -350
+                    position: Vec.create(115, -14),
+                    angle: 45
                 }
             },
             {
                 duration: 150,
                 fists: {
-                    left: Vec.create(-30, 40),
-                    right: Vec.create(-10, 50)
+                    left: Vec.create(55, -15),
+                    right: Vec.create(45, 0)
                 },
                 image: {
-                    position: Vec.create(-30, 19),
-                    angle: -110
+                    position: Vec.create(35, 45),
+                    angle: 155
                 }
             }
-        ]
+        ],
+        image: {
+            position: Vec.create(35, 45),
+            angle: 155,
+            lootScale: 0.55
+        }
     },
+    /**
+    {
+                idString: "baseball_bat",
+                name: "Baseball Bat",
+                swingSound: "heavy_swing",
+                damage: 34,
+                obstacleMultiplier: 1.5,
+                radius: 3.8,
+                offset: Vec.create(3.8, 2.2),
+                cooldown: 340,
+                fists: {
+                    animationDuration: 150,
+                    left: Vec.create(55, -15),
+                    right: Vec.create(45, 0)
+                },
+                animation: [
+                    {
+                        duration: 150,
+                        fists: {
+                            left: Vec.create(28, -15),
+                            right: Vec.create(50, -15)
+                        },
+                        image: {
+                            position: Vec.create(115, -14),
+                            angle: 45
+                        }
+                    },
+                    {
+                        duration: 150,
+                        fists: {
+                            left: Vec.create(55, -15),
+                            right: Vec.create(45, 0)
+                        },
+                        image: {
+                            position: Vec.create(35, 45),
+                            angle: 155
+                        }
+                    }
+                ],
+                image: {
+                    position: Vec.create(35, 45),
+                    angle: 155,
+                    lootScale: 0.55
+                }
+            },
+    */
     {
         idString: "hatchet",
         name: "Hatchet",
@@ -181,7 +214,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         swingSound: "heavy_swing",
         offset: Vec.create(5.4, -0.5),
         cooldown: 420,
-        hitDelay: 250,
+        hitDelay: 180,
         fists: {
             animationDuration: 150,
             left: Vec.create(40, -25),
@@ -241,7 +274,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         swingSound: "heavy_swing",
         offset: Vec.create(5.4, -0.5),
         cooldown: 420,
-        hitDelay: 250,
+        hitDelay: 180,
         fists: {
             animationDuration: 150,
             left: Vec.create(40, -25),
@@ -446,7 +479,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         radius: 2.7,
         offset: Vec.create(5.4, -0.5),
         cooldown: 450,
-        hitDelay: 250,
+        hitDelay: 180,
         fists: {
             animationDuration: 150,
             left: Vec.create(40, -25),
@@ -655,7 +688,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         radius: 2.8,
         offset: Vec.create(5.4, -0.5),
         cooldown: 350,
-        hitDelay: 250,
+        hitDelay: 180,
         fists: {
             animationDuration: 150,
             left: Vec.create(40, -30),
@@ -860,15 +893,15 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         offset: Vec.create(5.5, 2),
         cooldown: 800,
         reflectiveSurface: {
-            pointA: Vec.create(3.8, -2.5),
-            pointB: Vec.create(2.5, 1.025)
+            pointA: Vec.create(3.55, -2),
+            pointB: Vec.create(2.6, 0.66)
         },
         onBack: {
             angle: 35,
             position: Vec.create(-45, 30),
             reflectiveSurface: {
-                pointA: Vec.create(-3, 0.8),
-                pointB: Vec.create(0.25, 3)
+                pointA: Vec.create(-2.83, 0.96),
+                pointB: Vec.create(-0.35, 2.62)
             }
         },
         fists: {
@@ -904,6 +937,66 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
                 image: {
                     angle: -70,
                     position: Vec.create(60, 4)
+                }
+            }
+        ]
+    },
+    {
+        idString: "kukri",
+        name: "Kukri",
+        itemType: ItemType.Melee,
+        swingSound: "soft_swing",
+        hitSound: "kukri_stab",
+        damage: 40,
+        speedMultiplier: 1,
+        obstacleMultiplier: 1,
+        radius: 2.5,
+        iceMultiplier: 0.1,
+        offset: Vec.create(4.25, -0.8),
+        cooldown: 350,
+        fists: {
+            animationDuration: 150,
+            left: Vec.create(38, -35),
+            right: Vec.create(0, 45)
+        },
+        image: {
+            position: Vec.create(45, 45),
+            angle: 50,
+            lootScale: 0.75
+        },
+        hitDelay: 100,
+        animation: [
+            { // warmup
+                duration: 100,
+                fists: {
+                    left: Vec.create(38, -35),
+                    right: Vec.create(-5, 48)
+                },
+                image: {
+                    position: Vec.create(24, 76),
+                    angle: 95
+                }
+            },
+            {
+                duration: 95,
+                fists: {
+                    left: Vec.create(38, -35),
+                    right: Vec.create(60, 10)
+                },
+                image: {
+                    position: Vec.create(85, -25),
+                    angle: -5
+                }
+            },
+            {
+                duration: 95,
+                fists: {
+                    left: Vec.create(38, -35),
+                    right: Vec.create(0, 45)
+                },
+                image: {
+                    position: Vec.create(45, 45),
+                    angle: 50
                 }
             }
         ]

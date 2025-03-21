@@ -272,7 +272,7 @@ export class Terrain {
                 }
             }
         }
-        return [...rivers];
+        return Array.from(rivers);
     }
 
     private _roundToCells(vector: Vector): Vector {
@@ -316,7 +316,7 @@ export class River {
 
     constructor(
         readonly width: number,
-        readonly points: readonly Vector[],
+        readonly points: Vector[],
         otherRivers: readonly River[],
         bounds: RectangleHitbox,
         isTrail: boolean

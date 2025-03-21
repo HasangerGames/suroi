@@ -3,8 +3,8 @@ import { type BuildingDefinition } from "@common/definitions/buildings";
 import type { LootDefinition } from "@common/definitions/loots";
 import { type PlayerPing } from "@common/definitions/mapPings";
 import { type ObstacleDefinition } from "@common/definitions/obstacles";
-import { type PlayerInputData } from "@common/packets/inputPacket";
-import { type JoinPacketData } from "@common/packets/joinPacket";
+import { type InputData } from "@common/packets/inputPacket";
+import { type JoinData } from "@common/packets/joinPacket";
 import { PlayerModifiers, Variation, type Orientation } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
 import { Vector } from "@common/utils/vector";
@@ -199,7 +199,7 @@ export const Events = {
      * emitted, all player cleanup will have been finished;
      * the current action will have been cancelled; `health`,
      * `dead`, `downed`, and `canDespawn` flags will have been
-     * set; `KillFeedPacket` will have been created; and the
+     * set; `KillPacket` will have been created; and the
      * killer's kill count incremented. Movement variables,
      * attacking variables, and adrenaline will have been set,
      * A death emote will have been sent, and the inventory will
@@ -234,6 +234,32 @@ export const Events = {
      * as equipped
      */
     inv_item_unequip: makeEvent(),
+
+    /**
+     * Emitted whenever an inventory item is 'used'. For firearms
+     * and melees, this corresponds to attacking with them. For
+     * grenades, this corresponds to starting the cooking process.
+     *
+     * In all cases, this event is emitted after any input buffering
+     * has potentially been applied, and emitted after any pre-flight
+     * checks have been performed (ex: item is active? owner is not
+     * dead? etc) If the pre-flight checks fail, this event is not
+     * emitted. If you wish to be informed of these, use
+     * {@link Events.player_start_attacking} Cancelling this event
+     * emulates a pre-flight check fail. Among other things, this
+     * means that side-effects (such as setting `lastUse`) do not
+     * occur.
+     */
+    inv_item_use: makeEvent(true),
+    /**
+     * Emitted whenever an inventory item stops being 'used'. For
+     * all items, this is fired when the {@link InventoryItem#stopUse}
+     * method is called.
+     *
+     * Cancelling this event will prevent the rest of the `stopUse`
+     * method from running, but will *not* reset the `attacking` flag.
+     */
+    inv_item_stop_use: makeEvent(true),
 
     /**
      * Emitted whenever a weapon's stats have been changed
@@ -439,11 +465,11 @@ export interface EventDataMap {
 
     readonly player_will_join: {
         readonly player: Player
-        readonly joinPacket: JoinPacketData
+        readonly joinPacket: JoinData
     }
     readonly player_did_join: {
         readonly player: Player
-        readonly joinPacket: JoinPacketData
+        readonly joinPacket: JoinData
     }
 
     readonly player_disconnect: Player
@@ -452,7 +478,7 @@ export interface EventDataMap {
     readonly player_stop_attacking: Player
     readonly player_input: {
         readonly player: Player
-        readonly packet: PlayerInputData
+        readonly packet: InputData
     }
     readonly player_will_emote: {
         readonly player: Player
@@ -481,6 +507,8 @@ export interface EventDataMap {
 
     readonly inv_item_equip: InventoryItem
     readonly inv_item_unequip: InventoryItem
+    readonly inv_item_use: InventoryItem
+    readonly inv_item_stop_use: InventoryItem
     readonly inv_item_stats_changed: {
         readonly item: InventoryItem
         /**

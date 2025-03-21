@@ -1,25 +1,26 @@
 import { TeamSize } from "../constants";
 import { Emotes, type EmoteDefinition } from "../definitions/emotes";
-import { createPacket, DataSplitTypes } from "./packet";
+import { DataSplitTypes, Packet, PacketType } from "./packet";
 
-export type JoinedPacketData = {
+export type JoinedData = {
+    readonly type: PacketType.Joined
     readonly emotes: ReadonlyArray<EmoteDefinition | undefined>
-} & ({
-    readonly maxTeamSize: TeamSize.Solo
-} | {
-    readonly maxTeamSize: Exclude<TeamSize, TeamSize.Solo>
-    readonly teamID: number
-});
+} & (
+    | { readonly teamSize: TeamSize.Solo }
+    | {
+        readonly teamSize: Exclude<TeamSize, TeamSize.Solo>
+        readonly teamID: number
+    }
+);
 
-export const JoinedPacket = createPacket("JoinedPacket")<JoinedPacketData>({
+export const JoinedPacket = new Packet<JoinedData>(PacketType.Joined, {
     serialize(stream, data) {
-        stream.writeUint8(data.maxTeamSize);
-        if (data.maxTeamSize !== TeamSize.Solo) {
+        stream.writeUint8(data.teamSize);
+        if (data.teamSize !== TeamSize.Solo) {
             stream.writeUint8(data.teamID);
         }
 
-        const { emotes } = data;
-
+        const emotes = data.emotes;
         stream.writeBooleanGroup(
             emotes[0] !== undefined,
             emotes[1] !== undefined,
@@ -28,7 +29,6 @@ export const JoinedPacket = createPacket("JoinedPacket")<JoinedPacketData>({
             emotes[4] !== undefined,
             emotes[5] !== undefined
         );
-
         for (let i = 0; i < 6; i++) {
             const emote = emotes[i];
             if (emote !== undefined) {
@@ -36,20 +36,21 @@ export const JoinedPacket = createPacket("JoinedPacket")<JoinedPacketData>({
             }
         }
     },
-    deserialize(stream, [saveIndex, recordTo]) {
+
+    deserialize(stream, data, saveIndex, recordTo) {
         saveIndex();
-        const maxTeamSize: TeamSize = stream.readUint8();
-        const teamID = maxTeamSize !== TeamSize.Solo ? stream.readUint8() : undefined;
 
-        const emoteSlots = stream.readBooleanGroup();
+        data.teamSize = stream.readUint8();
+        if (data.teamSize !== TeamSize.Solo) {
+            data.teamID = stream.readUint8();
+        }
 
-        const data = {
-            maxTeamSize,
-            teamID,
-            emotes: Array.from({ length: 6 }, (_, i) => emoteSlots[i] ? Emotes.readFromStream(stream) : undefined)
-        } as JoinedPacketData;
+        const emotes = stream.readBooleanGroup();
+        data.emotes = new Array(6);
+        for (let i = 0; i < 6; i++) {
+            if (emotes[i]) data.emotes[i] = Emotes.readFromStream(stream);
+        }
 
         recordTo(DataSplitTypes.PlayerData);
-        return data;
     }
 });

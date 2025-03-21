@@ -45,6 +45,7 @@ export interface BuildingImageDefinition {
     readonly spinSpeed?: number
     readonly spinOnSolve?: boolean
     readonly residue?: string
+    readonly beachTinted?: boolean
 }
 
 export interface BuildingDefinition extends ObjectDefinition {
@@ -234,8 +235,8 @@ const randomStove = {
 };
 
 const randomSmallStove = {
-    small_stove: 0.95,
-    small_pan_stove: 0.05
+    small_stove: 0.97,
+    small_pan_stove: 0.03
 };
 
 const randomHayShed = {
@@ -4503,13 +4504,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 scale: Vec.create(1, 1.055)
             },
             {
-                key: "headquarters_ceiling_2",
-                position: Vec.create(-46.2, 5.8),
+                key: "headquarters_ceiling_1",
+                position: Vec.create(0.4, -66.722),
                 scale: Vec.create(2.15, 2.15)
             },
             {
-                key: "headquarters_ceiling_1",
-                position: Vec.create(0.4, -66.7),
+                key: "headquarters_ceiling_2",
+                position: Vec.create(-46.2, 5.85),
                 scale: Vec.create(2.15, 2.15)
             }
         ],
@@ -7050,5 +7051,104 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         { idString: "box", position: Vec.create(6.31, -22.32), outdoors: true },
         { idString: "box", position: Vec.create(-19.11, -1.56), outdoors: true },
         { idString: "propane_tank", position: Vec.create(-18.6, 3.13), outdoors: true }
-    ])
+    ]),
+
+    {
+        idString: "memorial_bunker_entrance",
+        name: "Memorial Bunker (Entrance)",
+        spawnHitbox: RectangleHitbox.fromRect(30, 30),
+        material: "metal_heavy",
+        particle: "plumpkin_bunker_particle",
+        reflectBullets: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(2, 17.4, Vec.create(-6.56, 0)),
+            RectangleHitbox.fromRect(2, 17.4, Vec.create(6.56, 0)),
+            RectangleHitbox.fromRect(12, 2, Vec.create(0, -7.7))
+        ),
+        collideWithLayers: Layers.Adjacent,
+        ceilingHitbox: RectangleHitbox.fromRect(11, 8, Vec.create(0, -3.4)),
+        floors: [{
+            type: FloorNames.Metal,
+            hitbox: RectangleHitbox.fromRect(11, 15, Vec.create(0, 0.8))
+        }],
+        obstacles: [
+            { idString: "memorial_bunker_stair", position: Vec.create(0, 2.5), rotation: 0, layer: -1 }
+        ]
+    },
+
+    {
+        idString: "memorial_bunker_main",
+        name: "Memorial Bunker",
+        spawnHitbox: RectangleHitbox.fromRect(30, 40),
+        material: "metal_heavy",
+        particle: "plumpkin_bunker_particle",
+        reflectBullets: true,
+        collideWithLayers: Layers.Adjacent,
+        ceilingHitbox: RectangleHitbox.fromRect(11.5, 30),
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(2, 34, Vec.create(-6.56, 0)),
+            RectangleHitbox.fromRect(2, 34, Vec.create(6.56, 0)),
+            RectangleHitbox.fromRect(12, 2, Vec.create(0, -16))
+        ),
+        floorImages: [{
+            key: "memorial_bunker_main_floor",
+            position: Vec.create(0, 0)
+        }],
+        floors: [
+            {
+                type: FloorNames.Stone,
+                hitbox: RectangleHitbox.fromRect(11.5, 16, Vec.create(0, -7))
+            },
+            {
+                type: FloorNames.Metal,
+                hitbox: RectangleHitbox.fromRect(11, 16, Vec.create(0, 9)),
+                layer: -2
+            },
+            {
+                type: FloorNames.Metal,
+                hitbox: RectangleHitbox.fromRect(11, 16, Vec.create(0, 9)),
+                layer: -1
+            }
+        ],
+        obstacles: [{
+            idString: "memorial_crate",
+            position: Vec.create(0, -9)
+        }]
+    },
+
+    {
+        idString: "memorial",
+        name: "Memorial",
+        spawnHitbox: RectangleHitbox.fromRect(30, 40, Vec.create(0, -10)),
+        rotationMode: RotationMode.None,
+        spawnMode: MapObjectSpawnMode.Grass,
+        hideOnMap: true,
+        floorImages: [
+            {
+                key: "memorial_bunker_stair",
+                position: Vec.create(0, 0)
+            },
+            {
+                key: "monument_railing",
+                position: Vec.create(-8.5, 0)
+            },
+            {
+                key: "monument_railing",
+                position: Vec.create(8.5, 0)
+            }
+        ],
+        ceilingHitbox: RectangleHitbox.fromRect(11, 8, Vec.create(0, 4.5)),
+        noCeilingScopeEffect: true,
+        ceilingImages: [{
+            key: "memorial_bunker_entrance_ceiling",
+            position: Vec.create(0, -3.4)
+        }],
+        obstacles: [
+            { idString: "monument", position: Vec.create(0, 0), rotation: 3 }
+        ],
+        subBuildings: [
+            { idString: "memorial_bunker_entrance", position: Vec.create(0, 0) },
+            { idString: "memorial_bunker_main", position: Vec.create(0, -8.5), layer: -2 }
+        ]
+    }
 ]);

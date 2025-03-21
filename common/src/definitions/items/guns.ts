@@ -1,9 +1,10 @@
 import { FireMode } from "../../constants";
 import { BaseBulletDefinition } from "../../utils/baseBullet";
 import { mergeDeep } from "../../utils/misc";
-import { ItemType, ObjectDefinitions, type InventoryItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
+import { ItemType, type InventoryItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
 import { Vec, type Vector } from "../../utils/vector";
 import { type AmmoDefinition } from "./ammos";
+import { InventoryItemDefinitions } from "./items";
 import { ScopeDefinition } from "./scopes";
 
 type BaseGunDefinition = InventoryItemDefinition & {
@@ -151,6 +152,7 @@ type RawForDef<B extends BaseGunDefinition> = B & {
             | "moveSpread"
             | "fsaReset"
             | "burstProperties"
+            | "fists"
             | "leftRightOffset"
         >
         ]?: B[K]
@@ -210,7 +212,7 @@ const gasParticlePresets = {
     }
 } satisfies Record<string, BaseGunDefinition["gasParticles"]>;
 
-export const Guns = new ObjectDefinitions<GunDefinition>(([
+export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     //
     // Pistols
     //
@@ -222,7 +224,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         ammoSpawnAmount: 60,
         fireDelay: 110,
         switchDelay: 250,
-        speedMultiplier: 1,
+        speedMultiplier: 1.136,
         recoilMultiplier: 0.8,
         recoilDuration: 90,
         fireMode: FireMode.Single,
@@ -274,7 +276,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         ammoSpawnAmount: 64,
         fireDelay: 60,
         switchDelay: 250,
-        speedMultiplier: 1,
+        speedMultiplier: 1.136,
         recoilMultiplier: 0.8,
         recoilDuration: 90,
         fireMode: FireMode.Auto,
@@ -326,7 +328,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         ammoSpawnAmount: 28,
         fireDelay: 375,
         switchDelay: 250,
-        speedMultiplier: 1,
+        speedMultiplier: 1.136,
         recoilMultiplier: 0.75,
         recoilDuration: 135,
         fireMode: FireMode.Single,
@@ -385,7 +387,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         ammoSpawnAmount: 42,
         fireDelay: 200,
         switchDelay: 250,
-        speedMultiplier: 1,
+        speedMultiplier: 1.136,
         recoilMultiplier: 0.65,
         recoilDuration: 150,
         fireMode: FireMode.Single,
@@ -443,7 +445,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         ammoSpawnAmount: 30,
         fireDelay: 400,
         switchDelay: 250,
-        speedMultiplier: 1,
+        speedMultiplier: 1.136,
         recoilMultiplier: 0.8,
         recoilDuration: 600,
         fsaReset: 600,
@@ -500,6 +502,66 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
             reloadTime: 4.2
         }
     },
+    {
+        idString: "mp5k",
+        name: "MP5k",
+        itemType: ItemType.Gun,
+        ammoType: "9mm",
+        ammoSpawnAmount: 80,
+        speedMultiplier: 1.136,
+        capacity: 20,
+        extendedCapacity: 30,
+        reloadTime: 1.8,
+        fireDelay: 60,
+        burstProperties: {
+            shotsPerBurst: 3,
+            burstCooldown: 250
+        },
+        switchDelay: 250,
+        recoilMultiplier: 0.8,
+        recoilDuration: 300,
+        fireMode: FireMode.Burst,
+        shotSpread: 3,
+        moveSpread: 7.5,
+        length: 5.6,
+        fists: {
+            left: Vec.create(85, -2),
+            right: Vec.create(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec.create(71, 0) },
+        casingParticles: [{
+            position: Vec.create(4, 0.35)
+        }],
+        gasParticles: gasParticlePresets.automatic,
+        ballistics: {
+            damage: 14,
+            obstacleMultiplier: 1,
+            speed: 0.25,
+            range: 100
+        },
+        dual: {
+            leftRightOffset: 1.3,
+            ammoSpawnAmount: 80,
+            fists: {
+                left: Vec.create(40, -1.3),
+                right: Vec.create(40, 1.3),
+                rightZIndex: 4,
+                leftZIndex: 4,
+                animationDuration: 100
+            },
+            burstProperties: {
+                shotsPerBurst: 3,
+                burstCooldown: 125
+            },
+            fireDelay: 60,
+            shotSpread: 3,
+            moveSpread: 6,
+            capacity: 40,
+            reloadTime: 3.2
+        }
+    },
 
     //
     // Submachine guns (SMGs)
@@ -540,8 +602,8 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         ballistics: {
             damage: 16,
             obstacleMultiplier: 1,
-            speed: 0.25,
-            range: 130
+            speed: 0.28,
+            range: 140
         }
     },
     {
@@ -555,7 +617,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         reloadTime: 1.75,
         fireDelay: 40,
         switchDelay: 300,
-        speedMultiplier: 1,
+        speedMultiplier: 1.136,
         recoilMultiplier: 0.75,
         recoilDuration: 60,
         fireMode: FireMode.Auto,
@@ -637,7 +699,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         recoilMultiplier: 0.75,
         recoilDuration: 60,
         fireMode: FireMode.Auto,
-        shotSpread: 2,
+        shotSpread: 3,
         moveSpread: 7,
         length: 6.1,
         fists: {
@@ -655,7 +717,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
             damage: 9,
             obstacleMultiplier: 1,
             speed: 0.27,
-            range: 100
+            range: 80
         }
     },
     {
@@ -1108,7 +1170,7 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
         recoilDuration: 200,
         fireMode: FireMode.Auto,
         shotSpread: 5,
-        moveSpread: 10,
+        moveSpread: 8,
         length: 7.15,
         fists: {
             left: Vec.create(109, -18),
@@ -1182,6 +1244,53 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
             obstacleMultiplier: 2,
             speed: 0.28,
             range: 160
+        }
+    },
+    {
+        idString: "pk61",
+        name: "PK-61",
+        itemType: ItemType.Gun,
+        ammoType: "762mm",
+        ammoSpawnAmount: 200,
+        capacity: 100,
+        extendedCapacity: 150,
+        reloadTime: 4.8,
+        fireDelay: 110,
+        switchDelay: 400,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.7,
+        recoilDuration: 200,
+        fireMode: FireMode.Auto,
+        shotSpread: 2,
+        moveSpread: 4,
+        length: 9.45,
+        fists: {
+            left: Vec.create(120, -4),
+            right: Vec.create(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec.create(100, 0) },
+        casingParticles: [{
+            frame: "casing_762x54mmR",
+            position: Vec.create(4.6, -0.8),
+            velocity: {
+                y: {
+                    min: -15,
+                    max: -10
+                }
+            }
+        }],
+        gasParticles: gasParticlePresets.automatic,
+        ballistics: {
+            damage: 17,
+            obstacleMultiplier: 2,
+            speed: 0.32,
+            range: 250,
+            tracer: {
+                width: 1.1,
+                length: 1.4
+            }
         }
     },
 
@@ -2498,8 +2607,6 @@ export const Guns = new ObjectDefinitions<GunDefinition>(([
 
     // @ts-expect-error init code
     delete dualDef.dual;
-    // @ts-expect-error init code
-    delete dualDef.fists;
     // @ts-expect-error init code
     delete dualDef.image;
     // @ts-expect-error init code

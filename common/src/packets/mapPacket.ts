@@ -5,26 +5,31 @@ import { type Orientation, type Variation } from "../typings";
 import type { CommonGameObject } from "../utils/gameObject";
 import { Angle, halfπ } from "../utils/math";
 import { type Vector } from "../utils/vector";
-import { createPacket, DataSplitTypes } from "./packet";
+import { DataSplitTypes, Packet, PacketType } from "./packet";
 
 export type MapObject = {
     readonly scale?: number
     readonly variation?: Variation
 } & CommonGameObject;
 
-export type MapPacketData = {
+export interface MapData {
+    readonly type: PacketType.Map
     readonly seed: number
     readonly width: number
     readonly height: number
     readonly oceanSize: number
     readonly beachSize: number
 
-    readonly rivers: ReadonlyArray<{ readonly width: number, readonly points: readonly Vector[], readonly isTrail: boolean }>
-    readonly objects: readonly MapObject[]
+    readonly rivers: Array<{
+        readonly width: number
+        readonly points: readonly Vector[]
+        readonly isTrail: boolean
+    }>
+    readonly objects: MapObject[]
     readonly places: ReadonlyArray<{ readonly position: Vector, readonly name: string }>
-};
+}
 
-export const MapPacket = createPacket("MapPacket")<MapPacketData>({
+export const MapPacket = new Packet<MapData>(PacketType.Map, {
     serialize(strm, data) {
         strm.writeUint32(data.seed)
             .writeUint16(data.width)
@@ -33,13 +38,9 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
             .writeUint16(data.beachSize)
             .writeArray(data.rivers, river => {
                 strm.writeUint8(river.width)
-                    .writeArray(
-                        river.points,
-                        point => { strm.writePosition(point); },
-                        1
-                    )
+                    .writeArray(river.points, point => strm.writePosition(point))
                     .writeUint8(river.isTrail ? -1 : 0);
-            }, 1)
+            })
             .writeArray(data.objects, object => {
                 strm.writeObjectType(object.type)
                     .writePosition(object.position);
@@ -90,100 +91,101 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
             .writeArray(data.places ?? [], place => {
                 strm.writeString(24, place.name)
                     .writePosition(place.position);
-            }, 1);
+            });
     },
-    deserialize(stream, [saveIndex, recordTo]) {
+    deserialize(stream, data, saveIndex, recordTo) {
         saveIndex();
-        const obj = {
-            seed: stream.readUint32(),
-            width: stream.readUint16(),
-            height: stream.readUint16(),
-            oceanSize: stream.readUint16(),
-            beachSize: stream.readUint16(),
-            rivers: stream.readArray(() => ({
-                width: stream.readUint8(),
-                points: stream.readArray(() => stream.readPosition(), 1),
-                isTrail: stream.readUint8() !== 0
-            }), 1),
-            objects: stream.readArray(() => {
-                const type = stream.readObjectType() as ObjectCategory.Obstacle | ObjectCategory.Building;
-                const position = stream.readPosition();
 
-                switch (type) {
-                    case ObjectCategory.Obstacle: {
-                        const definition = Obstacles.readFromStream(stream);
-                        const scale = definition.scale?.spawnMax ?? 1;
+        data.seed = stream.readUint32();
+        data.width = stream.readUint16();
+        data.height = stream.readUint16();
+        data.oceanSize = stream.readUint16();
+        data.beachSize = stream.readUint16();
 
-                        // see comments in serialization method to better
-                        // understand what's going on
+        data.rivers = stream.readArray(() => ({
+            width: stream.readUint8(),
+            points: stream.readArray(() => stream.readPosition()),
+            isTrail: stream.readUint8() !== 0
+        }));
 
-                        const obstacleData = stream.readUint8();
+        data.objects = stream.readArray(() => {
+            const type = stream.readObjectType() as ObjectCategory.Obstacle | ObjectCategory.Building;
+            const position = stream.readPosition();
 
-                        let variation: Variation | undefined;
-                        if (definition.variations !== undefined) {
-                            const bits = 8 - definition.variationBits;
-                            variation = ((obstacleData & (0xFF - (2 ** bits - 1)))) >> bits as Variation;
-                            //                           ^^^^^^^^^^^^^^^^^^^^^^^^ mask the most significant bits
-                        }
+            switch (type) {
+                case ObjectCategory.Obstacle: {
+                    const definition = Obstacles.readFromStream(stream);
+                    const scale = definition.scale?.spawnMax ?? 1;
 
-                        let rotation = 0;
+                    // see comments in serialization method to better
+                    // understand what's going on
 
-                        switch (definition.rotationMode) {
-                            case RotationMode.Full: {
-                                rotation = stream.readRotation();
-                                break;
-                            }
-                            case RotationMode.Limited:
-                            case RotationMode.Binary: {
-                                const orientation = (obstacleData & 0b11) as Orientation;
+                    const obstacleData = stream.readUint8();
 
-                                rotation = definition.rotationMode === RotationMode.Binary
-                                    ? orientation * halfπ // sus
-                                    : -Angle.normalize(orientation) * halfπ;
-                                break;
-                            }
-                            // case RotationMode.None: {
-                            //     break;
-                            // }
-                        }
-
-                        return {
-                            position,
-                            type,
-                            dead: false,
-                            definition,
-                            scale,
-                            rotation,
-                            variation,
-                            isObstacle: true
-                        };
+                    let variation: Variation | undefined;
+                    if (definition.variations !== undefined) {
+                        const bits = 8 - definition.variationBits;
+                        variation = ((obstacleData & (0xFF - (2 ** bits - 1)))) >> bits as Variation;
+                        //                           ^^^^^^^^^^^^^^^^^^^^^^^^ mask the most significant bits
                     }
-                    case ObjectCategory.Building: {
-                        const definition = Buildings.readFromStream(stream);
-                        const { orientation } = stream.readObstacleRotation(RotationMode.Limited);
-                        const layer = stream.readLayer();
 
-                        return {
-                            position,
-                            type,
-                            dead: false,
-                            definition,
-                            rotation: Angle.orientationToRotation(orientation),
-                            orientation,
-                            scale: 1,
-                            layer,
-                            isBuilding: true
-                        };
+                    let rotation = 0;
+
+                    switch (definition.rotationMode) {
+                        case RotationMode.Full: {
+                            rotation = stream.readRotation();
+                            break;
+                        }
+                        case RotationMode.Limited:
+                        case RotationMode.Binary: {
+                            const orientation = (obstacleData & 0b11) as Orientation;
+
+                            rotation = definition.rotationMode === RotationMode.Binary
+                                ? orientation * halfπ // sus
+                                : -Angle.normalize(orientation) * halfπ;
+                            break;
+                        }
+                        // case RotationMode.None: {
+                        //     break;
+                        // }
                     }
+
+                    return {
+                        position,
+                        type,
+                        dead: false,
+                        definition,
+                        scale,
+                        rotation,
+                        variation,
+                        isObstacle: true
+                    };
                 }
-            }, 2),
-            places: stream.readArray(() => ({
-                name: stream.readString(24),
-                position: stream.readPosition()
-            }), 1)
-        } as MapPacketData;
+                case ObjectCategory.Building: {
+                    const definition = Buildings.readFromStream(stream);
+                    const { orientation } = stream.readObstacleRotation(RotationMode.Limited);
+                    const layer = stream.readLayer();
+
+                    return {
+                        position,
+                        type,
+                        dead: false,
+                        definition,
+                        rotation: Angle.orientationToRotation(orientation),
+                        orientation,
+                        scale: 1,
+                        layer,
+                        isBuilding: true
+                    };
+                }
+            }
+        }, 2) as MapData["objects"];
+
+        data.places = stream.readArray(() => ({
+            name: stream.readString(24),
+            position: stream.readPosition()
+        }));
 
         recordTo(DataSplitTypes.GameObjects);
-        return obj;
     }
 });

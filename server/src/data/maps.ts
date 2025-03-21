@@ -1,26 +1,26 @@
 import { GameConstants, Layer, MapObjectSpawnMode, RotationMode } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
+import { Armors } from "@common/definitions/items/armors";
+import { Backpacks } from "@common/definitions/items/backpacks";
 import { Guns } from "@common/definitions/items/guns";
+import { PerkCategories } from "@common/definitions/items/perks";
 import { Loots } from "@common/definitions/loots";
 import { Mode } from "@common/definitions/modes";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { PerkCategories } from "@common/definitions/items/perks";
 import { Orientation, type Variation } from "@common/typings";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Collision } from "@common/utils/math";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-import { type WebSocket } from "uWebSockets.js";
 import { SpawnMode, SpawnOptions } from "../config";
 import { type GunItem } from "../inventory/gunItem";
 import { GameMap } from "../map";
-import { Player, type PlayerContainer } from "../objects/player";
+import { Player } from "../objects/player";
 import { GamePlugin } from "../pluginManager";
-import { LootTables } from "./lootTables";
 import { getLootFromTable } from "../utils/lootHelpers";
-import { Backpacks } from "@common/definitions/items/backpacks";
-import { Armors } from "@common/definitions/items/armors";
+import { LootTables } from "./lootTables";
+import { PacketType } from "@common/packets/packet";
 
 export interface RiverDefinition {
     readonly minAmount: number
@@ -158,7 +158,8 @@ const maps = {
             container_7: 1,
             container_8: 2,
             container_9: 1,
-            container_10: 2
+            container_10: 2,
+            memorial: 1
         },
         majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
         quadBuildingLimit: {
@@ -177,8 +178,8 @@ const maps = {
         },
         obstacles: {
             oil_tank: 12,
-            oak_tree: 10,
-            small_oak_tree: 100,
+            big_oak_tree: 30,
+            oak_tree: 80,
             birch_tree: 20,
             pine_tree: 10,
             loot_tree: 1,
@@ -197,8 +198,7 @@ const maps = {
             melee_crate: 1,
             gold_rock: 1,
             loot_barrel: 1,
-            flint_stone: 1,
-            monument: 1
+            flint_stone: 1
         },
         obstacleClumps: [
             {
@@ -207,7 +207,7 @@ const maps = {
                     minAmount: 2,
                     maxAmount: 3,
                     jitter: 5,
-                    obstacles: ["small_oak_tree"],
+                    obstacles: ["oak_tree"],
                     radius: 12
                 }
             },
@@ -340,10 +340,10 @@ const maps = {
             tent_4: 1
         },
         obstacles: {
-            oak_tree: 230,
-            small_oak_tree: 50,
-            birch_tree: 25,
+            big_oak_tree: 230,
             maple_tree: 70,
+            oak_tree: 50,
+            birch_tree: 25,
             pine_tree: 95,
             dormant_oak_tree: 25,
             stump: 40,
@@ -365,8 +365,7 @@ const maps = {
             loot_barrel: 1,
             flint_stone: 1,
             pumpkin: 200,
-            large_pumpkin: 5,
-            monument: 1
+            large_pumpkin: 5
         },
         obstacleClumps: [
             {
@@ -375,7 +374,7 @@ const maps = {
                     minAmount: 2,
                     maxAmount: 3,
                     jitter: 5,
-                    obstacles: ["oak_tree"],
+                    obstacles: ["big_oak_tree"],
                     radius: 12
                 }
             },
@@ -385,7 +384,7 @@ const maps = {
                     minAmount: 2,
                     maxAmount: 3,
                     jitter: 5,
-                    obstacles: ["small_oak_tree"],
+                    obstacles: ["oak_tree"],
                     radius: 12
                 }
             },
@@ -512,8 +511,8 @@ const maps = {
             tent_4: 1
         },
         obstacles: {
-            oak_tree: 40,
-            small_oak_tree: 100,
+            big_oak_tree: 40,
+            oak_tree: 100,
             birch_tree: 60,
             maple_tree: 50,
             pine_tree: 80,
@@ -541,8 +540,7 @@ const maps = {
             flint_stone: 3,
             pumpkin: 300,
             large_pumpkin: 40,
-            plumpkin: 5,
-            monument: 1
+            plumpkin: 5
         },
         obstacleClumps: [
             {
@@ -551,7 +549,7 @@ const maps = {
                     minAmount: 2,
                     maxAmount: 3,
                     jitter: 5,
-                    obstacles: ["oak_tree"],
+                    obstacles: ["big_oak_tree"],
                     radius: 12
                 }
             },
@@ -670,8 +668,7 @@ const maps = {
             melee_crate_winter: 1,
             gold_rock: 1,
             loot_barrel: 1,
-            flint_stone_winter: 1,
-            monument: 1
+            flint_stone_winter: 1
         },
         obstacleClumps: [
             {
@@ -943,35 +940,20 @@ const maps = {
                             this.on("game_created", _game => {
                                 if (_game !== game) return;
                                 const createBot = (name: string): Player | undefined => {
-                                    const bot = game.addPlayer({
-                                        send(): number { return 0; },
-                                        getBufferedAmount(): number { return 0; },
-                                        end(): void { return; },
-                                        close(): void { return; },
-                                        ping(): number { return 0; },
-                                        subscribe(): boolean { return false; },
-                                        unsubscribe(): boolean { return false; },
-                                        isSubscribed(): boolean { return false; },
-                                        getTopics(): string[] { return []; },
-                                        publish(): boolean { return true; },
-                                        cork(): WebSocket<PlayerContainer> { return this; },
-                                        getRemoteAddress(): ArrayBuffer { return new ArrayBuffer(); },
-                                        getRemoteAddressAsText(): ArrayBuffer { return new ArrayBuffer(); },
-                                        getUserData(): PlayerContainer { return { isDev: false, autoFill: false, ip: undefined, lobbyClearing: false, weaponPreset: "" }; }
-                                    });
+                                    const bot = game.addPlayer();
+                                    if (!bot) return;
 
-                                    if (bot !== undefined) {
-                                        game.activatePlayer(
-                                            bot,
-                                            {
-                                                name,
-                                                isMobile: false,
-                                                skin: Loots.fromString("hazel_jumpsuit"),
-                                                emotes: Array.from({ length: 6 }, () => undefined),
-                                                protocolVersion: GameConstants.protocolVersion
-                                            }
-                                        );
-                                    }
+                                    game.activatePlayer(
+                                        bot,
+                                        {
+                                            type: PacketType.Join,
+                                            name,
+                                            isMobile: false,
+                                            skin: Loots.fromString("hazel_jumpsuit"),
+                                            emotes: Array.from({ length: 6 }, () => undefined),
+                                            protocolVersion: GameConstants.protocolVersion
+                                        }
+                                    );
 
                                     return bot;
                                 };

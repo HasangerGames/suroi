@@ -57,6 +57,8 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
         "Creepy Clown",
         "Lying Face",
         "Nerd Face",
+        "Side Eye Face",
+        "Man Face",
         "Skull",
         "Blind Walking",
         "Melting Face",
@@ -82,7 +84,8 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
         "Frustrated Face",
         "Weary Face",
         "Pensive Face",
-        "Zipper Mouth Face"
+        "Zipper Mouth Face",
+        "Zombie Face"
     ].map(name => emote(name, EmoteCategory.People)),
     ...[
         "Suroi Logo",

@@ -113,7 +113,7 @@ Weapons:
   USAS-12 (Loot Image): eiπ
   USAS-12 (World Image): cobby
 
-  VSS (Loot Image): jchen
+  VSS (Loot Image): Emeraldneo, null, jchen
   VSS (World Image): ItzBlover, shortened by jchen
 
   Vector (Loot Image): TODO

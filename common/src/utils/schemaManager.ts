@@ -28,7 +28,7 @@ export interface SchemaManager<Def extends ObjectDefinition, SizeT extends numbe
     /**
      * Adds an item to this collection
      * @param item The item to add
-     * @returns Whether the item was already present (and thus nothing has changed)
+     * @returns Whether the item was absent (and was thus added, as opposed to not being added due to being already present)
      */
     addItem(item: ReifiableDef<Def>): boolean
 

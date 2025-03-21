@@ -1,6 +1,5 @@
 import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions, ZIndexes } from "@common/constants";
 import { type EmoteDefinition } from "@common/definitions/emotes";
-import { Explosions } from "@common/definitions/explosions";
 import { Ammos } from "@common/definitions/items/ammos";
 import { type ArmorDefinition } from "@common/definitions/items/armors";
 import { type BackpackDefinition } from "@common/definitions/items/backpacks";
@@ -14,7 +13,7 @@ import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obs
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, getEffectiveZIndex } from "@common/utils/layer";
-import { Angle, EaseFunctions, Geometry, Numeric } from "@common/utils/math";
+import { Angle, EaseFunctions, Geometry } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
@@ -22,19 +21,24 @@ import { random, randomBoolean, randomFloat, randomPointInsideCircle, randomRota
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
-import { DashLine } from "pixi-dashed-line";
-import { Container, Graphics, Text, TilingSprite } from "pixi.js";
-import { getTranslatedString } from "../../translations";
-import { type TranslationKeys } from "../../typings/translations";
-import { type Game } from "../game";
-import { type GameSound } from "../managers/soundManager";
+import { Container, Graphics, Text } from "pixi.js";
+import { getTranslatedString } from "../utils/translations/translations";
+import { type TranslationKeys } from "../utils/translations/typings";
+import { GameConsole } from "../console/gameConsole";
+import { Game } from "../game";
+import { CameraManager } from "../managers/cameraManager";
+import { InputManager } from "../managers/inputManager";
+import { MapManager } from "../managers/mapManager";
+import { ParticleManager, type Particle, type ParticleEmitter, type ParticleOptions } from "../managers/particleManager";
+import { ClientPerkManager } from "../managers/perkManager";
+import { SoundManager, type GameSound } from "../managers/soundManager";
+import { UIManager } from "../managers/uiManager";
 import { BULLET_WHIZ_SCALE, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
-import type { DebugRenderer } from "../utils/debugRenderer";
+import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
-import { type Particle, type ParticleEmitter, type ParticleOptions } from "./particles";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -52,6 +56,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     meleeAttackCounter = 0;
 
     blockEmoting = false;
+    bushID?: number;
 
     backEquippedMelee?: MeleeDefinition;
 
@@ -72,7 +77,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     distTraveled = 0;
 
     get isActivePlayer(): boolean {
-        return this.id === this.game.activePlayerID;
+        return this.id === Game.activePlayerID;
     }
 
     footstepSound?: GameSound;
@@ -97,7 +102,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     private _skin: ReferenceTo<SkinDefinition> = "";
 
     readonly images: {
-        readonly aimTrail: TilingSprite
+        aimTrail?: Graphics
         readonly vest: SuroiSprite
         readonly body: SuroiSprite
         readonly leftFist: SuroiSprite
@@ -163,39 +168,46 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     sizeMod = 1;
 
-    private grenadeImpactPreview?: Graphics;
+    constructor(id: number, data: ObjectsNetData[ObjectCategory.Player]) {
+        super(id);
 
-    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Player]) {
-        super(game, id);
+        CameraManager.addObject(this.disguiseContainer = new Container());
 
-        this.game.camera.addObject(this.disguiseContainer = new Container());
+        const teamMode = Game.teamMode;
 
         this.images = {
-            aimTrail: new TilingSprite({ texture: SuroiSprite.getTexture("aimTrail"), width: 20, height: 6000 }),
             vest: new SuroiSprite().setVisible(false),
             body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
             rightFist: new SuroiSprite(),
-            leftLeg: game.teamMode ? new SuroiSprite().setPos(-35, 26).setZIndex(-1) : undefined,
-            rightLeg: game.teamMode ? new SuroiSprite().setPos(-35, -26).setZIndex(-1) : undefined,
+            leftLeg: teamMode ? new SuroiSprite().setPos(-35, 26).setZIndex(-1) : undefined,
+            rightLeg: teamMode ? new SuroiSprite().setPos(-35, -26).setZIndex(-1) : undefined,
             backpack: new SuroiSprite().setPos(-35, 0).setVisible(false).setZIndex(-1),
             helmet: new SuroiSprite().setPos(-8, 0).setVisible(false).setZIndex(6),
             weapon: new SuroiSprite().setZIndex(3),
             altWeapon: new SuroiSprite().setZIndex(3),
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec.create(0, 0.5)),
-            waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(game.colors.water),
+            waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(Game.colors.water),
             blood: new Container(),
             disguiseSprite: new SuroiSprite(),
             backMeleeSprite: new SuroiSprite().setZIndex(ZIndexes.Players + 0.1)
         };
 
+        if (InputManager.isMobile && this.isActivePlayer) {
+            const aimTrail = this.images.aimTrail = new Graphics();
+            for (let i = 0; i < 100; i++) {
+                aimTrail.circle((i * 50) + 20, 0, 8).fill({ color: 0xffffff, alpha: 0.35 });
+            }
+            aimTrail.alpha = 0;
+            this.container.addChild(aimTrail);
+        }
+
         this.container.addChild(
-            this.images.aimTrail,
             this.images.vest,
             this.images.body,
             this.images.leftFist,
             this.images.rightFist,
-            ...(game.teamMode ? [this.images.leftLeg, this.images.rightLeg] as readonly SuroiSprite[] : []),
+            ...(Game.teamMode ? [this.images.leftLeg, this.images.rightLeg] as readonly SuroiSprite[] : []),
             this.images.backpack,
             this.images.helmet,
             this.images.weapon,
@@ -208,18 +220,13 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         this.disguiseContainer.addChild(this.images.disguiseSprite);
 
-        // this.images.blood.zIndex = getEffectiveZIndex(4, this.game.layer, this.game.layer);
+        // this.images.blood.zIndex = getEffectiveZIndex(4, Game.layer, Game.layer);
 
-        if (game.teamMode) {
+        if (teamMode) {
             // teamMode guarantees these images' presence
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.images.leftLeg!.scale = this.images.rightLeg!.scale = Vec.create(1.5, 0.8);
         }
-
-        this.images.aimTrail.angle = 90;
-        this.images.aimTrail.position = Vec.create(6000, -8);
-        this.images.aimTrail.alpha = 0;
-        if (!this.isActivePlayer) this.images.aimTrail.alpha = 0;
 
         let emote: this["emote"];
         this.emote = emote = {
@@ -228,15 +235,15 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             container: new Container()
         };
 
-        game.camera.addObject(emote.container);
+        CameraManager.addObject(emote.container);
         emote.container.addChild(emote.background, emote.image);
-        emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer, this.game.layer);
+        emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer, Game.layer);
         emote.container.visible = false;
 
         this.updateFistsPosition(false);
         this.updateWeapon();
 
-        this.healingParticlesEmitter = this.game.particleManager.addEmitter({
+        this.healingParticlesEmitter = ParticleManager.addEmitter({
             delay: 350,
             active: false,
             spawnOptions: () => {
@@ -267,8 +274,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         this.images.body.eventMode = "static";
         this.images.body.on("pointerdown", (): void => {
-            if (!this.game.spectating || this.game.activePlayerID === this.id) return;
-            this.game.sendPacket(
+            if (!Game.spectating || Game.activePlayerID === this.id) return;
+            Game.sendPacket(
                 SpectatePacket.create({
                     spectateAction: SpectateActions.SpectateSpecific,
                     playerID: this.id
@@ -286,18 +293,16 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.disguiseContainer.position = this.container.position;
             if (this.teammateName) {
                 this.teammateName.container.position = Vec.addComponent(this.container.position, 0, 95);
-                this.teammateName.container.zIndex = getEffectiveZIndex(ZIndexes.TeammateName, this.layer, this.game.layer);
+                this.teammateName.container.zIndex = getEffectiveZIndex(ZIndexes.TeammateName, this.layer, Game.layer);
             }
         }
     }
 
-    override update(): void {
-        this.updateGrenadePreview();
-    }
+    override update(): void { /* bleh */ }
 
     override updateInterpolation(): void {
         this.updateContainerPosition();
-        if (!this.isActivePlayer || !this.game.console.getBuiltInCVar("cv_responsive_rotation") || this.game.spectating) {
+        if (!this.isActivePlayer || !GameConsole.getBuiltInCVar("cv_responsive_rotation") || Game.spectating) {
             this.updateContainerRotation();
         }
     }
@@ -320,7 +325,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 const casingVelX = casingSpec.velocity?.x;
                 const casingVelY = casingSpec.velocity?.y;
 
-                this.game.particleManager.spawnParticles(
+                ParticleManager.spawnParticles(
                     casingSpec.count ?? 1,
                     () => {
                         const spinAmount = randomFloat(Math.PI / 2, Math.PI);
@@ -394,9 +399,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Player], isNew = false): void {
-        const game = this.game;
-        const { uiManager } = game;
-
         const previousLayer = this.layer;
 
         // Position and rotation
@@ -407,34 +409,34 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         this.rotation = data.rotation;
 
-        const noMovementSmoothing = !game.console.getBuiltInCVar("cv_movement_smoothing");
+        const noMovementSmoothing = !GameConsole.getBuiltInCVar("cv_movement_smoothing");
 
         if (noMovementSmoothing || isNew) this.container.rotation = this.rotation;
 
         if (this.isActivePlayer) {
-            game.soundManager.position = this.position;
-            game.map.setPosition(this.position);
+            SoundManager.position = this.position;
+            MapManager.setPosition(this.position);
 
-            if (noMovementSmoothing) game.camera.position = toPixiCoords(this.position);
+            if (noMovementSmoothing) CameraManager.position = toPixiCoords(this.position);
 
-            if (game.console.getBuiltInCVar("pf_show_pos")) {
-                uiManager.ui.debugPos.text(
+            if (GameConsole.getBuiltInCVar("pf_show_pos")) {
+                UIManager.ui.debugPos.text(
                     `X: ${this.position.x.toFixed(2)} Y: ${this.position.y.toFixed(2)} Z: ${this.layer}`
                 );
             }
         }
 
-        const floorType = game.map.terrain.getFloor(this.position, this.layer);
+        const floorType = MapManager.terrain.getFloor(this.position, this.layer);
 
         const doOverlay = FloorTypes[floorType].overlay;
-        const layerChanged = previousLayer !== this.layer || game.activePlayer?.layer !== this.layer || isNew;
+        const layerChanged = previousLayer !== this.layer || Game.layer !== this.layer || isNew;
         let updateContainerZIndex = isNew || FloorTypes[this.floorType].overlay !== doOverlay || layerChanged;
 
         if (floorType !== this.floorType) {
             if (doOverlay) this.images.waterOverlay.setVisible(true);
 
             this.anims.waterOverlay?.kill();
-            this.anims.waterOverlay = game.addTween(
+            this.anims.waterOverlay = Game.addTween(
                 {
                     target: this.images.waterOverlay,
                     to: {
@@ -484,7 +486,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     };
 
                     // outer
-                    game.particleManager.spawnParticle({
+                    ParticleManager.spawnParticle({
                         ...options,
                         scale: {
                             start: randomFloat(0.45, 0.55),
@@ -497,7 +499,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     });
 
                     // inner
-                    game.particleManager.spawnParticle({
+                    ParticleManager.spawnParticle({
                         ...options,
                         scale: {
                             start: randomFloat(0.15, 0.35),
@@ -512,7 +514,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
         }
 
-        if (isNew || !game.console.getBuiltInCVar("cv_movement_smoothing")) {
+        if (isNew || !GameConsole.getBuiltInCVar("cv_movement_smoothing")) {
             this.container.position.copyFrom(toPixiCoords(this.position));
             this.disguiseContainer.position.copyFrom(toPixiCoords(this.position));
             this.emote.container.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, -175)));
@@ -524,8 +526,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.animationChangeTime = Date.now();
             this.playAnimation(data.animation);
         }
-
-        this.updateGrenadePreview();
 
         if (data.full) {
             const {
@@ -551,7 +551,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             const layerChange = this.isActivePlayer && (this.layer !== layer || isNew);
             this.layer = layer;
-            if (layerChange) game.changeLayer(this.layer);
+            if (layerChange) Game.changeLayer(this.layer);
 
             this.backEquippedMelee = backEquippedMelee;
 
@@ -569,12 +569,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             // Blood particles on death (cooler graphics only)
             if (
-                game.console.getBuiltInCVar("cv_cooler_graphics")
+                GameConsole.getBuiltInCVar("cv_cooler_graphics")
                 && !isNew
                 && !this.dead
                 && dead
             ) {
-                game.particleManager.spawnParticles(random(15, 30), () => ({
+                ParticleManager.spawnParticles(random(15, 30), () => ({
                     frames: "blood_particle",
                     lifetime: random(1000, 3000),
                     position: this.position,
@@ -599,9 +599,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.teamID = teamID;
 
             const teammateIDs = [];
-            for (const teammate of uiManager.teammates) teammateIDs.push(teammate.id);
+            for (const teammate of UIManager.teammates) teammateIDs.push(teammate.id);
 
-            void this.game.fontObserver.then(() => this.updateTeammateName());
+            void Game.fontObserver.then(() => this.updateTeammateName());
 
             this.container.alpha = invulnerable ? 0.5 : 1;
 
@@ -620,9 +620,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     // somewhat an abuse of that system, but dedicating an
                     // entire "action" to this would be wasteful
                     if (this.beingRevived) {
-                        uiManager.animateAction(getTranslatedString("action_being_revived"), GameConstants.player.reviveTime, true);
+                        UIManager.animateAction(getTranslatedString("action_being_revived"), GameConstants.player.reviveTime, true);
                     } else {
-                        uiManager.cancelAction();
+                        UIManager.cancelAction();
                     }
                 }
             }
@@ -648,12 +648,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             const skinID = skin.idString;
             if (this.isActivePlayer) {
-                uiManager.skinID = skinID;
-                uiManager.updateWeapons();
+                UIManager.skinID = skinID;
+                UIManager.updateWeapons();
             }
             this._skin = skinID;
             const skinDef = Loots.fromString<SkinDefinition>(skinID);
-            const tint = skinDef.grassTint ? this.game.colors.ghillie : 0xffffff;
+            const tint = skinDef.grassTint ? Game.colors.ghillie : 0xffffff;
 
             const { body, leftFist, rightFist, leftLeg, rightLeg } = this.images;
 
@@ -733,7 +733,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             // Rate Limiting: Team Pings & Emotes
             this.blockEmoting = blockEmoting;
-            this.game.uiManager.ui.emoteWheel.css("opacity", this.blockEmoting ? "0.5" : "");
+            UIManager.ui.emoteWheel.css("opacity", this.blockEmoting ? "0.5" : "");
         }
 
         if (updateContainerZIndex) this.updateZIndex();
@@ -755,7 +755,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     }
 
                     if (this.isActivePlayer) {
-                        uiManager.cancelAction();
+                        UIManager.cancelAction();
                     }
                     break;
                 }
@@ -768,12 +768,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                     this.spawnCasingParticles("reload", false);
 
-                    const { weapons, activeWeaponIndex } = uiManager.inventory;
+                    const { weapons, activeWeaponIndex } = UIManager.inventory;
                     const reloadFullClip = weaponDef.reloadFullOnEmpty && (weapons[activeWeaponIndex]?.count ?? 0) <= 0;
 
                     actionSoundName = `${weaponDef.idString}_reload${reloadFullClip ? "_full" : ""}`;
                     if (this.isActivePlayer) {
-                        uiManager.animateAction(
+                        UIManager.animateAction(
                             getTranslatedString("action_reloading"),
                             reloadFullClip ? weaponDef.fullReloadTime : weaponDef.reloadTime
                         );
@@ -786,21 +786,21 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     actionSoundName = itemDef.idString;
                     this.healingParticlesEmitter.active = true;
                     if (this.isActivePlayer) {
-                        uiManager.animateAction(
+                        UIManager.animateAction(
                             getTranslatedString(
                                 `action_${itemDef.idString}_use` as TranslationKeys,
                                 { item: getTranslatedString(itemDef.idString as TranslationKeys) }
                             ),
-                            itemDef.useTime / uiManager.perks.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
+                            itemDef.useTime / ClientPerkManager.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
                         );
                     }
                     break;
                 }
                 case PlayerActions.Revive: {
                     if (this.isActivePlayer) {
-                        uiManager.animateAction(
+                        UIManager.animateAction(
                             getTranslatedString("action_reviving"),
-                            GameConstants.player.reviveTime / uiManager.perks.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
+                            GameConstants.player.reviveTime / ClientPerkManager.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
                         );
                     }
                     break;
@@ -813,7 +813,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     {
                         falloff: 0.6,
                         maxRange: 48,
-                        speed: game.uiManager.perks.hasItem(PerkIds.FieldMedic) && actionSoundName === action.item?.idString ? PerkData[PerkIds.FieldMedic].usageMod : 1
+                        speed: ClientPerkManager.hasItem(PerkIds.FieldMedic) && actionSoundName === action.item?.idString ? PerkData[PerkIds.FieldMedic].usageMod : 1
                     }
                 );
             }
@@ -823,119 +823,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         }
     }
 
-    updateGrenadePreview(): void {
-        this.grenadeImpactPreview?.clear();
-        if (
-            this.animation === AnimationType.ThrowableCook
-            && this.activeItem.itemType === ItemType.Throwable
-            && this.isActivePlayer
-        ) {
-            // prediction for impact point is basically just done by yoinking sever
-            // code and plopping it client-side lol
-            if (this.game.uiManager.perks.hasItem(PerkIds.DemoExpert)) {
-                if (this.grenadeImpactPreview === undefined) {
-                    this.grenadeImpactPreview = new Graphics();
-                    this.grenadeImpactPreview.zIndex = 999;
-                    this.game.camera.addObject(this.grenadeImpactPreview);
-                }
-
-                const graphics = this.grenadeImpactPreview;
-                const def = this.activeItem;
-
-                // mirrors server logic
-                const pos = Vec.add(
-                    toPixiCoords(this.position),
-                    Vec.rotate(toPixiCoords(def.animation.cook.rightFist), this.rotation)
-                );
-
-                const range = Numeric.min(
-                    this.game.inputManager.distanceToMouse,
-                    def.physics.maxThrowDistance * PerkData[PerkIds.DemoExpert].rangeMod
-                );
-
-                const cookMod = def.cookable ? Date.now() - this.animationChangeTime : 0;
-                const drag = GameConstants.projectiles.drag.air;
-
-                let cookDrag = Numeric.max((def.fuseTime /* - cookMod */), 0) / 1000;
-
-                const physDist = range * (1 + cookDrag * drag) / 4;
-
-                const { x, y } = Vec.add(
-                    pos,
-                    Vec.fromPolar(
-                        this.rotation,
-                        physDist * PIXI_SCALE
-                    )
-                );
-
-                const ln = new DashLine(graphics, { dash: [100, 50] });
-
-                graphics.clear()
-                    .setFillStyle({
-                        color: 0xff0000,
-                        alpha: 0.3
-                    })
-                    .setStrokeStyle({
-                        color: 0xff0000,
-                        width: 8,
-                        alpha: 0.7
-                    })
-                    .beginPath();
-
-                ln.moveTo(pos.x, pos.y)
-                    .lineTo(x, y);
-
-                graphics.stroke()
-                    .setStrokeStyle({
-                        color: 0xff0000,
-                        width: 3,
-                        alpha: 0.5
-                    })
-                    .beginPath();
-
-                const explosionDef = Explosions.fromStringSafe(def.detonation.explosion ?? "");
-                if (explosionDef !== undefined
-                    && explosionDef.damage !== 0
-                    && explosionDef.radius.min + explosionDef.radius.max !== 0) {
-                    graphics.circle(x, y, explosionDef.radius.min * PIXI_SCALE)
-                        .closePath()
-                        .fill()
-                        .stroke()
-                        .beginPath()
-                        .setFillStyle({
-                            color: 0xFFFF00,
-                            alpha: 0.8
-                        })
-                        .setStrokeStyle({
-                            color: 0xFFFF00,
-                            width: 3,
-                            alpha: 0.1
-                        })
-                        .circle(x, y, 0.5 * PIXI_SCALE)
-                        .closePath()
-                        .fill()
-                        .stroke();
-                } else {
-                    graphics.circle(x, y, 1.5 * PIXI_SCALE)
-                        .closePath()
-                        .fill()
-                        .stroke();
-                }
-            } else {
-                this.grenadeImpactPreview?.destroy();
-                this.grenadeImpactPreview = undefined;
-            }
-        }
-    }
-
-    override updateDebugGraphics(debugRenderer: DebugRenderer): void {
+    override updateDebugGraphics(): void {
         if (!DEBUG_CLIENT) return;
 
-        debugRenderer.addHitbox(this.hitbox, HITBOX_COLORS.player);
-        const alpha = this.layer === this.game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY;
+        DebugRenderer.addHitbox(this.hitbox, HITBOX_COLORS.player);
+        const alpha = this.layer === Game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY;
 
         if (this.downed) {
-            debugRenderer.addCircle(5, this.position, HITBOX_COLORS.obstacleNoCollision, alpha);
+            DebugRenderer.addCircle(5, this.position, HITBOX_COLORS.obstacleNoCollision, alpha);
         }
 
         const renderMeleeReflectionSurface = (surface: { pointA: Vector, pointB: Vector }): void => {
@@ -949,7 +844,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 Vec.rotate(surface.pointB, this.rotation)
             ));
 
-            debugRenderer.addLine(start, lineEnd, HITBOX_COLORS.playerWeapon, alpha);
+            DebugRenderer.addLine(start, lineEnd, HITBOX_COLORS.playerWeapon, alpha);
         };
 
         switch (this.activeItem.itemType) {
@@ -962,7 +857,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         this.sizeMod
                     ));
 
-                debugRenderer.addRay(
+                DebugRenderer.addRay(
                     start,
                     this.rotation,
                     this.activeItem.length,
@@ -972,7 +867,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 break;
             }
             case ItemType.Melee: {
-                debugRenderer.addCircle(
+                DebugRenderer.addCircle(
                     this.activeItem.radius * this.sizeMod,
                     Vec.add(
                         this.position,
@@ -989,7 +884,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
 
                 if (this.activeItem.image?.pivot) {
-                    debugRenderer.addCircle(
+                    DebugRenderer.addCircle(
                         this.sizeMod,
                         Vec.add(
                             this.position,
@@ -1028,7 +923,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     }
 
     updateTeammateName(): void {
-        const game = this.game;
+        const game = Game;
         if (
             game.teamMode
             && (
@@ -1041,9 +936,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             const name = game.playerNames.get(this.id);
             this.teammateName = {
                 text: new Text({
-                    text: game.uiManager.getRawPlayerName(this.id),
+                    text: UIManager.getRawPlayerName(this.id),
                     style: {
-                        fill: name?.hasColor ? name?.nameColor : TEAMMATE_COLORS[game.uiManager.getTeammateColorIndex(this.id) ?? 0],
+                        fill: name?.hasColor ? name?.nameColor : TEAMMATE_COLORS[UIManager.getTeammateColorIndex(this.id) ?? 0],
                         fontSize: 36,
                         fontFamily: "Inter",
                         fontWeight: "600",
@@ -1075,7 +970,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             container.zIndex = getEffectiveZIndex(ZIndexes.DeathMarkers, game.layer, game.layer);
-            game.camera.addObject(container);
+            CameraManager.addObject(container);
         } else if (
             this.teammateName
             && (
@@ -1109,17 +1004,15 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             return;
         }
 
-        const reference = this._getItemReference();
-
         type FistsRef = (SingleGunNarrowing | Exclude<WeaponDefinition, GunDefinition>)["fists"] & object;
-        const fists: FistsRef = reference.fists ?? DEFAULT_HAND_RIGGING;
+        const fists: FistsRef = this.activeItemDefinition.fists ?? DEFAULT_HAND_RIGGING;
 
         const offset = this._getOffset();
 
         if (anim) {
             const duration: number = "animationDuration" in fists ? fists.animationDuration as number : 150;
 
-            this.anims.leftFist = this.game.addTween({
+            this.anims.leftFist = Game.addTween({
                 target: this.images.leftFist,
                 to: { x: fists.left.x, y: fists.left.y - offset },
                 duration,
@@ -1128,7 +1021,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
             });
 
-            this.anims.rightFist = this.game.addTween({
+            this.anims.rightFist = Game.addTween({
                 target: this.images.rightFist,
                 to: { x: fists.right.x, y: fists.right.y + offset },
                 duration,
@@ -1140,6 +1033,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.leftFist.setPos(fists.left.x, fists.left.y - offset);
             this.images.rightFist.setPos(fists.right.x, fists.right.y + offset);
         }
+
+        const reference = this._getItemReference();
 
         if (reference.image) {
             const { image: { position, angle } } = reference;
@@ -1168,7 +1063,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         const weaponDef = this.activeItem;
         const reference = this._getItemReference();
 
-        const { fists, image } = reference;
+        const { image } = reference;
+        const { fists } = weaponDef;
 
         const imagePresent = image !== undefined;
         if (imagePresent) {
@@ -1193,6 +1089,17 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.anims.muzzleFlashFade?.kill();
                 this.anims.muzzleFlashRecoil?.kill();
                 this.images.muzzleFlash.alpha = 0;
+                if (this.isActivePlayer && !isNew) {
+                    let soundID: string;
+                    if (reference.itemType === ItemType.Throwable) {
+                        soundID = "throwable";
+                    } else if (reference.itemType === ItemType.Gun && reference.isDual) {
+                        soundID = reference.idString.slice("dual_".length);
+                    } else {
+                        soundID = reference.idString;
+                    }
+                    SoundManager.play(`${soundID}_switch`);
+                }
             }
 
             const offset = this._getOffset();
@@ -1254,10 +1161,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 ? ZIndexes.DownedPlayers
                 : ZIndexes.Players;
 
-        this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, this.game.layer);
+        this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, Game.layer);
         this.disguiseContainer.zIndex = this.container.zIndex + 1;
-        this.emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer, this.game.layer);
-        if (this.teammateName) this.teammateName.container.zIndex = getEffectiveZIndex(ZIndexes.DeathMarkers, this.game.layer, this.game.layer);
+        this.emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer, Game.layer);
+        if (this.teammateName) this.teammateName.container.zIndex = getEffectiveZIndex(ZIndexes.DeathMarkers, Game.layer, Game.layer);
     }
 
     updateEquipmentWorldImage(type: "helmet" | "vest" | "backpack"): void {
@@ -1317,8 +1224,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             "pointerdown",
             e => {
                 e.stopImmediatePropagation();
-                if (e.button === 2 && def && this.game.teamMode) {
-                    this.game.inputManager.addAction({
+                if (e.button === 2 && def && Game.teamMode) {
+                    InputManager.addAction({
                         type: InputActions.DropItem,
                         item: def
                     });
@@ -1327,7 +1234,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         );
 
         if (equipmentType === "backpack") {
-            this.game.uiManager.updateItems();
+            UIManager.updateItems();
         }
     }
 
@@ -1347,7 +1254,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     }
 
     canInteract(player: Player): boolean {
-        return this.game.teamMode
+        return Game.teamMode
             && !player.downed
             && this.downed
             && !this.beingRevived
@@ -1385,7 +1292,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.emote.image.setScale((gun || melee) ? 0.7 : 1);
         this.emote.background.setFrame(backgroundFrame);
 
-        this.anims.emote = this.game.addTween({
+        this.anims.emote = Game.addTween({
             target: container,
             to: { alpha: 1 },
             duration: 250,
@@ -1399,7 +1306,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         });
 
         this._emoteHideTimeout = this.addTimeout(() => {
-            this.anims.emoteHide = this.game.addTween({
+            this.anims.emoteHide = Game.addTween({
                 target: container,
                 to: { alpha: 0 },
                 duration: 200,
@@ -1440,7 +1347,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         this.addTimeout(() => {
                             if (this.activeItem === currentWeapon) {
                                 if (!weaponDef.fists.randomFist || !altFist) {
-                                    this.anims.leftFist = this.game.addTween({
+                                    this.anims.leftFist = Game.addTween({
                                         target: this.images.leftFist,
                                         to: { x: frame.fists.left.x, y: frame.fists.left.y },
                                         duration,
@@ -1449,7 +1356,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                 }
 
                                 if (altFist) {
-                                    this.anims.rightFist = this.game.addTween({
+                                    this.anims.rightFist = Game.addTween({
                                         target: this.images.rightFist,
                                         to: { x: frame.fists.right.x, y: frame.fists.right.y },
                                         duration,
@@ -1458,7 +1365,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                 }
 
                                 if (weaponDef.image !== undefined && frame.image !== undefined) {
-                                    this.anims.weapon = this.game.addTween({
+                                    this.anims.weapon = Game.addTween({
                                         target: this.images.weapon,
                                         to: {
                                             x: frame.image.position.x,
@@ -1528,7 +1435,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                     for (
                         const target of (
-                            [...this.game.objects].filter(
+                            Array.from(Game.objects).filter(
                                 object => !object.dead
                                     && object !== this
                                     && (
@@ -1544,13 +1451,15 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             ) as Array<Player | Obstacle>
                         ).sort((a, b) => {
                             if (
-                                (a.isObstacle && a.definition.noMeleeCollision)
-                                || (this.game.teamMode && a.isPlayer && a.teamID === this.teamID)
+                                (a.isObstacle && (a.definition.noMeleeCollision || a.definition.indestructible))
+                                || a.isBuilding
+                                || (Game.teamMode && a.isPlayer && a.teamID === this.teamID)
                             ) return Infinity;
 
                             if (
-                                (b.isObstacle && b.definition.noMeleeCollision)
-                                || (this.game.teamMode && b.isPlayer && b.teamID === this.teamID)
+                                (b.isObstacle && (b.definition.noMeleeCollision || b.definition.indestructible))
+                                || b.isBuilding
+                                || (Game.teamMode && b.isPlayer && b.teamID === this.teamID)
                             ) return -Infinity;
 
                             return a.hitbox.distanceTo(selfHitbox).distance - b.hitbox.distanceTo(selfHitbox).distance;
@@ -1570,7 +1479,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.updateFistsPosition(false);
 
                 if (this.images.rightLeg && !this.destroyed) {
-                    this.anims.rightLeg = this.game.addTween({
+                    this.anims.rightLeg = Game.addTween({
                         target: this.images.rightLeg,
                         to: { x: this.images.rightLeg.x - 10, y: this.images.rightLeg.y },
                         duration: 200,
@@ -1581,7 +1490,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         }
                     });
 
-                    this.anims.leftFist = this.game.addTween({
+                    this.anims.leftFist = Game.addTween({
                         target: this.images.leftFist,
                         to: { x: this.images.leftFist.x - 10, y: this.images.leftFist.y - 5 },
                         duration: 200,
@@ -1595,7 +1504,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                 setTimeout(() => {
                     if (this.images.leftLeg && !this.destroyed) {
-                        this.anims.leftLeg = this.game.addTween({
+                        this.anims.leftLeg = Game.addTween({
                             target: this.images.leftLeg,
                             to: { x: this.images.leftLeg.x - 10, y: this.images.leftLeg.y },
                             duration: 200,
@@ -1606,7 +1515,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             }
                         });
 
-                        this.anims.rightFist = this.game.addTween({
+                        this.anims.rightFist = Game.addTween({
                             target: this.images.rightFist,
                             to: { x: this.images.rightFist.x - 10, y: this.images.rightFist.y + 5 },
                             duration: 200,
@@ -1635,12 +1544,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 const weaponDef = this.activeItem;
                 const {
                     idString,
-                    image: { position: { x: imgX } },
+                    image: { position: { x: imgX } }
+                } = this._getItemReference() as SingleGunNarrowing;
+                const {
                     fists: {
                         left: { x: leftFistX },
                         right: { x: rightFistX }
                     }
-                } = this._getItemReference() as SingleGunNarrowing;
+                } = weaponDef;
 
                 if (anim === AnimationType.LastShot) {
                     this.playSound(
@@ -1665,14 +1576,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.updateFistsPosition(false);
                 const recoilAmount = PIXI_SCALE * (1 - weaponDef.recoilMultiplier);
 
-                this.anims.weapon = this.game.addTween({
+                this.anims.weapon = Game.addTween({
                     target: isAltFire ? this.images.altWeapon : this.images.weapon,
                     to: { x: imgX - recoilAmount },
                     duration: 50,
                     yoyo: true
                 });
 
-                if (weaponDef.gasParticles && this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
+                if (weaponDef.gasParticles && GameConsole.getBuiltInCVar("cv_cooler_graphics")) {
                     const offset = weaponDef.isDual
                         ? (isAltFire ? -1 : 1) * weaponDef.leftRightOffset
                         : (weaponDef.bulletOffset ?? 0);
@@ -1685,7 +1596,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     const gas = weaponDef.gasParticles;
                     const halfSpread = 0.5 * gas.spread;
 
-                    this.game.particleManager.spawnParticles(gas.amount, () => ({
+                    ParticleManager.spawnParticles(gas.amount, () => ({
                         frames: "small_gas",
                         layer: this.layer,
                         lifetime: random(gas.minLife, gas.maxSize),
@@ -1722,7 +1633,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                     this.anims.muzzleFlashFade?.kill();
                     this.anims.muzzleFlashRecoil?.kill();
-                    this.anims.muzzleFlashFade = this.game.addTween({
+                    this.anims.muzzleFlashFade = Game.addTween({
                         target: muzzleFlash,
                         to: { alpha: 0 },
                         duration: 100,
@@ -1732,7 +1643,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         }
                     });
 
-                    this.anims.muzzleFlashRecoil = this.game.addTween({
+                    this.anims.muzzleFlashRecoil = Game.addTween({
                         target: muzzleFlash,
                         to: { x: muzzleFlash.x - recoilAmount },
                         duration: 50,
@@ -1744,7 +1655,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
 
                 if (isAltFire !== false) {
-                    this.anims.leftFist = this.game.addTween({
+                    this.anims.leftFist = Game.addTween({
                         target: this.images.leftFist,
                         to: { x: leftFistX - recoilAmount },
                         duration: 50,
@@ -1756,7 +1667,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
 
                 if (isAltFire !== true) {
-                    this.anims.rightFist = this.game.addTween({
+                    this.anims.rightFist = Game.addTween({
                         target: this.images.rightFist,
                         to: { x: rightFistX - recoilAmount },
                         duration: 50,
@@ -1808,12 +1719,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.updateFistsPosition(false);
                 projImage.setFrame(frame);
 
-                this.anims.leftFist = this.game.addTween({
+                this.anims.leftFist = Game.addTween({
                     target: this.images.leftFist,
                     to: { x: 35, y: 0 },
                     duration: def.cookTime / 2,
                     onComplete: () => {
-                        this.anims.leftFist = this.game.addTween({
+                        this.anims.leftFist = Game.addTween({
                             target: this.images.leftFist,
                             to: Vec.scale(def.animation.cook.leftFist, PIXI_SCALE),
                             duration: def.cookTime / 2,
@@ -1824,7 +1735,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
                         if (def.animation.pinImage) {
                             pinImage.visible = true;
-                            this.anims.pin = this.game.addTween({
+                            this.anims.pin = Game.addTween({
                                 target: pinImage,
                                 duration: def.cookTime / 2,
                                 to: {
@@ -1839,7 +1750,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 });
 
                 if (def.cookable && def.animation.leverImage !== undefined) {
-                    this.game.particleManager.spawnParticle({
+                    ParticleManager.spawnParticle({
                         frames: def.animation.leverImage,
                         lifetime: 600,
                         position: Vec.add(
@@ -1861,7 +1772,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     });
                 }
 
-                this.anims.weapon = this.game.addTween({
+                this.anims.weapon = Game.addTween({
                     target: projImage,
                     to: { x: 25, y: 10 },
                     duration: def.cookTime / 2,
@@ -1870,12 +1781,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     }
                 });
 
-                this.anims.rightFist = this.game.addTween({
+                this.anims.rightFist = Game.addTween({
                     target: this.images.rightFist,
                     to: { x: 25, y: 10 },
                     duration: def.cookTime / 2,
                     onComplete: () => {
-                        this.anims.weapon = this.game.addTween({
+                        this.anims.weapon = Game.addTween({
                             target: projImage,
                             to: Vec.scale(def.animation.cook.rightFist, PIXI_SCALE),
                             duration: def.cookTime / 2,
@@ -1884,7 +1795,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             }
                         });
 
-                        this.anims.rightFist = this.game.addTween({
+                        this.anims.rightFist = Game.addTween({
                             target: this.images.rightFist,
                             to: Vec.scale(def.animation.cook.rightFist, PIXI_SCALE),
                             duration: def.cookTime / 2,
@@ -1913,7 +1824,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 projImage.setFrame(`${def.idString}${this.halloweenThrowableSkin && !def.noSkin ? "_halloween" : ""}`);
 
                 if (!def.cookable && def.animation.leverImage !== undefined) {
-                    this.game.particleManager.spawnParticle({
+                    ParticleManager.spawnParticle({
                         frames: def.animation.leverImage,
                         lifetime: 600,
                         layer: this.layer,
@@ -1939,7 +1850,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.anims.leftFist?.kill();
                 this.anims.weapon?.kill();
 
-                this.anims.leftFist = this.game.addTween({
+                this.anims.leftFist = Game.addTween({
                     target: this.images.leftFist,
                     to: Vec.scale(def.animation.throw.leftFist, PIXI_SCALE),
                     duration: def.throwTime,
@@ -1951,7 +1862,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     }
                 });
 
-                this.anims.rightFist = this.game.addTween({
+                this.anims.rightFist = Game.addTween({
                     target: this.images.rightFist,
                     to: Vec.scale(def.animation.throw.rightFist, PIXI_SCALE),
                     duration: def.throwTime,
@@ -1968,7 +1879,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.images.muzzleFlash.setVisible(false);
                 this.images.leftFist.setZIndex(4);
                 this.images.rightFist.setZIndex(4);
-                this.anims.leftFist = this.game.addTween({
+                this.anims.leftFist = Game.addTween({
                     target: this.images.leftFist,
                     to: Vec.create(28, -45),
                     duration: 100,
@@ -1976,7 +1887,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         this.anims.leftFist = undefined;
                     }
                 });
-                this.anims.rightFist = this.game.addTween({
+                this.anims.rightFist = Game.addTween({
                     target: this.images.rightFist,
                     to: Vec.create(58, 48),
                     duration: 100,
@@ -1993,8 +1904,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     get bloodDecals(): Set<Particle> { return this._bloodDecals; }
 
     hitEffect(position: Vector, angle: number, sound?: string): void {
-        if (!this.game.gameOver) {
-            this.game.soundManager.play(
+        if (!Game.gameOver) {
+            SoundManager.play(
                 sound ?? `${
                     this.activeDisguise
                         ? MaterialSounds[this.activeDisguise.material]?.hit ?? this.activeDisguise.material
@@ -2013,7 +1924,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         if (this.activeDisguise?.particleVariations) particle += `_${random(1, this.activeDisguise.particleVariations)}`;
 
-        this.game.particleManager.spawnParticle({
+        ParticleManager.spawnParticle({
             frames: particle,
             zIndex: ZIndexes.Players + 0.5,
             layer: this.layer,
@@ -2030,10 +1941,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             speed: Vec.fromPolar(angle, randomFloat(0.5, 1))
         });
 
-        if (this.game.console.getBuiltInCVar("cv_cooler_graphics") && !this.downed) {
+        if (GameConsole.getBuiltInCVar("cv_cooler_graphics") && !this.downed) {
             const isOnWater = this.floorType === FloorNames.Water;
             this._bloodDecals.add(
-                this.game.particleManager.spawnParticle({
+                ParticleManager.spawnParticle({
                     frames: "blood_particle",
                     zIndex: ZIndexes.Decals,
                     layer: this.layer,
@@ -2073,7 +1984,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         const { images, emote, teammateName, anims } = this;
 
-        images.aimTrail.destroy();
+        images.aimTrail?.destroy();
         images.vest.destroy();
         images.body.destroy();
         images.leftFist.destroy();
@@ -2103,8 +2014,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         anims.weapon?.kill();
         anims.muzzleFlashFade?.kill();
         anims.muzzleFlashRecoil?.kill();
-
-        this.grenadeImpactPreview?.destroy();
 
         this.disguiseContainer.destroy();
         images.backMeleeSprite?.destroy();

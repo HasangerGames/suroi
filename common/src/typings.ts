@@ -14,27 +14,23 @@ export interface PlayerModifiers {
     hpRegen: number
 }
 
-export type GetGameResponse =
-    {
-        readonly success: true
-        readonly gameID: number
-    } |
-    {
-        readonly success: false
-        readonly message?: "warn" | "temp" | "perma" | "vpn"
-        readonly reason?: string
-        readonly reportID?: string
-    };
+export interface PunishmentMessage {
+    readonly message: "warn" | "temp" | "perma" | "vpn"
+    readonly reason?: string
+    readonly reportID?: string
+}
 
 export const enum CustomTeamMessages {
     Join,
     Update,
     Settings,
+    KickPlayer,
     Start,
     Started
 }
 
 export interface CustomTeamPlayerInfo {
+    id: number
     isLeader?: boolean
     ready: boolean
     name: string
@@ -50,17 +46,24 @@ export type CustomTeamMessage =
         isLeader: boolean
         autoFill: boolean
         locked: boolean
+        forceStart: boolean
     }
     | {
         type: CustomTeamMessages.Update
         players: CustomTeamPlayerInfo[]
         isLeader: boolean
         ready: boolean
+        forceStart: boolean
     }
     | {
         type: CustomTeamMessages.Settings
         autoFill?: boolean
         locked?: boolean
+        forceStart?: boolean
+    }
+    | {
+        type: CustomTeamMessages.KickPlayer
+        playerId: number
     }
     | {
         type: CustomTeamMessages.Start | CustomTeamMessages.Started

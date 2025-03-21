@@ -40,8 +40,12 @@ export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwa
             || owner.dead
             || owner.downed
             || owner.disconnected
-            || this !== this.owner.activeItem
+            || this !== owner.activeItem
         ) {
+            return;
+        }
+
+        if (owner.game.pluginManager.emit("inv_item_use", this) !== undefined) {
             return;
         }
 

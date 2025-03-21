@@ -30,15 +30,13 @@ const skin = (name: string, backpackTint?: number, rolesRequired?: string[]): Sk
 export const Skins = new ObjectDefinitions<SkinDefinition>([
     // Dev funny skins
     skin("Hasanger",    0x640000, ["hasanger"]),
-    skin("LimeNade",    0xffffff, ["limenade"]),
-    skin("Dragonscale", 0x3f808d, ["solstice"]),
-    skin("error",       0x1fc462, ["error"]),
-    skin("pap",         0x00366b, ["pap"]),
-    skin("zedaes",      0x052105, ["zedaes"]),
+    skin("Error",       0x1fc462, ["error"]),
+    skin("Pap",         0x00366b, ["pap"]),
+    skin("Zedaes",      0x052105, ["zedaes"]),
 
     // Role skins
-    skin("Developr Swag",      0x007a7f, ["developr", "pap", "error", "limenade"]),
-    skin("Designr Swag",       0x67cf00, ["designr", "solstice", "vip_designr"]),
+    skin("Developr Swag",      0x007a7f, ["developr", "pap", "error"]),
+    skin("Designr Swag",       0x67cf00, ["designr", "vip_designr"]),
     skin("Sound Designr Swag", 0x3e8476, ["sound_designr"]),
     ...([
         ["HAZEL Jumpsuit",  0xb4a894],
@@ -86,7 +84,8 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         ["Flamingo",              0xf1847d],
         ["Peachy Breeze",         0xf2a263],
         ["Deep Sea",              0x284553],
-        ["Basic Outfit",          0x816537],
+        ["Ancestral Garb",        0x816537],
+        ["Timeless",              0x1a1a1a],
         ["Peppermint",            0xb40030],
         ["Spearmint",             0x115724],
         ["Coal",                  0x424242],

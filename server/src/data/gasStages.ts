@@ -16,96 +16,106 @@ export interface GasStage {
  */
 export const GAME_SPAWN_WINDOW = 84;
 
+const gasStageRadii: number[] = [
+    0.76, // 0
+    0.55, // 1
+    0.43, // 2
+    0.32, // 3
+    0.2,  // 4
+    0.09, // 5
+    0     // 6
+];
+
 export const GasStages: GasStage[] = [
     {
         state: GasState.Inactive,
         duration: 0,
-        oldRadius: 0.76,
-        newRadius: 0.76,
+        oldRadius: gasStageRadii[0],
+        newRadius: gasStageRadii[0],
         dps: 0
     },
     {
         state: GasState.Waiting,
         duration: 75,
-        oldRadius: 0.76,
-        newRadius: 0.55,
+        oldRadius: gasStageRadii[0],
+        newRadius: gasStageRadii[1],
         dps: 0
     },
     {
         state: GasState.Advancing,
         duration: 20,
-        oldRadius: 0.76,
-        newRadius: 0.55,
+        oldRadius: gasStageRadii[0],
+        newRadius: gasStageRadii[1],
         dps: 1
     },
     // Zone 1 closed, 1 min 5 seconds
     {
         state: GasState.Waiting,
         duration: 45,
-        oldRadius: 0.55,
-        newRadius: 0.43,
+        oldRadius: gasStageRadii[1],
+        newRadius: gasStageRadii[2],
         dps: 1,
         summonAirdrop: true
     },
     {
         state: GasState.Advancing,
         duration: 20,
-        oldRadius: 0.55,
-        newRadius: 0.43,
+        oldRadius: gasStageRadii[1],
+        newRadius: gasStageRadii[2],
         dps: 1
     },
     // Zone 2 closed, 2 min 10 seconds
     {
         state: GasState.Waiting,
         duration: 40,
-        oldRadius: 0.43,
-        newRadius: 0.32,
+        oldRadius: gasStageRadii[2],
+        newRadius: gasStageRadii[3],
         dps: 2
     },
     {
         state: GasState.Advancing,
         duration: 15,
-        oldRadius: 0.43,
-        newRadius: 0.32,
+        oldRadius: gasStageRadii[2],
+        newRadius: gasStageRadii[3],
         dps: 2
     },
     // Zone 3 closed, 3 min 10 seconds
     {
         state: GasState.Waiting,
         duration: 35,
-        oldRadius: 0.32,
-        newRadius: 0.2,
+        oldRadius: gasStageRadii[3],
+        newRadius: gasStageRadii[4],
         dps: 3,
         summonAirdrop: true
     },
     {
         state: GasState.Advancing,
         duration: 15,
-        oldRadius: 0.32,
-        newRadius: 0.2,
+        oldRadius: gasStageRadii[3],
+        newRadius: gasStageRadii[4],
         dps: 3
     },
     // Zone 4 closed, 4 min 10 seconds
     {
         state: GasState.Waiting,
         duration: 30,
-        oldRadius: 0.2,
-        newRadius: 0.09,
+        oldRadius: gasStageRadii[4],
+        newRadius: gasStageRadii[5],
         dps: 5
     },
     {
         state: GasState.Advancing,
         duration: 15,
-        oldRadius: 0.2,
-        newRadius: 0.09,
+        oldRadius: gasStageRadii[4],
+        newRadius: gasStageRadii[5],
         dps: 5
     },
     // Zone 5 closed, 5 min 10 seconds
     {
         state: GasState.Waiting,
         duration: 20,
-        oldRadius: 0.09,
-        newRadius: 0,
+        oldRadius: gasStageRadii[5],
+        newRadius: gasStageRadii[6],
         dps: 10,
         summonAirdrop: true,
         scaleDamageFactor: 1,
@@ -114,8 +124,8 @@ export const GasStages: GasStage[] = [
     {
         state: GasState.Advancing,
         duration: 60,
-        oldRadius: 0.09,
-        newRadius: 0,
+        oldRadius: gasStageRadii[5],
+        newRadius: gasStageRadii[6],
         dps: 10,
         scaleDamageFactor: 1,
         finalStage: true
@@ -124,8 +134,8 @@ export const GasStages: GasStage[] = [
     {
         state: GasState.Waiting,
         duration: 0,
-        oldRadius: 0,
-        newRadius: 0,
+        oldRadius: gasStageRadii[6],
+        newRadius: gasStageRadii[6],
         dps: 10,
         scaleDamageFactor: 1,
         finalStage: true

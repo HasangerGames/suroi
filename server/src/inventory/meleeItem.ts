@@ -16,7 +16,6 @@ import { InventoryItemBase } from "./inventoryItem";
  */
 export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
     private _autoUseTimeoutID?: NodeJS.Timeout;
-    private _hitTimeoutID?: NodeJS.Timeout;
 
     /**
      * Constructs a new melee weapon
@@ -43,6 +42,10 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
      * namely setTimeout
      */
     private _useItemNoDelayCheck(skipAttackCheck: boolean): void {
+        if (this.owner.game.pluginManager.emit("inv_item_use", this) !== undefined) {
+            return;
+        }
+
         const owner = this.owner;
         const definition = this.definition;
 
@@ -68,7 +71,7 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
 
                 // Damage the closest object
                 const damagedObjects: readonly CollidableGameObject[] = (
-                    [...owner.game.grid.intersectsHitbox(hitbox)]
+                    Array.from(owner.game.grid.intersectsHitbox(hitbox))
                         .filter(
                             object => !object.dead
                                 && object !== owner
@@ -114,25 +117,14 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
                         multiplier *= definition.obstacleMultiplier;
                     }
 
-                    const damageObject = (): void => {
-                        closestObject.damage({
-                            amount: definition.damage * multiplier,
-                            source: owner,
-                            weaponUsed: this
-                        });
+                    closestObject.damage({
+                        amount: definition.damage * multiplier,
+                        source: owner,
+                        weaponUsed: this
+                    });
 
-                        if (closestObject.isObstacle && !closestObject.dead) {
-                            closestObject.interact(this.owner);
-                        }
-                    };
-
-                    if (definition.hitDelay === undefined) {
-                        damageObject();
-                    } else {
-                        clearTimeout(this._hitTimeoutID);
-                        this._hitTimeoutID = setTimeout((): void => {
-                            damageObject();
-                        }, definition.hitDelay);
+                    if (closestObject.isObstacle && !closestObject.dead) {
+                        closestObject.interact(this.owner);
                     }
                 }
 
@@ -146,7 +138,15 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
                     );
                 }
             }
-        }, 50);
+        }, 50 + (definition.hitDelay ?? 0));
+    }
+
+    stopUse(): void {
+        // if (this.owner.game.pluginManager.emit("inv_item_stop_use", this) !== undefined) return;
+        // there's no logic in this method, so just emit the event and exit. if there ever comes
+        // the need to put logic here, uncomment the line above and remove the current one
+
+        this.owner.game.pluginManager.emit("inv_item_stop_use", this);
     }
 
     override itemData(): ItemData<MeleeDefinition> {

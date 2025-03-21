@@ -1,10 +1,11 @@
 import { GameConstants } from "@common/constants";
 import { Obstacles } from "@common/definitions/obstacles";
-import { PerkData, PerkIds, type PerkDefinition } from "@common/definitions/items/perks";
+import { PerkData, PerkIds, Perks, type PerkDefinition } from "@common/definitions/items/perks";
 import { Skins } from "@common/definitions/items/skins";
 import { PerkManager } from "@common/utils/perkManager";
 import { weightedRandom } from "@common/utils/random";
 import { type Player } from "../objects/player";
+import type { ReifiableDef } from "@common/utils/objectDefinitions";
 
 export type UpdatablePerkDefinition = PerkDefinition & { readonly updateInterval: number };
 
@@ -28,10 +29,7 @@ export class ServerPerkManager extends PerkManager {
         const owner = this.owner;
         const absent = super.addItem(perk);
 
-        if ("updateInterval" in perk) {
-            (owner.perkUpdateMap ??= new Map<UpdatablePerkDefinition, number>())
-                .set(perk as UpdatablePerkDefinition, owner.game.now);
-        }
+        this._addToMap(perk);
 
         if (absent) {
             // ! evil starts here
@@ -103,6 +101,15 @@ export class ServerPerkManager extends PerkManager {
         return absent;
     }
 
+    override toggleItem(item: ReifiableDef<PerkDefinition>): boolean {
+        const res = super.toggleItem(item);
+
+        if (res) this._addToMap(item);
+        else this._removeFromMap(item);
+
+        return res;
+    }
+
     /**
      * Removes a perk from this manager
      * @param perk The perk to remove
@@ -113,13 +120,11 @@ export class ServerPerkManager extends PerkManager {
         const idString = perk.idString;
         const owner = this.owner;
 
-        if ("updateInterval" in perk) {
-            owner.perkUpdateMap?.delete(perk as UpdatablePerkDefinition);
-        }
-
         const has = super.removeItem(perk);
 
         if (has) {
+            this._removeFromMap(perk);
+
             // ! evil starts here
             // some perks need to perform cleanup on removal
             switch (idString) {
@@ -165,5 +170,29 @@ export class ServerPerkManager extends PerkManager {
 
         owner.dirty.perks ||= has;
         return has;
+    }
+
+    protected _addToMap(perk: ReifiableDef<PerkDefinition>): void {
+        const owner = this.owner;
+        const def = Perks.reify(perk);
+
+        if ("updateInterval" in def) {
+            (owner.perkUpdateMap ??= new Map<UpdatablePerkDefinition, number>())
+                .set(perk as UpdatablePerkDefinition, owner.game.now);
+        }
+    }
+
+    protected _removeFromMap(perk: ReifiableDef<PerkDefinition>): void {
+        const owner = this.owner;
+        const def = Perks.reify(perk);
+
+        const perkUpdateMap = owner.perkUpdateMap;
+        if ("updateInterval" in def && perkUpdateMap !== undefined) {
+            perkUpdateMap?.delete(perk as UpdatablePerkDefinition);
+
+            if (perkUpdateMap?.size === 0) {
+                owner.perkUpdateMap = undefined;
+            }
+        }
     }
 }

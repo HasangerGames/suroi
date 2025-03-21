@@ -1,70 +1,42 @@
-import { createPacket } from "./packet";
-
-export type GameOverData = {
-    readonly numberTeammates: number
-    readonly teammates: ReadonlyArray<{
-        readonly playerID: number
-        readonly kills: number
-        readonly damageDone: number
-        readonly damageTaken: number
-        readonly timeAlive: number
-        readonly alive: boolean
-    }>
-} & ({
-    readonly won: true
-    readonly rank: 1
-} | {
-    readonly won: false
-    readonly rank: number
-});
+import { Packet, PacketType } from "../packets/packet";
 
 export interface TeammateGameOverData {
-    playerID: number
-    kills: number
-    damageDone: number
-    damageTaken: number
-    timeAlive: number
-    alive: boolean
+    readonly playerID: number
+    readonly kills: number
+    readonly damageDone: number
+    readonly damageTaken: number
+    readonly timeAlive: number
+    readonly alive: boolean
 }
 
-export const GameOverPacket = createPacket("GameOverPacket")<GameOverData>({
+export interface GameOverData {
+    readonly type: PacketType.GameOver
+    readonly rank: number
+    readonly teammates: TeammateGameOverData[]
+}
+
+export const GameOverPacket = new Packet<GameOverData>(PacketType.GameOver, {
     serialize(strm, data) {
-        strm.writeUint8(data.numberTeammates);
         strm.writeUint8(data.rank);
-        for (let i = 0; i < data.numberTeammates; i++) {
-            strm.writeObjectId(data.teammates[i].playerID)
-                .writeUint8(data.teammates[i].kills)
-                .writeUint16(data.teammates[i].damageDone)
-                .writeUint16(data.teammates[i].damageTaken)
-                .writeUint16(data.teammates[i].timeAlive).writeBooleanGroup(data.teammates[i].alive);
-        }
+        strm.writeArray(data.teammates, teammate =>
+            strm.writeObjectId(teammate.playerID)
+                .writeUint8(teammate.kills)
+                .writeUint16(teammate.damageDone)
+                .writeUint16(teammate.damageTaken)
+                .writeUint16(teammate.timeAlive)
+                .writeUint8(teammate.alive ? 1 : 0)
+        );
     },
 
-    deserialize(stream) {
-        const numberTeammates = stream.readUint8();
-        const rank = stream.readUint8();
-        const teammates: TeammateGameOverData[] = [];
-        for (let i = 0; i < numberTeammates; i++) {
-            const playerID = stream.readObjectId();
-            const kills = stream.readUint8();
-            const damageDone = stream.readUint16();
-            const damageTaken = stream.readUint16();
-            const timeAlive = stream.readUint16();
-            const [alive] = stream.readBooleanGroup();
-            teammates.push({
-                playerID,
-                kills,
-                damageDone,
-                damageTaken,
-                timeAlive,
-                alive
-            });
-        }
-        return {
-            won: rank === 1,
-            rank,
-            numberTeammates: numberTeammates,
-            teammates: teammates
-        } as GameOverData;
+    deserialize(stream, data) {
+        data.rank = stream.readUint8();
+        data.teammates = stream.readArray(() => ({
+            playerID: stream.readObjectId(),
+            kills: stream.readUint8(),
+            damageDone: stream.readUint16(),
+            damageTaken: stream.readUint16(),
+            timeAlive: stream.readUint16(),
+            alive: stream.readUint8() === 1
+        }));
     }
 });

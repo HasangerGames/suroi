@@ -2,8 +2,9 @@ import { type Mode } from "@common/definitions/modes";
 import { Obstacles } from "@common/definitions/obstacles";
 import { HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Vec, type Vector } from "@common/utils/vector";
-import { Assets, Container, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
+import { Assets, Container, Graphics, ImageSource, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
 import { PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
+import { GameConsole } from "../console/gameConsole";
 
 export let spritesheetsLoaded = false;
 
@@ -23,13 +24,13 @@ export async function loadTextures(modeName: Mode, renderer: Renderer, highResol
         }
     }
 
+    const atlases: Record<string, SpritesheetData[]> = (
+        highResolution
+            ? await import("virtual:spritesheets-jsons-high-res")
+            : await import("virtual:spritesheets-jsons-low-res")
     // we pray
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const atlases: Record<string, SpritesheetData[]> = highResolution
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        ? (await import("virtual:spritesheets-jsons-high-res")).atlases
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        : (await import("virtual:spritesheets-jsons-low-res")).atlases;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    ).atlases as Record<string, SpritesheetData[]>;
 
     const spritesheets = atlases[modeName];
 
@@ -45,7 +46,33 @@ export async function loadTextures(modeName: Mode, renderer: Renderer, highResol
             console.log(`Loading spritesheet ${location.origin}/${image}`);
 
             try {
-                const sheetTexture = await Assets.load<Texture>(image);
+                let sheetTexture: Texture;
+                // Workaround to reduce memory usage in Chromium-based browsers
+                // This actually increases usage in Firefox and has strange effects in WebKit,
+                // so we use the usual loading method for everything else
+                if (GameConsole.getBuiltInCVar("cv_alt_texture_loading")) {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    const { w: width, h: height } = spritesheet.meta.size!;
+                    const canvas = new OffscreenCanvas(width, height);
+                    const ctx = canvas.getContext("2d");
+                    if (ctx === null) {
+                        throw new Error("Unable to initialize canvas");
+                    }
+
+                    const img: HTMLImageElement = await new Promise(resolve => {
+                        const img = new Image();
+                        img.src = image;
+                        img.onload = () => resolve(img);
+                    });
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const resource = canvas.transferToImageBitmap();
+                    sheetTexture = new Texture({
+                        source: new ImageSource({ resource, width, height })
+                    });
+                } else {
+                    sheetTexture = await Assets.load<Texture>(image);
+                }
                 await renderer.prepare.upload(sheetTexture);
                 const textures = await new Spritesheet(sheetTexture, spritesheet).parse();
                 for (const [key, texture] of Object.entries(textures)) {

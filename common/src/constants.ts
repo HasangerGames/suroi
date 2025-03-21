@@ -7,7 +7,7 @@ const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType
 export const GameConstants = {
     // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
     // or a new item is added to a definition list
-    protocolVersion: 48,
+    protocolVersion: 51,
     gridSize: 32,
     maxPosition: 1924,
     objectMinScale: 0.15,
@@ -15,7 +15,7 @@ export const GameConstants = {
     defaultMode: "normal" satisfies Mode as Mode,
     player: {
         radius: 2.25,
-        baseSpeed: 0.0302,
+        baseSpeed: 0.03,
         defaultHealth: 100,
         maxAdrenaline: 100,
         inventorySlotTypings,
@@ -61,7 +61,7 @@ export const GameConstants = {
         [ItemType.Perk]: 3
     } satisfies Record<ItemType, number>,
     defaultSpeedModifiers: {
-        [ItemType.Gun]: 0.85,
+        [ItemType.Gun]: 0.88,
         [ItemType.Melee]: 1,
         [ItemType.Throwable]: 0.92
     } satisfies Record<WeaponTypes, number>,
@@ -233,13 +233,6 @@ export const enum AnimationType {
     Revive
 }
 
-export const enum KillfeedMessageType {
-    DeathOrDown,
-    KillLeaderAssigned,
-    KillLeaderDeadOrDisconnected,
-    KillLeaderUpdated
-}
-
 export const enum GasState {
     Inactive,
     Waiting,
@@ -285,21 +278,6 @@ export const enum PlayerActions {
     Reload,
     UseItem,
     Revive
-}
-
-export enum KillfeedEventType {
-    Suicide,
-    NormalTwoParty,
-    FinishedOff,
-    FinallyKilled,
-    Gas,
-    BleedOut,
-    Airdrop
-}
-
-export const enum KillfeedEventSeverity {
-    Kill,
-    Down
 }
 
 export enum InventoryMessages {

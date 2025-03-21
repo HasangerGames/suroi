@@ -1,8 +1,8 @@
-import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, Layer, ObjectCategory, PlayerActions, SpectateActions } from "@common/constants";
+import { AnimationType, GameConstants, InputActions, Layer, ObjectCategory, PlayerActions, SpectateActions } from "@common/constants";
 import { type BadgeDefinition } from "@common/definitions/badges";
 import { Emotes, type EmoteDefinition } from "@common/definitions/emotes";
 import { Ammos } from "@common/definitions/items/ammos";
-import { Armors, ArmorType } from "@common/definitions/items/armors";
+import { ArmorType, Armors } from "@common/definitions/items/armors";
 import { Backpacks } from "@common/definitions/items/backpacks";
 import { Guns, type GunDefinition } from "@common/definitions/items/guns";
 import { HealingItems } from "@common/definitions/items/healingItems";
@@ -15,20 +15,19 @@ import { Loots, type WeaponDefinition } from "@common/definitions/loots";
 import { type PlayerPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
-import { DisconnectPacket } from "@common/packets/disconnectPacket";
-import { GameOverData, GameOverPacket, TeammateGameOverData } from "@common/packets/gameOverPacket";
-import { type NoMobile, type PlayerInputData } from "@common/packets/inputPacket";
-import { createKillfeedMessage, KillFeedPacket, type ForEventType } from "@common/packets/killFeedPacket";
-import { type InputPacket } from "@common/packets/packet";
+import { GameOverPacket, TeammateGameOverData } from "@common/packets/gameOverPacket";
+import { type InputData, type NoMobile } from "@common/packets/inputPacket";
+import { DamageSources, KillPacket } from "@common/packets/killPacket";
+import { MutablePacketDataIn } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { ReportPacket } from "@common/packets/reportPacket";
-import { type SpectatePacketData } from "@common/packets/spectatePacket";
-import { UpdatePacket, type PlayerData, type UpdatePacketDataCommon, type UpdatePacketDataIn } from "@common/packets/updatePacket";
+import { type SpectateData } from "@common/packets/spectatePacket";
+import { UpdatePacket, type PlayerData, type UpdateDataCommon } from "@common/packets/updatePacket";
 import { PlayerModifiers } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
 import { Collision, Geometry, Numeric } from "@common/utils/math";
-import { ExtendedMap, type SDeepMutable, type SMutable, type Timeout } from "@common/utils/misc";
+import { type SDeepMutable, type Timeout } from "@common/utils/misc";
 import { ItemType, type EventModifiers, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray, randomPointInsideCircle, weightedRandom } from "@common/utils/random";
@@ -36,7 +35,7 @@ import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { randomBytes } from "crypto";
-import { type WebSocket } from "uWebSockets.js";
+import { WebSocket } from "uWebSockets.js";
 import { Config } from "../config";
 import { type Game } from "../game";
 import { HealingAction, ReloadAction, ReviveAction, type Action } from "../inventory/action";
@@ -54,16 +53,15 @@ import { Explosion } from "./explosion";
 import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject";
 import { type Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
-import { type SyncedParticle } from "./syncedParticle";
 import { Projectile } from "./projectile";
+import { type SyncedParticle } from "./syncedParticle";
 
-export interface PlayerContainer {
+export interface PlayerSocketData {
+    player?: Player
+    readonly ip?: string
     readonly teamID?: string
     readonly autoFill: boolean
-    player?: Player
-    readonly ip: string | undefined
     readonly role?: string
-
     readonly isDev: boolean
     readonly nameColor?: number
     readonly lobbyClearing: boolean
@@ -360,7 +358,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.dirty.zoom = true;
     }
 
-    readonly socket: WebSocket<PlayerContainer>;
+    readonly socket: WebSocket<PlayerSocketData> | undefined;
 
     private readonly _action: { type?: Action, dirty: boolean } = {
         type: undefined,
@@ -455,7 +453,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     private _pingSeq = 0;
 
-    constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector, layer?: Layer, team?: Team) {
+    constructor(game: Game, socket: WebSocket<PlayerSocketData> | undefined, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
 
         if (layer !== undefined) {
@@ -471,14 +469,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             team.setDirty();
         }
 
-        const userData = socket.getUserData();
         this.socket = socket;
+        const data = socket?.getUserData() ?? {} as Partial<PlayerSocketData>;
         this.name = GameConstants.player.defaultName;
-        this.ip = userData.ip;
-        this.role = userData.role;
-        this.isDev = userData.isDev;
-        this.nameColor = userData.nameColor ?? 0;
-        this.hasColor = userData.nameColor !== undefined;
+        this.ip = data.ip;
+        this.role = data.role;
+        this.isDev = data.isDev ?? false;
+        this.nameColor = data.nameColor ?? 0;
+        this.hasColor = data.nameColor !== undefined;
 
         game.addTimeout(() => {
             if (!this.joined) {
@@ -508,13 +506,17 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.inventory.scope = "2x_scope";
         this.effectiveScope = "2x_scope";
 
-        const specialFunnies = this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing;
-        // Inventory preset
-        if (specialFunnies) {
+        // Weapon preset
+        if (
+            this.isDev
+            && data.lobbyClearing
+            && data.weaponPreset
+            && !Config.disableLobbyClearing
+        ) {
             const [
                 weaponA, weaponB, melee,
                 killsA, killB, killsM
-            ] = userData.weaponPreset.split(" ");
+            ] = data.weaponPreset.split(" ");
 
             const backpack = this.inventory.backpack;
             const determinePreset = (
@@ -710,17 +712,17 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         inventory.scope = "4x_scope";
         inventory.backpack = max
-            ? [...Backpacks.definitions].sort(({ level: lvlA }, { level: lvlB }) => lvlB - lvlA)[0]
+            ? Array.from(Backpacks).sort(({ level: lvlA }, { level: lvlB }) => lvlB - lvlA)[0]
             : pickRandomInArray(Backpacks.definitions);
 
         this.inventory.vest = max
-            ? [...Armors.definitions.filter(({ armorType }) => armorType === ArmorType.Vest)].sort(({ level: lvlA }, { level: lvlB }) => lvlB - lvlA)[0]
+            ? Array.from(Armors).filter(({ armorType }) => armorType === ArmorType.Vest).sort(({ level: lvlA }, { level: lvlB }) => lvlB - lvlA)[0]
             : Math.random() > 0.9
                 ? undefined
                 : pickRandomInArray(Armors.definitions.filter(({ armorType }) => armorType === ArmorType.Vest));
 
         this.inventory.helmet = max
-            ? [...Armors.definitions.filter(({ armorType }) => armorType === ArmorType.Helmet)].sort(({ level: lvlA }, { level: lvlB }) => lvlB - lvlA)[0]
+            ? Array.from(Armors).filter(({ armorType }) => armorType === ArmorType.Helmet).sort(({ level: lvlA }, { level: lvlB }) => lvlB - lvlA)[0]
             : Math.random() > 0.9
                 ? undefined
                 : pickRandomInArray(Armors.definitions.filter(({ armorType }) => armorType === ArmorType.Helmet));
@@ -1005,16 +1007,48 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 1
             );
 
+        const adrenSpeedMod = (() => {
+            /*
+                The relation between speed and adrenaline is modelled around these three points:
+
+                adren. | speed multiplier
+                -------|---------------
+                   0   |       1
+                  30   |     1.10
+                  100  |     1.15
+
+                Using a logarithmic regression model, we obtain:
+
+                a = 0.944297822457
+                b = -0.0158132859327
+                c = 0.699999999995
+                d = 3.51269916486
+
+                y = b•log[c](x + d) + a
+
+                or, using the change of base law,
+                y = b•log(x + d) / log(c) + a
+
+                https://www.desmos.com/calculator/sgimzzda0b
+            */
+            const a = 0.944297822457;
+            const b = -0.0158132859327;
+            const c = 0.699999999995;
+            const d = 3.51269916486;
+
+            return b * Math.log(this._adrenaline + d) / Math.log(c) + a;
+        })();
+
         // Calculate speed
-        const speed = this.baseSpeed                                          // Base speed
-            * (FloorTypes[this.floor].speedMultiplier ?? 1)                   // Speed multiplier from floor player is standing in
-            * recoilMultiplier                                                // Recoil from items
-            * perkSpeedMod                                                    // See above
-            * (this.action?.speedMultiplier ?? 1)                             // Speed modifier from performing actions
-            * (1 + (this.adrenaline / 1000))                                  // Linear speed boost from adrenaline
-            * (this.downed ? 0.5 : this.activeItemDefinition.speedMultiplier) // Active item/knocked out speed modifier
-            * (this.beingRevivedBy ? 0.5 : 1)                                 // Being revived speed multiplier
-            * this._modifiers.baseSpeed;                                      // Current on-wearer modifier
+        const speed = this.baseSpeed                                                 // Base speed
+            * (FloorTypes[this.floor].speedMultiplier ?? 1)                          // Speed multiplier from floor player is standing in
+            * recoilMultiplier                                                       // Recoil from items
+            * perkSpeedMod                                                           // See above
+            * (this.action?.speedMultiplier ?? 1)                                    // Speed modifier from performing actions
+            * adrenSpeedMod                                                          // Speed boost from adrenaline
+            * (this.downed ? 0.5 : (this.activeItemDefinition.speedMultiplier ?? 1)) // Active item/knocked out speed modifier
+            * (this.beingRevivedBy ? 0.5 : 1)                                        // Being revived speed multiplier
+            * this._modifiers.baseSpeed;                                             // Current on-wearer modifier
 
         // Update position
         const oldPosition = Vec.clone(this.position);
@@ -1168,7 +1202,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if (gas.doDamage && gas.isInGas(this.position)) {
             this.piercingDamage({
                 amount: gas.scaledDamage(this.position) + (applyScaleDamageFactor ? (gas.getDef().scaleDamageFactor ?? 0) + this.additionalGasDamage : 0),
-                source: KillfeedEventType.Gas
+                source: DamageSources.Gas
             });
             if (applyScaleDamageFactor) {
                 this.additionalGasDamage = this.additionalGasDamage + (gas.getDef().scaleDamageFactor ?? 0);
@@ -1182,7 +1216,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if (this.downed && !this.beingRevivedBy) {
             this.piercingDamage({
                 amount: GameConstants.player.bleedOutDPMs * dt,
-                source: KillfeedEventType.BleedOut
+                source: DamageSources.BleedOut
             });
         }
 
@@ -1215,8 +1249,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             if (depletion?.health) {
                 this.piercingDamage({
                     amount: depletion.health * dt,
-                    source: KillfeedEventType.Gas
-                //          ^^^^^^^^^^^^^^^^^^^^^ dubious
+                    source: DamageSources.Gas
+                //          ^^^^^^^^^^^^^ dubious
                 });
             }
 
@@ -1282,7 +1316,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
      * Calculate visible objects, check team, and send packets
      */
     secondUpdate(): void {
-        const packet: SMutable<Partial<UpdatePacketDataIn>> = {};
+        const packet = UpdatePacket.create();
 
         const player = this.spectating ?? this;
         if (this.spectating) {
@@ -1301,46 +1335,22 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             const dim = player.effectiveScope.zoomLevel * 2 + 8;
             this.screenHitbox = RectangleHitbox.fromRect(dim, dim, player.position);
 
-            const visCache = new ExtendedMap<GameObject, boolean>();
             const newVisibleObjects = game.grid.intersectsHitbox(this.screenHitbox);
 
-            packet.deletedObjects = [...this.visibleObjects]
-                .filter(
-                    object => (
-                        (
-                            !newVisibleObjects.has(object)
-                            || !isVisibleFromLayer(
-                                this.layer,
-                                object,
-                                object?.hitbox && [...game.grid.intersectsHitbox(object.hitbox)]
-                            )
-                        )
-                        && (this.visibleObjects.delete(object), true)
-                    )
-                )
-                .map(({ id }) => id);
+            packet.deletedObjects = [];
+            for (const object of this.visibleObjects) {
+                if (newVisibleObjects.has(object) && isVisibleFromLayer(this.layer, object)) continue;
 
-            newVisibleObjects
-                .forEach(
-                    object => {
-                        if (
-                            (
-                                this.visibleObjects.has(object)
-                                || !visCache.getAndGetDefaultIfAbsent(
-                                    object,
-                                    () => isVisibleFromLayer(
-                                        this.layer,
-                                        object,
-                                        object?.hitbox && [...game.grid.intersectsHitbox(object.hitbox)]
-                                    )
-                                )
-                            )
-                        ) return;
+                this.visibleObjects.delete(object);
+                packet.deletedObjects.push(object.id);
+            }
 
-                        this.visibleObjects.add(object);
-                        fullObjects.add(object);
-                    }
-                );
+            for (const object of newVisibleObjects) {
+                if (this.visibleObjects.has(object) || !isVisibleFromLayer(this.layer, object)) continue;
+
+                this.visibleObjects.add(object);
+                fullObjects.add(object);
+            }
         }
 
         for (const object of game.fullDirtyObjects) {
@@ -1348,9 +1358,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             fullObjects.add(object);
         }
 
-        packet.partialObjectsCache = [...game.partialDirtyObjects].filter(
-            object => this.visibleObjects.has(object as GameObject) && !fullObjects.has(object)
-        );
+        packet.partialObjectsCache = [];
+        for (const object of game.partialDirtyObjects) {
+            if (!this.visibleObjects.has(object as GameObject) || fullObjects.has(object)) continue;
+            packet.partialObjectsCache.push(object);
+        }
 
         const inventory = player.inventory;
         let forceInclude = false;
@@ -1399,7 +1411,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             ),
             ...(
                 player.dirty.teammates || forceInclude
-                    ? { teammates: player._team?.players ?? [] }
+                    ? { teammates: player._team?.players as Player[] ?? [] }
                     : {}
             ),
             ...(
@@ -1491,7 +1503,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 || Geometry.distanceSquared(position, this.position) < maxDistSquared
         );
 
-        // Emotes
         packet.emotes = game.emotes.filter(({ player }) => this.visibleObjects.has(player));
 
         const gas = game.gas;
@@ -1502,7 +1513,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         packet.gasProgress = gas.completionRatioDirty || this._firstPacket ? gas.completionRatio : undefined;
 
         const newPlayers = this._firstPacket
-            ? [...game.grid.pool.getCategory(ObjectCategory.Player)]
+            ? Array.from(game.grid.pool.getCategory(ObjectCategory.Player))
             : game.newPlayers;
 
         // new and deleted players
@@ -1512,7 +1523,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             hasColor,
             nameColor: hasColor ? nameColor : undefined,
             badge
-        } as (UpdatePacketDataCommon["newPlayers"] & object)[number]));
+        } as (UpdateDataCommon["newPlayers"] & object)[number]));
 
         if (this.game.teamMode) {
             for (const teammate of newPlayers.filter(({ teamID }) => teamID === player.teamID)) {
@@ -1520,41 +1531,36 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
-        packet.fullObjectsCache = [...fullObjects];
+        packet.fullObjectsCache = Array.from(fullObjects);
 
         packet.deletedPlayers = game.deletedPlayers;
 
-        // alive count
         packet.aliveCount = game.aliveCountDirty || this._firstPacket ? game.aliveCount : undefined;
 
-        // killfeed messages
-        const killLeader = game.killLeader;
-
         packet.planes = game.planes;
+
         packet.mapPings = [...game.mapPings, ...this._mapPings];
         this._mapPings.length = 0;
 
-        // serialize and send update packet
-        this.sendPacket(UpdatePacket.create(packet as UpdatePacketDataIn));
+        packet.killLeader = game.killLeaderDirty || this._firstPacket
+            ? {
+                id: game.killLeader?.id ?? -1,
+                kills: game.killLeader?.kills ?? 0
+            }
+            : undefined;
 
-        if (this._firstPacket && killLeader) {
-            this._packets.push(KillFeedPacket.create({
-                messageType: KillfeedMessageType.KillLeaderAssigned,
-                victimId: killLeader.id,
-                attackerKills: killLeader.kills,
-                hideFromKillfeed: true
-            }));
-        }
+        // serialize and send update packet
+        this.sendPacket(packet as unknown as MutablePacketDataIn);
 
         this._firstPacket = false;
 
         this._packetStream.stream.index = 0;
         for (const packet of this._packets) {
-            this._packetStream.serializeServerPacket(packet);
+            this._packetStream.serialize(packet);
         }
 
         for (const packet of this.game.packets) {
-            this._packetStream.serializeServerPacket(packet);
+            this._packetStream.serialize(packet);
         }
 
         this._packets.length = 0;
@@ -1601,7 +1607,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         return this.perks.mapOrDefault<Name, U>(perk, mapper, defaultValue);
     }
 
-    spectate(packet: SpectatePacketData): void {
+    spectate(packet: SpectateData): void {
         if (!this.dead) return;
         const game = this.game;
         if (game.now - this.lastSpectateActionTime < 200) return;
@@ -1651,21 +1657,34 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.reportedPlayerIDs.set(this.spectating.id, true);
 
                 const reportID = randomBytes(4).toString("hex");
-                // SERVER HOSTERS assign your custom server an ID somewhere then pass it into the report body region: region
-                const reportJson = {
-                    id: reportID,
-                    reporterName: this.name,
-                    suspectName: this.spectating.name,
-                    suspectIP: this.spectating.ip,
-                    reporterIP: this.ip
-                };
 
                 this.sendPacket(ReportPacket.create({
                     playerID: this.spectating.id,
                     reportID: reportID
                 }));
-                if (Config.protection) {
-                    const reportURL = String(Config.protection?.ipChecker?.logURL);
+
+                // Send the report to the API server
+                if (Config.apiServer) {
+                    // SERVER HOSTERS assign your custom server an ID somewhere then pass it into the report body region: region
+                    const reportJson = {
+                        id: reportID,
+                        reporterName: this.name,
+                        suspectName: this.spectating.name,
+                        suspectIP: this.spectating.ip,
+                        reporterIP: this.ip
+                    };
+
+                    fetch(`${Config.apiServer.url}/reports`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", "api-key": Config.apiServer.apiKey },
+                        body: JSON.stringify(reportJson)
+                    }).then(response => response.json())
+                        .then(console.log)
+                        .catch((e: unknown) => console.error(e));
+                }
+
+                // Send the report to Discord
+                if (Config.apiServer?.reportWebhookURL) {
                     const reportData = {
                         embeds: [
                             {
@@ -1685,29 +1704,18 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                                         name: "Reporter",
                                         value: this.name
                                     }
-
                                 ]
                             }
                         ]
                     };
 
-                    // Send report to Discord
-                    fetch(reportURL, {
+                    fetch(Config.apiServer.reportWebhookURL, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(reportData)
                     }).catch(error => {
                         console.error("Error: ", error);
                     });
-
-                    // Post the report to the server
-                    fetch(`${Config.protection?.punishments?.url}/reports`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json", "api-key": Config?.protection?.punishments?.password || "" },
-                        body: JSON.stringify(reportJson)
-                    }).then(response => response.json())
-                        .then(console.log)
-                        .catch((e: unknown) => console.error(e));
                 }
             }
         }
@@ -1737,31 +1745,19 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
     }
 
-    private readonly _packets: InputPacket[] = [];
+    private readonly _packets: MutablePacketDataIn[] = [];
 
-    sendPacket(packet: InputPacket): void {
+    sendPacket(packet: MutablePacketDataIn): void {
         this._packets.push(packet);
     }
 
-    disconnect(reason: string): void {
-        const stream = new PacketStream(new ArrayBuffer(128));
-        stream.serializeServerPacket(
-            DisconnectPacket.create({
-                reason
-            })
-        );
-
-        this.sendData(stream.getBuffer());
-        this.disconnected = true;
-        // timeout to make sure disconnect packet is sent
-        setTimeout(() => {
-            this.game.removePlayer(this);
-        }, 10);
+    disconnect(reason?: string): void {
+        this.game.removePlayer(this, reason);
     }
 
     sendData(buffer: ArrayBuffer): void {
         try {
-            this.socket.send(buffer, true, false);
+            this.socket?.send(buffer, true, false);
         } catch (e) {
             console.warn("Error sending packet. Details:", e);
         }
@@ -2065,6 +2061,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
     }
 
+    private static _itemToDamageSource(item: NonNullable<DamageParams["weaponUsed"]>): DamageSources {
+        if (item instanceof Explosion) return DamageSources.Explosion;
+        else if (item.isGun) return DamageSources.Gun;
+        else if (item.isMelee) return DamageSources.Melee;
+        else /* if (item.isThrowable) */ return DamageSources.Throwable;
+    }
+
     // dies of death
     die(params: Omit<DamageParams, "amount">): void {
         if (this.health > 0 || this.dead) return;
@@ -2083,16 +2086,53 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.canDespawn = false;
         this._team?.setDirty();
 
-        let action: Action | undefined;
-        if ((action = this.beingRevivedBy?.action) instanceof ReviveAction) {
+        const action = this.beingRevivedBy?.action;
+        if (action instanceof ReviveAction) {
             action.cancel();
         }
 
-        const sourceIsPlayer = source instanceof Player;
+        const packet = KillPacket.create();
+        packet.victimId = this.id;
+        packet.downed = wasDowned;
+        packet.killed = true;
 
-        if (sourceIsPlayer) {
+        if (weaponUsed) {
+            packet.weaponUsed = weaponUsed.definition;
+            packet.damageSource = Player._itemToDamageSource(weaponUsed);
+        }
+
+        const downedBy = this.downedBy?.player;
+        if (source === DamageSources.Gas || source === DamageSources.Airdrop || source === DamageSources.BleedOut || source === DamageSources.FinallyKilled) {
+            packet.damageSource = source;
+
+            if (downedBy !== undefined) {
+                packet.creditedId = downedBy.id;
+                if (downedBy !== this) packet.kills = ++downedBy.kills;
+            }
+        } else if (source instanceof Player && source !== this) {
             this.killedBy = source;
 
+            packet.attackerId = source.id;
+
+            // Give kill credit to the player who downed if they're on the same team as the killer.
+            // Otherwise, the killer always gets credit.
+            if (downedBy && downedBy.teamID === source.teamID) {
+                packet.creditedId = downedBy.id;
+                packet.kills = ++downedBy.kills;
+            } else {
+                packet.kills = ++source.kills;
+            }
+
+            // Killstreak credit always goes to the killer regardless of the above.
+            if (
+                weaponUsed
+                && "killstreak" in weaponUsed.definition
+                && weaponUsed instanceof InventoryItemBase
+            ) {
+                packet.killstreak = weaponUsed.stats.kills;
+            }
+
+            // Apply perk effects. Perk effects are also always applied to the killer.
             for (const perk of source.perks) {
                 switch (perk.idString) {
                     case PerkIds.BabyPlumpkinPie: {
@@ -2125,119 +2165,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     }
                 }
             }
+
+            source.updateAndApplyModifiers();
         }
 
-        if (
-            sourceIsPlayer
-            // firstly, 'GameObject in KillfeedEventType' returns false;
-            // secondly, so does 'undefined in KillfeedEventType';
-            // thirdly, enum double-indexing means that 'KillfeedEventType.<whatever> in KillfeedEventType' returns true
-            // @ts-expect-error see above
-            || source in KillfeedEventType
-        ) {
-            const message = createKillfeedMessage(KillfeedMessageType.DeathOrDown)
-                .victimId(this.id);
-
-            const attributeToPlayer = (player: Player, item: InventoryItem | null = player.activeItem): void => {
-                ++player.kills;
-
-                (
-                    message as ForEventType<
-                        | KillfeedEventType.NormalTwoParty
-                        | KillfeedEventType.FinishedOff
-                        | KillfeedEventType.FinallyKilled
-                        | KillfeedEventType.Gas
-                        | KillfeedEventType.BleedOut
-                        | KillfeedEventType.Airdrop
-                    >
-                ).attackerId(player.id)
-                    .attackerKills(player.kills);
-
-                if (item !== null) {
-                    if (
-                        [
-                            KillfeedEventType.Suicide,
-                            KillfeedEventType.NormalTwoParty,
-                            KillfeedEventType.FinishedOff
-                        ].includes(message.eventType() as DamageParams["source"] & KillfeedEventType)
-                    ) {
-                        const msg = (message as ForEventType<
-                            KillfeedEventType.Suicide |
-                            KillfeedEventType.NormalTwoParty |
-                            KillfeedEventType.FinishedOff
-                        >).weaponUsed(item.definition);
-
-                        if (item.definition.killstreak) {
-                            msg.killstreak(item.stats.kills);
-                        }
-                    }
-                }
-            };
-
-            const attributeToDowner = (): boolean => {
-                const downer = this.downedBy;
-                if (downer === undefined) return false;
-
-                const { player, item } = downer;
-
-                ++player.kills;
-                if (
-                    (item?.isGun || item?.isMelee)
-                    && player.inventory.weapons.includes(item)
-                ) {
-                    const kills = ++item.stats.kills;
-
-                    for (const entry of item.definition.wearerAttributes?.on?.kill ?? []) {
-                        if (kills >= (entry.limit ?? Infinity)) continue;
-
-                        player.health += entry.healthRestored ?? 0;
-                        player.adrenaline += entry.adrenalineRestored ?? 0;
-                    }
-                }
-
-                return true;
-            };
-
-            if (
-                (
-                    [
-                        KillfeedEventType.FinallyKilled,
-                        KillfeedEventType.Gas,
-                        KillfeedEventType.BleedOut
-                    ].includes as (arg: DamageParams["source"]) => arg is DamageParams["source"] & KillfeedEventType
-                )(source)
-            ) {
-                message.eventType(source);
-
-                const downer = this.downedBy;
-                if (downer !== undefined) {
-                    attributeToPlayer(downer.player);
-                }
-            } else if (sourceIsPlayer) {
-                if (source === this) {
-                    message.eventType(KillfeedEventType.Suicide)
-                        .weaponUsed(weaponUsed?.definition);
-                } else {
-                    message.eventType(
-                        wasDowned
-                            ? KillfeedEventType.FinishedOff
-                            : KillfeedEventType.NormalTwoParty
-                    ).weaponUsed(weaponUsed?.definition);
-
-                    if (source.teamID === this.downedBy?.player.teamID) {
-                        attributeToDowner();
-                    }
-
-                    attributeToPlayer(source, weaponUsed instanceof Explosion ? null : weaponUsed); // …then attribute to the killer
-                }
-            } else if (source instanceof BaseGameObject) {
-                console.warn(`Unexpected source of death for player '${this.name}' (id: ${this.id}); source is of category ${ObjectCategory[source.type]}`);
-            }
-
-            this.game.packets.push(
-                KillFeedPacket.create(message.build())
-            );
-        }
+        this.game.packets.push(packet);
 
         // Reset movement and attacking variables
         this.movement.up = this.movement.down = this.movement.left = this.movement.right = false;
@@ -2280,8 +2212,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 if (def.noDrop || ("ephemeral" in def && def.ephemeral)) continue;
 
                 if (def.itemType === ItemType.Ammo && count !== Infinity) {
-                    this.game.addLoot(item, position, layer, { count: Math.floor(count / 2) });
-                    this.game.addLoot(item, position, layer, { count: Math.ceil(count / 2) });
+                    let left = count;
+                    let subtractAmount = 0;
+
+                    do {
+                        left -= subtractAmount = Numeric.min(left, def.maxStackSize);
+                        this.game.addLoot(item, position, layer, { count: subtractAmount });
+                    } while (left > 0);
+
                     continue;
                 }
 
@@ -2306,6 +2244,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.game.addLoot(skin, position, layer);
         }
 
+        // Drop perks
         for (const perk of this.perks) {
             if (!perk.noDrop) {
                 this.game.addLoot(perk, position, layer);
@@ -2346,11 +2285,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         // Remove player from kill leader
         if (this === this.game.killLeader) {
-            this.game.killLeaderDead(sourceIsPlayer ? source : undefined);
+            this.game.findNewKillLeader();
         }
-
-        this.updateAndApplyModifiers();
-        if (sourceIsPlayer) source.updateAndApplyModifiers();
 
         this.game.pluginManager.emit("player_did_die", {
             player: this,
@@ -2367,7 +2303,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 player.health = 0;
                 player.die({
-                    source: KillfeedEventType.FinallyKilled
+                    source: DamageSources.FinallyKilled
                 });
             }
 
@@ -2378,35 +2314,33 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     down(
-        source?: GameObject | (typeof KillfeedEventType)["Gas" | "Airdrop" | "BleedOut" | "FinallyKilled"],
+        source?: GameObject | (typeof DamageSources)["Gas" | "Airdrop" | "BleedOut" | "FinallyKilled"],
         weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
     ): void {
-        const sourceIsPlayer = source instanceof Player;
+        const packet = KillPacket.create();
+        packet.victimId = this.id;
+        packet.downed = true;
+        packet.killed = false;
 
-        if (sourceIsPlayer || source === KillfeedEventType.Gas || source === KillfeedEventType.Airdrop) {
-            const message = createKillfeedMessage(KillfeedMessageType.DeathOrDown)
-                .severity(KillfeedEventSeverity.Down)
-                .victimId(this.id);
+        if (source instanceof Player) {
+            this.downedBy = {
+                player: source,
+                item: weaponUsed instanceof InventoryItemBase ? weaponUsed : undefined
+            };
 
-            if (sourceIsPlayer) {
-                this.downedBy = {
-                    player: source,
-                    item: weaponUsed instanceof InventoryItemBase ? weaponUsed : undefined
-                };
-
-                if (source !== this) {
-                    message.eventType(KillfeedEventType.NormalTwoParty)
-                        .attackerId(source.id)
-                        .weaponUsed(weaponUsed?.definition);
-                }
-            } else {
-                message.eventType(source);
+            if (weaponUsed) {
+                packet.weaponUsed = weaponUsed.definition;
+                packet.damageSource = Player._itemToDamageSource(weaponUsed);
             }
 
-            this.game.packets.push(
-                KillFeedPacket.create(message.build())
-            );
+            if (source !== this) {
+                packet.attackerId = source.id;
+            }
+        } else if (source === DamageSources.Gas || source === DamageSources.Airdrop) {
+            packet.damageSource = source;
         }
+
+        this.game.packets.push(packet);
 
         this.canDespawn = false;
         this.downed = true;
@@ -2457,11 +2391,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }));
 
         const packet = GameOverPacket.create({
-            won,
             rank: won ? 1 as const : this.game.aliveCount + 1,
-            numberTeammates: teammates.length,
             teammates
-        } as GameOverData);
+        });
 
         this.sendPacket(packet);
 
@@ -2470,7 +2402,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
     }
 
-    processInputs(packet: PlayerInputData): void {
+    processInputs(packet: InputData): void {
         this.movement = {
             ...packet.movement,
             ...(packet.isMobile ? packet.mobile : { moving: false, angle: 0 })
@@ -2632,7 +2564,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 case InputActions.Emote: {
                     let isValid = false;
                     for (const definitionList of [Emotes, Ammos, HealingItems, Guns, Melees, Throwables]) {
-                        if (definitionList.hasString(action.emote.idString)) {
+                        if (this.game.teamMode && definitionList.hasString(action.emote.idString)) {
                             isValid = true;
                             break;
                         }

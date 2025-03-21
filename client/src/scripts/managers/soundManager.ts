@@ -2,10 +2,11 @@ import { Layer } from "@common/constants";
 // import { equalLayer, isGroundLayer } from "@common/utils/layer";
 import { Numeric } from "@common/utils/math";
 import { Vec, type Vector } from "@common/utils/vector";
-import { type Game } from "../game";
+import { Game } from "../game";
 // add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
 import * as PixiSound from "@pixi/sound";
 import { paths } from "virtual:game-sounds";
+import { GameConsole } from "../console/gameConsole";
 
 export interface SoundOptions {
     position?: Vector
@@ -26,8 +27,6 @@ export interface SoundOptions {
 PixiSound.sound.disableAutoPause = true;
 
 export class GameSound {
-    readonly manager: SoundManager;
-
     id: string;
     name: string;
     position?: Vector;
@@ -40,7 +39,7 @@ export class GameSound {
     readonly dynamic: boolean;
     readonly ambient: boolean;
 
-    get managerVolume(): number { return this.ambient ? this.manager.ambienceVolume : this.manager.sfxVolume; }
+    get managerVolume(): number { return this.ambient ? SoundManager.ambienceVolume : SoundManager.sfxVolume; }
 
     // acts as multiplier
     volume = 1;
@@ -51,10 +50,9 @@ export class GameSound {
 
     ended = false;
 
-    constructor(id: string, name: string, options: SoundOptions, manager: SoundManager) {
+    constructor(id: string, name: string, options: SoundOptions) {
         this.id = id;
         this.name = name;
-        this.manager = manager;
         this.position = options.position;
         this.falloff = options.falloff;
         this.maxRange = options.maxRange;
@@ -118,7 +116,7 @@ export class GameSound {
         if (!this.instance) return;
 
         if (this.position) {
-            const diff = Vec.sub(this.manager.position, this.position);
+            const diff = Vec.sub(SoundManager.position, this.position);
 
             this.instance.volume = (
                 1 - Numeric.clamp(Math.abs(Vec.length(diff) / this.maxRange), 0, 1)
@@ -143,11 +141,11 @@ export class GameSound {
     }
 }
 
-export class SoundManager {
+export const SoundManager = new (class SoundManager {
     readonly updatableSounds = new Set<GameSound>();
 
-    sfxVolume: number;
-    ambienceVolume: number;
+    sfxVolume = 0;
+    ambienceVolume = 0;
 
     position = Vec.create(0, 0);
 
@@ -173,15 +171,15 @@ export class SoundManager {
     //                                       ^              ^        ^
     private readonly _folderNameToId = {} as Record<string, Record<string, string>>;
 
-    private static _instantiated = false;
-    constructor(readonly game: Game) {
-        if (SoundManager._instantiated) {
-            throw new Error("Class 'SoundManager' has already been instantiated");
+    private _initialized = false;
+    init(): void {
+        if (this._initialized) {
+            throw new Error("SoundManager has already been initialized");
         }
-        SoundManager._instantiated = true;
+        this._initialized = true;
 
-        this.sfxVolume = game.console.getBuiltInCVar("cv_sfx_volume");
-        this.ambienceVolume = game.console.getBuiltInCVar("cv_ambience_volume");
+        this.sfxVolume = GameConsole.getBuiltInCVar("cv_sfx_volume");
+        this.ambienceVolume = GameConsole.getBuiltInCVar("cv_ambience_volume");
 
         for (const path of paths as string[]) {
             const name = path.slice(path.lastIndexOf("/") + 1, -4); // removes path and extension
@@ -205,10 +203,10 @@ export class SoundManager {
             maxRange: 256,
             dynamic: false,
             ambient: false,
-            layer: this.game.layer ?? Layer.Ground,
+            layer: Game.layer ?? Layer.Ground,
             loop: false,
             ...options
-        }, this);
+        });
 
         if (sound.dynamic || sound.ambient) {
             this.updatableSounds.add(sound);
@@ -231,12 +229,12 @@ export class SoundManager {
         PixiSound.sound.stopAll();
     }
 
-    loadSounds({ mode }: Game): void {
+    loadSounds(): void {
         this._nameToId = {};
 
         const isLoading: Record<string, boolean> = {};
 
-        for (const folder of mode.sounds.foldersToLoad) {
+        for (const folder of Game.mode.sounds.foldersToLoad) {
             for (const [name, id] of Object.entries(this._folderNameToId[folder])) {
                 this._nameToId[name] = id;
                 isLoading[id] = true;
@@ -287,4 +285,4 @@ export class SoundManager {
             }
         );
     }
-}
+})();
