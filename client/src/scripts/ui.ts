@@ -1287,7 +1287,7 @@ export async function setUpUI(): Promise<void> {
 
     GameConsole.variables.addChangeListener(
         "cv_loadout_crosshair",
-        (_, value) => {
+        value => {
             (crosshairCache[value] ??= $(`#crosshair-${value}`))
                 .addClass("selected")
                 .siblings()
@@ -1416,7 +1416,7 @@ export async function setUpUI(): Promise<void> {
 
         GameConsole.variables.addChangeListener(
             "cv_loadout_badge",
-            (_, newBadge) => { selectBadge(newBadge); }
+            selectBadge
         );
     }
 
@@ -1443,7 +1443,7 @@ export async function setUpUI(): Promise<void> {
             callback?.(value);
         });
 
-        GameConsole.variables.addChangeListener(settingName, (game, newValue) => {
+        GameConsole.variables.addChangeListener(settingName, newValue => {
             if (ignore) return;
 
             const casted = +newValue;
@@ -1478,7 +1478,7 @@ export async function setUpUI(): Promise<void> {
             callback?.(value);
         });
 
-        GameConsole.variables.addChangeListener(settingName, (game, newValue) => {
+        GameConsole.variables.addChangeListener(settingName, newValue => {
             const casted = !!newValue;
 
             callback?.(casted);
@@ -1514,7 +1514,7 @@ export async function setUpUI(): Promise<void> {
 
     GameConsole.variables.addChangeListener(
         "cv_crosshair_color",
-        (game, value) => {
+        value => {
             crosshairColor.val(value);
         }
     );
@@ -1528,7 +1528,7 @@ export async function setUpUI(): Promise<void> {
 
     GameConsole.variables.addChangeListener(
         "cv_crosshair_stroke_color",
-        (game, value) => {
+        value => {
             crosshairStrokeColor.val(value);
         }
     );
@@ -1662,7 +1662,6 @@ export async function setUpUI(): Promise<void> {
         });
 
         GameConsole.variables.addChangeListener("cv_weapon_slot_style", value => {
-            console.trace();
             element.checked = value === "colored";
             UIManager.updateWeaponSlots();
         });
@@ -1740,7 +1739,7 @@ export async function setUpUI(): Promise<void> {
 
     GameConsole.variables.addChangeListener(
         "cv_draw_hud",
-        (_, newVal) => {
+        newVal => {
             gameUi.toggle(newVal);
             MapManager.visible = !GameConsole.getBuiltInCVar("cv_minimap_minimized") && newVal;
         }
