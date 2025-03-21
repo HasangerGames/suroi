@@ -3731,6 +3731,19 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         winterVariations: 1
     },
     {
+        idString: "smaller_sandbags",
+        name: "Sandbags",
+        material: "sand",
+        health: 1000,
+        indestructible: true,
+        hitbox: RectangleHitbox.fromRect(8, 5.9),
+        rotationMode: RotationMode.Limited,
+        frames: {
+            particle: "sandbags_particle"
+        }
+        // winterVariations: 1
+    },
+    {
         idString: "gun_locker",
         name: "Gun Locker",
         material: "iron",

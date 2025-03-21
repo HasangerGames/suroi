@@ -13,7 +13,7 @@ import { Collision } from "@common/utils/math";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-import { SpawnMode, SpawnOptions } from "../config";
+import { SpawnOptions } from "../config";
 import { type GunItem } from "../inventory/gunItem";
 import { GameMap } from "../map";
 import { Player } from "../objects/player";
@@ -717,7 +717,7 @@ const maps = {
     debug: {
         width: 1620,
         height: 1620,
-        spawn: { mode: SpawnMode.Center },
+        // spawn: { mode: SpawnMode.Center },
         oceanSize: 128,
         beachSize: 32,
         onGenerate(map) {
@@ -778,7 +778,7 @@ const maps = {
     arena: {
         width: 512,
         height: 512,
-        spawn: { mode: SpawnMode.Center },
+        //   spawn: { mode: SpawnMode.Center },
         beachSize: 16,
         oceanSize: 40,
         onGenerate(map) {
@@ -893,7 +893,7 @@ const maps = {
     singleBuilding: {
         width: 1024,
         height: 1024,
-        spawn: { mode: SpawnMode.Center },
+        // spawn: { mode: SpawnMode.Center },
         beachSize: 32,
         oceanSize: 64,
         onGenerate(map, [building]) {
@@ -907,7 +907,7 @@ const maps = {
     singleObstacle: {
         width: 256,
         height: 256,
-        spawn: { mode: SpawnMode.Center },
+        // spawn: { mode: SpawnMode.Center },
         beachSize: 8,
         oceanSize: 8,
         onGenerate(map, [obstacle]) {
@@ -917,7 +917,7 @@ const maps = {
     singleGun: {
         width: 256,
         height: 256,
-        spawn: { mode: SpawnMode.Center },
+        //  spawn: { mode: SpawnMode.Center },
         beachSize: 8,
         oceanSize: 8,
         onGenerate(map, [gun]) {
@@ -1018,7 +1018,7 @@ const maps = {
     lootTest: {
         width: 256,
         height: 256,
-        spawn: { mode: SpawnMode.Center },
+        //  spawn: { mode: SpawnMode.Center },
         beachSize: 16,
         oceanSize: 16,
         onGenerate(map) {

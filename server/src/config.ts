@@ -2,6 +2,7 @@ import { TeamSize } from "@common/constants";
 import { type Maps } from "./data/maps";
 import { type Game } from "./game";
 import { type GamePlugin } from "./pluginManager";
+import { PlaceObjectPlugin } from "./defaultPlugins/placeObjectPlugin";
 
 export const Config = {
     host: "127.0.0.1",
@@ -9,7 +10,7 @@ export const Config = {
 
     map: "singleBuilding:port",
 
-    spawn: { mode: SpawnMode.Default },
+    spawn: { mode: SpawnMode.Center },
 
     teamSize: TeamSize.Solo,
 
@@ -22,7 +23,7 @@ export const Config = {
 
     tps: 40,
 
-    plugins: [],
+    plugins: [PlaceObjectPlugin], // place object plugin does not work with spawn modes (?)
 
     //  disableLobbyClearing: true,
 

@@ -188,6 +188,14 @@ const randomCelebrationWinterTree = {
     pine_tree: 0.9
 };
 
+const randomPortOpenContainer = {
+    container_3: 1,
+    container_4: 1,
+    container_5: 1,
+    container_6: 1,
+    container_9: 1
+};
+
 /* const randomContainer1 = {
     container_1: 1,
     container_2: 2,
@@ -935,125 +943,6 @@ const tugboat = (color: string, mainLoot: string): BuildingDefinition => ({
     )
 } as const);
 
-const port_warehouse = (color: string, tint: number): BuildingDefinition => ({
-    idString: `port_warehouse_${color}`,
-    name: "Port Warehouse",
-    reflectBullets: true,
-    material: "metal_heavy",
-    particle: "metal_particle",
-    hitbox: new GroupHitbox(
-        // Outer corners
-        RectangleHitbox.fromRect(2, 18.4, Vec.create(-29.53, -51.54)),
-        RectangleHitbox.fromRect(2, 18.4, Vec.create(29.53, 51.54)),
-        RectangleHitbox.fromRect(2, 18.4, Vec.create(-29.53, 51.54)),
-        RectangleHitbox.fromRect(2, 18.4, Vec.create(29.53, -51.54)),
-
-        // Top and bottom
-        RectangleHitbox.fromRect(60, 2, Vec.create(0, -59.79)),
-        RectangleHitbox.fromRect(60, 2, Vec.create(0, 59.79)),
-
-        // Sides
-        RectangleHitbox.fromRect(2, 35.55, Vec.create(-29.53, 0)),
-        RectangleHitbox.fromRect(2, 35.55, Vec.create(29.53, 0)),
-
-        // Inner corners
-        RectangleHitbox.fromRect(13, 2, Vec.create(22.34, -16.85)),
-        RectangleHitbox.fromRect(13, 2, Vec.create(-22.34, 16.85)),
-
-        // Doors
-        RectangleHitbox.fromRect(1.74, 25, Vec.create(-29.65, -30)),
-        RectangleHitbox.fromRect(1.74, 25, Vec.create(29.65, 30))
-    ),
-    spawnHitbox: RectangleHitbox.fromRect(72, 130),
-    ceilingHitbox: RectangleHitbox.fromRect(58, 118),
-    floorImages: [
-        { key: "port_warehouse_floor", position: Vec.create(2.04, -30.38) },
-        { key: "port_warehouse_floor", position: Vec.create(-2.04, 30.38), rotation: Math.PI }
-    ],
-    ceilingImages: [
-        {
-            key: "port_warehouse_ceiling",
-            position: Vec.create(0, 0),
-            tint,
-            scale: Vec.create(2.01, 2.05)
-        }
-        // TODO Detect mode somehow
-        // ...(GameConstants.modeName === "winter"
-        //     ? [
-        //         {
-        //             key: "snow_decal_1",
-        //             position: Vec.create(5, 0),
-        //             scale: Vec.create(1.5, 1.5)
-        //         },
-        //         {
-        //             key: "snow_decal_2",
-        //             position: Vec.create(12, -39),
-        //             scale: Vec.create(1.5, 1.5),
-        //             rotation: Math.PI / 2
-        //         },
-        //         {
-        //             key: "snow_decal_3",
-        //             position: Vec.create(-15, 33),
-        //             scale: Vec.create(2, 2),
-        //             rotation: Math.PI
-        //         },
-        //         {
-        //             key: "port_warehouse_snow_decal_1",
-        //             position: Vec.create(-28.5, -53.7),
-        //             scale: Vec.create(2, 2),
-        //             rotation: -Math.PI / 2
-        //         },
-        //         {
-        //             key: "port_warehouse_snow_decal_2",
-        //             position: Vec.create(13.1, 53.5),
-        //             rotation: Math.PI,
-        //             scale: Vec.create(2, 2)
-        //         },
-        //         {
-        //             key: "port_warehouse_snow_decal_3",
-        //             position: Vec.create(17.5, -52.25),
-        //             scale: Vec.create(2, 2),
-        //             rotation: -Math.PI / 2
-        //         },
-        //         {
-        //             key: "port_warehouse_snow_decal_4",
-        //             position: Vec.create(-23, -20),
-        //             scale: Vec.create(2, 2)
-        //         },
-        //         {
-        //             key: "port_warehouse_snow_decal_5",
-        //             position: Vec.create(22.8, -20),
-        //             scale: Vec.create(2, 2)
-        //         },
-        //         {
-        //             key: "port_warehouse_snow_decal_1",
-        //             position: Vec.create(-23.5, 58.6),
-        //             scale: Vec.create(2, 2),
-        //             rotation: Math.PI
-        //         }
-        //     ]
-        //     : [])
-    ],
-    obstacles: [
-        { idString: "super_barrel", position: Vec.create(-10, -52) },
-        { idString: "regular_crate", position: Vec.create(-22, -52) },
-        { idString: "forklift", position: Vec.create(15, -52), rotation: 3 },
-        { idString: "regular_crate", position: Vec.create(-22, -10) },
-        { idString: "regular_crate", position: Vec.create(-20, 0) },
-        { idString: "regular_crate", position: Vec.create(-22, 10) },
-        { idString: "forklift", position: Vec.create(-8, -2), rotation: 2 },
-        { idString: { regular_crate: 0.3, flint_crate: 1 }, position: Vec.create(-11, 50) },
-        { idString: "regular_crate", position: Vec.create(-22, 52) },
-        { idString: "barrel", position: Vec.create(1, 52) },
-        { idString: "super_barrel", position: Vec.create(10, 48) },
-        { idString: "barrel", position: Vec.create(23, 52) },
-        { idString: "barrel", position: Vec.create(17, 5) },
-        { idString: "barrel", position: Vec.create(24, 0) },
-        { idString: "box", position: Vec.create(24, 9) },
-        { idString: "box", position: Vec.create(19, 12) }
-    ]
-} as const);
-
 const blueHouse = (idString: string, subBuildings: BuildingDefinition["subBuildings"] = []): BuildingDefinition => ({
     idString,
     name: "Blue House",
@@ -1539,8 +1428,57 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec.create(0, 0)
         }]
     },
-    port_warehouse("red", 0x813131),
-    port_warehouse("blue", 0x2e2e6a),
+    {
+        idString: "port_warehouse",
+        name: "Port Warehouse",
+        reflectBullets: true,
+        material: "metal_heavy",
+        particle: "metal_particle",
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(14.05, 1.97, Vec.create(-20.01, -43.01)),
+            RectangleHitbox.fromRect(14.05, 1.97, Vec.create(20.01, -43.01)),
+            RectangleHitbox.fromRect(14.05, 1.97, Vec.create(-20.01, 43.01)),
+            RectangleHitbox.fromRect(14.05, 1.97, Vec.create(20.01, 43.01)),
+            RectangleHitbox.fromRect(1.97, 87.84, Vec.create(-26, 0)),
+            RectangleHitbox.fromRect(1.97, 87.84, Vec.create(26, 0))
+        ),
+        spawnHitbox: RectangleHitbox.fromRect(63.07, 114),
+        ceilingHitbox: RectangleHitbox.fromRect(52.92, 89),
+        floorImages: [{
+            key: "port_warehouse_floor",
+            position: Vec.create(0, 0),
+            scale: Vec.create(2, 2)
+        }],
+        ceilingImages: [
+            {
+                key: "warehouse_ceiling_1",
+                position: Vec.create(0, -22.25),
+                scale: Vec.create(2, 2)
+            },
+            {
+                key: "warehouse_ceiling_2",
+                position: Vec.create(0, 22.25),
+                scale: Vec.create(2, 2)
+            }
+        ],
+        floors: [{
+            type: FloorNames.Stone,
+            hitbox: RectangleHitbox.fromRect(54.04, 105.96)
+        }],
+        obstacles: [
+            { idString: warehouseObstacle, position: Vec.create(-19.39, -36.48) },
+            { idString: warehouseObstacle, position: Vec.create(-19.39, 36.48) }
+        ],
+        subBuildings: [{
+            idString: {
+                warehouse_layout_1: 1,
+                warehouse_layout_2: 1,
+                warehouse_layout_3: 1,
+                warehouse_layout_4: 1
+            },
+            position: Vec.create(0, 0)
+        }]
+    },
     {
         idString: "refinery",
         name: "Refinery",
@@ -2687,16 +2625,86 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "port",
         name: "Port",
         spawnHitbox: RectangleHitbox.fromRect(480, 490, Vec.create(0, -20)),
-        // floorImages: [{
-        //    key: "port_new_layout_alpha",
-        //    position: Vec.create(0, 0)
-        // }],
+        floorImages: [{
+            key: "port_new_layout_alpha",
+            position: Vec.create(0, 0)
+        }],
         subBuildings: [
-            { idString: "warehouse", position: Vec.create(-176.5, 98.75) }
+            { idString: "port_warehouse", position: Vec.create(-176.5, 98.75) },
+
+            // Left Side: Bottom Left
+            { idString: "porta_potty", position: Vec.create(130, -165.4), orientation: 2 },
+            { idString: randomPortOpenContainer, position: Vec.create(-168.2, -188.5), orientation: 1 } // y, x
         ],
         obstacles: [
             // uncomment to add silo in upper left
             // { idString: "silo", position: Vec.create(-181.75, -167.4) }
+
+            // ------------------------------------------------------------------------------------------
+            // Left Side: Bottom Left
+            // ------------------------------------------------------------------------------------------
+
+            // fence columns
+            { idString: "metal_column", position: Vec.create(-119.52, 93.83) },
+            { idString: "metal_column", position: Vec.create(-119.52, 55.7) },
+            { idString: "metal_column", position: Vec.create(-131.25, 55.7) },
+            { idString: "metal_column", position: Vec.create(-119.46, 136.8) },
+            { idString: "metal_column", position: Vec.create(-119.46, 174.95) },
+            { idString: "metal_column", position: Vec.create(-215.58, 152.81) },
+            { idString: "metal_column", position: Vec.create(-215.58, 38.48) },
+
+            // fence pieces
+            { idString: "fence", position: Vec.create(-125.37, 55.7), rotation: 0 },
+            { idString: "fence", position: Vec.create(-119.52, 61.57), rotation: 1 },
+            { idString: "fence", position: Vec.create(-119.52, 70.37), rotation: 1 },
+            { idString: "fence", position: Vec.create(-119.52, 79.17), rotation: 1 },
+            { idString: "fence", position: Vec.create(-119.52, 87.91), rotation: 1 },
+            { idString: "fence", position: Vec.create(-119.46, 142.75), rotation: 1 },
+            { idString: "fence", position: Vec.create(-119.46, 151.46), rotation: 1 },
+            { idString: "fence", position: Vec.create(-119.46, 160.23), rotation: 1 },
+            { idString: "fence", position: Vec.create(-119.46, 169), rotation: 1 },
+            { idString: "fence", position: Vec.create(-215.58, 149.86), rotation: 1 },
+
+            { idString: "sandbags", position: Vec.create(-142.32, 138.75), rotation: 0 },
+            { idString: "smaller_sandbags", position: Vec.create(-198.55, 157.42), rotation: 0 },
+
+            { idString: "barrel", position: Vec.create(-92.65, 185.04) },
+            { idString: "barrel", position: Vec.create(-190.09, 156.94) },
+            { idString: "barrel", position: Vec.create(-145.3, 130.52) },
+
+            { idString: "box", position: Vec.create(-126.9, 184.32) },
+            { idString: "box", position: Vec.create(-132.22, 186.21) },
+            { idString: "box", position: Vec.create(-89.01, 154.82) },
+            { idString: "box", position: Vec.create(-83.61, 157.44) },
+            { idString: "box", position: Vec.create(-146.62, 110.96) },
+            { idString: "box", position: Vec.create(-146.55, 105.93) },
+            { idString: "box", position: Vec.create(-141.3, 108.04) },
+
+            { idString: "forklift", position: Vec.create(-123.36, 121.84), rotation: 1 },
+            { idString: "dumpster", position: Vec.create(-207.76, 128.33), rotation: 2 },
+            { idString: "trash_bag", position: Vec.create(-206.77, 139.05) },
+
+            // todo: turn to subbuilding with custom layout
+            { idString: "pallet", position: Vec.create(-96.34, 153.61), rotation: 1 },
+            { idString: "pallet", position: Vec.create(-143.74, 170.4), rotation: 2 },
+            { idString: "pallet", position: Vec.create(-111.74, 121.96), rotation: 3 },
+            { idString: "pallet", position: Vec.create(-144.84, 82.81), rotation: 3 }, // H_S
+
+            { idString: "ammo_crate", position: Vec.create(-87.12, 147.13) },
+            { idString: "ammo_crate", position: Vec.create(-92.03, 164.29) },
+            { idString: "ammo_crate", position: Vec.create(-126.3, 74.77) }, // H_S
+            // ------------------------------------------------------------------------------------------
+
+            // Bollards
+            // Left Side
+            { idString: "bollard", position: Vec.create(-198.63, 185.55), rotation: 3 },
+            { idString: "bollard", position: Vec.create(-141.17, 185.52), rotation: 3 },
+            { idString: "bollard", position: Vec.create(-83.87, 185.62), rotation: 3 },
+
+            // Right Side
+            { idString: "bollard", position: Vec.create(84.42, 185.59), rotation: 3 },
+            { idString: "bollard", position: Vec.create(141.8, 185.44), rotation: 3 },
+            { idString: "bollard", position: Vec.create(199.25, 185.47), rotation: 3 }
         ],
         floors: [ // Follows ground graphics for most part
             {
