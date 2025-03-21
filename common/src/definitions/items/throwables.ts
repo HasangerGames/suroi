@@ -26,6 +26,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
 
     readonly fireDelay: number
 
+    readonly health?: number
     readonly noSkin?: boolean
     readonly cookSpeedMultiplier: number
 
