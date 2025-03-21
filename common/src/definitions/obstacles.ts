@@ -4,7 +4,7 @@ import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../util
 import { type Mutable } from "../utils/misc";
 import { ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
-import { TentTints } from "./buildings";
+import { TentTints, TruckContainerTints } from "./buildings";
 import { type GunDefinition } from "./items/guns";
 import { type LootDefinition } from "./loots";
 import { SyncedParticleDefinition } from "./syncedParticles";
@@ -323,7 +323,13 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
 
     tent_ceiling_particle_purple_1:     { base: "tent_ceiling_particle_1", tint: TentTints.purple },
     tent_ceiling_particle_purple_2:     { base: "tent_ceiling_particle_2", tint: TentTints.purple },
-    tent_ceiling_particle_purple_3:     { base: "tent_ceiling_particle_3", tint: TentTints.purple }
+    tent_ceiling_particle_purple_3:     { base: "tent_ceiling_particle_3", tint: TentTints.purple },
+
+    truck_container_particle_teal:      { base: "metal_particle_1", tint: TruckContainerTints.teal },
+    truck_container_particle_orange:    { base: "metal_particle_1", tint: TruckContainerTints.orange },
+    truck_container_particle_purple:    { base: "metal_particle_1", tint: TruckContainerTints.purple },
+    truck_container_particle_green:     { base: "metal_particle_1", tint: TruckContainerTints.green },
+    truck_container_particle_red:       { base: "metal_particle_1", tint: TruckContainerTints.red }
 };
 
 /* eslint-enable @stylistic/key-spacing, @stylistic/no-multi-spaces */
@@ -3399,6 +3405,29 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
+        idString: "truck_front",
+        name: "Truck",
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(13.25, 12.3, Vec.create(0, 0)),
+            RectangleHitbox.fromRect(16.8, 4.85, Vec.create(0, -6.85)),
+            new CircleHitbox(0.39, Vec.create(-5.25, -10.5)),
+            new CircleHitbox(1.13, Vec.create(6.24, -9.63)),
+            RectangleHitbox.fromRect(10.27, 3.9, Vec.create(0.03, -9.09)),
+            new CircleHitbox(1.13, Vec.create(-6.27, -9.63)),
+            new CircleHitbox(0.39, Vec.create(5.34, -10.46))
+        ),
+        reflectBullets: true,
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never,
+        zIndex: ZIndexes.BuildingsFloor - 1,
+        frames: {
+            particle: "metal_particle"
+        }
+    },
+    {
         idString: "trailer",
         name: "Trailer",
         material: "metal_heavy",
@@ -3947,6 +3976,33 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         particleVariations: 2,
         winterVariations: 2
+    },
+    {
+        idString: "truck_tire",
+        name: "Truck Tire",
+        material: "stone",
+        health: 200,
+        indestructible: true,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.8
+        },
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1, 5.31, Vec.create(0, 0)),
+            RectangleHitbox.fromRect(2.18, 4.28, Vec.create(-0.01, 0.01)),
+            new CircleHitbox(0.51, Vec.create(0.57, 2.14)),
+            new CircleHitbox(0.51, Vec.create(-0.57, -2.14)),
+            new CircleHitbox(0.51, Vec.create(-0.57, 2.14)),
+            new CircleHitbox(0.51, Vec.create(0.57, -2.13))
+        ),
+        rotationMode: RotationMode.Limited,
+        zIndex: ZIndexes.BuildingsFloor - 1,
+        noResidue: true,
+        frames: {
+            particle: "flint_stone_particle"
+        },
+        particleVariations: 2
     },
     {
         idString: "mobile_home_window",

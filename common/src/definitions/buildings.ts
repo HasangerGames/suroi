@@ -182,6 +182,25 @@ const randomGift = {
     purple_gift: 0.1
 };
 
+const randomPallet = {
+    pallet_1: 1,
+    pallet_2: 1,
+    pallet_3: 1,
+    pallet_4: 1
+};
+
+const randomTruckContainerTwoSided = {
+    // Two Sided (1 - 6)
+    truck_container_1: 1,
+    truck_container_2: 1,
+    truck_container_3: 1,
+    truck_container_4: 1,
+    truck_container_5: 1,
+    truck_container_6: 1
+};
+
+const randomTruckContainerOneSided = {}; // TODO
+
 const randomCelebrationWinterTree = {
     oak_tree: 1,
     birch_tree: 1,
@@ -259,6 +278,14 @@ const ContainerTints = {
     green: 0x419e2e,
     blue: 0x2e6e9e,
     yellow: 0xc1b215
+};
+
+export const TruckContainerTints = {
+    teal: 0x14544d,
+    orange: 0x994e11,
+    purple: 0x460e69,
+    green: 0x5cb64a,
+    red: 0xc02d0e
 };
 
 const ContainerWallOutlineTints = {
@@ -625,6 +652,107 @@ const container = (
                 }] }
         )
     } as const;
+};
+
+const truckContainer = (
+    id: number,
+    model: "two_sided" | "one_sided",
+    obstacles: readonly BuildingObstacle[],
+    subBuildings?: readonly SubBuilding[]
+): BuildingDefinition => {
+    const chosen = pickRandomInArray(Object.keys(TruckContainerTints));
+    const tint = TruckContainerTints[chosen as "teal" | "orange" | "purple" | "green" | "red"];
+
+    const hitbox = model === "one_sided"
+        ? new GroupHitbox(
+            RectangleHitbox.fromRect(1.55, 15.05, Vec.create(-6.59, 12.28)),
+            RectangleHitbox.fromRect(1.55, 15.05, Vec.create(-6.6, -12.3)),
+            RectangleHitbox.fromRect(1.61, 39.65, Vec.create(6.6, 0)),
+            RectangleHitbox.fromRect(12.93, 1.6, Vec.create(0.07, -19.01))
+        )
+        : new GroupHitbox(
+            RectangleHitbox.fromRect(1.55, 15.05, Vec.create(-6.59, 12.28)),
+            RectangleHitbox.fromRect(1.55, 15.05, Vec.create(6.59, 12.28)),
+            RectangleHitbox.fromRect(1.55, 15.05, Vec.create(-6.59, -12.28)),
+            RectangleHitbox.fromRect(1.55, 15.05, Vec.create(6.59, -12.28)),
+            RectangleHitbox.fromRect(12.93, 1.6, Vec.create(0.07, -19.01))
+        );
+
+    return {
+        idString: `truck_container_${id}`,
+        name: `Truck Container ${id}`,
+        reflectBullets: true,
+        material: "metal_heavy",
+        particle: `truck_container_particle_${chosen}`,
+        hitbox,
+        spawnHitbox: RectangleHitbox.fromRect(18, 42),
+        obstacles,
+        ...(subBuildings === undefined ? {} : { subBuildings: subBuildings }),
+        floorImages: [{
+            key: `truck_container_floor_${model}`,
+            position: Vec.create(0, 0),
+            scale: Vec.create(2, 2),
+            tint
+        }],
+        ceilingImages: [{
+            key: `truck_container_ceiling_${model}`,
+            position: Vec.create(0, 0),
+            scale: Vec.create(2, 2),
+            tint
+        }],
+        ceilingHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(12, 38.3, Vec.create(0.07, 0.67)),
+            RectangleHitbox.fromRect(14.77, 9.54, Vec.create(0, 0))
+        ),
+        floors: [{
+            type: FloorNames.Metal,
+            hitbox: new GroupHitbox(
+                RectangleHitbox.fromRect(12, 38.3, Vec.create(0.07, 0.67)),
+                RectangleHitbox.fromRect(14.77, 9.54, Vec.create(0, 0))
+            )
+        }]
+    };
+};
+
+const truck = (
+    id: number,
+    model: "two_sided" | "one_sided"
+): BuildingDefinition => {
+    return {
+        idString: `truck_${id}`,
+        name: `Truck ${id}`,
+        spawnHitbox: RectangleHitbox.fromRect(25, 60, Vec.create(0, 6)),
+        obstacles: [
+            { idString: "truck_front", position: Vec.create(0, -11.5), rotation: 0 },
+            { idString: "truck_tire", position: Vec.create(-7.15, 30.81), rotation: 0 },
+            { idString: "truck_tire", position: Vec.create(7.15, 30.81), rotation: 0 },
+            { idString: "truck_tire", position: Vec.create(7.15, 24.71), rotation: 0 },
+            { idString: "truck_tire", position: Vec.create(-7.15, 24.71), rotation: 0 },
+            { idString: "truck_tire", position: Vec.create(-7.15, -0.5), rotation: 0 },
+            { idString: "truck_tire", position: Vec.create(7.15, -0.5), rotation: 0 },
+            { idString: "truck_tire", position: Vec.create(-7.15, 5.84), rotation: 0 },
+            { idString: "truck_tire", position: Vec.create(7.15, 5.84), rotation: 0 }
+        ],
+        subBuildings: [{
+            idString: model === "two_sided" ? randomTruckContainerTwoSided : randomTruckContainerOneSided,
+            position: Vec.create(0, 15)
+        }]
+    };
+};
+
+const pallet = (
+    id: number,
+    obstacles: readonly BuildingObstacle[]
+): BuildingDefinition => {
+    return {
+        idString: `pallet_${id}`,
+        name: `Pallet ${id}`,
+        spawnHitbox: RectangleHitbox.fromRect(10.1, 9),
+        obstacles: [
+            { idString: "pallet", position: Vec.create(0, 0), rotation: 0 },
+            ...obstacles
+        ]
+    };
 };
 
 const riverHut = (id: number, obstacles: readonly BuildingObstacle[]): BuildingDefinition => {
@@ -1080,6 +1208,20 @@ const blueHouse = (idString: string, subBuildings: BuildingDefinition["subBuildi
 });
 
 export const Buildings = new ObjectDefinitions<BuildingDefinition>([
+    pallet(1, [
+        { idString: "box", position: Vec.create(-2.2, -1.9) },
+        { idString: "box", position: Vec.create(2.2, 1.9) }
+    ]),
+    pallet(2, [
+        { idString: "propane_tank", position: Vec.create(-2.41, -2.19) },
+        { idString: "grenade_box", position: Vec.create(1.95, 0.53) }
+    ]),
+    pallet(3, [{ idString: "regular_crate", position: Vec.create(0, 0) }]),
+    pallet(4, [
+        { idString: "box", position: Vec.create(-2.73, -2.5) },
+        { idString: "box", position: Vec.create(2.73, -2.4) },
+        { idString: "grenade_box", position: Vec.create(-1.5, 2.15) }
+    ]),
     {
         idString: "porta_potty",
         name: "Porta Potty",
@@ -2622,19 +2764,24 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         { idString: "super_barrel", position: Vec.create(7.71, -6.26) }
     ]),
     {
-        idString: "port",
+        idString: "port", // UNDER CONSTRUCTION
         name: "Port",
         spawnHitbox: RectangleHitbox.fromRect(480, 490, Vec.create(0, -20)),
-        floorImages: [{
-            key: "port_new_layout_alpha",
-            position: Vec.create(0, 0)
-        }],
+        //  floorImages: [{ // trucks will not display if enabled, because their z-indexes are building floor specific
+        //      key: "port_new_layout_alpha",
+        //      position: Vec.create(0, 0)
+        //  }],
         subBuildings: [
             { idString: "port_warehouse", position: Vec.create(-176.5, 98.75) },
 
             // Left Side: Bottom Left
             { idString: "porta_potty", position: Vec.create(130, -165.4), orientation: 2 },
-            { idString: randomPortOpenContainer, position: Vec.create(-168.2, -188.5), orientation: 1 } // y, x
+            { idString: randomPortOpenContainer, position: Vec.create(-168.2, -188.5), orientation: 1 }, // y, x
+            { idString: randomPallet, position: Vec.create(-153.61, -96.34), orientation: 1 },
+            { idString: randomPallet, position: Vec.create(-143.74, 170.4) },
+            { idString: randomPallet, position: Vec.create(-121.96, -111.74), orientation: 1 },
+            { idString: randomPallet, position: Vec.create(-82.81, -144.84), orientation: 1 }, // H_S
+            { idString: "truck_1", position: Vec.create(93.5, -77), orientation: 2 } // x,y, positive -> negative
         ],
         obstacles: [
             // uncomment to add silo in upper left
@@ -2643,15 +2790,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // ------------------------------------------------------------------------------------------
             // Left Side: Bottom Left
             // ------------------------------------------------------------------------------------------
-
-            // fence columns
-            { idString: "metal_column", position: Vec.create(-119.52, 93.83) },
-            { idString: "metal_column", position: Vec.create(-119.52, 55.7) },
-            { idString: "metal_column", position: Vec.create(-131.25, 55.7) },
-            { idString: "metal_column", position: Vec.create(-119.46, 136.8) },
-            { idString: "metal_column", position: Vec.create(-119.46, 174.95) },
-            { idString: "metal_column", position: Vec.create(-215.58, 152.81) },
-            { idString: "metal_column", position: Vec.create(-215.58, 38.48) },
 
             // fence pieces
             { idString: "fence", position: Vec.create(-125.37, 55.7), rotation: 0 },
@@ -2663,7 +2801,24 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "fence", position: Vec.create(-119.46, 151.46), rotation: 1 },
             { idString: "fence", position: Vec.create(-119.46, 160.23), rotation: 1 },
             { idString: "fence", position: Vec.create(-119.46, 169), rotation: 1 },
-            { idString: "fence", position: Vec.create(-215.58, 149.86), rotation: 1 },
+
+            ...Array.from(
+                { length: 13 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec.create(-215.56, 149.86 - 8.8 * i),
+                    rotation: 1
+                })
+            ),
+
+            // fence columns
+            { idString: "metal_column", position: Vec.create(-119.52, 93.83) },
+            { idString: "metal_column", position: Vec.create(-119.52, 55.7) },
+            { idString: "metal_column", position: Vec.create(-131.25, 55.7) },
+            { idString: "metal_column", position: Vec.create(-119.46, 136.8) },
+            { idString: "metal_column", position: Vec.create(-119.46, 174.95) },
+            { idString: "metal_column", position: Vec.create(-215.58, 152.81) },
+            { idString: "metal_column", position: Vec.create(-215.58, 38.48) },
 
             { idString: "sandbags", position: Vec.create(-142.32, 138.75), rotation: 0 },
             { idString: "smaller_sandbags", position: Vec.create(-198.55, 157.42), rotation: 0 },
@@ -2683,12 +2838,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "forklift", position: Vec.create(-123.36, 121.84), rotation: 1 },
             { idString: "dumpster", position: Vec.create(-207.76, 128.33), rotation: 2 },
             { idString: "trash_bag", position: Vec.create(-206.77, 139.05) },
-
-            // todo: turn to subbuilding with custom layout
-            { idString: "pallet", position: Vec.create(-96.34, 153.61), rotation: 1 },
-            { idString: "pallet", position: Vec.create(-143.74, 170.4), rotation: 2 },
-            { idString: "pallet", position: Vec.create(-111.74, 121.96), rotation: 3 },
-            { idString: "pallet", position: Vec.create(-144.84, 82.81), rotation: 3 }, // H_S
 
             { idString: "ammo_crate", position: Vec.create(-87.12, 147.13) },
             { idString: "ammo_crate", position: Vec.create(-92.03, 164.29) },
@@ -6366,5 +6515,62 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "memorial_bunker_entrance", position: Vec.create(0, 0) },
             { idString: "memorial_bunker_main", position: Vec.create(0, -8.5), layer: -2 }
         ]
-    }
+    },
+
+    // Trucks
+
+    // ----------------------------------------------------------------
+    // The front of the truck is an obstacle, while the container
+    // is a sub building of the "truck" which is the actual "building".
+    // Each truck, depending on the model, will be generated with a
+    // random "truck" container layout and tint.
+    // ----------------------------------------------------------------
+
+    truck(1, "two_sided"), // CAUTION: RANDOMLY GENERATED CONTAINER
+
+    truckContainer(1, "two_sided", [
+        { idString: "regular_crate", position: Vec.create(-0.82, -13.3) },
+        { idString: "regular_crate", position: Vec.create(0.76, -3.71) },
+        { idString: "box", position: Vec.create(-2.32, 16.51) },
+        { idString: "box", position: Vec.create(-2.32, 11.39) },
+        { idString: "box", position: Vec.create(2.86, 12.63) }
+    ]),
+
+    truckContainer(2, "two_sided", [
+        { idString: "regular_crate", position: Vec.create(0.08, 14.32) },
+        { idString: "propane_tank", position: Vec.create(2.55, 6.99) }
+    ], [
+        { idString: randomPallet, position: Vec.create(0.09, -13.43) }
+    ]),
+
+    truckContainer(3, "two_sided", [
+        { idString: "barrel", position: Vec.create(-1.55, -14.23) },
+        { idString: "box", position: Vec.create(-2.27, -7.29) },
+        { idString: "regular_crate", position: Vec.create(-0.06, 0.67) },
+        { idString: "regular_crate", position: Vec.create(0.68, 10.51) }
+    ]),
+
+    truckContainer(4, "two_sided", [
+        { idString: "ammo_crate", position: Vec.create(0, -12) },
+        { idString: "box", position: Vec.create(-3.14, 7.99) },
+        { idString: "box", position: Vec.create(-3.21, 12.87) },
+        { idString: "gun_case", position: Vec.create(2.77, 13.65), rotation: 3 }
+    ]),
+
+    truckContainer(5, "two_sided", [
+        { idString: "propane_tank", position: Vec.create(2.91, -15.8) },
+        { idString: "propane_tank", position: Vec.create(-2.93, -9.67) },
+        { idString: "box", position: Vec.create(-2.76, -14.84) },
+        { idString: "box", position: Vec.create(2.56, -8.72) },
+        { idString: "ammo_crate", position: Vec.create(0.02, 7) },
+        { idString: "gun_case", position: Vec.create(0.11, 15.5), rotation: 0 }
+    ]),
+
+    truckContainer(6, "two_sided", [
+        { idString: "box", position: Vec.create(-2.62, -6.11) },
+        { idString: "box", position: Vec.create(2.7, 16.4) }
+    ], [
+        { idString: randomPallet, position: Vec.create(0, -13.22) },
+        { idString: randomPallet, position: Vec.create(0, 9.63) }
+    ])
 ]);
