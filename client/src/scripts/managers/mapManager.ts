@@ -58,9 +58,7 @@ export const MapManager = new (class MapManager {
     readonly sprite = new Sprite();
     private _texture?: Texture;
 
-    readonly indicator = new SuroiSprite("player_indicator")
-        .setTint(TEAMMATE_COLORS[0])
-        .setZIndex(1000);
+    indicator!: SuroiSprite;
 
     readonly teammateIndicators = new Map<number, SuroiSprite>();
     readonly teammateIndicatorContainer = new Container();
@@ -115,6 +113,10 @@ export const MapManager = new (class MapManager {
         this.safeZone.zIndex = 997;
         this.pingsContainer.zIndex = 998;
         this.teammateIndicatorContainer.zIndex = 999;
+
+        this.indicator = new SuroiSprite("player_indicator")
+            .setTint(TEAMMATE_COLORS[0])
+            .setZIndex(1000);
 
         this._objectsContainer.addChild(
             this.sprite,
@@ -592,6 +594,8 @@ export const MapManager = new (class MapManager {
     private readonly _borderContainer = $("#minimap-border");
 
     resize(): void {
+        if (!this._initialized) return;
+
         this._border.visible = this._expanded;
         const uiScale = GameConsole.getBuiltInCVar("cv_ui_scale");
 
