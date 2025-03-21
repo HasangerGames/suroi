@@ -2,17 +2,20 @@ import { GameConstants, ObjectCategory, ZIndexes } from "@common/constants";
 import { type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { getEffectiveZIndex } from "@common/utils/layer";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
-import { type Game } from "../game";
+import { Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
-import type { DebugRenderer } from "../utils/debugRenderer";
+import { DebugRenderer } from "../utils/debugRenderer";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, TEAMMATE_COLORS } from "../utils/constants";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Numeric } from "@common/utils/math";
 import { Vec, type Vector } from "@common/utils/vector";
 import { FloorTypes } from "@common/utils/terrain";
 import { randomBoolean, randomFloat, randomPointInsideCircle } from "@common/utils/random";
-import type { GameSound } from "../managers/soundManager";
+import { SoundManager, type GameSound } from "../managers/soundManager";
+import { GameConsole } from "../console/gameConsole";
+import { MapManager } from "../managers/mapManager";
+import { ParticleManager } from "../managers/particleManager";
 
 export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
     definition!: ThrowableDefinition;
@@ -32,8 +35,8 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
     onFloor = false;
     onWater = false;
 
-    constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.Projectile]) {
-        super(game, id);
+    constructor(id: number, data: ObjectsNetData[ObjectCategory.Projectile]) {
+        super(id);
 
         this.image = new SuroiSprite();
 
@@ -57,10 +60,10 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
 
             this.hitbox.radius = def.hitboxRadius;
 
-            if (this.game.teamMode
+            if (Game.teamMode
                 && this.throwerTeamID !== undefined
                 && this.tintIndex !== undefined
-                && this.game.teamID === this.throwerTeamID
+                && Game.teamID === this.throwerTeamID
             ) {
                 this.image.setTint(TEAMMATE_COLORS[this.tintIndex]);
             }
@@ -87,7 +90,7 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
 
         this.container.scale = Numeric.remap(this.height, 0, GameConstants.projectiles.maxHeight, 1, 5);
 
-        if (!this.game.console.getBuiltInCVar("cv_movement_smoothing")) {
+        if (!GameConsole.getBuiltInCVar("cv_movement_smoothing")) {
             this.container.position = toPixiCoords(data.position);
             this.container.rotation = this.rotation;
         }
@@ -96,12 +99,12 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
 
         const onWaterOld = this.onWater;
         this.onFloor = this.height <= 0;
-        this.onWater = this.onFloor && !!FloorTypes[this.game.map.terrain.getFloor(this.position, this.layer)].overlay;
+        this.onWater = this.onFloor && !!FloorTypes[MapManager.terrain.getFloor(this.position, this.layer)].overlay;
 
         this.container.alpha = this.onWater ? 0.5 : 1;
 
         if (this.onWater && this.onWater !== onWaterOld) {
-            this.game.particleManager.spawnParticles(2, () => ({
+            ParticleManager.spawnParticles(2, () => ({
                 frames: "ripple_particle",
                 zIndex: ZIndexes.Ground,
                 position: randomPointInsideCircle(this.position, 1),
@@ -129,7 +132,7 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
         this.container.zIndex = getEffectiveZIndex(
             zIndex,
             this.layer,
-            this.game.layer
+            Game.layer
         );
     }
 
@@ -139,14 +142,14 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
         this.updateContainerRotation();
     }
 
-    updateDebugGraphics(debugRenderer: DebugRenderer): void {
+    updateDebugGraphics(): void {
         if (!DEBUG_CLIENT) return;
 
-        debugRenderer.addCircle(
+        DebugRenderer.addCircle(
             this.definition.hitboxRadius,
             this.position,
             HITBOX_COLORS.projectiles,
-            this.layer === this.game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
+            this.layer === Game.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
         );
     }
 
@@ -154,7 +157,7 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
         if (!this.definition.c4) return;
 
         this.hitSound?.stop();
-        this.hitSound = this.game.soundManager.play(
+        this.hitSound = SoundManager.play(
             `stone_hit_${randomBoolean() ? "1" : "2"}`,
             {
                 position,
@@ -163,7 +166,7 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
             }
         );
 
-        this.game.particleManager.spawnParticles(4, () => {
+        ParticleManager.spawnParticles(4, () => {
             return {
                 frames: this.halloweenSkin ? "plumpkin_particle" : "metal_particle",
                 position,
