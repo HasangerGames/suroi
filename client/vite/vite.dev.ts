@@ -1,7 +1,8 @@
 import { mergeConfig, type UserConfig } from "vite";
 
 import common from "./vite.common";
-import { spritesheet } from "./plugins/spritesheet-plugin";
+import { spritesheet } from "./plugins/image-spritesheet-plugin";
+import { audioSpritesheet } from "./plugins/audio-spritesheet-plugin";
 
 const config: UserConfig = {
     define: {
@@ -9,7 +10,10 @@ const config: UserConfig = {
         DEBUG_CLIENT: true
     },
 
-    plugins: [spritesheet(true)]
+    plugins: [
+        spritesheet(true),
+        audioSpritesheet(true)
+    ]
 };
 
 export default mergeConfig(common, config);
