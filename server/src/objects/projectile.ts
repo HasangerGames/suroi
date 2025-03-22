@@ -1,16 +1,16 @@
-import { Angle, Geometry, Numeric } from "@common/utils/math";
 import { GameConstants, ObjectCategory } from "@common/constants";
+import { PerkData, PerkIds } from "@common/definitions/items/perks";
+import { ThrowableDefinition, Throwables } from "@common/definitions/items/throwables";
+import { CircleHitbox, HitboxType, RectangleHitbox } from "@common/utils/hitbox";
+import { equivLayer } from "@common/utils/layer";
+import { Angle, Geometry, Numeric } from "@common/utils/math";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
+import { FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { BaseGameObject, DamageParams, GameObject } from "./gameObject";
-import { ThrowableDefinition, Throwables } from "@common/definitions/items/throwables";
-import { CircleHitbox, HitboxType, RectangleHitbox } from "@common/utils/hitbox";
 import { Obstacle } from "./obstacle";
-import { FloorTypes } from "@common/utils/terrain";
-import { equalLayer } from "@common/utils/layer";
-import { PerkData, PerkIds } from "@common/definitions/items/perks";
 
 export interface ProjectileParams {
     readonly position: Vector
@@ -31,7 +31,6 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
 
     halloweenSkin: boolean;
 
-    // can we remove the c4 🥺
     activated = false;
     throwerTeamID = 0;
     tintIndex = 0;
@@ -112,12 +111,14 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         }> = [];
 
         for (const object of objects) {
-            if (!(object.isBuilding || object.isObstacle || object.isPlayer)) continue;
-            if (object.dead) continue;
-            if (!object.hitbox) continue;
-            if (object === this.source) continue;
-            if (!equalLayer(object.layer, this.layer)) continue;
-            if (object.isObstacle && object.definition.noCollisions) continue;
+            if (
+                !(object.isBuilding || object.isObstacle || object.isPlayer)
+                || object.dead
+                || !object.hitbox
+                || object === this.source
+                || !equivLayer(object, this)
+                || (object.isObstacle && object.definition.noCollisions)
+            ) continue;
 
             const hitbox = object.hitbox;
             const hitboxes = hitbox.type === HitboxType.Group ? hitbox.hitboxes : [hitbox];
@@ -159,9 +160,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
             }
         }
 
-        collisions.sort((a, b) => {
-            return a.distance - b.distance;
-        });
+        collisions.sort((a, b) => a.distance - b.distance);
 
         for (const collision of collisions) {
             const { object } = collision;
