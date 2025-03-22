@@ -4,7 +4,7 @@ export interface BadgeDefinition extends ObjectDefinition {
     readonly roles?: readonly string[]
 }
 
-const badge = (name: string, roles: string[] = []): BadgeDefinition => ({
+const badge = (name: string, roles?: string[]): BadgeDefinition => ({
     idString: `bdg_${name.toLowerCase().replaceAll(" ", "_")}`,
     name,
     roles
