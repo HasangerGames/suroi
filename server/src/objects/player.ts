@@ -17,6 +17,7 @@ import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacle
 import { type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { GameOverPacket, TeammateGameOverData } from "@common/packets/gameOverPacket";
 import { type InputData, type NoMobile } from "@common/packets/inputPacket";
+import { DamageSources, KillPacket } from "@common/packets/killPacket";
 import { MutablePacketDataIn } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { ReportPacket } from "@common/packets/reportPacket";
@@ -52,9 +53,8 @@ import { Explosion } from "./explosion";
 import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject";
 import { type Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
+import { Projectile } from "./projectile";
 import { type SyncedParticle } from "./syncedParticle";
-import { type ThrowableProjectile } from "./throwableProj";
-import { DamageSources, KillPacket } from "@common/packets/killPacket";
 
 export interface PlayerSocketData {
     player?: Player
@@ -444,7 +444,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     private readonly _mapPings: Game["mapPings"] = [];
 
-    c4s: ThrowableProjectile[] = [];
+    c4s = new Set<Projectile>();
 
     backEquippedMelee?: MeleeDefinition;
 
@@ -1454,7 +1454,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             ),
             ...(
                 player.dirty.activeC4s || forceInclude
-                    ? { activeC4s: this.c4s.length > 0 }
+                    ? { activeC4s: this.c4s.size > 0 }
                     : {}
             ),
             ...(
@@ -2578,9 +2578,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     break;
                 case InputActions.ExplodeC4:
                     for (const c4 of this.c4s) {
-                        c4.detonate(750);
+                        if (c4.activateC4()) this.c4s.delete(c4);
                     }
-                    this.c4s.length = 0;
                     this.dirty.activeC4s = true;
                     break;
             }

@@ -71,6 +71,16 @@ export const GameConstants = {
         damage: 300,
         callerLimit: 3
     },
+    projectiles: {
+        maxHeight: 5,
+        gravity: 15,
+        distanceToMouseMultiplier: 1.3,
+        drag: {
+            air: 0.7,
+            ground: 5,
+            water: 8
+        }
+    },
     riverPadding: 64,
     trailPadding: 384,
     explosionRayDistance: 2
@@ -148,7 +158,7 @@ export enum ObjectCategory {
     Building,
     Decal,
     Parachute,
-    ThrowableProjectile,
+    Projectile,
     SyncedParticle
 }
 

@@ -26,9 +26,12 @@ import FontFaceObserver from "fontfaceobserver";
 import $ from "jquery";
 import { Application, Color, Container } from "pixi.js";
 import "pixi.js/prepare";
-import { getTranslatedString, initTranslation } from "./utils/translations/translations";
-import { type TranslationKeys } from "./utils/translations/typings";
+import { CameraManager } from "./managers/cameraManager";
+import { GasManager, GasRender } from "./managers/gasManager";
 import { InputManager } from "./managers/inputManager";
+import { MapManager } from "./managers/mapManager";
+import { ParticleManager } from "./managers/particleManager";
+import { ScreenRecordManager } from "./managers/screenRecordManager";
 import { GameSound, SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
 import { Building } from "./objects/building";
@@ -42,21 +45,18 @@ import { Obstacle } from "./objects/obstacle";
 import { Parachute } from "./objects/parachute";
 import { Plane } from "./objects/plane";
 import { Player } from "./objects/player";
+import { Projectile } from "./objects/projectile";
 import { SyncedParticle } from "./objects/syncedParticle";
-import { ThrowableProjectile } from "./objects/throwableProj";
-import { CameraManager } from "./managers/cameraManager";
-import { GasManager, GasRender } from "./managers/gasManager";
-import { MapManager } from "./managers/mapManager";
 import { autoPickup, fetchServerData, finalizeUI, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, updateDisconnectTime } from "./ui";
 import { setUpCommands } from "./console/commands";
 import { GameConsole } from "./console/gameConsole";
 import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
+import { DebugRenderer } from "./utils/debugRenderer";
 import { setUpNetGraph } from "./utils/graph/netGraph";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
+import { getTranslatedString, initTranslation } from "./utils/translations/translations";
+import { type TranslationKeys } from "./utils/translations/typings";
 import { Tween, type TweenOptions } from "./utils/tween";
-import { ParticleManager } from "./managers/particleManager";
-import { DebugRenderer } from "./utils/debugRenderer";
-import { ScreenRecordManager } from "./managers/screenRecordManager";
 import { defaultClientCVars } from "./console/variables";
 
 /* eslint-disable @stylistic/indent */
@@ -69,7 +69,7 @@ type ObjectClassMapping = {
     readonly [ObjectCategory.Building]: typeof Building
     readonly [ObjectCategory.Decal]: typeof Decal
     readonly [ObjectCategory.Parachute]: typeof Parachute
-    readonly [ObjectCategory.ThrowableProjectile]: typeof ThrowableProjectile
+    readonly [ObjectCategory.Projectile]: typeof Projectile
     readonly [ObjectCategory.SyncedParticle]: typeof SyncedParticle
 };
 
@@ -83,7 +83,7 @@ const ObjectClassMapping: ObjectClassMapping = Object.freeze<{
     [ObjectCategory.Building]: Building,
     [ObjectCategory.Decal]: Decal,
     [ObjectCategory.Parachute]: Parachute,
-    [ObjectCategory.ThrowableProjectile]: ThrowableProjectile,
+    [ObjectCategory.Projectile]: Projectile,
     [ObjectCategory.SyncedParticle]: SyncedParticle
 });
 

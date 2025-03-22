@@ -77,16 +77,16 @@ export function adjacentOrEqualLayer(referenceLayer: number, evalLayer: number):
 export function equivLayer(
     referenceObject: {
         layer: Layer
-        definition: {
+        definition?: {
             collideWithLayers?: Layers
             isStair?: boolean
         }
     },
     evalObject: { layer: Layer }
 ): boolean {
-    if (referenceObject.definition.isStair) return adjacentOrEqualLayer(referenceObject.layer, evalObject.layer);
+    if (referenceObject.definition?.isStair) return adjacentOrEqualLayer(referenceObject.layer, evalObject.layer);
 
-    switch (referenceObject.definition.collideWithLayers) {
+    switch (referenceObject.definition?.collideWithLayers) {
         case Layers.All: return true;
         case Layers.Adjacent: return adjacentOrEqualLayer(referenceObject.layer, evalObject.layer);
         case Layers.Equal:

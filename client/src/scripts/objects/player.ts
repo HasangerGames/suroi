@@ -1442,7 +1442,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                         (
                                             object.damageable
                                             && (object.isObstacle || object.isPlayer || object.isBuilding)
-                                        ) || (object.isThrowableProjectile && object.definition.c4)
+                                        ) || (object.isProjectile && object.definition.c4)
                                     )
                                     && object.hitbox?.collidesWith(hitbox)
                                     && adjacentOrEqualLayer(object.layer, this.layer)

@@ -75,7 +75,7 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
                         .filter(
                             object => !object.dead
                                 && object !== owner
-                                && (object.damageable || (object.isThrowableProjectile && object.definition.c4))
+                                && (object.damageable || (object.isProjectile && object.definition.c4))
                                 && (!object.isObstacle || (!object.definition.isStair))
                                 && object.hitbox?.collidesWith(hitbox)
                                 && adjacentOrEqualLayer(object.layer, this.owner.layer)
@@ -113,7 +113,7 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
                         }
                     }
 
-                    if (closestObject.isThrowableProjectile) {
+                    if (closestObject.isProjectile) {
                         multiplier *= definition.obstacleMultiplier;
                     }
 

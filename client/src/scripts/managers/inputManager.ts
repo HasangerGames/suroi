@@ -257,10 +257,6 @@ export const InputManager = new (class InputManager {
             if (playSound) SoundManager.play("pickup");
         }
 
-        if (action.type === InputActions.ExplodeC4 && UIManager.hasC4s) {
-            SoundManager.play("c4_beep");
-        }
-
         this.actions.push(action);
     }
 

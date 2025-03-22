@@ -1,4 +1,4 @@
-import { AnimationType, Layer, ObjectCategory, PlayerActions, RotationMode } from "../constants";
+import { AnimationType, GameConstants, Layer, ObjectCategory, PlayerActions, RotationMode } from "../constants";
 import { Armors, type ArmorDefinition } from "../definitions/items/armors";
 import { Backpacks, type BackpackDefinition } from "../definitions/items/backpacks";
 import { Buildings, type BuildingDefinition } from "../definitions/buildings";
@@ -9,7 +9,7 @@ import { type MeleeDefinition, Melees } from "../definitions/items/melees";
 import { Obstacles, type ObstacleDefinition } from "../definitions/obstacles";
 import { Skins, type SkinDefinition } from "../definitions/items/skins";
 import { SyncedParticles, type SyncedParticleDefinition } from "../definitions/syncedParticles";
-import { type ThrowableDefinition } from "../definitions/items/throwables";
+import { Throwables, type ThrowableDefinition } from "../definitions/items/throwables";
 import { type Orientation, type Variation } from "../typings";
 import { Angle, halfπ } from "./math";
 import { type Mutable, type SDeepMutable } from "./misc";
@@ -139,20 +139,23 @@ export interface ObjectsNetData extends BaseObjectsNetData {
         }
     }
     //
-    // Throwable data
+    // Projectile data
     //
-    readonly [ObjectCategory.ThrowableProjectile]: {
+    readonly [ObjectCategory.Projectile]: {
         readonly position: Vector
         readonly rotation: number
         readonly layer: Layer
-        readonly airborne: boolean
-        readonly activated: boolean
-        readonly throwerTeamID: number
+        readonly height: number
 
         readonly full?: {
             readonly definition: ThrowableDefinition
             readonly halloweenSkin: boolean
-            readonly tintIndex: number
+            readonly activated: boolean
+
+            readonly c4?: {
+                readonly throwerTeamID: number
+                readonly tintIndex: number
+            }
         }
     }
     //
@@ -811,44 +814,48 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         },
         deserializeFull() { /* no full serialization */ }
     },
-    [ObjectCategory.ThrowableProjectile]: {
-        serializePartial(stream, data) {
-            stream
-                .writeBooleanGroup(
-                    data.airborne,
-                    data.activated
-                )
-                .writePosition(data.position)
+    [ObjectCategory.Projectile]: {
+        serializePartial(strm, data) {
+            strm.writePosition(data.position)
                 .writeRotation2(data.rotation)
                 .writeLayer(data.layer)
-                .writeUint8(data.throwerTeamID);
+                .writeFloat(data.height, 0, GameConstants.projectiles.maxHeight, 1);
         },
         serializeFull(stream, { full }) {
-            Loots.writeToStream(stream, full.definition);
-            stream.writeUint8(full.halloweenSkin ? -1 : 0);
-            stream.writeUint8(full.tintIndex);
+            Throwables.writeToStream(stream, full.definition);
+            stream.writeBooleanGroup(full.halloweenSkin, full.activated);
+
+            if (full.definition.c4 && full.c4) {
+                stream.writeUint8(full.c4.throwerTeamID);
+                stream.writeUint8(full.c4.tintIndex);
+            }
         },
         deserializePartial(stream) {
-            const [
-                airborne,
-                activated
-            ] = stream.readBooleanGroup();
-
             return {
                 position: stream.readPosition(),
                 rotation: stream.readRotation2(),
                 layer: stream.readLayer(),
-                airborne,
-                activated,
-                throwerTeamID: stream.readUint8()
+                height: stream.readFloat(0, GameConstants.projectiles.maxHeight, 1)
             };
         },
         deserializeFull(stream) {
-            return {
-                definition: Loots.readFromStream(stream),
-                halloweenSkin: stream.readUint8() !== 0,
-                tintIndex: stream.readUint8()
+            const definition = Throwables.readFromStream(stream);
+            const [halloweenSkin, activated] = stream.readBooleanGroup();
+
+            const data: Mutable<ObjectsNetData[ObjectCategory.Projectile]["full"]> = {
+                definition,
+                halloweenSkin,
+                activated
             };
+
+            if (definition.c4) {
+                data.c4 = {
+                    throwerTeamID: stream.readUint8(),
+                    tintIndex: stream.readUint8()
+                };
+            }
+
+            return data;
         }
     }
 };

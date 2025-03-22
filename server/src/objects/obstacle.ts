@@ -1,4 +1,4 @@
-import { ObjectCategory, RotationMode } from "@common/constants";
+import { FlyoverPref, ObjectCategory, RotationMode } from "@common/constants";
 import { PerkIds } from "@common/definitions/items/perks";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
@@ -58,6 +58,19 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override hitbox: Hitbox;
 
     puzzlePiece?: string | boolean;
+
+    // TODO: remove flyover pref when henry finishes refactoring definitions
+    get height(): number {
+        if (this.door && !this.door.isOpen) return Infinity;
+
+        switch (this.definition.allowFlyover) {
+            case FlyoverPref.Always:
+                return 0.2;
+            case FlyoverPref.Sometimes:
+                return 0.5;
+        }
+        return Infinity;
+    }
 
     constructor(
         game: Game,

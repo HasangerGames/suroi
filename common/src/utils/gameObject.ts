@@ -62,7 +62,7 @@ export type CommonObjectMapping = {
         readonly definition: DecalDefinition
     }
     [ObjectCategory.Parachute]: object
-    [ObjectCategory.ThrowableProjectile]: {
+    [ObjectCategory.Projectile]: {
         readonly definition: ThrowableDefinition
     }
     [ObjectCategory.SyncedParticle]: {

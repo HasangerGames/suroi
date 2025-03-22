@@ -23,7 +23,8 @@ export class Explosion {
         readonly source: GameObject,
         readonly layer: Layer,
         readonly weapon?: GunItem | MeleeItem | ThrowableItem,
-        readonly damageMod = 1
+        readonly damageMod = 1,
+        readonly objectsToIgnore = new Set<GameObject>()
     ) {
         this.definition = Explosions.reify(definition);
     }
@@ -54,7 +55,7 @@ export class Explosion {
                         ObjectCategory.Obstacle,
                         ObjectCategory.Player,
                         ObjectCategory.Loot,
-                        ObjectCategory.ThrowableProjectile
+                        ObjectCategory.Projectile
                     ].some(type => object.type === type)
                 ) continue;
 
@@ -75,7 +76,7 @@ export class Explosion {
             const { min, max } = this.definition.radius;
             for (const collision of lineCollisions) {
                 const object = collision.object;
-                const { isPlayer, isObstacle, isBuilding, isLoot, isThrowableProjectile } = object;
+                const { isPlayer, isObstacle, isBuilding, isLoot, isProjectile } = object;
 
                 if (!damagedObjects.has(object.id)) {
                     damagedObjects.add(object.id);
@@ -99,10 +100,10 @@ export class Explosion {
                         }
                     }
 
-                    if (isLoot || isThrowableProjectile) {
-                        if (isThrowableProjectile) object.damage({ amount: this.definition.damage });
+                    if (isLoot || isProjectile) {
+                        if (isProjectile) object.damage({ amount: this.definition.damage });
 
-                        const multiplier = isThrowableProjectile ? 0.002 : 0.01;
+                        const multiplier = isProjectile ? 0.002 : 0.01;
                         object.push(
                             Angle.betweenPoints(object.position, this.position),
                             (max - dist) * multiplier
@@ -114,6 +115,7 @@ export class Explosion {
                     (isObstacle
                         && !object.definition.noCollisions
                         && !object.definition.isStair
+                        && !this.objectsToIgnore.has(object)
                     ) || (isBuilding && !object.definition.noCollisions)
                 ) {
                     /*

@@ -3600,21 +3600,36 @@ logger.indent("Validating throwables", () => {
                 baseErrorPath: errorPath
             });
 
-            tester.assertValidOrNPV({
-                obj: throwable,
-                field: "maxThrowDistance",
-                defaultValue: 128,
-                validatorIfPresent: (value, errorPath) => {
-                    tester.assertInBounds({
-                        value,
-                        min: 0,
-                        max: GameConstants.player.maxMouseDist,
-                        includeMin: true,
-                        includeMax: true,
-                        errorPath
-                    });
-                },
-                baseErrorPath: errorPath
+            logger.indent("Validating physics", () => {
+                const physics = throwable.physics;
+
+                tester.assertInBounds({
+                    obj: physics,
+                    field: "maxThrowDistance",
+                    min: 0,
+                    max: GameConstants.player.maxMouseDist,
+                    includeMin: true,
+                    includeMax: true,
+                    baseErrorPath: errorPath
+                });
+
+                tester.assertIsFiniteRealNumber({
+                    obj: physics,
+                    field: "initialZVelocity",
+                    baseErrorPath: errorPath
+                });
+
+                tester.assertIsFiniteRealNumber({
+                    obj: physics,
+                    field: "initialAngularVelocity",
+                    baseErrorPath: errorPath
+                });
+
+                tester.assertIsFiniteRealNumber({
+                    obj: physics,
+                    field: "initialHeight",
+                    baseErrorPath: errorPath
+                });
             });
 
             logger.indent("Validating image", () => {
@@ -3644,19 +3659,6 @@ logger.indent("Validating throwables", () => {
                     field: "zIndex",
                     baseErrorPath: errorPath2
                 });
-            });
-
-            tester.assertValidOrNPV({
-                obj: throwable,
-                field: "speedCap",
-                defaultValue: Infinity,
-                validatorIfPresent: (value, errorPath) => {
-                    tester.assertIsPositiveReal({
-                        value,
-                        errorPath
-                    });
-                },
-                baseErrorPath: errorPath
             });
 
             tester.assertIsPositiveFiniteReal({
@@ -3696,6 +3698,16 @@ logger.indent("Validating throwables", () => {
                     tester.assertReferenceExists({
                         obj: detonation,
                         field: "particles",
+                        collection: SyncedParticles,
+                        collectionName: "SyncedParticles",
+                        baseErrorPath: errorPath
+                    });
+                }
+
+                if (detonation.spookyParticles !== undefined) {
+                    tester.assertReferenceExists({
+                        obj: detonation,
+                        field: "spookyParticles",
                         collection: SyncedParticles,
                         collectionName: "SyncedParticles",
                         baseErrorPath: errorPath
