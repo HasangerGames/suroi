@@ -2097,7 +2097,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         const downedBy = this.downedBy?.player;
-        if (source === DamageSources.Gas || source === DamageSources.Airdrop || source === DamageSources.BleedOut || source === DamageSources.FinallyKilled) {
+        if (
+            source === DamageSources.Gas
+            || source === DamageSources.Airdrop
+            || source === DamageSources.BleedOut
+            || source === DamageSources.FinallyKilled
+        ) {
             packet.damageSource = source;
 
             if (downedBy !== undefined) {

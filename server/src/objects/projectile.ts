@@ -9,6 +9,7 @@ import { type FullData } from "@common/utils/objectsSerializations";
 import { FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
+import type { ThrowableItem } from "../inventory/throwableItem";
 import { BaseGameObject, DamageParams, GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 
@@ -17,7 +18,8 @@ export interface ProjectileParams {
     readonly definition: ReifiableDef<ThrowableDefinition>
     readonly height: number
     readonly layer: number
-    readonly source: GameObject
+    readonly owner: GameObject
+    readonly source?: ThrowableItem
     readonly velocity: Vector
     readonly fuseTime?: number
     readonly halloweenSkin?: boolean
@@ -28,6 +30,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
     override readonly partialAllocBytes = 16;
 
     readonly definition: ThrowableDefinition;
+    readonly source?: ThrowableItem;
 
     halloweenSkin: boolean;
 
@@ -37,7 +40,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
     tintIndex = 0;
     health: number;
 
-    source: GameObject;
+    owner: GameObject;
 
     override get position(): Vector { return this.hitbox.position; }
     override set position(pos: Vector) { this.hitbox.position = pos; }
@@ -67,10 +70,11 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
 
         this.health = this.definition.health ?? Infinity;
 
+        this.owner = params.owner;
         this.source = params.source;
-        if (this.source.isPlayer) {
-            this.throwerTeamID = this.source.teamID ?? 0;
-            this.tintIndex = this.source.colorIndex;
+        if (this.owner.isPlayer) {
+            this.throwerTeamID = this.owner.teamID ?? 0;
+            this.tintIndex = this.owner.colorIndex;
         }
 
         this.halloweenSkin = params.halloweenSkin ?? false;
@@ -114,7 +118,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
                 !(object.isBuilding || object.isObstacle || object.isPlayer)
                 || object.dead
                 || !object.hitbox
-                || object === this.source
+                || object === this.owner
                 || !equivLayer(object, this)
                 || (object.isObstacle && object.definition.noCollisions)
             ) continue;
@@ -186,7 +190,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
             if ((object.isObstacle || object.isPlayer) && this.definition.impactDamage) {
                 const damage = this.definition.impactDamage
                     * (object.isPlayer ? 1 : this.definition.obstacleMultiplier ?? 1);
-                object.damage({ amount: damage });
+                object.damage({ amount: damage, source: this.owner, weaponUsed: this.source });
             }
             if (object.dead) continue;
 
@@ -273,9 +277,9 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
             game.addExplosion(
                 explosion,
                 this.position,
-                this.source,
+                this.owner,
                 this.layer,
-                undefined,
+                this.source,
                 this.halloweenSkin ? PerkData[PerkIds.PlumpkinBomb].damageMod : 1,
                 this._obstaclesBelow
             );
@@ -343,9 +347,9 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         if (this.dead) return;
         this.dead = true;
 
-        if (this.source.isPlayer) {
-            this.source.c4s.delete(this);
-            this.source.dirty.activeC4s = true;
+        if (this.owner.isPlayer) {
+            this.owner.c4s.delete(this);
+            this.owner.dirty.activeC4s = true;
         }
     }
 }

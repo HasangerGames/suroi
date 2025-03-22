@@ -139,7 +139,8 @@ export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwa
                 Vec.rotate(definition.animation.cook.rightFist, owner.rotation)
             ),
             layer: owner.layer,
-            source: owner,
+            owner: owner,
+            source: this,
             velocity: Vec.add(
                 Vec.fromPolar(owner.rotation, speed),
                 owner.movementVector
