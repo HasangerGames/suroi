@@ -484,7 +484,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "c4_explosion",
         name: "C4",
-        damage: 150,
+        damage: 130,
         obstacleMultiplier: 1.15,
         radius: {
             min: 10,
