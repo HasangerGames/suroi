@@ -2578,9 +2578,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     break;
                 case InputActions.ExplodeC4:
                     for (const c4 of this.c4s) {
-                        c4.activateC4();
+                        if (c4.activateC4()) this.c4s.delete(c4);
                     }
-                    this.c4s.clear();
                     this.dirty.activeC4s = true;
                     break;
             }

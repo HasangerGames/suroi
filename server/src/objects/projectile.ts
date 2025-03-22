@@ -31,6 +31,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
 
     halloweenSkin: boolean;
 
+    activatable = false;
     activated = false;
     throwerTeamID = 0;
     tintIndex = 0;
@@ -84,16 +85,14 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
     }
 
     update(): void {
-        if (this.definition.c4 && !this.activated) return;
-
-        this._fuseTime -= this.game.dt;
+        if (!this.definition.c4 || this.activated) {
+            this._fuseTime -= this.game.dt;
+        }
 
         if (this._fuseTime < 0) {
             this._detonate();
             return;
         }
-
-        if (this.definition.c4) return;
 
         const dt = this.game.dt / 1000;
 
@@ -233,6 +232,8 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         if (onWater) speedDrag = drag.water;
         else if (onFloor || sittingOnObstacle) speedDrag = drag.ground;
 
+        this.activatable = onFloor || sittingOnObstacle;
+
         this._velocity = Vec.scale(this._velocity, 1 / (1 + dt * speedDrag));
 
         this._lastPosition = Vec.clone(this.position);
@@ -318,12 +319,14 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         this._angularVelocity = 10;
     }
 
-    activateC4(): void {
+    activateC4(): boolean {
         if (!this.definition.c4) {
             throw new Error("Tried to activate non c4 projectile");
         }
+        if (!this.activatable) return false;
         this.activated = true;
         this.setDirty();
+        return true;
     }
 
     override damage({ amount }: DamageParams): void {

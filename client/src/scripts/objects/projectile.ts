@@ -46,13 +46,16 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
         this.container.addChild(this.image);
     }
 
-    override updateFromData(data: ObjectsNetData[ObjectCategory.Projectile], _isNew = false): void {
+    override updateFromData(data: ObjectsNetData[ObjectCategory.Projectile], isNew = false): void {
         if (data.full) {
             const full = data.full;
 
             const def = this.definition = full.definition;
 
             this.halloweenSkin = full.halloweenSkin;
+            if (this.activated !== full.activated) {
+                this.playSound("c4_beep");
+            }
             this.activated = full.activated;
 
             this.throwerTeamID = full.c4?.throwerTeamID;
@@ -90,7 +93,7 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
 
         this.container.scale = Numeric.remap(this.height, 0, GameConstants.projectiles.maxHeight, 1, 5);
 
-        if (!GameConsole.getBuiltInCVar("cv_movement_smoothing")) {
+        if (!GameConsole.getBuiltInCVar("cv_movement_smoothing") || isNew) {
             this.container.position = toPixiCoords(data.position);
             this.container.rotation = this.rotation;
         }

@@ -223,10 +223,10 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         hitboxRadius: 1,
         fireDelay: 250,
         physics: {
-            maxThrowDistance: 0,
-            initialZVelocity: 0,
-            initialAngularVelocity: 0,
-            initialHeight: 0
+            maxThrowDistance: 128,
+            initialZVelocity: 4,
+            initialAngularVelocity: 10,
+            initialHeight: 0.5
         },
         image: {
             position: Vec.create(60, 43),
