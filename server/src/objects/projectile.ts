@@ -202,7 +202,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         let sittingOnObstacle = false;
         // find obstacle with highest height
         for (const obstacle of this._obstaclesBelow) {
-            if (!obstacle.hitbox.collidesWith(this.hitbox)) {
+            if (!obstacle.hitbox.collidesWith(this.hitbox) || obstacle.dead) {
                 this._obstaclesBelow.delete(obstacle);
                 continue;
             }
