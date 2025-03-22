@@ -129,7 +129,7 @@ export interface ParsedCommand {
          * The parts making up this argument. For non-string args, this
          * will always be a single raw part
          */
-        arg: Array<{
+        parts: Array<{
             /**
              * Whether this part is a raw string or the name of a variable
              * to be dereferenced
@@ -416,6 +416,12 @@ export function extractCommandsAndArgs(input: string): ParserNode {
     let expectingEndOfGroup = 0;
 
     /**
+     * After parsing a space character, we record the intent to create a new argument, and do so if
+     * we meet a character that should do so (such as a quote or a plain letter)
+     */
+    let creatingNewArg = false;
+
+    /**
      * Whether the console is currently processing a comment. Comments are completely ignored, not even
      * being added any parser nodes, and are usually used as clarification/explanation in configuration
      * files, which are then pasted into the console
@@ -441,11 +447,12 @@ export function extractCommandsAndArgs(input: string): ParserNode {
      * @param char The character to add
      */
     const addCharToLast = (char: string): void => {
-        if (!args.length) {
-            current.args = args = [{ arg: [{ type: argType, content: char, startIndex: charIndex }], startIndex: charIndex }];
+        creatingNewArg = false;
+        if (args.length === 0) {
+            current.args = args = [{ parts: [{ type: argType, content: char, startIndex: charIndex }], startIndex: charIndex }];
         } else {
-            const last = args[args.length - 1].arg;
-            if (!last.length) {
+            const last = args[args.length - 1].parts;
+            if (last.length === 0) {
                 last[0] = { type: argType, content: char, startIndex: charIndex };
             } else {
                 last[last.length - 1].content += char;
@@ -506,6 +513,7 @@ export function extractCommandsAndArgs(input: string): ParserNode {
                 if (parserPhase === "cmd") {
                     if (current.name && expectingEndOfGroup === 0) {
                         parserPhase = "args";
+                        creatingNewArg = true;
                     }
 
                     break;
@@ -517,15 +525,7 @@ export function extractCommandsAndArgs(input: string): ParserNode {
                     break;
                 }
 
-                /*
-                    This ensures that a query like `cmd a  b` will only parse as
-                    two arguments and not three (more generally, this ensures that
-                    multiple consecutive spaces, line breaks, or combinations thereof
-                    are treated as if only one had been given)
-                */
-                if (args.at(-1)?.arg.at(-1)?.content.length === 0) break;
-
-                args.push({ arg: [{ type: argType, content: "", startIndex: charIndex }], startIndex: charIndex });
+                creatingNewArg = true;
                 break;
             }
             case "#": {
@@ -579,10 +579,6 @@ export function extractCommandsAndArgs(input: string): ParserNode {
                     addCharToLast(char);
                     escaping = false;
                     break;
-                }
-
-                if (args.at(-1)?.arg.at(-1)?.content.length === 0) {
-                    args.length -= 1;
                 }
 
                 advance(current, char);
@@ -673,8 +669,8 @@ export function extractCommandsAndArgs(input: string): ParserNode {
                     if (args.length) {
                         // the array isn't empty => there is an element at index -1
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        const lastArg = args.at(-1)!.arg;
-                        let lastPart: ParsedCommand["args"][number]["arg"][number] | undefined;
+                        const lastArg = args.at(-1)!.parts;
+                        let lastPart: ParsedCommand["args"][number]["parts"][number] | undefined;
                         if ((lastPart = lastArg.at(-1))?.content.length === 0) {
                             // if the current part is empty, reuse it by switching its type
 
@@ -698,12 +694,12 @@ export function extractCommandsAndArgs(input: string): ParserNode {
                 if (inString && argType === "reference") {
                     argType = "raw";
 
-                    let lastArg: ParsedCommand["args"][number]["arg"] | undefined;
+                    let lastArg: ParsedCommand["args"][number]["parts"] | undefined;
                     if (
                         args.length === 0
                         // above condition checks that args isn't empty
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        || (lastArg = args.at(-1)!.arg).at(-1)?.content.length === 0
+                        || (lastArg = args.at(-1)!.parts).at(-1)?.content.length === 0
                     ) {
                         throwCSE("Unexpected empty reference", -1, 2);
                     }
@@ -711,7 +707,7 @@ export function extractCommandsAndArgs(input: string): ParserNode {
                     // empty args array results in thrown CSE; args is
                     // therefore not empty by the time we're here
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    (lastArg ??= args.at(-1)!.arg).push({ type: argType, content: "", startIndex: charIndex });
+                    (lastArg ??= args.at(-1)!.parts).push({ type: argType, content: "", startIndex: charIndex });
                 } else if (parserPhase === "args") {
                     addCharToLast(char);
                     escaping = false;
@@ -738,12 +734,29 @@ export function extractCommandsAndArgs(input: string): ParserNode {
                     if (argType === "reference") {
                         throwCSE("Unterminated variable reference");
                     }
+                } else {
+                    const currentArgLength = args.at(-1)?.parts.at(-1)?.content.length;
+                    if (currentArgLength === undefined || creatingNewArg) {
+                        /*
+                            Runs when opening an argument with a quote. For example,
 
-                    args.push({ arg: [{ type: argType, content: "", startIndex: charIndex }], startIndex: charIndex });
-                } else if (args.at(-1)?.arg.at(-1)?.content.length) {
-                    // If we encounter a " in the middle of an argument
-                    // such as `say hel"lo`
-                    throwCSE("Unexpected double-quote (\") character found.");
+                            echo "a"
+                                 ^
+                                runs here
+
+                            echo b "a"
+                                   ^
+                                  runs here
+
+                            Responsible for creating a new args entry
+                        */
+                        args.push({ parts: [{ type: argType, content: "", startIndex: charIndex }], startIndex: charIndex });
+                        creatingNewArg = false;
+                    } else if (currentArgLength !== 0) {
+                        // If we encounter a " in the middle of an argument
+                        // such as `say hel"lo`
+                        throwCSE("Unexpected double-quote (\") character found.");
+                    }
                 }
 
                 inString = !inString;
@@ -771,6 +784,9 @@ export function extractCommandsAndArgs(input: string): ParserNode {
                 }
 
                 escaping = false;
+                if (creatingNewArg) {
+                    args.push({ parts: [{ type: argType, content: "", startIndex: charIndex }], startIndex: charIndex });
+                }
                 addCharToLast(char);
                 break;
             }
@@ -802,30 +818,6 @@ export function extractCommandsAndArgs(input: string): ParserNode {
 
         // throwCSE("Unexpected end-of-input following chaining character");
         delete prevNode.cmd.next;
-    } else {
-        const args = current.args;
-        let last: ParsedCommand["args"][number]["arg"] | undefined;
-        let goAgain = true;
-        while (goAgain) {
-            goAgain = false;
-
-            if (
-                (last = args.at(-1)?.arg)?.at(-1)?.content.length === 0
-                // undefined is not equal to 0 => last cannot be undefined
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                && (last!.length > 1 || args.length !== 1)
-            ) {
-                // undefined is not equal to 0 => last cannot be undefined
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                last!.length -= 1;
-                goAgain = true;
-            }
-
-            if (last?.length === 0) {
-                args.length -= 1;
-                goAgain = true;
-            }
-        }
     }
 
     _parserCache_.set(input, commands);
@@ -845,7 +837,7 @@ function makeArgsResolver() {
      * a boolean indicating if this argument is constant (an argument is considered constant
      * if it references no variable) and whose second argument is the resolved string
      */
-    const resolveArgParts = (parts: ParsedCommand["args"][number]["arg"]): [isConst: boolean, value: string] => {
+    const resolveArgParts = (parts: ParsedCommand["args"][number]["parts"]): [isConst: boolean, value: string] => {
         let isConst = true;
         //    vvvvv -> do not inline, has side-effects
         const value = parts.reduce<string>(
@@ -877,7 +869,7 @@ function makeArgsResolver() {
     return function(args: Readonly<ParsedCommand["args"]>): [isConst: boolean, values: string[]] {
         let isConst = true;
         const value = args.map(e => {
-            const [argIsConst, argVal] = resolveArgParts(e.arg);
+            const [argIsConst, argVal] = resolveArgParts(e.parts);
             isConst &&= argIsConst;
             return argVal;
         });
