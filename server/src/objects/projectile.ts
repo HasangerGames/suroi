@@ -213,6 +213,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
             }
         }
 
+        const lastHeight = this._height;
         if (this._height === 0 || sittingOnObstacle) {
             this._height = height;
         } else {
@@ -242,17 +243,16 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         this.position.x = Numeric.clamp(this.position.x, 0, this.game.map.width);
         this.position.y = Numeric.clamp(this.position.y, 0, this.game.map.height);
 
-        for (const obstacle of this._obstaclesBelow) {
-            if (!this.hitbox.collidesWith(obstacle.hitbox)) {
-                this._obstaclesBelow.delete(obstacle);
-            }
-        }
-
+        const lastRotation = this.rotation;
         this.rotation = Angle.normalize(this.rotation + this._angularVelocity * dt);
 
         this._angularVelocity *= (1 / (1 + dt * 1.2));
 
-        this.setPartialDirty();
+        if (
+            !Vec.equals(this._lastPosition, this.position)
+            || !Numeric.equals(this.rotation, lastRotation)
+            || !Numeric.equals(this._height, lastHeight)
+        ) this.setPartialDirty();
     }
 
     private _detonated = false;

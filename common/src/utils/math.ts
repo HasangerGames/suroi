@@ -123,6 +123,16 @@ export const Numeric = Object.freeze({
      */
     max<N extends number | bigint>(a: N, b: N): N {
         return a > b ? a : b;
+    },
+    /**
+     * Tests whether two numbers are equal, within a certain tolerance
+     * @param a The first number
+     * @param b The second number
+     * @param epsilon The largest difference between the numbers that will be accepted as being "equal"
+     * @returns Whether or not the two numbers are considered equal with the given epsilon
+     */
+    equals(a: number, b: number, epsilon = 0.001): boolean {
+        return Math.abs(a - b) <= epsilon;
     }
 });
 
