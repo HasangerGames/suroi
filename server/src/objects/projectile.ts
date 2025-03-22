@@ -34,7 +34,6 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
 
     halloweenSkin: boolean;
 
-    activatable = false;
     activated = false;
     throwerTeamID = 0;
     tintIndex = 0;
@@ -46,6 +45,8 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
     override set position(pos: Vector) { this.hitbox.position = pos; }
 
     private _lastPosition: Vector;
+
+    inAir = false;
 
     hitbox = new CircleHitbox(0);
     private _height: number;
@@ -97,6 +98,8 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
             this._detonate();
             return;
         }
+
+        const initialLastPosition = Vec.clone(this.position);
 
         const dt = this.game.dt / 1000;
 
@@ -187,6 +190,8 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
                 this.position = collision.position;
             }
 
+            if (!this.inAir) continue;
+
             if ((object.isObstacle || object.isPlayer) && this.definition.impactDamage) {
                 const damage = this.definition.impactDamage
                     * (object.isPlayer ? 1 : this.definition.obstacleMultiplier ?? 1);
@@ -237,7 +242,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         if (onWater) speedDrag = drag.water;
         else if (onFloor || sittingOnObstacle) speedDrag = drag.ground;
 
-        this.activatable = onFloor || sittingOnObstacle;
+        this.inAir = !onFloor && !sittingOnObstacle;
 
         this._velocity = Vec.scale(this._velocity, 1 / (1 + dt * speedDrag));
 
@@ -253,7 +258,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         this._angularVelocity *= (1 / (1 + dt * 1.2));
 
         if (
-            !Vec.equals(this._lastPosition, this.position)
+            !Vec.equals(this.position, initialLastPosition)
             || !Numeric.equals(this.rotation, lastRotation)
             || !Numeric.equals(this._height, lastHeight)
         ) this.setPartialDirty();
@@ -327,7 +332,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         if (!this.definition.c4) {
             throw new Error("Tried to activate non c4 projectile");
         }
-        if (!this.activatable) return false;
+        if (this.inAir) return false;
         this.activated = true;
         this.setDirty();
         return true;
