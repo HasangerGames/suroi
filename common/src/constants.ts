@@ -73,12 +73,12 @@ export const GameConstants = {
     },
     projectiles: {
         maxHeight: 5,
-        gravity: 15,
-        distanceToMouseMultiplier: 1.3,
+        gravity: 10,
+        distanceToMouseMultiplier: 1.5,
         drag: {
             air: 0.7,
-            ground: 5,
-            water: 8
+            ground: 3,
+            water: 5
         }
     },
     riverPadding: 64,

@@ -227,7 +227,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         const onFloor = this._height <= 0;
         const onWater = onFloor && !!FloorTypes[this.game.map.terrain.getFloor(this.position, this.layer)].overlay;
 
-        const drag = GameConstants.projectiles.drag;
+        const drag = this.definition.physics.drag ?? GameConstants.projectiles.drag;
         // apply more friction based on being on top of something (ground or obstacle) or on water
         let speedDrag: number = drag.air;
         if (onWater) speedDrag = drag.water;

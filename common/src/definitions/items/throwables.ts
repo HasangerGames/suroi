@@ -35,6 +35,11 @@ export type ThrowableDefinition = InventoryItemDefinition & {
         readonly initialZVelocity: number
         readonly initialAngularVelocity: number
         readonly initialHeight: number
+        readonly drag?: {
+            readonly air: number
+            readonly ground: number
+            readonly water: number
+        }
     }
 
     readonly image: {
@@ -226,7 +231,12 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
             maxThrowDistance: 128,
             initialZVelocity: 4,
             initialAngularVelocity: 10,
-            initialHeight: 0.5
+            initialHeight: 0.5,
+            drag: {
+                air: 0.7,
+                ground: 6,
+                water: 8
+            }
         },
         image: {
             position: Vec.create(60, 43),
