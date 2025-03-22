@@ -1170,7 +1170,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             toRegen += adrenRegen * this.mapPerkOrDefault(
                 PerkIds.LacedStimulants,
                 ({ healDmgRate, lowerHpLimit }) => (this.health <= lowerHpLimit ? 1 : -healDmgRate),
-                1
+                this.normalizedHealth < 0.3 && !this.downed ? 1 : 0 // passive regen
             );
 
             // Drain adrenaline
