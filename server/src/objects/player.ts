@@ -1134,6 +1134,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
+        // Health regen
         let toRegen = this._modifiers.hpRegen;
         if (this._adrenaline >= 0) {
             /*
@@ -1176,23 +1177,17 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             // Drain adrenaline
             this.adrenaline -= 0.0005 * this._modifiers.adrenDrain * dt;
         }
-
         this.health += dt / 1000 * toRegen;
 
         // Shoot gun/use item
-        if (this.startedAttacking) {
-            if (this.game.pluginManager.emit("player_start_attacking", this) === undefined) {
-                this.startedAttacking = false;
-                this.disableInvulnerability();
-                this.activeItem.useItem();
-            }
+        if (this.startedAttacking && this.game.pluginManager.emit("player_start_attacking", this) === undefined) {
+            this.startedAttacking = false;
+            this.disableInvulnerability();
+            this.activeItem.useItem();
         }
-
-        if (this.stoppedAttacking) {
-            if (this.game.pluginManager.emit("player_stop_attacking", this) === undefined) {
-                this.stoppedAttacking = false;
-                this.activeItem.stopUse();
-            }
+        if (this.stoppedAttacking && this.game.pluginManager.emit("player_stop_attacking", this) === undefined) {
+            this.stoppedAttacking = false;
+            this.activeItem.stopUse();
         }
 
         // Gas damage
