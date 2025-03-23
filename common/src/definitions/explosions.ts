@@ -254,7 +254,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
             shrapnel: true,
             damage: 15,
             obstacleMultiplier: 9999,
-            speed: 0.08,
+            speed: 0.8,
             range: 60,
             rangeVariance: 1
         }

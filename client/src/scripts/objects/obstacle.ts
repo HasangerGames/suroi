@@ -399,8 +399,9 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             texture += `_${this.variation + 1}`;
         }
 
-        if (!definition.invisible && !(this.dead && definition.noResidue) && !definition.graphics) {
+        if (!definition.invisible && !(this.dead && definition.noResidue)) {
             this.image.setFrame(texture);
+            if (definition.graphics && !this.dead) this.image.setVisible(false);
         }
 
         if (definition.tint !== undefined) {

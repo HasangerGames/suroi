@@ -3265,7 +3265,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "large_warehouse_wall", // todo: make this wall only damageable by big white barrel explosion
         name: "Large Warehouse Wall",
-        material: "stone",
+        material: "metal_heavy",
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(55.19, 2.02, Vec.create(0.35, -12.47)),
             RectangleHitbox.fromRect(2, 27, Vec.create(-26.95, -0.02))
@@ -3288,12 +3288,12 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         ],
         health: 9999,
         hideOnMap: true,
+        reflectBullets: true,
         rotationMode: RotationMode.Limited,
         isWall: true,
         allowFlyover: FlyoverPref.Never,
-        particleVariations: 2,
         frames: {
-            particle: "rock_particle",
+            particle: "metal_particle",
             residue: "large_warehouse_ceiling_residue"
         }
     },
