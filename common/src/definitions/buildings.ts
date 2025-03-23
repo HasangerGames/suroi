@@ -5309,7 +5309,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "barn_stair_walls_top_floor", position: Vec.create(0, 0), rotation: 0, layer: 2 },
 
             // Columns
-            { idString: "house_column", position: Vec.create(-33.5, -11.6) },
+            { idString: "bush", position: Vec.create(-33.5, -11.6) },
             { idString: "house_column", position: Vec.create(-33.5, -26.7) },
             { idString: "house_column", position: Vec.create(-15, -26.7) },
             { idString: "house_column", position: Vec.create(4.1, -26.7) },

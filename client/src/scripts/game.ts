@@ -1036,7 +1036,7 @@ export const Game = new (class Game {
                         object.notOnCoolDown = false;
                         setTimeout(() => object.notOnCoolDown = true, 1000);
                     }
-                } else if (isObstacle && object.definition.material === "bush" && !object.dead) {
+                } else if (isObstacle && object.definition.material === "bush" && object.definition.noCollisions) {
                     const bushDetectionHitbox = object.hitbox.type === HitboxType.Circle ? new CircleHitbox(object.hitbox.radius / 6, object.position) : object.hitbox;
                     for (const player of this.objects.getCategory(ObjectCategory.Player)) {
                         if (
@@ -1073,6 +1073,7 @@ export const Game = new (class Game {
                             }));
                         };
 
+                        if (!object.dead) {
                         if (player.bushID === undefined) {
                             // bush
                             player.bushID = object.id;
@@ -1090,6 +1091,7 @@ export const Game = new (class Game {
                                 maxRange: 200
                             });
                         }
+                    } else if (player.bushID !== undefined) player.bushID = undefined;
                     }
                 }
             }

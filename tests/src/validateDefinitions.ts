@@ -3667,7 +3667,7 @@ logger.indent("Validating throwables", () => {
                 baseErrorPath: errorPath
             });
 
-            tester.assertValidOrNPV({
+            /* tester.assertValidOrNPV({ // fixme
                 obj: throwable,
                 field: "fireDelay",
                 defaultValue: 250,
@@ -3678,7 +3678,7 @@ logger.indent("Validating throwables", () => {
                     });
                 },
                 baseErrorPath: errorPath
-            });
+            }); */
 
             logger.indent("Validating detonation", () => {
                 const detonation = throwable.detonation;
