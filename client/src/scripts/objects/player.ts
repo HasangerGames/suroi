@@ -3,9 +3,9 @@ import { type EmoteDefinition } from "@common/definitions/emotes";
 import { Ammos } from "@common/definitions/items/ammos";
 import { type ArmorDefinition } from "@common/definitions/items/armors";
 import { type BackpackDefinition } from "@common/definitions/items/backpacks";
-import { Guns, type GunDefinition, type SingleGunNarrowing } from "@common/definitions/items/guns";
+import { type GunDefinition, type SingleGunNarrowing } from "@common/definitions/items/guns";
 import { HealType, type HealingItemDefinition } from "@common/definitions/items/healingItems";
-import { DEFAULT_HAND_RIGGING, Melees, type MeleeDefinition } from "@common/definitions/items/melees";
+import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "@common/definitions/items/melees";
 import { PerkData, PerkIds } from "@common/definitions/items/perks";
 import { Skins, type SkinDefinition } from "@common/definitions/items/skins";
 import { Loots, type WeaponDefinition } from "@common/definitions/loots";
@@ -22,8 +22,6 @@ import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Container, Graphics, Text } from "pixi.js";
-import { getTranslatedString } from "../utils/translations/translations";
-import { type TranslationKeys } from "../utils/translations/typings";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { CameraManager } from "../managers/cameraManager";
@@ -36,8 +34,11 @@ import { UIManager } from "../managers/uiManager";
 import { BULLET_WHIZ_SCALE, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { getTranslatedString } from "../utils/translations/translations";
+import { type TranslationKeys } from "../utils/translations/typings";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
+import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
@@ -1280,17 +1281,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         container.scale.set(0);
         container.alpha = 0;
 
-        let backgroundFrame = "emote_background";
-
-        const gun = Guns.fromStringSafe(emote.idString);
-        const melee = Melees.fromStringSafe(emote.idString);
-
-        if (gun) {
-            backgroundFrame = `loot_background_gun_${gun.ammoType}`;
-        }
-
-        this.emote.image.setScale((gun || melee) ? 0.7 : 1);
-        this.emote.background.setFrame(backgroundFrame);
+        const { backgroundTexture, scale } = Loot.getLootBackgroundAndScale(Loots.fromStringSafe(emote.idString));
+        this.emote.background.setFrame(backgroundTexture ?? "emote_background");
+        this.emote.image.setScale(scale ?? 1);
 
         this.anims.emote = Game.addTween({
             target: container,

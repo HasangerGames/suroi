@@ -54,18 +54,19 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
     override updateFromData(data: ObjectsNetData[ObjectCategory.Loot], isNew = false): void {
         if (data.full) {
             const definition = this.definition = data.full.definition;
+            const idString = definition.idString;
             const itemType = definition.itemType;
 
             this.container.addChild(this.images.background, this.images.item);
 
             if (itemType === ItemType.Skin) {
                 this.images.item
-                    .setFrame(`${this.definition.idString}_base`)
+                    .setFrame(`${idString}_base`)
                     .setPos(0, -3)
                     .setScale(0.65)
                     .setAngle(90);
 
-                const skinFist = `${this.definition.idString}_fist`;
+                const skinFist = `${idString}_fist`;
                 this.images.skinFistLeft
                     .setFrame(skinFist)
                     .setPos(22, 20)
@@ -86,55 +87,16 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
 
                 this.container.addChild(this.images.skinFistLeft, this.images.skinFistRight);
             } else {
-                this.images.item.setFrame(definition.idString);
+                this.images.item.setFrame(idString);
             }
 
-            // Set the loot texture based on the type
-            let backgroundTexture: string | undefined;
-            switch (itemType) {
-                case ItemType.Gun: {
-                    backgroundTexture = `loot_background_gun_${definition.ammoType}`;
-                    this.images.item.scale.set(0.85);
-                    break;
-                }
-                //
-                // No background for ammo
-                //
-                case ItemType.Melee: {
-                    backgroundTexture = "loot_background_melee";
-                    const imageScale = definition.image?.lootScale;
-                    if (imageScale !== undefined) this.images.item.scale.set(imageScale);
-                    break;
-                }
-                case ItemType.Healing: {
-                    backgroundTexture = "loot_background_healing";
-                    break;
-                }
-                case ItemType.Armor:
-                case ItemType.Backpack:
-                case ItemType.Scope:
-                case ItemType.Skin: {
-                    backgroundTexture = "loot_background_equipment";
-                    break;
-                }
-                case ItemType.Throwable: {
-                    backgroundTexture = "loot_background_throwable";
-                    break;
-                }
-                case ItemType.Perk: {
-                    // FIXME bad
-                    backgroundTexture = definition.idString === PerkIds.PlumpkinGamble
-                        ? "loot_background_plumpkin_gamble"
-                        : "loot_background_perk";
-                    break;
-                }
-            }
-
-            if (backgroundTexture !== undefined) {
+            const { backgroundTexture, scale } = Loot.getLootBackgroundAndScale(definition);
+            if (backgroundTexture) {
                 this.images.background.setFrame(backgroundTexture);
             } else {
                 this.images.background.setVisible(false);
             }
+            if (scale) this.images.item.setScale(scale);
 
             this.hitbox = new CircleHitbox(GameConstants.lootRadius[itemType]);
 
@@ -170,6 +132,45 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
 
         if (!GameConsole.getBuiltInCVar("cv_movement_smoothing") || isNew) {
             this.container.position = toPixiCoords(this.position);
+        }
+    }
+
+    static getLootBackgroundAndScale(definition?: LootDefinition): { backgroundTexture?: string, scale?: number } {
+        switch (definition?.itemType) {
+            case ItemType.Gun:
+                return {
+                    backgroundTexture: `loot_background_gun_${definition.ammoType}`,
+                    scale: 0.85
+                };
+
+            case ItemType.Melee:
+                return {
+                    backgroundTexture: "loot_background_melee",
+                    scale: definition.image?.lootScale
+                };
+
+            case ItemType.Healing:
+                return { backgroundTexture: "loot_background_healing" };
+
+            case ItemType.Armor:
+            case ItemType.Backpack:
+            case ItemType.Scope:
+            case ItemType.Skin:
+                return { backgroundTexture: "loot_background_equipment" };
+
+            case ItemType.Throwable:
+                return { backgroundTexture: "loot_background_throwable" };
+
+            case ItemType.Perk:
+                return {
+                    backgroundTexture: definition.idString === PerkIds.PlumpkinGamble // FIXME bad
+                        ? "loot_background_plumpkin_gamble"
+                        : "loot_background_perk"
+                };
+
+            case ItemType.Ammo:
+            default:
+                return {};
         }
     }
 
