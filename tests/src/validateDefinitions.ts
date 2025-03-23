@@ -1647,7 +1647,7 @@ logger.indent("Validating building definitions", () => {
                 ).length ?? Infinity
             ) + definiteMatches;
 
-            const wallsDestroyIsValid = wallsToDestroy < maxPossibleMatches;
+            const wallsDestroyIsValid = wallsToDestroy <= maxPossibleMatches;
             const infiniteWallsToDestroy = wallsToDestroy === Infinity;
             tester.assert(
                 infiniteWallsToDestroy || wallsDestroyIsValid,

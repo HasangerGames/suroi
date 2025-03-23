@@ -12,12 +12,13 @@ import { Graphics } from "pixi.js";
 import { Game } from "../game";
 import { SoundManager, type GameSound } from "../managers/soundManager";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE } from "../utils/constants";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { drawGroundGraphics, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { ParticleManager, type Particle, type ParticleEmitter, type ParticleOptions } from "../managers/particleManager";
 import { type Player } from "./player";
 import { DebugRenderer } from "../utils/debugRenderer";
+import { CameraManager } from "../managers/cameraManager";
 
 export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     override readonly damageable = true;
@@ -66,6 +67,8 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
     doorMask?: Graphics;
 
+    graphics?: Graphics;
+
     private _glowTween?: Tween<Particle>;
     private _flickerTimeout?: Timeout;
     private _glow?: Particle;
@@ -91,6 +94,18 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             this.orientation = full.rotation.orientation;
             this.layer = full.layer;
             this.variation = full.variation;
+
+            if (definition.graphics?.length && !this.graphics) {
+                this.graphics = new Graphics();
+                this.graphics.zIndex = getEffectiveZIndex(definition.graphicsZIndex ?? ZIndexes.ObstaclesLayer1, this.layer, Game.layer);
+                for (const graphics of definition.graphics) {
+                    this.graphics.beginPath();
+                    drawGroundGraphics(graphics.hitbox.transform(this.position, 1, this.orientation), this.graphics);
+                    this.graphics.closePath();
+                    this.graphics.fill(graphics.color);
+                }
+                CameraManager.addObject(this.graphics);
+            }
 
             if (definition.gunMount && !this.mountSpriteInitalized) {
                 this.mountSprite = new SuroiSprite()
@@ -301,6 +316,10 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 this.mountSprite.setVisible(false);
             }
 
+            if (definition.graphics?.length && this.graphics) {
+                this.graphics.visible = false;
+            }
+
             if (!isNew && !("replaceWith" in definition && definition.replaceWith) && !definition.noDestroyEffect) {
                 const playSound = (name: string): void => {
                     this.playSound(name, {
@@ -319,6 +338,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     this.image.setVisible(false);
                 } else {
                     this.image.setFrame(definition.frames?.residue ?? `${definition.idString}_residue`);
+                    if (definition.graphics && !this.image.visible) this.image.visible = true;
                 }
 
                 this.container.rotation = this.rotation;
@@ -379,7 +399,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             texture += `_${this.variation + 1}`;
         }
 
-        if (!definition.invisible && !(this.dead && definition.noResidue)) {
+        if (!definition.invisible && !(this.dead && definition.noResidue) && !definition.graphics) {
             this.image.setFrame(texture);
         }
 
@@ -709,6 +729,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
     override destroy(): void {
         super.destroy();
+        this.graphics?.destroy();
         this.image.destroy();
         this.mountSprite?.destroy();
         this.doorMask?.destroy();

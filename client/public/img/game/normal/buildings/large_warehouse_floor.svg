@@ -23,15 +23,15 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.17928416"
-     inkscape:cx="1508.778"
-     inkscape:cy="1843.4423"
+     inkscape:zoom="2.0283687"
+     inkscape:cx="188.57518"
+     inkscape:cy="189.06819"
      inkscape:window-width="1920"
      inkscape:window-height="1001"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg1" />
+     inkscape:current-layer="g1" />
   <defs
      id="defs1">
     <inkscape:path-effect
@@ -117,7 +117,7 @@
      transform="translate(2589.0846,214.35366)">
     <path
        style="fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:2.6999;stroke-dasharray:none;stroke-opacity:1"
-       d="m -2581.1088,532.39187 c 15.8796,2.37052 432.6777,0 432.6777,0 l 6.8411,-746.74553 -447.4946,1.40195 z"
+       d="m -2581.1088,532.39187 c 15.8796,2.37052 432.6777,0 432.6777,0 l 6.8411,-746.74553 -445.4075,1.40195 z"
        id="path534"
        sodipodi:nodetypes="ccccc" />
     <g
@@ -186,7 +186,7 @@
     </g>
     <g
        id="g532"
-       transform="translate(6070.8669,-9866.4128)">
+       transform="translate(6063.4588,-9866.4128)">
       <g
          id="g518-00-0"
          transform="rotate(90,-8093.113,10678.535)">

@@ -33,6 +33,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
     orientation!: Orientation;
 
     ceilingVisible = false;
+    damagedCeiling = false;
 
     puzzle: ObjectsNetData[ObjectCategory.Building]["puzzle"];
 
@@ -64,7 +65,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
     }
 
     toggleCeiling(duration = 200): void {
-        if (this.ceilingHitbox === undefined || this.ceilingTween || this.dead) return;
+        if (this.ceilingHitbox === undefined || this.ceilingTween || (this.dead && !this.damagedCeiling)) return;
         const player = Game.activePlayer;
         if (player === undefined) return;
 
@@ -356,7 +357,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
     }
 
     override updateZIndex(): void {
-        if (this.dead) {
+        if (this.dead && !this.damagedCeiling) {
             this.ceilingContainer.zIndex = getEffectiveZIndex(ZIndexes.DeadObstacles, this.layer, Game.layer);
         } else {
             const { obstacles = [], subBuildings = [] } = this.definition;
@@ -467,6 +468,10 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
         let key = imageDef.key;
         if (this.dead && imageDef.residue) key = imageDef.residue;
+        if (this.dead && imageDef.damaged) {
+            key = imageDef.damaged;
+            this.damagedCeiling = true;
+        }
         sprite.setFrame(key);
 
         if (isCeiling) {

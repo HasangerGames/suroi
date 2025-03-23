@@ -46,6 +46,7 @@ export interface BuildingImageDefinition {
     readonly spinOnSolve?: boolean
     readonly residue?: string
     readonly beachTinted?: boolean
+    readonly damaged?: string
 }
 
 export interface BuildingDefinition extends ObjectDefinition {
@@ -1653,12 +1654,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }]
     },
     {
-        idString: "large_warehouse", // WIP
+        idString: "large_warehouse",
         name: "Large Warehouse",
         reflectBullets: true,
         material: "metal_heavy",
         particle: "metal_particle",
         spawnHitbox: RectangleHitbox.fromRect(95, 150, Vec.create(-2, 0)),
+        ceilingHitbox: RectangleHitbox.fromRect(80, 137.5, Vec.create(-2, -2.1)),
+        ceilingCollapseParticle: "large_warehouse_particle",
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(4.53, 4.53, Vec.create(-2.11, -34.12)),
             RectangleHitbox.fromRect(4.63, 4.54, Vec.create(-2.1, 29.62)),
@@ -1671,10 +1674,23 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(29.91, 1.95, Vec.create(25.3, -72.17)),
             RectangleHitbox.fromRect(2.09, 32.17, Vec.create(-43.4, -30.88))
         ),
+        wallsToDestroy: 1,
         floorImages: [{
             key: "large_warehouse_floor",
             position: Vec.create(0, 0),
             scale: Vec.create(2, 2)
+        }],
+        ceilingImages: [{
+            key: "large_warehouse_ceiling",
+            position: Vec.create(-2, -2.1),
+            scale: Vec.create(2, 2),
+            damaged: "large_warehouse_ceiling_damaged",
+            residue: "large_warehouse_ceiling_residue"
+        }],
+        obstacles: [{
+            idString: "large_warehouse_wall",
+            position: Vec.create(-16.45, -59.664),
+            rotation: 0
         }]
         // floors: [{
         //     type: FloorNames.Stone,
@@ -3030,7 +3046,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomPallet, position: Vec.create(108, -88.97), orientation: 1 },
 
             // Large Warehouse
-            { idString: "large_warehouse", position: Vec.create(-159, -76) },
+            { idString: "large_warehouse", position: Vec.create(-158.8, -76) },
             { idString: randomPortDamagedContainer, position: Vec.create(194.2, 85.5), orientation: 2 },
             { idString: randomPallet, position: Vec.create(-156.48, -14.52) },
             { idString: randomPallet, position: Vec.create(-136.78, -14.37) },

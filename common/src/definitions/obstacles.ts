@@ -32,6 +32,13 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly rotationMode: RotationMode // for obstacles with a role, this cannot be RotationMode.Full
     readonly particleVariations?: number
     readonly zIndex?: ZIndexes
+
+    readonly graphics?: ReadonlyArray<{
+        readonly color: number | `#${string}`
+        readonly hitbox: Hitbox
+    }>
+    readonly graphicsZIndex?: ZIndexes
+
     /**
      * Whether throwables can fly over this obstacle
      */
@@ -265,6 +272,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     outhouse_particle:             { base: "ceiling_particle", tint: 0x78593b },
     outhouse_wall_particle:        { base: "wood_particle",    tint: 0x6e4d2f },
     mobile_home_particle:          { base: "ceiling_particle", tint: 0xa8a8a8 },
+    large_warehouse_particle:      { base: "ceiling_particle", tint: 0x2f3c4f },
     grey_office_chair_particle:    { base: "wood_particle",    tint: 0x616161 },
     office_chair_particle:         { base: "wood_particle",    tint: 0x7d2b2b },
     hq_stone_wall_particle_1:      { base: "stone_particle_1", tint: 0x591919 },
@@ -3253,6 +3261,42 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             color: 0x606060,
             borderColor: 0x262626
         } */
+    },
+    {
+        idString: "large_warehouse_wall", // todo: make this wall only damageable by big white barrel explosion
+        name: "Large Warehouse Wall",
+        material: "stone",
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(55.19, 2.02, Vec.create(0.35, -12.47)),
+            RectangleHitbox.fromRect(2, 27, Vec.create(-26.95, -0.02))
+        ),
+        graphics: [
+            { // Border
+                color: 0x1a1a1a,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(55.19, 2.02, Vec.create(0.35, -12.52)),
+                    RectangleHitbox.fromRect(2.02, 27, Vec.create(-26.95, -0.02))
+                )
+            },
+            { // Fill
+                color: 0x4d4d4d,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(55.15, 1.155, Vec.create(0.35, -12.51)),
+                    RectangleHitbox.fromRect(1.155, 26.56, Vec.create(-26.95, 0.18))
+                )
+            }
+        ],
+        health: 500,
+        hideOnMap: true,
+        impenetrable: true,
+        rotationMode: RotationMode.Limited,
+        isWall: true,
+        allowFlyover: FlyoverPref.Never,
+        particleVariations: 2,
+        frames: {
+            particle: "rock_particle",
+            residue: "large_warehouse_ceiling_residue"
+        }
     },
     {
         idString: "small_refinery_barrel",
