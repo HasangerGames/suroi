@@ -3286,9 +3286,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
                 )
             }
         ],
-        health: 500,
+        health: 9999,
         hideOnMap: true,
-        impenetrable: true,
         rotationMode: RotationMode.Limited,
         isWall: true,
         allowFlyover: FlyoverPref.Never,
@@ -4806,13 +4805,14 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             destroy: 0.5
         },
         hitbox: new CircleHitbox(17, Vec.create(-2, 0)),
-        rotationMode: RotationMode.None,
+        rotationMode: RotationMode.Limited,
         allowFlyover: FlyoverPref.Never,
         explosion: "silo_explosion",
         reflectBullets: true,
         zIndex: ZIndexes.ObstaclesLayer5,
         frames: {
-            particle: "metal_particle"
+            particle: "metal_particle",
+            residue: "large_refinery_barrel_residue"
         }
         // winterVariations: 1
     }

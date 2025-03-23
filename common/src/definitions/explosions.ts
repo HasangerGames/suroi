@@ -253,7 +253,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         ballistics: {
             shrapnel: true,
             damage: 15,
-            obstacleMultiplier: 3,
+            obstacleMultiplier: 9999,
             speed: 0.08,
             range: 60,
             rangeVariance: 1

@@ -53,6 +53,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly noCollisions?: boolean
     readonly noBulletCollision?: boolean
     readonly reflectBullets?: boolean
+    readonly hasDamagedCeiling?: boolean
     readonly collideWithLayers?: Layers
     readonly visibleFromLayers?: Layers
     readonly ceilingCollapseParticle?: string
@@ -636,6 +637,7 @@ const container = (
         particle: `container_particle_${color}`,
         spawnHitbox,
         ceilingHitbox: RectangleHitbox.fromRect(12, 27),
+        ceilingZIndex: ZIndexes.BuildingsCeiling - 0.5,
         // TODO this is a bit of a mess, refactor
         graphics: closed
             ? []
@@ -1662,6 +1664,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: RectangleHitbox.fromRect(95, 150, Vec.create(-2, 0)),
         ceilingHitbox: RectangleHitbox.fromRect(80, 137.5, Vec.create(-2, -2.1)),
         ceilingCollapseParticle: "large_warehouse_particle",
+        hasDamagedCeiling: true,
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(4.53, 4.53, Vec.create(-2.11, -34.12)),
             RectangleHitbox.fromRect(4.63, 4.54, Vec.create(-2.1, 29.62)),
@@ -2877,8 +2880,32 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { key: "barrel_residue", position: Vec.create(-206.62, -85.47) }
         ],
         obstacles: [
-            // uncomment to add silo in upper left
-            // { idString: "silo", position: Vec.create(-181.75, -167.4) }
+            // ------------------------------------------------------------------------------------------
+            // Left Side: Top Left // Refinery-like area
+            // ------------------------------------------------------------------------------------------
+            { idString: "silo", position: Vec.create(-181.75, -167.4), rotation: 0 },
+            { idString: "silo", position: Vec.create(-141.15, -209.35), rotation: 2 },
+
+            { idString: "regular_crate", position: Vec.create(-177.77, -222.93) },
+            { idString: "melee_crate", position: Vec.create(-158.02, -198.87) },
+            { idString: "regular_crate", position: Vec.create(-162.67, -155.56) },
+
+            { idString: "barrel", position: Vec.create(-125.97, -190.27) },
+            { idString: "barrel", position: Vec.create(-190.81, -192.61) },
+            { idString: "barrel", position: Vec.create(-168.52, -224.26) },
+            { idString: "super_barrel", position: Vec.create(-197.02, -187.09) },
+
+            // the only ones who will survive the boom boom boom boom i want you in my room
+            { idString: "sandbags", position: Vec.create(-161.08, -177.44), rotation: 0 },
+            { idString: "sandbags", position: Vec.create(-197.34, -202.28), rotation: 1 },
+            { idString: "smaller_sandbags", position: Vec.create(-158.31, -170.34), rotation: 0 },
+
+            { idString: "metal_column", position: Vec.create(-202.51, -212.43) },
+            { idString: "metal_column", position: Vec.create(-184.42, -229.94) },
+            { idString: "metal_column", position: Vec.create(-119.81, -229.95) },
+            { idString: "metal_column", position: Vec.create(-119.82, -182.91) },
+            { idString: "metal_column", position: Vec.create(-119.82, -159.6) },
+            // ------------------------------------------------------------------------------------------
 
             // ------------------------------------------------------------------------------------------
             // Left Side: Bottom Left
@@ -3056,7 +3083,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomPallet, position: Vec.create(121.28, -196.3), orientation: 1 },
             { idString: randomPallet, position: Vec.create(23.74, -176.44), orientation: 1 },
             { idString: randomPallet, position: Vec.create(15.65, -196.41), orientation: 1 },
-            { idString: randomPallet, position: Vec.create(79.79, -125.89), orientation: 1 }
+            { idString: randomPallet, position: Vec.create(79.79, -125.89), orientation: 1 },
+
+            // Left Side: Top Left // Refinery-like area
+            { idString: randomPallet, position: Vec.create(-126.84, -154.6) },
+            { idString: randomPallet, position: Vec.create(222.21, -159.22), orientation: 1 }
         ],
         floors: [ // Follows ground graphics for most part
             {
