@@ -1074,24 +1074,24 @@ export const Game = new (class Game {
                         };
 
                         if (!object.dead) {
-                        if (player.bushID === undefined) {
-                            // bush
-                            player.bushID = object.id;
-                            handleBushParticles();
-                            object.playSound("bush_rustle_1", {
-                                falloff: 0.25,
-                                maxRange: 200
-                            });
-                        } else if (!colliding) {
-                            // in this case we exit bushh lol
-                            player.bushID = undefined;
-                            handleBushParticles();
-                            object.playSound("bush_rustle_2", {
-                                falloff: 0.25,
-                                maxRange: 200
-                            });
-                        }
-                    } else if (player.bushID !== undefined) player.bushID = undefined;
+                            if (player.bushID === undefined) {
+                                // bush
+                                player.bushID = object.id;
+                                handleBushParticles();
+                                object.playSound("bush_rustle_1", {
+                                    falloff: 0.25,
+                                    maxRange: 200
+                                });
+                            } else if (!colliding) {
+                                // in this case we exit bushh lol
+                                player.bushID = undefined;
+                                handleBushParticles();
+                                object.playSound("bush_rustle_2", {
+                                    falloff: 0.25,
+                                    maxRange: 200
+                                });
+                            }
+                        } else if (player.bushID !== undefined) player.bushID = undefined;
                     }
                 }
             }
