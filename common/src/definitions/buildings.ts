@@ -2867,6 +2867,36 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]
     },
     {
+        idString: "port_gate_office",
+        name: "Port Gate Office",
+        spawnHitbox: RectangleHitbox.fromRect(55, 32),
+        ceilingHitbox: RectangleHitbox.fromRect(41.36, 20.56, Vec.create(2.04, -2.04)),
+        floorImages: [{
+            key: "port_gate_office_floor",
+            position: Vec.create(0, 0),
+            scale: Vec.create(2, 2)
+        }],
+        ceilingImages: [{
+            key: "port_gate_office_ceiling",
+            position: Vec.create(2.04, -2.04),
+            scale: Vec.create(2, 2)
+        }],
+        floors: [
+            {
+                type: FloorNames.Wood,
+                hitbox: RectangleHitbox.fromRect(43.3, 22.15, Vec.create(1.85, -1.8))
+            },
+            {
+                type: FloorNames.Stone,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(10.5, 5.6, Vec.create(3.6, 11.35)),
+                    RectangleHitbox.fromRect(2.05, 10.2, Vec.create(23.65, -7.8)),
+                    RectangleHitbox.fromRect(5.3, 10.4, Vec.create(-21.95, -7.1))
+                )
+            }
+        ]
+    },
+    {
         idString: "port", // UNDER CONSTRUCTION
         name: "Port",
         spawnHitbox: RectangleHitbox.fromRect(480, 490, Vec.create(0, -20)),
@@ -2877,7 +2907,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
 
             // Large warehouse broken wall area (left side, center)
-            { key: "barrel_residue", position: Vec.create(-206.62, -85.47) }
+            { key: "barrel_residue", position: Vec.create(-206.62, -85.47) },
+
+            // Left Side: Top Left // Refinery-like area
+            { key: "planted_bushes_residue", position: Vec.create(-109.2, -225.54) },
+
+            // Right Side: Top Left
+            { key: "planted_bushes_residue", position: Vec.create(91.67, -225.15) }
         ],
         obstacles: [
             // ------------------------------------------------------------------------------------------
@@ -2905,6 +2941,62 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "metal_column", position: Vec.create(-119.81, -229.95) },
             { idString: "metal_column", position: Vec.create(-119.82, -182.91) },
             { idString: "metal_column", position: Vec.create(-119.82, -159.6) },
+
+            // fence
+            { idString: "fence", position: Vec.create(-119.81, -153.77), rotation: 1 },
+            ...Array.from(
+                { length: 5 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec.create(-119.79, -188.89 - 8.8 * i),
+                    rotation: 1
+                })
+            ),
+
+            ...Array.from(
+                { length: 7 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec.create(-202.52, -153.75 - 8.8 * i),
+                    rotation: 1
+                })
+            ),
+
+            ...Array.from(
+                { length: 7 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec.create(-125.74 - 8.8 * i, -229.97),
+                    rotation: 0
+                })
+            ),
+
+            ...Array.from(
+                { length: 17 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec.create(-209.66 + 8.8 * i, -243.2),
+                    rotation: 0
+                })
+            ),
+
+            // outside refinery-like area
+            { idString: "forklift", position: Vec.create(-97.1, -153.48), rotation: 0 },
+
+            { idString: "barrel", position: Vec.create(-69.38, -216.4) },
+
+            { idString: "grenade_crate", position: Vec.create(-105.66, -229.46) },
+
+            { idString: "regular_crate", position: Vec.create(-112.72, -215.26) },
+            { idString: "regular_crate", position: Vec.create(-75.61, -183.93) },
+
+            { idString: "planted_bushes", position: Vec.create(-91.86, -225.47), rotation: 1 },
+            { idString: "planted_bushes", position: Vec.create(-73.75, -225.47), rotation: 1 },
+
+            { idString: "sandbags", position: Vec.create(-113.66, -226.97), rotation: 1 },
+            { idString: "sandbags", position: Vec.create(-77.72, -174.34), rotation: 0 },
+            { idString: "smaller_sandbags", position: Vec.create(-105.2, -222.95), rotation: 0 },
+            { idString: "smaller_sandbags", position: Vec.create(-76.39, -216.45), rotation: 1 },
             // ------------------------------------------------------------------------------------------
 
             // ------------------------------------------------------------------------------------------
@@ -3087,7 +3179,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             // Left Side: Top Left // Refinery-like area
             { idString: randomPallet, position: Vec.create(-126.84, -154.6) },
-            { idString: randomPallet, position: Vec.create(222.21, -159.22), orientation: 1 }
+            { idString: randomPallet, position: Vec.create(222.21, -159.22), orientation: 1 },
+            { idString: "port_gate_office", position: Vec.create(-44.15, -230) }
         ],
         floors: [ // Follows ground graphics for most part
             {
@@ -3241,7 +3334,55 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(3.1, 1.19, Vec.create(81.17, 84.74))
                     //       RectangleHitbox.fromRect(1.19, 357.83, Vec.create(82.13, -5.02)) // R
                 )
+            },
+            // ---------------------------------------------------------------------------
+            // Oil pipe(?), connects to ship from refinery-like area
+            // ---------------------------------------------------------------------------
+            {
+                color: 0x6d602f,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(1.7, 40.37, Vec.create(-158.05, -188.79)),
+                    RectangleHitbox.fromRect(87.91, 1.71, Vec.create(-115.05, -169.52)),
+                    RectangleHitbox.fromRect(1.71, 273.6, Vec.create(-71.89, -32.08))
+                )
+            },
+            // fill
+            {
+                color: 0x9e8b44,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(0.9, 39.57, Vec.create(-158.05, -188.79)),
+                    RectangleHitbox.fromRect(87.11, 0.9, Vec.create(-114.99, -169.52)),
+                    RectangleHitbox.fromRect(0.9, 273.5, Vec.create(-71.89, -32.5))
+                )
+            },
+
+            // grab my hand... I can see the void..
+            { // border
+                color: 0x404040,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(10.49, 2.5, Vec.create(-109.12, -169.49)),
+                    RectangleHitbox.fromRect(10.49, 2.5, Vec.create(-91.42, -169.5)),
+                    RectangleHitbox.fromRect(10.49, 4.12, Vec.create(-109.12, -169.49)),
+                    RectangleHitbox.fromRect(10.49, 4.12, Vec.create(-91.42, -169.47))
+                )
+            },
+            { // FILL_MIDDLE
+                color: 0x4d4d4d,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(9.6, 0.39, Vec.create(-109.12, -170.92)),
+                    RectangleHitbox.fromRect(9.6, 0.39, Vec.create(-109.12, -168.07)),
+                    RectangleHitbox.fromRect(9.6, 0.39, Vec.create(-91.42, -170.92)),
+                    RectangleHitbox.fromRect(9.6, 0.39, Vec.create(-91.42, -168.07))
+                )
+            },
+            { // fill
+                color: 0x595959,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(9.64, 1.65, Vec.create(-109.12, -169.49)),
+                    RectangleHitbox.fromRect(9.64, 1.65, Vec.create(-91.42, -169.5))
+                )
             }
+            // ---------------------------------------------------------------------------
         ]
     },
     {
