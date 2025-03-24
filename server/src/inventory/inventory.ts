@@ -676,6 +676,12 @@ export class Inventory {
         return this.weapons[index];
     }
 
+    /**
+     * Attempts to promote a weapon held in a slot to its dual variant
+     * @param slot The slot whose gun is to be promoted
+     * @returns `true` if the operation succeeded (in other words, if the weapon was upgraded to a dual variant successfully) and `false` otherwise.
+     * @throws {RangeError} If the slot is out-of-bounds
+     */
     upgradeToDual(slot: number): boolean {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to upgrade to dual weapon in invalid slot '${slot}'`);
         if (
