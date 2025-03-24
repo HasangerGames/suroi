@@ -20,6 +20,7 @@ interface BuildingObstacle {
     readonly locked?: boolean
     readonly activated?: boolean
     readonly outdoors?: boolean
+    // readonly waterOverlay?: boolean
 }
 
 interface LootSpawner {
@@ -1692,7 +1693,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }],
         obstacles: [{
             idString: "large_warehouse_wall",
-            position: Vec.create(-16.45, -59.664),
+            position: Vec.create(-16.45, -59.67),
             rotation: 0
         }]
         // floors: [{
@@ -2871,6 +2872,16 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         name: "Port Gate Office",
         spawnHitbox: RectangleHitbox.fromRect(55, 32),
         ceilingHitbox: RectangleHitbox.fromRect(41.36, 20.56, Vec.create(2.04, -2.04)),
+        material: "stone",
+        particle: "rock_particle",
+        particleVariations: 2,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(2, 12.1, Vec.create(-19.25, 4)),
+            RectangleHitbox.fromRect(18.78, 2.01, Vec.create(-10.85, 9.03)),
+            RectangleHitbox.fromRect(44.89, 1.99, Vec.create(2.23, -13.2)),
+            RectangleHitbox.fromRect(15.58, 2.01, Vec.create(16.58, 9.06)),
+            RectangleHitbox.fromRect(2, 13.09, Vec.create(23.63, 3.53))
+        ),
         floorImages: [{
             key: "port_gate_office_floor",
             position: Vec.create(0, 0),
@@ -2894,6 +2905,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(5.3, 10.4, Vec.create(-21.95, -7.1))
                 )
             }
+        ],
+        obstacles: [
+            { idString: "window2", position: Vec.create(23.65, -7.59), rotation: 0 },
+            { idString: "hq_desk_right", position: Vec.create(16.37, -2.1), rotation: 3 },
+            { idString: "grey_office_chair", position: Vec.create(11.72, -5.76), rotation: 1 },
+            { idString: "small_table", position: Vec.create(-11.84, 3.57), rotation: 1 },
+            { idString: "chair", position: Vec.create(-6.21, 3.57), rotation: 1 },
+            { idString: "door", position: Vec.create(3.2, 9.11), rotation: 2 },
+            { idString: "door", position: Vec.create(-19.33, -6.68), rotation: 3 }
         ]
     },
     {
@@ -2901,10 +2921,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         name: "Port",
         spawnHitbox: RectangleHitbox.fromRect(480, 490, Vec.create(0, -20)),
         floorImages: [
-            { // trucks will not display if enabled, because their z-indexes are building floor specific
-                key: "port_new_layout_alpha",
-                position: Vec.create(0, 0)
-            },
+            //  { // trucks will not display if enabled, because their z-indexes are building floor specific
+            //      key: "port_new_layout_alpha",
+            //      position: Vec.create(0, 0)
+            //  },
 
             // Large warehouse broken wall area (left side, center)
             { key: "barrel_residue", position: Vec.create(-206.62, -85.47) },
@@ -2916,6 +2936,48 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { key: "planted_bushes_residue", position: Vec.create(91.67, -225.15) }
         ],
         obstacles: [
+            // ------------------------------------------------------------------------------------------
+            // Right Side: Center
+            // ------------------------------------------------------------------------------------------
+            // ------------------------------------------------------------------------------------------
+
+            // ------------------------------------------------------------------------------------------
+            // Right Side: Top Left
+            // ------------------------------------------------------------------------------------------
+            { idString: "metal_column", position: Vec.create(20.82, -221.09) },
+            { idString: "metal_column", position: Vec.create(20.97, -243.09) },
+
+            { idString: "barrel", position: Vec.create(78.38, -234.57) },
+            { idString: "barrel", position: Vec.create(57.46, -163.16)/* , waterOverlay: true */ },
+
+            { idString: "grenade_crate", position: Vec.create(114.83, -216.15) },
+
+            { idString: "propane_tank", position: Vec.create(87.16, -134.58) },
+
+            { idString: "gun_case", position: Vec.create(93.12, -135.29), rotation: 1 },
+
+            { idString: "regular_crate", position: Vec.create(69.62, -235.69) },
+            { idString: "regular_crate", position: Vec.create(85.12, -141.67) },
+            { idString: "regular_crate", position: Vec.create(80.03, -131.98) },
+
+            { idString: "box", position: Vec.create(30.27, -230.74) },
+            { idString: "box", position: Vec.create(30.27, -235.7) },
+            { idString: "box", position: Vec.create(70.36, -217.63) },
+            { idString: "box", position: Vec.create(75.46, -217.56) },
+            { idString: "box", position: Vec.create(156.55, -233.86) },
+            { idString: { box: 1, grenade_box: 0.5 }, position: Vec.create(169.67, -233.93) },
+            { idString: "box", position: Vec.create(77.83, -139.44) },
+            { idString: "box", position: Vec.create(87.45, -129.9) },
+
+            { idString: "planted_bushes", position: Vec.create(73.65, -225.45), rotation: 1 },
+            { idString: "planted_bushes", position: Vec.create(109.69, -225.45), rotation: 1 },
+
+            { idString: "smaller_sandbags", position: Vec.create(163.06, -234.3), rotation: 0 },
+
+            { idString: "pallet", position: Vec.create(65.4, -155.76), rotation: 2 },
+            { idString: "box", position: Vec.create(67.31, -155.12) },
+            // ------------------------------------------------------------------------------------------
+
             // ------------------------------------------------------------------------------------------
             // Left Side: Top Left // Refinery-like area
             // ------------------------------------------------------------------------------------------
@@ -2997,6 +3059,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "sandbags", position: Vec.create(-77.72, -174.34), rotation: 0 },
             { idString: "smaller_sandbags", position: Vec.create(-105.2, -222.95), rotation: 0 },
             { idString: "smaller_sandbags", position: Vec.create(-76.39, -216.45), rotation: 1 },
+            { idString: "barrier", position: Vec.create(-0.87, -227.85), rotation: 3 },
             // ------------------------------------------------------------------------------------------
 
             // ------------------------------------------------------------------------------------------
@@ -3180,7 +3243,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Left Side: Top Left // Refinery-like area
             { idString: randomPallet, position: Vec.create(-126.84, -154.6) },
             { idString: randomPallet, position: Vec.create(222.21, -159.22), orientation: 1 },
-            { idString: "port_gate_office", position: Vec.create(-44.15, -230) }
+            { idString: "port_gate_office", position: Vec.create(-44.15, -230) },
+
+            // Right Side: Top Left
+            { idString: randomPallet, position: Vec.create(223.73, 208.67), orientation: 1 }
         ],
         floors: [ // Follows ground graphics for most part
             {

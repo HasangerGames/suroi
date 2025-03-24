@@ -3274,15 +3274,15 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             { // Border
                 color: 0x1a1a1a,
                 hitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(55.19, 2.02, Vec.create(0.35, -12.52)),
-                    RectangleHitbox.fromRect(2.02, 27, Vec.create(-26.95, -0.02))
+                    RectangleHitbox.fromRect(55.19, 2, Vec.create(0.35, -12.52)),
+                    RectangleHitbox.fromRect(2, 27, Vec.create(-26.95, -0.02))
                 )
             },
             { // Fill
                 color: 0x4d4d4d,
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(55.15, 1.155, Vec.create(0.35, -12.51)),
-                    RectangleHitbox.fromRect(1.155, 26.56, Vec.create(-26.95, 0.18))
+                    RectangleHitbox.fromRect(1.155, 26.56, Vec.create(-26.95, 0.2))
                 )
             }
         ],
