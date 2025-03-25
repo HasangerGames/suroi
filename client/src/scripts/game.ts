@@ -967,7 +967,10 @@ export const Game = new (class Game {
         let detonateBindIcon: JQuery<HTMLImageElement> | undefined;
 
         return () => {
-            if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
+            if (!this.gameStarted || (this.gameOver && !this.spectating)) {
+                SoundManager.update();
+                return;
+            }
             InputManager.update();
             SoundManager.update();
             ScreenRecordManager?.update();
