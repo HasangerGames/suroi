@@ -323,15 +323,28 @@ export class Game implements GameData {
             records = records.concat(bullet.update());
 
             if (bullet.dead) {
-                const onHitExplosion = bullet.definition.onHitExplosion;
-                if (onHitExplosion && !bullet.reflected) {
-                    this.addExplosion(
-                        onHitExplosion,
-                        bullet.position,
-                        bullet.shooter,
-                        bullet.layer,
-                        bullet.sourceGun instanceof GunItem ? bullet.sourceGun : undefined
-                    );
+                if (!bullet.reflected) {
+                    const { onHitExplosion, onHitProjectile } = bullet.definition;
+                    if (onHitExplosion) {
+                        this.addExplosion(
+                            onHitExplosion,
+                            bullet.position,
+                            bullet.shooter,
+                            bullet.layer,
+                            bullet.sourceGun instanceof GunItem ? bullet.sourceGun : undefined
+                        );
+                    }
+                    if (onHitProjectile) {
+                        this.addProjectile({
+                            owner: bullet.shooter,
+                            position: bullet.position,
+                            definition: onHitProjectile,
+                            height: 0,
+                            velocity: Vec.create(0, 0),
+                            layer: bullet.layer,
+                            rotation: randomRotation()
+                        });
+                    }
                 }
                 this.bullets.delete(bullet);
             }

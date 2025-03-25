@@ -2,6 +2,7 @@ import { Layer, ZIndexes } from "../constants";
 import { Bullets, type BulletDefinition } from "../definitions/bullets";
 import { ExplosionDefinition } from "../definitions/explosions";
 import { type MeleeDefinition } from "../definitions/items/melees";
+import { ThrowableDefinition } from "../definitions/items/throwables";
 import type { CommonGameObject } from "./gameObject";
 import { type Hitbox } from "./hitbox";
 import { adjacentOrEqualLayer, equivLayer } from "./layer";
@@ -20,6 +21,7 @@ export type BaseBulletDefinition = {
     readonly allowRangeOverride?: boolean
     readonly lastShotFX?: boolean
     readonly noCollision?: boolean
+    readonly noReflect?: boolean
 
     readonly tracer?: {
         /**
@@ -80,6 +82,10 @@ export type BaseBulletDefinition = {
      * - `false` causes the projectile to be reflected (default)
      */
     readonly explodeOnImpact?: boolean
+}) & ({
+    readonly onHitProjectile?: never
+} | {
+    readonly onHitProjectile: ReferenceTo<ThrowableDefinition>
 });
 
 export interface BulletOptions {

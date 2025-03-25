@@ -125,7 +125,7 @@ export class Bullet extends BaseBullet {
 
             if (isObstacle && object.definition.noCollisions) continue;
 
-            if (collision.reflected && this.reflectionCount < 3) {
+            if (collision.reflected && !definition.noReflect && this.reflectionCount < 3) {
                 /*
                     no matter what, nudge the bullet
 

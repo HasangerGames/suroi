@@ -258,5 +258,51 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
                 rightFist: Vec.create(4, 2.15)
             }
         }
+    },
+    {
+        idString: "proj_seed",
+        name: "Seed",
+        itemType: ItemType.Throwable,
+        cookable: true,
+        fuseTime: 1000,
+        cookTime: 0,
+        throwTime: 0,
+        speedMultiplier: 1,
+        cookSpeedMultiplier: 0.7,
+        impactDamage: 1,
+        obstacleMultiplier: 20,
+        hitboxRadius: 1,
+        fireDelay: 250,
+        physics: {
+            maxThrowDistance: 128,
+            initialZVelocity: 4,
+            initialAngularVelocity: 0,
+            initialHeight: 0.5,
+            drag: {
+                air: Infinity,
+                ground: Infinity,
+                water: Infinity
+            }
+        },
+        image: {
+            position: Vec.create(60, 43),
+            angle: 60,
+            zIndex: 5,
+            anchor: Vec.create(0.5, 0.68)
+        },
+        detonation: {
+            explosion: "seed_explosion"
+        },
+        animation: {
+            liveImage: "proj_seed",
+            cook: {
+                leftFist: Vec.create(2.5, 0),
+                rightFist: Vec.create(-0.5, 2.15)
+            },
+            throw: {
+                leftFist: Vec.create(1.9, -1.75),
+                rightFist: Vec.create(4, 2.15)
+            }
+        }
     }
 ]);

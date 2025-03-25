@@ -2344,8 +2344,50 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     },
 
     //
-    // Event exclusive weapons
+    // Fictional weapons
     //
+    {
+        idString: "seedshot",
+        name: "Seedshot",
+        itemType: ItemType.Gun,
+        ammoType: "seed",
+        ammoSpawnAmount: 80,
+        capacity: 20,
+        extendedCapacity: 30,
+        reloadTime: 2.6,
+        fireDelay: 80,
+        switchDelay: 400,
+        speedMultiplier: 1,
+        recoilMultiplier: 0.88,
+        recoilDuration: 130,
+        fireMode: FireMode.Auto,
+        shotSpread: 3,
+        moveSpread: 6.75,
+        length: 7.9,
+        fists: {
+            left: Vec.create(115, -6),
+            right: Vec.create(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec.create(90, 1) },
+        casingParticles: [{
+            position: Vec.create(4, 0.4)
+        }],
+        gasParticles: gasParticlePresets.automatic,
+        ballistics: {
+            damage: 16,
+            obstacleMultiplier: 1.5,
+            speed: 0.22,
+            range: 180,
+            tracer: {
+                image: "seed_trail",
+                length: 1.4
+            },
+            noReflect: true,
+            onHitProjectile: "proj_seed"
+        }
+    },
     {
         idString: "firework_launcher",
         name: "Firework Launcher",

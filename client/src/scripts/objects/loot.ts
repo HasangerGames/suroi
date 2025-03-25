@@ -90,7 +90,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                 this.images.item.setFrame(idString);
             }
 
-            const { backgroundTexture, scale } = Loot.getLootBackgroundAndScale(definition);
+            const { backgroundTexture, scale } = Loot.getBackgroundAndScale(definition);
             if (backgroundTexture) {
                 this.images.background.setFrame(backgroundTexture);
             } else {
@@ -135,7 +135,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
         }
     }
 
-    static getLootBackgroundAndScale(definition?: LootDefinition): { backgroundTexture?: string, scale?: number } {
+    static getBackgroundAndScale(definition?: LootDefinition): { backgroundTexture?: string, scale?: number } {
         switch (definition?.itemType) {
             case ItemType.Gun:
                 return {

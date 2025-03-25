@@ -17,6 +17,7 @@ export interface ProjectileParams {
     readonly position: Vector
     readonly definition: ReifiableDef<ThrowableDefinition>
     readonly height: number
+    readonly rotation?: number
     readonly layer: number
     readonly owner: GameObject
     readonly source?: ThrowableItem
@@ -62,7 +63,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         super(game, params.position);
         this.layer = params.layer;
 
-        this.rotation = 0;
+        this.rotation = params.rotation ?? 0;
 
         this.definition = Throwables.reify(params.definition);
         this.position = params.position;
