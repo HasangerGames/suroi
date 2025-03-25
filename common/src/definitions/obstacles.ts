@@ -251,6 +251,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     melee_crate_particle:          { base: "wood_particle",    tint: 0x23374c },
     tango_crate_particle:          { base: "wood_particle",    tint: 0x3f4c39 },
     wall_particle:                 { base: "wood_particle",    tint: 0xafa08c },
+    port_office_wall_particle:     { base: "wood_particle",    tint: 0xb98a46 },
     flint_stone_particle_1:        { base: "stone_particle_1", tint: 0x26272c },
     flint_stone_particle_2:        { base: "stone_particle_2", tint: 0x26272c },
     gold_rock_particle_1:          { base: "stone_particle_1", tint: 0xaa8534 },
@@ -425,6 +426,34 @@ const lodgeWall = (id: string, length: number): RawObstacleDefinition => ({
         borderColor: 0x291e0f,
         color: 0x5a4320,
         rounded: true
+    }
+});
+
+const portMainOfficeWall = (
+    lengthNumber: number,
+    hitbox: RectangleHitbox
+): RawObstacleDefinition => ({
+    idString: `port_main_office_wall_${lengthNumber}`,
+    name: `Port Main Office Wall ${lengthNumber}`,
+    material: "wood",
+    hideOnMap: true,
+    noResidue: true,
+    health: 200,
+    scale: {
+        spawnMin: 1,
+        spawnMax: 1,
+        destroy: 0.95
+    },
+    hitbox,
+    rotationMode: RotationMode.Limited,
+    allowFlyover: FlyoverPref.Never,
+    frames: {
+        particle: "port_office_wall_particle"
+    },
+    isWall: true,
+    wall: {
+        borderColor: 0x302412,
+        color: 0xb98a46
     }
 });
 
@@ -1914,6 +1943,14 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     lodgeWall("6", 20.44),
     lodgeWall("7", 26.15),
     lodgeWall("8", 27.03),
+
+    portMainOfficeWall(1, RectangleHitbox.fromRect(16.7, 1.8)),
+    portMainOfficeWall(2, RectangleHitbox.fromRect(9.5, 1.8)),
+    portMainOfficeWall(3, RectangleHitbox.fromRect(22.05, 1.8)),
+    portMainOfficeWall(4, RectangleHitbox.fromRect(32.6, 1.8)),
+    portMainOfficeWall(5, RectangleHitbox.fromRect(11.4, 1.8)),
+    portMainOfficeWall(6, RectangleHitbox.fromRect(1.8, 16.5)),
+
     {
         idString: "lodge_secret_room_wall",
         name: "Lodge Secret Room Wall",
@@ -3689,6 +3726,29 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "fence_particle"
         }
+    },
+    {
+        idString: "port_main_office_column",
+        name: "Port Main Office Column",
+        material: "stone",
+        indestructible: true,
+        health: 340,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.95
+        },
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(3, 3)
+        ),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never,
+        tint: 0xb98a46,
+        frames: {
+            base: "column",
+            particle: "port_office_wall_particle"
+        },
+        isWall: true
     },
     {
         idString: "house_column",
