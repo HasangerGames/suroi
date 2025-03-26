@@ -106,7 +106,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
             void: "hsl(25, 80%, 6%)"
         },
         sounds: {
-            foldersToLoad: ["shared", "normal"]
+            foldersToLoad: ["shared", "normal", "infection"]
         },
         spriteSheets: ["shared", "normal", "infection"]
     },
