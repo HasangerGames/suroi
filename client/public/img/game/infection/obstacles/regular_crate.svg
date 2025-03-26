@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="185"
+   height="185"
+   viewBox="0 0 48.947917 48.947917"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
+   sodipodi:docname="regular_crate.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="px"
+     inkscape:zoom="1.078823"
+     inkscape:cx="53.762295"
+     inkscape:cy="-80.179974"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <clipPath
+       id="clippath">
+      <path
+         class="st6"
+         d="m -3.7,47.9 c 16.8,9 22.3,18.6 24.1,25.8 4.4,17.1 -9,31.4 -3.2,50.3 1.5,5 3.7,11.9 9.5,17 1.5,1.3 3.7,2.8 7.1,6.1 3.4,3.3 5.3,5.1 6.8,7.6 3.8,6.2 3.2,13 3,14.9 -1,9.9 -7.6,15.4 -4.9,19.3 0.7,1 1.7,1.5 2.4,1.8 29.3,0.3 58.7,0.7 88,1 1,-0.9 2.6,-2.5 4.6,-4.4 6.8,-6.4 7.9,-7.2 9.2,-9.5 1,-1.6 2.9,-4.9 2.8,-9.2 -0.1,-3.1 -1.3,-5.5 -2.9,-8.8 -1.5,-3.1 -2.9,-5.2 -3.6,-6.2 -4.7,-7.1 -6.5,-15.2 -7.1,-19 -1,-7.1 0.3,-12.7 1.2,-16.3 3.9,-15.8 12.9,-19.3 12.2,-31.4 -0.3,-5.3 -2.2,-8.7 -2.7,-9.6 -2.6,-4.5 -6.4,-6.7 -9.7,-8.6 -8.4,-5 -16.1,-10.2 -19,-12.4 C 103.4,48.5 97.9,38.5 96,34.9 92.3,27.9 93.1,26.3 85.7,10.5 82.8,4.4 80.3,-0.7 74.9,-2.6 71.7,-3.7 68.6,-3.3 66.6,-2.8 43.7,-2.6 20.9,-2.5 -2,-2.3 -2.6,14.5 -3.2,31.3 -3.8,48.1 v -0.2 z"
+         id="path1" />
+    </clipPath>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-90.752083,-169.59792)">
+    <g
+       id="g2"
+       transform="matrix(0.26458333,0,0,0.26458333,90.752083,169.59792)">
+      <rect
+         id="rect42201"
+         class="st9"
+         x="30.1"
+         y="30.1"
+         width="125.3"
+         height="125.3"
+         style="fill:#592148" />
+      <path
+         id="path8691"
+         class="st5"
+         d="M 123.9,155 V 30"
+         style="fill:none;stroke:#311b28;stroke-width:7.4px;stroke-miterlimit:29.7" />
+      <path
+         id="path869-61"
+         class="st5"
+         d="M 58.5,155 V 30"
+         style="fill:none;stroke:#311b28;stroke-width:7.4px;stroke-miterlimit:29.7" />
+      <path
+         id="path869-31"
+         class="st5"
+         d="M 91.2,155 V 30"
+         style="fill:none;stroke:#311b28;stroke-width:7.4px;stroke-miterlimit:29.7" />
+      <rect
+         id="rect21961"
+         class="st1"
+         x="-17.700001"
+         y="79.099998"
+         width="217.5"
+         height="29.700001"
+         transform="rotate(-45,91.033113,93.99285)"
+         style="fill:#893681;stroke:#311b28;stroke-width:7.4px;stroke-linejoin:bevel" />
+      <path
+         id="rect9381"
+         class="st12"
+         d="M 181.3,181.3 V 3.7 H 3.7 v 177.6 z m -30,-30 H 33.7 V 33.6 h 117.7 v 117.7 0 z"
+         style="fill:#893681" />
+      <rect
+         id="rect26201"
+         class="st6"
+         x="30.1"
+         y="30.1"
+         width="125.3"
+         height="125.3"
+         style="fill:none" />
+      <circle
+         id="path8511"
+         class="st11"
+         cx="165.89999"
+         cy="165.89999"
+         r="6.0999999"
+         style="fill:#808080;stroke:#2e2e2e;stroke-width:3.7px;stroke-linecap:round;stroke-linejoin:round" />
+      <circle
+         id="path851-31"
+         class="st11"
+         cx="19.1"
+         cy="165.89999"
+         r="6.0999999"
+         style="fill:#808080;stroke:#2e2e2e;stroke-width:3.7px;stroke-linecap:round;stroke-linejoin:round" />
+      <circle
+         id="path851-61"
+         class="st11"
+         cx="165.89999"
+         cy="19.1"
+         r="6.0999999"
+         style="fill:#808080;stroke:#2e2e2e;stroke-width:3.7px;stroke-linecap:round;stroke-linejoin:round" />
+      <circle
+         id="path851-71"
+         class="st11"
+         cx="19.1"
+         cy="19.1"
+         r="6.0999999"
+         style="fill:#808080;stroke:#2e2e2e;stroke-width:3.7px;stroke-linecap:round;stroke-linejoin:round" />
+      <rect
+         id="rect3681-51"
+         class="st5"
+         x="33.599998"
+         y="33.599998"
+         width="117.7"
+         height="117.7"
+         style="fill:none;stroke:#311b28;stroke-width:7.4px;stroke-miterlimit:29.7" />
+      <rect
+         id="rect23301"
+         class="st7"
+         x="3.7"
+         y="3.7"
+         width="177.60001"
+         height="177.60001"
+         style="fill:none;stroke:#311b28;stroke-width:7.4px;stroke-linecap:round;stroke-linejoin:round" />
+      <path
+         id="path58861"
+         class="st5"
+         d="M 33.7,151.3 H 4"
+         style="fill:none;stroke:#311b28;stroke-width:7.4px;stroke-miterlimit:29.7" />
+      <path
+         id="path5886-31"
+         class="st5"
+         d="M 33.7,33.7 H 4"
+         style="fill:none;stroke:#311b28;stroke-width:7.4px;stroke-miterlimit:29.7" />
+      <path
+         id="path5886-61"
+         class="st5"
+         d="M 181,33.7 H 151.3"
+         style="fill:none;stroke:#311b28;stroke-width:7.4px;stroke-miterlimit:29.7" />
+      <path
+         id="path5886-71"
+         class="st5"
+         d="M 181,151.3 H 151.3"
+         style="fill:none;stroke:#311b28;stroke-width:7.4px;stroke-miterlimit:29.7" />
+    </g>
+    <g
+       id="g865"
+       transform="matrix(0.26458333,0,0,0.26458333,90.752083,169.59792)">
+      <g
+         class="st13"
+         clip-path="url(#clippath)"
+         id="g4">
+        <g
+           id="g3">
+          <rect
+             id="rect4220"
+             class="st10"
+             x="30.1"
+             y="30.1"
+             width="125.3"
+             height="125.3"
+             style="fill:#674b24" />
+          <path
+             id="path869"
+             class="st8"
+             d="M 123.9,155 V 30"
+             style="fill:none;stroke:#342612;stroke-width:7.4px;stroke-miterlimit:29.7" />
+          <path
+             id="path869-6"
+             class="st8"
+             d="M 58.5,155 V 30"
+             style="fill:none;stroke:#342612;stroke-width:7.4px;stroke-miterlimit:29.7" />
+          <path
+             id="path869-3"
+             class="st8"
+             d="M 91.2,155 V 30"
+             style="fill:none;stroke:#342612;stroke-width:7.4px;stroke-miterlimit:29.7" />
+          <rect
+             id="rect2196"
+             class="st0"
+             x="-17.700001"
+             y="79.099998"
+             width="217.5"
+             height="29.700001"
+             transform="rotate(-45,91.033113,93.99285)"
+             style="fill:#9e7437;stroke:#3f2e16;stroke-width:7.4px;stroke-linejoin:bevel" />
+          <path
+             id="rect938"
+             class="st4"
+             d="M 181.3,181.3 V 3.7 H 3.7 v 177.6 z m -30,-30 H 33.7 V 33.6 h 117.7 v 117.7 0 z"
+             style="fill:#9e7437" />
+          <rect
+             id="rect2620"
+             class="st6"
+             x="30.1"
+             y="30.1"
+             width="125.3"
+             height="125.3"
+             style="fill:none" />
+          <circle
+             id="path851"
+             class="st11"
+             cx="165.89999"
+             cy="165.89999"
+             r="6.0999999"
+             style="fill:#808080;stroke:#2e2e2e;stroke-width:3.7px;stroke-linecap:round;stroke-linejoin:round" />
+          <circle
+             id="path851-3"
+             class="st11"
+             cx="19.1"
+             cy="165.89999"
+             r="6.0999999"
+             style="fill:#808080;stroke:#2e2e2e;stroke-width:3.7px;stroke-linecap:round;stroke-linejoin:round" />
+          <circle
+             id="path851-6"
+             class="st11"
+             cx="165.89999"
+             cy="19.1"
+             r="6.0999999"
+             style="fill:#808080;stroke:#2e2e2e;stroke-width:3.7px;stroke-linecap:round;stroke-linejoin:round" />
+          <circle
+             id="path851-7"
+             class="st11"
+             cx="19.1"
+             cy="19.1"
+             r="6.0999999"
+             style="fill:#808080;stroke:#2e2e2e;stroke-width:3.7px;stroke-linecap:round;stroke-linejoin:round" />
+          <rect
+             id="rect3681-5"
+             class="st3"
+             x="33.599998"
+             y="33.599998"
+             width="117.7"
+             height="117.7"
+             style="fill:none;stroke:#3f2e16;stroke-width:7.4px;stroke-miterlimit:29.7" />
+          <rect
+             id="rect2330"
+             class="st2"
+             x="3.7"
+             y="3.7"
+             width="177.60001"
+             height="177.60001"
+             style="fill:none;stroke:#3f2e16;stroke-width:7.4px;stroke-linecap:round;stroke-linejoin:round" />
+          <path
+             id="path5886"
+             class="st3"
+             d="M 33.7,151.3 H 4"
+             style="fill:none;stroke:#3f2e16;stroke-width:7.4px;stroke-miterlimit:29.7" />
+          <path
+             id="path5886-3"
+             class="st3"
+             d="M 33.7,33.7 H 4"
+             style="fill:none;stroke:#3f2e16;stroke-width:7.4px;stroke-miterlimit:29.7" />
+          <path
+             id="path5886-6"
+             class="st3"
+             d="M 181,33.7 H 151.3"
+             style="fill:none;stroke:#3f2e16;stroke-width:7.4px;stroke-miterlimit:29.7" />
+          <path
+             id="path5886-7"
+             class="st3"
+             d="M 181,151.3 H 151.3"
+             style="fill:none;stroke:#3f2e16;stroke-width:7.4px;stroke-miterlimit:29.7" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

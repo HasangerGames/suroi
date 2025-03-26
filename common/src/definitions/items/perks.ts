@@ -73,7 +73,12 @@ export const enum PerkIds {
     Claustrophobic = "claustrophobic",
     LacedStimulants = "laced_stimulants",
     RottenPlumpkin = "rotten_plumpkin",
-    PriorityTarget = "priority_target"
+    PriorityTarget = "priority_target",
+
+    //
+    // Infection
+    //
+    Infected = "infected"
 }
 
 const perks = [
@@ -422,6 +427,19 @@ const perks = [
         category: PerkCategories.Halloween,
         type: PerkQualities.Negative,
 
+        noDrop: true,
+        plumpkinGambleIgnore: true
+    },
+    {
+        idString: PerkIds.Infected,
+        name: "Infected",
+        itemType: ItemType.Perk,
+        description: "Lose 50% health, but gain 150% speed.",
+        category: PerkCategories.Halloween,
+        type: PerkQualities.Negative,
+
+        hpMod: 0.5,
+        speedMod: 1.5,
         noDrop: true,
         plumpkinGambleIgnore: true
     }
