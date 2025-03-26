@@ -178,8 +178,7 @@ const maps = {
         },
         obstacles: {
             oil_tank: 12,
-            big_oak_tree: 30,
-            oak_tree: 80,
+            oak_tree: 110,
             birch_tree: 20,
             pine_tree: 10,
             loot_tree: 1,

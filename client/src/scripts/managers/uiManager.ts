@@ -665,7 +665,8 @@ export const UIManager = new (class UIManager {
             }
         }
 
-        if (minMax) {
+        const hasMinMax = minMax !== undefined;
+        if (hasMinMax) {
             this.maxHealth = minMax.maxHealth;
             this.minAdrenaline = minMax.minAdrenaline;
             this.maxAdrenaline = minMax.maxAdrenaline;
@@ -697,9 +698,12 @@ export const UIManager = new (class UIManager {
             }
         }
 
-        if (health !== undefined) {
+        const hasHealth = health !== undefined;
+        if (hasHealth) {
             this.health = Numeric.remap(health, 0, 1, 0, this.maxHealth);
+        }
 
+        if (hasMinMax || hasHealth) {
             const normalizedHealth = this.health / this.maxHealth;
             const healthPercent = 100 * normalizedHealth;
 
@@ -783,12 +787,15 @@ export const UIManager = new (class UIManager {
 
         if (zoom) CameraManager.zoom = zoom;
 
-        if (adrenaline !== undefined) {
+        const hasAdrenaline = adrenaline !== undefined;
+        if (hasAdrenaline) {
             this.adrenaline = Numeric.remap(adrenaline, 0, 1, this.minAdrenaline, this.maxAdrenaline);
+        }
+
+        if (hasMinMax || hasAdrenaline) {
             const percent = 100 * this.adrenaline / this.maxAdrenaline;
 
             this.ui.adrenalineBar.width(`${percent}%`);
-
             this.ui.adrenalineBarAmount
                 .text(safeRound(this.adrenaline))
                 .css("color", this.adrenaline < 7 ? "#ffffff" : "#000000");

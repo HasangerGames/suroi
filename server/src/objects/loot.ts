@@ -189,20 +189,28 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
 
         switch (definition.itemType) {
             case ItemType.Gun: {
+                let i = 0;
                 for (const weapon of inventory.weapons) {
                     if (
                         weapon?.isGun === true
                         && !weapon.definition.isDual
                         && weapon.definition.dualVariant
                         && weapon.definition === definition
+                        && !inventory.isLocked(i)
                     ) {
                         return true;
                     }
+                    ++i;
                 }
 
-                return (!inventory.hasWeapon(0) && !inventory.isLocked(0))
-                    || (!inventory.hasWeapon(1) && !inventory.isLocked(1))
-                    || (inventory.activeWeaponIndex < 2 && definition !== inventory.activeWeapon.definition && !inventory.isLocked(inventory.activeWeaponIndex));
+                const activeWeaponIndex = inventory.activeWeaponIndex;
+                return (!inventory.hasWeapon(0) && !inventory.isLocked(0)) // slot 0 available and not locked
+                    || (!inventory.hasWeapon(1) && !inventory.isLocked(1)) // slot 1 available and not locked
+                    || ( // active slot is a gun slot with a gun different from this loot's
+                        GameConstants.player.inventorySlotTypings[activeWeaponIndex] === ItemType.Gun
+                        && definition !== inventory.activeWeapon.definition
+                        && !inventory.isLocked(activeWeaponIndex)
+                    );
             }
             case ItemType.Healing:
             case ItemType.Ammo:
@@ -335,7 +343,9 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                         const wasReloading = action?.type === PlayerActions.Reload;
                         if (wasReloading) action.cancel();
 
-                        player.inventory.upgradeToDual(i);
+                        if (!player.inventory.upgradeToDual(i)) {
+                            continue;
+                        }
 
                         if (wasReloading) {
                             (player.activeItem as GunItem).reload(true);
