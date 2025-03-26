@@ -2351,7 +2351,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         name: "Seedshot",
         itemType: ItemType.Gun,
         ammoType: "seed",
-        ammoSpawnAmount: 80,
+        ammoSpawnAmount: 0,
         capacity: 20,
         extendedCapacity: 30,
         reloadTime: 2.6,
@@ -2386,6 +2386,44 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             },
             noReflect: true,
             onHitProjectile: "proj_seed"
+        }
+    },
+    {
+        idString: "vaccinator",
+        name: "Vaccinator",
+        itemType: ItemType.Gun,
+        ammoType: "needle",
+        ammoSpawnAmount: 0,
+        fireDelay: 70,
+        switchDelay: 300,
+        speedMultiplier: 1.136,
+        recoilMultiplier: 0.88,
+        recoilDuration: 90,
+        fireMode: FireMode.Auto,
+        shotSpread: 2,
+        moveSpread: 5,
+        length: 5.3,
+        fists: {
+            left: Vec.create(40, 0),
+            right: Vec.create(40, 0),
+            leftZIndex: 4,
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec.create(80, -1) },
+        capacity: 30,
+        extendedCapacity: 40,
+        reloadTime: 2,
+        ballistics: {
+            damage: 12,
+            obstacleMultiplier: 1,
+            speed: 0.18,
+            range: 70,
+            tracer: {
+                image: "needle_trail",
+                length: 1
+            },
+            noReflect: true
         }
     },
     {

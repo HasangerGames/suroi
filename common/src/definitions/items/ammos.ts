@@ -137,8 +137,21 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
         idString: "seed",
         name: "Plumpkin Seed",
         itemType: ItemType.Ammo,
-        maxStackSize: 240,
-        minDropAmount: 1,
+        maxStackSize: 0,
+        minDropAmount: 0,
+        characteristicColor: {
+            hue: 37,
+            saturation: 85,
+            lightness: 67
+        },
+        ephemeral: true
+    },
+    {
+        idString: "needle",
+        name: "Needle",
+        itemType: ItemType.Ammo,
+        maxStackSize: 0,
+        minDropAmount: 0,
         characteristicColor: {
             hue: 37,
             saturation: 85,
