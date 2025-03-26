@@ -1074,6 +1074,7 @@ export const UIManager = new (class UIManager {
         container.css("animation", `perk-${perkDef.type ?? "normal"}-colors 1.5s linear infinite`);
 
         // if (perkDef.type !== undefined) Game.soundManager.play(`perk_pickup_${perkDef.type}`);
+        if (perkDef.equipSound) SoundManager.play(perkDef.equipSound);
 
         this._animationTimeouts[index] = window.setTimeout(() => {
             container.css("animation", "none");

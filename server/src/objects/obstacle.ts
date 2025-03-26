@@ -1,5 +1,5 @@
 import { FlyoverPref, ObjectCategory, RotationMode } from "@common/constants";
-import { PerkIds } from "@common/definitions/items/perks";
+import { PerkIds, Perks } from "@common/definitions/items/perks";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
@@ -218,15 +218,24 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 this.game.addExplosion(definition.explosion, this.position, source, source.layer, weaponIsItem ? weaponUsed : weaponUsed?.weapon);
             }
 
-            // Pumpkin Bombs
-            if (
-                source instanceof BaseGameObject
-                && source.isPlayer
-                && source.perks.hasItem(PerkIds.PlumpkinBomb)
-                && definition.material === "pumpkin"
-            ) {
-                this.playMaterialDestroyedSound = false;
-                this.game.addExplosion("pumpkin_explosion", this.position, source, source.layer);
+            if (source instanceof BaseGameObject && source.isPlayer) {
+                // Plumpkin Bomb
+                if (
+                    source.perks.hasItem(PerkIds.PlumpkinBomb)
+                    && definition.material === "pumpkin"
+                ) {
+                    this.playMaterialDestroyedSound = false;
+                    this.game.addExplosion("pumpkin_explosion", this.position, source, source.layer);
+                }
+
+                // Infected perk
+                if (
+                    definition.applyPerkOnDestroy
+                    && definition.applyPerkOnDestroy.mode === this.game.modeName
+                    && definition.applyPerkOnDestroy.chance > Math.random()
+                ) {
+                    source.perks.addItem(Perks.fromString(PerkIds.Infected));
+                }
             }
 
             if (definition.particlesOnDestroy !== undefined) {

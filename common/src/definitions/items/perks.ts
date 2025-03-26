@@ -10,6 +10,7 @@ interface BasePerkDefinition extends ItemDefinition {
     readonly noSwap?: boolean
     readonly alwaysAllowSwap?: boolean
     readonly plumpkinGambleIgnore?: boolean
+    readonly equipSound?: string
 }
 
 /**
@@ -435,13 +436,14 @@ const perks = [
         name: "Infected",
         itemType: ItemType.Perk,
         description: "Lose 50% health, but gain 150% speed.",
-        category: PerkCategories.Halloween,
+        category: PerkCategories.Normal,
         type: PerkQualities.Negative,
 
         hpMod: 0.5,
         speedMod: 1.5,
         noDrop: true,
-        plumpkinGambleIgnore: true
+        plumpkinGambleIgnore: true,
+        equipSound: "infected"
     }
 ] as const satisfies ReadonlyArray<BasePerkDefinition & Record<string, unknown>>;
 

@@ -583,6 +583,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.dirty.weapons = true;
 
         this.updateAndApplyModifiers();
+        this.giveGun("vaccinator");
     }
 
     giveGun(idString: ReferenceTo<GunDefinition>): void {
@@ -1992,6 +1993,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
                 case PerkIds.LowProfile: {
                     newModifiers.size *= perk.sizeMod;
+                    break;
+                }
+                case PerkIds.Infected: {
+                    newModifiers.baseSpeed *= perk.speedMod;
+                    newModifiers.maxHealth *= perk.hpMod;
                     break;
                 }
             }
