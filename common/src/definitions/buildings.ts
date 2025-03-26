@@ -204,7 +204,14 @@ const randomTruckContainerTwoSided = {
     truck_container_6: 1
 };
 
-const randomTruckContainerOneSided = {}; // TODO
+const randomTruckContainerOneSided = {
+    truck_container_7: 1,
+    truck_container_8: 1,
+    truck_container_9: 1,
+    truck_container_10: 1,
+    truck_container_11: 1,
+    truck_container_12: 0.85
+};
 
 const randomCelebrationWinterTree = {
     oak_tree: 1,
@@ -3134,11 +3141,97 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // ------------------------------------------------------------------------------------------
             // Right Side: Center
             // ------------------------------------------------------------------------------------------
+            // fence
+            ...Array.from(
+                { length: 7 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec.create(143.88 + 8.8 * i, -38.32),
+                    rotation: 0
+                })
+            ),
+
+            ...Array.from(
+                { length: 7 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec.create(119.8, -32.47 + 8.8 * i),
+                    rotation: 1
+                })
+            ),
+
+            ...Array.from(
+                { length: 26 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec.create(215.64, -73.12 + 8.8 * i),
+                    rotation: 1
+                })
+            ),
+
+            { idString: "regular_crate", position: Vec.create(112.95, 5.44) },
+
+            { idString: "metal_column", position: Vec.create(215.59, -79.04) },
+            { idString: "metal_column", position: Vec.create(202.54, -38.28) },
+            { idString: "metal_column", position: Vec.create(137.84, -38.29) },
+            { idString: "metal_column", position: Vec.create(119.86, -38.36) },
+            { idString: "metal_column", position: Vec.create(119.84, 26.32) },
+
+            { idString: "forklift", position: Vec.create(111.6, -85.18), rotation: 2 },
+
+            { idString: "grenade_crate", position: Vec.create(200.77, -121.33) },
+            { idString: "grenade_crate", position: Vec.create(81, -37.2) },
+            { idString: "grenade_crate", position: Vec.create(114.59, -9.83) },
+
+            { idString: "propane_tank", position: Vec.create(82.46, -53.54) },
+            { idString: "propane_tank", position: Vec.create(96.82, -38.52) },
+
+            { idString: "ammo_crate", position: Vec.create(142.93, -16.31) },
+            { idString: "ammo_crate", position: Vec.create(209.41, -120.27) },
+            { idString: "ammo_crate", position: Vec.create(89.61, -51.02) },
+            { idString: "ammo_crate", position: Vec.create(79.47, -46.2) },
+            { idString: "ammo_crate", position: Vec.create(89.69, -40.66) },
+
+            { idString: "sandbags", position: Vec.create(151.87, -56.03), rotation: 0 },
+            { idString: "sandbags", position: Vec.create(203.28, -129.7), rotation: 0 },
+            { idString: "sandbags", position: Vec.create(184.03, -32.98), rotation: 0 },
+            { idString: "sandbags", position: Vec.create(210.22, -22.85), rotation: 1 },
+
+            { idString: "smaller_sandbags", position: Vec.create(113.58, -2.94), rotation: 0 },
+            { idString: "smaller_sandbags", position: Vec.create(210.38, 15.27), rotation: 0 },
+
+            { idString: { box: 1, grenade_box: 0.15 }, position: Vec.create(97.78, -53.95) },
+            { idString: "box", position: Vec.create(172.96, -111.62) },
+            { idString: "box", position: Vec.create(211.96, 20.85) },
             // ------------------------------------------------------------------------------------------
 
             // ------------------------------------------------------------------------------------------
             // Right Side: Top Left
             // ------------------------------------------------------------------------------------------
+
+            // fence
+            ...Array.from(
+                { length: 17 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec.create(68.97 + 8.8 * i, -243.15),
+                    rotation: 0
+                })
+            ),
+
+            ...Array.from(
+                { length: 15 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec.create(215.64, -240.25 + 8.8 * i),
+                    rotation: 1
+                })
+            ),
+
+            // note to self: always put columns AFTER fences
+            { idString: "metal_column", position: Vec.create(215.66, -243.25) },
+            { idString: "metal_column", position: Vec.create(215.66, -111.21) },
+
             { idString: "dumpster", position: Vec.create(208.3, -210.42), rotation: 0 },
             { idString: "trash_bag", position: Vec.create(207.12, -198.56) },
 
@@ -3147,6 +3240,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             { idString: "barrel", position: Vec.create(78.38, -234.57) },
             { idString: "barrel", position: Vec.create(57.46, -163.16)/* , waterOverlay: true */ },
+            { idString: "regular_crate", position: Vec.create(54.54, -153.74)/* , waterOverlay: true */ },
 
             { idString: "grenade_crate", position: Vec.create(114.83, -216.15) },
 
@@ -3446,7 +3540,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Right Side: Top Left
             { idString: "port_storage", position: Vec.create(48.8, -230.05) },
             { idString: "port_main_office", position: Vec.create(161.35, -183.07) },
-            { idString: randomPallet, position: Vec.create(223.73, 208.67), orientation: 1 }
+            { idString: randomPallet, position: Vec.create(223.73, 208.67), orientation: 1 },
+
+            // Right Side: Center
+            { idString: randomPallet, position: Vec.create(111.65, -97.06) },
+            { idString: randomPallet, position: Vec.create(46.01, 99.24), orientation: 1 },
+            { idString: randomPallet, position: Vec.create(142.19, -6.04) },
+            { idString: randomPallet, position: Vec.create(168.2, 22.47) },
+            { idString: "truck_2", position: Vec.create(-68.6, -177), orientation: 3 },
+            { idString: "porta_potty", position: Vec.create(-50.4, -190.07), orientation: 3 } // fucking porta potty in the middle of the road
         ],
         floors: [ // Follows ground graphics for most part
             {
@@ -7167,8 +7269,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     // random "truck" container layout and tint.
     // ----------------------------------------------------------------
 
-    truck(1, "two_sided"), // CAUTION: RANDOMLY GENERATED CONTAINER
+    // CAUTION: RANDOMLY GENERATED CONTAINER
+    truck(1, "two_sided"),
+    truck(2, "one_sided"),
 
+    // Two sided
     truckContainer(1, "two_sided", [
         { idString: "regular_crate", position: Vec.create(-0.82, -13.3) },
         { idString: "regular_crate", position: Vec.create(0.76, -3.71) },
@@ -7213,5 +7318,49 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     ], [
         { idString: randomPallet, position: Vec.create(0, -13.22) },
         { idString: randomPallet, position: Vec.create(0, 9.63) }
+    ]),
+
+    // One sided
+    truckContainer(7, "one_sided", [
+        { idString: "box", position: Vec.create(3.25, 15.3) },
+        { idString: "box", position: Vec.create(3.18, 10.34) },
+        { idString: "propane_tank", position: Vec.create(3.27, 5.38) }
+    ], [
+        { idString: randomPallet, position: Vec.create(0.05, -13.22) }
+    ]),
+
+    truckContainer(8, "one_sided", [
+        { idString: "barrel", position: Vec.create(-1.48, 14.27) },
+        { idString: "barrel", position: Vec.create(1.73, 5.53) },
+        { idString: "gun_case", position: Vec.create(2.5, -12.56), rotation: 3 }
+    ]),
+
+    truckContainer(9, "one_sided", [
+        { idString: "trash_bag", position: Vec.create(-2.7, -15.18) },
+        { idString: "trash_bag", position: Vec.create(2.85, -12.26) },
+        { idString: "trash_bag", position: Vec.create(-2.92, -7.89) },
+        { idString: "trash_bag", position: Vec.create(-2.33, 9.25) },
+        { idString: "trash_bag", position: Vec.create(2.42, 2.62) }
+    ]),
+
+    truckContainer(10, "one_sided", [
+        { idString: "box", position: Vec.create(-2.77, -6.21) },
+        { idString: "ammo_crate", position: Vec.create(0, 10.54) }
+    ], [
+        { idString: randomPallet, position: Vec.create(0.05, -13.22) }
+    ]),
+
+    truckContainer(11, "one_sided", [
+        { idString: "gun_locker", position: Vec.create(3, -11.37), rotation: 3 },
+        { idString: "grenade_crate", position: Vec.create(-2.41, 8.66) },
+        { idString: "box", position: Vec.create(3.23, 7.78) }
+    ]),
+
+    truckContainer(12, "one_sided", [
+        { idString: "flint_crate", position: Vec.create(0, -12.59) },
+        { idString: "gun_case", position: Vec.create(2.46, -2.23), rotation: 3 },
+        { idString: "box", position: Vec.create(2.71, 5.74) },
+        { idString: "gun_locker", position: Vec.create(-3.01, 0.22), rotation: 3 }, // LMAO no
+        { idString: "ammo_crate", position: Vec.create(0.04, 13.03) }
     ])
 ]);
