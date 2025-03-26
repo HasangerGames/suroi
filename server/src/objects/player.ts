@@ -1994,6 +1994,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     newModifiers.size *= perk.sizeMod;
                     break;
                 }
+                case PerkIds.Infected: {
+                    newModifiers.baseSpeed *= perk.speedMod;
+                    newModifiers.maxHealth *= perk.hpMod;
+                    break;
+                }
             }
         }
         // ! evil ends here

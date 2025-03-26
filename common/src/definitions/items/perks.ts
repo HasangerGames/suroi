@@ -435,7 +435,7 @@ const perks = [
         name: "Infected",
         itemType: ItemType.Perk,
         description: "Lose 50% health, but gain 150% speed.",
-        category: PerkCategories.Halloween,
+        category: PerkCategories.Normal,
         type: PerkQualities.Negative,
 
         hpMod: 0.5,
