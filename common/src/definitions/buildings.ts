@@ -219,7 +219,7 @@ const randomCelebrationWinterTree = {
     pine_tree: 0.9
 };
 
-const randomPortOpenContainer = {
+const randomPortOpenContainerOneSide = {
     container_3: 1,
     container_4: 1,
     container_5: 1,
@@ -227,10 +227,24 @@ const randomPortOpenContainer = {
     container_9: 1
 };
 
+const randomPortOpenContainerTwoSide = {
+    container_1: 0.25,
+    container_2: 0.25,
+    container_7: 2,
+    container_8: 2,
+    container_16: 2
+};
+
 const randomPortDamagedContainer = {
     container_13: 1,
     container_14: 1,
     container_15: 1
+};
+
+const randomPortDamagedContainerReversed = {
+    container_17: 1,
+    container_18: 1,
+    container_19: 1
 };
 
 /* const randomContainer1 = {
@@ -358,7 +372,7 @@ const warehouseLayout = (id: number, obstacles: readonly BuildingObstacle[]): Bu
 const container = (
     id: number,
     color: "white" | "red" | "green" | "blue" | "yellow",
-    variant: "open2" | "open1" | "closed" | "damaged",
+    variant: "open2" | "open1" | "closed" | "damaged" | "damaged_reversed",
     damaged?: boolean
 ): BuildingDefinition => {
     const tint = ContainerTints[color];
@@ -581,7 +595,24 @@ const container = (
     };
 
     switch (variant) {
-        case "damaged": // someone help on this please
+        case "damaged_reversed": // thanks designers
+            upperCeilingImage = "container_ceiling_6";
+            lowerCeilingImage = "container_ceiling_7";
+            hitbox = new GroupHitbox(
+                RectangleHitbox.fromRect(1.85, 8, Vec.create(-6.1, 10)),
+                RectangleHitbox.fromRect(1.85, 8, Vec.create(-6.1, -10)),
+                RectangleHitbox.fromRect(1.85, 28, Vec.create(6.1, 0)),
+                RectangleHitbox.fromRect(14, 1.85, Vec.create(0, -13.07))
+            );
+            wallHitbox = new GroupHitbox(
+                RectangleHitbox.fromRect(0.91, 7.05, Vec.create(-6.1, 10)),
+                RectangleHitbox.fromRect(0.91, 7.05, Vec.create(-6.1, -10)),
+                RectangleHitbox.fromRect(0.91, 27.05, Vec.create(6.1, 0)),
+                RectangleHitbox.fromRect(13.05, 0.91, Vec.create(0, -13.07))
+            );
+            spawnHitbox = RectangleHitbox.fromRect(16, 34.9, Vec.create(0, 2));
+            break;
+        case "damaged":
             upperCeilingImage = "container_ceiling_6";
             lowerCeilingImage = "container_ceiling_7";
             hitbox = new GroupHitbox(
@@ -664,11 +695,13 @@ const container = (
             {
                 key: upperCeilingImage,
                 position: Vec.create(0, -6.97),
+                ...(variant === "damaged_reversed" ? { scale: Vec.create(-1, 1) } : {}),
                 tint
             },
             {
                 key: lowerCeilingImage,
                 position: Vec.create(-0.04, 6.97),
+                ...(variant === "damaged_reversed" ? { scale: Vec.create(-1, 1) } : {}),
                 rotation: Math.PI,
                 tint
             }
@@ -2808,6 +2841,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     container(13, "yellow", "damaged"),
     container(14, "green", "damaged"),
     container(15, "blue", "damaged"),
+    container(16, "yellow", "open2", true),
+    container(17, "blue", "damaged_reversed"),
+    container(18, "yellow", "damaged_reversed"),
+    container(19, "green", "damaged_reversed"),
 
     bigTent(1, "red"),
     bigTent(2, "green"),
@@ -3138,6 +3175,50 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { key: "planted_bushes_residue", position: Vec.create(91.67, -225.15) }
         ],
         obstacles: [
+
+            // ------------------------------------------------------------------------------------------
+            // Right Side: Bottom Right
+            // ------------------------------------------------------------------------------------------
+
+            ...Array.from(
+                { length: 7 },
+                (_, i) => ({
+                    idString: "fence",
+                    position: Vec.create(119.97, 116.31 + 8.8 * i),
+                    rotation: 1
+                })
+            ),
+
+            { idString: "metal_column", position: Vec.create(119.93, 110.51) },
+            { idString: "metal_column", position: Vec.create(119.93, 175.08) },
+            { idString: "metal_column", position: Vec.create(215.67, 152.85) },
+
+            { idString: "barrel", position: Vec.create(180.91, 45.99) },
+            { idString: "barrel", position: Vec.create(131.66, 182.27) },
+
+            { idString: "flint_crate", position: Vec.create(181.89, 54.97) },
+
+            { idString: "ammo_crate", position: Vec.create(209.3, 59.77) },
+            { idString: "ammo_crate", position: Vec.create(197.03, 84.43) },
+
+            { idString: "smaller_sandbags", position: Vec.create(196.48, 92.23), rotation: 0 },
+            { idString: "smaller_sandbags", position: Vec.create(137.9, 135.75), rotation: 0 },
+
+            { idString: "box", position: Vec.create(146.98, 131.24) },
+            { idString: "box", position: Vec.create(144.35, 136.2) },
+            { idString: "box", position: Vec.create(149.46, 136.2) },
+
+            { idString: "box", position: Vec.create(179.86, 142.15) },
+            { idString: "box", position: Vec.create(184.96, 142.15) },
+            { idString: "box", position: Vec.create(182.26, 146.96) },
+
+            { idString: "grenade_crate", position: Vec.create(182.72, 182.48) },
+            { idString: "grenade_crate", position: Vec.create(189.36, 179.71) },
+
+            { idString: "regular_crate", position: Vec.create(205.12, 151.1) },
+            { idString: "regular_crate", position: Vec.create(207.37, 160.88) },
+            // ------------------------------------------------------------------------------------------
+
             // ------------------------------------------------------------------------------------------
             // Right Side: Center
             // ------------------------------------------------------------------------------------------
@@ -3506,7 +3587,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Left Side: Bottom Left
             { idString: "port_hay_shed", position: Vec.create(-73.7, -135), orientation: 1 },
             { idString: "porta_potty", position: Vec.create(130, -165.4), orientation: 2 },
-            { idString: randomPortOpenContainer, position: Vec.create(-168.2, -188.5), orientation: 1 }, // y, x
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(-168.2, -188.5), orientation: 1 }, // y, x
             { idString: randomPallet, position: Vec.create(-153.61, -96.34), orientation: 1 },
             { idString: randomPallet, position: Vec.create(-143.74, 170.4) },
             { idString: randomPallet, position: Vec.create(-121.96, -111.74), orientation: 1 },
@@ -3548,7 +3629,38 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomPallet, position: Vec.create(142.19, -6.04) },
             { idString: randomPallet, position: Vec.create(168.2, 22.47) },
             { idString: "truck_2", position: Vec.create(-68.6, -177), orientation: 3 },
-            { idString: "porta_potty", position: Vec.create(-50.4, -190.07), orientation: 3 } // fucking porta potty in the middle of the road
+            { idString: "porta_potty", position: Vec.create(-50.4, -190.07), orientation: 3 }, // fucking porta potty in the middle of the road
+
+            { idString: randomPortOpenContainerTwoSide, position: Vec.create(169.65, -15.05) },
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(183.95, -15.05) },
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(-155.35, 15.05), orientation: 2 },
+
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(155.35, 13.25) },
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(141.05, 13.25) },
+
+            // Right Side: Bottom Right
+
+            // ----------------------------------
+            // container distance X = 14.3
+            // container distance Y = 28.55
+            // ----------------------------------
+            { idString: randomPallet, position: Vec.create(182.22, 64.55) },
+            { idString: "truck_1", position: Vec.create(100.1, 129.8) },
+
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(-169.65, -55.05), orientation: 2 },
+            { idString: randomPortOpenContainerTwoSide, position: Vec.create(-155.35, -55.05), orientation: 2 },
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(-141.05, -55.05), orientation: 2 },
+
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(169.65, 83.5) },
+            { idString: randomPortDamagedContainer, position: Vec.create(-155.35, -83.5), orientation: 2 },
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(183.95, 83.5) },
+
+            // y = 125
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(-183.95, -125), orientation: 2 },
+            { idString: randomPortDamagedContainerReversed, position: Vec.create(169.65, 125) },
+            { idString: randomPortDamagedContainerReversed, position: Vec.create(-169.65, -153.5), orientation: 2 },
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(141.05, 153.5) },
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(155.35, 153.5) }
         ],
         floors: [ // Follows ground graphics for most part
             {
