@@ -2416,7 +2416,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         extendedCapacity: 40,
         reloadTime: 2,
         ballistics: {
-            damage: -12,
+            damage: 12,
+            teammateHeal: 1,
             obstacleMultiplier: 1,
             speed: 0.18,
             range: 70,

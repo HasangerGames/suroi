@@ -111,9 +111,19 @@ export class Bullet extends BaseBullet {
             const { point, normal } = collision.intersection;
 
             if (collision.dealDamage) {
+                const damageAmount = (
+                    definition.teammateHeal
+                    && this.game.teamMode
+                    && this.shooter.isPlayer
+                    && object.isPlayer
+                    && object.teamID === this.shooter.teamID
+                    && object.id !== this.shooter.id
+                )
+                    ? -definition.teammateHeal
+                    : definition.damage;
                 records.push({
                     object,
-                    damage: damageMod * definition.damage * (isObstacle ? (this.modifiers?.dtc ?? 1) * definition.obstacleMultiplier : 1),
+                    damage: damageMod * damageAmount * (isObstacle ? (this.modifiers?.dtc ?? 1) * definition.obstacleMultiplier : 1),
                     weapon: this.sourceGun,
                     source: this.shooter,
                     position: point

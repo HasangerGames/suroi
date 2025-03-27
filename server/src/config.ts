@@ -7,11 +7,11 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "singleObstacle:airdrop_crate",
+    map: "infection",
 
     spawn: { mode: SpawnMode.Center },
 
-    teamSize: TeamSize.Solo,
+    teamSize: TeamSize.Duo,
 
     maxPlayersPerGame: 80,
     maxGames: 5,

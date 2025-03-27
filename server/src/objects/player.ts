@@ -1768,7 +1768,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             amount = this.health;
         }
 
-        if (amount < 0 || this.dead) amount = 0;
+        if (this.dead) amount = 0;
 
         return amount;
     }
@@ -1814,6 +1814,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 && source.teamID === this.teamID
                 && source.id !== this.id
                 && !this.disconnected
+                && amount > 0
             )
         ) return;
 
