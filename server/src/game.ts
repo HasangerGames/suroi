@@ -1,6 +1,5 @@
 import { GameConstants, Layer, MapObjectSpawnMode, ObjectCategory, TeamSize } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
-import { type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
@@ -40,7 +39,7 @@ import { Loot, type ItemData } from "./objects/loot";
 import { Parachute } from "./objects/parachute";
 import { Player, type PlayerSocketData } from "./objects/player";
 import { SyncedParticle } from "./objects/syncedParticle";
-import { ThrowableProjectile } from "./objects/throwableProj";
+import { Projectile, ProjectileParams } from "./objects/projectile";
 import { PluginManager } from "./pluginManager";
 import { Team } from "./team";
 import { Grid } from "./utils/grid";
@@ -310,7 +309,7 @@ export class Game implements GameData {
             parachute.update();
         }
 
-        for (const projectile of this.grid.pool.getCategory(ObjectCategory.ThrowableProjectile)) {
+        for (const projectile of this.grid.pool.getCategory(ObjectCategory.Projectile)) {
             projectile.update();
         }
 
@@ -951,22 +950,26 @@ export class Game implements GameData {
         source: GameObject,
         layer: Layer,
         weapon?: GunItem | MeleeItem | ThrowableItem,
-        damageMod = 1
+        damageMod = 1,
+        objectsToIgnore?: Set<GameObject>
     ): Explosion {
-        const explosion = new Explosion(this, type, position, source, layer, weapon, damageMod);
+        const explosion = new Explosion(this, type, position, source, layer, weapon, damageMod, objectsToIgnore);
         this.explosions.push(explosion);
         return explosion;
     }
 
-    addProjectile(definition: ThrowableDefinition, position: Vector, layer: Layer, source: ThrowableItem): ThrowableProjectile {
-        const projectile = new ThrowableProjectile(this, position, layer, definition, source);
+    addProjectile(params: ProjectileParams): Projectile {
+        const projectile = new Projectile(
+            this,
+            params
+        );
         this.grid.addObject(projectile);
         return projectile;
     }
 
-    removeProjectile(projectile: ThrowableProjectile): void {
+    removeProjectile(projectile: Projectile): void {
+        projectile.destroy();
         this.removeObject(projectile);
-        projectile.dead = true;
     }
 
     addSyncedParticle(

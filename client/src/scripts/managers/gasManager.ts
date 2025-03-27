@@ -4,7 +4,7 @@ import { Numeric } from "@common/utils/math";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Graphics } from "pixi.js";
-import { getTranslatedString } from "../../translations";
+import { getTranslatedString } from "../utils/translations/translations";
 import { Game } from "../game";
 import { UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate } from "../utils/misc";

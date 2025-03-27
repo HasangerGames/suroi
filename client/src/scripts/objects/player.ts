@@ -22,8 +22,8 @@ import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Container, Graphics, Text } from "pixi.js";
-import { getTranslatedString } from "../../translations";
-import { type TranslationKeys } from "../../typings/translations";
+import { getTranslatedString } from "../utils/translations/translations";
+import { type TranslationKeys } from "../utils/translations/typings";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { CameraManager } from "../managers/cameraManager";
@@ -1442,7 +1442,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                         (
                                             object.damageable
                                             && (object.isObstacle || object.isPlayer || object.isBuilding)
-                                        ) || (object.isThrowableProjectile && object.definition.c4)
+                                        ) || (object.isProjectile && object.definition.c4)
                                     )
                                     && object.hitbox?.collidesWith(hitbox)
                                     && adjacentOrEqualLayer(object.layer, this.layer)

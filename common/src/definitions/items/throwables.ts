@@ -23,30 +23,39 @@ export type ThrowableDefinition = InventoryItemDefinition & {
      * Whether cooking the grenade will run down the fuse
      */
     readonly cookable: boolean
+
+    readonly fireDelay: number
+
     readonly health?: number
     readonly noSkin?: boolean
     readonly cookSpeedMultiplier: number
-    /**
-     * @default 128
-     */
-    readonly maxThrowDistance?: number
+
+    readonly physics: {
+        readonly maxThrowDistance: number
+        readonly initialZVelocity: number
+        readonly initialAngularVelocity: number
+        readonly initialHeight: number
+        readonly drag?: {
+            readonly air: number
+            readonly ground: number
+            readonly water: number
+        }
+    }
+
     readonly image: {
         readonly position: Vector
         readonly angle?: number
         // no relation to the ZIndexes enum
         readonly zIndex: number
+        readonly anchor?: Vector
     }
-    readonly speedCap?: number
     readonly hitboxRadius: number
     readonly impactDamage?: number
     /**
      * Applies to impact damage and not explosion damage
      */
     readonly obstacleMultiplier?: number
-    /**
-     * @default 250
-     */
-    readonly fireDelay?: number
+
     readonly detonation: {
         readonly explosion?: ReferenceTo<ExplosionDefinition>
         readonly particles?: ReferenceTo<SyncedParticleDefinition>
@@ -84,10 +93,18 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         impactDamage: 1,
         obstacleMultiplier: 20,
         hitboxRadius: 1,
+        fireDelay: 250,
+        physics: {
+            maxThrowDistance: 128,
+            initialZVelocity: 4,
+            initialAngularVelocity: 10,
+            initialHeight: 0.5
+        },
         image: {
             position: Vec.create(60, 43),
             angle: 60,
-            zIndex: 5
+            zIndex: 5,
+            anchor: Vec.create(0.5, 0.68)
         },
         detonation: {
             explosion: "frag_grenade_explosion"
@@ -120,6 +137,13 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         impactDamage: 1,
         obstacleMultiplier: 20,
         hitboxRadius: 1,
+        fireDelay: 250,
+        physics: {
+            maxThrowDistance: 128,
+            initialZVelocity: 4,
+            initialAngularVelocity: 10,
+            initialHeight: 0.5
+        },
         image: {
             position: Vec.create(60, 43),
             angle: 60,
@@ -159,6 +183,13 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         obstacleMultiplier: 20,
         hitboxRadius: 1,
         cookable: true,
+        fireDelay: 250,
+        physics: {
+            maxThrowDistance: 128,
+            initialZVelocity: 4,
+            initialAngularVelocity: 10,
+            initialHeight: 0.5
+        },
         image: {
             position: Vec.create(60, 43),
             angle: 60,
@@ -188,13 +219,25 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         itemType: ItemType.Throwable,
         c4: true,
         cookable: false,
-        fuseTime: 0,
-        cookTime: 0,
-        throwTime: 0,
-        cookSpeedMultiplier: 0,
+        fuseTime: 750,
+        cookTime: 250,
+        throwTime: 150,
+        cookSpeedMultiplier: 0.7,
         health: 40,
         speedMultiplier: 1,
         hitboxRadius: 1,
+        fireDelay: 250,
+        physics: {
+            maxThrowDistance: 128,
+            initialZVelocity: 4,
+            initialAngularVelocity: 10,
+            initialHeight: 0.5,
+            drag: {
+                air: 0.7,
+                ground: 6,
+                water: 8
+            }
+        },
         image: {
             position: Vec.create(60, 43),
             angle: 60,

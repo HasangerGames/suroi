@@ -99,12 +99,16 @@
                 justify-content: center;
                 align-items: center;
 
-                // leader indicator
-                .fa-crown {
+                // leader indicator/kick button
+                .fa-crown, .fa-xmark {
                     position: absolute;
                     font-size: 24px;
                     top: 5px;
-                    left: 5px;
+                    right: 5px;
+                }
+
+                .fa-xmark {
+                    cursor: pointer;
                 }
 
                 // ready indicator
@@ -113,7 +117,7 @@
                     font-size: 24px;
                     color: limegreen;
                     top: 5px;
-                    right: 5px;
+                    left: 5px;
                 }
 
                 .create-team-player-name-container {
@@ -142,10 +146,11 @@
             justify-content: center;
 
             #create-team-url-field {
+                font-family: "JetBrains Mono", monospace;
                 color: black;
                 user-select: all;
                 font-size: 18px;
-                width: 350px;
+                flex-grow: 1;
                 padding: 4px 8px;
                 outline: none;
                 border: none;
@@ -167,13 +172,12 @@
 
         #create-team-options {
             display: flex;
-            gap: 20px;
-            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
             padding-top: 12px;
 
             #create-team-toggles {
                 display: flex;
-                flex-direction: column;
                 justify-content: center;
                 gap: 12px;
 
@@ -184,6 +188,11 @@
 
                 label {
                     display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background-color: #555;
+                    padding: 5px 8px;
+                    border-radius: 10px;
 
                     span {
                         margin-right: 10px;
@@ -192,11 +201,9 @@
                     input {
                         margin-left: auto;
                         font-family: "JetBrains Mono", monospace;
+                        bottom: -5px;
                     }
                 }
-            }
-            #btn-start-game {
-                margin-left: auto;
             }
         }
     }

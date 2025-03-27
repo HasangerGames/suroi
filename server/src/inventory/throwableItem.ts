@@ -1,20 +1,21 @@
-import { AnimationType, Layer } from "@common/constants";
-import { PerkData, PerkIds } from "@common/definitions/items/perks";
+import { AnimationType, GameConstants } from "@common/constants";
+import { PerkIds } from "@common/definitions/items/perks";
 import { type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { Numeric } from "@common/utils/math";
-import { type Timeout } from "@common/utils/misc";
 import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
-import { type Game } from "../game";
 import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
-import { type ThrowableProjectile } from "../objects/throwableProj";
 import { CountableInventoryItem } from "./inventoryItem";
+import { Timeout } from "@common/utils/misc";
 
 export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwable) {
     count: number;
 
-    private _activeHandler?: GrenadeHandler;
+    private _cookStart?: number;
+    private _throwTimer?: Timeout;
+
+    private _cooking = false;
 
     constructor(definition: ReifiableDef<ThrowableDefinition>, owner: Player, data?: ItemData<ThrowableDefinition>, count = 1) {
         super(definition, owner);
@@ -40,7 +41,6 @@ export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwa
             || owner.downed
             || owner.disconnected
             || this !== owner.activeItem
-            || this._activeHandler
         ) {
             return;
         }
@@ -55,17 +55,11 @@ export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwa
 
         owner.action?.cancel();
 
-        this._activeHandler = new GrenadeHandler(this.definition, this.owner.game, this, () => this._detachHandler());
-        this._activeHandler.cook();
+        this._cook();
     }
 
     override stopUse(): void {
-        if (this.owner.game.pluginManager.emit("inv_item_stop_use", this) !== undefined) return;
-        this._activeHandler?.throw(!this.isActive);
-    }
-
-    private _detachHandler(): void {
-        this._activeHandler = undefined;
+        this._throw();
     }
 
     override itemData(): ItemData<ThrowableDefinition> {
@@ -77,58 +71,46 @@ export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwa
 
     override useItem(): void {
         super._bufferAttack(
-            this.definition.fireDelay ?? 250,
+            this.definition.fireDelay,
             this._useItemNoDelayCheck.bind(this, true)
         );
     }
-}
 
-class GrenadeHandler {
-    private _cookStart?: number;
-    private _thrown = false;
-    private _scheduledThrow?: Timeout;
-    private _timer?: Timeout;
-    private _projectile?: ThrowableProjectile;
+    private _cook(): void {
+        if (this._cooking) return;
+        this._cooking = true;
 
-    readonly owner: Player;
+        const owner = this.owner;
+        const game = owner.game;
 
-    constructor(
-        readonly definition: ThrowableDefinition,
-        readonly game: Game,
-        readonly parent: ThrowableItem,
-        readonly detach: () => void
-    ) {
-        this.owner = this.parent.owner;
-    }
+        const recoil = owner.recoil;
+        recoil.active = true;
+        recoil.multiplier = this.definition.cookSpeedMultiplier;
+        recoil.time = Infinity;
 
-    private _detonate(): void {
-        const { explosion } = this.definition.detonation;
-
-        const referencePosition = Vec.clone(this._projectile?.position ?? this.parent.owner.position);
-        const game = this.game;
-
-        if (explosion !== undefined) {
-            game.addExplosion(
-                explosion,
-                referencePosition,
-                this.parent.owner,
-                this._projectile?.layer ?? this.parent.owner.layer,
-                this.parent,
-                (this._projectile?.halloweenSkin ?? false) ? PerkData[PerkIds.PlumpkinBomb].damageMod : 1
+        if (this.definition.cookable) {
+            this._throwTimer = game.addTimeout(
+                () => {
+                    recoil.active = false;
+                    this._throw(true);
+                },
+                this.definition.fuseTime
             );
         }
 
-        const particles = (this.owner.halloweenThrowableSkin && this.definition.detonation.spookyParticles)
-            ? this.definition.detonation.spookyParticles
-            : this.definition.detonation.particles;
-
-        if (particles !== undefined) {
-            game.addSyncedParticles(particles, referencePosition, this._projectile ? this._projectile.layer : Layer.Ground);
-        }
+        this._cookStart = game.now;
     }
 
-    private _resetAnimAndRemoveFromInv(): void {
+    private _throw(soft = false): void {
+        if (!this._cooking) return;
+        this._cooking = false;
+
+        this._throwTimer?.kill();
+        this._throwTimer = undefined;
+
+        const definition = this.definition;
         const owner = this.owner;
+        const game = owner.game;
 
         owner.dirty.weapons = true;
 
@@ -138,116 +120,38 @@ class GrenadeHandler {
 
         owner.animation = AnimationType.ThrowableThrow;
         owner.setPartialDirty();
-    }
 
-    cook(): void {
-        if (this._cookStart !== undefined || this._thrown || this._scheduledThrow) return;
+        owner.recoil.active = false;
 
-        const owner = this.parent.owner;
-        const recoil = owner.recoil;
-        recoil.active = true;
-        recoil.multiplier = this.definition.cookSpeedMultiplier;
-        recoil.time = Infinity;
+        const speed = soft
+            ? 0
+            : Numeric.min(
+                definition.physics.maxThrowDistance * owner.mapPerkOrDefault(PerkIds.DemoExpert, ({ rangeMod }) => rangeMod, 1),
+                owner.distanceToMouse
+            ) * GameConstants.projectiles.distanceToMouseMultiplier;
 
-        if (this.definition.cookable && !this.definition.c4) {
-            this._timer = this.game.addTimeout(
-                () => {
-                    if (!this._thrown) {
-                        this.detach();
-                        recoil.active = false;
-                        this._resetAnimAndRemoveFromInv();
-                    }
+        const time = this.definition.cookable ? (game.now - (this._cookStart ?? 0)) : 0;
 
-                    this.destroy();
-                    this._detonate();
-                },
-                this.definition.fuseTime
-            );
-        }
-
-        this._cookStart = this.game.now;
-    }
-
-    throw(soft = false): void {
-        if (this._cookStart === undefined || this._thrown) return;
-
-        if (this._scheduledThrow) {
-            if (soft) {
-                this._scheduledThrow.kill();
-                this._throwInternal(true);
-            }
-
-            return;
-        }
-
-        const cookTimeLeft = this.definition.cookTime - this.game.now + this._cookStart;
-        if (cookTimeLeft > 0) {
-            this._scheduledThrow = this.game.addTimeout(
-                () => {
-                    this._throwInternal(soft);
-                },
-                cookTimeLeft
-            );
-            return;
-        }
-
-        this._throwInternal(soft);
-    }
-
-    private _throwInternal(soft = false): void {
-        this.detach();
-
-        const definition = this.definition;
-
-        this.parent.owner.recoil.active = false;
-        this._thrown = true;
-
-        this._resetAnimAndRemoveFromInv();
-
-        if (!this.definition.c4) {
-            this._timer ??= this.game.addTimeout(
-                () => {
-                    this.destroy();
-                    this._detonate();
-                },
-                this.definition.fuseTime
-            );
-        }
-
-        const projectile = this._projectile = this.game.addProjectile(
+        const projectile = game.addProjectile({
             definition,
-            Vec.add(
-                this.owner.position,
-                Vec.rotate(definition.animation.cook.rightFist, this.owner.rotation)
+            position: Vec.add(
+                owner.position,
+                Vec.rotate(definition.animation.cook.rightFist, owner.rotation)
             ),
-            this.parent.owner.layer,
-            this.parent
-        );
+            layer: owner.layer,
+            owner: owner,
+            source: this,
+            velocity: Vec.add(
+                Vec.fromPolar(owner.rotation, speed),
+                owner.movementVector
+            ),
+            height: this.definition.physics.initialHeight,
+            fuseTime: this.definition.fuseTime - time
+        });
 
-        if (!this.definition.c4) {
-            projectile.velocity = Vec.add(
-                Vec.fromPolar(
-                    this.owner.rotation,
-                    soft
-                        ? 0
-                        : Numeric.min(
-                            (definition.maxThrowDistance ?? 128) * this.owner.mapPerkOrDefault(PerkIds.DemoExpert, ({ rangeMod }) => rangeMod, 1),
-                            0.9 * this.owner.distanceToMouse
-                        //  ^^^ Grenades will consistently undershoot the mouse by 10% in order to make long-range shots harder
-                        //      while not really affecting close-range shots
-                        ) / 985
-                        //  ^^^ Heuristics says that dividing desired range by this number makes the grenade travel roughly that distance
-                ),
-                this.owner.movementVector
-            );
+        if (definition.c4) {
+            owner.c4s.add(projectile);
+            owner.dirty.activeC4s = true;
         }
-    }
-
-    destroy(): void {
-        this._cookStart = undefined;
-        this._timer?.kill();
-
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        this._projectile && this.game.removeProjectile(this._projectile);
     }
 }

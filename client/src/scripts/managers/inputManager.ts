@@ -9,8 +9,8 @@ import { Vec } from "@common/utils/vector";
 import $ from "jquery";
 import nipplejs, { type JoystickOutputData } from "nipplejs";
 import { isMobile } from "pixi.js";
-import { getTranslatedString } from "../../translations";
-import { type TranslationKeys } from "../../typings/translations";
+import { getTranslatedString } from "../utils/translations/translations";
+import { type TranslationKeys } from "../utils/translations/typings";
 import { Game } from "../game";
 import { GameConsole, type GameSettings, type PossibleError } from "../console/gameConsole";
 import { FORCE_MOBILE, PIXI_SCALE } from "../utils/constants";
@@ -255,10 +255,6 @@ export const InputManager = new (class InputManager {
             }
 
             if (playSound) SoundManager.play("pickup");
-        }
-
-        if (action.type === InputActions.ExplodeC4 && UIManager.hasC4s) {
-            SoundManager.play("c4_beep");
         }
 
         this.actions.push(action);

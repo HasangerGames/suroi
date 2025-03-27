@@ -17,6 +17,7 @@ import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacle
 import { type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { GameOverPacket, TeammateGameOverData } from "@common/packets/gameOverPacket";
 import { type InputData, type NoMobile } from "@common/packets/inputPacket";
+import { DamageSources, KillPacket } from "@common/packets/killPacket";
 import { MutablePacketDataIn } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { ReportPacket } from "@common/packets/reportPacket";
@@ -52,9 +53,8 @@ import { Explosion } from "./explosion";
 import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject";
 import { type Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
+import { Projectile } from "./projectile";
 import { type SyncedParticle } from "./syncedParticle";
-import { type ThrowableProjectile } from "./throwableProj";
-import { DamageSources, KillPacket } from "@common/packets/killPacket";
 
 export interface PlayerSocketData {
     player?: Player
@@ -444,7 +444,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     private readonly _mapPings: Game["mapPings"] = [];
 
-    c4s: ThrowableProjectile[] = [];
+    c4s = new Set<Projectile>();
 
     backEquippedMelee?: MeleeDefinition;
 
@@ -1134,6 +1134,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
+        // Health regen
         let toRegen = this._modifiers.hpRegen;
         if (this._adrenaline >= 0) {
             /*
@@ -1170,29 +1171,23 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             toRegen += adrenRegen * this.mapPerkOrDefault(
                 PerkIds.LacedStimulants,
                 ({ healDmgRate, lowerHpLimit }) => (this.health <= lowerHpLimit ? 1 : -healDmgRate),
-                1
+                (this.adrenaline > 0 || this.normalizedHealth < 0.3) && !this.downed ? 1 : 0
             );
 
             // Drain adrenaline
             this.adrenaline -= 0.0005 * this._modifiers.adrenDrain * dt;
         }
-
         this.health += dt / 1000 * toRegen;
 
         // Shoot gun/use item
-        if (this.startedAttacking) {
-            if (this.game.pluginManager.emit("player_start_attacking", this) === undefined) {
-                this.startedAttacking = false;
-                this.disableInvulnerability();
-                this.activeItem.useItem();
-            }
+        if (this.startedAttacking && this.game.pluginManager.emit("player_start_attacking", this) === undefined) {
+            this.startedAttacking = false;
+            this.disableInvulnerability();
+            this.activeItem.useItem();
         }
-
-        if (this.stoppedAttacking) {
-            if (this.game.pluginManager.emit("player_stop_attacking", this) === undefined) {
-                this.stoppedAttacking = false;
-                this.activeItem.stopUse();
-            }
+        if (this.stoppedAttacking && this.game.pluginManager.emit("player_stop_attacking", this) === undefined) {
+            this.stoppedAttacking = false;
+            this.activeItem.stopUse();
         }
 
         // Gas damage
@@ -1454,7 +1449,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             ),
             ...(
                 player.dirty.activeC4s || forceInclude
-                    ? { activeC4s: this.c4s.length > 0 }
+                    ? { activeC4s: this.c4s.size > 0 }
                     : {}
             ),
             ...(
@@ -2102,7 +2097,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         const downedBy = this.downedBy?.player;
-        if (source === DamageSources.Gas || source === DamageSources.Airdrop || source === DamageSources.BleedOut || source === DamageSources.FinallyKilled) {
+        if (
+            source === DamageSources.Gas
+            || source === DamageSources.Airdrop
+            || source === DamageSources.BleedOut
+            || source === DamageSources.FinallyKilled
+        ) {
             packet.damageSource = source;
 
             if (downedBy !== undefined) {
@@ -2578,9 +2578,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     break;
                 case InputActions.ExplodeC4:
                     for (const c4 of this.c4s) {
-                        c4.detonate(750);
+                        if (c4.activateC4()) this.c4s.delete(c4);
                     }
-                    this.c4s.length = 0;
                     this.dirty.activeC4s = true;
                     break;
             }

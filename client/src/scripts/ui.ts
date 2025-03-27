@@ -17,9 +17,9 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { sound } from "@pixi/sound";
 import $ from "jquery";
 import { Color, isWebGPUSupported } from "pixi.js";
-import type { NewsPost } from "../../vite/news-posts-plugin/news-posts-plugin";
-import { TRANSLATIONS, getTranslatedString } from "../translations";
-import type { TranslationKeys } from "../typings/translations";
+import type { NewsPost } from "../../vite/plugins/news-posts-plugin";
+import { TRANSLATIONS, getTranslatedString } from "./utils/translations/translations";
+import type { TranslationKeys } from "./utils/translations/typings";
 import { Config, type ServerInfo } from "./config";
 import { Game } from "./game";
 import { body, createDropdown } from "./uiHelpers";
@@ -71,6 +71,8 @@ export let teamSocket: WebSocket | undefined;
 let teamID: string | undefined | null;
 let joinedTeam = false;
 let autoFill = false;
+let globalIsLeader = false;
+let globalReady = false;
 
 export let autoPickup = true;
 
@@ -557,25 +559,40 @@ export async function setUpUI(): Promise<void> {
 
         teamSocket = new WebSocket(`${selectedRegion.mainAddress.replace("http", "ws")}/team?${params.toString()}`);
 
+        const updateTeamStartButton = (isLeader: boolean, ready: boolean, forceStart: boolean): void => {
+            let str: TranslationKeys;
+            if (isLeader && forceStart) {
+                str = "create_team_play";
+            } else if (ready) {
+                str = "create_team_not_ready";
+            } else {
+                str = "create_team_ready";
+            }
+            ui.btnStartGame.text(getTranslatedString(str));
+        };
+
         teamSocket.onmessage = (message: MessageEvent<string>): void => {
             const data = JSON.parse(message.data) as CustomTeamMessage;
             switch (data.type) {
                 case CustomTeamMessages.Join: {
                     joinedTeam = true;
                     teamID = data.teamID;
+                    globalReady = false;
                     window.location.hash = `#${teamID}`;
 
                     ui.createTeamUrl.val(`${window.location.origin}/?region=${GameConsole.getBuiltInCVar("cv_region")}#${teamID}`);
 
                     ui.createTeamAutoFill.prop("checked", data.autoFill);
                     ui.createTeamLock.prop("checked", data.locked);
+                    ui.createTeamForceStart.prop("checked", data.forceStart);
                     break;
                 }
                 case CustomTeamMessages.Update: {
-                    const { players, isLeader, ready } = data;
+                    const { players, isLeader: playerIsLeader, ready, forceStart } = data;
                     ui.createTeamPlayers.html(
                         players.map(
                             ({
+                                id,
                                 isLeader,
                                 ready,
                                 name,
@@ -583,31 +600,40 @@ export async function setUpUI(): Promise<void> {
                                 badge,
                                 nameColor
                             }: CustomTeamPlayerInfo): string => `
-                                <div class="create-team-player-container">
-                                    <i class="fa-solid fa-crown"${isLeader ? "" : ' style="display: none"'}></i>
-                                    <i class="fa-regular fa-circle-check"${ready ? "" : ' style="display: none"'}></i>
+                                <div class="create-team-player-container" data-id="${id}">
+                                    ${ready ? '<i class="fa-regular fa-circle-check"></i>' : ""}
+                                    ${playerIsLeader || isLeader ? `<i class="fa-solid ${isLeader ? "fa-crown" : "fa-xmark"}"></i>` : ""}
                                     <div class="skin">
                                         <div class="skin-base" style="background-image: url('./img/game/shared/skins/${skin}_base.svg')"></div>
                                         <div class="skin-left-fist" style="background-image: url('./img/game/shared/skins/${skin}_fist.svg')"></div>
                                         <div class="skin-right-fist" style="background-image: url('./img/game/shared/skins/${skin}_fist.svg')"></div>
                                     </div>
                                     <div class="create-team-player-name-container">
-                                        <span class="create-team-player-name"${nameColor ? ` style="color: ${new Color(nameColor).toHex()}"` : ""};>${name}</span>
-                                        ${![undefined, "bdg_"].includes(badge) ? `<img class="create-team-player-badge" draggable="false" src="./img/game/shared/badges/${badge}.svg" />` : ""}
+                                        <span class="create-team-player-name"${nameColor ? ` style="color: ${new Color(nameColor).toHex()}"` : ""}>${name}</span>
+                                        ${badge ? `<img class="create-team-player-badge" draggable="false" src="./img/game/shared/badges/${badge}.svg" />` : ""}
                                     </div>
                                 </div>
                                 `
                         ).join("")
                     );
-                    ui.createTeamToggles.toggleClass("disabled", !isLeader);
-                    ui.btnStartGame
-                        .toggleClass("btn-disabled", !isLeader && ready)
-                        .text(getTranslatedString(isLeader ? "create_team_play" : ready ? "create_team_waiting" : "create_team_ready"));
+                    $("#create-team-players .fa-xmark").off().on("click", function() {
+                        teamSocket?.send(JSON.stringify({
+                            type: CustomTeamMessages.KickPlayer,
+                            playerId: parseInt($(this).parent().attr("data-id") ?? "-1")
+                        }));
+                    });
+                    ui.createTeamToggles.toggleClass("disabled", !playerIsLeader);
+                    updateTeamStartButton(playerIsLeader, ready, forceStart);
+                    globalIsLeader = playerIsLeader;
+                    globalReady = ready;
                     break;
                 }
                 case CustomTeamMessages.Settings: {
-                    ui.createTeamAutoFill.prop("checked", data.autoFill);
-                    ui.createTeamLock.prop("checked", data.locked);
+                    const { autoFill, locked, forceStart } = data;
+                    ui.createTeamAutoFill.prop("checked", autoFill);
+                    ui.createTeamLock.prop("checked", locked);
+                    ui.createTeamForceStart.prop("checked", forceStart);
+                    updateTeamStartButton(globalIsLeader, globalReady, !!forceStart);
                     break;
                 }
                 case CustomTeamMessages.Started: {
@@ -628,15 +654,17 @@ export async function setUpUI(): Promise<void> {
             ui.splashUi.css({ filter: "", pointerEvents: "" });
         };
 
-        teamSocket.onclose = (): void => {
+        teamSocket.onclose = (e): void => {
             // The socket is set to undefined in the close button listener
             // If it's not undefined, the socket was closed by other means, so show an error message
             if (teamSocket) {
-                ui.splashMsgText.html(
+                ui.splashMsgText.html(getTranslatedString(
                     joinedTeam
-                        ? getTranslatedString("msg_lost_team_connection")
-                        : getTranslatedString("msg_error_joining_team")
-                );
+                        ? e.reason === "kicked"
+                            ? "msg_error_kicked_team"
+                            : "msg_lost_team_connection"
+                        : "msg_error_joining_team"
+                ));
                 ui.splashMsg.show();
             }
             resetPlayButtons();
@@ -746,6 +774,13 @@ export async function setUpUI(): Promise<void> {
         teamSocket?.send(JSON.stringify({
             type: CustomTeamMessages.Settings,
             locked: this.checked
+        }));
+    });
+
+    $<HTMLInputElement>("#create-team-toggle-force-start").on("click", function() {
+        teamSocket?.send(JSON.stringify({
+            type: CustomTeamMessages.Settings,
+            forceStart: this.checked
         }));
     });
 
@@ -1168,9 +1203,7 @@ export async function setUpUI(): Promise<void> {
 
         GameConsole.variables.addChangeListener(
             cvar,
-            (_, newEmote) => {
-                changeEmoteSlotImage(slot, newEmote);
-            }
+            val => changeEmoteSlotImage(slot, val)
         );
 
         changeEmoteSlotImage(slot, emote)
@@ -1254,7 +1287,7 @@ export async function setUpUI(): Promise<void> {
 
     GameConsole.variables.addChangeListener(
         "cv_loadout_crosshair",
-        (_, value) => {
+        value => {
             (crosshairCache[value] ??= $(`#crosshair-${value}`))
                 .addClass("selected")
                 .siblings()
@@ -1383,7 +1416,7 @@ export async function setUpUI(): Promise<void> {
 
         GameConsole.variables.addChangeListener(
             "cv_loadout_badge",
-            (_, newBadge) => { selectBadge(newBadge); }
+            selectBadge
         );
     }
 
@@ -1410,7 +1443,7 @@ export async function setUpUI(): Promise<void> {
             callback?.(value);
         });
 
-        GameConsole.variables.addChangeListener(settingName, (game, newValue) => {
+        GameConsole.variables.addChangeListener(settingName, newValue => {
             if (ignore) return;
 
             const casted = +newValue;
@@ -1445,7 +1478,7 @@ export async function setUpUI(): Promise<void> {
             callback?.(value);
         });
 
-        GameConsole.variables.addChangeListener(settingName, (game, newValue) => {
+        GameConsole.variables.addChangeListener(settingName, newValue => {
             const casted = !!newValue;
 
             callback?.(casted);
@@ -1481,7 +1514,7 @@ export async function setUpUI(): Promise<void> {
 
     GameConsole.variables.addChangeListener(
         "cv_crosshair_color",
-        (game, value) => {
+        value => {
             crosshairColor.val(value);
         }
     );
@@ -1495,7 +1528,7 @@ export async function setUpUI(): Promise<void> {
 
     GameConsole.variables.addChangeListener(
         "cv_crosshair_stroke_color",
-        (game, value) => {
+        value => {
             crosshairStrokeColor.val(value);
         }
     );
@@ -1611,7 +1644,7 @@ export async function setUpUI(): Promise<void> {
             GameConsole.setBuiltInCVar("cv_killfeed_style", element.checked ? "text" : "icon");
         });
 
-        GameConsole.variables.addChangeListener("cv_killfeed_style", (game, value) => {
+        GameConsole.variables.addChangeListener("cv_killfeed_style", value => {
             element.checked = value === "text";
             UIManager.updateWeaponSlots();
         });
@@ -1628,8 +1661,7 @@ export async function setUpUI(): Promise<void> {
             UIManager.updateWeaponSlots();
         });
 
-        GameConsole.variables.addChangeListener("cv_weapon_slot_style", (game, value) => {
-            console.trace();
+        GameConsole.variables.addChangeListener("cv_weapon_slot_style", value => {
             element.checked = value === "colored";
             UIManager.updateWeaponSlots();
         });
@@ -1637,9 +1669,9 @@ export async function setUpUI(): Promise<void> {
         element.checked = GameConsole.getBuiltInCVar("cv_weapon_slot_style") === "colored";
     }
 
+    // Show a warning if hardware acceleration is not available/supported
     const tmpCanvas = document.createElement("canvas");
     let glContext = tmpCanvas.getContext("webgl2", { failIfMajorPerformanceCaveat: true });
-
     if (!glContext) {
         $("#splash-hw-acceleration-warning").show();
     } else {
@@ -1707,7 +1739,7 @@ export async function setUpUI(): Promise<void> {
 
     GameConsole.variables.addChangeListener(
         "cv_draw_hud",
-        (_, newVal) => {
+        newVal => {
             gameUi.toggle(newVal);
             MapManager.visible = !GameConsole.getBuiltInCVar("cv_minimap_minimized") && newVal;
         }
