@@ -2402,7 +2402,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         fireMode: FireMode.Auto,
         shotSpread: 2,
         moveSpread: 5,
-        length: 5.3,
+        length: 5.9,
         fists: {
             left: Vec.create(40, 0),
             right: Vec.create(40, 0),
@@ -2410,18 +2410,19 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             rightZIndex: 4,
             animationDuration: 100
         },
-        image: { position: Vec.create(80, -1) },
+        image: { position: Vec.create(80, 0) },
+        noMuzzleFlash: true,
         capacity: 30,
         extendedCapacity: 40,
         reloadTime: 2,
         ballistics: {
-            damage: 12,
+            damage: -12,
             obstacleMultiplier: 1,
             speed: 0.18,
             range: 70,
             tracer: {
                 image: "needle_trail",
-                length: 1
+                length: 1.4
             },
             noReflect: true
         }

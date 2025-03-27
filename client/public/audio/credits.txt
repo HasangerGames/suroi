@@ -57,6 +57,8 @@ Guns:
     - "081895_impact_.wav" from Pixabay: https://pixabay.com/sound-effects/081895-impact-wav-43951/
     - "Gross Slimy Goo Foley 7" from Pixabay: https://pixabay.com/sound-effects/gross-slimy-goo-foley-7-164295/
 
+  Vaccinator fire - "Simple Gunshot Reverb Test" from Pixabay: https://pixabay.com/sound-effects/simple-gunshot-reverb-test-101094/
+
   Other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
 
 Melees:

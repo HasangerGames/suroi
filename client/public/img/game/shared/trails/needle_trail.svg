@@ -2,12 +2,12 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="76.817719"
-   height="24"
-   viewBox="0 0 20.324688 6.35"
+   width="149.82877"
+   height="10"
+   viewBox="0 0 39.642193 2.6458334"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
+   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
    sodipodi:docname="needle_trail.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -24,13 +24,13 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#505050"
      inkscape:document-units="px"
-     inkscape:zoom="2.3046021"
-     inkscape:cx="-27.336606"
-     inkscape:cy="25.383991"
-     inkscape:window-width="1472"
-     inkscape:window-height="812"
+     inkscape:zoom="13.036798"
+     inkscape:cx="132.93141"
+     inkscape:cy="-4.9475338"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
      inkscape:window-x="0"
-     inkscape:window-y="37"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
@@ -49,25 +49,57 @@
        id="linearGradient33"
        inkscape:collect="always">
       <stop
-         style="stop-color:#ff3333;stop-opacity:0;"
+         style="stop-color:#d928ca;stop-opacity:0;"
          offset="0"
          id="stop33" />
       <stop
-         style="stop-color:#ff3333;stop-opacity:1;"
+         style="stop-color:#d928ca;stop-opacity:1;"
          offset="0.22304283"
          id="stop34" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1136"
+       id="linearGradient1138"
+       x1="1.7117449"
+       y1="33.072918"
+       x2="10.583334"
+       y2="33.072914"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(2.9655359,0,0,0.04,-0.62738821,-4.044955)" />
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient1136">
+      <stop
+         style="stop-color:#da25cb;stop-opacity:0.50226957;"
+         offset="0"
+         id="stop1132" />
+      <stop
+         style="stop-color:#d928cd;stop-opacity:0;"
+         offset="1"
+         id="stop1134" />
     </linearGradient>
   </defs>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-0.09820859,-0.08046416)">
+     transform="translate(30.757875,-1.3991229)">
+    <rect
+       style="fill:url(#linearGradient1138);fill-opacity:1;stroke-width:0;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect846"
+       width="31.38525"
+       height="2.6458333"
+       x="-0.62737483"
+       y="-4.0449562"
+       rx="0"
+       transform="scale(-1)"
+       ry="0" />
     <g
        id="g40-6-7-3-0-10-0"
-       transform="matrix(2.7042825,0,0,3.5461526,-29.122559,-4.5084298)">
+       transform="matrix(1.1267844,0,0,1.4775636,-11.75962,-0.51291628)">
       <path
-         style="fill:#4d4d4d;fill-opacity:1;stroke:#4d4d4d;stroke-width:0.570465;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:29;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:#ffffff;fill-opacity:1;stroke:#4d4d4d;stroke-width:0.570465;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:29;stroke-dasharray:none;stroke-opacity:1"
          d="m 15.428412,2.1893887 2.607465,-0.00812"
          id="path30-1-0-6-7-3-3"
          sodipodi:nodetypes="cc" />
@@ -99,7 +131,7 @@
            id="path20-9-5-5-5-64-7-4-30-3"
            sodipodi:nodetypes="ccczcc" />
         <path
-           style="fill:#ad1f1f;fill-opacity:1;stroke:none;stroke-width:0.154362;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:29;stroke-dasharray:none;stroke-opacity:1"
+           style="fill:#d828c9;fill-opacity:1;stroke:none;stroke-width:0.154362;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:29;stroke-dasharray:none;stroke-opacity:1"
            d="m 13.740659,1.9718573 v 0.4350705 h 0.549384 V 1.9718573 Z"
            id="path31-89-6-8-6-161-4"
            sodipodi:nodetypes="ccccc" />

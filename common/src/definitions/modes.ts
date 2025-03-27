@@ -97,10 +97,10 @@ export const Modes: Record<Mode, ModeDefinition> = {
     infection: {
         colors: {
             grass: "hsl(300, 15%, 35%)",
-            water: "hsl(211, 63%, 42%)",
-            border: "hsl(211, 63%, 30%)",
-            beach: "hsl(40, 39%, 55%)",
-            riverBank: "hsl(34, 41%, 32%)",
+            water: "hsl(223, 35%, 44%)",
+            border: "hsl(229, 30%, 36%)",
+            beach: "hsl(25, 28%, 53%)",
+            riverBank: "hsl(16, 28%, 38%)",
             trail: "hsl(35, 50%, 40%)",
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
