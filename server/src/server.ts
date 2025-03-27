@@ -19,6 +19,17 @@ if (Cluster.isPrimary && require.main === module) {
 
     process.on("uncaughtException", e => serverError("An unhandled error occurred. Details:", e));
 
+    const exit = (): void => {
+        serverLog("Shutting down...");
+        for (const game of games) {
+            game?.worker.kill();
+        }
+    };
+    process.on("exit", exit);
+    process.on("SIGINT", exit);
+    process.on("SIGTERM", exit);
+    process.on("SIGUSR2", exit);
+
     setInterval(() => {
         const memoryUsage = process.memoryUsage().rss;
 
