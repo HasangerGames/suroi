@@ -66,6 +66,7 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
 
         owner.action?.cancel();
 
+        const hitDelay = definition.hitDelay ?? 50;
         this.owner.game.addTimeout((): void => {
             if (satisfiesPreflights()) {
                 const position = Vec.add(
@@ -137,13 +138,15 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
                     clearTimeout(this._autoUseTimeoutID);
                     this._autoUseTimeoutID = setTimeout(
                         () => this._useItemNoDelayCheck(false),
-                        damagedObjects.length && definition.attackCooldown
-                            ? definition.attackCooldown
-                            : definition.cooldown
+                        (
+                            damagedObjects.length && definition.attackCooldown
+                                ? definition.attackCooldown
+                                : definition.cooldown
+                        ) - hitDelay
                     );
                 }
             }
-        }, 50 + (definition.hitDelay ?? 0));
+        }, hitDelay);
     }
 
     stopUse(): void {
