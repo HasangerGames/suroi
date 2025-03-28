@@ -46,6 +46,7 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getSpawnableLoots, SpawnableItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap, removeFrom } from "./utils/misc";
+import { Perks } from "@common/definitions/items/perks";
 
 export class Game implements GameData {
     public readonly id: number;
@@ -368,17 +369,21 @@ export class Game implements GameData {
                 position: position
             });
 
-            // Slowdown/speed mult from bullets (currently only vaccinator)
-            const multiplier = weapon.definition.ballistics.enemySpeedMultiplier;
+            const { enemySpeedMultiplier, removePerk } = weapon.definition.ballistics;
+
             if (
-                multiplier
+                enemySpeedMultiplier
                 && object.isPlayer
                 && source.isPlayer
                 && (!this.teamMode || object.teamID !== source.teamID || object.id === source.id)
             ) {
-                object.effectSpeedMultiplier = multiplier.multiplier;
+                object.effectSpeedMultiplier = enemySpeedMultiplier.multiplier;
                 object.effectSpeedTimeout?.kill();
-                object.effectSpeedTimeout = this.addTimeout(() => object.effectSpeedMultiplier = 1, multiplier.duration);
+                object.effectSpeedTimeout = this.addTimeout(() => object.effectSpeedMultiplier = 1, enemySpeedMultiplier.duration);
+            }
+
+            if (object.isPlayer && removePerk) {
+                object.perks.removeItem(Perks.fromString(removePerk));
             }
         }
 
