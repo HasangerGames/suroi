@@ -24,9 +24,9 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
      inkscape:document-units="px"
-     inkscape:zoom="2.9959385"
-     inkscape:cx="151.87228"
-     inkscape:cy="42.557617"
+     inkscape:zoom="4.2368969"
+     inkscape:cx="81.427519"
+     inkscape:cy="102.31545"
      inkscape:window-width="2560"
      inkscape:window-height="1368"
      inkscape:window-x="0"
@@ -159,6 +159,116 @@
        y1="164.39999"
        x2="-488.70001"
        y2="164.39999" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linear-gradient1"
+       id="linearGradient1"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.08613991,-0.25016845,-0.25016845,-0.08613991,180.79788,127.2409)"
+       x1="-496.70001"
+       y1="164.39999"
+       x2="-488.70001"
+       y2="164.39999" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linear-gradient1"
+       id="linearGradient2"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.08613991,-0.25016845,-0.25016845,-0.08613991,183.0733,120.22944)"
+       x1="-496.70001"
+       y1="164.39999"
+       x2="-488.70001"
+       y2="164.39999" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linear-gradient1"
+       id="linearGradient3"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.08613991,-0.25016845,-0.25016845,-0.08613991,192.70412,117.26611)"
+       x1="-496.70001"
+       y1="164.39999"
+       x2="-488.70001"
+       y2="164.39999" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linear-gradient1"
+       id="linearGradient4"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.08613991,-0.25016845,-0.25016845,-0.08613991,188.65601,128.29923)"
+       x1="-496.70001"
+       y1="164.39999"
+       x2="-488.70001"
+       y2="164.39999" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linear-gradient1"
+       id="linearGradient5"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.08613991,-0.25016845,-0.25016845,-0.08613991,191.196,135.99861)"
+       x1="-496.70001"
+       y1="164.39999"
+       x2="-488.70001"
+       y2="164.39999" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linear-gradient1"
+       id="linearGradient6"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.08613991,-0.25016845,-0.25016845,-0.08613991,178.86641,136.9511)"
+       x1="-496.70001"
+       y1="164.39999"
+       x2="-488.70001"
+       y2="164.39999" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linear-gradient1"
+       id="linearGradient7"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.08613991,-0.25016845,-0.25016845,-0.08613991,175.10934,132.21508)"
+       x1="-496.70001"
+       y1="164.39999"
+       x2="-488.70001"
+       y2="164.39999" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linear-gradient1"
+       id="linearGradient8"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.08613991,-0.25016845,-0.25016845,-0.08613991,168.0185,135.20487)"
+       x1="-496.70001"
+       y1="164.39999"
+       x2="-488.70001"
+       y2="164.39999" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linear-gradient1"
+       id="linearGradient9"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.08613991,-0.25016845,-0.25016845,-0.08613991,166.77497,121.9757)"
+       x1="-496.70001"
+       y1="164.39999"
+       x2="-488.70001"
+       y2="164.39999" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linear-gradient1"
+       id="linearGradient10"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.08613991,-0.25016845,-0.25016845,-0.08613991,169.50018,111.31298)"
+       x1="-496.70001"
+       y1="164.39999"
+       x2="-488.70001"
+       y2="164.39999" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linear-gradient1"
+       id="linearGradient11"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.08613991,-0.25016845,-0.25016845,-0.08613991,181.82975,109.11695)"
+       x1="-496.70001"
+       y1="164.39999"
+       x2="-488.70001"
+       y2="164.39999" />
   </defs>
   <g
      inkscape:label="Layer 1"
@@ -220,12 +330,12 @@
        vector-effect="non-scaling-stroke"
        style="fill:#9b3e8e;stroke-width:0.264583" />
     <circle
-       id="path427-8"
-       class="st16"
+       id="path427-3-5-7-56"
+       class="st2"
        cx="98.274338"
        cy="218.23111"
        r="1.0583333"
-       style="fill:url(#linear-gradient);stroke-width:0.264583" />
+       style="fill:url(#linearGradient11);stroke-width:0.264583" />
     <circle
        id="path427-3"
        class="st2"
@@ -234,74 +344,74 @@
        r="1.0583333"
        style="fill:url(#linearGradient25);stroke-width:0.264583" />
     <circle
-       id="path427-2"
-       class="st0"
+       id="path427-3-5"
+       class="st2"
        cx="97.242462"
        cy="236.35507"
        r="1.0583333"
-       style="fill:url(#linear-gradient2);stroke-width:0.264583" />
+       style="fill:url(#linearGradient1);stroke-width:0.264583" />
     <circle
-       id="path427-22"
-       class="st13"
+       id="path427-3-5-7-5"
+       class="st2"
        cx="107.64059"
        cy="245.11278"
        r="1.0583333"
-       style="fill:url(#linear-gradient3);stroke-width:0.264583" />
+       style="fill:url(#linearGradient5);stroke-width:0.264583" />
     <circle
-       id="path427-5"
-       class="st11"
+       id="path427-3-5-7-0"
+       class="st2"
        cx="83.219551"
        cy="231.08987"
        r="1.0583333"
-       style="fill:url(#linear-gradient4);stroke-width:0.264583" />
+       style="fill:url(#linearGradient9);stroke-width:0.264583" />
     <circle
-       id="path427-1"
-       class="st12"
+       id="path427-3-5-7-3"
+       class="st2"
        cx="91.553925"
        cy="241.32924"
        r="1.0583333"
-       style="fill:url(#linear-gradient5);stroke-width:0.264583" />
+       style="fill:url(#linearGradient7);stroke-width:0.264583" />
     <circle
-       id="path427-87"
-       class="st14"
+       id="path427-3-5-7-6"
+       class="st2"
        cx="109.14871"
        cy="226.38028"
        r="1.0583333"
-       style="fill:url(#linear-gradient6);stroke-width:0.264583" />
+       style="fill:url(#linearGradient3);stroke-width:0.264583" />
     <circle
-       id="path427-0"
-       class="st10"
+       id="path427-3-5-7-1"
+       class="st2"
        cx="85.944756"
        cy="220.42715"
        r="1.0583333"
-       style="fill:url(#linear-gradient7);stroke-width:0.264583" />
+       style="fill:url(#linearGradient10);stroke-width:0.264583" />
     <circle
-       id="path427-6"
-       class="st6"
+       id="path427-3-5-7-4"
+       class="st2"
        cx="84.463089"
        cy="244.31903"
        r="1.0583333"
-       style="fill:url(#linear-gradient8);stroke-width:0.264583" />
+       style="fill:url(#linearGradient8);stroke-width:0.264583" />
     <circle
-       id="path427-9"
-       class="st3"
+       id="path427-3-5-7-9"
+       class="st2"
        cx="105.10059"
        cy="237.41341"
        r="1.0583333"
-       style="fill:url(#linear-gradient9);stroke-width:0.264583" />
+       style="fill:url(#linearGradient4);stroke-width:0.264583" />
     <circle
-       id="path427-05"
-       class="st1"
+       id="path427-3-5-7"
+       class="st2"
        cx="99.517883"
        cy="229.34361"
        r="1.0583333"
-       style="fill:url(#linear-gradient10);stroke-width:0.264583" />
+       style="fill:url(#linearGradient2);stroke-width:0.264583" />
     <circle
-       id="path427-30"
-       class="st7"
+       id="path427-3-5-7-7"
+       class="st2"
        cx="95.311005"
        cy="246.06528"
        r="1.0583333"
-       style="fill:url(#linear-gradient11);stroke-width:0.264583" />
+       style="fill:url(#linearGradient6);stroke-width:0.264583" />
   </g>
 </svg>

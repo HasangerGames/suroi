@@ -586,7 +586,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.dirty.weapons = true;
 
         this.updateAndApplyModifiers();
-        this.giveGun("vaccinator");
     }
 
     giveGun(idString: ReferenceTo<GunDefinition>): void {

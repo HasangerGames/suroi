@@ -9,7 +9,7 @@ export const Config = {
 
     map: "infection",
 
-    spawn: { mode: SpawnMode.Center },
+    spawn: { mode: SpawnMode.Default },
 
     teamSize: TeamSize.Solo,
 
