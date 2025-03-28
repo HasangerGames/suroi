@@ -19,11 +19,15 @@ if (Cluster.isPrimary && require.main === module) {
 
     process.on("uncaughtException", e => serverError("An unhandled error occurred. Details:", e));
 
+    let exiting = false;
     const exit = (): void => {
+        if (exiting) return;
+        exiting = true;
         serverLog("Shutting down...");
         for (const game of games) {
             game?.worker.kill();
         }
+        process.exit();
     };
     process.on("exit", exit);
     process.on("SIGINT", exit);
