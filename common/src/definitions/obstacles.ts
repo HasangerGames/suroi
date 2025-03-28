@@ -1029,7 +1029,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             particle: "plumpkin_particle"
         },
         weaponSwap: true,
-        regenerateAfterDestroyed: 1000,
+        regenerateAfterDestroyed: 30000,
         applyPerkOnDestroy: {
             mode: "infection",
             perk: PerkIds.Infected,

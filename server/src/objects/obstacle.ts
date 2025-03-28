@@ -292,15 +292,17 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 }
             }
 
-            // if (definition.regenerateAfterDestroyed) {
+            if (definition.regenerateAfterDestroyed) {
                 this.game.addTimeout(() => {
                     this.dead = false;
                     this.health = this.maxHealth;
                     this.scale = this.maxScale;
-                    this.hitbox.scale(this.maxScale);
-                    this.setDirty();
-                }, 1000); //definition.regenerateAfterDestroyed);
-            // }
+                    const hitboxRotation = this.definition.rotationMode === RotationMode.Limited ? this.rotation as Orientation : 0;
+                    this.hitbox = definition.hitbox.transform(this.position, this.scale, hitboxRotation);
+                    this.collidable = !definition.noCollisions;
+                    this.setPartialDirty();
+                }, definition.regenerateAfterDestroyed);
+            }
 
             this.game.pluginManager.emit("obstacle_did_destroy", {
                 obstacle: this,
