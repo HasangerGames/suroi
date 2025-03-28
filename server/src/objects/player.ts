@@ -650,7 +650,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 // Give the player ammo for the new gun if they do not have any ammo for it.
                 if (!items.hasItem(ammoType) && !summonAirdrop) {
-                    items.setItem(ammoType, ammoSpawnAmount);
+                    items.setItem(ammoType, Numeric.min(ammoSpawnAmount, this.inventory.backpack.maxCapacity[ammoType]));
                     this.dirty.items = true;
                 }
 
