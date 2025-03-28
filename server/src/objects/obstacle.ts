@@ -177,8 +177,9 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         this.health -= amount;
         this.setPartialDirty();
 
-        const notDead = this.health > 0 && !this.dead;
-        if (notDead) {
+        const dead = this.health <= 0 || this.dead;
+
+        if (!dead) {
             const oldScale = this.scale;
 
             // Calculate new scale & scale hitbox
@@ -192,7 +193,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             ...params
         });
 
-        if (!notDead) {
+        if (dead) {
             this.health = 0;
             this.dead = true;
             if (definition.weaponSwap && source instanceof BaseGameObject && source.isPlayer) {
@@ -262,7 +263,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 );
             }
 
-            if (this.definition.isWall) {
+            if (definition.isWall) {
                 this.parentBuilding?.damageCeiling();
 
                 for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
@@ -290,6 +291,16 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                     }
                 }
             }
+
+            // if (definition.regenerateAfterDestroyed) {
+                this.game.addTimeout(() => {
+                    this.dead = false;
+                    this.health = this.maxHealth;
+                    this.scale = this.maxScale;
+                    this.hitbox.scale(this.maxScale);
+                    this.setDirty();
+                }, 1000); //definition.regenerateAfterDestroyed);
+            // }
 
             this.game.pluginManager.emit("obstacle_did_destroy", {
                 obstacle: this,

@@ -2387,7 +2387,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             },
             noReflect: true,
             onHitProjectile: "proj_seed"
-        }
+        },
+        noSwap: true
     },
     {
         idString: "vaccinator",
@@ -2432,7 +2433,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
                 multiplier: 0.7
             },
             removePerk: PerkIds.Infected
-        }
+        },
+        noSwap: true
     },
     {
         idString: "firework_launcher",

@@ -53,6 +53,7 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly customInteractMessage?: boolean
     readonly interactOnlyFromSide?: Orientation
     readonly weaponSwap?: boolean
+    readonly regenerateAfterDestroyed?: number
 
     readonly applyPerkOnDestroy?: {
         readonly mode?: Mode
@@ -1028,6 +1029,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             particle: "plumpkin_particle"
         },
         weaponSwap: true,
+        regenerateAfterDestroyed: 1000,
         applyPerkOnDestroy: {
             mode: "infection",
             perk: PerkIds.Infected,

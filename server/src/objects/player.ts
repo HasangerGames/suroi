@@ -658,13 +658,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 inventory.replaceWeapon(slot, chosenItem, force);
                 (this.inventory.getWeapon(slot) as GunItem).ammo = capacity;
-                this.sendEmote(Emotes.fromString(chosenItem.idString), true);
                 break;
             }
 
             case ItemType.Melee: {
                 inventory.replaceWeapon(slot, chosenItem, force);
-                this.sendEmote(Emotes.fromString(chosenItem.idString), true);
                 break;
             }
 
@@ -702,7 +700,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 this.dirty.weapons = true;
                 this.dirty.items = true;
-                this.sendEmote(Emotes.fromString(chosenItem.idString), true);
                 break;
             }
         }
@@ -2175,6 +2172,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         break;
                     }
                 }
+            }
+
+            if (this.game.mode.weaponSwap && !(weaponUsed instanceof Explosion)) {
+                source.swapWeaponRandomly(weaponUsed, true);
             }
 
             source.updateAndApplyModifiers();

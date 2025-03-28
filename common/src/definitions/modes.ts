@@ -30,6 +30,7 @@ export interface ModeDefinition {
     readonly specialLogo?: boolean
     readonly specialPlayButtons?: boolean
     readonly modeLogoImage?: string
+    readonly weaponSwap?: boolean
 }
 
 export const Modes: Record<Mode, ModeDefinition> = {
@@ -108,7 +109,8 @@ export const Modes: Record<Mode, ModeDefinition> = {
         sounds: {
             foldersToLoad: ["shared", "normal", "infection"]
         },
-        spriteSheets: ["shared", "normal", "infection"]
+        spriteSheets: ["shared", "normal", "infection"],
+        weaponSwap: true
     },
     birthday: { // copy of normal
         colors: {

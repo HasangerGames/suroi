@@ -128,6 +128,7 @@ export enum ItemType {
 export interface ItemDefinition extends ObjectDefinition {
     readonly itemType: ItemType
     readonly noDrop?: boolean
+    readonly noSwap?: boolean
     readonly devItem?: boolean
 }
 

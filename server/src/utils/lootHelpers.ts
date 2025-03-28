@@ -229,7 +229,7 @@ export function getSpawnableLoots(mode: Mode, mapDef: MapDefinition, cache: Cach
         )
             .flat()
             .map(entry => "item" in entry ? entry.item : getAllItemsFromTable(resolveTable(mode, entry.table)))
-            .filter(item => item !== NullString)
+            .filter(item => item !== NullString && !Loots.fromStringSafe(item)?.noSwap)
             .flat();
 
     // and now we go get the spawnable loots
