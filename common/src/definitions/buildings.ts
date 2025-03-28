@@ -3156,7 +3156,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]
     },
     {
-        idString: "port", // UNDER CONSTRUCTION
+        idString: "port", // TODO: ship
         name: "Port",
         spawnHitbox: RectangleHitbox.fromRect(480, 490, Vec.create(0, -20)),
         floorImages: [
@@ -3172,7 +3172,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { key: "planted_bushes_residue", position: Vec.create(-109.2, -225.54) },
 
             // Right Side: Top Left
-            { key: "planted_bushes_residue", position: Vec.create(91.67, -225.15) }
+            { key: "planted_bushes_residue", position: Vec.create(91.67, -225.15) },
+
+            { key: "barrier_floor", position: Vec.create(0, -183.1) },
+            { key: "barrier_floor", position: Vec.create(81.8, 54.9), rotation: Math.PI / 2 }
         ],
         obstacles: [
 
@@ -3629,6 +3632,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomPallet, position: Vec.create(142.19, -6.04) },
             { idString: randomPallet, position: Vec.create(168.2, 22.47) },
             { idString: "truck_2", position: Vec.create(-68.6, -177), orientation: 3 },
+            { idString: "mutated_forklift", position: Vec.create(153.71, -98.5) },
             { idString: "porta_potty", position: Vec.create(-50.4, -190.07), orientation: 3 }, // fucking porta potty in the middle of the road
             { idString: "large_truck", position: Vec.create(122.9, 159.1), orientation: 1 }, // y x
 
@@ -3671,6 +3675,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(433.5, 76, Vec.create(0, -207)), // G2 - C
                     RectangleHitbox.fromRect(149, 434.5, Vec.create(141.68, -27.59)) // G1 - R
                 )
+            },
+            {
+                type: FloorNames.Water,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(132.89, 384.3, Vec.create(0, 24.5)),
+                    RectangleHitbox.fromRect(148.72, 55.77, Vec.create(-0.32, 216.9))
+                )
             }
         ],
         // ----------------------------------------------------
@@ -3688,6 +3699,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         // C - Center
         // ----------------------------------------------------
         groundGraphics: [
+            { // water
+                color: 0x2869af,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(132.89, 384.3, Vec.create(0, 24.5)),
+                    RectangleHitbox.fromRect(148.72, 55.77, Vec.create(-0.32, 216.9))
+                )
+            },
             {
                 color: 0x666666,
                 hitbox: new GroupHitbox(
@@ -7373,6 +7391,70 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]
     },
 
+    {
+        idString: "blue_stair",
+        name: "Blue Stair",
+        spawnHitbox: RectangleHitbox.fromRect(15, 15),
+        material: "metal_heavy",
+        particle: "metal_particle",
+        reflectBullets: true,
+        floorImages: [{
+            key: "blue_stair",
+            position: Vec.create(0, 0)
+        }],
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1.33, 10.49, Vec.create(4.21, -0.37)),
+            RectangleHitbox.fromRect(1.33, 10.49, Vec.create(-4.2, -0.37)),
+            RectangleHitbox.fromRect(1.99, 1.76, Vec.create(4.54, 4.75)),
+            RectangleHitbox.fromRect(1.98, 1.76, Vec.create(-4.53, 4.76)),
+            RectangleHitbox.fromRect(1.2, 2.57, Vec.create(4.94, -3.77)),
+            RectangleHitbox.fromRect(1.2, 2.57, Vec.create(-4.93, -3.77))
+        ),
+        floors: [{
+            type: FloorNames.Metal,
+            hitbox: RectangleHitbox.fromRect(7.17, 9.78, Vec.create(0.08, -0.36))
+        }]
+    },
+
+    {
+        idString: "mutated_forklift",
+        name: "Mutated Forklift",
+        spawnHitbox: RectangleHitbox.fromRect(30, 45, Vec.create(0, -11)),
+        ceilingHitbox: RectangleHitbox.fromRect(25, 20, Vec.create(0, -22)),
+        noCeilingScopeEffect: true,
+        material: "metal_heavy",
+        particle: "metal_particle",
+        reflectBullets: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(8.17, 14.87, Vec.create(0, 0)),
+            RectangleHitbox.fromRect(4.6, 18.25, Vec.create(0, 0)),
+            new CircleHitbox(1.88, Vec.create(2.14, -7.18)),
+            new CircleHitbox(1.83, Vec.create(2.21, 7.27)),
+            new CircleHitbox(1.83, Vec.create(-2.22, 7.22)),
+            new CircleHitbox(1.83, Vec.create(-2.22, -7.19))
+        ),
+        floorImages: [{
+            key: "mutated_forklift_2",
+            position: Vec.create(0, 0)
+        }],
+        ceilingImages: [
+            {
+                key: "mutated_forklift_1",
+                position: Vec.create(0, -24.5)
+            },
+            {
+                key: "mutated_forklift_3",
+                position: Vec.create(0, -9.5)
+            }
+        ],
+        obstacles: [
+            { idString: "truck_tire", position: Vec.create(-3.64, 6.92), rotation: 0 },
+            { idString: "truck_tire", position: Vec.create(3.64, 6.92), rotation: 0 },
+            { idString: "truck_tire", position: Vec.create(-3.64, -7.15), rotation: 0 },
+            { idString: "truck_tire", position: Vec.create(3.64, -7.15), rotation: 0 }
+        ]
+    },
+
     // Trucks
     {
         idString: "large_truck",
@@ -7465,6 +7547,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
 
         subBuildings: [
+            { idString: "blue_stair", position: Vec.create(23.33, 12.89), orientation: 3 },
             { idString: randomPortDamagedContainer, position: Vec.create(0, -23), orientation: 2 },
             { idString: randomPortDamagedContainer, position: Vec.create(0, -5.1) }
         ]
