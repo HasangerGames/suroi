@@ -1465,7 +1465,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 player.dirty.teamID || forceInclude
                     ? { teamID: player.teamID }
                     : {}
-            )
+            ),
+            blockEmoting: player.blockEmoting
         };
 
         // Cull bullets
@@ -2625,7 +2626,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 backpack: this.inventory.backpack,
                 halloweenThrowableSkin: this.halloweenThrowableSkin,
                 activeDisguise: this.activeDisguise,
-                blockEmoting: this.blockEmoting,
+                infected: this.perks.hasItem(PerkIds.Infected),
                 backEquippedMelee: this.backEquippedMelee
             }
         };

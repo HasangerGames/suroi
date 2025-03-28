@@ -56,7 +56,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly backpack: BackpackDefinition
             readonly halloweenThrowableSkin: boolean
             readonly activeDisguise?: ObstacleDefinition
-            readonly blockEmoting: boolean
+            readonly infected: boolean
             readonly backEquippedMelee?: MeleeDefinition
         }
     }
@@ -246,7 +246,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 backpack,
                 halloweenThrowableSkin,
                 activeDisguise,
-                blockEmoting,
+                infected,
                 backEquippedMelee
             } }
         ): void {
@@ -267,7 +267,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 hasHelmet,
                 hasVest,
                 hasDisguise,
-                blockEmoting,
+                infected,
                 hasBackEquippedMelee
             );
             stream.writeUint8(teamID);
@@ -326,7 +326,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 hasHelmet,
                 hasVest,
                 hasDisguise,
-                blockEmoting,
+                infected,
                 hasBackEquippedMelee
             ] = stream.readBooleanGroup2();
 
@@ -345,7 +345,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 vest: hasVest ? Armors.readFromStream(stream) : undefined,
                 backpack: Backpacks.readFromStream(stream),
                 activeDisguise: hasDisguise ? Obstacles.readFromStream(stream) : undefined,
-                blockEmoting,
+                infected,
                 backEquippedMelee: hasBackEquippedMelee ? Melees.readFromStream(stream) : undefined
             };
         }

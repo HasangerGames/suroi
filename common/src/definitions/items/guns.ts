@@ -5,6 +5,7 @@ import { ItemType, type InventoryItemDefinition, type ReferenceTo } from "../../
 import { Vec, type Vector } from "../../utils/vector";
 import { type AmmoDefinition } from "./ammos";
 import { InventoryItemDefinitions } from "./items";
+import { PerkIds } from "./perks";
 import { ScopeDefinition } from "./scopes";
 
 type BaseGunDefinition = InventoryItemDefinition & {
@@ -2429,7 +2430,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             enemySpeedMultiplier: {
                 duration: 2000,
                 multiplier: 0.7
-            }
+            },
+            removePerk: PerkIds.Infected
         }
     },
     {

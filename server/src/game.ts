@@ -46,7 +46,7 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getSpawnableLoots, SpawnableItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap, removeFrom } from "./utils/misc";
-import { Perks } from "@common/definitions/items/perks";
+import { PerkIds, Perks } from "@common/definitions/items/perks";
 
 export class Game implements GameData {
     public readonly id: number;
@@ -384,6 +384,9 @@ export class Game implements GameData {
 
             if (object.isPlayer && removePerk) {
                 object.perks.removeItem(Perks.fromString(removePerk));
+                if (removePerk === PerkIds.Infected) { // evil
+                    object.setDirty();
+                }
             }
         }
 

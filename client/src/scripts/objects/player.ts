@@ -56,7 +56,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     meleeStopSound?: GameSound;
     meleeAttackCounter = 0;
 
-    blockEmoting = false;
     bushID?: number;
 
     backEquippedMelee?: MeleeDefinition;
@@ -64,6 +63,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     private activeDisguise?: ObstacleDefinition;
     private readonly disguiseContainer: Container;
     halloweenThrowableSkin = false;
+
+    infected = false;
 
     private _oldItem = this.activeItem;
 
@@ -545,7 +546,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     backpack,
                     halloweenThrowableSkin,
                     activeDisguise,
-                    blockEmoting,
+                    infected,
                     backEquippedMelee
                 }
             } = data;
@@ -719,6 +720,15 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 updateContainerZIndex = true;
             }
 
+            if (infected !== this.infected) {
+                this.infected = infected;
+                this.container.tint = infected ? 0x8a4c70 : 0xffffff;
+                if (!isNew) {
+                    if (infected) this.playSound("infected");
+                    else this.playSound("cured");
+                }
+            }
+
             // Pan Image Display
             const backMeleeSprite = this.images.backMeleeSprite;
             const backMelee = this.backEquippedMelee;
@@ -731,10 +741,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 backMeleeSprite.setPos(onBack.position.x, onBack.position.y);
                 backMeleeSprite.setAngle(onBack.angle);
             }
-
-            // Rate Limiting: Team Pings & Emotes
-            this.blockEmoting = blockEmoting;
-            UIManager.ui.emoteWheel.css("opacity", this.blockEmoting ? "0.5" : "");
         }
 
         if (updateContainerZIndex) this.updateZIndex();

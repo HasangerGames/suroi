@@ -71,6 +71,8 @@ export const UIManager = new (class UIManager {
 
     public hasC4s = false;
 
+    blockEmoting = false;
+
     getRawPlayerNameNullish(id: number): string | undefined {
         const player = Game.playerNames.get(id) ?? this._teammateDataCache.get(id);
         let name: string | undefined;
@@ -622,7 +624,8 @@ export const UIManager = new (class UIManager {
             lockedSlots,
             items,
             activeC4s,
-            perks
+            perks,
+            blockEmoting
         } = data;
 
         const sentTime = Game.seqsSent[pingSeq];
@@ -840,6 +843,11 @@ export const UIManager = new (class UIManager {
                     this.updatePerkSlot(newPerk, i);
                 }
             }
+        }
+
+        if (blockEmoting !== this.blockEmoting) {
+            this.blockEmoting = blockEmoting;
+            this.ui.emoteWheel.css("opacity", this.blockEmoting ? "0.5" : "");
         }
     }
 
@@ -1074,7 +1082,6 @@ export const UIManager = new (class UIManager {
         container.css("animation", `perk-${perkDef.type ?? "normal"}-colors 1.5s linear infinite`);
 
         // if (perkDef.type !== undefined) Game.soundManager.play(`perk_pickup_${perkDef.type}`);
-        if (perkDef.equipSound) SoundManager.play(perkDef.equipSound);
 
         this._animationTimeouts[index] = window.setTimeout(() => {
             container.css("animation", "none");
