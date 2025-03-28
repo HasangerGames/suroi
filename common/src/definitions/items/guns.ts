@@ -2428,7 +2428,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             noReflect: true,
             enemySpeedMultiplier: {
                 duration: 2000,
-                multiplier: 0.75
+                multiplier: 0.7
             }
         }
     },
