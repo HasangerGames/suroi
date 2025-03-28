@@ -613,19 +613,17 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
     }
 
-    swapWeaponRandomly(itemOrSlot: InventoryItem | number = this.activeItem, force = false): void {
-        if (this.perks.hasItem(PerkIds.Lycanthropy)) return; // womp womp
+    swapWeaponRandomly(item: InventoryItem = this.activeItem, force = false): void {
+        if (item.definition.noSwap || this.perks.hasItem(PerkIds.Lycanthropy)) return; // womp womp
 
-        let slot = itemOrSlot === this.activeItem
+        let slot = item === this.activeItem
             ? this.activeItemIndex
-            : typeof itemOrSlot === "number"
-                ? itemOrSlot
-                : this.inventory.weapons.findIndex(i => i === itemOrSlot);
+            : this.inventory.weapons.findIndex(i => i === item);
 
         if (slot === -1) {
             // this happens if the item to be swapped isn't currently in the inventory
             // in that case, we just take the first slot matching that item's type
-            slot = GameConstants.player.inventorySlotTypings.filter(slot => slot === (itemOrSlot as InventoryItem).definition.itemType)?.[0] ?? 0;
+            slot = GameConstants.player.inventorySlotTypings.filter(slot => slot === item.definition.itemType)?.[0] ?? 0;
             // and if we somehow don't have any matching slots, then someone's probably messing with us… fallback to slot 0 lol
         }
 

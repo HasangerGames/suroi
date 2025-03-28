@@ -2501,7 +2501,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
                 spreadSpeed: { min: 1, max: 3 },
                 lifetime: { min: 2500, max: 5000 }
             }
-        }
+        },
+        noSwap: true
     },
 
     //
@@ -2511,6 +2512,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         idString: "g17_scoped",
         name: "G17 (scoped)",
         itemType: ItemType.Gun,
+        noSwap: true,
         devItem: true,
         ammoType: "bb",
         ammoSpawnAmount: 0,
@@ -2564,6 +2566,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         itemType: ItemType.Gun,
         ammoType: "power_cell",
         ammoSpawnAmount: 0,
+        noSwap: true,
         devItem: true,
         capacity: 1,
         reloadTime: 1.4,
@@ -2603,6 +2606,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         idString: "revitalizer",
         name: "Revitalizer",
         itemType: ItemType.Gun,
+        noSwap: true,
         devItem: true,
         killstreak: true,
         consistentPatterning: true,
