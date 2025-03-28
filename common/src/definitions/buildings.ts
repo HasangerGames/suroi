@@ -3630,6 +3630,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomPallet, position: Vec.create(168.2, 22.47) },
             { idString: "truck_2", position: Vec.create(-68.6, -177), orientation: 3 },
             { idString: "porta_potty", position: Vec.create(-50.4, -190.07), orientation: 3 }, // fucking porta potty in the middle of the road
+            { idString: "large_truck", position: Vec.create(122.9, 159.1), orientation: 1 }, // y x
 
             { idString: randomPortOpenContainerTwoSide, position: Vec.create(169.65, -15.05) },
             { idString: randomPortOpenContainerOneSide, position: Vec.create(183.95, -15.05) },
@@ -7373,6 +7374,101 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     },
 
     // Trucks
+    {
+        idString: "large_truck",
+        name: "Large Truck",
+        spawnHitbox: RectangleHitbox.fromRect(30, 85),
+        floorImages: [
+            {
+                key: "truck_large_back_floor",
+                position: Vec.create(-4.9, 8.7),
+                scale: Vec.create(2, 2)
+            },
+            {
+                key: "truck_large_back_floor",
+                position: Vec.create(4.9, 8.7),
+                scale: Vec.create(2, 2)
+            }
+        ],
+        floors: [{
+            type: FloorNames.Metal,
+            hitbox: new GroupHitbox(
+                RectangleHitbox.fromRect(5, 55.5, Vec.create(4.9, 8.7)),
+                RectangleHitbox.fromRect(5, 55.5, Vec.create(-4.9, 8.7)),
+                RectangleHitbox.fromRect(5.07, 2.53, Vec.create(0, -8.73)),
+                RectangleHitbox.fromRect(5.07, 2.53, Vec.create(0.04, 26.37)),
+                RectangleHitbox.fromRect(5.07, 2.53, Vec.create(-0.01, 10.8)),
+                RectangleHitbox.fromRect(5.07, 2.53, Vec.create(0.01, -4.78)),
+                RectangleHitbox.fromRect(5.07, 2.53, Vec.create(0.04, 6.86)),
+                RectangleHitbox.fromRect(5.07, 2.53, Vec.create(-0.06, -17.83)),
+                RectangleHitbox.fromRect(5.07, 2.53, Vec.create(0.04, 26.37)),
+                RectangleHitbox.fromRect(4.96, 2.51, Vec.create(0.02, 22.44)),
+                RectangleHitbox.fromRect(5.07, 2.53, Vec.create(0.07, 35.3)),
+                RectangleHitbox.fromRect(4.77, 1.36, Vec.create(-0.07, 4.32)),
+                RectangleHitbox.fromRect(5.08, 1.35, Vec.create(0.03, 32.75)),
+                RectangleHitbox.fromRect(5.08, 1.35, Vec.create(-0.1, 13.33))
+            )
+        }],
+        groundGraphics: [
+            {
+                color: 0x1f1f1f,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(4.77, 1.36, Vec.create(-0.07, 4.32)),
+                    RectangleHitbox.fromRect(5.08, 1.35, Vec.create(0.03, 32.75)),
+                    RectangleHitbox.fromRect(5.08, 1.35, Vec.create(-0.1, 13.33)),
+
+                    RectangleHitbox.fromRect(5.07, 2.53, Vec.create(0, -8.73)),
+                    RectangleHitbox.fromRect(5.07, 2.53, Vec.create(0.04, 26.37)),
+                    RectangleHitbox.fromRect(5.07, 2.53, Vec.create(-0.01, 10.8)),
+                    RectangleHitbox.fromRect(5.07, 2.53, Vec.create(0.01, -4.78)),
+                    RectangleHitbox.fromRect(5.07, 2.53, Vec.create(0.04, 6.86)),
+                    RectangleHitbox.fromRect(5.07, 2.53, Vec.create(-0.06, -17.83)),
+                    RectangleHitbox.fromRect(5.07, 2.53, Vec.create(0.04, 26.37)),
+                    RectangleHitbox.fromRect(4.96, 2.51, Vec.create(0.02, 22.44)),
+                    RectangleHitbox.fromRect(5.07, 2.53, Vec.create(0.07, 35.3))
+                )
+            },
+            {
+                color: 0x363636,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(4.51, 0.56, Vec.create(0.04, 32.73)),
+                    RectangleHitbox.fromRect(4.51, 0.56, Vec.create(0, 4.32)),
+                    RectangleHitbox.fromRect(4.51, 0.56, Vec.create(0.01, 13.35))
+                )
+            },
+            {
+                color: 0x575757,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(4.56, 1.7, Vec.create(0, -8.73)),
+                    RectangleHitbox.fromRect(4.56, 1.7, Vec.create(0.04, 26.37)),
+                    RectangleHitbox.fromRect(4.56, 1.7, Vec.create(-0.01, 10.8)),
+                    RectangleHitbox.fromRect(4.56, 1.7, Vec.create(0.01, -4.78)),
+                    RectangleHitbox.fromRect(4.56, 1.7, Vec.create(0.04, 6.86)),
+                    RectangleHitbox.fromRect(4.56, 1.7, Vec.create(-0.06, -17.83)),
+                    RectangleHitbox.fromRect(4.56, 1.7, Vec.create(0.04, 26.37)),
+                    RectangleHitbox.fromRect(4.56, 1.7, Vec.create(0.02, 22.44)),
+                    RectangleHitbox.fromRect(4.56, 1.7, Vec.create(0.07, 35.3))
+                )
+            }
+        ],
+
+        obstacles: [
+            { idString: "truck_front", position: Vec.create(0.1, -25.49), rotation: 0 },
+            { idString: "truck_tire", position: Vec.create(7.26, -15.08), rotation: 0 },
+            { idString: "truck_tire", position: Vec.create(7.26, 4.32), rotation: 0 },
+            { idString: "truck_tire", position: Vec.create(7.26, 13.43), rotation: 0 },
+            { idString: "truck_tire", position: Vec.create(7.26, 32.82), rotation: 0 },
+            { idString: "truck_tire", position: Vec.create(-7.26, -15.08), rotation: 0 },
+            { idString: "truck_tire", position: Vec.create(-7.26, 4.32), rotation: 0 },
+            { idString: "truck_tire", position: Vec.create(-7.26, 13.43), rotation: 0 },
+            { idString: "truck_tire", position: Vec.create(-7.26, 32.82), rotation: 0 }
+        ],
+
+        subBuildings: [
+            { idString: randomPortDamagedContainer, position: Vec.create(0, -23), orientation: 2 },
+            { idString: randomPortDamagedContainer, position: Vec.create(0, -5.1) }
+        ]
+    },
 
     // ----------------------------------------------------------------
     // The front of the truck is an obstacle, while the container
