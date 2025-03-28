@@ -226,6 +226,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         multiplier: 1
     };
 
+    effectSpeedMultiplier = 1; // TODO find a better way to do this maybe
+    effectSpeedTimeout?: Timeout;
+
     isMoving = false;
 
     movement = {
@@ -1049,6 +1052,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             * adrenSpeedMod                                                          // Speed boost from adrenaline
             * (this.downed ? 0.5 : (this.activeItemDefinition.speedMultiplier ?? 1)) // Active item/knocked out speed modifier
             * (this.beingRevivedBy ? 0.5 : 1)                                        // Being revived speed multiplier
+            * this.effectSpeedMultiplier                                             // Effect speed multiplier (currently only used for vaccinator slowdown)
             * this._modifiers.baseSpeed;                                             // Current on-wearer modifier
 
         // Update position

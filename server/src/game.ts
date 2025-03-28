@@ -367,6 +367,19 @@ export class Game implements GameData {
                 weaponUsed: weapon,
                 position: position
             });
+
+            // Slowdown/speed mult from bullets (currently only vaccinator)
+            const multiplier = weapon.definition.ballistics.enemySpeedMultiplier;
+            if (
+                multiplier
+                && object.isPlayer
+                && source.isPlayer
+                && (!this.teamMode || object.teamID !== source.teamID || object.id === source.id)
+            ) {
+                object.effectSpeedMultiplier = multiplier.multiplier;
+                object.effectSpeedTimeout?.kill();
+                object.effectSpeedTimeout = this.addTimeout(() => object.effectSpeedMultiplier = 1, multiplier.duration);
+            }
         }
 
         // Handle explosions

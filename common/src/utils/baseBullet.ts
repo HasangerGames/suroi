@@ -24,6 +24,11 @@ export type BaseBulletDefinition = {
     readonly noReflect?: boolean
     readonly teammateHeal?: number
 
+    readonly enemySpeedMultiplier?: {
+        duration: number
+        multiplier: number
+    }
+
     readonly tracer?: {
         /**
          * @default 1
