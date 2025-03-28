@@ -437,10 +437,12 @@ const perks = [
         description: "Lose 50% health, but gain 150% speed.",
         category: PerkCategories.Normal,
         type: PerkQualities.Negative,
+        updateInterval: 1000,
 
         hpMod: 0.5,
         speedMod: 1.5,
         adrenDrainMod: 2,
+        infectionChance: 0.02,
         noDrop: true,
         plumpkinGambleIgnore: true
     }

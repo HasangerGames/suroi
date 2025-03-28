@@ -956,6 +956,16 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         );
                         break;
                     }
+                    case PerkIds.Infected: {
+                        if (!(this.team?.players.length ?? 0 > 1)) break;
+                        for (const teammate of this.team?.players.filter(({ id }) => id !== this.id) ?? []) {
+                            const val = Numeric.clamp(1 - (perk.infectionChance * Geometry.distance(teammate.position, this.position)), 0, 1);
+                            if (Math.random() <= 1 - (val * val * val * val)) continue;
+                            teammate.perks.addItem(Perks.fromString(PerkIds.Infected));
+                            teammate.setDirty();
+                        }
+                        break;
+                    }
                 }
                 // ! evil ends here
             }
