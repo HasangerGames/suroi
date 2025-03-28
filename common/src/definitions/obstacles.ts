@@ -1028,6 +1028,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "plumpkin_particle"
         },
+        variations: 3,
         weaponSwap: true,
         regenerateAfterDestroyed: 30000,
         applyPerkOnDestroy: {
