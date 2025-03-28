@@ -42,11 +42,22 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
      * namely setTimeout
      */
     private _useItemNoDelayCheck(skipAttackCheck: boolean): void {
-        if (this.owner.game.pluginManager.emit("inv_item_use", this) !== undefined) {
+        const owner = this.owner;
+
+        const satisfiesPreflights = (): boolean => owner.activeItem === this
+            && (owner.attacking || skipAttackCheck)
+            && !owner.dead
+            && !owner.downed
+            && !owner.disconnected;
+
+        if (
+            !satisfiesPreflights()
+            || this.owner.game.pluginManager.emit("inv_item_use", this) !== undefined
+        ) {
             return;
         }
+        clearTimeout(this._autoUseTimeoutID);
 
-        const owner = this.owner;
         const definition = this.definition;
 
         this._lastUse = owner.game.now;
@@ -56,13 +67,7 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
         owner.action?.cancel();
 
         this.owner.game.addTimeout((): void => {
-            if (
-                this.owner.activeItem === this
-                && (owner.attacking || skipAttackCheck)
-                && !owner.dead
-                && !owner.downed
-                && !owner.disconnected
-            ) {
+            if (satisfiesPreflights()) {
                 const position = Vec.add(
                     owner.position,
                     Vec.scale(Vec.rotate(definition.offset, owner.rotation), owner.sizeMod)
@@ -131,7 +136,7 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
                 if (definition.fireMode === FireMode.Auto || owner.isMobile) {
                     clearTimeout(this._autoUseTimeoutID);
                     this._autoUseTimeoutID = setTimeout(
-                        this._useItemNoDelayCheck.bind(this, false),
+                        () => this._useItemNoDelayCheck(false),
                         damagedObjects.length && definition.attackCooldown
                             ? definition.attackCooldown
                             : definition.cooldown
@@ -159,7 +164,7 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
     override useItem(): void {
         super._bufferAttack(
             this.definition.cooldown,
-            this._useItemNoDelayCheck.bind(this, true)
+            () => this._useItemNoDelayCheck(true)
         );
     }
 }
