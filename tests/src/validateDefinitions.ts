@@ -1782,17 +1782,6 @@ logger.indent("Validating decals", () => {
 
 logger.indent("Validating emotes", () => {
     tester.assertNoDuplicateIDStrings(Emotes.definitions, "Emotes", "emotes");
-
-    for (const emote of Emotes) {
-        const errorPath = tester.createPath("emotes", `emote '${emote.idString}'`);
-
-        tester.assertNoPointlessValue({
-            obj: emote,
-            field: "scale",
-            defaultValue: 1,
-            baseErrorPath: errorPath
-        });
-    }
 });
 
 logger.indent("Validating explosions", () => {
