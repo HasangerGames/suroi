@@ -1998,6 +1998,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 case PerkIds.Infected: {
                     newModifiers.baseSpeed *= perk.speedMod;
                     newModifiers.maxHealth *= perk.hpMod;
+                    newModifiers.adrenDrain *= perk.adrenDrainMod;
                     break;
                 }
             }

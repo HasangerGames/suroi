@@ -440,6 +440,7 @@ const perks = [
 
         hpMod: 0.5,
         speedMod: 1.5,
+        adrenDrainMod: 2,
         noDrop: true,
         plumpkinGambleIgnore: true
     }
