@@ -1594,7 +1594,10 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "model_89", weight: 0.6 },
             { item: "vks", weight: 0.6 },
             { item: "radio", weight: 0.1 }
-        ]
+        ],
+        aegis_golden_case: [{ item: "vaccinator", weight: 1 }],
+        rsh_case_single: [{ item: "seedshot", weight: 1 }],
+        rsh_case_dual: [{ item: "seedshot", weight: 1 }]
     },
     birthday: {}
 };
