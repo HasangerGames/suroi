@@ -20,7 +20,7 @@ interface BuildingObstacle {
     readonly locked?: boolean
     readonly activated?: boolean
     readonly outdoors?: boolean
-    // readonly waterOverlay?: boolean
+    readonly waterOverlay?: boolean
 }
 
 interface LootSpawner {
@@ -3324,8 +3324,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "metal_column", position: Vec.create(20.97, -243.09) },
 
             { idString: "barrel", position: Vec.create(78.38, -234.57) },
-            { idString: "barrel", position: Vec.create(57.46, -163.16)/* , waterOverlay: true */ },
-            { idString: "regular_crate", position: Vec.create(54.54, -153.74)/* , waterOverlay: true */ },
+            { idString: "barrel", position: Vec.create(57.46, -163.16), waterOverlay: true },
+            { idString: "regular_crate", position: Vec.create(54.54, -153.74), waterOverlay: true },
 
             { idString: "grenade_crate", position: Vec.create(114.83, -216.15) },
 

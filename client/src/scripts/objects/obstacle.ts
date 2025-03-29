@@ -247,6 +247,27 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
         this.container.scale.set(this.dead ? 1 : this.scale);
 
+        if (data.waterOverlay) {
+            this.image.zIndex = getEffectiveZIndex(ZIndexes.UnderWaterObstacles, this.layer, Game.layer);
+
+            if (!this.graphics) { // todo: somehow make it follow container scale (once you punch overlay is gone)
+                this.graphics = new Graphics();
+                this.graphics.zIndex = getEffectiveZIndex(ZIndexes.ObstaclesLayer1, this.layer, Game.layer);
+                this.graphics.beginPath();
+                drawGroundGraphics(definition.hitbox.transform(this.position, 1, this.orientation), this.graphics);
+                this.graphics.closePath();
+                this.graphics.stroke({
+                    color: Game.mode.colors.water,
+                    width: 20,
+                    alpha: 0.75
+                });
+                CameraManager.addObject(this.graphics);
+            }
+            // else {
+            //     this.graphics.
+            // }
+        }
+
         if (isNew) {
             if (definition.glow !== undefined) {
                 const glow = definition.glow;
@@ -316,7 +337,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 this.mountSprite.setVisible(false);
             }
 
-            if (definition.graphics?.length && this.graphics) {
+            if ((definition.graphics?.length && this.graphics) || this.graphics) {
                 this.graphics.visible = false;
             }
 

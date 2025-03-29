@@ -611,7 +611,8 @@ export class GameMap {
                     parentBuilding: building,
                     puzzlePiece: obstacleData.puzzlePiece,
                     locked: obstacleData.locked,
-                    activated: obstacleData.activated
+                    activated: obstacleData.activated,
+                    waterOverlay: obstacleData.waterOverlay
                 },
                 obstacleData.outdoors
             );
@@ -710,7 +711,8 @@ export class GameMap {
             parentBuilding,
             puzzlePiece,
             locked,
-            activated
+            activated,
+            waterOverlay
         }: {
             rotation?: number
             layer?: number
@@ -721,6 +723,7 @@ export class GameMap {
             puzzlePiece?: string | boolean
             locked?: boolean
             activated?: boolean
+            waterOverlay?: boolean
         } = {},
         ignoreHideOnMap?: boolean
     ): Obstacle | undefined {
@@ -748,7 +751,8 @@ export class GameMap {
                     parentBuilding,
                     puzzlePiece,
                     locked,
-                    activated
+                    activated,
+                    waterOverlay
                 }
             )
         ) return;
@@ -765,7 +769,8 @@ export class GameMap {
             parentBuilding,
             puzzlePiece,
             locked,
-            activated
+            activated,
+            waterOverlay
         );
 
         if ((!def.hideOnMap || ignoreHideOnMap) && !def.invisible && obstacle.layer === Layer.Ground) this._packet.objects.push(obstacle);

@@ -29,6 +29,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
     playMaterialDestroyedSound = true;
 
+    waterOverlay = false;
+
     readonly variation: Variation;
 
     spawnHitbox: Hitbox;
@@ -84,7 +86,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         parentBuilding?: Building,
         puzzlePiece?: string | boolean,
         locked?: boolean,
-        activated?: boolean
+        activated?: boolean,
+        waterOverlay?: boolean
     ) {
         super(game, position);
 
@@ -97,6 +100,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         this.lootSpawnOffset = lootSpawnOffset;
 
         this.parentBuilding = parentBuilding;
+
+        this.waterOverlay = waterOverlay ?? false;
 
         this.activated = activated;
 
@@ -451,6 +456,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             scale: this.scale,
             dead: this.dead,
             playMaterialDestroyedSound: this.playMaterialDestroyedSound,
+            waterOverlay: this.waterOverlay,
             full: {
                 activated: this.activated,
                 definition: this.definition,
