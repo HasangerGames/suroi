@@ -26,7 +26,7 @@ import { UpdatePacket, type PlayerData, type UpdateDataCommon } from "@common/pa
 import { PlayerModifiers } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
-import { Collision, Geometry, Numeric } from "@common/utils/math";
+import { Angle, Collision, Geometry, Numeric } from "@common/utils/math";
 import { type SDeepMutable, type Timeout } from "@common/utils/misc";
 import { ItemType, type EventModifiers, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
@@ -456,6 +456,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     private _pingSeq = 0;
 
+    // key = proj, value = angle
+    stuckSeeds: Map<Projectile, number> | undefined;
+
     constructor(game: Game, socket: WebSocket<PlayerSocketData> | undefined, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
 
@@ -650,7 +653,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 // Give the player ammo for the new gun if they do not have any ammo for it.
                 if (!items.hasItem(ammoType) && !summonAirdrop) {
-                    items.setItem(ammoType, Numeric.min(ammoSpawnAmount, this.inventory.backpack.maxCapacity[ammoType]));
+                    items.setItem(ammoType, Numeric.min(ammoSpawnAmount, maxCapacity[ammoType]));
                     this.dirty.items = true;
                 }
 
@@ -968,6 +971,19 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     }
                 }
                 // ! evil ends here
+            }
+        }
+
+        if (this.stuckSeeds) {
+            for (const [proj, angle] of this.stuckSeeds.entries()) {
+                if (proj.detonated) {
+                    this.stuckSeeds.delete(proj);
+                    continue;
+                }
+                const finalAngle = Angle.normalize(this.rotation + angle);
+                proj.position = Vec.add(this.position, Vec.fromPolar(finalAngle, this.sizeMod * GameConstants.player.radius * 1.2));
+                proj.rotation = finalAngle;
+                proj.setPartialDirty();
             }
         }
 

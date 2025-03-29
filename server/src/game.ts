@@ -325,7 +325,7 @@ export class Game implements GameData {
 
             if (bullet.dead) {
                 if (!bullet.reflected) {
-                    const { onHitExplosion, onHitProjectile } = bullet.definition;
+                    const { onHitExplosion } = bullet.definition;
                     if (onHitExplosion) {
                         this.addExplosion(
                             onHitExplosion,
@@ -334,17 +334,6 @@ export class Game implements GameData {
                             bullet.layer,
                             bullet.sourceGun instanceof GunItem ? bullet.sourceGun : undefined
                         );
-                    }
-                    if (onHitProjectile) {
-                        this.addProjectile({
-                            owner: bullet.shooter,
-                            position: bullet.position,
-                            definition: onHitProjectile,
-                            height: 0,
-                            velocity: Vec.create(0, 0),
-                            layer: bullet.layer,
-                            rotation: randomRotation()
-                        });
                     }
                 }
                 this.bullets.delete(bullet);
@@ -369,7 +358,22 @@ export class Game implements GameData {
                 position: position
             });
 
-            const { enemySpeedMultiplier, removePerk } = weapon.definition.ballistics;
+            const { onHitProjectile, enemySpeedMultiplier, removePerk } = weapon.definition.ballistics;
+
+            if (onHitProjectile) {
+                const proj = this.addProjectile({
+                    owner: source,
+                    position,
+                    definition: onHitProjectile,
+                    height: 0,
+                    velocity: Vec.create(0, 0),
+                    layer: object.layer,
+                    rotation: randomRotation()
+                });
+                if (onHitProjectile === "proj_seed" && object.isPlayer) { // evil
+                    (object.stuckSeeds ??= new Map()).set(proj, Vec.angleBetween(position, object.position));
+                }
+            }
 
             if (
                 enemySpeedMultiplier

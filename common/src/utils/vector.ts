@@ -180,6 +180,14 @@ export const Vec = Object.freeze({
      * @param a The first vector
      * @param b The second vector
      */
+    angleBetween(a: Vector, b: Vector): number {
+        return Math.atan2(b.y - a.y, b.x - a.x) + Math.PI;
+    },
+    /**
+     * Returns the angle between two vectors
+     * @param a The first vector
+     * @param b The second vector
+     */
     angleBetweenVectors(a: Vector, b: Vector): number {
         return Math.acos((a.x * b.x + a.y * b.y) / Math.sqrt(Vec.length(a) * Vec.length(b)));
     },

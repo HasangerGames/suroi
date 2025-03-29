@@ -265,11 +265,11 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         ) this.setPartialDirty();
     }
 
-    private _detonated = false;
+    detonated = false;
     private _detonate(): void {
-        if (this._detonated) return;
+        if (this.detonated) return;
 
-        this._detonated = true;
+        this.detonated = true;
         const { explosion } = this.definition.detonation;
 
         const particles
