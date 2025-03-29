@@ -1092,26 +1092,28 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.altWeapon.setAngle(angle); // there's an ambiguity here as to whether the angle should be inverted or the same
             this.images.weapon.setPivot(reference.image && "pivot" in reference.image && reference.image.pivot ? reference.image.pivot : Vec.create(0, 0));
 
-            if (this.activeItem !== this._oldItem) {
-                this.anims.muzzleFlashFade?.kill();
-                this.anims.muzzleFlashRecoil?.kill();
-                this.images.muzzleFlash.alpha = 0;
-                if (this.isActivePlayer && !isNew) {
-                    let soundID: string;
-                    if (reference.itemType === ItemType.Throwable) {
-                        soundID = "throwable";
-                    } else if (reference.itemType === ItemType.Gun && reference.isDual) {
-                        soundID = reference.idString.slice("dual_".length);
-                    } else {
-                        soundID = reference.idString;
-                    }
-                    SoundManager.play(`${soundID}_switch`);
-                }
-            }
-
             const offset = this._getOffset();
             this.images.weapon.setPos(pX, pY + offset);
             this.images.altWeapon.setPos(pX, pY - offset);
+        }
+
+        if (this.activeItem !== this._oldItem) {
+            this.anims.muzzleFlashFade?.kill();
+            this.anims.muzzleFlashRecoil?.kill();
+            this.images.muzzleFlash.alpha = 0;
+            if (this.isActivePlayer && !isNew) {
+                let soundID: string;
+                if (reference.itemType === ItemType.Throwable) {
+                    soundID = "throwable";
+                } else if (reference.itemType === ItemType.Gun && reference.isDual) {
+                    soundID = reference.idString.slice("dual_".length);
+                } else if (SoundManager.has(`shared/${reference.idString}_switch`)) {
+                    soundID = reference.idString;
+                } else {
+                    soundID = "default";
+                }
+                SoundManager.play(`${soundID}_switch`);
+            }
         }
 
         this.images.weapon.setVisible(imagePresent);
