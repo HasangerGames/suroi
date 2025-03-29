@@ -244,6 +244,11 @@ export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
                     }
                     break;
                 }
+                case PerkIds.Infected: {
+                    modifiers.damage *= perk.damageMod;
+                    modifyForDamageMod(perk.damageMod);
+                    break;
+                }
             }
         }
         // ! evil ends here

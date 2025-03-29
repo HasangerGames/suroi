@@ -965,6 +965,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         break;
                     }
                     case PerkIds.Infected: {
+                        if (this.health > perk.minHealth) {
+                            this.health = Numeric.max(this.health - perk.dps, perk.minHealth);
+                        }
                         const detectionHitbox = new CircleHitbox(perk.infectionRadius, this.position);
                         for (const player of this.game.grid.intersectsHitbox(detectionHitbox)) {
                             if (
@@ -1205,7 +1208,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             toRegen += adrenRegen * this.mapPerkOrDefault(
                 PerkIds.LacedStimulants,
                 ({ healDmgRate, lowerHpLimit }) => (this.health <= lowerHpLimit ? 1 : -healDmgRate),
-                (this.adrenaline > 0 || this.normalizedHealth < 0.3) && !this.downed ? 1 : 0
+                (this.adrenaline > 0 || (this.normalizedHealth < 0.3 && !this.perks.hasItem(PerkIds.Infected))) && !this.downed ? 1 : 0
             );
 
             // Drain adrenaline
@@ -2015,7 +2018,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 case PerkIds.Engorged: {
                     const base = newModifiers.maxHealth * GameConstants.player.defaultHealth;
                     (eventMods.kill as ExtendedWearerAttributes[]).push({
-                        maxHealth: (base + perk.hpMod) / base,
+                        maxHealth: (base + perk.healthMod) / base,
                         sizeMod: perk.sizeMod
                     });
                     break;
@@ -2032,7 +2035,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
                 case PerkIds.Infected: {
                     newModifiers.baseSpeed *= perk.speedMod;
-                    newModifiers.maxHealth *= perk.hpMod;
+                    newModifiers.maxHealth *= perk.healthMod;
                     newModifiers.adrenDrain *= perk.adrenDrainMod;
                     break;
                 }
@@ -2185,7 +2188,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     case PerkIds.Engorged: {
                         if (source.kills <= perk.killsLimit) {
                             source.sizeMod *= perk.sizeMod;
-                            source.maxHealth *= perk.hpMod;
+                            source.maxHealth *= perk.healthMod;
                             source.updateAndApplyModifiers();
                         }
                         break;

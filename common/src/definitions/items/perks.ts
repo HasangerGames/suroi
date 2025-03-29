@@ -321,7 +321,7 @@ const perks = [
         category: PerkCategories.Halloween,
         type: PerkQualities.Neutral,
 
-        hpMod: 10, // additive
+        healthMod: 10, // additive
         sizeMod: 1.05, // multiplicative
         killsLimit: 10,
         noDrop: true
@@ -435,13 +435,16 @@ const perks = [
         idString: PerkIds.Infected,
         name: "Infected",
         itemType: ItemType.Perk,
-        description: "Lose 25% health, but gain 25% speed. Adrenaline decays twice as fast. Infect other players within 20 map units.",
+        description: "Increased speed and damage, but health drops and adrenaline decays fast. Infect nearby players.",
         category: PerkCategories.Normal,
         type: PerkQualities.Negative,
         updateInterval: 1000,
-        hpMod: 0.75,
+        dps: 0.78,
+        minHealth: 5,
+        healthMod: 0.75,
         speedMod: 1.25,
-        adrenDrainMod: 2,
+        damageMod: 1.2,
+        adrenDrainMod: 10,
         infectionRadius: 20,
         infectionChance: 0.05,
         noDrop: true,

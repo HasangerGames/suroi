@@ -102,6 +102,7 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
 
                     multiplier *= this.owner.mapPerkOrDefault(PerkIds.Berserker, ({ damageMod }) => damageMod, 1);
                     multiplier *= this.owner.mapPerkOrDefault(PerkIds.Lycanthropy, ({ damageMod }) => damageMod, 1);
+                    multiplier *= this.owner.mapPerkOrDefault(PerkIds.Infected, ({ damageMod }) => damageMod, 1);
 
                     if (closestObject.isObstacle) {
                         multiplier *= definition.piercingMultiplier !== undefined && closestObject.definition.impenetrable
