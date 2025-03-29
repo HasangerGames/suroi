@@ -326,7 +326,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
 
     push(angle: number, speed: number): void {
         this._velocity = Vec.add(this._velocity, Vec.fromPolar(angle, speed * 1000));
-        this._angularVelocity = 10;
+        if (!this.definition.physics.noSpin) this._angularVelocity = 10;
     }
 
     activateC4(): boolean {

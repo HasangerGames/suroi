@@ -435,7 +435,7 @@ const perks = [
         idString: PerkIds.Infected,
         name: "Infected",
         itemType: ItemType.Perk,
-        description: "Lose 25% health, but gain 25% speed. Adrenaline decays twice as fast.",
+        description: "Lose 25% health, but gain 25% speed. Adrenaline decays twice as fast. Infect other players within 20 map units.",
         category: PerkCategories.Normal,
         type: PerkQualities.Negative,
         updateInterval: 1000,

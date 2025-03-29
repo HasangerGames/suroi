@@ -35,6 +35,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
         readonly initialZVelocity: number
         readonly initialAngularVelocity: number
         readonly initialHeight: number
+        readonly noSpin?: boolean
         readonly drag?: {
             readonly air: number
             readonly ground: number
@@ -278,6 +279,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
             initialZVelocity: 4,
             initialAngularVelocity: 0,
             initialHeight: 0.5,
+            noSpin: true,
             drag: {
                 air: Infinity,
                 ground: Infinity,
