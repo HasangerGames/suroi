@@ -360,7 +360,7 @@ export class Game implements GameData {
 
             const { onHitProjectile, enemySpeedMultiplier, removePerk } = weapon.definition.ballistics;
 
-            if (onHitProjectile) {
+            if (onHitProjectile && !("definition" in object && (object.definition.noCollisions || object.definition.noBulletCollision))) {
                 const proj = this.addProjectile({
                     owner: source,
                     position,
