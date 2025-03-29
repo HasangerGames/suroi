@@ -142,4 +142,5 @@ Memorial open:
   "impact riser 01" from Pixabay: https://pixabay.com/sound-effects/impact-riser-01-6908/
   "Atomic Impact" from Pixabay: https://pixabay.com/sound-effects/atomic-impact-216308/
 
+Default switch sound - "Jump Landing" from Pixabay: https://pixabay.com/sound-effects/jump-landing-30946/
 Generic pickup sound - Katloo
