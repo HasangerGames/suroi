@@ -109,6 +109,30 @@ export class Bullet extends BaseBullet {
             }
 
             const { point, normal } = collision.intersection;
+            const reflected = (
+                collision.reflected
+                && this.reflectionCount < 3
+                && !definition.noReflect
+                && (definition.onHitExplosion === undefined || !definition.explodeOnImpact)
+            );
+
+            let rotation: number | undefined;
+            if (reflected || definition.onHitExplosion || definition.onHitProjectile) {
+                /*
+                    nudge the bullet
+
+                    if the bullet reflects, we do this to ensure that it doesn't re-collide
+                    with the same obstacle instantly
+
+                    if it doesn't, then we do this to avoid having the obstacle eat the
+                    explosion, thereby shielding others from its effects
+                */
+                rotation = 2 * Math.atan2(normal.y, normal.x) - this.rotation;
+                this.position = Vec.add(point, Vec.create(Math.sin(rotation), -Math.cos(rotation)));
+            } else {
+                // atan2 is expensive so we avoid the above calculation if possible
+                this.position = point;
+            }
 
             if (collision.dealDamage) {
                 const damageAmount = (
@@ -126,32 +150,17 @@ export class Bullet extends BaseBullet {
                     damage: damageMod * damageAmount * (isObstacle ? (this.modifiers?.dtc ?? 1) * definition.obstacleMultiplier : 1),
                     weapon: this.sourceGun,
                     source: this.shooter,
-                    position: point
+                    position: this.position
                 });
             }
 
             this.collidedIDs.add(object.id);
-            this.position = point;
 
             if (isObstacle && object.definition.noCollisions) continue;
 
-            if (collision.reflected && !definition.noReflect && this.reflectionCount < 3) {
-                /*
-                    no matter what, nudge the bullet
-
-                    if the bullet reflects, we do this to ensure that it doesn't re-collide
-                    with the same obstacle instantly
-
-                    if it doesn't, then we do this to avoid having the obstacle eat the
-                    explosion, thereby shielding others from its effects
-                */
-                const rotation = 2 * Math.atan2(normal.y, normal.x) - this.rotation;
-                this.position = Vec.add(this.position, Vec.create(Math.sin(rotation), -Math.cos(rotation)));
-
-                if (definition.onHitExplosion === undefined || !definition.explodeOnImpact) {
-                    this.reflect(rotation);
-                    this.reflected = true;
-                }
+            if (reflected) {
+                this.reflect(rotation ?? 0);
+                this.reflected = true;
             }
 
             this.dead = true;
