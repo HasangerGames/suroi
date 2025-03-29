@@ -3159,12 +3159,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "port", // TODO: ship
         name: "Port",
         spawnHitbox: RectangleHitbox.fromRect(480, 490, Vec.create(0, -20)),
+        sounds: {
+            normal: "port_ambience",
+            position: Vec.create(0, 0),
+            maxRange: 385,
+            falloff: 0.5
+        },
         floorImages: [
-            { // trucks will not display if enabled, because their z-indexes are building floor specific
-                key: "port_new_layout_alpha",
-                position: Vec.create(0, 0)
-            },
-
             // Large warehouse broken wall area (left side, center)
             { key: "barrel_residue", position: Vec.create(-206.62, -85.47) },
 
@@ -3702,7 +3703,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { // water
                 color: 0x2869af,
                 hitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(132.89, 384.3, Vec.create(0, 24.5)),
+                    RectangleHitbox.fromRect(135, 384.3, Vec.create(0, 24.5)),
                     RectangleHitbox.fromRect(148.72, 55.77, Vec.create(-0.32, 216.9))
                 )
             },
