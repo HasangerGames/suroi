@@ -932,6 +932,11 @@ export const UIManager = new (class UIManager {
         );
     }
 
+    private readonly _slotCache: string[] = [];
+    clearSlotCache(): void {
+        this._slotCache.length = 0;
+    }
+
     /*
       TODO proper caching would require keeping a copy of the inventory currently being shown,
            so that we can compare it to what it should now be showing (in other words, a kind
@@ -997,31 +1002,30 @@ export const UIManager = new (class UIManager {
                 );
 
                 const isFists = definition.idString === "fists";
-                const oldSrc = itemImage.attr("src");
 
-                let frame = definition.idString;
-                if (ClientPerkManager.hasItem(PerkIds.PlumpkinBomb) && definition.itemType === ItemType.Throwable && !definition.noSkin) {
-                    frame += "_halloween";
+                let newSrc: string;
+                if (isFists) {
+                    if (this.skinID !== undefined && Skins.fromStringSafe(this.skinID)?.grassTint) { // ghillie suit
+                        newSrc = `url("data:image/svg+xml,${encodeURIComponent(`<svg width="34" height="34" viewBox="0 0 8.996 8.996" xmlns="http://www.w3.org/2000/svg"><circle fill="${Game.colors.ghillie.toHex()}" stroke="${new Color(Game.colors.ghillie).multiply("#111").toHex()}" stroke-width="1.05833" cx="4.498" cy="4.498" r="3.969"/></svg>`)}")`;
+                    } else {
+                        newSrc = `url(./img/game/shared/skins/${this.skinID ?? GameConsole.getBuiltInCVar("cv_loadout_skin")}_fist.svg)`;
+                    }
+                } else {
+                    let frame = definition.idString;
+                    if (ClientPerkManager.hasItem(PerkIds.PlumpkinBomb) && definition.itemType === ItemType.Throwable && !definition.noSkin) {
+                        frame += "_halloween";
+                    }
+                    newSrc = `url(./img/game/${definition.itemType === ItemType.Melee && definition.reskins?.includes(Game.modeName) ? Game.modeName : "shared"}/weapons/${frame}.svg)`;
                 }
 
-                const location = definition.itemType === ItemType.Melee && definition.reskins?.includes(Game.modeName) ? Game.modeName : "shared";
-                const newSrc = `./img/game/${location}/weapons/${frame}.svg`;
-                if (oldSrc !== newSrc) {
+                if (newSrc !== this._slotCache[i]) {
+                    this._slotCache[i] = newSrc;
                     this._playSlotAnimation(container);
-                    itemImage.attr("src", newSrc);
+                    itemImage
+                        .css("background-image", newSrc)
+                        .toggleClass("is-fists", isFists)
+                        .show();
                 }
-
-                const backgroundImage
-                    = isFists
-                        ? this.skinID !== undefined && Skins.fromStringSafe(this.skinID)?.grassTint
-                            ? `url("data:image/svg+xml,${encodeURIComponent(`<svg width="34" height="34" viewBox="0 0 8.996 8.996" xmlns="http://www.w3.org/2000/svg"><circle fill="${Game.colors.ghillie.toHex()}" stroke="${new Color(Game.colors.ghillie).multiply("#111").toHex()}" stroke-width="1.05833" cx="4.498" cy="4.498" r="3.969"/></svg>`)}")`
-                            : `url(./img/game/shared/skins/${this.skinID ?? GameConsole.getBuiltInCVar("cv_loadout_skin")}_fist.svg)`
-                        : "none";
-
-                itemImage
-                    .css("background-image", backgroundImage)
-                    .toggleClass("is-fists", isFists)
-                    .show();
 
                 const count = weapon.count;
                 if (ammoDirty && count !== undefined) {
