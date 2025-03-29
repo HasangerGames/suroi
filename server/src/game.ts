@@ -46,7 +46,7 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getSpawnableLoots, SpawnableItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap, removeFrom } from "./utils/misc";
-import { PerkIds, Perks } from "@common/definitions/items/perks";
+import { PerkDefinition, PerkIds, Perks } from "@common/definitions/items/perks";
 
 export class Game implements GameData {
     public readonly id: number;
@@ -389,6 +389,12 @@ export class Game implements GameData {
             if (object.isPlayer && removePerk) {
                 object.perks.removeItem(Perks.fromString(removePerk));
                 if (removePerk === PerkIds.Infected) { // evil
+                    // stfu
+                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+                    const immunity = Perks.fromString(PerkIds.Immunity) as PerkDefinition & { duration: number };
+                    object.perks.addItem(immunity);
+                    object.immunityTimeout?.kill();
+                    object.immunityTimeout = this.addTimeout(() => object.perks.removeItem(immunity), immunity.duration);
                     object.setDirty();
                 }
             }

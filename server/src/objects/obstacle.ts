@@ -234,6 +234,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                     definition.applyPerkOnDestroy
                     && definition.applyPerkOnDestroy.mode === this.game.modeName
                     && definition.applyPerkOnDestroy.chance > Math.random()
+                    && !(definition.applyPerkOnDestroy.perk === PerkIds.Infected && source.perks.hasItem(PerkIds.Immunity)) // evil
                 ) {
                     source.perks.addItem(Perks.fromString(definition.applyPerkOnDestroy.perk));
                     if (definition.applyPerkOnDestroy.perk === PerkIds.Infected) { // evil

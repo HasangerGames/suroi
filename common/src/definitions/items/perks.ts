@@ -78,7 +78,8 @@ export const enum PerkIds {
     //
     // Infection
     //
-    Infected = "infected"
+    Infected = "infected",
+    Immunity = "immunity"
 }
 
 const perks = [
@@ -434,16 +435,26 @@ const perks = [
         idString: PerkIds.Infected,
         name: "Infected",
         itemType: ItemType.Perk,
-        description: "Lose 50% health, but gain 150% speed.",
+        description: "Lose 25% health, but gain 25% speed. Adrenaline decays twice as fast.",
         category: PerkCategories.Normal,
         type: PerkQualities.Negative,
         updateInterval: 1000,
-
-        hpMod: 0.5,
-        speedMod: 1.5,
+        hpMod: 0.75,
+        speedMod: 1.25,
         adrenDrainMod: 2,
         infectionRadius: 20,
         infectionChance: 0.05,
+        noDrop: true,
+        plumpkinGambleIgnore: true
+    },
+    {
+        idString: PerkIds.Immunity,
+        name: "Immunity",
+        itemType: ItemType.Perk,
+        description: "Immune to infection for 15 seconds.",
+        category: PerkCategories.Normal,
+        type: PerkQualities.Positive,
+        duration: 15000,
         noDrop: true,
         plumpkinGambleIgnore: true
     }

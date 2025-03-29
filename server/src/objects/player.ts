@@ -459,6 +459,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     // key = proj, value = angle
     stuckSeeds: Map<Projectile, number> | undefined;
 
+    immunityTimeout: Timeout | undefined;
+
     constructor(game: Game, socket: WebSocket<PlayerSocketData> | undefined, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
 
@@ -966,6 +968,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                                 !player.isPlayer
                                 || !player.hitbox.collidesWith(detectionHitbox)
                                 || Math.random() > perk.infectionChance
+                                || player.perks.hasItem(PerkIds.Immunity)
                             ) continue;
                             player.perks.addItem(Perks.fromString(PerkIds.Infected));
                             player.setDirty();
