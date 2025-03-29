@@ -391,7 +391,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "seed_explosion",
         name: "Seedshot",
-        damage: 80,
+        damage: 15,
         obstacleMultiplier: 0.5,
         radius: {
             min: 8,
@@ -406,10 +406,10 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
             tint: 0xe3a860,
             scale: 0.8
         },
-        shrapnelCount: 20,
+        shrapnelCount: 15,
         ballistics: {
             shrapnel: true,
-            damage: 5,
+            damage: 1,
             obstacleMultiplier: 0.5,
             speed: 0.04,
             range: 8,
