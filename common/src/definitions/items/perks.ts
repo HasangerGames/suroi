@@ -442,7 +442,8 @@ const perks = [
         hpMod: 0.5,
         speedMod: 1.5,
         adrenDrainMod: 2,
-        infectionChance: 0.02,
+        infectionRadius: 20,
+        infectionChance: 0.05,
         noDrop: true,
         plumpkinGambleIgnore: true
     }
