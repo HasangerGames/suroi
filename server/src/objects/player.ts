@@ -660,7 +660,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
 
                 inventory.replaceWeapon(slot, chosenItem, force);
-                (this.inventory.getWeapon(slot) as GunItem).ammo = capacity;
+                const item = this.inventory.getWeapon(slot) as GunItem;
+                item.ammo = capacity;
+                item.lastUse = item.switchDate = this.lastFreeSwitch = this.game.now;
+                this.effectiveSwitchDelay = 500;
                 break;
             }
 

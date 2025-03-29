@@ -101,8 +101,7 @@ export abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> 
         // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         get stats() { return this._stats; }
 
-        protected _lastUse = 0;
-        get lastUse(): number { return this._lastUse; }
+        lastUse = 0;
 
         switchDate = 0;
 
@@ -267,7 +266,7 @@ export abstract class InventoryItemBase<Type extends WeaponTypes = WeaponTypes> 
             if (owner.downed) return;
             const now = owner.game.now;
 
-            const timeToFire = cooldown - (now - this._lastUse);
+            const timeToFire = cooldown - (now - this.lastUse);
             const timeToSwitch = owner.effectiveSwitchDelay - (now - this.switchDate);
 
             if (

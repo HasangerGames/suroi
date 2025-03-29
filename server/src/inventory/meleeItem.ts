@@ -49,7 +49,7 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
         const owner = this.owner;
         const definition = this.definition;
 
-        this._lastUse = owner.game.now;
+        this.lastUse = owner.game.now;
         owner.animation = AnimationType.Melee;
         owner.setPartialDirty();
 
