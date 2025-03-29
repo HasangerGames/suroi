@@ -1019,7 +1019,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         scale: {
             spawnMin: 0.9,
             spawnMax: 1.1,
-            destroy: 0.5
+            destroy: 0.6
         },
         hitbox: new CircleHitbox(1.83),
         spawnHitbox: new CircleHitbox(2),
