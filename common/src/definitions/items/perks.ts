@@ -73,7 +73,13 @@ export const enum PerkIds {
     Claustrophobic = "claustrophobic",
     LacedStimulants = "laced_stimulants",
     RottenPlumpkin = "rotten_plumpkin",
-    PriorityTarget = "priority_target"
+    PriorityTarget = "priority_target",
+
+    //
+    // Infection
+    //
+    Infected = "infected",
+    Immunity = "immunity"
 }
 
 const perks = [
@@ -315,7 +321,7 @@ const perks = [
         category: PerkCategories.Halloween,
         type: PerkQualities.Neutral,
 
-        hpMod: 10, // additive
+        healthMod: 10, // additive
         sizeMod: 1.05, // multiplicative
         killsLimit: 10,
         noDrop: true
@@ -422,6 +428,36 @@ const perks = [
         category: PerkCategories.Halloween,
         type: PerkQualities.Negative,
 
+        noDrop: true,
+        plumpkinGambleIgnore: true
+    },
+    {
+        idString: PerkIds.Infected,
+        name: "Infected",
+        itemType: ItemType.Perk,
+        description: "Increased speed and damage, but health drops and adrenaline decays fast. Infect nearby players.",
+        category: PerkCategories.Normal,
+        type: PerkQualities.Negative,
+        updateInterval: 1000,
+        dps: 0.78,
+        minHealth: 5,
+        healthMod: 0.75,
+        speedMod: 1.25,
+        damageMod: 1.2,
+        adrenDrainMod: 10,
+        infectionRadius: 20,
+        infectionChance: 0.05,
+        noDrop: true,
+        plumpkinGambleIgnore: true
+    },
+    {
+        idString: PerkIds.Immunity,
+        name: "Immunity",
+        itemType: ItemType.Perk,
+        description: "Immune to infection for 15 seconds.",
+        category: PerkCategories.Normal,
+        type: PerkQualities.Positive,
+        duration: 15000,
         noDrop: true,
         plumpkinGambleIgnore: true
     }

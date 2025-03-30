@@ -17,6 +17,7 @@ export interface ProjectileParams {
     readonly position: Vector
     readonly definition: ReifiableDef<ThrowableDefinition>
     readonly height: number
+    readonly rotation?: number
     readonly layer: number
     readonly owner: GameObject
     readonly source?: ThrowableItem
@@ -62,7 +63,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         super(game, params.position);
         this.layer = params.layer;
 
-        this.rotation = 0;
+        this.rotation = params.rotation ?? 0;
 
         this.definition = Throwables.reify(params.definition);
         this.position = params.position;
@@ -264,11 +265,11 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         ) this.setPartialDirty();
     }
 
-    private _detonated = false;
+    detonated = false;
     private _detonate(): void {
-        if (this._detonated) return;
+        if (this.detonated) return;
 
-        this._detonated = true;
+        this.detonated = true;
         const { explosion } = this.definition.detonation;
 
         const particles
@@ -325,7 +326,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
 
     push(angle: number, speed: number): void {
         this._velocity = Vec.add(this._velocity, Vec.fromPolar(angle, speed * 1000));
-        this._angularVelocity = 10;
+        if (!this.definition.physics.noSpin) this._angularVelocity = 10;
     }
 
     activateC4(): boolean {

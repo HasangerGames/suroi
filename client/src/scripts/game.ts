@@ -605,6 +605,7 @@ export const Game = new (class Game {
                 CameraManager.container.removeChildren();
                 ParticleManager.clear();
                 UIManager.clearTeammateCache();
+                UIManager.clearSlotCache();
                 UIManager.reportedPlayerIDs.clear();
                 UIManager.killLeaderCache = undefined;
                 UIManager.oldKillLeaderId = undefined;

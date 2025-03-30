@@ -1593,6 +1593,10 @@
         height: 85px;
         position: absolute;
         left: 5px;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        border: none;
 
         @media screen and (max-width: variables.$screen_large) {
             width: 45px;

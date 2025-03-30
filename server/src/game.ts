@@ -46,6 +46,7 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getSpawnableLoots, SpawnableItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap, removeFrom } from "./utils/misc";
+import { PerkDefinition, PerkIds, Perks } from "@common/definitions/items/perks";
 
 export class Game implements GameData {
     public readonly id: number;
@@ -323,15 +324,17 @@ export class Game implements GameData {
             records = records.concat(bullet.update());
 
             if (bullet.dead) {
-                const onHitExplosion = bullet.definition.onHitExplosion;
-                if (onHitExplosion && !bullet.reflected) {
-                    this.addExplosion(
-                        onHitExplosion,
-                        bullet.position,
-                        bullet.shooter,
-                        bullet.layer,
-                        bullet.sourceGun instanceof GunItem ? bullet.sourceGun : undefined
-                    );
+                if (!bullet.reflected) {
+                    const { onHitExplosion } = bullet.definition;
+                    if (onHitExplosion) {
+                        this.addExplosion(
+                            onHitExplosion,
+                            bullet.position,
+                            bullet.shooter,
+                            bullet.layer,
+                            bullet.sourceGun instanceof GunItem ? bullet.sourceGun : undefined
+                        );
+                    }
                 }
                 this.bullets.delete(bullet);
             }
@@ -354,6 +357,47 @@ export class Game implements GameData {
                 weaponUsed: weapon,
                 position: position
             });
+
+            const { onHitProjectile, enemySpeedMultiplier, removePerk } = weapon.definition.ballistics;
+
+            if (onHitProjectile && !("definition" in object && (object.definition.noCollisions || object.definition.noBulletCollision))) {
+                const proj = this.addProjectile({
+                    owner: source,
+                    position,
+                    definition: onHitProjectile,
+                    height: 0,
+                    velocity: Vec.create(0, 0),
+                    layer: object.layer,
+                    rotation: randomRotation()
+                });
+                if (onHitProjectile === "proj_seed" && object.isPlayer) { // evil
+                    (object.stuckSeeds ??= new Map()).set(proj, Vec.angleBetween(position, object.position));
+                }
+            }
+
+            if (
+                enemySpeedMultiplier
+                && object.isPlayer
+                && source.isPlayer
+                && (!this.teamMode || object.teamID !== source.teamID || object.id === source.id)
+            ) {
+                object.effectSpeedMultiplier = enemySpeedMultiplier.multiplier;
+                object.effectSpeedTimeout?.kill();
+                object.effectSpeedTimeout = this.addTimeout(() => object.effectSpeedMultiplier = 1, enemySpeedMultiplier.duration);
+            }
+
+            if (object.isPlayer && removePerk) {
+                object.perks.removeItem(Perks.fromString(removePerk));
+                if (removePerk === PerkIds.Infected) { // evil
+                    // stfu
+                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+                    const immunity = Perks.fromString(PerkIds.Immunity) as PerkDefinition & { duration: number };
+                    object.perks.addItem(immunity);
+                    object.immunityTimeout?.kill();
+                    object.immunityTimeout = this.addTimeout(() => object.perks.removeItem(immunity), immunity.duration);
+                    object.setDirty();
+                }
+            }
         }
 
         // Handle explosions

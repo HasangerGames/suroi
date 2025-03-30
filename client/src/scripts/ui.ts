@@ -1963,7 +1963,7 @@ export async function setUpUI(): Promise<void> {
                         <div class="main-container">\
                             <span class="slot-number">${slot + 1}</span>\
                             <span class="item-ammo"></span>\
-                            <img class="item-image" draggable="false" />\
+                            <div class="item-image"></div>\
                             <span class="item-name"></span>\
                         </div>\
                         <img class="lock-icon" src="./img/misc/lock.svg"></span>\

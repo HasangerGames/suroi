@@ -3,7 +3,7 @@ import { type ScopeDefinition } from "./items/scopes";
 
 export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "trail" | "gas" | "void";
 
-export type Mode = "normal" | "fall" | "halloween" | "birthday" | "winter";
+export type Mode = "normal" | "fall" | "halloween" | "infection" | "birthday" | "winter";
 
 export type SpritesheetNames = Mode | "shared";
 
@@ -30,6 +30,7 @@ export interface ModeDefinition {
     readonly specialLogo?: boolean
     readonly specialPlayButtons?: boolean
     readonly modeLogoImage?: string
+    readonly weaponSwap?: boolean
 }
 
 export const Modes: Record<Mode, ModeDefinition> = {
@@ -93,6 +94,23 @@ export const Modes: Record<Mode, ModeDefinition> = {
         specialLogo: true,
         specialPlayButtons: true,
         modeLogoImage: "./img/game/halloween/obstacles/jack_o_lantern.svg"
+    },
+    infection: {
+        colors: {
+            grass: "hsl(300, 15%, 35%)",
+            water: "hsl(223, 35%, 44%)",
+            border: "hsl(229, 30%, 36%)",
+            beach: "hsl(25, 28%, 53%)",
+            riverBank: "hsl(16, 28%, 38%)",
+            trail: "hsl(35, 50%, 40%)",
+            gas: "hsla(17, 100%, 50%, 0.55)",
+            void: "hsl(25, 80%, 6%)"
+        },
+        sounds: {
+            foldersToLoad: ["shared", "normal", "infection"]
+        },
+        spriteSheets: ["shared", "normal", "infection"],
+        weaponSwap: true
     },
     birthday: { // copy of normal
         colors: {
