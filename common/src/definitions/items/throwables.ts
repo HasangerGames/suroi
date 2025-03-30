@@ -2,10 +2,12 @@ import { ItemType, type InventoryItemDefinition, type ReferenceTo } from "../../
 import { Vec, type Vector } from "../../utils/vector";
 import { type ExplosionDefinition } from "../explosions";
 import { SyncedParticleDefinition } from "../syncedParticles";
+import { Tier } from "./guns";
 import { InventoryItemDefinitions } from "./items";
 
 export type ThrowableDefinition = InventoryItemDefinition & {
     readonly itemType: ItemType.Throwable
+    readonly tier: Tier
     /**
      * Specified in *milliseconds*
      */
@@ -85,6 +87,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         idString: "frag_grenade",
         name: "Frag Grenade",
         itemType: ItemType.Throwable,
+        tier: Tier.C,
         cookable: true,
         fuseTime: 4000,
         cookTime: 150,
@@ -129,6 +132,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         idString: "smoke_grenade",
         name: "Smoke Grenade",
         itemType: ItemType.Throwable,
+        tier: Tier.D,
         cookable: false,
         fuseTime: 2000,
         cookTime: 150,
@@ -174,6 +178,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         idString: "confetti_grenade",
         name: "Confetti Grenade",
         itemType: ItemType.Throwable,
+        tier: Tier.S,
         fuseTime: 4000,
         cookTime: 150,
         noSkin: true,
@@ -218,6 +223,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         idString: "c4",
         name: "C4",
         itemType: ItemType.Throwable,
+        tier: Tier.S,
         c4: true,
         cookable: false,
         fuseTime: 750,
@@ -264,6 +270,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         idString: "proj_seed",
         name: "Seed",
         itemType: ItemType.Throwable,
+        tier: Tier.S,
         cookable: true,
         fuseTime: 1000,
         cookTime: 0,

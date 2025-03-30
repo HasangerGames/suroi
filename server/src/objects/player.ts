@@ -4,7 +4,7 @@ import { Emotes, type EmoteDefinition } from "@common/definitions/emotes";
 import { Ammos } from "@common/definitions/items/ammos";
 import { ArmorType, Armors } from "@common/definitions/items/armors";
 import { Backpacks } from "@common/definitions/items/backpacks";
-import { Guns, type GunDefinition } from "@common/definitions/items/guns";
+import { Guns, Tier, type GunDefinition } from "@common/definitions/items/guns";
 import { HealingItems } from "@common/definitions/items/healingItems";
 import { Melees, type MeleeDefinition } from "@common/definitions/items/melees";
 import { PerkCategories, PerkIds, Perks, type PerkDefinition } from "@common/definitions/items/perks";
@@ -618,6 +618,30 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
     }
 
+    private static readonly _weaponSwapWeights: Partial<Record<ItemType, Partial<Record<Tier, number>>>> = {
+        [ItemType.Gun]: {
+            [Tier.S]: 0.1,
+            [Tier.A]: 0.2,
+            [Tier.B]: 0.5,
+            [Tier.C]: 0.818,
+            [Tier.D]: 0.182
+        },
+        [ItemType.Melee]: {
+            [Tier.S]: 0.075,
+            [Tier.A]: 0.5,
+            [Tier.B]: 0.4,
+            [Tier.C]: 0.4,
+            [Tier.D]: 0.2
+        },
+        [ItemType.Throwable]: {
+            [Tier.S]: 0.4,
+            [Tier.C]: 1,
+            [Tier.D]: 0.5
+        }
+    };
+
+    private static readonly _weaponTiersCache: Partial<Record<ItemType, Partial<Record<Tier, WeaponDefinition[]>>>> = {};
+
     swapWeaponRandomly(item: InventoryItem = this.activeItem, force = false): void {
         if (item.definition.noSwap || this.perks.hasItem(PerkIds.Lycanthropy)) return; // womp womp
 
@@ -638,12 +662,17 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const { items, backpack: { maxCapacity }, throwableItemMap } = inventory;
         const type = GameConstants.player.inventorySlotTypings[slot];
 
+        const weights = Player._weaponSwapWeights[type] ?? {};
+        const chosenTier = weightedRandom<Tier>(Object.keys(weights).map(s => parseInt(s)), Object.values(weights));
+        const cache = Player._weaponTiersCache[type] ??= {};
+        const potentials = cache[chosenTier] ??= spawnable.forType(type).filter(({ tier }) => tier === chosenTier);
+
         const chosenItem = pickRandomInArray<WeaponDefinition>(
             type === ItemType.Throwable
-                ? spawnable.forType(ItemType.Throwable).filter(
+                ? potentials.filter(
                     ({ idString: thr }) => (items.hasItem(thr) ? items.getItem(thr) : 0) < maxCapacity[thr]
                 )
-                : spawnable.forType(type)
+                : potentials
         );
         if (chosenItem === undefined) return;
 
