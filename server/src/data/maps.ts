@@ -713,12 +713,12 @@ const maps = {
             ground_loot: 60
         },
         places: [
-            { name: "Banana", position: Vec.create(0.23, 0.2) },
-            { name: "Takedown", position: Vec.create(0.23, 0.8) },
-            { name: "Lavlandet", position: Vec.create(0.75, 0.2) },
-            { name: "Noskin Narrows", position: Vec.create(0.72, 0.8) },
-            { name: "Mt. Sanger", position: Vec.create(0.5, 0.35) },
-            { name: "Deepwood", position: Vec.create(0.5, 0.65) }
+            { name: "Blightnana", position: Vec.create(0.23, 0.2) },
+            { name: "Quarantine", position: Vec.create(0.23, 0.8) },
+            { name: "Rotlandet", position: Vec.create(0.75, 0.2) },
+            { name: "Pathogen Narrows", position: Vec.create(0.72, 0.8) },
+            { name: "Mt. Putrid", position: Vec.create(0.5, 0.35) },
+            { name: "Decayedwood", position: Vec.create(0.5, 0.65) }
         ]
     },
     winter: {
