@@ -1937,6 +1937,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingImages: [{
             key: "red_house_ceiling",
             position: Vec.create(0, -0.25),
+            scale: Vec.create(2, 2),
             particleAmount: 200,
             brokenRoof: 'red_house_ceiling_broken'
         }],
