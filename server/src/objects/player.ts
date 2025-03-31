@@ -457,7 +457,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private _pingSeq = 0;
 
     // key = proj, value = angle
-    stuckSeeds: Map<Projectile, number> | undefined;
+    stuckProjectiles: Map<Projectile, number> | undefined;
 
     immunityTimeout: Timeout | undefined;
 
@@ -1015,10 +1015,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
-        if (this.stuckSeeds) {
-            for (const [proj, angle] of this.stuckSeeds.entries()) {
-                if (proj.detonated) {
-                    this.stuckSeeds.delete(proj);
+        if (this.stuckProjectiles) {
+            for (const [proj, angle] of this.stuckProjectiles) {
+                if (proj.detonated || proj.dead) {
+                    this.stuckProjectiles.delete(proj);
                     continue;
                 }
                 const finalAngle = Angle.normalize(this.rotation + angle);
@@ -1839,11 +1839,19 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         return amount;
     }
 
+    heal(amount: number): void {
+        this.health += amount;
+    }
+
     override damage(params: DamageParams): void {
         if (this.invulnerable) return;
 
         const { source, weaponUsed } = params;
         let { amount } = params;
+
+        if (amount < 0) {
+            return this.heal(-amount);
+        }
 
         this.game.pluginManager.emit("player_damage", {
             amount,
@@ -1883,6 +1891,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 && amount > 0
             )
         ) return;
+
+        if (amount < 0) {
+            return this.heal(-amount);
+        }
 
         amount = this._clampDamageAmount(amount);
 

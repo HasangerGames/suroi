@@ -278,6 +278,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         speedMultiplier: 1,
         cookSpeedMultiplier: 0.7,
         impactDamage: 1,
+        killfeedFrame: "seedshot",
         obstacleMultiplier: 20,
         hitboxRadius: 1,
         fireDelay: 250,

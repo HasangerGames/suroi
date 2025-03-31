@@ -10,7 +10,7 @@ import { PacketDataIn, PacketType } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { type PingSerialization } from "@common/packets/updatePacket";
 import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { Geometry, Numeric, Statistics } from "@common/utils/math";
+import { Angle, Geometry, Numeric, Statistics } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
 import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray, randomPointInsideCircle, randomRotation } from "@common/utils/random";
@@ -19,6 +19,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 
 import { Bullets, type BulletDefinition } from "@common/definitions/bullets";
 import type { SingleGunNarrowing } from "@common/definitions/items/guns";
+import { PerkData, PerkIds, Perks } from "@common/definitions/items/perks";
 import { Mode, ModeDefinition, Modes } from "@common/definitions/modes";
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import type { WebSocket } from "uWebSockets.js";
@@ -38,15 +39,14 @@ import { type BaseGameObject, type GameObject } from "./objects/gameObject";
 import { Loot, type ItemData } from "./objects/loot";
 import { Parachute } from "./objects/parachute";
 import { Player, type PlayerSocketData } from "./objects/player";
-import { SyncedParticle } from "./objects/syncedParticle";
 import { Projectile, ProjectileParams } from "./objects/projectile";
+import { SyncedParticle } from "./objects/syncedParticle";
 import { PluginManager } from "./pluginManager";
 import { Team } from "./team";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getSpawnableLoots, SpawnableItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap, removeFrom } from "./utils/misc";
-import { PerkDefinition, PerkIds, Perks } from "@common/definitions/items/perks";
 
 export class Game implements GameData {
     public readonly id: number;
@@ -360,7 +360,13 @@ export class Game implements GameData {
 
             const { onHitProjectile, enemySpeedMultiplier, removePerk } = weapon.definition.ballistics;
 
-            if (onHitProjectile && !("definition" in object && (object.definition.noCollisions || object.definition.noBulletCollision))) {
+            if (
+                onHitProjectile
+                && !(
+                    "definition" in object
+                    && (object.definition.noCollisions || object.definition.noBulletCollision)
+                )
+            ) {
                 const proj = this.addProjectile({
                     owner: source,
                     position,
@@ -370,8 +376,9 @@ export class Game implements GameData {
                     layer: object.layer,
                     rotation: randomRotation()
                 });
-                if (onHitProjectile === "proj_seed" && object.isPlayer) { // evil
-                    (object.stuckSeeds ??= new Map()).set(proj, Vec.angleBetween(position, object.position));
+
+                if (object.isPlayer) {
+                    (object.stuckProjectiles ??= new Map()).set(proj, Angle.betweenPoints(position, object.position) - object.rotation);
                 }
             }
 
@@ -389,9 +396,7 @@ export class Game implements GameData {
             if (object.isPlayer && removePerk) {
                 object.perks.removeItem(Perks.fromString(removePerk));
                 if (removePerk === PerkIds.Infected) { // evil
-                    // stfu
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-                    const immunity = Perks.fromString(PerkIds.Immunity) as PerkDefinition & { duration: number };
+                    const immunity = PerkData[PerkIds.Immunity];
                     object.perks.addItem(immunity);
                     object.immunityTimeout?.kill();
                     object.immunityTimeout = this.addTimeout(() => object.perks.removeItem(immunity), immunity.duration);

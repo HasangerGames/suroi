@@ -391,6 +391,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "seed_explosion",
         name: "Seedshot",
+        killfeedFrame: "seedshot",
         damage: 10,
         obstacleMultiplier: 3,
         radius: {
