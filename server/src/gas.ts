@@ -88,7 +88,6 @@ export class Gas {
         this.currentDuration = duration;
         this.completionRatio = 1;
         this.countdownStart = this.game.now;
-//first circle
         if (currentStage.state === GasState.Waiting) {
             this.oldPosition = Vec.clone(this.newPosition);
             if (currentStage.newRadius !== 0) {
@@ -108,7 +107,6 @@ export class Gas {
                         Numeric.clamp(y, radius, height - radius)
                     );
                 }
-//second and later circles
             } else {
                 this.newPosition = Vec.clone(this.oldPosition);
             }
