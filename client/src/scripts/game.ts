@@ -981,7 +981,6 @@ export const Game = new (class Game {
 
             const isAction = UIManager.action.active;
             const showCancel = isAction && !UIManager.action.fake;
-            let canInteract = true;
 
             if (isAction) {
                 UIManager.updateAction();
@@ -1023,6 +1022,8 @@ export const Game = new (class Game {
                     }
                 } else if (isBuilding) {
                     object.toggleCeiling();
+
+                // metal detectors
                 } else if (isObstacle && object.definition.detector && object.notOnCoolDown) {
                     for (const player of this.objects.getCategory(ObjectCategory.Player)) {
                         if (
@@ -1040,69 +1041,70 @@ export const Game = new (class Game {
                         object.notOnCoolDown = false;
                         setTimeout(() => object.notOnCoolDown = true, 1000);
                     }
+
+                // bush particles
                 } else if (isObstacle && object.definition.material === "bush" && object.definition.noCollisions) {
-                    const bushDetectionHitbox = object.hitbox.type === HitboxType.Circle ? new CircleHitbox(object.hitbox.radius / 6, object.position) : object.hitbox;
                     for (const player of this.objects.getCategory(ObjectCategory.Player)) {
+                        const inBush = equalLayer(object.layer, player.layer) && object.hitbox.isPointInside(player.position);
+
                         if (
-                            (player.bushID === undefined && (!bushDetectionHitbox.collidesWith(player.hitbox)
-                                || !equalLayer(object.layer, player.layer)))
+                            (player.bushID === undefined && !inBush) // not in this bush
+                            || (player.bushID !== undefined && player.bushID !== object.id) // in a different bush
                             || player.dead
-                            || (player.bushID !== undefined && object.id !== player.bushID)
                         ) continue;
 
-                        const colliding = bushDetectionHitbox.collidesWith(player.hitbox) && equalLayer(object.layer, player.layer);
+                        if (object.dead) {
+                            player.bushID = undefined;
+                            continue;
+                        }
 
-                        const handleBushParticles = (): void => {
-                            let particle = object.definition.frames?.particle ?? `${object.definition.idString}_particle`;
+                        let bushSound: string | undefined;
+                        if (player.bushID === undefined) {
+                            // bush
+                            player.bushID = object.id;
+                            bushSound = "bush_rustle_1";
+                        } else if (!inBush) {
+                            // in this case we exit bushh lol
+                            player.bushID = undefined;
+                            bushSound = "bush_rustle_2";
+                        }
+                        if (!bushSound) continue;
 
-                            if (object.definition.particleVariations) particle += `_${random(1, object.definition.particleVariations)}`;
+                        let particle = object.definition.frames?.particle ?? `${object.definition.idString}_particle`;
+                        if (object.definition.particleVariations) {
+                            particle += `_${random(1, object.definition.particleVariations)}`;
+                        }
 
-                            ParticleManager.spawnParticles(2, () => ({
-                                frames: particle,
-                                position: object.hitbox.randomPoint(),
-                                zIndex: Numeric.max((object.definition.zIndex ?? ZIndexes.Players) + 1, 4),
-                                lifetime: 500,
-                                scale: {
-                                   start: randomFloat(0.85, 0.95),
-                                   end: 0,
-                                   ease: EaseFunctions.quarticIn
-                                },
-                                alpha: {
-                                    start: 1,
-                                    end: 0,
-                                    ease: EaseFunctions.sexticIn
-                                },
-                                rotation: { start: randomRotation(), end: randomRotation() },
-                                speed: Vec.fromPolar(randomRotation(), randomFloat(6, 9))
-                            }));
-                        };
+                        ParticleManager.spawnParticles(2, () => ({
+                            frames: particle,
+                            position: object.hitbox.randomPoint(),
+                            zIndex: Numeric.max((object.definition.zIndex ?? ZIndexes.Players) + 1, 4),
+                            lifetime: 500,
+                            scale: {
+                                start: randomFloat(0.85, 0.95),
+                                end: 0,
+                                ease: EaseFunctions.quarticIn
+                            },
+                            alpha: {
+                                start: 1,
+                                end: 0,
+                                ease: EaseFunctions.sexticIn
+                            },
+                            rotation: { start: randomRotation(), end: randomRotation() },
+                            speed: Vec.fromPolar(randomRotation(), randomFloat(6, 9))
+                        }));
 
-                        if (!object.dead) {
-                            if (player.bushID === undefined) {
-                                // bush
-                                player.bushID = object.id;
-                                handleBushParticles();
-                                object.playSound("bush_rustle_1", {
-                                    falloff: 0.25,
-                                    maxRange: 200
-                                });
-                            } else if (!colliding) {
-                                // in this case we exit bushh lol
-                                player.bushID = undefined;
-                                handleBushParticles();
-                                object.playSound("bush_rustle_2", {
-                                    falloff: 0.25,
-                                    maxRange: 200
-                                });
-                            }
-                        } else if (player.bushID !== undefined) player.bushID = undefined;
+                        object.playSound(bushSound, {
+                            falloff: 0.25,
+                            maxRange: 200
+                        });
                     }
                 }
             }
 
             const object = interactable.object ?? uninteractable.object;
             const offset = object?.isObstacle ? object.door?.offset : undefined;
-            canInteract = interactable.object !== undefined;
+            const canInteract = interactable.object !== undefined;
 
             const bind: string | undefined = InputManager.binds.getInputsBoundToAction(object === undefined ? "cancel_action" : "interact")[0];
 
