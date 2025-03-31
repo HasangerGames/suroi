@@ -294,33 +294,27 @@ export async function fetchServerData(): Promise<void> {
 
 // Take the stuff that needs fetchServerData out of setUpUI and put it here
 export async function finalizeUI(): Promise<void> {
-    const { mode, modeName } = Game;
+    const { mode: { specialLogo, playButtonImage, darkShaders }, modeName } = Game;
 
     // Change the menu based on the mode.
     $("#splash-ui").css("background-image", `url(./img/backgrounds/menu/${modeName}.png)`);
-    if (mode.specialLogo) $("#splash-logo").children("img").attr("src", `./img/logos/suroi_beta_${modeName}.svg`);
-    if (mode.specialPlayButtons) {
+
+    if (specialLogo) {
+        $("#splash-logo").children("img").attr("src", `./img/logos/suroi_beta_${modeName}.svg`);
+    }
+
+    if (playButtonImage) {
         const playButtons = [$("#btn-play-solo"), $("#btn-play-duo"), $("#btn-play-squad")];
-        for (let buttonIndex = 0; buttonIndex < playButtons.length; buttonIndex++) {
-            const button = playButtons[buttonIndex];
-
-            button.addClass(`event-${modeName}`);
-
-            // Mode Logo
-            if (mode.modeLogoImage) {
-                const translationString = `play_${["solo", "duo", "squad"][buttonIndex]}`;
-
-                button.html(`
-                    <img class="btn-icon" width="26" height="26" src=${mode.modeLogoImage}>
-                    <span style="margin-left: ${(buttonIndex > 0 ? "20px" : "0")}" translation="${translationString}">${getTranslatedString(translationString as TranslationKeys)}</span>
-                `);
-            }
+        for (let buttonIndex = 0, len = playButtons.length; buttonIndex < len; buttonIndex++) {
+            playButtons[buttonIndex]
+                .addClass(`event-${modeName}`)
+                .html(`<img class="btn-icon" src=${playButtonImage}><span>${getTranslatedString(`play_${["solo", "duo", "squad"][buttonIndex]}` as TranslationKeys)}</span>`);
         }
     }
 
     // Darken canvas (halloween mode)
     // TODO Use pixi for this
-    if (mode.darkShaders) {
+    if (darkShaders) {
         $("#game-canvas").css({
             "filter": "brightness(0.65) saturate(0.85)",
             "position": "relative",

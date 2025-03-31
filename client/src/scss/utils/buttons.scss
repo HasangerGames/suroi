@@ -31,11 +31,20 @@
 
 .btn-icon {
   position: absolute;
-  top: calc((45px - 24px) / 2);
-  left: 2px;
-  height: 24px;
-  margin-left: 7px;
-  filter: drop-shadow(3px 3px 8px #00000064);
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0;
+  margin-left: 8px;
+  height: 60%;
+  @include variables.drop-shadow;
+}
+
+#btn-play-duo span {
+  margin-left: 20px;
+}
+
+#btn-play-squad span {
+  margin-left: 27px;
 }
 
 .link-darken:hover,

@@ -28,8 +28,7 @@ export interface ModeDefinition {
         readonly gravity?: boolean
     }
     readonly specialLogo?: boolean
-    readonly specialPlayButtons?: boolean
-    readonly modeLogoImage?: string
+    readonly playButtonImage?: string
     readonly weaponSwap?: boolean
 }
 
@@ -71,8 +70,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
             delay: 1000
         },
         spriteSheets: ["shared", "fall"],
-        specialPlayButtons: true,
-        modeLogoImage: "./img/game/fall/obstacles/baby_plumpkin.svg"
+        playButtonImage: "./img/game/fall/obstacles/pumpkin.svg"
     },
     halloween: {
         colors: {
@@ -92,8 +90,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
         darkShaders: true,
         spriteSheets: ["shared", "fall", "halloween"],
         specialLogo: true,
-        specialPlayButtons: true,
-        modeLogoImage: "./img/game/halloween/obstacles/jack_o_lantern.svg"
+        playButtonImage: "./img/game/halloween/obstacles/jack_o_lantern.svg"
     },
     infection: {
         colors: {
@@ -110,6 +107,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
             foldersToLoad: ["shared", "normal", "infection"]
         },
         spriteSheets: ["shared", "normal", "infection"],
+        playButtonImage: "./img/game/shared/perks/infected.svg",
         weaponSwap: true
     },
     birthday: { // copy of normal
@@ -153,7 +151,6 @@ export const Modes: Record<Mode, ModeDefinition> = {
         },
         obstacleVariants: true,
         specialLogo: true,
-        specialPlayButtons: true,
-        modeLogoImage: "./img/game/winter/obstacles/red_gift.svg"
+        playButtonImage: "./img/game/winter/obstacles/red_gift.svg"
     }
 };
