@@ -298,7 +298,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                     particleFrame += `_${Math.floor(Math.random() * definition.ceilingCollapseParticleVariations) + 1}`;
                 }
 
-                ParticleManager.spawnParticles(10, () => ({
+                ParticleManager.spawnParticles((definition.ceilingImages?.[0]?.particleAmount ?? 10), () => ({
                     frames: particleFrame,
                     position: this.ceilingHitbox?.randomPoint() ?? { x: 0, y: 0 },
                     zIndex: Numeric.max(ZIndexes.Players + 1, 4),
@@ -313,7 +313,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                         end: 0,
                         ease: EaseFunctions.sexticIn
                     },
-                    scale: { start: (definition.ceilingCollapseParticle ? 2 : 1), end: 0.2 },
+                    scale: { start: (definition.ceilingCollapseParticle ? definition.hasDamagedRoof ? 9 : 2 : 1), end: (definition.ceilingCollapseParticle ? definition.hasDamagedRoof ? 5 : 1 : 0.2) },
                     speed: Vec.fromPolar(randomRotation(), randomFloat(1, 2))
                 }));
 
@@ -326,9 +326,25 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 );
             }
             this.ceilingTween?.kill();
-            this.ceilingContainer.alpha = 1;
+            if (this.definition.ceilingImages?.[0]?.brokenRoof !== undefined) {
+                const originalImage = this.definition.ceilingImages[0];
+                const brokenImage: BuildingImageDefinition = {
+                    ...originalImage,
+                    key: originalImage.brokenRoof as string,
+                    scale: Vec.create(2.13, 2.13), // Idk why the broken ceilingimage is smaller 
+                    residue: undefined,
+                };
+                this.definition = {
+                    ...this.definition,
+                    ceilingImages: [brokenImage],
+                };
+                this._createSprites(); 
+                this.dead;
+            } else {
+                this.dead = data.dead;
+            }
+            this.ceilingContainer.alpha = 0;
         }
-        this.dead = data.dead;
 
         if (data.puzzle) {
             if (!isNew && data.puzzle.errorSeq !== this.puzzle?.errorSeq) {
@@ -466,7 +482,9 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         }
 
         let key = imageDef.key;
-        if (this.dead && imageDef.residue) key = imageDef.residue;
+        if (this.dead && isCeiling && imageDef.residue) {
+            key = imageDef.residue;
+        }
         sprite.setFrame(key);
 
         if (isCeiling) {
