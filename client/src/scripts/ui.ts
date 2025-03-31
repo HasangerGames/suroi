@@ -33,6 +33,7 @@ import { InputManager } from "./managers/inputManager";
 import { MapManager } from "./managers/mapManager";
 import { SoundManager } from "./managers/soundManager";
 import { defaultClientCVars, type CVarTypeMapping } from "./console/variables";
+import { spritesheetLoad } from "./utils/pixi";
 
 /*
     eslint-disable
@@ -435,6 +436,8 @@ export async function setUpUI(): Promise<void> {
         ui.splashOptions.addClass("loading");
         ui.loaderText.text(getTranslatedString("loading_finding_game"));
         // ui.cancelFindingGame.css("display", "");
+
+        await spritesheetLoad();
 
         type GetGameResponse = { success: true, gameID: number } | { success: false };
         let response: GetGameResponse | undefined;
