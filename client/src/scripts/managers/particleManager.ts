@@ -109,9 +109,9 @@ export class Particle {
         this.image = new SuroiSprite(tintedParticle?.base ?? frame);
         this.image.tint = options.tint ?? tintedParticle?.tint ?? 0xffffff;
 
-        this.scale = typeof options.scale === "number" ? options.scale : 1;
-        this.alpha = typeof options.alpha === "number" ? options.alpha : 1;
-        this.rotation = typeof options.rotation === "number" ? options.rotation : randomRotation();
+        this.scale = typeof options.scale === "number" ? options.scale : options.scale?.start ?? 1;
+        this.alpha = typeof options.alpha === "number" ? options.alpha : options.alpha?.start ?? 1;
+        this.rotation = typeof options.rotation === "number" ? options.rotation : options.rotation?.start ?? randomRotation();
 
         this.options = options;
 
