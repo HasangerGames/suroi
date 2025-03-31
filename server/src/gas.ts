@@ -35,13 +35,16 @@ export class Gas {
     constructor(game: Game) {
         this.game = game;
         this.mapSize = (this.game.map.width + this.game.map.height) / 2;
+
         const firstStage = GasStages[0];
         this.oldRadius = firstStage.oldRadius * this.mapSize;
         this.newRadius = firstStage.newRadius * this.mapSize;
         this.currentRadius = firstStage.oldRadius * this.mapSize;
+
         this.oldPosition = Vec.create((game.map.width / 2), (game.map.height / 2));
         this.newPosition = Vec.clone(this.oldPosition);
         this.currentPosition = randomPointInsideCircle(Vec.clone(this.oldPosition), game.map.width * GasOffset[1], game.map.width * GasOffset[0]);
+
         this._lastDamageTimestamp = this.game.now;
     }
 
