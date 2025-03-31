@@ -1657,6 +1657,20 @@ export const UIManager = new (class UIManager {
         this.oldKillLeaderId = this.killLeaderCache?.id ?? id;
         this.killLeaderCache = data;
     }
+    resetUI(): void{
+        this.ui.teamContainer.html("");
+        this.ui.actionContainer.hide();
+        this.ui.gameOverOverlay.hide();
+        this.ui.canvas.removeClass("active");
+        this.ui.killLeaderLeader.text(getTranslatedString("msg_waiting_for_leader"));
+        this.ui.killLeaderCount.text("0");
+    }
+    resetcache(): void{
+        this.clearTeammateCache();
+        this.reportedPlayerIDs.clear();
+        this.killLeaderCache = undefined;
+        this.oldKillLeaderId = undefined;
+    }
 })();
 
 class Wrapper<T> {

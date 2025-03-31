@@ -586,12 +586,8 @@ export const Game = new (class Game {
                 this.pixi.stop();
                 ScreenRecordManager.endRecording();
                 void this.music?.play();
-                ui.teamContainer.html("");
-                ui.actionContainer.hide();
-                ui.gameOverOverlay.hide();
-                ui.canvas.removeClass("active");
-                ui.killLeaderLeader.text(getTranslatedString("msg_waiting_for_leader"));
-                ui.killLeaderCount.text("0");
+
+                UIManager.resetUI();
 
                 this.gameStarted = false;
                 this._socket?.close();
@@ -604,17 +600,10 @@ export const Game = new (class Game {
                 this.planes.clear();
                 CameraManager.container.removeChildren();
                 ParticleManager.clear();
-                UIManager.clearTeammateCache();
-                UIManager.reportedPlayerIDs.clear();
-                UIManager.killLeaderCache = undefined;
-                UIManager.oldKillLeaderId = undefined;
 
-                MapManager.safeZone.clear();
-                MapManager.pingGraphics.clear();
-                MapManager.pings.clear();
-                MapManager.pingsContainer.removeChildren();
-                MapManager.teammateIndicators.clear();
-                MapManager.teammateIndicatorContainer.removeChildren();
+                UIManager.resetcache();
+
+                MapManager.reset();
 
                 this.playerNames.clear();
                 this._timeouts.clear();
