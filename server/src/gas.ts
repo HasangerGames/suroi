@@ -4,7 +4,7 @@ import { Geometry, Numeric } from "@common/utils/math";
 import { randomPointInsideCircle } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Config, GasMode } from "./config";
-import { GasStage, GasStages, GasOffset } from "./data/gasStages";
+import { GasStage, GasStages, gasOffset } from "./data/gasStages";
 import { type Game } from "./game";
 
 export class Gas {
@@ -43,7 +43,7 @@ export class Gas {
 
         this.oldPosition = Vec.create((game.map.width / 2), (game.map.height / 2));
         this.newPosition = Vec.clone(this.oldPosition);
-        this.currentPosition = randomPointInsideCircle(Vec.clone(this.oldPosition), game.map.width * GasOffset[1], game.map.width * GasOffset[0]);
+        this.currentPosition = randomPointInsideCircle(Vec.clone(this.oldPosition), game.map.width * gasOffset.maxOffset, game.map.width * gasOffset.minOffset);
 
         this._lastDamageTimestamp = this.game.now;
     }
