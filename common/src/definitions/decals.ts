@@ -26,5 +26,15 @@ export const Decals = new ObjectDefinitions<DecalDefinition>([
         idString: "smoke_explosion_decal",
         name: "Smoke Explosion Decal",
         rotationMode: RotationMode.Full
+    },
+    {
+        idString: "seed_decal",
+        name: "Seed Decal",
+        rotationMode: RotationMode.Full
+    },
+    {
+        idString: "seed_explosion_decal",
+        name: "Seed Explosion Decal",
+        rotationMode: RotationMode.Full
     }
 ]);

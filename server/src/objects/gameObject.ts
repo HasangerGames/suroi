@@ -1,4 +1,5 @@
 import { Layer, ObjectCategory } from "@common/constants";
+import { DamageSources } from "@common/packets/killPacket";
 import { makeGameObjectTemplate } from "@common/utils/gameObject";
 import { type Hitbox } from "@common/utils/hitbox";
 import { ObjectSerializations, type FullData } from "@common/utils/objectsSerializations";
@@ -16,9 +17,8 @@ import { type Loot } from "./loot";
 import { type Obstacle } from "./obstacle";
 import { type Parachute } from "./parachute";
 import { type Player } from "./player";
+import { Projectile } from "./projectile";
 import { type SyncedParticle } from "./syncedParticle";
-import { type ThrowableProjectile } from "./throwableProj";
-import { DamageSources } from "@common/packets/killPacket";
 
 export interface ObjectMapping {
     [ObjectCategory.Player]: Player
@@ -28,7 +28,7 @@ export interface ObjectMapping {
     [ObjectCategory.Building]: Building
     [ObjectCategory.Decal]: Decal
     [ObjectCategory.Parachute]: Parachute
-    [ObjectCategory.ThrowableProjectile]: ThrowableProjectile
+    [ObjectCategory.Projectile]: Projectile
     [ObjectCategory.SyncedParticle]: SyncedParticle
 }
 

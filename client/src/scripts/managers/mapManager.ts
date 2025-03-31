@@ -11,7 +11,7 @@ import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorS
 import { getTranslatedString } from "../utils/translations/translations";
 import { Game } from "../game";
 import { DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
-import { SuroiSprite, drawGroundGraphics, drawHitbox, setOnSpritesheetsLoaded, spritesheetsLoaded, toPixiCoords } from "../utils/pixi";
+import { SuroiSprite, drawGroundGraphics, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GasManager, GasRender } from "./gasManager";
 import { SoundManager } from "./soundManager";
 import { InputManager } from "./inputManager";
@@ -58,9 +58,7 @@ export const MapManager = new (class MapManager {
     readonly sprite = new Sprite();
     private _texture?: Texture;
 
-    readonly indicator = new SuroiSprite("player_indicator")
-        .setTint(TEAMMATE_COLORS[0])
-        .setZIndex(1000);
+    indicator!: SuroiSprite;
 
     readonly teammateIndicators = new Map<number, SuroiSprite>();
     readonly teammateIndicatorContainer = new Container();
@@ -115,6 +113,10 @@ export const MapManager = new (class MapManager {
         this.safeZone.zIndex = 997;
         this.pingsContainer.zIndex = 998;
         this.teammateIndicatorContainer.zIndex = 999;
+
+        this.indicator = new SuroiSprite("player_indicator")
+            .setTint(TEAMMATE_COLORS[0])
+            .setZIndex(1000);
 
         this._objectsContainer.addChild(
             this.sprite,
@@ -282,10 +284,6 @@ export const MapManager = new (class MapManager {
         terrainGraphics.fill(colors.border);
 
         CameraManager.addObject(terrainGraphics);
-
-        if (!spritesheetsLoaded) {
-            await new Promise(resolve => setOnSpritesheetsLoaded(resolve));
-        }
 
         // Draw the minimap objects
         const mapRender = new Container();
@@ -592,6 +590,8 @@ export const MapManager = new (class MapManager {
     private readonly _borderContainer = $("#minimap-border");
 
     resize(): void {
+        if (!this._initialized) return;
+
         this._border.visible = this._expanded;
         const uiScale = GameConsole.getBuiltInCVar("cv_ui_scale");
 

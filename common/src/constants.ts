@@ -7,7 +7,7 @@ const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType
 export const GameConstants = {
     // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
     // or a new item is added to a definition list
-    protocolVersion: 51,
+    protocolVersion: 52,
     gridSize: 32,
     maxPosition: 1924,
     objectMinScale: 0.15,
@@ -70,6 +70,16 @@ export const GameConstants = {
         flyTime: 30000,
         damage: 300,
         callerLimit: 3
+    },
+    projectiles: {
+        maxHeight: 5,
+        gravity: 10,
+        distanceToMouseMultiplier: 1.5,
+        drag: {
+            air: 0.7,
+            ground: 3,
+            water: 5
+        }
     },
     riverPadding: 64,
     trailPadding: 384,
@@ -148,7 +158,7 @@ export enum ObjectCategory {
     Building,
     Decal,
     Parachute,
-    ThrowableProjectile,
+    Projectile,
     SyncedParticle
 }
 

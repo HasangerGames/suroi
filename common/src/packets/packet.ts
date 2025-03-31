@@ -37,7 +37,7 @@ export function getSplitTypeForCategory(category: ObjectCategory): DataSplitType
         case ObjectCategory.Building:            return DataSplitTypes.GameObjects;
         case ObjectCategory.Decal:               return DataSplitTypes.GameObjects;
         case ObjectCategory.Parachute:           return DataSplitTypes.GameObjects;
-        case ObjectCategory.ThrowableProjectile: return DataSplitTypes.GameObjects;
+        case ObjectCategory.Projectile: return DataSplitTypes.GameObjects;
         case ObjectCategory.SyncedParticle:      return DataSplitTypes.SyncedParticles;
     }
     /* eslint-enable @stylistic/no-multi-spaces */

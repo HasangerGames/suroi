@@ -195,7 +195,7 @@ export const Vec = Object.freeze({
     },
     /**
      * Takes a polar representation of a vector and converts it into a cartesian one
-     * @param angle The vector's angle
+     * @param angle The vector's angle in radians
      * @param magnitude The vector's length. Defaults to 1
      * @returns A new vector whose length is `magnitude` and whose direction is `angle`
      */

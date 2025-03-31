@@ -6,7 +6,9 @@ import { ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type 
 import { Vec, type Vector } from "../utils/vector";
 import { TentTints } from "./buildings";
 import { type GunDefinition } from "./items/guns";
+import { PerkDefinition, PerkIds } from "./items/perks";
 import { type LootDefinition } from "./loots";
+import { Mode } from "./modes";
 import { SyncedParticleDefinition } from "./syncedParticles";
 
 type CommonObstacleDefinition = ObjectDefinition & {
@@ -51,6 +53,16 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly customInteractMessage?: boolean
     readonly interactOnlyFromSide?: Orientation
     readonly weaponSwap?: boolean
+    readonly regenerateAfterDestroyed?: number
+
+    readonly applyPerkOnDestroy?: {
+        readonly mode?: Mode
+        readonly perk: ReferenceTo<PerkDefinition>
+        /**
+         * A number between 0 and 1 indicating the chance of the perk being applied
+         */
+        readonly chance: number
+    }
 
     readonly gunMount?: {
         readonly type: "gun" | "melee"
@@ -1007,7 +1019,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         scale: {
             spawnMin: 0.9,
             spawnMax: 1.1,
-            destroy: 0.5
+            destroy: 0.6
         },
         hitbox: new CircleHitbox(1.83),
         spawnHitbox: new CircleHitbox(2),
@@ -1016,7 +1028,14 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "plumpkin_particle"
         },
-        weaponSwap: true
+        variations: 3,
+        weaponSwap: true,
+        regenerateAfterDestroyed: 30000,
+        applyPerkOnDestroy: {
+            mode: "infection",
+            perk: PerkIds.Infected,
+            chance: 0.05
+        }
     },
     {
         idString: "plumpkin",

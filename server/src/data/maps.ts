@@ -178,8 +178,7 @@ const maps = {
         },
         obstacles: {
             oil_tank: 12,
-            big_oak_tree: 30,
-            oak_tree: 80,
+            oak_tree: 110,
             birch_tree: 20,
             pine_tree: 10,
             loot_tree: 1,
@@ -586,6 +585,142 @@ const maps = {
             { name: "Darkwood", position: Vec.create(0.5, 0.65) }
         ]
     },
+    infection: {
+        width: 1632,
+        height: 1632,
+        oceanSize: 128,
+        beachSize: 32,
+        rivers: {
+            minAmount: 2,
+            maxAmount: 3,
+            maxWideAmount: 1,
+            wideChance: 0.35,
+            minWidth: 12,
+            maxWidth: 18,
+            minWideWidth: 25,
+            maxWideWidth: 30,
+            obstacles: {
+                river_rock: 16,
+                lily_pad: 6
+            }
+        },
+        buildings: {
+            large_bridge: 2,
+            small_bridge: Infinity,
+            port_complex: 1,
+            river_hut_1: 2,
+            river_hut_2: 2,
+            river_hut_3: 2,
+            sea_traffic_control: 1,
+            tugboat_red: 1,
+            tugboat_white: 5,
+            armory: 1,
+            headquarters: 1,
+            small_bunker: 1,
+            refinery: 1,
+            warehouse: 5,
+            // firework_warehouse: 1, // birthday mode
+            green_house: 3,
+            blue_house: 2,
+            blue_house_special: 1,
+            red_house: 3,
+            red_house_v2: 3,
+            construction_site: 1,
+            mobile_home: 10,
+            porta_potty: 12,
+            container_3: 2,
+            container_4: 2,
+            container_5: 2,
+            container_6: 2,
+            container_7: 1,
+            container_8: 2,
+            container_9: 1,
+            container_10: 2,
+            memorial: 1
+        },
+        majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
+        quadBuildingLimit: {
+            river_hut_1: 1,
+            river_hut_2: 1,
+            river_hut_3: 1,
+            red_house: 1,
+            red_house_v2: 1,
+            warehouse: 2,
+            green_house: 1,
+            blue_house: 1,
+            mobile_home: 3,
+            porta_potty: 3,
+            construction_site: 1,
+            blue_house_special: 1
+        },
+        obstacles: {
+            oil_tank: 12,
+            oak_tree: 110,
+            birch_tree: 20,
+            pine_tree: 10,
+            loot_tree: 1,
+            baby_plumpkin: 200,
+            regular_crate: 160,
+            flint_crate: 5,
+            aegis_crate: 5,
+            grenade_crate: 35,
+            rock: 150,
+            river_chest: 1,
+            bush: 110,
+            // birthday_cake: 100, // birthday mode
+            blueberry_bush: 30,
+            barrel: 80,
+            viking_chest: 1,
+            super_barrel: 30,
+            melee_crate: 1,
+            gold_rock: 1,
+            loot_barrel: 1,
+            flint_stone: 1
+        },
+        obstacleClumps: [
+            {
+                clumpAmount: 100,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["oak_tree"],
+                    radius: 12
+                }
+            },
+            {
+                clumpAmount: 25,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["birch_tree"],
+                    radius: 12
+                }
+            },
+            {
+                clumpAmount: 4,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["pine_tree"],
+                    radius: 12
+                }
+            }
+        ],
+        loots: {
+            ground_loot: 60
+        },
+        places: [
+            { name: "Blightnana", position: Vec.create(0.23, 0.2) },
+            { name: "Quarantine", position: Vec.create(0.23, 0.8) },
+            { name: "Rotlandet", position: Vec.create(0.75, 0.2) },
+            { name: "Pathogen Narrows", position: Vec.create(0.72, 0.8) },
+            { name: "Mt. Putrid", position: Vec.create(0.5, 0.35) },
+            { name: "Decayedwood", position: Vec.create(0.5, 0.65) }
+        ]
+    },
     winter: {
         width: 1632,
         height: 1632,
@@ -908,6 +1043,7 @@ const maps = {
         width: 256,
         height: 256,
         spawn: { mode: SpawnMode.Center },
+        mode: "infection",
         beachSize: 8,
         oceanSize: 8,
         onGenerate(map, [obstacle]) {

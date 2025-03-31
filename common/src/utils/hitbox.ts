@@ -1,6 +1,6 @@
 import { type Orientation } from "../typings";
-import { Collision, Geometry, Numeric, type CollisionRecord, type IntersectionResponse } from "./math";
-import { cloneDeepSymbol, cloneSymbol, type Cloneable, type DeepCloneable } from "./misc";
+import { Collision, CollisionResponse, Geometry, Numeric, type CollisionRecord, type IntersectionResponse } from "./math";
+import { cloneDeepSymbol, cloneSymbol, Mutable, type Cloneable, type DeepCloneable } from "./misc";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle } from "./random";
 import { Vec, type Vector } from "./vector";
 
@@ -43,6 +43,78 @@ export interface HitboxMapping {
 }
 
 export type Hitbox = HitboxMapping[HitboxType];
+
+const intersectionFunctions: Array<
+    Array<{
+        fn: (a: Hitbox, b: Hitbox) => CollisionResponse
+        reverse: boolean
+    }>
+> = [];
+
+function setIntersectionFn<
+    A extends HitboxType,
+    B extends HitboxType,
+    AInst extends HitboxMapping[A] = HitboxMapping[A],
+    BInst extends HitboxMapping[B] = HitboxMapping[B]
+>(
+    hitboxTypeA: A,
+    hitboxTypeB: B,
+    fn: (
+        a: AInst,
+        b: BInst,
+    ) => CollisionResponse
+): void {
+    const setFunction = (
+        typeA: HitboxType,
+        typeB: HitboxType,
+        fn: (
+            a: AInst,
+            b: BInst,
+        ) => CollisionResponse,
+        reverse: boolean
+    ): void => {
+        intersectionFunctions[typeA] ??= [];
+        intersectionFunctions[typeA][typeB] = {
+            fn: fn as (a: Hitbox, B: Hitbox) => CollisionResponse,
+            reverse
+        };
+    };
+    setFunction(hitboxTypeA, hitboxTypeB, fn, false);
+
+    // @ts-expect-error shut up
+    if (hitboxTypeA !== hitboxTypeB) {
+        setFunction(hitboxTypeB, hitboxTypeA, fn, true);
+    }
+}
+
+setIntersectionFn(HitboxType.Circle, HitboxType.Circle, (a, b) => {
+    return Collision.circleCircleIntersection(a.position, a.radius, b.position, b.radius);
+});
+
+setIntersectionFn(HitboxType.Circle, HitboxType.Rect, (a, b) => {
+    return Collision.rectCircleIntersection(b.min, b.max, a.position, a.radius);
+});
+
+setIntersectionFn(HitboxType.Rect, HitboxType.Rect, (a, b) => {
+    return Collision.rectRectIntersection(a.min, a.max, b.min, b.max);
+});
+
+export type ShapeHitbox = CircleHitbox | RectangleHitbox; // | PolygonHitbox when i finish polygon hitbox branch :3
+
+function getIntersection(hitboxA: ShapeHitbox, hitboxB: ShapeHitbox): CollisionResponse {
+    const collisionFn = intersectionFunctions[hitboxA.type][hitboxB.type];
+    if (!collisionFn) {
+        throw new Error(`${hitboxA.type} doesn't support intersection with ${hitboxB.type}`);
+    }
+
+    const response: Mutable<CollisionResponse> = collisionFn.reverse
+        ? collisionFn.fn(hitboxB, hitboxA)
+        : collisionFn.fn(hitboxA, hitboxB);
+    if (response && collisionFn.reverse) {
+        response.dir = Vec.invert(response.dir);
+    }
+    return response;
+}
 
 export abstract class BaseHitbox<T extends HitboxType = HitboxType> implements DeepCloneable<HitboxMapping[T]>, Cloneable<HitboxMapping[T]> {
     abstract type: HitboxType;
@@ -115,6 +187,13 @@ export abstract class BaseHitbox<T extends HitboxType = HitboxType> implements D
     abstract scale(scale: number): void;
 
     /**
+     * Checks if this {@link Hitbox} collides with another one
+     * @param that The other {@link Hitbox}
+     * @return An array of intersection responses, only has more than 1 item for {@link GroupHitbox}
+     */
+    abstract getIntersection(hitbox: Hitbox): CollisionResponse;
+
+    /**
      * Check if a line intersects with this {@link Hitbox}.
      * @param a the start point of the line
      * @param b the end point of the line
@@ -141,6 +220,7 @@ export abstract class BaseHitbox<T extends HitboxType = HitboxType> implements D
 
 export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
     override readonly type = HitboxType.Circle;
+
     position: Vector;
     radius: number;
 
@@ -235,6 +315,10 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
         this.radius *= scale;
     }
 
+    override getIntersection(hitbox: ShapeHitbox): CollisionResponse {
+        return getIntersection(this, hitbox);
+    }
+
     override intersectsLine(a: Vector, b: Vector): IntersectionResponse {
         return Collision.lineIntersectsCircle(a, b, this.position, this.radius);
     }
@@ -258,6 +342,7 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
 
 export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
     override readonly type = HitboxType.Rect;
+
     min: Vector;
     max: Vector;
 
@@ -382,6 +467,10 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
         this.max = Vec.create((this.max.x - centerX) * scale + centerX, (this.max.y - centerY) * scale + centerY);
     }
 
+    override getIntersection(hitbox: ShapeHitbox): CollisionResponse {
+        return getIntersection(this, hitbox);
+    }
+
     override intersectsLine(a: Vector, b: Vector): IntersectionResponse {
         return Collision.lineIntersectsRect(a, b, this.min, this.max);
     }
@@ -430,12 +519,13 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
     }
 }
 
-export class GroupHitbox<GroupType extends Array<RectangleHitbox | CircleHitbox> = Array<RectangleHitbox | CircleHitbox>> extends BaseHitbox<HitboxType.Group> {
+export class GroupHitbox<GroupType extends ShapeHitbox[] = ShapeHitbox[]> extends BaseHitbox<HitboxType.Group> {
     override readonly type = HitboxType.Group;
+
     position = Vec.create(0, 0);
     hitboxes: GroupType;
 
-    static simple<ChildType extends ReadonlyArray<RectangleHitbox | CircleHitbox> = ReadonlyArray<RectangleHitbox | CircleHitbox>>(...hitboxes: ChildType): HitboxJSONMapping[HitboxType.Group] {
+    static simple<ChildType extends readonly ShapeHitbox[] = readonly ShapeHitbox[]>(...hitboxes: ChildType): HitboxJSONMapping[HitboxType.Group] {
         return {
             type: HitboxType.Group,
             hitboxes: hitboxes.map(h => h.toJSON())
@@ -526,6 +616,10 @@ export class GroupHitbox<GroupType extends Array<RectangleHitbox | CircleHitbox>
         for (const hitbox of this.hitboxes) hitbox.scale(scale);
     }
 
+    override getIntersection(_hitbox: ShapeHitbox): CollisionResponse {
+        throw new Error("Get intersection only supports base shapes");
+    }
+
     override intersectsLine(a: Vector, b: Vector): IntersectionResponse {
         const intersections: Array<{ readonly point: Vector, readonly normal: Vector }> = [];
 
@@ -570,6 +664,7 @@ export class GroupHitbox<GroupType extends Array<RectangleHitbox | CircleHitbox>
 
 export class PolygonHitbox extends BaseHitbox<HitboxType.Polygon> {
     override readonly type = HitboxType.Polygon;
+
     points: Vector[];
     center: Vector;
 
@@ -645,6 +740,10 @@ export class PolygonHitbox extends BaseHitbox<HitboxType.Polygon> {
         for (let i = 0, length = this.points.length; i < length; i++) {
             this.points[i] = Vec.scale(this.points[i], scale);
         }
+    }
+
+    override getIntersection(hitbox: Hitbox): CollisionResponse {
+        this.throwUnknownSubclassError(hitbox);
     }
 
     override intersectsLine(_a: Vector, _b: Vector): IntersectionResponse {
