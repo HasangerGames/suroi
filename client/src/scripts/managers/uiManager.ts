@@ -932,7 +932,7 @@ export const UIManager = new (class UIManager {
         );
     }
 
-    private readonly _slotCache: string[] = [];
+    private readonly _slotCache: Array<string | undefined> = [];
     clearSlotCache(): void {
         this._slotCache.length = 0;
     }
@@ -970,7 +970,7 @@ export const UIManager = new (class UIManager {
             const hadItem = container.hasClass(ClassNames.HasItem);
             const activityChanged = container.hasClass(ClassNames.IsActive) !== isActive;
 
-            if (weapon) {
+            if (weapon !== undefined) {
                 const definition = weapon.definition;
                 const isGun = definition.itemType === ItemType.Gun;
                 const color = isGun
@@ -1034,6 +1034,7 @@ export const UIManager = new (class UIManager {
                         .css("color", count > 0 ? "unset" : "red");
                 }
             } else {
+                this._slotCache[i] = undefined;
                 container.removeClass(ClassNames.HasItem)
                     .removeClass(ClassNames.IsActive)
                     .css({
