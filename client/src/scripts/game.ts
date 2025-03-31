@@ -617,6 +617,8 @@ export const Game = new (class Game {
                 MapManager.teammateIndicators.clear();
                 MapManager.teammateIndicatorContainer.removeChildren();
 
+                GasManager.time = undefined;
+
                 this.playerNames.clear();
                 this._timeouts.clear();
 
