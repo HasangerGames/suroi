@@ -16,7 +16,7 @@ export interface GasStage {
  */
 export const GAME_SPAWN_WINDOW = 84;
 
-type GasOffset={
+type GasOffset = {
     minOffset: number
     maxOffset: number
 };
