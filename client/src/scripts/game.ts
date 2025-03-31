@@ -12,7 +12,7 @@ import { JoinPacket } from "@common/packets/joinPacket";
 import { PacketType, type DataSplit, type PacketDataIn, type PacketDataOut } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { type UpdateDataOut } from "@common/packets/updatePacket";
-import { CircleHitbox, HitboxType } from "@common/utils/hitbox";
+import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, equalLayer } from "@common/utils/layer";
 import { EaseFunctions, Geometry, Numeric } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
@@ -26,6 +26,9 @@ import FontFaceObserver from "fontfaceobserver";
 import $ from "jquery";
 import { Application, Color, Container } from "pixi.js";
 import "pixi.js/prepare";
+import { setUpCommands } from "./console/commands";
+import { GameConsole } from "./console/gameConsole";
+import { defaultClientCVars } from "./console/variables";
 import { CameraManager } from "./managers/cameraManager";
 import { GasManager, GasRender } from "./managers/gasManager";
 import { InputManager } from "./managers/inputManager";
@@ -48,8 +51,6 @@ import { Player } from "./objects/player";
 import { Projectile } from "./objects/projectile";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { autoPickup, fetchServerData, finalizeUI, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, updateDisconnectTime } from "./ui";
-import { setUpCommands } from "./console/commands";
-import { GameConsole } from "./console/gameConsole";
 import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { DebugRenderer } from "./utils/debugRenderer";
 import { setUpNetGraph } from "./utils/graph/netGraph";
@@ -57,7 +58,6 @@ import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { getTranslatedString, initTranslation } from "./utils/translations/translations";
 import { type TranslationKeys } from "./utils/translations/typings";
 import { Tween, type TweenOptions } from "./utils/tween";
-import { defaultClientCVars } from "./console/variables";
 
 /* eslint-disable @stylistic/indent */
 
@@ -605,7 +605,7 @@ export const Game = new (class Game {
                 CameraManager.container.removeChildren();
                 ParticleManager.clear();
                 UIManager.clearTeammateCache();
-                UIManager.clearSlotCache();
+                UIManager.clearWeaponCache();
                 UIManager.reportedPlayerIDs.clear();
                 UIManager.killLeaderCache = undefined;
                 UIManager.oldKillLeaderId = undefined;
