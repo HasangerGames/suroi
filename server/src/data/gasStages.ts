@@ -22,8 +22,8 @@ type GasOffset = {
 };
 
 export const gasOffset: GasOffset = {
-minOffset: 0.4,
-maxOffset: 0.6
+minOffset: 0.15,
+maxOffset: 0.3
 }
 
 const gasStageRadii: number[] = [
