@@ -11,7 +11,7 @@ import { Throwables } from "@common/definitions/items/throwables";
 import { LootDefForType, LootDefinition, Loots } from "@common/definitions/loots";
 import { Mode } from "@common/definitions/modes";
 import { isArray } from "@common/utils/misc";
-import { ItemType, NullString, ObjectDefinition, ObjectDefinitions, ReferenceOrRandom, ReferenceTo } from "@common/utils/objectDefinitions";
+import { ItemType, NullString, ObjectDefinitions, ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, weightedRandom } from "@common/utils/random";
 import { LootTables } from "../data/lootTables";
 import { MapDefinition } from "../data/maps";
@@ -134,12 +134,12 @@ function getLoot(mode: Mode, items: WeightedItem[], noDuplicates?: boolean): Loo
 }
 
 // either return a reference as-is, or take all the non-null string references
-const referenceOrRandomOptions = <T extends ObjectDefinition>(obj: ReferenceOrRandom<T>): Array<ReferenceTo<T>> => {
-    return typeof obj === "string"
-        ? [obj]
-        // well, Object.keys already filters out symbols so…
-        : Object.keys(obj)/* .filter(k => k !== NullString) */;
-};
+// const referenceOrRandomOptions = <T extends ObjectDefinition>(obj: ReferenceOrRandom<T>): Array<ReferenceTo<T>> => {
+//     return typeof obj === "string"
+//         ? [obj]
+//         // well, Object.keys already filters out symbols so…
+//         : Object.keys(obj)/* .filter(k => k !== NullString) */;
+// };
 
 export type SpawnableItemRegistry = ReadonlySet<ReferenceTo<LootDefinition>> & {
     forType<K extends ItemType>(type: K): ReadonlyArray<LootDefForType<K>>
