@@ -1,10 +1,10 @@
 import { GameConstants, GasState, MapObjectSpawnMode } from "@common/constants";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Geometry, Numeric } from "@common/utils/math";
-import { random, randomPointInsideCircle } from "@common/utils/random";
+import { randomPointInsideCircle } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Config, GasMode } from "./config";
-import { GasStage, GasStages } from "./data/gasStages";
+import { GasStage, GasStages, GasOffset } from "./data/gasStages";
 import { type Game } from "./game";
 
 export class Gas {
@@ -13,7 +13,6 @@ export class Gas {
     currentDuration = 0;
     countdownStart = 0;
     completionRatio = 0;
-
     oldPosition: Vector;
     newPosition: Vector;
     currentPosition: Vector;
@@ -21,7 +20,6 @@ export class Gas {
     oldRadius: number;
     newRadius: number;
     currentRadius: number;
-
     dps = 0;
     private _lastDamageTimestamp;
 
@@ -41,9 +39,9 @@ export class Gas {
         this.oldRadius = firstStage.oldRadius * this.mapSize;
         this.newRadius = firstStage.newRadius * this.mapSize;
         this.currentRadius = firstStage.oldRadius * this.mapSize;
-        this.oldPosition = Vec.create((game.map.width / 2),(game.map.height / 2));
+        this.oldPosition = Vec.create((game.map.width / 2), (game.map.height / 2));
         this.newPosition = Vec.clone(this.oldPosition);
-        this.currentPosition = randomPointInsideCircle(Vec.clone(this.oldPosition),game.map.width*0.6,game.map.width*0.4);
+        this.currentPosition = randomPointInsideCircle(Vec.clone(this.oldPosition), game.map.width * GasOffset[1], game.map.width * GasOffset[0]);
         this._lastDamageTimestamp = this.game.now;
     }
 
