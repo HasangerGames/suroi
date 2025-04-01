@@ -389,6 +389,40 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         decal: "explosion_decal"
     },
     {
+        idString: "seed_explosion",
+        name: "Seedshot",
+        killfeedFrame: "seedshot",
+        damage: 10,
+        obstacleMultiplier: 3,
+        radius: {
+            min: 8,
+            max: 16
+        },
+        cameraShake: {
+            duration: 160,
+            intensity: 5
+        },
+        animation: {
+            duration: 1500,
+            tint: 0xe3a860,
+            scale: 0.8
+        },
+        shrapnelCount: 10,
+        ballistics: {
+            shrapnel: true,
+            damage: 1,
+            obstacleMultiplier: 3,
+            speed: 0.04,
+            range: 8,
+            rangeVariance: 1,
+            tracer: {
+                color: 0xe3a860
+            }
+        },
+        sound: "seed_explode",
+        decal: "seed_explosion_decal"
+    },
+    {
         idString: "coal_explosion",
         name: "Coal",
         damage: 97,

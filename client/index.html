@@ -63,7 +63,7 @@
     <link rel="manifest" href="./manifest.json" />
     <style>
       body {
-        background-color: #5b8939;
+        background-color: #3d3e48;
       }
 
       #splash-ui, #game {
@@ -178,8 +178,11 @@
                 name="username-input"
                 id="username-input"
                 placeholder="Enter a nickname"
+                autocomplete="off"
                 maxlength="16"
               />
+              <!-- makes password managers ignore the nickname field -->
+              <input type="password" style="width:0;height:0;background:transparent;border:none;padding:0;margin:0;display:block">
               <div id="server-select" class="dropdown">
                 <button id="btn-server-select">
                   <span id="server-name">-</span>

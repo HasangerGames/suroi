@@ -108,17 +108,18 @@ export class Particle {
         const tintedParticle = TintedParticles[frame];
         this.image = new SuroiSprite(tintedParticle?.base ?? frame);
         this.image.tint = options.tint ?? tintedParticle?.tint ?? 0xffffff;
-        this.image.setZIndex(getEffectiveZIndex(options.zIndex, this.layer, Game.layer));
 
-        this.scale = typeof options.scale === "number" ? options.scale : 1;
-        this.alpha = typeof options.alpha === "number" ? options.alpha : 1;
-        this.rotation = typeof options.rotation === "number" ? options.rotation : randomRotation();
+        this.scale = typeof options.scale === "number" ? options.scale : options.scale?.start ?? 1;
+        this.alpha = typeof options.alpha === "number" ? options.alpha : options.alpha?.start ?? 1;
+        this.rotation = typeof options.rotation === "number" ? options.rotation : options.rotation?.start ?? randomRotation();
 
         this.options = options;
+
+        this._updateImage();
     }
 
     update(delta: number): void {
-        this.position = Vec.add(this.position, Vec.scale(Vec.scale(this.options.speed, delta), 1e-3));
+        this.position = Vec.add(this.position, Vec.scale(this.options.speed, delta / 1e3));
         const options = this.options;
 
         const now = Date.now();
@@ -142,11 +143,16 @@ export class Particle {
             this.rotation = Numeric.lerp(options.rotation.start, options.rotation.end, (options.rotation.ease ?? (t => t))(interpFactor));
         }
 
-        this.image.setZIndex(getEffectiveZIndex(options.zIndex, this.layer, Game.layer));
+        this._updateImage();
+    }
 
-        this.image.position.copyFrom(toPixiCoords(this.position));
-        this.image.scale.set(this.scale);
-        this.image.setRotation(this.rotation).setAlpha(this.alpha);
+    protected _updateImage(): void {
+        this.image
+            .setZIndex(getEffectiveZIndex(this.options.zIndex, this.layer, Game.layer))
+            .setVPos(toPixiCoords(this.position))
+            .setScale(this.scale)
+            .setRotation(this.rotation)
+            .setAlpha(this.alpha);
     }
 
     kill(): void {

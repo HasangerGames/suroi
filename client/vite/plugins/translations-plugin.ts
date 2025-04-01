@@ -127,7 +127,7 @@ export async function buildTypings(keys: readonly string[]): Promise<void> {
         ...Guns.definitions.map(({ idString }) => idString),
         ...Melees.definitions.map(({ idString }) => idString),
         ...Throwables.definitions.map(({ idString }) => idString)
-    ].map(key => `"${key}"`).join("|");
+    ].sort().map(key => `"${key}"`).join("\n|");
     buffer += ";";
 
     await writeFile("src/scripts/utils/translations/typings.ts", buffer);

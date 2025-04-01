@@ -195,6 +195,10 @@ export const SoundManager = new (class SoundManager {
         }
     }
 
+    has(name: string): boolean {
+        return PixiSound.sound.exists(name);
+    }
+
     play(name: string, options?: Partial<SoundOptions>): GameSound {
         const id = this._nameToId[name];
 

@@ -4,7 +4,7 @@ import { Emotes, type EmoteDefinition } from "@common/definitions/emotes";
 import { Ammos } from "@common/definitions/items/ammos";
 import { ArmorType, Armors } from "@common/definitions/items/armors";
 import { Backpacks } from "@common/definitions/items/backpacks";
-import { Guns, type GunDefinition } from "@common/definitions/items/guns";
+import { Guns, Tier, type GunDefinition } from "@common/definitions/items/guns";
 import { HealingItems } from "@common/definitions/items/healingItems";
 import { Melees, type MeleeDefinition } from "@common/definitions/items/melees";
 import { PerkCategories, PerkIds, Perks, type PerkDefinition } from "@common/definitions/items/perks";
@@ -26,7 +26,7 @@ import { UpdatePacket, type PlayerData, type UpdateDataCommon } from "@common/pa
 import { PlayerModifiers } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
-import { Collision, Geometry, Numeric } from "@common/utils/math";
+import { Angle, Collision, Geometry, Numeric } from "@common/utils/math";
 import { type SDeepMutable, type Timeout } from "@common/utils/misc";
 import { ItemType, type EventModifiers, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
@@ -225,6 +225,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         time: 0,
         multiplier: 1
     };
+
+    effectSpeedMultiplier = 1; // TODO find a better way to do this maybe
+    effectSpeedTimeout?: Timeout;
 
     isMoving = false;
 
@@ -453,6 +456,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     private _pingSeq = 0;
 
+    // key = proj, value = angle
+    stuckProjectiles: Map<Projectile, number> | undefined;
+
+    immunityTimeout: Timeout | undefined;
+
     constructor(game: Game, socket: WebSocket<PlayerSocketData> | undefined, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
 
@@ -610,19 +618,41 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
     }
 
-    swapWeaponRandomly(itemOrSlot: InventoryItem | number = this.activeItem, force = false): void {
-        if (this.perks.hasItem(PerkIds.Lycanthropy)) return; // womp womp
+    private static readonly _weaponSwapWeights: Partial<Record<ItemType, Partial<Record<Tier, number>>>> = {
+        [ItemType.Gun]: {
+            [Tier.S]: 0.15,
+            [Tier.A]: 0.2,
+            [Tier.B]: 0.5,
+            [Tier.C]: 0.818,
+            [Tier.D]: 0.182
+        },
+        [ItemType.Melee]: {
+            [Tier.S]: 0.125,
+            [Tier.A]: 0.5,
+            [Tier.B]: 0.4,
+            [Tier.C]: 0.4,
+            [Tier.D]: 0.2
+        },
+        [ItemType.Throwable]: {
+            [Tier.S]: 0.4,
+            [Tier.C]: 1,
+            [Tier.D]: 0.5
+        }
+    };
 
-        let slot = itemOrSlot === this.activeItem
+    private static readonly _weaponTiersCache: Partial<Record<ItemType, Partial<Record<Tier, WeaponDefinition[]>>>> = {};
+
+    swapWeaponRandomly(item: InventoryItem = this.activeItem, force = false): void {
+        if (item.definition.noSwap || this.perks.hasItem(PerkIds.Lycanthropy)) return; // womp womp
+
+        let slot = item === this.activeItem
             ? this.activeItemIndex
-            : typeof itemOrSlot === "number"
-                ? itemOrSlot
-                : this.inventory.weapons.findIndex(i => i === itemOrSlot);
+            : this.inventory.weapons.findIndex(i => i === item);
 
         if (slot === -1) {
             // this happens if the item to be swapped isn't currently in the inventory
             // in that case, we just take the first slot matching that item's type
-            slot = GameConstants.player.inventorySlotTypings.filter(slot => slot === (itemOrSlot as InventoryItem).definition.itemType)?.[0] ?? 0;
+            slot = GameConstants.player.inventorySlotTypings.filter(slot => slot === item.definition.itemType)?.[0] ?? 0;
             // and if we somehow don't have any matching slots, then someone's probably messing with us… fallback to slot 0 lol
         }
 
@@ -632,12 +662,17 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const { items, backpack: { maxCapacity }, throwableItemMap } = inventory;
         const type = GameConstants.player.inventorySlotTypings[slot];
 
+        const weights = Player._weaponSwapWeights[type] ?? {};
+        const chosenTier = weightedRandom<Tier>(Object.keys(weights).map(s => parseInt(s)), Object.values(weights));
+        const cache = Player._weaponTiersCache[type] ??= {};
+        const potentials = cache[chosenTier] ??= spawnable.forType(type).filter(({ tier }) => tier === chosenTier);
+
         const chosenItem = pickRandomInArray<WeaponDefinition>(
             type === ItemType.Throwable
-                ? spawnable.forType(ItemType.Throwable).filter(
+                ? potentials.filter(
                     ({ idString: thr }) => (items.hasItem(thr) ? items.getItem(thr) : 0) < maxCapacity[thr]
                 )
-                : spawnable.forType(type)
+                : potentials
         );
         if (chosenItem === undefined) return;
 
@@ -649,19 +684,20 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 // Give the player ammo for the new gun if they do not have any ammo for it.
                 if (!items.hasItem(ammoType) && !summonAirdrop) {
-                    items.setItem(ammoType, ammoSpawnAmount);
+                    items.setItem(ammoType, Numeric.min(ammoSpawnAmount, maxCapacity[ammoType]));
                     this.dirty.items = true;
                 }
 
                 inventory.replaceWeapon(slot, chosenItem, force);
-                (this.inventory.getWeapon(slot) as GunItem).ammo = capacity;
-                this.sendEmote(Emotes.fromString(chosenItem.idString), true);
+                const item = this.inventory.getWeapon(slot) as GunItem;
+                item.ammo = capacity;
+                item.lastUse = item.switchDate = this.lastFreeSwitch = this.game.now;
+                this.effectiveSwitchDelay = 500;
                 break;
             }
 
             case ItemType.Melee: {
                 inventory.replaceWeapon(slot, chosenItem, force);
-                this.sendEmote(Emotes.fromString(chosenItem.idString), true);
                 break;
             }
 
@@ -699,7 +735,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                 this.dirty.weapons = true;
                 this.dirty.items = true;
-                this.sendEmote(Emotes.fromString(chosenItem.idString), true);
                 break;
             }
         }
@@ -958,8 +993,38 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         );
                         break;
                     }
+                    case PerkIds.Infected: {
+                        if (this.health > perk.minHealth) {
+                            this.health = Numeric.max(this.health - perk.dps, perk.minHealth);
+                        }
+                        const detectionHitbox = new CircleHitbox(perk.infectionRadius, this.position);
+                        for (const player of this.game.grid.intersectsHitbox(detectionHitbox)) {
+                            if (
+                                !player.isPlayer
+                                || !player.hitbox.collidesWith(detectionHitbox)
+                                || Math.random() > perk.infectionChance
+                                || player.perks.hasItem(PerkIds.Immunity)
+                            ) continue;
+                            player.perks.addItem(Perks.fromString(PerkIds.Infected));
+                            player.setDirty();
+                        }
+                        break;
+                    }
                 }
                 // ! evil ends here
+            }
+        }
+
+        if (this.stuckProjectiles) {
+            for (const [proj, angle] of this.stuckProjectiles) {
+                if (proj.detonated || proj.dead) {
+                    this.stuckProjectiles.delete(proj);
+                    continue;
+                }
+                const finalAngle = Angle.normalize(this.rotation + angle);
+                proj.position = Vec.add(this.position, Vec.fromPolar(finalAngle, this.sizeMod * GameConstants.player.radius * 1.2));
+                proj.rotation = finalAngle;
+                proj.setPartialDirty();
             }
         }
 
@@ -1048,6 +1113,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             * adrenSpeedMod                                                          // Speed boost from adrenaline
             * (this.downed ? 0.5 : (this.activeItemDefinition.speedMultiplier ?? 1)) // Active item/knocked out speed modifier
             * (this.beingRevivedBy ? 0.5 : 1)                                        // Being revived speed multiplier
+            * this.effectSpeedMultiplier                                             // Effect speed multiplier (currently only used for vaccinator slowdown)
             * this._modifiers.baseSpeed;                                             // Current on-wearer modifier
 
         // Update position
@@ -1171,7 +1237,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             toRegen += adrenRegen * this.mapPerkOrDefault(
                 PerkIds.LacedStimulants,
                 ({ healDmgRate, lowerHpLimit }) => (this.health <= lowerHpLimit ? 1 : -healDmgRate),
-                (this.adrenaline > 0 || this.normalizedHealth < 0.3) && !this.downed ? 1 : 0
+                (this.adrenaline > 0 || (this.normalizedHealth < 0.3 && !this.perks.hasItem(PerkIds.Infected))) && !this.downed ? 1 : 0
             );
 
             // Drain adrenaline
@@ -1461,7 +1527,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 player.dirty.teamID || forceInclude
                     ? { teamID: player.teamID }
                     : {}
-            )
+            ),
+            blockEmoting: player.blockEmoting
         };
 
         // Cull bullets
@@ -1767,9 +1834,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             amount = this.health;
         }
 
-        if (amount < 0 || this.dead) amount = 0;
+        if (this.dead) amount = 0;
 
         return amount;
+    }
+
+    heal(amount: number): void {
+        this.health += amount;
     }
 
     override damage(params: DamageParams): void {
@@ -1777,6 +1848,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         const { source, weaponUsed } = params;
         let { amount } = params;
+
+        if (amount < 0) {
+            return this.heal(-amount);
+        }
 
         this.game.pluginManager.emit("player_damage", {
             amount,
@@ -1813,8 +1888,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 && source.teamID === this.teamID
                 && source.id !== this.id
                 && !this.disconnected
+                && amount > 0
             )
         ) return;
+
+        if (amount < 0) {
+            return this.heal(-amount);
+        }
 
         amount = this._clampDamageAmount(amount);
 
@@ -1979,7 +2059,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 case PerkIds.Engorged: {
                     const base = newModifiers.maxHealth * GameConstants.player.defaultHealth;
                     (eventMods.kill as ExtendedWearerAttributes[]).push({
-                        maxHealth: (base + perk.hpMod) / base,
+                        maxHealth: (base + perk.healthMod) / base,
                         sizeMod: perk.sizeMod
                     });
                     break;
@@ -1992,6 +2072,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 }
                 case PerkIds.LowProfile: {
                     newModifiers.size *= perk.sizeMod;
+                    break;
+                }
+                case PerkIds.Infected: {
+                    newModifiers.baseSpeed *= perk.speedMod;
+                    newModifiers.maxHealth *= perk.healthMod;
+                    newModifiers.adrenDrain *= perk.adrenDrainMod;
                     break;
                 }
             }
@@ -2143,7 +2229,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     case PerkIds.Engorged: {
                         if (source.kills <= perk.killsLimit) {
                             source.sizeMod *= perk.sizeMod;
-                            source.maxHealth *= perk.hpMod;
+                            source.maxHealth *= perk.healthMod;
                             source.updateAndApplyModifiers();
                         }
                         break;
@@ -2164,6 +2250,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         break;
                     }
                 }
+            }
+
+            if (this.game.mode.weaponSwap && !(weaponUsed instanceof Explosion)) {
+                source.swapWeaponRandomly(weaponUsed, true);
             }
 
             source.updateAndApplyModifiers();
@@ -2615,7 +2705,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 backpack: this.inventory.backpack,
                 halloweenThrowableSkin: this.halloweenThrowableSkin,
                 activeDisguise: this.activeDisguise,
-                blockEmoting: this.blockEmoting,
+                infected: this.perks.hasItem(PerkIds.Infected),
                 backEquippedMelee: this.backEquippedMelee
             }
         };

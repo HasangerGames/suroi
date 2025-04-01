@@ -10,7 +10,7 @@ import { PacketDataIn, PacketType } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { type PingSerialization } from "@common/packets/updatePacket";
 import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { Geometry, Numeric, Statistics } from "@common/utils/math";
+import { Angle, Geometry, Numeric, Statistics } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
 import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray, randomPointInsideCircle, randomRotation } from "@common/utils/random";
@@ -19,6 +19,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 
 import { Bullets, type BulletDefinition } from "@common/definitions/bullets";
 import type { SingleGunNarrowing } from "@common/definitions/items/guns";
+import { PerkData, PerkIds, Perks } from "@common/definitions/items/perks";
 import { Mode, ModeDefinition, Modes } from "@common/definitions/modes";
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import type { WebSocket } from "uWebSockets.js";
@@ -38,8 +39,8 @@ import { type BaseGameObject, type GameObject } from "./objects/gameObject";
 import { Loot, type ItemData } from "./objects/loot";
 import { Parachute } from "./objects/parachute";
 import { Player, type PlayerSocketData } from "./objects/player";
-import { SyncedParticle } from "./objects/syncedParticle";
 import { Projectile, ProjectileParams } from "./objects/projectile";
+import { SyncedParticle } from "./objects/syncedParticle";
 import { PluginManager } from "./pluginManager";
 import { Team } from "./team";
 import { Grid } from "./utils/grid";
@@ -323,15 +324,17 @@ export class Game implements GameData {
             records = records.concat(bullet.update());
 
             if (bullet.dead) {
-                const onHitExplosion = bullet.definition.onHitExplosion;
-                if (onHitExplosion && !bullet.reflected) {
-                    this.addExplosion(
-                        onHitExplosion,
-                        bullet.position,
-                        bullet.shooter,
-                        bullet.layer,
-                        bullet.sourceGun instanceof GunItem ? bullet.sourceGun : undefined
-                    );
+                if (!bullet.reflected) {
+                    const { onHitExplosion } = bullet.definition;
+                    if (onHitExplosion) {
+                        this.addExplosion(
+                            onHitExplosion,
+                            bullet.position,
+                            bullet.shooter,
+                            bullet.layer,
+                            bullet.sourceGun instanceof GunItem ? bullet.sourceGun : undefined
+                        );
+                    }
                 }
                 this.bullets.delete(bullet);
             }
@@ -354,6 +357,52 @@ export class Game implements GameData {
                 weaponUsed: weapon,
                 position: position
             });
+
+            const { onHitProjectile, enemySpeedMultiplier, removePerk } = weapon.definition.ballistics;
+
+            if (
+                onHitProjectile
+                && !(
+                    "definition" in object
+                    && (object.definition.noCollisions || object.definition.noBulletCollision)
+                )
+            ) {
+                const proj = this.addProjectile({
+                    owner: source,
+                    position,
+                    definition: onHitProjectile,
+                    height: 0,
+                    velocity: Vec.create(0, 0),
+                    layer: object.layer,
+                    rotation: randomRotation()
+                });
+
+                if (object.isPlayer) {
+                    (object.stuckProjectiles ??= new Map()).set(proj, Angle.betweenPoints(position, object.position) - object.rotation);
+                }
+            }
+
+            if (
+                enemySpeedMultiplier
+                && object.isPlayer
+                && source.isPlayer
+                && (!this.teamMode || object.teamID !== source.teamID || object.id === source.id)
+            ) {
+                object.effectSpeedMultiplier = enemySpeedMultiplier.multiplier;
+                object.effectSpeedTimeout?.kill();
+                object.effectSpeedTimeout = this.addTimeout(() => object.effectSpeedMultiplier = 1, enemySpeedMultiplier.duration);
+            }
+
+            if (object.isPlayer && removePerk) {
+                object.perks.removeItem(Perks.fromString(removePerk));
+                if (removePerk === PerkIds.Infected) { // evil
+                    const immunity = PerkData[PerkIds.Immunity];
+                    object.perks.addItem(immunity);
+                    object.immunityTimeout?.kill();
+                    object.immunityTimeout = this.addTimeout(() => object.perks.removeItem(immunity), immunity.duration);
+                    object.setDirty();
+                }
+            }
         }
 
         // Handle explosions

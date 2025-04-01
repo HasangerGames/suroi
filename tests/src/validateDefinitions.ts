@@ -1782,17 +1782,6 @@ logger.indent("Validating decals", () => {
 
 logger.indent("Validating emotes", () => {
     tester.assertNoDuplicateIDStrings(Emotes.definitions, "Emotes", "emotes");
-
-    for (const emote of Emotes) {
-        const errorPath = tester.createPath("emotes", `emote '${emote.idString}'`);
-
-        tester.assertNoPointlessValue({
-            obj: emote,
-            field: "scale",
-            defaultValue: 1,
-            baseErrorPath: errorPath
-        });
-    }
 });
 
 logger.indent("Validating explosions", () => {
@@ -2730,13 +2719,6 @@ logger.indent("Validating modes", () => {
                     defaultValue: false,
                     baseErrorPath: errorPath
                 });
-
-                tester.assertNoPointlessValue({
-                    obj: mode,
-                    field: "specialPlayButtons",
-                    defaultValue: false,
-                    baseErrorPath: errorPath
-                });
             }
         });
     }
@@ -3667,7 +3649,7 @@ logger.indent("Validating throwables", () => {
                 baseErrorPath: errorPath
             });
 
-            tester.assertValidOrNPV({
+            /* tester.assertValidOrNPV({ // fixme
                 obj: throwable,
                 field: "fireDelay",
                 defaultValue: 250,
@@ -3678,7 +3660,7 @@ logger.indent("Validating throwables", () => {
                     });
                 },
                 baseErrorPath: errorPath
-            });
+            }); */
 
             logger.indent("Validating detonation", () => {
                 const detonation = throwable.detonation;

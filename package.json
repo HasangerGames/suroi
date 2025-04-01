@@ -1,6 +1,6 @@
 {
   "name": "suroi",
-  "version": "0.24.2",
+  "version": "0.25.0",
   "description": "An open-source 2D battle royale game inspired by surviv.io",
   "private": true,
   "scripts": {
@@ -23,8 +23,8 @@
     "validateDefinitions": "cd tests && pnpm run build && pnpm validateDefinitions",
     "validateSvgs": "cd tests && pnpm validateSvgs",
     "sanity-check": "pnpm lint:check && pnpm typecheck && pnpm validateDefinitions",
-    "full-reinstall": "rm -r node_modules pnpm-lock.yaml client/node_modules server/node_modules common/node_modules tests/node_modules translations/node_modules && pnpm install",
-    "full-reinstall-win": "del /f /s /q node_modules\\* pnpm-lock.yaml client\\node_modules\\* server\\node_modules\\* common\\node_modules\\* tests\\node_modules\\* translations\\node_modules\\* & pnpm install"
+    "full-reinstall": "rm -r node_modules pnpm-lock.yaml client/node_modules server/node_modules common/node_modules tests/node_modules && pnpm install",
+    "full-reinstall-win": "del /f /s /q node_modules\\* pnpm-lock.yaml client\\node_modules\\* server\\node_modules\\* common\\node_modules\\* tests\\node_modules\\* & pnpm install"
   },
   "engines": {
     "node": ">=20.0.0",
@@ -39,10 +39,10 @@
     "@eslint/js": "^9.23.0",
     "@stylistic/eslint-plugin": "^3.1.0",
     "@types/eslint__js": "^8.42.3",
-    "@types/node": "^22.13.11",
+    "@types/node": "^22.13.14",
     "eslint": "^9.23.0",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.27.0"
+    "typescript-eslint": "^8.28.0"
   },
   "packageManager": "pnpm@9.5.0+sha512.140036830124618d624a2187b50d04289d5a087f326c9edfc0ccd733d76c4f52c3a313d4fc148794a2a9d81553016004e6742e8cf850670268a7387fc220c903"
 }

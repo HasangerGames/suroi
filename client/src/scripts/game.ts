@@ -12,7 +12,7 @@ import { JoinPacket } from "@common/packets/joinPacket";
 import { PacketType, type DataSplit, type PacketDataIn, type PacketDataOut } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { type UpdateDataOut } from "@common/packets/updatePacket";
-import { CircleHitbox, HitboxType } from "@common/utils/hitbox";
+import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, equalLayer } from "@common/utils/layer";
 import { EaseFunctions, Geometry, Numeric } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
@@ -26,6 +26,9 @@ import FontFaceObserver from "fontfaceobserver";
 import $ from "jquery";
 import { Application, Color, Container } from "pixi.js";
 import "pixi.js/prepare";
+import { setUpCommands } from "./console/commands";
+import { GameConsole } from "./console/gameConsole";
+import { defaultClientCVars } from "./console/variables";
 import { CameraManager } from "./managers/cameraManager";
 import { GasManager, GasRender } from "./managers/gasManager";
 import { InputManager } from "./managers/inputManager";
@@ -48,8 +51,6 @@ import { Player } from "./objects/player";
 import { Projectile } from "./objects/projectile";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { autoPickup, fetchServerData, finalizeUI, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, updateDisconnectTime } from "./ui";
-import { setUpCommands } from "./console/commands";
-import { GameConsole } from "./console/gameConsole";
 import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { DebugRenderer } from "./utils/debugRenderer";
 import { setUpNetGraph } from "./utils/graph/netGraph";
@@ -57,7 +58,6 @@ import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { getTranslatedString, initTranslation } from "./utils/translations/translations";
 import { type TranslationKeys } from "./utils/translations/typings";
 import { Tween, type TweenOptions } from "./utils/tween";
-import { defaultClientCVars } from "./console/variables";
 
 /* eslint-disable @stylistic/indent */
 
@@ -605,9 +605,11 @@ export const Game = new (class Game {
                 CameraManager.container.removeChildren();
                 ParticleManager.clear();
                 UIManager.clearTeammateCache();
+                UIManager.clearWeaponCache();
                 UIManager.reportedPlayerIDs.clear();
                 UIManager.killLeaderCache = undefined;
                 UIManager.oldKillLeaderId = undefined;
+                UIManager.skinID = undefined;
 
                 MapManager.safeZone.clear();
                 MapManager.pingGraphics.clear();
@@ -615,6 +617,8 @@ export const Game = new (class Game {
                 MapManager.pingsContainer.removeChildren();
                 MapManager.teammateIndicators.clear();
                 MapManager.teammateIndicatorContainer.removeChildren();
+
+                GasManager.time = undefined;
 
                 this.playerNames.clear();
                 this._timeouts.clear();
@@ -967,7 +971,10 @@ export const Game = new (class Game {
         let detonateBindIcon: JQuery<HTMLImageElement> | undefined;
 
         return () => {
-            if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
+            if (!this.gameStarted || (this.gameOver && !this.spectating)) {
+                SoundManager.update();
+                return;
+            }
             InputManager.update();
             SoundManager.update();
             ScreenRecordManager?.update();
@@ -977,7 +984,6 @@ export const Game = new (class Game {
 
             const isAction = UIManager.action.active;
             const showCancel = isAction && !UIManager.action.fake;
-            let canInteract = true;
 
             if (isAction) {
                 UIManager.updateAction();
@@ -1019,6 +1025,8 @@ export const Game = new (class Game {
                     }
                 } else if (isBuilding) {
                     object.toggleCeiling();
+
+                // metal detectors
                 } else if (isObstacle && object.definition.detector && object.notOnCoolDown) {
                     for (const player of this.objects.getCategory(ObjectCategory.Player)) {
                         if (
@@ -1036,67 +1044,70 @@ export const Game = new (class Game {
                         object.notOnCoolDown = false;
                         setTimeout(() => object.notOnCoolDown = true, 1000);
                     }
-                } else if (isObstacle && object.definition.material === "bush" && !object.dead) {
-                    const bushDetectionHitbox = object.hitbox.type === HitboxType.Circle ? new CircleHitbox(object.hitbox.radius / 6, object.position) : object.hitbox;
+
+                // bush particles
+                } else if (isObstacle && object.definition.material === "bush" && object.definition.noCollisions) {
                     for (const player of this.objects.getCategory(ObjectCategory.Player)) {
+                        const inBush = equalLayer(object.layer, player.layer) && object.hitbox.isPointInside(player.position);
+
                         if (
-                            (player.bushID === undefined && (!bushDetectionHitbox.collidesWith(player.hitbox)
-                                || !equalLayer(object.layer, player.layer)))
+                            (player.bushID === undefined && !inBush) // not in this bush
+                            || (player.bushID !== undefined && player.bushID !== object.id) // in a different bush
                             || player.dead
-                            || (player.bushID !== undefined && object.id !== player.bushID)
                         ) continue;
 
-                        const colliding = bushDetectionHitbox.collidesWith(player.hitbox) && equalLayer(object.layer, player.layer);
+                        if (object.dead) {
+                            player.bushID = undefined;
+                            continue;
+                        }
 
-                        const handleBushParticles = (): void => {
-                            let particle = object.definition.frames?.particle ?? `${object.definition.idString}_particle`;
-
-                            if (object.definition.particleVariations) particle += `_${random(1, object.definition.particleVariations)}`;
-
-                            ParticleManager.spawnParticles(2, () => ({
-                                frames: particle,
-                                position: object.hitbox.randomPoint(),
-                                zIndex: Numeric.max((object.definition.zIndex ?? ZIndexes.Players) + 1, 4),
-                                lifetime: 500,
-                                scale: {
-                                   start: randomFloat(0.85, 0.95),
-                                   end: 0,
-                                   ease: EaseFunctions.quarticIn
-                                },
-                                alpha: {
-                                    start: 1,
-                                    end: 0,
-                                    ease: EaseFunctions.sexticIn
-                                },
-                                rotation: { start: randomRotation(), end: randomRotation() },
-                                speed: Vec.fromPolar(randomRotation(), randomFloat(6, 9))
-                            }));
-                        };
-
+                        let bushSound: string | undefined;
                         if (player.bushID === undefined) {
                             // bush
                             player.bushID = object.id;
-                            handleBushParticles();
-                            object.playSound("bush_rustle_1", {
-                                falloff: 0.25,
-                                maxRange: 200
-                            });
-                        } else if (!colliding) {
+                            bushSound = "bush_rustle_1";
+                        } else if (!inBush) {
                             // in this case we exit bushh lol
                             player.bushID = undefined;
-                            handleBushParticles();
-                            object.playSound("bush_rustle_2", {
-                                falloff: 0.25,
-                                maxRange: 200
-                            });
+                            bushSound = "bush_rustle_2";
                         }
+                        if (!bushSound) continue;
+
+                        let particle = object.definition.frames?.particle ?? `${object.definition.idString}_particle`;
+                        if (object.definition.particleVariations) {
+                            particle += `_${random(1, object.definition.particleVariations)}`;
+                        }
+
+                        ParticleManager.spawnParticles(2, () => ({
+                            frames: particle,
+                            position: object.hitbox.randomPoint(),
+                            zIndex: Numeric.max((object.definition.zIndex ?? ZIndexes.Players) + 1, 4),
+                            lifetime: 500,
+                            scale: {
+                                start: randomFloat(0.85, 0.95),
+                                end: 0,
+                                ease: EaseFunctions.quarticIn
+                            },
+                            alpha: {
+                                start: 1,
+                                end: 0,
+                                ease: EaseFunctions.sexticIn
+                            },
+                            rotation: { start: randomRotation(), end: randomRotation() },
+                            speed: Vec.fromPolar(randomRotation(), randomFloat(6, 9))
+                        }));
+
+                        object.playSound(bushSound, {
+                            falloff: 0.25,
+                            maxRange: 200
+                        });
                     }
                 }
             }
 
             const object = interactable.object ?? uninteractable.object;
             const offset = object?.isObstacle ? object.door?.offset : undefined;
-            canInteract = interactable.object !== undefined;
+            const canInteract = interactable.object !== undefined;
 
             const bind: string | undefined = InputManager.binds.getInputsBoundToAction(object === undefined ? "cancel_action" : "interact")[0];
 

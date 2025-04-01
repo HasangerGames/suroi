@@ -3,7 +3,7 @@ import { type ScopeDefinition } from "./items/scopes";
 
 export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "trail" | "gas" | "void";
 
-export type Mode = "normal" | "fall" | "halloween" | "birthday" | "winter";
+export type Mode = "normal" | "fall" | "halloween" | "infection" | "birthday" | "winter";
 
 export type SpritesheetNames = Mode | "shared";
 
@@ -28,8 +28,8 @@ export interface ModeDefinition {
         readonly gravity?: boolean
     }
     readonly specialLogo?: boolean
-    readonly specialPlayButtons?: boolean
-    readonly modeLogoImage?: string
+    readonly playButtonImage?: string
+    readonly weaponSwap?: boolean
 }
 
 export const Modes: Record<Mode, ModeDefinition> = {
@@ -70,8 +70,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
             delay: 1000
         },
         spriteSheets: ["shared", "fall"],
-        specialPlayButtons: true,
-        modeLogoImage: "./img/game/fall/obstacles/baby_plumpkin.svg"
+        playButtonImage: "./img/game/fall/obstacles/pumpkin.svg"
     },
     halloween: {
         colors: {
@@ -91,8 +90,25 @@ export const Modes: Record<Mode, ModeDefinition> = {
         darkShaders: true,
         spriteSheets: ["shared", "fall", "halloween"],
         specialLogo: true,
-        specialPlayButtons: true,
-        modeLogoImage: "./img/game/halloween/obstacles/jack_o_lantern.svg"
+        playButtonImage: "./img/game/halloween/obstacles/jack_o_lantern.svg"
+    },
+    infection: {
+        colors: {
+            grass: "hsl(300, 15%, 35%)",
+            water: "hsl(223, 35%, 44%)",
+            border: "hsl(229, 30%, 36%)",
+            beach: "hsl(25, 28%, 53%)",
+            riverBank: "hsl(16, 28%, 38%)",
+            trail: "hsl(35, 50%, 40%)",
+            gas: "hsla(17, 100%, 50%, 0.55)",
+            void: "hsl(25, 80%, 6%)"
+        },
+        sounds: {
+            foldersToLoad: ["shared", "normal", "infection"]
+        },
+        spriteSheets: ["shared", "normal", "infection"],
+        playButtonImage: "./img/game/shared/perks/infected.svg",
+        weaponSwap: true
     },
     birthday: { // copy of normal
         colors: {
@@ -135,7 +151,6 @@ export const Modes: Record<Mode, ModeDefinition> = {
         },
         obstacleVariants: true,
         specialLogo: true,
-        specialPlayButtons: true,
-        modeLogoImage: "./img/game/winter/obstacles/red_gift.svg"
+        playButtonImage: "./img/game/winter/obstacles/red_gift.svg"
     }
 };

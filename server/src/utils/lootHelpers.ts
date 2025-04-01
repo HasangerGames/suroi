@@ -1,19 +1,17 @@
 import { Ammos } from "@common/definitions/items/ammos";
 import { Armors } from "@common/definitions/items/armors";
 import { Backpacks } from "@common/definitions/items/backpacks";
-import { BuildingDefinition, Buildings } from "@common/definitions/buildings";
 import { Guns } from "@common/definitions/items/guns";
 import { HealingItems } from "@common/definitions/items/healingItems";
-import { LootDefForType, LootDefinition, Loots } from "@common/definitions/loots";
 import { Melees } from "@common/definitions/items/melees";
-import { Mode } from "@common/definitions/modes";
-import { ObstacleDefinition, Obstacles } from "@common/definitions/obstacles";
 import { Perks } from "@common/definitions/items/perks";
 import { Scopes } from "@common/definitions/items/scopes";
 import { Skins } from "@common/definitions/items/skins";
 import { Throwables } from "@common/definitions/items/throwables";
+import { LootDefForType, LootDefinition, Loots } from "@common/definitions/loots";
+import { Mode } from "@common/definitions/modes";
 import { isArray } from "@common/utils/misc";
-import { ItemType, NullString, ObjectDefinition, ObjectDefinitions, ReferenceOrRandom, ReferenceTo } from "@common/utils/objectDefinitions";
+import { ItemType, NullString, ObjectDefinitions, ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, weightedRandom } from "@common/utils/random";
 import { LootTables } from "../data/lootTables";
 import { MapDefinition } from "../data/maps";
@@ -136,12 +134,12 @@ function getLoot(mode: Mode, items: WeightedItem[], noDuplicates?: boolean): Loo
 }
 
 // either return a reference as-is, or take all the non-null string references
-const referenceOrRandomOptions = <T extends ObjectDefinition>(obj: ReferenceOrRandom<T>): Array<ReferenceTo<T>> => {
-    return typeof obj === "string"
-        ? [obj]
-        // well, Object.keys already filters out symbols so…
-        : Object.keys(obj)/* .filter(k => k !== NullString) */;
-};
+// const referenceOrRandomOptions = <T extends ObjectDefinition>(obj: ReferenceOrRandom<T>): Array<ReferenceTo<T>> => {
+//     return typeof obj === "string"
+//         ? [obj]
+//         // well, Object.keys already filters out symbols so…
+//         : Object.keys(obj)/* .filter(k => k !== NullString) */;
+// };
 
 export type SpawnableItemRegistry = ReadonlySet<ReferenceTo<LootDefinition>> & {
     forType<K extends ItemType>(type: K): ReadonlyArray<LootDefForType<K>>
@@ -167,74 +165,81 @@ export type Cache = {
 };
 
 export function getSpawnableLoots(mode: Mode, mapDef: MapDefinition, cache: Cache): SpawnableItemRegistry {
-    /*
-        we have a collection of loot tables, but not all of them are necessarily reachable
-        for example, if loot table A belongs to obstacle A, but said obstacle is never spawned,
-        then we mustn't take loot table A into account
-    */
+    // /*
+    //     we have a collection of loot tables, but not all of them are necessarily reachable
+    //     for example, if loot table A belongs to obstacle A, but said obstacle is never spawned,
+    //     then we mustn't take loot table A into account
+    // */
 
-    // first, get all the reachable buildings
-    // to do this, we get all the buildings in the map def, then for each one, include itself and any subbuildings
-    // flatten that array, and that's the reachable buildings
-    // and for good measure, we exclude duplicates by using a set
-    const reachableBuildings = [
-        ...new Set(
-            Object.keys(mapDef.buildings ?? {}).map(building => {
-                const b = Buildings.fromString(building);
+    // // first, get all the reachable buildings
+    // // to do this, we get all the buildings in the map def, then for each one, include itself and any subbuildings
+    // // flatten that array, and that's the reachable buildings
+    // // and for good measure, we exclude duplicates by using a set
+    // const reachableBuildings = [
+    //     ...new Set(
+    //         Object.keys(mapDef.buildings ?? {}).map(building => {
+    //             const b = Buildings.fromString(building);
 
-                // for each subbuilding, we either take it as-is, or take all possible spawn options
-                return (b.subBuildings ?? []).map(
-                    ({ idString }) => referenceOrRandomOptions(idString).map(s => Buildings.fromString(s))
-                ).concat([b]);
-            }).flat(2)
-        )
-    ] satisfies readonly BuildingDefinition[];
+    //             // for each subbuilding, we either take it as-is, or take all possible spawn options
+    //             return (b.subBuildings ?? []).map(
+    //                 ({ idString }) => referenceOrRandomOptions(idString).map(s => Buildings.fromString(s))
+    //             ).concat([b]);
+    //         }).flat(2)
+    //     )
+    // ] satisfies readonly BuildingDefinition[];
 
-    // now obstacles
-    // for this, we take the list of obstacles from the map def, and append to that alllllll the obstacles from the
-    // reachable buildings, which again involves flattening some arrays
-    const reachableObstacles = [
-        ...new Set(
-            Object.keys(mapDef.obstacles ?? {}).map(o => Obstacles.fromString(o)).concat(
-                reachableBuildings.map(
-                    ({ obstacles = [] }) => obstacles.map(
-                        ({ idString }) => referenceOrRandomOptions(idString).map(o => Obstacles.fromString(o))
-                    )
-                ).flat(2)
-            )
-        )
-    ] satisfies readonly ObstacleDefinition[];
+    // // now obstacles
+    // // for this, we take the list of obstacles from the map def, and append to that alllllll the obstacles from the
+    // // reachable buildings, which again involves flattening some arrays
+    // const reachableObstacles = [
+    //     ...new Set(
+    //         Object.keys(mapDef.obstacles ?? {}).map(o => Obstacles.fromString(o)).concat(
+    //             reachableBuildings.map(
+    //                 ({ obstacles = [] }) => obstacles.map(
+    //                     ({ idString }) => referenceOrRandomOptions(idString).map(o => Obstacles.fromString(o))
+    //                 )
+    //             ).flat(2)
+    //         )
+    //     )
+    // ] satisfies readonly ObstacleDefinition[];
 
-    // and now, we generate the list of reachable tables, by taking those from map def, and adding those from
-    // both the obstacles and the buildings
-    const reachableLootTables = [
-        ...new Set(
-            Object.keys(mapDef.loots ?? {}).map(t => resolveTable(mode, t)).concat(
-                reachableObstacles.filter(({ hasLoot }) => hasLoot).map(
-                    ({ lootTable, idString }) => resolveTable(mode, lootTable ?? idString)
-                )
-            ).concat(
-                reachableBuildings.map(
-                    ({ lootSpawners }) => lootSpawners ? lootSpawners.map(({ table }) => resolveTable(mode, table)) : []
-                ).flat()
-            )
-        )
-    ] satisfies readonly LootTable[];
+    // // and now, we generate the list of reachable tables, by taking those from map def, and adding those from
+    // // both the obstacles and the buildings
+    // const reachableLootTables = [
+    //     ...new Set(
+    //         Object.keys(mapDef.loots ?? {}).map(t => resolveTable(mode, t)).concat(
+    //             reachableObstacles.filter(({ hasLoot }) => hasLoot).map(
+    //                 ({ lootTable, idString }) => resolveTable(mode, lootTable ?? idString)
+    //             )
+    //         ).concat(
+    //             reachableBuildings.map(
+    //                 ({ lootSpawners }) => lootSpawners ? lootSpawners.map(({ table }) => resolveTable(mode, table)) : []
+    //             ).flat()
+    //         )
+    //     )
+    // ] satisfies readonly LootTable[];
 
-    const getAllItemsFromTable = (table: LootTable): Array<ReferenceTo<LootDefinition>> =>
-        (
-            Array.isArray(table)
-                ? table as SimpleLootTable
-                : (table as FullLootTable).loot
-        )
-            .flat()
-            .map(entry => "item" in entry ? entry.item : getAllItemsFromTable(resolveTable(mode, entry.table)))
-            .filter(item => item !== NullString)
-            .flat();
+    // const getAllItemsFromTable = (table: LootTable): Array<ReferenceTo<LootDefinition>> =>
+    //     (
+    //         Array.isArray(table)
+    //             ? table as SimpleLootTable
+    //             : (table as FullLootTable).loot
+    //     )
+    //         .flat()
+    //         .map(entry => "item" in entry ? entry.item : getAllItemsFromTable(resolveTable(mode, entry.table)))
+    //         .filter(item => item !== NullString && !Loots.fromStringSafe(item)?.noSwap)
+    //         .flat();
+
+    const filter = (def: LootDefinition): boolean => !def.noSwap;
 
     // and now we go get the spawnable loots
     const spawnableLoots: ReadonlySet<ReferenceTo<LootDefinition>> = new Set<ReferenceTo<LootDefinition>>(
-        reachableLootTables.map(getAllItemsFromTable).flat()
+        // reachableLootTables.map(getAllItemsFromTable).flat()
+        [
+            ...Guns.definitions.filter(filter),
+            ...Melees.definitions.filter(filter),
+            ...Throwables.definitions.filter(filter)
+        ].map(({ idString }) => idString)
     );
 
     (spawnableLoots as SpawnableItemRegistry).forType = <K extends ItemType>(type: K): ReadonlyArray<LootDefForType<K>> => {

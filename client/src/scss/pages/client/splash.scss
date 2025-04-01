@@ -8,7 +8,7 @@
     overflow-y: auto;
     overflow-x: hidden;
 
-    background-color: palette.$grass_bg;
+    background-color: palette.$bg;
 
     width: 100%;
     height: 100%;
@@ -884,6 +884,13 @@
     animation: mode-halloween-color 4s linear infinite;
 }
 
+.event-infection {
+    background-color: hsl(310, 35%, 50%);
+    border-bottom: 2px solid hsl(310, 35%, 40%);
+    box-shadow: inset 0 -2px hsl(315, 35%, 40%);
+    animation: mode-infection-color 4s linear infinite;
+}
+
 @keyframes mode-winter-color {
     0% {
         background-color: #dcdcdc;
@@ -936,5 +943,23 @@
         background-color: #5a0e0e;
         border-bottom: 2px solid #450b0b;
         box-shadow: inset 0 -2px #450b0b;
+    }
+}
+
+@keyframes mode-infection-color {
+    0% {
+        background-color: hsl(310, 35%, 50%);
+        border-bottom: 2px solid hsl(310, 35%, 40%);
+        box-shadow: inset 0 -2px hsl(315, 35%, 40%);
+    }
+    50% {
+        background-color: hsl(310, 45%, 50%);
+        border-bottom: 2px solid hsl(310, 45%, 40%);
+        box-shadow: inset 0 -2px hsl(315, 45%, 40%);
+    }
+    100% {
+        background-color: hsl(310, 35%, 50%);
+        border-bottom: 2px solid hsl(310, 35%, 40%);
+        box-shadow: inset 0 -2px hsl(315, 35%, 40%);
     }
 }

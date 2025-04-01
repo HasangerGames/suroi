@@ -123,11 +123,11 @@ export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
 
         const { moveSpread, shotSpread, fsaReset } = definition;
 
-        let spread = owner.game.now - this._lastUse >= (fsaReset ?? Infinity)
+        let spread = owner.game.now - this.lastUse >= (fsaReset ?? Infinity)
             ? 0
             : Angle.degreesToRadians((owner.isMoving ? moveSpread : shotSpread) / 2);
 
-        this._lastUse = owner.game.now;
+        this.lastUse = owner.game.now;
         const jitter = definition.jitterRadius ?? 0;
         // when are we gonna have a perk that takes this mechanic and chucks it in the fucking trash where it belongs
 
@@ -242,6 +242,11 @@ export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
                             break;
                         }
                     }
+                    break;
+                }
+                case PerkIds.Infected: {
+                    modifiers.damage *= perk.damageMod;
+                    modifyForDamageMod(perk.damageMod);
                     break;
                 }
             }
@@ -407,7 +412,7 @@ export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
             || (!owner.inventory.items.hasItem(definition.ammoType) && !this.owner.hasPerk(PerkIds.InfiniteAmmo))
             || owner.action !== undefined
             || owner.activeItem !== this
-            || (!skipFireDelayCheck && owner.game.now - this._lastUse < definition.fireDelay)
+            || (!skipFireDelayCheck && owner.game.now - this.lastUse < definition.fireDelay)
             || owner.downed
         ) return;
 

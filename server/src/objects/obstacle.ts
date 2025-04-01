@@ -1,5 +1,5 @@
 import { FlyoverPref, ObjectCategory, RotationMode } from "@common/constants";
-import { PerkIds } from "@common/definitions/items/perks";
+import { PerkIds, Perks } from "@common/definitions/items/perks";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
@@ -177,8 +177,9 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         this.health -= amount;
         this.setPartialDirty();
 
-        const notDead = this.health > 0 && !this.dead;
-        if (notDead) {
+        const dead = this.health <= 0 || this.dead;
+
+        if (!dead) {
             const oldScale = this.scale;
 
             // Calculate new scale & scale hitbox
@@ -192,7 +193,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             ...params
         });
 
-        if (!notDead) {
+        if (dead) {
             this.health = 0;
             this.dead = true;
             if (definition.weaponSwap && source instanceof BaseGameObject && source.isPlayer) {
@@ -218,15 +219,28 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 this.game.addExplosion(definition.explosion, this.position, source, source.layer, weaponIsItem ? weaponUsed : weaponUsed?.weapon);
             }
 
-            // Pumpkin Bombs
-            if (
-                source instanceof BaseGameObject
-                && source.isPlayer
-                && source.perks.hasItem(PerkIds.PlumpkinBomb)
-                && definition.material === "pumpkin"
-            ) {
-                this.playMaterialDestroyedSound = false;
-                this.game.addExplosion("pumpkin_explosion", this.position, source, source.layer);
+            if (source instanceof BaseGameObject && source.isPlayer) {
+                // Plumpkin Bomb
+                if (
+                    source.perks.hasItem(PerkIds.PlumpkinBomb)
+                    && definition.material === "pumpkin"
+                ) {
+                    this.playMaterialDestroyedSound = false;
+                    this.game.addExplosion("pumpkin_explosion", this.position, source, source.layer);
+                }
+
+                // Infected perk
+                if (
+                    definition.applyPerkOnDestroy
+                    && definition.applyPerkOnDestroy.mode === this.game.modeName
+                    && definition.applyPerkOnDestroy.chance > Math.random()
+                    && !(definition.applyPerkOnDestroy.perk === PerkIds.Infected && source.perks.hasItem(PerkIds.Immunity)) // evil
+                ) {
+                    source.perks.addItem(Perks.fromString(definition.applyPerkOnDestroy.perk));
+                    if (definition.applyPerkOnDestroy.perk === PerkIds.Infected) { // evil
+                        source.setDirty();
+                    }
+                }
             }
 
             if (definition.particlesOnDestroy !== undefined) {
@@ -250,7 +264,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 );
             }
 
-            if (this.definition.isWall) {
+            if (definition.isWall) {
                 this.parentBuilding?.damageCeiling();
 
                 for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
@@ -277,6 +291,18 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                         }
                     }
                 }
+            }
+
+            if (definition.regenerateAfterDestroyed) {
+                this.game.addTimeout(() => {
+                    this.dead = false;
+                    this.health = this.maxHealth;
+                    this.scale = this.maxScale;
+                    const hitboxRotation = this.definition.rotationMode === RotationMode.Limited ? this.rotation as Orientation : 0;
+                    this.hitbox = definition.hitbox.transform(this.position, this.scale, hitboxRotation);
+                    this.collidable = !definition.noCollisions;
+                    this.setPartialDirty();
+                }, definition.regenerateAfterDestroyed);
             }
 
             this.game.pluginManager.emit("obstacle_did_destroy", {

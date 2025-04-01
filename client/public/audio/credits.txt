@@ -44,7 +44,22 @@ Guns:
   MG36 reload - Siberian Black League & hasanger (based on Surviv.io Custom Sounds & Textures Resource Pack)
   MG36 switch - hasanger (based on Surviv.io Custom Sounds & Textures Resource Pack)
 
-  All other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
+  Seedshot fire:
+    - "AssaultRifle2" from Pixabay: https://pixabay.com/sound-effects/assaultrifle2-47258/
+    - "Tomato squish;wet" from Pixabay: https://pixabay.com/sound-effects/tomato-squishwet-103934/
+    - "Bottle Pop" from Pixabay: https://pixabay.com/sound-effects/bottle-pop-45531/
+  Seedshot reload:
+    - "m4 rifle reload" from Pixabay: https://pixabay.com/sound-effects/m4-rifle-reload-103528/
+    - "RiceGrains2" from Pixabay: https://pixabay.com/sound-effects/ricegrains2-68273/
+    - "Berretta 9mm Cocking Slower" from Pixabay: https://pixabay.com/sound-effects/berretta-9mm-cocking-slower-105410/
+  Seedshot switch - "Berretta 9mm Cocking Slower" from Pixabay: https://pixabay.com/sound-effects/berretta-9mm-cocking-slower-105410/
+  Seedshot explosion:
+    - "081895_impact_.wav" from Pixabay: https://pixabay.com/sound-effects/081895-impact-wav-43951/
+    - "Gross Slimy Goo Foley 7" from Pixabay: https://pixabay.com/sound-effects/gross-slimy-goo-foley-7-164295/
+
+  Vaccinator fire - "Simple Gunshot Reverb Test" from Pixabay: https://pixabay.com/sound-effects/simple-gunshot-reverb-test-101094/
+
+  Other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
 
 Melees:
   Kukri pickup - "Metal Blade Slice 46" from Pixabay: https://pixabay.com/sound-effects/metal-blade-slice-46-195333/
@@ -127,4 +142,5 @@ Memorial open:
   "impact riser 01" from Pixabay: https://pixabay.com/sound-effects/impact-riser-01-6908/
   "Atomic Impact" from Pixabay: https://pixabay.com/sound-effects/atomic-impact-216308/
 
+Default switch sound - "Jump Landing" from Pixabay: https://pixabay.com/sound-effects/jump-landing-30946/
 Generic pickup sound - Katloo

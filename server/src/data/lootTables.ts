@@ -1578,5 +1578,26 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "gas_can", weight: 0 } // somewhat hack in order to make the gas can obtainable through mini plumpkins
         ]
     },
+    infection: {
+        airdrop_guns: [
+            { item: "vaccinator", weight: 1.1 },
+            { item: "mg36", weight: 1 },
+            { item: "sr25", weight: 1 },
+            { item: "vss", weight: 1 },
+            { item: "vector", weight: 1 },
+            { item: "vepr12", weight: 1 },
+            { item: "deagle", weight: 1 },
+            { item: "mcx_spear", weight: 0.95 },
+            { item: "mosin_nagant", weight: 0.95 },
+            { item: "tango_51", weight: 0.9 },
+            { item: "stoner_63", weight: 0.9 },
+            { item: "model_89", weight: 0.6 },
+            { item: "vks", weight: 0.6 },
+            { item: "radio", weight: 0.1 }
+        ],
+        aegis_golden_case: [{ item: "vaccinator", weight: 1 }],
+        rsh_case_single: [{ item: "seedshot", weight: 1 }],
+        rsh_case_dual: [{ item: "seedshot", weight: 1 }]
+    },
     birthday: {}
 };

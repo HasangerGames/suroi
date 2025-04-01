@@ -15,16 +15,16 @@ export const TAU = 2 * π;
 
 export const Angle = Object.freeze({
     /**
-     * Draws a line between two points and returns that line's angle
-     * @param a The first point, used as the head of the vector
-     * @param b The second point, used as the tail of the vector
-     * @returns The angle, in radians, of the line going from b to a
+     * Draws a line between two points and returns that line's angle with respect to the horizontal axis
+     * @param a The first point, used as the tail of the vector
+     * @param b The second point, used as the head of the vector
+     * @returns The angle, in radians, of the line going from `a` to `b`
      */
     betweenPoints(a: Vector, b: Vector): number {
         return Math.atan2(a.y - b.y, a.x - b.x);
     },
     /**
-     * Normalize an angle to a value between -π and π
+     * Normalize an angle to a value between `-π` and `π`
      * @param radians The angle, in radians
      */
     normalize(radians: number): number {
@@ -35,6 +35,7 @@ export const Angle = Object.freeze({
      * (the difference between 10º and 350º can be either -340º or 20º—chances are, you're looking for the latter)
      * @param start The initial angle, in radians
      * @param end The final angle, in radians
+     * @returns The smallest difference between the two angles
      */
     minimize(start: number, end: number): number {
         return Numeric.absMod(end - start + π, τ) - π;
@@ -62,8 +63,8 @@ export const Angle = Object.freeze({
 
 export const Numeric = Object.freeze({
     /**
-     * Works like regular modulo, but negative numbers cycle back around: hence,
-     * `-1 % 4` gives `3` and not `-1`
+     * Works like regular modulo, but negative numbers cycle back around:
+     * `absMod(-1, 4)` gives `3` and `-1 % 4` gives `-1`
      * @param a The dividend
      * @param n The divisor
      */
@@ -73,7 +74,7 @@ export const Numeric = Object.freeze({
             : (a % n + n) % n;
     },
     /**
-     * Interpolate between two values
+     * Interpolates between two values
      * @param start The start value
      * @param end The end value
      * @param interpFactor The interpolation factor
@@ -87,8 +88,9 @@ export const Numeric = Object.freeze({
      * @param value The number to conform
      * @param min The minimum value the number can be
      * @param max The maximum value the number can be
+     * @returns The value, clamped to the interval `[min, max]`
      */
-    clamp(value: number, min: number, max: number): number {
+    clamp<N extends number | bigint>(value: N, min: N, max: N): N {
         return value < max ? value > min ? value : min : max;
     },
     /**
@@ -102,6 +104,11 @@ export const Numeric = Object.freeze({
     },
     /**
      * Remaps a value from a range to another
+     * @param value The value to remap
+     * @param min0 The minimum of the range the value currently belongs to
+     * @param max0 The maximum of the range the value currently belongs to
+     * @param min1 The minimum of the range the value should be remapped to
+     * @param max1 The maximum of the range the value should be remapped to
      */
     remap(value: number, min0: number, max0: number, min1: number, max1: number) {
         return Numeric.lerp(min1, max1, Numeric.clamp((value - min0) / (max0 - min0), 0, 1));
@@ -146,7 +153,7 @@ export const Geometry = Object.freeze({
         return Math.sqrt(this.distanceSquared(a, b));
     },
     /**
-     * Get the distance between two points squared
+     * Get the squared distance between two points
      * @param a The first point
      * @param b The second point
      */

@@ -3,9 +3,9 @@ import { type EmoteDefinition } from "@common/definitions/emotes";
 import { Ammos } from "@common/definitions/items/ammos";
 import { type ArmorDefinition } from "@common/definitions/items/armors";
 import { type BackpackDefinition } from "@common/definitions/items/backpacks";
-import { Guns, type GunDefinition, type SingleGunNarrowing } from "@common/definitions/items/guns";
+import { type GunDefinition, type SingleGunNarrowing } from "@common/definitions/items/guns";
 import { HealType, type HealingItemDefinition } from "@common/definitions/items/healingItems";
-import { DEFAULT_HAND_RIGGING, Melees, type MeleeDefinition } from "@common/definitions/items/melees";
+import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "@common/definitions/items/melees";
 import { PerkData, PerkIds } from "@common/definitions/items/perks";
 import { Skins, type SkinDefinition } from "@common/definitions/items/skins";
 import { Loots, type WeaponDefinition } from "@common/definitions/loots";
@@ -22,8 +22,6 @@ import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Container, Graphics, Text } from "pixi.js";
-import { getTranslatedString } from "../utils/translations/translations";
-import { type TranslationKeys } from "../utils/translations/typings";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { CameraManager } from "../managers/cameraManager";
@@ -36,8 +34,11 @@ import { UIManager } from "../managers/uiManager";
 import { BULLET_WHIZ_SCALE, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { getTranslatedString } from "../utils/translations/translations";
+import { type TranslationKeys } from "../utils/translations/typings";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
+import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
@@ -55,7 +56,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     meleeStopSound?: GameSound;
     meleeAttackCounter = 0;
 
-    blockEmoting = false;
     bushID?: number;
 
     backEquippedMelee?: MeleeDefinition;
@@ -63,6 +63,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     private activeDisguise?: ObstacleDefinition;
     private readonly disguiseContainer: Container;
     halloweenThrowableSkin = false;
+
+    infected = false;
 
     private _oldItem = this.activeItem;
 
@@ -544,7 +546,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     backpack,
                     halloweenThrowableSkin,
                     activeDisguise,
-                    blockEmoting,
+                    infected,
                     backEquippedMelee
                 }
             } = data;
@@ -718,6 +720,15 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 updateContainerZIndex = true;
             }
 
+            if (infected !== this.infected) {
+                this.infected = infected;
+                this.container.tint = infected ? 0x8a4c70 : 0xffffff;
+                if (!isNew) {
+                    if (infected) this.playSound("infected");
+                    else this.playSound("cured");
+                }
+            }
+
             // Pan Image Display
             const backMeleeSprite = this.images.backMeleeSprite;
             const backMelee = this.backEquippedMelee;
@@ -730,10 +741,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 backMeleeSprite.setPos(onBack.position.x, onBack.position.y);
                 backMeleeSprite.setAngle(onBack.angle);
             }
-
-            // Rate Limiting: Team Pings & Emotes
-            this.blockEmoting = blockEmoting;
-            UIManager.ui.emoteWheel.css("opacity", this.blockEmoting ? "0.5" : "");
         }
 
         if (updateContainerZIndex) this.updateZIndex();
@@ -1085,26 +1092,28 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.altWeapon.setAngle(angle); // there's an ambiguity here as to whether the angle should be inverted or the same
             this.images.weapon.setPivot(reference.image && "pivot" in reference.image && reference.image.pivot ? reference.image.pivot : Vec.create(0, 0));
 
-            if (this.activeItem !== this._oldItem) {
-                this.anims.muzzleFlashFade?.kill();
-                this.anims.muzzleFlashRecoil?.kill();
-                this.images.muzzleFlash.alpha = 0;
-                if (this.isActivePlayer && !isNew) {
-                    let soundID: string;
-                    if (reference.itemType === ItemType.Throwable) {
-                        soundID = "throwable";
-                    } else if (reference.itemType === ItemType.Gun && reference.isDual) {
-                        soundID = reference.idString.slice("dual_".length);
-                    } else {
-                        soundID = reference.idString;
-                    }
-                    SoundManager.play(`${soundID}_switch`);
-                }
-            }
-
             const offset = this._getOffset();
             this.images.weapon.setPos(pX, pY + offset);
             this.images.altWeapon.setPos(pX, pY - offset);
+        }
+
+        if (this.activeItem !== this._oldItem) {
+            this.anims.muzzleFlashFade?.kill();
+            this.anims.muzzleFlashRecoil?.kill();
+            this.images.muzzleFlash.alpha = 0;
+            if (this.isActivePlayer && !isNew) {
+                let soundID: string;
+                if (reference.itemType === ItemType.Throwable) {
+                    soundID = "throwable";
+                } else if (reference.itemType === ItemType.Gun && reference.isDual) {
+                    soundID = reference.idString.slice("dual_".length);
+                } else if (SoundManager.has(`shared/${reference.idString}_switch`)) {
+                    soundID = reference.idString;
+                } else {
+                    soundID = "default";
+                }
+                SoundManager.play(`${soundID}_switch`);
+            }
         }
 
         this.images.weapon.setVisible(imagePresent);
@@ -1280,17 +1289,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         container.scale.set(0);
         container.alpha = 0;
 
-        let backgroundFrame = "emote_background";
-
-        const gun = Guns.fromStringSafe(emote.idString);
-        const melee = Melees.fromStringSafe(emote.idString);
-
-        if (gun) {
-            backgroundFrame = `loot_background_gun_${gun.ammoType}`;
-        }
-
-        this.emote.image.setScale((gun || melee) ? 0.7 : 1);
-        this.emote.background.setFrame(backgroundFrame);
+        const { backgroundTexture, scale } = Loot.getBackgroundAndScale(Loots.fromStringSafe(emote.idString));
+        this.emote.background.setFrame(backgroundTexture ?? "emote_background");
+        this.emote.image.setScale(scale ?? 1);
 
         this.anims.emote = Game.addTween({
             target: container,
