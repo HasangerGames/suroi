@@ -408,7 +408,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
 
-## 🇬🇷 Ελληνικά (88% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (93% Complete) - gr.hjson
 
 ### Invalid Keys
 
@@ -424,7 +424,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_fullscreen` is not defined
 - Key `recording` is not defined
 - Key `settings_record_res` is not defined
-- Key `settings_alt_texture_loading` is not defined
 - Key `settings_lock_joysticks` is not defined
 - Key `settings_switch_joysticks` is not defined
 - Key `settings_left_joystick_color` is not defined
@@ -435,19 +434,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `final_gas_advancing` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
-- Key `kf_suicide_finished_off` is not defined
-- Key `kf_impact_of` is not defined
-- Key `km_finally_ended_yourself` is not defined
-- Key `km_finally_killed` is not defined
-- Key `km_gas_kill_you` is not defined
-- Key `km_gas_down_you` is not defined
-- Key `km_airdrop_kill_you` is not defined
-- Key `km_airdrop_down_you` is not defined
-- Key `km_knocked_you` is not defined
-- Key `km_finished_off_you` is not defined
-- Key `km_killed_you` is not defined
-- Key `km_suicide_down` is not defined
-- Key `km_suicide_finished_off` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
@@ -838,6 +824,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
 
+## 🇳🇱 Nederlands (100% Complete) - nl.hjson
+
+### (No Invalid Keys)
+
+### (No Undefined Keys)
+
 ## 🇵🇱 Polski (85% Complete) - pl.hjson
 
 ### Invalid Keys
@@ -944,7 +936,6 @@ This file is a report of all errors and missing keys in the translation files of
 ### Invalid Keys
 
 - Key `create_team_waiting` is not a valid key
-- Key `Pan` is not a valid key
 
 ### Undefined Keys
 
@@ -1060,10 +1051,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
 
-## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
 
 ### Invalid Keys
 
+- Key `msg_lost_connection` is not a valid key
+- Key `username_input_placeholder` is not a valid key
 - Key `create_team_waiting` is not a valid key
 - Key `developr_vest` is not a valid key
 - Key `destroyer_of_worlds` is not a valid key
@@ -1264,7 +1257,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `werewolf` is not a valid key
 - Key `zebra` is not a valid key
 - Key `fps` is not a valid key
-- Key `msg_lost_connection` is not a valid key
 - Key `ping` is not a valid key
 - Key `special_developer_cheats` is not a valid key
 - Key `special_login` is not a valid key
@@ -1278,12 +1270,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `special_weapon_preset_title` is not a valid key
 - Key `time_minute` is not a valid key
 - Key `time_second` is not a valid key
-- Key `username_input_placeholder` is not a valid key
 
 ### Undefined Keys
 
-- Key `msg_error_kicked_team` is not defined
-- Key `create_team_force_start` is not defined
-- Key `create_team_not_ready` is not defined
 - Key `m16a4` is not defined
 

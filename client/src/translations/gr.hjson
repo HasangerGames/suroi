@@ -63,6 +63,7 @@
 "settings_render_resolution": "Ανάλυση Απόδοσης"
 "settings_render_resolution_auto": "Αυτόματο"
 "settings_hires_textures": "Υψηλή ανάλυση υφής"
+"settings_alt_texture_loading": "Εναλλακτική μέθοδος φόρτωμα υφής"
 "settings_cooler_graphics": "Καλύτερα γραφικά"
 "settings_antialias": "Χωρίς αλλοίωση/επικάλυψη"
 "settings_ambient_particles": "Σωματίδια/εφέ περιβάλλοντος"
@@ -207,6 +208,19 @@
 "kf_kl_killed": "Ο/Η <player> σκότωσε τον αρχηγό των σκοτωμών"
 "kf_kl_dead": "Ο/Η Αρχηγός των σκοτωμών είναι νεκρός!"
 "kf_kl_suicide": "Ο/Η Αρχηγός των σκοτωμών σκότωσε τον εαυτό του/της!"
+"kf_suicide_finished_off": "<player> αποτελείωσε τον εαυτό του/της"
+"kf_impact_of": "η σύγκρουση από " // space is a must
+"km_finally_ended_yourself": "Τελικά αποτελείωσες τον εαυτό σου"
+"km_finally_killed": "Τελικά σκοτώθηκες"
+"km_gas_kill_you": ("Πέθανες από το θανατηφόρο αέριο") or ("Πέθανες από το βλαβερό αέριο")
+"km_gas_down_you": ("Βγήκες νοκ άουτ από το θανατηφόρο αέριο") or ("Βγήκες νοκ άουτ από το Βλαβερό αέριο")
+"km_airdrop_kill_you": "Θρυμματίστηκες μοιραία από ρίψη αέρος"
+"km_airdrop_down_you": "Βγήκες νοκ άουτ από ρίψη αέρος"
+"km_knocked_you": "σε έβγαλε νοκ άουτ"
+"km_finished_off_you": "σε αποτελείωσε"
+"km_killed_you": "σε σκότωσε"
+"km_suicide_down": "έβγαλες τον εαυτό σου νοκ άουτ"
+"km_suicide_finished_off": "αποτελείωσες τον εαυτό σου"
 "finally": "τελικά"
 "with": "με"
 "you": ""
