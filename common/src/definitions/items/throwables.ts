@@ -272,7 +272,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         itemType: ItemType.Throwable,
         tier: Tier.S,
         cookable: true,
-        fuseTime: 1000,
+        fuseTime: 1500,
         cookTime: 0,
         throwTime: 0,
         speedMultiplier: 1,
