@@ -791,6 +791,14 @@ export const MapManager = new (class MapManager {
             }, 10000);
         }
     }
+    reset(): void{
+        this.safeZone.clear();
+        this.pingGraphics.clear();
+        this.pings.clear();
+        this.pingsContainer.removeChildren();
+        this.teammateIndicators.clear();
+        this.teammateIndicatorContainer.removeChildren();
+    }
 })();
 
 export class MapPing {
