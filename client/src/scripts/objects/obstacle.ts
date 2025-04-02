@@ -1,7 +1,7 @@
 import { Layer, Layers, ObjectCategory, ZIndexes } from "@common/constants";
 import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
-import { RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, equivLayer, getEffectiveZIndex } from "@common/utils/layer";
 import { Angle, EaseFunctions, Numeric, calculateDoorHitboxes } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
@@ -58,8 +58,12 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     hitbox!: Hitbox;
     orientation: Orientation = 0;
 
-    mountSpriteInitalized = false;
+    mountSpriteInitialized = false;
     mountSprite: SuroiSprite | undefined;
+
+    waterOverlaySpriteInitialized = false;
+    waterOverlaySprite: SuroiSprite | undefined;
+    waterOverlay = false;
 
     hitSound?: GameSound;
 
@@ -107,7 +111,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 CameraManager.addObject(this.graphics);
             }
 
-            if (definition.gunMount && !this.mountSpriteInitalized) {
+            if (definition.gunMount && !this.mountSpriteInitialized) {
                 this.mountSprite = new SuroiSprite()
                     .setFrame(definition.gunMount.weapon)
                     .setScale(1.15)
@@ -121,7 +125,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 }
 
                 this.container.addChild(this.mountSprite);
-                this.mountSpriteInitalized = true;
+                this.mountSpriteInitialized = true;
             }
 
             if (definition.invisible) this.container.visible = false;
@@ -247,25 +251,23 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
         this.container.scale.set(this.dead ? 1 : this.scale);
 
-        if (data.waterOverlay) {
+        this.waterOverlay = data.waterOverlay;
+        if (this.waterOverlay) {
             this.image.zIndex = getEffectiveZIndex(ZIndexes.UnderWaterObstacles, this.layer, Game.layer);
 
-            if (!this.graphics) { // todo: somehow make it follow container scale (once you punch overlay is gone)
-                this.graphics = new Graphics();
-                this.graphics.zIndex = getEffectiveZIndex(ZIndexes.ObstaclesLayer1, this.layer, Game.layer);
-                this.graphics.beginPath();
-                drawGroundGraphics(definition.hitbox.transform(this.position, 1, this.orientation), this.graphics);
-                this.graphics.closePath();
-                this.graphics.stroke({
-                    color: Game.mode.colors.water,
-                    width: 20,
-                    alpha: 0.75
-                });
-                CameraManager.addObject(this.graphics);
+            if (!this.waterOverlaySpriteInitialized) {
+                const waterOverlaySpriteType: "circle" | "rect" = definition.hitbox.type === HitboxType.Circle ? "circle" : "rect";
+
+                this.waterOverlaySprite = new SuroiSprite(`water_overlay_${waterOverlaySpriteType}`)
+                    .setTint(Game.mode.colors.water)
+                    .setZIndex(getEffectiveZIndex(ZIndexes.BuildingsFloor, this.layer, Game.layer));
+
+                this.container.addChild(this.waterOverlaySprite);
+
+                this.waterOverlaySpriteInitialized = true;
+            } else {
+                this.waterOverlaySprite?.setZIndex(getEffectiveZIndex(ZIndexes.BuildingsFloor, this.layer, Game.layer));
             }
-            // else {
-            //     this.graphics.
-            // }
         }
 
         if (isNew) {
@@ -337,6 +339,10 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 this.mountSprite.setVisible(false);
             }
 
+            if (this.waterOverlaySprite !== undefined) {
+                this.waterOverlaySprite.setVisible(false);
+            }
+
             if ((definition.graphics?.length && this.graphics) || this.graphics) {
                 this.graphics.visible = false;
             }
@@ -359,6 +365,12 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     this.image.setVisible(false);
                 } else {
                     this.image.setFrame(definition.frames?.residue ?? `${definition.idString}_residue`);
+
+                    if (this.waterOverlay) {
+                        this.image.setZIndex(getEffectiveZIndex(ZIndexes.UnderWaterDeadObstacles, this.layer, Game.layer));
+                        this.image.setAlpha(0.5);
+                    }
+
                     if (definition.graphics && !this.image.visible) this.image.visible = true;
                 }
 
@@ -754,6 +766,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         this.graphics?.destroy();
         this.image.destroy();
         this.mountSprite?.destroy();
+        this.waterOverlaySprite?.destroy();
         this.doorMask?.destroy();
         this.smokeEmitter?.destroy();
         this._glow?.kill();
