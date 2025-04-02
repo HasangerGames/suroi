@@ -339,11 +339,10 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                     ceilingImages: [brokenImage],
                 };
                 this._createSprites(); 
-                this.dead;
             } else {
                 this.dead = data.dead;
             }
-            this.ceilingContainer.alpha = 0;
+            this.ceilingContainer.alpha = 1;
         }
 
         if (data.puzzle) {
