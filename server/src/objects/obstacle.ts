@@ -178,13 +178,16 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         }
 
         if (definition.breachable) {
-            if (
-                (weaponIsItem && 
-                    (weaponDef?.itemType === ItemType.Melee && (weaponDef as MeleeDefinition).breachingTool === true)) ||
-                (weaponUsed instanceof Explosion 
-                    ? (weaponUsed.weapon?.definition as MeleeDefinition | ThrowableDefinition)?.breachingTool 
-                    : (weaponUsed?.definition as MeleeDefinition | ThrowableDefinition)?.breachingTool))
-            return;
+            let isAllowedWeapon = 
+               (weaponIsItem && 
+                 (weaponDef?.itemType === ItemType.Melee && (weaponDef as MeleeDefinition).breachingTool === true)) ||
+               (weaponUsed instanceof Explosion 
+                   && ((weaponUsed.weapon?.definition as MeleeDefinition | ThrowableDefinition)?.breachingTool ));
+
+            if (!isAllowedWeapon) {
+                console.log('not breaching tool');
+                return 
+            }
         }
 
         this.health -= amount;
