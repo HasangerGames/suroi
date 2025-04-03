@@ -185,7 +185,6 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                    && ((weaponUsed.weapon?.definition as MeleeDefinition | ThrowableDefinition)?.breachingTool ));
 
             if (!isAllowedWeapon) {
-                console.log('not breaching tool');
                 return 
             }
         }
