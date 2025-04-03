@@ -1,6 +1,7 @@
 import { FlyoverPref, ObjectCategory, RotationMode } from "@common/constants";
 import { PerkIds, Perks } from "@common/definitions/items/perks";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { type MeleeDefinition } from "@common/definitions/items/melees";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Angle, calculateDoorHitboxes, resolveStairInteraction } from "@common/utils/math";
@@ -15,6 +16,8 @@ import { type Building } from "./building";
 import { type Bullet } from "./bullet";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { type Player } from "./player";
+import { ThrowableDefinition } from "@common/definitions/items/throwables";
+import { Explosion, type Explosion as ExplosionType } from "./explosion";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override readonly fullAllocBytes = 10;
@@ -171,6 +174,16 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 ...params
             })
         ) {
+            return;
+        }
+
+        if (definition.breachable) {
+            if (
+                (weaponIsItem && 
+                    (weaponDef?.itemType === ItemType.Melee && (weaponDef as MeleeDefinition).breachingTool === true)) ||
+                (weaponUsed instanceof Explosion 
+                    ? (weaponUsed.weapon?.definition as MeleeDefinition | ThrowableDefinition)?.breachingTool 
+                    : (weaponUsed?.definition as MeleeDefinition | ThrowableDefinition)?.breachingTool))
             return;
         }
 

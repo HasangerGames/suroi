@@ -8,6 +8,7 @@ import { InventoryItemDefinitions } from "./items";
 export type ThrowableDefinition = InventoryItemDefinition & {
     readonly itemType: ItemType.Throwable
     readonly tier: Tier
+    readonly breachingTool?: boolean
     /**
      * Specified in *milliseconds*
      */
@@ -88,6 +89,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         name: "Frag Grenade",
         itemType: ItemType.Throwable,
         tier: Tier.C,
+        breachingTool: true,
         cookable: true,
         fuseTime: 4000,
         cookTime: 150,
@@ -179,6 +181,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         name: "Confetti Grenade",
         itemType: ItemType.Throwable,
         tier: Tier.S,
+        breachingTool: true,
         fuseTime: 4000,
         cookTime: 150,
         noSkin: true,
@@ -224,6 +227,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         name: "C4",
         itemType: ItemType.Throwable,
         tier: Tier.S,
+        breachingTool: true,
         c4: true,
         cookable: false,
         fuseTime: 750,

@@ -16,6 +16,7 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly health: number
     readonly indestructible?: boolean
     readonly impenetrable?: boolean
+    readonly breachable?: boolean
     readonly noHitEffect?: boolean
     readonly noDestroyEffect?: boolean
     readonly noResidue?: boolean
@@ -3664,9 +3665,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         name: "House Pillar",
         material: "wood",
         indestructible: false,
-        // pillars should only be dealt damage by airstrikes or c4 (reminder for airstrike dev)
-        health: 340, 
-        impenetrable: true,
+        health: 340,
+        breachable: true,
         scale: {
             spawnMin: 1,
             spawnMax: 1,
