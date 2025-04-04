@@ -129,6 +129,75 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
         }
     },
     {
+        idString: "mirv_grenade",
+        name: "MIRV Grenade",
+        itemType: ItemType.Throwable,
+        tier: Tier.B,
+        cookable: true,
+        fuseTime: 5000,  
+        cookTime: 200,
+        throwTime: 150,
+        speedMultiplier: 1,
+        cookSpeedMultiplier: 0.8,
+        impactDamage: 2,  
+        obstacleMultiplier: 25, 
+        hitboxRadius: 2,  
+        fireDelay: 300,  
+        physics: {
+            maxThrowDistance: 128,
+            initialZVelocity: 5,
+            initialAngularVelocity: 12,
+            initialHeight: 0.5
+        },
+        image: {
+            position: Vec.create(60, 43),
+            angle: 60,
+            zIndex: 5,
+            anchor: Vec.create(0.5, 0.68)
+        },
+        detonation: {
+            explosion: "mirv_grenade_explosion",  
+            submunitions: [
+                {
+                    idString: "sub_grenade_1",
+                    name: "Sub Grenade 1",
+                    explosion: "sub_grenade_explosion_1",  
+                    impactDamage: 1,
+                    hitboxRadius: 1.5
+                },
+                {
+                    idString: "sub_grenade_2",
+                    name: "Sub Grenade 2",
+                    explosion: "sub_grenade_explosion_2", 
+                    impactDamage: 1,
+                    hitboxRadius: 1.5
+                },
+                {
+                    idString: "sub_grenade_3",
+                    name: "Sub Grenade 3",
+                    explosion: "sub_grenade_explosion_3", 
+                    impactDamage: 1,
+                    hitboxRadius: 1.5
+                }
+            ]
+        },
+        animation: {
+            pinImage: "proj_mirv_pin",  
+            liveImage: "proj_mirv",  
+            leverImage: "proj_mirv_lever",  
+            cook: {
+                cookingImage: "proj_mirv_nopin",
+                leftFist: Vec.create(2.5, 0),
+                rightFist: Vec.create(-0.5, 2.15)
+            },
+            throw: {
+                leftFist: Vec.create(1.9, -1.75),
+                rightFist: Vec.create(4, 2.15)
+            }
+        }
+    },
+
+    {
         idString: "smoke_grenade",
         name: "Smoke Grenade",
         itemType: ItemType.Throwable,
