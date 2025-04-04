@@ -1,33 +1,14 @@
 import { FSWatcher, watch } from "chokidar";
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync } from "fs";
-import { readFile, rm } from "fs/promises";
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "fs";
+import { readFile, rm, writeFile } from "fs/promises";
 import path, { resolve } from "path";
 import { type SpritesheetData } from "pixi.js";
-import { Image } from "skia-canvas";
 import { type Plugin, type ResolvedConfig } from "vite";
 import { Mode, ModeDefinition, Modes, SpritesheetNames } from "../../../common/src/definitions/modes";
 import { readDirectory } from "../../../common/src/utils/readDirectory";
+import { createHash } from "crypto";
 
-const PLUGIN_NAME = "vite-spritesheet-plugin";
-
-const compilerOpts = {
-    outDir: "audio",
-    removeExtensions: true
-} satisfies CompilerOptions as CompilerOptions;
-
-export interface CompilerOptions {
-    /**
-     * Output directory
-     * @default "audio"
-     */
-    outDir: string
-
-    /**
-     * Remove file extensions from the atlas frames
-     * @default true
-     */
-    removeExtensions: boolean
-}
+const PLUGIN_NAME = "vite-audio-spritesheet-plugin";
 
 export interface Atlas {
     readonly json: SpritesheetData
@@ -35,12 +16,9 @@ export interface Atlas {
     readonly cacheName?: string
 }
 
-export interface Spritesheet {
-    readonly low: Atlas[]
-    readonly high: Atlas[]
-}
+export type AudioSpritesheet = Record<string, { start: number, end: number }>;
 
-export type MultiAtlasList = Record<SpritesheetNames, Spritesheet>;
+export type MultiAtlasList = Record<SpritesheetNames, AudioSpritesheet>;
 
 export interface CacheData {
     lastModified: number
@@ -55,13 +33,8 @@ export interface CacheData {
  * Pack images spritesheets.
  * @param name Name of the spritesheet.
  * @param paths List of paths to the images.
- * @param options Options passed to the packer.
  */
-export async function createSpritesheets(
-    name: string,
-    fileMap: Record<string, number>,
-    options: CompilerOptions
-): Promise<Spritesheet> {
+export async function createSpritesheets(name: string, fileMap: Record<string, number>): Promise<AudioSpritesheet> {
     const atlasCacheDir = path.join(cacheDir, name);
     if (existsSync(atlasCacheDir)) {
         await Promise.all(
@@ -72,7 +45,40 @@ export async function createSpritesheets(
         mkdirSync(atlasCacheDir);
     }
 
-    console.log(`ffmpeg -i "concat:${Object.keys(fileMap).join("|")}" -c:a libmp3lame ${path.join(atlasCacheDir, "bleh.mp3")}`);
+    const files = Object.keys(fileMap);
+
+    // const round = (duration: number): number => Math.round(duration * 1000) / 1000; // round to nearest ms
+
+    let currentIdx = 0;
+    const sheet: AudioSpritesheet = {};
+    const buffers: Buffer[] = [];
+    for (const file of files) {
+        const buffer = readFileSync(file);
+        buffers.push(buffer);
+        const length = buffer.byteLength;
+        const filename = file.slice(file.lastIndexOf("/") + 1, -4); // remove path and extension
+        sheet[filename] = {
+            start: currentIdx,
+            end: currentIdx + length
+        };
+        currentIdx += length;
+    }
+    const audioBuffer = Buffer.concat(buffers);
+    const cacheName = `${name}-${createHash("sha1").update(audioBuffer).digest("hex").slice(0, 8)}`;
+    void writeFile(path.join(atlasCacheDir, `${cacheName}.json`), JSON.stringify(sheet));
+    void writeFile(path.join(atlasCacheDir, `${cacheName}.mp3`), audioBuffer);
+    // for (const file of files) {
+        // const proc = spawnSync("ffprobe", ["-i", file], { encoding: "utf8" });
+        // console.log(proc.stderr.match(/Duration: (.*?),/)?.[0]);
+        // const name = file.slice(file.lastIndexOf("/") + 1, -".mp3".length);
+        // const duration = mp3Duration(file);
+        // sheet[name] = {
+        //     start: round(currentPos),
+        //     end: round(currentPos + duration)
+        // };
+        // currentPos += duration;
+    // }
+    // execSync(`ffmpeg -i "concat:${files.join("|")}" -c:a copy ${path.join(atlasCacheDir, "bleh.mp3")}`, { stdio: "pipe" });
 
     // const cacheData: CacheData = {
     //     lastModified: Date.now(),
@@ -84,7 +90,7 @@ export async function createSpritesheets(
     // };
     // writeFileSync(path.join(atlasCacheDir, "data.json"), JSON.stringify(cacheData));
 
-    // return sheets;
+    return sheet;
 }
 
 const atlases: Partial<MultiAtlasList> = {};
@@ -174,7 +180,7 @@ async function buildSpritesheets(
             const strLength = str.length;
             process.stdout.write(str);
             const start = performance.now();
-            atlases[mode] = await createSpritesheets(mode, fileMap, compilerOpts);
+            atlases[mode] = await createSpritesheets(mode, fileMap);
             console.log(`\rBuilt spritesheet "${mode}" in ${Math.round(performance.now() - start) / 1000}s (${builtCount}/${totalCount})`.padEnd(strLength, " "));
         }
     }
@@ -237,7 +243,7 @@ export function audioSpritesheet(enableDevMode: boolean): Plugin[] {
         }
     };
 
-    const getSheets = (): Atlas[] => Object.values(atlases).flatMap(sheets => [...sheets.low, ...sheets.high]);
+    // const getSheets = (): Atlas[] => Object.values(atlases).flatMap(sheets => [...sheets.low, ...sheets.high]);
 
     let buildTimeout: NodeJS.Timeout | undefined;
 
@@ -248,24 +254,24 @@ export function audioSpritesheet(enableDevMode: boolean): Plugin[] {
             async buildStart() {
                 await buildSpritesheets(modeDefs);
 
-                const { low, high } = exportedAtlases;
-                for (const atlasId in atlases) {
-                    const atlas = atlases[atlasId as keyof typeof atlases];
-                    if (atlas === undefined) continue;
+                // const { low, high } = exportedAtlases;
+                // for (const atlasId in atlases) {
+                //     const atlas = atlases[atlasId as keyof typeof atlases];
+                //     if (atlas === undefined) continue;
 
-                    high[atlasId] = atlas.high.map(sheet => sheet.json);
-                    low[atlasId] = atlas.low.map(sheet => sheet.json);
-                }
+                //     high[atlasId] = atlas.high.map(sheet => sheet.json);
+                //     low[atlasId] = atlas.low.map(sheet => sheet.json);
+                // }
             },
             generateBundle() {
-                for (const sheet of getSheets()) {
-                    this.emitFile({
-                        type: "asset",
-                        fileName: sheet.json.meta.image,
-                        source: sheet.image
-                    });
-                    this.info(`Built spritesheet ${sheet.json.meta.image}`);
-                }
+                // for (const sheet of getSheets()) {
+                //     this.emitFile({
+                //         type: "asset",
+                //         fileName: sheet.json.meta.image,
+                //         source: sheet.image
+                //     });
+                //     this.info(`Built spritesheet ${sheet.json.meta.image}`);
+                // }
             },
             resolveId,
             load
@@ -277,80 +283,81 @@ export function audioSpritesheet(enableDevMode: boolean): Plugin[] {
                 config = cfg;
             },
             async configureServer(server) {
-                const reloadPage = (): void => {
-                    clearTimeout(buildTimeout);
+                void buildSpritesheets(modeDefs);
+                // const reloadPage = (): void => {
+                //     clearTimeout(buildTimeout);
 
-                    buildTimeout = setTimeout(() => {
-                        buildSheets().then(() => {
-                            const module = server.moduleGraph.getModuleById(highResVirtualModuleId);
-                            if (module !== undefined) void server.reloadModule(module);
-                            const module2 = server.moduleGraph.getModuleById(lowResVirtualModuleId);
-                            if (module2 !== undefined) void server.reloadModule(module2);
-                        }).catch(e => console.error(e));
-                    }, 500);
-                };
+                //     buildTimeout = setTimeout(() => {
+                //         buildSheets().then(() => {
+                //             const module = server.moduleGraph.getModuleById(highResVirtualModuleId);
+                //             if (module !== undefined) void server.reloadModule(module);
+                //             const module2 = server.moduleGraph.getModuleById(lowResVirtualModuleId);
+                //             if (module2 !== undefined) void server.reloadModule(module2);
+                //         }).catch(e => console.error(e));
+                //     }, 500);
+                // };
 
-                const initWatcher = (): void => {
-                    const foldersToWatch = modeName === undefined
-                        ? "public/audio/game"
-                        : Modes[modeName].spriteSheets.map(sheet => `public/audio/game/${sheet}`);
+                // const initWatcher = (): void => {
+                //     const foldersToWatch = modeName === undefined
+                //         ? "public/audio/game"
+                //         : Modes[modeName].spriteSheets.map(sheet => `public/audio/game/${sheet}`);
 
-                    watcher = watch(foldersToWatch, {
-                        cwd: config.root,
-                        ignoreInitial: true
-                    })
-                        .on("add", reloadPage)
-                        .on("change", reloadPage)
-                        .on("unlink", reloadPage);
-                };
-                initWatcher();
+                //     watcher = watch(foldersToWatch, {
+                //         cwd: config.root,
+                //         ignoreInitial: true
+                //     })
+                //         .on("add", reloadPage)
+                //         .on("change", reloadPage)
+                //         .on("unlink", reloadPage);
+                // };
+                // initWatcher();
 
-                serverConfigWatcher = watch("../server/src/config.ts", {
-                    cwd: config.root,
-                    ignoreInitial: true
-                })
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                    .on("change", async() => {
-                        updateModeTarget();
-                        await watcher.close();
-                        initWatcher();
-                        reloadPage();
-                    });
+                // serverConfigWatcher = watch("../server/src/config.ts", {
+                //     cwd: config.root,
+                //     ignoreInitial: true
+                // })
+                //     // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                //     .on("change", async() => {
+                //         updateModeTarget();
+                //         await watcher.close();
+                //         initWatcher();
+                //         reloadPage();
+                //     });
 
-                const files = new Map<string, Buffer | string>();
+                // const files = new Map<string, Buffer | string>();
 
-                async function buildSheets(): Promise<void> {
-                    await buildSpritesheets(modeDefs);
+                // async function buildSheets(): Promise<void> {
+                //     await buildSpritesheets(modeDefs);
 
-                    const { low, high } = exportedAtlases;
-                    for (const atlasId in atlases) {
-                        const atlas = atlases[atlasId as keyof typeof atlases];
-                        if (atlas === undefined) continue;
+                //     const { low, high } = exportedAtlases;
+                //     for (const atlasId in atlases) {
+                //         const atlas = atlases[atlasId as keyof typeof atlases];
+                //         if (atlas === undefined) continue;
 
-                        high[atlasId] = atlas.high.map(sheet => sheet.json);
-                        low[atlasId] = atlas.low.map(sheet => sheet.json);
-                    }
+                //         high[atlasId] = atlas.high.map(sheet => sheet.json);
+                //         low[atlasId] = atlas.low.map(sheet => sheet.json);
+                //     }
 
-                    files.clear();
-                    for (const sheet of getSheets()) {
-                        // consistently assigned in ./spritesheet.ts in function `createSheet` (in function `createSpritesheets`)
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        files.set(sheet.json.meta.image!, sheet.image);
-                    }
-                }
-                await buildSheets();
+                //     files.clear();
+                //     for (const sheet of getSheets()) {
+                //         // consistently assigned in ./spritesheet.ts in function `createSheet` (in function `createSpritesheets`)
+                //         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                //         files.set(sheet.json.meta.image!, sheet.image);
+                //     }
+                // }
+                // await buildSheets();
 
-                return () => {
-                    server.middlewares.use((req, res, next) => {
-                        if (req.originalUrl === undefined) return next();
+                // return () => {
+                //     server.middlewares.use((req, res, next) => {
+                //         if (req.originalUrl === undefined) return next();
 
-                        const file = files.get(req.originalUrl.slice(1));
-                        if (file === undefined) return next();
+                //         const file = files.get(req.originalUrl.slice(1));
+                //         if (file === undefined) return next();
 
-                        res.writeHead(200, { "Content-Type": "image/png" });
-                        res.end(file);
-                    });
-                };
+                //         res.writeHead(200, { "Content-Type": "image/png" });
+                //         res.end(file);
+                //     });
+                // };
             },
             closeBundle: async() => {
                 await watcher.close();

@@ -1107,7 +1107,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     soundID = "throwable";
                 } else if (reference.itemType === ItemType.Gun && reference.isDual) {
                     soundID = reference.idString.slice("dual_".length);
-                } else if (SoundManager.has(`shared/${reference.idString}_switch`)) {
+                } else if (SoundManager.has(`${reference.idString}_switch`)) {
                     soundID = reference.idString;
                 } else {
                     soundID = "default";
