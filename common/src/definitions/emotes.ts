@@ -115,7 +115,8 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
             "oof",
             "real",
             "fake",
-            "Colon Three"
+            "Colon Three",
+            "Lag"
         ],
         [EmoteCategory.Misc]: [
             "Fire",

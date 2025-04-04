@@ -620,14 +620,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     private static readonly _weaponSwapWeights: Partial<Record<ItemType, Partial<Record<Tier, number>>>> = {
         [ItemType.Gun]: {
-            [Tier.S]: 0.1,
+            [Tier.S]: 0.15,
             [Tier.A]: 0.2,
             [Tier.B]: 0.5,
             [Tier.C]: 0.818,
             [Tier.D]: 0.182
         },
         [ItemType.Melee]: {
-            [Tier.S]: 0.075,
+            [Tier.S]: 0.125,
             [Tier.A]: 0.5,
             [Tier.B]: 0.4,
             [Tier.C]: 0.4,

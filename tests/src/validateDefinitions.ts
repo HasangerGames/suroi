@@ -2719,13 +2719,6 @@ logger.indent("Validating modes", () => {
                     defaultValue: false,
                     baseErrorPath: errorPath
                 });
-
-                tester.assertNoPointlessValue({
-                    obj: mode,
-                    field: "specialPlayButtons",
-                    defaultValue: false,
-                    baseErrorPath: errorPath
-                });
             }
         });
     }

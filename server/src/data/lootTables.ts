@@ -1580,7 +1580,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
     },
     infection: {
         airdrop_guns: [
-            { item: "vaccinator", weight: 1.1 },
+            { item: "vaccinator", weight: 2 },
             { item: "mg36", weight: 1 },
             { item: "sr25", weight: 1 },
             { item: "vss", weight: 1 },

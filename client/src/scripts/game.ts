@@ -609,6 +609,7 @@ export const Game = new (class Game {
                 UIManager.reportedPlayerIDs.clear();
                 UIManager.killLeaderCache = undefined;
                 UIManager.oldKillLeaderId = undefined;
+                UIManager.skinID = undefined;
 
                 MapManager.safeZone.clear();
                 MapManager.pingGraphics.clear();
