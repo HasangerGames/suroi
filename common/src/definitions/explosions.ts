@@ -487,6 +487,60 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         decal: "frag_explosion_decal"
     },
     {
+        idString: "mirv_grenade_explosion",
+        name: "MIRV Grenade",
+        damage: 100,
+        obstacleMultiplier: 1.2,
+        radius: {
+            min: 15,
+            max: 30
+        },
+        cameraShake: {
+            duration: 250,
+            intensity: 35
+        },
+        animation: {
+            duration: 1200,
+            tint: 0x91140b,
+            scale: 1.7
+        },
+        shrapnelCount: 5, 
+        ballistics: {
+            shrapnel: true,
+            damage: 20,
+            obstacleMultiplier: 1,
+            speed: 0.09,
+            range: 25,
+            rangeVariance: 2
+        },
+        sound: "mirv_grenade",
+        decal: "mirv_explosion_decal",
+        subGrenades: {
+            count: 4, 
+            delay: 300, 
+            explosion: {
+                damage: 60,
+                obstacleMultiplier: 1.1,
+                radius: {
+                    min: 10,
+                    max: 20
+                },
+                shrapnelCount: 8,
+                ballistics: {
+                    shrapnel: true,
+                    damage: 10,
+                    obstacleMultiplier: 0.9,
+                    speed: 0.07,
+                    range: 15,
+                    rangeVariance: 1
+                },
+                sound: "mirv_sub_explosion",
+                decal: "mirv_sub_explosion_decal"
+            }
+        }
+    },
+
+    {
         idString: "smoke_grenade_explosion",
         name: "Smoke Grenade",
         damage: 0,
