@@ -214,6 +214,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     _glow_:                        { base: "_glow_",           tint: 0xffffff },
 
     metal_particle:                { base: "metal_particle_1", tint: 0x5f5f5f },
+    cargo_ship_particle:           { base: "metal_particle_1", tint: 0x273140 },
     metal_column_particle:         { base: "metal_particle_1", tint: 0x8f8f8f },
     super_barrel_particle:         { base: "metal_particle_1", tint: 0xce2b29 },
     propane_tank_particle:         { base: "metal_particle_1", tint: 0xb08b3f },

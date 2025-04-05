@@ -195,7 +195,7 @@
         hitboxes.push(JSON.parse(JSON.stringify(selected)));
     }
 
-    const bgImage = loadImage("/img/game/shared/buildings/port_new_layout_noalpha.png");
+    const bgImage = loadImage("/img/game/normal/buildings/cargo_ship_bottom_floor_alpha.png");
 </script>
 
 <main>

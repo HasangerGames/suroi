@@ -3886,6 +3886,34 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]
     },
     {
+        idString: "cargo_ship_bottom_floor",
+        name: "Cargo Ship (Bottom Floor)",
+        material: "metal_heavy",
+        particle: "cargo_ship_particle",
+        // reflectBullets: true,
+        spawnHitbox: RectangleHitbox.fromRect(180, 400, Vec.create(-1.5, -1.8)),
+        floorImages: [
+            {
+                key: "cargo_ship_bottom_floor_alpha",
+                position: Vec.create(0, 0)
+            },
+            {
+                key: "cargo_ship_floor_bottom_1",
+                position: Vec.create(-1.8, 60.25)
+            },
+            {
+                key: "cargo_ship_floor_bottom_2",
+                position: Vec.create(-1.85, -112.05),
+                scale: Vec.create(-1, -1)
+            },
+            {
+                key: "cargo_ship_floor_ramp",
+                position: Vec.create(66.85, 9.5),
+                scale: Vec.create(2, 2)
+            }
+        ]
+    },
+    {
         idString: "port_complex",
         name: "Port Complex",
         spawnHitbox: RectangleHitbox.fromRect(365, 290, Vec.create(-100, 0)),
