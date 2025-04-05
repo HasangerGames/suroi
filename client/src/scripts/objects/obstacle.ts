@@ -262,6 +262,11 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     .setTint(Game.mode.colors.water)
                     .setZIndex(getEffectiveZIndex(ZIndexes.BuildingsFloor, this.layer, Game.layer));
 
+                if (this.definition.waterOverlay !== undefined) { // TODO
+                    this.waterOverlaySprite.width = this.waterOverlaySprite.width * this.definition.waterOverlay.scaleX;
+                    this.waterOverlaySprite.height = this.waterOverlaySprite.height * this.definition.waterOverlay.scaleY;
+                }
+
                 this.container.addChild(this.waterOverlaySprite);
 
                 this.waterOverlaySpriteInitialized = true;

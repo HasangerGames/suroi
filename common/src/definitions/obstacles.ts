@@ -32,6 +32,10 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly rotationMode: RotationMode // for obstacles with a role, this cannot be RotationMode.Full
     readonly particleVariations?: number
     readonly zIndex?: ZIndexes
+    readonly waterOverlay?: {
+        readonly scaleX: number
+        readonly scaleY: number
+    }
 
     readonly graphics?: ReadonlyArray<{
         readonly color: number | `#${string}`
@@ -3862,7 +3866,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         indestructible: true,
         hitbox: RectangleHitbox.fromRect(13.1, 7.7),
         rotationMode: RotationMode.Limited,
-        winterVariations: 1
+        winterVariations: 1,
+        waterOverlay: {
+            scaleX: 2,
+            scaleY: 1
+        }
     },
     {
         idString: "smaller_sandbags",
