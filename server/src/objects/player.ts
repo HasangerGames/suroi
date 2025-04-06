@@ -2197,8 +2197,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 if (downedBy !== this) packet.kills = ++downedBy.kills;
             }
             if (this.game.mode.weaponSwap && downedBy !== undefined){
-                if (!(weaponUsed instanceof Explosion))
-                downedBy.swapWeaponRandomly(weaponUsed, true);
+                if (!(weaponUsed instanceof Explosion)) downedBy.swapWeaponRandomly(weaponUsed, true);
             }
         } else if (source instanceof Player && source !== this) {
             this.killedBy = source;
@@ -2258,9 +2257,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
             if (this.game.mode.weaponSwap && !(weaponUsed instanceof Explosion)) {
                 source.swapWeaponRandomly(weaponUsed, true);
-            }
-//swap gun if killed by explosive guns/breaking barrel with gun
-            if (weaponUsed instanceof Explosion){
+
+            //swap gun if killed by explosive guns/breaking barrel with gun
+            } else if (weaponUsed instanceof Explosion) {
                 if (weaponUsed.weapon) source.swapWeaponRandomly(weaponUsed.weapon, true);
             }
             source.updateAndApplyModifiers();
