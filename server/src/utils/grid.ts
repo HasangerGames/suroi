@@ -46,7 +46,20 @@ export class Grid {
         this.updateObject(object);
         this.game.updateObjects = true;
     }
-
+    /**
+     * Add an object to the grid system and pool, will delete itself after the time passed
+     * @param time time before it delete itself, in milisecond
+     */
+    addTimedObject(object: GameObject, time: number): void{
+        if (this.pool.has(object)) {
+            this.game.warn(`[Grid] Tried to add object ${ObjectCategory[object.type]} again`);
+            return;
+        }
+        this.pool.add(object);
+        this.updateObject(object);
+        this.game.updateObjects = true;
+        this.game.addTimeout(()=>{this.removeObject(object);this.updateObject},time);  
+    }
     /**
      * Update an object position on the grid system
      * This removes it from the grid and re-adds it

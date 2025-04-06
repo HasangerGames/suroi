@@ -15,7 +15,7 @@ import { type GameObject } from "./gameObject";
 
 export class Explosion {
     readonly definition: ExplosionDefinition;
-
+    readonly decalFadeTime?: number
     constructor(
         readonly game: Game,
         definition: ReifiableDef<ExplosionDefinition>,
@@ -143,14 +143,16 @@ export class Explosion {
         }
 
         if (this.definition.decal) {
-            this.game.grid.addObject(
+            this.game.grid.addTimedObject(
                 new Decal(
                     this.game,
                     this.definition.decal,
                     this.position,
                     randomRotation(),
                     this.layer
-                )
+                ),
+                //check if fade time is available, if not, then set the fade time to 15 seconds
+                (this.decalFadeTime) ? (this.decalFadeTime*1000) : (15000)
             );
 
             this.game.updateObjects = true;
