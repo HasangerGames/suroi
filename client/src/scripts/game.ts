@@ -203,7 +203,6 @@ export const Game = new (class Game {
         await setUpUI();
         await fetchServerData();
         this.gasRender = new GasRender(PIXI_SCALE);
-        SoundManager.init();
         MapManager.init();
         CameraManager.init();
         GasManager.init();
@@ -301,7 +300,7 @@ export const Game = new (class Game {
 
         void Promise.all([
             initPixi(),
-            SoundManager.loadSounds(),
+            SoundManager.init(),
             finalizeUI()
         ]).then(() => {
             unlockPlayButtons();

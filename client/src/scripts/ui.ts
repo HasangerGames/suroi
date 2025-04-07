@@ -17,6 +17,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { sound } from "@pixi/sound";
 import $ from "jquery";
 import { Color, isWebGPUSupported } from "pixi.js";
+import { posts } from "virtual:news-posts";
 import type { NewsPost } from "../../vite/plugins/news-posts-plugin";
 import { TRANSLATIONS, getTranslatedString } from "./utils/translations/translations";
 import type { TranslationKeys } from "./utils/translations/typings";
@@ -403,9 +404,7 @@ export async function setUpUI(): Promise<void> {
     }
 
     // Load news
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const posts = (await import("virtual:news-posts")).posts as NewsPost[];
-    ui.newsPosts.html(posts.slice(0, 5).map(post => `
+    ui.newsPosts.html((posts as NewsPost[]).slice(0, 5).map(post => `
         <article class="splash-news-entry">
             <div class="news-date">${humanDate(post.date)}</div>
             <div class="news-title">${post.title}</div>

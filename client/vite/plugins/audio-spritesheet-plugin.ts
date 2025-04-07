@@ -1,18 +1,18 @@
 import { FSWatcher, watch } from "chokidar";
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "fs";
-import { readFile, rm, writeFile } from "fs/promises";
-import path, { resolve } from "path";
-import { type SpritesheetData } from "pixi.js";
-import { type Plugin, type ResolvedConfig } from "vite";
-import { Mode, ModeDefinition, Modes, SpritesheetNames } from "../../../common/src/definitions/modes";
-import { readDirectory } from "../../../common/src/utils/readDirectory";
 import { createHash } from "crypto";
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync } from "fs";
+import { readFile, rm, writeFile } from "fs/promises";
+import path from "path";
+import { type Plugin, type ResolvedConfig } from "vite";
+import { Mode, ModeDefinition, SpritesheetNames } from "../../../common/src/definitions/modes";
+import { readDirectory } from "../../../common/src/utils/readDirectory";
+import { getModeDefs } from "./utils";
 
 const PLUGIN_NAME = "vite-audio-spritesheet-plugin";
 
 export interface Atlas {
-    readonly json: SpritesheetData
-    readonly image: Buffer
+    readonly json: AudioSpritesheet
+    readonly audio: Buffer
     readonly cacheName?: string
 }
 
@@ -23,84 +23,16 @@ export type MultiAtlasList = Record<SpritesheetNames, AudioSpritesheet>;
 export interface CacheData {
     lastModified: number
     fileMap: Record<string, number>
-    atlasFiles: {
-        low: string[]
-        high: string[]
-    }
+    filename: string
 }
 
-/**
- * Pack images spritesheets.
- * @param name Name of the spritesheet.
- * @param paths List of paths to the images.
- */
-export async function createSpritesheets(name: string, fileMap: Record<string, number>): Promise<AudioSpritesheet> {
-    const atlasCacheDir = path.join(cacheDir, name);
-    if (existsSync(atlasCacheDir)) {
-        await Promise.all(
-            readdirSync(atlasCacheDir)
-                .map(async file => await rm(path.join(atlasCacheDir, file)))
-        );
-    } else {
-        mkdirSync(atlasCacheDir);
-    }
-
-    const files = Object.keys(fileMap);
-
-    // const round = (duration: number): number => Math.round(duration * 1000) / 1000; // round to nearest ms
-
-    let currentIdx = 0;
-    const sheet: AudioSpritesheet = {};
-    const buffers: Buffer[] = [];
-    for (const file of files) {
-        const buffer = readFileSync(file);
-        buffers.push(buffer);
-        const length = buffer.byteLength;
-        const filename = file.slice(file.lastIndexOf("/") + 1, -4); // remove path and extension
-        sheet[filename] = {
-            start: currentIdx,
-            end: currentIdx + length
-        };
-        currentIdx += length;
-    }
-    const audioBuffer = Buffer.concat(buffers);
-    const cacheName = `${name}-${createHash("sha1").update(audioBuffer).digest("hex").slice(0, 8)}`;
-    void writeFile(path.join(atlasCacheDir, `${cacheName}.json`), JSON.stringify(sheet));
-    void writeFile(path.join(atlasCacheDir, `${cacheName}.mp3`), audioBuffer);
-    // for (const file of files) {
-        // const proc = spawnSync("ffprobe", ["-i", file], { encoding: "utf8" });
-        // console.log(proc.stderr.match(/Duration: (.*?),/)?.[0]);
-        // const name = file.slice(file.lastIndexOf("/") + 1, -".mp3".length);
-        // const duration = mp3Duration(file);
-        // sheet[name] = {
-        //     start: round(currentPos),
-        //     end: round(currentPos + duration)
-        // };
-        // currentPos += duration;
-    // }
-    // execSync(`ffmpeg -i "concat:${files.join("|")}" -c:a copy ${path.join(atlasCacheDir, "bleh.mp3")}`, { stdio: "pipe" });
-
-    // const cacheData: CacheData = {
-    //     lastModified: Date.now(),
-    //     fileMap,
-    //     atlasFiles: {
-    //         low: sheets.low.map(s => s.cacheName ?? ""),
-    //         high: sheets.high.map(s => s.cacheName ?? "")
-    //     }
-    // };
-    // writeFileSync(path.join(atlasCacheDir, "data.json"), JSON.stringify(cacheData));
-
-    return sheet;
-}
-
-const atlases: Partial<MultiAtlasList> = {};
-
-export const cacheDir = ".sound-spritesheet-cache";
+export const cacheDir = ".spritesheet-cache/audio";
 if (!existsSync(cacheDir)) {
-    mkdirSync(cacheDir);
+    mkdirSync(cacheDir, { recursive: true });
 }
 
 const cache: Partial<Record<SpritesheetNames, CacheData>> = {};
+const sheets: Partial<Record<Mode, { json: string, audio: Buffer, filename: string }>> = {};
 
 async function buildSpritesheets(
     modeDefs: ReadonlyArray<readonly [Mode, ModeDefinition]>
@@ -109,28 +41,27 @@ async function buildSpritesheets(
 
     let builtCount = 0;
     const totalCount = modeDefs.length;
-    console.log(`Building ${totalCount} sound spritesheet${totalCount === 1 ? "" : "s"}...`);
+    console.log(`Building ${totalCount} audio spritesheet${totalCount === 1 ? "" : "s"}...`);
 
     const uncachedModes: Record<string, Record<string, number>> = {};
 
     await Promise.all(modeDefs.map(async([mode, { spriteSheets }]) => {
         const pathMap = new Map<string, string>();
 
-        const files = ["shared", "normal"]
-            .flatMap(sheet => readDirectory(`public/audio/game/${sheet}`, /\.mp3$/i));
+        const files = spriteSheets.flatMap(sheet => readDirectory(`public/audio/game/${sheet}`, /\.mp3$/i));
 
         // Maps have unique keys.
         // Since the filename is used as the key, and mode sprites are added to the map after the common sprites,
         // this method allows mode sprites to override common sprites with the same filename.
-        for (const imagePath of files) {
-            const filename = imagePath.slice(imagePath.lastIndexOf(path.sep));
-            pathMap.set(filename, path.relative(".", imagePath));
+        for (const audioPath of files) {
+            const filename = audioPath.slice(audioPath.lastIndexOf(path.sep));
+            pathMap.set(filename, path.relative(".", audioPath));
         }
 
         const fileMap: Record<string, number> = {};
         for (const file of pathMap.values()) {
             const { mtimeMs, ctimeMs } = statSync(file);
-            fileMap[file] = max(mtimeMs, ctimeMs);
+            fileMap[file] = mtimeMs > ctimeMs ? mtimeMs : ctimeMs;
         }
 
         const getCacheData = (): CacheData | undefined => {
@@ -154,19 +85,13 @@ async function buildSpritesheets(
 
         const cacheData = getCacheData();
         if (cacheData) {
-            console.log(`Spritesheet "${mode}" is cached, skipping (${++builtCount}/${totalCount})`);
+            console.log(`Audio spritesheet "${mode}" is cached, skipping (${++builtCount}/${totalCount})`);
 
-            const loadFromCache = async(files: readonly string[]): Promise<Atlas[]> => Promise.all(
-                files.map(async file => ({
-                    json: JSON.parse(await readFile(path.join(cacheDir, mode, `${file}.json`), "utf8")) as SpritesheetData,
-                    image: await readFile(path.join(cacheDir, mode, `${file}.png`))
-                }))
-            );
-
-            const { low, high } = cacheData.atlasFiles;
-            atlases[mode] = {
-                low: await loadFromCache(low),
-                high: await loadFromCache(high)
+            const filename = cacheData.filename;
+            sheets[mode] = {
+                json: await readFile(path.join(cacheDir, mode, `${filename}.json`), "utf8"),
+                audio: await readFile(path.join(cacheDir, mode, `${filename}.mp3`)),
+                filename
             };
         } else {
             uncachedModes[mode] = fileMap;
@@ -176,76 +101,79 @@ async function buildSpritesheets(
     const sheetsToBuild = Object.entries(uncachedModes);
     if (sheetsToBuild.length) {
         for (const [mode, fileMap] of sheetsToBuild) {
-            const str = `Building spritesheet "${mode}" (${++builtCount}/${totalCount})...`;
-            const strLength = str.length;
-            process.stdout.write(str);
+            console.log(`Building audio spritesheet "${mode}" (${++builtCount}/${totalCount})...`);
             const start = performance.now();
-            atlases[mode] = await createSpritesheets(mode, fileMap);
-            console.log(`\rBuilt spritesheet "${mode}" in ${Math.round(performance.now() - start) / 1000}s (${builtCount}/${totalCount})`.padEnd(strLength, " "));
+
+            const atlasCacheDir = path.join(cacheDir, mode);
+            if (existsSync(atlasCacheDir)) {
+                await Promise.all(
+                    readdirSync(atlasCacheDir)
+                        .map(async file => await rm(path.join(atlasCacheDir, file)))
+                );
+            } else {
+                mkdirSync(atlasCacheDir);
+            }
+
+            let currentIdx = 0;
+            const sheet: AudioSpritesheet = {};
+            const buffers: Buffer[] = [];
+            for (const file of Object.keys(fileMap)) {
+                const buffer = readFileSync(file);
+                buffers.push(buffer);
+                const length = buffer.byteLength;
+                const filename = file.slice(file.lastIndexOf("/") + 1, -4); // remove path and extension
+                sheet[filename] = {
+                    start: currentIdx,
+                    end: currentIdx + length
+                };
+                currentIdx += length;
+            }
+
+            const json = JSON.stringify(sheet);
+            const audio = Buffer.concat(buffers);
+            const filename = `${mode}-${createHash("sha1").update(audio).digest("hex").slice(0, 8)}`;
+
+            void writeFile(path.join(atlasCacheDir, `${filename}.json`), json);
+            void writeFile(path.join(atlasCacheDir, `${filename}.mp3`), audio);
+
+            sheets[mode] = { json, audio, filename };
+
+            const cacheData: CacheData = {
+                lastModified: Date.now(),
+                fileMap,
+                filename
+            };
+            void writeFile(path.join(atlasCacheDir, "data.json"), JSON.stringify(cacheData));
+
+            console.log(`Built audio spritesheet "${mode}" in ${Math.round(performance.now() - start) / 1000}s (${builtCount}/${totalCount})`);
         }
     }
 
-    console.log(`Finished building spritesheets in ${Math.round(performance.now() - start) / 1000}s`);
+    console.log(`Finished building audio spritesheets in ${Math.round(performance.now() - start) / 1000}s`);
 }
 
-const max = (a: number, b: number): number => a > b ? a : b;
+const audioDirs = readdirSync("public/audio/game");
 
-const highResVirtualModuleId = "virtual:spritesheets-jsons-high-res";
-const lowResVirtualModuleId = "virtual:spritesheets-jsons-low-res";
+const virtualModuleIds = [
+    "virtual:audio-spritesheet-manifest",
+    ...audioDirs.map(dir => `virtual:audio-spritesheet-${dir}`)
+];
 
-const resolveId = (id: string): string | undefined => {
-    switch (id) {
-        case highResVirtualModuleId: return highResVirtualModuleId;
-        case lowResVirtualModuleId: return lowResVirtualModuleId;
-    }
-};
+const cases = audioDirs.map(dir => {
+    return `case "${dir}":return (await import("virtual:audio-spritesheet-${dir}")).spritesheet;`;
+}).join("");
+const manifest = `export const importSpritesheet=async t=>{switch(t){${cases}}}`;
 
-export function audioSpritesheet(enableDevMode: boolean): Plugin[] {
-    let modeName: Mode | undefined;
-    let modeDefs: ReadonlyArray<readonly [Mode, ModeDefinition]>;
-
-    const updateModeTarget = (): void => {
-        if (enableDevMode) {
-            // truly awful hack to get the mode name from the server
-            // because importing the server config directly causes vite to have a stroke
-            const serverConfig = readFileSync(resolve(__dirname, "../../../server/src/config.ts"), "utf8");
-            const mode: Mode = serverConfig
-                .matchAll(/map: "(.*?)",/g)
-                .next()
-                .value?.[1]
-                .split(":")[0];
-
-            if (mode in Modes) {
-                modeName = mode;
-                modeDefs = [[mode, Modes[mode]]];
-            }
-        }
-        modeDefs ??= Object.entries(Modes) as typeof modeDefs;
-    };
-    updateModeTarget();
+export function audioSpritesheet(): Plugin[] {
+    let modeDefs = getModeDefs();
 
     let watcher: FSWatcher;
     let serverConfigWatcher: FSWatcher;
     let config: ResolvedConfig;
-
-    const exportedAtlases: {
-        readonly low: Record<string, readonly SpritesheetData[]>
-        readonly high: Record<string, readonly SpritesheetData[]>
-    } = {
-        low: {},
-        high: {}
-    };
-
-    const load = (id: string): string | undefined => {
-        switch (id) {
-            case highResVirtualModuleId: return `export const atlases=${JSON.stringify(exportedAtlases.high)}`;
-            case lowResVirtualModuleId: return `export const atlases=${JSON.stringify(exportedAtlases.low)}`;
-        }
-    };
-
-    // const getSheets = (): Atlas[] => Object.values(atlases).flatMap(sheets => [...sheets.low, ...sheets.high]);
-
     let buildTimeout: NodeJS.Timeout | undefined;
+
+    const resolveId = (id: string): string | undefined => virtualModuleIds.includes(id) ? id : undefined;
+    const load = (id: string): string | undefined => id === "virtual:audio-spritesheet-manifest" ? manifest : sheets[id as Mode]?.json;
 
     return [
         {
@@ -253,25 +181,15 @@ export function audioSpritesheet(enableDevMode: boolean): Plugin[] {
             apply: "build",
             async buildStart() {
                 await buildSpritesheets(modeDefs);
-
-                // const { low, high } = exportedAtlases;
-                // for (const atlasId in atlases) {
-                //     const atlas = atlases[atlasId as keyof typeof atlases];
-                //     if (atlas === undefined) continue;
-
-                //     high[atlasId] = atlas.high.map(sheet => sheet.json);
-                //     low[atlasId] = atlas.low.map(sheet => sheet.json);
-                // }
             },
             generateBundle() {
-                // for (const sheet of getSheets()) {
-                //     this.emitFile({
-                //         type: "asset",
-                //         fileName: sheet.json.meta.image,
-                //         source: sheet.image
-                //     });
-                //     this.info(`Built spritesheet ${sheet.json.meta.image}`);
-                // }
+                for (const sheet of Object.values(sheets)) {
+                    this.emitFile({
+                        type: "asset",
+                        fileName: sheet.filename,
+                        source: sheet.audio
+                    });
+                }
             },
             resolveId,
             load
@@ -283,81 +201,53 @@ export function audioSpritesheet(enableDevMode: boolean): Plugin[] {
                 config = cfg;
             },
             async configureServer(server) {
-                void buildSpritesheets(modeDefs);
-                // const reloadPage = (): void => {
-                //     clearTimeout(buildTimeout);
+                const reloadPage = (): void => {
+                    clearTimeout(buildTimeout);
 
-                //     buildTimeout = setTimeout(() => {
-                //         buildSheets().then(() => {
-                //             const module = server.moduleGraph.getModuleById(highResVirtualModuleId);
-                //             if (module !== undefined) void server.reloadModule(module);
-                //             const module2 = server.moduleGraph.getModuleById(lowResVirtualModuleId);
-                //             if (module2 !== undefined) void server.reloadModule(module2);
-                //         }).catch(e => console.error(e));
-                //     }, 500);
-                // };
+                    buildTimeout = setTimeout(() => {
+                        buildSheets().then(() => {
+                            // const module = server.moduleGraph.getModuleById(highResVirtualModuleId);
+                            // if (module !== undefined) void server.reloadModule(module);
+                            // const module2 = server.moduleGraph.getModuleById(lowResVirtualModuleId);
+                            // if (module2 !== undefined) void server.reloadModule(module2);
+                        }).catch(e => console.error(e));
+                    }, 500);
+                };
 
-                // const initWatcher = (): void => {
-                //     const foldersToWatch = modeName === undefined
-                //         ? "public/audio/game"
-                //         : Modes[modeName].spriteSheets.map(sheet => `public/audio/game/${sheet}`);
+                watcher = watch("public/audio/game", { ignoreInitial: true })
+                    .on("add", reloadPage)
+                    .on("change", reloadPage)
+                    .on("unlink", reloadPage);
 
-                //     watcher = watch(foldersToWatch, {
-                //         cwd: config.root,
-                //         ignoreInitial: true
-                //     })
-                //         .on("add", reloadPage)
-                //         .on("change", reloadPage)
-                //         .on("unlink", reloadPage);
-                // };
-                // initWatcher();
+                serverConfigWatcher = watch("../server/src/config.ts")
+                    .on("change", () => {
+                        modeDefs = getModeDefs();
+                        reloadPage();
+                    });
 
-                // serverConfigWatcher = watch("../server/src/config.ts", {
-                //     cwd: config.root,
-                //     ignoreInitial: true
-                // })
-                //     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                //     .on("change", async() => {
-                //         updateModeTarget();
-                //         await watcher.close();
-                //         initWatcher();
-                //         reloadPage();
-                //     });
+                const files = new Map<string, Buffer | string>();
 
-                // const files = new Map<string, Buffer | string>();
+                async function buildSheets(): Promise<void> {
+                    await buildSpritesheets(modeDefs);
 
-                // async function buildSheets(): Promise<void> {
-                //     await buildSpritesheets(modeDefs);
+                    files.clear();
+                    for (const sheet of Object.values(sheets)) {
+                        files.set(sheet.filename, sheet.audio);
+                    }
+                }
+                await buildSheets();
 
-                //     const { low, high } = exportedAtlases;
-                //     for (const atlasId in atlases) {
-                //         const atlas = atlases[atlasId as keyof typeof atlases];
-                //         if (atlas === undefined) continue;
+                return () => {
+                    server.middlewares.use((req, res, next) => {
+                        if (req.originalUrl === undefined) return next();
 
-                //         high[atlasId] = atlas.high.map(sheet => sheet.json);
-                //         low[atlasId] = atlas.low.map(sheet => sheet.json);
-                //     }
+                        const file = files.get(req.originalUrl.slice(1));
+                        if (file === undefined) return next();
 
-                //     files.clear();
-                //     for (const sheet of getSheets()) {
-                //         // consistently assigned in ./spritesheet.ts in function `createSheet` (in function `createSpritesheets`)
-                //         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                //         files.set(sheet.json.meta.image!, sheet.image);
-                //     }
-                // }
-                // await buildSheets();
-
-                // return () => {
-                //     server.middlewares.use((req, res, next) => {
-                //         if (req.originalUrl === undefined) return next();
-
-                //         const file = files.get(req.originalUrl.slice(1));
-                //         if (file === undefined) return next();
-
-                //         res.writeHead(200, { "Content-Type": "image/png" });
-                //         res.end(file);
-                //     });
-                // };
+                        res.writeHead(200, { "Content-Type": "audio/mp3" });
+                        res.end(file);
+                    });
+                };
             },
             closeBundle: async() => {
                 await watcher.close();

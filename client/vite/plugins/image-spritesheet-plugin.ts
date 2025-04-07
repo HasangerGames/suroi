@@ -9,6 +9,7 @@ import { readDirectory } from "../../../common/src/utils/readDirectory";
 import { Canvas, RenderOptions, Image, loadImage } from "skia-canvas";
 import { IOption, MaxRectsPacker } from "maxrects-packer";
 import { createHash } from "crypto";
+import { getModeDefs } from "./utils";
 
 const PLUGIN_NAME = "vite-spritesheet-plugin";
 
@@ -265,9 +266,9 @@ export async function createSpritesheets(
 
 const atlases: Partial<MultiAtlasList> = {};
 
-export const cacheDir = ".spritesheet-cache";
+export const cacheDir = ".spritesheet-cache/img";
 if (!existsSync(cacheDir)) {
-    mkdirSync(cacheDir);
+    mkdirSync(cacheDir, { recursive: true });
 }
 
 const cache: Partial<Record<SpritesheetNames, CacheData>> = {};
@@ -372,29 +373,9 @@ const resolveId = (id: string): string | undefined => {
     }
 };
 
-export function spritesheet(enableDevMode: boolean): Plugin[] {
-    let modeName: Mode | undefined;
+export function imageSpritesheet(): Plugin[] {
     let modeDefs: ReadonlyArray<readonly [Mode, ModeDefinition]>;
-
-    const updateModeTarget = (): void => {
-        if (enableDevMode) {
-            // truly awful hack to get the mode name from the server
-            // because importing the server config directly causes vite to have a stroke
-            const serverConfig = readFileSync(resolve(__dirname, "../../../server/src/config.ts"), "utf8");
-            const mode: Mode = serverConfig
-                .matchAll(/map: "(.*?)",/g)
-                .next()
-                .value?.[1]
-                .split(":")[0];
-
-            if (mode in Modes) {
-                modeName = mode;
-                modeDefs = [[mode, Modes[mode]]];
-            }
-        }
-        modeDefs ??= Object.entries(Modes) as typeof modeDefs;
-    };
-    updateModeTarget();
+    modeDefs = getModeDefs();
 
     let watcher: FSWatcher;
     let serverConfigWatcher: FSWatcher;
@@ -468,30 +449,14 @@ export function spritesheet(enableDevMode: boolean): Plugin[] {
                     }, 500);
                 };
 
-                const initWatcher = (): void => {
-                    const foldersToWatch = modeName === undefined
-                        ? "public/img/game"
-                        : Modes[modeName].spriteSheets.map(sheet => `public/img/game/${sheet}`);
+                watcher = watch("public/img/game", { cwd: config.root, ignoreInitial: true })
+                    .on("add", reloadPage)
+                    .on("change", reloadPage)
+                    .on("unlink", reloadPage);
 
-                    watcher = watch(foldersToWatch, {
-                        cwd: config.root,
-                        ignoreInitial: true
-                    })
-                        .on("add", reloadPage)
-                        .on("change", reloadPage)
-                        .on("unlink", reloadPage);
-                };
-                initWatcher();
-
-                serverConfigWatcher = watch("../server/src/config.ts", {
-                    cwd: config.root,
-                    ignoreInitial: true
-                })
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                    .on("change", async() => {
-                        updateModeTarget();
-                        await watcher.close();
-                        initWatcher();
+                serverConfigWatcher = watch("../server/src/config.ts", { cwd: config.root, ignoreInitial: true })
+                    .on("change", () => {
+                        modeDefs = getModeDefs();
                         reloadPage();
                     });
 
