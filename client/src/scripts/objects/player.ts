@@ -31,7 +31,7 @@ import { ParticleManager, type Particle, type ParticleEmitter, type ParticleOpti
 import { ClientPerkManager } from "../managers/perkManager";
 import { SoundManager, type GameSound } from "../managers/soundManager";
 import { UIManager } from "../managers/uiManager";
-import { BULLET_WHIZ_SCALE, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
+import { BULLET_WHIZ_SCALE, DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { getTranslatedString } from "../utils/translations/translations";
@@ -1472,7 +1472,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             target.hitEffect(position, angleToPos);
                         }
                     }
-                }, 50 + (weaponDef.hitDelay ?? 0));
+                }, weaponDef.hitDelay ?? 50);
 
                 break;
             }
@@ -1990,6 +1990,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         images.body.destroy();
         images.leftFist.destroy();
         images.rightFist.destroy();
+        images.leftLeg?.destroy();
+        images.rightLeg?.destroy();
         images.backpack.destroy();
         images.helmet.destroy();
         images.weapon.destroy();
