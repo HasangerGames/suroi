@@ -8,7 +8,7 @@
    version="1.1"
    id="svg1"
    inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
-   sodipodi:docname="cargo_ship_floor_1.svg"
+   sodipodi:docname="cargo_ship_floor_bottom_1.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -24,15 +24,15 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.12677305"
-     inkscape:cx="2733.2308"
-     inkscape:cy="-78.881121"
+     inkscape:zoom="0.5070922"
+     inkscape:cx="553.15385"
+     inkscape:cy="884.45454"
      inkscape:window-width="1920"
      inkscape:window-height="1001"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="g3" />
   <defs
      id="defs1">
     <pattern
@@ -1271,7 +1271,7 @@
          style="fill:url(#radialGradient5-3-3);stroke-width:0.264583" />
       <path
          style="color:#000000;fill:#a28b4e;fill-opacity:1;stroke:#5d502d;stroke-width:1.5;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-         d="M 267.3529,-179.46935 V -4.61378 H 112.4937 c -1.0355,1e-4 -1.8749,0.8395 -1.875,1.875 V 337.50405 H 85.3424 v 3.75 h 27.1513 c 1.0355,-1e-4 1.8749,-0.8396 1.875,-1.875 V -0.86378 h 154.8592 c 1.0355,-10e-5 1.8749,-0.8395 1.875,-1.875 v -176.73057 z"
+         d="M 267.3529,-179.46935 V -4.61378 H 112.4937 c -1.0355,1e-4 -1.8749,0.8395 -1.875,1.875 V 337.50405 H 77.4049 v 3.75 h 35.0888 c 1.0355,-1e-4 1.8749,-0.8396 1.875,-1.875 V -0.86378 h 154.8592 c 1.0355,-10e-5 1.8749,-0.8395 1.875,-1.875 v -176.73057 z"
          id="path70-9"
          sodipodi:nodetypes="cccccccccccccc" />
       <path

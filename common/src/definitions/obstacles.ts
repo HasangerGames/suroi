@@ -1253,6 +1253,25 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         zIndex: ZIndexes.ObstaclesLayer3
     },
     {
+        idString: "lamp",
+        name: "Lamp",
+        material: "glass",
+        health: 69,
+        indestructible: true,
+        scale: {
+            spawnMin: 0.9,
+            spawnMax: 1.1,
+            destroy: 0.8
+        },
+        hitbox: new CircleHitbox(0),
+        noCollisions: true,
+        noBulletCollision: true,
+        noHitEffect: true,
+        noMeleeCollision: true,
+        rotationMode: RotationMode.Limited,
+        zIndex: ZIndexes.BuildingsCeiling - 2
+    },
+    {
         idString: "detector_walls",
         name: "Detector Walls",
         material: "iron",
@@ -2532,6 +2551,27 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         zIndex: ZIndexes.ObstaclesLayer3,
         frames: {
             particle: "metal_particle"
+        }
+    },
+    {
+        idString: "vault_door_deactivated",
+        name: "Vault Door",
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        reflectBullets: true,
+        hitbox: RectangleHitbox.fromRect(14.2, 1.95, Vec.create(1.1, -1.7)),
+        rotationMode: RotationMode.Limited,
+        isDoor: true,
+        locked: true,
+        openOnce: true,
+        doorSound: "vault_door",
+        animationDuration: 2000,
+        hingeOffset: Vec.create(-6.1, -1.4),
+        zIndex: ZIndexes.ObstaclesLayer3,
+        frames: {
+            particle: "metal_particle"
+            // activated: "vault_door_activated" <-- need to make this work like the monument
         }
     },
     {
