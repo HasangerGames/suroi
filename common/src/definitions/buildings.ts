@@ -4489,6 +4489,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         material: "stone",
         particle: "hq_stone_wall_particle",
         particleVariations: 2,
+        collideWithLayers: Layers.Adjacent,
         ceilingImages: [
             {
                 key: "headquarters_second_floor_bottom",
