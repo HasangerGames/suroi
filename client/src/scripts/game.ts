@@ -73,9 +73,7 @@ type ObjectClassMapping = {
     readonly [ObjectCategory.SyncedParticle]: typeof SyncedParticle
 };
 
-const ObjectClassMapping: ObjectClassMapping = Object.freeze<{
-    readonly [K in ObjectCategory]: new (id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
-}>({
+const ObjectClassMapping: ObjectClassMapping = Object.freeze({
     [ObjectCategory.Player]: Player,
     [ObjectCategory.Obstacle]: Obstacle,
     [ObjectCategory.DeathMarker]: DeathMarker,
@@ -85,6 +83,8 @@ const ObjectClassMapping: ObjectClassMapping = Object.freeze<{
     [ObjectCategory.Parachute]: Parachute,
     [ObjectCategory.Projectile]: Projectile,
     [ObjectCategory.SyncedParticle]: SyncedParticle
+} satisfies {
+    readonly [K in ObjectCategory]: new (id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
 });
 
 type ObjectMapping = {
