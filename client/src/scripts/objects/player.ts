@@ -1227,7 +1227,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             container.children(".item-tooltip").html(itemTooltip);
         }
 
-        container.css("visibility", (def?.level ?? 0) > 0 ? "visible" : "hidden");
+        container.css("visibility", (def?.level ?? 0) > 0 || UI_DEBUG_MODE ? "visible" : "hidden");
 
         container[0].addEventListener(
             "pointerdown",

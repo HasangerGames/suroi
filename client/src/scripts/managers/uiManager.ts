@@ -1062,7 +1062,7 @@ export const UIManager = new (class UIManager {
 
         container.children(".item-tooltip").html("");
         container.children(".item-image").attr("src", "");
-        container.css("visibility", "hidden");
+        container.css("visibility", UI_DEBUG_MODE ? "" : "hidden");
         container.off("pointerdown");
     }
 
@@ -1111,7 +1111,7 @@ export const UIManager = new (class UIManager {
                 const backpack = Game.activePlayer.equipment.backpack;
                 itemSlot.toggleClass("full", count >= backpack.maxCapacity[item]);
             }
-            const isPresent = count > 0;
+            const isPresent = count > 0 || UI_DEBUG_MODE;
 
             itemSlot.toggleClass("has-item", isPresent);
 
