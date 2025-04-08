@@ -191,7 +191,8 @@ class InputManagerClass {
         left: false,
         down: false,
         right: false,
-        moving: false
+        moving: false,
+        magnitude: 255
     };
 
     // had to put it here because it's not a boolean
@@ -291,13 +292,14 @@ class InputManagerClass {
                     }
                     : {}
             ),
-            isMobile: this.isMobile,
+            isJoystick: this.isMobile,
             ...(
                 this.isMobile
                     ? {
-                        mobile: {
+                        joystick: {
                             angle: this.movementAngle,
-                            moving: this.movement.moving
+                            moving: this.movement.moving,
+                            magnitude: this.movement.magnitude
                         }
                     }
                     : {}
@@ -473,7 +475,7 @@ class InputManagerClass {
                 const angle = -data.angle.radian;
                 this.movementAngle = angle;
                 this.movement.moving = true;
-
+                this.movement.magnitude = data.force > 1 ? 255 : data.force * 255;
                 if (!aimJoystickUsed && !shootOnRelease) {
                     this.rotation = angle;
                     this.turning = true;
@@ -504,7 +506,7 @@ class InputManagerClass {
                     activePlayer.images.aimTrail.alpha = 1;
                 }
 
-                const attacking = data.distance > GameConsole.getBuiltInCVar("mb_joystick_size") / 3;
+                const attacking = data.force > 0.75;
                 if (
                     (def.itemType === ItemType.Throwable && this.attacking)
                     || (def.itemType === ItemType.Gun && def.shootOnRelease)
@@ -524,7 +526,7 @@ class InputManagerClass {
                 shootOnRelease = false;
             });
         }
-
+ 
         // Gyro stuff
         const gyroAngle = GameConsole.getBuiltInCVar("mb_gyro_angle");
         if (gyroAngle > 0) {
