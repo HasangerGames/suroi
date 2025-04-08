@@ -4439,6 +4439,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         material: "metal_heavy",
         health: 42069,
         indestructible: true,
+        reflectBullets: true,
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(5.24, 21.1, Vec.create(0, 0.2)),
             new CircleHitbox(2.55, Vec.create(0, 10.7)),
