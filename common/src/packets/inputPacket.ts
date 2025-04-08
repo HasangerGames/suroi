@@ -53,14 +53,15 @@ export type InputAction =
     }
     | { readonly type: SimpleInputActions };
 
-type MobileMixin = {
-    readonly isMobile: false
-    readonly mobile?: undefined
+type JoystickMixin = {
+    readonly isJoystick: false
+    readonly joystick?: undefined
 } | {
-    readonly isMobile: true
-    readonly mobile: {
+    readonly isJoystick: true
+    readonly joystick: {
         readonly moving: boolean
         readonly angle: number
+        readonly magnitude: number
     }
 };
 
@@ -71,10 +72,10 @@ type TurningMixin = {
     readonly turning: true
     readonly rotation: number
 } & ({
-    readonly isMobile: false
+    readonly isJoystick: false
     readonly distanceToMouse: number
 } | {
-    readonly isMobile: true
+    readonly isJoystick: true
     readonly distanceToMouse?: undefined
 }));
 
@@ -89,14 +90,14 @@ export type InputData = {
     readonly attacking: boolean
     readonly actions: readonly InputAction[]
     readonly pingSeq: number
-} & MobileMixin & TurningMixin;
+} & JoystickMixin & TurningMixin;
 
-export type WithMobile = InputData & { readonly isMobile: true };
-export type NoMobile = InputData & { readonly isMobile: false };
+export type WithMobile = InputData & { readonly isJoystick: true };
+export type NoJoystick = InputData & { readonly isJoystick: false };
 
 export const InputPacket = new Packet<InputData>(PacketType.Input, {
     serialize(stream, data) {
-        const { movement, isMobile, turning } = data;
+        const { movement, isJoystick, turning } = data;
 
         stream.writeUint8(data.pingSeq);
         if ((data.pingSeq & 128) !== 0) return;
@@ -106,19 +107,20 @@ export const InputPacket = new Packet<InputData>(PacketType.Input, {
             movement.down,
             movement.left,
             movement.right,
-            isMobile,
-            data.mobile?.moving,
+            isJoystick,
+            data.joystick?.moving,
             turning,
             data.attacking
         );
 
-        if (isMobile) {
-            stream.writeRotation2(data.mobile.angle);
+        if (isJoystick) {
+            stream.writeRotation2(data.joystick.angle);
+            stream.writeUint8(data.joystick.magnitude);
         }
 
         if (turning) {
             stream.writeRotation2(data.rotation);
-            if (!isMobile) {
+            if (!isJoystick) {
                 stream.writeFloat(data.distanceToMouse, 0, GameConstants.player.maxMouseDist, 2);
             }
         }
@@ -169,29 +171,30 @@ export const InputPacket = new Packet<InputData>(PacketType.Input, {
             down,
             left,
             right,
-            isMobile,
+            isJoystick,
             moving,
             turning,
             attacking
         ] = stream.readBooleanGroup();
 
         data.movement = { up, down, left, right };
-        data.isMobile = isMobile;
+        data.isJoystick = isJoystick;
         data.turning = turning;
         data.attacking = attacking;
 
-        if (isMobile) {
-            data.mobile = {
+        if (isJoystick) {
+            data.joystick = {
                 moving,
-                angle: stream.readRotation2()
+                angle: stream.readRotation2(),
+                magnitude: stream.readUint8()
             };
         }
 
         if (turning) {
             data.rotation = stream.readRotation2();
-            if (!isMobile) {
+            if (!isJoystick) {
                 (
-                    data as DeepMutable<NoMobile & { turning: true }>
+                    data as DeepMutable<NoJoystick & { turning: true }>
                 ).distanceToMouse = stream.readFloat(0, GameConstants.player.maxMouseDist, 2);
             }
         }
@@ -256,12 +259,12 @@ export function areDifferent(newPacket: InputData, oldPacket: InputData): boolea
         if (oldPacket.movement[key] !== newPacket.movement[key]) return true;
     }
 
-    if (newPacket.isMobile !== oldPacket.isMobile) return true;
+    if (newPacket.isJoystick !== oldPacket.isJoystick) return true;
 
-    if (newPacket.isMobile) {
-        for (const k in newPacket.mobile) {
-            const key = k as keyof WithMobile["mobile"];
-            if ((oldPacket as WithMobile).mobile[key] !== newPacket.mobile[key]) return true;
+    if (newPacket.isJoystick) {
+        for (const k in newPacket.joystick) {
+            const key = k as keyof WithMobile["joystick"];
+            if ((oldPacket as WithMobile).joystick[key] !== newPacket.joystick[key]) return true;
         }
     }
 
