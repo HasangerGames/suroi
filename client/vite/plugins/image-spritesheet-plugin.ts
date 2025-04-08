@@ -1,22 +1,20 @@
 import { FSWatcher, watch } from "chokidar";
+import { createHash } from "crypto";
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "fs";
 import { readFile, rm, writeFile } from "fs/promises";
-import path, { resolve } from "path";
-import { type SpritesheetData } from "pixi.js";
-import { type Plugin, type ResolvedConfig } from "vite";
-import { Mode, ModeDefinition, Modes, SpritesheetNames } from "../../../common/src/definitions/modes";
-import { readDirectory } from "../../../common/src/utils/readDirectory";
-import { Canvas, RenderOptions, Image, loadImage } from "skia-canvas";
 import { IOption, MaxRectsPacker } from "maxrects-packer";
-import { createHash } from "crypto";
+import path from "path";
+import { type SpritesheetData } from "pixi.js";
+import { Canvas, Image, loadImage, RenderOptions } from "skia-canvas";
+import { type Plugin } from "vite";
+import { Mode, ModeDefinition, SpritesheetNames } from "../../../common/src/definitions/modes";
+import { readDirectory } from "../../../common/src/utils/readDirectory";
 import { getModeDefs } from "./utils";
 
 const PLUGIN_NAME = "vite-spritesheet-plugin";
 
 const compilerOpts = {
-    outDir: "atlases",
     margin: 8,
-    removeExtensions: true,
     maximumSize: 4096,
     renderOptions: {
         // @ts-expect-error no typings for the msaa property for some reason
@@ -29,22 +27,10 @@ const compilerOpts = {
 
 export interface CompilerOptions {
     /**
-     * Output directory
-     * @default "atlases"
-     */
-    outDir: string
-
-    /**
     * Added pixels between sprites (can prevent pixels leaking to adjacent sprite)
     * @default 1
     */
     margin: number
-
-    /**
-     * Remove file extensions from the atlas frames
-     * @default true
-     */
-    removeExtensions: boolean
 
     /**
      * The Maximum width and height a generated image can be
@@ -98,23 +84,13 @@ export interface CacheData {
 
 export const imageMap = new Map<string, Image>();
 
-/**
- * Pack images spritesheets.
- * @param name Name of the spritesheet.
- * @param paths List of paths to the images.
- * @param options Options passed to the packer.
- */
-export async function createSpritesheets(
-    name: string,
-    fileMap: Record<string, number>,
-    options: CompilerOptions
-): Promise<Spritesheet> {
+export async function createSpritesheets(name: string, fileMap: Record<string, number>): Promise<Spritesheet> {
     const packer = new MaxRectsPacker(
-        options.maximumSize,
-        options.maximumSize,
-        options.margin,
+        compilerOpts.maximumSize,
+        compilerOpts.maximumSize,
+        compilerOpts.margin,
         {
-            ...options.packerOptions,
+            ...compilerOpts.packerOptions,
             allowRotation: false // TODO: support rotating frames
         }
     );
@@ -179,15 +155,8 @@ export async function createSpritesheets(
 
             ctx.drawImage(data.image, rect.x, rect.y, rect.width, rect.height);
 
-            /**
-             * there is _probably_ a file name
-             */
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            let name = data.path.split(path.sep).at(-1)!;
-
-            if (options.removeExtensions) {
-                name = name.split(".").slice(0, -1).join("");
-            }
+            const fPath = data.path;
+            const name = fPath.slice(fPath.lastIndexOf(path.sep) + 1, fPath.lastIndexOf("."));
 
             const { width, height, x, y } = rect;
 
@@ -222,14 +191,14 @@ export async function createSpritesheets(
         lowResCtx.drawImage(canvas, 0, 0, bin.width * lowScale, bin.height * lowScale);
 
         const [lowBuffer, highBuffer] = await Promise.all([
-            lowResCanvas.toBuffer("png", options.renderOptions?.low),
-            canvas.toBuffer("png", options.renderOptions?.high)
+            lowResCanvas.toBuffer("png", compilerOpts.renderOptions?.low),
+            canvas.toBuffer("png", compilerOpts.renderOptions?.high)
         ]);
 
         const writeAtlas = async(image: Buffer, json: SpritesheetData, resolution: number, sheetList: Atlas[]): Promise<void> => {
             const hash = createHash("sha1").update(image).digest("hex").slice(0, 8);
             const cacheName = `${name}-${hash}@${resolution}x`;
-            json.meta.image = `${options.outDir}/${cacheName}.png`;
+            json.meta.image = `atlases/${cacheName}.png`;
 
             void writeFile(path.join(atlasCacheDir, `${cacheName}.json`), JSON.stringify(json));
             void writeFile(path.join(atlasCacheDir, `${cacheName}.png`), image);
@@ -266,25 +235,20 @@ export async function createSpritesheets(
 
 const atlases: Partial<MultiAtlasList> = {};
 
-export const cacheDir = ".spritesheet-cache/img";
+export const cacheDir = ".spritesheet-cache";
 if (!existsSync(cacheDir)) {
     mkdirSync(cacheDir, { recursive: true });
 }
 
 const cache: Partial<Record<SpritesheetNames, CacheData>> = {};
 
-async function buildSpritesheets(
-    modeDefs: ReadonlyArray<readonly [Mode, ModeDefinition]>
-): Promise<void> {
+async function buildSpritesheets(modeDefs: ReadonlyArray<readonly [Mode, ModeDefinition]>): Promise<void> {
+    console.log("Building image spritesheets...");
     const start = performance.now();
 
-    let builtCount = 0;
-    const totalCount = modeDefs.length;
-    console.log(`Building ${totalCount} spritesheet${totalCount === 1 ? "" : "s"}...`);
+    imageMap.clear();
 
-    const uncachedModes: Record<string, Record<string, number>> = {};
-
-    await Promise.all(modeDefs.map(async([mode, { spriteSheets }]) => {
+    for (const [mode, { spriteSheets }] of modeDefs) {
         const pathMap = new Map<string, string>();
 
         const files = spriteSheets
@@ -325,8 +289,6 @@ async function buildSpritesheets(
 
         const cacheData = getCacheData();
         if (cacheData) {
-            console.log(`Spritesheet "${mode}" is cached, skipping (${++builtCount}/${totalCount})`);
-
             const loadFromCache = async(files: readonly string[]): Promise<Atlas[]> => Promise.all(
                 files.map(async file => ({
                     json: JSON.parse(await readFile(path.join(cacheDir, mode, `${file}.json`), "utf8")) as SpritesheetData,
@@ -340,25 +302,11 @@ async function buildSpritesheets(
                 high: await loadFromCache(high)
             };
         } else {
-            uncachedModes[mode] = fileMap;
-        }
-    }));
-
-    const sheetsToBuild = Object.entries(uncachedModes);
-    if (sheetsToBuild.length) {
-        imageMap.clear();
-
-        for (const [mode, fileMap] of sheetsToBuild) {
-            const str = `Building spritesheet "${mode}" (${++builtCount}/${totalCount})...`;
-            const strLength = str.length;
-            process.stdout.write(str);
-            const start = performance.now();
-            atlases[mode] = await createSpritesheets(mode, fileMap, compilerOpts);
-            console.log(`\rBuilt spritesheet "${mode}" in ${Math.round(performance.now() - start) / 1000}s (${builtCount}/${totalCount})`.padEnd(strLength, " "));
+            atlases[mode] = await createSpritesheets(mode, fileMap);
         }
     }
 
-    console.log(`Finished building spritesheets in ${Math.round(performance.now() - start) / 1000}s`);
+    console.log(`Built ${modeDefs.length} image spritesheet${modeDefs.length === 1 ? "" : "s"} in ${Math.round(performance.now() - start)} ms`);
 }
 
 const max = (a: number, b: number): number => a > b ? a : b;
@@ -379,7 +327,6 @@ export function imageSpritesheet(): Plugin[] {
 
     let watcher: FSWatcher;
     let serverConfigWatcher: FSWatcher;
-    let config: ResolvedConfig;
 
     const exportedAtlases: {
         readonly low: Record<string, readonly SpritesheetData[]>
@@ -423,7 +370,6 @@ export function imageSpritesheet(): Plugin[] {
                         fileName: sheet.json.meta.image,
                         source: sheet.image
                     });
-                    this.info(`Built spritesheet ${sheet.json.meta.image}`);
                 }
             },
             resolveId,
@@ -432,9 +378,6 @@ export function imageSpritesheet(): Plugin[] {
         {
             name: `${PLUGIN_NAME}:serve`,
             apply: "serve",
-            configResolved(cfg) {
-                config = cfg;
-            },
             async configureServer(server) {
                 const reloadPage = (): void => {
                     clearTimeout(buildTimeout);
@@ -449,12 +392,12 @@ export function imageSpritesheet(): Plugin[] {
                     }, 500);
                 };
 
-                watcher = watch("public/img/game", { cwd: config.root, ignoreInitial: true })
+                watcher = watch("public/img/game", { ignoreInitial: true })
                     .on("add", reloadPage)
                     .on("change", reloadPage)
                     .on("unlink", reloadPage);
 
-                serverConfigWatcher = watch("../server/src/config.ts", { cwd: config.root, ignoreInitial: true })
+                serverConfigWatcher = watch("../server/src/config.ts")
                     .on("change", () => {
                         modeDefs = getModeDefs();
                         reloadPage();

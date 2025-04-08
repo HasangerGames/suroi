@@ -40,6 +40,9 @@ function makeSortable(filename: string): string {
 }
 
 async function processPosts(): Promise<void> {
+    console.log("Building news posts...");
+    const start = performance.now();
+
     posts.length = 0;
     const files = readDirectory(POSTS_DIR)
         // sort by version
@@ -68,6 +71,8 @@ async function processPosts(): Promise<void> {
             body: body ? await parse(body) : undefined
         });
     }
+
+    console.log(`Built ${posts.length} news posts in ${Math.round(performance.now() - start)} ms`);
 }
 
 export function newsPosts(): Plugin[] {
