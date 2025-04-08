@@ -506,7 +506,7 @@ class InputManagerClass {
                     activePlayer.images.aimTrail.alpha = 1;
                 }
 
-                const attacking = data.force > 0.75;
+                const attacking = data.force > 0.65;
                 if (
                     (def.itemType === ItemType.Throwable && this.attacking)
                     || (def.itemType === ItemType.Gun && def.shootOnRelease)
