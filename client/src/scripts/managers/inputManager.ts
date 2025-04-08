@@ -526,7 +526,7 @@ class InputManagerClass {
                 shootOnRelease = false;
             });
         }
- 
+
         // Gyro stuff
         const gyroAngle = GameConsole.getBuiltInCVar("mb_gyro_angle");
         if (gyroAngle > 0) {
