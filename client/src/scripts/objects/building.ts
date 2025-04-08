@@ -502,7 +502,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                     residueSprite.setFrame(imageDef.residue ?? '');
                     residueSprite.setVisible(true);
                     residueSprite.setVPos(toPixiCoords(Vec.create(0, 0)));
-                    residueSprite.scale.set();
+                    residueSprite.scale.set(1);
                     residueSprite.setZIndex(ZIndexes.Gas);
                     this.container.addChild(residueSprite);
                 }
