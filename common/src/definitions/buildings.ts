@@ -1938,6 +1938,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             key: "red_house_ceiling",
             position: Vec.create(0, -0.25),
             scale: Vec.create(2, 2),
+            residue: 'red_house_ceiling_residue',
             particleAmount: 200,
             brokenRoof: 'red_house_ceiling_broken'
         }],
@@ -2132,7 +2133,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             position: Vec.create(-0.6, -0.25),
             scale: Vec.create(2, 2),
             brokenRoof: 'red_house_ceiling_broken',
-            particleAmount: 200
+            particleAmount: 200,
+            residue: 'red_house_ceiling_residue'
         }],
         wallsToDestroy: 2,
         floors: [

@@ -331,14 +331,33 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 const brokenImage: BuildingImageDefinition = {
                     ...originalImage,
                     key: originalImage.brokenRoof as string,
-                    scale: Vec.create(2.13, 2.13), // Idk why the broken ceilingimage is smaller 
-                    residue: undefined,
+                    scale: Vec.create(2.13, 2.13), // Idk why the broken ceiling image is smaller 
                 };
                 this.definition = {
                     ...this.definition,
                     ceilingImages: [brokenImage],
                 };
-                this._createSprites(); 
+
+                // makes a new sprite for just the residue since i thought this was the easiest way
+                // used _updateImage() as reference...
+                const residue = {
+                    sprite: new SuroiSprite,
+                    definition: {
+                        key: this.definition.ceilingImages?.[0]?.residue,
+                        scale: Vec.create(0.7, 0.7),
+                        zIndex: ZIndexes.Gas
+                    } 
+                }
+
+                const { sprite } = residue;
+
+                this.ceilingContainer.addChild(sprite);
+
+                sprite.setVisible(true);
+                this.ceilingContainer.alpha = 1;
+                this._updateImage({ ...residue.definition, position: Vec.create(0, 0), key: residue.definition.key ?? '' }, true);
+
+
             } else {
                 this.dead = data.dead;
             }
@@ -476,8 +495,20 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         const { sprite } = image;
 
         if (isNewSprite) {
-            if (isCeiling) this.ceilingContainer.addChild(sprite);
-            else this.container.addChild(sprite);
+            if (isCeiling) {
+                this.ceilingContainer.addChild(sprite);
+                if (imageDef.residue && this.definition.ceilingImages?.[0]?.key === this.definition.ceilingImages?.[0]?.brokenRoof) {
+                    const residueSprite = new SuroiSprite();
+                    residueSprite.setFrame(imageDef.residue ?? '');
+                    residueSprite.setVisible(true);
+                    residueSprite.setVPos(toPixiCoords(Vec.create(0, 0)));
+                    residueSprite.scale.set();
+                    residueSprite.setZIndex(ZIndexes.Gas);
+                    this.container.addChild(residueSprite);
+                }
+            } else {
+                this.container.addChild(sprite);
+            }
         }
 
         let key = imageDef.key;
@@ -486,11 +517,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         }
         sprite.setFrame(key);
 
-        if (isCeiling) {
-            sprite.setVisible(this.dead ? !!imageDef.residue : !!imageDef.key);
-        } else {
-            sprite.setVisible(true);
-        }
+        sprite.setVisible(true);
 
         sprite.setVPos(toPixiCoords(imageDef.position));
 
