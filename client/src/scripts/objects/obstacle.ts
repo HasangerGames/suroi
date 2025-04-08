@@ -262,7 +262,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     .setTint(Game.mode.colors.water)
                     .setZIndex(getEffectiveZIndex(ZIndexes.BuildingsFloor, this.layer, Game.layer));
 
-                if (this.definition.waterOverlay !== undefined) { // TODO
+                if (this.definition.waterOverlay !== undefined) {
                     this.waterOverlaySprite.width = this.waterOverlaySprite.width * this.definition.waterOverlay.scaleX;
                     this.waterOverlaySprite.height = this.waterOverlaySprite.height * this.definition.waterOverlay.scaleY;
                 }
@@ -440,6 +440,11 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         if (!definition.invisible && !(this.dead && definition.noResidue)) {
             this.image.setFrame(texture);
             if (definition.graphics && !this.dead) this.image.setVisible(false);
+        }
+
+        if (this.waterOverlay && this.dead) {
+            this.image.setZIndex(getEffectiveZIndex(ZIndexes.UnderWaterDeadObstacles, this.layer, Game.layer));
+            this.image.setAlpha(0.5);
         }
 
         if (definition.tint !== undefined) {

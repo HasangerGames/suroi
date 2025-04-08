@@ -48,6 +48,7 @@ export interface BuildingImageDefinition {
     readonly residue?: string
     readonly beachTinted?: boolean
     readonly damaged?: string
+    readonly alpha?: number
 }
 
 export interface BuildingDefinition extends ObjectDefinition {
@@ -3938,16 +3939,24 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 key: "cargo_ship_top_floor_shadow",
                 position: Vec.create(0, 0),
-                scale: Vec.create(6, 6)
+                scale: Vec.create(24, 24)
             }
         ]
     },
     {
+        // implemented by pap with a lot of love >w<
         idString: "cargo_ship_bottom_floor",
         name: "Cargo Ship (Bottom Floor)",
         material: "metal_heavy",
         particle: "cargo_ship_particle",
         reflectBullets: true,
+        sounds: {
+            normal: "ship_ambience",
+            position: Vec.create(-1.5, 115.33),
+            maxRange: 300,
+            falloff: 0.86
+        },
+        floorZIndex: ZIndexes.Ground,
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(13.3, 2.27, Vec.create(59.22, 34.44)),
             RectangleHitbox.fromRect(12.47, 2.26, Vec.create(58.86, -15.53)),
@@ -4047,9 +4056,19 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(100.28, 13.61, Vec.create(-1.82, -125.2)),
             RectangleHitbox.fromRect(48.31, 33.89, Vec.create(-2.07, -164.9)),
             RectangleHitbox.fromRect(7.21, 20.34, Vec.create(-54, -51.5)),
-            RectangleHitbox.fromRect(101.81, 53.3, Vec.create(-1.96, 119.35))
+            RectangleHitbox.fromRect(101.81, 53.3, Vec.create(-1.96, 119.35)),
+            RectangleHitbox.fromRect(97.5, 18.46, Vec.create(-2.02, 153)),
+            RectangleHitbox.fromRect(82.05, 20, Vec.create(-3, 165))
         ),
         floors: [
+            {
+                type: FloorNames.Water,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(101.81, 53.3, Vec.create(-1.96, 119.35)),
+                    RectangleHitbox.fromRect(27.77, 14.14, Vec.create(-38.16, 86.7)),
+                    RectangleHitbox.fromRect(40, 4.82, Vec.create(27.71, 90))
+                )
+            },
             {
                 type: FloorNames.Metal,
                 hitbox: new GroupHitbox(
@@ -4063,12 +4082,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(45.17, 12.38, Vec.create(64.01, -0.29))
                 )
             }
-            // { - BROKEN
-            //     type: FloorNames.Water,
-            //     hitbox: RectangleHitbox.fromRect(101.81, 53.3, Vec.create(-1.96, 119.35))
-            // }
         ],
         floorImages: [
+            {
+                key: "floor_oil_ship",
+                position: Vec.create(-36.67, 157),
+                scale: Vec.create(2.3, 2.3)
+            },
             {
                 key: "cargo_ship_floor_bottom_1",
                 position: Vec.create(-1.8, 60.25)
@@ -4083,15 +4103,56 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec.create(66.85, 9.5),
                 scale: Vec.create(2, 2)
             },
-            { key: "regular_crate_residue", position: Vec.create(-37.26, -34.51), rotation: Math.PI / 2 },
-            { key: "regular_crate_residue", position: Vec.create(-45.34, 15.75), rotation: Math.PI / 2 },
-            { key: "barrel_residue", position: Vec.create(33.73, -148.61) },
             {
-                key: "cargo_ship_bottom_floor_alpha",
-                position: Vec.create(0, 0)
+                key: "regular_crate_residue",
+                position: Vec.create(-37.26, -34.51),
+                rotation: Math.PI / 2
+            },
+            {
+                key: "regular_crate_residue",
+                position: Vec.create(-45.34, 15.75),
+                rotation: Math.PI / 2
+            },
+            {
+                key: "barrel_residue",
+                position: Vec.create(33.73, -148.61)
+            },
+            {
+                key: "barrel_residue",
+                position: Vec.create(-33.17, 138.92),
+                alpha: 0.5
+            },
+            {
+                key: "explosion_decal",
+                position: Vec.create(-19.21, 138.48),
+                alpha: 0.5
+            },
+            {
+                key: "explosion_decal",
+                position: Vec.create(-15.16, 140.74),
+                alpha: 0.5,
+                rotation: Math.PI / 2,
+                scale: Vec.create(0.7, 0.7)
+            },
+            {
+                key: "ship_propeller",
+                position: Vec.create(-2, 153.45),
+                scale: Vec.create(2, 2)
+            },
+            {
+                key: "cargo_ship_wall_residue",
+                position: Vec.create(-30.4, 150.6),
+                scale: Vec.create(2, 2),
+                alpha: 0.5
             }
         ],
         obstacles: [
+            { idString: "ship_thing_v2", position: Vec.create(-2.07, 175.32), rotation: 0 },
+
+            { idString: "box", position: Vec.create(-70.39, 134.5), waterOverlay: true },
+            { idString: "box", position: Vec.create(-14.88, 178.02), waterOverlay: true },
+            { idString: "barrel", position: Vec.create(-24.67, 180.93), waterOverlay: true },
+
             { idString: "life_preserver", position: Vec.create(-44.28, -57.06), rotation: 0 },
             { idString: "trash_bag", position: Vec.create(43.68, -23.44) },
 
@@ -4166,8 +4227,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "sandbags", position: Vec.create(23.38, -135.79), rotation: 1 },
             { idString: "sandbags", position: Vec.create(-18.15, 88.38), rotation: 2 },
             { idString: "sandbags", position: Vec.create(-17.94, 77.59), rotation: 3 },
-            { idString: "sandbags", position: Vec.create(25.65, 112.33), rotation: 1, waterOverlay: true }, // BROKEN WATER OVERLAY: TODO: SCALE SPRITE
-            { idString: "sandbags", position: Vec.create(-15.44, 122.39), rotation: 1, waterOverlay: true }, // BROKEN WATER OVERLAY: TODO: SCALE SPRITE
+            { idString: "sandbags", position: Vec.create(25.65, 112.33), rotation: 1, waterOverlay: true },
+            { idString: "sandbags", position: Vec.create(-15.6, 122.39), rotation: 1, waterOverlay: true },
+
+            { idString: "control_panel2", position: Vec.create(-45.25, 138.06), rotation: 2, waterOverlay: true },
 
             { idString: "super_barrel", position: Vec.create(-3.23, 34.68) },
 

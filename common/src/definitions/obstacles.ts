@@ -1651,7 +1651,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         particlesOnDestroy: "tear_gas_particle",
         additionalDestroySounds: ["smoke_grenade"],
-        winterVariations: 1
+        winterVariations: 1,
+        waterOverlay: {
+            scaleX: 1,
+            scaleY: 0.65
+        }
     },
     {
         idString: "barrel",
@@ -1845,7 +1849,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         variations: 3,
         zIndex: ZIndexes.ObstaclesLayer2,
         hasLoot: true,
-        winterVariations: 3
+        winterVariations: 3,
+        waterOverlay: {
+            scaleX: 0.45,
+            scaleY: 0.45
+        }
     },
     gift("red"),
     gift("green"),
@@ -3602,7 +3610,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             residue: "barrel_residue"
         }
     },
-    controlPanel("control_panel2", "Control Panel"),
+    {
+        ...controlPanel("control_panel2", "Control Panel"),
+        waterOverlay: {
+            scaleX: 1.2,
+            scaleY: 0.85
+        }
+    },
     {
         ...controlPanel("recorder", "Recorder"),
         hitbox: RectangleHitbox.fromRect(8.7, 6.34),
@@ -3908,8 +3922,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Limited,
         winterVariations: 1,
         waterOverlay: {
-            scaleX: 2,
-            scaleY: 1
+            scaleX: 1.4,
+            scaleY: 0.8
         }
     },
     {
@@ -4418,6 +4432,23 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         rotationMode: RotationMode.Limited,
         zIndex: ZIndexes.BuildingsFloor
+    },
+    {
+        idString: "ship_thing_v2",
+        name: "the snack that smiles back",
+        material: "metal_heavy",
+        health: 42069,
+        indestructible: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(5.24, 21.1, Vec.create(0, 0.2)),
+            new CircleHitbox(2.55, Vec.create(0, 10.7)),
+            new CircleHitbox(3.37, Vec.create(-0.02, -9.91)),
+            RectangleHitbox.fromRect(6.87, 3.96, Vec.create(-0.01, -7.98))
+        ),
+        frames: {
+            particle: "cargo_ship_particle"
+        },
+        rotationMode: RotationMode.Limited
     },
     {
         idString: "memorial_bunker_stair",

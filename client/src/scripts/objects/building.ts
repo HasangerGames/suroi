@@ -486,6 +486,8 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             sprite.setRotation(imageDef.rotation ?? 0);
         }
 
+        if (imageDef.alpha) sprite.setAlpha(imageDef.alpha);
+
         sprite.setZIndex(imageDef.zIndex ?? 0);
 
         if (imageDef.scale) sprite.scale = (this.definition.resetCeilingResidueScale && this.dead) ? 1 : imageDef.scale;
