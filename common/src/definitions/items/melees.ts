@@ -13,7 +13,6 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     readonly obstacleMultiplier: number
     readonly piercingMultiplier?: number // If it does less dmg vs pierceable objects than it would vs a normal one
     readonly stonePiercing?: boolean
-    readonly breachingTool?: boolean
     /**
      * @default {0.01}
      */
@@ -485,8 +484,6 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         iceMultiplier: 5,
         swingSound: "heavy_swing",
         obstacleMultiplier: 2,
-        stonePiercing: true,
-        breachingTool: true,
         piercingMultiplier: 1,
         radius: 2.7,
         offset: Vec.create(5.4, -0.5),

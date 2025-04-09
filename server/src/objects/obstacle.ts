@@ -16,8 +16,6 @@ import { type Building } from "./building";
 import { type Bullet } from "./bullet";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { type Player } from "./player";
-import { ThrowableDefinition } from "@common/definitions/items/throwables";
-import { Explosion, type Explosion as ExplosionType } from "./explosion";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override readonly fullAllocBytes = 10;
@@ -177,12 +175,13 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             return;
         }
 
-        if (definition.breachable) {
-            let isAllowedWeapon = 
-               (weaponIsItem && 
-                 (weaponDef?.itemType === ItemType.Melee && (weaponDef as MeleeDefinition).breachingTool === true)) ||
-               (weaponUsed instanceof Explosion 
-                   && ((weaponUsed.weapon?.definition as MeleeDefinition | ThrowableDefinition)?.breachingTool ));
+        if (definition.airstrikeDamageOnly) {
+            let isAllowedWeapon = false; // change this to check whether the source of damage is an airstrike
+            /* Just some dummy code for airstrike dev change it to make it work later
+                (weaponDef?.idString === 'air_strike') || // if it is a direct hit
+                (weaponUsed instanceof Explosion 
+                   && ((weaponUsed.weapon?.definition as AirstrikeDefinition)?.idString === 'air_strike')); // if it is an explosion from the arstrike
+            */
 
             if (!isAllowedWeapon) {
                 return 
