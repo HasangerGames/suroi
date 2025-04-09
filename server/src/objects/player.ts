@@ -2195,8 +2195,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 packet.creditedId = downedBy.id;
                 if (downedBy !== this) packet.kills = ++downedBy.kills;
             }
-            if (this.game.mode.weaponSwap && downedBy !== undefined){
-                if (!(weaponUsed instanceof Explosion)) downedBy.swapWeaponRandomly(weaponUsed, true);
+
+            if (this.game.mode.weaponSwap && downedBy !== undefined) {
+                if (!(weaponUsed instanceof Explosion)) {
+                    downedBy.swapWeaponRandomly(weaponUsed, true);
+                } else if (weaponUsed.weapon) {
+                    downedBy.swapWeaponRandomly(weaponUsed.weapon, true);
+                }
             }
         } else if (source instanceof Player && source !== this) {
             this.killedBy = source;
