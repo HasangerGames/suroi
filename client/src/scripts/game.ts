@@ -575,9 +575,7 @@ export const Game = new (class Game {
         const ui = UIManager.ui;
 
         return await new Promise(resolve => {
-            ui.gameMenu.fadeOut(250);
-            ui.splashOptions.addClass("loading");
-            ui.loaderText.text("");
+            UIManager.fadeout();
 
             SoundManager.stopAll();
 
@@ -585,12 +583,8 @@ export const Game = new (class Game {
                 this.pixi.stop();
                 ScreenRecordManager.endRecording();
                 void this.music?.play();
-                ui.teamContainer.html("");
-                ui.actionContainer.hide();
-                ui.gameOverOverlay.hide();
-                ui.canvas.removeClass("active");
-                ui.killLeaderLeader.text(getTranslatedString("msg_waiting_for_leader"));
-                ui.killLeaderCount.text("0");
+
+                UIManager.resetUI();
 
                 this.gameStarted = false;
                 this._socket?.close();
@@ -603,19 +597,10 @@ export const Game = new (class Game {
                 this.planes.clear();
                 CameraManager.container.removeChildren();
                 ParticleManager.clear();
-                UIManager.clearTeammateCache();
-                UIManager.clearWeaponCache();
-                UIManager.reportedPlayerIDs.clear();
-                UIManager.killLeaderCache = undefined;
-                UIManager.oldKillLeaderId = undefined;
-                UIManager.skinID = undefined;
 
-                MapManager.safeZone.clear();
-                MapManager.pingGraphics.clear();
-                MapManager.pings.clear();
-                MapManager.pingsContainer.removeChildren();
-                MapManager.teammateIndicators.clear();
-                MapManager.teammateIndicatorContainer.removeChildren();
+                UIManager.resetCache();
+
+                MapManager.reset();
 
                 GasManager.time = undefined;
 
