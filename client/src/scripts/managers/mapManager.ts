@@ -19,7 +19,7 @@ import { UIManager } from "./uiManager";
 import { GameConsole } from "../console/gameConsole";
 import { CameraManager } from "./cameraManager";
 
-export const MapManager = new (class MapManager {
+class MapManagerClass {
     private _expanded = false;
     get expanded(): boolean { return this._expanded; }
     set expanded(expand: boolean) {
@@ -800,7 +800,9 @@ export const MapManager = new (class MapManager {
         this.teammateIndicators.clear();
         this.teammateIndicatorContainer.removeChildren();
     }
-})();
+}
+
+export const MapManager = new MapManagerClass();
 
 export class MapPing {
     readonly startTime: number;

@@ -1,7 +1,7 @@
 import $ from "jquery";
 import { GameConsole } from "../console/gameConsole";
 
-export const ScreenRecordManager = new (class ScreenRecordManager {
+class ScreenRecordManagerClass {
     mediaRecorder?: MediaRecorder;
     recording = false;
     startedTime = 0;
@@ -86,4 +86,10 @@ export const ScreenRecordManager = new (class ScreenRecordManager {
             this.recordingTime.text(`${Math.floor(duration / 60000)}:${(Math.floor(duration / 1000) % 60).toString().padStart(2, "0")}`);
         }
     }
-})();
+
+    reset(): void {
+        this.endRecording();
+    }
+}
+
+export const ScreenRecordManager = new ScreenRecordManagerClass();

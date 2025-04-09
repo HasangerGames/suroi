@@ -8,7 +8,7 @@ import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Game } from "../game";
 import { CameraManager } from "./cameraManager";
 
-export const ParticleManager = new (class ParticleManager {
+class ParticleManagerClass {
     readonly particles = new Set<Particle>();
     readonly emitters = new Set<ParticleEmitter>();
 
@@ -53,11 +53,13 @@ export const ParticleManager = new (class ParticleManager {
         return emitter;
     }
 
-    clear(): void {
+    reset(): void {
         this.particles.clear();
         this.emitters.clear();
     }
-})();
+}
+
+export const ParticleManager = new ParticleManagerClass();
 
 export type ParticleProperty = {
     readonly start: number

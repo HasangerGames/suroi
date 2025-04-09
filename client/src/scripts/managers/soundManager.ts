@@ -141,7 +141,7 @@ export class GameSound {
     }
 }
 
-export const SoundManager = new (class SoundManager {
+class SoundManagerClass {
     readonly updatableSounds = new Set<GameSound>();
 
     sfxVolume = 0;
@@ -220,5 +220,8 @@ export const SoundManager = new (class SoundManager {
 
     stopAll(): void {
         PixiSound.sound.stopAll();
+        this.updatableSounds.clear();
     }
-})();
+}
+
+export const SoundManager = new SoundManagerClass();

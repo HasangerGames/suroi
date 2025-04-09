@@ -572,42 +572,36 @@ export const Game = new (class Game {
     }
 
     async endGame(): Promise<void> {
-        const ui = UIManager.ui;
-
         return await new Promise(resolve => {
-            UIManager.fadeOut();
+            const ui = UIManager.ui;
+
+            ui.gameMenu.fadeOut(250);
+            ui.splashOptions.addClass("loading");
+            ui.loaderText.text("");
 
             SoundManager.stopAll();
 
             ui.splashUi.fadeIn(400, () => {
-                this.pixi.stop();
-                ScreenRecordManager.endRecording();
-                void this.music?.play();
-
-                UIManager.resetUI();
-
                 this.gameStarted = false;
                 this._socket?.close();
+                this.pixi.stop();
+                void this.music?.play();
 
-                // reset stuff
                 for (const object of this.objects) object.destroy();
                 for (const plane of this.planes) plane.destroy();
                 this.objects.clear();
                 this.bullets.clear();
                 this.planes.clear();
-                CameraManager.container.removeChildren();
-                ParticleManager.clear();
-
-                UIManager.resetCache();
-
-                MapManager.reset();
-
-                GasManager.time = undefined;
-
                 this.playerNames.clear();
                 this._timeouts.clear();
 
-                CameraManager.zoom = Scopes.definitions[0].zoomLevel;
+                CameraManager.reset();
+                GasManager.reset();
+                MapManager.reset();
+                ParticleManager.reset();
+                ScreenRecordManager.reset();
+                UIManager.reset();
+
                 updateDisconnectTime();
                 resetPlayButtons();
 

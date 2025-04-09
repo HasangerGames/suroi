@@ -43,7 +43,7 @@ function safeRound(value: number): number {
 /**
  * This class manages the game UI
  */
-export const UIManager = new (class UIManager {
+class UIManagerClass {
     private maxHealth = GameConstants.player.defaultHealth;
     private health = GameConstants.player.defaultHealth;
 
@@ -1678,16 +1678,14 @@ export const UIManager = new (class UIManager {
         this.killLeaderCache = data;
     }
 
-    resetUI(): void {
+    reset(): void {
         this.ui.teamContainer.html("");
         this.ui.actionContainer.hide();
         this.ui.gameOverOverlay.hide();
         this.ui.canvas.removeClass("active");
         this.ui.killLeaderLeader.text(getTranslatedString("msg_waiting_for_leader"));
         this.ui.killLeaderCount.text("0");
-    }
 
-    resetCache(): void {
         this.clearTeammateCache();
         this.clearWeaponCache();
         this.reportedPlayerIDs.clear();
@@ -1695,13 +1693,9 @@ export const UIManager = new (class UIManager {
         this.oldKillLeaderId = undefined;
         this.skinID = undefined;
     }
+}
 
-    fadeOut(): void {
-        this.ui.gameMenu.fadeOut(250);
-        this.ui.splashOptions.addClass("loading");
-        this.ui.loaderText.text("");
-    }
-})();
+export const UIManager = new UIManagerClass();
 
 class Wrapper<T> {
     private _dirty = true;
