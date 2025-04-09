@@ -64,6 +64,7 @@
     <style>
       body {
         background-color: #3d3e48;
+        overflow: hidden;
       }
 
       #splash-ui, #game {
@@ -237,7 +238,17 @@
             </div>
           </div>
           <div id="splash-socials">
-            <div style="display: flex; flex-wrap: wrap; gap: 8px">
+            <div>
+              <a class="btn btn-darken btn-wiki" href="https://wiki.suroi.io" target="_blank">
+                <img src="img/socials/wiki.svg" width="32">
+                <span translation="wiki" style="color: white"></span>
+              </a>
+              <a class="btn btn-darken btn-kofi" href="https://ko-fi.com/suroi" target="_blank">
+                <img src="img/socials/kofi.svg" width="32">
+                <span translation="donate" style="color: white"></span>
+              </a>
+            </div>
+            <div>
               <a
                 href="https://discord.suroi.io"
                 rel="noopener noreferrer"
@@ -275,16 +286,6 @@
                 target="_blank"
               ></a>
             </div>
-            <div style="display: flex; flex-direction: column; width: 346px; gap: 8px">
-              <a class="btn btn-darken btn-wiki" href="https://wiki.suroi.io" target="_blank">
-                <img src="img/socials/wiki.svg" width="32">
-                <span translation="wiki" style="font-size: 20px; color: white"></span>
-              </a>
-              <a class="btn btn-darken btn-kofi" href="https://ko-fi.com/suroi" target="_blank">
-                <img src="img/socials/kofi.svg" width="32">
-                <span translation="donate" style="font-size: 20px; color: white"></span>
-              </a>
-            </div>
           </div>
         </div>
         <div id="splash-customize">
@@ -320,9 +321,11 @@
               target="_blank"
             >
               <img
-                class="featured-logo"
+                id="featured-youtube-logo"
                 src="./img/misc/youtube-icon.svg"
                 alt="YouTube icon"
+                width="36"
+                height="25"
               />
               <span class="featured-name" id="youtube-featured-name"></span>
             </a>
@@ -336,9 +339,11 @@
               href=""
             >
               <img
-                class="featured-logo"
+                id="featured-twitch-logo"
                 src="./img/misc/twitch-icon.svg"
                 alt="Twitch icon"
+                width="26.333"
+                height="30"
               />
               <span class="featured-name" id="twitch-featured-name"></span>
             </a>
@@ -378,14 +383,16 @@
           <i class="fa-solid fa-caret-down"></i></button>
         <div id="languages-selector" class="dropdown-content persistent-scrollbar"></div>
       </div>
-        <div id="splash-backlinks">
-          <a href="./changelog/" target="_blank" rel="noopener noreferrer"
-            >v%VITE_APP_VERSION%</a
-          >
+        <div id="splash-version">
+          <a href="./changelog/" target="_blank" rel="noopener noreferrer">v%VITE_APP_VERSION%</a>
         </div>
-        <div id="splash-settings">
-          <!-- <a id="privacy-policy-link" href="./privacy/" target="_blank" rel="noopener noreferrer" translation="privacy"></a> -->
-        </div>
+        <!-- <div id="splash-partners">
+          <a href="./changelog/" target="_blank" rel="noopener noreferrer">Partners</a>
+          <a href="https://kevin.games/" target="_blank" title="Free Online Games">Kevin Games</a>
+          <a href="https://onlinegames.io" target="_blank">OnlineGames.io</a>
+          <a href="https://play-games.com" target="_blank">Play-Games.com</a>
+          <a id="privacy-policy-link" href="./privacy/" target="_blank" rel="noopener noreferrer" translation="privacy"></a>
+        </div> -->
       </div>
     </div>
     <div id="game">

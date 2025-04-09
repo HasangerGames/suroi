@@ -252,9 +252,9 @@
     // For mobile
     @media screen and (max-width: variables.$screen_large) {
 
-        transform: scale(55%);
-        top: 0;
-        right: -20px;
+        transform: scale(75%);
+        top: 5px;
+        right: -15px !important;
 
         .dropdown-content {
             height: 300px;
