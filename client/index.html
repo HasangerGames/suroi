@@ -124,19 +124,25 @@
   </head>
 
   <body>
+    <!-- Loader, appears on initial page load (spinning Suroi logo) -->
     <div id="initial-loader" class="loader"></div>
+
+    <!-- Console -->
     <div id="console" style="display: none">
-        <div id="console-container">
-          <div id="console-header">
-            <span>Console</span>
-            <button id="console-close"><i class="fa-solid fa-xmark"></i></button>
-          </div>
-          <div id="console-out"></div>
-          <textarea id="console-in" autocapitalize="off" autocomplete="off" ></textarea>
+      <div id="console-container">
+        <div id="console-header">
+          <span>Console</span>
+          <button id="console-close"><i class="fa-solid fa-xmark"></i></button>
         </div>
+        <div id="console-out"></div>
+        <textarea id="console-in" autocapitalize="off" autocomplete="off" ></textarea>
+      </div>
       <div id="console-autocmp" style="display: none"></div>
     </div>
+
+    <!-- Main UI -->
     <div id="splash-ui">
+      <!-- Logo -->
       <div id="splash-logo">
         <img
           src="./img/logos/suroi_beta.svg"
@@ -144,12 +150,17 @@
           draggable="false"
         />
       </div>
+
+      <!-- Hardware acceleration warning -->
       <div style="display: none;" id="splash-hw-acceleration-warning">
         <div translation="warning_hw_accel_1">Graphics acceleration has been disabled or is not supported by your browser.</div>
         <span translation="warning_hw_accel_2">Suroi may not perform well.</span>
         <a translation="warning_hw_accel_link" target="_blank" href="https://www.computerhope.com/issues/ch002154.htm">Read more</a>
       </div>
+
+      <!-- Main menu -->
       <div id="splash-modals">
+        <!-- News (left pane) -->
         <div id="splash-news" class="persistent-scrollbar">
           <h2>
             <a href="./news/">
@@ -160,20 +171,29 @@
           </h2>
           <div id="news-posts"></div>
         </div>
+
+        <!-- Center pane -->
         <div id="splash-center">
+          <!-- Error messages from the server -->
           <div id="splash-server-message" style="display: none">
             <span id="splash-server-message-text"></span>
           </div>
+
+          <!-- Displays a message telling the user to rotate their device to landscape if it's in portrait -->
           <div id="splash-rotate-message" style="display: none">
-            <i class="fa-solid fa-rotate"></i> <span translation="msg_rotate">For a better experience, please rotate your device to landscape.</span>
+            <i class="fa-solid fa-rotate"></i> <span translation="msg_rotate"></span>
           </div>
 
+          <!-- Username field, server selector, play buttons, & rules button -->
           <div id="splash-options" class="loading">
+            <!-- Loading icon (spinning Suroi logo) -->
             <div id="loader-container">
               <div class="loader"></div>
               <span id="loader-text" translation="msg_loading"></span>
             </div>
+
             <div id="splash-options-wrapper">
+              <!-- Username input -->
               <input
                 type="text"
                 name="username-input"
@@ -182,18 +202,15 @@
                 autocomplete="off"
                 maxlength="16"
               />
-              <!-- makes password managers ignore the nickname field -->
+              <!-- Dummy input to make password managers ignore the nickname field -->
               <input type="password" style="width:0;height:0;background:transparent;border:none;padding:0;margin:0;display:block">
+
+              <!-- Server selector -->
               <div id="server-select" class="dropdown">
                 <button id="btn-server-select">
                   <span id="server-name">-</span>
                   <span style="margin-left: auto">
-                    <img
-                      src="./img/misc/player_icon.svg"
-                      width="16"
-                      height="16"
-                      alt="Player count"
-                    />
+                    <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
                     <span id="server-player-count">-</span>
                   </span>
                   <i class="fa-solid fa-caret-down"></i>
@@ -201,6 +218,7 @@
                 <ul class="dropdown-content" id="server-list"></ul>
               </div>
 
+              <!-- Play buttons -->
               <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo">
                 <span translation="play_solo"></span>
               </button>
@@ -217,6 +235,7 @@
                 <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team" translation="create_team"></button>
               </div>
 
+              <!-- Mode/team switch messages -->
               <div id="next-switch-messages">
                 <span id="next-team-size-msg" class="next-switch-msg" style="display: none">
                   <div class="next-switch-icon"></div>
@@ -228,6 +247,7 @@
                 </span>
               </div>
 
+              <!-- Rules & tutorial button -->
               <button class="btn btn-lg btn-darken btn-secondary" id="btn-rules" style="display: none">
                 <div class="pulsating-circle" style="display: none"></div>
                 <span translation="rules_and_tutorial"></span>
@@ -237,6 +257,8 @@
               </button>
             </div>
           </div>
+
+          <!-- Social buttons -->
           <div id="splash-socials">
             <div>
               <a class="btn btn-darken btn-wiki" href="https://wiki.suroi.io" target="_blank">
@@ -255,12 +277,7 @@
                 class="btn btn-darken btn-social btn-discord"
                 target="_blank"
               ></a>
-              <a
-                href="https://reddit.com/r/suroigame"
-                rel="noopener noreferrer"
-                class="btn btn-darken btn-social btn-reddit"
-                target="_blank"
-              ></a>
+              <a href="https://reddit.com/r/suroigame" rel="noopener noreferrer" class="btn btn-darken btn-social btn-reddit" target="_blank"></a>
               <a
                 href="https://bsky.app/profile/suroigame.bsky.social"
                 rel="noopener noreferrer"
@@ -288,29 +305,31 @@
             </div>
           </div>
         </div>
+
+        <!-- Settings & skin options (right pane) -->
         <div id="splash-customize">
+          <!-- Skin preview -->
           <div id="skin-container">
             <div id="skin-base"></div>
             <div id="skin-left-fist"></div>
             <div id="skin-right-fist"></div>
           </div>
+
+          <!-- Loadout & settings buttons -->
           <div style="display: flex; flex-direction: row; gap: 15px">
-            <button
-              class="btn btn-lg btn-darken btn-primary"
-              id="btn-customize"
-            >
+            <button class="btn btn-lg btn-darken btn-primary" id="btn-customize">
               <i class="fa-solid fa-shirt"></i>
               <span translation="loadout"></span>
             </button>
-            <button
-              class="btn btn-lg btn-darken btn-secondary"
-              id="btn-settings"
-            >
+
+            <button class="btn btn-lg btn-darken btn-secondary" id="btn-settings">
               <i class="fa-solid fa-gear"></i>
               <span translation="settings"></span>
             </button>
           </div>
         </div>
+
+        <!-- Featured Youtubr & Streamr -->
         <div id="splash-featured-people">
           <div class="featured-container">
             <p class="featured-heading" translation="featured_youtubr"></p>
@@ -349,6 +368,8 @@
             </a>
           </div>
         </div>
+
+        <!-- More dropdown (currently unused) -->
         <!--<div id="splash-more" class="dropdown">
           <button class="btn btn-darken btn-primary btn-dropdown" id="btn-dropdown-more">
             More
@@ -374,8 +395,8 @@
           </div>
         </div>-->
       </div>
-      <div>
-      <!-- Language stuff -->
+
+      <!-- Language selector -->
       <div id="language-dropdown" class="dropdown">
         <button class="btn btn-darken btn-secondary" id="btn-language">
           <specialI class="fa-solid fa-globe"></specialI>
@@ -383,24 +404,32 @@
           <i class="fa-solid fa-caret-down"></i></button>
         <div id="languages-selector" class="dropdown-content persistent-scrollbar"></div>
       </div>
-        <div id="splash-version">
-          <a href="./changelog/" target="_blank" rel="noopener noreferrer">v%VITE_APP_VERSION%</a>
-        </div>
-        <!-- <div id="splash-partners">
-          <a href="./changelog/" target="_blank" rel="noopener noreferrer">Partners</a>
-          <a href="https://kevin.games/" target="_blank" title="Free Online Games">Kevin Games</a>
-          <a href="https://onlinegames.io" target="_blank">OnlineGames.io</a>
-          <a href="https://play-games.com" target="_blank">Play-Games.com</a>
-          <a id="privacy-policy-link" href="./privacy/" target="_blank" rel="noopener noreferrer" translation="privacy"></a>
-        </div> -->
+
+      <!-- Bottom left & right links -->
+
+      <div id="splash-version">
+        <a href="./changelog/" target="_blank" rel="noopener noreferrer">v%VITE_APP_VERSION%</a>
       </div>
+
+      <!-- <div id="splash-partners">
+        <a href="./changelog/" target="_blank" rel="noopener noreferrer">Partners</a>
+        <a href="https://kevin.games/" target="_blank" title="Free Online Games">Kevin Games</a>
+        <a href="https://onlinegames.io" target="_blank">OnlineGames.io</a>
+        <a href="https://play-games.com" target="_blank">Play-Games.com</a>
+        <a id="privacy-policy-link" href="./privacy/" target="_blank" rel="noopener noreferrer" translation="privacy"></a>
+      </div> -->
     </div>
+
+    <!-- Game UI -->
     <div id="game">
       <div id="game-ui">
+        <!-- Mobile joysticks containers -->
         <div id="joysticks-containers">
           <div id="left-joystick-container"></div>
           <div id="right-joystick-container"></div>
         </div>
+
+        <!-- Button to close minimap -->
         <button
           class="btn btn-lg btn-primary"
           id="btn-close-minimap"
@@ -408,16 +437,22 @@
         >
           <i class="fa-solid fa-close"></i>
         </button>
-      <div id="top-left-container">
-        <div id="game-misc-stats">
+
+        <!-- Minimap, gas timer, mobile options, coordinate display, & spectating controls -->
+        <div id="top-left-container">
+          <!-- Minimap border -->
           <div id="minimap-border"></div>
-            <div id="mobile-options" style="display: none">
-              <button id="btn-game-menu" class="btn btn-lg btn-primary fa-solid fa-bars"></button>
-              <button id="btn-emotes" class="btn btn-lg btn-primary">
-                <img src="./img/misc/emotes_icon.svg"/>
-              </button>
-              <button id="btn-toggle-ping" class="btn btn-lg btn-primary fa-solid fa-tower-broadcast"></button>
-            </div>
+
+          <!-- Mobile options menu -->
+          <div id="mobile-options" style="display: none">
+            <button id="btn-game-menu" class="btn btn-lg btn-primary fa-solid fa-bars"></button>
+            <button id="btn-emotes" class="btn btn-lg btn-primary">
+              <img src="./img/misc/emotes_icon.svg"/>
+            </button>
+            <button id="btn-toggle-ping" class="btn btn-lg btn-primary fa-solid fa-tower-broadcast"></button>
+          </div>
+
+          <!-- Gas timer & coordinate display -->
           <div id="gas-and-debug">
             <div id="gas-timer">
               <img id="gas-timer-image" src="./img/misc/gas-waiting-icon.svg" />
@@ -427,6 +462,8 @@
               <div id="coordinates-hud">X: -- Y: -- Z: --</div>
             </div>
           </div>
+
+          <!-- Spectating controls -->
           <div id="spectating-container">
             <button id="btn-spectate-previous" class="btn btn-lg btn-primary">
               <i class="fa-solid fa-arrow-left"></i>
@@ -436,17 +473,18 @@
             <button id="btn-spectate-next" class="btn btn-lg btn-primary">
               <i class="fa-solid fa-arrow-right"></i>
             </button>
-            <button id="btn-spectate-kill-leader" class="btn btn-lg btn-secondary" translation="btn_spectate_kill_leader">
-            </button>
-            <button id="btn-spectate-replay" class="btn btn-lg btn-primary" translation="btn_play_again">
-            </button>
-            <button id="btn-spectate-menu" class="btn btn-lg btn-secondary" translation="btn_menu">
-            </button>
+            <button id="btn-spectate-kill-leader" class="btn btn-lg btn-secondary" translation="btn_spectate_kill_leader"></button>
+            <button id="btn-spectate-replay" class="btn btn-lg btn-primary" translation="btn_play_again"></button>
+            <button id="btn-spectate-menu" class="btn btn-lg btn-secondary" translation="btn_menu"></button>
           </div>
         </div>
-      </div>
+
+        <!-- Teammate indicators -->
         <div id="team-container"></div>
+
+        <!-- Alive & kill counters, kill leader & killfeed -->
         <div class="ui-leaderboard">
+          <!-- Kill leader -->
           <div id="ui-kill-leader">
             <div id="kill-leader-leader-container">
               <span id="kill-leader-leader" translation="msg_waiting_for_leader"></span>
@@ -457,6 +495,8 @@
               <span id="kill-leader-kills-counter">0</span>
             </div>
           </div>
+
+          <!-- Alive & kill counters -->
           <div id="counter-holder">
             <div class="counter" id="kill-counter">
               <img src="./img/misc/skull_icon.svg" />
@@ -467,8 +507,11 @@
               <div class="counter-text" id="ui-players-alive">1</div>
             </div>
           </div>
+
           <div id="kill-feed"></div>
         </div>
+
+        <!-- Action timer -->
         <div id="action-container" style="display: none">
           <div id="action-timer">
             <h2 id="action-time">0.0</h2>
@@ -491,12 +534,19 @@
           </div>
           <div id="action-name"></div>
         </div>
+
+        <!-- Interact message -->
         <div id="interact-message" style="display: none">
           <kbd id="interact-key"></kbd>
           <span id="interact-text"></span>
         </div>
+
+        <!-- Inventory messages, active weapon ammo counters, health & adrenaline bar, & killstreak display -->
         <div id="center-bottom-container">
+          <!-- Inventory messages -->
           <span id="inventory-message"></span>
+
+          <!-- Active weapon ammo counters -->
           <div id="weapon-ammo-container" style="display: none">
             <div id="weapon-clip-ammo">
               <span id="weapon-clip-ammo-count"></span>
@@ -504,6 +554,8 @@
             </div>
             <div id="weapon-inventory-ammo"></div>
           </div>
+
+          <!-- Adrenaline bar -->
           <div id="adrenaline-bar-container">
             <div id="adrenaline-bar"></div>
             <div id="adrenaline-bar-min-wrapper">
@@ -512,28 +564,40 @@
             <span id="adrenaline-bar-amount"></span>
             <span id="adrenaline-bar-min-max"></span>
           </div>
+
+          <!-- Health bar -->
           <div id="health-bar-container">
             <div id="health-bar-animation"></div>
             <div id="health-bar"></div>
             <span id="health-bar-amount"></span>
             <span id="health-bar-max"></span>
           </div>
+
+          <!-- Killstreak display -->
           <div id="killstreak-indicator-container" style="display: none">
             <span id="killstreak-indicator-counter">Streak: 0</span>
           </div>
         </div>
 
+        <!-- Scopes, name of spectating player, spectate controls toggle, gas messages, screen recording indicator -->
         <div id="center-top-container">
+          <!-- Scopes -->
           <div class="inventory-container" id="scopes-container"></div>
+
+          <!-- Name of player being spectated & spectate controls toggle -->
           <div id="spectating-msg">
-            <spec translation="msg_spectating"></spec> <span id="spectating-msg-player"></span>
+            <span translation="msg_spectating"></span> <span id="spectating-msg-player"></span>
             <button id="btn-spectate-options" class="btn btn-lg btn-primary">
               <i id="btn-spectate-options-icon" class="fa-solid fa-eye-slash"></i>
             </button>
           </div>
+
+          <!-- Gas messages -->
           <div id="gas-msg" style="display: none">
             <div id="gas-msg-info"></div>
           </div>
+
+          <!-- Screen recording indicator -->
           <div id="recording-pill" style="display: none">
             <i class="fa-solid fa-video" style="margin-top: -2px"></i>
             <span translation="recording"></span>
@@ -542,12 +606,16 @@
           </div>
         </div>
 
+        <!-- Kill modal -->
         <div id="kill-msg" style="display: none">
           <div id="kill-msg-kills"></div>
           <div id="kill-msg-cont"></div>
         </div>
 
+        <!-- Healing items -->
         <div class="inventory-container items-container" id="healing-items-container"></div>
+
+        <!-- Ammo -->
         <div id="ammos-container">
           <div class="inventory-container items-container" id="special-ammo-container"></div>
           <div class="inventory-container items-container" id="ammo-container"></div>
@@ -558,6 +626,7 @@
           <div id="detonate-key"></div>
         </div>
 
+        <!-- Equipment -->
         <div class="inventory-container" id="equipment-container">
           <div class="inventory-slot has-item" id="helmet-slot">
             <img class="item-image" draggable="false" />
@@ -575,6 +644,8 @@
             <div class="item-tooltip"></div>
           </div>
         </div>
+
+        <!-- Perks -->
         <div class="inventory-container" id="perk-container">
           <!-- Slot 0 is intentionally in center -->
           <div class="inventory-slot has-item" id="perk-slot-1">
@@ -590,8 +661,11 @@
             <div class="item-tooltip"></div>
           </div>
         </div>
-        <div class="inventory-container" id="weapons-container">
-        </div>
+
+        <!-- Weapons -->
+        <div class="inventory-container" id="weapons-container"></div>
+
+        <!-- Emote wheel -->
         <div id="emote-wheel" style="display: none">
           <div class="emote-top"></div>
           <div class="emote-right"></div>
@@ -599,9 +673,12 @@
           <div class="emote-left"></div>
           <div class="button-center"></div>
         </div>
+
+        <!-- Game over screen -->
         <div id="game-over-overlay" style="display: none">
+          <!-- Win/death message -->
           <div id="game-over-top-screen">
-            <img id="chicken-dinner" src="./img/game/shared/emotes/chicken_dinner.svg" />
+            <img id="chicken-dinner" src="./img/game/shared/emotes/chicken_dinner.svg">
             <h1 id="game-over-text" class="modal-item" translation="msg_you_died"></h1>
             <div id="game-over-rank-and-team-kills-holder">
               <div id="game-over-rank-container">
@@ -613,622 +690,645 @@
               </div>
             </div>
           </div>
-          <!-- PLAYER  GAME OVER CARDS -->
+
+          <!-- Stats -->
           <div id="player-game-over-cards"></div>
+
+          <!-- Buttons -->
           <div class="modal-item" id="game-over-buttons-holder">
-            <button
-              class="btn btn-lg btn-darken btn-primary"
-              id="btn-play-again"
-              translation="btn_play_again"
-            >
-            </button>
+            <button class="btn btn-lg btn-darken btn-primary" id="btn-play-again" translation="btn_play_again"></button>
             <div style="display: flex; gap: 8px">
-              <button
-                class="btn btn-lg btn-darken btn-primary"
-                id="btn-spectate"
-                translation="btn_spectate"
-              >
-              </button>
-              <button
-                class="btn btn-lg btn-darken btn-secondary"
-                id="btn-menu"
-                translation="btn_menu"
-              >
-              </button>
+              <button class="btn btn-lg btn-darken btn-primary" id="btn-spectate" translation="btn_spectate"></button>
+              <button class="btn btn-lg btn-darken btn-secondary" id="btn-menu" translation="btn_menu"></button>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Game canvas, where the rendering happens -->
       <canvas id="game-canvas"></canvas>
     </div>
 
-  <div class="modal" id="game-menu" style="display: none">
-    <div class="modal-item">
-      <button class="btn btn-lg btn-darken btn-secondary" id="btn-settings-game"><i class="fa-solid fa-gear"></i>
-        <span translation="settings"></span>
-      </button>
-    </div>
-    <div class="modal-item">
-      <button class="btn btn-lg btn-darken btn-secondary" id="btn-fullscreen"><i class="fa-solid fa-expand"></i>
-        <span translation="fullscreen"></span>
-      </button>
-    </div>
-    <div class="modal-item">
-      <button class="btn btn-lg btn-darken btn-primary" id="btn-resume-game"><i class="fa-solid fa-play"></i>
-        <span translation="resume"></span>
-      </button>
-    </div>
-    <div class="modal-item">
-      <button class="btn btn-lg btn-darken btn-danger" id="btn-quit-game"><i
-          class="fa-solid fa-arrow-right-from-bracket"></i>
-        <span translation="quit"></span>
-      </button>
-    </div>
-  </div>
-  <div class="modal dialog" id="report-modal" style="display: none">
-    <div class="dialog-header">
-      <h3><span style="font-weight: 600" translation="report_reporting"></span><span id="reporting-name"></span></h3>
-      <span class="dialog-close-btn fa-solid fa-xmark" id="close-report"></span>
-    </div>
-    <div id="report-modal-content">
-      <div id="report-id-container">
-        <span translation="report_id"></span>
-        <span id="report-id"></span>
-      </div>
-      <span translation="report_instructions" use-html></span>
-    </div>
-  </div>
-  <div class="modal dialog" id="warning-modal" style="display: none">
-    <div id="warning-modal-content">
-      <h1 id="warning-modal-title"></h1>
-      <p id="warning-modal-text"></p>
-      <div id="warning-modal-agree-options" style="display: none">
-        <br><br>
-        <input type="checkbox" class="regular-checkbox" id="warning-modal-agree-checkbox">
-        <label for="warning-modal-agree-checkbox" translation="msg_punishment_warn_agreement"></label>
-        <br><br>
-        <button class="btn btn-lg btn-darken btn-primary btn-disabled" id="warning-continue-btn" style="width: 100%"><strong>Continue</strong></button>
-      </div>
-    </div>
-  </div>
-  <div class="modal dialog" id="settings-menu" style="display: none">
-    <div class="dialog-header">
-      <h3 translation="settings"></h3>
-      <span class="dialog-close-btn fa-solid fa-xmark" id="close-settings"></span>
-    </div>
-    <div id="settings-tabs-container">
-      <div class="tab-bar" id="settings-tab-bar">
-        <button class="tab active" id="tab-volume"><i class="fa-solid fa-volume-high"></i><span translation="settings_volume"></span></button>
-        <button class="tab" id="tab-keybinds"><i class="fa-solid fa-keyboard"></i><span translation="settings_keybinds"></span></button>
-        <button class="tab" id="tab-graphics"><i class="fa-solid fa-display"></i><span translation="settings_graphics"></span></button>
-        <button class="tab" id="tab-interface"><i class="fa-solid fa-list"></i><span translation="settings_interface" use-html></span></button>
-        <button class="tab" id="tab-import-export"><i class="fa-solid fa-file-export"></i><span translation="settings_save_load"></span></button>
-        <button class="tab" id="tab-mobile" style="display: none"><i class="fa-solid fa-mobile"></i><span translation="settings_mobile"></span></button>
-      </div>
-      <div id="settings-tabs" class="persistent-scrollbar">
-        <div class="tab-content active" id="tab-volume-content">
-          <div class="modal-item">
-            <label>
-              <span class="setting-title" translation="settings_master_volume"></span>
-              <span class="range-input-value"></span>
-              <input type="range" max="1" min="0" id="slider-master-volume" step="0.1" value="1">
-            </label>
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title" translation="settings_sfx_volume"></span>
-              <span class="range-input-value"></span>
-              <input type="range" max="1" min="0" id="slider-sfx-volume" step="0.1" value="1">
-            </label>
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title" translation="settings_ambience_volume"></span>
-              <span class="range-input-value"></span>
-              <input type="range" max="1" min="0" id="slider-ambience-volume" step="0.1" value="1">
-            </label>
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title" translation="settings_music_volume"></span>
-              <span class="range-input-value"></span>
-              <input type="range" max="1" min="0" id="slider-music-volume" step="0.1" value="1">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title"><span translation="settings_old_menu_music"></span><i>*</i></span>
-              <input type="checkbox" id="toggle-old-music">
-            </label>
-          </div>
-          <p style="color: red"><i translation="settings_require_reload"></i></p>
-        </div>
-        <div class="tab-content" id="tab-keybinds-content" style="display: none">
-        </div>
-        <div class="tab-content" id="tab-graphics-content" style="display: none">
-          <div class="modal-item select-setting">
-            <label>
-              <span class="setting-title"><span translation="settings_render_mode"></span><i>*</i></span>
-              <select id="render-mode-select">
-                <option value="webgl1">WebGL 1</option>
-                <option value="webgl2">WebGL 2</option>
-                <option value="webgpu" id="webgpu-option">WebGPU</option>
-              </select>
-            </label>
-          </div>
-          <div class="modal-item select-setting">
-            <label>
-              <span class="setting-title"><span translation="settings_render_resolution"></span><i>*</i></span>
-              <select id="render-res-select">
-                <option value="auto" translation="settings_render_resolution_auto">auto</option>
-                <option value="0.5">0.5</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-              </select>
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title"><span translation="settings_hires_textures"></span><i>*</i></span>
-              <input type="checkbox" id="toggle-high-res">
-            </label>
-          </div>
-          <div id="alt-texture-loading-item" class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title"><span translation="settings_alt_texture_loading"></span><i>*</i></span>
-              <input type="checkbox" id="toggle-alt-texture-loading">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_cooler_graphics"></span>
-              <input type="checkbox" id="toggle-cooler-graphics">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_ambient_particles"></span>
-              <input type="checkbox" id="toggle-ambient-particles">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title"><span translation="settings_antialias"></span><i>*</i></span>
-              <input type="checkbox" id="toggle-antialias">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_movement_smoothing">Movement smoothing</span>
-              <input type="checkbox" id="toggle-movement-smoothing">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_responsive_rotation">Responsive rotation</span>
-              <input type="checkbox" id="toggle-responsive-rotation">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_camera_shake"></span>
-              <input type="checkbox" id="toggle-camera-shake">
-            </label>
-          </div>
-          <div class="modal-item select-setting">
-            <label>
-              <span class="setting-title" translation="settings_record_res"></span>
-              <select id="record-res-select">
-                <option value="480p">480p</option>
-                <option value="720p">720p</option>
-                <option value="1080p">1080p</option>
-                <option value="maximum">Maximum</option>
-              </select>
-            </label>
-          </div>
-          <p style="color: red"><i translation="settings_require_reload"></i></p>
-        </div>
-        <div class="tab-content" id="tab-interface-content" style="display: none">
-          <div class="modal-item" id="ui-scale-container">
-            <label>
-              <span class="setting-title" translation="settings_interface_scale">Interface scale</span>
-              <span class="range-input-value"></span>
-              <input type="range" max="2" min="0.1" id="slider-ui-scale" step="0.05">
-            </label>
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title" translation="settings_minimap_opacity">Minimap opacity</span>
-              <span class="range-input-value"></span>
-              <input type="range" max="1" min="0.1" id="slider-minimap-transparency" step="0.1">
-            </label>
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title" translation="settings_fs_map_opacity">Fullscreen map opacity</span>
-              <span class="range-input-value"></span>
-              <input type="range" max="1" min="0.1" id="slider-big-map-transparency" step="0.1">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_hide_minimap">Hide minimap</span>
-              <input type="checkbox" id="toggle-hide-minimap">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_blur_splash">Blur splash screen</span>
-              <input type="checkbox" id="toggle-blur-splash">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_hide_rules">Hide rules button</span>
-              <input type="checkbox" id="toggle-hide-rules">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_warn_before_leaving">Warn before leaving</span>
-              <input type="checkbox" id="toggle-leave-warning">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_show_fps">Show FPS</span>
-              <input type="checkbox" id="toggle-fps">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_show_ping">Show ping</span>
-              <input type="checkbox" id="toggle-ping">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_show_inout">Show network stats</span>
-              <input type="checkbox" id="toggle-inout">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_show_coordinates">Show coordinates</span>
-              <input type="checkbox" id="toggle-pos">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_anon_names">Anonymous player names</span>
-              <input type="checkbox" id="toggle-anonymous-player">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_hide_emotes">Hide emotes</span>
-              <input type="checkbox" id="toggle-hide-emote">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting" id="toggle-text-kill-feed-option">
-            <label>
-              <span class="setting-title" translation="settings_text_killfeed">Text-based killfeed</span>
-              <input type="checkbox" id="toggle-text-kill-feed">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_colored_weapon_slots">Colored weapon slots</span>
-              <input type="checkbox" id="toggle-colored-slots">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_scope_looping">Loop scope selection</span>
-              <input type="checkbox" id="toggle-scope-looping">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_draw_hud">Draw HUD</span>
-              <input type="checkbox" id="toggle-draw-hud">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_autopickup">Enable Autopickup</span>
-              <input type="checkbox" id="toggle-autopickup">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_autopickup_dual_guns">Autopickup Dual Guns</span>
-              <input type="checkbox" id="toggle-autopickup-dual-guns">
-            </label>
-          </div>
-        </div>
-        <div class="tab-content" id="tab-import-export-content" style="display: none">
-          <div class="modal-item">
-            <button class="btn btn-darken btn-lg btn-secondary" id="import-settings-btn">
-              <i class="fa-solid fa-file-import"></i>
-              <span translation="settings_load_settings"></span>
-            </button>
-          </div>
-          <div class="modal-item">
-            <button class="btn btn-darken btn-lg btn-secondary" id="export-settings-btn">
-              <i class="fa-solid fa-file-export"></i>
-              <span translation="settings_copy_settings"></span>
-            </button>
-          </div>
-          <div class="modal-item">
-            <button class="btn btn-darken btn-lg btn-danger" id="reset-settings-btn">
-              <i class="fa-solid fa-trash"></i>
-              <span translation="settings_reset_settings"></span>
-            </button>
-          </div>
-        </div>
-        <div class="tab-content" id="tab-mobile-content" style="display: none">
-          <i translation="settings_require_reload"></i>
-          <div class="modal-item">
-            <button style="margin-bottom: 10px;" class="btn btn-lg btn-darken btn-secondary"
-              onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i><span translation="settings_reload"></span></button>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_mobile_controls"></span>
-              <input type="checkbox" id="toggle-mobile-controls">
-            </label>
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title" translation="settings_joystick_size"></span>
-              <span class="range-input-value"></span>
-              <input type="range" max="400" min="25" id="slider-joystick-size" step="25">
-            </label>
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title" translation="settings_joystick_opacity"></span>
-              <span class="range-input-value"></span>
-              <input type="range" max="1" min="0.1" id="slider-joystick-transparency" step="0.1">
-            </label>
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title" translation="settings_left_joystick_color"></span>
-              <input type="color" style="margin-right: 135px" id="left-joystick-color-picker">
-            </label>
-          </div>
-          <div style="margin-top: 25px" class="modal-item">
-            <label>
-              <span class="setting-title" translation="settings_right_joystick_color"></span>
-              <input type="color" style="margin-right: 135px" id="right-joystick-color-picker">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting" style="margin-top: 25px">
-              <span class="setting-title" translation="settings_gyro_angle"></span>
-              <span class="range-input-value"></span>
-              <input type="range" max="45" min="0" id="slider-gyro-angle" step="1">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_switch_joysticks"></span>
-              <input type="checkbox" id="toggle-mobile-joysticks">
-            </label>
-          </div>
-          <p style="color: red; font-size: 15px"><i id="mb-joystick-info"></i></p>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_autopickup"></span>
-              <input type="checkbox" id="toggle-auto-pickup">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_lock_joysticks"></span>
-              <input type="checkbox" id="toggle-mobile-joystick-lock">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title" translation="settings_haptics"></span>
-              <input type="checkbox" id="toggle-haptics">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title"><span translation="settings_hires_textures"></span><i>*</i></span>
-              <input type="checkbox" id="toggle-high-res-mobile">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title"><span translation="settings_antialias"></span><i>*</i></span>
-              <input type="checkbox" id="toggle-antialias-mobile">
-            </label>
-          </div>
-          <p style="color: red"><i translation="settings_performance_warning"></i></p>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="modal dialog persistent-scrollbar" id="customize-menu" style="display: none">
-    <div class="dialog-header">
-      <h3 translation="loadout"></h3>
-      <span class="dialog-close-btn fa-solid fa-xmark" id="close-customize"></span>
-    </div>
-    <div id="customize-tabs-container">
-      <div class="tab-bar" id="customize-tab-bar">
-        <button class="tab active" id="tab-skins"><i class="fa-solid fa-shirt"></i><span translation="loadout_skins"></span></button>
-        <button class="tab" id="tab-emotes"><img src="./img/misc/emotes_icon.svg"><span translation="loadout_emotes"></span></button>
-        <button class="tab" id="tab-crosshairs"><img src="./img/misc/crosshair_icon.svg"><span translation="loadout_crosshairs"></span></button>
-        <button class="tab" id="tab-badges" style="display: none"><i class="fa-solid fa-certificate"></i><span translation="loadout_badges"></span></button>
-        <button class="tab" id="tab-special" style="display: none"><i class="fa-solid fa-code"></i><span translation="loadout_special"></span></button>
-      </div>
-      <div id="customize-tabs">
-        <div class="tab-content active" id="tab-skins-content">
-          <div id="skins-list"></div>
-        </div>
-        <div class="tab-content" id="tab-emotes-content" style="display: none">
-          <div id="emote-wheel-container">
-            <div id="emote-customize-wheel">
-              <div class="emote-top"></div>
-              <div class="emote-right"></div>
-              <div class="emote-bottom"></div>
-              <div class="emote-left"></div>
-            </div>
-            <div id="emote-wheel-bottom">
-              <div class="emote-win">
-                <i class="fa-solid fa-crown"></i>
-                <i class="remove-emote-btn fa-solid fa-trash" title="Remove emote"></i>
-              </div>
-              <div class="emote-death">
-                <img src="./img/misc/skull_icon.svg" />
-                <i class="remove-emote-btn fa-solid fa-trash" title="Remove emote"></i>
-              </div>
-            </div>
-          </div>
-          <div id="emotes-list"></div>
-        </div>
-        <div class="tab-content" id="tab-crosshairs-content" style="display: none;">
-          <div id="crosshair-customize">
-            <div id="crosshair-preview">
-              <div id="crosshair-image"></div>
-            </div>
-            <div id="crosshair-controls">
-              <span id="crosshair-controls-disabled" style="display: none" translation="loadout_crosshairs_default"></span>
-              <div class="modal-item">
-                <label>
-                  <span class="setting-title" translation="loadout_crosshairs_size"></span>
-                  <span class="range-input-value"></span>
-                  <input type="range" max="5" min="0.5" id="slider-crosshair-size" step="0.1">
-                </label>
-              </div>
-              <div class="modal-item">
-                <label>
-                  <span class="setting-title" translation="loadout_crosshairs_color"></span>
-                  <input type="color" id="crosshair-color-picker" value="#000000">
-                </label>
-              </div>
-              <div class="modal-item">
-                <label>
-                  <span class="setting-title" translation="loadout_crosshairs_stroke_size"></span>
-                  <span class="range-input-value"></span>
-                  <input type="range" max="0.2" min="0" id="slider-crosshair-stroke-size" step="0.005">
-                </label>
-              </div>
-              <div class="modal-item">
-                <label>
-                  <span class="setting-title" translation="loadout_crosshairs_stroke_color"></span>
-                  <input type="color" id="crosshair-stroke-picker" value="#000000">
-                </label>
-              </div>
-            </div>
-          </div>
-          <div id="crosshairs-list"></div>
-        </div>
-        <div class="tab-content" id="tab-badges-content" style="display: none">
-          <div id="badges-list"></div>
-        </div>
-        <div class="tab-content" id="tab-special-content" style="display: none;">
-          <div class="modal-item">
-            Note that the role you are inputting may not exist on the game server configuration.
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title">Role Name:</span>
-              <input type="text" class="text-field" id="role-name">
-            </label>
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title">Role Password:</span>
-              <input type="password" class="text-field" id="role-password">
-            </label>
-          </div>
-          <div class="modal-item">
-            <button class="btn btn-primary btn-lg" onclick="window.location.reload(false)">Login</button>
-          </div>
-          <div class="modal-item">
-            Note that some of these settings may not be avaliable depending on game server configuration.
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title">Name Color:</span>
-              <input type="color" id="namecolor-color-picker" value="#000000">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
-              <span class="setting-title">Developer Cheats</span>
-              <input type="checkbox" id="toggle-lobbyclearing">
-            </label>
-          </div>
-          <div class="modal-item">
-            <label>
-              <span class="setting-title">Weapon Preset:</span>
-              <input type="text" class="text-field" id="weapon-preset" placeholder="USAGE: Gun1 Gun2 Melee" title="NOTE: Please use valid weapon ids from Guns.ts">
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="modal dialog persistent-scrollbar" id="create-team-menu" style="display: none">
-    <div class="dialog-header">
-      <h3 translation="create_team"></h3>
-      <span class="dialog-close-btn fa-solid fa-xmark" id="close-create-team"></span>
-    </div>
-    <div id="create-team-container">
-      <div id="create-team-players"></div>
-      <div id="create-team-url">
-        <button class="btn btn-lg btn-danger btn-darken" id="btn-hide-team-url">
-          <i class="fa-solid fa-eye-slash"></i>
-        </button>
-        <input
-          type="text"
-          readonly
-          id="create-team-url-field"
-        />
-        <button class="btn btn-lg btn-darken btn-secondary" id="btn-copy-team-url">
-          <i class="fa-solid fa-clipboard"></i>
-          <span translation="copy"></span>
+    <!-- "Pause" menu -->
+    <div class="modal" id="game-menu" style="display: none">
+      <div class="modal-item">
+        <button class="btn btn-lg btn-darken btn-secondary" id="btn-settings-game"><i class="fa-solid fa-gear"></i>
+          <span translation="settings"></span>
         </button>
       </div>
-      <div id="create-team-options">
-        <div id="create-team-toggles">
-          <label>
-            <span class="setting-title" translation="create_team_autofill"></span>
-            <input type="checkbox" id="create-team-toggle-auto-fill">
-          </label>
-          <label>
-            <span class="setting-title" translation="create_team_lock"></span>
-            <input type="checkbox" id="create-team-toggle-lock">
-          </label>
-          <label>
-            <span class="setting-title" translation="create_team_force_start"></span>
-            <input type="checkbox" id="create-team-toggle-force-start">
-          </label>
-        </div>
-        <button class="btn btn-lg btn-darken btn-primary" id="btn-start-game">
-          <span translation="create_team_play"></span>
+      <div class="modal-item">
+        <button class="btn btn-lg btn-darken btn-secondary" id="btn-fullscreen"><i class="fa-solid fa-expand"></i>
+          <span translation="fullscreen"></span>
+        </button>
+      </div>
+      <div class="modal-item">
+        <button class="btn btn-lg btn-darken btn-primary" id="btn-resume-game"><i class="fa-solid fa-play"></i>
+          <span translation="resume"></span>
+        </button>
+      </div>
+      <div class="modal-item">
+        <button class="btn btn-lg btn-darken btn-danger" id="btn-quit-game"><i
+            class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span translation="quit"></span>
         </button>
       </div>
     </div>
-  </div>
-  <div class="modal dialog" id="select-language-menu" style="display: none">
-    <div class="dialog-header">
-      <h3 translation="languages"></h3>
-      <span class="dialog-close-btn fa-solid fa-xmark" id="close-select-language"></span>
-    </div>
-    <div id="select-language-container" class="persistent-scrollbar">
-      <fieldset>
-      </fieldset>
-    </div>
-  </div>
-  <script src="./src/index.ts" type="module"></script>
-</body>
 
+    <!-- Report modal -->
+    <div class="modal dialog" id="report-modal" style="display: none">
+      <div class="dialog-header">
+        <h3><span style="font-weight: 600" translation="report_reporting"></span><span id="reporting-name"></span></h3>
+        <span class="dialog-close-btn fa-solid fa-xmark" id="close-report"></span>
+      </div>
+      <div id="report-modal-content">
+        <div id="report-id-container">
+          <span translation="report_id"></span>
+          <span id="report-id"></span>
+        </div>
+        <span translation="report_instructions" use-html></span>
+      </div>
+    </div>
+
+    <!-- Game warn/ban message -->
+    <div class="modal dialog" id="warning-modal" style="display: none">
+      <div id="warning-modal-content">
+        <h1 id="warning-modal-title"></h1>
+        <p id="warning-modal-text"></p>
+        <div id="warning-modal-agree-options" style="display: none">
+          <br><br>
+          <input type="checkbox" class="regular-checkbox" id="warning-modal-agree-checkbox">
+          <label for="warning-modal-agree-checkbox" translation="msg_punishment_warn_agreement"></label>
+          <br><br>
+          <button class="btn btn-lg btn-darken btn-primary btn-disabled" id="warning-continue-btn" style="width: 100%"><strong>Continue</strong></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings menu -->
+    <div class="modal dialog" id="settings-menu" style="display: none">
+      <!-- Header -->
+      <div class="dialog-header">
+        <h3 translation="settings"></h3>
+        <span class="dialog-close-btn fa-solid fa-xmark" id="close-settings"></span>
+      </div>
+
+      <!-- Content -->
+      <div id="settings-tabs-container">
+        <!-- Tab buttons -->
+        <div class="tab-bar" id="settings-tab-bar">
+          <button class="tab active" id="tab-volume"><i class="fa-solid fa-volume-high"></i><span translation="settings_volume"></span></button>
+          <button class="tab" id="tab-keybinds"><i class="fa-solid fa-keyboard"></i><span translation="settings_keybinds"></span></button>
+          <button class="tab" id="tab-graphics"><i class="fa-solid fa-display"></i><span translation="settings_graphics"></span></button>
+          <button class="tab" id="tab-interface"><i class="fa-solid fa-list"></i><span translation="settings_interface" use-html></span></button>
+          <button class="tab" id="tab-import-export"><i class="fa-solid fa-file-export"></i><span translation="settings_save_load"></span></button>
+          <button class="tab" id="tab-mobile" style="display: none"><i class="fa-solid fa-mobile"></i><span translation="settings_mobile"></span></button>
+        </div>
+
+        <!-- Tabs -->
+        <div id="settings-tabs" class="persistent-scrollbar">
+          <!-- Volume tab -->
+          <div class="tab-content active" id="tab-volume-content">
+            <div class="modal-item">
+              <label>
+                <span class="setting-title" translation="settings_master_volume"></span>
+                <span class="range-input-value"></span>
+                <input type="range" max="1" min="0" id="slider-master-volume" step="0.1" value="1">
+              </label>
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title" translation="settings_sfx_volume"></span>
+                <span class="range-input-value"></span>
+                <input type="range" max="1" min="0" id="slider-sfx-volume" step="0.1" value="1">
+              </label>
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title" translation="settings_ambience_volume"></span>
+                <span class="range-input-value"></span>
+                <input type="range" max="1" min="0" id="slider-ambience-volume" step="0.1" value="1">
+              </label>
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title" translation="settings_music_volume"></span>
+                <span class="range-input-value"></span>
+                <input type="range" max="1" min="0" id="slider-music-volume" step="0.1" value="1">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title"><span translation="settings_old_menu_music"></span><i>*</i></span>
+                <input type="checkbox" id="toggle-old-music">
+              </label>
+            </div>
+            <p style="color: red"><i translation="settings_require_reload"></i></p>
+          </div>
+
+          <!-- Keybinds tab -->
+          <div class="tab-content" id="tab-keybinds-content" style="display: none"></div>
+
+          <!-- Graphics tab -->
+          <div class="tab-content" id="tab-graphics-content" style="display: none">
+            <div class="modal-item select-setting">
+              <label>
+                <span class="setting-title"><span translation="settings_render_mode"></span><i>*</i></span>
+                <select id="render-mode-select">
+                  <option value="webgl1">WebGL 1</option>
+                  <option value="webgl2">WebGL 2</option>
+                  <option value="webgpu" id="webgpu-option">WebGPU</option>
+                </select>
+              </label>
+            </div>
+            <div class="modal-item select-setting">
+              <label>
+                <span class="setting-title"><span translation="settings_render_resolution"></span><i>*</i></span>
+                <select id="render-res-select">
+                  <option value="auto" translation="settings_render_resolution_auto">auto</option>
+                  <option value="0.5">0.5</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </select>
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title"><span translation="settings_hires_textures"></span><i>*</i></span>
+                <input type="checkbox" id="toggle-high-res">
+              </label>
+            </div>
+            <div id="alt-texture-loading-item" class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title"><span translation="settings_alt_texture_loading"></span><i>*</i></span>
+                <input type="checkbox" id="toggle-alt-texture-loading">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_cooler_graphics"></span>
+                <input type="checkbox" id="toggle-cooler-graphics">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_ambient_particles"></span>
+                <input type="checkbox" id="toggle-ambient-particles">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title"><span translation="settings_antialias"></span><i>*</i></span>
+                <input type="checkbox" id="toggle-antialias">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_movement_smoothing">Movement smoothing</span>
+                <input type="checkbox" id="toggle-movement-smoothing">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_responsive_rotation">Responsive rotation</span>
+                <input type="checkbox" id="toggle-responsive-rotation">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_camera_shake"></span>
+                <input type="checkbox" id="toggle-camera-shake">
+              </label>
+            </div>
+            <div class="modal-item select-setting">
+              <label>
+                <span class="setting-title" translation="settings_record_res"></span>
+                <select id="record-res-select">
+                  <option value="480p">480p</option>
+                  <option value="720p">720p</option>
+                  <option value="1080p">1080p</option>
+                  <option value="maximum">Maximum</option>
+                </select>
+              </label>
+            </div>
+            <p style="color: red"><i translation="settings_require_reload"></i></p>
+          </div>
+
+          <!-- Interface tab -->
+          <div class="tab-content" id="tab-interface-content" style="display: none">
+            <div class="modal-item" id="ui-scale-container">
+              <label>
+                <span class="setting-title" translation="settings_interface_scale">Interface scale</span>
+                <span class="range-input-value"></span>
+                <input type="range" max="2" min="0.1" id="slider-ui-scale" step="0.05">
+              </label>
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title" translation="settings_minimap_opacity">Minimap opacity</span>
+                <span class="range-input-value"></span>
+                <input type="range" max="1" min="0.1" id="slider-minimap-transparency" step="0.1">
+              </label>
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title" translation="settings_fs_map_opacity">Fullscreen map opacity</span>
+                <span class="range-input-value"></span>
+                <input type="range" max="1" min="0.1" id="slider-big-map-transparency" step="0.1">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_hide_minimap">Hide minimap</span>
+                <input type="checkbox" id="toggle-hide-minimap">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_blur_splash">Blur splash screen</span>
+                <input type="checkbox" id="toggle-blur-splash">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_hide_rules">Hide rules button</span>
+                <input type="checkbox" id="toggle-hide-rules">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_warn_before_leaving">Warn before leaving</span>
+                <input type="checkbox" id="toggle-leave-warning">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_show_fps">Show FPS</span>
+                <input type="checkbox" id="toggle-fps">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_show_ping">Show ping</span>
+                <input type="checkbox" id="toggle-ping">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_show_inout">Show network stats</span>
+                <input type="checkbox" id="toggle-inout">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_show_coordinates">Show coordinates</span>
+                <input type="checkbox" id="toggle-pos">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_anon_names">Anonymous player names</span>
+                <input type="checkbox" id="toggle-anonymous-player">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_hide_emotes">Hide emotes</span>
+                <input type="checkbox" id="toggle-hide-emote">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting" id="toggle-text-kill-feed-option">
+              <label>
+                <span class="setting-title" translation="settings_text_killfeed">Text-based killfeed</span>
+                <input type="checkbox" id="toggle-text-kill-feed">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_colored_weapon_slots">Colored weapon slots</span>
+                <input type="checkbox" id="toggle-colored-slots">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_scope_looping">Loop scope selection</span>
+                <input type="checkbox" id="toggle-scope-looping">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_draw_hud">Draw HUD</span>
+                <input type="checkbox" id="toggle-draw-hud">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_autopickup">Enable Autopickup</span>
+                <input type="checkbox" id="toggle-autopickup">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_autopickup_dual_guns">Autopickup Dual Guns</span>
+                <input type="checkbox" id="toggle-autopickup-dual-guns">
+              </label>
+            </div>
+          </div>
+
+          <!-- Import/Export tab -->
+          <div class="tab-content" id="tab-import-export-content" style="display: none">
+            <div class="modal-item">
+              <button class="btn btn-darken btn-lg btn-secondary" id="import-settings-btn">
+                <i class="fa-solid fa-file-import"></i>
+                <span translation="settings_load_settings"></span>
+              </button>
+            </div>
+            <div class="modal-item">
+              <button class="btn btn-darken btn-lg btn-secondary" id="export-settings-btn">
+                <i class="fa-solid fa-file-export"></i>
+                <span translation="settings_copy_settings"></span>
+              </button>
+            </div>
+            <div class="modal-item">
+              <button class="btn btn-darken btn-lg btn-danger" id="reset-settings-btn">
+                <i class="fa-solid fa-trash"></i>
+                <span translation="settings_reset_settings"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Mobile tab -->
+          <div class="tab-content" id="tab-mobile-content" style="display: none">
+            <i translation="settings_require_reload"></i>
+            <div class="modal-item">
+              <button style="margin-bottom: 10px;" class="btn btn-lg btn-darken btn-secondary"
+                onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i><span translation="settings_reload"></span></button>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_mobile_controls"></span>
+                <input type="checkbox" id="toggle-mobile-controls">
+              </label>
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title" translation="settings_joystick_size"></span>
+                <span class="range-input-value"></span>
+                <input type="range" max="400" min="25" id="slider-joystick-size" step="25">
+              </label>
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title" translation="settings_joystick_opacity"></span>
+                <span class="range-input-value"></span>
+                <input type="range" max="1" min="0.1" id="slider-joystick-transparency" step="0.1">
+              </label>
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title" translation="settings_left_joystick_color"></span>
+                <input type="color" style="margin-right: 135px" id="left-joystick-color-picker">
+              </label>
+            </div>
+            <div style="margin-top: 25px" class="modal-item">
+              <label>
+                <span class="setting-title" translation="settings_right_joystick_color"></span>
+                <input type="color" style="margin-right: 135px" id="right-joystick-color-picker">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting" style="margin-top: 25px">
+                <span class="setting-title" translation="settings_gyro_angle"></span>
+                <span class="range-input-value"></span>
+                <input type="range" max="45" min="0" id="slider-gyro-angle" step="1">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_switch_joysticks"></span>
+                <input type="checkbox" id="toggle-mobile-joysticks">
+              </label>
+            </div>
+            <p style="color: red; font-size: 15px"><i id="mb-joystick-info"></i></p>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_autopickup"></span>
+                <input type="checkbox" id="toggle-auto-pickup">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_lock_joysticks"></span>
+                <input type="checkbox" id="toggle-mobile-joystick-lock">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title" translation="settings_haptics"></span>
+                <input type="checkbox" id="toggle-haptics">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title"><span translation="settings_hires_textures"></span><i>*</i></span>
+                <input type="checkbox" id="toggle-high-res-mobile">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title"><span translation="settings_antialias"></span><i>*</i></span>
+                <input type="checkbox" id="toggle-antialias-mobile">
+              </label>
+            </div>
+            <p style="color: red"><i translation="settings_performance_warning"></i></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loadout menu -->
+    <div class="modal dialog persistent-scrollbar" id="customize-menu" style="display: none">
+      <!-- Header -->
+      <div class="dialog-header">
+        <h3 translation="loadout"></h3>
+        <span class="dialog-close-btn fa-solid fa-xmark" id="close-customize"></span>
+      </div>
+
+      <!-- Content -->
+      <div id="customize-tabs-container">
+        <!-- Tab buttons -->
+        <div class="tab-bar" id="customize-tab-bar">
+          <button class="tab active" id="tab-skins"><i class="fa-solid fa-shirt"></i><span translation="loadout_skins"></span></button>
+          <button class="tab" id="tab-emotes"><img src="./img/misc/emotes_icon.svg"><span translation="loadout_emotes"></span></button>
+          <button class="tab" id="tab-crosshairs"><img src="./img/misc/crosshair_icon.svg"><span translation="loadout_crosshairs"></span></button>
+          <button class="tab" id="tab-badges" style="display: none"><i class="fa-solid fa-certificate"></i><span translation="loadout_badges"></span></button>
+          <button class="tab" id="tab-special" style="display: none"><i class="fa-solid fa-code"></i><span translation="loadout_special"></span></button>
+        </div>
+
+        <!-- Tabs -->
+        <div id="customize-tabs">
+          <!-- Skins tab -->
+          <div class="tab-content active" id="tab-skins-content">
+            <div id="skins-list"></div>
+          </div>
+
+          <!-- Emotes tab -->
+          <div class="tab-content" id="tab-emotes-content" style="display: none">
+            <div id="emote-wheel-container">
+              <div id="emote-customize-wheel">
+                <div class="emote-top"></div>
+                <div class="emote-right"></div>
+                <div class="emote-bottom"></div>
+                <div class="emote-left"></div>
+              </div>
+              <div id="emote-wheel-bottom">
+                <div class="emote-win">
+                  <i class="fa-solid fa-crown"></i>
+                  <i class="remove-emote-btn fa-solid fa-trash" title="Remove emote"></i>
+                </div>
+                <div class="emote-death">
+                  <img src="./img/misc/skull_icon.svg" />
+                  <i class="remove-emote-btn fa-solid fa-trash" title="Remove emote"></i>
+                </div>
+              </div>
+            </div>
+            <div id="emotes-list"></div>
+          </div>
+
+          <!-- Crosshairs tab -->
+          <div class="tab-content" id="tab-crosshairs-content" style="display: none;">
+            <div id="crosshair-customize">
+              <div id="crosshair-preview">
+                <div id="crosshair-image"></div>
+              </div>
+              <div id="crosshair-controls">
+                <span id="crosshair-controls-disabled" style="display: none" translation="loadout_crosshairs_default"></span>
+                <div class="modal-item">
+                  <label>
+                    <span class="setting-title" translation="loadout_crosshairs_size"></span>
+                    <span class="range-input-value"></span>
+                    <input type="range" max="5" min="0.5" id="slider-crosshair-size" step="0.1">
+                  </label>
+                </div>
+                <div class="modal-item">
+                  <label>
+                    <span class="setting-title" translation="loadout_crosshairs_color"></span>
+                    <input type="color" id="crosshair-color-picker" value="#000000">
+                  </label>
+                </div>
+                <div class="modal-item">
+                  <label>
+                    <span class="setting-title" translation="loadout_crosshairs_stroke_size"></span>
+                    <span class="range-input-value"></span>
+                    <input type="range" max="0.2" min="0" id="slider-crosshair-stroke-size" step="0.005">
+                  </label>
+                </div>
+                <div class="modal-item">
+                  <label>
+                    <span class="setting-title" translation="loadout_crosshairs_stroke_color"></span>
+                    <input type="color" id="crosshair-stroke-picker" value="#000000">
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div id="crosshairs-list"></div>
+          </div>
+
+          <!-- Badges tab -->
+          <div class="tab-content" id="tab-badges-content" style="display: none">
+            <div id="badges-list"></div>
+          </div>
+
+          <!-- Developer tab -->
+          <div class="tab-content" id="tab-special-content" style="display: none;">
+            <div class="modal-item">
+              Note that the role you are inputting may not exist on the game server configuration.
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title">Role Name:</span>
+                <input type="text" class="text-field" id="role-name">
+              </label>
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title">Role Password:</span>
+                <input type="password" class="text-field" id="role-password">
+              </label>
+            </div>
+            <div class="modal-item">
+              <button class="btn btn-primary btn-lg" onclick="window.location.reload(false)">Login</button>
+            </div>
+            <div class="modal-item">
+              Note that some of these settings may not be avaliable depending on game server configuration.
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title">Name Color:</span>
+                <input type="color" id="namecolor-color-picker" value="#000000">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title">Developer Cheats</span>
+                <input type="checkbox" id="toggle-lobbyclearing">
+              </label>
+            </div>
+            <div class="modal-item">
+              <label>
+                <span class="setting-title">Weapon Preset:</span>
+                <input type="text" class="text-field" id="weapon-preset" placeholder="USAGE: Gun1 Gun2 Melee" title="NOTE: Please use valid weapon ids from Guns.ts">
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team menu -->
+    <div class="modal dialog persistent-scrollbar" id="create-team-menu" style="display: none">
+      <div class="dialog-header">
+        <h3 translation="create_team"></h3>
+        <span class="dialog-close-btn fa-solid fa-xmark" id="close-create-team"></span>
+      </div>
+      <div id="create-team-container">
+        <div id="create-team-players"></div>
+        <div id="create-team-url">
+          <button class="btn btn-lg btn-danger btn-darken" id="btn-hide-team-url">
+            <i class="fa-solid fa-eye-slash"></i>
+          </button>
+          <input
+            type="text"
+            readonly
+            id="create-team-url-field"
+          />
+          <button class="btn btn-lg btn-darken btn-secondary" id="btn-copy-team-url">
+            <i class="fa-solid fa-clipboard"></i>
+            <span translation="copy"></span>
+          </button>
+        </div>
+        <div id="create-team-options">
+          <div id="create-team-toggles">
+            <label>
+              <span class="setting-title" translation="create_team_autofill"></span>
+              <input type="checkbox" id="create-team-toggle-auto-fill">
+            </label>
+            <label>
+              <span class="setting-title" translation="create_team_lock"></span>
+              <input type="checkbox" id="create-team-toggle-lock">
+            </label>
+            <label>
+              <span class="setting-title" translation="create_team_force_start"></span>
+              <input type="checkbox" id="create-team-toggle-force-start">
+            </label>
+          </div>
+          <button class="btn btn-lg btn-darken btn-primary" id="btn-start-game">
+            <span translation="create_team_play"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- JS -->
+    <script src="./src/index.ts" type="module"></script>
+  </body>
 </html>
