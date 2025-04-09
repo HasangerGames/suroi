@@ -39,11 +39,11 @@
   @include variables.drop-shadow;
 }
 
-#btn-play-duo span {
+#btn-play-duo .btn-icon + span {
   margin-left: 20px;
 }
 
-#btn-play-squad span {
+#btn-play-squad .btn-icon + span {
   margin-left: 27px;
 }
 
