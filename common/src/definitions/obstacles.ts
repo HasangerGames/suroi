@@ -679,7 +679,7 @@ const rshCase = (idString: string): RawObstacleDefinition => ({
     idString,
     name: "RSh-12 Case",
     material: "crate",
-    health: 80,
+    health: 150,
     hitbox: new GroupHitbox(
         RectangleHitbox.fromRect(8.5, 5.5),
         RectangleHitbox.fromRect(1.3, 6, Vec.create(-2.7, 0)),
@@ -1451,7 +1451,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         idString: "hq_desk_left",
         name: "Headquarters Desk",
         material: "wood",
-        health: 120,
+        health: 100,
         scale: {
             spawnMin: 1,
             spawnMax: 1,
@@ -1463,7 +1463,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         ),
         rotationMode: RotationMode.Limited,
         hasLoot: true,
-        lootTable: "small_drawer",
+        lootTable: "hq_desk",
         frames: {
             particle: "headquarters_desk_particle"
         }
@@ -1472,7 +1472,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         idString: "hq_desk_right",
         name: "Headquarters Desk",
         material: "wood",
-        health: 120,
+        health: 100,
         scale: {
             spawnMin: 1,
             spawnMax: 1,
@@ -1484,7 +1484,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         ),
         rotationMode: RotationMode.Limited,
         hasLoot: true,
-        lootTable: "small_drawer",
+        lootTable: "hq_desk",
         frames: {
             particle: "headquarters_desk_particle"
         }
@@ -2640,7 +2640,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         idString: "filing_cabinet",
         name: "Filing Cabinet",
         material: "iron",
-        health: 125,
+        health: 100,
         scale: {
             spawnMin: 1,
             spawnMax: 1,

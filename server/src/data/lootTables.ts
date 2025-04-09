@@ -200,6 +200,18 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { table: "healing_items", weight: 0.8 },
             { table: "guns", weight: 0.3 }
         ],
+        hq_desk: [
+            [
+                { table: "equipment", weight: 1 },
+                { table: "guns", weight: 0.65 },
+                { table: "scopes", weight: 0.3 }
+            ],
+            [
+                { table: "ammo", weight: 1 },
+                { table: "healing_items", weight: 0.8 },
+                { table: "guns", weight: 0.3 }
+            ]
+        ],
         filing_cabinet: [
             { table: "ammo", weight: 1 },
             { table: "equipment", weight: 0.85 },
