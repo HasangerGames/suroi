@@ -2268,7 +2268,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     source.swapWeaponRandomly(weaponUsed.weapon, true);
                 }
             }
-            
+
             source.updateAndApplyModifiers();
         }
 

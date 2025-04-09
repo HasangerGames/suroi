@@ -575,7 +575,7 @@ export const Game = new (class Game {
         const ui = UIManager.ui;
 
         return await new Promise(resolve => {
-            UIManager.fadeout();
+            UIManager.fadeOut();
 
             SoundManager.stopAll();
 
@@ -610,6 +610,7 @@ export const Game = new (class Game {
                 CameraManager.zoom = Scopes.definitions[0].zoomLevel;
                 updateDisconnectTime();
                 resetPlayButtons();
+
                 if (teamSocket) ui.createTeamMenu.fadeIn(250, resolve);
                 else resolve();
             });
