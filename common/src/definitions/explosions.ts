@@ -22,6 +22,7 @@ export interface ExplosionDefinition extends ObjectDefinition {
     readonly killfeedFrame?: string
 
     readonly decal?: ReferenceTo<DecalDefinition>
+    readonly decalFadeTime?: number
     readonly shrapnelCount: number
     readonly ballistics: Omit<BaseBulletDefinition, "goToMouse" | "lastShotFX">
 }
@@ -288,7 +289,8 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
             rangeVariance: 1
         },
         sound: "12g_frag_explosion",
-        decal: "explosion_decal"
+        decal: "explosion_decal",
+        decalFadeTime: 30000
     },
     {
         idString: "m590m_explosion",
@@ -319,7 +321,8 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
             rangeVariance: 1
         },
         sound: "12g_frag_explosion",
-        decal: "explosion_decal"
+        decal: "explosion_decal",
+        decalFadeTime: 30000
     },
     {
         idString: "firework_launcher_explosion",
@@ -420,7 +423,8 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
             }
         },
         sound: "seed_explode",
-        decal: "seed_explosion_decal"
+        decal: "seed_explosion_decal",
+        decalFadeTime: 30000
     },
     {
         idString: "coal_explosion",
@@ -543,7 +547,8 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
             rangeVariance: 1
         },
         sound: "frag_grenade",
-        decal: "frag_explosion_decal"
+        decal: "frag_explosion_decal",
+        decalFadeTime: 30000
     },
     {
         idString: "pumpkin_explosion",
