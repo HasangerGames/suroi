@@ -114,7 +114,7 @@ class MapManagerClass {
         this.pingsContainer.zIndex = 998;
         this.teammateIndicatorContainer.zIndex = 999;
 
-        this.indicator = new SuroiSprite("player_indicator")
+        this.indicator = new SuroiSprite()
             .setTint(TEAMMATE_COLORS[0])
             .setZIndex(1000);
 
