@@ -2183,7 +2183,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         const downedBy = this.downedBy?.player;
-        //downed by someone and got killed by gas
         if (
             source === DamageSources.Gas
             || source === DamageSources.Airdrop
@@ -2255,13 +2254,16 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     }
                 }
             }
-            if (this.game.mode.weaponSwap && !(weaponUsed instanceof Explosion)) {
-                source.swapWeaponRandomly(weaponUsed, true);
 
-            //swap gun if killed by explosive guns/breaking barrel with gun
-            } else if (weaponUsed instanceof Explosion) {
-                if (weaponUsed.weapon) source.swapWeaponRandomly(weaponUsed.weapon, true);
+            // Weapon swap
+            if (this.game.mode.weaponSwap) {
+                if (!(weaponUsed instanceof Explosion)) {
+                    source.swapWeaponRandomly(weaponUsed, true);
+                } else if (weaponUsed.weapon) {
+                    source.swapWeaponRandomly(weaponUsed.weapon, true);
+                }
             }
+            
             source.updateAndApplyModifiers();
         }
 
