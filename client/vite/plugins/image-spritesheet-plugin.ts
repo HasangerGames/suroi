@@ -172,7 +172,7 @@ async function buildSpritesheets(modeName: ModeName): Promise<void> {
             const sheets: string[] = [];
             for (const file of filesArray) {
                 sheets.push(readFileSync(path.join(cacheDir, modeName, `${file}.json`), "utf8"));
-                files.set(`atlases/${file}.png`, readFileSync(path.join(cacheDir, modeName, `${file}.png`)));
+                files.set(`img/atlases/${file}.png`, readFileSync(path.join(cacheDir, modeName, `${file}.png`)));
             }
             modules.set(`virtual:image-spritesheets-${res}-res-${modeName}`, `export const spritesheets=[${sheets.join()}]`);
         };
@@ -292,7 +292,7 @@ async function buildSpritesheets(modeName: ModeName): Promise<void> {
                 filesList: string[]
             ): Promise<void> => {
                 const cacheName = `${modeName}-${shortHash(image)}@${resolution}x`;
-                const filePath = json.meta.image = `atlases/${cacheName}.png`;
+                const filePath = json.meta.image = `img/atlases/${cacheName}.png`;
 
                 files.set(filePath, image);
 

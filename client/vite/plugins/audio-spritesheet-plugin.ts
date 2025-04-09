@@ -60,7 +60,7 @@ async function buildSpritesheet(modeName: ModeName): Promise<void> {
     }
 
     const audio = Buffer.concat(buffers);
-    const filename = `audio/${modeName}-${shortHash(audio)}.mp3`;
+    const filename = `audio/atlases/${modeName}-${shortHash(audio)}.mp3`;
     files.set(filename, audio);
     modules.set(`virtual:audio-spritesheet-${modeName}`, `export const filename="${filename}";export const spritesheet=${JSON.stringify(sheet)}`);
 
