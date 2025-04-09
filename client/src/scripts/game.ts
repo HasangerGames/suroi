@@ -5,7 +5,7 @@ import { ArmorType } from "@common/definitions/items/armors";
 import { type DualGunNarrowing } from "@common/definitions/items/guns";
 import { Scopes } from "@common/definitions/items/scopes";
 import { Skins } from "@common/definitions/items/skins";
-import type { ColorKeys, Mode, ModeDefinition } from "@common/definitions/modes";
+import type { ColorKeys, ModeName, ModeDefinition } from "@common/definitions/modes";
 import { Modes } from "@common/definitions/modes";
 import type { JoinedData } from "@common/packets/joinedPacket";
 import { JoinPacket } from "@common/packets/joinPacket";
@@ -118,13 +118,13 @@ export const Game = new (class Game {
 
     teamMode = false;
 
-    _modeName: Mode | undefined;
-    get modeName(): Mode {
+    _modeName: ModeName | undefined;
+    get modeName(): ModeName {
         if (this._modeName === undefined) throw new Error("modeName accessed before initialization");
         return this._modeName;
     }
 
-    set modeName(modeName: Mode) {
+    set modeName(modeName: ModeName) {
         this._modeName = modeName;
         this._mode = Modes[this.modeName];
 

@@ -9,7 +9,7 @@ import { Scopes } from "@common/definitions/items/scopes";
 import { Skins } from "@common/definitions/items/skins";
 import { Throwables } from "@common/definitions/items/throwables";
 import { LootDefForType, LootDefinition, Loots } from "@common/definitions/loots";
-import { Mode } from "@common/definitions/modes";
+import { ModeName } from "@common/definitions/modes";
 import { isArray } from "@common/utils/misc";
 import { ItemType, NullString, ObjectDefinitions, ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, weightedRandom } from "@common/utils/random";
@@ -48,8 +48,8 @@ export class LootItem {
     ) { }
 }
 
-export function getLootFromTable(mode: Mode, tableID: string): LootItem[] {
-    const lootTable = resolveTable(mode, tableID);
+export function getLootFromTable(modeName: ModeName, tableID: string): LootItem[] {
+    const lootTable = resolveTable(modeName, tableID);
     if (lootTable === undefined) {
         throw new ReferenceError(`Unknown loot table: ${tableID}`);
     }
@@ -68,27 +68,27 @@ export function getLootFromTable(mode: Mode, tableID: string): LootItem[] {
 
     return (
         isSimple && isArray(loot[0])
-            ? (loot as readonly WeightedItem[][]).map(innerTable => getLoot(mode, innerTable))
+            ? (loot as readonly WeightedItem[][]).map(innerTable => getLoot(modeName, innerTable))
             : min === 1 && max === 1
-                ? getLoot(mode, loot as WeightedItem[], noDuplicates)
+                ? getLoot(modeName, loot as WeightedItem[], noDuplicates)
                 : Array.from(
                     { length: random(min, max) },
-                    () => getLoot(mode, loot as WeightedItem[], noDuplicates)
+                    () => getLoot(modeName, loot as WeightedItem[], noDuplicates)
                 )
     ).flat();
 }
 
-export function resolveTable(mode: Mode, tableID: string): LootTable {
-    return LootTables[mode]?.[tableID] ?? LootTables.normal[tableID];
+export function resolveTable(modeName: ModeName, tableID: string): LootTable {
+    return LootTables[modeName]?.[tableID] ?? LootTables.normal[tableID];
 }
 
-function getLoot(mode: Mode, items: WeightedItem[], noDuplicates?: boolean): LootItem[] {
+function getLoot(modeName: ModeName, items: WeightedItem[], noDuplicates?: boolean): LootItem[] {
     const selection = items.length === 1
         ? items[0]
         : weightedRandom(items, items.map(({ weight }) => weight));
 
     if ("table" in selection) {
-        return getLootFromTable(mode, selection.table);
+        return getLootFromTable(modeName, selection.table);
     }
 
     const item = selection.item;
@@ -164,7 +164,7 @@ export type Cache = {
     [K in ItemType]?: Array<LootDefForType<K>> | undefined;
 };
 
-export function getSpawnableLoots(mode: Mode, mapDef: MapDefinition, cache: Cache): SpawnableItemRegistry {
+export function getSpawnableLoots(modeName: ModeName, mapDef: MapDefinition, cache: Cache): SpawnableItemRegistry {
     // /*
     //     we have a collection of loot tables, but not all of them are necessarily reachable
     //     for example, if loot table A belongs to obstacle A, but said obstacle is never spawned,

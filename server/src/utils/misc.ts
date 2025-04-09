@@ -1,5 +1,5 @@
 import { GameConstants } from "@common/constants";
-import { Mode, Modes } from "@common/definitions/modes";
+import { ModeName, Modes } from "@common/definitions/modes";
 import { halfπ, τ } from "@common/utils/math";
 import { ReferenceOrNull, ReferenceOrRandom, type ObjectDefinition } from "@common/utils/objectDefinitions";
 import { weightedRandom } from "@common/utils/random";
@@ -7,13 +7,13 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { Config, MapWithParams } from "../config";
 import { MapName, Maps } from "../data/maps";
 
-export function modeFromMap(map: MapWithParams): Mode {
+export function modeFromMap(map: MapWithParams): ModeName {
     const mapName = map.split(":")[0];
     const mapMode = Maps[mapName as MapName]?.mode;
     if (mapMode) {
         return mapMode;
     } else if (mapName in Modes) {
-        return mapName as Mode;
+        return mapName as ModeName;
     } else {
         return GameConstants.defaultMode;
     }

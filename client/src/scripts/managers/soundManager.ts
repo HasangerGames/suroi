@@ -5,7 +5,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { Game } from "../game";
 // add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
 import * as PixiSound from "@pixi/sound";
-import type { AudioSpritesheet, AudioSpritesheetManifest, AudioSpritesheetManifest } from "../../../vite/plugins/audio-spritesheet-plugin";
+import type { AudioSpritesheetImporter } from "../../../vite/plugins/audio-spritesheet-plugin";
 import { GameConsole } from "../console/gameConsole";
 
 export interface SoundOptions {
@@ -159,12 +159,11 @@ export const SoundManager = new (class SoundManager {
         this.sfxVolume = GameConsole.getBuiltInCVar("cv_sfx_volume");
         this.ambienceVolume = GameConsole.getBuiltInCVar("cv_ambience_volume");
 
-        const { importSpritesheet } = await import("virtual:audio-spritesheet-importer") as {
-            importSpritesheet: (name: string) => Promise<AudioSpritesheetManifest>
-        };
+        const { importSpritesheet } = await import("virtual:audio-spritesheet-importer") as AudioSpritesheetImporter;
         const { filename, spritesheet } = await importSpritesheet(Game.modeName);
         const audio = await (await fetch(filename)).arrayBuffer();
-        for (const [id, { start, end }] of Object.entries(spritesheet)) {
+        let offset = 0;
+        for (const [id, length] of Object.entries(spritesheet)) {
             /**
              * For some reason, PIXI will call the `loaded` callback twice
              * when an error occurs…
@@ -172,7 +171,7 @@ export const SoundManager = new (class SoundManager {
             let called = false;
 
             PixiSound.sound.add(id, {
-                source: audio.slice(start, end),
+                source: audio.slice(offset, offset + length),
                 loaded(error: Error | null) {
                     // despite what the pixi typings say, logging `error` shows that it can be null
                     if (error !== null && !called) {
@@ -182,6 +181,8 @@ export const SoundManager = new (class SoundManager {
                     }
                 }
             });
+
+            offset += length;
         }
     }
 

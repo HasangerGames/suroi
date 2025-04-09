@@ -20,7 +20,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { Bullets, type BulletDefinition } from "@common/definitions/bullets";
 import type { SingleGunNarrowing } from "@common/definitions/items/guns";
 import { PerkData, PerkIds, Perks } from "@common/definitions/items/perks";
-import { Mode, ModeDefinition, Modes } from "@common/definitions/modes";
+import { ModeName, ModeDefinition, Modes } from "@common/definitions/modes";
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import type { WebSocket } from "uWebSockets.js";
 import { Config, MapWithParams, SpawnMode } from "./config";
@@ -56,7 +56,7 @@ export class Game implements GameData {
     readonly grid: Grid;
     readonly pluginManager = new PluginManager(this);
 
-    readonly modeName: Mode;
+    readonly modeName: ModeName;
     readonly mode: ModeDefinition;
 
     readonly partialDirtyObjects = new Set<BaseGameObject>();

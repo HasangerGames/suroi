@@ -1,9 +1,9 @@
-import { Mode } from "@common/definitions/modes";
+import { ModeName } from "@common/definitions/modes";
 import { PerkIds } from "@common/definitions/items/perks";
 import { NullString } from "@common/utils/objectDefinitions";
 import { LootTable } from "../utils/lootHelpers";
 
-export const LootTables: Record<Mode, Record<string, LootTable>> = {
+export const LootTables: Record<ModeName, Record<string, LootTable>> = {
     normal: {
         ground_loot: [
             { table: "equipment", weight: 1 },

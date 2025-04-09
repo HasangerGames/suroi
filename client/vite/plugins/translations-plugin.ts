@@ -16,15 +16,14 @@ export const LANGUAGES_DIRECTORY = "src/translations/";
 
 const files = readdirSync(LANGUAGES_DIRECTORY).filter(file => file.endsWith(".hjson")).sort();
 
-const virtualModuleIds = ["virtual:translations-manifest", ...files.map(f => `virtual:translations-${f.slice(0, -".hjson".length)}`)];
+const virtualModuleIds = [
+    "virtual:translations-manifest",
+    ...files.map(f => `virtual:translations-${f.slice(0, -".hjson".length)}`)
+];
 
-const resolveId = (id: string): string | undefined => {
-    if (virtualModuleIds.includes(id)) return id;
-};
+const resolveId = (id: string): string | undefined => virtualModuleIds.includes(id) ? id : undefined;
 
-const load = (id: string): string | undefined => {
-    if (virtualModuleIds.includes(id)) return translationsCache.get(id);
-};
+const load = (id: string): string | undefined => translationsCache.get(id);
 
 const translationsCache = new Map<string, string>();
 
@@ -54,7 +53,6 @@ export interface TranslationManifest {
 export type TranslationsManifest = Record<string, TranslationManifest>;
 
 export async function buildTranslations(): Promise<void> {
-    console.log("Building translations...");
     const start = performance.now();
 
     const manifest: TranslationsManifest = {};

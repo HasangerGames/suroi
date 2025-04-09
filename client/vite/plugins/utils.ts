@@ -1,20 +1,22 @@
-import { readFileSync } from "node:fs";
-import { Mode, ModeDefinition, Modes } from "../../../common/src/definitions/modes";
-import { resolve } from "node:path";
+import { readDirectory } from "../../../common/src/utils/readDirectory";
+import { Modes, type ModeName } from "../../../common/src/definitions/modes";
+import path from "node:path";
+import { createHash } from "node:crypto";
 
-export function getModeDefs(): ReadonlyArray<readonly [Mode, ModeDefinition]> {
-    if (process.env.DEBUG_CLIENT !== "true") return Object.entries(Modes) as ReadonlyArray<readonly [Mode, ModeDefinition]>;
+export function getPaths(modeName: ModeName, folder: string, filterRegex: RegExp): MapIterator<string> {
+    const pathMap = new Map<string, string>();
+    const files = Modes[modeName].spriteSheets
+        .flatMap(sheet => readDirectory(`public/${folder}/game/${sheet}`, filterRegex));
 
-    // truly awful hack to get the mode name from the server
-    // because importing the server config directly causes vite to have a stroke
-    const serverConfig = readFileSync(resolve(__dirname, "../../../server/src/config.ts"), "utf8");
-    const mapName = serverConfig
-        .matchAll(/map: "(.*?)",/g)
-        .next()
-        .value?.[1]
-        .split(":")[0];
-
-    if (mapName in Modes) {
-        return [[mapName, Modes[mapName]]];
+    // Maps have unique keys.
+    // Since the filename is used as the key, and mode sprites are added to the map after the common sprites,
+    // this method allows mode sprites to override common sprites with the same filename.
+    for (const filePath of files) {
+        const filename = filePath.slice(filePath.lastIndexOf(path.sep));
+        pathMap.set(filename, path.relative(".", filePath));
     }
+
+    return pathMap.values();
 }
+
+export const shortHash = (buffer: Buffer): string => createHash("sha1").update(buffer).digest("hex").slice(0, 8);

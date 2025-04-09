@@ -1,5 +1,5 @@
 import type { WeaponTypes } from "./definitions/loots";
-import { type Mode } from "./definitions/modes";
+import { type ModeName } from "./definitions/modes";
 import { PlayerModifiers } from "./typings";
 import { ItemType } from "./utils/objectDefinitions";
 
@@ -12,7 +12,7 @@ export const GameConstants = {
     maxPosition: 1924,
     objectMinScale: 0.15,
     objectMaxScale: 3,
-    defaultMode: "normal" satisfies Mode as Mode,
+    defaultMode: "normal" satisfies ModeName as ModeName,
     player: {
         radius: 2.25,
         baseSpeed: 0.03,

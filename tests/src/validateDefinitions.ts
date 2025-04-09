@@ -1,5 +1,5 @@
 import { Perks } from "@common/definitions/items/perks";
-import { Modes, type Mode } from "@common/definitions/modes";
+import { Modes, type ModeName } from "@common/definitions/modes";
 import { HitboxType, RectangleHitbox } from "@common/utils/hitbox";
 import { Config as ClientConfig } from "../../client/src/scripts/config";
 import { FireMode, GameConstants, Layers, RotationMode } from "../../common/src/constants";
@@ -95,7 +95,7 @@ logger.indent("Validating loot tables", () => {
 
     logger.indent("Verifying table presence", () => {
         tester.runTestOnArray(
-            Object.keys(Modes) as readonly Mode[],
+            Object.keys(Modes) as readonly ModeName[],
             (mode, errorPath) => {
                 tester.assert(
                     mode in LootTables,

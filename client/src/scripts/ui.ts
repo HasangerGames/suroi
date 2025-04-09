@@ -7,7 +7,7 @@ import { HealType, HealingItems, type HealingItemDefinition } from "@common/defi
 import { PerkIds, Perks } from "@common/definitions/items/perks";
 import { Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
 import { Skins, type SkinDefinition } from "@common/definitions/items/skins";
-import { Modes, type Mode } from "@common/definitions/modes";
+import { Modes, type ModeName } from "@common/definitions/modes";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type PunishmentMessage } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
@@ -57,8 +57,8 @@ interface RegionInfo {
     readonly nextTeamSize?: TeamSize
     readonly teamSizeSwitchTime?: number
 
-    readonly mode?: Mode
-    readonly nextMode?: Mode
+    readonly mode?: ModeName
+    readonly nextMode?: ModeName
     readonly modeSwitchTime?: number
 
     readonly ping?: number
