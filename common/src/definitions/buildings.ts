@@ -4435,6 +4435,31 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(26.94, 10.06, Vec.create(63.37, -48.46)),
                     RectangleHitbox.fromRect(26.94, 10.06, Vec.create(63.44, 121.47))
                 )
+            },
+            // Ship Floor
+            {
+                type: FloorNames.Metal,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(103.06, 256.5, Vec.create(0, 0)),
+                    RectangleHitbox.fromRect(78.64, 35.52, Vec.create(-0.02, -138.36)),
+                    RectangleHitbox.fromRect(12.2, 11.8, Vec.create(-20.12, 184.79)),
+                    RectangleHitbox.fromRect(25.48, 63.96, Vec.create(-37.62, 158.65)),
+                    RectangleHitbox.fromRect(25.48, 63.96, Vec.create(37.84, 159.69)),
+                    RectangleHitbox.fromRect(25.48, 24.04, Vec.create(20.44, 178.83))
+                )
+            },
+            // Bathroom
+            {
+                type: FloorNames.Stone,
+                hitbox: RectangleHitbox.fromRect(20.19, 11.33, Vec.create(-3.55, 184.83))
+            },
+            // Control Room
+            {
+                type: FloorNames.Carpet,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(32.38, 13.54, Vec.create(-8.51, 171.31)),
+                    RectangleHitbox.fromRect(47.91, 36.11, Vec.create(0.54, 148.19))
+                )
             }
         ],
         obstacles: [
