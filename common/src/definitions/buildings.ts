@@ -4534,6 +4534,21 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // container distance Y = 28.55
             // ----------------------------------
 
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(-30.75, -140.5) },
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(30.75, -140.5) },
+            { idString: randomPortDamagedContainerReversed, position: Vec.create(16.3, -140.5) },
+
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(41.5, 97.75), orientation: 2 },
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(27.2, 97.75), orientation: 2 },
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(-41.5, -69.2) },
+            { idString: "container_20", position: Vec.create(27.2, 69.2), orientation: 2 },
+
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(-41.5, 97.75), orientation: 2 },
+            { idString: "container_20", position: Vec.create(27.2, -97.75) },
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(41.5, -69.2) },
+            { idString: randomPortDamagedContainerReversed, position: Vec.create(27.2, -69.2) },
+            { idString: randomPortDamagedContainerReversed, position: Vec.create(-12.9, 69.2), orientation: 2 },
+
             { idString: randomPortOpenContainerOneSide, position: Vec.create(-12.7, 1) },
             { idString: "container_20", position: Vec.create(-27, 1) },
             { idString: randomPortOpenContainerOneSide, position: Vec.create(12.7, 27.55), orientation: 2 },
@@ -4542,7 +4557,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             { idString: randomPortOpenContainerOneSide, position: Vec.create(-41.37, -1.5), orientation: 2 },
             { idString: randomPortOpenContainerOneSide, position: Vec.create(41.37, 30.05) },
-            { idString: randomPortOpenContainerOneSide, position: Vec.create(27.07, 30.05) }
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(27.07, 30.05) },
+
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(27.07, -42.5), orientation: 2 },
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(41.37, -42.5), orientation: 2 },
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(-41.37, 71.05) },
+            { idString: randomPortDamagedContainer, position: Vec.create(-27.07, 71.05) },
+
+            { idString: randomPortOpenContainerTwoSide, position: Vec.create(27.17, 71.8) },
+            { idString: "container_20", position: Vec.create(12.87, 71.8) },
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(-41.47, -71.8), orientation: 2 },
+            { idString: randomPortDamagedContainer, position: Vec.create(-27.17, -100.35), orientation: 2 },
+            { idString: randomPortOpenContainerOneSide, position: Vec.create(41.47, 100.35) }
         ]
     },
     {
