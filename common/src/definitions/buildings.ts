@@ -4277,6 +4277,24 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]
     },
     {
+        idString: "cargo_ship_top_floor_control_room_ceiling",
+        name: "Cargo Ship Control Room Ceiling",
+        spawnHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(50.25, 61, Vec.create(0, 0.45)),
+            RectangleHitbox.fromRect(100, 50, Vec.create(0, 6))
+        ),
+        ceilingHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(50.25, 61, Vec.create(0, 0.45)),
+            RectangleHitbox.fromRect(100, 50, Vec.create(0, 6))
+        ),
+        ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
+        ceilingImages: [{
+            key: "cargo_ship_control_room_ceiling",
+            position: Vec.create(0, 0),
+            scale: Vec.create(2, 2)
+        }]
+    },
+    {
         // implemented by pap with a lot of love >w<
         idString: "cargo_ship_top_floor",
         name: "Cargo Ship (Top Floor)",
@@ -4361,7 +4379,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             new CircleHitbox(2.35, Vec.create(26.69, -181.9)),
             new CircleHitbox(2.35, Vec.create(30.6, -178.6)),
             new CircleHitbox(2.35, Vec.create(40.64, -166.19)),
-            RectangleHitbox.fromRect(16.19, 2.02, Vec.create(44.52, 140.6)),
+            RectangleHitbox.fromRect(16.19, 2.02, Vec.create(44.5, 140.6)),
             RectangleHitbox.fromRect(3.55, 7.18, Vec.create(51.52, -127.73)),
             RectangleHitbox.fromRect(3.63, 7.18, Vec.create(-51.41, -127.7)),
             RectangleHitbox.fromRect(1.97, 26.52, Vec.create(24.88, 141.48)),
@@ -4554,6 +4572,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "kitchen_unit_3", position: Vec.create(45.91, 152.89), rotation: 3 }
         ],
         subBuildings: [
+            { idString: "cargo_ship_top_floor_control_room_ceiling", position: Vec.create(0, 159.5) },
+
             // ----------------------------------
             // container distance X = 14.3
             // container distance Y = 28.55
