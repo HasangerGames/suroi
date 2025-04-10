@@ -2926,7 +2926,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hideOnMap: true,
         hitbox: RectangleHitbox.fromRect(1.1, 15.1, Vec.create(-0.25, 0)),
         rotationMode: RotationMode.Limited,
-        zIndex: ZIndexes.ObstaclesLayer2
+        zIndex: ZIndexes.ObstaclesLayer4
     },
     {
         idString: "small_table",
