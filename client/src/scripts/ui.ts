@@ -810,76 +810,44 @@ export async function setUpUI(): Promise<void> {
 
     const youtubers = [
         {
+            name: "Sapphire",
+            link: "https://www.youtube.com/channel/UCvsD5KTuL6aXFmiPFHLNq0g"
+        },
+        {
+            name: "End",
+            link: "https://www.youtube.com/channel/UCUEZCfGgTurhTqerJjIaFTQ"
+        },
+        {
+            name: "TEAMFIGHTER 27",
+            link: "https://www.youtube.com/channel/UCJF75th14wo3O4YvH8GfFXw"
+        },
+        {
+            name: "Red King Gaming",
+            link: "https://www.youtube.com/channel/UCr7jJLYLU9mCBVfL5rmpvXg"
+        },
+        {
+            name: "Viiper",
+            link: "https://www.youtube.com/channel/UCey8-fJfkF7UFYdWBcegzWA"
+        },
+        {
             name: "123OP",
             link: "https://www.youtube.com/@123op."
         },
         {
-            name: "$parkySKULL",
-            link: "https://www.youtube.com/@Skullboi249"
-        },
-        {
-            name: "viper",
-            link: "https://www.youtube.com/channel/UCey8-fJfkF7UFYdWBcegzWA"
-        },
-        {
-            name: "IoSilverAway",
-            link: "https://www.youtube.com/@iosilveraway_19"
-        },
-        {
-            name: "Ukraines dude",
-            link: "https://www.youtube.com/@Ukrainesdude"
-        },
-        {
-            name: "Ash",
-            link: "https://www.youtube.com/@AshMyBoi"
-        },
-        {
-            name: "Tuncres",
-            link: "https://www.youtube.com/@Tuncres2022"
-        },
-        {
-            name: "Данзан animations",
-            link: "https://www.youtube.com/@danzananimYT/videos"
+            name: "PacifistX",
+            link: "https://www.youtube.com/@PacifstX"
         },
         {
             name: "Pablo_Fan_",
             link: "https://www.youtube.com/@Pablo_Fan_"
         },
         {
-            name: "g0dak",
-            link: "https://www.youtube.com/@g0dak"
-        },
-        {
-            name: "GAMERIO",
-            link: "https://www.youtube.com/@GAMERIO1"
-        },
-        {
-            name: "N00B.I0",
-            link: "https://www.youtube.com/@N00B.I0"
-        },
-        {
-            name: "Dablitter",
-            link: "https://www.youtube.com/@dablitter5719"
-        },
-        {
-            name: "DESTROYER [IHY]",
-            link: "https://www.youtube.com/@DESTROYERIHY"
-        },
-        {
-            name: "[ATMOS]Bl00D",
-            link: "https://www.youtube.com/@TheRealATMOS"
-        },
-        {
-            name: "Tuncres",
-            link: "https://www.youtube.com/@Tuncres2022"
-        },
-        {
             name: "this.is.gls_",
             link: "https://www.youtube.com/@this.is.gls_"
         },
         {
-            name: "LeeMinHaiz",
-            link: "https://www.youtube.com/@LeeMinHaiz"
+            name: "dReammakers.",
+            link: "https://www.youtube.com/channel/UCLid-yvmRUmpA5NBP34SOug"
         }
     ];
     const youtuber = pickRandomInArray(youtubers);
@@ -888,16 +856,28 @@ export async function setUpUI(): Promise<void> {
 
     const streamers = [
         {
-            name: "ikou",
-            link: "https://www.twitch.tv/ikou_yt"
+            name: "MikeMotions",
+            link: "https://www.twitch.tv/mikemotions"
         },
         {
-            name: "seth_mayo",
-            link: "https://www.twitch.tv/seth_mayo"
+            name: "conduketive",
+            link: "https://www.twitch.tv/conduketive"
         },
         {
-            name: "PatchesSC",
-            link: "https://www.twitch.tv/patchessc"
+            name: "youraopp",
+            link: "https://www.twitch.tv/youraopp"
+        },
+        {
+            name: "bcdf92",
+            link: "https://www.twitch.tv/bcdf92"
+        },
+        {
+            name: "cybytroll",
+            link: "https://www.twitch.tv/cybytroll"
+        },
+        {
+            name: "bedbests",
+            link: "https://www.twitch.tv/bedbests"
         }
     ];
     const streamer = pickRandomInArray(streamers);
