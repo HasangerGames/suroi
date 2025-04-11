@@ -3947,15 +3947,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         },
         obstacles: [
             {
-               idString: "generator",
-               position: Vec.create(-2.01, 34.23),
-               rotation: 0,
-               layer: 2,
-               puzzlePiece: true
+                idString: "generator",
+                position: Vec.create(-2.01, 34.23),
+                rotation: 0,
+                layer: 2,
+                puzzlePiece: true
             },
             {
                 idString: "vault_door_deactivated",
-                position: Vec.create(26.07, -62),
+                position: Vec.create(25.6, -61.25),
                 rotation: 0,
                 locked: true,
                 layer: 0
@@ -4200,7 +4200,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: [
-            { idString: "cargo_ship_bottom_stair", position: Vec.create(22, -40.18), rotation: 0, layer: 1 },
+            { idString: "cargo_ship_bottom_stair", position: Vec.create(23, -40.18), rotation: 0, layer: 1 },
             { idString: "cargo_ship_bottom_stair", position: Vec.create(-2.15, -162.5), rotation: 1, layer: 1 },
             { idString: "cargo_ship_bottom_stair", position: Vec.create(-30.31, 100.22), rotation: 0, layer: 1 },
 

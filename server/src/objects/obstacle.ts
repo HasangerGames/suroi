@@ -378,11 +378,10 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             // optional chaining not required but makes both eslint and tsc happy
             if (!(this.door?.isOpen && definition.openOnce)) {
                 if (this.definition.interactionDelay !== undefined) {
-                   this.game.addTimeout(() => {
-                    this.toggleDoor(player);
-                   }, this.definition.interactionDelay)
-                }
-                else this.toggleDoor(player);               
+                    this.game.addTimeout(() => {
+                        this.toggleDoor(player);
+                    }, this.definition.interactionDelay);
+                } else this.toggleDoor(player);
             }
 
             if (definition.isActivatable) {

@@ -428,12 +428,13 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         this.image.setVisible(!(this.dead && definition.noResidue));
 
         texture ??= !this.dead
-            ? (!this.door?.locked && this.door?.offset !== 0) && definition.frames?.opened ? definition.frames.opened
-            : !this.door?.locked && (definition.requiresPower && definition.frames?.powered)
-                ? definition.frames?.powered
-                : this.activated && definition.frames?.activated
-                    ? definition.frames?.activated
-                    : definition.frames?.base ?? definition.idString
+            ? (!this.door?.locked && this.door?.offset !== 0) && definition.frames?.opened
+                ? definition.frames.opened
+                : !this.door?.locked && (definition.requiresPower && definition.frames?.powered)
+                    ? definition.frames?.powered
+                    : this.activated && definition.frames?.activated
+                        ? definition.frames?.activated
+                        : definition.frames?.base ?? definition.idString
             : definition.frames?.residue ?? `${definition.idString}_residue`;
 
         if (this.variation !== undefined && !this.dead) {
