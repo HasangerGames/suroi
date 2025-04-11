@@ -43,7 +43,7 @@ function safeRound(value: number): number {
 /**
  * This class manages the game UI
  */
-export const UIManager = new (class UIManager {
+class UIManagerClass {
     private maxHealth = GameConstants.player.defaultHealth;
     private health = GameConstants.player.defaultHealth;
 
@@ -70,6 +70,8 @@ export const UIManager = new (class UIManager {
     teammates: PlayerData["teammates"] & object = [];
 
     public hasC4s = false;
+
+    blockEmoting = false;
 
     getRawPlayerNameNullish(id: number): string | undefined {
         const player = Game.playerNames.get(id) ?? this._teammateDataCache.get(id);
@@ -622,7 +624,8 @@ export const UIManager = new (class UIManager {
             lockedSlots,
             items,
             activeC4s,
-            perks
+            perks,
+            blockEmoting
         } = data;
 
         const sentTime = Game.seqsSent[pingSeq];
@@ -841,6 +844,11 @@ export const UIManager = new (class UIManager {
                 }
             }
         }
+
+        if (blockEmoting !== this.blockEmoting) {
+            this.blockEmoting = blockEmoting;
+            this.ui.emoteWheel.css("opacity", this.blockEmoting ? "0.5" : "");
+        }
     }
 
     reportedPlayerIDs = new Map<number, boolean>();
@@ -924,21 +932,26 @@ export const UIManager = new (class UIManager {
         );
     }
 
-    /*
-      TODO proper caching would require keeping a copy of the inventory currently being shown,
-           so that we can compare it to what it should now be showing (in other words, a kind
-           of "oldInventory—newInventory" thing).
-    */
+    private readonly _weaponCache: Array<{
+        hasItem?: boolean
+        isActive?: boolean
+        idString?: string
+        ammo?: number
+        hasAmmo?: boolean
+    }> = new Array<typeof this._weaponCache[number]>(GameConstants.player.maxWeapons);
+
+    clearWeaponCache(): void {
+        this._weaponCache.length = 0;
+    }
+
     updateWeaponSlots(): void {
         const inventory = this.inventory;
 
-        const enum ClassNames {
-            HasItem = "has-item",
-            IsActive = "active"
-        }
+        for (let i = 0, max = GameConstants.player.maxWeapons; i < max; i++) {
+            const weapon = inventory.weapons[i];
+            const isNew = this._weaponCache[i] === undefined;
+            const cache = this._weaponCache[i] ??= {};
 
-        const max = GameConstants.player.maxWeapons;
-        for (let i = 0; i < max; i++) {
             const {
                 container,
                 image: itemImage,
@@ -946,93 +959,93 @@ export const UIManager = new (class UIManager {
                 name: itemName
             } = this._getSlotUI(i + 1);
 
-            const weapon = inventory.weapons[i];
+            const hasItem = weapon !== undefined;
+            if (hasItem !== cache.hasItem || isNew) {
+                cache.hasItem = hasItem;
+                container.toggleClass("has-item", hasItem);
+            }
+
             const isActive = this.inventory.activeWeaponIndex === i;
+            if (isActive !== cache.isActive || isNew) {
+                cache.isActive = isActive;
+                container.toggleClass("active", isActive);
+            }
 
-            const ammoText = ammoCounter.text();
-            const ammoDirty = !ammoText.length
-                ? weapon?.count !== undefined
-                : +ammoText !== weapon?.count;
+            const definition = weapon?.definition;
+            const idString = definition?.idString;
+            if (idString !== cache.idString || isNew) {
+                cache.idString = idString;
 
-            const hadItem = container.hasClass(ClassNames.HasItem);
-            const activityChanged = container.hasClass(ClassNames.IsActive) !== isActive;
+                if (definition) {
+                    const isGun = definition.itemType === ItemType.Gun;
+                    const color = isGun
+                        ? Ammos.fromString(definition.ammoType).characteristicColor
+                        : { hue: 0, saturation: 0, lightness: 0 };
 
-            if (weapon) {
-                const definition = weapon.definition;
-                const isGun = definition.itemType === ItemType.Gun;
-                const color = isGun
-                    ? Ammos.fromString(definition.ammoType).characteristicColor
-                    : { hue: 0, saturation: 0, lightness: 0 };
+                    container.css(isGun && GameConsole.getBuiltInCVar("cv_weapon_slot_style") === "colored"
+                        ? {
+                            "outline-color": `hsl(${color.hue}, ${color.saturation}%, ${(color.lightness + 50) / 3}%)`,
+                            "background-color": `hsla(${color.hue}, ${color.saturation}%, ${color.lightness / 2}%, 50%)`,
+                            "color": `hsla(${color.hue}, ${color.saturation}%, 90%)`
+                        }
+                        : {
+                            "outline-color": "",
+                            "background-color": "",
+                            "color": ""
+                        });
 
-                if (!hadItem) container.addClass(ClassNames.HasItem);
-                if (activityChanged) container.toggleClass(ClassNames.IsActive, isActive);
+                    itemName.text(
+                        definition.itemType === ItemType.Gun && definition.isDual
+                            ? getTranslatedString(
+                                "dual_template",
+                                { gun: getTranslatedString(definition.singleVariant as TranslationKeys) }
+                            )
+                            : getTranslatedString(definition.idString as TranslationKeys)
+                    );
 
-                container.css(isGun && GameConsole.getBuiltInCVar("cv_weapon_slot_style") === "colored"
-                    ? {
-                        "outline-color": `hsl(${color.hue}, ${color.saturation}%, ${(color.lightness + 50) / 3}%)`,
-                        "background-color": `hsla(${color.hue}, ${color.saturation}%, ${color.lightness / 2}%, 50%)`,
-                        "color": `hsla(${color.hue}, ${color.saturation}%, 90%)`
+                    const isFists = definition.idString === "fists";
+
+                    let weaponImage: string;
+                    if (isFists) {
+                        if (this.skinID !== undefined && Skins.fromStringSafe(this.skinID)?.grassTint) { // ghillie suit
+                            weaponImage = `url("data:image/svg+xml,${encodeURIComponent(`<svg width="34" height="34" viewBox="0 0 8.996 8.996" xmlns="http://www.w3.org/2000/svg"><circle fill="${Game.colors.ghillie.toHex()}" stroke="${new Color(Game.colors.ghillie).multiply("#111").toHex()}" stroke-width="1.05833" cx="4.498" cy="4.498" r="3.969"/></svg>`)}")`;
+                        } else {
+                            weaponImage = `url(./img/game/shared/skins/${this.skinID ?? GameConsole.getBuiltInCVar("cv_loadout_skin")}_fist.svg)`;
+                        }
+                    } else {
+                        let frame = definition.idString;
+                        if (ClientPerkManager.hasItem(PerkIds.PlumpkinBomb) && definition.itemType === ItemType.Throwable && !definition.noSkin) {
+                            frame += "_halloween";
+                        }
+                        weaponImage = `url(./img/game/${definition.itemType === ItemType.Melee && definition.reskins?.includes(Game.modeName) ? Game.modeName : "shared"}/weapons/${frame}.svg)`;
                     }
-                    : {
-                        "outline-color": "",
-                        "background-color": "",
-                        "color": ""
-                    });
 
-                itemName.text(
-                    definition.itemType === ItemType.Gun && definition.isDual
-                        ? getTranslatedString(
-                            "dual_template",
-                            { gun: getTranslatedString(definition.singleVariant as TranslationKeys) }
-                        )
-                        : getTranslatedString(definition.idString as TranslationKeys)
-                );
-
-                const isFists = definition.idString === "fists";
-                const oldSrc = itemImage.attr("src");
-
-                let frame = definition.idString;
-                if (ClientPerkManager.hasItem(PerkIds.PlumpkinBomb) && definition.itemType === ItemType.Throwable && !definition.noSkin) {
-                    frame += "_halloween";
-                }
-
-                const location = definition.itemType === ItemType.Melee && definition.reskins?.includes(Game.modeName) ? Game.modeName : "shared";
-                const newSrc = `./img/game/${location}/weapons/${frame}.svg`;
-                if (oldSrc !== newSrc) {
                     this._playSlotAnimation(container);
-                    itemImage.attr("src", newSrc);
-                }
-
-                const backgroundImage
-                    = isFists
-                        ? this.skinID !== undefined && Skins.fromStringSafe(this.skinID)?.grassTint
-                            ? `url("data:image/svg+xml,${encodeURIComponent(`<svg width="34" height="34" viewBox="0 0 8.996 8.996" xmlns="http://www.w3.org/2000/svg"><circle fill="${Game.colors.ghillie.toHex()}" stroke="${new Color(Game.colors.ghillie).multiply("#111").toHex()}" stroke-width="1.05833" cx="4.498" cy="4.498" r="3.969"/></svg>`)}")`
-                            : `url(./img/game/shared/skins/${this.skinID ?? GameConsole.getBuiltInCVar("cv_loadout_skin")}_fist.svg)`
-                        : "none";
-
-                itemImage
-                    .css("background-image", backgroundImage)
-                    .toggleClass("is-fists", isFists)
-                    .show();
-
-                const count = weapon.count;
-                if (ammoDirty && count !== undefined) {
-                    ammoCounter
-                        .text(count)
-                        .css("color", count > 0 ? "unset" : "red");
-                }
-            } else {
-                container.removeClass(ClassNames.HasItem)
-                    .removeClass(ClassNames.IsActive)
-                    .css({
+                    itemImage
+                        .css("background-image", weaponImage)
+                        .toggleClass("is-fists", isFists)
+                        .show();
+                } else {
+                    container.css({
                         "outline-color": "",
                         "background-color": "",
                         "color": ""
                     });
+                    itemName.css("color", "").text("");
+                    itemImage.hide();
+                }
+            }
 
-                itemName.css("color", "").text("");
-                itemImage.removeAttr("src").hide();
-                ammoCounter.text("");
+            const ammo = weapon?.count;
+            if (ammo !== cache.ammo || isNew) {
+                cache.ammo = ammo;
+                ammoCounter.text(ammo ?? "");
+            }
+
+            const hasAmmo = ammo !== undefined && ammo > 0;
+            if (hasAmmo !== cache.hasAmmo || isNew) {
+                cache.hasAmmo = hasAmmo;
+                ammoCounter.css("color", hasAmmo ? "unset" : "red");
             }
         }
     }
@@ -1049,7 +1062,7 @@ export const UIManager = new (class UIManager {
 
         container.children(".item-tooltip").html("");
         container.children(".item-image").attr("src", "");
-        container.css("visibility", "hidden");
+        container.css("visibility", UI_DEBUG_MODE ? "" : "hidden");
         container.off("pointerdown");
     }
 
@@ -1098,7 +1111,7 @@ export const UIManager = new (class UIManager {
                 const backpack = Game.activePlayer.equipment.backpack;
                 itemSlot.toggleClass("full", count >= backpack.maxCapacity[item]);
             }
-            const isPresent = count > 0;
+            const isPresent = count > 0 || UI_DEBUG_MODE;
 
             itemSlot.toggleClass("has-item", isPresent);
 
@@ -1664,7 +1677,25 @@ export const UIManager = new (class UIManager {
         this.oldKillLeaderId = this.killLeaderCache?.id ?? id;
         this.killLeaderCache = data;
     }
-})();
+
+    reset(): void {
+        this.ui.teamContainer.html("");
+        this.ui.actionContainer.hide();
+        this.ui.gameOverOverlay.hide();
+        this.ui.canvas.removeClass("active");
+        this.ui.killLeaderLeader.text(getTranslatedString("msg_waiting_for_leader"));
+        this.ui.killLeaderCount.text("0");
+
+        this.clearTeammateCache();
+        this.clearWeaponCache();
+        this.reportedPlayerIDs.clear();
+        this.killLeaderCache = undefined;
+        this.oldKillLeaderId = undefined;
+        this.skinID = undefined;
+    }
+}
+
+export const UIManager = new UIManagerClass();
 
 class Wrapper<T> {
     private _dirty = true;

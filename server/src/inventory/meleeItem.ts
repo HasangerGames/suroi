@@ -42,27 +42,33 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
      * namely setTimeout
      */
     private _useItemNoDelayCheck(skipAttackCheck: boolean): void {
-        if (this.owner.game.pluginManager.emit("inv_item_use", this) !== undefined) {
+        const owner = this.owner;
+
+        const satisfiesPreflights = (): boolean => owner.activeItem === this
+            && (owner.attacking || skipAttackCheck)
+            && !owner.dead
+            && !owner.downed
+            && !owner.disconnected;
+
+        if (
+            !satisfiesPreflights()
+            || this.owner.game.pluginManager.emit("inv_item_use", this) !== undefined
+        ) {
             return;
         }
+        clearTimeout(this._autoUseTimeoutID);
 
-        const owner = this.owner;
         const definition = this.definition;
 
-        this._lastUse = owner.game.now;
+        this.lastUse = owner.game.now;
         owner.animation = AnimationType.Melee;
         owner.setPartialDirty();
 
         owner.action?.cancel();
 
+        const hitDelay = definition.hitDelay ?? 50;
         this.owner.game.addTimeout((): void => {
-            if (
-                this.owner.activeItem === this
-                && (owner.attacking || skipAttackCheck)
-                && !owner.dead
-                && !owner.downed
-                && !owner.disconnected
-            ) {
+            if (satisfiesPreflights()) {
                 const position = Vec.add(
                     owner.position,
                     Vec.scale(Vec.rotate(definition.offset, owner.rotation), owner.sizeMod)
@@ -102,6 +108,7 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
 
                     multiplier *= this.owner.mapPerkOrDefault(PerkIds.Berserker, ({ damageMod }) => damageMod, 1);
                     multiplier *= this.owner.mapPerkOrDefault(PerkIds.Lycanthropy, ({ damageMod }) => damageMod, 1);
+                    multiplier *= this.owner.mapPerkOrDefault(PerkIds.Infected, ({ damageMod }) => damageMod, 1);
 
                     if (closestObject.isObstacle) {
                         multiplier *= definition.piercingMultiplier !== undefined && closestObject.definition.impenetrable
@@ -131,14 +138,16 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
                 if (definition.fireMode === FireMode.Auto || owner.isMobile) {
                     clearTimeout(this._autoUseTimeoutID);
                     this._autoUseTimeoutID = setTimeout(
-                        this._useItemNoDelayCheck.bind(this, false),
-                        damagedObjects.length && definition.attackCooldown
-                            ? definition.attackCooldown
-                            : definition.cooldown
+                        () => this._useItemNoDelayCheck(false),
+                        (
+                            damagedObjects.length && definition.attackCooldown
+                                ? definition.attackCooldown
+                                : definition.cooldown
+                        ) - hitDelay
                     );
                 }
             }
-        }, 50 + (definition.hitDelay ?? 0));
+        }, hitDelay);
     }
 
     stopUse(): void {
@@ -159,7 +168,7 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
     override useItem(): void {
         super._bufferAttack(
             this.definition.cooldown,
-            this._useItemNoDelayCheck.bind(this, true)
+            () => this._useItemNoDelayCheck(true)
         );
     }
 }

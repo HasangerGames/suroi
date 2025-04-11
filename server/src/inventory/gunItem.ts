@@ -123,11 +123,11 @@ export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
 
         const { moveSpread, shotSpread, fsaReset } = definition;
 
-        let spread = owner.game.now - this._lastUse >= (fsaReset ?? Infinity)
+        let spread = owner.game.now - this.lastUse >= (fsaReset ?? Infinity)
             ? 0
             : Angle.degreesToRadians((owner.isMoving ? moveSpread : shotSpread) / 2);
 
-        this._lastUse = owner.game.now;
+        this.lastUse = owner.game.now;
         const jitter = definition.jitterRadius ?? 0;
         // when are we gonna have a perk that takes this mechanic and chucks it in the fucking trash where it belongs
 
@@ -135,14 +135,17 @@ export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
             ? (this._altFire ? -1 : 1) * definition.leftRightOffset
             : (definition.bulletOffset ?? 0);
 
-        const startPosition = Vec.rotate(Vec.create(0, offset), owner.rotation);
-
         const ownerPos = owner.position;
+        const startPosition = offset !== 0
+            ? Vec.add(ownerPos, Vec.rotate(Vec.create(0, offset), owner.rotation))
+            : ownerPos;
+
         let position = Vec.add(
             ownerPos,
             Vec.scale(Vec.rotate(Vec.create(definition.length, offset), owner.rotation), owner.sizeMod)
         );
 
+        let distToPos = Geometry.distanceSquared(startPosition, position);
         for (const object of owner.game.grid.intersectsHitbox(RectangleHitbox.fromLine(startPosition, position))) {
             if (
                 object.dead
@@ -153,11 +156,12 @@ export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
                 || (object.isObstacle && object.definition.isStair)
             ) continue;
 
-            const intersection = object.hitbox.intersectsLine(ownerPos, position);
+            const intersection = object.hitbox.intersectsLine(startPosition, position);
             if (intersection === null) continue;
 
-            if (Geometry.distanceSquared(ownerPos, position) > Geometry.distanceSquared(ownerPos, intersection.point)) {
+            if (distToPos > Geometry.distanceSquared(startPosition, intersection.point)) {
                 position = Vec.sub(intersection.point, Vec.rotate(Vec.create(0.2 + jitter, 0), owner.rotation));
+                distToPos = Geometry.distanceSquared(startPosition, position);
             }
         }
 
@@ -242,6 +246,11 @@ export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
                             break;
                         }
                     }
+                    break;
+                }
+                case PerkIds.Infected: {
+                    modifiers.damage *= perk.damageMod;
+                    modifyForDamageMod(perk.damageMod);
                     break;
                 }
             }
@@ -407,7 +416,7 @@ export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
             || (!owner.inventory.items.hasItem(definition.ammoType) && !this.owner.hasPerk(PerkIds.InfiniteAmmo))
             || owner.action !== undefined
             || owner.activeItem !== this
-            || (!skipFireDelayCheck && owner.game.now - this._lastUse < definition.fireDelay)
+            || (!skipFireDelayCheck && owner.game.now - this.lastUse < definition.fireDelay)
             || owner.downed
         ) return;
 

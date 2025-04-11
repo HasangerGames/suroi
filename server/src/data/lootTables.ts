@@ -1,9 +1,9 @@
-import { Mode } from "@common/definitions/modes";
+import { ModeName } from "@common/definitions/modes";
 import { PerkIds } from "@common/definitions/items/perks";
 import { NullString } from "@common/utils/objectDefinitions";
 import { LootTable } from "../utils/lootHelpers";
 
-export const LootTables: Record<Mode, Record<string, LootTable>> = {
+export const LootTables: Record<ModeName, Record<string, LootTable>> = {
     normal: {
         ground_loot: [
             { table: "equipment", weight: 1 },
@@ -199,6 +199,18 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { table: "ammo", weight: 1 },
             { table: "healing_items", weight: 0.8 },
             { table: "guns", weight: 0.3 }
+        ],
+        hq_desk: [
+            [
+                { table: "equipment", weight: 1 },
+                { table: "guns", weight: 0.65 },
+                { table: "scopes", weight: 0.3 }
+            ],
+            [
+                { table: "ammo", weight: 1 },
+                { table: "healing_items", weight: 0.8 },
+                { table: "guns", weight: 0.3 }
+            ]
         ],
         filing_cabinet: [
             { table: "ammo", weight: 1 },
@@ -1577,6 +1589,27 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { item: "baseball_bat", weight: 2 },
             { item: "gas_can", weight: 0 } // somewhat hack in order to make the gas can obtainable through mini plumpkins
         ]
+    },
+    infection: {
+        airdrop_guns: [
+            { item: "vaccinator", weight: 2 },
+            { item: "mg36", weight: 1 },
+            { item: "sr25", weight: 1 },
+            { item: "vss", weight: 1 },
+            { item: "vector", weight: 1 },
+            { item: "vepr12", weight: 1 },
+            { item: "deagle", weight: 1 },
+            { item: "mcx_spear", weight: 0.95 },
+            { item: "mosin_nagant", weight: 0.95 },
+            { item: "tango_51", weight: 0.9 },
+            { item: "stoner_63", weight: 0.9 },
+            { item: "model_89", weight: 0.6 },
+            { item: "vks", weight: 0.6 },
+            { item: "radio", weight: 0.1 }
+        ],
+        aegis_golden_case: [{ item: "vaccinator", weight: 1 }],
+        rsh_case_single: [{ item: "seedshot", weight: 1 }],
+        rsh_case_dual: [{ item: "seedshot", weight: 1 }]
     },
     birthday: {}
 };

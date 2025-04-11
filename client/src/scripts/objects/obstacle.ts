@@ -337,11 +337,11 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         }
 
         // Change the texture of the obstacle and play a sound when it's destroyed
-        if (!this.dead && data.dead) {
-            this.dead = true;
+        if (this.dead !== data.dead) {
+            this.dead = data.dead;
 
             if (this.mountSprite !== undefined) {
-                this.mountSprite.setVisible(false);
+                this.mountSprite.setVisible(!this.dead);
             }
 
             if (this.waterOverlaySprite !== undefined) {

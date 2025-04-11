@@ -1,5 +1,5 @@
 import { Perks } from "@common/definitions/items/perks";
-import { Modes, type Mode } from "@common/definitions/modes";
+import { Modes, type ModeName } from "@common/definitions/modes";
 import { HitboxType, RectangleHitbox } from "@common/utils/hitbox";
 import { Config as ClientConfig } from "../../client/src/scripts/config";
 import { FireMode, GameConstants, Layers, RotationMode } from "../../common/src/constants";
@@ -95,7 +95,7 @@ logger.indent("Validating loot tables", () => {
 
     logger.indent("Verifying table presence", () => {
         tester.runTestOnArray(
-            Object.keys(Modes) as readonly Mode[],
+            Object.keys(Modes) as readonly ModeName[],
             (mode, errorPath) => {
                 tester.assert(
                     mode in LootTables,
@@ -1782,17 +1782,6 @@ logger.indent("Validating decals", () => {
 
 logger.indent("Validating emotes", () => {
     tester.assertNoDuplicateIDStrings(Emotes.definitions, "Emotes", "emotes");
-
-    for (const emote of Emotes) {
-        const errorPath = tester.createPath("emotes", `emote '${emote.idString}'`);
-
-        tester.assertNoPointlessValue({
-            obj: emote,
-            field: "scale",
-            defaultValue: 1,
-            baseErrorPath: errorPath
-        });
-    }
 });
 
 logger.indent("Validating explosions", () => {
@@ -2727,13 +2716,6 @@ logger.indent("Validating modes", () => {
                 tester.assertNoPointlessValue({
                     obj: mode,
                     field: "specialLogo",
-                    defaultValue: false,
-                    baseErrorPath: errorPath
-                });
-
-                tester.assertNoPointlessValue({
-                    obj: mode,
-                    field: "specialPlayButtons",
                     defaultValue: false,
                     baseErrorPath: errorPath
                 });

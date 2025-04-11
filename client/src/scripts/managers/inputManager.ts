@@ -181,7 +181,7 @@ class InputMapper {
     }
 }
 
-export const InputManager = new (class InputManager {
+class InputManagerClass {
     readonly binds = new InputMapper();
 
     readonly isMobile!: boolean;
@@ -391,7 +391,7 @@ export const InputManager = new (class InputManager {
 
             if (this.emoteWheelActive) {
                 const mousePosition = Vec.create(e.clientX, e.clientY);
-                if (Geometry.distanceSquared(this.emoteWheelPosition, mousePosition) > 500 && Game.activePlayer && !Game.activePlayer.blockEmoting) {
+                if (Geometry.distanceSquared(this.emoteWheelPosition, mousePosition) > 500 && !UIManager.blockEmoting) {
                     const angle = Angle.betweenPoints(this.emoteWheelPosition, mousePosition);
                     let slotName: string | undefined;
                     if (SECOND_EMOTE_ANGLE <= angle && angle <= FOURTH_EMOTE_ANGLE) {
@@ -924,7 +924,9 @@ export const InputManager = new (class InputManager {
 
         return name === undefined ? name : `./img/misc/${name}_icon.svg`;
     }
-})();
+}
+
+export const InputManager = new InputManagerClass();
 
 export type CompiledAction = (() => boolean) & { readonly original: string };
 export type CompiledTuple = readonly [CompiledAction, CompiledAction];

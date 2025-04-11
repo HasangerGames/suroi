@@ -3,16 +3,15 @@ import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { Emotes } from "@common/definitions/emotes";
 import { ArmorType } from "@common/definitions/items/armors";
 import { type DualGunNarrowing } from "@common/definitions/items/guns";
-import { Scopes } from "@common/definitions/items/scopes";
 import { Skins } from "@common/definitions/items/skins";
-import type { ColorKeys, Mode, ModeDefinition } from "@common/definitions/modes";
+import type { ColorKeys, ModeDefinition, ModeName } from "@common/definitions/modes";
 import { Modes } from "@common/definitions/modes";
 import type { JoinedData } from "@common/packets/joinedPacket";
 import { JoinPacket } from "@common/packets/joinPacket";
 import { PacketType, type DataSplit, type PacketDataIn, type PacketDataOut } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { type UpdateDataOut } from "@common/packets/updatePacket";
-import { CircleHitbox, HitboxType } from "@common/utils/hitbox";
+import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, equalLayer } from "@common/utils/layer";
 import { EaseFunctions, Geometry, Numeric } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
@@ -26,6 +25,9 @@ import FontFaceObserver from "fontfaceobserver";
 import $ from "jquery";
 import { Application, Color, Container } from "pixi.js";
 import "pixi.js/prepare";
+import { setUpCommands } from "./console/commands";
+import { GameConsole } from "./console/gameConsole";
+import { defaultClientCVars } from "./console/variables";
 import { CameraManager } from "./managers/cameraManager";
 import { GasManager, GasRender } from "./managers/gasManager";
 import { InputManager } from "./managers/inputManager";
@@ -48,8 +50,6 @@ import { Player } from "./objects/player";
 import { Projectile } from "./objects/projectile";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { autoPickup, fetchServerData, finalizeUI, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, updateDisconnectTime } from "./ui";
-import { setUpCommands } from "./console/commands";
-import { GameConsole } from "./console/gameConsole";
 import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { DebugRenderer } from "./utils/debugRenderer";
 import { setUpNetGraph } from "./utils/graph/netGraph";
@@ -57,7 +57,6 @@ import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { getTranslatedString, initTranslation } from "./utils/translations/translations";
 import { type TranslationKeys } from "./utils/translations/typings";
 import { Tween, type TweenOptions } from "./utils/tween";
-import { defaultClientCVars } from "./console/variables";
 
 /* eslint-disable @stylistic/indent */
 
@@ -73,9 +72,7 @@ type ObjectClassMapping = {
     readonly [ObjectCategory.SyncedParticle]: typeof SyncedParticle
 };
 
-const ObjectClassMapping: ObjectClassMapping = Object.freeze<{
-    readonly [K in ObjectCategory]: new (id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
-}>({
+const ObjectClassMapping: ObjectClassMapping = Object.freeze({
     [ObjectCategory.Player]: Player,
     [ObjectCategory.Obstacle]: Obstacle,
     [ObjectCategory.DeathMarker]: DeathMarker,
@@ -85,6 +82,8 @@ const ObjectClassMapping: ObjectClassMapping = Object.freeze<{
     [ObjectCategory.Parachute]: Parachute,
     [ObjectCategory.Projectile]: Projectile,
     [ObjectCategory.SyncedParticle]: SyncedParticle
+} satisfies {
+    readonly [K in ObjectCategory]: new (id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
 });
 
 type ObjectMapping = {
@@ -118,13 +117,13 @@ export const Game = new (class Game {
 
     teamMode = false;
 
-    _modeName: Mode | undefined;
-    get modeName(): Mode {
+    _modeName: ModeName | undefined;
+    get modeName(): ModeName {
         if (this._modeName === undefined) throw new Error("modeName accessed before initialization");
         return this._modeName;
     }
 
-    set modeName(modeName: Mode) {
+    set modeName(modeName: ModeName) {
         this._modeName = modeName;
         this._mode = Modes[this.modeName];
 
@@ -203,7 +202,6 @@ export const Game = new (class Game {
         await setUpUI();
         await fetchServerData();
         this.gasRender = new GasRender(PIXI_SCALE);
-        SoundManager.init();
         MapManager.init();
         CameraManager.init();
         GasManager.init();
@@ -301,7 +299,7 @@ export const Game = new (class Game {
 
         void Promise.all([
             initPixi(),
-            SoundManager.loadSounds(),
+            SoundManager.init(),
             finalizeUI()
         ]).then(() => {
             unlockPlayButtons();
@@ -516,7 +514,7 @@ export const Game = new (class Game {
                             soundID = "backpack_pickup";
                             break;
                         case ItemType.Throwable:
-                            soundID = "throwable_pickup";
+                            soundID = "throwable_switch";
                             break;
                         case ItemType.Perk:
                             soundID = "pickup";
@@ -573,9 +571,9 @@ export const Game = new (class Game {
     }
 
     async endGame(): Promise<void> {
-        const ui = UIManager.ui;
-
         return await new Promise(resolve => {
+            const ui = UIManager.ui;
+
             ui.gameMenu.fadeOut(250);
             ui.splashOptions.addClass("loading");
             ui.loaderText.text("");
@@ -583,45 +581,29 @@ export const Game = new (class Game {
             SoundManager.stopAll();
 
             ui.splashUi.fadeIn(400, () => {
-                this.pixi.stop();
-                ScreenRecordManager.endRecording();
-                void this.music?.play();
-                ui.teamContainer.html("");
-                ui.actionContainer.hide();
-                ui.gameOverOverlay.hide();
-                ui.canvas.removeClass("active");
-                ui.killLeaderLeader.text(getTranslatedString("msg_waiting_for_leader"));
-                ui.killLeaderCount.text("0");
-
                 this.gameStarted = false;
                 this._socket?.close();
+                this.pixi.stop();
+                void this.music?.play();
 
-                // reset stuff
                 for (const object of this.objects) object.destroy();
                 for (const plane of this.planes) plane.destroy();
                 this.objects.clear();
                 this.bullets.clear();
                 this.planes.clear();
-                CameraManager.container.removeChildren();
-                ParticleManager.clear();
-                UIManager.clearTeammateCache();
-                UIManager.reportedPlayerIDs.clear();
-                UIManager.killLeaderCache = undefined;
-                UIManager.oldKillLeaderId = undefined;
-
-                MapManager.safeZone.clear();
-                MapManager.pingGraphics.clear();
-                MapManager.pings.clear();
-                MapManager.pingsContainer.removeChildren();
-                MapManager.teammateIndicators.clear();
-                MapManager.teammateIndicatorContainer.removeChildren();
-
                 this.playerNames.clear();
                 this._timeouts.clear();
 
-                CameraManager.zoom = Scopes.definitions[0].zoomLevel;
+                CameraManager.reset();
+                GasManager.reset();
+                MapManager.reset();
+                ParticleManager.reset();
+                ScreenRecordManager.reset();
+                UIManager.reset();
+
                 updateDisconnectTime();
                 resetPlayButtons();
+
                 if (teamSocket) ui.createTeamMenu.fadeIn(250, resolve);
                 else resolve();
             });
@@ -967,7 +949,10 @@ export const Game = new (class Game {
         let detonateBindIcon: JQuery<HTMLImageElement> | undefined;
 
         return () => {
-            if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
+            if (!this.gameStarted || (this.gameOver && !this.spectating)) {
+                SoundManager.update();
+                return;
+            }
             InputManager.update();
             SoundManager.update();
             ScreenRecordManager?.update();
@@ -977,7 +962,6 @@ export const Game = new (class Game {
 
             const isAction = UIManager.action.active;
             const showCancel = isAction && !UIManager.action.fake;
-            let canInteract = true;
 
             if (isAction) {
                 UIManager.updateAction();
@@ -1019,6 +1003,8 @@ export const Game = new (class Game {
                     }
                 } else if (isBuilding) {
                     object.toggleCeiling();
+
+                // metal detectors
                 } else if (isObstacle && object.definition.detector && object.notOnCoolDown) {
                     for (const player of this.objects.getCategory(ObjectCategory.Player)) {
                         if (
@@ -1036,69 +1022,70 @@ export const Game = new (class Game {
                         object.notOnCoolDown = false;
                         setTimeout(() => object.notOnCoolDown = true, 1000);
                     }
+
+                // bush particles
                 } else if (isObstacle && object.definition.material === "bush" && object.definition.noCollisions) {
-                    const bushDetectionHitbox = object.hitbox.type === HitboxType.Circle ? new CircleHitbox(object.hitbox.radius / 6, object.position) : object.hitbox;
                     for (const player of this.objects.getCategory(ObjectCategory.Player)) {
+                        const inBush = equalLayer(object.layer, player.layer) && object.hitbox.isPointInside(player.position);
+
                         if (
-                            (player.bushID === undefined && (!bushDetectionHitbox.collidesWith(player.hitbox)
-                                || !equalLayer(object.layer, player.layer)))
+                            (player.bushID === undefined && !inBush) // not in this bush
+                            || (player.bushID !== undefined && player.bushID !== object.id) // in a different bush
                             || player.dead
-                            || (player.bushID !== undefined && object.id !== player.bushID)
                         ) continue;
 
-                        const colliding = bushDetectionHitbox.collidesWith(player.hitbox) && equalLayer(object.layer, player.layer);
+                        if (object.dead) {
+                            player.bushID = undefined;
+                            continue;
+                        }
 
-                        const handleBushParticles = (): void => {
-                            let particle = object.definition.frames?.particle ?? `${object.definition.idString}_particle`;
+                        let bushSound: string | undefined;
+                        if (player.bushID === undefined) {
+                            // bush
+                            player.bushID = object.id;
+                            bushSound = "bush_rustle_1";
+                        } else if (!inBush) {
+                            // in this case we exit bushh lol
+                            player.bushID = undefined;
+                            bushSound = "bush_rustle_2";
+                        }
+                        if (!bushSound) continue;
 
-                            if (object.definition.particleVariations) particle += `_${random(1, object.definition.particleVariations)}`;
+                        let particle = object.definition.frames?.particle ?? `${object.definition.idString}_particle`;
+                        if (object.definition.particleVariations) {
+                            particle += `_${random(1, object.definition.particleVariations)}`;
+                        }
 
-                            ParticleManager.spawnParticles(2, () => ({
-                                frames: particle,
-                                position: object.hitbox.randomPoint(),
-                                zIndex: Numeric.max((object.definition.zIndex ?? ZIndexes.Players) + 1, 4),
-                                lifetime: 500,
-                                scale: {
-                                   start: randomFloat(0.85, 0.95),
-                                   end: 0,
-                                   ease: EaseFunctions.quarticIn
-                                },
-                                alpha: {
-                                    start: 1,
-                                    end: 0,
-                                    ease: EaseFunctions.sexticIn
-                                },
-                                rotation: { start: randomRotation(), end: randomRotation() },
-                                speed: Vec.fromPolar(randomRotation(), randomFloat(6, 9))
-                            }));
-                        };
+                        ParticleManager.spawnParticles(2, () => ({
+                            frames: particle,
+                            position: object.hitbox.randomPoint(),
+                            zIndex: Numeric.max((object.definition.zIndex ?? ZIndexes.Players) + 1, 4),
+                            lifetime: 500,
+                            scale: {
+                                start: randomFloat(0.85, 0.95),
+                                end: 0,
+                                ease: EaseFunctions.quarticIn
+                            },
+                            alpha: {
+                                start: 1,
+                                end: 0,
+                                ease: EaseFunctions.sexticIn
+                            },
+                            rotation: { start: randomRotation(), end: randomRotation() },
+                            speed: Vec.fromPolar(randomRotation(), randomFloat(6, 9))
+                        }));
 
-                        if (!object.dead) {
-                            if (player.bushID === undefined) {
-                                // bush
-                                player.bushID = object.id;
-                                handleBushParticles();
-                                object.playSound("bush_rustle_1", {
-                                    falloff: 0.25,
-                                    maxRange: 200
-                                });
-                            } else if (!colliding) {
-                                // in this case we exit bushh lol
-                                player.bushID = undefined;
-                                handleBushParticles();
-                                object.playSound("bush_rustle_2", {
-                                    falloff: 0.25,
-                                    maxRange: 200
-                                });
-                            }
-                        } else if (player.bushID !== undefined) player.bushID = undefined;
+                        object.playSound(bushSound, {
+                            falloff: 0.25,
+                            maxRange: 200
+                        });
                     }
                 }
             }
 
             const object = interactable.object ?? uninteractable.object;
             const offset = object?.isObstacle ? object.door?.offset : undefined;
-            canInteract = interactable.object !== undefined;
+            const canInteract = interactable.object !== undefined;
 
             const bind: string | undefined = InputManager.binds.getInputsBoundToAction(object === undefined ? "cancel_action" : "interact")[0];
 

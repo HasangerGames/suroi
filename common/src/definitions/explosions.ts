@@ -22,6 +22,7 @@ export interface ExplosionDefinition extends ObjectDefinition {
     readonly killfeedFrame?: string
 
     readonly decal?: ReferenceTo<DecalDefinition>
+    readonly decalFadeTime?: number
     readonly shrapnelCount: number
     readonly ballistics: Omit<BaseBulletDefinition, "goToMouse" | "lastShotFX">
 }
@@ -317,7 +318,8 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
             rangeVariance: 1
         },
         sound: "12g_frag_explosion",
-        decal: "explosion_decal"
+        decal: "explosion_decal",
+        decalFadeTime: 30000
     },
     {
         idString: "m590m_explosion",
@@ -348,7 +350,8 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
             rangeVariance: 1
         },
         sound: "12g_frag_explosion",
-        decal: "explosion_decal"
+        decal: "explosion_decal",
+        decalFadeTime: 30000
     },
     {
         idString: "firework_launcher_explosion",
@@ -416,6 +419,41 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         },
         sound: "firework_rocket_explode",
         decal: "explosion_decal"
+    },
+    {
+        idString: "seed_explosion",
+        name: "Seedshot",
+        killfeedFrame: "seedshot",
+        damage: 10,
+        obstacleMultiplier: 3,
+        radius: {
+            min: 8,
+            max: 16
+        },
+        cameraShake: {
+            duration: 160,
+            intensity: 5
+        },
+        animation: {
+            duration: 1500,
+            tint: 0xe3a860,
+            scale: 0.8
+        },
+        shrapnelCount: 10,
+        ballistics: {
+            shrapnel: true,
+            damage: 1,
+            obstacleMultiplier: 3,
+            speed: 0.04,
+            range: 8,
+            rangeVariance: 1,
+            tracer: {
+                color: 0xe3a860
+            }
+        },
+        sound: "seed_explode",
+        decal: "seed_explosion_decal",
+        decalFadeTime: 30000
     },
     {
         idString: "coal_explosion",
@@ -538,7 +576,8 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
             rangeVariance: 1
         },
         sound: "frag_grenade",
-        decal: "frag_explosion_decal"
+        decal: "frag_explosion_decal",
+        decalFadeTime: 30000
     },
     {
         idString: "pumpkin_explosion",

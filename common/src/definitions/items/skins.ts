@@ -77,7 +77,8 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         ["Bee",             0x4a4a4a],
         ["Armadillo",       0xa68c5e],
         ["Printer",         0xffffff],
-        ["Distant Shores",  0x7eca83]
+        ["Distant Shores",  0x7eca83],
+        ["Celestial",       0xd2e3fb]
     ] satisfies ReadonlyArray<readonly [string, number]>).map(([name, tint]) => skin(name, tint)),
     ...([
         ["Lemon",                 0xebe092],

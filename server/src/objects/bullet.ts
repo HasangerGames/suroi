@@ -109,25 +109,17 @@ export class Bullet extends BaseBullet {
             }
 
             const { point, normal } = collision.intersection;
+            const reflected = (
+                collision.reflected
+                && this.reflectionCount < 3
+                && !definition.noReflect
+                && (definition.onHitExplosion === undefined || !definition.explodeOnImpact)
+            );
 
-            if (collision.dealDamage) {
-                records.push({
-                    object,
-                    damage: damageMod * definition.damage * (isObstacle ? (this.modifiers?.dtc ?? 1) * definition.obstacleMultiplier : 1),
-                    weapon: this.sourceGun,
-                    source: this.shooter,
-                    position: point
-                });
-            }
-
-            this.collidedIDs.add(object.id);
-            this.position = point;
-
-            if (isObstacle && object.definition.noCollisions) continue;
-
-            if (collision.reflected && this.reflectionCount < 3) {
+            let rotation: number | undefined;
+            if (reflected || definition.onHitExplosion || definition.onHitProjectile) {
                 /*
-                    no matter what, nudge the bullet
+                    nudge the bullet
 
                     if the bullet reflects, we do this to ensure that it doesn't re-collide
                     with the same obstacle instantly
@@ -135,13 +127,40 @@ export class Bullet extends BaseBullet {
                     if it doesn't, then we do this to avoid having the obstacle eat the
                     explosion, thereby shielding others from its effects
                 */
-                const rotation = 2 * Math.atan2(normal.y, normal.x) - this.rotation;
-                this.position = Vec.add(this.position, Vec.create(Math.sin(rotation), -Math.cos(rotation)));
+                rotation = 2 * Math.atan2(normal.y, normal.x) - this.rotation;
+                this.position = Vec.add(point, Vec.create(Math.sin(rotation), -Math.cos(rotation)));
+            } else {
+                // atan2 is expensive so we avoid the above calculation if possible
+                this.position = point;
+            }
 
-                if (definition.onHitExplosion === undefined || !definition.explodeOnImpact) {
-                    this.reflect(rotation);
-                    this.reflected = true;
-                }
+            if (collision.dealDamage) {
+                const damageAmount = (
+                    definition.teammateHeal
+                    && this.game.teamMode
+                    && this.shooter.isPlayer
+                    && object.isPlayer
+                    && object.teamID === this.shooter.teamID
+                    && object.id !== this.shooter.id
+                )
+                    ? -definition.teammateHeal
+                    : definition.damage;
+                records.push({
+                    object,
+                    damage: damageMod * damageAmount * (isObstacle ? (this.modifiers?.dtc ?? 1) * definition.obstacleMultiplier : 1),
+                    weapon: this.sourceGun,
+                    source: this.shooter,
+                    position: this.position
+                });
+            }
+
+            this.collidedIDs.add(object.id);
+
+            if (isObstacle && object.definition.noCollisions) continue;
+
+            if (reflected) {
+                this.reflect(rotation ?? 0);
+                this.reflected = true;
             }
 
             this.dead = true;

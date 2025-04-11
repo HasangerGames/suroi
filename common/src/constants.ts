@@ -1,18 +1,18 @@
 import type { WeaponTypes } from "./definitions/loots";
-import { type Mode } from "./definitions/modes";
+import { type ModeName } from "./definitions/modes";
 import { PlayerModifiers } from "./typings";
 import { ItemType } from "./utils/objectDefinitions";
 
 const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType.Melee, ItemType.Throwable] as const);
 export const GameConstants = {
-    // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
+    // !!!!! NOTE: Increase this every time a byte stream change is made between latest release and master
     // or a new item is added to a definition list
-    protocolVersion: 52,
+    protocolVersion: 54,
     gridSize: 32,
     maxPosition: 1924,
     objectMinScale: 0.15,
     objectMaxScale: 3,
-    defaultMode: "normal" satisfies Mode as Mode,
+    defaultMode: "normal" satisfies ModeName as ModeName,
     player: {
         radius: 2.25,
         baseSpeed: 0.03,

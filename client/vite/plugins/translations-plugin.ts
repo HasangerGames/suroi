@@ -16,15 +16,14 @@ export const LANGUAGES_DIRECTORY = "src/translations/";
 
 const files = readdirSync(LANGUAGES_DIRECTORY).filter(file => file.endsWith(".hjson")).sort();
 
-const virtualModuleIds = ["virtual:translations-manifest", ...files.map(f => `virtual:translations-${f.slice(0, -".hjson".length)}`)];
+const virtualModuleIds = [
+    "virtual:translations-manifest",
+    ...files.map(f => `virtual:translations-${f.slice(0, -".hjson".length)}`)
+];
 
-const resolveId = (id: string): string | undefined => {
-    if (virtualModuleIds.includes(id)) return id;
-};
+const resolveId = (id: string): string | undefined => virtualModuleIds.includes(id) ? id : undefined;
 
-const load = (id: string): string | undefined => {
-    if (virtualModuleIds.includes(id)) return translationsCache.get(id);
-};
+const load = (id: string): string | undefined => translationsCache.get(id);
 
 const translationsCache = new Map<string, string>();
 
@@ -55,7 +54,6 @@ export type TranslationsManifest = Record<string, TranslationManifest>;
 
 export async function buildTranslations(): Promise<void> {
     const start = performance.now();
-    console.log(`Building translations for ${files.length} languages...`);
 
     const manifest: TranslationsManifest = {};
 
@@ -115,7 +113,7 @@ This file is a report of all errors and missing keys in the translation files of
     await writeFile("../TRANSLATIONS_REPORT.md", reportBuffer);
     await buildTypings(ValidKeys);
 
-    console.log(`Finished building translations in ${Math.round(performance.now() - start) / 1000}s`);
+    console.log(`Built translations for ${files.length} languages in ${Math.round(performance.now() - start)} ms`);
 }
 
 export async function buildTypings(keys: readonly string[]): Promise<void> {
@@ -151,6 +149,8 @@ export function translations(): Plugin[] {
             name: `${PLUGIN_NAME}:serve`,
             apply: "serve",
             async configureServer(server) {
+                await buildTranslations();
+
                 watcher = watch("src/translations").on("change", (filename: string): void => {
                     clearTimeout(buildTimeout);
 
@@ -164,8 +164,6 @@ export function translations(): Plugin[] {
                         });
                     }, 500);
                 });
-
-                await buildTranslations();
             },
             closeBundle: async() => {
                 await watcher.close();

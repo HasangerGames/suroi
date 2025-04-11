@@ -49,7 +49,7 @@ export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwa
             return;
         }
 
-        this._lastUse = owner.game.now;
+        this.lastUse = owner.game.now;
         owner.animation = AnimationType.ThrowableCook;
         owner.setPartialDirty();
 

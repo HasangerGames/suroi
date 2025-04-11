@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.1"
+   width="36"
+   height="35.966408"
+   viewBox="0 0 35.999999 35.966408"
+   id="svg4"
+   sodipodi:docname="lily_pad_particle.svg"
+   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="namedview4"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="2.0842601"
+     inkscape:cx="-82.043503"
+     inkscape:cy="23.749435"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4" />
+  <g
+     transform="matrix(2.0483387,0,0,2.0483387,-642.80802,-345.36133)"
+     id="g4">
+    <g
+       data-paper-data="{&quot;isPaintingLayer&quot;:true}"
+       fill="#6fa63d"
+       fill-rule="nonzero"
+       stroke="#62742b"
+       stroke-width="3.5"
+       stroke-linecap="butt"
+       stroke-linejoin="miter"
+       stroke-miterlimit="10"
+       stroke-dasharray="none"
+       stroke-dashoffset="0"
+       style="mix-blend-mode:normal"
+       id="g3">
+      <path
+         d=""
+         id="path1" />
+      <path
+         d=""
+         id="path2" />
+      <path
+         d="m 320,170.35558 c 5.32646,0 9.64442,4.31795 9.64442,9.64442 0,5.32647 -11.40161,5.57111 -13.55175,2.12559 -1.5984,-4.45978 0.84991,-11.77 3.90733,-11.77 z"
+         id="path3"
+         style="fill:#8e5983;fill-opacity:1;stroke:#613058;stroke-opacity:1" />
+    </g>
+  </g>
+</svg>
+<!--rotationCenter:5.554719518222498:11.394419999999997-->
+

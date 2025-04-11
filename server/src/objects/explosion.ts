@@ -30,11 +30,13 @@ export class Explosion {
     }
 
     explode(): void {
+        const definition = this.definition;
+
         // List of all near objects
-        const objects = this.game.grid.intersectsHitbox(new CircleHitbox(this.definition.radius.max * 2, this.position), this.layer);
+        const objects = this.game.grid.intersectsHitbox(new CircleHitbox(definition.radius.max * 2, this.position), this.layer);
         const damagedObjects = new Set<number>();
 
-        const step = Math.acos(1 - ((GameConstants.explosionRayDistance / this.definition.radius.max) ** 2) / 2);
+        const step = Math.acos(1 - ((GameConstants.explosionRayDistance / definition.radius.max) ** 2) / 2);
 
         for (let angle = -Math.PI; angle < Math.PI; angle += step) {
             // All objects that collided with this line
@@ -44,7 +46,7 @@ export class Explosion {
                 readonly squareDistance: number
             }> = [];
 
-            const lineEnd = Vec.add(this.position, Vec.fromPolar(angle, this.definition.radius.max));
+            const lineEnd = Vec.add(this.position, Vec.fromPolar(angle, definition.radius.max));
 
             for (const object of objects) {
                 if (
@@ -73,7 +75,7 @@ export class Explosion {
             // sort by closest to the explosion center to prevent damaging objects through walls
             lineCollisions.sort((a, b) => a.squareDistance - b.squareDistance);
 
-            const { min, max } = this.definition.radius;
+            const { min, max } = definition.radius;
             for (const collision of lineCollisions) {
                 const object = collision.object;
                 const { isPlayer, isObstacle, isBuilding, isLoot, isProjectile } = object;
@@ -84,8 +86,8 @@ export class Explosion {
 
                     if (isPlayer || isObstacle || isBuilding) {
                         object.damage({
-                            amount: this.damageMod * this.definition.damage
-                                * (isObstacle ? this.definition.obstacleMultiplier : 1)
+                            amount: this.damageMod * definition.damage
+                                * (isObstacle ? definition.obstacleMultiplier : 1)
                                 * (isPlayer ? object.mapPerkOrDefault(PerkIds.LowProfile, ({ explosionMod }) => explosionMod, 1) : 1)
                                 * ((dist > min) ? (max - dist) / (max - min) : 1),
 
@@ -101,7 +103,7 @@ export class Explosion {
                     }
 
                     if (isLoot || isProjectile) {
-                        if (isProjectile) object.damage({ amount: this.definition.damage });
+                        if (isProjectile) object.damage({ amount: definition.damage });
 
                         const multiplier = isProjectile ? 0.002 : 0.01;
                         object.push(
@@ -130,7 +132,7 @@ export class Explosion {
             }
         }
 
-        for (let i = 0, count = this.definition.shrapnelCount; i < count; i++) {
+        for (let i = 0, count = definition.shrapnelCount; i < count; i++) {
             this.game.addBullet(
                 this,
                 this.source,
@@ -142,18 +144,19 @@ export class Explosion {
             );
         }
 
-        if (this.definition.decal) {
-            this.game.grid.addObject(
-                new Decal(
-                    this.game,
-                    this.definition.decal,
-                    this.position,
-                    randomRotation(),
-                    this.layer
-                )
-            );
+        if (!definition.decal) return;
 
-            this.game.updateObjects = true;
-        }
+        const decal = new Decal(
+            this.game,
+            definition.decal,
+            this.position,
+            randomRotation(),
+            this.layer
+        );
+        this.game.grid.addObject(decal);
+
+        if (definition.decalFadeTime === undefined) return;
+
+        this.game.addTimeout(() => this.game.grid.removeObject(decal), definition.decalFadeTime);
     }
 }

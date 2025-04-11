@@ -11,7 +11,7 @@ import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorS
 import { getTranslatedString } from "../utils/translations/translations";
 import { Game } from "../game";
 import { DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
-import { SuroiSprite, drawGroundGraphics, drawHitbox, setOnSpritesheetsLoaded, spritesheetsLoaded, toPixiCoords } from "../utils/pixi";
+import { SuroiSprite, drawGroundGraphics, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GasManager, GasRender } from "./gasManager";
 import { SoundManager } from "./soundManager";
 import { InputManager } from "./inputManager";
@@ -19,7 +19,7 @@ import { UIManager } from "./uiManager";
 import { GameConsole } from "../console/gameConsole";
 import { CameraManager } from "./cameraManager";
 
-export const MapManager = new (class MapManager {
+class MapManagerClass {
     private _expanded = false;
     get expanded(): boolean { return this._expanded; }
     set expanded(expand: boolean) {
@@ -114,7 +114,7 @@ export const MapManager = new (class MapManager {
         this.pingsContainer.zIndex = 998;
         this.teammateIndicatorContainer.zIndex = 999;
 
-        this.indicator = new SuroiSprite("player_indicator")
+        this.indicator = new SuroiSprite()
             .setTint(TEAMMATE_COLORS[0])
             .setZIndex(1000);
 
@@ -284,10 +284,6 @@ export const MapManager = new (class MapManager {
         terrainGraphics.fill(colors.border);
 
         CameraManager.addObject(terrainGraphics);
-
-        if (!spritesheetsLoaded) {
-            await new Promise(resolve => setOnSpritesheetsLoaded(resolve));
-        }
 
         // Draw the minimap objects
         const mapRender = new Container();
@@ -795,7 +791,18 @@ export const MapManager = new (class MapManager {
             }, 10000);
         }
     }
-})();
+
+    reset(): void {
+        this.safeZone.clear();
+        this.pingGraphics.clear();
+        this.pings.clear();
+        this.pingsContainer.removeChildren();
+        this.teammateIndicators.clear();
+        this.teammateIndicatorContainer.removeChildren();
+    }
+}
+
+export const MapManager = new MapManagerClass();
 
 export class MapPing {
     readonly startTime: number;

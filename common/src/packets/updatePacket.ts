@@ -31,7 +31,8 @@ function serializePlayerData(
         items,
         activeC4s,
         perks,
-        teamID
+        teamID,
+        blockEmoting
     }: PlayerData
 ): void {
     /* eslint-disable @stylistic/no-multi-spaces */
@@ -63,7 +64,8 @@ function serializePlayerData(
         hasItems,
         hasActiveC4s,
         hasPerks,
-        hasTeamID
+        hasTeamID,
+        blockEmoting
     );
 
     strm.writeUint8(pingSeq);
@@ -267,11 +269,13 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         hasItems,
         hasActiveC4s,
         hasPerks,
-        hasTeamID
+        hasTeamID,
+        blockEmoting
     ] = strm.readBooleanGroup2();
 
     const data: SDeepMutable<PlayerData> = {
-        pingSeq: strm.readUint8()
+        pingSeq: strm.readUint8(),
+        blockEmoting
     };
 
     if (hasMinMax) {
@@ -524,6 +528,7 @@ export interface PlayerData {
     readonly activeC4s?: boolean
     readonly perks?: PerkCollection
     readonly teamID?: number
+    readonly blockEmoting: boolean
 }
 
 export interface UpdateDataCommon {

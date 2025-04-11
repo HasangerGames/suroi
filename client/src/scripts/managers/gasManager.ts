@@ -10,7 +10,7 @@ import { UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate } from "../utils/misc";
 import { UIManager } from "./uiManager";
 
-export const GasManager = new (class GasManager {
+class GasManagerClass {
     state = GasState.Inactive;
     currentDuration = 0;
     oldPosition = Vec.create(0, 0);
@@ -50,6 +50,8 @@ export const GasManager = new (class GasManager {
     }
 
     private _gasMsgFadeTimeout: number | undefined;
+
+    time: number | undefined;
 
     updateFrom(data: UpdateDataOut): void {
         const gas = data.gas;
@@ -114,7 +116,10 @@ export const GasManager = new (class GasManager {
 
         if (gasProgress !== undefined) {
             const time = this.currentDuration - Math.round(this.currentDuration * gasProgress);
-            this._ui.timerText.text(`${Math.floor(time / 60)}:${(time % 60) < 10 ? "0" : ""}${time % 60}`);
+            if (time !== this.time) {
+                this.time = time;
+                this._ui.timerText.text(`${Math.floor(time / 60)}:${(time % 60) < 10 ? "0" : ""}${time % 60}`);
+            }
 
             if (this.state !== GasState.Advancing) {
                 this.position = this.oldPosition;
@@ -130,7 +135,13 @@ export const GasManager = new (class GasManager {
             }
         }
     }
-})();
+
+    reset(): void {
+        this.time = undefined;
+    }
+}
+
+export const GasManager = new GasManagerClass();
 
 export class GasRender {
     private readonly _graphics: Graphics;

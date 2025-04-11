@@ -134,6 +134,32 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     // Ephemeral ammo types below
 
     {
+        idString: "seed",
+        name: "Plumpkin Seed",
+        itemType: ItemType.Ammo,
+        maxStackSize: 0,
+        minDropAmount: 0,
+        characteristicColor: {
+            hue: 37,
+            saturation: 85,
+            lightness: 67
+        },
+        ephemeral: true
+    },
+    {
+        idString: "needle",
+        name: "Needle",
+        itemType: ItemType.Ammo,
+        maxStackSize: 0,
+        minDropAmount: 0,
+        characteristicColor: {
+            hue: 305,
+            saturation: 70,
+            lightness: 50
+        },
+        ephemeral: true
+    },
+    {
         idString: "power_cell",
         name: "P.O.W.E.R. cell",
         itemType: ItemType.Ammo,

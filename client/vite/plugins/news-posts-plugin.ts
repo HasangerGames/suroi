@@ -8,7 +8,6 @@ import { readDirectory } from "../../../common/src/utils/readDirectory";
 
 const PLUGIN_NAME = "vite-news-posts-plugin";
 const VIRTUAL_MODULE_ID = "virtual:news-posts";
-const RESOLVED_VIRTUAL_MODULE_ID = `\0${VIRTUAL_MODULE_ID}`;
 const POSTS_DIR = "src/newsPosts";
 
 export interface NewsPost {
@@ -23,15 +22,11 @@ const REQUIRED_FIELDS: Array<keyof NewsPost> = ["title", "author", "date"];
 
 const posts: NewsPost[] = [];
 
-const resolveId = (id: string): string | undefined => {
-    if (id === VIRTUAL_MODULE_ID) return RESOLVED_VIRTUAL_MODULE_ID;
-};
+const resolveId = (id: string): string | undefined => id === VIRTUAL_MODULE_ID ? VIRTUAL_MODULE_ID : undefined;
 
-const load = (id: string): string | undefined => {
-    if (id === RESOLVED_VIRTUAL_MODULE_ID) {
-        return `export const posts = ${JSON.stringify(posts)}`;
-    }
-};
+const load = (id: string): string | undefined => id === VIRTUAL_MODULE_ID
+    ? `export const posts=${JSON.stringify(posts)}`
+    : undefined;
 
 function makeSortable(filename: string): string {
     return filename
@@ -40,6 +35,8 @@ function makeSortable(filename: string): string {
 }
 
 async function processPosts(): Promise<void> {
+    const start = performance.now();
+
     posts.length = 0;
     const files = readDirectory(POSTS_DIR)
         // sort by version
@@ -68,6 +65,8 @@ async function processPosts(): Promise<void> {
             body: body ? await parse(body) : undefined
         });
     }
+
+    console.log(`Built ${posts.length} news posts in ${Math.round(performance.now() - start)} ms`);
 }
 
 export function newsPosts(): Plugin[] {
@@ -93,7 +92,7 @@ export function newsPosts(): Plugin[] {
 
                     buildTimeout = setTimeout(() => {
                         void processPosts().then(() => {
-                            const module = server.moduleGraph.getModuleById(RESOLVED_VIRTUAL_MODULE_ID);
+                            const module = server.moduleGraph.getModuleById(VIRTUAL_MODULE_ID);
                             if (module !== undefined) void server.reloadModule(module);
                         });
                     }, 500);

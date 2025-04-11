@@ -28,6 +28,51 @@
 <body>
   <pre>
 # Changelog
+v0.25.1 - [4/11/2025]
+- Switched back to normal mode. The new schedule is as follows: 1 week normal, 1 week harvest, 1 week normal, 1 week infection.
+- **UI improvements!** The menu now scales much better on smaller screens. We have a full UI overhaul planned for the accounts update.
+- **Client optimizations!** Several optimizations have been made to reduce the game's resource usage.
+  - Audio is now loaded from a single file, improving loading times and reducing RAM usage by ~100 MB.
+  - All audio in the game has been reprocessed, reducing file sizes and loading times, and RAM by another ~40 MB for a total of ~140 MB savings this update.
+  - Spritesheet metadata is now loaded only for the active mode, not for every mode, which should also help loading times.
+- Added 2 emotes: Whale, Sun and Moon.
+- Added backlinks to a number of .io game websites. Promotion by these sites will help boost player counts.
+- Fixed an issue with guns being able to shoot through walls. This fix should also improve server performance.
+- Adjusted the health of various obstacles.
+  - Desks: 120 -> 100 (6 hits with fists -> 5)
+  - Filing cabinet: 125 -> 100 (6 hits -> 5)
+  - RSh-12 case: 80 -> 150 (4 hits -> 8)
+- Adjusted desks loot table.
+- Improved M1895 fire sound.
+- Made Vaccinator more common from airdrops.
+- Fixed explosive weapons not swapping when killing players/destroying plumpkins with the explosion.
+- Fixed weapons not swapping when a downed player bleeds out.
+- Certain explosion decals now fade after 30 seconds.
+
+v0.25.0 - [4/1/2025]
+- Infection mode! Added a brand new gamemode.
+  - A deadly virus has taken over the normal map, turning it purple.
+  - Baby plumpkins, with 2 new variants, cover the map. They now regenerate every 30 seconds.
+- New perks!
+  - Infected: Increases speed by 25% and damage by 20%, but health is decreased by 25% and drops over time. Adrenaline decays 10x faster. Every second, there's a 5% chance of infecting players within 20 map units.
+  - Immunity: Cures infection and makes you immune to it for 15 seconds. Granted by the Vaccinator (see below).
+- New guns!
+  - Seedshot: Shoots explosive seeds that stick to players and obstacles. Infinite ammo. Found in the blue house basement.
+  - Vaccinator: Shoots needles which grant Immunity (see above), heal teammates, and slow down enemies. Infinite ammo. Found in the headquarters and airdrops.
+- Added 4 new emotes: Plumpkin, Satisfied Face, Lag, Logged.
+- Added a new skin: Celestial.
+- Added Dutch language.
+- Added default switch sound for weapons.
+- Updated Lewis gun reload sound.
+- Edited the generator sound to be quieter and loop more cleanly.
+- Removed the big oak tree from normal (and infection) mode.
+- UI performance optimizations.
+- Changed loading screen background color.
+- Changed the way textures are loaded to prevent potential issues and lag when initially joining.
+- Fixed an issue with the airdrop plane sound continuing to play at a constant volume after the game ends.
+- Fixed an issue where attempting to pick up a 2nd dual wieldable gun while the slot was locked would delete the 2nd gun.
+- Fixed an issue where destroying a bush while inside of it would break bush particles.
+
 v0.24.2 - [3/22/2025]
 - Grenade overhaul!
   - Grenades now have visible height.
