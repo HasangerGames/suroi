@@ -62,6 +62,9 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly customInteractMessage?: boolean
     readonly interactOnlyFromSide?: Orientation
     readonly weaponSwap?: boolean
+    readonly requiresPower?: boolean
+
+    readonly interactionDelay?: number
 
     readonly gunMount?: {
         readonly type: "gun" | "melee"
@@ -74,6 +77,7 @@ type CommonObstacleDefinition = ObjectDefinition & {
         readonly residue?: string
         readonly opened?: string
         readonly activated?: string
+        readonly powered?: string
     }
 
     readonly glow?: {
@@ -2568,18 +2572,19 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         health: 1000,
         indestructible: true,
         reflectBullets: true,
-        hitbox: RectangleHitbox.fromRect(14.2, 1.95, Vec.create(1.1, -1.7)),
+        hitbox: RectangleHitbox.fromRect(14.2, 1.95, Vec.create(1.1, -0.4)),
         rotationMode: RotationMode.Limited,
         isDoor: true,
-        locked: true,
         openOnce: true,
-        doorSound: "vault_door",
+        doorSound: "vault_door_powered",
+        requiresPower: true,
         animationDuration: 2000,
-        hingeOffset: Vec.create(-6.1, -1.4),
+        hingeOffset: Vec.create(-6.1, -0.8),
         zIndex: ZIndexes.ObstaclesLayer3,
         frames: {
-            particle: "metal_particle"
-            // activated: "vault_door_activated" <-- need to make this work like the monument
+            particle: "metal_particle",
+            powered: "vault_door_activated",
+            opened: "vault_door_off"
         }
     },
     {

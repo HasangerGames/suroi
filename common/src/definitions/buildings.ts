@@ -3934,6 +3934,40 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "cargo_ship",
         name: "Cargo Ship",
         spawnHitbox: RectangleHitbox.fromRect(180, 400, Vec.create(-1.5, -1.8)),
+        puzzle: {
+            triggerOnSolve: "vault_door_deactivated",
+            delay: 2000,
+            unlockOnly: true
+        },
+        sounds: {
+            solved: "generator_running",
+            position: Vec.create(-1.46, 40.23),
+            maxRange: 416,
+            falloff: 2
+        },
+        obstacles: [
+            {
+               idString: "generator",
+               position: Vec.create(-2.01, 34.23),
+               rotation: 0,
+               layer: 2,
+               puzzlePiece: true
+            },
+            {
+                idString: "vault_door_deactivated",
+                position: Vec.create(26.07, -62),
+                rotation: 0,
+                locked: true,
+                layer: 0
+            },
+            {
+                idString: "vault_door_deactivated",
+                position: Vec.create(42.1, -118),
+                rotation: 2,
+                locked: true,
+                layer: 0
+            }
+        ],
         subBuildings: [
             { idString: "cargo_ship_top_floor", position: Vec.create(-0.55, -6), layer: 2 },
             { idString: "cargo_ship_bottom_floor", position: Vec.create(1.8, 0) }
@@ -4166,9 +4200,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: [
-            { idString: "cargo_ship_bottom_stair", position: Vec.create(25.01, -40.18), rotation: 0, layer: 1 },
-            { idString: "cargo_ship_bottom_stair", position: Vec.create(-2.15, -162.84), rotation: 1, layer: 1 },
-            { idString: "cargo_ship_bottom_stair", position: Vec.create(-27.31, 100.22), rotation: 0, layer: 1 },
+            { idString: "cargo_ship_bottom_stair", position: Vec.create(22, -40.18), rotation: 0, layer: 1 },
+            { idString: "cargo_ship_bottom_stair", position: Vec.create(-2.15, -162.5), rotation: 1, layer: 1 },
+            { idString: "cargo_ship_bottom_stair", position: Vec.create(-30.31, 100.22), rotation: 0, layer: 1 },
 
             { idString: "ship_thing_v2", position: Vec.create(-2.07, 175.32), rotation: 0 },
 
@@ -4264,8 +4298,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "lamp", position: Vec.create(-50.92, 118.9), rotation: 3 },
 
             // vault
-            { idString: "vault_door_deactivated", position: Vec.create(24.27, -60.98), rotation: 0 },
-            { idString: "vault_door_deactivated", position: Vec.create(40.3, -118.62), rotation: 2 },
             { idString: "lamp", position: Vec.create(27.09, -96.53), rotation: 2 },
             { idString: "tango_crate", position: Vec.create(23.7, -107.96), rotation: 1 },
             { idString: "melee_crate", position: Vec.create(23.67, -93.73) },
@@ -4508,8 +4540,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: [
-            { idString: "generator", position: Vec.create(-1.46, 40.23), rotation: 0 }, // mighttt be moved to bottom floor def
-
             { idString: "cargo_ship_stair_support", position: Vec.create(26.36, -27.63), rotation: 0 },
             { idString: "cargo_ship_stair_support", position: Vec.create(26.28, -40.59), rotation: 0 },
             { idString: "cargo_ship_stair_support", position: Vec.create(-6.42, -156.84), rotation: 1 },

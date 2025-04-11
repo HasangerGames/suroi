@@ -49,6 +49,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         openHitbox: Hitbox
         openAltHitbox?: Hitbox
         offset: number
+        powered: boolean
     };
 
     activated?: boolean;
@@ -87,7 +88,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         puzzlePiece?: string | boolean,
         locked?: boolean,
         activated?: boolean,
-        waterOverlay?: boolean
+        waterOverlay?: boolean,
+        powered?: boolean
     ) {
         super(game, position);
 
@@ -142,7 +144,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 closedHitbox: this.hitbox.clone(),
                 openHitbox: hitboxes.openHitbox,
                 openAltHitbox: (hitboxes as typeof hitboxes & { readonly openAltHitbox?: RectangleHitbox }).openAltHitbox,
-                offset: 0
+                offset: 0,
+                powered: powered ?? false
             };
         }
 
@@ -348,7 +351,12 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         if (definition.isDoor) {
             // optional chaining not required but makes both eslint and tsc happy
             if (!(this.door?.isOpen && definition.openOnce)) {
-                this.toggleDoor(player);
+                if (this.definition.interactionDelay !== undefined) {
+                   this.game.addTimeout(() => {
+                    this.toggleDoor(player);
+                   }, this.definition.interactionDelay)
+                }
+                else this.toggleDoor(player);               
             }
 
             if (definition.isActivatable) {
@@ -424,6 +432,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                             this.hitbox = this.door.openAltHitbox!.clone();
                         } else {
                             this.door.offset = 1;
+                            if (this.definition.requiresPower && !this.door.locked) this.door.offset = 3;
                             this.hitbox = this.door.openHitbox.clone();
                         }
                     } else {
