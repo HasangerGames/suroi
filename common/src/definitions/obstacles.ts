@@ -4371,6 +4371,51 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         allowFlyover: FlyoverPref.Always
     },
     {
+        idString: "cargo_ship_stair_entrance_walls",
+        name: "Cargo Ship Stair",
+        material: "metal_heavy",
+        health: 69,
+        indestructible: true,
+        reflectBullets: true,
+        collideWithLayers: Layers.Equal,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(15.27, 2.72, Vec.create(0.01, -7.24)),
+            RectangleHitbox.fromRect(2.36, 15.71, Vec.create(-6.45, 0.71)),
+            RectangleHitbox.fromRect(2.36, 16.68, Vec.create(6.46, 0.19))
+        ),
+        frames: {
+            base: "cargo_ship_stair_entrance",
+            particle: "cargo_ship_particle"
+        },
+        rotationMode: RotationMode.Limited
+    },
+    {
+        idString: "cargo_ship_stair",
+        name: "Cargo Ship Stair",
+        material: "metal_heavy",
+        health: 69,
+        indestructible: true,
+        reflectBullets: true,
+        invisible: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(23.99, 1.01, Vec.create(1.34, 5.45)),
+            RectangleHitbox.fromRect(23.99, 1.01, Vec.create(1.6, -5.47)),
+            new CircleHitbox(0.91, Vec.create(13.01, 5.45)),
+            new CircleHitbox(0.91, Vec.create(-2.7, -5.48)),
+            new CircleHitbox(0.91, Vec.create(5.16, -5.46)),
+            new CircleHitbox(0.91, Vec.create(13, -5.48)),
+            new CircleHitbox(0.91, Vec.create(-10.57, -5.48)),
+            new CircleHitbox(0.91, Vec.create(-10.57, 5.45)),
+            new CircleHitbox(0.91, Vec.create(-2.7, 5.45)),
+            new CircleHitbox(0.91, Vec.create(5.15, 5.45))
+        ),
+        frames: {
+            particle: "metal_particle"
+            // base: "cargo_ship_stair"
+        },
+        rotationMode: RotationMode.Limited
+    },
+    {
         idString: "bunker_entrance",
         name: "Bunker Entrance",
         material: "metal_heavy",
@@ -4396,6 +4441,24 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         invisible: true,
         hitbox: RectangleHitbox.fromRect(10, 11.5),
+        frames: {
+            particle: "metal_particle"
+        },
+        rotationMode: RotationMode.Limited
+    },
+    {
+        idString: "cargo_ship_bottom_stair",
+        name: "Cargo Ship Top Stair",
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        isStair: true,
+        activeEdges: {
+            high: 3,
+            low: 1
+        },
+        invisible: true,
+        hitbox: RectangleHitbox.fromRect(13, 11.27),
         frames: {
             particle: "metal_particle"
         },
@@ -4446,6 +4509,21 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             new CircleHitbox(3.37, Vec.create(-0.02, -9.91)),
             RectangleHitbox.fromRect(6.87, 3.96, Vec.create(-0.01, -7.98))
         ),
+        frames: {
+            particle: "cargo_ship_particle"
+        },
+        rotationMode: RotationMode.Limited
+    },
+    {
+        idString: "cargo_ship_stair_support",
+        name: "cargo ship stair",
+        material: "metal_heavy",
+        indestructible: true,
+        collideWithLayers: Layers.All,
+        health: 69,
+        reflectBullets: true,
+        invisible: true,
+        hitbox: RectangleHitbox.fromRect(17.22, 2.09),
         frames: {
             particle: "cargo_ship_particle"
         },

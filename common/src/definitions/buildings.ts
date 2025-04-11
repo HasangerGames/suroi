@@ -3931,6 +3931,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }]
     },
     {
+        idString: "cargo_ship",
+        name: "Cargo Ship",
+        spawnHitbox: RectangleHitbox.fromRect(180, 400, Vec.create(-1.5, -1.8)),
+        subBuildings: [
+            { idString: "cargo_ship_top_floor", position: Vec.create(-0.55, -6), layer: 2 },
+            { idString: "cargo_ship_bottom_floor", position: Vec.create(1.8, 0) }
+        ]
+    },
+    {
         idString: "cargo_ship_top_floor_shadow",
         name: "Cargo Ship Shadow",
         spawnHitbox: RectangleHitbox.fromRect(180, 400, Vec.create(-1.5, -1.8)),
@@ -3950,6 +3959,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         material: "metal_heavy",
         particle: "cargo_ship_particle",
         reflectBullets: true,
+        collideWithLayers: Layers.Equal,
         sounds: {
             normal: "ship_ambience",
             position: Vec.create(-1.5, 115.33),
@@ -4081,6 +4091,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(45.17, 12.38, Vec.create(63.86, 19.27)),
                     RectangleHitbox.fromRect(45.17, 12.38, Vec.create(64.01, -0.29))
                 )
+            },
+            {
+                type: FloorNames.Metal,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(15.2, 11.27, Vec.create(25.01, -40.18)),
+                    RectangleHitbox.fromRect(15.2, 11.27, Vec.create(-2.15, -162.84)),
+                    RectangleHitbox.fromRect(15.2, 11.27, Vec.create(-27.31, 100.22))
+                ),
+                layer: 1
             }
         ],
         floorImages: [
@@ -4147,6 +4166,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: [
+            { idString: "cargo_ship_bottom_stair", position: Vec.create(25.01, -40.18), rotation: 0, layer: 1 },
+            { idString: "cargo_ship_bottom_stair", position: Vec.create(-2.15, -162.84), rotation: 1, layer: 1 },
+            { idString: "cargo_ship_bottom_stair", position: Vec.create(-27.31, 100.22), rotation: 0, layer: 1 },
+
             { idString: "ship_thing_v2", position: Vec.create(-2.07, 175.32), rotation: 0 },
 
             { idString: "box", position: Vec.create(-70.39, 134.5), waterOverlay: true },
@@ -4301,6 +4324,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         material: "metal_heavy",
         particle: "cargo_ship_particle",
         reflectBullets: true,
+        // visibleFromLayers: Layers.All, - TODO
+        collideWithLayers: Layers.Adjacent,
+        ceilingHitbox: new GroupHitbox(// -0.55, -6
+            RectangleHitbox.fromRect(15.2, 11.27, Vec.create(25.6, -34.18)),
+            RectangleHitbox.fromRect(15.2, 11.27, Vec.create(-1.6, -156.84)),
+            RectangleHitbox.fromRect(15.2, 11.27, Vec.create(-26.76, 94.22))
+        ),
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(3.63, 64.39, Vec.create(51.52, 158.63)),
             RectangleHitbox.fromRect(3.62, 159.73, Vec.create(51.52, 36.39)),
@@ -4402,10 +4432,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 key: "cargo_ship_floor_top_1",
                 position: Vec.create(0.07, 94.7)
             },
-            {
-                key: "cargo_ship_top_floor_alpha",
-                position: Vec.create(0, 0)
-            },
 
             // -------------------------------------------------
             {
@@ -4442,7 +4468,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // -------------------------------------------------
         ],
         floors: [
-            { // Stairs (Might be layer 1)
+            { // Stairs
                 type: FloorNames.Metal,
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(26.94, 10.06, Vec.create(63.39, -119.14)),
@@ -4452,7 +4478,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                     RectangleHitbox.fromRect(26.94, 10.06, Vec.create(-63.32, -119.09)),
                     RectangleHitbox.fromRect(26.94, 10.06, Vec.create(63.37, -48.46)),
                     RectangleHitbox.fromRect(26.94, 10.06, Vec.create(63.44, 121.47))
-                )
+                ),
+                layer: 1
             },
             // Ship Floor
             {
@@ -4482,6 +4509,24 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         obstacles: [
             { idString: "generator", position: Vec.create(-1.46, 40.23), rotation: 0 }, // mighttt be moved to bottom floor def
+
+            { idString: "cargo_ship_stair_support", position: Vec.create(26.36, -27.63), rotation: 0 },
+            { idString: "cargo_ship_stair_support", position: Vec.create(26.28, -40.59), rotation: 0 },
+            { idString: "cargo_ship_stair_support", position: Vec.create(-6.42, -156.84), rotation: 1 },
+            { idString: "cargo_ship_stair_support", position: Vec.create(6.42, -156.84), rotation: 1 },
+            { idString: "cargo_ship_stair_support", position: Vec.create(-26.09, 100.04), rotation: 2 },
+            { idString: "cargo_ship_stair_support", position: Vec.create(-26.08, 113.1), rotation: 2 },
+
+            { idString: "cargo_ship_stair", position: Vec.create(63.71, -48.43), rotation: 0 },
+            { idString: "cargo_ship_stair", position: Vec.create(63.71, 121.45), rotation: 0 },
+            { idString: "cargo_ship_stair", position: Vec.create(63.71, -119.14), rotation: 0 },
+            { idString: "cargo_ship_stair", position: Vec.create(-66.09, -119.07), rotation: 0 },
+            { idString: "cargo_ship_stair", position: Vec.create(-66.09, 21.75), rotation: 0 },
+            { idString: "cargo_ship_stair", position: Vec.create(-66.09, 121.65), rotation: 0 },
+
+            { idString: "cargo_ship_stair_entrance_walls", position: Vec.create(0.11, -156.81), rotation: 0 },
+            { idString: "cargo_ship_stair_entrance_walls", position: Vec.create(26.3, -34.17), rotation: 3 },
+            { idString: "cargo_ship_stair_entrance_walls", position: Vec.create(-26.12, 106.47), rotation: 3 },
 
             { idString: "life_preserver", position: Vec.create(-48.2, 5.29), rotation: 2 },
             { idString: "life_preserver", position: Vec.create(-48.27, -4.55), rotation: 2 },
