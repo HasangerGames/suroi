@@ -728,6 +728,9 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
     canInteract(player: Player): boolean {
         type DoorDef = { openOnce?: boolean, automatic?: boolean };
+        if (this._door !== undefined
+            && !this._door.locked
+            && !((this.definition as DoorDef).openOnce && this._door.offset === 0)) return false;
         return !this.dead
             && (
                 this.definition.interactOnlyFromSide === undefined
@@ -743,10 +746,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     this.definition.isActivatable === true
                     && (this.definition.requiredItem === undefined || player.activeItem.idString === this.definition.requiredItem)
                     && !this.activated
-                ) || (
-                    this._door !== undefined
-                    && !this._door.locked
-                    && !((this.definition as DoorDef).openOnce && this._door.offset !== 0)
                 )
             );
     }

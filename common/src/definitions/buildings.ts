@@ -3954,15 +3954,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 puzzlePiece: true
             },
             {
-                idString: "vault_door_deactivated",
-                position: Vec.create(25.6, -61.25),
+                idString: "vault_door_deactivated", // this one doesnt have collision when opened (idk why)
+                position: Vec.create(25.6, -61),
                 rotation: 0,
                 locked: true,
                 layer: 0
             },
             {
                 idString: "vault_door_deactivated",
-                position: Vec.create(42.1, -118),
+                position: Vec.create(42.5, -119.53),
                 rotation: 2,
                 locked: true,
                 layer: 0
@@ -4225,8 +4225,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "box", position: Vec.create(0.55, -132.81) },
             { idString: "grenade_box", position: Vec.create(-1.93, -128) },
 
-            { idString: "metal_door", position: Vec.create(-21.4, -80.05), rotation: 1 },
-            { idString: "metal_door", position: Vec.create(-21.48, -90.05), rotation: 3 },
+            { idString: "metal_door", position: Vec.create(-21.48, -80.0), rotation: 1 },
+            { idString: "metal_door", position: Vec.create(-21.48, -89.95), rotation: 3 },
             { idString: "metal_door", position: Vec.create(26.45, 93.5), rotation: 0 },
             { idString: "metal_door", position: Vec.create(-46.35, 93.5), rotation: 0 },
             { idString: "metal_door", position: Vec.create(-41.58, -46.75), rotation: 1 },
