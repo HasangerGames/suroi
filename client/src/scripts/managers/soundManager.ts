@@ -164,26 +164,34 @@ class SoundManagerClass {
         const audio = await (await fetch(filename)).arrayBuffer();
         let offset = 0;
         for (const [id, length] of Object.entries(spritesheet)) {
-            /**
-             * For some reason, PIXI will call the `loaded` callback twice
-             * when an error occurs…
-             */
-            let called = false;
-
-            PixiSound.sound.add(id, {
-                source: audio.slice(offset, offset + length),
-                loaded(error: Error | null) {
-                    // despite what the pixi typings say, logging `error` shows that it can be null
-                    if (error !== null && !called) {
-                        called = true;
-                        console.warn(`Failed to load sound '${id}'\nError object provided below`);
-                        console.error(error);
-                    }
-                }
-            });
-
+            this.addSound(id, { source: audio.slice(offset, offset + length) });
             offset += length;
         }
+
+        const { noPreloadSounds } = await import("virtual:audio-spritesheet-no-preload") as { noPreloadSounds: string[] };
+        for (const id of noPreloadSounds) {
+            this.addSound(id, { url: `./audio/game/no-preload/${id}.mp3`, preload: false });
+        }
+    }
+
+    addSound(id: string, opts: Partial<PixiSound.Options>): void {
+        /**
+         * For some reason, PIXI will call the `loaded` callback twice
+         * when an error occurs…
+         */
+        let called = false;
+
+        PixiSound.sound.add(id, {
+            ...opts,
+            loaded(error: Error | null) {
+                // despite what the pixi typings say, logging `error` shows that it can be null
+                if (error !== null && !called) {
+                    called = true;
+                    console.warn(`Failed to load sound '${id}'\nError object provided below`);
+                    console.error(error);
+                }
+            }
+        });
     }
 
     update(): void {

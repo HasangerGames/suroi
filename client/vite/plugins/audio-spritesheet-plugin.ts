@@ -4,6 +4,7 @@ import path from "path";
 import { type Plugin } from "vite";
 import { type ModeName, Modes, type SpritesheetNames } from "../../../common/src/definitions/modes";
 import { getPaths, shortHash } from "./utils";
+import { readDirectory } from "../../../common/src/utils/readDirectory";
 
 export interface AudioSpritesheetImporter {
     readonly importSpritesheet: (name: string) => Promise<AudioSpritesheetManifest>
@@ -22,6 +23,7 @@ const audioDirs = Object.keys(Modes).filter(m => audioDirContents.includes(m));
 
 const virtualModuleIds = [
     "virtual:audio-spritesheet-importer",
+    "virtual:audio-spritesheet-no-preload",
     ...audioDirs.map(dir => `virtual:audio-spritesheet-${dir}`)
 ];
 
@@ -40,7 +42,9 @@ const load = async(id: string): Promise<string | undefined> => {
     if (!virtualModuleIds.includes(id)) return;
     let data = modules.get(id);
     if (!data) {
-        await buildSpritesheet(id.slice(id.lastIndexOf("-") + 1) as ModeName);
+        const moduleName = id.match(/virtual:audio-spritesheet-(.*)/)?.[1] as ModeName | "no-preload";
+        if (moduleName === "no-preload") await getNoPreloadPaths();
+        else await buildSpritesheet(moduleName);
         data = modules.get(id);
     }
     return data;
@@ -67,6 +71,15 @@ async function buildSpritesheet(modeName: ModeName): Promise<void> {
     console.log(`Built audio spritesheet "${modeName}" in ${Math.round(performance.now() - start)} ms`);
 }
 
+async function getNoPreloadPaths(): Promise<void> {
+    const noPreloadSounds: string[] = readDirectory("public/audio/game/no-preload", /\.mp3$/i)
+        .map(f => f.slice(f.lastIndexOf(path.sep) + 1, -4)); // remove path and extension
+
+    modules.set("virtual:audio-spritesheet-no-preload", `export const noPreloadSounds=${JSON.stringify(noPreloadSounds)}`);
+
+    console.log("Updated paths of no preload sounds");
+}
+
 export function audioSpritesheet(): Plugin[] {
     let watcher: FSWatcher;
 
@@ -78,6 +91,7 @@ export function audioSpritesheet(): Plugin[] {
                 for (const modeName of Object.keys(Modes) as ModeName[]) {
                     await buildSpritesheet(modeName);
                 }
+                await getNoPreloadPaths();
             },
             generateBundle() {
                 for (const [fileName, source] of files) {
@@ -92,13 +106,15 @@ export function audioSpritesheet(): Plugin[] {
             apply: "serve",
             async configureServer(server) {
                 const onChange = (filename: string): void => {
-                    const dir = filename.split(path.sep)[3] as SpritesheetNames;
-                    const invalidatedModes = Object.entries(Modes)
-                        .filter(([, mode]) => mode.spriteSheets.includes(dir))
-                        .map(([modeName]) => modeName);
+                    const dir = filename.split(path.sep)[3] as SpritesheetNames | "no-preload";
+                    const invalidatedModules = dir === "no-preload"
+                        ? ["no-preload"]
+                        : Object.entries(Modes)
+                            .filter(([, mode]) => mode.spriteSheets.includes(dir))
+                            .map(([modeName]) => modeName);
 
-                    for (const modeName of invalidatedModes) {
-                        const moduleId = `virtual:audio-spritesheet-${modeName}`;
+                    for (const moduleName of invalidatedModules) {
+                        const moduleId = `virtual:audio-spritesheet-${moduleName}`;
                         modules.delete(moduleId);
                         const module = server.moduleGraph.getModuleById(moduleId);
                         if (module !== undefined) void server.reloadModule(module);
