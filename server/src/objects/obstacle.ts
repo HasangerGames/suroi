@@ -1,6 +1,7 @@
 import { FlyoverPref, ObjectCategory, RotationMode } from "@common/constants";
 import { PerkIds, Perks } from "@common/definitions/items/perks";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { type MeleeDefinition } from "@common/definitions/items/melees";
 import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Angle, calculateDoorHitboxes, resolveStairInteraction } from "@common/utils/math";
@@ -172,6 +173,19 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             })
         ) {
             return;
+        }
+
+        if (definition.airstrikeDamageOnly) {
+            let isAllowedWeapon = false; // change this to check whether the source of damage is an airstrike
+            /* Just some dummy code for airstrike dev change it to make it work later
+                (weaponDef?.idString === 'air_strike') || // if it is a direct hit
+                (weaponUsed instanceof Explosion 
+                   && ((weaponUsed.weapon?.definition as AirstrikeDefinition)?.idString === 'air_strike')); // if it is an explosion from the arstrike
+            */
+
+            if (!isAllowedWeapon) {
+                return 
+            }
         }
 
         this.health -= amount;

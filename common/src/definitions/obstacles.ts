@@ -16,6 +16,7 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly health: number
     readonly indestructible?: boolean
     readonly impenetrable?: boolean
+    readonly airstrikeDamageOnly?: boolean
     readonly noHitEffect?: boolean
     readonly noDestroyEffect?: boolean
     readonly noResidue?: boolean
@@ -367,7 +368,6 @@ const houseWall = (
     frames: {
         particle: (tintProperties?.particle) ?? "wall_particle"
     },
-    isWall: true,
     wall: {
         borderColor: (tintProperties?.border) ?? 0x4a4134,
         color: (tintProperties?.color) ?? 0xafa08c,
@@ -3642,7 +3642,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         idString: "house_column",
         name: "House Column",
         material: "stone",
-        indestructible: true,
+        indestructible: false,
         health: 340,
         scale: {
             spawnMin: 1,
@@ -3660,6 +3660,31 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             particle: "wall_particle"
         },
         isWall: true
+    },    
+    {
+        idString: "house_pillar",
+        name: "House Pillar",
+        material: "wood",
+        indestructible: false,
+        health: 100,
+        airstrikeDamageOnly: true,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.8
+        },
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(3, 3)
+        ),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never,
+        tint: 0xa3917b,
+        frames: {
+            base: "house_pillar",
+            particle: "wall_particle"
+        },
+        isWall: true,
+        noResidue: true
     },
     {
         idString: "metal_column",

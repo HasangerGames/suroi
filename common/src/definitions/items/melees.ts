@@ -484,7 +484,6 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         iceMultiplier: 5,
         swingSound: "heavy_swing",
         obstacleMultiplier: 2,
-        stonePiercing: true,
         piercingMultiplier: 1,
         radius: 2.7,
         offset: Vec.create(5.4, -0.5),
