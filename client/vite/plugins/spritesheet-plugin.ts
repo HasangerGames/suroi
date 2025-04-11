@@ -287,7 +287,7 @@ async function buildSpritesheets(
         const pathMap = new Map<string, string>();
 
         const files = spriteSheets
-            .flatMap(sheet => readDirectory(`public/img/game/${sheet}`, /\.(png|gif|jpg|bmp|tiff|svg)$/i)); 
+            .flatMap(sheet => readDirectory(`public/img/game/${sheet}`, /\.(png|gif|jpg|bmp|tiff|svg)$/i));
 
         // Maps have unique keys.
         // Since the filename is used as the key, and mode sprites are added to the map after the common sprites,
