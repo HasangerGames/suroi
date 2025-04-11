@@ -207,6 +207,7 @@ export const Materials = [
 export const MaterialSounds: Record<string, { hit?: string, destroyed?: string }> = {
     cardboard: { hit: "stone",       destroyed: "crate"     },
     iron:      { hit: "metal_light", destroyed: "appliance" },
+    ice:       { hit: "glass",       destroyed: "glass"     },
     crate:     { hit: "wood"  },
     pumpkin:   { hit: "stone" },
     trash_bag: { hit: "sand" }
@@ -1514,7 +1515,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         name: "Piano",
         material: "piano",
         health: 350,
-        hitSoundVariations: 8, // blus
+        hitSoundVariations: 4,
         indestructible: true,
         scale: {
             spawnMin: 1,

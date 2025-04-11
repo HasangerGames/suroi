@@ -515,7 +515,7 @@ export const Game = new (class Game {
                             soundID = "backpack_pickup";
                             break;
                         case ItemType.Throwable:
-                            soundID = "throwable_pickup";
+                            soundID = "throwable_switch";
                             break;
                         case ItemType.Perk:
                             soundID = "pickup";
