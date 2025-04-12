@@ -225,7 +225,12 @@ const randomPortOpenContainerOneSide = {
     container_4: 1,
     container_5: 1,
     container_6: 1,
-    container_9: 1
+    container_9: 1,
+
+    // Military
+    container_22: 0.1,
+    container_23: 0.1,
+    container_24: 0.1
 };
 
 const randomPortOpenContainerTwoSide = {
@@ -305,14 +310,6 @@ const randomHayShed = {
     hay_shed_3: 1
 };
 
-const ContainerTints = {
-    white: 0xc0c0c0,
-    red: 0xa33229,
-    green: 0x419e2e,
-    blue: 0x2e6e9e,
-    yellow: 0xc1b215
-};
-
 export const TruckContainerTints = { // colors by angel and me :3
     teal: 0x14544d,
     orange: 0x994e11,
@@ -321,12 +318,28 @@ export const TruckContainerTints = { // colors by angel and me :3
     red: 0xc02d0e
 };
 
+export const ContainerTints = {
+    white: 0xc0c0c0,
+    red: 0xa33229,
+    green: 0x419e2e,
+    blue: 0x2e6e9e,
+    yellow: 0xc1b215,
+    gas_can: 0xd64533,
+    military_green: 0x243315,
+    military_orange: 0x918556,
+    military_marine: 0x273b3b
+};
+
 const ContainerWallOutlineTints = {
     white: 0x797979,
     red: 0x661900,
     green: 0x006608,
     blue: 0x003b66,
-    yellow: 0x808000
+    yellow: 0x808000,
+    gas_can: 0x571b14,
+    military_green: 0x161f0d,
+    military_orange: 0x574f33,
+    military_marine: 0x172424
 };
 
 const ContainerWallTints = {
@@ -334,7 +347,11 @@ const ContainerWallTints = {
     red: 0x8f2400,
     green: 0x008f0c,
     blue: 0x00538f,
-    yellow: 0xb3b300
+    yellow: 0xb3b300,
+    gas_can: 0xd64533,
+    military_green: 0x31451c,
+    military_orange: 0xab9d65,
+    military_marine: 0x3e5e5e
 };
 
 export const TentTints = {
@@ -372,8 +389,8 @@ const warehouseLayout = (id: number, obstacles: readonly BuildingObstacle[]): Bu
 
 const container = (
     id: number,
-    color: "white" | "red" | "green" | "blue" | "yellow",
-    variant: "open2" | "open1" | "closed" | "closed_damaged" | "damaged" | "damaged_reversed",
+    color: keyof typeof ContainerTints,
+    variant: "open2" | "open1" | "closed" | "closed_damaged" | "damaged" | "damaged_reversed" | "gas_can",
     damaged?: boolean
 ): BuildingDefinition => {
     const tint = ContainerTints[color];
@@ -659,6 +676,7 @@ const container = (
             lowerCeilingImage = damaged ? "container_ceiling_5" : "container_ceiling_2";
             break;
         case "closed_damaged":
+        case "gas_can":
             upperCeilingImage = "container_ceiling_8";
             lowerCeilingImage = "container_ceiling_9";
             hitbox = new GroupHitbox(
@@ -724,7 +742,53 @@ const container = (
                 ...(variant === "damaged_reversed" ? { scale: Vec.create(-1, 1) } : {}),
                 rotation: Math.PI,
                 tint
-            }
+            },
+            ...(variant === "gas_can"
+                ? [
+                    {
+                        key: "fire_danger_symbol",
+                        position: Vec.create(0, 0),
+                        rotation: -Math.PI / 4
+                    },
+                    {
+                        key: "danger_tape",
+                        position: Vec.create(0, -10.1)
+                    },
+                    {
+                        key: "danger_tape",
+                        position: Vec.create(0, 10.1)
+                    }
+                ]
+                : []),
+            ...(color.includes("military")
+                ? [
+                    {
+                        key: "column",
+                        position: Vec.create(0, 0),
+                        tint: 0x7d9176,
+                        scale: Vec.create(1.5, 1.5)
+                    },
+                    {
+                        key: "nsd_logo",
+                        position: Vec.create(0, 0),
+                        scale: Vec.create(0.5, 0.5),
+                        tint: 0xb8b6b6
+                    },
+                    {
+                        key: "danger_tape",
+                        position: Vec.create(0, -10.1),
+                        scale: Vec.create(-1, 1),
+                        alpha: 0.5,
+                        tint: 0xff9500
+                    },
+                    {
+                        key: "danger_tape",
+                        position: Vec.create(0, 10.1),
+                        alpha: 0.5,
+                        tint: 0xff9500
+                    }
+                ]
+                : [])
             // TODO Detect mode somehow
             // ...(GameConstants.modeName === "winter" ? snowDecalDefinitions[open] : [])
         ],
@@ -732,22 +796,33 @@ const container = (
             type: FloorNames.Metal,
             hitbox: RectangleHitbox.fromRect(14, 28)
         }],
-        /* floorZIndex: ZIndexes.BuildingsFloor + 1.1,
-        ...(variant === "closed_damaged" ? {
-            floorImages: [{
-                key: "large_refinery_barrel_residue",
-                position: Vec.create(-4, 0),
-                scale: Vec.create(0.5, 0.5)
-            }]
-        } : {}), */
+        floorZIndex: ZIndexes.BuildingsFloor + 1.1,
+        ...(variant === "gas_can"
+            ? {
+                floorImages: [{
+                    key: "large_refinery_barrel_residue",
+                    position: Vec.create(-4, 0),
+                    scale: Vec.create(0.5, 0.5),
+                    alpha: 0.8
+                }]
+            }
+            : {}),
         ...(
             closed
                 ? {}
                 : { lootSpawners: [{
-                    position: Vec.create(0, 0),
-                    table: "ground_loot"
+                    position: Vec.create(0, variant === "gas_can" ? -8.5 : 0),
+                    table: variant === "gas_can" ? "gas_can" : color.includes("military") ? "airdrop_guns" : "ground_loot"
                 }] }
-        )
+        ),
+        ...(variant === "gas_can"
+            ? {
+                obstacles: [
+                    { idString: "propane_tank", position: Vec.create(3, 10) },
+                    { idString: "propane_tank", position: Vec.create(-3, 10) }
+                ]
+            }
+            : {})
     } as const;
 };
 
@@ -2875,6 +2950,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     container(19, "green", "damaged_reversed"),
     container(20, "red", "closed_damaged"),
 
+    // special containers
+    container(21, "gas_can", "gas_can"),
+    container(22, "military_green", "open1"),
+    container(23, "military_orange", "open1"),
+    container(24, "military_marine", "open1"),
+
     bigTent(1, "red"),
     bigTent(2, "green"),
     bigTent(3, "blue"),
@@ -4314,7 +4395,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // container distance Y = 28.55
             // ----------------------------------
             { idString: randomPortOpenContainerOneSide, position: Vec.create(10.75, -75.60) },
-            { idString: "container_20", position: Vec.create(10.75, -104.15) },
+            { idString: "container_21", position: Vec.create(10.75, -104.15) },
             { idString: randomPortOpenContainerTwoSide, position: Vec.create(-43.49, -5.3) },
             { idString: randomPortDamagedContainerReversed, position: Vec.create(29.19, 5.3), orientation: 2 },
             { idString: "container_20", position: Vec.create(-14.89, -5.3) },

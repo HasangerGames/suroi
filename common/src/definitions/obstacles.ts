@@ -4,7 +4,7 @@ import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../util
 import { type Mutable } from "../utils/misc";
 import { ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
-import { TentTints, TruckContainerTints } from "./buildings";
+import { ContainerTints, TentTints, TruckContainerTints } from "./buildings";
 import { type GunDefinition } from "./items/guns";
 import { PerkDefinition, PerkIds } from "./items/perks";
 import { type LootDefinition } from "./loots";
@@ -250,11 +250,6 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     bollard_particle:              { base: "metal_particle_1", tint: 0xa66e20 },
     m1117_particle:                { base: "metal_particle_1", tint: 0x2f3725 },
     file_cart_particle:            { base: "metal_particle_1", tint: 0x404040 },
-    container_particle_white:      { base: "metal_particle_1", tint: 0xc0c0c0 },
-    container_particle_red:        { base: "metal_particle_1", tint: 0xa32900 },
-    container_particle_green:      { base: "metal_particle_1", tint: 0x00a30e },
-    container_particle_blue:       { base: "metal_particle_1", tint: 0x005fa3 },
-    container_particle_yellow:     { base: "metal_particle_1", tint: 0xcccc00 },
     filing_cabinet_particle:       { base: "metal_particle_2", tint: 0x7f714d },
     briefcase_particle:            { base: "metal_particle_2", tint: 0xcfcfcf },
     aegis_crate_particle:          { base: "wood_particle",    tint: 0x2687d9 },
@@ -329,6 +324,17 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     pumpkin_particle:              { base: "pumpkin_particle_base", tint: 0xff8c01 },
     plumpkin_particle:             { base: "pumpkin_particle_base", tint: 0x8a4c70 },
     diseased_plumpkin_particle:    { base: "pumpkin_particle_base", tint: 0x654646 },
+
+    container_particle_white:      { base: "metal_particle_1", tint: ContainerTints.white },
+    container_particle_red:        { base: "metal_particle_1", tint: ContainerTints.red },
+    container_particle_green:      { base: "metal_particle_1", tint: ContainerTints.green },
+    container_particle_blue:       { base: "metal_particle_1", tint: ContainerTints.blue },
+    container_particle_yellow:     { base: "metal_particle_1", tint: ContainerTints.yellow },
+    container_particle_gas_can:    { base: "metal_particle_1", tint: ContainerTints.gas_can },
+
+    container_particle_military_green: { base: "metal_particle_1", tint: ContainerTints.military_green },
+    container_particle_military_orange: { base: "metal_particle_1", tint: ContainerTints.military_orange },
+    container_particle_military_marine: { base: "metal_particle_1", tint: ContainerTints.military_marine },
 
     tent_particle_1:               { base: "ceiling_particle", tint: TentTints.red },
     tent_particle_2:               { base: "ceiling_particle", tint: TentTints.green },
