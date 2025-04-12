@@ -226,10 +226,10 @@
 "kf_impact_of": "l'impact de " // l'espace est nécessaire
 "finally": "enfin"
 "with": "avec"
-"you": "Vous"
-"yourself": "vous-même"
-"km_killed": "avez tué"
-"km_knocked": "avez assommé"
+"you": "Tu" //Cela cause une faute : "a" plutot que "as" dans certains cas
+"yourself": "toi-même"
+"km_killed": "a tué"
+"km_knocked": "a assommé"
 "km_message": "<you> <event> <victim> <with> <weapon>"
 "kf_killed": "a tué"
 "kf_knocked": "a assommé"
