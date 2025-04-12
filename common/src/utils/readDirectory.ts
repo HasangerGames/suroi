@@ -1,4 +1,4 @@
-import { readdirSync, statSync } from "node:fs";
+import { existsSync, readdirSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 
 /**
@@ -8,6 +8,7 @@ import { resolve } from "node:path";
  */
 export function readDirectory(dir: string, filter?: RegExp): string[] {
     let results: string[] = [];
+    if (!existsSync(dir)) return results;
 
     for (const file of readdirSync(dir)) {
         const filePath = resolve(dir, file);

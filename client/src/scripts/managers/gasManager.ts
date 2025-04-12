@@ -10,7 +10,7 @@ import { UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate } from "../utils/misc";
 import { UIManager } from "./uiManager";
 
-export const GasManager = new (class GasManager {
+class GasManagerClass {
     state = GasState.Inactive;
     currentDuration = 0;
     oldPosition = Vec.create(0, 0);
@@ -135,7 +135,13 @@ export const GasManager = new (class GasManager {
             }
         }
     }
-})();
+
+    reset(): void {
+        this.time = undefined;
+    }
+}
+
+export const GasManager = new GasManagerClass();
 
 export class GasRender {
     private readonly _graphics: Graphics;

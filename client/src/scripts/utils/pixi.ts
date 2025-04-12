@@ -1,12 +1,13 @@
-import { type Mode } from "@common/definitions/modes";
+import { type ModeName } from "@common/definitions/modes";
 import { Obstacles } from "@common/definitions/obstacles";
 import { HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Vec, type Vector } from "@common/utils/vector";
-import { Assets, Container, Graphics, ImageSource, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
-import { PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
+import { Assets, Container, Graphics, ImageSource, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type WebGLRenderer } from "pixi.js";
+import type { ImageSpritesheetImporter } from "../../../vite/plugins/image-spritesheet-plugin";
 import { GameConsole } from "../console/gameConsole";
-import { getTranslatedString } from "./translations/translations";
 import { UIManager } from "../managers/uiManager";
+import { PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
+import { getTranslatedString } from "./translations/translations";
 
 let spritesheetsLoaded = false;
 
@@ -17,7 +18,7 @@ export async function spritesheetLoad(): Promise<void> {
     return new Promise(resolve => spritesheetCallbacks.push(resolve));
 }
 
-export async function loadTextures(modeName: Mode, renderer: Renderer, highResolution: boolean): Promise<void> {
+export async function loadTextures(modeName: ModeName, renderer: Renderer, highResolution: boolean): Promise<void> {
     // If device doesn't support 4096x4096 textures, force low resolution textures since they are 2048x2048
     if (renderer.type as RendererType === RendererType.WEBGL) {
         const gl = (renderer as WebGLRenderer).gl;
@@ -26,15 +27,12 @@ export async function loadTextures(modeName: Mode, renderer: Renderer, highResol
         }
     }
 
-    const atlases: Record<string, SpritesheetData[]> = (
+    const { importSpritesheet } = (
         highResolution
-            ? await import("virtual:spritesheets-jsons-high-res")
-            : await import("virtual:spritesheets-jsons-low-res")
-    // we pray
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    ).atlases as Record<string, SpritesheetData[]>;
-
-    const spritesheets = atlases[modeName];
+            ? await import("virtual:image-spritesheets-importer-high-res")
+            : await import("virtual:image-spritesheets-importer-low-res")
+    ) as ImageSpritesheetImporter;
+    const { spritesheets } = await importSpritesheet(modeName);
 
     let resolved = 0;
     const count = spritesheets.length;

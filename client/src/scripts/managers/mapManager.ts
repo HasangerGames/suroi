@@ -19,7 +19,7 @@ import { UIManager } from "./uiManager";
 import { GameConsole } from "../console/gameConsole";
 import { CameraManager } from "./cameraManager";
 
-export const MapManager = new (class MapManager {
+class MapManagerClass {
     private _expanded = false;
     get expanded(): boolean { return this._expanded; }
     set expanded(expand: boolean) {
@@ -114,7 +114,7 @@ export const MapManager = new (class MapManager {
         this.pingsContainer.zIndex = 998;
         this.teammateIndicatorContainer.zIndex = 999;
 
-        this.indicator = new SuroiSprite("player_indicator")
+        this.indicator = new SuroiSprite()
             .setTint(TEAMMATE_COLORS[0])
             .setZIndex(1000);
 
@@ -791,7 +791,18 @@ export const MapManager = new (class MapManager {
             }, 10000);
         }
     }
-})();
+
+    reset(): void {
+        this.safeZone.clear();
+        this.pingGraphics.clear();
+        this.pings.clear();
+        this.pingsContainer.removeChildren();
+        this.teammateIndicators.clear();
+        this.teammateIndicatorContainer.removeChildren();
+    }
+}
+
+export const MapManager = new MapManagerClass();
 
 export class MapPing {
     readonly startTime: number;

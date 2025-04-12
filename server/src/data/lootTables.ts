@@ -1,9 +1,9 @@
-import { Mode } from "@common/definitions/modes";
+import { ModeName } from "@common/definitions/modes";
 import { PerkIds } from "@common/definitions/items/perks";
 import { NullString } from "@common/utils/objectDefinitions";
 import { LootTable } from "../utils/lootHelpers";
 
-export const LootTables: Record<Mode, Record<string, LootTable>> = {
+export const LootTables: Record<ModeName, Record<string, LootTable>> = {
     normal: {
         ground_loot: [
             { table: "equipment", weight: 1 },
@@ -199,6 +199,18 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
             { table: "ammo", weight: 1 },
             { table: "healing_items", weight: 0.8 },
             { table: "guns", weight: 0.3 }
+        ],
+        hq_desk: [
+            [
+                { table: "equipment", weight: 1 },
+                { table: "guns", weight: 0.65 },
+                { table: "scopes", weight: 0.3 }
+            ],
+            [
+                { table: "ammo", weight: 1 },
+                { table: "healing_items", weight: 0.8 },
+                { table: "guns", weight: 0.3 }
+            ]
         ],
         filing_cabinet: [
             { table: "ammo", weight: 1 },
@@ -1580,7 +1592,7 @@ export const LootTables: Record<Mode, Record<string, LootTable>> = {
     },
     infection: {
         airdrop_guns: [
-            { item: "vaccinator", weight: 1.1 },
+            { item: "vaccinator", weight: 2 },
             { item: "mg36", weight: 1 },
             { item: "sr25", weight: 1 },
             { item: "vss", weight: 1 },

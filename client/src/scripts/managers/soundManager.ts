@@ -5,7 +5,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { Game } from "../game";
 // add a namespace to pixi sound imports because it has annoying generic names like "sound" and "filters" without a namespace
 import * as PixiSound from "@pixi/sound";
-import { paths } from "virtual:game-sounds";
+import type { AudioSpritesheetImporter } from "../../../vite/plugins/audio-spritesheet-plugin";
 import { GameConsole } from "../console/gameConsole";
 
 export interface SoundOptions {
@@ -141,7 +141,7 @@ export class GameSound {
     }
 }
 
-export const SoundManager = new (class SoundManager {
+class SoundManagerClass {
     readonly updatableSounds = new Set<GameSound>();
 
     sfxVolume = 0;
@@ -149,30 +149,8 @@ export const SoundManager = new (class SoundManager {
 
     position = Vec.create(0, 0);
 
-    /**
-     * Explanation for the following code:
-     * Every sound now has an internal ID and a name
-     * The internal ID is required for sounds that have the same file name but are in different folders
-     * This is used so modes can override sounds by just having a file with the same name in their folders
-     *
-     * Sounds that are not in the current mode folders will *still* be loaded but only when they are played
-     * This is done for example for the HQ music thingy that is a big file that's not played most of the time
-     */
-
-    /** current map of names to ID based on the folders loaded by the current mode */
-    private _nameToId: Record<string, string> = {};
-
-    /** Map of sound ID to sound path used to load sounds */
-    private readonly _idToPath: Record<string, string> = {};
-
-    // used to map sounds from a mode to their ID's
-    // example: on winter `airdrop_plane` will map to `winter/airdrop_plane`
-    //                                      mode       sound name sound ID
-    //                                       ^              ^        ^
-    private readonly _folderNameToId = {} as Record<string, Record<string, string>>;
-
     private _initialized = false;
-    init(): void {
+    async init(): Promise<void> {
         if (this._initialized) {
             throw new Error("SoundManager has already been initialized");
         }
@@ -181,17 +159,48 @@ export const SoundManager = new (class SoundManager {
         this.sfxVolume = GameConsole.getBuiltInCVar("cv_sfx_volume");
         this.ambienceVolume = GameConsole.getBuiltInCVar("cv_ambience_volume");
 
-        for (const path of paths as string[]) {
-            const name = path.slice(path.lastIndexOf("/") + 1, -4); // removes path and extension
-            const url = path;
+        const { importSpritesheet } = await import("virtual:audio-spritesheet-importer") as AudioSpritesheetImporter;
+        const { filename, spritesheet } = await importSpritesheet(Game.modeName);
+        const audio = await (await fetch(filename)).arrayBuffer();
+        let offset = 0;
+        for (const [id, length] of Object.entries(spritesheet)) {
+            this.addSound(id, { source: audio.slice(offset, offset + length) });
+            offset += length;
+        }
 
-            const folder = path.split("/")[3];
-            const id = `${folder}/${name}`;
+        const { noPreloadSounds } = await import("virtual:audio-spritesheet-no-preload") as { noPreloadSounds: string[] };
+        for (const id of noPreloadSounds) {
+            this.addSound(id, { url: `./audio/game/no-preload/${id}.mp3`, preload: false });
+        }
+    }
 
-            this._folderNameToId[folder] ??= {};
-            this._folderNameToId[folder][name] = id;
+    addSound(id: string, opts: Partial<PixiSound.Options>): void {
+        /**
+         * For some reason, PIXI will call the `loaded` callback twice
+         * when an error occurs…
+         */
+        let called = false;
 
-            this._idToPath[id] = url;
+        PixiSound.sound.add(id, {
+            ...opts,
+            loaded(error: Error | null) {
+                // despite what the pixi typings say, logging `error` shows that it can be null
+                if (error !== null && !called) {
+                    called = true;
+                    console.warn(`Failed to load sound '${id}'\nError object provided below`);
+                    console.error(error);
+                }
+            }
+        });
+    }
+
+    update(): void {
+        for (const sound of this.updatableSounds) {
+            if (sound.ended) {
+                this.updatableSounds.delete(sound);
+                continue;
+            }
+            sound.update();
         }
     }
 
@@ -200,9 +209,7 @@ export const SoundManager = new (class SoundManager {
     }
 
     play(name: string, options?: Partial<SoundOptions>): GameSound {
-        const id = this._nameToId[name];
-
-        const sound = new GameSound(id, name, {
+        const sound = new GameSound(name, name, {
             falloff: 1,
             maxRange: 256,
             dynamic: false,
@@ -219,74 +226,10 @@ export const SoundManager = new (class SoundManager {
         return sound;
     }
 
-    update(): void {
-        for (const sound of this.updatableSounds) {
-            if (sound.ended) {
-                this.updatableSounds.delete(sound);
-                continue;
-            }
-            sound.update();
-        }
-    }
-
     stopAll(): void {
         PixiSound.sound.stopAll();
+        this.updatableSounds.clear();
     }
+}
 
-    loadSounds(): void {
-        this._nameToId = {};
-
-        const isLoading: Record<string, boolean> = {};
-
-        for (const folder of Game.mode.sounds.foldersToLoad) {
-            for (const [name, id] of Object.entries(this._folderNameToId[folder])) {
-                this._nameToId[name] = id;
-                isLoading[id] = true;
-                this.loadSound(id, true);
-            }
-        }
-
-        // add sounds that are not in the mode folders but set preload to false
-        for (const nameToId of Object.values(this._folderNameToId)) {
-            for (const [name, id] of Object.entries(nameToId)) {
-                if (!this._nameToId[name]) {
-                    this._nameToId[name] = id;
-                }
-                if (!isLoading[id]) {
-                    this.loadSound(id, false);
-                }
-            }
-        }
-    }
-
-    loadSound(id: string, preload: boolean): void {
-        if (PixiSound.sound.exists(id)) return;
-
-        const url = this._idToPath[id];
-        if (!url) {
-            return;
-        }
-
-        /**
-         * For some reason, PIXI will call the `loaded` callback twice
-         * when an error occurs…
-         */
-        let called = false;
-
-        PixiSound.sound.add(
-            id,
-            {
-                url,
-                preload,
-                loaded(error: Error | null) {
-                    // despite what the pixi typings say, logging `error` shows that it can be null
-                    if (error !== null && !called) {
-                        called = true;
-                        console.warn(`Failed to load sound '${id}' (path '${url}')\nError object provided below`);
-                        console.error(error);
-                    }
-                }
-            }
-        );
-    }
-})();
+export const SoundManager = new SoundManagerClass();

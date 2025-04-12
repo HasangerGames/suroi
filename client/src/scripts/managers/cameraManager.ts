@@ -1,4 +1,4 @@
-import { DEFAULT_SCOPE } from "@common/definitions/items/scopes";
+import { DEFAULT_SCOPE, Scopes } from "@common/definitions/items/scopes";
 import { EaseFunctions, Numeric } from "@common/utils/math";
 import { randomPointInsideCircle } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -11,7 +11,7 @@ import { type Tween } from "../utils/tween";
 import type { Layer } from "@common/constants";
 import { GameConsole } from "../console/gameConsole";
 
-export const CameraManager = new (class CameraManager {
+class CameraManagerClass {
     pixi!: Application;
     container!: Container;
 
@@ -115,7 +115,14 @@ export const CameraManager = new (class CameraManager {
     addObject(...objects: Container[]): void {
         this.container.addChild(...objects);
     }
-})();
+
+    reset(): void {
+        this.container.removeChildren();
+        this.zoom = Scopes.definitions[0].zoomLevel;
+    }
+}
+
+export const CameraManager = new CameraManagerClass();
 
 export class Shockwave {
     lifeStart: number;

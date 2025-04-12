@@ -3,9 +3,10 @@ import path, { resolve } from "path";
 import { type UserConfig } from "vite";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 import pkg from "../../package.json";
-import { importPathsPlugin } from "./plugins/import-paths-plugin";
 import { newsPosts } from "./plugins/news-posts-plugin";
 import { translations } from "./plugins/translations-plugin";
+import { imageSpritesheet } from "./plugins/image-spritesheet-plugin";
+import { audioSpritesheet } from "./plugins/audio-spritesheet-plugin";
 
 const commonConfig: UserConfig = {
     server: {
@@ -65,10 +66,8 @@ const commonConfig: UserConfig = {
             test: /\.(svg)$/i,
             logStats: false
         }),
-        importPathsPlugin({
-            folders: ["public/audio/game/"],
-            moduleName: "game-sounds"
-        }),
+        imageSpritesheet(),
+        audioSpritesheet(),
         newsPosts(),
         translations()
     ],

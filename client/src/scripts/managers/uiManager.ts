@@ -43,7 +43,7 @@ function safeRound(value: number): number {
 /**
  * This class manages the game UI
  */
-export const UIManager = new (class UIManager {
+class UIManagerClass {
     private maxHealth = GameConstants.player.defaultHealth;
     private health = GameConstants.player.defaultHealth;
 
@@ -1062,7 +1062,7 @@ export const UIManager = new (class UIManager {
 
         container.children(".item-tooltip").html("");
         container.children(".item-image").attr("src", "");
-        container.css("visibility", "hidden");
+        container.css("visibility", UI_DEBUG_MODE ? "" : "hidden");
         container.off("pointerdown");
     }
 
@@ -1111,7 +1111,7 @@ export const UIManager = new (class UIManager {
                 const backpack = Game.activePlayer.equipment.backpack;
                 itemSlot.toggleClass("full", count >= backpack.maxCapacity[item]);
             }
-            const isPresent = count > 0;
+            const isPresent = count > 0 || UI_DEBUG_MODE;
 
             itemSlot.toggleClass("has-item", isPresent);
 
@@ -1677,7 +1677,25 @@ export const UIManager = new (class UIManager {
         this.oldKillLeaderId = this.killLeaderCache?.id ?? id;
         this.killLeaderCache = data;
     }
-})();
+
+    reset(): void {
+        this.ui.teamContainer.html("");
+        this.ui.actionContainer.hide();
+        this.ui.gameOverOverlay.hide();
+        this.ui.canvas.removeClass("active");
+        this.ui.killLeaderLeader.text(getTranslatedString("msg_waiting_for_leader"));
+        this.ui.killLeaderCount.text("0");
+
+        this.clearTeammateCache();
+        this.clearWeaponCache();
+        this.reportedPlayerIDs.clear();
+        this.killLeaderCache = undefined;
+        this.oldKillLeaderId = undefined;
+        this.skinID = undefined;
+    }
+}
+
+export const UIManager = new UIManagerClass();
 
 class Wrapper<T> {
     private _dirty = true;

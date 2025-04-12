@@ -10,6 +10,11 @@
     max-width: 500px;
 }
 
+#partners-modal {
+    background-color: palette.$bg;
+    max-width: 900px;
+}
+
 #warning-modal {
     text-align: center;
     border: 2.5px solid rgba(0, 0, 0, 0.3);
@@ -252,9 +257,9 @@
     // For mobile
     @media screen and (max-width: variables.$screen_large) {
 
-        transform: scale(55%);
-        top: 0;
-        right: -20px;
+        transform: scale(75%);
+        top: 5px;
+        right: -15px !important;
 
         .dropdown-content {
             height: 300px;
@@ -265,6 +270,22 @@
         }
     }
 }
+
+#partners-list {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 5px;
+    column-gap: 15px;
+    padding: 0.25rem 1rem 1rem 1rem;
+    max-height: 365px;
+    overflow-x: scroll;
+
+    a {
+        color: white;
+    }
+}
+
 // TODO Refactor this, make classes
 .dialog {
     user-select: none;
@@ -293,6 +314,12 @@
             width: $headerHeight;
             height: $headerHeight;
             cursor: pointer;
+
+            transition: color 0.25s;
+
+            &:hover {
+                color: red;
+            }
         }
     }
 

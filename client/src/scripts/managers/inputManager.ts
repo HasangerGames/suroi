@@ -181,7 +181,7 @@ class InputMapper {
     }
 }
 
-export const InputManager = new (class InputManager {
+class InputManagerClass {
     readonly binds = new InputMapper();
 
     readonly isMobile!: boolean;
@@ -926,7 +926,9 @@ export const InputManager = new (class InputManager {
 
         return name === undefined ? name : `./img/misc/${name}_icon.svg`;
     }
-})();
+}
+
+export const InputManager = new InputManagerClass();
 
 export type CompiledAction = (() => boolean) & { readonly original: string };
 export type CompiledTuple = readonly [CompiledAction, CompiledAction];

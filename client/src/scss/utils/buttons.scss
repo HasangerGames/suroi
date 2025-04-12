@@ -16,7 +16,13 @@
   border-radius: 10px;
 
   text-decoration: none;
-  text-shadow: 3px 3px 8px #00000064;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+
+  filter: drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.5));
+
+  @media screen and (max-width: variables.$screen_large) {
+    padding: 0 12px;
+  }
 }
 
 .btn-lg {
@@ -39,20 +45,24 @@
   @include variables.drop-shadow;
 }
 
-#btn-play-duo span {
+#btn-play-duo .btn-icon + span {
   margin-left: 20px;
 }
 
-#btn-play-squad span {
+#btn-play-squad .btn-icon + span {
   margin-left: 27px;
 }
 
 .link-darken:hover,
-.link-darken:active,
+.link-darken:active {
+  color: inherit;
+  filter: brightness(80%);
+}
+
 .btn-darken:hover,
 .btn-darken:active {
   color: inherit;
-  filter: brightness(80%);
+  filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.6)) brightness(80%);
 }
 
 .btn-disabled {
@@ -121,10 +131,14 @@
   border: none;
   border-radius: 12px;
 
-  background-size: 65%;
+  background-size: 60%;
   background-position: center;
   background-repeat: no-repeat;
   text-align: center;
+
+  @media screen and (max-width: 800px) {
+    background-size: 50%;
+  }
 }
 
 .btn-bsky {

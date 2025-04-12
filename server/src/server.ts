@@ -1,7 +1,7 @@
 import { GameConstants, TeamSize } from "@common/constants";
 import { Badges } from "@common/definitions/badges";
 import { Skins } from "@common/definitions/items/skins";
-import { Mode } from "@common/definitions/modes";
+import { ModeName } from "@common/definitions/modes";
 import { CustomTeamMessage, PunishmentMessage } from "@common/typings";
 import Cluster from "node:cluster";
 import { URLSearchParams } from "node:url";
@@ -73,8 +73,8 @@ if (Cluster.isPrimary && require.main === module) {
         serverLog(`Switching to ${humanReadableTeamSizes[teamSize] ?? `team size ${teamSize}`}`);
     });
 
-    let mode: Mode;
-    let nextMode: Mode | undefined;
+    let mode: ModeName;
+    let nextMode: ModeName | undefined;
     const map = new Switcher("map", Config.map, (map, nextMap) => {
         mode = modeFromMap(map);
         nextMode = modeFromMap(nextMap);

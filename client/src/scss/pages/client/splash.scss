@@ -34,21 +34,26 @@
         user-select: none;
     }
 
+    @media screen and (max-width: 800px) {
+        margin-top: 10px;
+    }
+
     @media screen and (max-height: 500px) {
+        min-width: 300px;
         margin-top: 10px;
     }
 
     @media screen and (max-width: variables.$screen_medium) and (max-height: variables.$screen_medium) {
-        min-width: 170px;
-        max-width: 300px;
-        margin: 2.5px auto 2.5px auto;
+        margin: 16px auto 2.5px auto;
     }
 }
 
 #splash-modals {
     display: flex;
     justify-content: center;
-    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
 
     width: 100vw;
     max-height: 299px;
@@ -58,12 +63,8 @@
     font-size: 20px;
 
     @media screen and (max-width: variables.$screen_medium) and (max-height: variables.$screen_medium) {
-        align-items: center;
-        flex-wrap: nowrap;
-        flex-direction: column;
-        gap: 5px;
+        gap: 8px;
         max-height: unset;
-        margin-bottom: 1rem;
 
         button span {
             font-size: 16px;
@@ -86,23 +87,13 @@
             border-radius: 15px;
             margin-right: 20px;
         }
-
-
-        #splash-featured-people,
-        #skin-container,
-        #splash-news,
-        #splash-socials {
-            display: none !important;
-        }
     }
 
     @media screen and (max-width: variables.$screen_large) {
-        display: inline-flex;
-        align-items: center;
-        flex-wrap: nowrap;
-        gap: 5px;
+        gap: 8px;
         max-height: unset;
-        margin-bottom: 1rem;
+        padding-left: 8px;
+        padding-right: 8px;
 
         #splash-options,
         #splash-customize,
@@ -113,36 +104,70 @@
             max-width: 300px;
         }
 
-        #splash-news {
-            height: 250px;
-            #news-posts {
-                height: 80%;
-            }
-        }
+        #splash-socials > div {
+            gap: 5px;
 
-        #splash-socials {
-            height: 90px;
-            display: flex;
+            .btn {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
 
-            div {
-                flex-direction: column !important;
-
-                .btn-wiki, .btn-kofi, .btn-github {
-                    display: none;
+                img {
+                    height: 24px;
                 }
             }
         }
 
         #splash-customize {
-            height: 250px;
+            gap: 8px;
 
             #skin-container {
                 transform: scale(90%);
             }
 
-            button {
-                font-size: 16px;
+            div:last-child {
+                width: 100%;
+                flex-direction: column !important;
+                gap: 8px !important;
             }
+
+            button {
+                font-size: 18px;
+            }
+        }
+    }
+
+    @media screen and (max-width: 800px) {
+        flex-direction: column;
+        align-items: center;
+        padding: 5px;
+
+        #splash-options,
+        #splash-customize,
+        #splash-socials,
+        #splash-rotate-message,
+        #splash-server-message,
+        #splash-news {
+            max-width: 375px;
+        }
+
+        #splash-center {
+            order: 1;
+        }
+
+        #splash-featured-people {
+            order: 2;
+            flex-direction: column;
+            width: unset;
+        }
+
+        #splash-news {
+            order: 3;
+        }
+
+        #splash-customize {
+            order: 4;
+            margin-bottom: 16px;
         }
     }
 }
@@ -278,8 +303,9 @@
     padding: 20px;
     border-radius: 20px;
 
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
+    @media screen and (max-width: variables.$screen_large) {
+        padding: 15px;
+    }
 }
 
 .blur {
@@ -290,6 +316,7 @@
     #splash-rotate-message,
     #splash-socials,
     #splash-hw-acceleration-warning,
+    #splash-backlinks,
     .featured-container,
     .server-list-item {
         backdrop-filter: blur(8px);
@@ -303,9 +330,8 @@
 #splash-news,
 #splash-options,
 #splash-customize,
-#splash-server-message,
-#btn-server-select {
-    text-shadow: 3px 3px 8px #00000064;
+#splash-server-message {
+    @include variables.text-shadow;
 }
 
 #splash-hw-acceleration-warning {
@@ -406,7 +432,6 @@
 }
 
 #splash-center {
-    margin-right: 15px;
     max-width: 370px;
 }
 
@@ -490,6 +515,8 @@
 
         font-size: 18px;
         text-align: center;
+
+        @include variables.drop-shadow;
     }
 
     #username-input:focus,
@@ -529,6 +556,8 @@
 
         display: flex;
         align-items: center;
+
+        filter: drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.5));
 
         i {
             // caret
@@ -668,14 +697,14 @@
 
         &:first-child {
             border-top: 1px solid rgba($color: #000000, $alpha: 0.8);
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
             padding-top: 12px;
         }
 
         &:last-child {
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
             padding-bottom: 12px;
         }
     }
@@ -734,13 +763,28 @@
 #splash-socials {
     margin-top: 14px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
     gap: 10px;
     background: palette.$transparent_bg;
     padding: 20px;
     border-radius: 20px;
-    margin-left: 8px;
-    margin-right: -8px;
+
+    @media screen and (max-width: variables.$screen_large) {
+        padding: 15px;
+    }
+
+    & > div {
+        width: 100%;
+        display: flex;
+        gap: 8px;
+        justify-content: space-evenly;
+
+        a {
+            flex: 1 1 0;
+        }
+    }
 }
 
 #splash-customize {
@@ -763,19 +807,45 @@
         width: 200px;
     }
 
+    @media screen and (max-width: 1280px) {
+        flex-direction: column;
+        gap: 8px;
+    }
+
     @media screen and (max-width: 800px) {
         position: static;
-        flex-direction: row;
+        max-width: 370px;
+        flex-direction: row !important;
+    }
+
+    @media screen and (min-width: 800px) and (max-height: 500px) {
+        gap: 5px;
+        transform: scale(75%);
+        top: -8px;
+        left: -16px;
     }
 
     .featured-container {
         background: palette.$transparent_bg;
         border-radius: 10px;
-        padding: 10px 20px 10px 20px;
-        height: fit-content;
+        padding: 10px 20px;
+        width: fit-content;
+        height: 90px;
 
-        @media screen and (max-width: 1200px) {
-            padding: 5px 10px 5px 10px;
+        @media screen and (max-width: 1280px) {
+            height: fit-content;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            padding: 15px;
+        }
+
+        @media screen and (max-width: 800px) {
+            flex-direction: column;
+            gap: 8px;
+            max-height: 83px;
+            flex-grow: 1;
         }
     }
 
@@ -785,16 +855,15 @@
         margin-top: 5px;
         margin-bottom: 12px;
 
-        @media screen and (max-width: 1200px) {
+        @include variables.text-shadow;
+
+        @media screen and (max-width: 1280px) {
+            margin: 0;
             font-size: 16px;
         }
-    }
 
-    .featured-logo {
-        height: 30px;
-
-        @media screen and (max-width: 1200px) {
-            height: 25px;
+        @media screen and (max-width: 1280px) and (min-width: 800px) {
+            width: min-content;
         }
     }
 
@@ -803,7 +872,7 @@
         align-items: center;
         gap: 5px;
         color: #ffc800;
-        text-shadow: 3px 3px 8px #00000064;
+        @include variables.text-shadow;
         text-decoration: none;
     }
 
@@ -833,34 +902,32 @@
     }
 }
 
-#splash-settings {
-    display: flex;
+#splash-version, #splash-partners {
     position: absolute;
-
     bottom: 0.5rem;
-    right: 0.75rem;
-
-    .btn {
-        width: 50px;
-        height: 50px;
-    }
-
-    *:not(:last-child) {
-        margin-right: -2px;
-    }
-}
-
-#splash-backlinks {
-    position: absolute;
-
-    bottom: 0.5rem;
-    left: 0.75rem;
+    z-index: 10000;
 
     font-size: 16px;
+    @include variables.text-shadow;
 
     a {
         color: white;
     }
+
+    @media screen and (max-width: 500px), (max-height: 500px) {
+        background-color: palette.$bg;
+        @include variables.drop-shadow;
+        padding: 4px 8px;
+        border-radius: 8px;
+    }
+}
+
+#splash-version {
+    left: 0.75rem;
+}
+
+#splash-partners {
+    right: 0.75rem;
 }
 
 .event-winter {

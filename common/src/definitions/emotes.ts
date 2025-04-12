@@ -120,15 +120,17 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
         ],
         [EmoteCategory.Misc]: [
             "Fire",
-            "Carrot",
-            "Egg",
             "Penguin",
             "Squid",
-            "Tomato",
+            "Eagle",
+            "Whale",
+            "Carrot",
+            "Egg",
             "Plumpkin",
             "Leek",
-            "Eagle",
-            "Logged"
+            "Tomato",
+            "Logged",
+            "Sun and Moon"
         ]
     }).flatMap(([category, names]) =>
         names.map(name => ({

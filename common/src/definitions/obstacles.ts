@@ -8,7 +8,7 @@ import { TentTints } from "./buildings";
 import { type GunDefinition } from "./items/guns";
 import { PerkDefinition, PerkIds } from "./items/perks";
 import { type LootDefinition } from "./loots";
-import { Mode } from "./modes";
+import { ModeName } from "./modes";
 import { SyncedParticleDefinition } from "./syncedParticles";
 
 type CommonObstacleDefinition = ObjectDefinition & {
@@ -56,7 +56,7 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly regenerateAfterDestroyed?: number
 
     readonly applyPerkOnDestroy?: {
-        readonly mode?: Mode
+        readonly mode?: ModeName
         readonly perk: ReferenceTo<PerkDefinition>
         /**
          * A number between 0 and 1 indicating the chance of the perk being applied
@@ -207,6 +207,7 @@ export const Materials = [
 export const MaterialSounds: Record<string, { hit?: string, destroyed?: string }> = {
     cardboard: { hit: "stone",       destroyed: "crate"     },
     iron:      { hit: "metal_light", destroyed: "appliance" },
+    ice:       { hit: "glass",       destroyed: "glass"     },
     crate:     { hit: "wood"  },
     pumpkin:   { hit: "stone" },
     trash_bag: { hit: "sand" }
@@ -679,7 +680,7 @@ const rshCase = (idString: string): RawObstacleDefinition => ({
     idString,
     name: "RSh-12 Case",
     material: "crate",
-    health: 80,
+    health: 150,
     hitbox: new GroupHitbox(
         RectangleHitbox.fromRect(8.5, 5.5),
         RectangleHitbox.fromRect(1.3, 6, Vec.create(-2.7, 0)),
@@ -1451,7 +1452,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         idString: "hq_desk_left",
         name: "Headquarters Desk",
         material: "wood",
-        health: 120,
+        health: 100,
         scale: {
             spawnMin: 1,
             spawnMax: 1,
@@ -1463,7 +1464,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         ),
         rotationMode: RotationMode.Limited,
         hasLoot: true,
-        lootTable: "small_drawer",
+        lootTable: "hq_desk",
         frames: {
             particle: "headquarters_desk_particle"
         }
@@ -1472,7 +1473,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         idString: "hq_desk_right",
         name: "Headquarters Desk",
         material: "wood",
-        health: 120,
+        health: 100,
         scale: {
             spawnMin: 1,
             spawnMax: 1,
@@ -1484,7 +1485,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         ),
         rotationMode: RotationMode.Limited,
         hasLoot: true,
-        lootTable: "small_drawer",
+        lootTable: "hq_desk",
         frames: {
             particle: "headquarters_desk_particle"
         }
@@ -1514,7 +1515,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         name: "Piano",
         material: "piano",
         health: 350,
-        hitSoundVariations: 8, // blus
+        hitSoundVariations: 4,
         indestructible: true,
         scale: {
             spawnMin: 1,
@@ -2640,7 +2641,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         idString: "filing_cabinet",
         name: "Filing Cabinet",
         material: "iron",
-        health: 125,
+        health: 100,
         scale: {
             spawnMin: 1,
             spawnMax: 1,

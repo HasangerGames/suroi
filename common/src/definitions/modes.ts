@@ -3,9 +3,9 @@ import { type ScopeDefinition } from "./items/scopes";
 
 export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "trail" | "gas" | "void";
 
-export type Mode = "normal" | "fall" | "halloween" | "infection" | "birthday" | "winter";
+export type ModeName = "normal" | "fall" | "halloween" | "infection" | "birthday" | "winter";
 
-export type SpritesheetNames = Mode | "shared";
+export type SpritesheetNames = ModeName | "shared";
 
 export interface ModeDefinition {
     readonly colors: Record<ColorKeys, string>
@@ -32,7 +32,7 @@ export interface ModeDefinition {
     readonly weaponSwap?: boolean
 }
 
-export const Modes: Record<Mode, ModeDefinition> = {
+export const Modes: Record<ModeName, ModeDefinition> = {
     normal: {
         colors: {
             grass: "hsl(95, 41%, 38%)",

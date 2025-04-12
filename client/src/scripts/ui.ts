@@ -7,7 +7,7 @@ import { HealType, HealingItems, type HealingItemDefinition } from "@common/defi
 import { PerkIds, Perks } from "@common/definitions/items/perks";
 import { Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
 import { Skins, type SkinDefinition } from "@common/definitions/items/skins";
-import { Modes, type Mode } from "@common/definitions/modes";
+import { Modes, type ModeName } from "@common/definitions/modes";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type PunishmentMessage } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
@@ -17,6 +17,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { sound } from "@pixi/sound";
 import $ from "jquery";
 import { Color, isWebGPUSupported } from "pixi.js";
+import { posts } from "virtual:news-posts";
 import type { NewsPost } from "../../vite/plugins/news-posts-plugin";
 import { TRANSLATIONS, getTranslatedString } from "./utils/translations/translations";
 import type { TranslationKeys } from "./utils/translations/typings";
@@ -56,8 +57,8 @@ interface RegionInfo {
     readonly nextTeamSize?: TeamSize
     readonly teamSizeSwitchTime?: number
 
-    readonly mode?: Mode
-    readonly nextMode?: Mode
+    readonly mode?: ModeName
+    readonly nextMode?: ModeName
     readonly modeSwitchTime?: number
 
     readonly ping?: number
@@ -403,9 +404,7 @@ export async function setUpUI(): Promise<void> {
     }
 
     // Load news
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const posts = (await import("virtual:news-posts")).posts as NewsPost[];
-    ui.newsPosts.html(posts.slice(0, 5).map(post => `
+    ui.newsPosts.html((posts as NewsPost[]).slice(0, 5).map(post => `
         <article class="splash-news-entry">
             <div class="news-date">${humanDate(post.date)}</div>
             <div class="news-title">${post.title}</div>
@@ -811,76 +810,44 @@ export async function setUpUI(): Promise<void> {
 
     const youtubers = [
         {
+            name: "Sapphire",
+            link: "https://www.youtube.com/channel/UCvsD5KTuL6aXFmiPFHLNq0g"
+        },
+        {
+            name: "End",
+            link: "https://www.youtube.com/channel/UCUEZCfGgTurhTqerJjIaFTQ"
+        },
+        {
+            name: "TEAMFIGHTER 27",
+            link: "https://www.youtube.com/channel/UCJF75th14wo3O4YvH8GfFXw"
+        },
+        {
+            name: "Red King Gaming",
+            link: "https://www.youtube.com/channel/UCr7jJLYLU9mCBVfL5rmpvXg"
+        },
+        {
+            name: "Viiper",
+            link: "https://www.youtube.com/channel/UCey8-fJfkF7UFYdWBcegzWA"
+        },
+        {
             name: "123OP",
             link: "https://www.youtube.com/@123op."
         },
         {
-            name: "$parkySKULL",
-            link: "https://www.youtube.com/@Skullboi249"
-        },
-        {
-            name: "viper",
-            link: "https://www.youtube.com/channel/UCey8-fJfkF7UFYdWBcegzWA"
-        },
-        {
-            name: "IoSilverAway",
-            link: "https://www.youtube.com/@iosilveraway_19"
-        },
-        {
-            name: "Ukraines dude",
-            link: "https://www.youtube.com/@Ukrainesdude"
-        },
-        {
-            name: "Ash",
-            link: "https://www.youtube.com/@AshMyBoi"
-        },
-        {
-            name: "Tuncres",
-            link: "https://www.youtube.com/@Tuncres2022"
-        },
-        {
-            name: "Данзан animations",
-            link: "https://www.youtube.com/@danzananimYT/videos"
+            name: "PacifistX",
+            link: "https://www.youtube.com/@PacifstX"
         },
         {
             name: "Pablo_Fan_",
             link: "https://www.youtube.com/@Pablo_Fan_"
         },
         {
-            name: "g0dak",
-            link: "https://www.youtube.com/@g0dak"
-        },
-        {
-            name: "GAMERIO",
-            link: "https://www.youtube.com/@GAMERIO1"
-        },
-        {
-            name: "N00B.I0",
-            link: "https://www.youtube.com/@N00B.I0"
-        },
-        {
-            name: "Dablitter",
-            link: "https://www.youtube.com/@dablitter5719"
-        },
-        {
-            name: "DESTROYER [IHY]",
-            link: "https://www.youtube.com/@DESTROYERIHY"
-        },
-        {
-            name: "[ATMOS]Bl00D",
-            link: "https://www.youtube.com/@TheRealATMOS"
-        },
-        {
-            name: "Tuncres",
-            link: "https://www.youtube.com/@Tuncres2022"
-        },
-        {
             name: "this.is.gls_",
             link: "https://www.youtube.com/@this.is.gls_"
         },
         {
-            name: "LeeMinHaiz",
-            link: "https://www.youtube.com/@LeeMinHaiz"
+            name: "dReammakers.",
+            link: "https://www.youtube.com/channel/UCLid-yvmRUmpA5NBP34SOug"
         }
     ];
     const youtuber = pickRandomInArray(youtubers);
@@ -889,16 +856,28 @@ export async function setUpUI(): Promise<void> {
 
     const streamers = [
         {
-            name: "ikou",
-            link: "https://www.twitch.tv/ikou_yt"
+            name: "MikeMotions",
+            link: "https://www.twitch.tv/mikemotions"
         },
         {
-            name: "seth_mayo",
-            link: "https://www.twitch.tv/seth_mayo"
+            name: "conduketive",
+            link: "https://www.twitch.tv/conduketive"
         },
         {
-            name: "PatchesSC",
-            link: "https://www.twitch.tv/patchessc"
+            name: "youraopp",
+            link: "https://www.twitch.tv/youraopp"
+        },
+        {
+            name: "bcdf92",
+            link: "https://www.twitch.tv/bcdf92"
+        },
+        {
+            name: "cybytroll",
+            link: "https://www.twitch.tv/cybytroll"
+        },
+        {
+            name: "bedbests",
+            link: "https://www.twitch.tv/bedbests"
         }
     ];
     const streamer = pickRandomInArray(streamers);
@@ -1021,7 +1000,7 @@ export async function setUpUI(): Promise<void> {
     });
 
     $<HTMLButtonElement>("#btn-settings").on("click", () => {
-        $(".dialog").hide();
+        $(".dialog").fadeOut(250);
         settingsMenu.fadeToggle(250);
         settingsMenu.removeClass("in-game");
     });
@@ -1042,6 +1021,16 @@ export async function setUpUI(): Promise<void> {
     $<HTMLButtonElement>("#close-customize").on("click", () => customizeMenu.fadeOut(250));
 
     $<HTMLButtonElement>("#close-report").on("click", () => ui.reportingModal.fadeOut(250));
+
+    const partnersModal = $("#partners-modal");
+
+    $("#partners-link").on("click", () => {
+        if (partnersModal.is(":visible")) return;
+        $(".dialog").fadeOut(250);
+        partnersModal.fadeToggle(250);
+    });
+
+    $("#close-partners").on("click", () => partnersModal.fadeOut(250));
 
     const role = GameConsole.getBuiltInCVar("dv_role");
 

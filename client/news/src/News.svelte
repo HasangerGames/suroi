@@ -1,10 +1,11 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { NewsPost } from "../../vite/news-posts-plugin/news-posts-plugin";
+  import type { NewsPost } from "../../vite/plugins/news-posts-plugin";
   import { humanDate } from "../../src/scripts/utils/misc";
   import { Numeric } from "@common/utils/math";
   import Pagination from "./Pagination.svelte";
   import { writable } from "svelte/store";
+  import { posts as newsPosts } from "virtual:news-posts";
 
   let posts: NewsPost[];
   export let page = writable(0);
@@ -12,7 +13,7 @@
   export let pages: number;
 
   onMount(async() => {
-    posts = (await import("virtual:news-posts")).posts as NewsPost[];
+    posts = newsPosts as NewsPost[];
     pages = Math.ceil(posts.length / perPage);
   });
 

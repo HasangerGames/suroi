@@ -5,7 +5,7 @@ import { Backpacks } from "@common/definitions/items/backpacks";
 import { Guns } from "@common/definitions/items/guns";
 import { PerkCategories } from "@common/definitions/items/perks";
 import { Loots } from "@common/definitions/loots";
-import { Mode } from "@common/definitions/modes";
+import { ModeName } from "@common/definitions/modes";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { Orientation, type Variation } from "@common/typings";
 import { CircleHitbox } from "@common/utils/hitbox";
@@ -51,7 +51,7 @@ export interface RiverDefinition {
 export interface MapDefinition {
     readonly width: number
     readonly height: number
-    readonly mode?: Mode
+    readonly mode?: ModeName
     readonly spawn?: SpawnOptions
     readonly oceanSize: number
     readonly beachSize: number
@@ -77,7 +77,7 @@ export interface MapDefinition {
     readonly quadBuildingLimit?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly obstacles?: Record<ReferenceTo<ObstacleDefinition>, number>
     readonly obstacleClumps?: readonly ObstacleClump[]
-    readonly loots?: Record<keyof typeof LootTables[Mode], number>
+    readonly loots?: Record<keyof typeof LootTables[ModeName], number>
 
     readonly places?: ReadonlyArray<{
         readonly name: string

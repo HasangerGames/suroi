@@ -15,16 +15,16 @@
   "license": "GPL-3.0",
   "devDependencies": {
     "@jest/globals": "^29.7.0",
-    "@swc/core": "^1.11.13",
+    "@swc/core": "^1.11.20",
     "@swc/helpers": "^0.5.15",
-    "@types/node": "^22.13.14",
+    "@types/node": "^22.14.0",
     "@types/svg-parser": "^2.0.6",
-    "@types/ws": "^8.18.0",
+    "@types/ws": "^8.18.1",
     "nodemon": "^3.1.9",
-    "ts-jest": "^29.3.0",
-    "tsc-alias": "^1.8.13",
+    "ts-jest": "^29.3.1",
+    "tsc-alias": "^1.8.15",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "svg-parser": "^2.0.4",
