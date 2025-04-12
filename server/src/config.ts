@@ -7,7 +7,7 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "singleBuilding:cargo_ship",
+    map: "singleBuilding:port",
 
     spawn: { mode: SpawnMode.Center },
 

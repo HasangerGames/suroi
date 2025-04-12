@@ -4479,7 +4479,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     },
     {
         idString: "cargo_ship_bottom_stair",
-        name: "Cargo Ship Top Stair",
+        name: "Cargo Ship Bottom Stair",
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -4490,6 +4490,24 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         invisible: true,
         hitbox: RectangleHitbox.fromRect(13, 11.27),
+        frames: {
+            particle: "metal_particle"
+        },
+        rotationMode: RotationMode.Limited
+    },
+    {
+        idString: "cargo_ship_top_stair",
+        name: "Cargo Ship Top Stair",
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        isStair: true,
+        activeEdges: {
+            high: 3,
+            low: 1
+        },
+        invisible: true,
+        hitbox: RectangleHitbox.fromRect(26.94, 10.06),
         frames: {
             particle: "metal_particle"
         },
@@ -4544,6 +4562,20 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             particle: "cargo_ship_particle"
         },
         rotationMode: RotationMode.Limited
+    },
+    {
+        idString: "ship_oil_source",
+        name: "Ship Oil Source",
+        material: "metal_heavy",
+        health: 69,
+        indestructible: true,
+        reflectBullets: true,
+        hitbox: RectangleHitbox.fromRect(7.7, 19.43, Vec.create(-6.47, 0)),
+        frames: {
+            particle: "metal_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        zIndex: ZIndexes.BuildingsCeiling
     },
     {
         idString: "cargo_ship_stair_support",

@@ -195,7 +195,7 @@
         hitboxes.push(JSON.parse(JSON.stringify(selected)));
     }
 
-    const bgImage = loadImage("/img/game/normal/buildings/cargo_ship_top_floor_alpha.png");
+    const bgImage = loadImage("/img/game/normal/obstacles/ship_oil_source.svg");
 </script>
 
 <main>
