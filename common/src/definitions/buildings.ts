@@ -3942,8 +3942,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         sounds: {
             solved: "generator_running",
             position: Vec.create(-1.46, 40.23),
-            maxRange: 416,
-            falloff: 2
+            maxRange: 50,
+            falloff: 5
         },
         obstacles: [
             {
@@ -3955,7 +3955,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: "vault_door_deactivated", // this one doesnt have collision when opened (idk why)
-                position: Vec.create(25.6, -61),
+                position: Vec.create(25.6, -60),
                 rotation: 0,
                 locked: true,
                 layer: 0
@@ -4055,7 +4055,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // vault
             RectangleHitbox.fromRect(13.99, 2.02, Vec.create(39.39, -62.58)),
             RectangleHitbox.fromRect(1.98, 53.64, Vec.create(45.35, -89.15)),
-            RectangleHitbox.fromRect(1.98, 53.64, Vec.create(19.15, -90.42)),
+            RectangleHitbox.fromRect(1.98, 55, Vec.create(19.15, -90.42)),
             RectangleHitbox.fromRect(15.65, 2.02, Vec.create(36.84, -75.7)),
             RectangleHitbox.fromRect(13.99, 2.02, Vec.create(25.12, -116.96)),
             RectangleHitbox.fromRect(15.65, 2.02, Vec.create(27.68, -98.66)),
@@ -4202,7 +4202,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         obstacles: [
             { idString: "cargo_ship_bottom_stair", position: Vec.create(23, -40.18), rotation: 0, layer: 1 },
             { idString: "cargo_ship_bottom_stair", position: Vec.create(-2.15, -162.5), rotation: 1, layer: 1 },
-            { idString: "cargo_ship_bottom_stair", position: Vec.create(-30.31, 100.22), rotation: 0, layer: 1 },
+            { idString: "cargo_ship_bottom_stair", position: Vec.create(-29, 100.22), rotation: 0, layer: 1 },
 
             { idString: "ship_thing_v2", position: Vec.create(-2.07, 175.32), rotation: 0 },
 
