@@ -3,17 +3,17 @@ import { EaseFunctions, Numeric } from "@common/utils/math";
 import { randomPointInsideCircle } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { ShockwaveFilter } from "pixi-filters";
-import { Container, type Application } from "pixi.js";
+import { Container, Filter, type Application } from "pixi.js";
 import { Game } from "../game";
 import { PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
-import type { Layer } from "@common/constants";
+import { Layers, type Layer } from "@common/constants";
 import { GameConsole } from "../console/gameConsole";
 
 class CameraManagerClass {
     pixi!: Application;
-    container!: Container;
+    containers!: Record<Layer, Container>;
 
     position = Vec.create(0, 0);
 
@@ -44,11 +44,9 @@ class CameraManagerClass {
         this._initialized = true;
 
         this.pixi = Game.pixi;
-        this.container = new Container({
-            isRenderGroup: true,
-            sortableChildren: true,
-            filters: []
-        });
+        for (const layer of Object.keys(Layer).filter(k => isNaN(Number(k)))) {
+
+        }
     }
 
     resize(animation = false): void {
@@ -112,12 +110,18 @@ class CameraManagerClass {
         this.shockwaves.add(new Shockwave(duration, position, amplitude, wavelength, speed, layer));
     }
 
-    addObject(...objects: Container[]): void {
-        this.container.addChild(...objects);
+    addObject(layer: Layer, ...objects: Container[]): void {
+        this.containers[layer].addChild(...objects);
+    }
+
+    addFilter(layer: Layer, filter: Filter): void {
+        (this.containers[layer].filters as Filter[]).push
     }
 
     reset(): void {
-        this.container.removeChildren();
+        for (const container of Object.values(this.containers)) {
+            container.removeChildren();
+        }
         this.zoom = Scopes.definitions[0].zoomLevel;
     }
 }
@@ -143,14 +147,14 @@ export class Shockwave {
         this.anchorContainer = new SuroiSprite();
         this.wavelength = wavelength;
 
-        CameraManager.addObject(this.anchorContainer);
+        CameraManager.addObject(layer, this.anchorContainer);
         this.anchorContainer.setVPos(position);
 
         this.filter = new ShockwaveFilter();
 
         this.update();
 
-        CameraManager.container.filters = [CameraManager.container.filters].flat().concat(this.filter);
+        CameraManager.containers[layer].filters = [CameraManager.container.filters].flat().concat(this.filter);
     }
 
     update(): void {
