@@ -8565,5 +8565,17 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         { idString: "box", position: Vec.create(2.71, 5.74) },
         { idString: "gun_locker", position: Vec.create(-3.01, 0.22), rotation: 3 }, // LMAO no
         { idString: "ammo_crate", position: Vec.create(0.04, 13.03) }
-    ])
+    ]),
+
+    {
+        // we use tugboat "HACK" to generate these in the ocean
+        idString: "buoy",
+        name: "Buoy",
+        spawnMode: MapObjectSpawnMode.Beach,
+        spawnHitbox: RectangleHitbox.fromRect(70, 110, Vec.create(50, 0)),
+        obstacles: [{
+            idString: "buoy",
+            position: Vec.create(50, 0)
+        }]
+    }
 ]);

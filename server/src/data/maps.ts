@@ -130,7 +130,7 @@ const maps = {
         buildings: {
             large_bridge: 2,
             small_bridge: Infinity,
-            port_complex: 1,
+            //  port_complex: 1,
             river_hut_1: 2,
             river_hut_2: 2,
             river_hut_3: 2,
@@ -142,7 +142,6 @@ const maps = {
             small_bunker: 1,
             refinery: 1,
             warehouse: 5,
-            // firework_warehouse: 1, // birthday mode
             green_house: 3,
             blue_house: 2,
             blue_house_special: 1,
@@ -159,7 +158,8 @@ const maps = {
             container_8: 2,
             container_9: 1,
             container_10: 2,
-            memorial: 1
+            memorial: 1,
+            buoy: 16
         },
         majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
         quadBuildingLimit: {
@@ -318,7 +318,8 @@ const maps = {
             tent_3: 3,
             tent_4: 3,
             tent_5: 1,
-            outhouse: 10
+            outhouse: 10,
+            buoy: 8
         },
         majorBuildings: ["bombed_armory", "lodge", "plumpkin_bunker"],
         quadBuildingLimit: {
@@ -636,7 +637,8 @@ const maps = {
             container_8: 2,
             container_9: 1,
             container_10: 2,
-            memorial: 1
+            memorial: 1,
+            buoy: 16
         },
         majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
         quadBuildingLimit: {

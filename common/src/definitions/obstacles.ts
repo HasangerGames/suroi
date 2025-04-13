@@ -34,6 +34,7 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly rotationMode: RotationMode // for obstacles with a role, this cannot be RotationMode.Full
     readonly particleVariations?: number
     readonly zIndex?: ZIndexes
+    readonly spawnWithWaterOverlay?: boolean
     readonly waterOverlay?: {
         readonly scaleX: number
         readonly scaleY: number
@@ -314,6 +315,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     blue_metal_auto_door_particle: { base: "metal_particle_1", tint: 0x1a1a40 },
     rsh_case_particle:             { base: "wood_particle",    tint: 0x583928 },
     river_hut_wall_particle:       { base: "wood_particle",    tint: 0x736758 },
+    buoy_particle:                 { base: "metal_particle_1", tint: 0x351616 },
 
     red_gift_particle:             { base: "toilet_particle",  tint: 0x962626 },
     green_gift_particle:           { base: "toilet_particle",  tint: 0x377130 },
@@ -5100,6 +5102,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             residue: "large_refinery_barrel_residue"
         }
         // winterVariations: 1
+    },
+    {
+        idString: "buoy",
+        name: "Buoy",
+        material: "metal_heavy",
+        health: 69,
+        indestructible: true,
+        reflectBullets: true,
+        hitbox: new CircleHitbox(7.27),
+        frames: {
+            particle: "buoy_particle"
+        },
+        rotationMode: RotationMode.Full,
+        spawnWithWaterOverlay: true,
+        waterOverlay: {
+            scaleX: 1.95,
+            scaleY: 1.95
+        },
+        allowFlyover: FlyoverPref.Always
+        // spawnMode: MapObjectSpawnMode.Beach // todo: ocean spawn mode
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));

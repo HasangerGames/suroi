@@ -104,11 +104,11 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
         this.parentBuilding = parentBuilding;
 
-        this.waterOverlay = waterOverlay ?? false;
-
         this.activated = activated;
 
         const definition = this.definition = Obstacles.reify(type);
+
+        this.waterOverlay = waterOverlay ?? definition.spawnWithWaterOverlay ?? false;
 
         this.health = this.maxHealth = this.definition.health;
 
