@@ -4799,10 +4799,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port_complex",
         name: "Port Complex",
-        spawnHitbox: RectangleHitbox.fromRect(580, 590, Vec.create(600, 0)),
+        spawnHitbox: RectangleHitbox.fromRect(500, 590),
         spawnMode: MapObjectSpawnMode.Beach,
         subBuildings: [
-            { idString: "port", position: Vec.create(0, 0), orientation: 1 }
+            { idString: "port", position: Vec.create(5, -160), orientation: 1 } // y, x
         ]
     },
     {

@@ -130,7 +130,7 @@ const maps = {
         buildings: {
             large_bridge: 2,
             small_bridge: Infinity,
-            //  port_complex: 1,
+            port_complex: 1,
             river_hut_1: 2,
             river_hut_2: 2,
             river_hut_3: 2,
@@ -163,6 +163,7 @@ const maps = {
         },
         majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
         quadBuildingLimit: {
+            port_complex: 1,
             river_hut_1: 1,
             river_hut_2: 1,
             river_hut_3: 1,
