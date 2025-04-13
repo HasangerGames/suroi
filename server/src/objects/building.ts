@@ -10,6 +10,7 @@ import { type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { BaseGameObject } from "./gameObject";
 import { type Obstacle } from "./obstacle";
+import { runOrWait } from "../utils/misc";
 
 export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
     override readonly fullAllocBytes = 8;
@@ -176,12 +177,8 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const puzzleDef = this.definition.puzzle!;
 
-        const runOrWait = (cb: () => void, delay: number): void => {
-            if (delay === 0) cb();
-            else this.game.addTimeout(cb, delay);
-        };
-
         runOrWait(
+            this.game,
             () => {
                 puzzle.solved = true;
                 this.setPartialDirty();
@@ -190,6 +187,7 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
         );
 
         runOrWait(
+            this.game,
             () => {
                 for (const obstacle of this.interactableObstacles) {
                     if (obstacle.definition.idString === puzzleDef.triggerOnSolve) {

@@ -2605,6 +2605,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         doorSound: "vault_door_powered",
         requiresPower: true,
         animationDuration: 2000,
+        interactionDelay: 2500,
         hingeOffset: Vec.create(-5.6, -2.3),
         zIndex: ZIndexes.ObstaclesLayer3,
         frames: {

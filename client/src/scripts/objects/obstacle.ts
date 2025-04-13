@@ -64,6 +64,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     waterOverlaySpriteInitialized = false;
     waterOverlaySprite: SuroiSprite | undefined;
     waterOverlay = false;
+    powered = false;
 
     hitSound?: GameSound;
 
@@ -251,6 +252,8 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
         this.container.scale.set(this.dead ? 1 : this.scale);
 
+        this.powered = data.powered;
+
         this.waterOverlay = data.waterOverlay;
         if (this.waterOverlay) {
             this.image.zIndex = getEffectiveZIndex(ZIndexes.UnderWaterObstacles, this.layer, Game.layer);
@@ -428,9 +431,9 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         this.image.setVisible(!(this.dead && definition.noResidue));
 
         texture ??= !this.dead
-            ? (!this.door?.locked && this.door?.offset !== 0) && definition.frames?.opened
+            ? ((!this.door?.locked && !this.powered) && this.door?.offset !== 0) && definition.frames?.opened
                 ? definition.frames.opened
-                : !this.door?.locked && (definition.requiresPower && definition.frames?.powered)
+                : (!this.door?.locked && !this.powered) && (definition.requiresPower && definition.frames?.powered)
                     ? definition.frames?.powered
                     : this.activated && definition.frames?.activated
                         ? definition.frames?.activated
@@ -642,6 +645,12 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 break;
             }
         }
+
+        const savedBackupHitbox = backupHitbox;
+        if (definition.interactionDelay && !this.powered && this.door?.locked) {
+            backupHitbox = this._door.closedHitbox.clone();
+        }
+
         this.hitbox = this._door.hitbox = backupHitbox;
 
         const offset = data.door.offset;
@@ -703,11 +712,14 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             );
 
             if (definition.operationStyle !== "slide") {
-                Game.addTween({
-                    target: this.image,
-                    to: { rotation: Angle.orientationToRotation(offset) },
-                    duration: definition.animationDuration ?? 150
-                });
+                Game.addTimeout(() => {
+                    Game.addTween({
+                        target: this.image,
+                        to: { rotation: Angle.orientationToRotation(offset) },
+                        duration: definition.animationDuration ?? 150
+                    });
+                    if (this._door) this.hitbox = this._door.hitbox = savedBackupHitbox;
+                }, definition.interactionDelay ?? 0);
             } else {
                 const x = offset
                     ? (definition.slideFactor ?? 1) * (
