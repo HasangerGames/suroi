@@ -3792,7 +3792,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 type: FloorNames.Water,
                 hitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(132.89, 384.3, Vec.create(0, 24.5)),
+                    RectangleHitbox.fromRect(135, 388, Vec.create(0, 24.5)),
                     RectangleHitbox.fromRect(148.72, 55.77, Vec.create(-0.32, 216.9))
                 )
             }
@@ -3815,7 +3815,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { // water
                 color: 0x2869af,
                 hitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(135, 384.3, Vec.create(0, 24.5)),
+                    RectangleHitbox.fromRect(135, 388, Vec.create(0, 24.5)),
                     RectangleHitbox.fromRect(148.72, 55.77, Vec.create(-0.32, 216.9))
                 )
             },
@@ -4802,7 +4802,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: RectangleHitbox.fromRect(500, 590),
         spawnMode: MapObjectSpawnMode.Beach,
         subBuildings: [
-            { idString: "port", position: Vec.create(5, -160), orientation: 1 } // y, x
+            { idString: "port", position: Vec.create(-12, -160), orientation: 1 } // y, x
         ]
     },
     {
