@@ -3418,6 +3418,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         isWall: true,
         allowFlyover: FlyoverPref.Never,
         frames: {
+            base: "column",
             particle: "metal_particle",
             residue: "large_warehouse_ceiling_residue"
         }
