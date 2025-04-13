@@ -335,6 +335,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     container_particle_military_green: { base: "metal_particle_1", tint: ContainerTints.military_green },
     container_particle_military_orange: { base: "metal_particle_1", tint: ContainerTints.military_orange },
     container_particle_military_marine: { base: "metal_particle_1", tint: ContainerTints.military_marine },
+    container_particle_military_lime: { base: "metal_particle_1", tint: ContainerTints.military_lime },
 
     tent_particle_1:               { base: "ceiling_particle", tint: TentTints.red },
     tent_particle_2:               { base: "ceiling_particle", tint: TentTints.green },

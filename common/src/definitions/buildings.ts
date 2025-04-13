@@ -230,7 +230,8 @@ const randomPortOpenContainerOneSide = {
     // Military
     container_22: 0.05,
     container_23: 0.05,
-    container_24: 0.05
+    container_24: 0.05,
+    container_25: 0.05
 };
 
 const randomPortOpenContainerTwoSide = {
@@ -327,7 +328,8 @@ export const ContainerTints = {
     gas_can: 0xd64533,
     military_green: 0x243315,
     military_orange: 0x918556,
-    military_marine: 0x273b3b
+    military_marine: 0x273b3b,
+    military_lime: 0x727825
 };
 
 const ContainerWallOutlineTints = {
@@ -339,7 +341,8 @@ const ContainerWallOutlineTints = {
     gas_can: 0x571b14,
     military_green: 0x161f0d,
     military_orange: 0x574f33,
-    military_marine: 0x172424
+    military_marine: 0x172424,
+    military_lime: 0x3f4214
 };
 
 const ContainerWallTints = {
@@ -351,7 +354,8 @@ const ContainerWallTints = {
     gas_can: 0xd64533,
     military_green: 0x31451c,
     military_orange: 0xab9d65,
-    military_marine: 0x3e5e5e
+    military_marine: 0x3e5e5e,
+    military_lime: 0x838a2b
 };
 
 export const TentTints = {
@@ -763,16 +767,10 @@ const container = (
             ...(color.includes("military")
                 ? [
                     {
-                        key: "column",
+                        key: "nsd_logo_cont",
                         position: Vec.create(0, 0),
-                        tint: 0x7d9176,
-                        scale: Vec.create(1.5, 1.5)
-                    },
-                    {
-                        key: "nsd_logo",
-                        position: Vec.create(0, 0),
-                        scale: Vec.create(0.5, 0.5),
-                        tint: 0xb8b6b6
+                        scale: Vec.create(2, 2),
+                        tint
                     },
                     {
                         key: "danger_tape",
@@ -2955,6 +2953,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     container(22, "military_green", "open1"),
     container(23, "military_orange", "open1"),
     container(24, "military_marine", "open1"),
+    container(25, "military_lime", "open1"),
 
     bigTent(1, "red"),
     bigTent(2, "green"),
@@ -4387,7 +4386,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             // vault
             { idString: "lamp", position: Vec.create(27.09, -96.53), rotation: 2 },
-            { idString: "tango_crate", position: Vec.create(23.7, -107.96), rotation: 1 },
+            {
+                idString: {
+                    tango_crate: 1,
+                    briefcase: 0.75
+                },
+                position: Vec.create(24.7, -107.96),
+                rotation: 1
+            },
             { idString: "melee_crate", position: Vec.create(23.67, -93.73) },
             { idString: "grenade_crate", position: Vec.create(30.51, -93.73) },
             { idString: "gun_locker", position: Vec.create(37.53, -79.28), rotation: 2 },
@@ -4994,7 +5000,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "ammo_crate", position: Vec.create(-20, -14.8), rotation: 0 },
             { idString: "regular_crate", position: Vec.create(-29.8, -14.8), rotation: 0 },
             { idString: "barrel", position: Vec.create(-30.9, 11.3) },
-            { idString: "briefcase", position: Vec.create(-20.7, 10.85), rotation: 0 },
+            { idString: "briefcase", position: Vec.create(-20.7, 10.85), rotation: 2 },
             { idString: "vault_door", position: Vec.create(-14.1, -3.22), rotation: 3 }
         ],
         lootSpawners: [{
@@ -6766,7 +6772,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "tear_gas_crate", position: Vec.create(21.2, -0.45), rotation: 1 },
             { idString: "window_damaged", position: Vec.create(18.1, 16.5), rotation: 1 },
             { idString: "grenade_crate", position: Vec.create(-9.1, -15.9) },
-            { idString: "briefcase", position: Vec.create(-28.93, -14.85), rotation: 2 },
+            { idString: "briefcase", position: Vec.create(-28.93, -14.85), rotation: 0 },
             { idString: "barrel", position: Vec.create(-19.59, -9.22) },
             { idString: "barrel", position: Vec.create(-29.81, -6.01) },
             { idString: "box", position: Vec.create(-18.46, -16.58) },
