@@ -5118,8 +5118,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Full,
         spawnWithWaterOverlay: true,
         waterOverlay: {
-            scaleX: 1.95,
-            scaleY: 1.95
+            scaleX: 2.4,
+            scaleY: 2.4
         },
         allowFlyover: FlyoverPref.Always
         // spawnMode: MapObjectSpawnMode.Beach // todo: ocean spawn mode

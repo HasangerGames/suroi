@@ -808,10 +808,36 @@ const container = (
         ...(
             closed
                 ? {}
-                : { lootSpawners: [{
-                    position: Vec.create(0, variant === "gas_can" ? -8.5 : 0),
-                    table: variant === "gas_can" ? "gas_can" : color.includes("military") ? "airdrop_guns" : "ground_loot"
-                }] }
+                : variant === "gas_can"
+                    ? {
+                        lootSpawners: [
+                            {
+                                position: Vec.create(0, -8.5),
+                                table: "gas_can"
+                            }
+                        ]
+                    }
+                    : color.includes("military")
+                        ? {
+                            lootSpawners: [
+                                {
+                                    position: Vec.create(0, 0),
+                                    table: "airdrop_guns"
+                                },
+                                {
+                                    position: Vec.create(0, 0),
+                                    table: "military_container_skins"
+                                }
+                            ]
+                        }
+                        : {
+                            lootSpawners: [
+                                {
+                                    position: Vec.create(0, 0),
+                                    table: "ground_loot"
+                                }
+                            ]
+                        }
         ),
         ...(variant === "gas_can"
             ? {
@@ -4794,12 +4820,16 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomPortOpenContainerOneSide, position: Vec.create(-41.47, -71.8), orientation: 2 },
             { idString: randomPortDamagedContainer, position: Vec.create(-27.17, -100.35), orientation: 2 },
             { idString: randomPortOpenContainerOneSide, position: Vec.create(41.47, 100.35) }
-        ]
+        ],
+        lootSpawners: [{
+            table: "ship_skins",
+            position: Vec.create(0.79, 151.41)
+        }]
     },
     {
         idString: "port_complex",
         name: "Port Complex",
-        spawnHitbox: RectangleHitbox.fromRect(500, 590),
+        spawnHitbox: RectangleHitbox.fromRect(500, 350, Vec.create(-160, -12)),
         spawnMode: MapObjectSpawnMode.Beach,
         subBuildings: [
             { idString: "port", position: Vec.create(-12, -160), orientation: 1 } // y, x
