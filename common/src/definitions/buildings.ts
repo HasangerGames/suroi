@@ -4319,7 +4319,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             { idString: "ship_thing_v2", position: Vec.create(-2.07, 175.32), rotation: 0 },
 
-            { idString: "box", position: Vec.create(-70.39, 134.5), waterOverlay: true },
+            { idString: "box", position: Vec.create(-66, 134.5), waterOverlay: true },
             { idString: "box", position: Vec.create(-14.88, 178.02), waterOverlay: true },
             { idString: "barrel", position: Vec.create(-24.67, 180.93), waterOverlay: true },
 
