@@ -4037,7 +4037,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 puzzlePiece: true
             },
             {
-                idString: "vault_door_deactivated", // this one doesnt have collision when opened (idk why)
+                idString: "vault_door_deactivated",
                 position: Vec.create(25.6, -60),
                 rotation: 0,
                 locked: true,
