@@ -7,7 +7,7 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "singleBuilding:port", // todo: make port generate on map (very buggy at the moment)
+    map: "normal", // todo: make port generate on map (very buggy at the moment, bridges and rivers might overlap with port)
 
     spawn: { mode: SpawnMode.Center },
 
