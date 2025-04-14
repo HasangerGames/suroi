@@ -502,7 +502,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
         briefcase: [
             { item: "vector", weight: 3 },
-            { item: "arx160", weight: 1 },
+            { item: "shak12", weight: 1 },
             { item: "vepr12", weight: 1 },
             { item: "stoner_63", weight: 0.2 },
             { item: "negev", weight: 0.15 },
