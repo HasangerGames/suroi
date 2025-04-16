@@ -99,7 +99,9 @@ export const Game = new (class Game {
     readonly bullets = new Set<Bullet>();
     readonly planes = new Set<Plane>();
 
-    ambience?: GameSound;
+    windAmbience?: GameSound;
+    riverAmbience?: GameSound;
+    oceanAmbience?: GameSound;
 
     layerTween?: Tween<Container>;
 
@@ -310,6 +312,44 @@ export const Game = new (class Game {
     resize(): void {
         MapManager.resize();
         CameraManager.resize(true);
+    }
+
+    updateRiverAmbience(): void {
+        // todo: loop river ambience mp3
+        if (!this.activePlayer) return;
+
+        const position = this.activePlayer.position;
+
+        let riverWeight = 0;
+
+        const rivers = MapManager.terrain.rivers;
+
+        riverWeight = 0;
+
+        for (let i = 0; i < rivers.length; i++) {
+            const river = rivers[i],
+                  closestPointT = river.getClosestT(position),
+                  closestPoint = river.getPosition(closestPointT),
+                  distanceToRiver = Vec.length(Vec.sub(closestPoint, position)),
+                  riverWidth = river.waterWidths[i] + 2,
+                  normalizedDistance = Numeric.delerp(
+                      distanceToRiver,
+                      30 + riverWidth,
+                      riverWidth
+                  );
+
+            const riverStrength = Numeric.clamp(river.waterWidths[i] / 8, 0.25, 1);
+            riverWeight = Numeric.max(normalizedDistance * riverStrength, riverWeight);
+        }
+
+        // we don't want rivers when we change layers
+        if (this.activePlayer.layer !== Layer.Ground) {
+            riverWeight = 0;
+        }
+
+        if (this.riverAmbience) {
+            this.riverAmbience.volume = riverWeight;
+        }
     }
 
     connect(address: string): void {
@@ -546,9 +586,21 @@ export const Game = new (class Game {
         // game started if page is out of focus.
         if (!document.hasFocus()) SoundManager.play("join_notification");
 
-        const ambience = this.mode.sounds?.ambience;
-        if (ambience) {
-            this.ambience = SoundManager.play(ambience, { loop: true, ambient: true });
+        const windAmbience = this.mode.sounds?.ambience?.wind;
+        if (windAmbience) {
+            this.windAmbience = SoundManager.play(windAmbience, { loop: true, ambient: true });
+        }
+
+        const riverAmbience = this.mode.sounds?.ambience?.river;
+        if (riverAmbience) {
+            this.riverAmbience = SoundManager.play(riverAmbience, { loop: true, ambient: true });
+            this.riverAmbience.volume = 0;
+        }
+
+        const oceanAmbience = this.mode.sounds?.ambience?.ocean;
+        if (oceanAmbience) {
+            this.oceanAmbience = SoundManager.play(oceanAmbience, { loop: true, ambient: true });
+            this.oceanAmbience.volume = 0;
         }
 
         UIManager.emotes = packet.emotes;
@@ -883,7 +935,7 @@ export const Game = new (class Game {
             onComplete: () => { this.backgroundTween = undefined; }
         });
 
-        if (this.ambience !== undefined) {
+        if (this.windAmbience !== undefined) {
             this.volumeTween?.kill();
 
             let target = 1; // if, somehow, the switch fails to assign a value
@@ -900,7 +952,7 @@ export const Game = new (class Game {
             }
 
             this.volumeTween = this.addTween({
-                target: this.ambience,
+                target: this.windAmbience,
                 to: { volume: target },
                 duration: 2000,
                 onComplete: () => { this.volumeTween = undefined; }
@@ -1082,6 +1134,8 @@ export const Game = new (class Game {
                     }
                 }
             }
+
+            this.updateRiverAmbience();
 
             const object = interactable.object ?? uninteractable.object;
             const offset = object?.isObstacle ? object.door?.offset : undefined;
