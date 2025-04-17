@@ -51,7 +51,8 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         sounds: {
             foldersToLoad: ["shared", "normal"],
             ambience: {
-                river: "river_ambience"
+                river: "river_ambience",
+                ocean: "ocean_ambience"
             }
         },
         spriteSheets: ["shared", "normal"]

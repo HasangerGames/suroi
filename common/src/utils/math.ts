@@ -1,6 +1,6 @@
 import { type ObstacleDefinition } from "../definitions/obstacles";
 import { type Orientation } from "../typings";
-import { PolygonHitbox, RectangleHitbox } from "./hitbox";
+import { RectangleHitbox } from "./hitbox";
 import { Vec, type Vector } from "./vector";
 
 export const π = Math.PI;
@@ -698,12 +698,12 @@ export const Collision = Object.freeze({
         const e = Vec.sub(d, p);
         return Vec.dotProduct(e, e);
     },
-    distToPolygon(p: Vector, poly: PolygonHitbox[]) {
+    distToPolygon(p: Vector, poly: Vector[]) {
         let closestDistSq = Number.MAX_VALUE;
         for (let i = 0; i < poly.length; i++) {
             const a = poly[i];
             const b = i === poly.length - 1 ? poly[0] : poly[i + 1];
-            const distSq = Collision.distToSegmentSq(p, a.points[i], b.points[i]);
+            const distSq = Collision.distToSegmentSq(p, a, b);
             if (distSq < closestDistSq) {
                 closestDistSq = distSq;
             }
@@ -714,20 +714,19 @@ export const Collision = Object.freeze({
      * Source
      * @link https://stackoverflow.com/questions/22521982/js-check-if-point-inside-a-polygon
      */
-    pointInsidePolygon(point: Vector, poly: PolygonHitbox[]): boolean {
-        // ray-casting algorithm based on
+    pointInsidePolygon(point: Vector, poly: Vector[]) {
         // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
         const { x } = point;
         const { y } = point;
         let inside = false;
         const count = poly.length;
         for (let i = 0, j = count - 1; i < count; j = i++) {
-            const xi = poly[i].points[i].x;
-            const yi = poly[i].points[i].y;
-            const xj = poly[j].points[j].x;
-            const yj = poly[j].points[j].y;
+            const xi = poly[i].x;
+            const yi = poly[i].y;
+            const xj = poly[j].x;
+            const yj = poly[j].y;
 
-            const intersect = ((yi > y) !== (yj > y)) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+            const intersect = (yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
             if (intersect) {
                 inside = !inside;
             }

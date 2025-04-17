@@ -314,17 +314,24 @@ export const Game = new (class Game {
         CameraManager.resize(true);
     }
 
-    updateRiverAmbience(): void {
-        // todo: loop river ambience mp3
+    updateAmbience(): void {
+        // todo:
+        // loop river ambience & ocean ambience mp3
+        // make ocean ambience mp3 shorter
+        // add wind ambience mp3
+
         if (!this.activePlayer) return;
 
         const position = this.activePlayer.position;
 
-        let riverWeight = 0;
+        let riverWeight = 0,
+            oceanWeight = 0;
 
         const rivers = MapManager.terrain.rivers;
 
-        riverWeight = 0;
+        const oceanDistance = MapManager.distanceToShore(position);
+
+        oceanWeight = Numeric.delerp(oceanDistance, 50, 5);
 
         for (let i = 0; i < rivers.length; i++) {
             const river = rivers[i],
@@ -349,6 +356,10 @@ export const Game = new (class Game {
 
         if (this.riverAmbience) {
             this.riverAmbience.volume = riverWeight;
+        }
+
+        if (this.oceanAmbience) {
+            this.oceanAmbience.volume = oceanWeight;
         }
     }
 
@@ -1135,7 +1146,7 @@ export const Game = new (class Game {
                 }
             }
 
-            this.updateRiverAmbience();
+            this.updateAmbience();
 
             const object = interactable.object ?? uninteractable.object;
             const offset = object?.isObstacle ? object.door?.offset : undefined;

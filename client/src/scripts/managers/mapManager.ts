@@ -3,7 +3,7 @@ import { type MapPingDefinition } from "@common/definitions/mapPings";
 import { type MapData } from "@common/packets/mapPacket";
 import { type PingSerialization, type PlayerPingSerialization } from "@common/packets/updatePacket";
 import { RectangleHitbox } from "@common/utils/hitbox";
-import { Numeric } from "@common/utils/math";
+import { Collision, Numeric } from "@common/utils/math";
 import { FloorTypes, River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
@@ -156,6 +156,14 @@ class MapManagerClass {
                 this.debugGraphics.visible = val;
             });
         }
+    }
+
+    isInOcean(position: Vector): boolean {
+        return !Collision.pointInsidePolygon(position, this.terrain.beachHitbox.points);
+    }
+
+    distanceToShore(position: Vector): number {
+        return Collision.distToPolygon(position, this.terrain.beachHitbox.points);
     }
 
     drawTerrain(ctx: Graphics, scale: number, gridLineWidth: number): void {
