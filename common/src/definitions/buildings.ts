@@ -46,6 +46,8 @@ export interface BuildingImageDefinition {
     readonly spinOnSolve?: boolean
     readonly residue?: string
     readonly beachTinted?: boolean
+    readonly brokenRoof?: string
+    readonly particleAmount?: number
 }
 
 export interface BuildingDefinition extends ObjectDefinition {
@@ -67,6 +69,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly hitbox?: Hitbox
     readonly spawnHitbox: Hitbox
     readonly ceilingHitbox?: Hitbox
+    readonly hasDamagedRoof?: boolean
     /**
      * @default {FlyoverPref.Never}
      */
@@ -1917,10 +1920,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(2, 16, Vec.create(-30.9, 20.5)),
             RectangleHitbox.fromRect(12.3, 2, Vec.create(-25.8, 28.9)),
             RectangleHitbox.fromRect(39.4, 2, Vec.create(10.45, 28.9)),
-            RectangleHitbox.fromRect(3, 3, Vec.create(8.75, -6.12))
         ),
         spawnHitbox: RectangleHitbox.fromRect(80, 80),
         ceilingHitbox: RectangleHitbox.fromRect(60, 56),
+        ceilingCollapseParticle: "red_house_ceiling_particle",
         floorImages: [
             {
                 key: "red_house_floor_1",
@@ -1934,8 +1937,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingImages: [{
             key: "red_house_ceiling",
             position: Vec.create(0, -0.25),
-            scale: Vec.create(2, 2)
+            scale: Vec.create(2, 2),
+            residue: 'red_house_ceiling_residue',
+            particleAmount: 200,
+            brokenRoof: 'red_house_ceiling_broken'
         }],
+        wallsToDestroy: 1,
         floors: [
             {
                 type: FloorNames.Wood,
@@ -1960,14 +1967,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // { idString: "jack_o_lantern", position: Vec.create(6.2, -36.5), rotation: 3 },
             // { idString: "jack_o_lantern", position: Vec.create(27.2, -36.5), rotation: 3 },
             // -----------------------------------------------------------------------
-
-            { idString: "house_wall_4", position: Vec.create(8.6, -18), rotation: 1 },
+            { idString: "house_wall_4", position: Vec.create(8.6, -18), rotation: 1, },
             { idString: "house_wall_1", position: Vec.create(2.6, -6.07), rotation: 0 },
             { idString: "house_wall_9", position: Vec.create(-20.98, -6.07), rotation: 0 },
             { idString: "door", position: Vec.create(-7.45, -6.06), rotation: 2 },
             { idString: "bookshelf", position: Vec.create(5.11, -21.95), rotation: 1 },
             { idString: "couch", position: Vec.create(-21.48, -1.01), rotation: 3 },
             { idString: "large_drawer", position: Vec.create(-25.98, 21.3), rotation: 1 },
+            { idString: "house_pillar", position: Vec.create(8.5, -6.15), rotation: 0 },
             // Bathroom Left
             {
                 idString: "house_wall_4",
@@ -2107,9 +2114,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(18.6, 1.8, Vec.create(21.6, 28.7)),
             RectangleHitbox.fromRect(12, 1.8, Vec.create(-4.1, 28.7)),
             RectangleHitbox.fromRect(10.5, 1.8, Vec.create(-26, 28.7)),
-
-            RectangleHitbox.fromRect(3, 3, Vec.create(16.15, -5.6)),
-            RectangleHitbox.fromRect(3, 3, Vec.create(0.8, 10.35))
         ),
         spawnHitbox: RectangleHitbox.fromRect(80, 80),
         ceilingHitbox: RectangleHitbox.fromRect(60, 56),
@@ -2123,11 +2127,16 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec.create(16.28, 0)
             }
         ],
+        ceilingCollapseParticle: "red_house_ceiling_particle",
         ceilingImages: [{
             key: "red_house_ceiling",
             position: Vec.create(-0.6, -0.25),
-            scale: Vec.create(2, 2)
+            scale: Vec.create(2, 2),
+            brokenRoof: 'red_house_ceiling_broken',
+            particleAmount: 200,
+            residue: 'red_house_ceiling_residue'
         }],
+        wallsToDestroy: 2,
         floors: [
             {
                 type: FloorNames.Wood,
@@ -2187,6 +2196,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "house_wall_11", position: Vec.create(16.1, -22.9), rotation: 1 },
             { idString: randomToilet, position: Vec.create(23, -24), rotation: 0 },
             { idString: "house_wall_11", position: Vec.create(23.4, -5.5), rotation: 0 },
+
+            // pillars
+            { idString: "house_pillar", position: Vec.create(16.15, -5.6), rotation: 0 },
+            { idString: "house_pillar", position: Vec.create(0.8, 10.35), rotation: 0 },
 
             // windows (y += 0.2, (x, y + 0.2))
             { idString: "window", position: Vec.create(30.2, 16.7), rotation: 0 },

@@ -298,7 +298,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                     particleFrame += `_${Math.floor(Math.random() * definition.ceilingCollapseParticleVariations) + 1}`;
                 }
 
-                ParticleManager.spawnParticles(10, () => ({
+                ParticleManager.spawnParticles((definition.ceilingImages?.[0]?.particleAmount ?? 10), () => ({
                     frames: particleFrame,
                     position: this.ceilingHitbox?.randomPoint() ?? { x: 0, y: 0 },
                     zIndex: Numeric.max(ZIndexes.Players + 1, 4),
@@ -313,7 +313,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                         end: 0,
                         ease: EaseFunctions.sexticIn
                     },
-                    scale: { start: (definition.ceilingCollapseParticle ? 2 : 1), end: 0.2 },
+                    scale: { start: (definition.ceilingCollapseParticle ? definition.hasDamagedRoof ? 9 : 2 : 1), end: (definition.ceilingCollapseParticle ? definition.hasDamagedRoof ? 5 : 1 : 0.2) },
                     speed: Vec.fromPolar(randomRotation(), randomFloat(1, 2))
                 }));
 
@@ -326,9 +326,43 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 );
             }
             this.ceilingTween?.kill();
+            if (this.definition.ceilingImages?.[0]?.brokenRoof !== undefined) {
+                const originalImage = this.definition.ceilingImages[0];
+                const brokenImage: BuildingImageDefinition = {
+                    ...originalImage,
+                    key: originalImage.brokenRoof as string,
+                    scale: Vec.create(2.13, 2.13), // Idk why the broken ceiling image is smaller 
+                };
+                this.definition = {
+                    ...this.definition,
+                    ceilingImages: [brokenImage],
+                };
+
+                // makes a new sprite for just the residue since i thought this was the easiest way
+                // used _updateImage() as reference...
+                const residue = {
+                    sprite: new SuroiSprite,
+                    definition: {
+                        key: this.definition.ceilingImages?.[0]?.residue,
+                        scale: Vec.create(0.7, 0.7),
+                        zIndex: ZIndexes.Gas
+                    } 
+                }
+
+                const { sprite } = residue;
+
+                this.ceilingContainer.addChild(sprite);
+
+                sprite.setVisible(true);
+                this.ceilingContainer.alpha = 1;
+                this._updateImage({ ...residue.definition, position: Vec.create(0, 0), key: residue.definition.key ?? '' }, true);
+
+
+            } else {
+                this.dead = data.dead;
+            }
             this.ceilingContainer.alpha = 1;
         }
-        this.dead = data.dead;
 
         if (data.puzzle) {
             if (!isNew && data.puzzle.errorSeq !== this.puzzle?.errorSeq) {
@@ -461,19 +495,29 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         const { sprite } = image;
 
         if (isNewSprite) {
-            if (isCeiling) this.ceilingContainer.addChild(sprite);
-            else this.container.addChild(sprite);
+            if (isCeiling) {
+                this.ceilingContainer.addChild(sprite);
+                if (imageDef.residue && this.definition.ceilingImages?.[0]?.key === this.definition.ceilingImages?.[0]?.brokenRoof) {
+                    const residueSprite = new SuroiSprite();
+                    residueSprite.setFrame(imageDef.residue ?? '');
+                    residueSprite.setVisible(true);
+                    residueSprite.setVPos(toPixiCoords(Vec.create(0, 0)));
+                    residueSprite.scale.set(1);
+                    residueSprite.setZIndex(ZIndexes.Gas);
+                    this.container.addChild(residueSprite);
+                }
+            } else {
+                this.container.addChild(sprite);
+            }
         }
 
         let key = imageDef.key;
-        if (this.dead && imageDef.residue) key = imageDef.residue;
+        if (this.dead && isCeiling && imageDef.residue) {
+            key = imageDef.residue;
+        }
         sprite.setFrame(key);
 
-        if (isCeiling) {
-            sprite.setVisible(this.dead ? !!imageDef.residue : !!imageDef.key);
-        } else {
-            sprite.setVisible(true);
-        }
+        sprite.setVisible(true);
 
         sprite.setVPos(toPixiCoords(imageDef.position));
 
