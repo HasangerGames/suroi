@@ -71,7 +71,9 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         sounds: {
             foldersToLoad: ["shared", "fall"],
             ambience: {
-                wind: "wind_ambience"
+                wind: "wind_ambience",
+                river: "river_ambience",
+                ocean: "ocean_ambience"
             }
         },
         defaultScope: "2x_scope",

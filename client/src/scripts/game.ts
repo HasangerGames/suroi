@@ -333,9 +333,12 @@ export const Game = new (class Game {
 
         oceanWeight = Numeric.delerp(oceanDistance, 50, 5);
 
-        for (let i = 0; i < rivers.length; i++) {
-            const river = rivers[i],
-                  closestPointT = river.getClosestT(position),
+        for (let i = 0, len = rivers.length; i < len; i++) { // hasanger mwah optimization
+            const river = rivers[i];
+
+            if (river.isTrail) continue;
+
+            const closestPointT = river.getClosestT(position),
                   closestPoint = river.getPosition(closestPointT),
                   distanceToRiver = Vec.length(Vec.sub(closestPoint, position)),
                   riverWidth = river.waterWidths[i] + 2,
