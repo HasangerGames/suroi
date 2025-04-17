@@ -2,6 +2,7 @@ import { ModeName } from "@common/definitions/modes";
 import { PerkIds } from "@common/definitions/items/perks";
 import { NullString } from "@common/utils/objectDefinitions";
 import { LootTable } from "../utils/lootHelpers";
+import { Obstacles } from "@common/definitions/obstacles";
 
 export const LootTables: Record<ModeName, Record<string, LootTable>> = {
     normal: {
@@ -326,7 +327,11 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { table: "guns", weight: 0.05 }
             ]
         },
-        ...["mcx_spear", "hp18", "stoner_63", "mini14", "maul", "m590m", "dual_rsh12", "model_37", "sks"].reduce(
+        ...Obstacles.definitions.filter(def => {
+            return def.idString.startsWith("gun_mount");
+        }).map(def => {
+            return def.idString.replace("gun_mount_", "");
+        }).reduce(
             (acc, item) => {
                 acc[`gun_mount_${item}`] = [{ item, weight: 1 }];
                 return acc;
