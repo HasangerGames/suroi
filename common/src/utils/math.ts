@@ -712,29 +712,6 @@ export const Collision = Object.freeze({
     },
     /**
      * Source
-     * @link https://stackoverflow.com/questions/22521982/js-check-if-point-inside-a-polygon
-     */
-    pointInsidePolygon(point: Vector, poly: Vector[]) {
-        // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
-        const { x } = point;
-        const { y } = point;
-        let inside = false;
-        const count = poly.length;
-        for (let i = 0, j = count - 1; i < count; j = i++) {
-            const xi = poly[i].x;
-            const yi = poly[i].y;
-            const xj = poly[j].x;
-            const yj = poly[j].y;
-
-            const intersect = (yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
-            if (intersect) {
-                inside = !inside;
-            }
-        }
-        return inside;
-    },
-    /**
-     * Source
      * @link http://ahamnett.blogspot.com/2012/06/raypolygon-intersections.html
      */
     rayIntersectsLine(origin: Vector, direction: Vector, lineA: Vector, lineB: Vector): number | null {

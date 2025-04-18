@@ -159,7 +159,7 @@ class MapManagerClass {
     }
 
     isInOcean(position: Vector): boolean {
-        return !Collision.pointInsidePolygon(position, this.terrain.beachHitbox.points);
+        return !this.terrain.beachHitbox.isPointInside(position);
     }
 
     distanceToShore(position: Vector): number {
@@ -202,7 +202,7 @@ class MapManagerClass {
             );
         }
 
-        // river bank needs to be draw first
+        // river bank needs to be drawn first
         for (const river of this._terrain.rivers) {
             ctx
                 .beginPath()
