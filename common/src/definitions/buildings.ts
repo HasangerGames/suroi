@@ -7120,7 +7120,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "memorial",
         name: "Memorial",
-        spawnHitbox: RectangleHitbox.fromRect(30, 40, Vec.create(0, -10)),
+        spawnHitbox: RectangleHitbox.fromRect(50, 50, Vec.create(0, -10)),
         rotationMode: RotationMode.None,
         spawnMode: MapObjectSpawnMode.Grass,
         hideOnMap: true,
