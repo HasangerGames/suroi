@@ -18,6 +18,7 @@ import { GameObject } from "./gameObject";
 import { ParticleManager, type Particle, type ParticleEmitter, type ParticleOptions } from "../managers/particleManager";
 import { type Player } from "./player";
 import { DebugRenderer } from "../utils/debugRenderer";
+import { CameraManager } from "../managers/cameraManager";
 
 export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     override readonly damageable = true;
@@ -77,6 +78,8 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         this.container.addChild(this.image);
 
         this.updateFromData(data, true);
+
+        CameraManager.addObjectToLayer(this.layer, this.container);
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Obstacle], isNew = false): void {

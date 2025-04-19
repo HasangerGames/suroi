@@ -12,6 +12,7 @@ import { GameObject } from "./gameObject";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { MapManager } from "../managers/mapManager";
 import { ParticleManager } from "../managers/particleManager";
+import { CameraManager } from "../managers/cameraManager";
 
 export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
     private readonly image = new SuroiSprite("airdrop_parachute");
@@ -29,6 +30,8 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
         this.updateZIndex();
 
         this.updateFromData(data, true);
+
+        CameraManager.addObjectToLayer(this.layer, this.container);
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Parachute], isNew = false): void {

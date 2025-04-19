@@ -129,7 +129,7 @@ export enum ZIndexes {
     Gas
 }
 
-export const enum Layer {
+export enum Layer {
     Basement1 = -2,
     ToBasement1 = -1,
     Ground = 0,

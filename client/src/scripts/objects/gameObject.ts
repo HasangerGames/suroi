@@ -7,7 +7,6 @@ import { FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Container } from "pixi.js";
 import { Game } from "../game";
-import { CameraManager } from "../managers/cameraManager";
 import { MapManager } from "../managers/mapManager";
 import { SoundManager, type GameSound, type SoundOptions } from "../managers/soundManager";
 import { toPixiCoords } from "../utils/pixi";
@@ -97,7 +96,6 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
 
     constructor(readonly id: number) {
         super();
-        CameraManager.addObject(this.container);
     }
 
     destroy(): void {

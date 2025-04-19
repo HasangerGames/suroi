@@ -58,7 +58,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
         this.container.sortableChildren = true;
 
-        CameraManager.addObject(this.ceilingContainer);
+        CameraManager.addObjectToLayer(this.layer, this.container, this.ceilingContainer);
 
         this.updateFromData(data, true);
     }
@@ -209,7 +209,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                     this.graphics.closePath();
                     this.graphics.fill(graphics.color);
                 }
-                CameraManager.addObject(this.graphics);
+                CameraManager.addObjectToLayer(this.layer, this.graphics);
             }
 
             for (const override of definition.visibilityOverrides ?? []) {
@@ -232,7 +232,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             if (this.maskHitbox) {
                 this.mask = new Graphics();
                 this.mask.alpha = 0;
-                CameraManager.addObject(this.mask);
+                CameraManager.addObjectToLayer(this.layer, this.mask);
 
                 for (const hitbox of this.maskHitbox.hitboxes) {
                     const { min, max } = hitbox;

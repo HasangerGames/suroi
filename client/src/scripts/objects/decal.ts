@@ -7,6 +7,7 @@ import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
+import { CameraManager } from "../managers/cameraManager";
 
 export class Decal extends GameObject.derive(ObjectCategory.Decal) {
     definition!: DecalDefinition;
@@ -38,6 +39,8 @@ export class Decal extends GameObject.derive(ObjectCategory.Decal) {
         this.container.rotation = data.rotation;
 
         this.updateZIndex();
+
+        CameraManager.addObjectToLayer(this.layer, this.container);
     }
 
     override updateZIndex(): void {

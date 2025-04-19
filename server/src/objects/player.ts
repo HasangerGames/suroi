@@ -46,7 +46,7 @@ import { MeleeItem } from "../inventory/meleeItem";
 import { ServerPerkManager, UpdatablePerkDefinition } from "../inventory/perkManager";
 import { ThrowableItem } from "../inventory/throwableItem";
 import { type Team } from "../team";
-import { removeFrom } from "../utils/misc";
+import { removeFrom } from "@common/utils/misc";
 import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
 import { Explosion } from "./explosion";

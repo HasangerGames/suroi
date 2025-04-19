@@ -173,7 +173,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     constructor(id: number, data: ObjectsNetData[ObjectCategory.Player]) {
         super(id);
 
-        CameraManager.addObject(this.disguiseContainer = new Container());
+        CameraManager.addObjectToLayer(this.disguiseContainer = new Container());
 
         const teamMode = Game.teamMode;
 
@@ -237,7 +237,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             container: new Container()
         };
 
-        CameraManager.addObject(emote.container);
+        CameraManager.addObjectToLayer(this.layer, emote.container);
         emote.container.addChild(emote.background, emote.image);
         emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer, Game.layer);
         emote.container.visible = false;
@@ -977,7 +977,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             container.zIndex = getEffectiveZIndex(ZIndexes.DeathMarkers, game.layer, game.layer);
-            CameraManager.addObject(container);
+            CameraManager.addObjectToLayer(container);
         } else if (
             this.teammateName
             && (

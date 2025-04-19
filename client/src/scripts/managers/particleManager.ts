@@ -39,7 +39,7 @@ class ParticleManagerClass {
     spawnParticle(options: ParticleOptions): Particle {
         const particle = new Particle(options);
         this.particles.add(particle);
-        CameraManager.addObject(particle.image);
+        CameraManager.addObjectToLayer(options.layer ?? Layer.Ground, particle.image);
         return particle;
     }
 

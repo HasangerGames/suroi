@@ -81,7 +81,7 @@ export class Bullet extends BaseBullet {
         // don't play bullet whiz if bullet originated within whiz hitbox
         this._playBulletWhiz = !Game.activePlayer?.bulletWhizHitbox.isPointInside(this.initialPosition);
 
-        CameraManager.addObject(this._image);
+        CameraManager.addObjectToLayer(this.layer, this._image);
     }
 
     update(delta: number): void {

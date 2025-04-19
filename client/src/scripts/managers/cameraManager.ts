@@ -1,19 +1,26 @@
+import { Layer } from "@common/constants";
 import { DEFAULT_SCOPE, Scopes } from "@common/definitions/items/scopes";
 import { EaseFunctions, Numeric } from "@common/utils/math";
+import { removeFrom } from "@common/utils/misc";
 import { randomPointInsideCircle } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { ShockwaveFilter } from "pixi-filters";
-import { Container, Filter, type Application } from "pixi.js";
+import { Container, Filter } from "pixi.js";
+import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
-import { Layers, type Layer } from "@common/constants";
-import { GameConsole } from "../console/gameConsole";
 
 class CameraManagerClass {
-    pixi!: Application;
-    containers!: Record<Layer, Container>;
+    container = new Container();
+
+    layerContainers = new Map<Layer, Container>(
+        // create a container for each layer
+        Object.keys(Layer)
+            .filter(k => isNaN(Number(k)))
+            .map(k => [parseInt(k), new Container()])
+    );
 
     position = Vec.create(0, 0);
 
@@ -43,15 +50,14 @@ class CameraManagerClass {
         }
         this._initialized = true;
 
-        this.pixi = Game.pixi;
-        for (const layer of Object.keys(Layer).filter(k => isNaN(Number(k)))) {
-
+        for (const container of this.layerContainers.values()) {
+            this.container.addChild(container);
         }
     }
 
     resize(animation = false): void {
-        this.width = this.pixi.screen.width;
-        this.height = this.pixi.screen.height;
+        this.width = Game.pixi.screen.width;
+        this.height = Game.pixi.screen.height;
 
         const minDimension = Numeric.min(this.width, this.height);
         const maxDimension = Numeric.max(this.width, this.height);
@@ -110,18 +116,35 @@ class CameraManagerClass {
         this.shockwaves.add(new Shockwave(duration, position, amplitude, wavelength, speed, layer));
     }
 
-    addObject(layer: Layer, ...objects: Container[]): void {
-        this.containers[layer].addChild(...objects);
+    getLayer(layer: Layer): Container {
+        const container = this.layerContainers.get(layer);
+        if (!container) {
+            throw new Error(`No container found for layer: ${layer}`);
+        }
+        return container;
+    }
+
+    addObject(...objects: Container[]): void {
+        this.container.addChild(...objects);
+    }
+
+    addObjectToLayer(layer: Layer, ...objects: Container[]): void {
+        this.getLayer(layer).addChild(...objects);
     }
 
     addFilter(layer: Layer, filter: Filter): void {
-        (this.containers[layer].filters as Filter[]).push
+        (this.getLayer(layer).filters as Filter[]).push(filter);
+    }
+
+    removeFilter(layer: Layer, filter: Filter): void {
+        removeFrom(this.getLayer(layer).filters as Filter[], filter);
     }
 
     reset(): void {
-        for (const container of Object.values(this.containers)) {
+        for (const container of this.layerContainers.values()) {
             container.removeChildren();
         }
+        this.container.removeChildren();
         this.zoom = Scopes.definitions[0].zoomLevel;
     }
 }
@@ -147,14 +170,14 @@ export class Shockwave {
         this.anchorContainer = new SuroiSprite();
         this.wavelength = wavelength;
 
-        CameraManager.addObject(layer, this.anchorContainer);
+        CameraManager.addObjectToLayer(layer, this.anchorContainer);
         this.anchorContainer.setVPos(position);
 
         this.filter = new ShockwaveFilter();
 
         this.update();
 
-        CameraManager.containers[layer].filters = [CameraManager.container.filters].flat().concat(this.filter);
+        CameraManager.addFilter(layer, this.filter);
     }
 
     update(): void {
@@ -185,7 +208,7 @@ export class Shockwave {
     }
 
     destroy(): void {
-        CameraManager.container.filters = [CameraManager.container.filters].flat().filter(filter => this.filter !== filter);
+        CameraManager.removeFilter(this.layer, this.filter);
         CameraManager.shockwaves.delete(this);
         this.anchorContainer.destroy();
     }

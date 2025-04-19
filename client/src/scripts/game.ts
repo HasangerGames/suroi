@@ -363,7 +363,7 @@ export const Game = new (class Game {
                 )
             }));
 
-            CameraManager.addObject(this.gasRender.graphics);
+            CameraManager.addObjectToLayer(this.gasRender.graphics);
             MapManager.indicator.setFrame("player_indicator");
 
             const particleEffects = this.mode.particleEffects;

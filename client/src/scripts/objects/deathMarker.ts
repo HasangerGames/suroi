@@ -11,6 +11,7 @@ import { GameObject } from "./gameObject";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
 import { UIManager } from "../managers/uiManager";
+import { CameraManager } from "../managers/cameraManager";
 
 export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
     playerName!: string;
@@ -45,6 +46,8 @@ export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
         this.container.addChild(this.image, this.playerNameText);
 
         this.updateFromData(data, true);
+
+        CameraManager.addObjectToLayer(this.layer, this.container);
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.DeathMarker], isNew = false): void {
