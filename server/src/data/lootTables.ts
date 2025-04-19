@@ -345,8 +345,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "gold_tie_event", weight: 1 }
         ],
         ship_skins: [
-            { item: "ship_carrier", weight: 1 },
-            { item: "cargo_wave", weight: 1 }
+            { item: "ship_carrier", weight: 0.5 },
+            { item: "cargo_wave", weight: 0.5 }
         ],
         military_container_skins: [
             { item: "military_camo", weight: 1 }
