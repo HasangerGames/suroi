@@ -316,8 +316,6 @@ export const Game = new (class Game {
 
     updateAmbience(): void {
         // todo:
-        // loop river ambience & ocean ambience mp3
-        // make ocean ambience mp3 shorter
         // add wind ambience mp3
 
         if (!this.activePlayer) return;
