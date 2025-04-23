@@ -296,6 +296,7 @@ const maps = {
             river_hut_6: 3,
             small_bridge: Infinity,
             plumpkin_bunker: 1,
+            campsite: 1,
             sea_traffic_control: 1,
             tugboat_red: 1,
             tugboat_white: 7,
@@ -320,7 +321,7 @@ const maps = {
             tent_5: 1,
             outhouse: 10
         },
-        majorBuildings: ["bombed_armory", "lodge", "plumpkin_bunker"],
+        majorBuildings: ["bombed_armory", "lodge", "plumpkin_bunker", "campsite"],
         quadBuildingLimit: {
             river_hut_4: 2,
             river_hut_5: 2,

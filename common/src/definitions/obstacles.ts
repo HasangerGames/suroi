@@ -242,6 +242,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     filing_cabinet_particle:       { base: "metal_particle_2", tint: 0x7f714d },
     briefcase_particle:            { base: "metal_particle_2", tint: 0xcfcfcf },
     aegis_crate_particle:          { base: "wood_particle",    tint: 0x2687d9 },
+    log_particle:                  { base: "stone_particle_1",  tint: 0x5b3e24 },
     airdrop_crate_particle:        { base: "wood_particle",    tint: aidrTint },
     chest_particle:                { base: "wood_particle",    tint: 0xa87e5a },
     cooler_particle:               { base: "wood_particle",    tint: 0x357d99 },
@@ -4700,6 +4701,51 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: RectangleHitbox.fromRect(9.2, 9.2),
         frames: {
             particle: "memorial_crate_particle"
+        }
+    },
+    {
+        idString: "large_logs_pile",
+        name: "Large Logs Pile",
+        material: "tree",
+        health: 200,
+        hitbox: RectangleHitbox.fromRect(17.54, 8.22),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Always,
+        noResidue: true,
+        frames: {
+            particle: "log_particle"
+        }
+    },
+    {
+        idString: "small_logs_pile",
+        name: "Small Logs Pile",
+        material: "tree",
+        health: 180,
+        hitbox: RectangleHitbox.fromRect(8.6, 8.21),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Always,
+        noResidue: true,
+        frames: {
+            particle: "log_particle"
+        }
+    },
+    {
+        idString: "campsite_crate",
+        name: "Campsite Crate",
+        material: "crate",
+        health: 65,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.5
+        },
+        spawnMode: MapObjectSpawnMode.GrassAndSand,
+        rotationMode: RotationMode.Binary,
+        hitbox: RectangleHitbox.fromRect(7.96, 7.96),
+        hasLoot: true,
+        frames: {
+            particle: "crate_particle",
+            residue: "regular_crate_residue"
         }
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {

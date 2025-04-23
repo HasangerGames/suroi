@@ -173,6 +173,14 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { table: "scopes", weight: 0.3 }
             ]
         },
+        campsite_crate: [
+            { table: "guns", weight: 1 },
+            { table: "healing_items", weight: 1 },
+            { table: "equipment", weight: 0.4 },
+            { table: "ammo", weight: 0.5 },
+            { table: "scopes", weight: 0.35 },
+            { table: "throwables", weight: 0.35 }
+        ],
         birthday_cake: [
             { table: "special_guns", weight: 0.25 },
             { table: "special_equipment", weight: 0.25 },
@@ -953,6 +961,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
         briefcase: [
             { item: "usas12", weight: 0.5 },
+            { item: "mp153", weight: 0.5 },
             { item: "m1_garand", weight: 0.5 },
             { item: "mk18", weight: 0.2 },
             { item: "l115a1", weight: 0.2 },
@@ -1495,6 +1504,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "m1_garand", weight: 1 },
             { item: "l115a1", weight: 1 },
             { item: "mk18", weight: 1 },
+            { item: "mp153", weight: 0.75 },
             { item: "usas12", weight: 0.5 },
             { item: "g19", weight: 0.02 }
         ],

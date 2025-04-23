@@ -1699,7 +1699,49 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             }
         }
     },
-
+    {
+        idString: "mp153",
+        name: "MP-153",
+        tier: Tier.A,
+        ammoType: "12g",
+        speedMultiplier: 1,
+        itemType: ItemType.Gun,
+        ammoSpawnAmount: 16,
+        capacity: 8,
+        reloadTime: 0.45,
+        shotsPerReload: 1,
+        fireDelay: 400,
+        switchDelay: 600,
+        recoilMultiplier: 0.6,
+        recoilDuration: 400,
+        fireMode: FireMode.Single,
+        shotSpread: 2,
+        moveSpread: 5,
+        fsaReset: 600,
+        length: 8.45,
+        fists: {
+            left: Vec.create(108, -3),
+            right: Vec.create(45, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec.create(100, 0) },
+        casingParticles: [{
+            position: Vec.create(4.5, 0.6),
+            frame: "casing_12ga_slug"
+        }],
+        gasParticles: gasParticlePresets.shotgun,
+        ballistics: {
+            damage: 78,
+            obstacleMultiplier: 1,
+            speed: 0.25,
+            range: 120,
+            tracer: {
+                width: 2,
+                length: 1.3
+            }
+        }
+    },
     //
     // Sniper rifles
     //
