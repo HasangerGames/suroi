@@ -85,6 +85,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     activeBloodthirstEffect = false;
     activeDisguise?: ObstacleDefinition;
 
+    bulletTargetHitCount = 0;
+
     teamID?: number;
     colorIndex = 0; // Assigned in the team.ts file.
 

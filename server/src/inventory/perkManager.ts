@@ -96,6 +96,10 @@ export class ServerPerkManager extends PerkManager {
                     if (owner.action?.type === PlayerActions.Reload) owner.action?.cancel();
                     break;
                 }
+                case PerkIds.PrecisionRecycling: {
+                    owner.bulletTargetHitCount = 0;
+                    break;
+                }
             }
             // ! evil ends here
         }
@@ -168,6 +172,10 @@ export class ServerPerkManager extends PerkManager {
                 }
                 case PerkIds.CombatExpert: {
                     if (owner.action?.type === PlayerActions.Reload) owner.action?.cancel();
+                    break;
+                }
+                case PerkIds.PrecisionRecycling: {
+                    owner.bulletTargetHitCount = 0;
                     break;
                 }
             }

@@ -57,6 +57,7 @@ export const enum PerkIds {
     CloseQuartersCombat = "close_quarters_combat",
     LowProfile = "low_profile",
     CombatExpert = "combat_expert",
+    PrecisionRecycling = "precision_recycling",
 
     //
     // Halloween Perks
@@ -221,7 +222,17 @@ const perks = [
         category: PerkCategories.Normal,
         reloadMod: 1.25
     },
-
+    {
+        idString: PerkIds.PrecisionRecycling,
+        name: "Precision Recycling",
+        itemType: ItemType.Perk,
+        description: "Hitting an enemy with two bullets in a row refunds two bullets back into the magazine.",
+        category: PerkCategories.Normal,
+        hitReq: 2,
+        accThreshold: 0.5,
+        refund: 2,
+        margin: 3 // times fireDelay
+    },
     //
     // Halloween perks
     //

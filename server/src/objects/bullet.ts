@@ -2,7 +2,7 @@ import { Bullets, type BulletDefinition } from "@common/definitions/bullets";
 import { BaseBullet, type BulletOptions } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";
 import { Angle } from "@common/utils/math";
-import type { ReferenceTo } from "@common/utils/objectDefinitions";
+import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
@@ -12,6 +12,7 @@ import { type Explosion } from "./explosion";
 import { type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Player } from "./player";
+import { PerkData, PerkIds } from "@common/definitions/items/perks";
 
 type Weapon = GunItem | Explosion;
 
@@ -152,6 +153,30 @@ export class Bullet extends BaseBullet {
                     source: this.shooter,
                     position: this.position
                 });
+
+                // evil perk
+                if (this.sourceGun && this.shooter.isPlayer && this.shooter.hasPerk(PerkIds.PrecisionRecycling)) {
+                    if (object.isPlayer) {
+                        const hitsNeeded = PerkData[PerkIds.PrecisionRecycling].hitReq;
+                        const refund = PerkData[PerkIds.PrecisionRecycling].refund;
+                        const shooterActiveWeapon = this.shooter.inventory.getWeapon(this.shooter.inventory.activeWeaponIndex);
+
+                        if (this.shooter.bulletTargetHitCount < hitsNeeded) {
+                            this.shooter.bulletTargetHitCount++;
+                            if (this.shooter.bulletTargetHitCount >= hitsNeeded && shooterActiveWeapon?.definition.itemType === ItemType.Gun) {
+                                if (shooterActiveWeapon.definition.capacity >= ((shooterActiveWeapon as GunItem).ammo + refund)) {
+                                    (shooterActiveWeapon as GunItem).ammo += refund;
+                                    this.shooter.dirty.weapons = true;
+                                }
+                                this.shooter.bulletTargetHitCount = 0;
+                            }
+                        } else {
+                            this.shooter.bulletTargetHitCount++;
+                        }
+                    } else {
+                        this.shooter.bulletTargetHitCount = 0;
+                    }
+                }
             }
 
             this.collidedIDs.add(object.id);
