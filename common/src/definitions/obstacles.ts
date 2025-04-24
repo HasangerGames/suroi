@@ -3911,6 +3911,28 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
+        idString: "campsite_case",
+        name: "Campsite Case",
+        material: "wood",
+        health: 180,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.8
+        },
+        hasLoot: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(10.5, 4.5, Vec.create(-0.1, -0.1)),
+            RectangleHitbox.fromRect(0.55, 5.95, Vec.create(-3.7, 0)),
+            RectangleHitbox.fromRect(0.55, 5.95, Vec.create(3.7, 0))
+        ),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never,
+        frames: {
+            particle: "crate_particle"
+        }
+    },
+    {
         idString: "button",
         name: "Button",
         material: "stone",

@@ -8163,6 +8163,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: [
+            { idString: "campsite_case", position: Vec.create(61.56, -48.94), rotation: 0 },
+
             { idString: "pebble", position: Vec.create(-5.9, -3.68) },
             { idString: "pebble", position: Vec.create(-54.97, 27.96) },
             { idString: "pebble", position: Vec.create(-4.89, 32.17) },

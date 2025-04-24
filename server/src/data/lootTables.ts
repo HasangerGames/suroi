@@ -490,6 +490,10 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             [{ item: "ice_pick", weight: 1 }],
             [{ item: "frosty", weight: 1 }]
         ],
+        campsite_case: [
+            { item: "radio", weight: 1 },
+            { item: "mp153", weight: 0.75 }
+        ],
         confetti_grenade_box: {
             min: 1,
             max: 2,
@@ -961,7 +965,6 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
         briefcase: [
             { item: "usas12", weight: 0.5 },
-            { item: "mp153", weight: 0.5 },
             { item: "m1_garand", weight: 0.5 },
             { item: "mk18", weight: 0.2 },
             { item: "l115a1", weight: 0.2 },
