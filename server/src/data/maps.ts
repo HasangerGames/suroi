@@ -291,6 +291,7 @@ const maps = {
             ]
         },
         buildings: {
+            breached_dam: 3,
             river_hut_4: 3,
             river_hut_5: 3,
             river_hut_6: 3,
