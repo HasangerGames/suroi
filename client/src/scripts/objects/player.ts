@@ -782,7 +782,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     if (this.isActivePlayer) {
                         UIManager.animateAction(
                             getTranslatedString("action_reloading"),
-                            reloadFullClip ? weaponDef.fullReloadTime : weaponDef.reloadTime
+                            (reloadFullClip ? weaponDef.fullReloadTime : weaponDef.reloadTime) / (ClientPerkManager.hasItem(PerkIds.CombatExpert) ? PerkData[PerkIds.CombatExpert].reloadMod : 1)
                         );
                     }
 
@@ -820,7 +820,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     {
                         falloff: 0.6,
                         maxRange: 48,
-                        speed: ClientPerkManager.hasItem(PerkIds.FieldMedic) && actionSoundName === action.item?.idString ? PerkData[PerkIds.FieldMedic].usageMod : 1
+                        speed: (ClientPerkManager.hasItem(PerkIds.CombatExpert) && action.type === PlayerActions.Reload) ? PerkData[PerkIds.CombatExpert].reloadMod : ClientPerkManager.hasItem(PerkIds.FieldMedic) && actionSoundName === action.item?.idString ? PerkData[PerkIds.FieldMedic].usageMod : 1
                     }
                 );
             }

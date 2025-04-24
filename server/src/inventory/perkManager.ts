@@ -1,4 +1,4 @@
-import { GameConstants } from "@common/constants";
+import { GameConstants, PlayerActions } from "@common/constants";
 import { Obstacles } from "@common/definitions/obstacles";
 import { PerkData, PerkIds, Perks, type PerkDefinition } from "@common/definitions/items/perks";
 import { Skins } from "@common/definitions/items/skins";
@@ -92,6 +92,10 @@ export class ServerPerkManager extends PerkManager {
                     }
                     break;
                 }
+                case PerkIds.CombatExpert: {
+                    if (owner.action?.type === PlayerActions.Reload) owner.action?.cancel();
+                    break;
+                }
             }
             // ! evil ends here
         }
@@ -160,6 +164,10 @@ export class ServerPerkManager extends PerkManager {
                 case PerkIds.Costumed: {
                     owner.activeDisguise = undefined;
                     owner.setDirty();
+                    break;
+                }
+                case PerkIds.CombatExpert: {
+                    if (owner.action?.type === PlayerActions.Reload) owner.action?.cancel();
                     break;
                 }
             }

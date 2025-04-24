@@ -56,6 +56,7 @@ export const enum PerkIds {
     Berserker = "stark_melee_gauntlet",
     CloseQuartersCombat = "close_quarters_combat",
     LowProfile = "low_profile",
+    CombatExpert = "combat_expert",
 
     //
     // Halloween Perks
@@ -73,7 +74,7 @@ export const enum PerkIds {
     Claustrophobic = "claustrophobic",
     LacedStimulants = "laced_stimulants",
     RottenPlumpkin = "rotten_plumpkin",
-    PriorityTarget = "priority_target",
+    // PriorityTarget = "priority_target",
 
     //
     // Infection
@@ -211,6 +212,14 @@ const perks = [
 
         sizeMod: 0.8, // multiplicative
         explosionMod: 0.5 // multiplicative
+    },
+    {
+        idString: PerkIds.CombatExpert,
+        name: "Combat Expert",
+        itemType: ItemType.Perk,
+        description: "Decreased reload time.",
+        category: PerkCategories.Normal,
+        reloadMod: 1.25
     },
 
     //
@@ -420,7 +429,7 @@ const perks = [
         healthLoss: 5, // absolute
         noDrop: true
     },
-    {
+    /* {
         idString: PerkIds.PriorityTarget,
         name: "Priority Target",
         itemType: ItemType.Perk,
@@ -430,7 +439,7 @@ const perks = [
 
         noDrop: true,
         plumpkinGambleIgnore: true
-    },
+    }, */
     {
         idString: PerkIds.Infected,
         name: "Infected",

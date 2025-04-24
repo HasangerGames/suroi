@@ -1,7 +1,7 @@
 import { AnimationType, GameConstants, PlayerActions } from "@common/constants";
 import { HealType, type HealingItemDefinition } from "@common/definitions/items/healingItems";
 import { Loots } from "@common/definitions/loots";
-import { PerkIds } from "@common/definitions/items/perks";
+import { PerkData, PerkIds } from "@common/definitions/items/perks";
 import { Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
@@ -75,7 +75,7 @@ export class ReloadAction extends Action {
         const fullReload = item.definition.reloadFullOnEmpty && item.ammo <= 0;
         super(
             player,
-            fullReload ? item.definition.fullReloadTime : item.definition.reloadTime
+            (fullReload ? item.definition.fullReloadTime : item.definition.reloadTime) / (player.hasPerk(PerkIds.CombatExpert) ? PerkData[PerkIds.CombatExpert].reloadMod : 1)
         );
         this.fullReload = !!fullReload;
     }
