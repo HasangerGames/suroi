@@ -4708,6 +4708,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         name: "Large Logs Pile",
         material: "tree",
         health: 200,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.7
+        },
         hitbox: RectangleHitbox.fromRect(17.54, 8.22),
         rotationMode: RotationMode.Limited,
         allowFlyover: FlyoverPref.Always,
@@ -4721,6 +4726,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         name: "Small Logs Pile",
         material: "tree",
         health: 180,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.7
+        },
         hitbox: RectangleHitbox.fromRect(8.6, 8.21),
         rotationMode: RotationMode.Limited,
         allowFlyover: FlyoverPref.Always,
