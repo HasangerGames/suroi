@@ -1,6 +1,5 @@
 import { ObjectCategory, ZIndexes } from "@common/constants";
 import { type DecalDefinition } from "@common/definitions/decals";
-import { getEffectiveZIndex } from "@common/utils/layer";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
@@ -44,10 +43,9 @@ export class Decal extends GameObject.derive(ObjectCategory.Decal) {
     }
 
     override updateZIndex(): void {
-        const zIndex = this.doOverlay() && this.definition.zIndex === undefined
+        this.container.zIndex = this.doOverlay() && this.definition.zIndex === undefined
             ? ZIndexes.UnderWaterDeadObstacles
             : this.definition.zIndex ?? ZIndexes.Decals;
-        this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, Game.layer);
     }
 
     update(): void { /* bleh */ }

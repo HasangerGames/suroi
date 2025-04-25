@@ -15,12 +15,13 @@ import { type Tween } from "../utils/tween";
 class CameraManagerClass {
     container = new Container();
 
-    layerContainers = new Map<Layer, Container>(
-        // create a container for each layer
-        Object.keys(Layer)
-            .filter(k => isNaN(Number(k)))
-            .map(k => [parseInt(k), new Container()])
-    );
+    layerContainers = new Map<Layer, Container>([
+        [Layer.Basement1, new Container()],
+        [Layer.ToBasement1, new Container()],
+        [Layer.Ground, new Container()],
+        [Layer.ToFloor1, new Container()],
+        [Layer.Floor1, new Container()]
+    ]);
 
     position = Vec.create(0, 0);
 
@@ -130,6 +131,10 @@ class CameraManagerClass {
 
     addObjectToLayer(layer: Layer, ...objects: Container[]): void {
         this.getLayer(layer).addChild(...objects);
+    }
+
+    removeObjectFromLayer(layer: Layer, ...objects: Container[]): void {
+        this.getLayer(layer).removeChild(...objects);
     }
 
     addFilter(layer: Layer, filter: Filter): void {

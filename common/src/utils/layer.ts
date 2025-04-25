@@ -148,13 +148,3 @@ export function isVisibleFromLayer(
         )
     );
 }
-
-const layerCount = Object.keys(ZIndexes).length / 2; // account for double-indexing
-
-export function getEffectiveZIndex(orig: ZIndexes, layer = Layer.Ground, gameLayer = Layer.Ground): number {
-    if (layer > Layer.Ground || (gameLayer < Layer.Ground && layer < Layer.Ground)) {
-        layer = Layer.Floor1;
-    }
-
-    return orig + layer * layerCount;
-}

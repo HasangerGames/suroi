@@ -12,7 +12,7 @@ import { Loots, type WeaponDefinition } from "@common/definitions/loots";
 import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer, getEffectiveZIndex } from "@common/utils/layer";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Angle, EaseFunctions, Geometry } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
@@ -61,7 +61,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     backEquippedMelee?: MeleeDefinition;
 
     private activeDisguise?: ObstacleDefinition;
-    private readonly disguiseContainer: Container;
+    private readonly disguiseContainer?: Container;
     halloweenThrowableSkin = false;
 
     infected = false;
@@ -173,8 +173,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     constructor(id: number, data: ObjectsNetData[ObjectCategory.Player]) {
         super(id);
 
-        CameraManager.addObjectToLayer(this.disguiseContainer = new Container());
-
         const teamMode = Game.teamMode;
 
         this.images = {
@@ -220,9 +218,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.backMeleeSprite
         );
 
+        CameraManager.addObjectToLayer(this.layer, this.disguiseContainer = new Container());
         this.disguiseContainer.addChild(this.images.disguiseSprite);
-
-        // this.images.blood.zIndex = getEffectiveZIndex(4, Game.layer, Game.layer);
 
         if (teamMode) {
             // teamMode guarantees these images' presence
@@ -239,7 +236,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         CameraManager.addObjectToLayer(this.layer, emote.container);
         emote.container.addChild(emote.background, emote.image);
-        emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer, Game.layer);
+        emote.container.zIndex = ZIndexes.Emotes;
         emote.container.visible = false;
 
         this.updateFistsPosition(false);
@@ -292,10 +289,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         super.updateContainerPosition();
         if (!this.destroyed) {
             this.emote.container.position = Vec.addComponent(this.container.position, 0, -175);
-            this.disguiseContainer.position = this.container.position;
+            this.disguiseContainer?.position.copyFrom(this.container.position);
             if (this.teammateName) {
                 this.teammateName.container.position = Vec.addComponent(this.container.position, 0, 95);
-                this.teammateName.container.zIndex = getEffectiveZIndex(ZIndexes.TeammateName, this.layer, Game.layer);
+                this.teammateName.container.zIndex = ZIndexes.TeammateName;
             }
         }
     }
@@ -518,7 +515,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         if (isNew || !GameConsole.getBuiltInCVar("cv_movement_smoothing")) {
             this.container.position.copyFrom(toPixiCoords(this.position));
-            this.disguiseContainer.position.copyFrom(toPixiCoords(this.position));
+            this.disguiseContainer?.position.copyFrom(toPixiCoords(this.position));
             this.emote.container.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, -175)));
             this.teammateName?.container.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, 95)));
         }
@@ -555,10 +552,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.layer = layer;
             if (layerChange) Game.changeLayer(this.layer);
 
+            CameraManager.addObjectToLayer(this.layer, this.container);
+
             this.backEquippedMelee = backEquippedMelee;
 
             this.container.visible = !dead;
-            this.disguiseContainer.visible = this.container.visible;
+            if (this.disguiseContainer) {
+                this.disguiseContainer.visible = this.container.visible;
+            }
 
             const hadSkin = this.halloweenThrowableSkin;
             if (
@@ -976,8 +977,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 container.addChild(badge);
             }
 
-            container.zIndex = getEffectiveZIndex(ZIndexes.DeathMarkers, game.layer, game.layer);
-            CameraManager.addObjectToLayer(container);
+            container.zIndex = ZIndexes.DeathMarkers;
+            CameraManager.addObjectToLayer(this.layer, container);
         } else if (
             this.teammateName
             && (
@@ -1162,18 +1163,18 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     override updateZIndex(): void {
         // i love ternary spam
-        const zIndex = FloorTypes[this.floorType].overlay
+        this.container.zIndex = FloorTypes[this.floorType].overlay
             ? this.downed
                 ? ZIndexes.UnderwaterDownedPlayers
                 : ZIndexes.UnderwaterPlayers
             : this.downed
                 ? ZIndexes.DownedPlayers
                 : ZIndexes.Players;
-
-        this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, Game.layer);
-        this.disguiseContainer.zIndex = this.container.zIndex + 1;
-        this.emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer, Game.layer);
-        if (this.teammateName) this.teammateName.container.zIndex = getEffectiveZIndex(ZIndexes.DeathMarkers, Game.layer, Game.layer);
+        if (this.disguiseContainer) {
+            this.disguiseContainer.zIndex = this.container.zIndex + 1;
+        }
+        this.emote.container.zIndex = ZIndexes.Emotes;
+        if (this.teammateName) this.teammateName.container.zIndex = ZIndexes.DeathMarkers;
     }
 
     updateEquipmentWorldImage(type: "helmet" | "vest" | "backpack"): void {
@@ -2018,7 +2019,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         anims.muzzleFlashFade?.kill();
         anims.muzzleFlashRecoil?.kill();
 
-        this.disguiseContainer.destroy();
+        this.disguiseContainer?.destroy();
         images.backMeleeSprite?.destroy();
 
         this.healingParticlesEmitter.destroy();

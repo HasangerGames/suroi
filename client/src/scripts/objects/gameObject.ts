@@ -122,6 +122,8 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
 
     abstract updateZIndex(): void;
 
+    abstract updateLayer(): void;
+
     abstract update(): void;
     abstract updateInterpolation(): void;
 

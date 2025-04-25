@@ -2,7 +2,7 @@ import { Layer, Layers, ObjectCategory, ZIndexes } from "@common/constants";
 import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
 import { RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer, equivLayer, getEffectiveZIndex } from "@common/utils/layer";
+import { adjacentOrEqualLayer, equivLayer } from "@common/utils/layer";
 import { Angle, EaseFunctions, Numeric, calculateDoorHitboxes } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
@@ -394,13 +394,11 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     }
 
     override updateZIndex(): void {
-        const zIndex = this.dead
+        this.container.zIndex = this.dead
             ? this.doOverlay()
                 ? ZIndexes.UnderWaterDeadObstacles
                 : ZIndexes.DeadObstacles
             : this.definition.zIndex ?? ZIndexes.ObstaclesLayer1;
-
-        this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, Game.layer);
 
         // hides bunker doors on ground layer
         if (this.definition.visibleFromLayers === Layers.All && Game.activePlayer !== undefined) {

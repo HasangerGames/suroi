@@ -1,7 +1,7 @@
 import { Layer, ObjectCategory, ZIndexes } from "@common/constants";
 import { BaseBullet, type BulletOptions } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer, getEffectiveZIndex, isVisibleFromLayer } from "@common/utils/layer";
+import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
 import { Geometry, Numeric, resolveStairInteraction } from "@common/utils/math";
 import { random, randomFloat, randomRotation } from "@common/utils/random";
 import { Vec } from "@common/utils/vector";
@@ -202,7 +202,7 @@ export class Bullet extends BaseBullet {
                     ),
                     position: this.position,
                     lifetime: random(trail.lifetime.min, trail.lifetime.max),
-                    zIndex: getEffectiveZIndex(ZIndexes.Bullets - 1, this.layer, Game.layer),
+                    zIndex: ZIndexes.Bullets - 1,
                     scale: randomFloat(trail.scale.min, trail.scale.max),
                     alpha: {
                         start: randomFloat(trail.alpha.min, trail.alpha.max),
@@ -228,7 +228,7 @@ export class Bullet extends BaseBullet {
     private setLayer(layer: number): void {
         this.layer = layer;
         this.updateVisibility();
-        this._image.zIndex = getEffectiveZIndex(this.definition.tracer?.zIndex ?? ZIndexes.Bullets, this.layer, Game.layer);
+        this._image.zIndex = this.definition.tracer?.zIndex ?? ZIndexes.Bullets;
     }
 
     private updateVisibility(): void {

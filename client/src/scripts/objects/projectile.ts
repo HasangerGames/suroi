@@ -1,6 +1,5 @@
 import { GameConstants, ObjectCategory, ZIndexes } from "@common/constants";
 import { type ThrowableDefinition } from "@common/definitions/items/throwables";
-import { getEffectiveZIndex } from "@common/utils/layer";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
@@ -128,15 +127,11 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
     }
 
     override updateZIndex(): void {
-        let zIndex = ZIndexes.AirborneThrowables;
+        let zIndex: number;
         if (this.onWater) zIndex = ZIndexes.UnderwaterGroundedThrowables;
         else if (this.onFloor) zIndex = ZIndexes.GroundedThrowables;
-
-        this.container.zIndex = getEffectiveZIndex(
-            zIndex,
-            this.layer,
-            Game.layer
-        );
+        else zIndex = ZIndexes.AirborneThrowables;
+        this.container.zIndex = zIndex;
     }
 
     update(): void { /* bleh */ }

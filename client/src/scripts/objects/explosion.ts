@@ -1,6 +1,6 @@
 import { GameConstants, Layer, ZIndexes } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
-import { adjacentOrEqualLayer, getEffectiveZIndex } from "@common/utils/layer";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { EaseFunctions } from "@common/utils/math";
 import { randomFloat, randomPointInsideCircle } from "@common/utils/random";
 import { FloorTypes } from "@common/utils/terrain";
@@ -27,7 +27,7 @@ export function explosion(definition: ExplosionDefinition, position: Vector, lay
     image.tint = definition.animation.tint;
     image.setVPos(pixiPos);
 
-    image.zIndex = getEffectiveZIndex(ZIndexes.Explosions, layer, Game.layer);
+    image.zIndex = ZIndexes.Explosions;
     image.setVisible(isOnSameLayer);
 
     CameraManager.addObjectToLayer(layer, image);

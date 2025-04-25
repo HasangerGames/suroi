@@ -363,7 +363,7 @@ export const Game = new (class Game {
                 )
             }));
 
-            CameraManager.addObjectToLayer(this.gasRender.graphics);
+            CameraManager.addObject(this.gasRender.graphics);
             MapManager.indicator.setFrame("player_indicator");
 
             const particleEffects = this.mode.particleEffects;
@@ -744,21 +744,6 @@ export const Game = new (class Game {
                     ObjectClassMapping[type] as new (id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
                 )(id, data);
                 this.objects.add(_object);
-
-                // Layer Transition
-                if (_object.layer !== (this.layer ?? Layer.Ground)) {
-                    _object.container.alpha = 0;
-
-                    this.layerTween = this.addTween({
-                        target: _object.container,
-                        to: { alpha: 1 },
-                        duration: LAYER_TRANSITION_DELAY,
-                        ease: EaseFunctions.sineIn,
-                        onComplete: () => {
-                            this.layerTween = undefined;
-                        }
-                    });
-                }
             } else {
                 object.updateFromData(data, false);
             }
@@ -781,25 +766,8 @@ export const Game = new (class Game {
                 continue;
             }
 
-            // Layer Transition
-            if (object.layer !== (this.layer ?? Layer.Ground)) {
-                object.container.alpha = 1;
-
-                this.layerTween = this.addTween({
-                    target: object.container,
-                    to: { alpha: 0 },
-                    duration: LAYER_TRANSITION_DELAY,
-                    ease: EaseFunctions.sineOut,
-                    onComplete: () => {
-                        this.layerTween = undefined;
-                        object.destroy();
-                        this.objects.delete(object);
-                    }
-                });
-            } else {
-                object.destroy();
-                this.objects.delete(object);
-            }
+            object.destroy();
+            this.objects.delete(object);
         }
 
         for (const bullet of updateData.deserializedBullets ?? []) {

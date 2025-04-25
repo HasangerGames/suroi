@@ -3,7 +3,7 @@ import { type BuildingDefinition, type BuildingImageDefinition } from "@common/d
 import { MaterialSounds } from "@common/definitions/obstacles";
 import { type Orientation } from "@common/typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { equivLayer, getEffectiveZIndex, isGroundLayer } from "@common/utils/layer";
+import { equivLayer, isGroundLayer } from "@common/utils/layer";
 import { Angle, Collision, EaseFunctions, Numeric, type CollisionResponse } from "@common/utils/math";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "@common/utils/random";
@@ -202,7 +202,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
             if (definition.graphics?.length) {
                 this.graphics = new Graphics();
-                this.graphics.zIndex = getEffectiveZIndex(definition.graphicsZIndex ?? ZIndexes.BuildingsFloor, this.layer, Game.layer);
+                this.graphics.zIndex = definition.graphicsZIndex ?? ZIndexes.BuildingsFloor;
                 for (const graphics of definition.graphics) {
                     this.graphics.beginPath();
                     drawGroundGraphics(graphics.hitbox.transform(this.position, 1, this.orientation), this.graphics);
@@ -356,20 +356,10 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
     }
 
     override updateZIndex(): void {
-        if (this.dead) {
-            this.ceilingContainer.zIndex = getEffectiveZIndex(ZIndexes.DeadObstacles, this.layer, Game.layer);
-        } else {
-            const { obstacles = [], subBuildings = [] } = this.definition;
-            this.ceilingContainer.zIndex = getEffectiveZIndex(
-                this.definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling,
-                this.layer + Numeric.clamp(Math.max( // make sure the ceiling appears over everything else
-                    ...obstacles.map(({ layer }) => layer ?? 0),
-                    ...subBuildings.map(({ layer }) => layer ?? 0)
-                ), 0, Infinity),
-                Game.layer
-            );
-        }
-        this.container.zIndex = getEffectiveZIndex(this.definition.floorZIndex ?? ZIndexes.BuildingsFloor, this.layer, Game.layer);
+        this.ceilingContainer.zIndex = this.dead
+            ? ZIndexes.DeadObstacles
+            : this.definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling;
+        this.container.zIndex = this.definition.floorZIndex ?? ZIndexes.BuildingsFloor;
     }
 
     override updateDebugGraphics(): void {

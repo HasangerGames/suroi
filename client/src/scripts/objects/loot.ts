@@ -3,7 +3,6 @@ import { ArmorType } from "@common/definitions/items/armors";
 import { PerkIds } from "@common/definitions/items/perks";
 import { type LootDefinition } from "@common/definitions/loots";
 import { CircleHitbox } from "@common/utils/hitbox";
-import { getEffectiveZIndex } from "@common/utils/layer";
 import { EaseFunctions } from "@common/utils/math";
 import { ItemType } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
@@ -178,7 +177,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
     }
 
     override updateZIndex(): void {
-        this.container.zIndex = getEffectiveZIndex(this.doOverlay() ? ZIndexes.UnderWaterLoot : ZIndexes.Loot, this.layer, Game.layer);
+        this.container.zIndex = this.doOverlay() ? ZIndexes.UnderWaterLoot : ZIndexes.Loot;
     }
 
     override updateDebugGraphics(): void {

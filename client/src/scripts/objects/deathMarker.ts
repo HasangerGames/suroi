@@ -1,6 +1,5 @@
 import { ObjectCategory, ZIndexes } from "@common/constants";
 import { type BadgeDefinition } from "@common/definitions/badges";
-import { getEffectiveZIndex } from "@common/utils/layer";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Text, type Container } from "pixi.js";
@@ -113,11 +112,7 @@ export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
     }
 
     override updateZIndex(): void {
-        this.container.zIndex = getEffectiveZIndex(
-            this.doOverlay() ? ZIndexes.UnderWaterDeadObstacles : ZIndexes.DeathMarkers,
-            this.layer,
-            Game.layer
-        );
+        this.container.zIndex = this.doOverlay() ? ZIndexes.UnderWaterDeadObstacles : ZIndexes.DeathMarkers;
     }
 
     override update(): void { /* bleh */ }

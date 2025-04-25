@@ -1,6 +1,5 @@
 import { ObjectCategory } from "@common/constants";
 import { resolveNumericSpecifier, type InternalAnimation, type NumericSpecifier, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
-import { getEffectiveZIndex } from "@common/utils/layer";
 import { Angle, EaseFunctions, Numeric } from "@common/utils/math";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -103,7 +102,7 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
     }
 
     override updateZIndex(): void {
-        this.container.zIndex = getEffectiveZIndex(this.definition.zIndex, this.layer, Game.layer);
+        this.container.zIndex = this.definition.zIndex;
     }
 
     override updateDebugGraphics(): void {
