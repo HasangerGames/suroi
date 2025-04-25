@@ -226,8 +226,9 @@ const perks = [
         idString: PerkIds.PrecisionRecycling,
         name: "Precision Recycling",
         itemType: ItemType.Perk,
-        description: "Hitting an enemy with two bullets in a row refunds two bullets back into the magazine.",
+        description: "Hitting an enemy with two bullets in a row refunds two bullets back into the magazine.<br>Does not apply to shotguns.",
         category: PerkCategories.Normal,
+        updateInterval: 1e3, // milliseconds
         hitReq: 2,
         accThreshold: 0.5,
         refund: 2,
