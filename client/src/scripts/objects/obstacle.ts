@@ -361,7 +361,9 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             this._glow?.kill();
         }
 
-        this.updateZIndex();
+        this.container.zIndex = this.dead
+            ? ZIndexes.DeadObstacles
+            : this.definition.zIndex ?? ZIndexes.ObstaclesLayer1;
 
         if (this._door === undefined) {
             this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
@@ -391,19 +393,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         }
 
         this.container.rotation = this.rotation;
-    }
-
-    override updateZIndex(): void {
-        this.container.zIndex = this.dead
-            ? this.doOverlay()
-                ? ZIndexes.UnderWaterDeadObstacles
-                : ZIndexes.DeadObstacles
-            : this.definition.zIndex ?? ZIndexes.ObstaclesLayer1;
-
-        // hides bunker doors on ground layer
-        if (this.definition.visibleFromLayers === Layers.All && Game.activePlayer !== undefined) {
-            this.container.visible = adjacentOrEqualLayer(this.layer, Game.layer ?? Layer.Ground);
-        }
     }
 
     override updateDebugGraphics(): void {

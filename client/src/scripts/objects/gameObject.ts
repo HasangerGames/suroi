@@ -3,11 +3,9 @@ import { makeGameObjectTemplate } from "@common/utils/gameObject";
 import { Angle, Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
-import { FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Container } from "pixi.js";
 import { Game } from "../game";
-import { MapManager } from "../managers/mapManager";
 import { SoundManager, type GameSound, type SoundOptions } from "../managers/soundManager";
 import { toPixiCoords } from "../utils/pixi";
 
@@ -15,7 +13,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
     damageable = false;
     destroyed = false;
 
-    layer: Layer = Layer.Ground;
+    layer!: Layer;
 
     private _oldPosition?: Vector;
     private _lastPositionChange?: number;
@@ -114,15 +112,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
         });
     }
 
-    doOverlay(): boolean {
-        return FloorTypes[MapManager.terrain.getFloor(this.position, this.layer)]?.overlay ?? false;
-    }
-
     abstract updateFromData(data: ObjectsNetData[Cat], isNew: boolean): void;
-
-    abstract updateZIndex(): void;
-
-    abstract updateLayer(): void;
 
     abstract update(): void;
     abstract updateInterpolation(): void;

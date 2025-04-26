@@ -8,6 +8,7 @@ import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
 import { Game } from "../game";
 import { DebugRenderer } from "../utils/debugRenderer";
+import { CameraManager } from "../managers/cameraManager";
 
 export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParticle) {
     readonly image = new SuroiSprite();
@@ -61,6 +62,7 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
         this.container.position = startPosition;
 
         this.layer = layer;
+        CameraManager.addObjectToLayer(layer, this.container);
         this._lifetime = lifetime ?? definition.lifetime as number;
         this._age = age;
         this._spawnTime = Date.now() - this._age * this._lifetime;
@@ -98,10 +100,6 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
 
         this.image.setFrame(`${definition.frame}${variant !== undefined ? `_${variant}` : ""}`);
         if (definition.tint) this.image.tint = definition.tint;
-        this.updateZIndex();
-    }
-
-    override updateZIndex(): void {
         this.container.zIndex = this.definition.zIndex;
     }
 

@@ -130,7 +130,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
         this.layer = data.layer;
         this.hitbox.position = this.position;
 
-        this.updateZIndex();
+        this.container.zIndex = ZIndexes.Loot;
 
         if (!GameConsole.getBuiltInCVar("cv_movement_smoothing") || isNew) {
             this.container.position = toPixiCoords(this.position);
@@ -174,10 +174,6 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
             default:
                 return {};
         }
-    }
-
-    override updateZIndex(): void {
-        this.container.zIndex = this.doOverlay() ? ZIndexes.UnderWaterLoot : ZIndexes.Loot;
     }
 
     override updateDebugGraphics(): void {

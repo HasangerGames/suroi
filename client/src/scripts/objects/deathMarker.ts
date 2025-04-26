@@ -45,18 +45,17 @@ export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
         this.container.addChild(this.image, this.playerNameText);
 
         this.updateFromData(data, true);
-
-        CameraManager.addObjectToLayer(this.layer, this.container);
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.DeathMarker], isNew = false): void {
         this.position = data.position;
 
         this.layer = data.layer;
+        CameraManager.addObjectToLayer(this.layer, this.container);
 
         this.container.position.copyFrom(toPixiCoords(this.position));
 
-        this.updateZIndex();
+        this.container.zIndex = ZIndexes.DeathMarkers;
 
         const player = Game.playerNames.get(data.playerID);
 
@@ -109,10 +108,6 @@ export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
                 }
             });
         }
-    }
-
-    override updateZIndex(): void {
-        this.container.zIndex = this.doOverlay() ? ZIndexes.UnderWaterDeadObstacles : ZIndexes.DeathMarkers;
     }
 
     override update(): void { /* bleh */ }

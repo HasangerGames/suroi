@@ -27,7 +27,7 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
         super(id);
 
         this.container.addChild(this.image);
-        this.updateZIndex();
+        this.container.zIndex = 994; // gas is 996 ig
 
         this.updateFromData(data, true);
 
@@ -89,10 +89,6 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
                 }));
             }
         }
-    }
-
-    override updateZIndex(): void {
-        this.container.zIndex = 994; // gas is 996 ig
     }
 
     override update(): void { /* bleh */ }

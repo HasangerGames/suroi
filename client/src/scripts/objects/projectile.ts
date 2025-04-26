@@ -15,6 +15,7 @@ import { SoundManager, type GameSound } from "../managers/soundManager";
 import { GameConsole } from "../console/gameConsole";
 import { MapManager } from "../managers/mapManager";
 import { ParticleManager } from "../managers/particleManager";
+import { CameraManager } from "../managers/cameraManager";
 
 export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
     definition!: ThrowableDefinition;
@@ -85,7 +86,6 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
 
         this.position = data.position;
         this.rotation = data.rotation;
-        this.layer = data.layer;
         this.height = data.height;
 
         this.hitbox.position = this.position;
@@ -97,8 +97,12 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
             this.container.rotation = this.rotation;
         }
 
-        this.layer = data.layer;
+        if (this.layer !== data.layer) {
+            CameraManager.changeObjectLayer(this.layer, data.layer, this.container);
+            this.layer = data.layer;
+        }
 
+        const onFloorOld = this.onFloor;
         const onWaterOld = this.onWater;
         this.onFloor = this.height <= 0;
         this.onWater = this.onFloor && !!FloorTypes[MapManager.terrain.getFloor(this.position, this.layer)].overlay;
@@ -123,15 +127,9 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
             }));
         }
 
-        this.updateZIndex();
-    }
-
-    override updateZIndex(): void {
-        let zIndex: number;
-        if (this.onWater) zIndex = ZIndexes.UnderwaterGroundedThrowables;
-        else if (this.onFloor) zIndex = ZIndexes.GroundedThrowables;
-        else zIndex = ZIndexes.AirborneThrowables;
-        this.container.zIndex = zIndex;
+        if (this.onFloor !== onFloorOld) {
+            this.container.zIndex = this.onFloor ? ZIndexes.GroundedThrowables : ZIndexes.AirborneThrowables;
+        }
     }
 
     update(): void { /* bleh */ }

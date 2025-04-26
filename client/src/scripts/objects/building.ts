@@ -9,15 +9,15 @@ import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Container, Graphics } from "pixi.js";
+import { Game } from "../game";
+import { CameraManager } from "../managers/cameraManager";
+import { ParticleManager } from "../managers/particleManager";
 import { SoundManager, type GameSound } from "../managers/soundManager";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE } from "../utils/constants";
+import { DebugRenderer } from "../utils/debugRenderer";
 import { drawGroundGraphics, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
-import { CameraManager } from "../managers/cameraManager";
-import { Game } from "../game";
-import { ParticleManager } from "../managers/particleManager";
-import { DebugRenderer } from "../utils/debugRenderer";
 
 export class Building extends GameObject.derive(ObjectCategory.Building) {
     definition!: BuildingDefinition;
@@ -54,11 +54,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
     constructor(id: number, data: ObjectsNetData[ObjectCategory.Building]) {
         super(id);
 
-        this.layer = data.layer;
-
         this.container.sortableChildren = true;
-
-        CameraManager.addObjectToLayer(this.layer, this.container, this.ceilingContainer);
 
         this.updateFromData(data, true);
     }
@@ -191,6 +187,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 : [particleImage];
 
             this.layer = data.layer;
+            CameraManager.addObjectToLayer(this.layer, this.container, this.ceilingContainer);
             const pos = toPixiCoords(this.position);
             this.container.position.copyFrom(pos);
             this.ceilingContainer.position.copyFrom(pos);
@@ -352,10 +349,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
         this.toggleCeiling();
 
-        this.updateZIndex();
-    }
-
-    override updateZIndex(): void {
         this.ceilingContainer.zIndex = this.dead
             ? ZIndexes.DeadObstacles
             : this.definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling;

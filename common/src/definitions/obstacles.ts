@@ -897,7 +897,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             destroy: 0.5
         },
         spawnMode: MapObjectSpawnMode.River,
-        zIndex: ZIndexes.UnderwaterPlayers - 1,
+        zIndex: ZIndexes.DownedPlayers - 1,
         hitbox: new CircleHitbox(8),
         spawnHitbox: new CircleHitbox(10),
         rotationMode: RotationMode.Full,
@@ -4145,7 +4145,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: RectangleHitbox.fromRect(12, 7),
         spawnHitbox: RectangleHitbox.fromRect(14, 9),
         rotationMode: RotationMode.None,
-        zIndex: ZIndexes.UnderwaterPlayers - 1,
+        zIndex: ZIndexes.DownedPlayers - 1,
         hasLoot: true,
         hideOnMap: true,
         frames: {

@@ -137,6 +137,11 @@ class CameraManagerClass {
         this.getLayer(layer).removeChild(...objects);
     }
 
+    changeObjectLayer(oldLayer: Layer | undefined, newLayer: Layer, ...objects: Container[]): void {
+        if (oldLayer !== undefined) this.removeObjectFromLayer(oldLayer, ...objects);
+        this.addObjectToLayer(newLayer, ...objects);
+    }
+
     addFilter(layer: Layer, filter: Filter): void {
         (this.getLayer(layer).filters as Filter[]).push(filter);
     }

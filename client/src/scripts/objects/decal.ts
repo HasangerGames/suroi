@@ -37,15 +37,9 @@ export class Decal extends GameObject.derive(ObjectCategory.Decal) {
         this.container.position.copyFrom(toPixiCoords(this.position));
         this.container.rotation = data.rotation;
 
-        this.updateZIndex();
+        this.container.zIndex = this.definition.zIndex ?? ZIndexes.Decals;
 
         CameraManager.addObjectToLayer(this.layer, this.container);
-    }
-
-    override updateZIndex(): void {
-        this.container.zIndex = this.doOverlay() && this.definition.zIndex === undefined
-            ? ZIndexes.UnderWaterDeadObstacles
-            : this.definition.zIndex ?? ZIndexes.Decals;
     }
 
     update(): void { /* bleh */ }

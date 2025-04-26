@@ -830,26 +830,27 @@ export const Game = new (class Game {
     volumeTween?: Tween<GameSound>;
 
     changeLayer(layer: Layer): void {
-        for (const object of this.objects) {
-            object.updateZIndex();
-        }
-
         const basement = layer === Layer.Basement1;
         MapManager.terrainGraphics.visible = !basement;
-        const { red, green, blue } = this.pixi.renderer.background.color;
-        const color = { r: red * 255, g: green * 255, b: blue * 255 };
+
+        const currentColor = this.pixi.renderer.background.color;
         const targetColor = basement ? this.colors.void : this.colors.grass;
 
-        this.backgroundTween?.kill();
-        this.backgroundTween = this.addTween({
-            target: color,
-            to: { r: targetColor.red * 255, g: targetColor.green * 255, b: targetColor.blue * 255 },
-            onUpdate: () => {
-                this.pixi.renderer.background.color = new Color(color);
-            },
-            duration: LAYER_TRANSITION_DELAY,
-            onComplete: () => { this.backgroundTween = undefined; }
-        });
+        if (currentColor.toNumber() !== targetColor.toNumber()) {
+            const { red, green, blue } = currentColor;
+            const color = { r: red * 255, g: green * 255, b: blue * 255 };
+
+            this.backgroundTween?.kill();
+            this.backgroundTween = this.addTween({
+                target: color,
+                to: { r: targetColor.red * 255, g: targetColor.green * 255, b: targetColor.blue * 255 },
+                onUpdate: () => {
+                    this.pixi.renderer.background.color = new Color(color);
+                },
+                duration: LAYER_TRANSITION_DELAY,
+                onComplete: () => { this.backgroundTween = undefined; }
+            });
+        }
 
         if (this.ambience !== undefined) {
             this.volumeTween?.kill();

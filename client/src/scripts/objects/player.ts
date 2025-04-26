@@ -218,7 +218,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.backMeleeSprite
         );
 
-        CameraManager.addObjectToLayer(this.layer, this.disguiseContainer = new Container());
+        this.disguiseContainer = new Container();
+        // CameraManager.addObjectToLayer(this.layer, this.disguiseContainer = new Container());
         this.disguiseContainer.addChild(this.images.disguiseSprite);
 
         if (teamMode) {
@@ -227,14 +228,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.leftLeg!.scale = this.images.rightLeg!.scale = Vec.create(1.5, 0.8);
         }
 
-        let emote: this["emote"];
-        this.emote = emote = {
+        const emote = this.emote = {
             background: new SuroiSprite("emote_background").setPos(0, 0),
             image: new SuroiSprite().setPos(0, 0),
             container: new Container()
         };
 
-        CameraManager.addObjectToLayer(this.layer, emote.container);
         emote.container.addChild(emote.background, emote.image);
         emote.container.zIndex = ZIndexes.Emotes;
         emote.container.visible = false;
@@ -287,13 +286,13 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     override updateContainerPosition(): void {
         super.updateContainerPosition();
-        if (!this.destroyed) {
-            this.emote.container.position = Vec.addComponent(this.container.position, 0, -175);
-            this.disguiseContainer?.position.copyFrom(this.container.position);
-            if (this.teammateName) {
-                this.teammateName.container.position = Vec.addComponent(this.container.position, 0, 95);
-                this.teammateName.container.zIndex = ZIndexes.TeammateName;
-            }
+
+        if (this.destroyed) return;
+
+        this.emote.container.position = Vec.addComponent(this.container.position, 0, -175);
+        this.disguiseContainer?.position.copyFrom(this.container.position);
+        if (this.teammateName) {
+            this.teammateName.container.position = Vec.addComponent(this.container.position, 0, 95);
         }
     }
 
@@ -548,11 +547,16 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
             } = data;
 
+            if (layer !== this.layer) {
+                CameraManager.changeObjectLayer(this.layer, layer, this.container, this.emote.container);
+                if (this.teammateName) CameraManager.changeObjectLayer(this.layer, layer, this.teammateName.container);
+
+                this.layer = layer;
+            }
+
             const layerChange = this.isActivePlayer && (this.layer !== layer || isNew);
             this.layer = layer;
             if (layerChange) Game.changeLayer(this.layer);
-
-            CameraManager.addObjectToLayer(this.layer, this.container);
 
             this.backEquippedMelee = backEquippedMelee;
 
@@ -744,7 +748,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
         }
 
-        if (updateContainerZIndex) this.updateZIndex();
+        if (updateContainerZIndex) {
+            this.container.zIndex = this.downed ? ZIndexes.DownedPlayers : ZIndexes.Players;
+            if (this.disguiseContainer) {
+                this.disguiseContainer.zIndex = this.container.zIndex + 1;
+            }
+        }
 
         if (data.action !== undefined) {
             const action = data.action;
@@ -978,7 +987,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             container.zIndex = ZIndexes.DeathMarkers;
-            CameraManager.addObjectToLayer(this.layer, container);
         } else if (
             this.teammateName
             && (
@@ -1159,22 +1167,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.updateEquipmentSlot(item);
             }
         }
-    }
-
-    override updateZIndex(): void {
-        // i love ternary spam
-        this.container.zIndex = FloorTypes[this.floorType].overlay
-            ? this.downed
-                ? ZIndexes.UnderwaterDownedPlayers
-                : ZIndexes.UnderwaterPlayers
-            : this.downed
-                ? ZIndexes.DownedPlayers
-                : ZIndexes.Players;
-        if (this.disguiseContainer) {
-            this.disguiseContainer.zIndex = this.container.zIndex + 1;
-        }
-        this.emote.container.zIndex = ZIndexes.Emotes;
-        if (this.teammateName) this.teammateName.container.zIndex = ZIndexes.DeathMarkers;
     }
 
     updateEquipmentWorldImage(type: "helmet" | "vest" | "backpack"): void {
