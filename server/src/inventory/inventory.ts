@@ -816,8 +816,6 @@ export class Inventory {
                 this.owner.setDirty();
                 this.owner.dirty.weapons = true;
                 const slot = this.slotsByItemType[ItemType.Throwable]?.[0];
-//                if (!this.items.getItem(idString))
-//                return;
                 // Let's hope there's only one throwable slot…
                 if (slot !== undefined) {
                     const old = this.weapons[slot];
