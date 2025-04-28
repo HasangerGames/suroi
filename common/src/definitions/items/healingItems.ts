@@ -1,12 +1,14 @@
-import { ItemType, ObjectDefinitions, type ItemDefinition } from "../../utils/objectDefinitions";
-
+import { ItemType, ObjectDefinitions, ReferenceTo, type ItemDefinition } from "../../utils/objectDefinitions";
+import { PerkIds } from "./perks";
+import { PerkDefinition } from "../../definitions/items/perks";
 export interface HealingItemDefinition extends ItemDefinition {
     readonly itemType: ItemType.Healing
     readonly healType: HealType
     readonly restoreAmount: number
     readonly useTime: number
+    readonly removePerk?: ReferenceTo<PerkDefinition>
+    readonly restoreAmounts?: Record<string, number>
 }
-
 export enum HealType {
     Health,
     Adrenaline,
@@ -52,11 +54,12 @@ export const HealingItems = new ObjectDefinitions<HealingItemDefinition>([
         name: "Vaccine Injector",
         itemType: ItemType.Healing,
         healType: HealType.Special,
-        restoreAmount: 0,
         useTime: 2,
-        effect: {
-            removePerk: "infected",
-            adrenaline: 50
-        }
+        removePerk: PerkIds.Infected,
+        restoreAmount: 0,
+        restoreAmounts: {
+            "adrenaline": 50,
+          }
     }
+    
 ]);

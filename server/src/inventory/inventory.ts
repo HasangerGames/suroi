@@ -779,7 +779,7 @@ export class Inventory {
         const idString = definition.idString;
 
         if (!this.items.hasItem(idString)) return;
-
+        
         switch (definition.itemType) {
             case ItemType.Healing: {
                 if (
@@ -791,6 +791,11 @@ export class Inventory {
                     ) || (
                         definition.healType === HealType.Adrenaline
                         && this.owner.adrenaline >= this.owner.maxAdrenaline
+                    ) || (
+                        definition.healType === HealType.Special
+                        && (definition.removePerk!=undefined 
+                            && !this.owner.perks.hasItem(definition.removePerk))
+                        || definition.removePerk===undefined
                     )
                 ) return;
 
@@ -808,11 +813,11 @@ export class Inventory {
                 if (this.activeWeapon.category === ItemType.Throwable) {
                     this.activeWeapon.stopUse();
                 }
-
                 this.owner.setDirty();
                 this.owner.dirty.weapons = true;
                 const slot = this.slotsByItemType[ItemType.Throwable]?.[0];
-
+//                if (!this.items.getItem(idString))
+//                return;
                 // Let's hope there's only one throwable slot…
                 if (slot !== undefined) {
                     const old = this.weapons[slot];

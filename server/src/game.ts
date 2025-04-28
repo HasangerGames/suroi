@@ -393,16 +393,7 @@ export class Game implements GameData {
                 object.effectSpeedTimeout = this.addTimeout(() => object.effectSpeedMultiplier = 1, enemySpeedMultiplier.duration);
             }
 
-            if (object.isPlayer && removePerk) {
-                object.perks.removeItem(Perks.fromString(removePerk));
-                if (removePerk === PerkIds.Infected) { // evil
-                    const immunity = PerkData[PerkIds.Immunity];
-                    object.perks.addItem(immunity);
-                    object.immunityTimeout?.kill();
-                    object.immunityTimeout = this.addTimeout(() => object.perks.removeItem(immunity), immunity.duration);
-                    object.setDirty();
-                }
-            }
+            if (object.isPlayer && removePerk) this.removePerks(object,removePerk);
         }
 
         // Handle explosions
@@ -786,6 +777,17 @@ export class Game implements GameData {
             }
         }
         this.pluginManager.emit("player_did_join", { player, joinPacket: packet });
+    }
+
+    public removePerks(player: Player, perk:PerkIds){
+        player.perks.removeItem(Perks.fromString(perk));
+        if (perk === PerkIds.Infected) { // evil
+            const immunity = PerkData[PerkIds.Immunity];
+            player.perks.addItem(immunity);
+            player.immunityTimeout?.kill();
+            player.immunityTimeout = this.addTimeout(() => player.perks.removeItem(immunity), immunity.duration);
+            player.setDirty();
+        }
     }
 
     removePlayer(player: Player, reason?: string): void {
