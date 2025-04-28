@@ -1,7 +1,7 @@
 import { AnimationType, GameConstants, PlayerActions } from "@common/constants";
 import { HealType, type HealingItemDefinition } from "@common/definitions/items/healingItems";
 import { Loots } from "@common/definitions/loots";
-import { PerkData, PerkIds } from "@common/definitions/items/perks";
+import { PerkData, PerkIds, Perks } from "@common/definitions/items/perks";
 import { Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
@@ -149,6 +149,21 @@ export class HealingAction extends Action {
             case HealType.Adrenaline:
                 this.player.adrenaline += this.item.restoreAmount;
                 break;
+            case HealType.Special:
+                let effect = this.item?.effect;
+                if (!effect) return; //???
+                this.player.adrenaline += (effect.adrenaline || 0);
+                if (effect?.removePerk){
+                    this.player.perks.removeItem(Perks.fromString(effect.removePerk));
+                    if (effect.removePerk == PerkIds.Infected) {
+                        const immunity = PerkData[PerkIds.Immunity];
+                        this.player.perks.addItem(immunity);
+                        this.player.immunityTimeout?.kill();
+                        this.player.immunityTimeout = this.player.game.addTimeout(() => this.player.perks.removeItem(immunity), immunity.duration);
+                    }
+                    this.player.setDirty();
+                }
+                //may implement more for future uses
         }
         this.player.dirty.items = true;
     }

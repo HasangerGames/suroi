@@ -597,7 +597,9 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "gauze", count: 5, weight: 3 },
             { item: "cola", weight: 2 },
             { item: "tablets", weight: 1 },
-            { item: "medikit", weight: 1 }
+            { item: "medikit", weight: 1 },
+            { item: "vaccine_injector", weight: 0.75 }
+            //how do i make this infection mode only??
         ],
         scopes: [
             { item: "4x_scope", weight: 1 },

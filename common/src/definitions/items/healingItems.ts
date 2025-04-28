@@ -9,7 +9,8 @@ export interface HealingItemDefinition extends ItemDefinition {
 
 export enum HealType {
     Health,
-    Adrenaline
+    Adrenaline,
+    Special
 }
 
 export const HealingItems = new ObjectDefinitions<HealingItemDefinition>([
@@ -45,5 +46,17 @@ export const HealingItems = new ObjectDefinitions<HealingItemDefinition>([
         healType: HealType.Adrenaline,
         restoreAmount: 50,
         useTime: 4
+    },
+    {
+        idString: "vaccine_injector",
+        name: "Vaccine Injector",
+        itemType: ItemType.Healing,
+        healType: HealType.Special,
+        restoreAmount: 0,
+        useTime: 2,
+        effect: {
+            removePerk: "infected",
+            adrenaline: 50
+        }
     }
 ]);

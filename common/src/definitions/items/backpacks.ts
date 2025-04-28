@@ -19,6 +19,7 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
         maxCapacity: {
             "gauze": 5,
             "medikit": 1,
+            "vaccine_injector": 1,
             "cola": 2,
             "tablets": 1,
             "12g": 15,
@@ -45,6 +46,7 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
         maxCapacity: {
             "gauze": 10,
             "medikit": 2,
+            "vaccine_injector": 2,
             "cola": 5,
             "tablets": 2,
             "12g": 30,
@@ -71,6 +73,7 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
         maxCapacity: {
             "gauze": 15,
             "medikit": 3,
+            "vaccine_injector": 3,
             "cola": 10,
             "tablets": 3,
             "12g": 60,
@@ -97,6 +100,7 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
         maxCapacity: {
             "gauze": 30,
             "medikit": 4,
+            "vaccine_injector": 4,
             "cola": 15,
             "tablets": 4,
             "12g": 90,
