@@ -2029,7 +2029,23 @@ export async function setUpUI(): Promise<void> {
 
     $<HTMLDivElement>("#healing-items-container").append(
         HealingItems.definitions.map(item => {
-            const ele = $<HTMLDivElement>(
+            let i:JQuery<HTMLDivElement>
+            if(item.healType===HealType.Special){
+                i = $<HTMLDivElement>(
+                    html`<div class="inventory-slot item-slot active" id="${item.idString}-slot">
+                        <img class="item-image" src="./img/game/shared/loot/${item.idString}.svg" draggable="false">
+                        <span class="item-count" id="${item.idString}-count">0</span>
+                        <div class="item-tooltip">
+                            ${getTranslatedString("tt_restores", {
+                        item: `<b>${getTranslatedString(item.idString as TranslationKeys)}</b><br>`,
+                        desc: `<b>${getTranslatedString((item.idString+"_desc") as TranslationKeys)}</b><br>`
+                    })}
+                        </div>
+                    </div>`
+                );
+            }
+            else{
+            i = $<HTMLDivElement>(
                 html`<div class="inventory-slot item-slot active" id="${item.idString}-slot">
                     <img class="item-image" src="./img/game/shared/loot/${item.idString}.svg" draggable="false">
                     <span class="item-count" id="${item.idString}-count">0</span>
@@ -2043,8 +2059,8 @@ export async function setUpUI(): Promise<void> {
                 })}
                     </div>
                 </div>`
-            );
-
+            );}
+            const ele = i;
             ele[0].addEventListener("pointerup", () => clearTimeout(dropTimer));
 
             slotListener(ele, button => {
