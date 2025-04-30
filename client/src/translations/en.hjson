@@ -157,6 +157,7 @@
 "action_medikit_use": "Using <item>"
 "action_cola_use": "Drinking <item>"
 "action_tablets_use": "Taking <item>"
+"action_vaccine_injector_use": "injecting vaccine"
 "interact_airdrop_crate_locked": "Open Airdrop"
 "interact_control_panel": "Activate Control Panel"
 "interact_headquarters_security_desk": "Activate Control Panel"
