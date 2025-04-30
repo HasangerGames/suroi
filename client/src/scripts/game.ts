@@ -154,8 +154,8 @@ export const Game = new (class Game {
     /**
      * proxy for `activePlayer`'s layer
      */
-    get layer(): Layer | undefined {
-        return this.activePlayer?.layer;
+    get layer(): Layer {
+        return this.activePlayer?.layer ?? Layer.Ground;
     }
 
     get activePlayer(): Player | undefined {
@@ -167,6 +167,8 @@ export const Game = new (class Game {
     gameOver = false;
     spectating = false;
     error = false;
+
+    hideSecondFloor = false;
 
     readonly pixi = new Application();
 
@@ -363,6 +365,7 @@ export const Game = new (class Game {
                 )
             }));
 
+            this.gasRender.graphics.zIndex = 1000;
             CameraManager.addObject(this.gasRender.graphics);
             MapManager.indicator.setFrame("player_indicator");
 
@@ -829,7 +832,11 @@ export const Game = new (class Game {
     backgroundTween?: Tween<{ readonly r: number, readonly g: number, readonly b: number }>;
     volumeTween?: Tween<GameSound>;
 
-    changeLayer(layer: Layer): void {
+    updateLayer(initial = false): void {
+        CameraManager.updateLayer(initial);
+
+        const layer = this.layer;
+
         const basement = layer === Layer.Basement1;
         MapManager.terrainGraphics.visible = !basement;
 
@@ -855,22 +862,20 @@ export const Game = new (class Game {
         if (this.ambience !== undefined) {
             this.volumeTween?.kill();
 
-            let target = 1; // if, somehow, the switch fails to assign a value
+            let volume: number;
 
-            switch (true) {
-                // above ground—play as normal
-                case layer >= Layer.Ground: target = 1; break;
+            // stairway leading down to bunker—half volume
+            if (layer === Layer.ToBasement1) volume = 0.5;
 
-                // stairway leading down to bunker—half volume
-                case layer === Layer.ToBasement1: target = 0.5; break;
+            // below ground—very muted
+            else if (layer <= Layer.Basement1) volume = 0.15;
 
-                // below ground—very muted
-                case layer <= Layer.Basement1: target = 0.15; break;
-            }
+            // above ground—play as normal
+            else /* if (layer >= Layer.Ground) */ volume = 1;
 
             this.volumeTween = this.addTween({
                 target: this.ambience,
-                to: { volume: target },
+                to: { volume },
                 duration: 2000,
                 onComplete: () => { this.volumeTween = undefined; }
             });
@@ -951,6 +956,8 @@ export const Game = new (class Game {
             };
             const detectionHitbox = new CircleHitbox(3 * player.sizeMod, player.position);
 
+            let hideSecondFloor = false;
+
             for (const object of this.objects) {
                 const { isLoot, isObstacle, isPlayer, isBuilding } = object;
                 const isInteractable = (isLoot || isObstacle || isPlayer) && object.canInteract(player);
@@ -972,6 +979,9 @@ export const Game = new (class Game {
                     }
                 } else if (isBuilding) {
                     object.toggleCeiling();
+                    if (object.ceilingHitbox !== undefined && !object.ceilingVisible) {
+                        hideSecondFloor = true;
+                    }
 
                 // metal detectors
                 } else if (isObstacle && object.definition.detector && object.notOnCoolDown) {
@@ -1050,6 +1060,11 @@ export const Game = new (class Game {
                         });
                     }
                 }
+            }
+
+            if (this.hideSecondFloor !== hideSecondFloor) {
+                this.hideSecondFloor = hideSecondFloor;
+                CameraManager.updateLayer();
             }
 
             const object = interactable.object ?? uninteractable.object;

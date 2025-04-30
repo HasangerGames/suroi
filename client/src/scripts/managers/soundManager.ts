@@ -46,7 +46,6 @@ export class GameSound {
 
     instance?: PixiSound.IMediaInstance;
     readonly stereoFilter: PixiSound.filters.StereoFilter;
-    // readonly reverbFilter: PixiSound.filters.ReverbFilter;
 
     ended = false;
 
@@ -62,33 +61,25 @@ export class GameSound {
         this.ambient = options.ambient;
         this.onEnd = options.onEnd;
         this.stereoFilter = new PixiSound.filters.StereoFilter(0);
-        // this.reverbFilter = new PixiSound.filters.ReverbFilter(1, 20);
 
         if (!PixiSound.sound.exists(id)) {
             console.warn(`Unknown sound with name ${id}`);
             return;
         }
 
-        const filter: PixiSound.Filter = this.stereoFilter;
+        const filters: PixiSound.Filter[] = [this.stereoFilter];
 
-        // We want reverb inside bunkers (basement layer) or if we are on a different layer with visible objects (layer floor1)
-        /* if (SOUND_FILTER_FOR_LAYERS && this.manager.game.layer) {
-            switch (this.manager.game.layer) {
-                case Layer.Floor1:
-                    filter = !equalLayer(this.layer, this.manager.game.layer ?? Layer.Ground) && isGroundLayer(this.layer) ? this.reverbFilter : this.stereoFilter;
-                    break;
-
-                case Layer.Basement1:
-                    filter = this.reverbFilter;
-                    break;
-            }
-        } */
+        // muffle the sound if it's 2 or more layers away
+        if (Math.abs(Game.layer - this.layer) >= 2) {
+            this.volume = 0.15;
+            filters.push(new PixiSound.filters.TelephoneFilter());
+        }
 
         const instanceOrPromise = PixiSound.sound.play(id, {
             loaded: (_err, _sound, instance) => {
                 if (instance) this.init(instance);
             },
-            filters: [filter],
+            filters,
             loop: options.loop,
             volume: this.managerVolume * this.volume,
             speed: this.speed
@@ -214,7 +205,7 @@ class SoundManagerClass {
             maxRange: 256,
             dynamic: false,
             ambient: false,
-            layer: Game.layer ?? Layer.Ground,
+            layer: Game.layer,
             loop: false,
             ...options
         });

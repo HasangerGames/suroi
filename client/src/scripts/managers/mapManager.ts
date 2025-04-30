@@ -284,7 +284,7 @@ class MapManagerClass {
         terrainGraphics.fill(colors.border);
 
         CameraManager.addObject(terrainGraphics);
-        terrainGraphics.zIndex = -1;
+        terrainGraphics.zIndex = -5;
 
         // Draw the minimap objects
         const mapRender = new Container();

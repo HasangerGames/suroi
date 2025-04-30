@@ -8,7 +8,7 @@ import { ShockwaveFilter } from "pixi-filters";
 import { Container, Filter } from "pixi.js";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
-import { PIXI_SCALE } from "../utils/constants";
+import { LAYER_TRANSITION_DELAY, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 
@@ -22,6 +22,8 @@ class CameraManagerClass {
         [Layer.ToFloor1, new Container()],
         [Layer.Floor1, new Container()]
     ]);
+
+    layerTweens = new Set<Tween<Container>>();
 
     position = Vec.create(0, 0);
 
@@ -51,7 +53,8 @@ class CameraManagerClass {
         }
         this._initialized = true;
 
-        for (const container of this.layerContainers.values()) {
+        for (const [layer, container] of this.layerContainers) {
+            container.zIndex = layer;
             this.container.addChild(container);
         }
     }
@@ -102,6 +105,61 @@ class CameraManagerClass {
         );
 
         this.container.position.set(-cameraPos.x, -cameraPos.y);
+    }
+
+    updateLayer(initial = false): void {
+        for (const tween of this.layerTweens) {
+            tween.complete();
+        }
+        this.layerTweens.clear();
+
+        const newLayer = Game.layer;
+
+        for (const [layer, layerContainer] of this.layerContainers) {
+            // Show bunkers above everything when standing on bunker stairs
+            if (layer === Layer.Basement1) {
+                layerContainer.zIndex = newLayer <= Layer.ToBasement1 ? 999 : Layer.Basement1;
+            } else if (layer === Layer.ToBasement1) {
+                layerContainer.zIndex = newLayer <= Layer.ToBasement1 ? 998 : Layer.ToBasement1;
+            }
+
+            const visible = (
+                (newLayer < Layer.ToBasement1 && layer <= Layer.ToBasement1)
+                || newLayer === Layer.ToBasement1
+                || (
+                    newLayer > Layer.ToBasement1
+                    && layer >= Layer.ToBasement1
+                    && (
+                        newLayer !== Layer.Ground
+                        || !Game.hideSecondFloor
+                        || layer !== Layer.Floor1
+                    )
+                )
+            );
+
+            if (visible === layerContainer.visible) continue;
+
+            if (initial) {
+                layerContainer.visible = visible;
+                continue;
+            }
+
+            layerContainer.alpha = visible ? 0 : 1;
+            // if showing the container, it needs to be visible from the start or the transition won't work
+            if (visible) layerContainer.visible = true;
+
+            const tween = Game.addTween({
+                target: layerContainer,
+                to: { alpha: visible ? 1 : 0 },
+                duration: LAYER_TRANSITION_DELAY,
+                ease: EaseFunctions.sineOut,
+                onComplete: () => {
+                    this.layerTweens.delete(tween);
+                    layerContainer.visible = visible;
+                }
+            });
+            this.layerTweens.add(tween);
+        }
     }
 
     shake(duration: number, intensity: number): void {

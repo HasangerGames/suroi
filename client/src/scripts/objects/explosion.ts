@@ -21,7 +21,7 @@ export function explosion(definition: ExplosionDefinition, position: Vector, lay
 
     const image = new SuroiSprite("explosion_1");
 
-    const isOnSameLayer = adjacentOrEqualLayer(layer, Game.layer ?? Layer.Ground);
+    const isOnSameLayer = adjacentOrEqualLayer(layer, Game.layer);
 
     image.scale.set(0);
     image.tint = definition.animation.tint;
@@ -63,7 +63,7 @@ export function explosion(definition: ExplosionDefinition, position: Vector, lay
         }
     });
 
-    if (FloorTypes[MapManager.terrain.getFloor(position, (Game.layer as number))].particles) {
+    if (FloorTypes[MapManager.terrain.getFloor(position, Game.layer)].particles) {
         ParticleManager.spawnParticles(4, () => ({
             frames: "ripple_particle",
             zIndex: ZIndexes.Ground,
@@ -89,7 +89,7 @@ export function explosion(definition: ExplosionDefinition, position: Vector, lay
             definition.cameraShake.intensity * SHOCKWAVE_EXPLOSION_MULTIPLIERS.amplitude,
             definition.radius.min * 100 * SHOCKWAVE_EXPLOSION_MULTIPLIERS.wavelength,
             definition.ballistics.speed * SHOCKWAVE_EXPLOSION_MULTIPLIERS.speed,
-            Game.layer ?? Layer.Ground
+            Game.layer
         );
     }
 

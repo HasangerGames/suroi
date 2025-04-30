@@ -39,6 +39,7 @@ export class Bullet extends BaseBullet {
 
         this._image = new SuroiSprite(tracerStats?.image ?? "base_trail")
             .setRotation(this.rotation - Math.PI / 2)
+            .setZIndex(this.definition.tracer?.zIndex ?? ZIndexes.Bullets)
             .setVPos(toPixiCoords(this.position));
 
         const {
@@ -76,7 +77,6 @@ export class Bullet extends BaseBullet {
         }
 
         this._image.tint = color;
-        this.setLayer(this.layer);
 
         // don't play bullet whiz if bullet originated within whiz hitbox
         this._playBulletWhiz = !Game.activePlayer?.bulletWhizHitbox.isPointInside(this.initialPosition);
@@ -85,19 +85,20 @@ export class Bullet extends BaseBullet {
     }
 
     update(delta: number): void {
-        const oldLayer = this.layer;
         if (!this.dead) {
             for (const collision of this.updateAndGetCollisions(delta, Game.objects)) {
                 const object = collision.object;
 
                 if (object.isObstacle && object.definition.isStair) {
-                    this.setLayer(resolveStairInteraction(
+                    const newLayer = resolveStairInteraction(
                         object.definition,
                         (object as Obstacle).orientation,
                         object.hitbox as RectangleHitbox,
                         object.layer,
                         this.position
-                    ));
+                    );
+                    CameraManager.changeObjectLayer(this.layer, newLayer, this._image);
+                    this.layer = newLayer;
                     continue;
                 }
 
@@ -126,9 +127,10 @@ export class Bullet extends BaseBullet {
                 break;
             }
         }
+
         if (this._playBulletWhiz) {
             const intersection = Game.activePlayer?.bulletWhizHitbox.intersectsLine(this.initialPosition, this.position);
-            if (intersection && Game.layer !== undefined && adjacentOrEqualLayer(this.layer, Game.layer)) {
+            if (intersection && adjacentOrEqualLayer(this.layer, Game.layer)) {
                 SoundManager.play(`bullet_whiz_${random(1, 3)}`, { position: intersection.point });
                 this._playBulletWhiz = false;
             }
@@ -220,21 +222,7 @@ export class Bullet extends BaseBullet {
 
         if (this._trailTicks <= 0 && this.dead) {
             this.destroy();
-        } else if (this.layer === oldLayer) {
-            this.updateVisibility();
         }
-    }
-
-    private setLayer(layer: number): void {
-        this.layer = layer;
-        this.updateVisibility();
-        this._image.zIndex = this.definition.tracer?.zIndex ?? ZIndexes.Bullets;
-    }
-
-    private updateVisibility(): void {
-        if (!Game.activePlayer) return;
-
-        this._image.visible = isVisibleFromLayer(Game.activePlayer.layer, this);
     }
 
     destroy(): void {

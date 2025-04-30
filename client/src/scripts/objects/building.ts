@@ -13,7 +13,7 @@ import { Game } from "../game";
 import { CameraManager } from "../managers/cameraManager";
 import { ParticleManager } from "../managers/particleManager";
 import { SoundManager, type GameSound } from "../managers/soundManager";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, LAYER_TRANSITION_DELAY, PIXI_SCALE } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { drawGroundGraphics, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
@@ -59,7 +59,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         this.updateFromData(data, true);
     }
 
-    toggleCeiling(duration = 200): void {
+    toggleCeiling(duration = LAYER_TRANSITION_DELAY): void {
         if (this.ceilingHitbox === undefined || this.ceilingTween || this.dead) return;
         const player = Game.activePlayer;
         if (player === undefined) return;
@@ -68,7 +68,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
         if (this.ceilingHitbox.collidesWith(player.hitbox)) {
             visible = false;
-            duration = !isGroundLayer(player.layer) ? 0 : 200; // We do not want a ceiling tween during the layer change.
+            duration = !isGroundLayer(player.layer) ? 0 : LAYER_TRANSITION_DELAY; // We do not want a ceiling tween during the layer change.
         } else {
             const visionSize = 14;
 
@@ -261,6 +261,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             const { sounds } = definition;
             const soundOptions = {
                 position: Vec.add(Vec.rotate(sounds.position ?? Vec.create(0, 0), this.rotation), this.position),
+                layer: this.layer,
                 fallOff: sounds.falloff,
                 maxRange: sounds.maxRange,
                 dynamic: true,
@@ -403,7 +404,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             DebugRenderer.addHitbox(
                 collider.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.buildingVisOverride,
-                layer === Game.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY
+                layer === Game.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
             );
         }
     }

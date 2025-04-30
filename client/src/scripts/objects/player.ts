@@ -434,7 +434,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         }
         this.floorType = floorType;
 
-        if (oldPosition !== undefined) {
+        if (!isNew) {
             const dist = Geometry.distance(oldPosition, this.position);
             this.distSinceLastFootstep += dist;
             this.distTraveled += dist;
@@ -529,16 +529,17 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
             } = data;
 
-            if (layer !== this.layer) {
-                CameraManager.changeObjectLayer(this.layer, layer, this.container, this.emote.container);
-                if (this.teammateName) CameraManager.changeObjectLayer(this.layer, layer, this.teammateName.container);
+            const layerChanged = layer !== this.layer;
+            if (layerChanged) {
+                const visualLayer = layer === Layer.ToBasement1 && !this.isActivePlayer ? Layer.Ground : layer;
+                CameraManager.changeObjectLayer(this.layer, visualLayer, this.container, this.emote.container);
+                if (this.teammateName) CameraManager.changeObjectLayer(this.layer, visualLayer, this.teammateName.container);
 
                 this.layer = layer;
             }
-
-            const layerChange = this.isActivePlayer && (this.layer !== layer || isNew);
-            this.layer = layer;
-            if (layerChange) Game.changeLayer(this.layer);
+            if (this.isActivePlayer && (layerChanged || isNew)) {
+                Game.updateLayer(isNew);
+            }
 
             this.backEquippedMelee = backEquippedMelee;
 
@@ -580,12 +581,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             this.dead = dead;
 
-            // this.layer = data.layer; - why assign again?
-
             this.teamID = teamID;
-
-            const teammateIDs = [];
-            for (const teammate of UIManager.teammates) teammateIDs.push(teammate.id);
 
             void Game.fontObserver.then(() => this.updateTeammateName());
 
@@ -1244,23 +1240,21 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.anims.emote?.kill();
         this.anims.emoteHide?.kill();
         this._emoteHideTimeout?.kill();
-        this.playSound(
-            "emote",
-            {
-                falloff: 0.4,
-                maxRange: 128
-            }
-        );
-        this.emote.image.setFrame(emote.idString);
 
-        const container = this.emote.container;
+        this.playSound("emote", {
+            falloff: 0.4,
+            maxRange: 128
+        });
+
+        const { container, background, image } = this.emote;
+
         container.visible = true;
         container.scale.set(0);
         container.alpha = 0;
 
         const { backgroundTexture, scale } = Loot.getBackgroundAndScale(Loots.fromStringSafe(emote.idString));
-        this.emote.background.setFrame(backgroundTexture ?? "emote_background");
-        this.emote.image.setScale(scale ?? 1);
+        background.setFrame(backgroundTexture ?? "emote_background");
+        image.setFrame(emote.idString).setScale(scale ?? 1);
 
         this.anims.emote = Game.addTween({
             target: container,

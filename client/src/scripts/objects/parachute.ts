@@ -1,4 +1,4 @@
-import { ObjectCategory, ZIndexes } from "@common/constants";
+import { Layer, ObjectCategory, ZIndexes } from "@common/constants";
 import { Numeric } from "@common/utils/math";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { randomFloat, randomPointInsideCircle } from "@common/utils/random";
@@ -31,7 +31,7 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
 
         this.updateFromData(data, true);
 
-        CameraManager.addObjectToLayer(this.layer, this.container);
+        CameraManager.addObjectToLayer(Layer.Ground, this.container);
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Parachute], isNew = false): void {

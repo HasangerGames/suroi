@@ -1400,14 +1400,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
             packet.deletedObjects = [];
             for (const object of this.visibleObjects) {
-                if (newVisibleObjects.has(object) && isVisibleFromLayer(this.layer, object)) continue;
+                if (newVisibleObjects.has(object)) continue;
 
                 this.visibleObjects.delete(object);
                 packet.deletedObjects.push(object.id);
             }
 
             for (const object of newVisibleObjects) {
-                if (this.visibleObjects.has(object) || !isVisibleFromLayer(this.layer, object)) continue;
+                if (this.visibleObjects.has(object)) continue;
 
                 this.visibleObjects.add(object);
                 fullObjects.add(object);

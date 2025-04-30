@@ -4490,31 +4490,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         particle: "hq_stone_wall_particle",
         particleVariations: 2,
         collideWithLayers: Layers.Adjacent,
-        ceilingImages: [
-            {
-                key: "headquarters_second_floor_bottom",
-                position: Vec.create(0.5, 15.8)
-            },
-            {
-                key: "headquarters_second_floor_top", // dont touch :3
-                position: Vec.create(0, -69)
-            },
-            {
-                key: "headquarters_torture_window", // dont touch :3
-                position: Vec.create(-65, -84.8),
-                scale: Vec.create(1, 1.055)
-            },
-            {
-                key: "headquarters_ceiling_1",
-                position: Vec.create(0.4, -66.722),
-                scale: Vec.create(2.15, 2.15)
-            },
-            {
-                key: "headquarters_ceiling_2",
-                position: Vec.create(-46.2, 5.85),
-                scale: Vec.create(2.15, 2.15)
-            }
-        ],
         hitbox: new GroupHitbox(
             // Outer walls
             RectangleHitbox.fromRect(84.9, 1.75, Vec.create(-29.2, -106.4)), // T, W1
@@ -4813,6 +4788,23 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         material: "stone",
         particle: "hq_stone_wall_particle",
         particleVariations: 2,
+        ceilingImages: [
+            {
+                key: "headquarters_torture_window", // dont touch :3
+                position: Vec.create(-70.6, -84.2),
+                scale: Vec.create(1, 1.055)
+            },
+            {
+                key: "headquarters_ceiling_1",
+                position: Vec.create(-5.2, -66.122),
+                scale: Vec.create(2.15, 2.15)
+            },
+            {
+                key: "headquarters_ceiling_2",
+                position: Vec.create(-51.8, 6.45),
+                scale: Vec.create(2.15, 2.15)
+            }
+        ],
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(20, 40, Vec.create(75.975, -15)),
             RectangleHitbox.fromRect(60, 40, Vec.create(35.975, -5)),
@@ -5021,17 +5013,17 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         visibleFromLayers: Layers.All,
         material: "metal_heavy",
         particle: "metal_particle",
+        floorImages: [{
+            key: "small_bunker_entrance_floor",
+            position: Vec.create(-0.05, 0),
+            scale: Vec.create(2.2, 2.2)
+        }],
         hitbox: new GroupHitbox(
             // RectangleHitbox.fromRect(12, 1, Vec.create(0, -7.5)),
             RectangleHitbox.fromRect(1.9, 16.6, Vec.create(6.1, 0.15)),
             RectangleHitbox.fromRect(1.9, 16.6, Vec.create(-6.1, 0.15))
         ),
         spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
-        floorImages: [{
-            key: "small_bunker_entrance_floor",
-            position: Vec.create(-0.05, 0),
-            scale: Vec.create(2.2, 2.2)
-        }],
         floors: [
             { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(10, 18, Vec.create(0, 0)) }
         ],
@@ -5061,7 +5053,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floorImages: [
             {
                 key: "small_bunker_floor",
-                position: Vec.create(0, 0),
+                position: Vec.create(0, 7),
                 scale: Vec.create(2.2, 2.2)
             }
         ],
@@ -5113,10 +5105,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec.create(0, 20)),
         ceilingHitbox: RectangleHitbox.fromRect(10, 15, Vec.create(0, 20)),
         obstacles: [
-            { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(7.5, 9.8) },
-            { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(10, 23) },
-            { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-10, 16) },
-            { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-5, 37) }
+            // { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(7.5, 9.8) },
+            // { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(10, 23) },
+            // { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-10, 16) },
+            // { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-5, 37) }
         ],
         bulletMask: RectangleHitbox.fromRect(11, 30, Vec.create(0, 30)),
         subBuildings: [
