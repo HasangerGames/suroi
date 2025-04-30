@@ -255,6 +255,7 @@
 "kf_kl_suicide": "The Kill Leader killed themselves!"
 "tt_restores": "<item> Restores <amount> <type>"
 "tt_reduces": "<item> Reduces <percent>% damage"
+"tt_desc": "<item> <desc>"
 "go_kills": "Kills:"
 "go_damage_done": "Damage Done:"
 "go_damage_taken": "Damage Taken:"
@@ -354,3 +355,5 @@
 "region_sa": "South America"
 "region_as": "Asia"
 "region_oc": "Oceania"
+"vaccine_injector": "Vaccine Injector"
+"vaccine_injector_desc": "restores 50 Adrenaline, also removes infection"

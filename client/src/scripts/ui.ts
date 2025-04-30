@@ -2036,9 +2036,9 @@ export async function setUpUI(): Promise<void> {
                         <img class="item-image" src="./img/game/shared/loot/${item.idString}.svg" draggable="false">
                         <span class="item-count" id="${item.idString}-count">0</span>
                         <div class="item-tooltip">
-                            ${getTranslatedString("tt_restores", {
+                            ${getTranslatedString("tt_desc", {
                         item: `<b>${getTranslatedString(item.idString as TranslationKeys)}</b><br>`,
-                        desc: `<b>${getTranslatedString((item.idString+"_desc") as TranslationKeys)}</b><br>`
+                        desc: getTranslatedString((item.idString+"_desc") as TranslationKeys)
                     })}
                         </div>
                     </div>`
