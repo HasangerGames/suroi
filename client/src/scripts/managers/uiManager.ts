@@ -34,6 +34,7 @@ import { InputManager } from "./inputManager";
 import { SoundManager } from "./soundManager";
 import { MapManager } from "./mapManager";
 import { CameraManager } from "./cameraManager";
+import { HealingItems } from "@common/definitions/items/healingItems";
 
 function safeRound(value: number): number {
     if (0 < value && value <= 1) return 1;
@@ -589,6 +590,13 @@ class UIManagerClass {
                 if (pingWheelActive && ammo.hideUnlessPresent) itemSlot.css("visibility", "visible");
                 else if (ammo.hideUnlessPresent && this.inventory.items[ammo.idString] === 0) itemSlot.css("visibility", "hidden");
             }
+
+            $("#ammos-container, #healing-items-container").toggleClass("active", pingWheelActive);
+            for (const healingItem of HealingItems) {
+                const itemSlot = this._itemSlotCache[healingItem.idString] ??= $(`#${healingItem.idString}-slot`);
+                if (pingWheelActive && healingItem.hideUnlessPresent) itemSlot.css("visibility", "visible");
+                else if (healingItem.hideUnlessPresent && this.inventory.items[healingItem.idString] === 0) itemSlot.css("visibility", "hidden");
+            }
         }
         for (let i = 0; i < 4; i++) {
             const definition = (pingWheelActive ? this.mapPings : this.emotes)[i];
@@ -1111,11 +1119,12 @@ class UIManagerClass {
                 const backpack = Game.activePlayer.equipment.backpack;
                 itemSlot.toggleClass("full", count >= backpack.maxCapacity[item]);
             }
+
             const isPresent = count > 0 || UI_DEBUG_MODE;
 
             itemSlot.toggleClass("has-item", isPresent);
 
-            if (itemDef.itemType === ItemType.Ammo && itemDef.hideUnlessPresent) {
+            if ((itemDef.itemType === ItemType.Ammo || itemDef.itemType === ItemType.Healing) && itemDef.hideUnlessPresent) {
                 itemSlot.css("visibility", isPresent ? "visible" : "hidden");
             }
 

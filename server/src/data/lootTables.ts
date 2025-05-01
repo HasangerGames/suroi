@@ -597,9 +597,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "gauze", count: 5, weight: 3 },
             { item: "cola", weight: 2 },
             { item: "tablets", weight: 1 },
-            { item: "medikit", weight: 1 },
-            { item: "vaccine_injector", weight: 0.75 }
-            //how do i make this infection mode only??
+            { item: "medikit", weight: 1 }
         ],
         scopes: [
             { item: "4x_scope", weight: 1 },
@@ -846,8 +844,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: PerkIds.CloseQuartersCombat, weight: 1 },
                 { item: PerkIds.LowProfile, weight: 1 },
                 { item: PerkIds.Berserker, weight: 1 },
-                { item: PerkIds.CombatExpert, weight: 1 },
-                { item: PerkIds.PrecisionRecycling, weight: 1 }
+                { item: PerkIds.CombatExpert, weight: 1 }
+                // { item: PerkIds.PrecisionRecycling, weight: 1 }
             ]
         },
         red_gift: [
@@ -1608,6 +1606,13 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ]
     },
     infection: {
+        healing_items: [
+            { item: "gauze", count: 5, weight: 3 },
+            { item: "cola", weight: 2 },
+            { item: "tablets", weight: 1 },
+            { item: "medikit", weight: 1 },
+            { item: "vaccine_injector", weight: 0.75 }
+        ],
         airdrop_guns: [
             { item: "vaccinator", weight: 2 },
             { item: "mg36", weight: 1 },

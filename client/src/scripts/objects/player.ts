@@ -252,6 +252,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 let frame = "";
                 if (this.action.item?.itemType === ItemType.Healing) {
                     frame = HealType[this.action.item.healType].toLowerCase();
+
+                    if (this.action.item.healType === HealType.Special && this.action.item.particleFrame !== undefined) {
+                        frame = this.action.item.particleFrame;
+                    }
                 }
 
                 return {

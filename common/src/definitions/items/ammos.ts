@@ -160,6 +160,19 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
         ephemeral: true
     },
     {
+        idString: "plumpkin_ammo",
+        name: "Plumpkin Ammo",
+        itemType: ItemType.Ammo,
+        maxStackSize: 0,
+        minDropAmount: 0,
+        characteristicColor: {
+            hue: 305,
+            saturation: 70,
+            lightness: 50
+        },
+        ephemeral: true
+    },
+    {
         idString: "power_cell",
         name: "P.O.W.E.R. cell",
         itemType: ItemType.Ammo,

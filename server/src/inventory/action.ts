@@ -142,6 +142,8 @@ export class HealingAction extends Action {
 
         this.player.inventory.items.decrementItem(this.item.idString);
 
+        const effect = this.item.effect;
+
         switch (this.item.healType) {
             case HealType.Health:
                 this.player.health += this.item.restoreAmount;
@@ -150,12 +152,11 @@ export class HealingAction extends Action {
                 this.player.adrenaline += this.item.restoreAmount;
                 break;
             case HealType.Special:
-                let effect = this.item?.effect;
-                if (!effect) return; //???
-                this.player.adrenaline += (effect.adrenaline || 0);
-                if (effect?.removePerk){
+                if (effect === undefined) return; // ???
+                this.player.adrenaline += effect.adrenaline;
+                if (effect?.removePerk) {
                     this.player.perks.removeItem(Perks.fromString(effect.removePerk));
-                    if (effect.removePerk == PerkIds.Infected) {
+                    if (effect.removePerk === PerkIds.Infected) {
                         const immunity = PerkData[PerkIds.Immunity];
                         this.player.perks.addItem(immunity);
                         this.player.immunityTimeout?.kill();
@@ -163,7 +164,7 @@ export class HealingAction extends Action {
                     }
                     this.player.setDirty();
                 }
-                //may implement more for future uses
+                // may implement more for future uses
         }
         this.player.dirty.items = true;
     }

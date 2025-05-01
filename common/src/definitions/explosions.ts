@@ -359,6 +359,41 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         decal: "explosion_decal"
     },
     {
+        idString: "plumpkin_launcher_explosion",
+        name: "Plumpkin Launcher Explosion",
+        damage: 65,
+        obstacleMultiplier: 1,
+        radius: {
+            min: 9,
+            max: 19
+        },
+        cameraShake: {
+            duration: 160,
+            intensity: 10
+        },
+        animation: {
+            duration: 1500,
+            tint: 0x8a4c70,
+            scale: 0.8
+        },
+        killfeedFrame: "plumpkin_launcher",
+        shrapnelCount: 10,
+        ballistics: {
+            damage: 2,
+            obstacleMultiplier: 1.5,
+            speed: 0.1,
+            range: 15,
+            tracer: {
+                image: "seed_trail",
+                length: 1.4,
+                color: 0x8a4c70
+            },
+            onHitProjectile: "proj_seed_plumpkin_launcher"
+        },
+        sound: "firework_rocket_explode",
+        decal: "explosion_decal"
+    },
+    {
         idString: "confetti_grenade_explosion",
         name: "Confetti Grenade",
         damage: 97,
@@ -424,6 +459,41 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
         },
         sound: "seed_explode",
         decal: "seed_explosion_decal",
+        decalFadeTime: 30000
+    },
+    {
+        idString: "seed_explosion_plumpkin_launcher",
+        name: "Plumpkin Launcher",
+        killfeedFrame: "plumpkin_launcher",
+        damage: 10,
+        obstacleMultiplier: 3,
+        radius: {
+            min: 8,
+            max: 16
+        },
+        cameraShake: {
+            duration: 160,
+            intensity: 5
+        },
+        animation: {
+            duration: 1500,
+            tint: 0x8a4c70,
+            scale: 0.8
+        },
+        shrapnelCount: 10,
+        ballistics: {
+            shrapnel: true,
+            damage: 1,
+            obstacleMultiplier: 3,
+            speed: 0.04,
+            range: 8,
+            rangeVariance: 1,
+            tracer: {
+                color: 0x8a4c70
+            }
+        },
+        sound: "seed_explode",
+        decal: "seed_explosion_decal_plumpkin_launcher",
         decalFadeTime: 30000
     },
     {
