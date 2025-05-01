@@ -436,9 +436,9 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         radius: 2.7,
         offset: Vec.create(4, 0),
         cooldown: 150,
-        attackCooldown: 100,
+        attackCooldown: 125,
         reskins: ["winter"],
-        // fireMode: FireMode.Auto, - TODO
+        fireMode: FireMode.Auto,
         fists: {
             animationDuration: 70,
             left: Vec.create(29, -39),

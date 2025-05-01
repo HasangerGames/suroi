@@ -360,7 +360,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     },
     {
         idString: "plumpkin_launcher_explosion",
-        name: "Plumpkin Launcher Explosion",
+        name: "Plumpkin Launcher",
         damage: 65,
         obstacleMultiplier: 1,
         radius: {

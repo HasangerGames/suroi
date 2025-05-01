@@ -1401,7 +1401,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             destroy: 0.5
         },
         hitbox: RectangleHitbox.fromRect(9.2, 9.2),
-        rotationMode: RotationMode.Binary,
+        rotationMode: RotationMode.None,
         frames: {
             particle: "hazel_crate_particle",
             residue: "hazel_crate_residue"
