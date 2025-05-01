@@ -55,8 +55,8 @@ export const HealingItems = new ObjectDefinitions<HealingItemDefinition>([
         useTime: 4
     },
     {
-        idString: "vaccine_injector",
-        name: "Vaccine Injector",
+        idString: "vaccine_syringe",
+        name: "Vaccine Syringe",
         itemType: ItemType.Healing,
         healType: HealType.Special,
         particleFrame: "vaccine",
