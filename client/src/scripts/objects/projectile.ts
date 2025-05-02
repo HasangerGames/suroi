@@ -22,7 +22,7 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
 
     hitbox = new CircleHitbox(0);
 
-    readonly image: SuroiSprite;
+    readonly image = new SuroiSprite();
     hitSound?: GameSound;
 
     height!: number;
@@ -37,10 +37,6 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
 
     constructor(id: number, data: ObjectsNetData[ObjectCategory.Projectile]) {
         super(id);
-
-        this.image = new SuroiSprite();
-
-        this.layer = data.layer;
 
         this.updateFromData(data, true);
         this.container.addChild(this.image);

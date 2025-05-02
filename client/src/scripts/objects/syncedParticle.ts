@@ -9,6 +9,7 @@ import { GameObject } from "./gameObject";
 import { Game } from "../game";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { CameraManager } from "../managers/cameraManager";
+import { isStairLayer } from "@common/utils/layer";
 
 export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParticle) {
     readonly image = new SuroiSprite();
@@ -144,6 +145,17 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
     }
 
     override updateInterpolation(): void { /* bleh */ }
+
+    override updateLayer(): void {
+        let newLayer: number;
+        if (isStairLayer(this.layer) && this.layer < Game.layer) {
+            newLayer = Game.layer;
+        } else {
+            newLayer = this.layer;
+        }
+        CameraManager.changeObjectLayer(this.visualLayer, newLayer, this.container);
+        this.visualLayer = newLayer;
+    }
 
     override destroy(): void {
         super.destroy();

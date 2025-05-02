@@ -50,12 +50,12 @@ export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
     override updateFromData(data: ObjectsNetData[ObjectCategory.DeathMarker], isNew = false): void {
         this.position = data.position;
 
-        this.layer = data.layer;
-        CameraManager.addObjectToLayer(this.layer, this.container);
-
         this.container.position.copyFrom(toPixiCoords(this.position));
 
         this.container.zIndex = ZIndexes.DeathMarkers;
+
+        this.layer = data.layer;
+        CameraManager.addObjectToLayer(this.layer, this.container);
 
         const player = Game.playerNames.get(data.playerID);
 

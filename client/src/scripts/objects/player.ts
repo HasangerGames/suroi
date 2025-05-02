@@ -531,9 +531,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             const layerChanged = layer !== this.layer;
             if (layerChanged) {
-                const visualLayer = layer === Layer.ToBasement1 && !this.isActivePlayer ? Layer.Ground : layer;
-                CameraManager.changeObjectLayer(this.layer, visualLayer, this.container, this.emote.container);
-                if (this.teammateName) CameraManager.changeObjectLayer(this.layer, visualLayer, this.teammateName.container);
+                CameraManager.changeObjectLayer(this.layer, layer, this.container, this.emote.container);
+                if (this.teammateName) CameraManager.changeObjectLayer(this.layer, layer, this.teammateName.container);
 
                 this.layer = layer;
             }

@@ -122,6 +122,8 @@ export enum ZIndexes {
     Gas
 }
 
+export const Z_INDEX_COUNT = Object.keys(ZIndexes).length / 2; // account for double indexing
+
 export enum Layer {
     Basement1 = -2,
     ToBasement1 = -1,

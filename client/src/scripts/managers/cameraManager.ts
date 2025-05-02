@@ -116,12 +116,21 @@ class CameraManagerClass {
         const newLayer = Game.layer;
 
         for (const [layer, layerContainer] of this.layerContainers) {
-            // Show bunkers above everything when standing on bunker stairs
+            let zIndex: number;
             if (layer === Layer.Basement1) {
-                layerContainer.zIndex = newLayer <= Layer.ToBasement1 ? 999 : Layer.Basement1;
+                zIndex = newLayer <= Layer.ToBasement1 ? 998 : Layer.Basement1;
             } else if (layer === Layer.ToBasement1) {
-                layerContainer.zIndex = newLayer <= Layer.ToBasement1 ? 998 : Layer.ToBasement1;
+                if (newLayer <= Layer.ToBasement1) {
+                    zIndex = 999;
+                } else if (newLayer === Layer.Ground) {
+                    zIndex = Layer.Ground + 0.1;
+                } else {
+                    zIndex = Layer.ToBasement1;
+                }
+            } else {
+                zIndex = layer;
             }
+            layerContainer.zIndex = zIndex;
 
             const visible = (
                 (newLayer < Layer.ToBasement1 && layer <= Layer.ToBasement1)
@@ -209,10 +218,15 @@ class CameraManagerClass {
     }
 
     reset(): void {
-        for (const container of this.layerContainers.values()) {
+        const layerContainers = Array.from(this.layerContainers.values());
+        for (const container of layerContainers) {
             container.removeChildren();
         }
-        this.container.removeChildren();
+        // remove all children except layer containers
+        for (const child of this.container.children) {
+            if (layerContainers.includes(child)) continue;
+            this.container.removeChild(child);
+        }
         this.zoom = Scopes.definitions[0].zoomLevel;
     }
 }

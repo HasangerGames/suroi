@@ -39,6 +39,8 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
     constructor(id: number, data: ObjectsNetData[ObjectCategory.Loot]) {
         super(id);
 
+        this.container.zIndex = ZIndexes.Loot;
+
         this.images = {
             background: new SuroiSprite(),
             item: new SuroiSprite(),
@@ -46,11 +48,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
             skinFistRight: new SuroiSprite()
         };
 
-        this.layer = data.layer;
-
         this.updateFromData(data, true);
-
-        CameraManager.addObjectToLayer(this.layer, this.container);
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Loot], isNew = false): void {
@@ -127,10 +125,11 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
         }
 
         this.position = data.position;
-        this.layer = data.layer;
+        if (this.layer !== data.layer) {
+            CameraManager.changeObjectLayer(this.layer, data.layer, this.container);
+            this.layer = data.layer;
+        }
         this.hitbox.position = this.position;
-
-        this.container.zIndex = ZIndexes.Loot;
 
         if (!GameConsole.getBuiltInCVar("cv_movement_smoothing") || isNew) {
             this.container.position = toPixiCoords(this.position);

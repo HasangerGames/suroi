@@ -21,6 +21,7 @@ export interface SoundOptions {
      */
     dynamic: boolean
     ambient: boolean
+    noMuffledEffect?: boolean
     onEnd?: () => void
 }
 
@@ -38,6 +39,7 @@ export class GameSound {
 
     readonly dynamic: boolean;
     readonly ambient: boolean;
+    readonly noMuffledEffect: boolean;
 
     get managerVolume(): number { return this.ambient ? SoundManager.ambienceVolume : SoundManager.sfxVolume; }
 
@@ -46,6 +48,7 @@ export class GameSound {
 
     instance?: PixiSound.IMediaInstance;
     readonly stereoFilter: PixiSound.filters.StereoFilter;
+    telephoneFilter?: PixiSound.filters.TelephoneFilter;
 
     ended = false;
 
@@ -59,6 +62,7 @@ export class GameSound {
         this.speed = options.speed ?? 1;
         this.dynamic = options.dynamic;
         this.ambient = options.ambient;
+        this.noMuffledEffect = options.noMuffledEffect ?? false;
         this.onEnd = options.onEnd;
         this.stereoFilter = new PixiSound.filters.StereoFilter(0);
 
@@ -67,19 +71,11 @@ export class GameSound {
             return;
         }
 
-        const filters: PixiSound.Filter[] = [this.stereoFilter];
-
-        // muffle the sound if it's 2 or more layers away
-        if (Math.abs(Game.layer - this.layer) >= 2) {
-            this.volume = 0.15;
-            filters.push(new PixiSound.filters.TelephoneFilter());
-        }
-
         const instanceOrPromise = PixiSound.sound.play(id, {
             loaded: (_err, _sound, instance) => {
                 if (instance) this.init(instance);
             },
-            filters,
+            filters: [this.stereoFilter],
             loop: options.loop,
             volume: this.managerVolume * this.volume,
             speed: this.speed
@@ -100,6 +96,7 @@ export class GameSound {
         instance.on("stop", () => {
             this.ended = true;
         });
+        this.updateLayer();
         this.update();
     }
 
@@ -116,6 +113,21 @@ export class GameSound {
             this.stereoFilter.pan = Numeric.clamp(-diff.x / this.maxRange, -1, 1);
         } else {
             this.instance.volume = this.managerVolume * this.volume;
+        }
+    }
+
+    updateLayer(): void {
+        if (!this.instance) return;
+
+        // muffle the sound if it's 2 or more layers away
+        if (Math.abs(Game.layer - this.layer) >= 2 && !this.noMuffledEffect) {
+            this.volume = 0.15;
+            // @ts-expect-error pixi sound doesn't have typings for this for some reason
+            this.instance.filters = [this.stereoFilter, this.telephoneFilter ??= new PixiSound.filters.TelephoneFilter()];
+        } else if (this.telephoneFilter) {
+            this.volume = 1;
+            // @ts-expect-error see above
+            this.instance.filters = [this.stereoFilter];
         }
     }
 

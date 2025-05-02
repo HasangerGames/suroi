@@ -114,6 +114,9 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
 
     abstract updateFromData(data: ObjectsNetData[Cat], isNew: boolean): void;
 
+    visualLayer?: number;
+    updateLayer(): void { /* no-op */ }
+
     abstract update(): void;
     abstract updateInterpolation(): void;
 

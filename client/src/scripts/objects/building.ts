@@ -3,8 +3,8 @@ import { type BuildingDefinition, type BuildingImageDefinition } from "@common/d
 import { MaterialSounds } from "@common/definitions/obstacles";
 import { type Orientation } from "@common/typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { equivLayer, isGroundLayer } from "@common/utils/layer";
-import { Angle, Collision, EaseFunctions, Numeric, type CollisionResponse } from "@common/utils/math";
+import { equivLayer } from "@common/utils/layer";
+import { Angle, EaseFunctions, Numeric } from "@common/utils/math";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -59,7 +59,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         this.updateFromData(data, true);
     }
 
-    toggleCeiling(duration = LAYER_TRANSITION_DELAY): void {
+    toggleCeiling(): void {
         if (this.ceilingHitbox === undefined || this.ceilingTween || this.dead) return;
         const player = Game.activePlayer;
         if (player === undefined) return;
@@ -67,45 +67,24 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         let visible = true;
 
         if (this.ceilingHitbox.collidesWith(player.hitbox)) {
+            // If the player is inside the building, we know the ceiling should be hidden
             visible = false;
-            duration = !isGroundLayer(player.layer) ? 0 : LAYER_TRANSITION_DELAY; // We do not want a ceiling tween during the layer change.
         } else {
+            // Otherwise, we do some raycasting to check
             const visionSize = 14;
 
             const playerHitbox = new CircleHitbox(visionSize, player.position);
 
             const hitboxes = this.ceilingHitbox instanceof GroupHitbox ? this.ceilingHitbox.hitboxes : [this.ceilingHitbox];
-
             for (const hitbox of hitboxes) {
-                // find the direction to cast rays
-                let collision: CollisionResponse = null;
-
-                switch (true) {
-                    case hitbox instanceof CircleHitbox: {
-                        collision = Collision.circleCircleIntersection(
-                            hitbox.position,
-                            hitbox.radius,
-                            playerHitbox.position,
-                            playerHitbox.radius
-                        );
-                        break;
-                    }
-                    case hitbox instanceof RectangleHitbox: {
-                        collision = Collision.rectCircleIntersection(
-                            hitbox.min,
-                            hitbox.max,
-                            playerHitbox.position,
-                            playerHitbox.radius
-                        );
-                        break;
-                    }
-                    case hitbox instanceof PolygonHitbox: {
-                        // TODO
-                        break;
-                    }
+                // TODO
+                if (hitbox instanceof PolygonHitbox) {
+                    visible = true;
+                    continue;
                 }
 
-                const direction = collision?.dir;
+                // find the direction to cast rays
+                const direction = playerHitbox.getIntersection(hitbox)?.dir;
                 if (direction) {
                     const angle = Math.atan2(direction.y, direction.x);
 
@@ -119,18 +98,10 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                             player.position,
                             Vec.add(
                                 player.position,
-                                Vec.scale(
-                                    Vec.create(Math.cos(i), Math.sin(i)),
-                                    visionSize
-                                )
+                                Vec.fromPolar(i, visionSize)
                             )
                         )?.point;
-
-                        if (!end) {
-                            // what's the point of this assignment?
-                            collided = true;
-                            continue;
-                        }
+                        if (!end) continue;
 
                         if (!(
                             collided
@@ -165,7 +136,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         this.ceilingTween = Game.addTween({
             target: this.ceilingContainer,
             to: { alpha },
-            duration,
+            duration: LAYER_TRANSITION_DELAY,
             ease: EaseFunctions.sineOut,
             onComplete: () => {
                 this.ceilingTween = undefined;

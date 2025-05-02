@@ -1,4 +1,4 @@
-import { GameConstants, GasState, Layer, ObjectCategory, ZIndexes } from "@common/constants";
+import { GameConstants, GasState, Layer, ObjectCategory, Z_INDEX_COUNT, ZIndexes } from "@common/constants";
 import { type MapPingDefinition } from "@common/definitions/mapPings";
 import { type MapData } from "@common/packets/mapPacket";
 import { type PingSerialization, type PlayerPingSerialization } from "@common/packets/updatePacket";
@@ -311,13 +311,14 @@ class MapManagerClass {
                 }
 
                 case ObjectCategory.Building: {
-                    if (mapObject.layer !== Layer.Ground) continue;
                     const definition = mapObject.definition;
                     const rotation = mapObject.rotation;
 
+                    const zIndexOffset = (mapObject.layer + 1) * Z_INDEX_COUNT;
+
                     const floorContainer = new Container({
                         sortableChildren: true,
-                        zIndex: ZIndexes.BuildingsFloor,
+                        zIndex: ZIndexes.BuildingsFloor + zIndexOffset,
                         rotation,
                         position: mapObject.position
                     });
@@ -337,7 +338,7 @@ class MapManagerClass {
 
                     const ceilingContainer = new Container({
                         sortableChildren: true,
-                        zIndex: definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling,
+                        zIndex: (definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling) + zIndexOffset,
                         rotation,
                         position: mapObject.position
                     });

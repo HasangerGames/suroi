@@ -835,6 +835,11 @@ export const Game = new (class Game {
     updateLayer(initial = false): void {
         CameraManager.updateLayer(initial);
 
+        for (const sound of SoundManager.updatableSounds) {
+            sound.updateLayer();
+            sound.update();
+        }
+
         const layer = this.layer;
 
         const basement = layer === Layer.Basement1;
