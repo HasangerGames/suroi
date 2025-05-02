@@ -1,4 +1,4 @@
-import { ObjectCategory, ZIndexes } from "@common/constants";
+import { GameConstants, ObjectCategory, ZIndexes } from "@common/constants";
 import { type BuildingDefinition, type BuildingImageDefinition } from "@common/definitions/buildings";
 import { MaterialSounds } from "@common/definitions/obstacles";
 import { type Orientation } from "@common/typings";
@@ -71,7 +71,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             visible = false;
         } else {
             // Otherwise, we do some raycasting to check
-            const visionSize = 14;
+            const visionSize = GameConstants.player.buildingVisionSize;
 
             const playerHitbox = new CircleHitbox(visionSize, player.position);
 
@@ -101,7 +101,11 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                                 Vec.fromPolar(i, visionSize)
                             )
                         )?.point;
-                        if (!end) continue;
+
+                        if (!end) {
+                            collided = true;
+                            continue;
+                        }
 
                         if (!(
                             collided
