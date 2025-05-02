@@ -86,7 +86,6 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
     {
         idString: "frag_grenade",
         name: "Frag Grenade",
-        reskins: ["infection"],
         itemType: ItemType.Throwable,
         tier: Tier.C,
         cookable: true,
@@ -132,7 +131,6 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
     {
         idString: "smoke_grenade",
         name: "Smoke Grenade",
-        reskins: ["infection"],
         itemType: ItemType.Throwable,
         tier: Tier.D,
         cookable: false,
@@ -224,7 +222,6 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
     {
         idString: "c4",
         name: "C4",
-        reskins: ["infection"],
         itemType: ItemType.Throwable,
         tier: Tier.S,
         c4: true,

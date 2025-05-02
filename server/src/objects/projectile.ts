@@ -273,7 +273,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         const { explosion } = this.definition.detonation;
 
         const particles
-            = ((this.halloweenSkin || this.game.mode.plumpkinGrenades) && this.definition.detonation.spookyParticles)
+            = (this.halloweenSkin && this.definition.detonation.spookyParticles)
                 ? this.definition.detonation.spookyParticles
                 : this.definition.detonation.particles;
 

@@ -109,8 +109,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         },
         spriteSheets: ["shared", "normal", "infection"],
         playButtonImage: "./img/game/shared/perks/infected.svg",
-        weaponSwap: true,
-        plumpkinGrenades: true
+        weaponSwap: true
     },
     birthday: { // copy of normal
         colors: {
