@@ -26,7 +26,6 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     readonly cooldown: number
     readonly attackCooldown?: number
     readonly maxTargets?: number
-    readonly reskins?: readonly string[]
 
     readonly fists: InventoryItemDefinition["fists"] & {
         readonly animationDuration: number

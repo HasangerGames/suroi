@@ -30,6 +30,7 @@ export interface ModeDefinition {
     readonly specialLogo?: boolean
     readonly playButtonImage?: string
     readonly weaponSwap?: boolean
+    readonly plumpkinGrenades?: boolean
 }
 
 export const Modes: Record<ModeName, ModeDefinition> = {
@@ -108,7 +109,8 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         },
         spriteSheets: ["shared", "normal", "infection"],
         playButtonImage: "./img/game/shared/perks/infected.svg",
-        weaponSwap: true
+        weaponSwap: true,
+        plumpkinGrenades: true
     },
     birthday: { // copy of normal
         colors: {

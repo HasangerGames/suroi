@@ -23,9 +23,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="0.50777962"
-     inkscape:cx="77.789652"
-     inkscape:cy="16.739545"
+     inkscape:zoom="2.8724353"
+     inkscape:cx="-3.6554348"
+     inkscape:cy="578.08091"
      inkscape:window-width="1920"
      inkscape:window-height="1001"
      inkscape:window-x="-9"
@@ -131,4 +131,8 @@
      d="M 92.94,472.07 H 0.065 v 87.5 H 92.94 Z"
      fill="#666666"
      id="path22" />
+  <path
+     d="m 92.14269,468.77391 5.80208,9.81346 -10.35177,30.87584 -19.16395,-1.19236 -13.45503,18.91135 -22.45934,-14.57099 -11.6653,11.17159 9.35761,-16.94835 22.23747,14.20437 11.72696,-20.43546 18.75837,1.44757 z"
+     style="fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:2.50285;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+     id="path1-6-4-5" />
 </svg>

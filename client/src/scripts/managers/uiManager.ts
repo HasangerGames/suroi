@@ -1025,7 +1025,7 @@ class UIManagerClass {
                         if (ClientPerkManager.hasItem(PerkIds.PlumpkinBomb) && definition.itemType === ItemType.Throwable && !definition.noSkin) {
                             frame += "_halloween";
                         }
-                        weaponImage = `url(./img/game/${definition.itemType === ItemType.Melee && definition.reskins?.includes(Game.modeName) ? Game.modeName : "shared"}/weapons/${frame}.svg)`;
+                        weaponImage = `url(./img/game/${definition.reskins?.includes(Game.modeName) ? Game.modeName : "shared"}/weapons/${frame}.svg)`;
                     }
 
                     this._playSlotAnimation(container);
