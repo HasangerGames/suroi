@@ -1124,7 +1124,7 @@ class UIManagerClass {
 
             itemSlot.toggleClass("has-item", isPresent);
 
-            if (itemDef.itemType === ItemType.Ammo && itemDef.hideUnlessPresent) {
+            if ((itemDef.itemType === ItemType.Ammo || itemDef.itemType === ItemType.Healing) && itemDef.hideUnlessPresent) {
                 itemSlot.css("visibility", isPresent ? "visible" : "hidden");
             }
 
