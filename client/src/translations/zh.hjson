@@ -168,6 +168,7 @@
 "action_medikit_use": "使用<item>中"
 "action_cola_use": "饮用<item>中"
 "action_tablets_use": "服用<item>中"
+"action_vaccine_syringe_use": "注射疫苗中"
 "interact_airdrop_crate_locked": "解锁空投"
 "interact_control_panel": "激活控制台"
 "interact_headquarters_security_desk": "激活控制台"
@@ -274,6 +275,7 @@
 "go_damage_done": "造成伤害："
 "go_damage_taken": "受到伤害："
 "go_time_alive": "存活时间："
+"vaccine_syringe_desc_action": "恢复50肾上腺素并且治愈感染"
 
 "create_team": "创建队伍"
 "create_team_autofill": "自动填充"
@@ -293,6 +295,7 @@
 "medikit": "医疗包"
 "cola": "可乐"
 "tablets": "药片"
+"vaccine_syringe": "疫苗注射器"
 
 "basic_vest": "基础护甲"
 "regular_vest": "常规护甲"
