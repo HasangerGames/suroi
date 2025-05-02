@@ -584,14 +584,14 @@ class UIManagerClass {
     updateEmoteWheel(): void {
         const { pingWheelActive } = InputManager;
         if (Game.teamMode) {
-            $("#ammos-container, #healitems-container").toggleClass("active", pingWheelActive);
+            $("#ammos-container, #healing-items-container").toggleClass("active", pingWheelActive);
             for (const ammo of Ammos) {
                 const itemSlot = this._itemSlotCache[ammo.idString] ??= $(`#${ammo.idString}-slot`);
                 if (pingWheelActive && ammo.hideUnlessPresent) itemSlot.css("visibility", "visible");
                 else if (ammo.hideUnlessPresent && this.inventory.items[ammo.idString] === 0) itemSlot.css("visibility", "hidden");
             }
 
-            $("#ammos-container, #healitems-container").toggleClass("active", pingWheelActive);
+            $("#ammos-container, #healing-items-container").toggleClass("active", pingWheelActive);
             for (const healItem of HealingItems) {
                 const itemSlot = this._itemSlotCache[healItem.idString] ??= $(`#${healItem.idString}-slot`);
                 if (pingWheelActive && healItem.hideUnlessPresent) itemSlot.css("visibility", "visible");
