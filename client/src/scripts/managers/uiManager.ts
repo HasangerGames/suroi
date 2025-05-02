@@ -34,6 +34,7 @@ import { InputManager } from "./inputManager";
 import { SoundManager } from "./soundManager";
 import { MapManager } from "./mapManager";
 import { CameraManager } from "./cameraManager";
+import { HealingItems } from "@common/definitions/items/healingItems";
 
 function safeRound(value: number): number {
     if (0 < value && value <= 1) return 1;
@@ -583,11 +584,18 @@ class UIManagerClass {
     updateEmoteWheel(): void {
         const { pingWheelActive } = InputManager;
         if (Game.teamMode) {
-            $("#ammos-container, #healing-items-container").toggleClass("active", pingWheelActive);
+            $("#ammos-container, #healitems-container").toggleClass("active", pingWheelActive);
             for (const ammo of Ammos) {
                 const itemSlot = this._itemSlotCache[ammo.idString] ??= $(`#${ammo.idString}-slot`);
                 if (pingWheelActive && ammo.hideUnlessPresent) itemSlot.css("visibility", "visible");
                 else if (ammo.hideUnlessPresent && this.inventory.items[ammo.idString] === 0) itemSlot.css("visibility", "hidden");
+            }
+
+            $("#ammos-container, #healitems-container").toggleClass("active", pingWheelActive);
+            for (const healItem of HealingItems) {
+                const itemSlot = this._itemSlotCache[healItem.idString] ??= $(`#${healItem.idString}-slot`);
+                if (pingWheelActive && healItem.hideUnlessPresent) itemSlot.css("visibility", "visible");
+                else if (healItem.hideUnlessPresent && this.inventory.items[healItem.idString] === 0) itemSlot.css("visibility", "hidden");
             }
         }
         for (let i = 0; i < 4; i++) {
@@ -1115,7 +1123,7 @@ class UIManagerClass {
 
             itemSlot.toggleClass("has-item", isPresent);
 
-            if (itemDef.itemType === ItemType.Ammo && itemDef.hideUnlessPresent) {
+            if (itemDef.itemType === (ItemType.Ammo || ItemType.Healing) && itemDef.hideUnlessPresent) {
                 itemSlot.css("visibility", isPresent ? "visible" : "hidden");
             }
 

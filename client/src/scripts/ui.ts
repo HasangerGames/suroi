@@ -2026,8 +2026,7 @@ export async function setUpUI(): Promise<void> {
             return ele;
         })
     );
-
-    $<HTMLDivElement>("#healing-items-container").append(
+   $<HTMLDivElement>("#healing-items-container").append(
         HealingItems.definitions.map(item => {
             let i:JQuery<HTMLDivElement>
             if(item.healType===HealType.Special){
