@@ -791,6 +791,13 @@ export class Inventory {
                     ) || (
                         definition.healType === HealType.Adrenaline
                         && this.owner.adrenaline >= this.owner.maxAdrenaline
+                    ) || (
+                        definition.healType === HealType.Special
+                            && ((
+                                definition.removePerk!=undefined
+                                && !this.owner.perks.hasItem(definition.removePerk))
+                            || definition.removePerk===undefined
+                            )
                     )
                 ) return;
 
