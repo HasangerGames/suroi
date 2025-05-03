@@ -59,10 +59,11 @@ export const HealingItems = new ObjectDefinitions<HealingItemDefinition>([
         particleFrame: "vaccine",
         restoreAmount: 0,
         useTime: 2,
-        effect: {
-            removePerk: PerkIds.Infected,
+        removePerk: PerkIds.Infected,
+        restoreAmount: 0,
+        restoreAmounts: {
             adrenaline: 50
-        },
-        hideUnlessPresent: true
+        }
     }
+    
 ]);
