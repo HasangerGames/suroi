@@ -684,12 +684,18 @@ export class ConsoleVariables {
     dump(): string {
         return [...Object.entries(this._builtInCVars), ...this._userCVars.entries()]
             .map(([key, { flags, value }]) =>
-                `<li><code>${key}</code> ${[
-                    flags.archive ? "<span class=\"cvar-detail-archived\" title=\"Archived CVar\">A</span>" : "",
-                    flags.cheat ? "<span class=\"cvar-detail-cheat\" title=\"Cheat CVar\">C</span>" : "",
-                    flags.readonly ? "<span class=\"cvar-detail-readonly\" title=\"Readonly CVar\">R</span>" : "",
-                    flags.replicated ? "<span class=\"cvar-detail-replicated\" title=\"Replicated CVar\">S</span>" : ""
-                ].join(" ")} &rightarrow;&nbsp;<code class="cvar-value-${value === null ? "null" : typeof value}">${stringify(value)}</code></li>`
+                `<tr>
+                ${[
+                    [
+                        `<span class="cvar-detail-archived${flags.archive ? "" : " cvar-inactive-flag"}" title="Archived CVar">A</span>`,
+                        `<span class="cvar-detail-cheat${flags.cheat ? "" : " cvar-inactive-flag"}" title="Cheat CVar">C</span>`,
+                        `<span class="cvar-detail-readonly${flags.readonly ? "" : " cvar-inactive-flag"}" title="Readonly CVar">R</span>`,
+                        `<span class="cvar-detail-replicated${flags.replicated ? "" : " cvar-inactive-flag"}" title="Replicated CVar">S</span>`
+                    ].join(""),
+                    `<code>${key}</code>`,
+                    `<code class="cvar-value-${value === null ? "null" : typeof value}">${stringify(value)}</code>`
+                ].map((v, i) => `<td${i === 0 ? " style=\"text-align: center\"" : ""}>${v}</td>`).join("")}
+                </tr>`
             ).join("");
     }
 }
