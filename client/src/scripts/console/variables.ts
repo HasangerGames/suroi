@@ -655,7 +655,9 @@ export class ConsoleVariables {
         const variables: GameSettings["variables"] = {};
 
         for (const [varName, cvar] of this._userCVars.entries()) {
-            variables[varName] = { value: cvar.value, flags: flagInterfaceToBitfield(cvar.flags) };
+            if (cvar.flags.archive || !noArchive) {
+                variables[varName] = { value: cvar.value, flags: flagInterfaceToBitfield(cvar.flags) };
+            }
         }
 
         for (const varName in this._builtInCVars) {
