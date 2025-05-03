@@ -86,6 +86,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     activeDisguise?: ObstacleDefinition;
 
     bulletTargetHitCount = 0;
+    targetHitCountExpiration?: Timeout;
 
     teamID?: number;
     colorIndex = 0; // Assigned in the team.ts file.
@@ -653,40 +654,35 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     private static readonly _weaponTiersCache: Partial<Record<ItemType, Partial<Record<Tier, WeaponDefinition[]>>>> = {};
 
-    refundGun(item: InventoryItem = this.activeItem): void {
-        let slot = item === this.activeItem
-            ? this.activeItemIndex
-            : this.inventory.weapons.findIndex(i => i === item);
+    tryRefund(item: InventoryItem = this.activeItem): void {
+        if (
+            item.category !== ItemType.Gun
+            || item.owner !== this
+            || item.definition.bulletCount !== 1
+            || !this.inventory.weapons.includes(item)
+        ) return;
 
-        if (slot === -1) {
-            // this happens if the item to be swapped isn't currently in the inventory
-            // in that case, we just take the first slot matching that item's type
-            slot = GameConstants.player.inventorySlotTypings.filter(slot => slot === item.definition.itemType)?.[0] ?? 0;
-            // and if we somehow don't have any matching slots, then someone's probably messing with us… fallback to slot 0 lol
-        }
+        const { hitReq: hitsNeeded, refund, margin } = PerkData[PerkIds.PrecisionRecycling];
 
-        const type = GameConstants.player.inventorySlotTypings[slot];
-
-        if (type === ItemType.Gun && (this.inventory.getWeapon(slot) as GunItem).definition.ammoType === "12g") return;
-
-        const hitsNeeded = PerkData[PerkIds.PrecisionRecycling].hitReq;
-        const refund = PerkData[PerkIds.PrecisionRecycling].refund;
+        this.targetHitCountExpiration?.kill();
+        this.targetHitCountExpiration = this.game.addTimeout(() => {
+            this.bulletTargetHitCount = 0;
+        }, margin * item.definition.fireDelay);
 
         if (this.bulletTargetHitCount < hitsNeeded) {
-            this.bulletTargetHitCount++;
-            if (this.bulletTargetHitCount >= hitsNeeded) {
-                if (type === ItemType.Gun) {
-                    const gun = this.inventory.getWeapon(slot) as GunItem;
-                    if (gun.definition.capacity >= (gun).ammo) {
-                        (gun).ammo += refund;
-                        this.dirty.weapons = true;
-                    }
-                }
+            ++this.bulletTargetHitCount;
+        }
 
-                this.bulletTargetHitCount = 0;
+        if (this.bulletTargetHitCount >= hitsNeeded) {
+            const cap = this.mapPerk(PerkIds.ExtendedMags, () => item.definition.extendedCapacity) ?? item.definition.capacity;
+
+            const target = Numeric.min(item.ammo + refund, cap);
+            if (item.ammo !== target) {
+                item.ammo = target;
+                this.dirty.weapons = true;
             }
-        } else {
-            this.bulletTargetHitCount++;
+
+            this.bulletTargetHitCount = 0;
         }
     }
 
@@ -1056,31 +1052,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                             player.perks.addItem(Perks.fromString(PerkIds.Infected));
                             player.setDirty();
                         }
-                        break;
-                    }
-                    case PerkIds.PrecisionRecycling: {
-                        const item = this.inventory.activeWeapon;
-
-                        let slot = item === this.activeItem
-                            ? this.activeItemIndex
-                            : this.inventory.weapons.findIndex(i => i === item);
-
-                        if (slot === -1) {
-                            // this happens if the item to be swapped isn't currently in the inventory
-                            // in that case, we just take the first slot matching that item's type
-                            slot = GameConstants.player.inventorySlotTypings.filter(slot => slot === item.definition.itemType)?.[0] ?? 0;
-                            // and if we somehow don't have any matching slots, then someone's probably messing with us… fallback to slot 0 lol
-                        }
-
-                        const type = GameConstants.player.inventorySlotTypings[slot];
-
-                        if (type === ItemType.Gun) {
-                            const gun = this.inventory.getWeapon(slot) as GunItem;
-                            const delay = PerkData[PerkIds.PrecisionRecycling].margin * gun.definition.fireDelay;
-
-                            if (this.game.now - delay > delay) this.bulletTargetHitCount = 0;
-                        }
-
                         break;
                     }
                 }

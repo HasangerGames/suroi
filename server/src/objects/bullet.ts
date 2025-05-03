@@ -154,12 +154,17 @@ export class Bullet extends BaseBullet {
                     position: this.position
                 });
 
-                // evil perk
-                if (this.sourceGun instanceof GunItem && this.shooter.isPlayer && this.shooter.hasPerk(PerkIds.PrecisionRecycling)) {
+                if (
+                    this.sourceGun instanceof GunItem
+                    && this.shooter.isPlayer
+                    && this.shooter.hasPerk(PerkIds.PrecisionRecycling)
+                ) {
                     if (object.isPlayer) {
-                        this.shooter.refundGun(this.sourceGun);
+                        this.shooter.tryRefund(this.sourceGun);
                     } else {
                         this.shooter.bulletTargetHitCount = 0;
+                        this.shooter.targetHitCountExpiration?.kill();
+                        this.shooter.targetHitCountExpiration = undefined;
                     }
                 }
             }
