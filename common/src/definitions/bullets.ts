@@ -1,9 +1,11 @@
 import { BaseBulletDefinition } from "../utils/baseBullet";
-import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
+import { DefinitionType, ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
 import { Explosions } from "./explosions";
 import { Guns } from "./items/guns";
 
-export type BulletDefinition = BaseBulletDefinition & ObjectDefinition;
+export type BulletDefinition = BaseBulletDefinition & ObjectDefinition & {
+    readonly defType: DefinitionType.Bullet
+};
 
 const bulletColors: Record<string, number> = {
     "9mm": 0xffff80,
@@ -40,7 +42,7 @@ export const Bullets = new ObjectDefinitions<BulletDefinition>(
             // if this bullet definition doesn't override the tracer color
             // calculate it based on ammo type or if it's shrapnel
             if (color === undefined) {
-                if ("ammoType" in def && def.ammoType in bulletColors) {
+                if (def.defType === DefinitionType.Gun && def.ammoType in bulletColors) {
                     color = bulletColors[def.ammoType];
                     saturatedColor ??= saturatedBulletColors[def.ammoType];
                 } else if (def.ballistics.shrapnel) {
@@ -52,6 +54,7 @@ export const Bullets = new ObjectDefinitions<BulletDefinition>(
             return {
                 idString: `${def.idString}_bullet`,
                 name: `${def.name} Bullet`,
+                defType: DefinitionType.Bullet,
                 ...def.ballistics,
                 tracer: {
                     color: color ?? 0xffffff,

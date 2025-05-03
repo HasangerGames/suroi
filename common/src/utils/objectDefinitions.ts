@@ -86,9 +86,32 @@ export class ObjectDefinitions<Def extends ObjectDefinition = ObjectDefinition> 
     }
 }
 
+export enum DefinitionType {
+    Ammo,
+    Armor,
+    Backpack,
+    Badge,
+    Building,
+    Bullet,
+    Decal,
+    Emote,
+    Explosion,
+    Gun,
+    HealingItem,
+    MapPing,
+    Melee,
+    Obstacle,
+    Perk,
+    Scope,
+    Skin,
+    SyncedParticle,
+    Throwable
+}
+
 export interface ObjectDefinition {
     readonly idString: string
     readonly name: string
+    readonly defType: DefinitionType
 }
 
 /**

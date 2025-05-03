@@ -1,10 +1,11 @@
 import { FireMode } from "../../constants";
-import { ItemType, type InventoryItemDefinition } from "../../utils/objectDefinitions";
+import { DefinitionType, ItemType, type InventoryItemDefinition } from "../../utils/objectDefinitions";
 import { Vec, type Vector } from "../../utils/vector";
 import { Tier } from "./guns";
 import { InventoryItemDefinitions } from "./items";
 
 export interface MeleeDefinition extends InventoryItemDefinition {
+    readonly defType: DefinitionType.Melee
     readonly itemType: ItemType.Melee
     readonly tier: Tier
 
@@ -79,6 +80,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "fists",
         name: "Fists",
+        defType: DefinitionType.Melee,
         itemType: ItemType.Melee,
         tier: Tier.D,
         damage: 20,
@@ -115,6 +117,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "baseball_bat",
         name: "Baseball Bat",
+        defType: DefinitionType.Melee,
         itemType: ItemType.Melee,
         tier: Tier.C,
         swingSound: "heavy_swing",
@@ -208,6 +211,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "hatchet",
         name: "Hatchet",
+        defType: DefinitionType.Melee,
         itemType: ItemType.Melee,
         tier: Tier.B,
         damage: 38,
@@ -268,6 +272,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "fire_hatchet",
         name: "Fire Hatchet",
+        defType: DefinitionType.Melee,
         itemType: ItemType.Melee,
         tier: Tier.A,
         damage: 50,
@@ -329,6 +334,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "crowbar",
         name: "Crowbar",
+        defType: DefinitionType.Melee,
         itemType: ItemType.Melee,
         tier: Tier.A,
         swingSound: "heavy_swing",
@@ -378,6 +384,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "kbar",
         name: "K-bar",
+        defType: DefinitionType.Melee,
         itemType: ItemType.Melee,
         tier: Tier.C,
         swingSound: "soft_swing",
@@ -426,6 +433,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "sickle",
         name: "Sickle",
+        defType: DefinitionType.Melee,
         itemType: ItemType.Melee,
         tier: Tier.A,
         damage: 24,
@@ -476,6 +484,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "maul",
         name: "Maul",
+        defType: DefinitionType.Melee,
         itemType: ItemType.Melee,
         tier: Tier.S,
         damage: 54,
@@ -538,6 +547,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "steelfang",
         name: "Steelfang",
+        defType: DefinitionType.Melee,
         itemType: ItemType.Melee,
         tier: Tier.S,
         devItem: true,
@@ -594,6 +604,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "gas_can",
         name: "Gas Can",
+        defType: DefinitionType.Melee,
         itemType: ItemType.Melee,
         tier: Tier.S,
         damage: 22,
@@ -640,6 +651,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "heap_sword",
         name: "HE-AP sword",
+        defType: DefinitionType.Melee,
         itemType: ItemType.Melee,
         tier: Tier.S,
         devItem: true,
@@ -692,6 +704,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "ice_pick",
         name: "Ice Pick",
+        defType: DefinitionType.Melee,
         itemType: ItemType.Melee,
         tier: Tier.S,
         swingSound: "heavy_swing",
@@ -753,6 +766,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "seax",
         name: "Seax",
+        defType: DefinitionType.Melee,
         itemType: ItemType.Melee,
         tier: Tier.A,
         damage: 45,
@@ -800,6 +814,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "falchion",
         name: "Falchion",
+        defType: DefinitionType.Melee,
         itemType: ItemType.Melee,
         tier: Tier.B,
         damage: 41,
@@ -849,6 +864,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "chainsaw",
         name: "Chain Saw",
+        defType: DefinitionType.Melee,
         itemType: ItemType.Melee,
         tier: Tier.S,
         fireMode: FireMode.Auto,
@@ -902,6 +918,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "pan",
         name: "Pan",
+        defType: DefinitionType.Melee,
         itemType: ItemType.Melee,
         tier: Tier.S,
         damage: 65,
@@ -964,6 +981,7 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
     {
         idString: "kukri",
         name: "Kukri",
+        defType: DefinitionType.Melee,
         itemType: ItemType.Melee,
         tier: Tier.A,
         swingSound: "soft_swing",

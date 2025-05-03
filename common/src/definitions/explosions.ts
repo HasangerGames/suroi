@@ -1,8 +1,9 @@
 import { BaseBulletDefinition } from "../utils/baseBullet";
-import { ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { DefinitionType, ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { type DecalDefinition } from "./decals";
 
 export interface ExplosionDefinition extends ObjectDefinition {
+    readonly defType: DefinitionType.Explosion
     readonly damage: number
     readonly obstacleMultiplier: number
     readonly radius: {
@@ -31,6 +32,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "barrel_explosion",
         name: "Barrel",
+        defType: DefinitionType.Explosion,
         damage: 130,
         obstacleMultiplier: 2,
         radius: {
@@ -60,6 +62,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "stove_explosion",
         name: "Stove",
+        defType: DefinitionType.Explosion,
         damage: 130,
         obstacleMultiplier: 2,
         radius: {
@@ -89,6 +92,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "fireplace_explosion",
         name: "Fireplace",
+        defType: DefinitionType.Explosion,
         damage: 180,
         obstacleMultiplier: 2,
         radius: {
@@ -118,6 +122,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "control_panel_explosion",
         name: "Control Panel",
+        defType: DefinitionType.Explosion,
         damage: 130,
         obstacleMultiplier: 2,
         radius: {
@@ -147,6 +152,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "super_barrel_explosion",
         name: "Super Barrel",
+        defType: DefinitionType.Explosion,
         damage: 160,
         obstacleMultiplier: 2,
         radius: {
@@ -176,6 +182,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "small_refinery_barrel_explosion",
         name: "Small Refinery Barrel",
+        defType: DefinitionType.Explosion,
         damage: 200,
         obstacleMultiplier: 2,
         radius: {
@@ -205,6 +212,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "large_refinery_barrel_explosion",
         name: "Large Refinery Barrel",
+        defType: DefinitionType.Explosion,
         damage: 10000,
         obstacleMultiplier: 3,
         radius: {
@@ -234,6 +242,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "propane_tank_explosion",
         name: "Propane Tank",
+        defType: DefinitionType.Explosion,
         damage: 80,
         obstacleMultiplier: 2,
         radius: {
@@ -263,6 +272,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "usas_explosion",
         name: "USAS-12",
+        defType: DefinitionType.Explosion,
         damage: 30,
         obstacleMultiplier: 1.5,
         radius: {
@@ -295,6 +305,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "m590m_explosion",
         name: "M590M",
+        defType: DefinitionType.Explosion,
         damage: 40,
         obstacleMultiplier: 1.5,
         radius: {
@@ -327,6 +338,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "firework_launcher_explosion",
         name: "Firework Launcher",
+        defType: DefinitionType.Explosion,
         damage: 97,
         obstacleMultiplier: 1,
         radius: {
@@ -361,6 +373,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "plumpkin_launcher_explosion",
         name: "Plumpkin Launcher",
+        defType: DefinitionType.Explosion,
         damage: 65,
         obstacleMultiplier: 1,
         radius: {
@@ -396,6 +409,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "confetti_grenade_explosion",
         name: "Confetti Grenade",
+        defType: DefinitionType.Explosion,
         damage: 97,
         obstacleMultiplier: 1,
         radius: {
@@ -429,6 +443,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "seed_explosion",
         name: "Seedshot",
+        defType: DefinitionType.Explosion,
         killfeedFrame: "seedshot",
         damage: 10,
         obstacleMultiplier: 3,
@@ -464,6 +479,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "seed_explosion_plumpkin_launcher",
         name: "Plumpkin Launcher",
+        defType: DefinitionType.Explosion,
         killfeedFrame: "plumpkin_launcher",
         damage: 10,
         obstacleMultiplier: 3,
@@ -499,6 +515,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "coal_explosion",
         name: "Coal",
+        defType: DefinitionType.Explosion,
         damage: 97,
         obstacleMultiplier: 1,
         radius: {
@@ -533,6 +550,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "frag_grenade_explosion",
         name: "Frag Grenade",
+        defType: DefinitionType.Explosion,
         damage: 120,
         obstacleMultiplier: 1.15,
         radius: {
@@ -563,6 +581,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "smoke_grenade_explosion",
         name: "Smoke Grenade",
+        defType: DefinitionType.Explosion,
         damage: 0,
         obstacleMultiplier: 0,
         radius: {
@@ -592,6 +611,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "c4_explosion",
         name: "C4",
+        defType: DefinitionType.Explosion,
         damage: 130,
         obstacleMultiplier: 1.15,
         radius: {
@@ -623,6 +643,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "pumpkin_explosion",
         name: "Pumpkin",
+        defType: DefinitionType.Explosion,
         damage: 100,
         obstacleMultiplier: 1,
         radius: {

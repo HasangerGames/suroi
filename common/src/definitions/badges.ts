@@ -1,12 +1,14 @@
-import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
+import { DefinitionType, ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
 
 export interface BadgeDefinition extends ObjectDefinition {
+    readonly defType: DefinitionType.Badge
     readonly roles?: readonly string[]
 }
 
 const badge = (name: string, roles?: string[]): BadgeDefinition => ({
     idString: `bdg_${name.toLowerCase().replaceAll(" ", "_")}`,
     name,
+    defType: DefinitionType.Badge,
     roles
 });
 

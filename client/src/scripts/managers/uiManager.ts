@@ -3,38 +3,38 @@ import { DEFAULT_INVENTORY } from "@common/defaultInventory";
 import { type BadgeDefinition } from "@common/definitions/badges";
 import { type EmoteDefinition } from "@common/definitions/emotes";
 import { Ammos } from "@common/definitions/items/ammos";
+import { HealingItems } from "@common/definitions/items/healingItems";
 import { PerkCategories, PerkIds, type PerkDefinition } from "@common/definitions/items/perks";
 import { DEFAULT_SCOPE, type ScopeDefinition } from "@common/definitions/items/scopes";
 import { Skins } from "@common/definitions/items/skins";
 import { Loots } from "@common/definitions/loots";
 import { MapPings, type PlayerPing } from "@common/definitions/mapPings";
 import { type GameOverData } from "@common/packets/gameOverPacket";
-import type { ReportData } from "@common/packets/reportPacket";
 import type { KillData } from "@common/packets/killPacket";
+import { DamageSources } from "@common/packets/killPacket";
+import type { ReportData } from "@common/packets/reportPacket";
 import { type PlayerData, type UpdateDataCommon } from "@common/packets/updatePacket";
 import { Numeric } from "@common/utils/math";
 import { ExtendedMap } from "@common/utils/misc";
-import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { DefinitionType, ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Color } from "pixi.js";
-import { getTranslatedString, TRANSLATIONS } from "../utils/translations/translations";
-import { type TranslationKeys } from "../utils/translations/typings";
+import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { type GameObject } from "../objects/gameObject";
 import { Player } from "../objects/player";
 import { TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
-import { ClientPerkManager } from "./perkManager";
-import { DamageSources } from "@common/packets/killPacket";
-import { GameConsole } from "../console/gameConsole";
-import { ScreenRecordManager } from "./screenRecordManager";
-import { InputManager } from "./inputManager";
-import { SoundManager } from "./soundManager";
-import { MapManager } from "./mapManager";
+import { getTranslatedString, TRANSLATIONS } from "../utils/translations/translations";
+import { type TranslationKeys } from "../utils/translations/typings";
 import { CameraManager } from "./cameraManager";
-import { HealingItems } from "@common/definitions/items/healingItems";
+import { InputManager } from "./inputManager";
+import { MapManager } from "./mapManager";
+import { ClientPerkManager } from "./perkManager";
+import { ScreenRecordManager } from "./screenRecordManager";
+import { SoundManager } from "./soundManager";
 
 function safeRound(value: number): number {
     if (0 < value && value <= 1) return 1;
@@ -1082,7 +1082,7 @@ class UIManagerClass {
 
         const container = this._perkSlots[index] ??= $<HTMLDivElement>(`#perk-slot-${index}`);
         container.attr("data-idString", perkDef.idString);
-        container.children(".item-tooltip").html(`<strong>${getTranslatedString(perkDef.idString as unknown as TranslationKeys)}</strong><br>${getTranslatedString(perkDef.idString+"_desc" as TranslationKeys)}`);
+        container.children(".item-tooltip").html(`<strong>${getTranslatedString(perkDef.idString as unknown as TranslationKeys)}</strong><br>${getTranslatedString(`${perkDef.idString}_desc` as TranslationKeys)}`);
         container.children(".item-image").attr("src", `./img/game/${perkDef.category === PerkCategories.Halloween ? "halloween" : "shared"}/perks/${perkDef.idString}.svg`);
         container.css("visibility", ClientPerkManager.hasItem(perkDef.idString) ? "visible" : "hidden");
 
@@ -1092,7 +1092,7 @@ class UIManagerClass {
 
         clearTimeout(this._animationTimeouts[index]);
 
-        container.css("animation", `perk-${perkDef.type ?? "normal"}-colors 1.5s linear infinite`);
+        container.css("animation", `perk-${perkDef.quality ?? "normal"}-colors 1.5s linear infinite`);
 
         // if (perkDef.type !== undefined) Game.soundManager.play(`perk_pickup_${perkDef.type}`);
 
@@ -1254,7 +1254,7 @@ class UIManagerClass {
         const gotKillCredit = creditedId !== undefined ? activeId === creditedId : activeId === attackerId;
         const grenadeImpactKill = (
             weaponPresent
-            && "itemType" in weaponUsed
+            && weaponUsed.defType !== DefinitionType.Explosion
             && weaponUsed.itemType === ItemType.Throwable
         )
             ? getTranslatedString("kf_impact_of")

@@ -1,4 +1,4 @@
-import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
+import { DefinitionType, ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
 import { Ammos } from "./items/ammos";
 import { Guns } from "./items/guns";
 import { HealingItems } from "./items/healingItems";
@@ -16,6 +16,7 @@ export enum EmoteCategory {
 }
 
 export interface EmoteDefinition extends ObjectDefinition {
+    readonly defType: DefinitionType.Emote
     readonly category: EmoteCategory
     readonly hideInLoadout?: boolean
 }
@@ -137,6 +138,7 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
         names.map(name => ({
             idString: name.toLowerCase().replaceAll(" ", "_"),
             name,
+            defType: DefinitionType.Emote as const,
             category: parseInt(category)
         })
         )),
@@ -146,6 +148,7 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
     ].map(({ idString, name }) => ({
         idString,
         name,
+        defType: DefinitionType.Emote as const,
         category: EmoteCategory.Team,
         hideInLoadout: true
     })),
@@ -156,6 +159,7 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
     ].map(({ idString, name }) => ({
         idString,
         name,
+        defType: DefinitionType.Emote as const,
         category: EmoteCategory.Weapon,
         hideInLoadout: true
     }))

@@ -1,8 +1,9 @@
 import { Bullets, type BulletDefinition } from "@common/definitions/bullets";
+import { PerkIds } from "@common/definitions/items/perks";
 import { BaseBullet, type BulletOptions } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";
 import { Angle } from "@common/utils/math";
-import { type ReferenceTo } from "@common/utils/objectDefinitions";
+import { DefinitionType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
@@ -12,7 +13,6 @@ import { type Explosion } from "./explosion";
 import { type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Player } from "./player";
-import { PerkIds } from "@common/definitions/items/perks";
 
 type Weapon = GunItem | Explosion;
 
@@ -155,12 +155,12 @@ export class Bullet extends BaseBullet {
                 });
 
                 if (
-                    this.sourceGun instanceof GunItem
+                    this.sourceGun.definition.defType === DefinitionType.Gun
                     && this.shooter.isPlayer
                     && this.shooter.hasPerk(PerkIds.PrecisionRecycling)
                 ) {
                     if (object.isPlayer) {
-                        this.shooter.tryRefund(this.sourceGun);
+                        this.shooter.tryRefund(this.sourceGun as GunItem);
                     } else {
                         this.shooter.bulletTargetHitCount = 0;
                         this.shooter.targetHitCountExpiration?.kill();

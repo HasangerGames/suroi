@@ -2,7 +2,7 @@ import { FlyoverPref, Layers, RotationMode, ZIndexes, MapObjectSpawnMode } from 
 import { Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type Mutable } from "../utils/misc";
-import { ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
+import { DefinitionType, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { TentTints } from "./buildings";
 import { type GunDefinition } from "./items/guns";
@@ -12,6 +12,8 @@ import { ModeName } from "./modes";
 import { SyncedParticleDefinition } from "./syncedParticles";
 
 type CommonObstacleDefinition = ObjectDefinition & {
+    readonly defType: DefinitionType.Obstacle
+
     readonly material: typeof Materials[number]
     readonly health: number
     readonly indestructible?: boolean
@@ -353,6 +355,7 @@ const houseWall = (
 ): RawObstacleDefinition => ({
     idString: `house_wall_${lengthNumber}`,
     name: `House Wall ${lengthNumber}`,
+    defType: DefinitionType.Obstacle,
     material: "wood",
     hideOnMap: true,
     noResidue: true,
@@ -379,6 +382,7 @@ const houseWall = (
 const hqWall = (lengthNumber: number, hitbox: RectangleHitbox, customHealth = false): RawObstacleDefinition => ({
     idString: `headquarters_wall_${lengthNumber}`,
     name: "Headquarters Wall",
+    defType: DefinitionType.Obstacle,
     material: "wood",
     hideOnMap: true,
     noResidue: true,
@@ -405,6 +409,7 @@ const hqWall = (lengthNumber: number, hitbox: RectangleHitbox, customHealth = fa
 const lodgeWall = (id: string, length: number): RawObstacleDefinition => ({
     idString: `lodge_wall_${id}`,
     name: "Lodge Wall",
+    defType: DefinitionType.Obstacle,
     material: "wood",
     hideOnMap: true,
     noResidue: true,
@@ -431,6 +436,7 @@ const lodgeWall = (id: string, length: number): RawObstacleDefinition => ({
 const innerConcreteWall = (id: number, hitbox: Hitbox): RawObstacleDefinition => ({
     idString: `inner_concrete_wall_${id}`,
     name: "Inner Concrete Wall",
+    defType: DefinitionType.Obstacle,
     material: "stone",
     hitbox,
     health: 500,
@@ -458,6 +464,7 @@ const innerConcreteWall = (id: number, hitbox: Hitbox): RawObstacleDefinition =>
 const mobileHomeWall = (lengthNumber: string, hitbox: RectangleHitbox): RawObstacleDefinition => ({
     idString: `mobile_home_wall_${lengthNumber}`,
     name: `Mobile Home Wall ${lengthNumber}`,
+    defType: DefinitionType.Obstacle,
     material: "appliance",
     noResidue: true,
     hideOnMap: true,
@@ -486,6 +493,7 @@ const tentWall = (
 ): RawObstacleDefinition => ({
     idString: `tent_wall_${id}`,
     name: `Tent Wall ${id}`,
+    defType: DefinitionType.Obstacle,
     material: "stone",
     hideOnMap: true,
     noResidue: true,
@@ -518,6 +526,7 @@ const portaPottyWall = (
 ): RawObstacleDefinition => ({
     idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
     name: name,
+    defType: DefinitionType.Obstacle,
     material: "wood",
     health: 100,
     noResidue: true,
@@ -547,6 +556,7 @@ const bigTentWall = (
 ): RawObstacleDefinition => ({
     idString: `tent_wall_big_${id}`,
     name: `Big Tent Wall ${id}`,
+    defType: DefinitionType.Obstacle,
     material: "stone",
     hideOnMap: true,
     noResidue: true,
@@ -586,6 +596,7 @@ const gunMount = (
 ): RawObstacleDefinition => ({
     idString: `gun_mount_${gunID}`,
     name: "Gun Mount",
+    defType: DefinitionType.Obstacle,
     material: "wood",
     health: 60,
     hideOnMap: true,
@@ -617,6 +628,7 @@ const gunMount = (
 const kitchenUnit = (id: string, hitbox: RectangleHitbox, residue?: string): RawObstacleDefinition => ({
     idString: `kitchen_unit_${id}`,
     name: "Kitchen Unit",
+    defType: DefinitionType.Obstacle,
     material: "wood",
     health: 100,
     scale: {
@@ -638,6 +650,7 @@ const kitchenUnit = (id: string, hitbox: RectangleHitbox, residue?: string): Raw
 const controlPanel = (idString: string, name: string): RawObstacleDefinition => ({
     idString,
     name,
+    defType: DefinitionType.Obstacle,
     material: "metal_light",
     health: 200,
     reflectBullets: true,
@@ -661,6 +674,7 @@ const gift = (
 ): RawObstacleDefinition => ({
     idString: `${color}_gift`,
     name: `${color.charAt(0).toUpperCase() + color.slice(1)} Gift`,
+    defType: DefinitionType.Obstacle,
     material: "cardboard",
     hideOnMap: true,
     health: 60,
@@ -680,6 +694,7 @@ const gift = (
 const rshCase = (idString: string): RawObstacleDefinition => ({
     idString,
     name: "RSh-12 Case",
+    defType: DefinitionType.Obstacle,
     material: "crate",
     health: 150,
     hitbox: new GroupHitbox(
@@ -712,6 +727,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "oak_tree",
         name: "Oak Tree",
+        defType: DefinitionType.Obstacle,
         material: "tree",
         health: 180,
         scale: {
@@ -729,6 +745,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "birch_tree",
         name: "Birch Tree",
+        defType: DefinitionType.Obstacle,
         material: "tree",
         health: 180,
         scale: {
@@ -746,6 +763,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "pine_tree",
         name: "Pine Tree",
+        defType: DefinitionType.Obstacle,
         material: "tree",
         health: 180,
         scale: {
@@ -762,6 +780,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "big_oak_tree",
         name: "Big Oak Tree",
+        defType: DefinitionType.Obstacle,
         material: "tree",
         health: 240,
         scale: {
@@ -782,6 +801,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "maple_tree",
         name: "Maple Tree",
+        defType: DefinitionType.Obstacle,
         material: "tree",
         health: 290,
         scale: {
@@ -799,6 +819,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "dormant_oak_tree",
         name: "Dormant Oak Tree",
+        defType: DefinitionType.Obstacle,
         material: "tree",
         health: 120,
         scale: {
@@ -816,6 +837,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "christmas_tree",
         name: "Christmas Tree",
+        defType: DefinitionType.Obstacle,
         material: "tree",
         health: 720,
         scale: {
@@ -842,6 +864,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "stump",
         name: "Stump",
+        defType: DefinitionType.Obstacle,
         material: "tree",
         health: 180,
         scale: {
@@ -855,6 +878,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "hatchet_stump",
         name: "Hatchet Stump",
+        defType: DefinitionType.Obstacle,
         material: "tree",
         health: 180,
         scale: {
@@ -873,6 +897,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "rock",
         name: "Rock",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         health: 200,
         scale: {
@@ -890,6 +915,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "river_rock",
         name: "River Rock",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         health: 550,
         scale: {
@@ -908,6 +934,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "clearing_boulder",
         name: "Clearing Boulder",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         health: 850,
         scale: {
@@ -925,6 +952,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "pebble",
         name: "Pebble",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         health: 200,
         indestructible: true,
@@ -945,6 +973,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "pumpkin",
         name: "Pumpkin",
+        defType: DefinitionType.Obstacle,
         material: "pumpkin",
         health: 100,
         scale: {
@@ -964,6 +993,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "large_pumpkin",
         name: "Large Pumpkin",
+        defType: DefinitionType.Obstacle,
         material: "pumpkin",
         health: 160,
         scale: {
@@ -983,6 +1013,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "jack_o_lantern",
         name: "Jack O' Lantern",
+        defType: DefinitionType.Obstacle,
         material: "pumpkin",
         health: 300,
         scale: {
@@ -1016,6 +1047,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "baby_plumpkin",
         name: "Baby Plumpkin",
+        defType: DefinitionType.Obstacle,
         material: "pumpkin",
         health: 100,
         scale: {
@@ -1042,6 +1074,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "plumpkin",
         name: "Plumpkin",
+        defType: DefinitionType.Obstacle,
         material: "pumpkin",
         health: 300,
         scale: {
@@ -1061,6 +1094,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "diseased_plumpkin",
         name: "Diseased Plumpkin",
+        defType: DefinitionType.Obstacle,
         material: "pumpkin",
         health: 200,
         hideOnMap: true,
@@ -1087,6 +1121,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "birthday_cake",
         name: "Birthday Cake",
+        defType: DefinitionType.Obstacle,
         material: "pumpkin",
         health: 70,
         scale: {
@@ -1103,6 +1138,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "cobweb",
         name: "Cobweb",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         health: 69420,
         indestructible: true,
@@ -1123,6 +1159,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "oil_tank",
         name: "Oil Tank",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -1147,6 +1184,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "flint_stone",
         name: "Flint Stone",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         health: 200,
         impenetrable: true,
@@ -1165,6 +1203,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "monument",
         name: "Monument",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         health: 200,
         indestructible: true,
@@ -1193,6 +1232,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "bush",
         name: "Bush",
+        defType: DefinitionType.Obstacle,
         material: "bush",
         health: 80,
         scale: {
@@ -1209,6 +1249,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "vibrant_bush",
         name: "Vibrant Bush",
+        defType: DefinitionType.Obstacle,
         material: "bush",
         health: 120,
         scale: {
@@ -1228,6 +1269,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "detector_walls",
         name: "Detector Walls",
+        defType: DefinitionType.Obstacle,
         material: "iron",
         health: 1000,
         reflectBullets: true,
@@ -1245,6 +1287,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "detector_top",
         name: "Detector Top",
+        defType: DefinitionType.Obstacle,
         material: "iron",
         health: 1000,
         detector: true,
@@ -1263,6 +1306,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "blueberry_bush",
         name: "Blueberry Bush",
+        defType: DefinitionType.Obstacle,
         material: "bush",
         health: 80,
         scale: {
@@ -1285,6 +1329,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "oak_leaf_pile",
         name: "Oak Leaf Pile",
+        defType: DefinitionType.Obstacle,
         material: "bush",
         health: 50,
         scale: {
@@ -1305,6 +1350,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "regular_crate",
         name: "Regular Crate",
+        defType: DefinitionType.Obstacle,
         material: "crate",
         health: 80,
         scale: {
@@ -1325,6 +1371,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "flint_crate",
         name: "Flint Crate",
+        defType: DefinitionType.Obstacle,
         material: "crate",
         health: 80,
         scale: {
@@ -1342,6 +1389,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "aegis_crate",
         name: "AEGIS Crate",
+        defType: DefinitionType.Obstacle,
         material: "crate",
         health: 80,
         scale: {
@@ -1359,6 +1407,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "grenade_crate",
         name: "Grenade Crate",
+        defType: DefinitionType.Obstacle,
         material: "crate",
         health: 80,
         scale: {
@@ -1376,6 +1425,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "melee_crate",
         name: "Melee Crate",
+        defType: DefinitionType.Obstacle,
         material: "crate",
         health: 80,
         scale: {
@@ -1393,6 +1443,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "hazel_crate",
         name: "HAZEL Crate",
+        defType: DefinitionType.Obstacle,
         material: "crate",
         health: 1700,
         scale: {
@@ -1411,6 +1462,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "frozen_crate",
         name: "Frozen Crate",
+        defType: DefinitionType.Obstacle,
         material: "ice",
         health: 1000,
         variations: 2,
@@ -1432,6 +1484,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "ammo_crate",
         name: "Ammo Crate",
+        defType: DefinitionType.Obstacle,
         material: "cardboard",
         health: 160,
         impenetrable: true,
@@ -1452,6 +1505,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "hq_desk_left",
         name: "Headquarters Desk",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 100,
         scale: {
@@ -1473,6 +1527,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "hq_desk_right",
         name: "Headquarters Desk",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 100,
         scale: {
@@ -1494,6 +1549,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "square_desk",
         name: "Square Desk",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 120,
         indestructible: true,
@@ -1514,6 +1570,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "piano",
         name: "Piano",
+        defType: DefinitionType.Obstacle,
         material: "piano",
         health: 350,
         hitSoundVariations: 4,
@@ -1550,6 +1607,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "rocket_box",
         name: "Firework rocket box",
+        defType: DefinitionType.Obstacle,
         material: "cardboard",
         health: 45,
         scale: {
@@ -1569,6 +1627,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "confetti_grenade_box",
         name: "Confetti grenade box",
+        defType: DefinitionType.Obstacle,
         material: "cardboard",
         health: 45,
         scale: {
@@ -1588,6 +1647,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "tear_gas_crate",
         name: "Tear Gas Crate",
+        defType: DefinitionType.Obstacle,
         material: "crate",
         health: 100,
         scale: {
@@ -1610,6 +1670,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "barrel",
         name: "Barrel",
+        defType: DefinitionType.Obstacle,
         material: "metal_light",
         health: 160,
         scale: {
@@ -1631,6 +1692,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "super_barrel",
         name: "Super Barrel",
+        defType: DefinitionType.Obstacle,
         material: "metal_light",
         health: 240,
         scale: {
@@ -1648,6 +1710,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "propane_tank",
         name: "Propane Tank",
+        defType: DefinitionType.Obstacle,
         material: "metal_light",
         health: 60,
         scale: {
@@ -1668,6 +1731,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "loot_barrel",
         name: "Loot Barrel",
+        defType: DefinitionType.Obstacle,
         material: "metal_light",
         hideOnMap: true,
         health: 160,
@@ -1690,6 +1754,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "airdrop_crate_locked",
         name: "Airdrop",
+        defType: DefinitionType.Obstacle,
         material: "metal_light",
         health: 10000,
         indestructible: true,
@@ -1717,6 +1782,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "airdrop_crate",
         name: "Airdrop Crate",
+        defType: DefinitionType.Obstacle,
         material: "crate",
         health: 150,
         scale: {
@@ -1733,6 +1799,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "gold_airdrop_crate",
         name: "Gold Airdrop Crate",
+        defType: DefinitionType.Obstacle,
         material: "crate",
         health: 170,
         scale: {
@@ -1752,6 +1819,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "gold_rock",
         name: "Gold Rock",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         hideOnMap: true,
         health: 250,
@@ -1769,6 +1837,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "loot_tree",
         name: "Loot Tree",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         hideOnMap: true,
         health: 250,
@@ -1787,6 +1856,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "box",
         name: "Box",
+        defType: DefinitionType.Obstacle,
         material: "cardboard",
         health: 40,
         scale: {
@@ -1809,6 +1879,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "hq_large_cart",
         name: "Large Cart",
+        defType: DefinitionType.Obstacle,
         material: "iron",
         health: 210,
         indestructible: true,
@@ -1833,6 +1904,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "file_cart",
         name: "File Cart",
+        defType: DefinitionType.Obstacle,
         material: "iron",
         health: 210,
         hideOnMap: true,
@@ -1924,6 +1996,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "lodge_secret_room_wall",
         name: "Lodge Secret Room Wall",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         hideOnMap: true,
         noResidue: true,
@@ -1963,6 +2036,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "fridge",
         name: "Fridge",
+        defType: DefinitionType.Obstacle,
         material: "appliance",
         health: 140,
         scale: {
@@ -1982,6 +2056,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "water_cooler",
         name: "Cool Water",
+        defType: DefinitionType.Obstacle,
         material: "appliance",
         health: 125,
         scale: {
@@ -2002,6 +2077,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "stove",
         name: "Stove",
+        defType: DefinitionType.Obstacle,
         material: "metal_light",
         health: 140,
         scale: {
@@ -2020,6 +2096,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "small_stove",
         name: "Small Stove",
+        defType: DefinitionType.Obstacle,
         material: "metal_light",
         health: 140,
         scale: {
@@ -2040,6 +2117,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "pan_stove",
         name: "Pan Stove",
+        defType: DefinitionType.Obstacle,
         material: "metal_light",
         health: 140,
         scale: {
@@ -2060,6 +2138,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "small_pan_stove",
         name: "Small Pan Stove",
+        defType: DefinitionType.Obstacle,
         material: "metal_light",
         health: 140,
         scale: {
@@ -2081,6 +2160,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "fireplace",
         name: "Fireplace",
+        defType: DefinitionType.Obstacle,
         material: "metal_light",
         health: 300,
         scale: {
@@ -2101,6 +2181,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "fire_pit",
         name: "Fire Pit",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         health: 400,
         scale: {
@@ -2118,6 +2199,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "speaker",
         name: "Speaker",
+        defType: DefinitionType.Obstacle,
         material: "iron",
         health: 160,
         indestructible: true,
@@ -2144,6 +2226,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "vending_machine",
         name: "Vending Machine",
+        defType: DefinitionType.Obstacle,
         material: "appliance",
         health: 165,
         scale: {
@@ -2163,6 +2246,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "washing_machine",
         name: "Washing Machine",
+        defType: DefinitionType.Obstacle,
         material: "appliance",
         health: 140,
         scale: {
@@ -2178,6 +2262,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "door",
         name: "Door",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 120,
         scale: {
@@ -2198,6 +2283,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "barn_door",
         name: "Barn Door",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         doorSound: "barn_door",
         health: 150,
@@ -2220,6 +2306,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "aegis_golden_case",
         name: "Golden Aegis Case",
+        defType: DefinitionType.Obstacle,
         material: "wood", // crate or wood?
         health: 150,
         scale: {
@@ -2242,6 +2329,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "falchion_case",
         name: "Falchion Case",
+        defType: DefinitionType.Obstacle,
         material: "glass",
         health: 200,
         scale: {
@@ -2262,6 +2350,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "dumpster",
         name: "Dumpster",
+        defType: DefinitionType.Obstacle,
         material: "iron",
         reflectBullets: true,
         hasLoot: true,
@@ -2283,6 +2372,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "trash_bag",
         name: "Trash Bag",
+        defType: DefinitionType.Obstacle,
         material: "trash_bag",
         health: 40,
         scale: {
@@ -2304,6 +2394,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "hay_bale",
         name: "Hay Bale",
+        defType: DefinitionType.Obstacle,
         material: "bush",
         hideOnMap: true,
         health: 180,
@@ -2320,6 +2411,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "secret_door",
         name: "Secret Door",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         noInteractMessage: true,
         health: 120,
@@ -2340,6 +2432,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "glass_door",
         name: "Glass Door",
+        defType: DefinitionType.Obstacle,
         material: "glass",
         doorSound: "auto_door",
         health: 100,
@@ -2364,6 +2457,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "bigger_glass_door",
         name: "Bigger Glass Door",
+        defType: DefinitionType.Obstacle,
         material: "glass",
         doorSound: "auto_door",
         health: 100,
@@ -2387,6 +2481,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "red_metal_auto_door",
         name: "Red Metal Automatic Door",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         doorSound: "metal_auto_door",
         locked: true,
@@ -2410,6 +2505,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "blue_metal_auto_door",
         name: "Blue Metal Automatic Door",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         doorSound: "metal_auto_door",
         locked: true,
@@ -2433,6 +2529,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "metal_auto_door",
         name: "Metal Automatic Door",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         doorSound: "metal_auto_door",
         health: 100,
@@ -2456,6 +2553,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "metal_door",
         name: "Metal Door",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         reflectBullets: true,
         doorSound: "metal_door",
@@ -2482,6 +2580,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "vault_door",
         name: "Vault Door",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -2502,6 +2601,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "tent_window",
         name: "Tent Window",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         indestructible: true,
         noBulletCollision: true,
@@ -2518,6 +2618,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "windowed_vault_door",
         name: "Windowed Vault Door",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -2533,6 +2634,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "toilet",
         name: "Toilet",
+        defType: DefinitionType.Obstacle,
         material: "porcelain",
         health: 100,
         scale: {
@@ -2548,6 +2650,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "used_toilet",
         name: "Used Toilet",
+        defType: DefinitionType.Obstacle,
         material: "porcelain",
         health: 100,
         scale: {
@@ -2567,6 +2670,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "sink",
         name: "Sink",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 80,
         scale: {
@@ -2586,6 +2690,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "sink2",
         name: "Sink",
+        defType: DefinitionType.Obstacle,
         material: "porcelain",
         health: 120,
         scale: {
@@ -2605,6 +2710,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "bathtub",
         name: "Bathtub",
+        defType: DefinitionType.Obstacle,
         material: "appliance",
         health: 180,
         scale: {
@@ -2623,6 +2729,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "small_drawer",
         name: "Small Drawer",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 80,
         scale: {
@@ -2641,6 +2748,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "filing_cabinet",
         name: "Filing Cabinet",
+        defType: DefinitionType.Obstacle,
         material: "iron",
         health: 100,
         scale: {
@@ -2657,6 +2765,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "large_drawer",
         name: "Large Drawer",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 80,
         scale: {
@@ -2676,6 +2785,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "couch",
         name: "Couch",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 100,
         scale: {
@@ -2690,6 +2800,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "white_small_couch",
         name: "White Small Couch",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 95,
         scale: {
@@ -2712,6 +2823,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "red_small_couch",
         name: "Red Small Couch",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 95,
         scale: {
@@ -2737,6 +2849,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "couch_part",
         name: "Couch Part",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 95,
         scale: {
@@ -2759,6 +2872,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "couch_corner",
         name: "Couch Corner",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 95,
         scale: {
@@ -2783,6 +2897,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "couch_end_right",
         name: "Couch Part",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 95,
         scale: {
@@ -2808,6 +2923,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "couch_end_left",
         name: "Couch Part",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 95,
         scale: {
@@ -2833,6 +2949,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "tv",
         name: "TV",
+        defType: DefinitionType.Obstacle,
         material: "glass",
         health: 100,
         scale: {
@@ -2848,6 +2965,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "small_table",
         name: "Small Table",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 100,
         scale: {
@@ -2869,6 +2987,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "large_table",
         name: "Large Table",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 100,
         scale: {
@@ -2890,6 +3009,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "round_table",
         name: "Round Table",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 100,
         scale: {
@@ -2910,6 +3030,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "chair",
         name: "Chair",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 100,
         scale: {
@@ -2927,6 +3048,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "bookshelf",
         name: "Bookshelf",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 80,
         scale: {
@@ -2947,6 +3069,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "window_damaged",
         name: "Window",
+        defType: DefinitionType.Obstacle,
         material: "glass",
         health: 20,
         invisible: true,
@@ -2963,6 +3086,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "window",
         name: "Window",
+        defType: DefinitionType.Obstacle,
         material: "glass",
         health: 20,
         scale: {
@@ -2980,6 +3104,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "window2",
         name: "Window",
+        defType: DefinitionType.Obstacle,
         material: "glass",
         health: 20,
         scale: {
@@ -2995,6 +3120,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "bulletproof_window",
         name: "Bulletproof Window",
+        defType: DefinitionType.Obstacle,
         material: "glass",
         health: 1000,
         scale: {
@@ -3012,6 +3138,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "bed",
         name: "Bed",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 100,
         scale: {
@@ -3027,6 +3154,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "small_bed",
         name: "Small Bed",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 100,
         scale: {
@@ -3045,6 +3173,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "bunk_bed",
         name: "Bunk Bed",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -3060,6 +3189,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "porta_potty_toilet_open",
         name: "Porta Potty Toilet Open",
+        defType: DefinitionType.Obstacle,
         material: "porcelain",
         health: 100,
         scale: {
@@ -3080,6 +3210,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "porta_potty_toilet_closed",
         name: "Porta Potty Toilet Closed",
+        defType: DefinitionType.Obstacle,
         material: "porcelain",
         health: 100,
         scale: {
@@ -3100,6 +3231,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "porta_potty_door",
         name: "Porta Potty Door",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 100,
         noResidue: true,
@@ -3119,6 +3251,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "outhouse_door",
         name: "Outhouse Door",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 100,
         noResidue: true,
@@ -3141,6 +3274,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "porta_potty_sink_wall",
         name: "Porta Potty Sink Wall",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 100,
         noResidue: true,
@@ -3162,6 +3296,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "porta_potty_sink_wall_fall",
         name: "Porta Potty Sink Wall",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 100,
         noResidue: true,
@@ -3184,6 +3319,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "outhouse_toilet_paper_wall",
         name: "Outhouse Toilet Paper Wall",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 100,
         noResidue: true,
@@ -3205,6 +3341,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "porta_potty_toilet_paper_wall",
         name: "Porta Potty Toilet Paper Wall",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 100,
         noResidue: true,
@@ -3226,6 +3363,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "hq_toilet_paper_wall",
         name: "Headquarters Toilet Paper Wall",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 100,
         noResidue: true,
@@ -3251,6 +3389,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "bombed_armory_vault_wall",
         name: "Bombed Armory Vault Wall",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         hitbox: RectangleHitbox.fromRect(15, 2.04),
         health: 500,
@@ -3272,6 +3411,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "small_refinery_barrel",
         name: "Small Refinery Barrel",
+        defType: DefinitionType.Obstacle,
         material: "metal_light",
         health: 250,
         scale: {
@@ -3292,6 +3432,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "large_refinery_barrel",
         name: "Large Refinery Barrel",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 2000,
         scale: {
@@ -3313,6 +3454,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "smokestack",
         name: "Smokestack",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 500,
         indestructible: true,
@@ -3326,6 +3468,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "distillation_column",
         name: "Distillation Column",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 500,
         indestructible: true,
@@ -3342,6 +3485,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "distillation_equipment",
         name: "Distillation Equipment",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 500,
         indestructible: true,
@@ -3399,6 +3543,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "truck",
         name: "Truck",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -3422,6 +3567,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "trailer",
         name: "Trailer",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -3444,6 +3590,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "tango_crate",
         name: "Tango Crate",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 120,
         scale: {
@@ -3492,6 +3639,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "small_desk",
         name: "Small Desk",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         scale: {
             spawnMin: 1,
@@ -3511,6 +3659,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "generator",
         name: "Generator",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 200,
         indestructible: true,
@@ -3534,6 +3683,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "ship_oil_tank",
         name: "Ship Oil Tank",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 200,
         indestructible: true,
@@ -3544,6 +3694,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "forklift",
         name: "Forklift",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -3559,6 +3710,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "pallet",
         name: "Pallet",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 120,
         indestructible: true,
@@ -3578,6 +3730,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "pipe",
         name: "Pipe",
+        defType: DefinitionType.Obstacle,
         material: "metal_light",
         health: 200,
         indestructible: true,
@@ -3593,6 +3746,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "bollard",
         name: "Bollard",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -3608,6 +3762,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "barrier",
         name: "Barrier",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -3625,6 +3780,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "fence",
         name: "Fence",
+        defType: DefinitionType.Obstacle,
         material: "fence",
         health: 40,
         scale: {
@@ -3642,6 +3798,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "house_column",
         name: "House Column",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         indestructible: true,
         health: 340,
@@ -3665,6 +3822,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "metal_column",
         name: "Metal Column",
+        defType: DefinitionType.Obstacle,
         material: "metal_light",
         reflectBullets: true,
         indestructible: true,
@@ -3689,6 +3847,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "potted_plant",
         name: "Potted Plant",
+        defType: DefinitionType.Obstacle,
         material: "porcelain",
         health: 100,
         scale: {
@@ -3704,6 +3863,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "poinsettia",
         name: "Poinsettia",
+        defType: DefinitionType.Obstacle,
         material: "porcelain",
         health: 100,
         scale: {
@@ -3724,6 +3884,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "trash_can",
         name: "Trash Can",
+        defType: DefinitionType.Obstacle,
         material: "appliance",
         health: 60,
         scale: {
@@ -3744,6 +3905,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "sandbags",
         name: "Sandbags",
+        defType: DefinitionType.Obstacle,
         material: "sand",
         health: 1000,
         indestructible: true,
@@ -3754,6 +3916,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "gun_locker",
         name: "Gun Locker",
+        defType: DefinitionType.Obstacle,
         material: "iron",
         scale: {
             spawnMin: 1,
@@ -3775,6 +3938,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "roadblock",
         name: "Road Block",
+        defType: DefinitionType.Obstacle,
         material: "fence",
         health: 80,
         indestructible: false,
@@ -3784,6 +3948,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "gun_case",
         name: "Gun Case",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 100,
         scale: {
@@ -3800,6 +3965,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "cooler",
         name: "Cooler",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 100,
         scale: {
@@ -3816,6 +3982,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "m1117",
         name: "M1117",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -3834,6 +4001,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "cabinet",
         name: "Cabinet",
+        defType: DefinitionType.Obstacle,
         material: "appliance",
         health: 100,
         reflectBullets: true,
@@ -3852,6 +4020,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "briefcase",
         name: "Briefcase",
+        defType: DefinitionType.Obstacle,
         material: "appliance",
         health: 150,
         scale: {
@@ -3867,6 +4036,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "fire_hatchet_case",
         name: "Fire Hatchet Case",
+        defType: DefinitionType.Obstacle,
         material: "appliance",
         health: 180,
         scale: {
@@ -3891,6 +4061,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "ice_pick_case",
         name: "Ice Pick Case",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 180,
         scale: {
@@ -3913,6 +4084,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "campsite_case",
         name: "Campsite Case",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 180,
         scale: {
@@ -3935,6 +4107,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "button",
         name: "Button",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         health: 1000,
         indestructible: true,
@@ -3961,6 +4134,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "tire",
         name: "Tire",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         health: 200,
         scale: {
@@ -3981,6 +4155,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "mobile_home_window",
         name: "Mobile Home Window",
+        defType: DefinitionType.Obstacle,
         material: "glass",
         health: 20,
         scale: {
@@ -4002,6 +4177,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "lux_crate",
         name: "Lux Crate",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 120,
         scale: {
@@ -4017,6 +4193,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "tugboat_control_panel",
         name: "Tugboat Control Panel",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 250,
         reflectBullets: true,
@@ -4035,6 +4212,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "office_chair",
         name: "Office Chair",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 140,
         scale: {
@@ -4052,6 +4230,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "grey_office_chair",
         name: "Office Chair (Grey Edition)",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 155,
         scale: {
@@ -4069,6 +4248,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "life_preserver",
         name: "Life Preserver",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         health: 80,
         scale: {
@@ -4084,6 +4264,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "grenade_box",
         name: "Grenade Box",
+        defType: DefinitionType.Obstacle,
         material: "cardboard",
         health: 40,
         scale: {
@@ -4104,6 +4285,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "lily_pad",
         name: "Lily Pad",
+        defType: DefinitionType.Obstacle,
         material: "bush",
         health: 80,
         scale: {
@@ -4121,6 +4303,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "planted_bushes",
         name: "Planted Bushes",
+        defType: DefinitionType.Obstacle,
         material: "porcelain",
         health: 800,
         indestructible: true,
@@ -4137,6 +4320,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "viking_chest",
         name: "Viking Chest",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 150,
         scale: {
@@ -4158,6 +4342,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "river_chest",
         name: "River Chest",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 150,
         scale: {
@@ -4180,6 +4365,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "bunker_entrance",
         name: "Bunker Entrance",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         reflectBullets: true,
@@ -4193,6 +4379,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "bunker_stair",
         name: "Bunker Stair",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -4211,6 +4398,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "blue_house_stair_walls",
         name: "Blue House Stair Walls",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -4224,6 +4412,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "blue_house_stair",
         name: "Blue House Stair",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -4243,6 +4432,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "memorial_bunker_stair",
         name: "Memorial Bunker Stair",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -4262,6 +4452,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "hq_stair",
         name: "HQ Stair",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -4281,6 +4472,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "barn_stair",
         name: "Barn Stair",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -4300,6 +4492,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "hq_large_stair",
         name: "HQ Large Stair",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -4319,6 +4512,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "lodge_stair",
         name: "Lodge Stair",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -4338,6 +4532,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "plumpkin_bunker_stair",
         name: "Plumpkin Bunker Stair",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -4358,6 +4553,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "fire_exit_railing",
         name: "Fire exit railing",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -4380,6 +4576,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "hq_second_floor_collider_hack",
         name: "HQ Second Floor Collider Hack",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(84.9, 1.75, Vec.create(-28.9, -105.9)),
@@ -4400,6 +4597,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     { // i have fully given up at this point
         idString: "hq_second_floor_collider_hack_2",
         name: "HQ Second Floor Collider Hack 2",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         hitbox: RectangleHitbox.fromRect(13, 17.7, Vec.create(-52, -85.5)),
         health: 1000,
@@ -4413,6 +4611,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "lodge_railing",
         name: "Lodge Railing",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(12.04, 1.28, Vec.create(-32.61, 20.51)),
@@ -4435,6 +4634,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "headquarters_bottom_entrance",
         name: "Headquarters Bottom Entrance",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         health: 1000,
         hideOnMap: true,
@@ -4461,6 +4661,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "barn_stair_walls",
         name: "Barn Stair Walls",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         hideOnMap: true,
@@ -4483,6 +4684,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "barn_stair_walls_top_floor",
         name: "Barn Stair Walls",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         hideOnMap: true,
@@ -4504,6 +4706,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "barn_stair_walls_2",
         name: "Barn Stair Walls",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         hideOnMap: true,
@@ -4523,6 +4726,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "headquarters_main_desk",
         name: "Headquarters Main Desk",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         health: 120,
         indestructible: true,
@@ -4548,6 +4752,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "headquarters_boss_desk",
         name: "Headquarters Boss Desk",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         health: 120,
         indestructible: true,
@@ -4572,6 +4777,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "headquarters_cafeteria_table",
         name: "Headquarters Cafeteria Table",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 120,
         noBulletCollision: true,
@@ -4594,6 +4800,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "headquarters_security_desk",
         name: "Headquarters Security Desk",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 120,
         indestructible: true,
@@ -4622,6 +4829,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "headquarters_security_desk_activated",
         name: "Headquarters Security Panel (active)",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 120,
         indestructible: true,
@@ -4639,6 +4847,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "headquarters_wood_obstacles",
         name: "Headquarters Wood Obstacles",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 1000,
         hideOnMap: true,
@@ -4654,6 +4863,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "headquarters_wood_table_second_floor",
         name: "Headquarters Wood Obstacles",
+        defType: DefinitionType.Obstacle,
         material: "wood",
         health: 1000,
         hideOnMap: true,
@@ -4672,6 +4882,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "headquarters_sinks",
         name: "Headquarters Sinks",
+        defType: DefinitionType.Obstacle,
         material: "porcelain",
         health: 1000,
         hideOnMap: true,
@@ -4689,6 +4900,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "pole",
         name: "Pole",
+        defType: DefinitionType.Obstacle,
         material: "fence",
         health: 150,
         scale: {
@@ -4710,6 +4922,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "memorial_crate",
         name: "Aged Memorial Crate",
+        defType: DefinitionType.Obstacle,
         material: "crate",
         hasLoot: true,
         health: 140,
@@ -4728,6 +4941,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "large_logs_pile",
         name: "Large Logs Pile",
+        defType: DefinitionType.Obstacle,
         material: "tree",
         health: 200,
         scale: {
@@ -4746,6 +4960,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "small_logs_pile",
         name: "Small Logs Pile",
+        defType: DefinitionType.Obstacle,
         material: "tree",
         health: 180,
         scale: {
@@ -4764,6 +4979,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "campsite_crate",
         name: "Campsite Crate",
+        defType: DefinitionType.Obstacle,
         material: "crate",
         health: 65,
         scale: {
