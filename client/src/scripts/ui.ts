@@ -2026,40 +2026,32 @@ export async function setUpUI(): Promise<void> {
             return ele;
         })
     );
-   $<HTMLDivElement>("#healing-items-container").append(
+    $<HTMLDivElement>("#healing-items-container").append(
         HealingItems.definitions.map(item => {
-            let i: JQuery<HTMLDivElement>;
-            if (item.healType === HealType.Special) {
-                i = $<HTMLDivElement>(
-                    html`<div class="inventory-slot item-slot active" id="${item.idString}-slot">
-                        <img class="item-image" src="./img/game/shared/loot/${item.idString}.svg" draggable="false">
-                        <span class="item-count" id="${item.idString}-count">0</span>
-                        <div class="item-tooltip">
-                            ${getTranslatedString("tt_desc", {
-                        item: `<b>${getTranslatedString(item.idString as TranslationKeys)}</b><br>`,
-                        desc: getTranslatedString((`${item.idString}_desc`) as TranslationKeys)
-                    })}
-                        </div>
-                    </div>`
-                );
-            } else {
-            i = $<HTMLDivElement>(
+            const ele = $<HTMLDivElement>(
                 html`<div class="inventory-slot item-slot active" id="${item.idString}-slot">
                     <img class="item-image" src="./img/game/shared/loot/${item.idString}.svg" draggable="false">
                     <span class="item-count" id="${item.idString}-count">0</span>
                     <div class="item-tooltip">
-                        ${getTranslatedString("tt_restores", {
+                        ${getTranslatedString(
+                            item.healType === HealType.Special
+                            ? "tt_desc"
+                            : "tt_restores", {
                     item: `<b>${getTranslatedString(item.idString as TranslationKeys)}</b><br>`,
                     amount: item.restoreAmount.toString(),
-                    type: item.healType === HealType.Adrenaline
-                        ? getTranslatedString("adrenaline")
-                        : getTranslatedString("health")
+                    type: item.healType === HealType.Special
+                        ? ""
+                        : item.healType === HealType.Adrenaline
+                            ? getTranslatedString("adrenaline")
+                            : getTranslatedString("health"),
+                    desc: item.healType !== HealType.Special
+                        ? ""
+                        : getTranslatedString(item.idString+"_desc" as TranslationKeys)
                 })}
                     </div>
                 </div>`
             );
-}
-            const ele = i;
+            
             ele[0].addEventListener("pointerup", () => clearTimeout(dropTimer));
 
             slotListener(ele, button => {
