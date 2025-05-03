@@ -1391,6 +1391,81 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]
     },
 
+    {
+        idString: "mini_warehouse",
+        name: "Mini Warehouse",
+        material: "stone",
+        particle: "wall_particle",
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(27.7, 1.75, Vec.create(-19, -23)),
+            RectangleHitbox.fromRect(27.7, 1.75, Vec.create(19, -23)),
+            RectangleHitbox.fromRect(27.7, 1.75, Vec.create(-19, 23)),
+            RectangleHitbox.fromRect(27.7, 1.75, Vec.create(19, 23)),
+            RectangleHitbox.fromRect(1.75, 18, Vec.create(32.3, 15)),
+            RectangleHitbox.fromRect(1.75, 18, Vec.create(32.3, -15)),
+            RectangleHitbox.fromRect(1.75, 18, Vec.create(-32.3, 15)),
+            RectangleHitbox.fromRect(1.75, 18, Vec.create(-32.3, -15))
+        ),
+        spawnHitbox: RectangleHitbox.fromRect(110, 70),
+        ceilingHitbox: RectangleHitbox.fromRect(65, 48),
+        floorImages: [
+            {
+                key: "mini_warehouse_floor_1_top",
+                position: Vec.create(-17.4, -14)
+            },
+            {
+                key: "mini_warehouse_floor_1_bottom",
+                position: Vec.create(-17.4, 14)
+            },
+            {
+                key: "mini_warehouse_floor_2_top",
+                position: Vec.create(17.4, -14)
+            },
+            {
+                key: "mini_warehouse_floor_2_bottom",
+                position: Vec.create(17.4, 14)
+            }
+        ],
+        ceilingImages: [
+            {
+                key: "mini_warehouse_ceiling_1",
+                position: Vec.create(-16.5, 0),
+                scale: Vec.create(2, 2)
+            },
+
+            {
+                key: "mini_warehouse_ceiling_2",
+                position: Vec.create(17, 0),
+                scale: Vec.create(2, 2)
+            }
+        ],
+        floors: [
+            {
+                type: FloorNames.Stone,
+                hitbox: RectangleHitbox.fromRect(65, 48, Vec.create(0, 0))
+            }
+        ],
+        obstacles: [
+            { idString: randomBarrel, position: Vec.create(-27, 18) },
+            { idString: randomBarrel, position: Vec.create(27, -18) },
+            { idString: "window", position: Vec.create(32.4, 0), rotation: 2 },
+            { idString: "window", position: Vec.create(-32.4, 0), rotation: 2 },
+            { idString: "door", position: Vec.create(-0.47, 23), rotation: 2 },
+            { idString: "door", position: Vec.create(0.47, -23), rotation: 0 },
+            { idString: "box", position: Vec.create(29, -12) },
+            { idString: "baby_plumpkin", position: Vec.create(-29, 12) },
+            { idString: "grenade_box", position: Vec.create(-27, 7) },
+            { idString: "baby_plumpkin", position: Vec.create(-22, 9) },
+            { idString: "propane_tank", position: Vec.create(-17, 17) },
+            { idString: "baby_plumpkin", position: Vec.create(17, -17) },
+            { idString: "ammo_crate", position: Vec.create(26.8, 17) },
+            { idString: "regular_crate", position: Vec.create(-26, -17) },
+            { idString: { box: 9, grenade_box: 1 }, position: Vec.create(18.8, 14) },
+            { idString: "grenade_box", position: Vec.create(20, 19) },
+            { idString: "hazel_crate", position: Vec.create(0, 0) }
+        ]
+    },
+
     warehouseLayout(1, [
         // top left
         { idString: "ammo_crate", position: Vec.create(-19.53, -26.33) },

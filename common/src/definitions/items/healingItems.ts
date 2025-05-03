@@ -1,6 +1,5 @@
 import { ItemType, ObjectDefinitions, ReferenceTo, type ItemDefinition } from "../../utils/objectDefinitions";
-import { PerkIds } from "./perks";
-import { PerkDefinition } from "../../definitions/items/perks";
+import { PerkIds, PerkDefinition } from "./perks";
 export interface HealingItemDefinition extends ItemDefinition {
     readonly itemType: ItemType.Healing
     readonly healType: HealType

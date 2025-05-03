@@ -606,3 +606,5 @@
 "special_weapon_preset_title": "注意：请使用Guns.ts中有效的武器ID"
 "time_minute": "分"
 "time_second": "秒"
+"berserker": "狂人"
+"berserker_desc": "当装备近战武器时，提升移动速度和伤害"

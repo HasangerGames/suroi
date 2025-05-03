@@ -6,8 +6,8 @@
    fill="none"
    version="1.1"
    id="svg7"
-   sodipodi:docname="proj_frag_nopin.svg"
-   inkscape:version="1.3 (0e150ed, 2023-07-21)"
+   sodipodi:docname="proj_frag_nopin_halloween.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -24,14 +24,14 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="3.6307692"
-     inkscape:cx="11.016949"
-     inkscape:cy="34.70339"
+     inkscape:cx="10.879237"
+     inkscape:cy="34.565678"
      inkscape:window-width="1312"
      inkscape:window-height="449"
      inkscape:window-x="0"
      inkscape:window-y="25"
      inkscape:window-maximized="0"
-     inkscape:current-layer="svg7" />
+     inkscape:current-layer="g7" />
   <path
      d="m 23.419766,12.182583 -14.9692204,6.1832 -6.05416,23.0757 6.16649,2.2563 6.0541904,-22.6815 6.6546,-2.7968 z"
      fill="#4E4735"
@@ -128,14 +128,5 @@
          ry="18.452194"
          transform="matrix(0.85634628,0.51640202,-0.51667405,0.85618218,0,0)" />
     </g>
-    <path
-       fill-rule="evenodd"
-       clip-rule="evenodd"
-       d="M 27.339365,32.718816 C 33.70463,32.718778 38.86431,27.558606 38.864272,21.193341 38.864285,14.828163 33.704619,9.6679595 27.339354,9.6679971 20.974622,9.6679579 15.814496,14.828156 15.814483,21.193335 c -4.9e-5,6.365315 5.16015,11.525441 11.524882,11.525481 z m 3.3e-5,-4.095743 c 4.103941,3.5e-5 7.431094,-3.326168 7.431155,-7.429663 -6e-5,-4.105503 -3.327189,-7.431659 -7.431216,-7.431643 -4.103941,-3.4e-5 -7.431094,3.326168 -7.431171,7.431635 7.6e-5,4.103531 3.327205,7.429687 7.431232,7.429671 z"
-       fill="#a1a29c"
-       stroke="#222220"
-       stroke-width="2"
-       stroke-miterlimit="3.99393"
-       id="path8" />
   </g>
 </svg>

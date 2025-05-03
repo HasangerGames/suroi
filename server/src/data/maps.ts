@@ -621,7 +621,7 @@ const maps = {
             small_bunker: 1,
             refinery: 1,
             warehouse: 5,
-            // firework_warehouse: 1, // birthday mode
+            mini_warehouse: 1,
             green_house: 3,
             blue_house: 2,
             blue_house_special: 1,

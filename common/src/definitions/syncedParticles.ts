@@ -159,7 +159,19 @@ export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
         name: "Plumpkin Smoke Grenade Particle",
         tint: 0x854770,
         hitbox: new CircleHitbox(5),
-        snapScopeTo: "1x_scope"
+        snapScopeTo: "1x_scope",
+        velocity: {
+            duration: 4000,
+            easing: "expoOut"
+        },
+        spawner: {
+            count: 10,
+            radius: 15,
+            staggering: {
+                delay: 300,
+                initialAmount: 2
+            }
+        }
     }),
     smokeLike({
         idString: "shrouded_particle",

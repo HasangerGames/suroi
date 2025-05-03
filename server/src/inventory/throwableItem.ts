@@ -146,7 +146,8 @@ export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwa
                 owner.movementVector
             ),
             height: this.definition.physics.initialHeight,
-            fuseTime: this.definition.fuseTime - time
+            fuseTime: this.definition.fuseTime - time,
+            halloweenSkin: this.owner.hasPerk(PerkIds.PlumpkinBomb)
         });
 
         if (definition.c4) {

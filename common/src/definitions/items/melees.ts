@@ -26,7 +26,6 @@ export interface MeleeDefinition extends InventoryItemDefinition {
     readonly cooldown: number
     readonly attackCooldown?: number
     readonly maxTargets?: number
-    readonly reskins?: readonly string[]
 
     readonly fists: InventoryItemDefinition["fists"] & {
         readonly animationDuration: number
@@ -436,9 +435,9 @@ export const Melees = new InventoryItemDefinitions<MeleeDefinition>([
         radius: 2.7,
         offset: Vec.create(4, 0),
         cooldown: 150,
-        attackCooldown: 100,
+        attackCooldown: 125,
         reskins: ["winter"],
-        // fireMode: FireMode.Auto, - TODO
+        fireMode: FireMode.Auto,
         fists: {
             animationDuration: 70,
             left: Vec.create(29, -39),
