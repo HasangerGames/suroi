@@ -252,9 +252,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 let frame = "";
                 if (this.action.item?.itemType === ItemType.Healing) {
                     if (this.action.item.healType === HealType.Special) {
-                    frame = this.action.item.idString.toLowerCase();
-                    } else
-                    frame = HealType[this.action.item.healType].toLowerCase();
+                        frame = this.action.item.idString.toLowerCase();
+                    } else { frame = HealType[this.action.item.healType].toLowerCase(); }
                 }
 
                 return {

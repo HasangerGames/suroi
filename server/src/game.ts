@@ -393,7 +393,7 @@ export class Game implements GameData {
                 object.effectSpeedTimeout = this.addTimeout(() => object.effectSpeedMultiplier = 1, enemySpeedMultiplier.duration);
             }
 
-            if (object.isPlayer && removePerk) this.removePerks(object,removePerk);
+            if (object.isPlayer && removePerk) this.removePerks(object, removePerk);
         }
 
         // Handle explosions
@@ -779,7 +779,7 @@ export class Game implements GameData {
         this.pluginManager.emit("player_did_join", { player, joinPacket: packet });
     }
 
-    public removePerks(player: Player, perk:PerkIds){
+    public removePerks(player: Player, perk: PerkIds) {
         player.perks.removeItem(Perks.fromString(perk));
         if (perk === PerkIds.Infected) { // evil
             const immunity = PerkData[PerkIds.Immunity];

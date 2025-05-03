@@ -779,7 +779,7 @@ export class Inventory {
         const idString = definition.idString;
 
         if (!this.items.hasItem(idString)) return;
-        
+
         switch (definition.itemType) {
             case ItemType.Healing: {
                 if (
@@ -793,11 +793,11 @@ export class Inventory {
                         && this.owner.adrenaline >= this.owner.maxAdrenaline
                     ) || (
                         definition.healType === HealType.Special
-                            && ((
-                                definition.removePerk!=undefined
-                                && !this.owner.perks.hasItem(definition.removePerk))
-                            || definition.removePerk===undefined
-                            )
+                        && ((
+                            definition.removePerk != undefined
+                            && !this.owner.perks.hasItem(definition.removePerk))
+                        || definition.removePerk === undefined
+                        )
                     )
                 ) return;
 

@@ -150,19 +150,20 @@ export class HealingAction extends Action {
                 this.player.adrenaline += this.item.restoreAmount;
                 break;
             case HealType.Special:
-                if(this.item.restoreAmounts!=undefined)
-                for(const i in this.item.restoreAmounts){
-                    switch(i){
-                        case "adrenaline":
-                            this.player.adrenaline += this.item.restoreAmounts[i];
-                            break;
-                        case "health":
-                            this.player.health += this.item.restoreAmounts[i];
-                            break;
+                if (this.item.restoreAmounts != undefined) {
+                    for (const i in this.item.restoreAmounts) {
+                        switch (i) {
+                            case "adrenaline":
+                                this.player.adrenaline += this.item.restoreAmounts[i];
+                                break;
+                            case "health":
+                                this.player.health += this.item.restoreAmounts[i];
+                                break;
+                        }
                     }
                 }
-                if(this.item.removePerk!=undefined){
-                this.player.removePerk(this.item.removePerk);
+                if (this.item.removePerk != undefined) {
+                    this.player.removePerk(this.item.removePerk);
                 }
                 break;
         }

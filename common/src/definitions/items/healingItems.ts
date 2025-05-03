@@ -59,8 +59,8 @@ export const HealingItems = new ObjectDefinitions<HealingItemDefinition>([
         removePerk: PerkIds.Infected,
         restoreAmount: 0,
         restoreAmounts: {
-            "adrenaline": 50,
-          }
+            adrenaline: 50
+        }
     }
-    
+
 ]);
