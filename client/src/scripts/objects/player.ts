@@ -251,10 +251,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             spawnOptions: () => {
                 let frame = "";
                 if (this.action.item?.itemType === ItemType.Healing) {
-                    if(this.action.item.healType===HealType.Special){
+                    if (this.action.item.healType === HealType.Special) {
                     frame = this.action.item.idString.toLowerCase();
-                    }
-                    else
+                    } else
                     frame = HealType[this.action.item.healType].toLowerCase();
 
                     if (this.action.item.healType === HealType.Special && this.action.item.particleFrame !== undefined) {
