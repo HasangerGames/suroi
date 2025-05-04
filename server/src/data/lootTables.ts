@@ -1614,14 +1614,14 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "cola", weight: 2 },
             { item: "tablets", weight: 1 },
             { item: "medikit", weight: 1 },
-            { item: "vaccine_injector", weight: 0.75 }
+            { item: "vaccine_syringe", weight: 0.75 }
         ],
         airdrop_healing_items: [
             { item: "gauze", count: 5, weight: 1.5 },
             { item: "medikit", weight: 1 },
             { item: "cola", weight: 1 },
             { item: "tablets", weight: 1 },
-            { item: "vaccine_injector", count: 2, weight: 0.75 }
+            { item: "vaccine_syringe", count: 2, weight: 0.75 }
         ],
         airdrop_guns: [
             { item: "vaccinator", weight: 2 },

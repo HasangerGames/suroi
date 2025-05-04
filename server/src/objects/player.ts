@@ -2076,10 +2076,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if (sourceIsPlayer) source.updateAndApplyModifiers();
     }
 
-    public removePerk(perk: PerkIds) {
-        this.game.removePerks(this, perk);
-    }
-
     private _calculateModifiers(): PlayerModifiers {
         const newModifiers = GameConstants.player.defaultModifiers();
         const eventMods: EventModifiers = {
