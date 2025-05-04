@@ -535,12 +535,14 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             } = data;
 
             const layerChanged = layer !== this.layer;
+            let oldLayer: Layer | undefined;
             if (layerChanged) {
+                oldLayer = this.layer;
                 this.layer = layer;
                 if (!this.isActivePlayer || isNew) this.updateLayer();
             }
             if (this.isActivePlayer && (layerChanged || isNew)) {
-                Game.updateLayer(isNew);
+                Game.updateLayer(isNew, oldLayer);
             }
 
             this.backEquippedMelee = backEquippedMelee;

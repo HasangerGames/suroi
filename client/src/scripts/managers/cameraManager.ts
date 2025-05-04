@@ -110,21 +110,17 @@ class CameraManagerClass {
         this.container.position.set(-cameraPos.x, -cameraPos.y);
     }
 
-    transitioningContainers: number[] = [];
-
     objectUpdateTimeout?: Timeout;
 
-    updateLayer(initial = false): void {
+    updateLayer(initial = false, oldLayer?: Layer): void {
         for (const tween of this.layerTweens) {
             tween.complete();
         }
         this.layerTweens.clear();
         this.objectUpdateTimeout?.kill();
-        this.transitioningContainers.length = 0;
 
         if (!initial) {
             this.objectUpdateTimeout = Game.addTimeout(() => {
-                this.transitioningContainers.length = 0;
                 for (const object of Game.objects) {
                     object.updateLayer();
                 }
@@ -138,7 +134,7 @@ class CameraManagerClass {
 
             // Display bunkers above everything else when on stairs or below
             if (i === 0) {
-                container.zIndex = newLayer <= Layer.ToBasement ? Number.MAX_SAFE_INTEGER : 0;
+                container.zIndex = newLayer <= Layer.ToBasement ? 999 : 0;
             }
 
             const visible = (
@@ -153,8 +149,6 @@ class CameraManagerClass {
                 container.visible = visible;
                 continue;
             }
-
-            this.transitioningContainers.push(i);
 
             container.alpha = visible ? 0 : 1;
             // if showing the container, it needs to be visible from the start or the transition won't work
@@ -173,8 +167,19 @@ class CameraManagerClass {
             this.layerTweens.add(tween);
         }
 
-        const containerIndex = getLayerContainerIndex(Game.layer, Game.layer);
-        this.tempLayerContainer.zIndex = containerIndex === LayerContainer.Basement && newLayer <= Layer.ToBasement ? Number.MAX_SAFE_INTEGER : containerIndex;
+        let tempContainerIndex = getLayerContainerIndex(Game.layer, Game.layer);
+        if (oldLayer !== undefined) {
+            const oldIndex = getLayerContainerIndex(oldLayer, oldLayer);
+            if (oldIndex > tempContainerIndex && newLayer >= Layer.Ground) {
+                tempContainerIndex = oldIndex;
+            }
+        }
+        if (tempContainerIndex === LayerContainer.Basement && newLayer <= Layer.ToBasement) {
+            tempContainerIndex = 999 as LayerContainer;
+        }
+        tempContainerIndex += 0.1;
+        this.tempLayerContainer.zIndex = tempContainerIndex;
+
         for (const object of Game.objects) {
             object.updateLayer();
         }
@@ -182,11 +187,7 @@ class CameraManagerClass {
 
     getContainer(layer: Layer, oldContainerIndex?: LayerContainer): Container {
         const containerIndex = getLayerContainerIndex(layer, Game.layer);
-        if (
-            oldContainerIndex !== undefined
-            && containerIndex !== oldContainerIndex
-            && this.transitioningContainers.includes(containerIndex)
-        ) {
+        if (oldContainerIndex !== undefined && containerIndex !== oldContainerIndex) {
             return this.tempLayerContainer;
         } else {
             return this.layerContainers[containerIndex];

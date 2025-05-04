@@ -832,8 +832,8 @@ export const Game = new (class Game {
     backgroundTween?: Tween<{ readonly r: number, readonly g: number, readonly b: number }>;
     volumeTween?: Tween<GameSound>;
 
-    updateLayer(initial = false): void {
-        CameraManager.updateLayer(initial);
+    updateLayer(initial = false, oldLayer?: Layer): void {
+        CameraManager.updateLayer(initial, oldLayer);
 
         for (const sound of SoundManager.updatableSounds) {
             sound.updateLayer();
