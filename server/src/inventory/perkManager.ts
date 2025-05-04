@@ -178,7 +178,7 @@ export class ServerPerkManager extends PerkManager {
                     owner.bulletTargetHitCount = 0;
                     break;
                 }
-                case  PerkIds.Infected: { // evil
+                case PerkIds.Infected: { // evil
                     const immunity = PerkData[PerkIds.Immunity];
                     owner.perks.addItem(immunity);
                     owner.immunityTimeout?.kill();

@@ -150,8 +150,8 @@ export class HealingAction extends Action {
                 break;
             case HealType.Special:
                 if (this.item.effect?.restoreAmounts != undefined) {
-                    this.item.effect.restoreAmounts.forEach(heals=> {
-                        switch(heals.healType){
+                    this.item.effect.restoreAmounts.forEach(heals => {
+                        switch (heals.healType) {
                             case HealType.Health:
                                 this.player.health += heals.restoreAmount;
                                 break;
@@ -162,7 +162,7 @@ export class HealingAction extends Action {
                     });
                 }
                 if (this.item.effect?.removePerk != undefined) {
-                    this.player.perks.removeItem(Perks.fromString(this.item.effect.removePerk))
+                    this.player.perks.removeItem(Perks.fromString(this.item.effect.removePerk));
                 }
                 break;
         }

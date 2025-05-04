@@ -793,8 +793,7 @@ export class Inventory {
                         && this.owner.adrenaline >= this.owner.maxAdrenaline
                     ) || (
                         definition.healType === HealType.Special
-                        && definition.effect !== undefined
-                        && definition.effect.removePerk !== undefined
+                        && definition.effect?.removePerk !== undefined
                         && !this.owner.perks.hasItem(definition.effect?.removePerk)
                     )
                 ) return;
