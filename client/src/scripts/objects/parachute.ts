@@ -5,14 +5,13 @@ import { randomFloat, randomPointInsideCircle } from "@common/utils/random";
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Game } from "../game";
+import { MapManager } from "../managers/mapManager";
+import { ParticleManager } from "../managers/particleManager";
 import { type GameSound } from "../managers/soundManager";
+import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
-import { DebugRenderer } from "../utils/debugRenderer";
-import { MapManager } from "../managers/mapManager";
-import { ParticleManager } from "../managers/particleManager";
-import { CameraManager } from "../managers/cameraManager";
 
 export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
     private readonly image = new SuroiSprite("airdrop_parachute");
@@ -31,7 +30,8 @@ export class Parachute extends GameObject.derive(ObjectCategory.Parachute) {
 
         this.updateFromData(data, true);
 
-        CameraManager.addObjectToLayer(Layer.Ground, this.container);
+        this.layer = Layer.Ground;
+        this.updateLayer();
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Parachute], isNew = false): void {

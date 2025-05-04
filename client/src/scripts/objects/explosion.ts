@@ -30,7 +30,7 @@ export function explosion(definition: ExplosionDefinition, position: Vector, lay
     image.zIndex = ZIndexes.Explosions;
     image.setVisible(isOnSameLayer);
 
-    CameraManager.addObjectToLayer(layer, image);
+    CameraManager.getContainer(layer).addChild(image);
 
     Game.addTween({
         target: image.scale,

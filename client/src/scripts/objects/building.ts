@@ -10,7 +10,6 @@ import { randomBoolean, randomFloat, randomRotation } from "@common/utils/random
 import { Vec, type Vector } from "@common/utils/vector";
 import { Container, Graphics } from "pixi.js";
 import { Game } from "../game";
-import { CameraManager } from "../managers/cameraManager";
 import { ParticleManager } from "../managers/particleManager";
 import { SoundManager, type GameSound } from "../managers/soundManager";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, LAYER_TRANSITION_DELAY, PIXI_SCALE } from "../utils/constants";
@@ -55,6 +54,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         super(id);
 
         this.container.sortableChildren = true;
+        this.containers.push(this.ceilingContainer);
 
         this.updateFromData(data, true);
     }
@@ -162,7 +162,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 : [particleImage];
 
             this.layer = data.layer;
-            CameraManager.addObjectToLayer(this.layer, this.container, this.ceilingContainer);
             const pos = toPixiCoords(this.position);
             this.container.position.copyFrom(pos);
             this.ceilingContainer.position.copyFrom(pos);
@@ -181,7 +180,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                     this.graphics.closePath();
                     this.graphics.fill(graphics.color);
                 }
-                CameraManager.addObjectToLayer(this.layer, this.graphics);
+                this.containers.push(this.graphics);
             }
 
             for (const override of definition.visibilityOverrides ?? []) {
@@ -204,7 +203,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             if (this.maskHitbox) {
                 this.mask = new Graphics();
                 this.mask.alpha = 0;
-                CameraManager.addObjectToLayer(this.layer, this.mask);
+                this.containers.push(this.mask);
 
                 for (const hitbox of this.maskHitbox.hitboxes) {
                     const { min, max } = hitbox;
@@ -220,6 +219,8 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                         .fill(0xffffff);
                 }
             }
+
+            this.updateLayer();
 
             this.hitbox = definition.hitbox?.transform(this.position, 1, this.orientation);
             this.damageable = !!definition.hitbox;

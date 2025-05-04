@@ -1,4 +1,4 @@
-import { Layer, Layers, ZIndexes } from "../constants";
+import { Layer, Layers } from "../constants";
 import { type CommonGameObject } from "./gameObject";
 import { type Hitbox } from "./hitbox";
 import { type ObjectDefinition } from "./objectDefinitions";
@@ -147,4 +147,21 @@ export function isVisibleFromLayer(
             )
         )
     );
+}
+
+export enum LayerContainer { Basement, Ground, Upstairs }
+
+export function getLayerContainer(objectLayer: Layer, activeLayer: Layer): LayerContainer {
+    switch (objectLayer) {
+        case Layer.Basement:
+            return LayerContainer.Basement;
+        case Layer.ToBasement:
+            return activeLayer <= Layer.ToBasement ? LayerContainer.Basement : LayerContainer.Ground;
+        case Layer.Ground:
+            return LayerContainer.Ground;
+        case Layer.ToUpstairs:
+            return activeLayer >= Layer.ToUpstairs ? LayerContainer.Upstairs : LayerContainer.Ground;
+        case Layer.Upstairs:
+            return LayerContainer.Upstairs;
+    }
 }

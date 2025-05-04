@@ -228,6 +228,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         emote.container.addChild(emote.background, emote.image);
         emote.container.zIndex = ZIndexes.Emotes;
         emote.container.visible = false;
+        this.containers.push(emote.container);
 
         this.updateFistsPosition(false);
         this.updateWeapon();
@@ -535,10 +536,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             const layerChanged = layer !== this.layer;
             if (layerChanged) {
-                CameraManager.changeObjectLayer(this.layer, layer, this.container, this.emote.container);
-                if (this.teammateName) CameraManager.changeObjectLayer(this.layer, layer, this.teammateName.container);
-
                 this.layer = layer;
+                if (!this.isActivePlayer || isNew) this.updateLayer();
             }
             if (this.isActivePlayer && (layerChanged || isNew)) {
                 Game.updateLayer(isNew);
@@ -962,6 +961,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             container.zIndex = ZIndexes.DeathMarkers;
+            this.containers.push(container);
         } else if (
             this.teammateName
             && (

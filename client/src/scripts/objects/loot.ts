@@ -17,7 +17,6 @@ import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { type Player } from "./player";
-import { CameraManager } from "../managers/cameraManager";
 
 export class Loot extends GameObject.derive(ObjectCategory.Loot) {
     definition!: LootDefinition;
@@ -126,8 +125,8 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
 
         this.position = data.position;
         if (this.layer !== data.layer) {
-            CameraManager.changeObjectLayer(this.layer, data.layer, this.container);
             this.layer = data.layer;
+            this.updateLayer();
         }
         this.hitbox.position = this.position;
 

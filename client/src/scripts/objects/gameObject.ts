@@ -8,6 +8,8 @@ import { Container } from "pixi.js";
 import { Game } from "../game";
 import { SoundManager, type GameSound, type SoundOptions } from "../managers/soundManager";
 import { toPixiCoords } from "../utils/pixi";
+import { CameraManager } from "../managers/cameraManager";
+import { getLayerContainer } from "@common/utils/layer";
 
 export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> extends makeGameObjectTemplate() {
     damageable = false;
@@ -114,8 +116,22 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
 
     abstract updateFromData(data: ObjectsNetData[Cat], isNew: boolean): void;
 
-    visualLayer?: number;
-    updateLayer(): void { /* no-op */ }
+    layerContainer?: Container;
+    layerContainerIndex?: number;
+    readonly containers: Container[] = [this.container];
+    updateLayer(): void {
+        const oldContainer = this.layerContainer;
+        const newContainer = CameraManager.getContainer(this.layer, this.layerContainerIndex);
+        if (oldContainer === newContainer) return;
+
+        this.layerContainer = newContainer;
+        this.layerContainerIndex = getLayerContainer(this.layer, Game.layer);
+
+        for (const container of this.containers) {
+            oldContainer?.removeChild(container);
+            newContainer.addChild(container);
+        }
+    }
 
     abstract update(): void;
     abstract updateInterpolation(): void;

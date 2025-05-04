@@ -3,13 +3,11 @@ import { resolveNumericSpecifier, type InternalAnimation, type NumericSpecifier,
 import { Angle, EaseFunctions, Numeric } from "@common/utils/math";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { Vec, type Vector } from "@common/utils/vector";
+import { Game } from "../game";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
+import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
-import { Game } from "../game";
-import { DebugRenderer } from "../utils/debugRenderer";
-import { CameraManager } from "../managers/cameraManager";
-import { isStairLayer } from "@common/utils/layer";
 
 export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParticle) {
     readonly image = new SuroiSprite();
@@ -62,8 +60,10 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
         };
         this.container.position = startPosition;
 
-        this.layer = layer;
-        CameraManager.addObjectToLayer(layer, this.container);
+        if (layer !== this.layer) {
+            this.layer = layer;
+            this.updateLayer();
+        }
         this._lifetime = lifetime ?? definition.lifetime as number;
         this._age = age;
         this._spawnTime = Date.now() - this._age * this._lifetime;
@@ -145,17 +145,6 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
     }
 
     override updateInterpolation(): void { /* bleh */ }
-
-    override updateLayer(): void {
-        let newLayer: number;
-        if (isStairLayer(this.layer) && this.layer < Game.layer) {
-            newLayer = Game.layer;
-        } else {
-            newLayer = this.layer;
-        }
-        CameraManager.changeObjectLayer(this.visualLayer, newLayer, this.container);
-        this.visualLayer = newLayer;
-    }
 
     override destroy(): void {
         super.destroy();

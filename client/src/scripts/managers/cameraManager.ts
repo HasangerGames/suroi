@@ -1,7 +1,6 @@
 import { Layer } from "@common/constants";
 import { DEFAULT_SCOPE, Scopes } from "@common/definitions/items/scopes";
 import { EaseFunctions, Numeric } from "@common/utils/math";
-import { removeFrom } from "@common/utils/misc";
 import { randomPointInsideCircle } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { ShockwaveFilter } from "pixi-filters";
@@ -11,17 +10,19 @@ import { Game } from "../game";
 import { LAYER_TRANSITION_DELAY, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
+import { getLayerContainer as getLayerContainerIndex, LayerContainer } from "@common/utils/layer";
+import { removeFrom, type Timeout } from "@common/utils/misc";
 
 class CameraManagerClass {
     container = new Container();
 
-    layerContainers = new Map<Layer, Container>([
-        [Layer.Basement1, new Container()],
-        [Layer.ToBasement1, new Container()],
-        [Layer.Ground, new Container()],
-        [Layer.ToFloor1, new Container()],
-        [Layer.Floor1, new Container()]
-    ]);
+    // basement, ground, upstairs
+    // objects on stairs are shown on the same level as one of the floors
+    // so they don't need a separate container
+    readonly layerContainers = [new Container(), new Container(), new Container()];
+
+    // used when moving objects between layers to prevent flickering
+    readonly tempLayerContainer = new Container();
 
     layerTweens = new Set<Tween<Container>>();
 
@@ -53,10 +54,12 @@ class CameraManagerClass {
         }
         this._initialized = true;
 
-        for (const [layer, container] of this.layerContainers) {
-            container.zIndex = layer;
+        for (let i = 0, len = this.layerContainers.length; i < len; i++) {
+            const container = this.layerContainers[i];
+            container.zIndex = i;
             this.container.addChild(container);
         }
+        this.container.addChild(this.tempLayerContainer);
     }
 
     resize(animation = false): void {
@@ -107,67 +110,86 @@ class CameraManagerClass {
         this.container.position.set(-cameraPos.x, -cameraPos.y);
     }
 
+    transitioningContainers: number[] = [];
+
+    objectUpdateTimeout?: Timeout;
+
     updateLayer(initial = false): void {
         for (const tween of this.layerTweens) {
             tween.complete();
         }
         this.layerTweens.clear();
+        this.objectUpdateTimeout?.kill();
+        this.transitioningContainers.length = 0;
+
+        if (!initial) {
+            this.objectUpdateTimeout = Game.addTimeout(() => {
+                this.transitioningContainers.length = 0;
+                for (const object of Game.objects) {
+                    object.updateLayer();
+                }
+            }, LAYER_TRANSITION_DELAY);
+        }
 
         const newLayer = Game.layer;
 
-        for (const [layer, layerContainer] of this.layerContainers) {
-            let zIndex: number;
-            if (layer === Layer.Basement1) {
-                zIndex = newLayer <= Layer.ToBasement1 ? 998 : Layer.Basement1;
-            } else if (layer === Layer.ToBasement1) {
-                if (newLayer <= Layer.ToBasement1) {
-                    zIndex = 999;
-                } else if (newLayer === Layer.Ground) {
-                    zIndex = Layer.Ground + 0.1;
-                } else {
-                    zIndex = Layer.ToBasement1;
-                }
-            } else {
-                zIndex = layer;
+        for (let i = 0, len = this.layerContainers.length; i < len; i++) {
+            const container = this.layerContainers[i];
+
+            // Display bunkers above everything else when on stairs or below
+            if (i === 0) {
+                container.zIndex = newLayer <= Layer.ToBasement ? Number.MAX_SAFE_INTEGER : 0;
             }
-            layerContainer.zIndex = zIndex;
 
             const visible = (
-                (newLayer < Layer.ToBasement1 && layer <= Layer.ToBasement1)
-                || newLayer === Layer.ToBasement1
-                || (
-                    newLayer > Layer.ToBasement1
-                    && layer >= Layer.ToBasement1
-                    && (
-                        newLayer !== Layer.Ground
-                        || !Game.hideSecondFloor
-                        || layer !== Layer.Floor1
-                    )
-                )
+                (i === 0 && newLayer <= Layer.ToBasement)
+                || (i === 1 && newLayer >= Layer.ToBasement)
+                || (i === 2 && newLayer >= (Game.hideSecondFloor ? Layer.ToUpstairs : Layer.ToBasement))
             );
 
-            if (visible === layerContainer.visible) continue;
+            if (visible === container.visible) continue;
 
             if (initial) {
-                layerContainer.visible = visible;
+                container.visible = visible;
                 continue;
             }
 
-            layerContainer.alpha = visible ? 0 : 1;
+            this.transitioningContainers.push(i);
+
+            container.alpha = visible ? 0 : 1;
             // if showing the container, it needs to be visible from the start or the transition won't work
-            if (visible) layerContainer.visible = true;
+            if (visible) container.visible = true;
 
             const tween = Game.addTween({
-                target: layerContainer,
+                target: container,
                 to: { alpha: visible ? 1 : 0 },
                 duration: LAYER_TRANSITION_DELAY,
                 ease: EaseFunctions.sineOut,
                 onComplete: () => {
                     this.layerTweens.delete(tween);
-                    layerContainer.visible = visible;
+                    container.visible = visible;
                 }
             });
             this.layerTweens.add(tween);
+        }
+
+        const containerIndex = getLayerContainerIndex(Game.layer, Game.layer);
+        this.tempLayerContainer.zIndex = containerIndex === LayerContainer.Basement && newLayer <= Layer.ToBasement ? Number.MAX_SAFE_INTEGER : containerIndex;
+        for (const object of Game.objects) {
+            object.updateLayer();
+        }
+    }
+
+    getContainer(layer: Layer, oldContainerIndex?: LayerContainer): Container {
+        const containerIndex = getLayerContainerIndex(layer, Game.layer);
+        if (
+            oldContainerIndex !== undefined
+            && containerIndex !== oldContainerIndex
+            && this.transitioningContainers.includes(containerIndex)
+        ) {
+            return this.tempLayerContainer;
+        } else {
+            return this.layerContainers[containerIndex];
         }
     }
 
@@ -184,49 +206,30 @@ class CameraManagerClass {
         this.shockwaves.add(new Shockwave(duration, position, amplitude, wavelength, speed, layer));
     }
 
-    getLayer(layer: Layer): Container {
-        const container = this.layerContainers.get(layer);
-        if (!container) {
-            throw new Error(`No container found for layer: ${layer}`);
-        }
-        return container;
-    }
-
     addObject(...objects: Container[]): void {
         this.container.addChild(...objects);
     }
 
-    addObjectToLayer(layer: Layer, ...objects: Container[]): void {
-        this.getLayer(layer).addChild(...objects);
-    }
-
-    removeObjectFromLayer(layer: Layer, ...objects: Container[]): void {
-        this.getLayer(layer).removeChild(...objects);
-    }
-
-    changeObjectLayer(oldLayer: Layer | undefined, newLayer: Layer, ...objects: Container[]): void {
-        if (oldLayer !== undefined) this.removeObjectFromLayer(oldLayer, ...objects);
-        this.addObjectToLayer(newLayer, ...objects);
-    }
-
     addFilter(layer: Layer, filter: Filter): void {
-        (this.getLayer(layer).filters as Filter[]).push(filter);
+        (this.getContainer(layer).filters as Filter[]).push(filter);
     }
 
     removeFilter(layer: Layer, filter: Filter): void {
-        removeFrom(this.getLayer(layer).filters as Filter[], filter);
+        removeFrom(this.getContainer(layer).filters as Filter[], filter);
     }
 
     reset(): void {
-        const layerContainers = Array.from(this.layerContainers.values());
-        for (const container of layerContainers) {
+        const containers = this.layerContainers.concat(this.tempLayerContainer);
+        for (const container of containers) {
             container.removeChildren();
         }
+
         // remove all children except layer containers
         for (const child of this.container.children) {
-            if (layerContainers.includes(child)) continue;
+            if (containers.includes(child)) continue;
             this.container.removeChild(child);
         }
+
         this.zoom = Scopes.definitions[0].zoomLevel;
     }
 }
@@ -252,7 +255,7 @@ export class Shockwave {
         this.anchorContainer = new SuroiSprite();
         this.wavelength = wavelength;
 
-        CameraManager.addObjectToLayer(layer, this.anchorContainer);
+        CameraManager.getContainer(layer).addChild(this.anchorContainer);
         this.anchorContainer.setVPos(position);
 
         this.filter = new ShockwaveFilter();

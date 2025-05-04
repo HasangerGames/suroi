@@ -645,7 +645,7 @@ const container = (
 };
 
 const riverHut = (id: number, obstacles: readonly BuildingObstacle[]): BuildingDefinition => {
-    const bridgeFloor1 = 31.5;
+    const bridgeUpstairs = 31.5;
     return {
         idString: `river_hut_${id}`,
         name: "River Hut",
@@ -662,7 +662,7 @@ const riverHut = (id: number, obstacles: readonly BuildingObstacle[]): BuildingD
             },
             {
                 key: "river_hut_bridge_floor_2",
-                position: Vec.create(bridgeFloor1, -5),
+                position: Vec.create(bridgeUpstairs, -5),
                 scale: Vec.create(2, 2)
             },
             {
@@ -683,7 +683,7 @@ const riverHut = (id: number, obstacles: readonly BuildingObstacle[]): BuildingD
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(32.5, 39.25),
                     RectangleHitbox.fromRect(10, 13, Vec.create(20.4, -10.5)),
-                    RectangleHitbox.fromRect(13, 46, Vec.create(bridgeFloor1, -5))
+                    RectangleHitbox.fromRect(13, 46, Vec.create(bridgeUpstairs, -5))
                 )
             },
             {
@@ -5253,10 +5253,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec.create(0, 20)),
         ceilingHitbox: RectangleHitbox.fromRect(10, 15, Vec.create(0, 20)),
         obstacles: [
-            // { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(7.5, 9.8) },
-            // { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(10, 23) },
-            // { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-10, 16) },
-            // { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-5, 37) }
+            { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(7.5, 9.8) },
+            { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(10, 23) },
+            { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-10, 16) },
+            { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-5, 37) }
         ],
         bulletMask: RectangleHitbox.fromRect(11, 30, Vec.create(0, 30)),
         subBuildings: [

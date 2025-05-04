@@ -1,23 +1,23 @@
 import { Layer, ObjectCategory, ZIndexes } from "@common/constants";
 import { BaseBullet, type BulletOptions } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Geometry, Numeric, resolveStairInteraction } from "@common/utils/math";
 import { random, randomFloat, randomRotation } from "@common/utils/random";
 import { Vec } from "@common/utils/vector";
 import { colord } from "colord";
 import { BloomFilter } from "pixi-filters";
-import { Color } from "pixi.js";
+import { Color, Container } from "pixi.js";
+import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
+import { CameraManager } from "../managers/cameraManager";
+import { ParticleManager } from "../managers/particleManager";
+import { SoundManager } from "../managers/soundManager";
 import { PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import type { Building } from "./building";
 import { type Obstacle } from "./obstacle";
 import { type Player } from "./player";
-import { GameConsole } from "../console/gameConsole";
-import { CameraManager } from "../managers/cameraManager";
-import { SoundManager } from "../managers/soundManager";
-import { ParticleManager } from "../managers/particleManager";
 
 const white = 0xFFFFFF;
 
@@ -81,7 +81,7 @@ export class Bullet extends BaseBullet {
         // don't play bullet whiz if bullet originated within whiz hitbox
         this._playBulletWhiz = !Game.activePlayer?.bulletWhizHitbox.isPointInside(this.initialPosition);
 
-        CameraManager.addObjectToLayer(this.layer, this._image);
+        this.updateLayer();
     }
 
     update(delta: number): void {
@@ -97,8 +97,8 @@ export class Bullet extends BaseBullet {
                         object.layer,
                         this.position
                     );
-                    CameraManager.changeObjectLayer(this.layer, newLayer, this._image);
                     this.layer = newLayer;
+                    this.updateLayer();
                     continue;
                 }
 
@@ -166,11 +166,11 @@ export class Bullet extends BaseBullet {
 
         if (
             (
-                this.layer === Layer.Floor1
+                this.layer === Layer.Upstairs
                 && Game.layer === Layer.Ground
             )
             || (
-                this.initialLayer === Layer.Basement1
+                this.initialLayer === Layer.Basement
                 && this.layer !== this.initialLayer
                 && Game.layer === Layer.Ground
             )
@@ -223,6 +223,13 @@ export class Bullet extends BaseBullet {
         if (this._trailTicks <= 0 && this.dead) {
             this.destroy();
         }
+    }
+
+    layerContainer?: Container;
+
+    updateLayer(): void {
+        this.layerContainer?.removeChild(this._image);
+        (this.layerContainer = CameraManager.getContainer(this.layer)).addChild(this._image);
     }
 
     destroy(): void {

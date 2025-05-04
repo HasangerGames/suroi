@@ -842,7 +842,7 @@ export const Game = new (class Game {
 
         const layer = this.layer;
 
-        const basement = layer === Layer.Basement1;
+        const basement = layer === Layer.Basement;
         MapManager.terrainGraphics.visible = !basement;
 
         const currentColor = this.pixi.renderer.background.color;
@@ -870,10 +870,10 @@ export const Game = new (class Game {
             let volume: number;
 
             // stairway leading down to bunker—half volume
-            if (layer === Layer.ToBasement1) volume = 0.5;
+            if (layer === Layer.ToBasement) volume = 0.5;
 
             // below ground—very muted
-            else if (layer <= Layer.Basement1) volume = 0.15;
+            else if (layer <= Layer.Basement) volume = 0.15;
 
             // above ground—play as normal
             else /* if (layer >= Layer.Ground) */ volume = 1;

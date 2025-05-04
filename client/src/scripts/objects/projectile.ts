@@ -1,21 +1,20 @@
 import { GameConstants, ObjectCategory, ZIndexes } from "@common/constants";
 import { type ThrowableDefinition } from "@common/definitions/items/throwables";
-import { type ObjectsNetData } from "@common/utils/objectsSerializations";
-import { Game } from "../game";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { GameObject } from "./gameObject";
-import { DebugRenderer } from "../utils/debugRenderer";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, TEAMMATE_COLORS } from "../utils/constants";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Numeric } from "@common/utils/math";
-import { Vec, type Vector } from "@common/utils/vector";
-import { FloorTypes } from "@common/utils/terrain";
+import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomPointInsideCircle } from "@common/utils/random";
-import { SoundManager, type GameSound } from "../managers/soundManager";
+import { FloorTypes } from "@common/utils/terrain";
+import { Vec, type Vector } from "@common/utils/vector";
 import { GameConsole } from "../console/gameConsole";
+import { Game } from "../game";
 import { MapManager } from "../managers/mapManager";
 import { ParticleManager } from "../managers/particleManager";
-import { CameraManager } from "../managers/cameraManager";
+import { SoundManager, type GameSound } from "../managers/soundManager";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, TEAMMATE_COLORS } from "../utils/constants";
+import { DebugRenderer } from "../utils/debugRenderer";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { GameObject } from "./gameObject";
 
 export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
     definition!: ThrowableDefinition;
@@ -32,14 +31,15 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
     throwerTeamID?: number;
     tintIndex?: number;
 
-    onFloor = false;
+    onFloor?: boolean;
     onWater = false;
 
     constructor(id: number, data: ObjectsNetData[ObjectCategory.Projectile]) {
         super(id);
 
-        this.updateFromData(data, true);
         this.container.addChild(this.image);
+
+        this.updateFromData(data, true);
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Projectile], isNew = false): void {
@@ -94,8 +94,8 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
         }
 
         if (this.layer !== data.layer) {
-            CameraManager.changeObjectLayer(this.layer, data.layer, this.container);
             this.layer = data.layer;
+            this.updateLayer();
         }
 
         const onFloorOld = this.onFloor;

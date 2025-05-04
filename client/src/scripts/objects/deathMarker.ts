@@ -4,13 +4,12 @@ import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Text, type Container } from "pixi.js";
 import { Game } from "../game";
+import { UIManager } from "../managers/uiManager";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
+import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
-import { DebugRenderer } from "../utils/debugRenderer";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
-import { UIManager } from "../managers/uiManager";
-import { CameraManager } from "../managers/cameraManager";
 
 export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
     playerName!: string;
@@ -55,7 +54,7 @@ export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
         this.container.zIndex = ZIndexes.DeathMarkers;
 
         this.layer = data.layer;
-        CameraManager.addObjectToLayer(this.layer, this.container);
+        this.updateLayer();
 
         const player = Game.playerNames.get(data.playerID);
 

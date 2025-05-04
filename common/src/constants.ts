@@ -126,11 +126,11 @@ export enum ZIndexes {
 export const Z_INDEX_COUNT = Object.keys(ZIndexes).length / 2; // account for double indexing
 
 export enum Layer {
-    Basement1 = -2,
-    ToBasement1 = -1,
+    Basement = -2,
+    ToBasement = -1,
     Ground = 0,
-    ToFloor1 = 1,
-    Floor1 = 2
+    ToUpstairs = 1,
+    Upstairs = 2
 }
 
 export const enum Layers {

@@ -7,6 +7,7 @@ import { Game } from "../game";
 import * as PixiSound from "@pixi/sound";
 import type { AudioSpritesheetImporter } from "../../../vite/plugins/audio-spritesheet-plugin";
 import { GameConsole } from "../console/gameConsole";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
 
 export interface SoundOptions {
     position?: Vector
@@ -118,6 +119,11 @@ export class GameSound {
 
     updateLayer(): void {
         if (!this.instance) return;
+
+        if (this.ambient) {
+            this.volume = adjacentOrEqualLayer(this.layer, Game.layer) ? 1 : 0;
+            return;
+        }
 
         // muffle the sound if it's 2 or more layers away
         if (Math.abs(Game.layer - this.layer) >= 2 && !this.noMuffledEffect) {
