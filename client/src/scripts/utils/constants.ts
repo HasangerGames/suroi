@@ -17,6 +17,7 @@ export const HITBOX_COLORS = {
     buildingZoomCeiling: new Color("purple"),
     buildingScopeCeiling: new Color("cyan"),
     buildingVisOverride: new Color("teal"),
+    buildingCeilingRaycast: new Color("darkslateblue"),
     bulletMask: new Color("fuchsia"), // me when this is the same as magenta
     landHitbox: new Color("orangered"),
     loot: new Color("magenta"),

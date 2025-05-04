@@ -59,7 +59,11 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         this.updateFromData(data, true);
     }
 
+    ceilingRaycastLines?: Array<[Vector, Vector]>;
+
     toggleCeiling(): void {
+        if (this.ceilingRaycastLines) this.ceilingRaycastLines.length = 0;
+
         if (this.ceilingHitbox === undefined || this.ceilingTween || this.dead) return;
         const player = Game.activePlayer;
         if (player === undefined) return;
@@ -67,13 +71,18 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         let visible = true;
 
         if (this.ceilingHitbox.collidesWith(player.hitbox)) {
-            // If the player is inside the building, we know the ceiling should be hidden
+            // If the player is inside the ceiling hitbox, we know the ceiling should be hidden
             visible = false;
         } else {
             // Otherwise, we do some raycasting to check
             const visionSize = GameConstants.player.buildingVisionSize;
-
-            const playerHitbox = new CircleHitbox(visionSize, player.position);
+            const rayStart = player.position;
+            const playerHitbox = new CircleHitbox(visionSize, rayStart);
+            const halfPi = Math.PI / 2;
+            const potentials = [
+                ...Game.objects.getCategory(ObjectCategory.Obstacle),
+                ...Game.objects.getCategory(ObjectCategory.Building)
+            ];
 
             const hitboxes = this.ceilingHitbox instanceof GroupHitbox ? this.ceilingHitbox.hitboxes : [this.ceilingHitbox];
             for (const hitbox of hitboxes) {
@@ -85,47 +94,42 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
                 // find the direction to cast rays
                 const direction = playerHitbox.getIntersection(hitbox)?.dir;
-                if (direction) {
-                    const angle = Math.atan2(direction.y, direction.x);
+                if (!direction) {
+                    visible = true;
+                    continue;
+                }
+
+                const angle = Math.atan2(direction.y, direction.x);
+
+                let raysPenetrated = 0;
+                for (let i = angle - halfPi; i < angle + halfPi; i += 0.1) {
+                    const rayEnd = Vec.add(rayStart, Vec.fromPolar(i, visionSize));
+                    const rayCeilingIntersection = this.ceilingHitbox.intersectsLine(rayStart, rayEnd)?.point;
+
+                    if (DEBUG_CLIENT) {
+                        (this.ceilingRaycastLines ??= []).push([rayStart, rayCeilingIntersection ?? rayEnd]);
+                    }
+
+                    if (!rayCeilingIntersection) continue;
 
                     let collided = false;
+                    for (const { damageable, dead, definition, layer, hitbox } of potentials) {
+                        if (
+                            !damageable
+                            || dead
+                            || ("isWindow" in definition && definition.isWindow)
+                            || !equivLayer({ layer, definition }, player)
+                            || !hitbox?.intersectsLine(rayStart, rayCeilingIntersection)
+                        ) continue;
 
-                    const halfPi = Math.PI / 2;
-                    for (let i = angle - halfPi; i < angle + halfPi; i += 0.1) {
-                        collided = false;
-
-                        const end = this.ceilingHitbox.intersectsLine(
-                            player.position,
-                            Vec.add(
-                                player.position,
-                                Vec.fromPolar(i, visionSize)
-                            )
-                        )?.point;
-
-                        if (!end) {
-                            collided = true;
-                            continue;
-                        }
-
-                        if (!(
-                            collided
-                                ||= [
-                                    ...Game.objects.getCategory(ObjectCategory.Obstacle),
-                                    ...Game.objects.getCategory(ObjectCategory.Building)
-                                ].some(
-                                    ({ damageable, dead, definition, hitbox, layer }) =>
-                                        damageable
-                                        && !dead
-                                        && (!("isWindow" in definition) || !definition.isWindow)
-                                        && equivLayer({ layer, definition }, player)
-                                        && hitbox?.intersectsLine(player.position, end)
-                                )
-                        )) break;
+                        collided = true;
+                        break;
                     }
-                    visible = collided;
-                } else {
-                    visible = true;
+                    if (!collided) raysPenetrated++;
+
+                    if (raysPenetrated > 1) break;
                 }
+                visible = raysPenetrated <= 1;
 
                 if (!visible) break;
             }
@@ -381,6 +385,15 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 collider.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.buildingVisOverride,
                 layer === Game.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
+            );
+        }
+
+        for (const [start, end] of this.ceilingRaycastLines ?? []) {
+            DebugRenderer.addLine(
+                start,
+                end,
+                HITBOX_COLORS.buildingCeilingRaycast,
+                alpha
             );
         }
     }
