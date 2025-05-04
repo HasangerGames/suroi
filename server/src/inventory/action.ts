@@ -149,7 +149,7 @@ export class HealingAction extends Action {
                 this.player.adrenaline += this.item.restoreAmount;
                 break;
             case HealType.Special:
-                if (this.item.effect?.restoreAmounts != undefined) {
+                if (this.item.effect?.restoreAmounts !== undefined) {
                     this.item.effect.restoreAmounts.forEach(heals => {
                         switch (heals.healType) {
                             case HealType.Health:
@@ -161,7 +161,7 @@ export class HealingAction extends Action {
                         }
                     });
                 }
-                if (this.item.effect?.removePerk != undefined) {
+                if (this.item.effect?.removePerk !== undefined) {
                     this.player.perks.removeItem(Perks.fromString(this.item.effect.removePerk));
                 }
                 break;
