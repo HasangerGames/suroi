@@ -42,11 +42,5 @@ export const Decals = new ObjectDefinitions<DecalDefinition>([
         name: "Seed Explosion Decal",
         defType: DefinitionType.Decal,
         rotationMode: RotationMode.Full
-    },
-    {
-        idString: "seed_explosion_decal_plumpkin_launcher",
-        name: "Infected Seed Explosion Decal",
-        defType: DefinitionType.Decal,
-        rotationMode: RotationMode.Full
     }
 ]);

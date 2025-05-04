@@ -322,57 +322,5 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
                 rightFist: Vec.create(4, 2.15)
             }
         }
-    },
-    {
-        idString: "proj_seed_plumpkin_launcher",
-        name: "Seed",
-        defType: DefinitionType.Throwable,
-        itemType: ItemType.Throwable,
-        tier: Tier.S,
-        cookable: true,
-        devItem: true,
-        noSwap: true,
-        fuseTime: 1500,
-        cookTime: 0,
-        throwTime: 0,
-        speedMultiplier: 1,
-        cookSpeedMultiplier: 0.7,
-        impactDamage: 1,
-        killfeedFrame: "plumpkin_launcher",
-        obstacleMultiplier: 20,
-        hitboxRadius: 1,
-        fireDelay: 250,
-        physics: {
-            maxThrowDistance: 128,
-            initialZVelocity: 4,
-            initialAngularVelocity: 0,
-            initialHeight: 0.5,
-            noSpin: true,
-            drag: {
-                air: Infinity,
-                ground: Infinity,
-                water: Infinity
-            }
-        },
-        image: {
-            position: Vec.create(60, 43),
-            angle: 60,
-            zIndex: 5,
-            anchor: Vec.create(0.5, 0.68)
-        },
-        detonation: {
-            explosion: "seed_explosion_plumpkin_launcher"
-        },
-        animation: {
-            liveImage: "proj_seed_plumpkin_launcher",
-            cook: {
-                leftFist: Vec.create(2.5, 0),
-                rightFist: Vec.create(-0.5, 2.15)
-            },
-            throw: {
-                leftFist: Vec.create(1.9, -1.75),
-                rightFist: Vec.create(4, 2.15)
-            }
-        }
     }
 ]);
