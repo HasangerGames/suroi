@@ -9,7 +9,7 @@ export const Config = {
 
     map: "normal",
 
-    spawn: { mode: SpawnMode.Normal },
+    spawn: { mode: SpawnMode.Default },
 
     teamSize: TeamSize.Solo,
 
