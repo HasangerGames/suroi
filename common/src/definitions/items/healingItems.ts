@@ -6,9 +6,15 @@ export interface HealingItemDefinition extends ItemDefinition {
     readonly healType: HealType
     readonly restoreAmount: number
     readonly useTime: number
-    readonly removePerk?: ReferenceTo<PerkDefinition>
-    readonly restoreAmounts?: Record<string, number>
+    readonly effect?: {
+        readonly removePerk: PerkIds
+        readonly restoreAmounts?: Heal[]
+    }
     readonly hideUnlessPresent?: boolean
+}
+interface Heal {
+    readonly healType: HealType
+    readonly restoreAmount: number
 }
 export enum HealType {
     Health,
@@ -53,17 +59,19 @@ export const HealingItems = new ObjectDefinitions<HealingItemDefinition>([
     {
         idString: "vaccine_syringe",
         name: "Vaccine Syringe",
-        hideUnlessPresent: true,
         itemType: ItemType.Healing,
         healType: HealType.Special,
-        particleFrame: "vaccine",
         restoreAmount: 0,
         useTime: 2,
-        removePerk: PerkIds.Infected,
-        restoreAmount: 0,
-        restoreAmounts: {
-            adrenaline: 50
-        }
+        effect: {
+            removePerk: PerkIds.Infected,
+            restoreAmounts: [
+                {
+                healType: HealType.Adrenaline,
+                restoreAmount: 50
+                }
+            ]
+        },
+        hideUnlessPresent: true
     }
-    
 ]);
