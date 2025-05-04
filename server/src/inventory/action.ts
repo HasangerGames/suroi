@@ -1,7 +1,7 @@
 import { AnimationType, GameConstants, PlayerActions } from "@common/constants";
 import { HealType, type HealingItemDefinition } from "@common/definitions/items/healingItems";
 import { Loots } from "@common/definitions/loots";
-import { PerkIds } from "@common/definitions/items/perks";
+import { PerkData, PerkIds, Perks } from "@common/definitions/items/perks";
 import { Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
@@ -75,7 +75,7 @@ export class ReloadAction extends Action {
         const fullReload = item.definition.reloadFullOnEmpty && item.ammo <= 0;
         super(
             player,
-            fullReload ? item.definition.fullReloadTime : item.definition.reloadTime
+            (fullReload ? item.definition.fullReloadTime : item.definition.reloadTime) / (player.hasPerk(PerkIds.CombatExpert) ? PerkData[PerkIds.CombatExpert].reloadMod : 1)
         );
         this.fullReload = !!fullReload;
     }
@@ -142,6 +142,8 @@ export class HealingAction extends Action {
 
         this.player.inventory.items.decrementItem(this.item.idString);
 
+        const effect = this.item.effect;
+
         switch (this.item.healType) {
             case HealType.Health:
                 this.player.health += this.item.restoreAmount;
@@ -149,6 +151,20 @@ export class HealingAction extends Action {
             case HealType.Adrenaline:
                 this.player.adrenaline += this.item.restoreAmount;
                 break;
+            case HealType.Special:
+                if (effect === undefined) return; // ???
+                this.player.adrenaline += effect.adrenaline;
+                if (effect?.removePerk) {
+                    this.player.perks.removeItem(Perks.fromString(effect.removePerk));
+                    if (effect.removePerk === PerkIds.Infected) {
+                        const immunity = PerkData[PerkIds.Immunity];
+                        this.player.perks.addItem(immunity);
+                        this.player.immunityTimeout?.kill();
+                        this.player.immunityTimeout = this.player.game.addTimeout(() => this.player.perks.removeItem(immunity), immunity.duration);
+                    }
+                    this.player.setDirty();
+                }
+                // may implement more for future uses
         }
         this.player.dirty.items = true;
     }

@@ -2,6 +2,7 @@ import { Explosions, type ExplosionDefinition } from "../definitions/explosions"
 import { Guns, type GunDefinition } from "../definitions/items/guns";
 import { Melees, type MeleeDefinition } from "../definitions/items/melees";
 import { Throwables, type ThrowableDefinition } from "../definitions/items/throwables";
+import { DefinitionType } from "../utils/objectDefinitions";
 import { DataSplitTypes, Packet, PacketType } from "./packet";
 
 export enum DamageSources {
@@ -87,8 +88,8 @@ export const KillPacket = new Packet<KillData>(PacketType.Kill, {
         }
 
         if (
-            data.weaponUsed
-            && "killstreak" in data.weaponUsed
+            data.weaponUsed !== undefined
+            && data.weaponUsed.defType !== DefinitionType.Explosion
             && data.weaponUsed.killstreak
         ) {
             stream.writeUint8(data.killstreak ?? 0);

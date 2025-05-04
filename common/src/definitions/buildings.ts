@@ -1,7 +1,7 @@
 import { Layers, ZIndexes, FlyoverPref, MapObjectSpawnMode, RotationMode } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
-import { NullString, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
+import { DefinitionType, NullString, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { pickRandomInArray, randomBoolean } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
@@ -49,6 +49,8 @@ export interface BuildingImageDefinition {
 }
 
 export interface BuildingDefinition extends ObjectDefinition {
+    readonly defType: DefinitionType.Building
+
     readonly noCollisions?: boolean
     readonly noBulletCollision?: boolean
     readonly reflectBullets?: boolean
@@ -174,6 +176,26 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly rotationMode?: RotationMode.Limited | RotationMode.Binary | RotationMode.None
 }
 
+const randomBigTent = {
+    tent_big_1: 1,
+    tent_big_2: 1,
+    tent_big_3: 1,
+    tent_big_4: 1
+};
+
+const randomTent = {
+    tent_1: 1,
+    tent_2: 1,
+    tent_3: 1,
+    tent_4: 1,
+    tent_5: 0.1
+};
+
+const randomStump = {
+    stump: 1,
+    hatchet_stump: 0.1
+};
+
 const randomGift = {
     red_gift: 1,
     green_gift: 1,
@@ -284,6 +306,7 @@ const blueHouseVaultLayout = (
 ): BuildingDefinition => ({
     idString: `blue_house_vault_layout_${id}`,
     name: "Blue House Vault Layout",
+    defType: DefinitionType.Building,
     spawnHitbox: RectangleHitbox.fromRect(40, 35, Vec.create(18.4, 18)),
     floorImages: [{
         key: subBuildings ? "blue_house_floor_2_2_special" : "blue_house_floor_2_2",
@@ -298,6 +321,7 @@ const blueHouseVaultLayout = (
 const warehouseLayout = (id: number, obstacles: readonly BuildingObstacle[]): BuildingDefinition => ({
     idString: `warehouse_layout_${id}`,
     name: "Warehouse Layout",
+    defType: DefinitionType.Building,
     spawnHitbox: RectangleHitbox.fromRect(63.07, 114),
     obstacles
 });
@@ -569,6 +593,7 @@ const container = (
     return {
         idString: `container_${id}`,
         name: `Container ${id}`,
+        defType: DefinitionType.Building,
         hitbox,
         reflectBullets: true,
         material: "metal_heavy",
@@ -624,6 +649,7 @@ const riverHut = (id: number, obstacles: readonly BuildingObstacle[]): BuildingD
     return {
         idString: `river_hut_${id}`,
         name: "River Hut",
+        defType: DefinitionType.Building,
         wallsToDestroy: 3,
         ceilingCollapseParticle: "river_hut_ceiling_particle",
         spawnMode: MapObjectSpawnMode.Beach, // TODO: river bank spawn mode support
@@ -686,6 +712,7 @@ const tent = (
     return {
         idString: `tent_${id}`,
         name: `Tent ${id}`,
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(31, 23),
         ceilingHitbox: RectangleHitbox.fromRect(26, 16),
         floorImages: [{
@@ -739,6 +766,7 @@ const hayShed = (
 ): BuildingDefinition => ({
     idString: `hay_shed_${id}`,
     name: `Hay Shed ${id}`,
+    defType: DefinitionType.Building,
     spawnHitbox: RectangleHitbox.fromRect(47, 32),
     ceilingHitbox: RectangleHitbox.fromRect(33.5, 24.5, Vec.create(-1.2, -0.5)),
     floorImages: [{
@@ -775,6 +803,7 @@ const bigTent = (
     return {
         idString: `tent_big_${id}`,
         name: `Big Tent ${id}`,
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(58, 35),
         ceilingHitbox: RectangleHitbox.fromRect(44, 27),
         floorImages: [{
@@ -826,6 +855,7 @@ const bigTent = (
 const tugboat = (color: string, mainLoot: string): BuildingDefinition => ({
     idString: `tugboat_${color}`,
     name: "Tugboat",
+    defType: DefinitionType.Building,
     reflectBullets: true,
     material: "metal_heavy",
     particle: "metal_particle",
@@ -938,6 +968,7 @@ const tugboat = (color: string, mainLoot: string): BuildingDefinition => ({
 const port_warehouse = (color: string, tint: number): BuildingDefinition => ({
     idString: `port_warehouse_${color}`,
     name: "Port Warehouse",
+    defType: DefinitionType.Building,
     reflectBullets: true,
     material: "metal_heavy",
     particle: "metal_particle",
@@ -1057,6 +1088,7 @@ const port_warehouse = (color: string, tint: number): BuildingDefinition => ({
 const blueHouse = (idString: string, subBuildings: BuildingDefinition["subBuildings"] = []): BuildingDefinition => ({
     idString,
     name: "Blue House",
+    defType: DefinitionType.Building,
     hitbox: new GroupHitbox(
         // Left.
         RectangleHitbox.fromRect(2, 11, Vec.create(-34.4, 18.25)),
@@ -1194,6 +1226,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "porta_potty",
         name: "Porta Potty",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(20, 32),
         ceilingHitbox: RectangleHitbox.fromRect(14, 18),
         floorImages: [
@@ -1260,6 +1293,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "outhouse",
         name: "Outhouse",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(19, 29),
         ceilingHitbox: RectangleHitbox.fromRect(14.94, 20, Vec.create(0, -2.02)),
         floorImages: [
@@ -1299,6 +1333,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "firework_warehouse",
         name: "Firework Warehouse",
+        defType: DefinitionType.Building,
         material: "stone",
         particle: "wall_particle",
         hitbox: new GroupHitbox(
@@ -1367,6 +1402,82 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: fireworkWarehouseObstacle, position: Vec.create(-26.8, -17) },
             { idString: { box: 9, grenade_box: 1 }, position: Vec.create(18.8, 14) },
             { idString: "confetti_grenade_box", position: Vec.create(20, 19) },
+            { idString: "hazel_crate", position: Vec.create(0, 0) }
+        ]
+    },
+
+    {
+        idString: "mini_warehouse",
+        name: "Mini Warehouse",
+        defType: DefinitionType.Building,
+        material: "stone",
+        particle: "wall_particle",
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(27.7, 1.75, Vec.create(-19, -23)),
+            RectangleHitbox.fromRect(27.7, 1.75, Vec.create(19, -23)),
+            RectangleHitbox.fromRect(27.7, 1.75, Vec.create(-19, 23)),
+            RectangleHitbox.fromRect(27.7, 1.75, Vec.create(19, 23)),
+            RectangleHitbox.fromRect(1.75, 18, Vec.create(32.3, 15)),
+            RectangleHitbox.fromRect(1.75, 18, Vec.create(32.3, -15)),
+            RectangleHitbox.fromRect(1.75, 18, Vec.create(-32.3, 15)),
+            RectangleHitbox.fromRect(1.75, 18, Vec.create(-32.3, -15))
+        ),
+        spawnHitbox: RectangleHitbox.fromRect(110, 70),
+        ceilingHitbox: RectangleHitbox.fromRect(65, 48),
+        floorImages: [
+            {
+                key: "mini_warehouse_floor_1_top",
+                position: Vec.create(-17.4, -14)
+            },
+            {
+                key: "mini_warehouse_floor_1_bottom",
+                position: Vec.create(-17.4, 14)
+            },
+            {
+                key: "mini_warehouse_floor_2_top",
+                position: Vec.create(17.4, -14)
+            },
+            {
+                key: "mini_warehouse_floor_2_bottom",
+                position: Vec.create(17.4, 14)
+            }
+        ],
+        ceilingImages: [
+            {
+                key: "mini_warehouse_ceiling_1",
+                position: Vec.create(-16.5, 0),
+                scale: Vec.create(2, 2)
+            },
+
+            {
+                key: "mini_warehouse_ceiling_2",
+                position: Vec.create(17, 0),
+                scale: Vec.create(2, 2)
+            }
+        ],
+        floors: [
+            {
+                type: FloorNames.Stone,
+                hitbox: RectangleHitbox.fromRect(65, 48, Vec.create(0, 0))
+            }
+        ],
+        obstacles: [
+            { idString: randomBarrel, position: Vec.create(-27, 18) },
+            { idString: randomBarrel, position: Vec.create(27, -18) },
+            { idString: "window", position: Vec.create(32.4, 0), rotation: 2 },
+            { idString: "window", position: Vec.create(-32.4, 0), rotation: 2 },
+            { idString: "door", position: Vec.create(-0.47, 23), rotation: 2 },
+            { idString: "door", position: Vec.create(0.47, -23), rotation: 0 },
+            { idString: "box", position: Vec.create(29, -12) },
+            { idString: "baby_plumpkin", position: Vec.create(-29, 12) },
+            { idString: "grenade_box", position: Vec.create(-27, 7) },
+            { idString: "baby_plumpkin", position: Vec.create(-22, 9) },
+            { idString: "propane_tank", position: Vec.create(-17, 17) },
+            { idString: "baby_plumpkin", position: Vec.create(17, -17) },
+            { idString: "ammo_crate", position: Vec.create(26.8, 17) },
+            { idString: "regular_crate", position: Vec.create(-26, -17) },
+            { idString: { box: 9, grenade_box: 1 }, position: Vec.create(18.8, 14) },
+            { idString: "grenade_box", position: Vec.create(20, 19) },
             { idString: "hazel_crate", position: Vec.create(0, 0) }
         ]
     },
@@ -1486,6 +1597,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "warehouse",
         name: "Warehouse",
+        defType: DefinitionType.Building,
         reflectBullets: true,
         material: "metal_heavy",
         particle: "metal_particle",
@@ -1544,6 +1656,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "refinery",
         name: "Refinery",
+        defType: DefinitionType.Building,
         material: "stone",
         particle: "rock_particle",
         particleVariations: 2,
@@ -1904,6 +2017,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "red_house",
         name: "Red House",
+        defType: DefinitionType.Building,
         material: "stone",
         particle: "wall_particle",
         hitbox: new GroupHitbox(
@@ -2091,6 +2205,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "red_house_v2",
         name: "Red House Variation 2",
+        defType: DefinitionType.Building,
         material: "stone",
         particle: "wall_particle",
         hitbox: new GroupHitbox(
@@ -2200,6 +2315,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "green_house",
         name: "Green House",
+        defType: DefinitionType.Building,
         material: "stone",
         particle: "wall_particle",
         hitbox: new GroupHitbox(
@@ -2378,6 +2494,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "blue_house_vault",
         name: "Blue House Vault",
+        defType: DefinitionType.Building,
         reflectBullets: true,
         material: "metal_heavy",
         particle: "metal_particle",
@@ -2398,6 +2515,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "blue_house_basement",
         name: "Blue House Basement",
+        defType: DefinitionType.Building,
         reflectBullets: true,
         material: "metal_heavy",
         particle: "metal_particle",
@@ -2492,6 +2610,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "blue_house_basement_ceiling",
         name: "blue house basement ceiling",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(21.5, 28.9, Vec.create(21, -15.3)),
         ceilingHitbox: RectangleHitbox.fromRect(21.5, 28.9, Vec.create(21, -15.3)),
         ceilingImages: [{
@@ -2503,6 +2622,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "crane",
         name: "Crane",
+        defType: DefinitionType.Building,
         reflectBullets: true,
         noCeilingScopeEffect: true,
         material: "metal_heavy",
@@ -2558,6 +2678,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "shed",
         name: "Shed",
+        defType: DefinitionType.Building,
         material: "stone",
         particle: "rock_particle",
         particleVariations: 2,
@@ -2687,6 +2808,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "cargo_ship_center_roof",
         name: "Cargo Ship Center Roof",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(40, 95, Vec.create(0, 0)),
         ceilingHitbox: RectangleHitbox.fromRect(25, 90, Vec.create(0.5, 0)), // why doesn't this work well? (you have to go in full center?)
         ceilingImages: [
@@ -2700,6 +2822,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "cargo_ship",
         name: "Cargo Ship",
+        defType: DefinitionType.Building,
         reflectBullets: true,
         material: "metal_heavy",
         particle: "metal_particle",
@@ -2992,6 +3115,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "oil_tanker_ship",
         name: "Oil Tanker",
+        defType: DefinitionType.Building,
         reflectBullets: true,
         material: "metal_heavy",
         particle: "metal_particle",
@@ -3179,6 +3303,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "oil_tanker_ship_vault",
         name: "Oil Tanker Ship Vault",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(20, 35),
         ceilingHitbox: RectangleHitbox.fromRect(20, 35),
         ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
@@ -3191,6 +3316,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "oil_tanker_tanks",
         name: "Oil Tanker Tanks",
+        defType: DefinitionType.Building,
         reflectBullets: true,
         material: "metal_heavy",
         particle: "metal_particle",
@@ -3226,6 +3352,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port",
         name: "Port",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(315, 290, Vec.create(-5, 0)),
         groundGraphics: [
             {
@@ -3618,6 +3745,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "cargo_ship_holder",
         name: "Cargo Ship (Holder)",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(365, 290, Vec.create(-100, 0)),
         spawnMode: MapObjectSpawnMode.Beach,
         sounds: {
@@ -3633,6 +3761,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "oil_tanker_ship_holder",
         name: "Oil Tanker Ship (Holder)",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(365, 290, Vec.create(-100, 0)),
         spawnMode: MapObjectSpawnMode.Beach,
         sounds: {
@@ -3648,6 +3777,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port_complex",
         name: "Port Complex",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(365, 290, Vec.create(-100, 0)),
         spawnMode: MapObjectSpawnMode.Beach,
         subBuildings: [
@@ -3658,6 +3788,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "armory_barracks",
         name: "Armory Barracks",
+        defType: DefinitionType.Building,
         material: "stone",
         particle: "rock_particle",
         particleVariations: 2,
@@ -3726,6 +3857,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "armory_center",
         name: "Armory Center",
+        defType: DefinitionType.Building,
         material: "stone",
         particle: "rock_particle",
         particleVariations: 2,
@@ -3780,6 +3912,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "armory_vault",
         name: "Armory Vault",
+        defType: DefinitionType.Building,
         material: "stone",
         particle: "rock_particle",
         particleVariations: 2,
@@ -3861,6 +3994,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "armory_inner_vault",
         name: "Armory Inner Vault",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(20.87, 36.34),
         ceilingHitbox: RectangleHitbox.fromRect(20.87, 36.34),
         ceilingImages: [
@@ -3877,6 +4011,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "armory",
         name: "Armory",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(160, 176),
         spawnMode: MapObjectSpawnMode.GrassAndSand,
         subBuildings: [
@@ -4102,6 +4237,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "mobile_home",
         name: "Mobile Home",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(65, 40),
         ceilingHitbox: RectangleHitbox.fromRect(43.5, 20, Vec.create(0, -1)),
         floorImages: [
@@ -4156,6 +4292,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "sea_traffic_control",
         name: "Sea Traffic Control",
+        defType: DefinitionType.Building,
         material: "stone",
         particle: "rock_particle",
         particleVariations: 2,
@@ -4224,6 +4361,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "small_bridge",
         name: "Small Bridge",
+        defType: DefinitionType.Building,
         noBulletCollision: true,
         allowFlyover: FlyoverPref.Always,
         material: "wood",
@@ -4270,6 +4408,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "large_bridge",
         name: "Large Bridge",
+        defType: DefinitionType.Building,
         allowFlyover: FlyoverPref.Always,
         material: "stone",
         particle: "rock_particle",
@@ -4382,6 +4521,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "construction_site",
         name: "Construction Site",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
         spawnMode: MapObjectSpawnMode.Grass,
         floorImages: [
@@ -4450,6 +4590,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "detector",
         name: "Detector",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(9, 3, Vec.create(0, 1)),
         obstacles: [
             { idString: "detector_walls", position: Vec.create(0, 0), rotation: 0 },
@@ -4459,6 +4600,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "headquarters_vault",
         name: "Headquarters Vault",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(22, 30.6, Vec.create(0, -7.2)),
         ceilingHitbox: RectangleHitbox.fromRect(22, 30.6, Vec.create(0, -7.2)),
         ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
@@ -4473,6 +4615,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "headquarters_secret_room",
         name: "Headquarters Secret Room",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(20, 20),
         ceilingHitbox: RectangleHitbox.fromRect(20, 20),
         ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
@@ -4486,6 +4629,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "headquarters",
         name: "Headquarters",
+        defType: DefinitionType.Building,
         material: "stone",
         particle: "hq_stone_wall_particle",
         particleVariations: 2,
@@ -4785,6 +4929,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "headquarters_second_floor",
         name: "Headquarters Second Floor",
+        defType: DefinitionType.Building,
         material: "stone",
         particle: "hq_stone_wall_particle",
         particleVariations: 2,
@@ -5008,6 +5153,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "small_bunker_entrance",
         name: "Small Bunker Entrance",
+        defType: DefinitionType.Building,
         reflectBullets: true,
         collideWithLayers: Layers.All,
         visibleFromLayers: Layers.All,
@@ -5029,6 +5175,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "small_bunker_main",
         name: "Small Bunker",
+        defType: DefinitionType.Building,
         reflectBullets: true,
         collideWithLayers: Layers.Adjacent,
         material: "metal_heavy",
@@ -5086,6 +5233,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "small_bunker",
         name: "Small Bunker",
+        defType: DefinitionType.Building,
         material: "metal_heavy",
         particle: "metal_particle",
         reflectBullets: true,
@@ -5119,6 +5267,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "barn_top_floor_shadow",
         name: "Barn Shadow",
+        defType: DefinitionType.Building,
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(20, 55, Vec.create(-19, 0)),
             RectangleHitbox.fromRect(58, 14, Vec.create(0, -21))
@@ -5135,6 +5284,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "barn_top_floor",
         name: "Barn Top Floor",
+        defType: DefinitionType.Building,
         material: "stone",
         particle: "wall_particle",
         hitbox: new GroupHitbox(
@@ -5192,6 +5342,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "barn_exterior", // spanAdjacent layer thingy no work
         name: "Barn Exterior",
+        defType: DefinitionType.Building,
         material: "stone",
         particleVariations: 2,
         spawnHitbox: RectangleHitbox.fromRect(120, 92),
@@ -5208,6 +5359,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "barn_exterior_top_floor", // spanAdjacent layer thingy no work
         name: "Barn Exterior",
+        defType: DefinitionType.Building,
         material: "stone",
         particleVariations: 2,
         spawnHitbox: RectangleHitbox.fromRect(120, 92),
@@ -5224,6 +5376,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "barn",
         name: "Barn",
+        defType: DefinitionType.Building,
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(120, 92),
             // temp fix (bleh)
@@ -5302,7 +5455,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "barn_stair_walls_top_floor", position: Vec.create(0, 0), rotation: 0, layer: 2 },
 
             // Columns
-            { idString: "bush", position: Vec.create(-33.5, -11.6) },
+            { idString: "house_column", position: Vec.create(-33.5, -11.6) },
             { idString: "house_column", position: Vec.create(-33.5, -26.7) },
             { idString: "house_column", position: Vec.create(-15, -26.7) },
             { idString: "house_column", position: Vec.create(4.1, -26.7) },
@@ -5376,6 +5529,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "bombed_armory_barracks",
         name: "Armory Barracks",
+        defType: DefinitionType.Building,
         material: "stone",
         particle: "rock_particle",
         particleVariations: 2,
@@ -5454,6 +5608,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "bombed_armory_center",
         name: "Armory Center",
+        defType: DefinitionType.Building,
         material: "stone",
         particle: "rock_particle",
         particleVariations: 2,
@@ -5541,6 +5696,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "bombed_armory_vault",
         name: "Armory Vault",
+        defType: DefinitionType.Building,
         material: "stone",
         particle: "rock_particle",
         particleVariations: 2,
@@ -5637,6 +5793,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "bombed_armory",
         name: "Bombed Armory",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(160, 176),
         spawnMode: MapObjectSpawnMode.GrassAndSand,
         subBuildings: [
@@ -5917,6 +6074,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "lodge",
         name: "Lodge",
+        defType: DefinitionType.Building,
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(10, 10, Vec.create(235.14, 40.53)),
             RectangleHitbox.fromRect(2.96, 2.98, Vec.create(20.05, 57.73)),
@@ -6127,6 +6285,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "lodge_second_floor",
         name: "Lodge Second Floor",
+        defType: DefinitionType.Building,
         material: "stone",
         particle: "lodge_particle",
         hitbox: new GroupHitbox(
@@ -6251,6 +6410,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "lodge_secret_room",
         name: "Lodge Secret Room",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(47.5, 24.5),
         ceilingHitbox: RectangleHitbox.fromRect(47.5, 24.5),
         ceilingImages: [
@@ -6265,6 +6425,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "plumpkin_bunker",
         name: "Plumpkin Bunker",
+        defType: DefinitionType.Building,
         material: "metal_heavy",
         reflectBullets: true,
         collideWithLayers: Layers.Equal,
@@ -6409,6 +6570,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "plumpkin_bunker_main",
         name: "Plumpkin Bunker Main",
+        defType: DefinitionType.Building,
         material: "metal_heavy",
         particle: "plumpkin_bunker_particle",
         reflectBullets: true,
@@ -6842,6 +7004,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "plumpkin_bunker_second_puzzle",
         name: "Plumpkin Bunker Second Puzzle",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(104.67, 37.14, Vec.create(0, -75.62)),
         sounds: {
             normal: "plumpkin_bunker_pump_ambience",
@@ -6873,6 +7036,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "plumpkin_bunker_third_puzzle",
         name: "Plumpkin Bunker Third Puzzle",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(104.67, 37.14, Vec.create(0, -75.62)),
         sounds: {
             solved: "recorder_buzz",
@@ -6892,6 +7056,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "plumpkin_bunker_vault",
         name: "Plumpkin Bunker Vault",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(33.39, 20.34, Vec.create(-67.67, 85.03)),
         ceilingHitbox: RectangleHitbox.fromRect(33.39, 20.34, Vec.create(-67.67, 85.03)),
         ceilingImages: [{
@@ -6903,6 +7068,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "christmas_camp",
         name: "Christmas Camp",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(150, 75, Vec.create(0, -1)),
         obstacles: [
             { idString: "christmas_tree", position: Vec.create(0, 0) },
@@ -7052,6 +7218,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "memorial_bunker_entrance",
         name: "Memorial Bunker (Entrance)",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(30, 30),
         material: "metal_heavy",
         particle: "plumpkin_bunker_particle",
@@ -7075,6 +7242,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "memorial_bunker_main",
         name: "Memorial Bunker",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(30, 40),
         material: "metal_heavy",
         particle: "plumpkin_bunker_particle",
@@ -7115,7 +7283,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "memorial",
         name: "Memorial",
-        spawnHitbox: RectangleHitbox.fromRect(30, 40, Vec.create(0, -10)),
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(50, 50, Vec.create(0, -10)),
         rotationMode: RotationMode.None,
         spawnMode: MapObjectSpawnMode.Grass,
         hideOnMap: true,
@@ -7145,6 +7314,1260 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         subBuildings: [
             { idString: "memorial_bunker_entrance", position: Vec.create(0, 0) },
             { idString: "memorial_bunker_main", position: Vec.create(0, -8.5), layer: -2 }
+        ]
+    },
+    { // implemented by pap with a lot of love >w<
+        idString: "campsite",
+        name: "Campsite",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(300, 250),
+        floors: [
+            {
+                type: FloorNames.Sand,
+                hitbox: new PolygonHitbox([
+                    Vec.create(75.23, 2.27),
+                    Vec.create(76.39, 3.23),
+                    Vec.create(78.37, 4.13),
+                    Vec.create(80.3, 4.46),
+                    Vec.create(82.98, 4.37),
+                    Vec.create(85.4, 3.98),
+                    Vec.create(88.34, 3.33),
+                    Vec.create(91.48, 2.63),
+                    Vec.create(94.35, 1.88),
+                    Vec.create(97.49, 0.72),
+                    Vec.create(99.68, -0.63),
+                    Vec.create(101.11, -2.15),
+                    Vec.create(102.07, -3.86),
+                    Vec.create(102.79, -6.16),
+                    Vec.create(103.16, -9.34),
+                    Vec.create(102.99, -12.5),
+                    Vec.create(102.55, -15.74),
+                    Vec.create(101.83, -18.56),
+                    Vec.create(100.67, -21.45),
+                    Vec.create(99.2, -24.06),
+                    Vec.create(97.15, -26.57),
+                    Vec.create(95, -28.45),
+                    Vec.create(92.37, -30.12),
+                    Vec.create(89.33, -31.45),
+                    Vec.create(86.43, -32.36),
+                    Vec.create(83.47, -32.84),
+                    Vec.create(80.86, -33.13),
+                    Vec.create(77.91, -33.21),
+                    Vec.create(75.28, -32.99),
+                    Vec.create(72.92, -32.53),
+                    Vec.create(70.31, -31.66),
+                    Vec.create(68.38, -30.36),
+                    Vec.create(66.72, -28.5),
+                    Vec.create(65.44, -26.26),
+                    Vec.create(64.59, -23.77),
+                    Vec.create(64.3, -21.55),
+                    Vec.create(64.33, -19.38),
+                    Vec.create(64.93, -17.33),
+                    Vec.create(65.8, -15.25),
+                    Vec.create(67.42, -12.5),
+                    Vec.create(69.49, -8.98),
+                    Vec.create(70.92, -5.96),
+                    Vec.create(72, -3.55),
+                    Vec.create(73.38, -0.7),
+                    Vec.create(74.34, 1.02)
+                ])
+            },
+            {
+                type: FloorNames.Sand,
+                hitbox: new PolygonHitbox([
+                    Vec.create(83.61, 21.65),
+                    Vec.create(86.92, 21.39),
+                    Vec.create(90.68, 22.23),
+                    Vec.create(93.79, 23.82),
+                    Vec.create(96.56, 26.33),
+                    Vec.create(99.05, 30.01),
+                    Vec.create(100.66, 33.94),
+                    Vec.create(101.54, 36.87),
+                    Vec.create(102.31, 40.53),
+                    Vec.create(102.6, 44.3),
+                    Vec.create(101.94, 48.8),
+                    Vec.create(100.26, 52.36),
+                    Vec.create(97.51, 55.47),
+                    Vec.create(93.08, 59.57),
+                    Vec.create(87.56, 64.14),
+                    Vec.create(83.09, 66.49),
+                    Vec.create(80.82, 66.93),
+                    Vec.create(77.86, 66.27),
+                    Vec.create(75.51, 64.84),
+                    Vec.create(73.06, 62.28),
+                    Vec.create(71.34, 60.04),
+                    Vec.create(69.17, 55.86),
+                    Vec.create(68, 51.84),
+                    Vec.create(67.36, 48.01),
+                    Vec.create(67.33, 44.43),
+                    Vec.create(67.8, 41.07),
+                    Vec.create(68.7, 37.99),
+                    Vec.create(70.28, 33.95),
+                    Vec.create(72.16, 30.55),
+                    Vec.create(74.44, 27.45),
+                    Vec.create(76.76, 24.99),
+                    Vec.create(80.3, 22.64)
+                ])
+            },
+            {
+                type: FloorNames.Sand,
+                hitbox: new PolygonHitbox([
+                    Vec.create(-9.67, -92.78),
+                    Vec.create(-6.58, -87.91),
+                    Vec.create(-3.76, -80.47),
+                    Vec.create(-2.46, -75.85),
+                    Vec.create(-1.41, -71.91),
+                    Vec.create(-0.08, -65.74),
+                    Vec.create(0.48, -61.51),
+                    Vec.create(0.57, -55.46),
+                    Vec.create(0.42, -49.93),
+                    Vec.create(0.03, -44.33),
+                    Vec.create(-0.31, -38.56),
+                    Vec.create(-0.47, -34),
+                    Vec.create(3.42, -33.22),
+                    Vec.create(8.26, -33.53),
+                    Vec.create(8.91, -32.63),
+                    Vec.create(9.09, -28.8),
+                    Vec.create(9.09, -25.63),
+                    Vec.create(8.8, -22.5),
+                    Vec.create(5.4, -22.25),
+                    Vec.create(0.85, -22.5),
+                    Vec.create(0.06, -18.09),
+                    Vec.create(-1, -12.04),
+                    Vec.create(-1, -6.43),
+                    Vec.create(-0.69, -0.0),
+                    Vec.create(-0.51, 7.3),
+                    Vec.create(-0.51, 17.36),
+                    Vec.create(-0.57, 26.67),
+                    Vec.create(-0.75, 30.55),
+                    Vec.create(-1.6, 35.24),
+                    Vec.create(-7.15, 34.97),
+                    Vec.create(-12.65, 31.81),
+                    Vec.create(-12.79, 30.63),
+                    Vec.create(-12.35, 28.09),
+                    Vec.create(-12.3, 23.7),
+                    Vec.create(-12.35, 15.73),
+                    Vec.create(-12.28, 6.23),
+                    Vec.create(-12.37, -0.92),
+                    Vec.create(-12.2, -17.23),
+                    Vec.create(-11.58, -29.88),
+                    Vec.create(-11.4, -38.97),
+                    Vec.create(-10.63, -50.03),
+                    Vec.create(-10.57, -56.52),
+                    Vec.create(-10.76, -62.36),
+                    Vec.create(-11.87, -68.26),
+                    Vec.create(-12.89, -72.36),
+                    Vec.create(-13.91, -76.06),
+                    Vec.create(-15.41, -81.02),
+                    Vec.create(-17.99, -86.65)
+                ])
+            },
+            {
+                type: FloorNames.Sand,
+                hitbox: new PolygonHitbox([
+                    Vec.create(8.44, -24.96),
+                    Vec.create(8.72, -22.34),
+                    Vec.create(10.22, -19.96),
+                    Vec.create(13, -16.81),
+                    Vec.create(16.84, -14.21),
+                    Vec.create(21.24, -12.67),
+                    Vec.create(26.84, -12.09),
+                    Vec.create(31.49, -12.63),
+                    Vec.create(36.06, -14.43),
+                    Vec.create(40.02, -17.21),
+                    Vec.create(42.73, -20.25),
+                    Vec.create(44.34, -23.4),
+                    Vec.create(44.51, -26.43),
+                    Vec.create(44.41, -29.26),
+                    Vec.create(44.16, -32.58),
+                    Vec.create(44.05, -34.58),
+                    Vec.create(43.11, -36.46),
+                    Vec.create(41.77, -38.37),
+                    Vec.create(38.99, -41.01),
+                    Vec.create(36.44, -42.79),
+                    Vec.create(33.41, -44.17),
+                    Vec.create(30.2, -45.03),
+                    Vec.create(26.73, -45.36),
+                    Vec.create(23.66, -45.21),
+                    Vec.create(20.73, -44.61),
+                    Vec.create(18.23, -43.8),
+                    Vec.create(15.84, -42.56),
+                    Vec.create(13.58, -40.99),
+                    Vec.create(11.69, -39.31),
+                    Vec.create(10.34, -37.5),
+                    Vec.create(9.16, -35.64),
+                    Vec.create(8.3, -33.65),
+                    Vec.create(8.18, -30.94),
+                    Vec.create(8.28, -27.87)
+                ])
+            },
+            {
+                type: FloorNames.Sand,
+                hitbox: new PolygonHitbox([
+                    Vec.create(43.65, -24.12),
+                    Vec.create(44.04, -34.56),
+                    Vec.create(44.94, -34.31),
+                    Vec.create(46.38, -33.83),
+                    Vec.create(48.52, -33),
+                    Vec.create(50.97, -31.58),
+                    Vec.create(53.24, -29.76),
+                    Vec.create(55.44, -27.7),
+                    Vec.create(57.75, -25.05),
+                    Vec.create(59.74, -22.3),
+                    Vec.create(61.82, -18.68),
+                    Vec.create(63.34, -15.1),
+                    Vec.create(64.85, -10.36),
+                    Vec.create(65.89, -5.79),
+                    Vec.create(66.96, -1.88),
+                    Vec.create(67.96, 2.73),
+                    Vec.create(68.62, 5.58),
+                    Vec.create(68.9, 7.47),
+                    Vec.create(69.09, 9.27),
+                    Vec.create(70.02, 19.17),
+                    Vec.create(70.13, 22.6),
+                    Vec.create(69.86, 25.71),
+                    Vec.create(68.93, 29.98),
+                    Vec.create(67.42, 34.83),
+                    Vec.create(66.23, 38.7),
+                    Vec.create(65.06, 43.96),
+                    Vec.create(64.18, 47.95),
+                    Vec.create(62.58, 52.14),
+                    Vec.create(60.04, 56.77),
+                    Vec.create(55.08, 62),
+                    Vec.create(51.17, 64.39),
+                    Vec.create(45.68, 65.79),
+                    Vec.create(39.96, 66.45),
+                    Vec.create(32.45, 66.52),
+                    Vec.create(30.05, 56.05),
+                    Vec.create(34.13, 55.94),
+                    Vec.create(38.52, 55.89),
+                    Vec.create(42.65, 55.56),
+                    Vec.create(46.57, 54.67),
+                    Vec.create(48.65, 53.14),
+                    Vec.create(50.52, 51.09),
+                    Vec.create(52.36, 48.26),
+                    Vec.create(53.79, 44.75),
+                    Vec.create(54.72, 40.36),
+                    Vec.create(56, 35.43),
+                    Vec.create(57.16, 31.72),
+                    Vec.create(58.54, 27.14),
+                    Vec.create(59.42, 22.96),
+                    Vec.create(59.4, 20.08),
+                    Vec.create(59.06, 16.71),
+                    Vec.create(58.72, 14),
+                    Vec.create(58.51, 11.1),
+                    Vec.create(58.23, 7.64),
+                    Vec.create(57.19, 3.41),
+                    Vec.create(56, -1.37),
+                    Vec.create(55.37, -5.08),
+                    Vec.create(54.37, -8.87),
+                    Vec.create(53.11, -12.63),
+                    Vec.create(51.38, -16.13),
+                    Vec.create(49.23, -19.26),
+                    Vec.create(47.05, -21.49),
+                    Vec.create(44.44, -23.44)
+                ])
+            },
+            {
+                type: FloorNames.Sand,
+                hitbox: new PolygonHitbox([
+                    Vec.create(-8.48, 40.37),
+                    Vec.create(-2.52, 41.81),
+                    Vec.create(-2.62, 43.66),
+                    Vec.create(-2.75, 46.35),
+                    Vec.create(-2.73, 49.48),
+                    Vec.create(-2.04, 52.08),
+                    Vec.create(0.5, 53.23),
+                    Vec.create(2.04, 53.58),
+                    Vec.create(3.42, 54.4),
+                    Vec.create(7.05, 54.94),
+                    Vec.create(11.69, 55.25),
+                    Vec.create(15.93, 55.38),
+                    Vec.create(20.82, 55.42),
+                    Vec.create(26.29, 55.79),
+                    Vec.create(31.11, 56),
+                    Vec.create(33.69, 56.03),
+                    Vec.create(34.18, 66.53),
+                    Vec.create(32.37, 66.61),
+                    Vec.create(33.1, 69.51),
+                    Vec.create(33.36, 71.97),
+                    Vec.create(33.45, 74.84),
+                    Vec.create(33.47, 78.41),
+                    Vec.create(33.43, 81.85),
+                    Vec.create(33.34, 85.11),
+                    Vec.create(33.21, 87.79),
+                    Vec.create(33.05, 90.34),
+                    Vec.create(32.96, 92.59),
+                    Vec.create(32.78, 94.87),
+                    Vec.create(32.56, 97.66),
+                    Vec.create(32.29, 100.44),
+                    Vec.create(32.15, 103.13),
+                    Vec.create(32.29, 106.61),
+                    Vec.create(32.29, 109.22),
+                    Vec.create(31.88, 110.74),
+                    Vec.create(31.11, 112.15),
+                    Vec.create(29.73, 112.54),
+                    Vec.create(28.21, 112.37),
+                    Vec.create(26.65, 111.86),
+                    Vec.create(25.28, 110.42),
+                    Vec.create(23.87, 108.94),
+                    Vec.create(22.81, 107.74),
+                    Vec.create(22.38, 106.73),
+                    Vec.create(22.36, 104.55),
+                    Vec.create(22.26, 101.95),
+                    Vec.create(22.48, 98.92),
+                    Vec.create(22.78, 95.47),
+                    Vec.create(23.02, 92.34),
+                    Vec.create(23.19, 89.52),
+                    Vec.create(23.41, 85.82),
+                    Vec.create(23.53, 82.4),
+                    Vec.create(23.56, 79.12),
+                    Vec.create(23.56, 76.75),
+                    Vec.create(23.56, 74.18),
+                    Vec.create(23.36, 71.08),
+                    Vec.create(22.86, 67.56),
+                    Vec.create(22.65, 66.12),
+                    Vec.create(18.25, 66.01),
+                    Vec.create(13.48, 65.84),
+                    Vec.create(9.06, 65.56),
+                    Vec.create(5.03, 65.16),
+                    Vec.create(1.16, 64.73),
+                    Vec.create(-2.76, 63.94),
+                    Vec.create(-6.66, 62.53),
+                    Vec.create(-9.64, 60.61),
+                    Vec.create(-12.04, 58.02),
+                    Vec.create(-13.33, 55.6),
+                    Vec.create(-14.09, 53.24),
+                    Vec.create(-14.49, 50.7),
+                    Vec.create(-14.66, 48.06),
+                    Vec.create(-14.62, 45.61),
+                    Vec.create(-14.51, 43.28),
+                    Vec.create(-14.4, 41.83)
+                ])
+            },
+            {
+                type: FloorNames.Sand,
+                hitbox: new PolygonHitbox([
+                    Vec.create(-1.46, 33.75),
+                    Vec.create(-1.06, 31.8),
+                    Vec.create(-4.79, 32.13),
+                    Vec.create(-9.83, 32.1),
+                    Vec.create(-12.91, 30.76),
+                    Vec.create(-16.05, 30.71),
+                    Vec.create(-19.15, 30.7),
+                    Vec.create(-23.24, 30.67),
+                    Vec.create(-28.28, 30.67),
+                    Vec.create(-32.69, 30.75),
+                    Vec.create(-36.85, 31.14),
+                    Vec.create(-41.26, 31.09),
+                    Vec.create(-47.04, 30.35),
+                    Vec.create(-51.02, 28.1),
+                    Vec.create(-54.43, 25.62),
+                    Vec.create(-57.18, 22.42),
+                    Vec.create(-58.67, 19.67),
+                    Vec.create(-59.19, 17.11),
+                    Vec.create(-61.63, 15.88),
+                    Vec.create(-63.62, 15),
+                    Vec.create(-65.92, 13.91),
+                    Vec.create(-68.6, 12.59),
+                    Vec.create(-70.96, 11.45),
+                    Vec.create(-70.94, 13.11),
+                    Vec.create(-70.54, 15.79),
+                    Vec.create(-70.14, 18.44),
+                    Vec.create(-69.8, 21.37),
+                    Vec.create(-68.8, 24.01),
+                    Vec.create(-67.34, 26.73),
+                    Vec.create(-64.98, 30.14),
+                    Vec.create(-61.87, 33.38),
+                    Vec.create(-58.07, 36.26),
+                    Vec.create(-53.68, 39.16),
+                    Vec.create(-49.41, 40.89),
+                    Vec.create(-43.97, 41.75),
+                    Vec.create(-38.92, 42.22),
+                    Vec.create(-33.45, 42.09),
+                    Vec.create(-27.04, 41.88),
+                    Vec.create(-22.04, 41.73),
+                    Vec.create(-14.5, 41.78),
+                    Vec.create(-11.57, 42.76),
+                    Vec.create(-8.68, 41.88),
+                    Vec.create(-5.61, 42.72),
+                    Vec.create(-2.59, 41.96),
+                    Vec.create(-2.3, 39.32),
+                    Vec.create(-1.8, 36.14)
+                ])
+            },
+            {
+                type: FloorNames.Sand,
+                hitbox: new PolygonHitbox([
+                    Vec.create(67.05, 10.89),
+                    Vec.create(69.16, 9.24),
+                    Vec.create(71.68, 8.99),
+                    Vec.create(74.89, 8.85),
+                    Vec.create(78.56, 8.63),
+                    Vec.create(82.05, 8.32),
+                    Vec.create(85.49, 7.98),
+                    Vec.create(88.39, 7.81),
+                    Vec.create(91.81, 7.82),
+                    Vec.create(95.63, 7.5),
+                    Vec.create(99.06, 6.94),
+                    Vec.create(102.61, 6.04),
+                    Vec.create(105.6, 4.86),
+                    Vec.create(108, 3.54),
+                    Vec.create(110.08, 2.42),
+                    Vec.create(112.29, 1.36),
+                    Vec.create(114, 1.24),
+                    Vec.create(115.67, 2.36),
+                    Vec.create(117.31, 3.52),
+                    Vec.create(118.92, 4.56),
+                    Vec.create(119.6, 5.63),
+                    Vec.create(120.01, 6.97),
+                    Vec.create(119.63, 8.27),
+                    Vec.create(118.7, 9.51),
+                    Vec.create(117.4, 10.05),
+                    Vec.create(115.78, 10.82),
+                    Vec.create(113.93, 11.71),
+                    Vec.create(111.84, 12.96),
+                    Vec.create(109.88, 13.94),
+                    Vec.create(107.13, 15.04),
+                    Vec.create(103.92, 15.98),
+                    Vec.create(101.27, 16.63),
+                    Vec.create(98.26, 17.15),
+                    Vec.create(94.2, 17.54),
+                    Vec.create(90.6, 17.62),
+                    Vec.create(85.91, 17.89),
+                    Vec.create(80.99, 18.29),
+                    Vec.create(76.5, 18.61),
+                    Vec.create(73.3, 18.79),
+                    Vec.create(69.99, 19.42),
+                    Vec.create(67.52, 16.76),
+                    Vec.create(68.58, 13.4)
+                ])
+            }
+        ],
+        groundGraphics: [
+            {
+                color: 0x5e442e,
+                hitbox: new PolygonHitbox([
+                    Vec.create(75.23, 2.27),
+                    Vec.create(76.39, 3.23),
+                    Vec.create(78.37, 4.13),
+                    Vec.create(80.3, 4.46),
+                    Vec.create(82.98, 4.37),
+                    Vec.create(85.4, 3.98),
+                    Vec.create(88.34, 3.33),
+                    Vec.create(91.48, 2.63),
+                    Vec.create(94.35, 1.88),
+                    Vec.create(97.49, 0.72),
+                    Vec.create(99.68, -0.63),
+                    Vec.create(101.11, -2.15),
+                    Vec.create(102.07, -3.86),
+                    Vec.create(102.79, -6.16),
+                    Vec.create(103.16, -9.34),
+                    Vec.create(102.99, -12.5),
+                    Vec.create(102.55, -15.74),
+                    Vec.create(101.83, -18.56),
+                    Vec.create(100.67, -21.45),
+                    Vec.create(99.2, -24.06),
+                    Vec.create(97.15, -26.57),
+                    Vec.create(95, -28.45),
+                    Vec.create(92.37, -30.12),
+                    Vec.create(89.33, -31.45),
+                    Vec.create(86.43, -32.36),
+                    Vec.create(83.47, -32.84),
+                    Vec.create(80.86, -33.13),
+                    Vec.create(77.91, -33.21),
+                    Vec.create(75.28, -32.99),
+                    Vec.create(72.92, -32.53),
+                    Vec.create(70.31, -31.66),
+                    Vec.create(68.38, -30.36),
+                    Vec.create(66.72, -28.5),
+                    Vec.create(65.44, -26.26),
+                    Vec.create(64.59, -23.77),
+                    Vec.create(64.3, -21.55),
+                    Vec.create(64.33, -19.38),
+                    Vec.create(64.93, -17.33),
+                    Vec.create(65.8, -15.25),
+                    Vec.create(67.42, -12.5),
+                    Vec.create(69.49, -8.98),
+                    Vec.create(70.92, -5.96),
+                    Vec.create(72, -3.55),
+                    Vec.create(73.38, -0.7),
+                    Vec.create(74.34, 1.02)
+                ])
+            },
+            {
+                color: 0x705136,
+                hitbox: new PolygonHitbox([
+                    Vec.create(87.26, -31.25),
+                    Vec.create(89.52, -30.43),
+                    Vec.create(92.06, -29.24),
+                    Vec.create(94.7, -27.54),
+                    Vec.create(96.85, -25.73),
+                    Vec.create(98.71, -23.26),
+                    Vec.create(100.18, -20.48),
+                    Vec.create(101.2, -17.65),
+                    Vec.create(101.83, -14.96),
+                    Vec.create(102.26, -11.07),
+                    Vec.create(102.3, -7.83),
+                    Vec.create(101.69, -5.1),
+                    Vec.create(100.27, -2.61),
+                    Vec.create(98.46, -0.84),
+                    Vec.create(95.92, 0.42),
+                    Vec.create(92.94, 1.4),
+                    Vec.create(90.11, 2.1),
+                    Vec.create(87.06, 2.75),
+                    Vec.create(83.39, 3.41),
+                    Vec.create(80.54, 3.57),
+                    Vec.create(78.28, 3.23),
+                    Vec.create(76.38, 2.19),
+                    Vec.create(75.11, 0.67),
+                    Vec.create(74.05, -1.16),
+                    Vec.create(72.92, -3.58),
+                    Vec.create(71.56, -6.79),
+                    Vec.create(70.31, -9.82),
+                    Vec.create(68.57, -12.29),
+                    Vec.create(66.97, -14.78),
+                    Vec.create(65.95, -17.06),
+                    Vec.create(65.27, -19.58),
+                    Vec.create(65.22, -21.77),
+                    Vec.create(65.59, -24.21),
+                    Vec.create(66.38, -26.34),
+                    Vec.create(68.01, -28.69),
+                    Vec.create(70.16, -30.48),
+                    Vec.create(72.4, -31.43),
+                    Vec.create(75.2, -32.22),
+                    Vec.create(78.12, -32.38),
+                    Vec.create(81.54, -32.2),
+                    Vec.create(84.7, -31.79)
+                ])
+            },
+            {
+                color: 0x5e442e,
+                hitbox: new PolygonHitbox([
+                    Vec.create(83.61, 21.65),
+                    Vec.create(86.92, 21.39),
+                    Vec.create(90.68, 22.23),
+                    Vec.create(93.79, 23.82),
+                    Vec.create(96.56, 26.33),
+                    Vec.create(99.05, 30.01),
+                    Vec.create(100.66, 33.94),
+                    Vec.create(101.54, 36.87),
+                    Vec.create(102.31, 40.53),
+                    Vec.create(102.6, 44.3),
+                    Vec.create(101.94, 48.8),
+                    Vec.create(100.26, 52.36),
+                    Vec.create(97.51, 55.47),
+                    Vec.create(93.08, 59.57),
+                    Vec.create(87.56, 64.14),
+                    Vec.create(83.09, 66.49),
+                    Vec.create(80.82, 66.93),
+                    Vec.create(77.86, 66.27),
+                    Vec.create(75.51, 64.84),
+                    Vec.create(73.06, 62.28),
+                    Vec.create(71.34, 60.04),
+                    Vec.create(69.17, 55.86),
+                    Vec.create(68, 51.84),
+                    Vec.create(67.36, 48.01),
+                    Vec.create(67.33, 44.43),
+                    Vec.create(67.8, 41.07),
+                    Vec.create(68.7, 37.99),
+                    Vec.create(70.28, 33.95),
+                    Vec.create(72.16, 30.55),
+                    Vec.create(74.44, 27.45),
+                    Vec.create(76.76, 24.99),
+                    Vec.create(80.3, 22.64)
+                ])
+            },
+            {
+                color: 0x705136,
+                hitbox: new PolygonHitbox([
+                    Vec.create(94.54, 25.66),
+                    Vec.create(95.51, 26.74),
+                    Vec.create(96.65, 28.13),
+                    Vec.create(97.73, 29.91),
+                    Vec.create(98.83, 31.93),
+                    Vec.create(99.73, 34.22),
+                    Vec.create(100.46, 36.49),
+                    Vec.create(101.16, 39.42),
+                    Vec.create(101.56, 42.24),
+                    Vec.create(101.64, 44.28),
+                    Vec.create(101.46, 46.53),
+                    Vec.create(100.96, 48.51),
+                    Vec.create(100.19, 50.48),
+                    Vec.create(98.69, 52.8),
+                    Vec.create(96.44, 55.24),
+                    Vec.create(93.77, 57.75),
+                    Vec.create(91.88, 59.45),
+                    Vec.create(89.58, 61.37),
+                    Vec.create(87.35, 63.12),
+                    Vec.create(84.83, 64.75),
+                    Vec.create(82.93, 65.99),
+                    Vec.create(80.67, 66.3),
+                    Vec.create(78.61, 65.76),
+                    Vec.create(76.38, 64.2),
+                    Vec.create(74.7, 62.74),
+                    Vec.create(73.25, 61),
+                    Vec.create(72.4, 59.67),
+                    Vec.create(71.45, 58.18),
+                    Vec.create(70.67, 56.77),
+                    Vec.create(70.03, 55.3),
+                    Vec.create(69.44, 53.46),
+                    Vec.create(68.85, 51.45),
+                    Vec.create(68.46, 49.21),
+                    Vec.create(68.26, 46.87),
+                    Vec.create(68.35, 44.51),
+                    Vec.create(68.67, 42.4),
+                    Vec.create(69.09, 40.39),
+                    Vec.create(69.68, 38.35),
+                    Vec.create(70.54, 36.07),
+                    Vec.create(71.5, 33.82),
+                    Vec.create(72.77, 31.54),
+                    Vec.create(74.06, 29.5),
+                    Vec.create(75.29, 27.93),
+                    Vec.create(76.8, 26.32),
+                    Vec.create(78.3, 25.07),
+                    Vec.create(79.88, 23.98),
+                    Vec.create(81.7, 23.08),
+                    Vec.create(83.5, 22.46),
+                    Vec.create(85.55, 22.16),
+                    Vec.create(87.52, 22.22),
+                    Vec.create(89.45, 22.57),
+                    Vec.create(91.44, 23.51),
+                    Vec.create(93.38, 24.68)
+                ])
+            },
+            {
+                color: 0x996f33,
+                hitbox: new PolygonHitbox([
+                    Vec.create(-9.67, -92.78),
+                    Vec.create(-6.58, -87.91),
+                    Vec.create(-3.76, -80.47),
+                    Vec.create(-2.46, -75.85),
+                    Vec.create(-1.41, -71.91),
+                    Vec.create(-0.08, -65.74),
+                    Vec.create(0.48, -61.51),
+                    Vec.create(0.57, -55.46),
+                    Vec.create(0.42, -49.93),
+                    Vec.create(0.03, -44.33),
+                    Vec.create(-0.31, -38.56),
+                    Vec.create(-0.47, -34),
+                    Vec.create(3.42, -33.22),
+                    Vec.create(8.26, -33.53),
+                    Vec.create(8.91, -32.63),
+                    Vec.create(9.09, -28.8),
+                    Vec.create(9.09, -25.63),
+                    Vec.create(8.8, -22.5),
+                    Vec.create(5.4, -22.25),
+                    Vec.create(0.85, -22.5),
+                    Vec.create(0.06, -18.09),
+                    Vec.create(-1, -12.04),
+                    Vec.create(-1, -6.43),
+                    Vec.create(-0.69, -0.0),
+                    Vec.create(-0.51, 7.3),
+                    Vec.create(-0.51, 17.36),
+                    Vec.create(-0.57, 26.67),
+                    Vec.create(-0.75, 30.55),
+                    Vec.create(-1.6, 35.24),
+                    Vec.create(-7.15, 34.97),
+                    Vec.create(-12.65, 31.81),
+                    Vec.create(-12.79, 30.63),
+                    Vec.create(-12.35, 28.09),
+                    Vec.create(-12.3, 23.7),
+                    Vec.create(-12.35, 15.73),
+                    Vec.create(-12.28, 6.23),
+                    Vec.create(-12.37, -0.92),
+                    Vec.create(-12.2, -17.23),
+                    Vec.create(-11.58, -29.88),
+                    Vec.create(-11.4, -38.97),
+                    Vec.create(-10.63, -50.03),
+                    Vec.create(-10.57, -56.52),
+                    Vec.create(-10.76, -62.36),
+                    Vec.create(-11.87, -68.26),
+                    Vec.create(-12.89, -72.36),
+                    Vec.create(-13.91, -76.06),
+                    Vec.create(-15.41, -81.02),
+                    Vec.create(-17.99, -86.65)
+                ])
+            },
+            {
+                color: 0x996f33,
+                hitbox: new PolygonHitbox([
+                    Vec.create(8.44, -24.96),
+                    Vec.create(8.72, -22.34),
+                    Vec.create(10.22, -19.96),
+                    Vec.create(13, -16.81),
+                    Vec.create(16.84, -14.21),
+                    Vec.create(21.24, -12.67),
+                    Vec.create(26.84, -12.09),
+                    Vec.create(31.49, -12.63),
+                    Vec.create(36.06, -14.43),
+                    Vec.create(40.02, -17.21),
+                    Vec.create(42.73, -20.25),
+                    Vec.create(44.34, -23.4),
+                    Vec.create(44.51, -26.43),
+                    Vec.create(44.41, -29.26),
+                    Vec.create(44.16, -32.58),
+                    Vec.create(44.05, -34.58),
+                    Vec.create(43.11, -36.46),
+                    Vec.create(41.77, -38.37),
+                    Vec.create(38.99, -41.01),
+                    Vec.create(36.44, -42.79),
+                    Vec.create(33.41, -44.17),
+                    Vec.create(30.2, -45.03),
+                    Vec.create(26.73, -45.36),
+                    Vec.create(23.66, -45.21),
+                    Vec.create(20.73, -44.61),
+                    Vec.create(18.23, -43.8),
+                    Vec.create(15.84, -42.56),
+                    Vec.create(13.58, -40.99),
+                    Vec.create(11.69, -39.31),
+                    Vec.create(10.34, -37.5),
+                    Vec.create(9.16, -35.64),
+                    Vec.create(8.3, -33.65),
+                    Vec.create(8.18, -30.94),
+                    Vec.create(8.28, -27.87)
+                ])
+            },
+            {
+                color: 0x996f33,
+                hitbox: new PolygonHitbox([
+                    Vec.create(43.65, -24.12),
+                    Vec.create(44.04, -34.56),
+                    Vec.create(44.94, -34.31),
+                    Vec.create(46.38, -33.83),
+                    Vec.create(48.52, -33),
+                    Vec.create(50.97, -31.58),
+                    Vec.create(53.24, -29.76),
+                    Vec.create(55.44, -27.7),
+                    Vec.create(57.75, -25.05),
+                    Vec.create(59.74, -22.3),
+                    Vec.create(61.82, -18.68),
+                    Vec.create(63.34, -15.1),
+                    Vec.create(64.85, -10.36),
+                    Vec.create(65.89, -5.79),
+                    Vec.create(66.96, -1.88),
+                    Vec.create(67.96, 2.73),
+                    Vec.create(68.62, 5.58),
+                    Vec.create(68.9, 7.47),
+                    Vec.create(69.09, 9.27),
+                    Vec.create(70.02, 19.17),
+                    Vec.create(70.13, 22.6),
+                    Vec.create(69.86, 25.71),
+                    Vec.create(68.93, 29.98),
+                    Vec.create(67.42, 34.83),
+                    Vec.create(66.23, 38.7),
+                    Vec.create(65.06, 43.96),
+                    Vec.create(64.18, 47.95),
+                    Vec.create(62.58, 52.14),
+                    Vec.create(60.04, 56.77),
+                    Vec.create(55.08, 62),
+                    Vec.create(51.17, 64.39),
+                    Vec.create(45.68, 65.79),
+                    Vec.create(39.96, 66.45),
+                    Vec.create(32.45, 66.52),
+                    Vec.create(30.05, 56.05),
+                    Vec.create(34.13, 55.94),
+                    Vec.create(38.52, 55.89),
+                    Vec.create(42.65, 55.56),
+                    Vec.create(46.57, 54.67),
+                    Vec.create(48.65, 53.14),
+                    Vec.create(50.52, 51.09),
+                    Vec.create(52.36, 48.26),
+                    Vec.create(53.79, 44.75),
+                    Vec.create(54.72, 40.36),
+                    Vec.create(56, 35.43),
+                    Vec.create(57.16, 31.72),
+                    Vec.create(58.54, 27.14),
+                    Vec.create(59.42, 22.96),
+                    Vec.create(59.4, 20.08),
+                    Vec.create(59.06, 16.71),
+                    Vec.create(58.72, 14),
+                    Vec.create(58.51, 11.1),
+                    Vec.create(58.23, 7.64),
+                    Vec.create(57.19, 3.41),
+                    Vec.create(56, -1.37),
+                    Vec.create(55.37, -5.08),
+                    Vec.create(54.37, -8.87),
+                    Vec.create(53.11, -12.63),
+                    Vec.create(51.38, -16.13),
+                    Vec.create(49.23, -19.26),
+                    Vec.create(47.05, -21.49),
+                    Vec.create(44.44, -23.44)
+                ])
+            },
+            {
+                color: 0x996f33,
+                hitbox: new PolygonHitbox([
+                    Vec.create(-8.48, 40.37),
+                    Vec.create(-2.52, 41.81),
+                    Vec.create(-2.62, 43.66),
+                    Vec.create(-2.75, 46.35),
+                    Vec.create(-2.73, 49.48),
+                    Vec.create(-2.04, 52.08),
+                    Vec.create(0.5, 53.23),
+                    Vec.create(2.04, 53.58),
+                    Vec.create(3.42, 54.4),
+                    Vec.create(7.05, 54.94),
+                    Vec.create(11.69, 55.25),
+                    Vec.create(15.93, 55.38),
+                    Vec.create(20.82, 55.42),
+                    Vec.create(26.29, 55.79),
+                    Vec.create(31.11, 56),
+                    Vec.create(33.69, 56.03),
+                    Vec.create(34.18, 66.53),
+                    Vec.create(32.37, 66.61),
+                    Vec.create(33.1, 69.51),
+                    Vec.create(33.36, 71.97),
+                    Vec.create(33.45, 74.84),
+                    Vec.create(33.47, 78.41),
+                    Vec.create(33.43, 81.85),
+                    Vec.create(33.34, 85.11),
+                    Vec.create(33.21, 87.79),
+                    Vec.create(33.05, 90.34),
+                    Vec.create(32.96, 92.59),
+                    Vec.create(32.78, 94.87),
+                    Vec.create(32.56, 97.66),
+                    Vec.create(32.29, 100.44),
+                    Vec.create(32.15, 103.13),
+                    Vec.create(32.29, 106.61),
+                    Vec.create(32.29, 109.22),
+                    Vec.create(31.88, 110.74),
+                    Vec.create(31.11, 112.15),
+                    Vec.create(29.73, 112.54),
+                    Vec.create(28.21, 112.37),
+                    Vec.create(26.65, 111.86),
+                    Vec.create(25.28, 110.42),
+                    Vec.create(23.87, 108.94),
+                    Vec.create(22.81, 107.74),
+                    Vec.create(22.38, 106.73),
+                    Vec.create(22.36, 104.55),
+                    Vec.create(22.26, 101.95),
+                    Vec.create(22.48, 98.92),
+                    Vec.create(22.78, 95.47),
+                    Vec.create(23.02, 92.34),
+                    Vec.create(23.19, 89.52),
+                    Vec.create(23.41, 85.82),
+                    Vec.create(23.53, 82.4),
+                    Vec.create(23.56, 79.12),
+                    Vec.create(23.56, 76.75),
+                    Vec.create(23.56, 74.18),
+                    Vec.create(23.36, 71.08),
+                    Vec.create(22.86, 67.56),
+                    Vec.create(22.65, 66.12),
+                    Vec.create(18.25, 66.01),
+                    Vec.create(13.48, 65.84),
+                    Vec.create(9.06, 65.56),
+                    Vec.create(5.03, 65.16),
+                    Vec.create(1.16, 64.73),
+                    Vec.create(-2.76, 63.94),
+                    Vec.create(-6.66, 62.53),
+                    Vec.create(-9.64, 60.61),
+                    Vec.create(-12.04, 58.02),
+                    Vec.create(-13.33, 55.6),
+                    Vec.create(-14.09, 53.24),
+                    Vec.create(-14.49, 50.7),
+                    Vec.create(-14.66, 48.06),
+                    Vec.create(-14.62, 45.61),
+                    Vec.create(-14.51, 43.28),
+                    Vec.create(-14.4, 41.83)
+                ])
+            },
+            {
+                color: 0x996f33,
+                hitbox: new PolygonHitbox([
+                    Vec.create(-1.46, 33.75),
+                    Vec.create(-1.06, 31.8),
+                    Vec.create(-4.79, 32.13),
+                    Vec.create(-9.83, 32.1),
+                    Vec.create(-12.91, 30.76),
+                    Vec.create(-16.05, 30.71),
+                    Vec.create(-19.15, 30.7),
+                    Vec.create(-23.24, 30.67),
+                    Vec.create(-28.28, 30.67),
+                    Vec.create(-32.69, 30.75),
+                    Vec.create(-36.85, 31.14),
+                    Vec.create(-41.26, 31.09),
+                    Vec.create(-47.04, 30.35),
+                    Vec.create(-51.02, 28.1),
+                    Vec.create(-54.43, 25.62),
+                    Vec.create(-57.18, 22.42),
+                    Vec.create(-58.67, 19.67),
+                    Vec.create(-59.19, 17.11),
+                    Vec.create(-61.63, 15.88),
+                    Vec.create(-63.62, 15),
+                    Vec.create(-65.92, 13.91),
+                    Vec.create(-68.6, 12.59),
+                    Vec.create(-70.96, 11.45),
+                    Vec.create(-70.94, 13.11),
+                    Vec.create(-70.54, 15.79),
+                    Vec.create(-70.14, 18.44),
+                    Vec.create(-69.8, 21.37),
+                    Vec.create(-68.8, 24.01),
+                    Vec.create(-67.34, 26.73),
+                    Vec.create(-64.98, 30.14),
+                    Vec.create(-61.87, 33.38),
+                    Vec.create(-58.07, 36.26),
+                    Vec.create(-53.68, 39.16),
+                    Vec.create(-49.41, 40.89),
+                    Vec.create(-43.97, 41.75),
+                    Vec.create(-38.92, 42.22),
+                    Vec.create(-33.45, 42.09),
+                    Vec.create(-27.04, 41.88),
+                    Vec.create(-22.04, 41.73),
+                    Vec.create(-14.5, 41.78),
+                    Vec.create(-11.57, 42.76),
+                    Vec.create(-8.68, 41.88),
+                    Vec.create(-5.61, 42.72),
+                    Vec.create(-2.59, 41.96),
+                    Vec.create(-2.3, 39.32),
+                    Vec.create(-1.8, 36.14)
+                ])
+            },
+            {
+                color: 0x996f33,
+                hitbox: new PolygonHitbox([
+                    Vec.create(67.05, 10.89),
+                    Vec.create(69.16, 9.24),
+                    Vec.create(71.68, 8.99),
+                    Vec.create(74.89, 8.85),
+                    Vec.create(78.56, 8.63),
+                    Vec.create(82.05, 8.32),
+                    Vec.create(85.49, 7.98),
+                    Vec.create(88.39, 7.81),
+                    Vec.create(91.81, 7.82),
+                    Vec.create(95.63, 7.5),
+                    Vec.create(99.06, 6.94),
+                    Vec.create(102.61, 6.04),
+                    Vec.create(105.6, 4.86),
+                    Vec.create(108, 3.54),
+                    Vec.create(110.08, 2.42),
+                    Vec.create(112.29, 1.36),
+                    Vec.create(114, 1.24),
+                    Vec.create(115.67, 2.36),
+                    Vec.create(117.31, 3.52),
+                    Vec.create(118.92, 4.56),
+                    Vec.create(119.6, 5.63),
+                    Vec.create(120.01, 6.97),
+                    Vec.create(119.63, 8.27),
+                    Vec.create(118.7, 9.51),
+                    Vec.create(117.4, 10.05),
+                    Vec.create(115.78, 10.82),
+                    Vec.create(113.93, 11.71),
+                    Vec.create(111.84, 12.96),
+                    Vec.create(109.88, 13.94),
+                    Vec.create(107.13, 15.04),
+                    Vec.create(103.92, 15.98),
+                    Vec.create(101.27, 16.63),
+                    Vec.create(98.26, 17.15),
+                    Vec.create(94.2, 17.54),
+                    Vec.create(90.6, 17.62),
+                    Vec.create(85.91, 17.89),
+                    Vec.create(80.99, 18.29),
+                    Vec.create(76.5, 18.61),
+                    Vec.create(73.3, 18.79),
+                    Vec.create(69.99, 19.42),
+                    Vec.create(67.52, 16.76),
+                    Vec.create(68.58, 13.4)
+                ])
+            },
+            {
+                color: 0x540000,
+                hitbox: RectangleHitbox.fromRect(12.65, 25.09, Vec.create(47.38, 25.18))
+            },
+            {
+                color: 0xffffff,
+                hitbox: RectangleHitbox.fromRect(11.15, 23.6, Vec.create(47.4, 25.16))
+            },
+            {
+                color: 0x6b2020,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(1.16, 0.91, Vec.create(52.39, 36.51)),
+                    RectangleHitbox.fromRect(0.95, 2.98, Vec.create(42.3, 19.48)),
+                    RectangleHitbox.fromRect(2.97, 2.98, Vec.create(47.29, 25.5)),
+                    RectangleHitbox.fromRect(2.97, 2.98, Vec.create(50.27, 28.51)),
+                    RectangleHitbox.fromRect(2.97, 2.98, Vec.create(44.27, 28.48)),
+                    RectangleHitbox.fromRect(2.97, 2.98, Vec.create(47.27, 31.51)),
+                    RectangleHitbox.fromRect(2.97, 2.98, Vec.create(44.27, 34.52)),
+                    RectangleHitbox.fromRect(2.97, 2.98, Vec.create(44.26, 22.48)),
+                    RectangleHitbox.fromRect(2.97, 2.98, Vec.create(50.27, 22.48)),
+                    RectangleHitbox.fromRect(2.97, 2.98, Vec.create(47.27, 19.48)),
+                    RectangleHitbox.fromRect(2.97, 2.98, Vec.create(44.27, 16.49)),
+                    RectangleHitbox.fromRect(2.97, 2.98, Vec.create(50.27, 16.46)),
+                    RectangleHitbox.fromRect(1.21, 2.98, Vec.create(52.38, 19.49)),
+                    RectangleHitbox.fromRect(1.21, 2.98, Vec.create(52.4, 25.49)),
+                    RectangleHitbox.fromRect(1.19, 2.98, Vec.create(52.38, 31.51)),
+                    RectangleHitbox.fromRect(0.95, 2.98, Vec.create(42.3, 31.5)),
+                    RectangleHitbox.fromRect(0.95, 2.98, Vec.create(42.32, 25.5)),
+                    RectangleHitbox.fromRect(2.97, 2.98, Vec.create(50.28, 34.49)),
+                    RectangleHitbox.fromRect(2.97, 0.96, Vec.create(47.29, 36.47)),
+                    RectangleHitbox.fromRect(2.97, 0.96, Vec.create(47.28, 13.84)),
+                    RectangleHitbox.fromRect(1.16, 1.62, Vec.create(52.39, 14.16)),
+                    RectangleHitbox.fromRect(0.95, 1.62, Vec.create(42.3, 14.18)),
+                    RectangleHitbox.fromRect(0.95, 0.95, Vec.create(42.29, 36.49))
+                )
+            }
+        ],
+        obstacles: [
+            { idString: "campsite_case", position: Vec.create(61.56, -48.94), rotation: 0 },
+
+            { idString: "pebble", position: Vec.create(-5.9, -3.68) },
+            { idString: "pebble", position: Vec.create(-54.97, 27.96) },
+            { idString: "pebble", position: Vec.create(-4.89, 32.17) },
+            { idString: "pebble", position: Vec.create(-36.46, 40.17) },
+            { idString: "pebble", position: Vec.create(24.95, 59.42) },
+            { idString: "pebble", position: Vec.create(60.61, 37.69) },
+            { idString: "pebble", position: Vec.create(-6.77, -38.21) },
+            { idString: "pebble", position: Vec.create(-4.67, -61.59) },
+            { idString: "pebble", position: Vec.create(-9.91, -85.03) },
+            { idString: "pebble", position: Vec.create(57.63, -13.41) },
+            { idString: "pebble", position: Vec.create(103.16, 7.98) },
+            { idString: "pebble", position: Vec.create(28.6, 98.55) },
+
+            { idString: "campsite_crate", position: Vec.create(-26.22, 20.96) },
+            { idString: "campsite_crate", position: Vec.create(-17.47, 25.33) },
+            { idString: "campsite_crate", position: Vec.create(-57.88, -43.67) },
+            { idString: "campsite_crate", position: Vec.create(-48.34, -47.03) },
+            { idString: "campsite_crate", position: Vec.create(69.8, -9.28) },
+            { idString: "campsite_crate", position: Vec.create(54.51, 71.1) },
+
+            { idString: "barrel", position: Vec.create(-37.78, -13.62) },
+            { idString: "barrel", position: Vec.create(40.68, -113.28) },
+            { idString: "barrel", position: Vec.create(47.76, 87.97) },
+
+            { idString: "clearing_boulder", position: Vec.create(-100, 105.73) },
+            { idString: "clearing_boulder", position: Vec.create(-123.28, 72.58) },
+            { idString: "clearing_boulder", position: Vec.create(120.42, 104.75) },
+            { idString: "clearing_boulder", position: Vec.create(-124.42, -102.24) },
+
+            { idString: "regular_crate", position: Vec.create(11.19, -55.86) },
+            { idString: "flint_crate", position: Vec.create(9.3, -66.29) },
+            { idString: "regular_crate", position: Vec.create(-89.84, -7.51) },
+            { idString: "regular_crate", position: Vec.create(-91.89, -17.5) },
+            { idString: "regular_crate", position: Vec.create(-22, 58.36) },
+            { idString: "regular_crate", position: Vec.create(-21.62, 68.79) },
+            { idString: "regular_crate", position: Vec.create(97.17, -114.18) },
+            { idString: "regular_crate", position: Vec.create(111, -113.18) },
+            { idString: "regular_crate", position: Vec.create(129.49, -14.44) },
+            { idString: "regular_crate", position: Vec.create(139.78, 39.52) },
+
+            { idString: "box", position: Vec.create(4.37, -4.1) },
+            { idString: { box: 1, grenade_box: 0.5 }, position: Vec.create(6.33, 0.79) },
+            { idString: "box", position: Vec.create(15.6, 66.84) },
+            { idString: "box", position: Vec.create(13.92, 71.94) },
+            { idString: "box", position: Vec.create(37.03, 45.18) },
+            { idString: "box", position: Vec.create(44.83, 32.46) },
+            { idString: "box", position: Vec.create(49.87, 34.06) },
+            { idString: "box", position: Vec.create(105.79, -82.57) },
+            { idString: "box", position: Vec.create(-36.26, -21.29) },
+
+            { idString: "stump", position: Vec.create(-50.49, 2) },
+            { idString: "stump", position: Vec.create(-76.23, -7.7) },
+            { idString: "hatchet_stump", position: Vec.create(-56.26, -19.3) },
+            { idString: "stump", position: Vec.create(-75.79, -31.48) },
+            { idString: "stump", position: Vec.create(-112.42, 33.21) },
+            { idString: "stump", position: Vec.create(-112.42, 33.21) },
+            { idString: "stump", position: Vec.create(-74.33, -86.97) },
+            { idString: randomStump, position: Vec.create(-130.31, -29.57) },
+            { idString: randomStump, position: Vec.create(101.68, -46.53) },
+            { idString: randomStump, position: Vec.create(87.31, 80.6) },
+
+            { idString: "pumpkin", position: Vec.create(75.4, 50.55) },
+            { idString: "pumpkin", position: Vec.create(83.56, 56.39) },
+            { idString: "pumpkin", position: Vec.create(81.31, 31.66) },
+            { idString: "pumpkin", position: Vec.create(82.83, -2.29) },
+            { idString: "pumpkin", position: Vec.create(71.13, -23.64) },
+            { idString: "pumpkin", position: Vec.create(78.3, -26.06) },
+            { idString: "pumpkin", position: Vec.create(90.55, -21.96) },
+
+            { idString: "large_pumpkin", position: Vec.create(92.12, -13.89) },
+            { idString: "large_pumpkin", position: Vec.create(91.13, 37.64) },
+            { idString: "large_pumpkin", position: Vec.create(93.9, 48.21) },
+
+            { idString: "pine_tree", position: Vec.create(-66.33, -68.15) },
+            { idString: "pine_tree", position: Vec.create(42.71, -93.71) },
+            { idString: "pine_tree", position: Vec.create(76.03, -50.86) },
+            { idString: "pine_tree", position: Vec.create(-86.1, 72.38) },
+
+            { idString: "oak_tree", position: Vec.create(-102.86, -24.63) },
+            { idString: "oak_tree", position: Vec.create(-63.51, -101.43) },
+            { idString: "oak_tree", position: Vec.create(14.2, -103.61) },
+            { idString: "oak_tree", position: Vec.create(-93.28, 35.66) },
+            { idString: "oak_tree", position: Vec.create(-103.86, 2.86) },
+            { idString: "oak_tree", position: Vec.create(-120.76, -42.59) },
+            { idString: "oak_tree", position: Vec.create(-103.93, -71.77) },
+            { idString: "oak_tree", position: Vec.create(-45.6, -98.66) },
+            { idString: "oak_tree", position: Vec.create(-41.77, 99.59) },
+            { idString: "oak_tree", position: Vec.create(4.86, 84.4) },
+            { idString: "oak_tree", position: Vec.create(5.7, 106.07) },
+            { idString: "oak_tree", position: Vec.create(61.69, 85.94) },
+            { idString: "oak_tree", position: Vec.create(114.42, 63.52) },
+            { idString: "oak_tree", position: Vec.create(121.78, 47.04) },
+            { idString: "oak_tree", position: Vec.create(113.29, 30.21) },
+            { idString: "oak_tree", position: Vec.create(118.15, -34.69) },
+            { idString: "oak_tree", position: Vec.create(60.07, -60.79) },
+            { idString: "oak_tree", position: Vec.create(-33.44, -64.7) },
+            { idString: "oak_tree", position: Vec.create(132.49, -107.99) },
+            { idString: "oak_tree", position: Vec.create(121.46, -65.32) },
+            { idString: "oak_tree", position: Vec.create(67.82, -107.86) },
+            { idString: "oak_tree", position: Vec.create(133.24, 6.9) },
+
+            { idString: "cooler", position: Vec.create(47.17, 16.51), rotation: 0 },
+            { idString: "fire_pit", position: Vec.create(25.87, -29) },
+
+            { idString: "large_logs_pile", position: Vec.create(-72.55, -46.88), rotation: 0 },
+            { idString: "large_logs_pile", position: Vec.create(6.9, 66.48), rotation: 1 },
+            { idString: "large_logs_pile", position: Vec.create(40.15, -61.21), rotation: 1 },
+
+            { idString: "small_logs_pile", position: Vec.create(-79.95, 15.45), rotation: 0 },
+            { idString: "small_logs_pile", position: Vec.create(45.49, 75.44), rotation: 0 },
+            { idString: "small_logs_pile", position: Vec.create(66.66, -0.52), rotation: 0 },
+            { idString: "small_logs_pile", position: Vec.create(-16.28, 99.83), rotation: 0 },
+            { idString: "small_logs_pile", position: Vec.create(97.4, -80.86), rotation: 0 }
+        ],
+        subBuildings: [
+            { idString: randomTent, position: Vec.create(102.18, -95.33) },
+            { idString: randomBigTent, position: Vec.create(-18, 24.5), orientation: 1 },
+            { idString: randomTent, position: Vec.create(61.28, 25.97), orientation: 1 },
+            { idString: randomHayShed, position: Vec.create(-50, 65.27) },
+            { idString: "outhouse", position: Vec.create(-24.51, -17) }
+        ]
+    },
+    {
+        idString: "breached_dam",
+        name: "Breached Dam(n)",
+        defType: DefinitionType.Building,
+        spawnHitbox: RectangleHitbox.fromRect(100, 230, Vec.create(-16, -4.25)),
+        allowFlyover: FlyoverPref.Always,
+        material: "stone",
+        particle: "rock_particle",
+        particleVariations: 2,
+        floorZIndex: ZIndexes.Ground,
+        bridgeMinRiverWidth: 15,
+        bridgeHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(89.28, 42.3, Vec.create(-15.17, 37.93)),
+            RectangleHitbox.fromRect(89.28, 42.3, Vec.create(-15.17, -46.35))
+        ),
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-24.8, 9.91)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-9.97, -46.78)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-9.99, 19.36)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-9.99, 28.8)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-9.99, 38.25)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-9.96, 47.7)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-9.96, 9.91)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-9.97, -18.46)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-24.85, -18.46)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-24.88, -27.92)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-10.01, -27.92)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-24.85, -37.32)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-9.97, -37.35)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-10.01, -65.69)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-9.99, 57.21)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-24.85, 57.17)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-24.84, 47.71)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-24.9, 38.26)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-24.85, 28.79)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-24.85, 19.38)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-24.88, -46.82)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-24.91, -56.23)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-9.97, -56.26)),
+            RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-24.87, -65.69)),
+            RectangleHitbox.fromRect(3.81, 36.35, Vec.create(-7.79, -43.61)),
+            RectangleHitbox.fromRect(3.81, 36.35, Vec.create(-7.84, 35.09)),
+            RectangleHitbox.fromRect(3.81, 36.35, Vec.create(-27.08, 35.12)),
+            RectangleHitbox.fromRect(3.81, 36.35, Vec.create(-27.08, -43.59)),
+            RectangleHitbox.fromRect(1.52, 49.69, Vec.create(-10, -39.95)),
+            RectangleHitbox.fromRect(1.52, 49.69, Vec.create(-24.85, 32.46)),
+            RectangleHitbox.fromRect(1.52, 49.69, Vec.create(-10.01, 32.05)),
+            RectangleHitbox.fromRect(1.52, 49.69, Vec.create(-24.85, -39.93))
+        ),
+        groundGraphics: [
+            {
+                color: 0x363630,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(5.34, 36.45, Vec.create(-8.57, -43.59)),
+                    RectangleHitbox.fromRect(5.34, 36.45, Vec.create(-8.62, 35.05)),
+                    RectangleHitbox.fromRect(5.34, 36.45, Vec.create(-26.32, 35.14)),
+                    RectangleHitbox.fromRect(5.34, 36.45, Vec.create(-26.27, -43.59))
+                )
+            },
+            {
+                color: 0x6c6c60,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(5.15, 35.43, Vec.create(-8.95, -43.61)),
+                    RectangleHitbox.fromRect(5.15, 35.43, Vec.create(-8.99, 35.1)),
+                    RectangleHitbox.fromRect(5.15, 35.43, Vec.create(-25.88, 35.1)),
+                    RectangleHitbox.fromRect(5.15, 35.43, Vec.create(-25.88, -43.61))
+                )
+            }
+        ],
+        floors: [
+            {
+                type: FloorNames.Water,
+                hitbox: new PolygonHitbox([
+                    Vec.create(-25.14, -17.94),
+                    Vec.create(-24.98, 9.69),
+                    Vec.create(-16.72, 11.86),
+                    Vec.create(-9.64, 7.22),
+                    Vec.create(-9.85, -18.37),
+                    Vec.create(-20.39, -20.34)
+                ])
+            },
+            {
+                type: FloorNames.Metal,
+                hitbox: RectangleHitbox.fromRect(15.24, 125.07, Vec.create(-17.56, -4.28))
+            }
+        ],
+        floorImages: [
+            {
+                key: "breached_dam_pillar",
+                position: Vec.create(-23.53, -16.15)
+            },
+            {
+                key: "breached_dam_pillar",
+                position: Vec.create(-23.53, -4.26)
+            },
+            {
+                key: "breached_dam_pillar",
+                position: Vec.create(-23.53, 7.62)
+            },
+            {
+                key: "breached_dam_floor",
+                position: Vec.create(-17.5, -4.25),
+                scale: Vec.create(2, 2)
+            }
+        ],
+        obstacles: [
+            { idString: "oak_tree", position: Vec.create(-34.95, 95.26) },
+            { idString: "oak_tree", position: Vec.create(-39.54, -93.9) },
+            { idString: "oak_tree", position: Vec.create(2.65, -105.9) },
+            { idString: "oak_tree", position: Vec.create(-9.45, -87.93) },
+
+            { idString: "regular_crate", position: Vec.create(18.88, -88.73) },
+            { idString: "regular_crate", position: Vec.create(-17.43, -33.26) },
+            { idString: "regular_crate", position: Vec.create(-17.49, 36.64) },
+            { idString: "regular_crate", position: Vec.create(-44.61, 73.56) },
+
+            { idString: "barrel", position: Vec.create(-17.26, 26.43) },
+            { idString: "barrel", position: Vec.create(29.46, -88.82) },
+            { idString: "barrel", position: Vec.create(-44.58, 63.1) },
+
+            { idString: "propane_tank", position: Vec.create(-36.93, -73.22) },
+            { idString: "propane_tank", position: Vec.create(-39.85, -77.38) },
+            { idString: "propane_tank", position: Vec.create(4.18, 68.95) },
+            { idString: "propane_tank", position: Vec.create(4.18, 63.99) },
+
+            { idString: "ammo_crate", position: Vec.create(-17.36, -44.88) },
+            { idString: "ammo_crate", position: Vec.create(24.85, -78.26) },
+            { idString: "ammo_crate", position: Vec.create(-34.17, 67.72) },
+            { idString: "ammo_crate", position: Vec.create(11.91, 66.33) },
+
+            { idString: "hatchet_stump", position: Vec.create(-43.91, -72.21) },
+            { idString: "stump", position: Vec.create(-18.25, -98.24) },
+            { idString: "stump", position: Vec.create(-16.86, 99) }
+        ],
+        subBuildings: [
+            { idString: randomHayShed, position: Vec.create(9.77, 87) }
         ]
     }
 ]);

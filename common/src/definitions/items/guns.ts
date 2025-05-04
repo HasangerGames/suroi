@@ -1,7 +1,7 @@
 import { FireMode } from "../../constants";
 import { BaseBulletDefinition } from "../../utils/baseBullet";
 import { mergeDeep } from "../../utils/misc";
-import { ItemType, type InventoryItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
+import { DefinitionType, ItemType, type InventoryItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
 import { Vec, type Vector } from "../../utils/vector";
 import { type AmmoDefinition } from "./ammos";
 import { InventoryItemDefinitions } from "./items";
@@ -11,6 +11,7 @@ import { ScopeDefinition } from "./scopes";
 export enum Tier { S, A, B, C, D }
 
 type BaseGunDefinition = InventoryItemDefinition & {
+    readonly defType: DefinitionType.Gun
     readonly itemType: ItemType.Gun
 
     readonly ammoType: ReferenceTo<AmmoDefinition>
@@ -224,6 +225,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "g19",
         name: "G19",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.D,
         ammoType: "9mm",
@@ -278,6 +280,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "cz75a",
         name: "CZ-75A",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.D,
         ammoType: "9mm",
@@ -332,6 +335,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "m1895",
         name: "M1895",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.D,
         ammoType: "762mm",
@@ -393,6 +397,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "deagle",
         name: "DEagle",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.B,
         ammoType: "50cal",
@@ -453,6 +458,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "rsh12",
         name: "RSh-12",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.A,
         ammoType: "50cal",
@@ -520,6 +526,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "mp5k",
         name: "MP5k",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.D,
         ammoType: "9mm",
@@ -586,6 +593,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "saf200",
         name: "SAF-200",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.C,
         ammoType: "9mm",
@@ -627,6 +635,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "micro_uzi",
         name: "Micro Uzi",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.C,
         ammoType: "9mm",
@@ -664,6 +673,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "mp40",
         name: "MP40",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.C,
         ammoType: "9mm",
@@ -707,6 +717,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "vector",
         name: "Vector",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.A,
         ammoType: "9mm",
@@ -744,6 +755,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "pp19",
         name: "PP-19 Vityaz",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.S,
         ammoType: "9mm",
@@ -788,6 +800,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "ak47",
         name: "AK-47",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.C,
         ammoType: "762mm",
@@ -826,6 +839,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "mcx_spear",
         name: "MCX Spear",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.A,
         ammoType: "762mm",
@@ -866,6 +880,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "m16a2",
         name: "M16A2",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.B,
         ammoType: "556mm",
@@ -907,6 +922,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "aug",
         name: "AUG",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.C,
         ammoType: "556mm",
@@ -944,6 +960,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "arx160",
         name: "ARX-160",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.C,
         ammoType: "762mm",
@@ -982,6 +999,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "acr",
         name: "ACR",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.S,
         ammoType: "556mm",
@@ -1026,6 +1044,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "lewis_gun",
         name: "Lewis Gun",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.C,
         ammoType: "762mm",
@@ -1068,6 +1087,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "stoner_63",
         name: "Stoner 63",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.A,
         ammoType: "556mm",
@@ -1131,6 +1151,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "mg5",
         name: "MG5",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.S,
         ammoType: "762mm",
@@ -1188,6 +1209,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "negev",
         name: "Negev SF",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.S,
         ammoType: "556mm",
@@ -1245,6 +1267,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "mg36",
         name: "MG36",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.B,
         ammoType: "556mm",
@@ -1282,6 +1305,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "pk61",
         name: "PK-61",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.A,
         ammoType: "762mm",
@@ -1334,6 +1358,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "m3k",
         name: "M3K",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.C,
         ammoType: "12g",
@@ -1375,6 +1400,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "model_37",
         name: "Model 37",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.C,
         ammoType: "12g",
@@ -1426,6 +1452,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "hp18",
         name: "HP-18",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.C,
         ammoType: "12g",
@@ -1470,6 +1497,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "flues",
         name: "Flues",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.C,
         ammoType: "12g",
@@ -1520,6 +1548,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "usas12",
         name: "USAS-12",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.S,
         ammoType: "12g",
@@ -1565,6 +1594,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "vepr12",
         name: "Vepr-12",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.B,
         ammoType: "12g",
@@ -1607,6 +1637,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "dt11",
         name: "DT-11",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.C,
         ammoType: "12g",
@@ -1655,6 +1686,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "m590m",
         name: "M590M",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.A,
         ammoType: "12g",
@@ -1699,13 +1731,57 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             }
         }
     },
-
+    {
+        idString: "mp153",
+        name: "MP-153",
+        tier: Tier.A,
+        ammoType: "12g",
+        speedMultiplier: 1,
+        defType: DefinitionType.Gun,
+        itemType: ItemType.Gun,
+        ammoSpawnAmount: 16,
+        capacity: 8,
+        reloadTime: 0.45,
+        shotsPerReload: 1,
+        fireDelay: 400,
+        switchDelay: 600,
+        recoilMultiplier: 0.6,
+        recoilDuration: 400,
+        fireMode: FireMode.Single,
+        shotSpread: 2,
+        moveSpread: 5,
+        fsaReset: 600,
+        length: 8.45,
+        fists: {
+            left: Vec.create(108, -3),
+            right: Vec.create(45, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec.create(100, 0) },
+        casingParticles: [{
+            position: Vec.create(4.5, 0.6),
+            frame: "casing_12ga_slug"
+        }],
+        gasParticles: gasParticlePresets.shotgun,
+        ballistics: {
+            damage: 78,
+            obstacleMultiplier: 1,
+            speed: 0.25,
+            range: 120,
+            tracer: {
+                width: 2,
+                length: 1.3
+            }
+        }
+    },
     //
     // Sniper rifles
     //
     {
         idString: "mosin_nagant",
         name: "Mosin-Nagant",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.A,
         ammoType: "762mm",
@@ -1753,6 +1829,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "tango_51",
         name: "Tango 51",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.A,
         ammoType: "762mm",
@@ -1797,6 +1874,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "cz600",
         name: "CZ-600",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.B,
         ammoType: "556mm",
@@ -1840,6 +1918,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "l115a1",
         name: "L115A1",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.S,
         ammoType: "338lap",
@@ -1884,6 +1963,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "rgs",
         name: "RG Scout",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.A,
         ammoType: "556mm",
@@ -1929,6 +2009,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "vks",
         name: "VKS Vykhlop",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.S,
         ammoType: "50cal",
@@ -1978,6 +2059,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "vss",
         name: "VSS Vintorez",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.B,
         ammoType: "9mm",
@@ -2020,6 +2102,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "sr25",
         name: "SR-25",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.B,
         ammoType: "762mm",
@@ -2060,6 +2143,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "mini14",
         name: "Mini-14",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.B,
         ammoType: "556mm",
@@ -2106,6 +2190,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "m1_garand",
         name: "M1 Garand",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.S,
         ammoType: "762mm",
@@ -2173,6 +2258,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "model_89",
         name: "Model 89",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.A,
         ammoType: "50cal",
@@ -2217,6 +2303,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "sks",
         name: "SKS",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.C,
         ammoType: "762mm",
@@ -2267,6 +2354,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "blr",
         name: "BLR 556",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.C,
         ammoType: "556mm",
@@ -2308,6 +2396,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "mk18",
         name: "Mk-18 Mjölnir",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.S,
         ammoType: "338lap",
@@ -2355,6 +2444,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "radio",
         name: "Radio",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.S,
         summonAirdrop: true,
@@ -2406,6 +2496,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "seedshot",
         name: "Seedshot",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.S,
         ammoType: "seed",
@@ -2450,6 +2541,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "vaccinator",
         name: "Vaccinator",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.A,
         ammoType: "needle",
@@ -2494,8 +2586,77 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         noSwap: true
     },
     {
+        idString: "plumpkin_launcher",
+        name: "Plumpkin Launcher",
+        defType: DefinitionType.Gun,
+        itemType: ItemType.Gun,
+        tier: Tier.S,
+        ammoType: "plumpkin_ammo",
+        ammoSpawnAmount: 0,
+        capacity: 1,
+        reloadTime: 2.7,
+        shootOnRelease: true,
+        fireDelay: 1250,
+        switchDelay: 900,
+        noMuzzleFlash: true,
+        speedMultiplier: 0.707,
+        recoilMultiplier: 0.5,
+        recoilDuration: 925,
+        fireMode: FireMode.Single,
+        bulletOffset: 2.7,
+        shotSpread: 3,
+        moveSpread: 8,
+        length: 6,
+        fists: {
+            left: Vec.create(80, 53),
+            right: Vec.create(50, 53),
+            animationDuration: 100
+        },
+        image: {
+            position: Vec.create(29.7, 53.5),
+            zIndex: 4
+        },
+        casingParticles: [{
+            position: Vec.create(0.5, 3),
+            ejectionDelay: 800
+        }],
+        gasParticles: {
+            spread: 360,
+            amount: 75,
+            minLife: 7500,
+            maxLife: 20000,
+            minSpeed: 3,
+            maxSpeed: 7,
+            minSize: 0.4,
+            maxSize: 0.6
+        },
+        ballistics: {
+            damage: 20,
+            obstacleMultiplier: 1,
+            speed: 0.15,
+            range: 120,
+            onHitExplosion: "plumpkin_launcher_explosion",
+            explodeOnImpact: true,
+            tracer: {
+                image: "plumpkin"
+            },
+            trail: {
+                frame: "small_gas",
+                interval: 17,
+                amount: 5,
+                tint: -1,
+                alpha: { min: 0.4, max: 0.8 },
+                scale: { min: 0.1, max: 0.2 },
+                spreadSpeed: { min: 1, max: 3 },
+                lifetime: { min: 2500, max: 5000 }
+            }
+        },
+        noSwap: true
+    },
+    {
         idString: "firework_launcher",
         name: "Firework Launcher",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.S,
         ammoType: "firework_rocket",
@@ -2569,6 +2730,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "g17_scoped",
         name: "G17 (scoped)",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.C,
         noSwap: true,
@@ -2622,6 +2784,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "death_ray",
         name: "Death Ray",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.S,
         ammoType: "power_cell",
@@ -2665,6 +2828,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "revitalizer",
         name: "Revitalizer",
+        defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.A,
         noSwap: true,

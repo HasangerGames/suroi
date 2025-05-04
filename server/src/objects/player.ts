@@ -7,7 +7,7 @@ import { Backpacks } from "@common/definitions/items/backpacks";
 import { Guns, Tier, type GunDefinition } from "@common/definitions/items/guns";
 import { HealingItems } from "@common/definitions/items/healingItems";
 import { Melees, type MeleeDefinition } from "@common/definitions/items/melees";
-import { PerkCategories, PerkIds, Perks, type PerkDefinition } from "@common/definitions/items/perks";
+import { PerkCategories, PerkData, PerkIds, Perks, type PerkDefinition } from "@common/definitions/items/perks";
 import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/items/scopes";
 import { type SkinDefinition } from "@common/definitions/items/skins";
 import { Throwables, type ThrowableDefinition } from "@common/definitions/items/throwables";
@@ -28,7 +28,7 @@ import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox
 import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric } from "@common/utils/math";
 import { type SDeepMutable, type Timeout } from "@common/utils/misc";
-import { ItemType, type EventModifiers, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
+import { DefinitionType, ItemType, type EventModifiers, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray, randomPointInsideCircle, weightedRandom } from "@common/utils/random";
 import { SuroiByteStream } from "@common/utils/suroiByteStream";
@@ -85,6 +85,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     activeBloodthirstEffect = false;
     activeDisguise?: ObstacleDefinition;
 
+    bulletTargetHitCount = 0;
+    targetHitCountExpiration?: Timeout;
+
     teamID?: number;
     colorIndex = 0; // Assigned in the team.ts file.
 
@@ -134,13 +137,18 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private _maxHealth = GameConstants.player.defaultHealth;
     get maxHealth(): number { return this._maxHealth; }
     set maxHealth(maxHealth: number) {
-        if (this._maxHealth !== maxHealth) {
-            this._maxHealth = maxHealth;
-            this.dirty.maxMinStats = true;
-            this._team?.setDirty();
-        }
+        if (this._maxHealth === maxHealth) return;
 
-        this.health = this._health;
+        this._maxHealth = maxHealth;
+        this.dirty.maxMinStats = true;
+        this._team?.setDirty();
+
+        if (this._health <= this._maxHealth) {
+            this._normalizedHealth = Numeric.remap(this._health, 0, maxHealth, 0, 1);
+            this.dirty.health = true;
+        } else {
+            this.health = this._health;
+        }
     }
 
     private _health = this._maxHealth;
@@ -166,12 +174,16 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     get maxAdrenaline(): number { return this._maxAdrenaline; }
     set maxAdrenaline(maxAdrenaline: number) {
-        if (this._maxAdrenaline !== maxAdrenaline) {
-            this._maxAdrenaline = maxAdrenaline;
-            this.dirty.maxMinStats = true;
-        }
+        if (this._maxAdrenaline === maxAdrenaline) return;
+        this._maxAdrenaline = maxAdrenaline;
+        this.dirty.maxMinStats = true;
 
-        this.adrenaline = this._adrenaline;
+        if (this._adrenaline < this._maxAdrenaline) {
+            this._normalizedAdrenaline = Numeric.remap(this.adrenaline, this.minAdrenaline, this.maxAdrenaline, 0, 1);
+            this.dirty.adrenaline = true;
+        } else {
+            this.adrenaline = this._adrenaline;
+        }
     }
 
     private _minAdrenaline = 0;
@@ -641,6 +653,38 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     };
 
     private static readonly _weaponTiersCache: Partial<Record<ItemType, Partial<Record<Tier, WeaponDefinition[]>>>> = {};
+
+    tryRefund(item: InventoryItem = this.activeItem): void {
+        if (
+            item.category !== ItemType.Gun
+            || item.owner !== this
+            || item.definition.bulletCount !== 1
+            || !this.inventory.weapons.includes(item)
+        ) return;
+
+        const { hitReq: hitsNeeded, refund, margin } = PerkData[PerkIds.PrecisionRecycling];
+
+        this.targetHitCountExpiration?.kill();
+        this.targetHitCountExpiration = this.game.addTimeout(() => {
+            this.bulletTargetHitCount = 0;
+        }, margin * item.definition.fireDelay);
+
+        if (this.bulletTargetHitCount < hitsNeeded) {
+            ++this.bulletTargetHitCount;
+        }
+
+        if (this.bulletTargetHitCount >= hitsNeeded) {
+            const cap = this.mapPerk(PerkIds.ExtendedMags, () => item.definition.extendedCapacity) ?? item.definition.capacity;
+
+            const target = Numeric.min(item.ammo + refund, cap);
+            if (item.ammo !== target) {
+                item.ammo = target;
+                this.dirty.weapons = true;
+            }
+
+            this.bulletTargetHitCount = 0;
+        }
+    }
 
     swapWeaponRandomly(item: InventoryItem = this.activeItem, force = false): void {
         if (item.definition.noSwap || this.perks.hasItem(PerkIds.Lycanthropy)) return; // womp womp
@@ -2219,8 +2263,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
             // Killstreak credit always goes to the killer regardless of the above.
             if (
-                weaponUsed
-                && "killstreak" in weaponUsed.definition
+                weaponUsed !== undefined
+                && weaponUsed.definition.defType !== DefinitionType.Explosion
                 && weaponUsed instanceof InventoryItemBase
             ) {
                 packet.killstreak = weaponUsed.stats.kills;

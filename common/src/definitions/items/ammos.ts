@@ -1,6 +1,7 @@
-import { ItemType, ObjectDefinitions, type ItemDefinition } from "../../utils/objectDefinitions";
+import { DefinitionType, ItemType, ObjectDefinitions, type ItemDefinition } from "../../utils/objectDefinitions";
 
 export interface AmmoDefinition extends ItemDefinition {
+    readonly defType: DefinitionType.Ammo
     readonly itemType: ItemType.Ammo
     readonly maxStackSize: number
     readonly minDropAmount: number
@@ -25,6 +26,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "12g",
         name: "12 gauge",
+        defType: DefinitionType.Ammo,
         itemType: ItemType.Ammo,
         maxStackSize: 20,
         minDropAmount: 3,
@@ -38,6 +40,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "556mm",
         name: "5.56mm",
+        defType: DefinitionType.Ammo,
         itemType: ItemType.Ammo,
         maxStackSize: 60,
         minDropAmount: 5,
@@ -51,6 +54,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "762mm",
         name: "7.62mm",
+        defType: DefinitionType.Ammo,
         itemType: ItemType.Ammo,
         maxStackSize: 60,
         minDropAmount: 5,
@@ -64,6 +68,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "9mm",
         name: "9mm",
+        defType: DefinitionType.Ammo,
         itemType: ItemType.Ammo,
         maxStackSize: 90,
         minDropAmount: 5,
@@ -77,6 +82,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "50cal",
         name: ".50 Cal",
+        defType: DefinitionType.Ammo,
         itemType: ItemType.Ammo,
         maxStackSize: 9,
         minDropAmount: 3,
@@ -91,6 +97,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "338lap",
         name: ".338 Lapua Magnum",
+        defType: DefinitionType.Ammo,
         itemType: ItemType.Ammo,
         maxStackSize: 9,
         minDropAmount: 3,
@@ -105,6 +112,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "curadell",
         name: "Curadell",
+        defType: DefinitionType.Ammo,
         itemType: ItemType.Ammo,
         maxStackSize: 10,
         minDropAmount: 1,
@@ -119,6 +127,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "firework_rocket",
         name: "Firework Rocket",
+        defType: DefinitionType.Ammo,
         itemType: ItemType.Ammo,
         maxStackSize: 5,
         minDropAmount: 1,
@@ -136,6 +145,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "seed",
         name: "Plumpkin Seed",
+        defType: DefinitionType.Ammo,
         itemType: ItemType.Ammo,
         maxStackSize: 0,
         minDropAmount: 0,
@@ -149,6 +159,21 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "needle",
         name: "Needle",
+        defType: DefinitionType.Ammo,
+        itemType: ItemType.Ammo,
+        maxStackSize: 0,
+        minDropAmount: 0,
+        characteristicColor: {
+            hue: 305,
+            saturation: 70,
+            lightness: 50
+        },
+        ephemeral: true
+    },
+    {
+        idString: "plumpkin_ammo",
+        name: "Plumpkin Ammo",
+        defType: DefinitionType.Ammo,
         itemType: ItemType.Ammo,
         maxStackSize: 0,
         minDropAmount: 0,
@@ -162,6 +187,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "power_cell",
         name: "P.O.W.E.R. cell",
+        defType: DefinitionType.Ammo,
         itemType: ItemType.Ammo,
         maxStackSize: 10,
         minDropAmount: 1,
@@ -176,6 +202,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "bb",
         name: "6mm BB",
+        defType: DefinitionType.Ammo,
         itemType: ItemType.Ammo,
         maxStackSize: 240,
         minDropAmount: 1,

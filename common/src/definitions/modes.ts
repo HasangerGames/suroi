@@ -30,6 +30,7 @@ export interface ModeDefinition {
     readonly specialLogo?: boolean
     readonly playButtonImage?: string
     readonly weaponSwap?: boolean
+    readonly plumpkinGrenades?: boolean
 }
 
 export const Modes: Record<ModeName, ModeDefinition> = {

@@ -173,6 +173,14 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { table: "scopes", weight: 0.3 }
             ]
         },
+        campsite_crate: [
+            { table: "guns", weight: 1 },
+            { table: "healing_items", weight: 1 },
+            { table: "equipment", weight: 0.4 },
+            { table: "ammo", weight: 0.5 },
+            { table: "scopes", weight: 0.35 },
+            { table: "throwables", weight: 0.35 }
+        ],
         birthday_cake: [
             { table: "special_guns", weight: 0.25 },
             { table: "special_equipment", weight: 0.25 },
@@ -481,6 +489,10 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ice_pick_case: [
             [{ item: "ice_pick", weight: 1 }],
             [{ item: "frosty", weight: 1 }]
+        ],
+        campsite_case: [
+            { item: "radio", weight: 1 },
+            { item: "mp153", weight: 0.75 }
         ],
         confetti_grenade_box: {
             min: 1,
@@ -831,7 +843,9 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: PerkIds.Toploaded, weight: 1 },
                 { item: PerkIds.CloseQuartersCombat, weight: 1 },
                 { item: PerkIds.LowProfile, weight: 1 },
-                { item: PerkIds.Berserker, weight: 1 }
+                { item: PerkIds.Berserker, weight: 1 },
+                { item: PerkIds.CombatExpert, weight: 1 }
+                // { item: PerkIds.PrecisionRecycling, weight: 1 }
             ]
         },
         red_gift: [
@@ -1495,6 +1509,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "m1_garand", weight: 1 },
             { item: "l115a1", weight: 1 },
             { item: "mk18", weight: 1 },
+            { item: "mp153", weight: 0.75 },
             { item: "usas12", weight: 0.5 },
             { item: "g19", weight: 0.02 }
         ],
@@ -1591,10 +1606,28 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ]
     },
     infection: {
+        hazel_crate: [
+            [{ item: "plumpkin_launcher", weight: 1 }]
+        ],
+        healing_items: [
+            { item: "gauze", count: 5, weight: 3 },
+            { item: "cola", weight: 2 },
+            { item: "tablets", weight: 1 },
+            { item: "medikit", weight: 1 },
+            { item: "vaccine_injector", weight: 0.75 }
+        ],
+        airdrop_healing_items: [
+            { item: "gauze", count: 5, weight: 1.5 },
+            { item: "medikit", weight: 1 },
+            { item: "cola", weight: 1 },
+            { item: "tablets", weight: 1 },
+            { item: "vaccine_injector", count: 2, weight: 0.75 }
+        ],
         airdrop_guns: [
             { item: "vaccinator", weight: 2 },
+            { item: "plumpkin_launcher", weight: 0.5 },
             { item: "mg36", weight: 1 },
-            { item: "sr25", weight: 1 },
+            { item: "m590m", weight: 1 },
             { item: "vss", weight: 1 },
             { item: "vector", weight: 1 },
             { item: "vepr12", weight: 1 },
