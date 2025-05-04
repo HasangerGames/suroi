@@ -2039,19 +2039,15 @@ export async function setUpUI(): Promise<void> {
                             : "tt_restores", {
                     item: `<b>${getTranslatedString(item.idString as TranslationKeys)}</b><br>`,
                     amount: item.restoreAmount.toString(),
-                    type: item.healType === HealType.Special
-                        ? ""
-                        : item.healType === HealType.Adrenaline
-                            ? getTranslatedString("adrenaline")
-                            : getTranslatedString("health"),
-                    desc: item.healType !== HealType.Special
-                        ? ""
-                        : getTranslatedString(item.idString+"_desc" as TranslationKeys)
+                    type: item.healType === HealType.Adrenaline
+                        ? getTranslatedString("adrenaline")
+                        : getTranslatedString("health"),
+                    desc: getTranslatedString(`${item.idString}_desc` as TranslationKeys)
                 })}
                     </div>
                 </div>`
             );
-            
+
             ele[0].addEventListener("pointerup", () => clearTimeout(dropTimer));
 
             slotListener(ele, button => {
