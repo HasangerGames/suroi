@@ -844,8 +844,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: PerkIds.CloseQuartersCombat, weight: 1 },
                 { item: PerkIds.LowProfile, weight: 1 },
                 { item: PerkIds.Berserker, weight: 1 },
-                { item: PerkIds.CombatExpert, weight: 1 }
-                // { item: PerkIds.PrecisionRecycling, weight: 1 }
+                { item: PerkIds.CombatExpert, weight: 1 },
+                { item: PerkIds.PrecisionRecycling, weight: 1 }
             ]
         },
         red_gift: [
