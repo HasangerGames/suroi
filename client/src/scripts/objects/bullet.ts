@@ -1,23 +1,23 @@
 import { Layer, ObjectCategory, ZIndexes } from "@common/constants";
 import { BaseBullet, type BulletOptions } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer, getEffectiveZIndex, isVisibleFromLayer } from "@common/utils/layer";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Geometry, Numeric, resolveStairInteraction } from "@common/utils/math";
 import { random, randomFloat, randomRotation } from "@common/utils/random";
 import { Vec } from "@common/utils/vector";
 import { colord } from "colord";
 import { BloomFilter } from "pixi-filters";
-import { Color } from "pixi.js";
+import { Color, Container } from "pixi.js";
+import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
+import { CameraManager } from "../managers/cameraManager";
+import { ParticleManager } from "../managers/particleManager";
+import { SoundManager } from "../managers/soundManager";
 import { PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import type { Building } from "./building";
 import { type Obstacle } from "./obstacle";
 import { type Player } from "./player";
-import { GameConsole } from "../console/gameConsole";
-import { CameraManager } from "../managers/cameraManager";
-import { SoundManager } from "../managers/soundManager";
-import { ParticleManager } from "../managers/particleManager";
 
 const white = 0xFFFFFF;
 
@@ -39,6 +39,7 @@ export class Bullet extends BaseBullet {
 
         this._image = new SuroiSprite(tracerStats?.image ?? "base_trail")
             .setRotation(this.rotation - Math.PI / 2)
+            .setZIndex(this.definition.tracer?.zIndex ?? ZIndexes.Bullets)
             .setVPos(toPixiCoords(this.position));
 
         const {
@@ -76,28 +77,28 @@ export class Bullet extends BaseBullet {
         }
 
         this._image.tint = color;
-        this.setLayer(this.layer);
 
         // don't play bullet whiz if bullet originated within whiz hitbox
         this._playBulletWhiz = !Game.activePlayer?.bulletWhizHitbox.isPointInside(this.initialPosition);
 
-        CameraManager.addObject(this._image);
+        this.updateLayer();
     }
 
     update(delta: number): void {
-        const oldLayer = this.layer;
         if (!this.dead) {
             for (const collision of this.updateAndGetCollisions(delta, Game.objects)) {
                 const object = collision.object;
 
                 if (object.isObstacle && object.definition.isStair) {
-                    this.setLayer(resolveStairInteraction(
+                    const newLayer = resolveStairInteraction(
                         object.definition,
                         (object as Obstacle).orientation,
                         object.hitbox as RectangleHitbox,
                         object.layer,
                         this.position
-                    ));
+                    );
+                    this.layer = newLayer;
+                    this.updateLayer();
                     continue;
                 }
 
@@ -126,9 +127,10 @@ export class Bullet extends BaseBullet {
                 break;
             }
         }
+
         if (this._playBulletWhiz) {
             const intersection = Game.activePlayer?.bulletWhizHitbox.intersectsLine(this.initialPosition, this.position);
-            if (intersection && Game.layer !== undefined && adjacentOrEqualLayer(this.layer, Game.layer)) {
+            if (intersection && adjacentOrEqualLayer(this.layer, Game.layer)) {
                 SoundManager.play(`bullet_whiz_${random(1, 3)}`, { position: intersection.point });
                 this._playBulletWhiz = false;
             }
@@ -164,11 +166,11 @@ export class Bullet extends BaseBullet {
 
         if (
             (
-                this.layer === Layer.Floor1
+                this.layer === Layer.Upstairs
                 && Game.layer === Layer.Ground
             )
             || (
-                this.initialLayer === Layer.Basement1
+                this.initialLayer === Layer.Basement
                 && this.layer !== this.initialLayer
                 && Game.layer === Layer.Ground
             )
@@ -202,7 +204,7 @@ export class Bullet extends BaseBullet {
                     ),
                     position: this.position,
                     lifetime: random(trail.lifetime.min, trail.lifetime.max),
-                    zIndex: getEffectiveZIndex(ZIndexes.Bullets - 1, this.layer, Game.layer),
+                    zIndex: ZIndexes.Bullets - 1,
                     scale: randomFloat(trail.scale.min, trail.scale.max),
                     alpha: {
                         start: randomFloat(trail.alpha.min, trail.alpha.max),
@@ -220,21 +222,14 @@ export class Bullet extends BaseBullet {
 
         if (this._trailTicks <= 0 && this.dead) {
             this.destroy();
-        } else if (this.layer === oldLayer) {
-            this.updateVisibility();
         }
     }
 
-    private setLayer(layer: number): void {
-        this.layer = layer;
-        this.updateVisibility();
-        this._image.zIndex = getEffectiveZIndex(this.definition.tracer?.zIndex ?? ZIndexes.Bullets, this.layer, Game.layer);
-    }
+    layerContainer?: Container;
 
-    private updateVisibility(): void {
-        if (!Game.activePlayer) return;
-
-        this._image.visible = isVisibleFromLayer(Game.activePlayer.layer, this);
+    updateLayer(): void {
+        this.layerContainer?.removeChild(this._image);
+        (this.layerContainer = CameraManager.getContainer(this.layer)).addChild(this._image);
     }
 
     destroy(): void {

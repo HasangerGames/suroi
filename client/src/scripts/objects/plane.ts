@@ -1,12 +1,11 @@
 import { GameConstants, Layer } from "@common/constants";
-import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Geometry } from "@common/utils/math";
 import { Vec, type Vector } from "@common/utils/vector";
+import { Game } from "../game";
+import { CameraManager } from "../managers/cameraManager";
 import { SoundManager, type GameSound } from "../managers/soundManager";
 import { PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite } from "../utils/pixi";
-import { CameraManager } from "../managers/cameraManager";
-import { Game } from "../game";
 
 export class Plane {
     readonly startPosition: Vector;
@@ -38,7 +37,8 @@ export class Plane {
                 falloff: 0.5,
                 maxRange: 256,
                 dynamic: true,
-                loop: true
+                loop: true,
+                noMuffledEffect: true
             }
         );
 
@@ -59,10 +59,10 @@ export class Plane {
             Game.planes.delete(this);
         }
 
-        if (Game.layer && Game.layer !== Layer.Floor1) {
-            this.image.visible = adjacentOrEqualLayer(Layer.Ground, Game.layer);
-            this.sound.maxRange = adjacentOrEqualLayer(Layer.Ground, Game.layer) ? 256 : 0;
-        }
+        // TODO more elegant way of doing this
+        const visible = Game.layer > Layer.Basement;
+        this.image.visible = visible;
+        this.sound.maxRange = visible ? 256 : 0;
     }
 
     destroy(): void {

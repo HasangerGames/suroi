@@ -46,7 +46,8 @@ import { Team } from "./team";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getSpawnableLoots, SpawnableItemRegistry } from "./utils/lootHelpers";
-import { cleanUsername, modeFromMap, removeFrom } from "./utils/misc";
+import { cleanUsername, modeFromMap } from "./utils/misc";
+import { removeFrom } from "@common/utils/misc";
 
 export class Game implements GameData {
     public readonly id: number;

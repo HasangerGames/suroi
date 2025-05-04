@@ -1,14 +1,13 @@
 import { ObjectCategory } from "@common/constants";
 import { resolveNumericSpecifier, type InternalAnimation, type NumericSpecifier, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
-import { getEffectiveZIndex } from "@common/utils/layer";
 import { Angle, EaseFunctions, Numeric } from "@common/utils/math";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { Vec, type Vector } from "@common/utils/vector";
+import { Game } from "../game";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
+import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
-import { Game } from "../game";
-import { DebugRenderer } from "../utils/debugRenderer";
 
 export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParticle) {
     readonly image = new SuroiSprite();
@@ -61,7 +60,10 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
         };
         this.container.position = startPosition;
 
-        this.layer = layer;
+        if (layer !== this.layer) {
+            this.layer = layer;
+            this.updateLayer();
+        }
         this._lifetime = lifetime ?? definition.lifetime as number;
         this._age = age;
         this._spawnTime = Date.now() - this._age * this._lifetime;
@@ -99,11 +101,7 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
 
         this.image.setFrame(`${definition.frame}${variant !== undefined ? `_${variant}` : ""}`);
         if (definition.tint) this.image.tint = definition.tint;
-        this.updateZIndex();
-    }
-
-    override updateZIndex(): void {
-        this.container.zIndex = getEffectiveZIndex(this.definition.zIndex, this.layer, Game.layer);
+        this.container.zIndex = this.definition.zIndex;
     }
 
     override updateDebugGraphics(): void {

@@ -1,4 +1,4 @@
-import { Layer, Layers, ZIndexes } from "../constants";
+import { Layer, Layers } from "../constants";
 import { type CommonGameObject } from "./gameObject";
 import { type Hitbox } from "./hitbox";
 import { type ObjectDefinition } from "./objectDefinitions";
@@ -149,12 +149,19 @@ export function isVisibleFromLayer(
     );
 }
 
-const layerCount = Object.keys(ZIndexes).length / 2; // account for double-indexing
+export enum LayerContainer { Basement, Ground, Upstairs }
 
-export function getEffectiveZIndex(orig: ZIndexes, layer = Layer.Ground, gameLayer = Layer.Ground): number {
-    if (layer > Layer.Ground || (gameLayer < Layer.Ground && layer < Layer.Ground)) {
-        layer = Layer.Floor1;
+export function getLayerContainer(objectLayer: Layer, activeLayer: Layer): LayerContainer {
+    switch (objectLayer) {
+        case Layer.Basement:
+            return LayerContainer.Basement;
+        case Layer.ToBasement:
+            return activeLayer <= Layer.ToBasement ? LayerContainer.Basement : LayerContainer.Ground;
+        case Layer.Ground:
+            return LayerContainer.Ground;
+        case Layer.ToUpstairs:
+            return activeLayer >= Layer.ToUpstairs ? LayerContainer.Upstairs : LayerContainer.Ground;
+        case Layer.Upstairs:
+            return LayerContainer.Upstairs;
     }
-
-    return orig + layer * layerCount;
 }

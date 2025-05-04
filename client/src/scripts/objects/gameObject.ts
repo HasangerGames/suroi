@@ -3,20 +3,19 @@ import { makeGameObjectTemplate } from "@common/utils/gameObject";
 import { Angle, Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
-import { FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Container } from "pixi.js";
 import { Game } from "../game";
-import { CameraManager } from "../managers/cameraManager";
-import { MapManager } from "../managers/mapManager";
 import { SoundManager, type GameSound, type SoundOptions } from "../managers/soundManager";
 import { toPixiCoords } from "../utils/pixi";
+import { CameraManager } from "../managers/cameraManager";
+import { getLayerContainer } from "@common/utils/layer";
 
 export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> extends makeGameObjectTemplate() {
     damageable = false;
     destroyed = false;
 
-    layer: Layer = Layer.Ground;
+    layer!: Layer;
 
     private _oldPosition?: Vector;
     private _lastPositionChange?: number;
@@ -97,7 +96,6 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
 
     constructor(readonly id: number) {
         super();
-        CameraManager.addObject(this.container);
     }
 
     destroy(): void {
@@ -116,13 +114,24 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
         });
     }
 
-    doOverlay(): boolean {
-        return FloorTypes[MapManager.terrain.getFloor(this.position, this.layer)]?.overlay ?? false;
-    }
-
     abstract updateFromData(data: ObjectsNetData[Cat], isNew: boolean): void;
 
-    abstract updateZIndex(): void;
+    layerContainer?: Container;
+    layerContainerIndex?: number;
+    readonly containers: Container[] = [this.container];
+    updateLayer(): void {
+        const oldContainer = this.layerContainer;
+        const newContainer = CameraManager.getContainer(this.layer, this.layerContainerIndex);
+        if (oldContainer === newContainer) return;
+
+        this.layerContainer = newContainer;
+        this.layerContainerIndex = getLayerContainer(this.layer, Game.layer);
+
+        for (const container of this.containers) {
+            oldContainer?.removeChild(container);
+            newContainer.addChild(container);
+        }
+    }
 
     abstract update(): void;
     abstract updateInterpolation(): void;

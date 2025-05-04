@@ -25,9 +25,9 @@ import { type SpectateData } from "@common/packets/spectatePacket";
 import { UpdatePacket, type PlayerData, type UpdateDataCommon } from "@common/packets/updatePacket";
 import { PlayerModifiers } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric } from "@common/utils/math";
-import { type SDeepMutable, type Timeout } from "@common/utils/misc";
+import { removeFrom, type SDeepMutable, type Timeout } from "@common/utils/misc";
 import { DefinitionType, ItemType, type EventModifiers, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray, randomPointInsideCircle, weightedRandom } from "@common/utils/random";
@@ -46,7 +46,6 @@ import { MeleeItem } from "../inventory/meleeItem";
 import { ServerPerkManager, UpdatablePerkDefinition } from "../inventory/perkManager";
 import { ThrowableItem } from "../inventory/throwableItem";
 import { type Team } from "../team";
-import { removeFrom } from "../utils/misc";
 import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
 import { Explosion } from "./explosion";
@@ -1444,14 +1443,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
             packet.deletedObjects = [];
             for (const object of this.visibleObjects) {
-                if (newVisibleObjects.has(object) && isVisibleFromLayer(this.layer, object)) continue;
+                if (newVisibleObjects.has(object)) continue;
 
                 this.visibleObjects.delete(object);
                 packet.deletedObjects.push(object.id);
             }
 
             for (const object of newVisibleObjects) {
-                if (this.visibleObjects.has(object) || !isVisibleFromLayer(this.layer, object)) continue;
+                if (this.visibleObjects.has(object)) continue;
 
                 this.visibleObjects.add(object);
                 fullObjects.add(object);

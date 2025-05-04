@@ -1,11 +1,9 @@
 import { Layer } from "@common/constants";
 import { TintedParticles } from "@common/definitions/obstacles";
-import { getEffectiveZIndex } from "@common/utils/layer";
 import { Numeric } from "@common/utils/math";
 import { random, randomRotation } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { Game } from "../game";
 import { CameraManager } from "./cameraManager";
 
 class ParticleManagerClass {
@@ -39,7 +37,7 @@ class ParticleManagerClass {
     spawnParticle(options: ParticleOptions): Particle {
         const particle = new Particle(options);
         this.particles.add(particle);
-        CameraManager.addObject(particle.image);
+        CameraManager.getContainer(options.layer ?? Layer.Ground).addChild(particle.image);
         return particle;
     }
 
@@ -150,7 +148,7 @@ export class Particle {
 
     protected _updateImage(): void {
         this.image
-            .setZIndex(getEffectiveZIndex(this.options.zIndex, this.layer, Game.layer))
+            .setZIndex(this.options.zIndex)
             .setVPos(toPixiCoords(this.position))
             .setScale(this.scale)
             .setRotation(this.rotation)

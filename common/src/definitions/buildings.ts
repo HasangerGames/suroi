@@ -645,7 +645,7 @@ const container = (
 };
 
 const riverHut = (id: number, obstacles: readonly BuildingObstacle[]): BuildingDefinition => {
-    const bridgeFloor1 = 31.5;
+    const bridgeUpstairs = 31.5;
     return {
         idString: `river_hut_${id}`,
         name: "River Hut",
@@ -662,7 +662,7 @@ const riverHut = (id: number, obstacles: readonly BuildingObstacle[]): BuildingD
             },
             {
                 key: "river_hut_bridge_floor_2",
-                position: Vec.create(bridgeFloor1, -5),
+                position: Vec.create(bridgeUpstairs, -5),
                 scale: Vec.create(2, 2)
             },
             {
@@ -683,7 +683,7 @@ const riverHut = (id: number, obstacles: readonly BuildingObstacle[]): BuildingD
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(32.5, 39.25),
                     RectangleHitbox.fromRect(10, 13, Vec.create(20.4, -10.5)),
-                    RectangleHitbox.fromRect(13, 46, Vec.create(bridgeFloor1, -5))
+                    RectangleHitbox.fromRect(13, 46, Vec.create(bridgeUpstairs, -5))
                 )
             },
             {
@@ -4634,31 +4634,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         particle: "hq_stone_wall_particle",
         particleVariations: 2,
         collideWithLayers: Layers.Adjacent,
-        ceilingImages: [
-            {
-                key: "headquarters_second_floor_bottom",
-                position: Vec.create(0.5, 15.8)
-            },
-            {
-                key: "headquarters_second_floor_top", // dont touch :3
-                position: Vec.create(0, -69)
-            },
-            {
-                key: "headquarters_torture_window", // dont touch :3
-                position: Vec.create(-65, -84.8),
-                scale: Vec.create(1, 1.055)
-            },
-            {
-                key: "headquarters_ceiling_1",
-                position: Vec.create(0.4, -66.722),
-                scale: Vec.create(2.15, 2.15)
-            },
-            {
-                key: "headquarters_ceiling_2",
-                position: Vec.create(-46.2, 5.85),
-                scale: Vec.create(2.15, 2.15)
-            }
-        ],
         hitbox: new GroupHitbox(
             // Outer walls
             RectangleHitbox.fromRect(84.9, 1.75, Vec.create(-29.2, -106.4)), // T, W1
@@ -4958,6 +4933,23 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         material: "stone",
         particle: "hq_stone_wall_particle",
         particleVariations: 2,
+        ceilingImages: [
+            {
+                key: "headquarters_torture_window", // dont touch :3
+                position: Vec.create(-70.6, -84.2),
+                scale: Vec.create(1, 1.055)
+            },
+            {
+                key: "headquarters_ceiling_1",
+                position: Vec.create(-5.2, -66.122),
+                scale: Vec.create(2.15, 2.15)
+            },
+            {
+                key: "headquarters_ceiling_2",
+                position: Vec.create(-51.8, 6.45),
+                scale: Vec.create(2.15, 2.15)
+            }
+        ],
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(20, 40, Vec.create(75.975, -15)),
             RectangleHitbox.fromRect(60, 40, Vec.create(35.975, -5)),
@@ -5173,11 +5165,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(1.9, 16.6, Vec.create(-6.1, 0.15))
         ),
         spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
-        floorImages: [{
-            key: "small_bunker_entrance_floor",
-            position: Vec.create(-0.05, 0),
-            scale: Vec.create(2.2, 2.2)
-        }],
         floors: [
             { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(10, 18, Vec.create(0, 0)) }
         ],
@@ -5208,7 +5195,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floorImages: [
             {
                 key: "small_bunker_floor",
-                position: Vec.create(0, 0),
+                position: Vec.create(0, 7),
                 scale: Vec.create(2.2, 2.2)
             }
         ],
@@ -5253,6 +5240,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingZIndex: ZIndexes.ObstaclesLayer3,
         visibleFromLayers: Layers.All,
         hitbox: RectangleHitbox.fromRect(12, 1, Vec.create(0, 12.3)),
+        floorImages: [{
+            key: "small_bunker_entrance_floor",
+            position: Vec.create(-0.05, 20),
+            scale: Vec.create(2.2, 2.2)
+        }],
         ceilingImages: [{
             key: "small_bunker_entrance_ceiling",
             position: Vec.create(0, 18),
@@ -5310,7 +5302,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(60, 14, Vec.create(0, -21))
         ),
         ceilingHitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(20.5, 55.5, Vec.create(-19.5, 0)),
+            RectangleHitbox.fromRect(30.5, 55.5, Vec.create(-19.5, 0)),
             RectangleHitbox.fromRect(61, 14, Vec.create(0, -21))
         ),
         floorImages: [
@@ -5330,6 +5322,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 scale: Vec.create(1.07, 1.07)
             }
         ],
+        ceilingImages: [{
+            key: "barn_ceiling",
+            position: Vec.create(12.9, 11.35),
+            scale: Vec.create(2.12, 2.12)
+        }],
         floors: [
             {
                 type: FloorNames.Wood,
@@ -5415,11 +5412,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec.create(-50, -37)
             }
         ],
-        ceilingImages: [{
-            key: "barn_ceiling",
-            position: Vec.create(-11, -0.5),
-            scale: Vec.create(2.12, 2.12)
-        }],
         floors: [
             {
                 type: FloorNames.Stone,
@@ -6165,16 +6157,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 key: "lodge_second_floor_bottom",
                 position: Vec.create(0, 29.9)
-            },
-            {
-                key: "lodge_ceiling_top",
-                position: Vec.create(0, -35),
-                scale: Vec.create(2, 2)
-            },
-            {
-                key: "lodge_ceiling_bottom",
-                position: Vec.create(0, 16.85),
-                scale: Vec.create(2, 2)
             }
         ],
         subBuildings: [
@@ -6363,6 +6345,19 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: Vec.create(0, 29.8)
             }
         ],
+        ceilingImages: [
+            {
+                key: "lodge_ceiling_top",
+                position: Vec.create(0, -35),
+                scale: Vec.create(2, 2)
+            },
+            {
+                key: "lodge_ceiling_bottom",
+                position: Vec.create(0, 16.85),
+                scale: Vec.create(2, 2)
+            }
+        ],
+        ceilingZIndex: ZIndexes.BuildingsCeiling + 1,
         subBuildings: [
             { idString: "lodge_secret_room", position: Vec.create(-2.7, -48) }
         ],

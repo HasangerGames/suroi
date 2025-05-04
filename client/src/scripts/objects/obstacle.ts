@@ -1,8 +1,8 @@
-import { Layer, Layers, ObjectCategory, ZIndexes } from "@common/constants";
+import { ObjectCategory, ZIndexes } from "@common/constants";
 import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
 import { RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer, equivLayer, getEffectiveZIndex } from "@common/utils/layer";
+import { equivLayer } from "@common/utils/layer";
 import { Angle, EaseFunctions, Numeric, calculateDoorHitboxes } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
@@ -10,14 +10,14 @@ import { random, randomBoolean, randomFloat, randomRotation } from "@common/util
 import { Vec, type Vector } from "@common/utils/vector";
 import { Graphics } from "pixi.js";
 import { Game } from "../game";
+import { ParticleManager, type Particle, type ParticleEmitter, type ParticleOptions } from "../managers/particleManager";
 import { SoundManager, type GameSound } from "../managers/soundManager";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE } from "../utils/constants";
+import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
-import { ParticleManager, type Particle, type ParticleEmitter, type ParticleOptions } from "../managers/particleManager";
 import { type Player } from "./player";
-import { DebugRenderer } from "../utils/debugRenderer";
 
 export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     override readonly damageable = true;
@@ -90,6 +90,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             this.rotation = full.rotation.rotation;
             this.orientation = full.rotation.orientation;
             this.layer = full.layer;
+            this.updateLayer();
             this.variation = full.variation;
 
             if (definition.gunMount && !this.mountSpriteInitalized) {
@@ -358,7 +359,9 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             this._glow?.kill();
         }
 
-        this.updateZIndex();
+        this.container.zIndex = this.dead
+            ? ZIndexes.DeadObstacles
+            : this.definition.zIndex ?? ZIndexes.ObstaclesLayer1;
 
         if (this._door === undefined) {
             this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
@@ -388,21 +391,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         }
 
         this.container.rotation = this.rotation;
-    }
-
-    override updateZIndex(): void {
-        const zIndex = this.dead
-            ? this.doOverlay()
-                ? ZIndexes.UnderWaterDeadObstacles
-                : ZIndexes.DeadObstacles
-            : this.definition.zIndex ?? ZIndexes.ObstaclesLayer1;
-
-        this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, Game.layer);
-
-        // hides bunker doors on ground layer
-        if (this.definition.visibleFromLayers === Layers.All && Game.activePlayer !== undefined) {
-            this.container.visible = adjacentOrEqualLayer(this.layer, Game.layer ?? Layer.Ground);
-        }
     }
 
     override updateDebugGraphics(): void {
