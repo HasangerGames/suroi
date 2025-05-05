@@ -1,7 +1,7 @@
 import { AnimationType, GameConstants, PlayerActions } from "@common/constants";
 import { HealType, type HealingItemDefinition } from "@common/definitions/items/healingItems";
 import { Loots } from "@common/definitions/loots";
-import { PerkData, PerkIds, Perks } from "@common/definitions/items/perks";
+import { PerkIds, Perks } from "@common/definitions/items/perks";
 import { Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
