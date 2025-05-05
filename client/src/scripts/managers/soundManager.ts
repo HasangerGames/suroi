@@ -7,7 +7,7 @@ import { Game } from "../game";
 import * as PixiSound from "@pixi/sound";
 import type { AudioSpritesheetImporter } from "../../../vite/plugins/audio-spritesheet-plugin";
 import { GameConsole } from "../console/gameConsole";
-import { adjacentOrEqualLayer } from "@common/utils/layer";
+import type { Tween } from "../utils/tween";
 
 export interface SoundOptions {
     position?: Vector
@@ -46,6 +46,8 @@ export class GameSound {
 
     // acts as multiplier
     volume = 1;
+
+    volumeTween?: Tween<GameSound>;
 
     instance?: PixiSound.IMediaInstance;
     readonly stereoFilter: PixiSound.filters.StereoFilter;
@@ -97,7 +99,7 @@ export class GameSound {
         instance.on("stop", () => {
             this.ended = true;
         });
-        this.updateLayer();
+        this.updateLayer(true);
         this.update();
     }
 
@@ -117,21 +119,42 @@ export class GameSound {
         }
     }
 
-    updateLayer(): void {
+    updateLayer(initial = false): void {
         if (!this.instance) return;
 
-        if (this.ambient) {
-            this.volume = adjacentOrEqualLayer(this.layer, Game.layer) ? 1 : 0;
+        let volume = 1;
+        const layerDelta = Math.abs(Game.layer - this.layer);
+        if (layerDelta === 1) {
+            volume = 0.5;
+        } else if (layerDelta >= 2) {
+            volume = 0.15;
+        }
+
+        if (initial) {
+            this.volume = volume;
+            this._updateMuffledFilter(layerDelta);
             return;
         }
 
-        // muffle the sound if it's 2 or more layers away
-        if (Math.abs(Game.layer - this.layer) >= 2 && !this.noMuffledEffect) {
-            this.volume = 0.15;
+        this.volumeTween?.kill();
+        this.volumeTween = Game.addTween<GameSound>({
+            target: this,
+            to: { volume },
+            duration: 500,
+            onComplete: () => {
+                this.volumeTween = undefined;
+                this._updateMuffledFilter(layerDelta);
+            }
+        });
+    }
+
+    private _updateMuffledFilter(layerDelta: number): void {
+        if (this.noMuffledEffect) return;
+
+        if (layerDelta >= 2) {
             // @ts-expect-error pixi sound doesn't have typings for this for some reason
             this.instance.filters = [this.stereoFilter, this.telephoneFilter ??= new PixiSound.filters.TelephoneFilter()];
         } else if (this.telephoneFilter) {
-            this.volume = 1;
             // @ts-expect-error see above
             this.instance.filters = [this.stereoFilter];
         }

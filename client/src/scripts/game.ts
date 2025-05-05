@@ -99,8 +99,6 @@ export const Game = new (class Game {
     readonly bullets = new Set<Bullet>();
     readonly planes = new Set<Plane>();
 
-    ambience?: GameSound;
-
     layerTween?: Tween<Container>;
 
     readonly spinningImages = new Map<SuroiSprite, number>();
@@ -551,7 +549,7 @@ export const Game = new (class Game {
 
         const ambience = this.mode.sounds?.ambience;
         if (ambience) {
-            this.ambience = SoundManager.play(ambience, { loop: true, ambient: true });
+            SoundManager.play(ambience, { loop: true, ambient: true, noMuffledEffect: true });
         }
 
         UIManager.emotes = packet.emotes;
@@ -863,28 +861,6 @@ export const Game = new (class Game {
                 onComplete: () => { this.backgroundTween = undefined; }
             });
         }
-
-        if (this.ambience !== undefined) {
-            this.volumeTween?.kill();
-
-            let volume: number;
-
-            // stairway leading down to bunker—half volume
-            if (layer === Layer.ToBasement) volume = 0.5;
-
-            // below ground—very muted
-            else if (layer <= Layer.Basement) volume = 0.15;
-
-            // above ground—play as normal
-            else /* if (layer >= Layer.Ground) */ volume = 1;
-
-            this.volumeTween = this.addTween({
-                target: this.ambience,
-                to: { volume },
-                duration: 2000,
-                onComplete: () => { this.volumeTween = undefined; }
-            });
-        };
     }
 
     // yes this might seem evil. but the two local variables really only need to
