@@ -8271,15 +8271,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 ])
             },
             {
-                color: 0x542020,
+                color: 0x542828,
                 hitbox: RectangleHitbox.fromRect(12.65, 25.09, Vec.create(47.38, 25.18))
             },
             {
-                color: 0xcccccc,
+                color: 0xaaaaaa,
                 hitbox: RectangleHitbox.fromRect(11.15, 23.6, Vec.create(47.4, 25.16))
             },
             {
-                color: 0x6b2929,
+                color: 0x6b3232,
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(1.16, 0.91, Vec.create(52.39, 36.51)),
                     RectangleHitbox.fromRect(0.95, 2.98, Vec.create(42.3, 19.48)),
