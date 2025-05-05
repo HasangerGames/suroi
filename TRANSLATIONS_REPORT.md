@@ -2,7 +2,7 @@
 
 This file is a report of all errors and missing keys in the translation files of this game.
 
-## 🇦🇱 Shqip (64% Complete) - ab.hjson
+## 🇦🇱 Shqip (63% Complete) - ab.hjson
 
 ### Invalid Keys
 
@@ -42,6 +42,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
 - Key `interact_speaker` is not defined
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
@@ -74,11 +75,14 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_suicide_finished_off` is not defined
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
+- Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
 - Key `m16a4` is not defined
 - Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -137,11 +141,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
 
-## 🇧🇷 Português (Brasil) (80% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (96% Complete) - br.hjson
 
 ### Invalid Keys
 
 - Key `create_team_waiting` is not a valid key
+- Key `baby_plumpkin_pie_desc` is not a valid key
 
 ### Undefined Keys
 
@@ -154,66 +159,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_right_joystick_color` is not defined
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
+- Key `action_vaccine_syringe_use` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
+- Key `tt_desc` is not defined
 - Key `region_oc` is not defined
-- Key `second_wind` is not defined
-- Key `second_wind_desc` is not defined
-- Key `flechettes` is not defined
-- Key `flechettes_desc` is not defined
-- Key `sabot_rounds` is not defined
-- Key `sabot_rounds_desc` is not defined
-- Key `extended_mags` is not defined
-- Key `extended_mags_desc` is not defined
-- Key `demo_expert` is not defined
-- Key `demo_expert_desc` is not defined
-- Key `advanced_athletics` is not defined
-- Key `advanced_athletics_desc` is not defined
-- Key `toploaded` is not defined
-- Key `toploaded_desc` is not defined
-- Key `infinite_ammo` is not defined
-- Key `infinite_ammo_desc` is not defined
-- Key `field_medic` is not defined
-- Key `field_medic_desc` is not defined
-- Key `berserker` is not defined
-- Key `berserker_desc` is not defined
-- Key `close_quarters_combat` is not defined
-- Key `close_quarters_combat_desc` is not defined
-- Key `low_profile` is not defined
-- Key `low_profile_desc` is not defined
-- Key `combat_expert` is not defined
-- Key `combat_expert_desc` is not defined
-- Key `precision_recycling` is not defined
-- Key `precision_recycling_desc` is not defined
-- Key `plumpkin_gamble` is not defined
-- Key `plumpkin_gamble_desc` is not defined
-- Key `lycanthropy` is not defined
-- Key `lycanthropy_desc` is not defined
-- Key `bloodthirst` is not defined
-- Key `bloodthirst_desc` is not defined
-- Key `plumpkin_bomb` is not defined
-- Key `plumpkin_bomb_desc` is not defined
-- Key `shrouded` is not defined
-- Key `shrouded_desc` is not defined
-- Key `experimental_treatment` is not defined
-- Key `experimental_treatment_desc` is not defined
-- Key `engorged` is not defined
-- Key `engorged_desc` is not defined
-- Key `baby_plumpkin_pie` is not defined
-- Key `costumed` is not defined
-- Key `costumed_desc` is not defined
-- Key `torn_pockets` is not defined
-- Key `torn_pockets_desc` is not defined
-- Key `claustrophobic` is not defined
-- Key `claustrophobic_desc` is not defined
-- Key `laced_stimulants` is not defined
-- Key `laced_stimulants_desc` is not defined
-- Key `rotten_plumpkin` is not defined
-- Key `rotten_plumpkin_desc` is not defined
-- Key `infected` is not defined
-- Key `infected_desc` is not defined
-- Key `immunity` is not defined
-- Key `immunity_desc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 
 ## 🇨🇿 Čeština (67% Complete) - cz.hjson
 
@@ -257,6 +209,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
 - Key `interact_speaker` is not defined
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
@@ -277,10 +230,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -339,7 +295,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
 
-## 🇩🇪 Deutsch (77% Complete) - de.hjson
+## 🇩🇪 Deutsch (76% Complete) - de.hjson
 
 ### Invalid Keys
 
@@ -366,12 +322,16 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_haptics` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `tt_desc` is not defined
 - Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -463,6 +423,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_switched_joystick_info` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
@@ -481,9 +442,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -570,6 +534,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_switched_joystick_info` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
@@ -588,9 +553,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -649,7 +617,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
 
-## 🇫🇮 suomi (71% Complete) - fi.hjson
+## 🇫🇮 suomi (70% Complete) - fi.hjson
 
 ### Invalid Keys
 
@@ -681,6 +649,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_the_team_eliminated` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
@@ -699,9 +668,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -760,7 +732,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
 
-## 🇫🇷 Français (73% Complete) - fr.hjson
+## 🇫🇷 Français (88% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -786,6 +758,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_switched_joystick_info` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
@@ -803,68 +776,14 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
-- Key `second_wind` is not defined
-- Key `second_wind_desc` is not defined
-- Key `flechettes` is not defined
-- Key `flechettes_desc` is not defined
-- Key `sabot_rounds` is not defined
-- Key `sabot_rounds_desc` is not defined
-- Key `extended_mags` is not defined
-- Key `extended_mags_desc` is not defined
-- Key `demo_expert` is not defined
-- Key `demo_expert_desc` is not defined
-- Key `advanced_athletics` is not defined
-- Key `advanced_athletics_desc` is not defined
-- Key `toploaded` is not defined
-- Key `toploaded_desc` is not defined
-- Key `infinite_ammo` is not defined
-- Key `infinite_ammo_desc` is not defined
-- Key `field_medic` is not defined
-- Key `field_medic_desc` is not defined
-- Key `berserker` is not defined
-- Key `berserker_desc` is not defined
-- Key `close_quarters_combat` is not defined
-- Key `close_quarters_combat_desc` is not defined
-- Key `low_profile` is not defined
-- Key `low_profile_desc` is not defined
-- Key `combat_expert` is not defined
-- Key `combat_expert_desc` is not defined
-- Key `precision_recycling` is not defined
-- Key `precision_recycling_desc` is not defined
-- Key `plumpkin_gamble` is not defined
-- Key `plumpkin_gamble_desc` is not defined
-- Key `lycanthropy` is not defined
-- Key `lycanthropy_desc` is not defined
-- Key `bloodthirst` is not defined
-- Key `bloodthirst_desc` is not defined
-- Key `plumpkin_bomb` is not defined
-- Key `plumpkin_bomb_desc` is not defined
-- Key `shrouded` is not defined
-- Key `shrouded_desc` is not defined
-- Key `experimental_treatment` is not defined
-- Key `experimental_treatment_desc` is not defined
-- Key `engorged` is not defined
-- Key `engorged_desc` is not defined
-- Key `baby_plumpkin_pie` is not defined
-- Key `costumed` is not defined
-- Key `costumed_desc` is not defined
-- Key `torn_pockets` is not defined
-- Key `torn_pockets_desc` is not defined
-- Key `claustrophobic` is not defined
-- Key `claustrophobic_desc` is not defined
-- Key `laced_stimulants` is not defined
-- Key `laced_stimulants_desc` is not defined
-- Key `rotten_plumpkin` is not defined
-- Key `rotten_plumpkin_desc` is not defined
-- Key `infected` is not defined
-- Key `infected_desc` is not defined
-- Key `immunity` is not defined
-- Key `immunity_desc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 
-## 🇬🇷 Ελληνικά (78% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (77% Complete) - gr.hjson
 
 ### Invalid Keys
 
@@ -888,11 +807,15 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_switched_joystick_info` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
+- Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -951,7 +874,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (66% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (65% Complete) - hk_mo.hjson
 
 ### Invalid Keys
 
@@ -995,6 +918,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
 - Key `interact_speaker` is not defined
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
@@ -1017,10 +941,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -1090,6 +1017,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_error_kicked_team` is not defined
 - Key `recording` is not defined
 - Key `settings_alt_texture_loading` is not defined
+- Key `action_vaccine_syringe_use` is not defined
 - Key `interact_monument` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_impact_of` is not defined
@@ -1104,8 +1032,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -1221,6 +1152,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
 - Key `interact_headquarters_security_desk` is not defined
 - Key `interact_speaker` is not defined
 - Key `interact_monument` is not defined
@@ -1244,11 +1176,14 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
 - Key `m16a4` is not defined
 - Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -1349,6 +1284,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
 - Key `interact_speaker` is not defined
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
@@ -1369,10 +1305,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -1473,6 +1412,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
 - Key `interact_speaker` is not defined
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
@@ -1493,10 +1433,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -1597,6 +1540,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
 - Key `interact_speaker` is not defined
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
@@ -1617,10 +1561,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -1679,71 +1626,18 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
 
-## 🇳🇱 Nederlands (84% Complete) - nl.hjson
+## 🇳🇱 Nederlands (99% Complete) - nl.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
-- Key `second_wind` is not defined
-- Key `second_wind_desc` is not defined
-- Key `flechettes` is not defined
-- Key `flechettes_desc` is not defined
-- Key `sabot_rounds` is not defined
-- Key `sabot_rounds_desc` is not defined
-- Key `extended_mags` is not defined
-- Key `extended_mags_desc` is not defined
-- Key `demo_expert` is not defined
-- Key `demo_expert_desc` is not defined
-- Key `advanced_athletics` is not defined
-- Key `advanced_athletics_desc` is not defined
-- Key `toploaded` is not defined
-- Key `toploaded_desc` is not defined
-- Key `infinite_ammo` is not defined
-- Key `infinite_ammo_desc` is not defined
-- Key `field_medic` is not defined
-- Key `field_medic_desc` is not defined
-- Key `berserker` is not defined
-- Key `berserker_desc` is not defined
-- Key `close_quarters_combat` is not defined
-- Key `close_quarters_combat_desc` is not defined
-- Key `low_profile` is not defined
-- Key `low_profile_desc` is not defined
-- Key `combat_expert` is not defined
-- Key `combat_expert_desc` is not defined
-- Key `precision_recycling` is not defined
-- Key `precision_recycling_desc` is not defined
-- Key `plumpkin_gamble` is not defined
-- Key `plumpkin_gamble_desc` is not defined
-- Key `lycanthropy` is not defined
-- Key `lycanthropy_desc` is not defined
-- Key `bloodthirst` is not defined
-- Key `bloodthirst_desc` is not defined
-- Key `plumpkin_bomb` is not defined
-- Key `plumpkin_bomb_desc` is not defined
-- Key `shrouded` is not defined
-- Key `shrouded_desc` is not defined
-- Key `experimental_treatment` is not defined
-- Key `experimental_treatment_desc` is not defined
-- Key `engorged` is not defined
-- Key `engorged_desc` is not defined
-- Key `baby_plumpkin_pie` is not defined
-- Key `costumed` is not defined
-- Key `costumed_desc` is not defined
-- Key `torn_pockets` is not defined
-- Key `torn_pockets_desc` is not defined
-- Key `claustrophobic` is not defined
-- Key `claustrophobic_desc` is not defined
-- Key `laced_stimulants` is not defined
-- Key `laced_stimulants_desc` is not defined
-- Key `rotten_plumpkin` is not defined
-- Key `rotten_plumpkin_desc` is not defined
-- Key `infected` is not defined
-- Key `infected_desc` is not defined
-- Key `immunity` is not defined
-- Key `immunity_desc` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `tt_desc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 
-## 🇵🇱 Polski (71% Complete) - pl.hjson
+## 🇵🇱 Polski (70% Complete) - pl.hjson
 
 ### Invalid Keys
 
@@ -1775,6 +1669,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_the_team_eliminated` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
 - Key `interact_monument` is not defined
 - Key `loading_fetching_data_failed` is not defined
 - Key `retry` is not defined
@@ -1793,9 +1688,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -1854,7 +1752,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
 
-## 🎀 Cute Engwish (75% Complete) - qen.hjson
+## 🎀 Cute Engwish (74% Complete) - qen.hjson
 
 ### Invalid Keys
 
@@ -1873,6 +1771,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_right_joystick_color` is not defined
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
+- Key `action_vaccine_syringe_use` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `bindings_screen_record` is not defined
@@ -1889,9 +1788,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -1950,7 +1852,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
 
-## 🇷🇴 Română (84% Complete) - ro.hjson
+## 🇷🇴 Română (83% Complete) - ro.hjson
 
 ### Invalid Keys
 
@@ -1958,6 +1860,10 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `action_vaccine_syringe_use` is not defined
+- Key `tt_desc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -2016,7 +1922,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
 
-## 🇷🇺 Русский (83% Complete) - ru.hjson
+## 🇷🇺 Русский (98% Complete) - ru.hjson
 
 ### Invalid Keys
 
@@ -2025,66 +1931,13 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `settings_show_inout` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `tt_desc` is not defined
 - Key `m16a4` is not defined
-- Key `second_wind` is not defined
-- Key `second_wind_desc` is not defined
-- Key `flechettes` is not defined
-- Key `flechettes_desc` is not defined
-- Key `sabot_rounds` is not defined
-- Key `sabot_rounds_desc` is not defined
-- Key `extended_mags` is not defined
-- Key `extended_mags_desc` is not defined
-- Key `demo_expert` is not defined
-- Key `demo_expert_desc` is not defined
-- Key `advanced_athletics` is not defined
-- Key `advanced_athletics_desc` is not defined
-- Key `toploaded` is not defined
-- Key `toploaded_desc` is not defined
-- Key `infinite_ammo` is not defined
-- Key `infinite_ammo_desc` is not defined
-- Key `field_medic` is not defined
-- Key `field_medic_desc` is not defined
-- Key `berserker` is not defined
-- Key `berserker_desc` is not defined
-- Key `close_quarters_combat` is not defined
-- Key `close_quarters_combat_desc` is not defined
-- Key `low_profile` is not defined
-- Key `low_profile_desc` is not defined
-- Key `combat_expert` is not defined
-- Key `combat_expert_desc` is not defined
-- Key `precision_recycling` is not defined
-- Key `precision_recycling_desc` is not defined
-- Key `plumpkin_gamble` is not defined
-- Key `plumpkin_gamble_desc` is not defined
-- Key `lycanthropy` is not defined
-- Key `lycanthropy_desc` is not defined
-- Key `bloodthirst` is not defined
-- Key `bloodthirst_desc` is not defined
-- Key `plumpkin_bomb` is not defined
-- Key `plumpkin_bomb_desc` is not defined
-- Key `shrouded` is not defined
-- Key `shrouded_desc` is not defined
-- Key `experimental_treatment` is not defined
-- Key `experimental_treatment_desc` is not defined
-- Key `engorged` is not defined
-- Key `engorged_desc` is not defined
-- Key `baby_plumpkin_pie` is not defined
-- Key `costumed` is not defined
-- Key `costumed_desc` is not defined
-- Key `torn_pockets` is not defined
-- Key `torn_pockets_desc` is not defined
-- Key `claustrophobic` is not defined
-- Key `claustrophobic_desc` is not defined
-- Key `laced_stimulants` is not defined
-- Key `laced_stimulants_desc` is not defined
-- Key `rotten_plumpkin` is not defined
-- Key `rotten_plumpkin_desc` is not defined
-- Key `infected` is not defined
-- Key `infected_desc` is not defined
-- Key `immunity` is not defined
-- Key `immunity_desc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 
-## 🇮🇳 தமிழ் (79% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (78% Complete) - ta.hjson
 
 ### Invalid Keys
 
@@ -2094,6 +1947,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_error_kicked_team` is not defined
 - Key `settings_alt_texture_loading` is not defined
+- Key `action_vaccine_syringe_use` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_impact_of` is not defined
 - Key `km_finally_ended_yourself` is not defined
@@ -2107,8 +1961,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -2167,7 +2024,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
 
-## 🇹🇷 Turkısh (83% Complete) - tr.hjson
+## 🇹🇷 Turkısh (82% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -2177,8 +2034,12 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -2237,7 +2098,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
 
-## 🇹🇼 中文（繁體） (79% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (78% Complete) - tw.hjson
 
 ### Invalid Keys
 
@@ -2247,6 +2108,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_error_kicked_team` is not defined
 - Key `settings_alt_texture_loading` is not defined
+- Key `action_vaccine_syringe_use` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_impact_of` is not defined
 - Key `km_finally_ended_yourself` is not defined
@@ -2260,8 +2122,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -2320,7 +2185,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
 
-## 🇻🇳 Tiếng Việt (74% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (73% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -2345,6 +2210,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_switched_joystick_info` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `kf_suicide_finished_off` is not defined
@@ -2360,9 +2226,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `km_killed_you` is not defined
 - Key `km_suicide_down` is not defined
 - Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
 - Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
 - Key `second_wind_desc` is not defined
 - Key `flechettes` is not defined
@@ -2421,12 +2290,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
 
-## 🇨🇳 中文（简体） (84% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
 
 ### Invalid Keys
 
 - Key `msg_lost_connection` is not a valid key
 - Key `username_input_placeholder` is not a valid key
+- Key `vaccine_syringe_desc_action` is not a valid key
 - Key `create_team_waiting` is not a valid key
 - Key `developr_vest` is not a valid key
 - Key `destroyer_of_worlds` is not a valid key
@@ -2640,63 +2510,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `special_weapon_preset_title` is not a valid key
 - Key `time_minute` is not a valid key
 - Key `time_second` is not a valid key
+- Key `baby_plumpkin_pie_desc` is not a valid key
 
 ### Undefined Keys
 
+- Key `tt_desc` is not defined
 - Key `m16a4` is not defined
-- Key `second_wind` is not defined
-- Key `second_wind_desc` is not defined
-- Key `flechettes` is not defined
-- Key `flechettes_desc` is not defined
-- Key `sabot_rounds` is not defined
-- Key `sabot_rounds_desc` is not defined
-- Key `extended_mags` is not defined
-- Key `extended_mags_desc` is not defined
-- Key `demo_expert` is not defined
-- Key `demo_expert_desc` is not defined
-- Key `advanced_athletics` is not defined
-- Key `advanced_athletics_desc` is not defined
-- Key `toploaded` is not defined
-- Key `toploaded_desc` is not defined
-- Key `infinite_ammo` is not defined
-- Key `infinite_ammo_desc` is not defined
-- Key `field_medic` is not defined
-- Key `field_medic_desc` is not defined
-- Key `close_quarters_combat` is not defined
-- Key `close_quarters_combat_desc` is not defined
-- Key `low_profile` is not defined
-- Key `low_profile_desc` is not defined
-- Key `combat_expert` is not defined
-- Key `combat_expert_desc` is not defined
-- Key `precision_recycling` is not defined
-- Key `precision_recycling_desc` is not defined
-- Key `plumpkin_gamble` is not defined
-- Key `plumpkin_gamble_desc` is not defined
-- Key `lycanthropy` is not defined
-- Key `lycanthropy_desc` is not defined
-- Key `bloodthirst` is not defined
-- Key `bloodthirst_desc` is not defined
-- Key `plumpkin_bomb` is not defined
-- Key `plumpkin_bomb_desc` is not defined
-- Key `shrouded` is not defined
-- Key `shrouded_desc` is not defined
-- Key `experimental_treatment` is not defined
-- Key `experimental_treatment_desc` is not defined
-- Key `engorged` is not defined
-- Key `engorged_desc` is not defined
-- Key `baby_plumpkin_pie` is not defined
-- Key `costumed` is not defined
-- Key `costumed_desc` is not defined
-- Key `torn_pockets` is not defined
-- Key `torn_pockets_desc` is not defined
-- Key `claustrophobic` is not defined
-- Key `claustrophobic_desc` is not defined
-- Key `laced_stimulants` is not defined
-- Key `laced_stimulants_desc` is not defined
-- Key `rotten_plumpkin` is not defined
-- Key `rotten_plumpkin_desc` is not defined
-- Key `infected` is not defined
-- Key `infected_desc` is not defined
-- Key `immunity` is not defined
-- Key `immunity_desc` is not defined
+- Key `vaccine_syringe_desc` is not defined
 
