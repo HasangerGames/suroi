@@ -26,10 +26,10 @@ import { ColorStyles, FontStyles, styleText } from "../../common/src/utils/loggi
 import { NullString, type ItemDefinition } from "../../common/src/utils/objectDefinitions";
 import { FloorTypes } from "../../common/src/utils/terrain";
 import { Vec, type Vector } from "../../common/src/utils/vector";
-import { Config, GasMode, Config as ServerConfig, SpawnMode, type MapWithParams } from "../../server/src/config";
+import { Config, GasMode, Config as ServerConfig, type MapWithParams } from "../../server/src/config";
 import { GasStages } from "../../server/src/data/gasStages";
 import { LootTables } from "../../server/src/data/lootTables";
-import { Maps, type MapName, type RiverDefinition } from "../../server/src/data/maps";
+import { Maps, SpawnMode, type MapName, type RiverDefinition } from "../../server/src/data/maps";
 import type { FullLootTable, SimpleLootTable, WeightedItem } from "../../server/src/utils/lootHelpers";
 import { findDupes, logger, safeString, tester, validators } from "./validationUtils";
 
