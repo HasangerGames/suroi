@@ -960,7 +960,11 @@ export const Game = new (class Game {
                     }
                 } else if (isBuilding) {
                     object.toggleCeiling();
-                    if (object.ceilingHitbox !== undefined && !object.ceilingVisible) {
+                    if (
+                        object.ceilingHitbox !== undefined
+                        && !object.ceilingVisible
+                        && object.definition.subBuildings?.some(({ layer }) => layer === Layer.Upstairs)
+                    ) {
                         hideSecondFloor = true;
                     }
 
