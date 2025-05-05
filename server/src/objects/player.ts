@@ -2126,7 +2126,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
         // ! evil ends here
-
         const applyModifiers = (modifiers: WearerAttributes): void => {
             newModifiers.maxHealth *= modifiers.maxHealth ?? 1;
             newModifiers.maxAdrenaline *= modifiers.maxAdrenaline ?? 1;

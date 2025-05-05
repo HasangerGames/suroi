@@ -141,9 +141,6 @@ export class HealingAction extends Action {
         super.execute();
 
         this.player.inventory.items.decrementItem(this.item.idString);
-
-        const effect = this.item.effect;
-
         switch (this.item.healType) {
             case HealType.Health:
                 this.player.health += this.item.restoreAmount;
@@ -152,19 +149,22 @@ export class HealingAction extends Action {
                 this.player.adrenaline += this.item.restoreAmount;
                 break;
             case HealType.Special:
-                if (effect === undefined) return; // ???
-                this.player.adrenaline += effect.adrenaline;
-                if (effect?.removePerk) {
-                    this.player.perks.removeItem(Perks.fromString(effect.removePerk));
-                    if (effect.removePerk === PerkIds.Infected) {
-                        const immunity = PerkData[PerkIds.Immunity];
-                        this.player.perks.addItem(immunity);
-                        this.player.immunityTimeout?.kill();
-                        this.player.immunityTimeout = this.player.game.addTimeout(() => this.player.perks.removeItem(immunity), immunity.duration);
-                    }
-                    this.player.setDirty();
+                if (this.item.effect?.restoreAmounts !== undefined) {
+                    this.item.effect.restoreAmounts.forEach(heals => {
+                        switch (heals.healType) {
+                            case HealType.Health:
+                                this.player.health += heals.restoreAmount;
+                                break;
+                            case HealType.Adrenaline:
+                                this.player.adrenaline += heals.restoreAmount;
+                                break;
+                        }
+                    });
                 }
-                // may implement more for future uses
+                if (this.item.effect?.removePerk !== undefined) {
+                    this.player.perks.removeItem(Perks.fromString(this.item.effect.removePerk));
+                }
+                break;
         }
         this.player.dirty.items = true;
     }

@@ -592,10 +592,10 @@ class UIManagerClass {
             }
 
             $("#ammos-container, #healing-items-container").toggleClass("active", pingWheelActive);
-            for (const healingItem of HealingItems) {
-                const itemSlot = this._itemSlotCache[healingItem.idString] ??= $(`#${healingItem.idString}-slot`);
-                if (pingWheelActive && healingItem.hideUnlessPresent) itemSlot.css("visibility", "visible");
-                else if (healingItem.hideUnlessPresent && this.inventory.items[healingItem.idString] === 0) itemSlot.css("visibility", "hidden");
+            for (const healItem of HealingItems) {
+                const itemSlot = this._itemSlotCache[healItem.idString] ??= $(`#${healItem.idString}-slot`);
+                if (pingWheelActive && healItem.hideUnlessPresent) itemSlot.css("visibility", "visible");
+                else if (healItem.hideUnlessPresent && this.inventory.items[healItem.idString] === 0) itemSlot.css("visibility", "hidden");
             }
         }
         for (let i = 0; i < 4; i++) {
