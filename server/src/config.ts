@@ -1,5 +1,5 @@
 import { TeamSize } from "@common/constants";
-import { type Maps } from "./data/maps";
+import { type Maps, SpawnMode, SpawnOptions } from "./data/maps";
 import { type Game } from "./game";
 import { type GamePlugin } from "./pluginManager";
 
@@ -43,28 +43,6 @@ export const Config = {
 } satisfies ConfigType as ConfigType;
 
 export type MapWithParams = `${keyof typeof Maps}${string}`;
-
-export const enum SpawnMode {
-    Normal,
-    Radius,
-    Fixed,
-    Center,
-    Default
-}
-
-export type SpawnOptions =
-    | {
-        readonly mode: SpawnMode.Normal | SpawnMode.Center
-    }
-    | {
-        readonly mode: SpawnMode.Radius
-        readonly position: readonly [x: number, y: number, z?: number]
-        readonly radius: number
-    }
-    | {
-        readonly mode: SpawnMode.Fixed
-        readonly position: readonly [x: number, y: number, z?: number]
-    };
 
 export const enum GasMode {
     Normal,
