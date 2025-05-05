@@ -2496,7 +2496,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hideWhenOpen: true,
         operationStyle: "slide",
         slideFactor: 0.9,
-        animationDuration: 500,
+        animationDuration: 400,
         frames: {
             base: "auto_door"
         },
@@ -2520,7 +2520,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hideWhenOpen: true,
         operationStyle: "slide",
         slideFactor: 0.9,
-        animationDuration: 500,
+        animationDuration: 400,
         frames: {
             base: "auto_door"
         },
@@ -2543,7 +2543,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hideWhenOpen: true,
         operationStyle: "slide",
         slideFactor: 0.9,
-        animationDuration: 500,
+        animationDuration: 400,
         frames: {
             base: "auto_door",
             particle: "metal_auto_door_particle"
