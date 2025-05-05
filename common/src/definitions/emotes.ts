@@ -106,8 +106,7 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
             "emoji_50",
             "Boykisser",
             "Grr",
-            "are you sure",
-            "cash brown"
+            "are you sure"
         ],
         [EmoteCategory.Text]: [
             "Question Mark",
