@@ -655,7 +655,7 @@ export class GameMap {
             this.terrain.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation), floor.layer ?? layer);
         }
 
-        if (!definition.hideOnMap && !(building.layer < Layer.Ground)) this._packet.objects.push(building);
+        if (!definition.hideOnMap) this._packet.objects.push(building);
         this.game.grid.addObject(building);
         this.game.pluginManager.emit("building_did_generate", building);
 
