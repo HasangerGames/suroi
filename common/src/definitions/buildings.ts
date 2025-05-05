@@ -8442,10 +8442,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         particle: "rock_particle",
         particleVariations: 2,
         floorZIndex: ZIndexes.Ground,
-        bridgeMinRiverWidth: 15,
+        bridgeMinRiverWidth: 18,
         bridgeHitbox: new GroupHitbox(
-            RectangleHitbox.fromRect(89.28, 42.3, Vec.create(-15.17, 37.93)),
-            RectangleHitbox.fromRect(89.28, 42.3, Vec.create(-15.17, -46.35))
+            // RectangleHitbox.fromRect(25, 42.3, Vec.create(-17.5, 37.93)),
+            // RectangleHitbox.fromRect(25, 42.3, Vec.create(-17.5, -46.35)),
+            RectangleHitbox.fromRect(100, 55, Vec.create(-16, -92)),
+            RectangleHitbox.fromRect(100, 55, Vec.create(-16, 83))
         ),
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(2.13, 2.24, Vec.create(-24.8, 9.91)),
@@ -8548,7 +8550,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "regular_crate", position: Vec.create(-17.49, 36.64) },
             { idString: "regular_crate", position: Vec.create(-44.61, 73.56) },
 
-            { idString: "barrel", position: Vec.create(-17.26, 26.43) },
+            { idString: "barrel", position: Vec.create(-19.5, 26.43) },
             { idString: "barrel", position: Vec.create(29.46, -88.82) },
             { idString: "barrel", position: Vec.create(-44.58, 63.1) },
 
@@ -8557,7 +8559,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "propane_tank", position: Vec.create(4.18, 68.95) },
             { idString: "propane_tank", position: Vec.create(4.18, 63.99) },
 
-            { idString: "ammo_crate", position: Vec.create(-17.36, -44.88) },
+            { idString: "sandbags", position: Vec.create(-15.4, -44.88), rotation: 1 },
             { idString: "ammo_crate", position: Vec.create(24.85, -78.26) },
             { idString: "ammo_crate", position: Vec.create(-34.17, 67.72) },
             { idString: "ammo_crate", position: Vec.create(11.91, 66.33) },
