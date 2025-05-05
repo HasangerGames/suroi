@@ -5303,7 +5303,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ),
         ceilingHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(30.5, 55.5, Vec.create(-19.5, 0)),
-            RectangleHitbox.fromRect(61, 14, Vec.create(0, -21))
+            RectangleHitbox.fromRect(61, 14, Vec.create(7, -21))
         ),
         floorImages: [
             {
