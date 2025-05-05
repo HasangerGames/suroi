@@ -291,6 +291,7 @@ class MapManagerClass {
         mapRender.addChild(mapGraphics);
 
         for (const mapObject of this._objects) {
+            const zIndexOffset = ((mapObject.layer ?? Layer.Ground) + 1) * Z_INDEX_COUNT;
             switch (mapObject.type) {
                 case ObjectCategory.Obstacle: {
                     const definition = mapObject.definition;
@@ -301,7 +302,7 @@ class MapManagerClass {
 
                     const image = new SuroiSprite(texture)
                         .setVPos(mapObject.position).setRotation(mapObject.rotation)
-                        .setZIndex(definition.zIndex ?? ZIndexes.ObstaclesLayer1);
+                        .setZIndex((definition.zIndex ?? ZIndexes.ObstaclesLayer1) + zIndexOffset);
 
                     if (definition.tint !== undefined) image.setTint(definition.tint);
                     image.scale.set((mapObject.scale ?? 1) * (1 / PIXI_SCALE));
@@ -311,14 +312,13 @@ class MapManagerClass {
                 }
 
                 case ObjectCategory.Building: {
+                    if (mapObject.layer < Layer.Ground) continue;
                     const definition = mapObject.definition;
                     const rotation = mapObject.rotation;
 
-                    const zIndexOffset = (mapObject.layer + 1) * Z_INDEX_COUNT;
-
                     const floorContainer = new Container({
                         sortableChildren: true,
-                        zIndex: ZIndexes.BuildingsFloor + zIndexOffset,
+                        zIndex: (definition.floorZIndex ?? ZIndexes.BuildingsFloor) + zIndexOffset,
                         rotation,
                         position: mapObject.position
                     });
