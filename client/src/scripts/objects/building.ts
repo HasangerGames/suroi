@@ -1,23 +1,22 @@
-import { ObjectCategory, ZIndexes } from "@common/constants";
+import { GameConstants, ObjectCategory, ZIndexes } from "@common/constants";
 import { type BuildingDefinition, type BuildingImageDefinition } from "@common/definitions/buildings";
 import { MaterialSounds } from "@common/definitions/obstacles";
 import { type Orientation } from "@common/typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { equivLayer, getEffectiveZIndex, isGroundLayer } from "@common/utils/layer";
-import { Angle, Collision, EaseFunctions, Numeric, type CollisionResponse } from "@common/utils/math";
+import { equivLayer } from "@common/utils/layer";
+import { Angle, EaseFunctions, Numeric } from "@common/utils/math";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Container, Graphics } from "pixi.js";
+import { Game } from "../game";
+import { ParticleManager } from "../managers/particleManager";
 import { SoundManager, type GameSound } from "../managers/soundManager";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, LAYER_TRANSITION_DELAY, PIXI_SCALE } from "../utils/constants";
+import { DebugRenderer } from "../utils/debugRenderer";
 import { drawGroundGraphics, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
-import { CameraManager } from "../managers/cameraManager";
-import { Game } from "../game";
-import { ParticleManager } from "../managers/particleManager";
-import { DebugRenderer } from "../utils/debugRenderer";
 
 export class Building extends GameObject.derive(ObjectCategory.Building) {
     definition!: BuildingDefinition;
@@ -54,16 +53,17 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
     constructor(id: number, data: ObjectsNetData[ObjectCategory.Building]) {
         super(id);
 
-        this.layer = data.layer;
-
         this.container.sortableChildren = true;
-
-        CameraManager.addObject(this.ceilingContainer);
+        this.containers.push(this.ceilingContainer);
 
         this.updateFromData(data, true);
     }
 
-    toggleCeiling(duration = 200): void {
+    ceilingRaycastLines?: Array<[Vector, Vector]>;
+
+    toggleCeiling(): void {
+        if (this.ceilingRaycastLines) this.ceilingRaycastLines.length = 0;
+
         if (this.ceilingHitbox === undefined || this.ceilingTween || this.dead) return;
         const player = Game.activePlayer;
         if (player === undefined) return;
@@ -71,90 +71,65 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         let visible = true;
 
         if (this.ceilingHitbox.collidesWith(player.hitbox)) {
+            // If the player is inside the ceiling hitbox, we know the ceiling should be hidden
             visible = false;
-            duration = !isGroundLayer(player.layer) ? 0 : 200; // We do not want a ceiling tween during the layer change.
         } else {
-            const visionSize = 14;
-
-            const playerHitbox = new CircleHitbox(visionSize, player.position);
+            // Otherwise, we do some raycasting to check
+            const visionSize = GameConstants.player.buildingVisionSize;
+            const rayStart = player.position;
+            const playerHitbox = new CircleHitbox(visionSize, rayStart);
+            const halfPi = Math.PI / 2;
+            const potentials = [
+                ...Game.objects.getCategory(ObjectCategory.Obstacle),
+                ...Game.objects.getCategory(ObjectCategory.Building)
+            ];
 
             const hitboxes = this.ceilingHitbox instanceof GroupHitbox ? this.ceilingHitbox.hitboxes : [this.ceilingHitbox];
-
             for (const hitbox of hitboxes) {
-                // find the direction to cast rays
-                let collision: CollisionResponse = null;
-
-                switch (true) {
-                    case hitbox instanceof CircleHitbox: {
-                        collision = Collision.circleCircleIntersection(
-                            hitbox.position,
-                            hitbox.radius,
-                            playerHitbox.position,
-                            playerHitbox.radius
-                        );
-                        break;
-                    }
-                    case hitbox instanceof RectangleHitbox: {
-                        collision = Collision.rectCircleIntersection(
-                            hitbox.min,
-                            hitbox.max,
-                            playerHitbox.position,
-                            playerHitbox.radius
-                        );
-                        break;
-                    }
-                    case hitbox instanceof PolygonHitbox: {
-                        // TODO
-                        break;
-                    }
+                // TODO
+                if (hitbox instanceof PolygonHitbox) {
+                    visible = true;
+                    continue;
                 }
 
-                const direction = collision?.dir;
-                if (direction) {
-                    const angle = Math.atan2(direction.y, direction.x);
+                // find the direction to cast rays
+                const direction = playerHitbox.getIntersection(hitbox)?.dir;
+                if (!direction) {
+                    visible = true;
+                    continue;
+                }
+
+                const angle = Math.atan2(direction.y, direction.x);
+
+                let raysPenetrated = 0;
+                for (let i = angle - halfPi; i < angle + halfPi; i += 0.1) {
+                    const rayEnd = Vec.add(rayStart, Vec.fromPolar(i, visionSize));
+                    const rayCeilingIntersection = this.ceilingHitbox.intersectsLine(rayStart, rayEnd)?.point;
+
+                    if (DEBUG_CLIENT) {
+                        (this.ceilingRaycastLines ??= []).push([rayStart, rayCeilingIntersection ?? rayEnd]);
+                    }
+
+                    if (!rayCeilingIntersection) continue;
 
                     let collided = false;
+                    for (const { damageable, dead, definition, layer, hitbox } of potentials) {
+                        if (
+                            !damageable
+                            || dead
+                            || ("isWindow" in definition && definition.isWindow)
+                            || !equivLayer({ layer, definition }, player)
+                            || !hitbox?.intersectsLine(rayStart, rayCeilingIntersection)
+                        ) continue;
 
-                    const halfPi = Math.PI / 2;
-                    for (let i = angle - halfPi; i < angle + halfPi; i += 0.1) {
-                        collided = false;
-
-                        const end = this.ceilingHitbox.intersectsLine(
-                            player.position,
-                            Vec.add(
-                                player.position,
-                                Vec.scale(
-                                    Vec.create(Math.cos(i), Math.sin(i)),
-                                    visionSize
-                                )
-                            )
-                        )?.point;
-
-                        if (!end) {
-                            // what's the point of this assignment?
-                            collided = true;
-                            continue;
-                        }
-
-                        if (!(
-                            collided
-                                ||= [
-                                    ...Game.objects.getCategory(ObjectCategory.Obstacle),
-                                    ...Game.objects.getCategory(ObjectCategory.Building)
-                                ].some(
-                                    ({ damageable, dead, definition, hitbox, layer }) =>
-                                        damageable
-                                        && !dead
-                                        && (!("isWindow" in definition) || !definition.isWindow)
-                                        && equivLayer({ layer, definition }, player)
-                                        && hitbox?.intersectsLine(player.position, end)
-                                )
-                        )) break;
+                        collided = true;
+                        break;
                     }
-                    visible = collided;
-                } else {
-                    visible = true;
+                    if (!collided) raysPenetrated++;
+
+                    if (raysPenetrated > 1) break;
                 }
+                visible = raysPenetrated <= 1;
 
                 if (!visible) break;
             }
@@ -169,7 +144,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         this.ceilingTween = Game.addTween({
             target: this.ceilingContainer,
             to: { alpha },
-            duration,
+            duration: LAYER_TRANSITION_DELAY,
             ease: EaseFunctions.sineOut,
             onComplete: () => {
                 this.ceilingTween = undefined;
@@ -202,14 +177,14 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
             if (definition.graphics?.length) {
                 this.graphics = new Graphics();
-                this.graphics.zIndex = getEffectiveZIndex(definition.graphicsZIndex ?? ZIndexes.BuildingsFloor, this.layer, Game.layer);
+                this.graphics.zIndex = definition.graphicsZIndex ?? ZIndexes.BuildingsFloor;
                 for (const graphics of definition.graphics) {
                     this.graphics.beginPath();
                     drawGroundGraphics(graphics.hitbox.transform(this.position, 1, this.orientation), this.graphics);
                     this.graphics.closePath();
                     this.graphics.fill(graphics.color);
                 }
-                CameraManager.addObject(this.graphics);
+                this.containers.push(this.graphics);
             }
 
             for (const override of definition.visibilityOverrides ?? []) {
@@ -232,7 +207,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             if (this.maskHitbox) {
                 this.mask = new Graphics();
                 this.mask.alpha = 0;
-                CameraManager.addObject(this.mask);
+                this.containers.push(this.mask);
 
                 for (const hitbox of this.maskHitbox.hitboxes) {
                     const { min, max } = hitbox;
@@ -249,6 +224,8 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                 }
             }
 
+            this.updateLayer();
+
             this.hitbox = definition.hitbox?.transform(this.position, 1, this.orientation);
             this.damageable = !!definition.hitbox;
             this.ceilingHitbox = definition.ceilingHitbox?.transform(this.position, 1, this.orientation);
@@ -264,6 +241,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             const { sounds } = definition;
             const soundOptions = {
                 position: Vec.add(Vec.rotate(sounds.position ?? Vec.create(0, 0), this.rotation), this.position),
+                layer: this.layer,
                 fallOff: sounds.falloff,
                 maxRange: sounds.maxRange,
                 dynamic: true,
@@ -352,24 +330,10 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
         this.toggleCeiling();
 
-        this.updateZIndex();
-    }
-
-    override updateZIndex(): void {
-        if (this.dead) {
-            this.ceilingContainer.zIndex = getEffectiveZIndex(ZIndexes.DeadObstacles, this.layer, Game.layer);
-        } else {
-            const { obstacles = [], subBuildings = [] } = this.definition;
-            this.ceilingContainer.zIndex = getEffectiveZIndex(
-                this.definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling,
-                this.layer + Numeric.clamp(Math.max( // make sure the ceiling appears over everything else
-                    ...obstacles.map(({ layer }) => layer ?? 0),
-                    ...subBuildings.map(({ layer }) => layer ?? 0)
-                ), 0, Infinity),
-                Game.layer
-            );
-        }
-        this.container.zIndex = getEffectiveZIndex(this.definition.floorZIndex ?? ZIndexes.BuildingsFloor, this.layer, Game.layer);
+        this.ceilingContainer.zIndex = this.dead
+            ? ZIndexes.DeadObstacles
+            : this.definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling;
+        this.container.zIndex = this.definition.floorZIndex ?? ZIndexes.BuildingsFloor;
     }
 
     override updateDebugGraphics(): void {
@@ -420,7 +384,16 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             DebugRenderer.addHitbox(
                 collider.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.buildingVisOverride,
-                layer === Game.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY
+                layer === Game.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY
+            );
+        }
+
+        for (const [start, end] of this.ceilingRaycastLines ?? []) {
+            DebugRenderer.addLine(
+                start,
+                end,
+                HITBOX_COLORS.buildingCeilingRaycast,
+                alpha
             );
         }
     }

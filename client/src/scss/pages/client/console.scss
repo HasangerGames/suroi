@@ -248,23 +248,35 @@
                 }
 
                 span.cvar-detail-archived {
-                    padding: 0 1px;
                     background-color: hsl(280, 70%, 60%);
+
+                    &.cvar-inactive-flag {
+                        filter: brightness(0.5) opacity(0.5);
+                    }
                 }
 
                 span.cvar-detail-cheat {
-                    padding: 0 1px;
                     background-color: hsl(20, 90%, 40%);
+
+                    &.cvar-inactive-flag {
+                        filter: brightness(0.5) opacity(0.5);
+                    }
                 }
 
                 span.cvar-detail-readonly {
-                    padding: 0 1px;
                     background-color: hsl(100, 60%, 30%);
+
+                    &.cvar-inactive-flag {
+                        filter: brightness(0.5) opacity(0.5);
+                    }
                 }
 
                 span.cvar-detail-replicated {
-                    padding: 0 1px;
                     background-color: hsl(170, 40%, 40%);
+
+                    &.cvar-inactive-flag {
+                        filter: brightness(0.5) opacity(0.5);
+                    }
                 }
 
                 // colors stolen from vscode dark theme

@@ -1354,7 +1354,14 @@ export function setUpCommands(): void {
         (): undefined => {
             GameConsole.log.raw({
                 main: "List of CVars",
-                detail: `<ul>${GameConsole.variables.dump()}</ul>`
+                detail: `<table>
+                    <thead><tr>
+                        <td>Flags</td>
+                        <td>Name</td>
+                        <td>Value</td>
+                    </tr></thead>
+                    <tbody>${GameConsole.variables.dump()}</tbody>
+                </table>`
             });
         },
         {

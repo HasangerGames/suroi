@@ -12,7 +12,7 @@ import { Loots, type WeaponDefinition } from "@common/definitions/loots";
 import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer, getEffectiveZIndex } from "@common/utils/layer";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Angle, EaseFunctions, Geometry } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
@@ -61,7 +61,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     backEquippedMelee?: MeleeDefinition;
 
     private activeDisguise?: ObstacleDefinition;
-    private readonly disguiseContainer: Container;
     halloweenThrowableSkin = false;
 
     infected = false;
@@ -109,8 +108,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         readonly body: SuroiSprite
         readonly leftFist: SuroiSprite
         readonly rightFist: SuroiSprite
-        readonly leftLeg?: SuroiSprite
-        readonly rightLeg?: SuroiSprite
+        leftLeg?: SuroiSprite
+        rightLeg?: SuroiSprite
         readonly backpack: SuroiSprite
         readonly helmet: SuroiSprite
         readonly weapon: SuroiSprite
@@ -118,9 +117,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         readonly muzzleFlash: SuroiSprite
         readonly waterOverlay: SuroiSprite
         readonly blood: Container
-        readonly disguiseSprite: SuroiSprite
         readonly backMeleeSprite: SuroiSprite
-        readonly badge?: SuroiSprite
+        disguiseSprite?: SuroiSprite
     };
 
     readonly emote: {
@@ -173,27 +171,26 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     constructor(id: number, data: ObjectsNetData[ObjectCategory.Player]) {
         super(id);
 
-        CameraManager.addObject(this.disguiseContainer = new Container());
-
-        const teamMode = Game.teamMode;
-
         this.images = {
             vest: new SuroiSprite().setVisible(false),
             body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
             rightFist: new SuroiSprite(),
-            leftLeg: teamMode ? new SuroiSprite().setPos(-35, 26).setZIndex(-1) : undefined,
-            rightLeg: teamMode ? new SuroiSprite().setPos(-35, -26).setZIndex(-1) : undefined,
-            backpack: new SuroiSprite().setPos(-35, 0).setVisible(false).setZIndex(-1),
-            helmet: new SuroiSprite().setPos(-8, 0).setVisible(false).setZIndex(6),
+            backpack: new SuroiSprite().setVisible(false).setPos(-35, 0).setZIndex(-1),
+            helmet: new SuroiSprite().setVisible(false).setPos(-8, 0).setZIndex(6),
             weapon: new SuroiSprite().setZIndex(3),
             altWeapon: new SuroiSprite().setZIndex(3),
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec.create(0, 0.5)),
             waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(Game.colors.water),
             blood: new Container(),
-            disguiseSprite: new SuroiSprite(),
-            backMeleeSprite: new SuroiSprite().setZIndex(ZIndexes.Players + 0.1)
+            backMeleeSprite: new SuroiSprite()
         };
+
+        if (Game.teamMode) {
+            const createLegImage = (): SuroiSprite => new SuroiSprite().setPos(-35, 26).setZIndex(-1).setScale(1.5, 0.8);
+            this.images.leftLeg = createLegImage();
+            this.images.rightLeg = createLegImage();
+        }
 
         if (InputManager.isMobile && this.isActivePlayer) {
             const aimTrail = this.images.aimTrail = new Graphics();
@@ -220,27 +217,18 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.backMeleeSprite
         );
 
-        this.disguiseContainer.addChild(this.images.disguiseSprite);
+        this.container.zIndex = ZIndexes.Players;
 
-        // this.images.blood.zIndex = getEffectiveZIndex(4, Game.layer, Game.layer);
-
-        if (teamMode) {
-            // teamMode guarantees these images' presence
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.images.leftLeg!.scale = this.images.rightLeg!.scale = Vec.create(1.5, 0.8);
-        }
-
-        let emote: this["emote"];
-        this.emote = emote = {
+        const emote = this.emote = {
             background: new SuroiSprite("emote_background").setPos(0, 0),
             image: new SuroiSprite().setPos(0, 0),
             container: new Container()
         };
 
-        CameraManager.addObject(emote.container);
         emote.container.addChild(emote.background, emote.image);
-        emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer, Game.layer);
+        emote.container.zIndex = ZIndexes.Emotes;
         emote.container.visible = false;
+        this.containers.push(emote.container);
 
         this.updateFistsPosition(false);
         this.updateWeapon();
@@ -292,13 +280,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     override updateContainerPosition(): void {
         super.updateContainerPosition();
-        if (!this.destroyed) {
-            this.emote.container.position = Vec.addComponent(this.container.position, 0, -175);
-            this.disguiseContainer.position = this.container.position;
-            if (this.teammateName) {
-                this.teammateName.container.position = Vec.addComponent(this.container.position, 0, 95);
-                this.teammateName.container.zIndex = getEffectiveZIndex(ZIndexes.TeammateName, this.layer, Game.layer);
-            }
+
+        if (this.destroyed) return;
+
+        this.emote.container.position = Vec.addComponent(this.container.position, 0, -175);
+        if (this.teammateName) {
+            this.teammateName.container.position = Vec.addComponent(this.container.position, 0, 95);
         }
     }
 
@@ -403,8 +390,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Player], isNew = false): void {
-        const previousLayer = this.layer;
-
         // Position and rotation
         const oldPosition = Vec.clone(this.position);
         this.position = data.position;
@@ -431,33 +416,28 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         }
 
         const floorType = MapManager.terrain.getFloor(this.position, this.layer);
-
-        const doOverlay = FloorTypes[floorType].overlay;
-        const layerChanged = previousLayer !== this.layer || Game.layer !== this.layer || isNew;
-        let updateContainerZIndex = isNew || FloorTypes[this.floorType].overlay !== doOverlay || layerChanged;
-
         if (floorType !== this.floorType) {
-            if (doOverlay) this.images.waterOverlay.setVisible(true);
+            const doOverlay = FloorTypes[floorType].overlay;
+            if (doOverlay) {
+                this.images.waterOverlay.setVisible(true);
+            }
 
             this.anims.waterOverlay?.kill();
-            this.anims.waterOverlay = Game.addTween(
-                {
-                    target: this.images.waterOverlay,
-                    to: {
-                        alpha: doOverlay ? 1 : 0
-                    },
-                    duration: 200,
-                    onComplete: () => {
-                        if (!doOverlay) this.images.waterOverlay.setVisible(false);
-
-                        this.anims.waterOverlay = undefined;
+            this.anims.waterOverlay = Game.addTween({
+                target: this.images.waterOverlay,
+                to: { alpha: doOverlay ? 1 : 0 },
+                duration: 200,
+                onComplete: () => {
+                    this.anims.waterOverlay = undefined;
+                    if (!doOverlay) {
+                        this.images.waterOverlay.setVisible(false);
                     }
                 }
-            );
+            });
         }
         this.floorType = floorType;
 
-        if (oldPosition !== undefined) {
+        if (!isNew) {
             const dist = Geometry.distance(oldPosition, this.position);
             this.distSinceLastFootstep += dist;
             this.distTraveled += dist;
@@ -520,9 +500,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         if (isNew || !GameConsole.getBuiltInCVar("cv_movement_smoothing")) {
             this.container.position.copyFrom(toPixiCoords(this.position));
-            this.disguiseContainer.position.copyFrom(toPixiCoords(this.position));
-            this.emote.container.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, -175)));
-            this.teammateName?.container.position.copyFrom(Vec.add(toPixiCoords(this.position), Vec.create(0, 95)));
+            this.emote.container.position.copyFrom(Vec.addComponent(toPixiCoords(this.position), 0, -175));
+            this.teammateName?.container.position.copyFrom(Vec.addComponent(toPixiCoords(this.position), 0, 95));
         }
 
         if (data.animation !== undefined) {
@@ -553,14 +532,20 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
             } = data;
 
-            const layerChange = this.isActivePlayer && (this.layer !== layer || isNew);
-            this.layer = layer;
-            if (layerChange) Game.changeLayer(this.layer);
+            const layerChanged = layer !== this.layer;
+            let oldLayer: Layer | undefined;
+            if (layerChanged) {
+                oldLayer = this.layer;
+                this.layer = layer;
+                if (!this.isActivePlayer || isNew) this.updateLayer();
+            }
+            if (this.isActivePlayer && (layerChanged || isNew)) {
+                Game.updateLayer(isNew, oldLayer);
+            }
 
             this.backEquippedMelee = backEquippedMelee;
 
             this.container.visible = !dead;
-            this.disguiseContainer.visible = this.container.visible;
 
             const hadSkin = this.halloweenThrowableSkin;
             if (
@@ -598,12 +583,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             this.dead = dead;
 
-            // this.layer = data.layer; - why assign again?
-
             this.teamID = teamID;
-
-            const teammateIDs = [];
-            for (const teammate of UIManager.teammates) teammateIDs.push(teammate.id);
 
             void Game.fontObserver.then(() => this.updateTeammateName());
 
@@ -611,7 +591,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             if (this.downed !== downed) {
                 this.downed = downed;
-                updateContainerZIndex = true;
+                this.container.zIndex = this.downed ? ZIndexes.DownedPlayers : ZIndexes.Players;
                 this.updateFistsPosition(false);
                 this.updateWeapon(isNew);
                 this.updateEquipment();
@@ -710,16 +690,20 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.updateWeapon(isNew);
             }
 
-            const oldDisguise = this.activeDisguise;
-            if (oldDisguise !== (this.activeDisguise = activeDisguise)) {
-                const def = this.activeDisguise;
+            if (this.activeDisguise !== activeDisguise) {
+                const def = this.activeDisguise = activeDisguise;
+                let disguiseSprite = this.images.disguiseSprite;
                 if (def !== undefined) {
-                    this.images.disguiseSprite.setVisible(true);
-                    this.images.disguiseSprite.setFrame(`${def.frames?.base ?? def.idString}${def.variations !== undefined ? `_${random(1, def.variations)}` : ""}`);
+                    if (!disguiseSprite) {
+                        disguiseSprite = this.images.disguiseSprite = new SuroiSprite();
+                        disguiseSprite.zIndex = 999; // this only applies within the player container, not globally
+                        this.container.addChild(disguiseSprite);
+                    }
+                    disguiseSprite.setFrame(`${def.frames?.base ?? def.idString}${def.variations !== undefined ? `_${random(1, def.variations)}` : ""}`);
+                    disguiseSprite.setVisible(true);
                 } else {
-                    this.images.disguiseSprite.setVisible(false);
+                    disguiseSprite?.setVisible(false);
                 }
-                updateContainerZIndex = true;
             }
 
             if (infected !== this.infected) {
@@ -744,8 +728,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 backMeleeSprite.setAngle(onBack.angle);
             }
         }
-
-        if (updateContainerZIndex) this.updateZIndex();
 
         if (data.action !== undefined) {
             const action = data.action;
@@ -784,7 +766,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     if (this.isActivePlayer) {
                         UIManager.animateAction(
                             getTranslatedString("action_reloading"),
-                            (reloadFullClip ? weaponDef.fullReloadTime : weaponDef.reloadTime) / (ClientPerkManager.hasItem(PerkIds.CombatExpert) ? PerkData[PerkIds.CombatExpert].reloadMod : 1)
+                            (reloadFullClip ? weaponDef.fullReloadTime : weaponDef.reloadTime) / (ClientPerkManager.mapOrDefault(PerkIds.CombatExpert, ({ reloadMod }) => reloadMod, 1))
                         );
                     }
 
@@ -817,12 +799,18 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
 
             if (actionSoundName) {
+                let speed = 1;
+                if (ClientPerkManager.hasItem(PerkIds.CombatExpert) && action.type === PlayerActions.Reload) {
+                    speed = PerkData[PerkIds.CombatExpert].reloadMod;
+                } else if (ClientPerkManager.hasItem(PerkIds.FieldMedic) && actionSoundName === action.item?.idString) {
+                    speed = PerkData[PerkIds.FieldMedic].usageMod;
+                }
                 this.actionSound = this.playSound(
                     actionSoundName,
                     {
                         falloff: 0.6,
                         maxRange: 48,
-                        speed: (ClientPerkManager.hasItem(PerkIds.CombatExpert) && action.type === PlayerActions.Reload) ? PerkData[PerkIds.CombatExpert].reloadMod : ClientPerkManager.hasItem(PerkIds.FieldMedic) && actionSoundName === action.item?.idString ? PerkData[PerkIds.FieldMedic].usageMod : 1
+                        speed
                     }
                 );
             }
@@ -978,8 +966,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 container.addChild(badge);
             }
 
-            container.zIndex = getEffectiveZIndex(ZIndexes.DeathMarkers, game.layer, game.layer);
-            CameraManager.addObject(container);
+            container.zIndex = ZIndexes.DeathMarkers;
+            this.containers.push(container);
         } else if (
             this.teammateName
             && (
@@ -1162,22 +1150,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         }
     }
 
-    override updateZIndex(): void {
-        // i love ternary spam
-        const zIndex = FloorTypes[this.floorType].overlay
-            ? this.downed
-                ? ZIndexes.UnderwaterDownedPlayers
-                : ZIndexes.UnderwaterPlayers
-            : this.downed
-                ? ZIndexes.DownedPlayers
-                : ZIndexes.Players;
-
-        this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, Game.layer);
-        this.disguiseContainer.zIndex = this.container.zIndex + 1;
-        this.emote.container.zIndex = getEffectiveZIndex(ZIndexes.Emotes, this.layer, Game.layer);
-        if (this.teammateName) this.teammateName.container.zIndex = getEffectiveZIndex(ZIndexes.DeathMarkers, Game.layer, Game.layer);
-    }
-
     updateEquipmentWorldImage(type: "helmet" | "vest" | "backpack"): void {
         const image = this.images[type];
         const def = this.equipment[type];
@@ -1277,23 +1249,21 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.anims.emote?.kill();
         this.anims.emoteHide?.kill();
         this._emoteHideTimeout?.kill();
-        this.playSound(
-            "emote",
-            {
-                falloff: 0.4,
-                maxRange: 128
-            }
-        );
-        this.emote.image.setFrame(emote.idString);
 
-        const container = this.emote.container;
+        this.playSound("emote", {
+            falloff: 0.4,
+            maxRange: 128
+        });
+
+        const { container, background, image } = this.emote;
+
         container.visible = true;
         container.scale.set(0);
         container.alpha = 0;
 
         const { backgroundTexture, scale } = Loot.getBackgroundAndScale(Loots.fromStringSafe(emote.idString));
-        this.emote.background.setFrame(backgroundTexture ?? "emote_background");
-        this.emote.image.setScale(scale ?? 1);
+        background.setFrame(backgroundTexture ?? "emote_background");
+        image.setFrame(emote.idString).setScale(scale ?? 1);
 
         this.anims.emote = Game.addTween({
             target: container,
@@ -2001,7 +1971,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         images.muzzleFlash.destroy();
         images.waterOverlay.destroy();
         images.blood.destroy();
-        images.disguiseSprite.destroy();
+        images.disguiseSprite?.destroy();
 
         emote.image.destroy();
         emote.background.destroy();
@@ -2020,7 +1990,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         anims.muzzleFlashFade?.kill();
         anims.muzzleFlashRecoil?.kill();
 
-        this.disguiseContainer.destroy();
         images.backMeleeSprite?.destroy();
 
         this.healingParticlesEmitter.destroy();

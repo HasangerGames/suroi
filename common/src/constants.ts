@@ -29,6 +29,7 @@ export const GameConstants = {
         maxReviveDist: 5,
         bleedOutDPMs: 0.002, // === 2 dps
         maxPerkCount: 1,
+        buildingVisionSize: 20,
         rateLimitPunishmentTrigger: 10,
         emotePunishmentTime: 5000, // ms
         rateLimitInterval: 1000,
@@ -88,13 +89,6 @@ export const GameConstants = {
 
 export enum ZIndexes {
     Ground,
-    UnderWaterDeathMarkers,
-    UnderWaterDeadObstacles,
-    UnderWaterObstacles,
-    UnderWaterLoot,
-    UnderwaterGroundedThrowables,
-    UnderwaterDownedPlayers,
-    UnderwaterPlayers,
     BuildingsFloor,
     Decals,
     DeadObstacles,
@@ -129,12 +123,14 @@ export enum ZIndexes {
     Gas
 }
 
-export const enum Layer {
-    Basement1 = -2,
-    ToBasement1 = -1,
+export const Z_INDEX_COUNT = Object.keys(ZIndexes).length / 2; // account for double indexing
+
+export enum Layer {
+    Basement = -2,
+    ToBasement = -1,
     Ground = 0,
-    ToFloor1 = 1,
-    Floor1 = 2
+    ToUpstairs = 1,
+    Upstairs = 2
 }
 
 export const enum Layers {

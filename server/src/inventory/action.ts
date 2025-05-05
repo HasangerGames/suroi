@@ -75,7 +75,7 @@ export class ReloadAction extends Action {
         const fullReload = item.definition.reloadFullOnEmpty && item.ammo <= 0;
         super(
             player,
-            (fullReload ? item.definition.fullReloadTime : item.definition.reloadTime) / (player.hasPerk(PerkIds.CombatExpert) ? PerkData[PerkIds.CombatExpert].reloadMod : 1)
+            (fullReload ? item.definition.fullReloadTime : item.definition.reloadTime) / (player.mapPerkOrDefault(PerkIds.CombatExpert, ({ reloadMod }) => reloadMod, 1))
         );
         this.fullReload = !!fullReload;
     }

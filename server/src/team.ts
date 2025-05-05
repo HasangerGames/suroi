@@ -5,7 +5,7 @@ import { WebSocket } from "uWebSockets.js";
 import { MapWithParams } from "./config";
 import { findGame } from "./gameManager";
 import { type Player } from "./objects/player";
-import { removeFrom } from "./utils/misc";
+import { removeFrom } from "@common/utils/misc";
 
 export class Team {
     readonly id: number;

@@ -1,11 +1,12 @@
-import { ItemType, ObjectDefinitions, type ItemDefinition } from "../../utils/objectDefinitions";
+import { DefinitionType, ItemType, ObjectDefinitions, type ItemDefinition } from "../../utils/objectDefinitions";
 import { FloorTypes } from "../../utils/terrain";
 
 interface BasePerkDefinition extends ItemDefinition {
+    readonly defType: DefinitionType.Perk
     readonly itemType: ItemType.Perk
     readonly category: PerkCategories
     readonly updateInterval?: number
-    readonly type?: PerkQualities
+    readonly quality?: PerkQualities
     readonly noSwap?: boolean
     readonly alwaysAllowSwap?: boolean
     readonly plumpkinGambleIgnore?: boolean
@@ -90,6 +91,7 @@ const perks = [
     {
         idString: PerkIds.SecondWind,
         name: "Second Wind",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Normal,
 
@@ -99,6 +101,7 @@ const perks = [
     {
         idString: PerkIds.Flechettes,
         name: "Fléchettes",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Normal,
 
@@ -109,6 +112,7 @@ const perks = [
     {
         idString: PerkIds.SabotRounds,
         name: "Sabot Rounds",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Normal,
 
@@ -121,6 +125,7 @@ const perks = [
     {
         idString: PerkIds.ExtendedMags,
         name: "Extended Mags",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Normal
 
@@ -129,6 +134,7 @@ const perks = [
     {
         idString: PerkIds.DemoExpert,
         name: "Demo Expert",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Normal,
 
@@ -139,6 +145,7 @@ const perks = [
     {
         idString: PerkIds.AdvancedAthletics,
         name: "Advanced Athletics",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Normal,
 
@@ -149,6 +156,7 @@ const perks = [
     {
         idString: PerkIds.Toploaded,
         name: "Toploaded",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Normal,
 
@@ -160,6 +168,7 @@ const perks = [
     {
         idString: PerkIds.InfiniteAmmo,
         name: "Infinite Ammo",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Normal,
 
@@ -168,6 +177,7 @@ const perks = [
     {
         idString: PerkIds.FieldMedic,
         name: "Field Medic",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Normal,
 
@@ -176,6 +186,7 @@ const perks = [
     {
         idString: PerkIds.Berserker,
         name: "Berserker",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Normal,
 
@@ -185,6 +196,7 @@ const perks = [
     {
         idString: PerkIds.CloseQuartersCombat,
         name: "Close Quarters Combat",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Normal,
 
@@ -195,6 +207,7 @@ const perks = [
     {
         idString: PerkIds.LowProfile,
         name: "Low Profile",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Normal,
 
@@ -204,6 +217,7 @@ const perks = [
     {
         idString: PerkIds.CombatExpert,
         name: "Combat Expert",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Normal,
         reloadMod: 1.25
@@ -211,6 +225,7 @@ const perks = [
     {
         idString: PerkIds.PrecisionRecycling,
         name: "Precision Recycling",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Normal,
         updateInterval: 1e3, // milliseconds
@@ -225,6 +240,7 @@ const perks = [
     {
         idString: PerkIds.PlumpkinGamble,
         name: "Plumpkin Gamble",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Halloween,
 
@@ -256,9 +272,10 @@ const perks = [
     {
         idString: PerkIds.Lycanthropy,
         name: "Lycanthropy",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Halloween,
-        type: PerkQualities.Positive,
+        quality: PerkQualities.Positive,
 
         speedMod: 1.3,
         healthMod: 1.5,
@@ -269,9 +286,10 @@ const perks = [
     {
         idString: PerkIds.Bloodthirst,
         name: "Bloodthirst",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Halloween,
-        type: PerkQualities.Positive,
+        quality: PerkQualities.Positive,
 
         updateInterval: 1e3,
         speedMod: 1.5,
@@ -284,9 +302,10 @@ const perks = [
     {
         idString: PerkIds.PlumpkinBomb,
         name: "Plumpkin Bomb",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Halloween,
-        type: PerkQualities.Positive,
+        quality: PerkQualities.Positive,
 
         damageMod: 1.2, // for grenades
         noDrop: true
@@ -294,9 +313,10 @@ const perks = [
     {
         idString: PerkIds.Shrouded,
         name: "Shrouded",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Halloween,
-        type: PerkQualities.Positive,
+        quality: PerkQualities.Positive,
 
         updateInterval: 100,
         noDrop: true
@@ -304,9 +324,10 @@ const perks = [
     {
         idString: PerkIds.ExperimentalTreatment,
         name: "Experimental Treatment",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Halloween,
-        type: PerkQualities.Neutral,
+        quality: PerkQualities.Neutral,
 
         adrenDecay: 0,
         adrenSet: 1,
@@ -316,9 +337,10 @@ const perks = [
     {
         idString: PerkIds.Engorged,
         name: "Engorged",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Halloween,
-        type: PerkQualities.Neutral,
+        quality: PerkQualities.Neutral,
 
         healthMod: 10, // additive
         sizeMod: 1.05, // multiplicative
@@ -328,9 +350,10 @@ const perks = [
     {
         idString: PerkIds.BabyPlumpkinPie,
         name: "Baby Plumpkin Pie",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Halloween,
-        type: PerkQualities.Neutral, // how is this neutral it's annoying
+        quality: PerkQualities.Neutral, // how is this neutral it's annoying
 
         updateInterval: 10e3, // milliseconds
         noDrop: true
@@ -338,9 +361,10 @@ const perks = [
     {
         idString: PerkIds.Costumed,
         name: "Costumed",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Halloween,
-        type: PerkQualities.Neutral,
+        quality: PerkQualities.Neutral,
 
         choices: {
             oak_tree: 1,
@@ -371,9 +395,10 @@ const perks = [
     {
         idString: PerkIds.TornPockets,
         name: "Torn Pockets",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Halloween,
-        type: PerkQualities.Negative,
+        quality: PerkQualities.Negative,
 
         updateInterval: 2e3,
         dropCount: 2,
@@ -382,9 +407,10 @@ const perks = [
     {
         idString: PerkIds.Claustrophobic,
         name: "Claustrophobic",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Halloween,
-        type: PerkQualities.Negative,
+        quality: PerkQualities.Negative,
 
         speedMod: 0.75,
         noDrop: true
@@ -392,9 +418,10 @@ const perks = [
     {
         idString: PerkIds.LacedStimulants,
         name: "Laced Stimulants",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Halloween,
-        type: PerkQualities.Negative,
+        quality: PerkQualities.Negative,
 
         healDmgRate: 0.5,
         lowerHpLimit: 5, // absolute
@@ -403,9 +430,10 @@ const perks = [
     {
         idString: PerkIds.RottenPlumpkin,
         name: "Rotten Plumpkin",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Halloween,
-        type: PerkQualities.Negative,
+        quality: PerkQualities.Negative,
 
         updateInterval: 10e3, // milliseconds
         emote: "vomiting_face",
@@ -416,6 +444,7 @@ const perks = [
     /* {
         idString: PerkIds.PriorityTarget,
         name: "Priority Target",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         description: "All players on the map can see your location.",
         category: PerkCategories.Halloween,
@@ -427,9 +456,10 @@ const perks = [
     {
         idString: PerkIds.Infected,
         name: "Infected",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Normal,
-        type: PerkQualities.Negative,
+        quality: PerkQualities.Negative,
         updateInterval: 1000,
         dps: 0.78,
         minHealth: 5,
@@ -445,9 +475,10 @@ const perks = [
     {
         idString: PerkIds.Immunity,
         name: "Immunity",
+        defType: DefinitionType.Perk,
         itemType: ItemType.Perk,
         category: PerkCategories.Normal,
-        type: PerkQualities.Positive,
+        quality: PerkQualities.Positive,
         duration: 15000,
         noDrop: true,
         plumpkinGambleIgnore: true

@@ -25,10 +25,10 @@ import { type SpectateData } from "@common/packets/spectatePacket";
 import { UpdatePacket, type PlayerData, type UpdateDataCommon } from "@common/packets/updatePacket";
 import { PlayerModifiers } from "@common/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric } from "@common/utils/math";
-import { type SDeepMutable, type Timeout } from "@common/utils/misc";
-import { ItemType, type EventModifiers, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
+import { removeFrom, type SDeepMutable, type Timeout } from "@common/utils/misc";
+import { DefinitionType, ItemType, type EventModifiers, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray, randomPointInsideCircle, weightedRandom } from "@common/utils/random";
 import { SuroiByteStream } from "@common/utils/suroiByteStream";
@@ -46,7 +46,6 @@ import { MeleeItem } from "../inventory/meleeItem";
 import { ServerPerkManager, UpdatablePerkDefinition } from "../inventory/perkManager";
 import { ThrowableItem } from "../inventory/throwableItem";
 import { type Team } from "../team";
-import { removeFrom } from "../utils/misc";
 import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
 import { Explosion } from "./explosion";
@@ -86,6 +85,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     activeDisguise?: ObstacleDefinition;
 
     bulletTargetHitCount = 0;
+    targetHitCountExpiration?: Timeout;
 
     teamID?: number;
     colorIndex = 0; // Assigned in the team.ts file.
@@ -653,40 +653,35 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     private static readonly _weaponTiersCache: Partial<Record<ItemType, Partial<Record<Tier, WeaponDefinition[]>>>> = {};
 
-    refundGun(item: InventoryItem = this.activeItem): void {
-        let slot = item === this.activeItem
-            ? this.activeItemIndex
-            : this.inventory.weapons.findIndex(i => i === item);
+    tryRefund(item: InventoryItem = this.activeItem): void {
+        if (
+            item.category !== ItemType.Gun
+            || item.owner !== this
+            || item.definition.bulletCount !== 1
+            || !this.inventory.weapons.includes(item)
+        ) return;
 
-        if (slot === -1) {
-            // this happens if the item to be swapped isn't currently in the inventory
-            // in that case, we just take the first slot matching that item's type
-            slot = GameConstants.player.inventorySlotTypings.filter(slot => slot === item.definition.itemType)?.[0] ?? 0;
-            // and if we somehow don't have any matching slots, then someone's probably messing with us… fallback to slot 0 lol
-        }
+        const { hitReq: hitsNeeded, refund, margin } = PerkData[PerkIds.PrecisionRecycling];
 
-        const type = GameConstants.player.inventorySlotTypings[slot];
-
-        if (type === ItemType.Gun && (this.inventory.getWeapon(slot) as GunItem).definition.ammoType === "12g") return;
-
-        const hitsNeeded = PerkData[PerkIds.PrecisionRecycling].hitReq;
-        const refund = PerkData[PerkIds.PrecisionRecycling].refund;
+        this.targetHitCountExpiration?.kill();
+        this.targetHitCountExpiration = this.game.addTimeout(() => {
+            this.bulletTargetHitCount = 0;
+        }, margin * item.definition.fireDelay);
 
         if (this.bulletTargetHitCount < hitsNeeded) {
-            this.bulletTargetHitCount++;
-            if (this.bulletTargetHitCount >= hitsNeeded) {
-                if (type === ItemType.Gun) {
-                    const gun = this.inventory.getWeapon(slot) as GunItem;
-                    if (gun.definition.capacity >= (gun).ammo) {
-                        (gun).ammo += refund;
-                        this.dirty.weapons = true;
-                    }
-                }
+            ++this.bulletTargetHitCount;
+        }
 
-                this.bulletTargetHitCount = 0;
+        if (this.bulletTargetHitCount >= hitsNeeded) {
+            const cap = this.mapPerk(PerkIds.ExtendedMags, () => item.definition.extendedCapacity) ?? item.definition.capacity;
+
+            const target = Numeric.min(item.ammo + refund, cap);
+            if (item.ammo !== target) {
+                item.ammo = target;
+                this.dirty.weapons = true;
             }
-        } else {
-            this.bulletTargetHitCount++;
+
+            this.bulletTargetHitCount = 0;
         }
     }
 
@@ -1056,31 +1051,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                             player.perks.addItem(Perks.fromString(PerkIds.Infected));
                             player.setDirty();
                         }
-                        break;
-                    }
-                    case PerkIds.PrecisionRecycling: {
-                        const item = this.inventory.activeWeapon;
-
-                        let slot = item === this.activeItem
-                            ? this.activeItemIndex
-                            : this.inventory.weapons.findIndex(i => i === item);
-
-                        if (slot === -1) {
-                            // this happens if the item to be swapped isn't currently in the inventory
-                            // in that case, we just take the first slot matching that item's type
-                            slot = GameConstants.player.inventorySlotTypings.filter(slot => slot === item.definition.itemType)?.[0] ?? 0;
-                            // and if we somehow don't have any matching slots, then someone's probably messing with us… fallback to slot 0 lol
-                        }
-
-                        const type = GameConstants.player.inventorySlotTypings[slot];
-
-                        if (type === ItemType.Gun) {
-                            const gun = this.inventory.getWeapon(slot) as GunItem;
-                            const delay = PerkData[PerkIds.PrecisionRecycling].margin * gun.definition.fireDelay;
-
-                            if (this.game.now - delay > delay) this.bulletTargetHitCount = 0;
-                        }
-
                         break;
                     }
                 }
@@ -1473,14 +1443,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
             packet.deletedObjects = [];
             for (const object of this.visibleObjects) {
-                if (newVisibleObjects.has(object) && isVisibleFromLayer(this.layer, object)) continue;
+                if (newVisibleObjects.has(object)) continue;
 
                 this.visibleObjects.delete(object);
                 packet.deletedObjects.push(object.id);
             }
 
             for (const object of newVisibleObjects) {
-                if (this.visibleObjects.has(object) || !isVisibleFromLayer(this.layer, object)) continue;
+                if (this.visibleObjects.has(object)) continue;
 
                 this.visibleObjects.add(object);
                 fullObjects.add(object);
@@ -2291,8 +2261,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
             // Killstreak credit always goes to the killer regardless of the above.
             if (
-                weaponUsed
-                && "killstreak" in weaponUsed.definition
+                weaponUsed !== undefined
+                && weaponUsed.definition.defType !== DefinitionType.Explosion
                 && weaponUsed instanceof InventoryItemBase
             ) {
                 packet.killstreak = weaponUsed.stats.kills;

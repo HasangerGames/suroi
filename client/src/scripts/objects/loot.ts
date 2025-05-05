@@ -3,7 +3,6 @@ import { ArmorType } from "@common/definitions/items/armors";
 import { PerkIds } from "@common/definitions/items/perks";
 import { type LootDefinition } from "@common/definitions/loots";
 import { CircleHitbox } from "@common/utils/hitbox";
-import { getEffectiveZIndex } from "@common/utils/layer";
 import { EaseFunctions } from "@common/utils/math";
 import { ItemType } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
@@ -39,14 +38,14 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
     constructor(id: number, data: ObjectsNetData[ObjectCategory.Loot]) {
         super(id);
 
+        this.container.zIndex = ZIndexes.Loot;
+
         this.images = {
             background: new SuroiSprite(),
             item: new SuroiSprite(),
             skinFistLeft: new SuroiSprite(),
             skinFistRight: new SuroiSprite()
         };
-
-        this.layer = data.layer;
 
         this.updateFromData(data, true);
     }
@@ -125,10 +124,11 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
         }
 
         this.position = data.position;
-        this.layer = data.layer;
+        if (this.layer !== data.layer) {
+            this.layer = data.layer;
+            this.updateLayer();
+        }
         this.hitbox.position = this.position;
-
-        this.updateZIndex();
 
         if (!GameConsole.getBuiltInCVar("cv_movement_smoothing") || isNew) {
             this.container.position = toPixiCoords(this.position);
@@ -172,10 +172,6 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
             default:
                 return {};
         }
-    }
-
-    override updateZIndex(): void {
-        this.container.zIndex = getEffectiveZIndex(this.doOverlay() ? ZIndexes.UnderWaterLoot : ZIndexes.Loot, this.layer, Game.layer);
     }
 
     override updateDebugGraphics(): void {

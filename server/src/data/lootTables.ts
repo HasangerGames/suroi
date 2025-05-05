@@ -844,8 +844,8 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: PerkIds.CloseQuartersCombat, weight: 1 },
                 { item: PerkIds.LowProfile, weight: 1 },
                 { item: PerkIds.Berserker, weight: 1 },
-                { item: PerkIds.CombatExpert, weight: 1 }
-                // { item: PerkIds.PrecisionRecycling, weight: 1 }
+                { item: PerkIds.CombatExpert, weight: 1 },
+                { item: PerkIds.PrecisionRecycling, weight: 1 }
             ]
         },
         red_gift: [
@@ -1606,9 +1606,6 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ]
     },
     infection: {
-        hazel_crate: [
-            [{ item: "plumpkin_launcher", weight: 1 }]
-        ],
         healing_items: [
             { item: "gauze", count: 5, weight: 3 },
             { item: "cola", weight: 2 },
@@ -1625,7 +1622,6 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
         airdrop_guns: [
             { item: "vaccinator", weight: 2 },
-            { item: "plumpkin_launcher", weight: 0.5 },
             { item: "mg36", weight: 1 },
             { item: "m590m", weight: 1 },
             { item: "vss", weight: 1 },

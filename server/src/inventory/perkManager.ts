@@ -176,6 +176,8 @@ export class ServerPerkManager extends PerkManager {
                 }
                 case PerkIds.PrecisionRecycling: {
                     owner.bulletTargetHitCount = 0;
+                    owner.targetHitCountExpiration?.kill();
+                    owner.targetHitCountExpiration = undefined;
                     break;
                 }
                 case PerkIds.Infected: { // evil
