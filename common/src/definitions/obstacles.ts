@@ -4943,7 +4943,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         name: "Large Logs Pile",
         defType: DefinitionType.Obstacle,
         material: "tree",
-        health: 200,
+        health: 250,
         scale: {
             spawnMin: 1,
             spawnMax: 1,
@@ -4962,7 +4962,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         name: "Small Logs Pile",
         defType: DefinitionType.Obstacle,
         material: "tree",
-        health: 180,
+        health: 230,
         scale: {
             spawnMin: 1,
             spawnMax: 1,
