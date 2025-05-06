@@ -685,7 +685,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
     }
 
-    swapWeaponRandomly(item: InventoryItem = this.activeItem, force = false): void {
+    swapWeaponRandomly(item: InventoryItem = this.activeItem, force = false, modeRestricted?: boolean, weighted?: boolean): void {
         if (item.definition.noSwap || this.perks.hasItem(PerkIds.Lycanthropy)) return; // womp womp
 
         let slot = item === this.activeItem
@@ -699,16 +699,23 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             // and if we somehow don't have any matching slots, then someone's probably messing with us… fallback to slot 0 lol
         }
 
-        const spawnable = this.game.spawnableLoots;
+        // braindead solution
+        const allWeapons = this.game.allLoots;
+
+        const spawnable = modeRestricted ? this.game.spawnableLoots : allWeapons;
+
+        console.log(allWeapons);
 
         const { inventory } = this;
         const { items, backpack: { maxCapacity }, throwableItemMap } = inventory;
         const type = GameConstants.player.inventorySlotTypings[slot];
 
+        // only used if weapon swap is weighted
         const weights = Player._weaponSwapWeights[type] ?? {};
         const chosenTier = weightedRandom<Tier>(Object.keys(weights).map(s => parseInt(s)), Object.values(weights));
         const cache = Player._weaponTiersCache[type] ??= {};
-        const potentials = cache[chosenTier] ??= spawnable.forType(type).filter(({ tier }) => tier === chosenTier);
+
+        const potentials = weighted ? cache[chosenTier] ??= spawnable.forType(type).filter(({ tier }) => tier === chosenTier) : spawnable.forType(type);
 
         const chosenItem = pickRandomInArray<WeaponDefinition>(
             type === ItemType.Throwable

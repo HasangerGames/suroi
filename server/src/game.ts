@@ -162,6 +162,13 @@ export class Game implements GameData {
         return this._spawnableLoots ??= getSpawnableLoots(this.modeName, this.map.mapDef, this._spawnableItemTypeCache);
     }
 
+    private readonly _allItemsTypeCache = [] as Cache;
+
+    private _allLoots: SpawnableItemRegistry | undefined;
+    get allLoots(): SpawnableItemRegistry {
+        return this._allLoots ??= getSpawnableLoots(this.modeName, this.map.mapDef, this._allItemsTypeCache, true);
+    }
+
     private readonly _timeouts = new Set<Timeout>();
 
     addTimeout(callback: () => void, delay = 0): Timeout {

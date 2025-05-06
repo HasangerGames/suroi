@@ -54,7 +54,13 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly noInteractMessage?: boolean
     readonly customInteractMessage?: boolean
     readonly interactOnlyFromSide?: Orientation
-    readonly weaponSwap?: boolean
+    readonly weaponSwap?: {
+        // whether the weapon swap will utilize gun tiers to determine chances for each weapon
+        readonly weighted?: boolean
+
+        // whether the possible weapons will be restricted to the current mode
+        readonly modeRestricted?: boolean
+    }
     readonly regenerateAfterDestroyed?: number
 
     readonly applyPerkOnDestroy?: {
@@ -1062,8 +1068,35 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "plumpkin_particle"
         },
+        variations: 1,
+        weaponSwap: {
+            modeRestricted: true
+        }
+    },
+    {
+        idString: "baby_plumpkin_infection",
+        name: "Baby Plumpkin (Infection)",
+        defType: DefinitionType.Obstacle,
+        material: "pumpkin",
+        health: 100,
+        scale: {
+            spawnMin: 0.9,
+            spawnMax: 1.1,
+            destroy: 0.6
+        },
+        hitbox: new CircleHitbox(1.83),
+        spawnHitbox: new CircleHitbox(2),
+        rotationMode: RotationMode.Full,
+        allowFlyover: FlyoverPref.Always,
+        frames: {
+            base: "baby_plumpkin",
+            particle: "plumpkin_particle",
+            residue: "baby_plumpkin_residue"
+        },
         variations: 3,
-        weaponSwap: true,
+        weaponSwap: {
+            weighted: true
+        },
         regenerateAfterDestroyed: 30000,
         applyPerkOnDestroy: {
             mode: "infection",
