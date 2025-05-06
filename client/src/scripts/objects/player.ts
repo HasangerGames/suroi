@@ -14,7 +14,7 @@ import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Angle, EaseFunctions, Geometry } from "@common/utils/math";
-import { type Timeout } from "@common/utils/misc";
+import { removeFrom, type Timeout } from "@common/utils/misc";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "@common/utils/random";
@@ -920,40 +920,37 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     }
 
     updateTeammateName(): void {
-        const game = Game;
         if (
-            game.teamMode
+            Game.teamMode
             && (
                 !this.isActivePlayer
                 && !this.teammateName
                 && !this.dead
-                && this.teamID === game.teamID
+                && this.teamID === Game.teamID
             )
         ) {
-            const name = game.playerNames.get(this.id);
-            this.teammateName = {
-                text: new Text({
-                    text: UIManager.getRawPlayerName(this.id),
-                    style: {
-                        fill: name?.hasColor ? name?.nameColor : TEAMMATE_COLORS[UIManager.getTeammateColorIndex(this.id) ?? 0],
-                        fontSize: 36,
-                        fontFamily: "Inter",
-                        fontWeight: "600",
-                        dropShadow: {
-                            alpha: 0.8,
-                            color: "black",
-                            blur: 2,
-                            distance: 2
-                        }
+            const name = Game.playerNames.get(this.id);
+
+            const text = new Text({
+                text: UIManager.getRawPlayerName(this.id),
+                style: {
+                    fill: name?.hasColor ? name?.nameColor : TEAMMATE_COLORS[UIManager.getTeammateColorIndex(this.id) ?? 0],
+                    fontSize: 36,
+                    fontFamily: "Inter",
+                    fontWeight: "600",
+                    dropShadow: {
+                        alpha: 0.8,
+                        color: "black",
+                        blur: 2,
+                        distance: 2
                     }
-                }),
-                badge: name?.badge ? new SuroiSprite(name.badge.idString) : undefined,
-                container: new Container()
-            };
-            const { text, badge, container } = this.teammateName;
+                }
+            });
+            const badge = name?.badge ? new SuroiSprite(name.badge.idString) : undefined;
+            const container = new Container();
+            this.teammateName = { text, badge, container };
 
             text.anchor.set(0.5);
-            container.addChild(this.teammateName.text);
 
             if (badge) {
                 const oldWidth = badge.width;
@@ -966,22 +963,24 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 container.addChild(badge);
             }
 
-            container.zIndex = ZIndexes.DeathMarkers;
+            container.addChild(text);
+            container.zIndex = ZIndexes.TeammateName;
             this.containers.push(container);
+            this.updateLayer(true);
         } else if (
             this.teammateName
             && (
                 this.isActivePlayer
                 || this.dead
-                || this.teamID !== game.teamID
+                || this.teamID !== Game.teamID
             )
         ) {
             const { text, badge, container } = this.teammateName;
-
             text?.destroy();
             badge?.destroy();
             container?.destroy();
             this.teammateName = undefined;
+            removeFrom(this.containers, container);
         }
     }
 

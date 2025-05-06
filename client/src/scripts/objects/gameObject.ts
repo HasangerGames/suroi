@@ -119,10 +119,10 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
     layerContainer?: Container;
     layerContainerIndex?: number;
     readonly containers: Container[] = [this.container];
-    updateLayer(): void {
+    updateLayer(forceUpdate = false): void {
         const oldContainer = this.layerContainer;
         const newContainer = CameraManager.getContainer(this.layer, this.layerContainerIndex);
-        if (oldContainer === newContainer) return;
+        if (oldContainer === newContainer && !forceUpdate) return;
 
         this.layerContainer = newContainer;
         this.layerContainerIndex = getLayerContainer(this.layer, Game.layer);
