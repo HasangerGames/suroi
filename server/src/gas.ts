@@ -4,7 +4,7 @@ import { Geometry, Numeric } from "@common/utils/math";
 import { randomPointInsideCircle } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Config, GasMode } from "./config";
-import { GasStage, GasStages } from "./data/gasStages";
+import { GasStage, GasStages, gasOffset } from "./data/gasStages";
 import { type Game } from "./game";
 
 export class Gas {
@@ -13,7 +13,6 @@ export class Gas {
     currentDuration = 0;
     countdownStart = 0;
     completionRatio = 0;
-
     oldPosition: Vector;
     newPosition: Vector;
     currentPosition: Vector;
@@ -21,7 +20,6 @@ export class Gas {
     oldRadius: number;
     newRadius: number;
     currentRadius: number;
-
     dps = 0;
     private _lastDamageTimestamp;
 
@@ -43,7 +41,7 @@ export class Gas {
         this.newRadius = firstStage.newRadius * this.mapSize;
         this.currentRadius = firstStage.oldRadius * this.mapSize;
 
-        this.oldPosition = Vec.create(game.map.width / 2, game.map.height / 2);
+        this.oldPosition = Vec.create((game.map.width / 2), (game.map.height / 2));
         this.newPosition = Vec.clone(this.oldPosition);
         this.currentPosition = Vec.clone(this.oldPosition);
         this._lastDamageTimestamp = this.game.now;
@@ -90,7 +88,6 @@ export class Gas {
         this.currentDuration = duration;
         this.completionRatio = 1;
         this.countdownStart = this.game.now;
-
         if (currentStage.state === GasState.Waiting) {
             this.oldPosition = Vec.clone(this.newPosition);
             if (currentStage.newRadius !== 0) {
@@ -101,7 +98,8 @@ export class Gas {
                     const { oldRadius, newRadius } = currentStage;
                     const { x, y } = randomPointInsideCircle(
                         this.oldPosition,
-                        (oldRadius - newRadius) * this.mapSize
+                        gasOffset.maxOffset * this.mapSize,
+                        gasOffset.minOffset * this.mapSize
                     );
                     const radius = newRadius * 0.75; // ensure at least 75% of the safe zone will be inside map bounds
                     this.newPosition = Vec.create(
