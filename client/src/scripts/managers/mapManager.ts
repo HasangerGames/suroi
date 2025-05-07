@@ -1,4 +1,4 @@
-import { GameConstants, GasState, Layer, ObjectCategory, ZIndexes } from "@common/constants";
+import { GameConstants, GasState, Layer, ObjectCategory, Z_INDEX_COUNT, ZIndexes } from "@common/constants";
 import { type MapPingDefinition } from "@common/definitions/mapPings";
 import { type MapData } from "@common/packets/mapPacket";
 import { type PingSerialization, type PlayerPingSerialization } from "@common/packets/updatePacket";
@@ -292,12 +292,14 @@ class MapManagerClass {
         terrainGraphics.fill(colors.border);
 
         CameraManager.addObject(terrainGraphics);
+        terrainGraphics.zIndex = -5;
 
         // Draw the minimap objects
         const mapRender = new Container();
         mapRender.addChild(mapGraphics);
 
         for (const mapObject of this._objects) {
+            const zIndexOffset = ((mapObject.layer ?? Layer.Ground) + 1) * Z_INDEX_COUNT;
             switch (mapObject.type) {
                 case ObjectCategory.Obstacle: {
                     const definition = mapObject.definition;
@@ -308,7 +310,7 @@ class MapManagerClass {
 
                     const image = new SuroiSprite(texture)
                         .setVPos(mapObject.position).setRotation(mapObject.rotation)
-                        .setZIndex(definition.zIndex ?? ZIndexes.ObstaclesLayer1);
+                        .setZIndex((definition.zIndex ?? ZIndexes.ObstaclesLayer1) + zIndexOffset);
 
                     if (definition.tint !== undefined) image.setTint(definition.tint);
                     image.scale.set((mapObject.scale ?? 1) * (1 / PIXI_SCALE));
@@ -318,13 +320,13 @@ class MapManagerClass {
                 }
 
                 case ObjectCategory.Building: {
-                    if (mapObject.layer !== Layer.Ground) continue;
+                    if (mapObject.layer < Layer.Ground) continue;
                     const definition = mapObject.definition;
                     const rotation = mapObject.rotation;
 
                     const floorContainer = new Container({
                         sortableChildren: true,
-                        zIndex: ZIndexes.BuildingsFloor,
+                        zIndex: (definition.floorZIndex ?? ZIndexes.BuildingsFloor) + zIndexOffset,
                         rotation,
                         position: mapObject.position
                     });
@@ -344,7 +346,7 @@ class MapManagerClass {
 
                     const ceilingContainer = new Container({
                         sortableChildren: true,
-                        zIndex: definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling,
+                        zIndex: (definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling) + zIndexOffset,
                         rotation,
                         position: mapObject.position
                     });

@@ -1,12 +1,11 @@
 import { ObjectCategory, ZIndexes } from "@common/constants";
 import { type DecalDefinition } from "@common/definitions/decals";
-import { getEffectiveZIndex } from "@common/utils/layer";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { Game } from "../game";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
+import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
-import { DebugRenderer } from "../utils/debugRenderer";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
 
 export class Decal extends GameObject.derive(ObjectCategory.Decal) {
     definition!: DecalDefinition;
@@ -18,8 +17,6 @@ export class Decal extends GameObject.derive(ObjectCategory.Decal) {
 
         this.image = new SuroiSprite();
 
-        this.layer = data.layer;
-
         this.updateFromData(data);
     }
 
@@ -27,6 +24,7 @@ export class Decal extends GameObject.derive(ObjectCategory.Decal) {
         this.position = data.position;
 
         this.layer = data.layer;
+        this.updateLayer();
 
         const definition = this.definition = data.definition;
 
@@ -37,14 +35,7 @@ export class Decal extends GameObject.derive(ObjectCategory.Decal) {
         this.container.position.copyFrom(toPixiCoords(this.position));
         this.container.rotation = data.rotation;
 
-        this.updateZIndex();
-    }
-
-    override updateZIndex(): void {
-        const zIndex = this.doOverlay() && this.definition.zIndex === undefined
-            ? ZIndexes.UnderWaterDeadObstacles
-            : this.definition.zIndex ?? ZIndexes.Decals;
-        this.container.zIndex = getEffectiveZIndex(zIndex, this.layer, Game.layer);
+        this.container.zIndex = this.definition.zIndex ?? ZIndexes.Decals;
     }
 
     update(): void { /* bleh */ }

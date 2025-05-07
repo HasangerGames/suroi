@@ -7,20 +7,19 @@ import { PerkCategories } from "@common/definitions/items/perks";
 import { Loots } from "@common/definitions/loots";
 import { ModeName } from "@common/definitions/modes";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { PacketType } from "@common/packets/packet";
 import { Orientation, type Variation } from "@common/typings";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Collision } from "@common/utils/math";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, randomFloat } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-import { SpawnOptions } from "../config";
 import { type GunItem } from "../inventory/gunItem";
 import { GameMap } from "../map";
 import { Player } from "../objects/player";
 import { GamePlugin } from "../pluginManager";
 import { getLootFromTable } from "../utils/lootHelpers";
 import { LootTables } from "./lootTables";
-import { PacketType } from "@common/packets/packet";
 
 export interface RiverDefinition {
     readonly minAmount: number
@@ -106,6 +105,28 @@ export type ObstacleClump = {
         readonly jitter: number
     }
 };
+
+export const enum SpawnMode {
+    Normal,
+    Radius,
+    Fixed,
+    Center,
+    Default
+}
+
+export type SpawnOptions =
+    | {
+        readonly mode: SpawnMode.Normal | SpawnMode.Center
+    }
+    | {
+        readonly mode: SpawnMode.Radius
+        readonly position: readonly [x: number, y: number, z?: number]
+        readonly radius: number
+    }
+    | {
+        readonly mode: SpawnMode.Fixed
+        readonly position: readonly [x: number, y: number, z?: number]
+    };
 
 const maps = {
     normal: {
@@ -292,11 +313,13 @@ const maps = {
             ]
         },
         buildings: {
+            breached_dam: 3,
             river_hut_4: 3,
             river_hut_5: 3,
             river_hut_6: 3,
             small_bridge: Infinity,
             plumpkin_bunker: 1,
+            campsite: 1,
             sea_traffic_control: 1,
             tugboat_red: 1,
             tugboat_white: 7,
@@ -322,7 +345,7 @@ const maps = {
             outhouse: 10,
             buoy: 16
         },
-        majorBuildings: ["bombed_armory", "lodge", "plumpkin_bunker"],
+        majorBuildings: ["bombed_armory", "lodge", "plumpkin_bunker", "campsite"],
         quadBuildingLimit: {
             river_hut_4: 2,
             river_hut_5: 2,
@@ -621,7 +644,7 @@ const maps = {
             small_bunker: 1,
             refinery: 1,
             warehouse: 5,
-            // firework_warehouse: 1, // birthday mode
+            // mini_warehouse: 1,
             green_house: 3,
             blue_house: 2,
             blue_house_special: 1,
@@ -945,7 +968,7 @@ const maps = {
                 for (const item of Loots.definitions) {
                     if (
                         ((item.itemType === ItemType.Melee || item.itemType === ItemType.Scope) && item.noDrop)
-                        || ("ephemeral" in item && item.ephemeral)
+                        || (item.itemType === ItemType.Ammo && item.ephemeral)
                         || (item.itemType === ItemType.Backpack && item.level === 0)
                         || (item.itemType === ItemType.Perk && item.category === PerkCategories.Halloween)
                         || item.itemType === ItemType.Skin

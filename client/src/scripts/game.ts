@@ -156,8 +156,8 @@ export const Game = new (class Game {
     /**
      * proxy for `activePlayer`'s layer
      */
-    get layer(): Layer | undefined {
-        return this.activePlayer?.layer;
+    get layer(): Layer {
+        return this.activePlayer?.layer ?? Layer.Ground;
     }
 
     get activePlayer(): Player | undefined {
@@ -169,6 +169,8 @@ export const Game = new (class Game {
     gameOver = false;
     spectating = false;
     error = false;
+
+    hideSecondFloor = false;
 
     readonly pixi = new Application();
 
@@ -415,6 +417,7 @@ export const Game = new (class Game {
                 )
             }));
 
+            this.gasRender.graphics.zIndex = 1000;
             CameraManager.addObject(this.gasRender.graphics);
             MapManager.indicator.setFrame("player_indicator");
 
@@ -600,18 +603,18 @@ export const Game = new (class Game {
 
         const windAmbience = this.mode.sounds?.ambience?.wind;
         if (windAmbience) {
-            this.windAmbience = SoundManager.play(windAmbience, { loop: true, ambient: true });
+            this.windAmbience = SoundManager.play(windAmbience, { loop: true, ambient: true, noMuffledEffect: true });
         }
 
         const riverAmbience = this.mode.sounds?.ambience?.river;
         if (riverAmbience) {
-            this.riverAmbience = SoundManager.play(riverAmbience, { loop: true, ambient: true });
+            this.riverAmbience = SoundManager.play(riverAmbience, { loop: true, ambient: true, noMuffledEffect: true });
             this.riverAmbience.volume = 0;
         }
 
         const oceanAmbience = this.mode.sounds?.ambience?.ocean;
         if (oceanAmbience) {
-            this.oceanAmbience = SoundManager.play(oceanAmbience, { loop: true, ambient: true });
+            this.oceanAmbience = SoundManager.play(oceanAmbience, { loop: true, ambient: true, noMuffledEffect: true });
             this.oceanAmbience.volume = 0;
         }
 
@@ -808,21 +811,6 @@ export const Game = new (class Game {
                     ObjectClassMapping[type] as new (id: number, data: ObjectsNetData[K]) => InstanceType<ObjectClassMapping[K]>
                 )(id, data);
                 this.objects.add(_object);
-
-                // Layer Transition
-                if (_object.layer !== (this.layer ?? Layer.Ground)) {
-                    _object.container.alpha = 0;
-
-                    this.layerTween = this.addTween({
-                        target: _object.container,
-                        to: { alpha: 1 },
-                        duration: LAYER_TRANSITION_DELAY,
-                        ease: EaseFunctions.sineIn,
-                        onComplete: () => {
-                            this.layerTween = undefined;
-                        }
-                    });
-                }
             } else {
                 object.updateFromData(data, false);
             }
@@ -845,25 +833,8 @@ export const Game = new (class Game {
                 continue;
             }
 
-            // Layer Transition
-            if (object.layer !== (this.layer ?? Layer.Ground)) {
-                object.container.alpha = 1;
-
-                this.layerTween = this.addTween({
-                    target: object.container,
-                    to: { alpha: 0 },
-                    duration: LAYER_TRANSITION_DELAY,
-                    ease: EaseFunctions.sineOut,
-                    onComplete: () => {
-                        this.layerTween = undefined;
-                        object.destroy();
-                        this.objects.delete(object);
-                    }
-                });
-            } else {
-                object.destroy();
-                this.objects.delete(object);
-            }
+            object.destroy();
+            this.objects.delete(object);
         }
 
         for (const bullet of updateData.deserializedBullets ?? []) {
@@ -925,51 +896,37 @@ export const Game = new (class Game {
     backgroundTween?: Tween<{ readonly r: number, readonly g: number, readonly b: number }>;
     volumeTween?: Tween<GameSound>;
 
-    changeLayer(layer: Layer): void {
-        for (const object of this.objects) {
-            object.updateZIndex();
+    updateLayer(initial = false, oldLayer?: Layer): void {
+        CameraManager.updateLayer(initial, oldLayer);
+
+        for (const sound of SoundManager.updatableSounds) {
+            sound.updateLayer();
+            sound.update();
         }
 
-        const basement = layer === Layer.Basement1;
+        const layer = this.layer;
+
+        const basement = layer === Layer.Basement;
         MapManager.terrainGraphics.visible = !basement;
-        const { red, green, blue } = this.pixi.renderer.background.color;
-        const color = { r: red * 255, g: green * 255, b: blue * 255 };
+
+        const currentColor = this.pixi.renderer.background.color;
         const targetColor = basement ? this.colors.void : this.colors.grass;
 
-        this.backgroundTween?.kill();
-        this.backgroundTween = this.addTween({
-            target: color,
-            to: { r: targetColor.red * 255, g: targetColor.green * 255, b: targetColor.blue * 255 },
-            onUpdate: () => {
-                this.pixi.renderer.background.color = new Color(color);
-            },
-            duration: LAYER_TRANSITION_DELAY,
-            onComplete: () => { this.backgroundTween = undefined; }
-        });
+        if (currentColor.toNumber() !== targetColor.toNumber()) {
+            const { red, green, blue } = currentColor;
+            const color = { r: red * 255, g: green * 255, b: blue * 255 };
 
-        if (this.windAmbience !== undefined) {
-            this.volumeTween?.kill();
-
-            let target = 1; // if, somehow, the switch fails to assign a value
-
-            switch (true) {
-                // above ground—play as normal
-                case layer >= Layer.Ground: target = 1; break;
-
-                // stairway leading down to bunker—half volume
-                case layer === Layer.ToBasement1: target = 0.5; break;
-
-                // below ground—very muted
-                case layer <= Layer.Basement1: target = 0.15; break;
-            }
-
-            this.volumeTween = this.addTween({
-                target: this.windAmbience,
-                to: { volume: target },
-                duration: 2000,
-                onComplete: () => { this.volumeTween = undefined; }
+            this.backgroundTween?.kill();
+            this.backgroundTween = this.addTween({
+                target: color,
+                to: { r: targetColor.red * 255, g: targetColor.green * 255, b: targetColor.blue * 255 },
+                onUpdate: () => {
+                    this.pixi.renderer.background.color = new Color(color);
+                },
+                duration: LAYER_TRANSITION_DELAY,
+                onComplete: () => { this.backgroundTween = undefined; }
             });
-        };
+        }
     }
 
     // yes this might seem evil. but the two local variables really only need to
@@ -1046,6 +1003,8 @@ export const Game = new (class Game {
             };
             const detectionHitbox = new CircleHitbox(3 * player.sizeMod, player.position);
 
+            let hideSecondFloor = false;
+
             for (const object of this.objects) {
                 const { isLoot, isObstacle, isPlayer, isBuilding } = object;
                 const isInteractable = (isLoot || isObstacle || isPlayer) && object.canInteract(player);
@@ -1067,6 +1026,13 @@ export const Game = new (class Game {
                     }
                 } else if (isBuilding) {
                     object.toggleCeiling();
+                    if (
+                        object.ceilingHitbox !== undefined
+                        && !object.ceilingVisible
+                        && object.definition.subBuildings?.some(({ layer }) => layer === Layer.Upstairs)
+                    ) {
+                        hideSecondFloor = true;
+                    }
 
                 // metal detectors
                 } else if (isObstacle && object.definition.detector && object.notOnCoolDown) {
@@ -1148,6 +1114,11 @@ export const Game = new (class Game {
             }
 
             this.updateAmbience();
+            
+            if (this.hideSecondFloor !== hideSecondFloor) {
+                this.hideSecondFloor = hideSecondFloor;
+                CameraManager.updateLayer();
+            }
 
             const object = interactable.object ?? uninteractable.object;
             const offset = object?.isObstacle ? object.door?.offset : undefined;

@@ -1,6 +1,7 @@
-import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
+import { DefinitionType, type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
 
 export interface MapPingDefinition extends ObjectDefinition {
+    readonly defType: DefinitionType.MapPing
     /**
      * Color to tint the ping sprite and color the map pulse effect
      */
@@ -31,6 +32,7 @@ export type MapPing = MapPingDefinition & { readonly isPlayerPing?: false };
 const gamePing = (idString: string, color: number, ignoreExpiration = false): MapPing => ({
     idString,
     name: idString,
+    defType: DefinitionType.MapPing,
     showInGame: false,
     ignoreExpiration,
     lifetime: 20,
@@ -42,6 +44,7 @@ const gamePing = (idString: string, color: number, ignoreExpiration = false): Ma
 const playerPing = (idString: string, ignoreExpiration = false): PlayerPing => ({
     idString,
     name: idString,
+    defType: DefinitionType.MapPing,
     showInGame: true,
     ignoreExpiration,
     lifetime: 120,

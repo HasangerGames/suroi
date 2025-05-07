@@ -7,6 +7,7 @@ import { Game } from "../game";
 import * as PixiSound from "@pixi/sound";
 import type { AudioSpritesheetImporter } from "../../../vite/plugins/audio-spritesheet-plugin";
 import { GameConsole } from "../console/gameConsole";
+import type { Tween } from "../utils/tween";
 
 export interface SoundOptions {
     position?: Vector
@@ -21,6 +22,7 @@ export interface SoundOptions {
      */
     dynamic: boolean
     ambient: boolean
+    noMuffledEffect?: boolean
     onEnd?: () => void
 }
 
@@ -38,15 +40,18 @@ export class GameSound {
 
     readonly dynamic: boolean;
     readonly ambient: boolean;
+    readonly noMuffledEffect: boolean;
 
     get managerVolume(): number { return this.ambient ? SoundManager.ambienceVolume : SoundManager.sfxVolume; }
 
     // acts as multiplier
     volume = 1;
 
+    volumeTween?: Tween<GameSound>;
+
     instance?: PixiSound.IMediaInstance;
     readonly stereoFilter: PixiSound.filters.StereoFilter;
-    // readonly reverbFilter: PixiSound.filters.ReverbFilter;
+    telephoneFilter?: PixiSound.filters.TelephoneFilter;
 
     ended = false;
 
@@ -60,35 +65,20 @@ export class GameSound {
         this.speed = options.speed ?? 1;
         this.dynamic = options.dynamic;
         this.ambient = options.ambient;
+        this.noMuffledEffect = options.noMuffledEffect ?? false;
         this.onEnd = options.onEnd;
         this.stereoFilter = new PixiSound.filters.StereoFilter(0);
-        // this.reverbFilter = new PixiSound.filters.ReverbFilter(1, 20);
 
         if (!PixiSound.sound.exists(id)) {
             console.warn(`Unknown sound with name ${id}`);
             return;
         }
 
-        const filter: PixiSound.Filter = this.stereoFilter;
-
-        // We want reverb inside bunkers (basement layer) or if we are on a different layer with visible objects (layer floor1)
-        /* if (SOUND_FILTER_FOR_LAYERS && this.manager.game.layer) {
-            switch (this.manager.game.layer) {
-                case Layer.Floor1:
-                    filter = !equalLayer(this.layer, this.manager.game.layer ?? Layer.Ground) && isGroundLayer(this.layer) ? this.reverbFilter : this.stereoFilter;
-                    break;
-
-                case Layer.Basement1:
-                    filter = this.reverbFilter;
-                    break;
-            }
-        } */
-
         const instanceOrPromise = PixiSound.sound.play(id, {
             loaded: (_err, _sound, instance) => {
                 if (instance) this.init(instance);
             },
-            filters: [filter],
+            filters: [this.stereoFilter],
             loop: options.loop,
             volume: this.managerVolume * this.volume,
             speed: this.speed
@@ -109,6 +99,7 @@ export class GameSound {
         instance.on("stop", () => {
             this.ended = true;
         });
+        this.updateLayer(true);
         this.update();
     }
 
@@ -125,6 +116,47 @@ export class GameSound {
             this.stereoFilter.pan = Numeric.clamp(-diff.x / this.maxRange, -1, 1);
         } else {
             this.instance.volume = this.managerVolume * this.volume;
+        }
+    }
+
+    updateLayer(initial = false): void {
+        if (!this.instance) return;
+
+        let volume = 1;
+        const layerDelta = Math.abs(Game.layer - this.layer);
+        if (layerDelta === 1) {
+            volume = 0.5;
+        } else if (layerDelta >= 2) {
+            volume = 0.15;
+        }
+
+        if (initial) {
+            this.volume = volume;
+            this._updateMuffledFilter(layerDelta);
+            return;
+        }
+
+        this.volumeTween?.kill();
+        this.volumeTween = Game.addTween<GameSound>({
+            target: this,
+            to: { volume },
+            duration: 500,
+            onComplete: () => {
+                this.volumeTween = undefined;
+                this._updateMuffledFilter(layerDelta);
+            }
+        });
+    }
+
+    private _updateMuffledFilter(layerDelta: number): void {
+        if (this.noMuffledEffect) return;
+
+        if (layerDelta >= 2) {
+            // @ts-expect-error pixi sound doesn't have typings for this for some reason
+            this.instance.filters = [this.stereoFilter, this.telephoneFilter ??= new PixiSound.filters.TelephoneFilter()];
+        } else if (this.telephoneFilter) {
+            // @ts-expect-error see above
+            this.instance.filters = [this.stereoFilter];
         }
     }
 
@@ -214,7 +246,7 @@ class SoundManagerClass {
             maxRange: 256,
             dynamic: false,
             ambient: false,
-            layer: Game.layer ?? Layer.Ground,
+            layer: Game.layer,
             loop: false,
             ...options
         });

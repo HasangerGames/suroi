@@ -197,7 +197,7 @@ export class SuroiByteStream extends ByteStream {
     }
 
     /**
-     * Alias for {@link ByteStream.writeUint8}
+     * Alias for {@link ByteStream.writeInt8}
      */
     writeLayer(layer: Layer): this {
         return this.writeInt8(layer);

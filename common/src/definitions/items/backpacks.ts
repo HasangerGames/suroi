@@ -1,9 +1,10 @@
-import { ItemType, ObjectDefinitions, type ItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
+import { DefinitionType, ItemType, ObjectDefinitions, type ItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
 import { type HealingItemDefinition } from "./healingItems";
 import { type AmmoDefinition } from "./ammos";
 import { type ThrowableDefinition } from "./throwables";
 
 export interface BackpackDefinition extends ItemDefinition {
+    readonly defType: DefinitionType.Backpack
     readonly itemType: ItemType.Backpack
     readonly level: number
     readonly defaultTint?: number
@@ -14,11 +15,13 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
     {
         idString: "bag",
         name: "Bag",
+        defType: DefinitionType.Backpack,
         itemType: ItemType.Backpack,
         level: 0,
         maxCapacity: {
             "gauze": 5,
             "medikit": 1,
+            "vaccine_syringe": 1,
             "cola": 2,
             "tablets": 1,
             "12g": 15,
@@ -40,11 +43,13 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
     {
         idString: "basic_pack",
         name: "Basic Pack",
+        defType: DefinitionType.Backpack,
         itemType: ItemType.Backpack,
         level: 1,
         maxCapacity: {
             "gauze": 10,
             "medikit": 2,
+            "vaccine_syringe": 2,
             "cola": 5,
             "tablets": 2,
             "12g": 30,
@@ -66,11 +71,13 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
     {
         idString: "regular_pack",
         name: "Regular Pack",
+        defType: DefinitionType.Backpack,
         itemType: ItemType.Backpack,
         level: 2,
         maxCapacity: {
             "gauze": 15,
             "medikit": 3,
+            "vaccine_syringe": 3,
             "cola": 10,
             "tablets": 3,
             "12g": 60,
@@ -92,11 +99,13 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
     {
         idString: "tactical_pack",
         name: "Tactical Pack",
+        defType: DefinitionType.Backpack,
         itemType: ItemType.Backpack,
         level: 3,
         maxCapacity: {
             "gauze": 30,
             "medikit": 4,
+            "vaccine_syringe": 4,
             "cola": 15,
             "tablets": 4,
             "12g": 90,

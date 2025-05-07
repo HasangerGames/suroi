@@ -3,12 +3,13 @@ import { type Variation } from "../typings";
 import { CircleHitbox } from "../utils/hitbox";
 import { EasingFunction, type EaseFunctions } from "../utils/math";
 import { DeepPartial, mergeDeep } from "../utils/misc";
-import { ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { DefinitionType, ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { randomFloat } from "../utils/random";
 import { Vec, type Vector } from "../utils/vector";
 import { type ScopeDefinition } from "./items/scopes";
 
 export type SyncedParticleDefinition = ObjectDefinition & {
+    readonly defType: DefinitionType.SyncedParticle
     readonly scale: Animated<number> | NumericSpecifier
     readonly alpha: (Animated<number> & { readonly creatorMult?: number }) | NumericSpecifier
     readonly lifetime: NumericSpecifier
@@ -97,6 +98,7 @@ export function resolveVectorSpecifier(vectorSpecifier: VectorSpecifier): Vector
 }
 
 const smokeLike = (def: DeepPartial<SyncedParticleDefinition>): SyncedParticleDefinition => mergeDeep({
+    defType: DefinitionType.SyncedParticle,
     frame: "smoke_grenade_particle",
     scale: {
         start: {
@@ -159,7 +161,19 @@ export const SyncedParticles = new ObjectDefinitions<SyncedParticleDefinition>([
         name: "Plumpkin Smoke Grenade Particle",
         tint: 0x854770,
         hitbox: new CircleHitbox(5),
-        snapScopeTo: "1x_scope"
+        snapScopeTo: "1x_scope",
+        velocity: {
+            duration: 4000,
+            easing: "expoOut"
+        },
+        spawner: {
+            count: 10,
+            radius: 15,
+            staggering: {
+                delay: 300,
+                initialAmount: 2
+            }
+        }
     }),
     smokeLike({
         idString: "shrouded_particle",

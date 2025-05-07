@@ -1,16 +1,15 @@
 import { ObjectCategory, ZIndexes } from "@common/constants";
 import { type BadgeDefinition } from "@common/definitions/badges";
-import { getEffectiveZIndex } from "@common/utils/layer";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Text, type Container } from "pixi.js";
 import { Game } from "../game";
+import { UIManager } from "../managers/uiManager";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
+import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
-import { DebugRenderer } from "../utils/debugRenderer";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
-import { UIManager } from "../managers/uiManager";
 
 export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
     playerName!: string;
@@ -50,11 +49,12 @@ export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
     override updateFromData(data: ObjectsNetData[ObjectCategory.DeathMarker], isNew = false): void {
         this.position = data.position;
 
-        this.layer = data.layer;
-
         this.container.position.copyFrom(toPixiCoords(this.position));
 
-        this.updateZIndex();
+        this.container.zIndex = ZIndexes.DeathMarkers;
+
+        this.layer = data.layer;
+        this.updateLayer();
 
         const player = Game.playerNames.get(data.playerID);
 
@@ -107,14 +107,6 @@ export class DeathMarker extends GameObject.derive(ObjectCategory.DeathMarker) {
                 }
             });
         }
-    }
-
-    override updateZIndex(): void {
-        this.container.zIndex = getEffectiveZIndex(
-            this.doOverlay() ? ZIndexes.UnderWaterDeadObstacles : ZIndexes.DeathMarkers,
-            this.layer,
-            Game.layer
-        );
     }
 
     override update(): void { /* bleh */ }

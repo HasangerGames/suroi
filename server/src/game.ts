@@ -23,9 +23,9 @@ import { PerkData, PerkIds, Perks } from "@common/definitions/items/perks";
 import { ModeName, ModeDefinition, Modes } from "@common/definitions/modes";
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
 import type { WebSocket } from "uWebSockets.js";
-import { Config, MapWithParams, SpawnMode } from "./config";
+import { Config, MapWithParams } from "./config";
 import { GAME_SPAWN_WINDOW } from "./data/gasStages";
-import { MapName, Maps } from "./data/maps";
+import { MapName, Maps, SpawnMode } from "./data/maps";
 import { type GameData } from "./gameManager";
 import { Gas } from "./gas";
 import { GunItem } from "./inventory/gunItem";
@@ -46,7 +46,8 @@ import { Team } from "./team";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getSpawnableLoots, SpawnableItemRegistry } from "./utils/lootHelpers";
-import { cleanUsername, modeFromMap, removeFrom } from "./utils/misc";
+import { cleanUsername, modeFromMap } from "./utils/misc";
+import { removeFrom } from "@common/utils/misc";
 
 export class Game implements GameData {
     public readonly id: number;

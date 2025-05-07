@@ -1,6 +1,6 @@
 import { Layer } from "../constants";
 import { PolygonHitbox, RectangleHitbox, type Hitbox } from "./hitbox";
-import { Collision, Numeric } from "./math";
+import { Collision, Geometry, Numeric } from "./math";
 import { randomBoolean, randomFloat, SeededRandom } from "./random";
 import { Vec, type Vector } from "./vector";
 
@@ -153,6 +153,15 @@ export class Terrain {
 
         this.beachHitbox = new PolygonHitbox(jaggedRectangle(beachRect, spacing, Numeric.min(8, 2 * oceanSize), random));
         this.grassHitbox = new PolygonHitbox(jaggedRectangle(grassRect, spacing, Numeric.min(8, 2 * beachSize), random));
+
+        const point = Vec.create(0, 0);
+        Geometry.distanceSquared(
+            point,
+            Vec.create(
+                Math.max(-point.x, 0, point.x - width),
+                Math.max(-point.y, 0, point.y - height)
+            )
+        );
 
         this.rivers = rivers;
 

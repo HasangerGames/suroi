@@ -272,8 +272,8 @@ export class SuroiSprite extends Sprite {
         return this;
     }
 
-    setScale(scale?: number): this {
-        this.scale = Vec.create(scale ?? 1, scale ?? 1);
+    setScale(scaleX?: number, scaleY?: number): this {
+        this.scale = Vec.create(scaleX ?? 1, scaleY ?? scaleX ?? 1);
         return this;
     }
 

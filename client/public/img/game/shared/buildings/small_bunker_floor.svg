@@ -2,13 +2,13 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="115.55894mm"
-   height="97.875595mm"
-   viewBox="0 0 231.11787 195.75119"
+   width="115.7254mm"
+   height="133.99635mm"
+   viewBox="0 0 231.4508 267.99271"
    version="1.1"
    id="svg1"
    sodipodi:docname="small_bunker_floor.svg"
-   inkscape:version="1.4 (1:1.4+202410161351+e7c3feb100)"
+   inkscape:version="1.4.1 (1:1.4.1+202503302257+93de688d07)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -24,9 +24,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="1.5895178"
-     inkscape:cx="297.88908"
-     inkscape:cy="358.28476"
+     inkscape:zoom="2.2479176"
+     inkscape:cx="268.47069"
+     inkscape:cy="363.22505"
      inkscape:window-width="2560"
      inkscape:window-height="1368"
      inkscape:window-x="0"
@@ -777,8 +777,7 @@
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(-0.3329102)">
+     id="layer1">
     <path
        style="fill:url(#pattern65-6);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:10.5833;stroke-linecap:square;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
        d="m 84.66655,262.70105 -2.3749,-73.4073 -77.6255002,-3.3889 -0.421,-182.8704002 220.4946002,-0.9733 3.6372,187.5303002 -81.5926,1.4829 v 71.6267"

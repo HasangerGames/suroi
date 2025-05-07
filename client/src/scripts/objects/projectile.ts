@@ -1,28 +1,27 @@
 import { GameConstants, ObjectCategory, ZIndexes } from "@common/constants";
 import { type ThrowableDefinition } from "@common/definitions/items/throwables";
-import { getEffectiveZIndex } from "@common/utils/layer";
-import { type ObjectsNetData } from "@common/utils/objectsSerializations";
-import { Game } from "../game";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { GameObject } from "./gameObject";
-import { DebugRenderer } from "../utils/debugRenderer";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, TEAMMATE_COLORS } from "../utils/constants";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Numeric } from "@common/utils/math";
-import { Vec, type Vector } from "@common/utils/vector";
-import { FloorTypes } from "@common/utils/terrain";
+import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomPointInsideCircle } from "@common/utils/random";
-import { SoundManager, type GameSound } from "../managers/soundManager";
+import { FloorTypes } from "@common/utils/terrain";
+import { Vec, type Vector } from "@common/utils/vector";
 import { GameConsole } from "../console/gameConsole";
+import { Game } from "../game";
 import { MapManager } from "../managers/mapManager";
 import { ParticleManager } from "../managers/particleManager";
+import { SoundManager, type GameSound } from "../managers/soundManager";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, TEAMMATE_COLORS } from "../utils/constants";
+import { DebugRenderer } from "../utils/debugRenderer";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { GameObject } from "./gameObject";
 
 export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
     definition!: ThrowableDefinition;
 
     hitbox = new CircleHitbox(0);
 
-    readonly image: SuroiSprite;
+    readonly image = new SuroiSprite();
     hitSound?: GameSound;
 
     height!: number;
@@ -32,18 +31,15 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
     throwerTeamID?: number;
     tintIndex?: number;
 
-    onFloor = false;
+    onFloor?: boolean;
     onWater = false;
 
     constructor(id: number, data: ObjectsNetData[ObjectCategory.Projectile]) {
         super(id);
 
-        this.image = new SuroiSprite();
-
-        this.layer = data.layer;
+        this.container.addChild(this.image);
 
         this.updateFromData(data, true);
-        this.container.addChild(this.image);
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Projectile], isNew = false): void {
@@ -53,7 +49,7 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
             const def = this.definition = full.definition;
 
             this.halloweenSkin = full.halloweenSkin;
-            if (this.activated !== full.activated) {
+            if (this.activated !== full.activated && this.definition.c4) {
                 this.playSound("c4_beep");
             }
             this.activated = full.activated;
@@ -86,7 +82,6 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
 
         this.position = data.position;
         this.rotation = data.rotation;
-        this.layer = data.layer;
         this.height = data.height;
 
         this.hitbox.position = this.position;
@@ -98,8 +93,12 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
             this.container.rotation = this.rotation;
         }
 
-        this.layer = data.layer;
+        if (this.layer !== data.layer) {
+            this.layer = data.layer;
+            this.updateLayer();
+        }
 
+        const onFloorOld = this.onFloor;
         const onWaterOld = this.onWater;
         this.onFloor = this.height <= 0;
         this.onWater = this.onFloor && !!FloorTypes[MapManager.terrain.getFloor(this.position, this.layer)].overlay;
@@ -124,19 +123,9 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
             }));
         }
 
-        this.updateZIndex();
-    }
-
-    override updateZIndex(): void {
-        let zIndex = ZIndexes.AirborneThrowables;
-        if (this.onWater) zIndex = ZIndexes.UnderwaterGroundedThrowables;
-        else if (this.onFloor) zIndex = ZIndexes.GroundedThrowables;
-
-        this.container.zIndex = getEffectiveZIndex(
-            zIndex,
-            this.layer,
-            Game.layer
-        );
+        if (this.onFloor !== onFloorOld) {
+            this.container.zIndex = this.onFloor ? ZIndexes.GroundedThrowables : ZIndexes.AirborneThrowables;
+        }
     }
 
     update(): void { /* bleh */ }

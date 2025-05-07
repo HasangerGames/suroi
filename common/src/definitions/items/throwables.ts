@@ -1,4 +1,4 @@
-import { ItemType, type InventoryItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
+import { DefinitionType, ItemType, type InventoryItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
 import { Vec, type Vector } from "../../utils/vector";
 import { type ExplosionDefinition } from "../explosions";
 import { SyncedParticleDefinition } from "../syncedParticles";
@@ -6,6 +6,7 @@ import { Tier } from "./guns";
 import { InventoryItemDefinitions } from "./items";
 
 export type ThrowableDefinition = InventoryItemDefinition & {
+    readonly defType: DefinitionType.Throwable
     readonly itemType: ItemType.Throwable
     readonly tier: Tier
     /**
@@ -86,6 +87,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
     {
         idString: "frag_grenade",
         name: "Frag Grenade",
+        defType: DefinitionType.Throwable,
         itemType: ItemType.Throwable,
         tier: Tier.C,
         cookable: true,
@@ -131,6 +133,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
     {
         idString: "smoke_grenade",
         name: "Smoke Grenade",
+        defType: DefinitionType.Throwable,
         itemType: ItemType.Throwable,
         tier: Tier.D,
         cookable: false,
@@ -177,6 +180,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
     {
         idString: "confetti_grenade",
         name: "Confetti Grenade",
+        defType: DefinitionType.Throwable,
         itemType: ItemType.Throwable,
         tier: Tier.S,
         fuseTime: 4000,
@@ -222,6 +226,7 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
     {
         idString: "c4",
         name: "C4",
+        defType: DefinitionType.Throwable,
         itemType: ItemType.Throwable,
         tier: Tier.S,
         c4: true,
@@ -269,12 +274,15 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
     {
         idString: "proj_seed",
         name: "Seed",
+        defType: DefinitionType.Throwable,
         itemType: ItemType.Throwable,
         tier: Tier.S,
         cookable: true,
         fuseTime: 1500,
         cookTime: 0,
         throwTime: 0,
+        devItem: true,
+        noSwap: true,
         speedMultiplier: 1,
         cookSpeedMultiplier: 0.7,
         impactDamage: 1,
