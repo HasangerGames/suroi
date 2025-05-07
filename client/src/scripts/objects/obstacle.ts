@@ -2,7 +2,7 @@ import { ObjectCategory, ZIndexes } from "@common/constants";
 import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type Orientation, type Variation } from "@common/typings";
 import { HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
-import { equivLayer, getEffectiveZIndex } from "@common/utils/layer";
+import { equivLayer } from "@common/utils/layer";
 import { Angle, calculateDoorHitboxes, EaseFunctions, Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
@@ -103,7 +103,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
             if (definition.graphics?.length && !this.graphics) {
                 this.graphics = new Graphics();
-                this.graphics.zIndex = getEffectiveZIndex(definition.graphicsZIndex ?? ZIndexes.ObstaclesLayer1, this.layer, Game.layer);
+                this.graphics.zIndex = definition.graphicsZIndex ?? ZIndexes.ObstaclesLayer1;
                 for (const graphics of definition.graphics) {
                     this.graphics.beginPath();
                     drawGroundGraphics(graphics.hitbox.transform(this.position, 1, this.orientation), this.graphics);
@@ -256,27 +256,21 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         this.powered = data.powered;
 
         this.waterOverlay = data.waterOverlay;
-        if (this.waterOverlay) {
-            this.image.zIndex = getEffectiveZIndex(ZIndexes.UnderWaterObstacles, this.layer, Game.layer);
+        if (this.waterOverlay && !this.waterOverlaySpriteInitialized) {
+            const waterOverlaySpriteType: "circle" | "rect" = definition.hitbox.type === HitboxType.Circle ? "circle" : "rect";
 
-            if (!this.waterOverlaySpriteInitialized) {
-                const waterOverlaySpriteType: "circle" | "rect" = definition.hitbox.type === HitboxType.Circle ? "circle" : "rect";
+            this.waterOverlaySprite = new SuroiSprite(`water_overlay_${waterOverlaySpriteType}`)
+                .setTint(Game.mode.colors.water)
+                .setZIndex(ZIndexes.BuildingsFloor);
 
-                this.waterOverlaySprite = new SuroiSprite(`water_overlay_${waterOverlaySpriteType}`)
-                    .setTint(Game.mode.colors.water)
-                    .setZIndex(getEffectiveZIndex(ZIndexes.BuildingsFloor, this.layer, Game.layer));
-
-                if (this.definition.waterOverlay !== undefined) {
-                    this.waterOverlaySprite.width = this.waterOverlaySprite.width * this.definition.waterOverlay.scaleX;
-                    this.waterOverlaySprite.height = this.waterOverlaySprite.height * this.definition.waterOverlay.scaleY;
-                }
-
-                this.container.addChild(this.waterOverlaySprite);
-
-                this.waterOverlaySpriteInitialized = true;
-            } else {
-                this.waterOverlaySprite?.setZIndex(getEffectiveZIndex(ZIndexes.BuildingsFloor, this.layer, Game.layer));
+            if (this.definition.waterOverlay !== undefined) {
+                this.waterOverlaySprite.width = this.waterOverlaySprite.width * this.definition.waterOverlay.scaleX;
+                this.waterOverlaySprite.height = this.waterOverlaySprite.height * this.definition.waterOverlay.scaleY;
             }
+
+            this.container.addChild(this.waterOverlaySprite);
+
+            this.waterOverlaySpriteInitialized = true;
         }
 
         if (isNew) {
@@ -376,7 +370,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     this.image.setFrame(definition.frames?.residue ?? `${definition.idString}_residue`);
 
                     if (this.waterOverlay) {
-                        this.image.setZIndex(getEffectiveZIndex(ZIndexes.UnderWaterDeadObstacles, this.layer, Game.layer));
+                        this.image.setZIndex(ZIndexes.DeadObstacles);
                         this.image.setAlpha(0.5);
                     }
 
@@ -453,7 +447,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         }
 
         if (this.waterOverlay && this.dead) {
-            this.image.setZIndex(getEffectiveZIndex(ZIndexes.UnderWaterDeadObstacles, this.layer, Game.layer));
+            this.image.setZIndex(ZIndexes.DeadObstacles);
             this.image.setAlpha(0.5);
         }
 

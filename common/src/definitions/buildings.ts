@@ -4710,37 +4710,37 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
 
             // -------------------------------------------------
-            {
-                key: "cargo_ship_stair",
-                position: Vec.create(63.7, -119.14)
-            },
-            {
-                key: "cargo_ship_stair",
-                position: Vec.create(-63.7, 21.67),
-                rotation: Math.PI
-            },
-            {
-                key: "cargo_ship_stair",
-                position: Vec.create(-63.7, 121.57),
-                rotation: Math.PI
-            },
-            {
-                key: "cargo_ship_stair",
-                position: Vec.create(63.7, -119.14)
-            },
-            {
-                key: "cargo_ship_stair",
-                position: Vec.create(-63.7, -119.09),
-                rotation: Math.PI
-            },
-            {
-                key: "cargo_ship_stair",
-                position: Vec.create(63.7, -48.46)
-            },
-            {
-                key: "cargo_ship_stair",
-                position: Vec.create(63.7, 121.47)
-            }
+            // {
+            //     key: "cargo_ship_stair",
+            //     position: Vec.create(63.7, -119.14)
+            // },
+            // {
+            //     key: "cargo_ship_stair",
+            //     position: Vec.create(-63.7, 21.67),
+            //     rotation: Math.PI
+            // },
+            // {
+            //     key: "cargo_ship_stair",
+            //     position: Vec.create(-63.7, 121.57),
+            //     rotation: Math.PI
+            // },
+            // {
+            //     key: "cargo_ship_stair",
+            //     position: Vec.create(63.7, -119.14)
+            // },
+            // {
+            //     key: "cargo_ship_stair",
+            //     position: Vec.create(-63.7, -119.09),
+            //     rotation: Math.PI
+            // },
+            // {
+            //     key: "cargo_ship_stair",
+            //     position: Vec.create(63.7, -48.46)
+            // },
+            // {
+            //     key: "cargo_ship_stair",
+            //     position: Vec.create(63.7, 121.47)
+            // }
             // -------------------------------------------------
         ],
         floors: [
@@ -4784,13 +4784,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: [
-            { idString: "cargo_ship_top_stair", position: Vec.create(63.39, -119.14), rotation: 0, layer: 1 },
-            { idString: "cargo_ship_top_stair", position: Vec.create(-63.34, 21.67), rotation: 2, layer: 1 },
-            { idString: "cargo_ship_top_stair", position: Vec.create(-63.47, 121.57), rotation: 2, layer: 1 },
-            { idString: "cargo_ship_top_stair", position: Vec.create(63.39, -119.14), rotation: 0, layer: 1 },
-            { idString: "cargo_ship_top_stair", position: Vec.create(63.37, -48.46), rotation: 0, layer: 1 },
-            { idString: "cargo_ship_top_stair", position: Vec.create(63.44, 121.47), rotation: 0, layer: 1 },
-            { idString: "cargo_ship_top_stair", position: Vec.create(-63.32, -119.09), rotation: 2, layer: 1 },
+            { idString: "cargo_ship_top_stair", position: Vec.create(63.39, -119.14), rotation: 0, layer: -1 },
+            { idString: "cargo_ship_top_stair", position: Vec.create(-63.34, 21.67), rotation: 2, layer: -1 },
+            { idString: "cargo_ship_top_stair", position: Vec.create(-63.47, 121.57), rotation: 2, layer: -1 },
+            { idString: "cargo_ship_top_stair", position: Vec.create(63.39, -119.14), rotation: 0, layer: -1 },
+            { idString: "cargo_ship_top_stair", position: Vec.create(63.37, -48.46), rotation: 0, layer: -1 },
+            { idString: "cargo_ship_top_stair", position: Vec.create(63.44, 121.47), rotation: 0, layer: -1 },
+            { idString: "cargo_ship_top_stair", position: Vec.create(-63.32, -119.09), rotation: 2, layer: -1 },
 
             { idString: "cargo_ship_stair_support", position: Vec.create(26.36, -27.63), rotation: 0 },
             { idString: "cargo_ship_stair_support", position: Vec.create(26.28, -40.59), rotation: 0 },
@@ -4799,12 +4799,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "cargo_ship_stair_support", position: Vec.create(-26.09, 100.04), rotation: 2 },
             { idString: "cargo_ship_stair_support", position: Vec.create(-26.08, 113.1), rotation: 2 },
 
-            { idString: "cargo_ship_stair", position: Vec.create(63.71, -48.43), rotation: 0 },
-            { idString: "cargo_ship_stair", position: Vec.create(63.71, 121.45), rotation: 0 },
-            { idString: "cargo_ship_stair", position: Vec.create(63.71, -119.14), rotation: 0 },
-            { idString: "cargo_ship_stair", position: Vec.create(-66.09, -119.07), rotation: 0 },
-            { idString: "cargo_ship_stair", position: Vec.create(-66.09, 21.75), rotation: 0 },
-            { idString: "cargo_ship_stair", position: Vec.create(-66.09, 121.65), rotation: 0 },
+            { idString: "cargo_ship_stair", position: Vec.create(63.71, -48.43), rotation: 0, layer: -1 },
+            { idString: "cargo_ship_stair", position: Vec.create(63.71, 121.45), rotation: 0, layer: -1 },
+            { idString: "cargo_ship_stair", position: Vec.create(63.71, -119.14), rotation: 0, layer: -1 },
+            { idString: "cargo_ship_stair", position: Vec.create(-66.09, -119.07), rotation: 0, layer: -1 },
+            { idString: "cargo_ship_stair", position: Vec.create(-66.09, 21.75), rotation: 0, layer: -1 },
+            { idString: "cargo_ship_stair", position: Vec.create(-66.09, 121.65), rotation: 0, layer: -1 },
 
             { idString: "cargo_ship_stair_entrance_walls", position: Vec.create(0.11, -156.81), rotation: 0 },
             { idString: "cargo_ship_stair_entrance_walls", position: Vec.create(26.3, -34.17), rotation: 3 },
