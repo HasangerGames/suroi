@@ -472,6 +472,7 @@ const portMainOfficeWall = (
 ): RawObstacleDefinition => ({
     idString: `port_main_office_wall_${lengthNumber}`,
     name: `Port Main Office Wall ${lengthNumber}`,
+    defType: DefinitionType.Obstacle,
     material: "wood",
     hideOnMap: true,
     noResidue: true,
@@ -1330,6 +1331,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "lamp",
         name: "Lamp",
+        defType: DefinitionType.Obstacle,
         material: "glass",
         health: 69,
         indestructible: true,
@@ -2697,6 +2699,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "vault_door_deactivated",
         name: "Vault Door",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -3530,6 +3533,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "large_warehouse_wall", // todo: make this wall only damageable by big white barrel explosion
         name: "Large Warehouse Wall",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(55.19, 2.02, Vec.create(0.35, -12.47)),
@@ -3551,6 +3555,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
                 )
             }
         ],
+        graphicsZIndex: ZIndexes.ObstaclesLayer1,
         health: 9999,
         hideOnMap: true,
         reflectBullets: true,
@@ -3722,6 +3727,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "truck_front",
         name: "Truck",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -3983,6 +3989,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "port_main_office_column",
         name: "Port Main Office Column",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         indestructible: true,
         health: 340,
@@ -4128,6 +4135,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "smaller_sandbags",
         name: "Sandbags",
+        defType: DefinitionType.Obstacle,
         material: "sand",
         health: 1000,
         indestructible: true,
@@ -4380,6 +4388,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "truck_tire",
         name: "Truck Tire",
+        defType: DefinitionType.Obstacle,
         material: "stone",
         health: 200,
         indestructible: true,
@@ -4767,6 +4776,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "ship_thing_v2",
         name: "the snack that smiles back",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 42069,
         indestructible: true,
@@ -4785,6 +4795,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "ship_oil_source",
         name: "Ship Oil Source",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 69,
         indestructible: true,
@@ -4799,6 +4810,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "cargo_ship_stair_support",
         name: "cargo ship stair",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         indestructible: true,
         collideWithLayers: Layers.All,
