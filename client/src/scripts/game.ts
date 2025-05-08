@@ -896,17 +896,20 @@ export const Game = new (class Game {
     backgroundTween?: Tween<{ readonly r: number, readonly g: number, readonly b: number }>;
     volumeTween?: Tween<GameSound>;
 
-    updateLayer(initial = false, oldLayer?: Layer): void {
-        CameraManager.updateLayer(initial, oldLayer);
+    updateLayer(newLayer: Layer, initial = false, oldLayer?: Layer): void {
+        CameraManager.updateLayer(newLayer, initial, oldLayer);
 
         for (const sound of SoundManager.updatableSounds) {
             sound.updateLayer();
             sound.update();
         }
+        // slight hack
+        // if we don't do this then ambience will play at the wrong volume for a tick
+        this.riverAmbience?.volumeTween?.kill();
+        this.oceanAmbience?.volumeTween?.kill();
+        this.updateAmbience();
 
-        const layer = this.layer;
-
-        const basement = layer === Layer.Basement;
+        const basement = newLayer === Layer.Basement;
         MapManager.terrainGraphics.visible = !basement;
 
         const currentColor = this.pixi.renderer.background.color;
@@ -1117,7 +1120,7 @@ export const Game = new (class Game {
 
             if (this.hideSecondFloor !== hideSecondFloor) {
                 this.hideSecondFloor = hideSecondFloor;
-                CameraManager.updateLayer();
+                CameraManager.updateLayer(this.layer);
             }
 
             const object = interactable.object ?? uninteractable.object;
