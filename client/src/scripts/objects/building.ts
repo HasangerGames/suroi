@@ -331,7 +331,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
         this.toggleCeiling();
 
-        this.ceilingContainer.zIndex = this.dead
+        this.ceilingContainer.zIndex = (this.dead && !this.damagedCeiling)
             ? ZIndexes.DeadObstacles
             : this.definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling;
         this.container.zIndex = this.definition.floorZIndex ?? ZIndexes.BuildingsFloor;

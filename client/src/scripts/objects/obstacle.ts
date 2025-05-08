@@ -106,11 +106,11 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 this.graphics.zIndex = definition.graphicsZIndex ?? ZIndexes.ObstaclesLayer1;
                 for (const graphics of definition.graphics) {
                     this.graphics.beginPath();
-                    drawGroundGraphics(graphics.hitbox.transform(this.position, 1, this.orientation), this.graphics);
+                    drawGroundGraphics(graphics.hitbox, this.graphics);
                     this.graphics.closePath();
                     this.graphics.fill(graphics.color);
                 }
-                CameraManager.addObject(this.graphics);
+                this.container.addChild(this.graphics);
             }
 
             if (definition.gunMount && !this.mountSpriteInitialized) {
