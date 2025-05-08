@@ -1972,8 +1972,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             key: "large_warehouse_ceiling",
             position: Vec.create(-2, -2.1),
             scale: Vec.create(2, 2),
-            damaged: "large_warehouse_ceiling_damaged",
-            residue: "large_warehouse_ceiling_residue"
+            damaged: "large_warehouse_ceiling_damaged"
         }],
         obstacles: [{
             idString: "large_warehouse_wall",
@@ -5767,6 +5766,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         particle: "hq_stone_wall_particle",
         particleVariations: 2,
         collideWithLayers: Layers.Adjacent,
+        hasSecondFloor: true,
         hitbox: new GroupHitbox(
             // Outer walls
             RectangleHitbox.fromRect(84.9, 1.75, Vec.create(-29.2, -106.4)), // T, W1
@@ -6519,6 +6519,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(85.5, 56, Vec.create(-11, -11.9)),
             RectangleHitbox.fromRect(64, 24, Vec.create(-23, 29.5))
         ),
+        hasSecondFloor: true,
         floorImages: [
             {
                 key: "barn_floor_4",
@@ -7247,6 +7248,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(97.2, 102, Vec.create(0, -9.5)),
             RectangleHitbox.fromRect(70.5, 18.5, Vec.create(-13.38, 50))
         ),
+        hasSecondFloor: true,
         floors: [
             {
                 type: FloorNames.Carpet,

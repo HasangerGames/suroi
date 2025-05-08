@@ -540,7 +540,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 if (!this.isActivePlayer || isNew) this.updateLayer();
             }
             if (this.isActivePlayer && (layerChanged || isNew)) {
-                Game.updateLayer(isNew, oldLayer);
+                Game.updateLayer(layer, isNew, oldLayer);
             }
 
             this.backEquippedMelee = backEquippedMelee;

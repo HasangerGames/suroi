@@ -1,4 +1,4 @@
-import { GameConstants, ObjectCategory, ZIndexes } from "@common/constants";
+import { GameConstants, Layer, ObjectCategory, ZIndexes } from "@common/constants";
 import { type BuildingDefinition, type BuildingImageDefinition } from "@common/definitions/buildings";
 import { MaterialSounds } from "@common/definitions/obstacles";
 import { type Orientation } from "@common/typings";
@@ -32,7 +32,6 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
     orientation!: Orientation;
 
     ceilingVisible = false;
-    damagedCeiling = false;
 
     puzzle: ObjectsNetData[ObjectCategory.Building]["puzzle"];
 
@@ -65,13 +64,15 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
     toggleCeiling(): void {
         if (this.ceilingRaycastLines) this.ceilingRaycastLines.length = 0;
 
-        if (this.ceilingHitbox === undefined || this.ceilingTween || (this.dead && !this.damagedCeiling)) return;
+        if (this.ceilingHitbox === undefined || this.ceilingTween || (this.dead && !this.definition.hasDamagedCeiling)) return;
         const player = Game.activePlayer;
         if (player === undefined) return;
 
         let visible = true;
 
-        if (this.ceilingHitbox.collidesWith(player.hitbox)) {
+        if (this.layer === Layer.Upstairs && !Game.hideSecondFloor) {
+            visible = true;
+        } else if (this.ceilingHitbox.collidesWith(player.hitbox)) {
             // If the player is inside the ceiling hitbox, we know the ceiling should be hidden
             visible = false;
         } else {
@@ -88,17 +89,10 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             const hitboxes = this.ceilingHitbox instanceof GroupHitbox ? this.ceilingHitbox.hitboxes : [this.ceilingHitbox];
             for (const hitbox of hitboxes) {
                 // TODO
-                if (hitbox instanceof PolygonHitbox) {
-                    visible = true;
-                    continue;
-                }
+                if (hitbox instanceof PolygonHitbox) continue;
 
-                // find the direction to cast rays
                 const direction = playerHitbox.getIntersection(hitbox)?.dir;
-                if (!direction) {
-                    visible = true;
-                    continue;
-                }
+                if (!direction) continue;
 
                 const angle = Math.atan2(direction.y, direction.x);
 
@@ -114,10 +108,10 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
                     if (!rayCeilingIntersection) continue;
 
                     let collided = false;
-                    for (const { damageable, dead, definition, layer, hitbox } of potentials) {
+                    for (const { damageable, dead, isBuilding, definition, layer, hitbox } of potentials) {
                         if (
                             !damageable
-                            || dead
+                            || (dead && !(isBuilding && definition.hasDamagedCeiling))
                             || ("isWindow" in definition && definition.isWindow)
                             || !equivLayer({ layer, definition }, player)
                             || !hitbox?.intersectsLine(rayStart, rayCeilingIntersection)
@@ -331,7 +325,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
 
         this.toggleCeiling();
 
-        this.ceilingContainer.zIndex = (this.dead && !this.damagedCeiling)
+        this.ceilingContainer.zIndex = (this.dead && !this.definition.hasDamagedCeiling)
             ? ZIndexes.DeadObstacles
             : this.definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling;
         this.container.zIndex = this.definition.floorZIndex ?? ZIndexes.BuildingsFloor;
@@ -439,21 +433,13 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             else this.container.addChild(sprite);
         }
 
-        let key = imageDef.key;
-        if (this.dead && imageDef.residue) key = imageDef.residue;
-        if (this.dead && imageDef.damaged) {
-            key = imageDef.damaged;
-            this.damagedCeiling = true;
-        }
-        sprite.setFrame(key);
-
-        if (isCeiling) {
-            sprite.setVisible(this.dead ? !!imageDef.residue : !!imageDef.key);
-        } else {
-            sprite.setVisible(true);
-        }
-
-        sprite.setVPos(toPixiCoords(imageDef.position));
+        const frame = this.dead
+            ? imageDef.residue ?? imageDef.damaged ?? imageDef.key
+            : imageDef.key;
+        sprite
+            .setFrame(frame)
+            .setVPos(toPixiCoords(imageDef.position))
+            .setVisible(isCeiling || frame !== undefined);
 
         if (imageDef.spinSpeed !== undefined ? isNewSprite : true) {
             sprite.setRotation(imageDef.rotation ?? 0);
