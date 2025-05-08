@@ -1,4 +1,4 @@
-import { FlyoverPref, Layers, RotationMode, ZIndexes, MapObjectSpawnMode } from "../constants";
+import { FlyoverPref, Layers, RotationMode, ZIndexes, MapObjectSpawnMode, Layer } from "../constants";
 import { Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type Mutable } from "../utils/misc";
@@ -4617,6 +4617,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "cargo_ship_stair_entrance_walls",
         name: "Cargo Ship Stair",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 69,
         indestructible: true,
@@ -4636,11 +4637,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "cargo_ship_stair",
         name: "Cargo Ship Stair",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 69,
         indestructible: true,
         reflectBullets: true,
-        invisible: true,
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(23.99, 1.01, Vec.create(1.34, 5.45)),
             RectangleHitbox.fromRect(23.99, 1.01, Vec.create(1.6, -5.47)),
@@ -4655,7 +4656,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         ),
         frames: {
             particle: "metal_particle"
-            // base: "cargo_ship_stair"
         },
         rotationMode: RotationMode.Limited
     },
@@ -4695,6 +4695,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "cargo_ship_bottom_stair",
         name: "Cargo Ship Bottom Stair",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -4713,6 +4714,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "cargo_ship_top_stair",
         name: "Cargo Ship Top Stair",
+        defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
         indestructible: true,
@@ -4722,7 +4724,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             low: 1
         },
         invisible: true,
-        hitbox: RectangleHitbox.fromRect(26.94, 10.06),
+        hitbox: RectangleHitbox.fromRect(10, 10),
         frames: {
             particle: "metal_particle"
         },

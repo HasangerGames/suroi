@@ -1,8 +1,7 @@
-import { Layers, ZIndexes, FlyoverPref, MapObjectSpawnMode, RotationMode } from "../constants";
+import { FlyoverPref, Layers, MapObjectSpawnMode, RotationMode, ZIndexes } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
-import { ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
-import { DefinitionType, NullString, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
+import { DefinitionType, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { pickRandomInArray, randomBoolean } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
@@ -88,6 +87,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly bridgeMinRiverWidth?: number
 
     readonly noCeilingScopeEffect?: boolean
+    readonly hasSecondFloor?: boolean
     readonly obstacles?: readonly BuildingObstacle[]
     readonly lootSpawners?: readonly LootSpawner[]
     readonly subBuildings?: readonly SubBuilding[]
@@ -903,6 +903,7 @@ const truckContainer = (
     return {
         idString: `truck_container_${id}`,
         name: `Truck Container ${id}`,
+        defType: DefinitionType.Building,
         reflectBullets: true,
         material: "metal_heavy",
         particle: `truck_container_particle_${chosen}`,
@@ -943,6 +944,7 @@ const truck = (
     return {
         idString: `truck_${id}`,
         name: `Truck ${id}`,
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(25, 60, Vec.create(0, 6)),
         obstacles: [
             { idString: "truck_front", position: Vec.create(0, -11.5), rotation: 0 },
@@ -969,6 +971,7 @@ const pallet = (
     return {
         idString: `pallet_${id}`,
         name: `Pallet ${id}`,
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(10.1, 9),
         obstacles: [
             { idString: "pallet", position: Vec.create(0, 0), rotation: 0 },
@@ -1887,6 +1890,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port_warehouse",
         name: "Port Warehouse",
+        defType: DefinitionType.Building,
         reflectBullets: true,
         material: "metal_heavy",
         particle: "metal_particle",
@@ -1938,6 +1942,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "large_warehouse",
         name: "Large Warehouse",
+        defType: DefinitionType.Building,
         reflectBullets: true,
         material: "metal_heavy",
         particle: "metal_particle",
@@ -2947,62 +2952,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }]
     },
     {
-        idString: "crane",
-        name: "Crane",
-        defType: DefinitionType.Building,
-        reflectBullets: true,
-        noCeilingScopeEffect: true,
-        material: "metal_heavy",
-        particle: "container_particle_yellow",
-        hitbox: new GroupHitbox(
-            // base ends
-            RectangleHitbox.fromRect(4.82, 1.8, Vec.create(32, -6.42)),
-            RectangleHitbox.fromRect(4.82, 1.8, Vec.create(-31.5, -6.42)),
-            RectangleHitbox.fromRect(4.82, 1.8, Vec.create(32, -135.5)),
-            RectangleHitbox.fromRect(4.82, 1.8, Vec.create(-31.5, -135.5)),
-
-            // base parts
-            RectangleHitbox.fromRect(5.89, 15, Vec.create(-31.55, -87.3)),
-            RectangleHitbox.fromRect(4.99, 25.69, Vec.create(-31.55, -87.3)),
-            RectangleHitbox.fromRect(4.29, 31.46, Vec.create(-31.55, -87.3)),
-
-            RectangleHitbox.fromRect(5.89, 15, Vec.create(-31.55, -35.6)),
-            RectangleHitbox.fromRect(4.99, 25.69, Vec.create(-31.55, -35.6)),
-            RectangleHitbox.fromRect(4.29, 31.46, Vec.create(-31.55, -35.6)),
-
-            RectangleHitbox.fromRect(5.89, 15, Vec.create(32, -87.3)),
-            RectangleHitbox.fromRect(4.99, 25.69, Vec.create(32, -87.3)),
-            RectangleHitbox.fromRect(4.29, 31.46, Vec.create(32, -87.3)),
-
-            RectangleHitbox.fromRect(5.89, 15, Vec.create(32, -35.6)),
-            RectangleHitbox.fromRect(4.99, 25.69, Vec.create(32, -35.6)),
-            RectangleHitbox.fromRect(4.29, 31.46, Vec.create(32, -35.6))
-        ),
-        spawnHitbox: RectangleHitbox.fromRect(210, 140, Vec.create(55, -72)),
-        ceilingHitbox: RectangleHitbox.fromRect(210, 100, Vec.create(55, -60)),
-        floorImages: [
-            { key: "crane_base_part", position: Vec.create(-31.55, -87.3) },
-            { key: "crane_base_part", position: Vec.create(-31.55, -35.6) },
-
-            { key: "crane_base_part", position: Vec.create(32, -87.3) },
-            { key: "crane_base_part", position: Vec.create(32, -35.6) },
-
-            { key: "crane_base_end", position: Vec.create(32, -6.42) },
-            { key: "crane_base_end", position: Vec.create(-31.5, -6.42) },
-
-            { key: "crane_base_end", position: Vec.create(32, -135.5) },
-            { key: "crane_base_end", position: Vec.create(-31.5, -135.5) }
-        ],
-        floorZIndex: ZIndexes.ObstaclesLayer4,
-        ceilingImages: [
-            { key: "crane_ceiling_1", position: Vec.create(31, -60), scale: Vec.create(2, 2) },
-            { key: "crane_ceiling_2", position: Vec.create(77.5, -60), scale: Vec.create(2, 2) },
-            { key: "crane_ceiling_3", position: Vec.create(-20, -60), scale: Vec.create(2, 2) },
-            { key: "crane_ceiling_4", position: Vec.create(131, -60), scale: Vec.create(2, 2) }
-        ],
-        ceilingZIndex: ZIndexes.BuildingsCeiling + 1 // makes the crane ceiling render above container ceilings
-    },
-    {
         idString: "shed",
         name: "Shed",
         defType: DefinitionType.Building,
@@ -3149,6 +3098,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port_hay_shed",
         name: "Port Hay Shed",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(47, 32),
         ceilingHitbox: RectangleHitbox.fromRect(33.5, 24.5, Vec.create(-1.2, -0.5)),
         ceilingImages: [{
@@ -3170,6 +3120,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port_gate_office",
         name: "Port Gate Office",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(55, 32),
         ceilingHitbox: RectangleHitbox.fromRect(41.36, 20.56, Vec.create(2.04, -2.04)),
         material: "stone",
@@ -3219,6 +3170,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port_storage",
         name: "Port Storage",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(55, 32, Vec.create(-10, 0)),
         ceilingHitbox: RectangleHitbox.fromRect(42, 21.55, Vec.create(-7.7, -2.04)),
         material: "stone",
@@ -3264,6 +3216,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port_main_office",
         name: "Port Main Office",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(102, 112),
         ceilingHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(81.49, 17.42, Vec.create(-0.2, 24.94)),
@@ -3414,6 +3367,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port",
         name: "Port",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(480, 490, Vec.create(0, -20)),
         floorZIndex: ZIndexes.Ground,
         sounds: {
@@ -3745,8 +3699,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             { idString: "box", position: Vec.create(-126.9, 184.32) },
             { idString: "box", position: Vec.create(-132.22, 186.21) },
-            { idString: "box", position: Vec.create(-89.01, 154.82) },
-            { idString: "box", position: Vec.create(-83.61, 157.44) },
+            { idString: "box", position: Vec.create(-97.01, 154.82) },
+            { idString: "box", position: Vec.create(-91.61, 157.44) },
             { idString: "box", position: Vec.create(-146.62, 110.96) },
             { idString: "box", position: Vec.create(-146.55, 105.93) },
             { idString: "box", position: Vec.create(-141.3, 108.04) },
@@ -3756,8 +3710,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "trash_bag", position: Vec.create(-206.77, 139.05) },
             { idString: "roadblock", position: Vec.create(-140.92, 55.62), rotation: 1 }, // H_S
 
-            { idString: "ammo_crate", position: Vec.create(-87.12, 147.13) },
-            { idString: "ammo_crate", position: Vec.create(-92.03, 164.29) },
+            { idString: "ammo_crate", position: Vec.create(-95.12, 147.13) },
+            { idString: "ammo_crate", position: Vec.create(-100.03, 164.29) },
             { idString: "ammo_crate", position: Vec.create(-126.3, 74.77) }, // H_S
             // ------------------------------------------------------------------------------------------
 
@@ -3851,7 +3805,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "port_hay_shed", position: Vec.create(-73.7, -135), orientation: 1 },
             { idString: "porta_potty", position: Vec.create(130, -165.4), orientation: 2 },
             { idString: randomPortOpenContainerOneSide, position: Vec.create(-168.2, -188.5), orientation: 1 }, // y, x
-            { idString: randomPallet, position: Vec.create(-153.61, -96.34), orientation: 1 },
+            { idString: randomPallet, position: Vec.create(-153.61, -104.34), orientation: 1 },
             { idString: randomPallet, position: Vec.create(-143.74, 170.4) },
             { idString: randomPallet, position: Vec.create(-121.96, -111.74), orientation: 1 },
             { idString: randomPallet, position: Vec.create(-82.81, -144.84), orientation: 1 }, // H_S
@@ -4147,6 +4101,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "cargo_ship_bottom_floor_vault",
         name: "Cargo Ship Vault Ceiling",
+        defType: DefinitionType.Building,
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(28.15, 52.25),
             RectangleHitbox.fromRect(14, 4, Vec.create(7.1, 26.3)),
@@ -4163,6 +4118,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "cargo_ship",
         name: "Cargo Ship",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(180, 400, Vec.create(-1.5, -1.8)),
         puzzle: {
             triggerOnSolve: "vault_door_deactivated",
@@ -4206,6 +4162,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "cargo_ship_top_floor_shadow",
         name: "Cargo Ship Shadow",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(180, 400, Vec.create(-1.5, -1.8)),
         ceilingZIndex: ZIndexes.BuildingsCeiling + 0.5,
         ceilingImages: [
@@ -4220,9 +4177,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         // implemented by pap with a lot of love >w<
         idString: "cargo_ship_bottom_floor",
         name: "Cargo Ship (Bottom Floor)",
+        defType: DefinitionType.Building,
         material: "metal_heavy",
         particle: "cargo_ship_particle",
         reflectBullets: true,
+        hasSecondFloor: true,
         collideWithLayers: Layers.Equal,
         sounds: {
             normal: "ship_ambience",
@@ -4578,6 +4537,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "cargo_ship_top_floor_control_room_ceiling",
         name: "Cargo Ship Control Room Ceiling",
+        defType: DefinitionType.Building,
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(50.25, 61, Vec.create(0, 0.45)),
             RectangleHitbox.fromRect(100, 50, Vec.create(0, 6))
@@ -4597,6 +4557,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         // implemented by pap with a lot of love >w<
         idString: "cargo_ship_top_floor",
         name: "Cargo Ship (Top Floor)",
+        defType: DefinitionType.Building,
         material: "metal_heavy",
         particle: "cargo_ship_particle",
         reflectBullets: true,
@@ -4706,7 +4667,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 key: "cargo_ship_floor_top_1",
-                position: Vec.create(0.07, 94.7)
+                position: Vec.create(0.115, 94.7)
             },
 
             // -------------------------------------------------
@@ -4784,13 +4745,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: [
-            { idString: "cargo_ship_top_stair", position: Vec.create(63.39, -119.14), rotation: 0, layer: -1 },
-            { idString: "cargo_ship_top_stair", position: Vec.create(-63.34, 21.67), rotation: 2, layer: -1 },
-            { idString: "cargo_ship_top_stair", position: Vec.create(-63.47, 121.57), rotation: 2, layer: -1 },
-            { idString: "cargo_ship_top_stair", position: Vec.create(63.39, -119.14), rotation: 0, layer: -1 },
-            { idString: "cargo_ship_top_stair", position: Vec.create(63.37, -48.46), rotation: 0, layer: -1 },
-            { idString: "cargo_ship_top_stair", position: Vec.create(63.44, 121.47), rotation: 0, layer: -1 },
-            { idString: "cargo_ship_top_stair", position: Vec.create(-63.32, -119.09), rotation: 2, layer: -1 },
+            { idString: "cargo_ship_top_stair", position: Vec.create(64, -119.14), rotation: 0, layer: -1 },
+            { idString: "cargo_ship_top_stair", position: Vec.create(-64, 21.67), rotation: 2, layer: -1 },
+            { idString: "cargo_ship_top_stair", position: Vec.create(-64, 121.57), rotation: 2, layer: -1 },
+            { idString: "cargo_ship_top_stair", position: Vec.create(64, -119.14), rotation: 0, layer: -1 },
+            { idString: "cargo_ship_top_stair", position: Vec.create(64, -48.46), rotation: 0, layer: -1 },
+            { idString: "cargo_ship_top_stair", position: Vec.create(64, 121.47), rotation: 0, layer: -1 },
+            { idString: "cargo_ship_top_stair", position: Vec.create(-64, -119.09), rotation: 2, layer: -1 },
 
             { idString: "cargo_ship_stair_support", position: Vec.create(26.36, -27.63), rotation: 0 },
             { idString: "cargo_ship_stair_support", position: Vec.create(26.28, -40.59), rotation: 0 },
@@ -4802,9 +4763,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "cargo_ship_stair", position: Vec.create(63.71, -48.43), rotation: 0, layer: -1 },
             { idString: "cargo_ship_stair", position: Vec.create(63.71, 121.45), rotation: 0, layer: -1 },
             { idString: "cargo_ship_stair", position: Vec.create(63.71, -119.14), rotation: 0, layer: -1 },
-            { idString: "cargo_ship_stair", position: Vec.create(-66.09, -119.07), rotation: 0, layer: -1 },
-            { idString: "cargo_ship_stair", position: Vec.create(-66.09, 21.75), rotation: 0, layer: -1 },
-            { idString: "cargo_ship_stair", position: Vec.create(-66.09, 121.65), rotation: 0, layer: -1 },
+            { idString: "cargo_ship_stair", position: Vec.create(-63.71, -119.07), rotation: 2, layer: -1 },
+            { idString: "cargo_ship_stair", position: Vec.create(-63.71, 21.75), rotation: 2, layer: -1 },
+            { idString: "cargo_ship_stair", position: Vec.create(-63.71, 121.65), rotation: 2, layer: -1 },
 
             { idString: "cargo_ship_stair_entrance_walls", position: Vec.create(0.11, -156.81), rotation: 0 },
             { idString: "cargo_ship_stair_entrance_walls", position: Vec.create(26.3, -34.17), rotation: 3 },
@@ -4950,6 +4911,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port_complex",
         name: "Port Complex",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(500, 350, Vec.create(-160, -15)),
         spawnMode: MapObjectSpawnMode.Beach,
         subBuildings: [
@@ -8517,8 +8479,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "mutated_forklift",
         name: "Mutated Forklift",
+        defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(30, 45, Vec.create(0, -11)),
-        ceilingHitbox: RectangleHitbox.fromRect(25, 20, Vec.create(0, -22)),
+        ceilingHitbox: RectangleHitbox.fromRect(20, 10, Vec.create(0, -25)),
         noCeilingScopeEffect: true,
         material: "metal_heavy",
         particle: "metal_particle",

@@ -1029,7 +1029,7 @@ export const Game = new (class Game {
                     if (
                         object.ceilingHitbox !== undefined
                         && !object.ceilingVisible
-                        && object.definition.subBuildings?.some(({ layer }) => layer === Layer.Upstairs)
+                        && object.definition.hasSecondFloor
                     ) {
                         hideSecondFloor = true;
                     }
@@ -1114,7 +1114,7 @@ export const Game = new (class Game {
             }
 
             this.updateAmbience();
-            
+
             if (this.hideSecondFloor !== hideSecondFloor) {
                 this.hideSecondFloor = hideSecondFloor;
                 CameraManager.updateLayer();
