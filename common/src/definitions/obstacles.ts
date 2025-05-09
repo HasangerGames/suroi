@@ -1,4 +1,4 @@
-import { FlyoverPref, Layers, RotationMode, ZIndexes, MapObjectSpawnMode, Layer } from "../constants";
+import { FlyoverPref, Layers, MapObjectSpawnMode, RotationMode, ZIndexes } from "../constants";
 import { Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type Mutable } from "../utils/misc";

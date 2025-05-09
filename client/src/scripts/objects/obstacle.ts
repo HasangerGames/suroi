@@ -10,7 +10,6 @@ import { random, randomBoolean, randomFloat, randomRotation } from "@common/util
 import { Vec, type Vector } from "@common/utils/vector";
 import { Graphics } from "pixi.js";
 import { Game } from "../game";
-import { CameraManager } from "../managers/cameraManager";
 import { ParticleManager, type Particle, type ParticleEmitter, type ParticleOptions } from "../managers/particleManager";
 import { SoundManager, type GameSound } from "../managers/soundManager";
 import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE } from "../utils/constants";

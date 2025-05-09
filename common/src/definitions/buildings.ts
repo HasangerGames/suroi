@@ -4680,41 +4680,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 key: "cargo_ship_floor_top_1",
                 position: Vec.create(0.115, 94.7)
-            },
-
-            // -------------------------------------------------
-            // {
-            //     key: "cargo_ship_stair",
-            //     position: Vec.create(63.7, -119.14)
-            // },
-            // {
-            //     key: "cargo_ship_stair",
-            //     position: Vec.create(-63.7, 21.67),
-            //     rotation: Math.PI
-            // },
-            // {
-            //     key: "cargo_ship_stair",
-            //     position: Vec.create(-63.7, 121.57),
-            //     rotation: Math.PI
-            // },
-            // {
-            //     key: "cargo_ship_stair",
-            //     position: Vec.create(63.7, -119.14)
-            // },
-            // {
-            //     key: "cargo_ship_stair",
-            //     position: Vec.create(-63.7, -119.09),
-            //     rotation: Math.PI
-            // },
-            // {
-            //     key: "cargo_ship_stair",
-            //     position: Vec.create(63.7, -48.46)
-            // },
-            // {
-            //     key: "cargo_ship_stair",
-            //     position: Vec.create(63.7, 121.47)
-            // }
-            // -------------------------------------------------
+            }
         ],
         floors: [
             { // Stairs
@@ -5582,7 +5548,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "sandbags", position: Vec.create(25.8, 32.27), rotation: 1 },
             { idString: "sandbags", position: Vec.create(-27, 32.27), rotation: 1 },
             { idString: "propane_tank", position: Vec.create(20.43, 40.97) },
-            { idString: "propane_tank", position: Vec.create(20.43, 45.02) },
+            { idString: "propane_tank", position: Vec.create(20.43, 45.02) }
         ],
         subBuildings: [
             { idString: "lighthouse_lighting", position: Vec.create(0, -36.2) }
