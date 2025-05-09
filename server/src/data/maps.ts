@@ -180,7 +180,7 @@ const maps = {
             container_9: 1,
             container_10: 2,
             memorial: 1,
-            buoy: 8
+            buoy: 12
         },
         majorBuildings: ["armory", "refinery", "port", "headquarters"],
         quadBuildingLimit: {
@@ -662,7 +662,7 @@ const maps = {
             container_9: 1,
             container_10: 2,
             memorial: 1,
-            buoy: 8
+            buoy: 12
         },
         majorBuildings: ["armory", "refinery", "port", "headquarters"],
         quadBuildingLimit: {

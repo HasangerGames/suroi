@@ -2,7 +2,7 @@ import { FlyoverPref, Layers, MapObjectSpawnMode, RotationMode, ZIndexes } from 
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { DefinitionType, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
-import { pickRandomInArray, randomBoolean } from "../utils/random";
+import { pickRandomInArray, random, randomBoolean } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
 import { Materials, type ObstacleDefinition } from "./obstacles";
@@ -50,6 +50,11 @@ export interface BuildingImageDefinition {
     readonly damaged?: string
     readonly alpha?: number
     readonly hideOnDead?: boolean
+}
+
+interface BuildingGraphicsDefinition {
+    readonly color: number | `#${string}`
+    readonly hitbox: Hitbox
 }
 
 export interface BuildingDefinition extends ObjectDefinition {
@@ -165,10 +170,8 @@ export interface BuildingDefinition extends ObjectDefinition {
         readonly layer?: number
     }>
 
-    readonly graphics?: ReadonlyArray<{
-        readonly color: number | `#${string}`
-        readonly hitbox: Hitbox
-    }>
+    readonly graphics?: readonly BuildingGraphicsDefinition[]
+    readonly terrainGraphics?: readonly BuildingGraphicsDefinition[]
     /**
      * @default {ZIndexes.BuildingsFloor}
      */
@@ -8847,7 +8850,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: RectangleHitbox.fromRect(70, 110, Vec.create(50, 0)),
         obstacles: [{
             idString: "buoy",
-            position: Vec.create(50, 0)
+            get position() { return Vec.create(random(50, 100), 0); }
         }]
     },
     { // implemented by pap with a lot of love >w<
