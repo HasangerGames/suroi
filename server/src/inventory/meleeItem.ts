@@ -2,7 +2,7 @@ import { AnimationType, FireMode } from "@common/constants";
 import { type MeleeDefinition } from "@common/definitions/items/melees";
 import { PerkIds } from "@common/definitions/items/perks";
 import { CircleHitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer } from "@common/utils/layer";
+import { adjacentOrEquivLayer } from "@common/utils/layer";
 import { Numeric } from "@common/utils/math";
 import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
@@ -88,7 +88,7 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
                     || !(object.isPlayer || object.isObstacle || object.isBuilding || object.isProjectile)
                     || !object.damageable
                     || (object.isObstacle && (object.definition.isStair || object.definition.noMeleeCollision))
-                    || !adjacentOrEqualLayer(object.layer, owner.layer)
+                    || !adjacentOrEquivLayer(object, owner.layer)
                     || !object.hitbox?.collidesWith(hitbox)
                 ) continue;
 

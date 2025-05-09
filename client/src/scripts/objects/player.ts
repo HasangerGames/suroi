@@ -12,8 +12,8 @@ import { Loots, type WeaponDefinition } from "@common/definitions/loots";
 import { MaterialSounds, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
-import { adjacentOrEqualLayer } from "@common/utils/layer";
-import { Angle, EaseFunctions, Geometry } from "@common/utils/math";
+import { adjacentOrEquivLayer } from "@common/utils/layer";
+import { Angle, EaseFunctions, Geometry, Numeric } from "@common/utils/math";
 import { removeFrom, type Timeout } from "@common/utils/misc";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
@@ -37,12 +37,11 @@ import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { getTranslatedString } from "../utils/translations/translations";
 import { type TranslationKeys } from "../utils/translations/typings";
 import { type Tween } from "../utils/tween";
+import type { Building } from "./building";
 import { GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
-import type { Building } from "./building";
 import type { Projectile } from "./projectile";
-import { Numeric } from "@common/utils/math";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -1419,7 +1418,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             || !(object.isPlayer || object.isObstacle || object.isBuilding || object.isProjectile)
                             || !object.damageable
                             || (object.isObstacle && (object.definition.isStair))
-                            || !adjacentOrEqualLayer(object.layer, this.layer)
+                            || !adjacentOrEquivLayer(object, this.layer)
                             || !object.hitbox?.collidesWith(hitbox)
                         ) continue;
 
