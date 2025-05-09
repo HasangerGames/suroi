@@ -256,7 +256,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     filing_cabinet_particle:       { base: "metal_particle_2", tint: 0x7f714d },
     briefcase_particle:            { base: "metal_particle_2", tint: 0xcfcfcf },
     aegis_crate_particle:          { base: "wood_particle",    tint: 0x2687d9 },
-    log_particle:                  { base: "stone_particle_1",  tint: 0x5b3e24 },
+    log_particle:                  { base: "stone_particle_1", tint: 0x5b3e24 },
     airdrop_crate_particle:        { base: "wood_particle",    tint: aidrTint },
     chest_particle:                { base: "wood_particle",    tint: 0xa87e5a },
     cooler_particle:               { base: "wood_particle",    tint: 0x357d99 },
@@ -319,6 +319,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     rsh_case_particle:             { base: "wood_particle",    tint: 0x583928 },
     river_hut_wall_particle:       { base: "wood_particle",    tint: 0x736758 },
     buoy_particle:                 { base: "metal_particle_1", tint: 0xa43737 },
+    lighthouse_crate_particle:     { base: "wood_particle",    tint: 0x79512a },
 
     red_gift_particle:             { base: "toilet_particle",  tint: 0x962626 },
     green_gift_particle:           { base: "toilet_particle",  tint: 0x377130 },
@@ -492,6 +493,35 @@ const portMainOfficeWall = (
     wall: {
         borderColor: 0x302412,
         color: 0xb98a46
+    }
+});
+
+const lighthouseWall = (
+    lengthNumber: number,
+    hitbox: RectangleHitbox
+): RawObstacleDefinition => ({
+    idString: `lighthouse_wall_${lengthNumber}`,
+    name: `Lighthouse Wall ${lengthNumber}`,
+    defType: DefinitionType.Obstacle,
+    material: "wood",
+    hideOnMap: true,
+    noResidue: true,
+    health: 200,
+    scale: {
+        spawnMin: 1,
+        spawnMax: 1,
+        destroy: 0.95
+    },
+    hitbox,
+    rotationMode: RotationMode.Limited,
+    allowFlyover: FlyoverPref.Never,
+    frames: {
+        particle: "port_office_wall_particle"
+    },
+    isWall: true,
+    wall: {
+        borderColor: 0x352719,
+        color: 0x85613c
     }
 });
 
@@ -1523,6 +1553,24 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         winterVariations: 1
     },
     {
+        idString: "lighthouse_crate",
+        name: "Lighthouse Crate",
+        defType: DefinitionType.Obstacle,
+        material: "crate",
+        health: 80,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.5
+        },
+        spawnMode: MapObjectSpawnMode.GrassAndSand,
+        hitbox: RectangleHitbox.fromRect(6.5, 6.3),
+        rotationMode: RotationMode.None,
+        allowFlyover: FlyoverPref.Always,
+        hasLoot: true,
+        winterVariations: 1
+    },
+    {
         idString: "hazel_crate",
         name: "HAZEL Crate",
         defType: DefinitionType.Obstacle,
@@ -2083,14 +2131,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     lodgeWall("6", 20.44),
     lodgeWall("7", 26.15),
     lodgeWall("8", 27.03),
-
-    portMainOfficeWall(1, RectangleHitbox.fromRect(16.7, 1.8)),
-    portMainOfficeWall(2, RectangleHitbox.fromRect(9.5, 1.8)),
-    portMainOfficeWall(3, RectangleHitbox.fromRect(22.05, 1.8)),
-    portMainOfficeWall(4, RectangleHitbox.fromRect(32.6, 1.8)),
-    portMainOfficeWall(5, RectangleHitbox.fromRect(11.4, 1.8)),
-    portMainOfficeWall(6, RectangleHitbox.fromRect(1.8, 16.5)),
-
     {
         idString: "lodge_secret_room_wall",
         name: "Lodge Secret Room Wall",
@@ -2130,6 +2170,17 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     portaPottyWall("Outhouse Back Wall", RectangleHitbox.fromRect(11.71, 1.81), true),
     portaPottyWall("Outhouse Side Wall", RectangleHitbox.fromRect(1.81, 19.2), true),
     portaPottyWall("Outhouse Front Wall", RectangleHitbox.fromRect(2.8, 1.81), true),
+
+    portMainOfficeWall(1, RectangleHitbox.fromRect(16.7, 1.8)),
+    portMainOfficeWall(2, RectangleHitbox.fromRect(9.5, 1.8)),
+    portMainOfficeWall(3, RectangleHitbox.fromRect(22.05, 1.8)),
+    portMainOfficeWall(4, RectangleHitbox.fromRect(32.6, 1.8)),
+    portMainOfficeWall(5, RectangleHitbox.fromRect(11.4, 1.8)),
+    portMainOfficeWall(6, RectangleHitbox.fromRect(1.8, 16.5)),
+
+    lighthouseWall(1, RectangleHitbox.fromRect(4.69, 2)),
+    lighthouseWall(2, RectangleHitbox.fromRect(11.89, 2)),
+    lighthouseWall(3, RectangleHitbox.fromRect(2, 21.14)),
 
     {
         idString: "fridge",
@@ -4801,7 +4852,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         health: 69,
         indestructible: true,
         reflectBullets: true,
-        hitbox: RectangleHitbox.fromRect(7.7, 19.43, Vec.create(-6.47, 0)),
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(7.7, 19.43, Vec.create(-6.47, 0)),
+            RectangleHitbox.fromRect(2.38, 15.56, Vec.create(9.13, -0.3))
+        ),
         frames: {
             particle: "metal_particle"
         },
@@ -5114,6 +5168,25 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Limited,
         allowFlyover: FlyoverPref.Never, // todo
         invisible: true,
+        frames: {
+            particle: "metal_particle"
+        }
+    },
+    {
+        idString: "lighthouse_stairs",
+        name: "Lighthouse Stairs",
+        defType: DefinitionType.Obstacle,
+        material: "appliance",
+        health: 10000,
+        hideOnMap: true,
+        reflectBullets: true,
+        noResidue: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1.18, 4.25, Vec.create(-3.83, 0)),
+            RectangleHitbox.fromRect(1.18, 4.25, Vec.create(3.83, 0))
+        ),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never,
         frames: {
             particle: "metal_particle"
         }

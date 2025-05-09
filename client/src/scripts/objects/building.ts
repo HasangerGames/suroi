@@ -264,7 +264,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         }
 
         if (data.dead) {
-            if (!this.dead && !isNew) {
+            if (!this.dead && !isNew && !definition.noCeilingCollapseEffect) {
                 let particleFrame = definition.ceilingCollapseParticle ?? `${definition.idString}_particle`;
 
                 if (definition.ceilingCollapseParticleVariations) {
@@ -439,7 +439,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
         sprite
             .setFrame(frame)
             .setVPos(toPixiCoords(imageDef.position))
-            .setVisible(isCeiling || frame !== undefined);
+            .setVisible(frame !== undefined && !(this.dead && imageDef.hideOnDead));
 
         if (imageDef.spinSpeed !== undefined ? isNewSprite : true) {
             sprite.setRotation(imageDef.rotation ?? 0);

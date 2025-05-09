@@ -7,9 +7,9 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "normal", // todo: make port generate on map (very buggy at the moment, bridges and rivers might overlap with port)
+    map: "normal",
 
-    spawn: { mode: SpawnMode.Center },
+    spawn: { mode: SpawnMode.Default },
 
     teamSize: TeamSize.Solo,
 
@@ -20,7 +20,7 @@ export const Config = {
 
     tps: 40,
 
-    plugins: [], // place object plugin does not work with spawn modes (?)
+    plugins: [],
 
     //  disableLobbyClearing: true,
 

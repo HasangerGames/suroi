@@ -107,13 +107,6 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "frag_grenade", weight: 1, count: 2 },
             { item: "smoke_grenade", weight: 1, count: 2 }
         ],
-        melee_crate: {
-            min: 2,
-            max: 2,
-            loot: [
-                { table: "melee", weight: 1 }
-            ]
-        },
         grenade_crate: {
             min: 3,
             max: 4,
@@ -121,6 +114,14 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { table: "throwables", weight: 1 }
             ]
         },
+        melee_crate: {
+            min: 2,
+            max: 2,
+            loot: [
+                { table: "melee", weight: 1 }
+            ]
+        },
+        lighthouse_crate: [{ item: "radio", weight: 1 }],
         tango_crate: [
             { item: "tango_51", weight: 60 },
             { item: "tango_51", spawnSeparately: true, count: 2, weight: 30 },
@@ -550,10 +551,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { table: "healing_items", weight: 1.2 },
             { table: "ammo", weight: 1 }
         ],
-        sea_traffic_control_floor: [
-            { item: "radio", weight: 1 }
-        ],
-        sea_traffic_control_outside: [
+        lighthouse_skin: [
             { item: "peachy_breeze", weight: 1 }
         ],
         tugboat_red_floor: [

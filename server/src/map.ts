@@ -430,7 +430,14 @@ export class GameMap {
         const buildingDef = Buildings.reify(definition);
 
         if (!buildingDef.bridgeHitbox) {
-            const { idString, rotationMode } = buildingDef;
+            const {
+                idString,
+                rotationMode,
+                spawnHitbox,
+                spawnMode = MapObjectSpawnMode.Grass,
+                spawnOrientation,
+                spawnOffset
+            } = buildingDef;
             const { majorBuildings = [], quadBuildingLimit = {} } = this.mapDef;
 
             let attempts = 0;
@@ -442,11 +449,12 @@ export class GameMap {
                 while (!validPositionFound && attempts < 100) {
                     orientation = GameMap.getRandomBuildingOrientation(rotationMode);
 
-                    position = this.getRandomPosition(buildingDef.spawnHitbox, {
+                    position = this.getRandomPosition(spawnHitbox, {
                         orientation,
-                        spawnMode: buildingDef.spawnMode ?? MapObjectSpawnMode.Grass,
+                        spawnMode,
+                        spawnOffset,
                         orientationConsumer: (newOrientation: Orientation) => {
-                            orientation = newOrientation;
+                            orientation = spawnOrientation ? Numeric.addOrientations(newOrientation, spawnOrientation) : newOrientation;
                         },
                         maxAttempts: 400
                     });
@@ -851,6 +859,7 @@ export class GameMap {
             collides?: (position: Vector) => boolean
             collidableObjects?: Partial<Record<ObjectCategory, boolean>>
             spawnMode?: MapObjectSpawnMode
+            spawnOffset?: Vector
             scale?: number
             layer?: Layer
             orientation?: Orientation
@@ -928,7 +937,8 @@ export class GameMap {
                             }
                         }
 
-                        return beachRect.randomPoint();
+                        const point = beachRect.randomPoint();
+                        return params?.spawnOffset ? Vec.addAdjust(point, params.spawnOffset, orientation) : point;
                     };
                 }
                 case MapObjectSpawnMode.Trail: {

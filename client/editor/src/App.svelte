@@ -287,7 +287,7 @@
                 <!-- svelte-ignore empty-block -->
                 {#await bgImage}
                 {:then img}
-                    <image x="{-(img.width / 2)}" y="{-(img.height / 2)}" href="{img.src}" on:mousedown={() => { return false; }}></image>
+                    <image class="nopointer" x={-(img.width / 2)} y={-(img.height / 2)} href={img.src}></image>
                 {/await}
                 {#each hitboxes as hitbox (hitbox)}
                     <Hitbox
@@ -346,5 +346,9 @@
     svg {
         width: 100%;
         height: 100%;
+    }
+
+    .nopointer {
+        pointer-events: none;
     }
 </style>

@@ -149,13 +149,13 @@ const maps = {
             }
         },
         buildings: {
+            port: 1,
             large_bridge: 2,
             small_bridge: Infinity,
-            port_complex: 1,
             river_hut_1: 2,
             river_hut_2: 2,
             river_hut_3: 2,
-            sea_traffic_control: 1,
+            lighthouse: 1,
             tugboat_red: 1,
             tugboat_white: 5,
             armory: 1,
@@ -182,9 +182,9 @@ const maps = {
             memorial: 1,
             buoy: 8
         },
-        majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
+        majorBuildings: ["armory", "refinery", "port", "headquarters"],
         quadBuildingLimit: {
-            port_complex: 1,
+            port: 1,
             river_hut_1: 1,
             river_hut_2: 1,
             river_hut_3: 1,
@@ -320,7 +320,7 @@ const maps = {
             small_bridge: Infinity,
             plumpkin_bunker: 1,
             campsite: 1,
-            sea_traffic_control: 1,
+            lighthouse: 1,
             tugboat_red: 1,
             tugboat_white: 7,
             lodge: 1,
@@ -495,7 +495,7 @@ const maps = {
         buildings: {
             small_bridge: Infinity,
             plumpkin_bunker: 1,
-            sea_traffic_control: 1,
+            lighthouse: 1,
             tugboat_red: 1,
             tugboat_white: 7,
             lodge: 1,
@@ -632,11 +632,11 @@ const maps = {
         buildings: {
             large_bridge: 2,
             small_bridge: Infinity,
-            port_complex: 1,
+            port: 1,
             river_hut_1: 2,
             river_hut_2: 2,
             river_hut_3: 2,
-            sea_traffic_control: 1,
+            lighthouse: 1,
             tugboat_red: 1,
             tugboat_white: 5,
             armory: 1,
@@ -664,7 +664,7 @@ const maps = {
             memorial: 1,
             buoy: 8
         },
-        majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
+        majorBuildings: ["armory", "refinery", "port", "headquarters"],
         quadBuildingLimit: {
             river_hut_1: 1,
             river_hut_2: 1,
@@ -768,8 +768,8 @@ const maps = {
         buildings: {
             large_bridge: 2,
             small_bridge: Infinity,
-            port_complex: 1,
-            sea_traffic_control: 1,
+            port: 1,
+            lighthouse: 1,
             tugboat_red: 1,
             tugboat_white: 5,
             armory: 1,
@@ -795,7 +795,7 @@ const maps = {
             container_9: 1,
             container_10: 3
         },
-        majorBuildings: ["armory", "refinery", "port_complex", "headquarters", "christmas_camp"],
+        majorBuildings: ["armory", "refinery", "port", "headquarters", "christmas_camp"],
         quadBuildingLimit: {
             red_house: 1,
             red_house_v2: 1,
@@ -1054,7 +1054,7 @@ const maps = {
     singleBuilding: {
         width: 1024,
         height: 1024,
-        // spawn: { mode: SpawnMode.Center },
+        spawn: { mode: SpawnMode.Center },
         beachSize: 32,
         oceanSize: 64,
         onGenerate(map, [building]) {
@@ -1226,7 +1226,7 @@ const maps = {
         oceanSize: 144,
         beachSize: 32,
         buildings: {
-            port_complex: 1
+            port: 1
         },
         obstacles: {
             regular_crate: 30,
