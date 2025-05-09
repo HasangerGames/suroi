@@ -699,7 +699,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             // and if we somehow don't have any matching slots, then someone's probably messing with us… fallback to slot 0 lol
         }
 
-        // braindead solution
         const allWeapons = this.game.allLoots;
 
         const spawnable = modeRestricted ? this.game.spawnableLoots : allWeapons;
@@ -715,7 +714,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const chosenTier = weightedRandom<Tier>(Object.keys(weights).map(s => parseInt(s)), Object.values(weights));
         const cache = Player._weaponTiersCache[type] ??= {};
 
-        const potentials = weighted ? cache[chosenTier] ??= spawnable.forType(type).filter(({ tier }) => tier === chosenTier) : spawnable.forType(type);
+        const potentials = weighted
+            ? cache[chosenTier] ??= spawnable.forType(type).filter(({ tier }) => tier === chosenTier).filter(item => !item.noSwap)
+            : spawnable.forType(type).filter(item => !item.noSwap);
+
+        console.log(potentials.map(item => item.idString));
 
         const chosenItem = pickRandomInArray<WeaponDefinition>(
             type === ItemType.Throwable
