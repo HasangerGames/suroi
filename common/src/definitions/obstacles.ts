@@ -4666,6 +4666,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "metal_particle"
         },
+        hideOnMap: false,
         rotationMode: RotationMode.Limited
     },
     {

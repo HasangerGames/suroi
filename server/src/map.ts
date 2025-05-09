@@ -773,7 +773,11 @@ export class GameMap {
             waterOverlay
         );
 
-        if ((!def.hideOnMap || ignoreHideOnMap) && !def.invisible && obstacle.layer === Layer.Ground) this._packet.objects.push(obstacle);
+        if (
+            (!def.hideOnMap || ignoreHideOnMap)
+            && !def.invisible
+            && (obstacle.layer === Layer.Ground || def.hideOnMap === false) // explicitly specifying false ignores layer
+        ) this._packet.objects.push(obstacle);
         this.game.grid.addObject(obstacle);
         this.game.updateObjects = true;
         this.game.pluginManager.emit("obstacle_did_generate", obstacle);
