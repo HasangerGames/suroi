@@ -2,6 +2,7 @@ import { ModeName } from "@common/definitions/modes";
 import { PerkIds } from "@common/definitions/items/perks";
 import { NullString } from "@common/utils/objectDefinitions";
 import { LootTable } from "../utils/lootHelpers";
+import { Obstacles } from "@common/definitions/obstacles";
 
 export const LootTables: Record<ModeName, Record<string, LootTable>> = {
     normal: {
@@ -106,13 +107,6 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "frag_grenade", weight: 1, count: 2 },
             { item: "smoke_grenade", weight: 1, count: 2 }
         ],
-        melee_crate: {
-            min: 2,
-            max: 2,
-            loot: [
-                { table: "melee", weight: 1 }
-            ]
-        },
         grenade_crate: {
             min: 3,
             max: 4,
@@ -120,6 +114,14 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { table: "throwables", weight: 1 }
             ]
         },
+        melee_crate: {
+            min: 2,
+            max: 2,
+            loot: [
+                { table: "melee", weight: 1 }
+            ]
+        },
+        lighthouse_crate: [{ item: "radio", weight: 1 }],
         tango_crate: [
             { item: "tango_51", weight: 60 },
             { item: "tango_51", spawnSeparately: true, count: 2, weight: 30 },
@@ -334,7 +336,11 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { table: "guns", weight: 0.05 }
             ]
         },
-        ...["mcx_spear", "hp18", "stoner_63", "mini14", "maul", "m590m", "dual_rsh12", "model_37", "sks"].reduce(
+        ...Obstacles.definitions.filter(def => {
+            return def.idString.startsWith("gun_mount");
+        }).map(def => {
+            return def.idString.replace("gun_mount_", "");
+        }).reduce(
             (acc, item) => {
                 acc[`gun_mount_${item}`] = [{ item, weight: 1 }];
                 return acc;
@@ -347,8 +353,12 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         hq_skin: [
             { item: "gold_tie_event", weight: 1 }
         ],
-        ship_skin: [
-            { item: "ship_carrier", weight: 1 }
+        ship_skins: [
+            { item: "ship_carrier", weight: 0.5 },
+            { item: "cargo_wave", weight: 0.5 }
+        ],
+        military_container_skins: [
+            { item: "military_camo", weight: 1 }
         ],
         armory_skin: [
             { item: "nsd_uniform", weight: 1 }
@@ -510,7 +520,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
         briefcase: [
             { item: "vector", weight: 3 },
-            { item: "arx160", weight: 1 },
+            { item: "shak12", weight: 1 },
             { item: "vepr12", weight: 1 },
             { item: "stoner_63", weight: 0.2 },
             { item: "negev", weight: 0.15 },
@@ -541,10 +551,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { table: "healing_items", weight: 1.2 },
             { table: "ammo", weight: 1 }
         ],
-        sea_traffic_control_floor: [
-            { item: "radio", weight: 1 }
-        ],
-        sea_traffic_control_outside: [
+        lighthouse_skin: [
             { item: "peachy_breeze", weight: 1 }
         ],
         tugboat_red_floor: [
@@ -736,6 +743,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "deagle", weight: 1 },
             { item: "mcx_spear", weight: 0.95 },
             { item: "mosin_nagant", weight: 0.95 },
+            { item: "shak12", weight: 0.95 },
             { item: "tango_51", weight: 0.9 },
             { item: "stoner_63", weight: 0.9 },
             { item: "model_89", weight: 0.6 },
@@ -1629,6 +1637,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "vepr12", weight: 1 },
             { item: "deagle", weight: 1 },
             { item: "mcx_spear", weight: 0.95 },
+            { item: "shak12", weight: 0.95 },
             { item: "mosin_nagant", weight: 0.95 },
             { item: "tango_51", weight: 0.9 },
             { item: "stoner_63", weight: 0.9 },

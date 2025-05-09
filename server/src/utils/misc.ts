@@ -6,6 +6,7 @@ import { weightedRandom } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Config, MapWithParams } from "../config";
 import { MapName, Maps } from "../data/maps";
+import { Game } from "../game";
 
 export function modeFromMap(map: MapWithParams): ModeName {
     const mapName = map.split(":")[0];
@@ -93,3 +94,8 @@ export function getPatterningShape(
         ...makeHexagon(radius, halfπ)
     ];
 }
+
+export const runOrWait = (game: Game, cb: () => void, delay: number): void => {
+    if (delay === 0) cb();
+    else game.addTimeout(cb, delay);
+};

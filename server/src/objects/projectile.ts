@@ -71,6 +71,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         this.hitbox.radius = this.definition.hitboxRadius;
 
         this.health = this.definition.health ?? Infinity;
+        this.damageable = this.definition.c4 ?? false;
 
         this.owner = params.owner;
         this.source = params.source;

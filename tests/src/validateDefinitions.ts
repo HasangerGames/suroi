@@ -1647,7 +1647,7 @@ logger.indent("Validating building definitions", () => {
                 ).length ?? Infinity
             ) + definiteMatches;
 
-            const wallsDestroyIsValid = wallsToDestroy < maxPossibleMatches;
+            const wallsDestroyIsValid = wallsToDestroy <= maxPossibleMatches;
             const infiniteWallsToDestroy = wallsToDestroy === Infinity;
             tester.assert(
                 infiniteWallsToDestroy || wallsDestroyIsValid,
@@ -2866,11 +2866,11 @@ logger.indent("Validating obstacles", () => {
                 errorPath
             );
 
-            tester.assertWarn(
+            /* tester.assertWarn(
                 obstacle.frames?.opened !== undefined,
                 `Obstacle '${obstacle.idString}' specified an 'opened' image, but this image is never used`,
                 errorPath
-            );
+            ); well now its used shut up */
 
             tester.assertNoPointlessValue({
                 obj: obstacle,

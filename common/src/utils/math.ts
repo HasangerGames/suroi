@@ -83,6 +83,9 @@ export const Numeric = Object.freeze({
     lerp(start: number, end: number, interpFactor: number): number {
         return start * (1 - interpFactor) + end * interpFactor;
     },
+    delerp(t: number, a: number, b: number) {
+        return Numeric.clamp((t - a) / (b - a), 0.0, 1.0);
+    },
     /**
      * Conform a number to specified bounds
      * @param value The number to conform
@@ -687,6 +690,25 @@ export const Collision = Object.freeze({
                 p
             )
         );
+    },
+    distToSegmentSq(p: Vector, a: Vector, b: Vector) {
+        const ab = Vec.sub(b, a);
+        const c = Vec.dotProduct(Vec.sub(p, a), ab) / Vec.dotProduct(ab, ab);
+        const d = Vec.add(a, Vec.scale(ab, Numeric.clamp(c, 0.0, 1.0)));
+        const e = Vec.sub(d, p);
+        return Vec.dotProduct(e, e);
+    },
+    distToPolygon(p: Vector, poly: Vector[]) {
+        let closestDistSq = Number.MAX_VALUE;
+        for (let i = 0; i < poly.length; i++) {
+            const a = poly[i];
+            const b = i === poly.length - 1 ? poly[0] : poly[i + 1];
+            const distSq = Collision.distToSegmentSq(p, a, b);
+            if (distSq < closestDistSq) {
+                closestDistSq = distSq;
+            }
+        }
+        return Math.sqrt(closestDistSq);
     },
     /**
      * Source

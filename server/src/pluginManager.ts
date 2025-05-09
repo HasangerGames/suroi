@@ -554,6 +554,7 @@ export interface EventDataMap {
         readonly puzzlePiece?: string | boolean
         readonly locked?: boolean
         readonly activated?: boolean
+        readonly waterOverlay?: boolean
     }
     readonly obstacle_did_generate: Obstacle
     readonly obstacle_will_damage: ObstacleDamageEvent

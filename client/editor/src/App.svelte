@@ -123,6 +123,10 @@
         }
     }
 
+    function contextMenu_(event) {
+        event.preventDefault();
+    }
+
     function mouseWheel(e: WheelEvent) {
         const oldScale = scale;
         const { x: rectX, y: rectY } = hitboxesContainer.getBoundingClientRect();
@@ -191,7 +195,7 @@
         hitboxes.push(JSON.parse(JSON.stringify(selected)));
     }
 
-    const bgImage = loadImage("/img/game/fall/obstacles/outhouse_door.svg");
+    const bgImage = loadImage("/img/game/normal/obstacles/ship_oil_source.svg");
 </script>
 
 <main>
@@ -276,14 +280,14 @@
         on:pointerup={pointerUp}
         on:pointermove={pointermove}
         on:wheel={mouseWheel}
-        on:contextmenu={() => false}
+        on:contextmenu={contextMenu_}
     >
         <svg>
             <g transform="translate({x} {y}) scale({scale})">
                 <!-- svelte-ignore empty-block -->
                 {#await bgImage}
                 {:then img}
-                    <image x="{-(img.width / 2)}" y="{-(img.height / 2)}" href="{img.src}" on:mousedown={() => { return false; }}></image>
+                    <image class="nopointer" x={-(img.width / 2)} y={-(img.height / 2)} href={img.src}></image>
                 {/await}
                 {#each hitboxes as hitbox (hitbox)}
                     <Hitbox
@@ -342,5 +346,9 @@
     svg {
         width: 100%;
         height: 100%;
+    }
+
+    .nopointer {
+        pointer-events: none;
     }
 </style>

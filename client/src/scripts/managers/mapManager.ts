@@ -3,7 +3,7 @@ import { type MapPingDefinition } from "@common/definitions/mapPings";
 import { type MapData } from "@common/packets/mapPacket";
 import { type PingSerialization, type PlayerPingSerialization } from "@common/packets/updatePacket";
 import { RectangleHitbox } from "@common/utils/hitbox";
-import { Numeric } from "@common/utils/math";
+import { Collision, Numeric } from "@common/utils/math";
 import { FloorTypes, River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
@@ -158,6 +158,14 @@ class MapManagerClass {
         }
     }
 
+    isInOcean(position: Vector): boolean {
+        return !this.terrain.beachHitbox.isPointInside(position);
+    }
+
+    distanceToShore(position: Vector): number {
+        return Collision.distToPolygon(position, this.terrain.beachHitbox.points);
+    }
+
     drawTerrain(ctx: Graphics, scale: number, gridLineWidth: number): void {
         ctx.zIndex = ZIndexes.Ground;
 
@@ -181,6 +189,18 @@ class MapManagerClass {
         ctx.roundShape(grass, radius);
         ctx.cut();
 
+        for (const building of this._objects) {
+            if (!building.isBuilding) continue;
+
+            const definition = building.definition;
+            for (const ground of definition.terrainGraphics ?? []) {
+                ctx.beginPath();
+                drawGroundGraphics(ground.hitbox.transform(building.position, 1, building.orientation), ctx, scale);
+                ctx.closePath();
+                ctx.fill(ground.color);
+            }
+        }
+
         // gets the river polygon with the middle 2 points not rounded
         // so it joins nicely with other rivers
         function getRiverPoly(points: readonly Vector[]): Array<Vector & { readonly radius: number }> {
@@ -194,7 +214,7 @@ class MapManagerClass {
             );
         }
 
-        // river bank needs to be draw first
+        // river bank needs to be drawn first
         for (const river of this._terrain.rivers) {
             ctx
                 .beginPath()

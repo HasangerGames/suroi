@@ -1,10 +1,10 @@
-import { FlyoverPref, Layers, RotationMode, ZIndexes, MapObjectSpawnMode } from "../constants";
+import { FlyoverPref, Layers, RotationMode, ZIndexes, MapObjectSpawnMode, Layer } from "../constants";
 import { Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type Mutable } from "../utils/misc";
 import { DefinitionType, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
-import { TentTints } from "./buildings";
+import { ContainerTints, TentTints, TruckContainerTints } from "./buildings";
 import { type GunDefinition } from "./items/guns";
 import { PerkDefinition, PerkIds } from "./items/perks";
 import { type LootDefinition } from "./loots";
@@ -36,6 +36,18 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly rotationMode: RotationMode // for obstacles with a role, this cannot be RotationMode.Full
     readonly particleVariations?: number
     readonly zIndex?: ZIndexes
+    readonly spawnWithWaterOverlay?: boolean
+    readonly waterOverlay?: {
+        readonly scaleX: number
+        readonly scaleY: number
+    }
+
+    readonly graphics?: ReadonlyArray<{
+        readonly color: number | `#${string}`
+        readonly hitbox: Hitbox
+    }>
+    readonly graphicsZIndex?: ZIndexes
+
     /**
      * Whether throwables can fly over this obstacle
      */
@@ -55,6 +67,9 @@ type CommonObstacleDefinition = ObjectDefinition & {
     readonly customInteractMessage?: boolean
     readonly interactOnlyFromSide?: Orientation
     readonly weaponSwap?: boolean
+    readonly requiresPower?: boolean
+
+    readonly interactionDelay?: number
     readonly regenerateAfterDestroyed?: number
 
     readonly applyPerkOnDestroy?: {
@@ -77,6 +92,7 @@ type CommonObstacleDefinition = ObjectDefinition & {
         readonly residue?: string
         readonly opened?: string
         readonly activated?: string
+        readonly powered?: string
     }
 
     readonly glow?: {
@@ -222,6 +238,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     _glow_:                        { base: "_glow_",           tint: 0xffffff },
 
     metal_particle:                { base: "metal_particle_1", tint: 0x5f5f5f },
+    cargo_ship_particle:           { base: "metal_particle_1", tint: 0x273140 },
     metal_column_particle:         { base: "metal_particle_1", tint: 0x8f8f8f },
     super_barrel_particle:         { base: "metal_particle_1", tint: 0xce2b29 },
     propane_tank_particle:         { base: "metal_particle_1", tint: 0xb08b3f },
@@ -236,15 +253,10 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     bollard_particle:              { base: "metal_particle_1", tint: 0xa66e20 },
     m1117_particle:                { base: "metal_particle_1", tint: 0x2f3725 },
     file_cart_particle:            { base: "metal_particle_1", tint: 0x404040 },
-    container_particle_white:      { base: "metal_particle_1", tint: 0xc0c0c0 },
-    container_particle_red:        { base: "metal_particle_1", tint: 0xa32900 },
-    container_particle_green:      { base: "metal_particle_1", tint: 0x00a30e },
-    container_particle_blue:       { base: "metal_particle_1", tint: 0x005fa3 },
-    container_particle_yellow:     { base: "metal_particle_1", tint: 0xcccc00 },
     filing_cabinet_particle:       { base: "metal_particle_2", tint: 0x7f714d },
     briefcase_particle:            { base: "metal_particle_2", tint: 0xcfcfcf },
     aegis_crate_particle:          { base: "wood_particle",    tint: 0x2687d9 },
-    log_particle:                  { base: "stone_particle_1",  tint: 0x5b3e24 },
+    log_particle:                  { base: "stone_particle_1", tint: 0x5b3e24 },
     airdrop_crate_particle:        { base: "wood_particle",    tint: aidrTint },
     chest_particle:                { base: "wood_particle",    tint: 0xa87e5a },
     cooler_particle:               { base: "wood_particle",    tint: 0x357d99 },
@@ -260,6 +272,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     melee_crate_particle:          { base: "wood_particle",    tint: 0x23374c },
     tango_crate_particle:          { base: "wood_particle",    tint: 0x3f4c39 },
     wall_particle:                 { base: "wood_particle",    tint: 0xafa08c },
+    port_office_wall_particle:     { base: "wood_particle",    tint: 0xb98a46 },
     flint_stone_particle_1:        { base: "stone_particle_1", tint: 0x26272c },
     flint_stone_particle_2:        { base: "stone_particle_2", tint: 0x26272c },
     gold_rock_particle_1:          { base: "stone_particle_1", tint: 0xaa8534 },
@@ -281,6 +294,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     outhouse_particle:             { base: "ceiling_particle", tint: 0x78593b },
     outhouse_wall_particle:        { base: "wood_particle",    tint: 0x6e4d2f },
     mobile_home_particle:          { base: "ceiling_particle", tint: 0xa8a8a8 },
+    large_warehouse_particle:      { base: "ceiling_particle", tint: 0x2f3c4f },
     grey_office_chair_particle:    { base: "wood_particle",    tint: 0x616161 },
     office_chair_particle:         { base: "wood_particle",    tint: 0x7d2b2b },
     hq_stone_wall_particle_1:      { base: "stone_particle_1", tint: 0x591919 },
@@ -304,6 +318,8 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     blue_metal_auto_door_particle: { base: "metal_particle_1", tint: 0x1a1a40 },
     rsh_case_particle:             { base: "wood_particle",    tint: 0x583928 },
     river_hut_wall_particle:       { base: "wood_particle",    tint: 0x736758 },
+    buoy_particle:                 { base: "metal_particle_1", tint: 0xa43737 },
+    lighthouse_crate_particle:     { base: "wood_particle",    tint: 0x79512a },
 
     red_gift_particle:             { base: "toilet_particle",  tint: 0x962626 },
     green_gift_particle:           { base: "toilet_particle",  tint: 0x377130 },
@@ -314,6 +330,18 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     pumpkin_particle:              { base: "pumpkin_particle_base", tint: 0xff8c01 },
     plumpkin_particle:             { base: "pumpkin_particle_base", tint: 0x8a4c70 },
     diseased_plumpkin_particle:    { base: "pumpkin_particle_base", tint: 0x654646 },
+
+    container_particle_white:      { base: "metal_particle_1", tint: ContainerTints.white },
+    container_particle_red:        { base: "metal_particle_1", tint: ContainerTints.red },
+    container_particle_green:      { base: "metal_particle_1", tint: ContainerTints.green },
+    container_particle_blue:       { base: "metal_particle_1", tint: ContainerTints.blue },
+    container_particle_yellow:     { base: "metal_particle_1", tint: ContainerTints.yellow },
+    container_particle_gas_can:    { base: "metal_particle_1", tint: ContainerTints.gas_can },
+
+    container_particle_military_green: { base: "metal_particle_1", tint: ContainerTints.military_green },
+    container_particle_military_orange: { base: "metal_particle_1", tint: ContainerTints.military_orange },
+    container_particle_military_marine: { base: "metal_particle_1", tint: ContainerTints.military_marine },
+    container_particle_military_lime: { base: "metal_particle_1", tint: ContainerTints.military_lime },
 
     tent_particle_1:               { base: "ceiling_particle", tint: TentTints.red },
     tent_particle_2:               { base: "ceiling_particle", tint: TentTints.green },
@@ -339,7 +367,13 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
 
     tent_ceiling_particle_purple_1:     { base: "tent_ceiling_particle_1", tint: TentTints.purple },
     tent_ceiling_particle_purple_2:     { base: "tent_ceiling_particle_2", tint: TentTints.purple },
-    tent_ceiling_particle_purple_3:     { base: "tent_ceiling_particle_3", tint: TentTints.purple }
+    tent_ceiling_particle_purple_3:     { base: "tent_ceiling_particle_3", tint: TentTints.purple },
+
+    truck_container_particle_teal:      { base: "metal_particle_1", tint: TruckContainerTints.teal },
+    truck_container_particle_orange:    { base: "metal_particle_1", tint: TruckContainerTints.orange },
+    truck_container_particle_purple:    { base: "metal_particle_1", tint: TruckContainerTints.purple },
+    truck_container_particle_green:     { base: "metal_particle_1", tint: TruckContainerTints.green },
+    truck_container_particle_red:       { base: "metal_particle_1", tint: TruckContainerTints.red }
 };
 
 /* eslint-enable @stylistic/key-spacing, @stylistic/no-multi-spaces */
@@ -430,6 +464,64 @@ const lodgeWall = (id: string, length: number): RawObstacleDefinition => ({
         borderColor: 0x291e0f,
         color: 0x5a4320,
         rounded: true
+    }
+});
+
+const portMainOfficeWall = (
+    lengthNumber: number,
+    hitbox: RectangleHitbox
+): RawObstacleDefinition => ({
+    idString: `port_main_office_wall_${lengthNumber}`,
+    name: `Port Main Office Wall ${lengthNumber}`,
+    defType: DefinitionType.Obstacle,
+    material: "wood",
+    hideOnMap: true,
+    noResidue: true,
+    health: 200,
+    scale: {
+        spawnMin: 1,
+        spawnMax: 1,
+        destroy: 0.95
+    },
+    hitbox,
+    rotationMode: RotationMode.Limited,
+    allowFlyover: FlyoverPref.Never,
+    frames: {
+        particle: "port_office_wall_particle"
+    },
+    isWall: true,
+    wall: {
+        borderColor: 0x302412,
+        color: 0xb98a46
+    }
+});
+
+const lighthouseWall = (
+    lengthNumber: number,
+    hitbox: RectangleHitbox
+): RawObstacleDefinition => ({
+    idString: `lighthouse_wall_${lengthNumber}`,
+    name: `Lighthouse Wall ${lengthNumber}`,
+    defType: DefinitionType.Obstacle,
+    material: "wood",
+    hideOnMap: true,
+    noResidue: true,
+    health: 200,
+    scale: {
+        spawnMin: 1,
+        spawnMax: 1,
+        destroy: 0.95
+    },
+    hitbox,
+    rotationMode: RotationMode.Limited,
+    allowFlyover: FlyoverPref.Never,
+    frames: {
+        particle: "port_office_wall_particle"
+    },
+    isWall: true,
+    wall: {
+        borderColor: 0x352719,
+        color: 0x85613c
     }
 });
 
@@ -1267,6 +1359,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         zIndex: ZIndexes.ObstaclesLayer3
     },
     {
+        idString: "lamp",
+        name: "Lamp",
+        defType: DefinitionType.Obstacle,
+        material: "glass",
+        health: 69,
+        indestructible: true,
+        scale: {
+            spawnMin: 0.9,
+            spawnMax: 1.1,
+            destroy: 0.8
+        },
+        hitbox: new CircleHitbox(0),
+        noCollisions: true,
+        noBulletCollision: true,
+        noHitEffect: true,
+        noMeleeCollision: true,
+        rotationMode: RotationMode.Limited,
+        zIndex: ZIndexes.BuildingsCeiling - 2
+    },
+    {
         idString: "detector_walls",
         name: "Detector Walls",
         defType: DefinitionType.Obstacle,
@@ -1425,6 +1537,24 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     {
         idString: "melee_crate",
         name: "Melee Crate",
+        defType: DefinitionType.Obstacle,
+        material: "crate",
+        health: 80,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.5
+        },
+        spawnMode: MapObjectSpawnMode.GrassAndSand,
+        hitbox: RectangleHitbox.fromRect(6.5, 6.3),
+        rotationMode: RotationMode.None,
+        allowFlyover: FlyoverPref.Always,
+        hasLoot: true,
+        winterVariations: 1
+    },
+    {
+        idString: "lighthouse_crate",
+        name: "Lighthouse Crate",
         defType: DefinitionType.Obstacle,
         material: "crate",
         health: 80,
@@ -1665,7 +1795,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         particlesOnDestroy: "tear_gas_particle",
         additionalDestroySounds: ["smoke_grenade"],
-        winterVariations: 1
+        winterVariations: 1,
+        waterOverlay: {
+            scaleX: 1,
+            scaleY: 0.65
+        }
     },
     {
         idString: "barrel",
@@ -1869,7 +2003,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         variations: 3,
         zIndex: ZIndexes.ObstaclesLayer2,
         hasLoot: true,
-        winterVariations: 3
+        winterVariations: 3,
+        waterOverlay: {
+            scaleX: 0.45,
+            scaleY: 0.45
+        }
     },
     gift("red"),
     gift("green"),
@@ -2032,6 +2170,17 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
     portaPottyWall("Outhouse Back Wall", RectangleHitbox.fromRect(11.71, 1.81), true),
     portaPottyWall("Outhouse Side Wall", RectangleHitbox.fromRect(1.81, 19.2), true),
     portaPottyWall("Outhouse Front Wall", RectangleHitbox.fromRect(2.8, 1.81), true),
+
+    portMainOfficeWall(1, RectangleHitbox.fromRect(16.7, 1.8)),
+    portMainOfficeWall(2, RectangleHitbox.fromRect(9.5, 1.8)),
+    portMainOfficeWall(3, RectangleHitbox.fromRect(22.05, 1.8)),
+    portMainOfficeWall(4, RectangleHitbox.fromRect(32.6, 1.8)),
+    portMainOfficeWall(5, RectangleHitbox.fromRect(11.4, 1.8)),
+    portMainOfficeWall(6, RectangleHitbox.fromRect(1.8, 16.5)),
+
+    lighthouseWall(1, RectangleHitbox.fromRect(4.69, 2)),
+    lighthouseWall(2, RectangleHitbox.fromRect(11.89, 2)),
+    lighthouseWall(3, RectangleHitbox.fromRect(2, 21.14)),
 
     {
         idString: "fridge",
@@ -2599,6 +2748,30 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
+        idString: "vault_door_deactivated",
+        name: "Vault Door",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        reflectBullets: true,
+        hitbox: RectangleHitbox.fromRect(14.2, 1.95, Vec.create(1.6, -2.9)),
+        rotationMode: RotationMode.Limited,
+        isDoor: true,
+        openOnce: true,
+        doorSound: "vault_door_powered",
+        requiresPower: true,
+        animationDuration: 2000,
+        interactionDelay: 2500,
+        hingeOffset: Vec.create(-5.6, -2.3),
+        zIndex: ZIndexes.ObstaclesLayer3,
+        frames: {
+            particle: "metal_particle",
+            powered: "vault_door_activated",
+            opened: "vault_door_off"
+        }
+    },
+    {
         idString: "tent_window",
         name: "Tent Window",
         defType: DefinitionType.Obstacle,
@@ -2960,7 +3133,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hideOnMap: true,
         hitbox: RectangleHitbox.fromRect(1.1, 15.1, Vec.create(-0.25, 0)),
         rotationMode: RotationMode.Limited,
-        zIndex: ZIndexes.ObstaclesLayer2
+        zIndex: ZIndexes.ObstaclesLayer3 + 0.5 // needs to be above table
     },
     {
         idString: "small_table",
@@ -3409,6 +3582,44 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         } */
     },
     {
+        idString: "large_warehouse_wall", // todo: make this wall only damageable by big white barrel explosion
+        name: "Large Warehouse Wall",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(55.19, 2.02, Vec.create(0.35, -12.47)),
+            RectangleHitbox.fromRect(2, 27, Vec.create(-26.95, -0.02))
+        ),
+        graphics: [
+            { // Border
+                color: 0x1a1a1a,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(55.19, 2, Vec.create(0.35, -12.52)),
+                    RectangleHitbox.fromRect(2, 27, Vec.create(-26.95, -0.02))
+                )
+            },
+            { // Fill
+                color: 0x4d4d4d,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(55.15, 1.155, Vec.create(0.35, -12.51)),
+                    RectangleHitbox.fromRect(1.155, 26.56, Vec.create(-26.95, 0.2))
+                )
+            }
+        ],
+        graphicsZIndex: ZIndexes.ObstaclesLayer1,
+        health: 9999,
+        hideOnMap: true,
+        reflectBullets: true,
+        rotationMode: RotationMode.Limited,
+        isWall: true,
+        allowFlyover: FlyoverPref.Never,
+        frames: {
+            base: "column",
+            particle: "metal_particle",
+            residue: "large_warehouse_ceiling_residue"
+        }
+    },
+    {
         idString: "small_refinery_barrel",
         name: "Small Refinery Barrel",
         defType: DefinitionType.Obstacle,
@@ -3565,6 +3776,31 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
+        idString: "truck_front",
+        name: "Truck",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(13.25, 12.3, Vec.create(0, 0)),
+            RectangleHitbox.fromRect(16.8, 4.85, Vec.create(0, -6.85)),
+            new CircleHitbox(0.39, Vec.create(-5.25, -10.5)),
+            new CircleHitbox(1.13, Vec.create(6.24, -9.63)),
+            RectangleHitbox.fromRect(10.27, 3.9, Vec.create(0.03, -9.09)),
+            new CircleHitbox(1.13, Vec.create(-6.27, -9.63)),
+            new CircleHitbox(0.39, Vec.create(5.34, -10.46))
+        ),
+        reflectBullets: true,
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never,
+        zIndex: ZIndexes.BuildingsFloor - 1,
+        variations: 3,
+        frames: {
+            particle: "metal_particle"
+        }
+    },
+    {
         idString: "trailer",
         name: "Trailer",
         defType: DefinitionType.Obstacle,
@@ -3615,7 +3851,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             residue: "barrel_residue"
         }
     },
-    controlPanel("control_panel2", "Control Panel"),
+    {
+        ...controlPanel("control_panel2", "Control Panel"),
+        waterOverlay: {
+            scaleX: 1.2,
+            scaleY: 0.85
+        }
+    },
     {
         ...controlPanel("recorder", "Recorder"),
         hitbox: RectangleHitbox.fromRect(8.7, 6.34),
@@ -3796,6 +4038,30 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
+        idString: "port_main_office_column",
+        name: "Port Main Office Column",
+        defType: DefinitionType.Obstacle,
+        material: "stone",
+        indestructible: true,
+        health: 340,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.95
+        },
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(3, 3)
+        ),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never,
+        tint: 0xb98a46,
+        frames: {
+            base: "column",
+            particle: "port_office_wall_particle"
+        },
+        isWall: true
+    },
+    {
         idString: "house_column",
         name: "House Column",
         defType: DefinitionType.Obstacle,
@@ -3911,7 +4177,25 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         indestructible: true,
         hitbox: RectangleHitbox.fromRect(13.1, 7.7),
         rotationMode: RotationMode.Limited,
-        winterVariations: 1
+        winterVariations: 1,
+        waterOverlay: {
+            scaleX: 1.4,
+            scaleY: 0.8
+        }
+    },
+    {
+        idString: "smaller_sandbags",
+        name: "Sandbags",
+        defType: DefinitionType.Obstacle,
+        material: "sand",
+        health: 1000,
+        indestructible: true,
+        hitbox: RectangleHitbox.fromRect(8, 5.9),
+        rotationMode: RotationMode.Limited,
+        frames: {
+            particle: "sandbags_particle"
+        }
+        // winterVariations: 1
     },
     {
         idString: "gun_locker",
@@ -4153,6 +4437,34 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         winterVariations: 2
     },
     {
+        idString: "truck_tire",
+        name: "Truck Tire",
+        defType: DefinitionType.Obstacle,
+        material: "stone",
+        health: 200,
+        indestructible: true,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.8
+        },
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1, 5.31, Vec.create(0, 0)),
+            RectangleHitbox.fromRect(2.18, 4.28, Vec.create(-0.01, 0.01)),
+            new CircleHitbox(0.51, Vec.create(0.57, 2.14)),
+            new CircleHitbox(0.51, Vec.create(-0.57, -2.14)),
+            new CircleHitbox(0.51, Vec.create(-0.57, 2.14)),
+            new CircleHitbox(0.51, Vec.create(0.57, -2.13))
+        ),
+        rotationMode: RotationMode.Limited,
+        zIndex: ZIndexes.BuildingsFloor - 1,
+        noResidue: true,
+        frames: {
+            particle: "flint_stone_particle"
+        },
+        particleVariations: 2
+    },
+    {
         idString: "mobile_home_window",
         name: "Mobile Home Window",
         defType: DefinitionType.Obstacle,
@@ -4363,6 +4675,52 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         allowFlyover: FlyoverPref.Always
     },
     {
+        idString: "cargo_ship_stair_entrance_walls",
+        name: "Cargo Ship Stair",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 69,
+        indestructible: true,
+        reflectBullets: true,
+        collideWithLayers: Layers.Equal,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(15.27, 2.72, Vec.create(0.01, -7.24)),
+            RectangleHitbox.fromRect(2.36, 15.71, Vec.create(-6.45, 0.71)),
+            RectangleHitbox.fromRect(2.36, 16.68, Vec.create(6.46, 0.19))
+        ),
+        frames: {
+            base: "cargo_ship_stair_entrance",
+            particle: "cargo_ship_particle"
+        },
+        rotationMode: RotationMode.Limited
+    },
+    {
+        idString: "cargo_ship_stair",
+        name: "Cargo Ship Stair",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 69,
+        indestructible: true,
+        reflectBullets: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(23.99, 1.01, Vec.create(1.34, 5.45)),
+            RectangleHitbox.fromRect(23.99, 1.01, Vec.create(1.6, -5.47)),
+            new CircleHitbox(0.91, Vec.create(13.01, 5.45)),
+            new CircleHitbox(0.91, Vec.create(-2.7, -5.48)),
+            new CircleHitbox(0.91, Vec.create(5.16, -5.46)),
+            new CircleHitbox(0.91, Vec.create(13, -5.48)),
+            new CircleHitbox(0.91, Vec.create(-10.57, -5.48)),
+            new CircleHitbox(0.91, Vec.create(-10.57, 5.45)),
+            new CircleHitbox(0.91, Vec.create(-2.7, 5.45)),
+            new CircleHitbox(0.91, Vec.create(5.15, 5.45))
+        ),
+        frames: {
+            particle: "metal_particle"
+        },
+        hideOnMap: false,
+        rotationMode: RotationMode.Limited
+    },
+    {
         idString: "bunker_entrance",
         name: "Bunker Entrance",
         defType: DefinitionType.Obstacle,
@@ -4390,6 +4748,44 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         invisible: true,
         hitbox: RectangleHitbox.fromRect(10, 11.5),
+        frames: {
+            particle: "metal_particle"
+        },
+        rotationMode: RotationMode.Limited
+    },
+    {
+        idString: "cargo_ship_bottom_stair",
+        name: "Cargo Ship Bottom Stair",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        isStair: true,
+        activeEdges: {
+            high: 3,
+            low: 1
+        },
+        invisible: true,
+        hitbox: RectangleHitbox.fromRect(13, 11.27),
+        frames: {
+            particle: "metal_particle"
+        },
+        rotationMode: RotationMode.Limited
+    },
+    {
+        idString: "cargo_ship_top_stair",
+        name: "Cargo Ship Top Stair",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        isStair: true,
+        activeEdges: {
+            high: 3,
+            low: 1
+        },
+        invisible: true,
+        hitbox: RectangleHitbox.fromRect(10, 10),
         frames: {
             particle: "metal_particle"
         },
@@ -4428,6 +4824,59 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         rotationMode: RotationMode.Limited,
         zIndex: ZIndexes.BuildingsFloor
+    },
+    {
+        idString: "ship_thing_v2",
+        name: "the snack that smiles back",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 42069,
+        indestructible: true,
+        reflectBullets: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(5.24, 21.1, Vec.create(0, 0.2)),
+            new CircleHitbox(2.55, Vec.create(0, 10.7)),
+            new CircleHitbox(3.37, Vec.create(-0.02, -9.91)),
+            RectangleHitbox.fromRect(6.87, 3.96, Vec.create(-0.01, -7.98))
+        ),
+        frames: {
+            particle: "cargo_ship_particle"
+        },
+        rotationMode: RotationMode.Limited
+    },
+    {
+        idString: "ship_oil_source",
+        name: "Ship Oil Source",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 69,
+        indestructible: true,
+        reflectBullets: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(7.7, 19.43, Vec.create(-6.47, 0)),
+            RectangleHitbox.fromRect(2.38, 15.56, Vec.create(9.13, -0.3))
+        ),
+        frames: {
+            particle: "metal_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        zIndex: ZIndexes.BuildingsCeiling
+    },
+    {
+        idString: "cargo_ship_stair_support",
+        name: "cargo ship stair",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        indestructible: true,
+        collideWithLayers: Layers.All,
+        health: 69,
+        reflectBullets: true,
+        invisible: true,
+        hitbox: RectangleHitbox.fromRect(17.22, 2.09),
+        frames: {
+            particle: "cargo_ship_particle"
+        },
+        rotationMode: RotationMode.Limited
     },
     {
         idString: "memorial_bunker_stair",
@@ -4724,6 +5173,25 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
+        idString: "lighthouse_stairs",
+        name: "Lighthouse Stairs",
+        defType: DefinitionType.Obstacle,
+        material: "appliance",
+        health: 10000,
+        hideOnMap: true,
+        reflectBullets: true,
+        noResidue: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1.18, 4.25, Vec.create(-3.83, 0)),
+            RectangleHitbox.fromRect(1.18, 4.25, Vec.create(3.83, 0))
+        ),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never,
+        frames: {
+            particle: "metal_particle"
+        }
+    },
+    {
         idString: "headquarters_main_desk",
         name: "Headquarters Main Desk",
         defType: DefinitionType.Obstacle,
@@ -4937,6 +5405,45 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         frames: {
             particle: "memorial_crate_particle"
         }
+    },
+    {
+        idString: "silo",
+        name: "Silo",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 1000,
+        hitbox: new CircleHitbox(17, Vec.create(-2, 0)),
+        rotationMode: RotationMode.Limited,
+        allowFlyover: FlyoverPref.Never,
+        explosion: "silo_explosion",
+        reflectBullets: true,
+        zIndex: ZIndexes.ObstaclesLayer5,
+        frames: {
+            particle: "metal_particle",
+            residue: "large_refinery_barrel_residue"
+        }
+        // winterVariations: 1
+    },
+    {
+        idString: "buoy",
+        name: "Buoy",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 69,
+        indestructible: true,
+        reflectBullets: true,
+        hitbox: new CircleHitbox(7.27),
+        frames: {
+            particle: "buoy_particle"
+        },
+        rotationMode: RotationMode.Full,
+        spawnWithWaterOverlay: true,
+        waterOverlay: {
+            scaleX: 2.4,
+            scaleY: 2.4
+        },
+        allowFlyover: FlyoverPref.Always
+        // spawnMode: MapObjectSpawnMode.Beach // todo: ocean spawn mode
     },
     {
         idString: "large_logs_pile",

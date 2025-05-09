@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="147.274855"
+   height="396.100465"
+   viewBox="0 0 77.932943 209.60316"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="truck_container_floor_one_sided.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.71713664"
+     inkscape:cx="446.91623"
+     inkscape:cy="499.90473"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g109" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Στρώση 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-127.00015,-39.42278)">
+    <g
+       id="g109"
+       transform="translate(7032.048,333.3249)">
+      <rect
+         style="fill:#7a7a7a;fill-opacity:1;stroke:none;stroke-width:2.27499;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+         id="rect83-03-8-9"
+         width="77.932945"
+         height="209.60301"
+         x="-6905.0479"
+         y="-293.90198"
+         ry="1.5824678" />
+      <path
+         id="rect61-05-0-5-9-0"
+         style="fill:#909090;fill-opacity:1;stroke:#1f1f1f;stroke-width:2.275;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+         d="m -6903.9102,-292.76462 v 77.33791 h 6.0337 v -71.30314 h 63.5874 v 201.293141 h 6.0348 V -292.76462 Z m 0,129.99 v 77.337911 h 6.0337 v -77.337911 z"
+         sodipodi:nodetypes="cccccccccccccc" />
+    </g>
+  </g>
+</svg>

@@ -119,7 +119,7 @@ class CameraManagerClass {
 
     layerTransition = false;
 
-    updateLayer(initial = false, oldLayer?: Layer): void {
+    updateLayer(newLayer: Layer, initial = false, oldLayer?: Layer): void {
         this.objectUpdateTimeout?.kill();
 
         if (!initial) {
@@ -129,8 +129,6 @@ class CameraManagerClass {
                 }
             }, LAYER_TRANSITION_DELAY);
         }
-
-        const newLayer = Game.layer;
 
         for (let i = 0, len = this.layerContainers.length; i < len; i++) {
             const container = this.layerContainers[i];
@@ -161,6 +159,7 @@ class CameraManagerClass {
 
             if (initial) {
                 container.visible = visible;
+                container.alpha = targetAlpha;
                 continue;
             }
 
@@ -184,24 +183,30 @@ class CameraManagerClass {
             });
         }
 
-        let tempContainerIndex = getLayerContainerIndex(Game.layer, Game.layer);
-        if (oldLayer !== undefined) {
-            const oldIndex = getLayerContainerIndex(oldLayer, oldLayer);
-            if (oldIndex > tempContainerIndex && newLayer >= Layer.Ground) {
-                tempContainerIndex = oldIndex;
+        if (initial) {
+            for (const object of Game.objects) {
+                object.updateLayer();
             }
-        }
-        if (tempContainerIndex === LayerContainer.Basement && newLayer <= Layer.ToBasement) {
-            tempContainerIndex = 999 as LayerContainer;
-        }
-        tempContainerIndex += 0.1;
-        this.tempLayerContainer.zIndex = tempContainerIndex;
+        } else {
+            let tempContainerIndex = getLayerContainerIndex(Game.layer, Game.layer);
+            if (oldLayer !== undefined) {
+                const oldIndex = getLayerContainerIndex(oldLayer, oldLayer);
+                if (oldIndex > tempContainerIndex && newLayer >= Layer.Ground) {
+                    tempContainerIndex = oldIndex;
+                }
+            }
+            if (tempContainerIndex === LayerContainer.Basement && newLayer <= Layer.ToBasement) {
+                tempContainerIndex = 999 as LayerContainer;
+            }
+            tempContainerIndex += 0.1;
+            this.tempLayerContainer.zIndex = tempContainerIndex;
 
-        this.layerTransition = true;
-        for (const object of Game.objects) {
-            object.updateLayer();
+            this.layerTransition = true;
+            for (const object of Game.objects) {
+                object.updateLayer();
+            }
+            this.layerTransition = false;
         }
-        this.layerTransition = false;
     }
 
     getContainer(layer: Layer, oldContainerIndex?: LayerContainer): Container {

@@ -324,7 +324,7 @@ export function drawGroundGraphics(hitbox: Hitbox, graphics: Graphics, scale = P
             break;
         case HitboxType.Group:
             for (const hitBox of hitbox.hitboxes) {
-                drawGroundGraphics(hitBox, graphics);
+                drawGroundGraphics(hitBox, graphics, scale);
             }
             break;
     }

@@ -1037,7 +1037,47 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             }
         }
     },
-
+    {
+        idString: "shak12",
+        name: "ShAK-12",
+        ammoType: "50cal",
+        ammoSpawnAmount: 30,
+        speedMultiplier: 1,
+        tier: Tier.A,
+        itemType: ItemType.Gun,
+        capacity: 10,
+        extendedCapacity: 15,
+        reloadTime: 3,
+        fireDelay: 125,
+        switchDelay: 400,
+        recoilMultiplier: 0.75,
+        recoilDuration: 400,
+        fireMode: FireMode.Auto,
+        shotSpread: 6,
+        moveSpread: 6,
+        bulletCount: 2,
+        length: 7.2,
+        fists: {
+            left: Vec.create(85, -2),
+            right: Vec.create(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec.create(70, 0) },
+        casingParticles: [{
+            position: Vec.create(3.53, 0.4)
+        }],
+        gasParticles: gasParticlePresets.rifle,
+        ballistics: {
+            damage: 17.5,
+            obstacleMultiplier: 1.5,
+            speed: 0.26,
+            range: 60,
+            tracer: {
+                width: 1.3
+            }
+        }
+    },
     //
     // Light machine guns (LMGs)
     //

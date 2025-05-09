@@ -10,7 +10,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { InventoryItemBase } from "../inventory/inventoryItem";
 import { getLootFromTable, LootItem } from "../utils/lootHelpers";
-import { getRandomIDString } from "../utils/misc";
+import { getRandomIDString, runOrWait } from "../utils/misc";
 import { type Building } from "./building";
 import { type Bullet } from "./bullet";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
@@ -28,6 +28,10 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     collidable: boolean;
 
     playMaterialDestroyedSound = true;
+
+    waterOverlay = false;
+
+    powered = false;
 
     readonly variation: Variation;
 
@@ -47,6 +51,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         openHitbox: Hitbox
         openAltHitbox?: Hitbox
         offset: number
+        powered: boolean
     };
 
     activated?: boolean;
@@ -84,7 +89,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         parentBuilding?: Building,
         puzzlePiece?: string | boolean,
         locked?: boolean,
-        activated?: boolean
+        activated?: boolean,
+        waterOverlay?: boolean
     ) {
         super(game, position);
 
@@ -101,6 +107,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         this.activated = activated;
 
         const definition = this.definition = Obstacles.reify(type);
+
+        this.waterOverlay = waterOverlay ?? definition.spawnWithWaterOverlay ?? false;
 
         this.health = this.maxHealth = this.definition.health;
 
@@ -137,7 +145,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 closedHitbox: this.hitbox.clone(),
                 openHitbox: hitboxes.openHitbox,
                 openAltHitbox: (hitboxes as typeof hitboxes & { readonly openAltHitbox?: RectangleHitbox }).openAltHitbox,
-                offset: 0
+                offset: 0,
+                powered: false
             };
         }
 
@@ -416,6 +425,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             throw new Error("Door with non-rectangular hitbox");
         }
 
+        let hitbox: Hitbox = this.hitbox;
+
         this.door.isOpen = !this.door.isOpen;
         if (this.door.isOpen) {
             switch (this.door.operationStyle) {
@@ -442,19 +453,23 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
                             // swivel door => alt hitbox
                             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                            this.hitbox = this.door.openAltHitbox!.clone();
+                            hitbox = this.door.openAltHitbox!.clone();
                         } else {
                             this.door.offset = 1;
-                            this.hitbox = this.door.openHitbox.clone();
+                            if (this.definition.requiresPower && !this.door.locked) {
+                                this.door.offset = 3;
+                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                                hitbox = this.door.openAltHitbox!.clone();
+                            } else hitbox = this.door.openHitbox.clone();
                         }
                     } else {
                         this.door.offset = 1;
-                        this.hitbox = this.door.openHitbox.clone();
+                        hitbox = this.door.openHitbox.clone();
                     }
                     break;
                 }
                 case "slide": {
-                    this.hitbox = this.door.openHitbox.clone();
+                    hitbox = this.door.openHitbox.clone();
                     this.door.offset = 1;
                     /*
                         changing the value of offset is really just for interop
@@ -466,10 +481,28 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             }
         } else {
             this.door.offset = 0;
-            this.hitbox = this.door.closedHitbox.clone();
+            hitbox = this.door.closedHitbox.clone();
         }
-        this.spawnHitbox = this.hitbox;
-        this.game.grid.updateObject(this);
+
+        if (this.definition.interactionDelay) {
+            this.door.powered = false;
+            this.door.locked = true;
+            this.setDirty();
+        }
+        runOrWait(
+            this.game,
+            () => {
+                if (this.door) {
+                    this.door.powered = true;
+                    this.door.locked = false;
+                    this.setDirty();
+                }
+                this.hitbox = hitbox;
+                this.spawnHitbox = hitbox;
+                this.game.grid.updateObject(this);
+            },
+            this.definition.interactionDelay ?? 0
+        );
     }
 
     override get data(): FullData<ObjectCategory.Obstacle> {
@@ -477,6 +510,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             scale: this.scale,
             dead: this.dead,
             playMaterialDestroyedSound: this.playMaterialDestroyedSound,
+            waterOverlay: this.waterOverlay,
+            powered: this.powered,
             full: {
                 activated: this.activated,
                 definition: this.definition,

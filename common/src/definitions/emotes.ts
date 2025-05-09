@@ -87,6 +87,7 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>([
             "Suroi Logo",
             "AEGIS Logo",
             "Flint Logo",
+            "NSD Logo",
             "Skull",
             "Duel",
             "Chicken Dinner",

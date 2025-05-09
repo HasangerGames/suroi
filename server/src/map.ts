@@ -430,7 +430,14 @@ export class GameMap {
         const buildingDef = Buildings.reify(definition);
 
         if (!buildingDef.bridgeHitbox) {
-            const { idString, rotationMode } = buildingDef;
+            const {
+                idString,
+                rotationMode,
+                spawnHitbox,
+                spawnMode = MapObjectSpawnMode.Grass,
+                spawnOrientation,
+                spawnOffset
+            } = buildingDef;
             const { majorBuildings = [], quadBuildingLimit = {} } = this.mapDef;
 
             let attempts = 0;
@@ -442,11 +449,12 @@ export class GameMap {
                 while (!validPositionFound && attempts < 100) {
                     orientation = GameMap.getRandomBuildingOrientation(rotationMode);
 
-                    position = this.getRandomPosition(buildingDef.spawnHitbox, {
+                    position = this.getRandomPosition(spawnHitbox, {
                         orientation,
-                        spawnMode: buildingDef.spawnMode ?? MapObjectSpawnMode.Grass,
+                        spawnMode,
+                        spawnOffset,
                         orientationConsumer: (newOrientation: Orientation) => {
-                            orientation = newOrientation;
+                            orientation = spawnOrientation ? Numeric.addOrientations(newOrientation, spawnOrientation) : newOrientation;
                         },
                         maxAttempts: 400
                     });
@@ -611,7 +619,8 @@ export class GameMap {
                     parentBuilding: building,
                     puzzlePiece: obstacleData.puzzlePiece,
                     locked: obstacleData.locked,
-                    activated: obstacleData.activated
+                    activated: obstacleData.activated,
+                    waterOverlay: obstacleData.waterOverlay
                 },
                 obstacleData.outdoors
             );
@@ -710,7 +719,8 @@ export class GameMap {
             parentBuilding,
             puzzlePiece,
             locked,
-            activated
+            activated,
+            waterOverlay
         }: {
             rotation?: number
             layer?: number
@@ -721,6 +731,7 @@ export class GameMap {
             puzzlePiece?: string | boolean
             locked?: boolean
             activated?: boolean
+            waterOverlay?: boolean
         } = {},
         ignoreHideOnMap?: boolean
     ): Obstacle | undefined {
@@ -748,7 +759,8 @@ export class GameMap {
                     parentBuilding,
                     puzzlePiece,
                     locked,
-                    activated
+                    activated,
+                    waterOverlay
                 }
             )
         ) return;
@@ -765,10 +777,15 @@ export class GameMap {
             parentBuilding,
             puzzlePiece,
             locked,
-            activated
+            activated,
+            waterOverlay
         );
 
-        if ((!def.hideOnMap || ignoreHideOnMap) && !def.invisible && obstacle.layer === Layer.Ground) this._packet.objects.push(obstacle);
+        if (
+            (!def.hideOnMap || ignoreHideOnMap)
+            && !def.invisible
+            && (obstacle.layer === Layer.Ground || def.hideOnMap === false) // explicitly specifying false ignores layer
+        ) this._packet.objects.push(obstacle);
         this.game.grid.addObject(obstacle);
         this.game.updateObjects = true;
         this.game.pluginManager.emit("obstacle_did_generate", obstacle);
@@ -842,6 +859,7 @@ export class GameMap {
             collides?: (position: Vector) => boolean
             collidableObjects?: Partial<Record<ObjectCategory, boolean>>
             spawnMode?: MapObjectSpawnMode
+            spawnOffset?: Vector
             scale?: number
             layer?: Layer
             orientation?: Orientation
@@ -919,7 +937,8 @@ export class GameMap {
                             }
                         }
 
-                        return beachRect.randomPoint();
+                        const point = beachRect.randomPoint();
+                        return params?.spawnOffset ? Vec.addAdjust(point, params.spawnOffset, orientation) : point;
                     };
                 }
                 case MapObjectSpawnMode.Trail: {

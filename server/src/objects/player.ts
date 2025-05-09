@@ -1083,7 +1083,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             if (
                 !isInsideBuilding
                 && object?.isBuilding
-                && !object.dead
+                && (!object.dead || (object.dead && object.definition.hasDamagedCeiling))
                 && object.scopeHitbox?.collidesWith(this._hitbox)
                 && !Config.disableBuildingCheck
             ) {

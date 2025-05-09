@@ -149,13 +149,13 @@ const maps = {
             }
         },
         buildings: {
+            port: 1,
             large_bridge: 2,
             small_bridge: Infinity,
-            port_complex: 1,
             river_hut_1: 2,
             river_hut_2: 2,
             river_hut_3: 2,
-            sea_traffic_control: 1,
+            lighthouse: 1,
             tugboat_red: 1,
             tugboat_white: 5,
             armory: 1,
@@ -163,7 +163,6 @@ const maps = {
             small_bunker: 1,
             refinery: 1,
             warehouse: 5,
-            // firework_warehouse: 1, // birthday mode
             green_house: 3,
             blue_house: 2,
             blue_house_special: 1,
@@ -180,10 +179,12 @@ const maps = {
             container_8: 2,
             container_9: 1,
             container_10: 2,
-            memorial: 1
+            memorial: 1,
+            buoy: 12
         },
-        majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
+        majorBuildings: ["armory", "refinery", "port", "headquarters"],
         quadBuildingLimit: {
+            port: 1,
             river_hut_1: 1,
             river_hut_2: 1,
             river_hut_3: 1,
@@ -319,7 +320,7 @@ const maps = {
             small_bridge: Infinity,
             plumpkin_bunker: 1,
             campsite: 1,
-            sea_traffic_control: 1,
+            lighthouse: 1,
             tugboat_red: 1,
             tugboat_white: 7,
             lodge: 1,
@@ -341,7 +342,8 @@ const maps = {
             tent_3: 3,
             tent_4: 3,
             tent_5: 1,
-            outhouse: 10
+            outhouse: 10,
+            buoy: 16
         },
         majorBuildings: ["bombed_armory", "lodge", "plumpkin_bunker", "campsite"],
         quadBuildingLimit: {
@@ -493,7 +495,7 @@ const maps = {
         buildings: {
             small_bridge: Infinity,
             plumpkin_bunker: 1,
-            sea_traffic_control: 1,
+            lighthouse: 1,
             tugboat_red: 1,
             tugboat_white: 7,
             lodge: 1,
@@ -630,11 +632,11 @@ const maps = {
         buildings: {
             large_bridge: 2,
             small_bridge: Infinity,
-            port_complex: 1,
+            port: 1,
             river_hut_1: 2,
             river_hut_2: 2,
             river_hut_3: 2,
-            sea_traffic_control: 1,
+            lighthouse: 1,
             tugboat_red: 1,
             tugboat_white: 5,
             armory: 1,
@@ -659,9 +661,10 @@ const maps = {
             container_8: 2,
             container_9: 1,
             container_10: 2,
-            memorial: 1
+            memorial: 1,
+            buoy: 12
         },
-        majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
+        majorBuildings: ["armory", "refinery", "port", "headquarters"],
         quadBuildingLimit: {
             river_hut_1: 1,
             river_hut_2: 1,
@@ -765,8 +768,8 @@ const maps = {
         buildings: {
             large_bridge: 2,
             small_bridge: Infinity,
-            port_complex: 1,
-            sea_traffic_control: 1,
+            port: 1,
+            lighthouse: 1,
             tugboat_red: 1,
             tugboat_white: 5,
             armory: 1,
@@ -792,7 +795,7 @@ const maps = {
             container_9: 1,
             container_10: 3
         },
-        majorBuildings: ["armory", "refinery", "port_complex", "headquarters", "christmas_camp"],
+        majorBuildings: ["armory", "refinery", "port", "headquarters", "christmas_camp"],
         quadBuildingLimit: {
             red_house: 1,
             red_house_v2: 1,
@@ -875,7 +878,7 @@ const maps = {
     debug: {
         width: 1620,
         height: 1620,
-        spawn: { mode: SpawnMode.Center },
+        // spawn: { mode: SpawnMode.Center },
         oceanSize: 128,
         beachSize: 32,
         onGenerate(map) {
@@ -936,7 +939,7 @@ const maps = {
     arena: {
         width: 512,
         height: 512,
-        spawn: { mode: SpawnMode.Center },
+        //   spawn: { mode: SpawnMode.Center },
         beachSize: 16,
         oceanSize: 40,
         onGenerate(map) {
@@ -1065,8 +1068,7 @@ const maps = {
     singleObstacle: {
         width: 256,
         height: 256,
-        spawn: { mode: SpawnMode.Center },
-        mode: "infection",
+        // spawn: { mode: SpawnMode.Center },
         beachSize: 8,
         oceanSize: 8,
         onGenerate(map, [obstacle]) {
@@ -1076,7 +1078,7 @@ const maps = {
     singleGun: {
         width: 256,
         height: 256,
-        spawn: { mode: SpawnMode.Center },
+        //  spawn: { mode: SpawnMode.Center },
         beachSize: 8,
         oceanSize: 8,
         onGenerate(map, [gun]) {
@@ -1177,7 +1179,7 @@ const maps = {
     lootTest: {
         width: 256,
         height: 256,
-        spawn: { mode: SpawnMode.Center },
+        //  spawn: { mode: SpawnMode.Center },
         beachSize: 16,
         oceanSize: 16,
         onGenerate(map) {
@@ -1224,7 +1226,7 @@ const maps = {
         oceanSize: 144,
         beachSize: 32,
         buildings: {
-            port_complex: 1
+            port: 1
         },
         obstacles: {
             regular_crate: 30,

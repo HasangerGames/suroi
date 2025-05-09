@@ -99,6 +99,10 @@ export const Game = new (class Game {
     readonly bullets = new Set<Bullet>();
     readonly planes = new Set<Plane>();
 
+    windAmbience?: GameSound;
+    riverAmbience?: GameSound;
+    oceanAmbience?: GameSound;
+
     layerTween?: Tween<Container>;
 
     readonly spinningImages = new Map<SuroiSprite, number>();
@@ -310,6 +314,56 @@ export const Game = new (class Game {
     resize(): void {
         MapManager.resize();
         CameraManager.resize(true);
+    }
+
+    updateAmbience(): void {
+        // todo:
+        // add wind ambience mp3
+
+        if (!this.activePlayer) return;
+
+        const position = this.activePlayer.position;
+
+        let riverWeight = 0,
+            oceanWeight = 0;
+
+        const rivers = MapManager.terrain.rivers;
+
+        const oceanDistance = MapManager.distanceToShore(position);
+
+        oceanWeight = Numeric.delerp(oceanDistance, 50, 5);
+
+        for (let i = 0, len = rivers.length; i < len; i++) { // hasanger mwah optimization
+            const river = rivers[i];
+
+            if (river.isTrail) continue;
+
+            const closestPointT = river.getClosestT(position),
+                  closestPoint = river.getPosition(closestPointT),
+                  distanceToRiver = Vec.length(Vec.sub(closestPoint, position)),
+                  riverWidth = river.waterWidths[i] + 2,
+                  normalizedDistance = Numeric.delerp(
+                      distanceToRiver,
+                      30 + riverWidth,
+                      riverWidth
+                  );
+
+            const riverStrength = Numeric.clamp(river.waterWidths[i] / 8, 0.25, 1);
+            riverWeight = Numeric.max(normalizedDistance * riverStrength, riverWeight);
+        }
+
+        // we don't want rivers when we change layers
+        if (this.activePlayer.layer !== Layer.Ground) {
+            riverWeight = 0;
+        }
+
+        if (this.riverAmbience) {
+            this.riverAmbience.volume = riverWeight;
+        }
+
+        if (this.oceanAmbience) {
+            this.oceanAmbience.volume = oceanWeight;
+        }
     }
 
     connect(address: string): void {
@@ -547,9 +601,21 @@ export const Game = new (class Game {
         // game started if page is out of focus.
         if (!document.hasFocus()) SoundManager.play("join_notification");
 
-        const ambience = this.mode.sounds?.ambience;
-        if (ambience) {
-            SoundManager.play(ambience, { loop: true, ambient: true, noMuffledEffect: true });
+        const windAmbience = this.mode.sounds?.ambience?.wind;
+        if (windAmbience) {
+            this.windAmbience = SoundManager.play(windAmbience, { loop: true, ambient: true, noMuffledEffect: true });
+        }
+
+        const riverAmbience = this.mode.sounds?.ambience?.river;
+        if (riverAmbience) {
+            this.riverAmbience = SoundManager.play(riverAmbience, { loop: true, ambient: true, noMuffledEffect: true });
+            this.riverAmbience.volume = 0;
+        }
+
+        const oceanAmbience = this.mode.sounds?.ambience?.ocean;
+        if (oceanAmbience) {
+            this.oceanAmbience = SoundManager.play(oceanAmbience, { loop: true, ambient: true, noMuffledEffect: true });
+            this.oceanAmbience.volume = 0;
         }
 
         UIManager.emotes = packet.emotes;
@@ -830,17 +896,20 @@ export const Game = new (class Game {
     backgroundTween?: Tween<{ readonly r: number, readonly g: number, readonly b: number }>;
     volumeTween?: Tween<GameSound>;
 
-    updateLayer(initial = false, oldLayer?: Layer): void {
-        CameraManager.updateLayer(initial, oldLayer);
+    updateLayer(newLayer: Layer, initial = false, oldLayer?: Layer): void {
+        CameraManager.updateLayer(newLayer, initial, oldLayer);
 
         for (const sound of SoundManager.updatableSounds) {
             sound.updateLayer();
             sound.update();
         }
+        // slight hack
+        // if we don't do this then ambience will play at the wrong volume for a tick
+        this.riverAmbience?.volumeTween?.kill();
+        this.oceanAmbience?.volumeTween?.kill();
+        this.updateAmbience();
 
-        const layer = this.layer;
-
-        const basement = layer === Layer.Basement;
+        const basement = newLayer === Layer.Basement;
         MapManager.terrainGraphics.visible = !basement;
 
         const currentColor = this.pixi.renderer.background.color;
@@ -963,7 +1032,7 @@ export const Game = new (class Game {
                     if (
                         object.ceilingHitbox !== undefined
                         && !object.ceilingVisible
-                        && object.definition.subBuildings?.some(({ layer }) => layer === Layer.Upstairs)
+                        && object.definition.hasSecondFloor
                     ) {
                         hideSecondFloor = true;
                     }
@@ -1047,9 +1116,11 @@ export const Game = new (class Game {
                 }
             }
 
+            this.updateAmbience();
+
             if (this.hideSecondFloor !== hideSecondFloor) {
                 this.hideSecondFloor = hideSecondFloor;
-                CameraManager.updateLayer();
+                CameraManager.updateLayer(this.layer);
             }
 
             const object = interactable.object ?? uninteractable.object;

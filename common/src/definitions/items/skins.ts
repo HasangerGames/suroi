@@ -107,6 +107,8 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         ["Lumberjack",            0x924a24],
         ["Gold Tie Event",        0x2b2929],
         ["Ship Carrier",          0x679bd9],
+        ["Cargo Wave",            0xd0bbd7],
+        ["Military Camo",         0x54483a],
         ["NSD Uniform",           0x593b26],
         ["Pumpkified",            0x402000],
         ["One at NSD",            0x27331a],

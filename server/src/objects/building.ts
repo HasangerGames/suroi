@@ -10,6 +10,7 @@ import { type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { BaseGameObject } from "./gameObject";
 import { type Obstacle } from "./obstacle";
+import { runOrWait } from "../utils/misc";
 
 export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
     override readonly fullAllocBytes = 8;
@@ -95,9 +96,9 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
             this.dead = true;
             this.setPartialDirty();
             this.game.pluginManager.emit("building_did_destroy_ceiling", this);
-            if (this.definition.destroyUponCeilingCollapse && this.scopeHitbox) {
+            if (this.definition.destroyOnCeilingCollapse && this.scopeHitbox) {
                 for (const object of this.game.grid.intersectsHitbox(this.scopeHitbox)) {
-                    if ((object.isObstacle && this.definition.destroyUponCeilingCollapse.includes(object.definition.idString)) && object.hitbox.collidesWith(this.spawnHitbox)) {
+                    if ((object.isObstacle && this.definition.destroyOnCeilingCollapse.includes(object.definition.idString)) && object.hitbox.collidesWith(this.spawnHitbox)) {
                         if (object.definition.isWindow) object.collidable = false;
                         object.damage({
                             source: this,
@@ -176,12 +177,8 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const puzzleDef = this.definition.puzzle!;
 
-        const runOrWait = (cb: () => void, delay: number): void => {
-            if (delay === 0) cb();
-            else this.game.addTimeout(cb, delay);
-        };
-
         runOrWait(
+            this.game,
             () => {
                 puzzle.solved = true;
                 this.setPartialDirty();
@@ -190,10 +187,14 @@ export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
         );
 
         runOrWait(
+            this.game,
             () => {
                 for (const obstacle of this.interactableObstacles) {
                     if (obstacle.definition.idString === puzzleDef.triggerOnSolve) {
-                        if (obstacle.door) obstacle.door.locked = false;
+                        if (obstacle.door) {
+                            obstacle.door.locked = false;
+                            obstacle.door.powered = true;
+                        }
 
                         if (!puzzleDef.unlockOnly) obstacle.interact(undefined);
                         else obstacle.setDirty();

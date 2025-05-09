@@ -123,7 +123,9 @@ export class GameSound {
         if (!this.instance) return;
 
         let volume = 1;
-        const layerDelta = Math.abs(Game.layer - this.layer);
+        const layerDelta = this.ambient // ambient sounds only decrease in volume underground
+            ? this.layer - Game.layer
+            : Math.abs(this.layer - Game.layer);
         if (layerDelta === 1) {
             volume = 0.5;
         } else if (layerDelta >= 2) {
@@ -149,7 +151,7 @@ export class GameSound {
     }
 
     private _updateMuffledFilter(layerDelta: number): void {
-        if (this.noMuffledEffect) return;
+        if (this.noMuffledEffect || this.ambient) return;
 
         if (layerDelta >= 2) {
             // @ts-expect-error pixi sound doesn't have typings for this for some reason
