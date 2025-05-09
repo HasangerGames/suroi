@@ -3919,14 +3919,16 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         // R - Right
         // C - Center
         // ----------------------------------------------------
-        groundGraphics: [
+        terrainGraphics: [
             { // water
                 color: 0x2869af,
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(135, 388, Vec.create(0, 24.5)),
                     RectangleHitbox.fromRect(148.72, 55.77, Vec.create(-0.32, 216.9))
                 )
-            },
+            }
+        ],
+        groundGraphics: [
             {
                 color: 0x666666,
                 hitbox: new GroupHitbox(

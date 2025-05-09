@@ -189,6 +189,18 @@ class MapManagerClass {
         ctx.roundShape(grass, radius);
         ctx.cut();
 
+        for (const building of this._objects) {
+            if (!building.isBuilding) continue;
+
+            const definition = building.definition;
+            for (const ground of definition.terrainGraphics ?? []) {
+                ctx.beginPath();
+                drawGroundGraphics(ground.hitbox.transform(building.position, 1, building.orientation), ctx, scale);
+                ctx.closePath();
+                ctx.fill(ground.color);
+            }
+        }
+
         // gets the river polygon with the middle 2 points not rounded
         // so it joins nicely with other rivers
         function getRiverPoly(points: readonly Vector[]): Array<Vector & { readonly radius: number }> {
