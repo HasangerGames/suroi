@@ -143,7 +143,7 @@ const referenceOrRandomOptions = <T extends ObjectDefinition>(obj: ReferenceOrRa
         : Object.keys(obj)/* .filter(k => k !== NullString) */;
 };
 
-export type SpawnableItemRegistry = ReadonlySet<ReferenceTo<LootDefinition>> & {
+export type ItemRegistry = ReadonlySet<ReferenceTo<LootDefinition>> & {
     forType<K extends ItemType>(type: K): ReadonlyArray<LootDefForType<K>>
 };
 
@@ -166,8 +166,7 @@ export type Cache = {
     [K in ItemType]?: Array<LootDefForType<K>> | undefined;
 };
 
-// new braindead parameter brought to you by 109 ("allLoots")
-export function getSpawnableLoots(modeName: ModeName, mapDef: MapDefinition, cache: Cache, allLoots?: boolean): SpawnableItemRegistry {
+export function getSpawnableLoots(modeName: ModeName, mapDef: MapDefinition, cache: Cache): ItemRegistry {
     /*
         we have a collection of loot tables, but not all of them are necessarily reachable
         for example, if loot table A belongs to obstacle A, but said obstacle is never spawned,
@@ -233,23 +232,12 @@ export function getSpawnableLoots(modeName: ModeName, mapDef: MapDefinition, cac
             .filter(item => item !== NullString && !Loots.fromStringSafe(item as string)?.noSwap)
             .flat() as string[];
 
-    const filter = (def: LootDefinition): boolean => !def.noSwap;
-
     // and now we go get the spawnable loots
-    const spawnableLoots: ReadonlySet<ReferenceTo<LootDefinition>> = allLoots
-
-        // stupid because first 2 parameters get completely ignored for this calculation even though they are used above regardless if allLoots is true or not
-        // also stupid x2 because parameter name is misleading; the set only contains weapons, not every loot item
-        ? new Set<ReferenceTo<LootDefinition>>([
-            ...Guns.definitions.filter(filter),
-            ...Melees.definitions.filter(filter),
-            ...Throwables.definitions.filter(filter)
-        ].map(({ idString }) => idString))
-
-        : new Set<ReferenceTo<LootDefinition>>(
+    const spawnableLoots: ReadonlySet<ReferenceTo<LootDefinition>>
+        = new Set<ReferenceTo<LootDefinition>>(
             reachableLootTables.map(getAllItemsFromTable).flat());
 
-    (spawnableLoots as SpawnableItemRegistry).forType = <K extends ItemType>(type: K): ReadonlyArray<LootDefForType<K>> => {
+    (spawnableLoots as ItemRegistry).forType = <K extends ItemType>(type: K): ReadonlyArray<LootDefForType<K>> => {
         return (
             (
                 // without this seemingly useless assertion, assignability errors occur
@@ -259,5 +247,26 @@ export function getSpawnableLoots(modeName: ModeName, mapDef: MapDefinition, cac
         );
     };
 
-    return spawnableLoots as SpawnableItemRegistry;
+    return spawnableLoots as ItemRegistry;
+}
+
+export function getAllLoots(cache: Cache, dev?: boolean): ItemRegistry {
+    // returns a set of all loot items in the game
+    // property "dev" allows including dev items if true
+    const filter = (def: LootDefinition): boolean => dev ? true : !def.devItem;
+
+    const allLoots: ReadonlySet<ReferenceTo<LootDefinition>> = new Set<ReferenceTo<LootDefinition>>([
+        ...Loots.definitions.filter(filter)
+    ].map(({ idString }) => idString));
+
+    (allLoots as ItemRegistry).forType = <K extends ItemType>(type: K): ReadonlyArray<LootDefForType<K>> => {
+        return (
+            (
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+                cache[type] as Array<LootDefForType<K>> | undefined
+            ) ??= itemTypeToCollection[type].definitions.filter(({ idString }) => allLoots.has(idString))
+        );
+    };
+
+    return allLoots as ItemRegistry;
 }
