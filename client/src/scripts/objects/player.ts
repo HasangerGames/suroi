@@ -40,6 +40,9 @@ import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
+import type { Building } from "./building";
+import type { Projectile } from "./projectile";
+import { Numeric } from "@common/utils/math";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -1399,44 +1402,42 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.addTimeout(() => {
                     // Play hit effect on closest object
                     // TODO: share this logic with the server
-                    const selfHitbox = this.hitbox;
 
-                    const position = Vec.add(this.position, Vec.rotate(weaponDef.offset, this.rotation));
-                    const hitbox = new CircleHitbox(weaponDef.radius, position);
+                    type MeleeObject = Player | Obstacle | Building | Projectile;
+
+                    const position = Vec.add(
+                        this.position,
+                        Vec.scale(Vec.rotate(weaponDef.offset, this.rotation), this.sizeMod)
+                    );
+                    const hitbox = new CircleHitbox(weaponDef.radius * this.sizeMod, position);
+                    const targets: MeleeObject[] = [];
+
+                    for (const object of Game.objects) {
+                        if (
+                            (object.dead && !(object.isBuilding && object.definition.hasDamagedCeiling))
+                            || object === this
+                            || !(object.isPlayer || object.isObstacle || object.isBuilding || object.isProjectile)
+                            || !object.damageable
+                            || (object.isObstacle && (object.definition.isStair))
+                            || !adjacentOrEqualLayer(object.layer, this.layer)
+                            || !object.hitbox?.collidesWith(hitbox)
+                        ) continue;
+
+                        targets.push(object);
+                    }
+
+                    targets.sort((a, b) => {
+                        if (Game.teamMode && a.isPlayer && a.teamID === this.teamID) return Infinity;
+                        if (Game.teamMode && b.isPlayer && b.teamID === this.teamID) return -Infinity;
+
+                        return (a.hitbox?.distanceTo(hitbox).distance ?? 0) - (b.hitbox?.distanceTo(hitbox).distance ?? 0);
+                    });
+
                     const angleToPos = Angle.betweenPoints(this.position, position);
+                    const numTargets = Numeric.min(targets.length, weaponDef.maxTargets ?? 1);
+                    for (let i = 0; i < numTargets; i++) {
+                        const target = targets[i];
 
-                    for (
-                        const target of (
-                            Array.from(Game.objects).filter(
-                                object => !object.dead
-                                    && object !== this
-                                    && (
-                                        (
-                                            object.damageable
-                                            && (object.isObstacle || object.isPlayer || object.isBuilding)
-                                        ) || (object.isProjectile && object.definition.c4)
-                                    )
-                                    && object.hitbox?.collidesWith(hitbox)
-                                    && adjacentOrEqualLayer(object.layer, this.layer)
-                                    && (!object.isObstacle || (!object.definition.isStair))
-                                    && (!object.isObstacle || (!object.definition.noMeleeCollision))
-                            ) as Array<Player | Obstacle>
-                        ).sort((a, b) => {
-                            if (
-                                (a.isObstacle && (a.definition.noMeleeCollision || a.definition.indestructible))
-                                || a.isBuilding
-                                || (Game.teamMode && a.isPlayer && a.teamID === this.teamID)
-                            ) return Infinity;
-
-                            if (
-                                (b.isObstacle && (b.definition.noMeleeCollision || b.definition.indestructible))
-                                || b.isBuilding
-                                || (Game.teamMode && b.isPlayer && b.teamID === this.teamID)
-                            ) return -Infinity;
-
-                            return a.hitbox.distanceTo(selfHitbox).distance - b.hitbox.distanceTo(selfHitbox).distance;
-                        }).slice(0, weaponDef.maxTargets ?? 1)
-                    ) {
                         if (target.isPlayer) {
                             target.hitEffect(position, angleToPos, (this.activeItem as MeleeDefinition).hitSound);
                         } else {

@@ -48,6 +48,8 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
 
             const def = this.definition = full.definition;
 
+            this.damageable = def.c4 ?? false;
+
             this.halloweenSkin = full.halloweenSkin;
             if (this.activated !== full.activated && this.definition.c4) {
                 this.playSound("c4_beep");
