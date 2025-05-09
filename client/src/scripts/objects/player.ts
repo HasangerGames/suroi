@@ -1260,7 +1260,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         container.visible = true;
         container.scale.set(0);
-        container.alpha = 0;
 
         const { backgroundTexture, scale } = Loot.getBackgroundAndScale(Loots.fromStringSafe(emote.idString));
         background.setFrame(backgroundTexture ?? "emote_background");
