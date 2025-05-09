@@ -1040,6 +1040,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     {
         idString: "shak12",
         name: "ShAK-12",
+        defType: DefinitionType.Gun,
         ammoType: "50cal",
         ammoSpawnAmount: 30,
         speedMultiplier: 1,

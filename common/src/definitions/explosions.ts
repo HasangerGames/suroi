@@ -242,6 +242,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>([
     {
         idString: "silo_explosion",
         name: "Silo",
+        defType: DefinitionType.Explosion,
         damage: 500,
         obstacleMultiplier: 3,
         radius: {
