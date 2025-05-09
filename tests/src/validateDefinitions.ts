@@ -2879,12 +2879,21 @@ logger.indent("Validating obstacles", () => {
                 baseErrorPath: errorPath
             });
 
-            tester.assertNoPointlessValue({
-                obj: obstacle,
-                field: "weaponSwap",
-                defaultValue: false,
-                baseErrorPath: errorPath
-            });
+            const weaponSwap = obstacle.weaponSwap;
+            if (weaponSwap !== undefined) {
+                tester.assertNoPointlessValue({
+                    obj: weaponSwap,
+                    field: "weighted",
+                    defaultValue: false,
+                    baseErrorPath: errorPath
+                });
+                tester.assertNoPointlessValue({
+                    obj: weaponSwap,
+                    field: "modeRestricted",
+                    defaultValue: false,
+                    baseErrorPath: errorPath
+                });
+            }
 
             const mount = obstacle.gunMount;
             if (mount !== undefined) {
