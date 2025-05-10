@@ -939,7 +939,7 @@ const maps = {
     arena: {
         width: 512,
         height: 512,
-        //   spawn: { mode: SpawnMode.Center },
+        spawn: { mode: SpawnMode.Center },
         beachSize: 16,
         oceanSize: 40,
         onGenerate(map) {

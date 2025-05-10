@@ -89,7 +89,7 @@ export function explosion(definition: ExplosionDefinition, position: Vector, lay
             definition.cameraShake.intensity * SHOCKWAVE_EXPLOSION_MULTIPLIERS.amplitude,
             definition.radius.min * 100 * SHOCKWAVE_EXPLOSION_MULTIPLIERS.wavelength,
             definition.ballistics.speed * SHOCKWAVE_EXPLOSION_MULTIPLIERS.speed,
-            Game.layer
+            layer
         );
     }
 

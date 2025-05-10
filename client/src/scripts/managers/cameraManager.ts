@@ -227,7 +227,6 @@ class CameraManagerClass {
     }
 
     shockwave(duration: number, position: Vector, amplitude: number, wavelength: number, speed: number, layer: Layer): void {
-        if (!GameConsole.getBuiltInCVar("cv_cooler_graphics")) return;
         this.shockwaves.add(new Shockwave(duration, position, amplitude, wavelength, speed, layer));
     }
 
@@ -236,11 +235,13 @@ class CameraManagerClass {
     }
 
     addFilter(layer: Layer, filter: Filter): void {
-        (this.getContainer(layer).filters as Filter[]).push(filter);
+        const container = this.getContainer(layer);
+        container.filters = [container.filters ?? []].flat().concat(filter);
     }
 
     removeFilter(layer: Layer, filter: Filter): void {
-        removeFrom(this.getContainer(layer).filters as Filter[], filter);
+        const container = this.getContainer(layer);
+        container.filters = [container.filters ?? []].flat().filter(f => f !== filter);
     }
 
     reset(): void {
