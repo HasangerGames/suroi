@@ -162,8 +162,8 @@ class MapManagerClass {
         return !this.terrain.beachHitbox.isPointInside(position);
     }
 
-    distanceToShore(position: Vector): number {
-        return Collision.distToPolygon(position, this.terrain.beachHitbox.points);
+    distanceToShoreSquared(position: Vector): number {
+        return Collision.distToPolygonSq(position, this.terrain.beachHitbox.points);
     }
 
     drawTerrain(ctx: Graphics, scale: number, gridLineWidth: number): void {

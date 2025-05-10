@@ -46,8 +46,9 @@ export class GameSound {
 
     // acts as multiplier
     volume = 1;
+    layerMult = 1;
 
-    volumeTween?: Tween<GameSound>;
+    layerVolumeTween?: Tween<GameSound>;
 
     instance?: PixiSound.IMediaInstance;
     readonly stereoFilter: PixiSound.filters.StereoFilter;
@@ -111,40 +112,40 @@ export class GameSound {
 
             this.instance.volume = (
                 1 - Numeric.clamp(Math.abs(Vec.length(diff) / this.maxRange), 0, 1)
-            ) ** (1 + this.falloff * 2) * this.managerVolume * this.volume;
+            ) ** (1 + this.falloff * 2) * this.managerVolume * this.volume * this.layerMult;
 
             this.stereoFilter.pan = Numeric.clamp(-diff.x / this.maxRange, -1, 1);
         } else {
-            this.instance.volume = this.managerVolume * this.volume;
+            this.instance.volume = this.managerVolume * this.volume * this.layerMult;
         }
     }
 
     updateLayer(initial = false): void {
         if (!this.instance) return;
 
-        let volume = 1;
+        let layerMult = 1;
         const layerDelta = this.ambient // ambient sounds only decrease in volume underground
             ? this.layer - Game.layer
             : Math.abs(this.layer - Game.layer);
         if (layerDelta === 1) {
-            volume = 0.5;
+            layerMult = 0.5;
         } else if (layerDelta >= 2) {
-            volume = 0.15;
+            layerMult = 0.15;
         }
 
         if (initial) {
-            this.volume = volume;
+            this.layerMult = layerMult;
             this._updateMuffledFilter(layerDelta);
             return;
         }
 
-        this.volumeTween?.kill();
-        this.volumeTween = Game.addTween<GameSound>({
+        this.layerVolumeTween?.kill();
+        this.layerVolumeTween = Game.addTween<GameSound>({
             target: this,
-            to: { volume },
+            to: { layerMult },
             duration: 500,
             onComplete: () => {
-                this.volumeTween = undefined;
+                this.layerVolumeTween = undefined;
                 this._updateMuffledFilter(layerDelta);
             }
         });

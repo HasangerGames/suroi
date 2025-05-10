@@ -698,7 +698,7 @@ export const Collision = Object.freeze({
         const e = Vec.sub(d, p);
         return Vec.dotProduct(e, e);
     },
-    distToPolygon(p: Vector, poly: Vector[]) {
+    distToPolygonSq(p: Vector, poly: Vector[]) {
         let closestDistSq = Number.MAX_VALUE;
         for (let i = 0; i < poly.length; i++) {
             const a = poly[i];
@@ -708,7 +708,10 @@ export const Collision = Object.freeze({
                 closestDistSq = distSq;
             }
         }
-        return Math.sqrt(closestDistSq);
+        return closestDistSq;
+    },
+    distToPolygon(p: Vector, poly: Vector[]) {
+        return Math.sqrt(Collision.distToPolygonSq(p, poly));
     },
     /**
      * Source

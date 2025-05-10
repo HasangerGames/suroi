@@ -99,9 +99,9 @@ export const Game = new (class Game {
     readonly bullets = new Set<Bullet>();
     readonly planes = new Set<Plane>();
 
-    windAmbience?: GameSound;
-    riverAmbience?: GameSound;
-    oceanAmbience?: GameSound;
+    ambience?: GameSound;
+    riverAmbience!: GameSound;
+    oceanAmbience!: GameSound;
 
     layerTween?: Tween<Container>;
 
@@ -317,53 +317,29 @@ export const Game = new (class Game {
     }
 
     updateAmbience(): void {
-        // todo:
-        // add wind ambience mp3
-
         if (!this.activePlayer) return;
 
         const position = this.activePlayer.position;
 
-        let riverWeight = 0,
-            oceanWeight = 0;
+        // TODO Optimize this function to use the distance from the edge of the map
+        // rather than the beach hitbox
+        const oceanDistance = MapManager.distanceToShoreSquared(position);
+        this.oceanAmbience.volume = Numeric.delerp(oceanDistance, 4225, 0);
 
+        let riverWeight = 0;
         const rivers = MapManager.terrain.rivers;
-
-        const oceanDistance = MapManager.distanceToShore(position);
-
-        oceanWeight = Numeric.delerp(oceanDistance, 50, 5);
-
         for (let i = 0, len = rivers.length; i < len; i++) { // hasanger mwah optimization
             const river = rivers[i];
-
             if (river.isTrail) continue;
 
-            const closestPointT = river.getClosestT(position),
-                  closestPoint = river.getPosition(closestPointT),
-                  distanceToRiver = Vec.length(Vec.sub(closestPoint, position)),
+            const closestPoint = river.getPosition(river.getClosestT(position)),
+                  distanceToRiver = Geometry.distanceSquared(position, closestPoint),
                   riverWidth = river.waterWidths[i] + 2,
-                  normalizedDistance = Numeric.delerp(
-                      distanceToRiver,
-                      30 + riverWidth,
-                      riverWidth
-                  );
-
-            const riverStrength = Numeric.clamp(river.waterWidths[i] / 8, 0.25, 1);
+                  normalizedDistance = Numeric.delerp(distanceToRiver, (30 + riverWidth) ** 2, riverWidth ** 2),
+                  riverStrength = Numeric.clamp(river.waterWidths[i] / 8, 0.25, 1);
             riverWeight = Numeric.max(normalizedDistance * riverStrength, riverWeight);
         }
-
-        // we don't want rivers when we change layers
-        if (this.activePlayer.layer !== Layer.Ground) {
-            riverWeight = 0;
-        }
-
-        if (this.riverAmbience) {
-            this.riverAmbience.volume = riverWeight;
-        }
-
-        if (this.oceanAmbience) {
-            this.oceanAmbience.volume = oceanWeight;
-        }
+        this.riverAmbience.volume = riverWeight;
     }
 
     connect(address: string): void {
@@ -601,22 +577,16 @@ export const Game = new (class Game {
         // game started if page is out of focus.
         if (!document.hasFocus()) SoundManager.play("join_notification");
 
-        const windAmbience = this.mode.sounds?.ambience?.wind;
-        if (windAmbience) {
-            this.windAmbience = SoundManager.play(windAmbience, { loop: true, ambient: true, noMuffledEffect: true });
+        const ambience = this.mode.sounds?.ambience;
+        if (ambience) {
+            this.ambience = SoundManager.play(ambience, { loop: true, ambient: true });
         }
 
-        const riverAmbience = this.mode.sounds?.ambience?.river;
-        if (riverAmbience) {
-            this.riverAmbience = SoundManager.play(riverAmbience, { loop: true, ambient: true, noMuffledEffect: true });
-            this.riverAmbience.volume = 0;
-        }
+        this.riverAmbience = SoundManager.play("river_ambience", { loop: true, ambient: true });
+        this.riverAmbience.volume = 0;
 
-        const oceanAmbience = this.mode.sounds?.ambience?.ocean;
-        if (oceanAmbience) {
-            this.oceanAmbience = SoundManager.play(oceanAmbience, { loop: true, ambient: true, noMuffledEffect: true });
-            this.oceanAmbience.volume = 0;
-        }
+        this.oceanAmbience = SoundManager.play("ocean_ambience", { loop: true, ambient: true });
+        this.oceanAmbience.volume = 0;
 
         UIManager.emotes = packet.emotes;
         UIManager.updateEmoteWheel();
@@ -905,8 +875,8 @@ export const Game = new (class Game {
         }
         // slight hack
         // if we don't do this then ambience will play at the wrong volume for a tick
-        this.riverAmbience?.volumeTween?.kill();
-        this.oceanAmbience?.volumeTween?.kill();
+        this.riverAmbience?.layerVolumeTween?.kill();
+        this.oceanAmbience?.layerVolumeTween?.kill();
         this.updateAmbience();
 
         const basement = newLayer === Layer.Basement;

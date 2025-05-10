@@ -11,11 +11,7 @@ export interface ModeDefinition {
     readonly colors: Record<ColorKeys, string>
     readonly spriteSheets: readonly SpritesheetNames[]
     readonly sounds: {
-        readonly ambience?: {
-            readonly wind?: string
-            readonly river?: string
-            readonly ocean?: string
-        }
+        readonly ambience?: string
         readonly replaceMenuMusic?: boolean
         // sound folders that will be preloaded at game start
         readonly foldersToLoad: readonly string[]
@@ -50,11 +46,8 @@ export const Modes: Record<ModeName, ModeDefinition> = {
             void: "hsl(25, 80%, 6%)"
         },
         sounds: {
-            foldersToLoad: ["shared", "normal"],
-            ambience: {
-                river: "river_ambience",
-                ocean: "ocean_ambience"
-            }
+            ambience: "wind_ambience",
+            foldersToLoad: ["shared", "normal"]
         },
         spriteSheets: ["shared", "normal"]
     },
@@ -71,11 +64,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         },
         sounds: {
             foldersToLoad: ["shared", "fall"],
-            ambience: {
-                wind: "wind_ambience",
-                river: "river_ambience",
-                ocean: "ocean_ambience"
-            }
+            ambience: "wind_ambience"
         },
         defaultScope: "2x_scope",
         particleEffects: {
@@ -153,9 +142,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         spriteSheets: ["shared", "normal", "winter"],
         sounds: {
             foldersToLoad: ["shared", "normal", "winter"],
-            ambience: {
-                wind: "snowstorm_ambience"
-            },
+            ambience: "snowstorm_ambience",
             replaceMenuMusic: true
         },
         bulletTrailAdjust: "hsl(0, 50%, 80%)",

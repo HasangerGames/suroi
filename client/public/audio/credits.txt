@@ -144,5 +144,9 @@ Memorial open:
   "impact riser 01" from Pixabay: https://pixabay.com/sound-effects/impact-riser-01-6908/
   "Atomic Impact" from Pixabay: https://pixabay.com/sound-effects/atomic-impact-216308/
 
+Ambience:
+  Wind (normal mode) - "Wind - Oak - Calm - Close - Inside Canopy - XY - MKH8060.wav" from "Wind in Trees" by Pole Position: https://sonniss.com/sound-effects/wind-in-trees/
+  River - "29 Rapids near field_LOOP 2.wav" from "Mountain rivers and streams" by Ivo Vicic: https://sonniss.com/sound-effects/mountain-rivers-streams/
+
 Default switch sound - "Jump Landing" from Pixabay: https://pixabay.com/sound-effects/jump-landing-30946/
 Generic pickup sound - Katloo
