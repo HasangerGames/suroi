@@ -1423,7 +1423,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                         if (Game.teamMode && a.isPlayer && a.teamID === this.teamID) return Infinity;
                         if (Game.teamMode && b.isPlayer && b.teamID === this.teamID) return -Infinity;
 
-                        return (a.hitbox?.distanceTo(hitbox).distance ?? 0) - (b.hitbox?.distanceTo(hitbox).distance ?? 0);
+                        return (a.hitbox?.distanceTo(this.hitbox).distance ?? 0) - (b.hitbox?.distanceTo(this.hitbox).distance ?? 0);
                     });
 
                     const angleToPos = Angle.betweenPoints(this.position, position);

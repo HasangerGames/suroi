@@ -99,7 +99,7 @@ export class MeleeItem extends InventoryItemBase.derive(ItemType.Melee) {
                 if (owner.game.teamMode && a.isPlayer && a.teamID === owner.teamID) return Infinity;
                 if (owner.game.teamMode && b.isPlayer && b.teamID === owner.teamID) return -Infinity;
 
-                return (a.hitbox?.distanceTo(hitbox).distance ?? 0) - (b.hitbox?.distanceTo(hitbox).distance ?? 0);
+                return (a.hitbox?.distanceTo(owner.hitbox).distance ?? 0) - (b.hitbox?.distanceTo(owner.hitbox).distance ?? 0);
             });
 
             const numTargets = Numeric.min(targets.length, definition.maxTargets ?? 1);
