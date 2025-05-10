@@ -21,7 +21,7 @@ import { random, randomBoolean, randomFloat, randomPointInsideCircle, randomRota
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
-import { Container, Graphics, Text } from "pixi.js";
+import { Container, Graphics, ObservablePoint, Text } from "pixi.js";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { CameraManager } from "../managers/cameraManager";
@@ -136,8 +136,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     healingParticlesEmitter: ParticleEmitter;
 
     readonly anims: {
-        emote?: Tween<Container>
-        emoteHide?: Tween<Container>
+        emote?: Tween<ObservablePoint>
+        emoteHide?: Tween<ObservablePoint>
 
         leftFist?: Tween<SuroiSprite>
         rightFist?: Tween<SuroiSprite>
@@ -1265,13 +1265,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         image.setFrame(emote.idString).setScale(scale ?? 1);
 
         this.anims.emote = Game.addTween({
-            target: container,
-            to: { alpha: 1 },
+            target: container.scale,
+            to: { x: 1, y: 1 },
             duration: 250,
             ease: EaseFunctions.backOut,
-            onUpdate: () => {
-                container.scale.set(container.alpha);
-            },
             onComplete: () => {
                 this.anims.emote = undefined;
             }
@@ -1279,12 +1276,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         this._emoteHideTimeout = this.addTimeout(() => {
             this.anims.emoteHide = Game.addTween({
-                target: container,
-                to: { alpha: 0 },
+                target: container.scale,
+                to: { x: 0, y: 0 },
                 duration: 200,
-                onUpdate: () => {
-                    container.scale.set(container.alpha);
-                },
+                ease: EaseFunctions.backIn,
                 onComplete: () => {
                     this._emoteHideTimeout = undefined;
                     this.anims.emoteHide = undefined;
@@ -1323,7 +1318,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                         target: this.images.leftFist,
                                         to: { x: frame.fists.left.x, y: frame.fists.left.y },
                                         duration,
-                                        ease: EaseFunctions.sineIn
+                                        ease: EaseFunctions.cubicOut
                                     });
                                 }
 
@@ -1332,7 +1327,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                         target: this.images.rightFist,
                                         to: { x: frame.fists.right.x, y: frame.fists.right.y },
                                         duration,
-                                        ease: EaseFunctions.sineIn
+                                        ease: EaseFunctions.cubicOut
                                     });
                                 }
 
@@ -1345,7 +1340,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                                             angle: frame.image.angle
                                         },
                                         duration,
-                                        ease: EaseFunctions.sineIn
+                                        ease: EaseFunctions.cubicOut
                                     });
                                 }
                             }
