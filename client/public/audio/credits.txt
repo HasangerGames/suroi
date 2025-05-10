@@ -97,7 +97,7 @@ Cola:
   "Opening a can of soda" from Pixabay: https://pixabay.com/sound-effects/opening-a-can-of-soda-80185/
   "Soda Can Plus Pour and Fizz MUS 152" from Pixabay: https://pixabay.com/sound-effects/soda-can-plus-pour-and-fizz-mus-152-25167/
   "Gulping Noises | Drinking Noises" from Pixabay: https://pixabay.com/sound-effects/gulping-noises-drinking-noises-37758/
-  Picking up: 123OP
+  Pickup - 123OP
 
 Medikit:
   "Opening a small cardboard box" by Aiwha: https://freesound.org/people/Aiwha/sounds/415488/
@@ -146,7 +146,7 @@ Memorial open:
 
 Ambience:
   Wind (normal mode) - "Wind - Oak - Calm - Close - Inside Canopy - XY - MKH8060.wav" from "Wind in Trees" by Pole Position: https://sonniss.com/sound-effects/wind-in-trees/
-  River - "29 Rapids near field_LOOP 2.wav" from "Mountain rivers and streams" by Ivo Vicic: https://sonniss.com/sound-effects/mountain-rivers-streams/
+  River - "63 River_near field_LOOP 11.WAV" from "Mountain rivers and streams" by Ivo Vicic: https://sonniss.com/sound-effects/mountain-rivers-streams/
 
 Default switch sound - "Jump Landing" from Pixabay: https://pixabay.com/sound-effects/jump-landing-30946/
 Generic pickup sound - Katloo
