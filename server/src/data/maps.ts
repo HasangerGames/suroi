@@ -685,7 +685,7 @@ const maps = {
             birch_tree: 20,
             pine_tree: 10,
             loot_tree: 1,
-            baby_plumpkin: 200,
+            baby_plumpkin_infection: 200,
             regular_crate: 160,
             flint_crate: 5,
             aegis_crate: 5,

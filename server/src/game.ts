@@ -45,7 +45,7 @@ import { PluginManager } from "./pluginManager";
 import { Team } from "./team";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
-import { Cache, getSpawnableLoots, SpawnableItemRegistry } from "./utils/lootHelpers";
+import { Cache, getAllLoots, getSpawnableLoots, ItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap } from "./utils/misc";
 import { removeFrom } from "@common/utils/misc";
 
@@ -157,9 +157,16 @@ export class Game implements GameData {
 
     private readonly _spawnableItemTypeCache = [] as Cache;
 
-    private _spawnableLoots: SpawnableItemRegistry | undefined;
-    get spawnableLoots(): SpawnableItemRegistry {
+    private _spawnableLoots: ItemRegistry | undefined;
+    get spawnableLoots(): ItemRegistry {
         return this._spawnableLoots ??= getSpawnableLoots(this.modeName, this.map.mapDef, this._spawnableItemTypeCache);
+    }
+
+    private readonly _allItemsTypeCache = [] as Cache;
+
+    private _allLoots: ItemRegistry | undefined;
+    get allLoots(): ItemRegistry {
+        return this._allLoots ??= getAllLoots(this._allItemsTypeCache);
     }
 
     private readonly _timeouts = new Set<Timeout>();
