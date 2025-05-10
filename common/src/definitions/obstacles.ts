@@ -2797,7 +2797,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         animationDuration: 2000,
         interactionDelay: 2500,
         hingeOffset: Vec.create(-5.6, -2.3),
-        zIndex: ZIndexes.ObstaclesLayer3,
         frames: {
             particle: "metal_particle",
             powered: "vault_door_activated",
