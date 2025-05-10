@@ -4501,6 +4501,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "lamp", position: Vec.create(-2.17, 91.52), rotation: 0 },
             { idString: "lamp", position: Vec.create(46.65, 118.81), rotation: 1 },
             { idString: "lamp", position: Vec.create(-50.92, 118.9), rotation: 3 },
+            { idString: "lamp", position: Vec.create(-50.67, -83.62), rotation: 3 },
 
             // vault
             { idString: "lamp", position: Vec.create(27.09, -96.53), rotation: 2 },
