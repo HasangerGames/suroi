@@ -856,7 +856,7 @@ export class MapPing {
             this.inGameImage = new SuroiSprite(definition.idString)
                 .setVPos(toPixiCoords(position))
                 .setTint(this.color)
-                .setZIndex(995);
+                .setZIndex(1001);
         }
     }
 
