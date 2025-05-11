@@ -4,7 +4,7 @@
   "private": true,
   "main": "src/server.ts",
   "scripts": {
-    "dev": "bun --hot src/server.ts",
+    "dev": "NODE_ENV=development bun --hot src/server.ts",
     "updateConfigSchema": "json2ts -i config.schema.json -o src/utils/config.d.ts"
   },
   "keywords": [],

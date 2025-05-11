@@ -297,7 +297,9 @@ export class Game implements GameData {
                     player.spectate(packet);
                     break;
                 case PacketType.Debug:
-                    player.processDebugPacket(packet);
+                    if (process.env.NODE_ENV === "development") {
+                        player.processDebugPacket(packet);
+                    }
                     break;
             }
         }
