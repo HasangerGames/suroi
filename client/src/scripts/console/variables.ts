@@ -263,6 +263,18 @@ type SimpleCVarMapping = {
         : never
 };
 
+export type NumberCVars = {
+    [K in keyof CVarTypeMapping]: ConVar<number> extends CVarTypeMapping[K]
+        ? K
+        : never;
+}[keyof CVarTypeMapping];
+
+export type BooleanCVars = {
+    [K in keyof CVarTypeMapping]: ConVar<boolean> extends CVarTypeMapping[K]
+        ? K
+        : never;
+}[keyof CVarTypeMapping];
+
 export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_player_name: "",
 

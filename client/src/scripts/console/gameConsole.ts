@@ -1,12 +1,13 @@
 import { Badges } from "@common/definitions/badges";
 import { Numeric } from "@common/utils/math";
 import $ from "jquery";
-import { Game } from "../game";
 import { InputManager, type CompiledAction, type CompiledTuple } from "../managers/inputManager";
+import { FloatingWindow } from "../utils/floatingWindow";
 import { sanitizeHTML } from "../utils/misc";
 import { type Command } from "./commands";
 import { evalQuery, extractCommandsAndArgs } from "./internals";
 import { Casters, ConsoleVariables, ConVar, defaultBinds, defaultClientCVars, flagBitfieldToInterface, type CVarTypeMapping } from "./variables";
+import { Game } from "../game";
 
 const enum MessageType {
     Log = "log",
@@ -38,112 +39,71 @@ export interface GameSettings {
 // because the keypress event is triggered for the input field, but only on the main menu screen
 let invalidateNextCharacter = false;
 
-// goofy infinite loop prevention for resizes
-let noWidthAdjust = false;
-let noHeightAdjust = false;
-
-export const GameConsole = new (class GameConsole {
-    private _isOpen = false;
-    get isOpen(): boolean { return this._isOpen; }
-    set isOpen(value: boolean) {
-        if (this._isOpen === value) return;
-
-        this._isOpen = value;
-
-        this.variables.get.builtIn("cv_console_open").setValue(value);
-
-        if (this._isOpen) {
-            this._ui.globalContainer.show();
-            this._ui.input.trigger("focus");
-
-            invalidateNextCharacter = !Game.gameStarted;
-        } else {
-            this._ui.globalContainer.hide();
-        }
+export class GameConsoleClass extends FloatingWindow<{
+    readonly output: JQuery<HTMLDivElement>
+    readonly input: JQuery<HTMLTextAreaElement>
+    readonly autocomplete: JQuery<HTMLDivElement>
+}> {
+    override open(): void {
+        super.open();
+        this.ui.input.trigger("focus");
+        invalidateNextCharacter = !Game.gameStarted;
     }
 
-    private readonly _ui = {
-        globalContainer: $("#console"),
-        container: $("#console-container"),
-        header: $("#console-header"),
-        closeButton: $("#console-close"),
-        output: $("#console-out"),
-        input: $("#console-in"),
-        autocomplete: $("#console-autocmp")
-    };
+    protected override _changeWidth(target: number): boolean {
+        const res = super._changeWidth(target);
+        if (res) {
+            this.ui.autocomplete.css("width", target);
+        }
+        return res;
+    }
 
-    private readonly _dimensions = (() => {
-        let width = NaN;
-        let height = NaN;
-        const T = this;
-        let set: ConsoleVariables["set"]["builtIn"] | undefined;
+    protected override _changeHeight(target: number): boolean {
+        const res = super._changeHeight(target);
+        if (res) {
+            this.ui.autocomplete.css("top", this.top + target);
+        }
+        return res;
+    }
 
-        return {
-            get width() { return width; },
-            set width(w: number) {
-                w = Numeric.clamp(
-                    w,
-                    0,
-                    window.innerWidth - (Number.isNaN(T._position?.left ?? NaN) ? -Infinity : T._position.left)
-                );
+    protected override _changeLeft(target: number): boolean {
+        const res = super._changeLeft(target);
+        if (res) {
+            this.ui.autocomplete.css("left", target);
+        }
 
-                (set ??= T.variables.set.builtIn)("cv_console_width", width = w);
+        return res;
+    }
+
+    protected override _changeTop(target: number): boolean {
+        const res = super._changeTop(target);
+        if (res) {
+            this.ui.autocomplete.css("top", target + this.height);
+        }
+
+        return res;
+    }
+
+    constructor() {
+        super(
+            {
+                open: "cv_console_open",
+                left: "cv_console_left",
+                top: "cv_console_top",
+                width: "cv_console_width",
+                height: "cv_console_height"
             },
-
-            get height() { return height; },
-            set height(h: number) {
-                h = Numeric.clamp(
-                    h,
-                    0,
-                    window.innerHeight - (Number.isNaN(T._position?.top ?? NaN) ? -Infinity : T._position.top)
-                );
-
-                (set ??= T.variables.set.builtIn)("cv_console_height", height = h);
+            {
+                globalContainer: $("#console"),
+                container: $("#console-container"),
+                header: $("#console-header"),
+                closeButton: $("#console-close"),
+                output: $("#console-out"),
+                input: $("#console-in"),
+                autocomplete: $("#console-autocmp")
             }
-        };
-    })();
-
-    private readonly _position = (() => {
-        let left = NaN;
-        let top = NaN;
-
-        const magicalPadding /* that prevents scroll bars from showing up */ = 1;
-        const T = this;
-        let set: ConsoleVariables["set"]["builtIn"] | undefined;
-        const { container, autocomplete } = this._ui;
-
-        return {
-            get left() { return left; },
-            set left(l: number) {
-                l = Numeric.clamp(
-                    l,
-                    0,
-                    window.innerWidth - T._dimensions.width - magicalPadding
-                );
-
-                if (left !== l) {
-                    (set ??= T.variables.set.builtIn)("cv_console_left", left = l);
-                    container.css("left", left);
-                    autocomplete.css("left", left);
-                }
-            },
-
-            get top() { return top; },
-            set top(t: number) {
-                t = Numeric.clamp(
-                    t,
-                    0,
-                    window.innerHeight - T._dimensions.height - magicalPadding
-                );
-
-                if (top !== t) {
-                    (set ??= T.variables.set.builtIn)("cv_console_top", top = t);
-                    container.css("top", top);
-                    autocomplete.css("top", top + T._dimensions.height);
-                }
-            }
-        };
-    })();
+        );
+    }
 
     private readonly _entries: ConsoleData[] = [];
 
@@ -462,7 +422,8 @@ export const GameConsole = new (class GameConsole {
         }
         this._instantiated = true;
 
-        this._attachListeners();
+        this.readFromLocalStorage();
+        super.init();
 
         /* const T = this;
         // Overrides for native console methods
@@ -512,128 +473,24 @@ export const GameConsole = new (class GameConsole {
                 console.error(err);
             }
         });
-        const addChangeListener = this.variables.addChangeListener.bind(this.variables);
-        addChangeListener(
-            "cv_console_left",
-            val => this._position.left = val
-        );
-
-        addChangeListener(
-            "cv_console_top",
-            val => this._position.top = val
-        );
-
-        const { container, autocomplete } = this._ui;
-        addChangeListener(
-            "cv_console_width",
-            val => {
-                if (!noWidthAdjust) {
-                    container.css("width", val);
-                }
-
-                autocomplete.css("width", val);
-            }
-        );
-
-        addChangeListener(
-            "cv_console_height",
-            val => {
-                if (!noHeightAdjust) {
-                    container.css("height", val);
-                }
-
-                autocomplete.css("top", this._position.top + val);
-            }
-        );
-
-        addChangeListener("cv_console_open", val => this.isOpen = val);
-
-        this.isOpen = this._isOpen;
-        // sanity check
-
-        this.readFromLocalStorage();
     }
 
-    private _attachListeners(): void {
-        // Close button
-        {
-            this._ui.closeButton.on("click", e => {
-                if (e.button !== 0) return;
-
-                this.close();
-            });
-        }
-
-        // Dragging
-        {
-            let dragging = false;
-            const offset = {
-                x: NaN,
-                y: NaN
-            };
-
-            const mouseUpHandler = (): void => {
-                if (!dragging) return;
-
-                dragging = false;
-
-                window.removeEventListener("mouseup", mouseUpHandler);
-                window.removeEventListener("mousemove", mouseMoveHandler);
-            };
-
-            const mouseMoveHandler = (event: MouseEvent): void => {
-                this._position.left = event.clientX + offset.x;
-                this._position.top = event.clientY + offset.y;
-            };
-
-            this._ui.header.on("mousedown", e => {
-                dragging = true;
-
-                // This does _not_ equal e.offsetX
-                offset.x = parseInt(this._ui.container.css("left")) - e.clientX;
-                offset.y = parseInt(this._ui.container.css("top")) - e.clientY;
-
-                window.addEventListener("mouseup", mouseUpHandler);
-                window.addEventListener("mousemove", mouseMoveHandler);
-            });
-        }
-
-        // Resize
-        {
-            new ResizeObserver(e => {
-                // Ignore for closed consoles
-                if (!this._isOpen) return;
-
-                const size = e[0]?.borderBoxSize[0];
-                // Shouldn't ever happen
-                if (size === undefined) return;
-
-                // With a left-to-right writing mode, inline is horizontal and block is vertical
-                // This might not work with languages where inline is vertical
-
-                noWidthAdjust = true;
-                this._dimensions.width = size.inlineSize;
-                noWidthAdjust = false;
-
-                noHeightAdjust = true;
-                this._dimensions.height = size.blockSize;
-                noHeightAdjust = false;
-            }).observe(this._ui.container[0]);
-        }
+    protected override _attachListeners(): void {
+        super._attachListeners();
 
         let navigatingAutocmp = false;
 
         // Input
         {
-            this._ui.globalContainer.on("keydown", e => {
+            this.ui.globalContainer.on("keydown", e => {
                 switch (e.key) {
                     case "Enter": {
                         e.preventDefault();
                         e.stopPropagation();
                         e.stopImmediatePropagation();
-                        const input = this._ui.input.val() as string;
+                        const input = this.ui.input.val() ?? "";
 
-                        this._ui.input.val("");
+                        this.ui.input.val("");
                         navigatingAutocmp = false;
 
                         this.log.raw(`> ${sanitizeHTML(input, { strict: true, escapeNewLines: true, escapeSpaces: true })}`);
@@ -675,25 +532,25 @@ export const GameConsole = new (class GameConsole {
                 }
             });
 
-            this._ui.input.on("beforeinput", e => {
+            this.ui.input.on("beforeinput", e => {
                 if (invalidateNextCharacter) {
                     invalidateNextCharacter = false;
                     e.preventDefault();
                 }
             });
 
-            this._ui.input.on("input", () => {
+            this.ui.input.on("input", () => {
                 this._updateAutocmp();
             });
         }
 
         // Focus / blur
         {
-            this._ui.input.on("focus", () => {
+            this.ui.input.on("focus", () => {
                 this._updateAutocmp();
             });
 
-            this._ui.input.on("blur", () => {
+            this.ui.input.on("blur", () => {
                 navigatingAutocmp || this._hideAutocomplete();
             });
         }
@@ -749,8 +606,8 @@ export const GameConsole = new (class GameConsole {
     private _updateAutocmp(): void {
         // TODO autocomplete for command invocations
 
-        const inputValue = this._ui.input.val() as string;
-        const { autocomplete, input, container } = this._ui;
+        const inputValue = this.ui.input.val() ?? "";
+        const { autocomplete, input, container } = this.ui;
         const primaryEntity = inputValue.split(" ")[0];
 
         const isEmpty = inputValue.length === 0;
@@ -903,11 +760,11 @@ export const GameConsole = new (class GameConsole {
     }
 
     private _hideAutocomplete(): void {
-        this._ui.container
+        this.ui.container
             .css("border-bottom-left-radius", "")
             .css("border-bottom-right-radius", "");
 
-        this._ui.autocomplete
+        this.ui.autocomplete
             .hide()
             .empty();
 
@@ -940,34 +797,9 @@ export const GameConsole = new (class GameConsole {
         return { success: evalQuery(extractCommandsAndArgs(query)) };
     }
 
-    open(): void { this.isOpen = true; }
-    close(): void { this.isOpen = false; }
-    toggle(): void { this.isOpen = !this._isOpen; }
-
-    resizeAndMove(info: {
-        readonly dimensions?: {
-            readonly width?: number
-            readonly height?: number
-        }
-        readonly position?: {
-            readonly left?: number
-            readonly top?: number
-        }
-    }): void {
-        if (info.dimensions) {
-            info.dimensions.width !== undefined && (this._dimensions.width = info.dimensions.width);
-            info.dimensions.height !== undefined && (this._dimensions.height = info.dimensions.height);
-        }
-
-        if (info.position) {
-            info.position.left !== undefined && (this._position.left = info.position.left);
-            info.position.top !== undefined && (this._position.top = info.position.top);
-        }
-    }
-
     private _pushAndLog(entry: ConsoleData, raw = false): void {
         this._entries.push(entry);
-        this._ui.output.append(this._generateHTML(entry, raw));
+        this.ui.output.append(this._generateHTML(entry, raw));
     }
 
     private _generateHTML(entry: ConsoleData, raw = false): JQuery<HTMLDivElement> {
@@ -1097,10 +929,11 @@ export const GameConsole = new (class GameConsole {
 
     clear(): void {
         this._entries.length = 0;
-        this._ui.output.html("");
+        this.ui.output.html("");
     }
-})();
+};
 
+export const GameConsole = new GameConsoleClass();
 declare global {
     interface Window {
         GameConsole: typeof GameConsole

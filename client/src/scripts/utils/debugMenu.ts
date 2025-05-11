@@ -1,136 +1,35 @@
-import { Numeric } from "@common/utils/math";
-import $ from "jquery";
-import { GameConsole } from "../console/gameConsole";
 import { GameConstants } from "@common/constants";
-import { Game } from "../game";
+import { Loots } from "@common/definitions/loots";
 import { DebugPacket } from "@common/packets/debugPacket";
 import { PacketType } from "@common/packets/packet";
+import { Numeric } from "@common/utils/math";
 import type { Mutable } from "@common/utils/misc";
+import $ from "jquery";
+import { GameConsole } from "../console/gameConsole";
+import type { BooleanCVars, NumberCVars } from "../console/variables";
+import { Game } from "../game";
 import { UIManager } from "../managers/uiManager";
-import { Loots } from "@common/definitions/loots";
-import type { ConVar, CVarTypeMapping } from "../console/variables";
+import { FloatingWindow } from "./floatingWindow";
 
-// goofy infinite loop prevention for resizes
-let noWidthAdjust = false;
-let noHeightAdjust = false;
-
-type NumberCvars = {
-    [K in keyof CVarTypeMapping]: ConVar<number> extends CVarTypeMapping[K]
-        ? K
-        : never;
-}[keyof CVarTypeMapping];
-
-type BooleanCvars = {
-    [K in keyof CVarTypeMapping]: ConVar<boolean> extends CVarTypeMapping[K]
-        ? K
-        : never;
-}[keyof CVarTypeMapping];
-
-export class DebugMenuClass {
-    private readonly _ui = {
-        container: $("#debug-menu"),
-        header: $("#debug-menu-header"),
-        closeButton: $("#debug-menu-close"),
-        content: $("#debug-menu-content")
-    };
-
-    private _isOpen = false;
-
-    get isOpen(): boolean {
-        return this._isOpen;
-    }
-
-    set isOpen(value: boolean) {
-        if (this._isOpen === value) return;
-
-        this._isOpen = value;
-
-        GameConsole.variables.get.builtIn("cv_debug_menu_open").setValue(value);
-
-        if (this._isOpen) {
-            this._ui.container.show();
-        } else {
-            this._ui.container.hide();
-        }
-    }
-
-    toggle(): void {
-        this.isOpen = !this.isOpen;
-    }
-
-    // shameless stolen from console code :3
-    private readonly _dimensions = (() => {
-        let width = NaN;
-        let height = NaN;
-        const T = this;
-
-        return {
-            get width() { return width; },
-            set width(w: number) {
-                w = Numeric.clamp(
-                    w,
-                    0,
-                    window.innerWidth - (Number.isNaN(T._position?.left ?? NaN) ? -Infinity : T._position.left)
-                );
-
-                GameConsole.variables.set.builtIn("cv_debug_menu_width", width = w);
-                T._ui.container.width(width);
+export class DebugMenuClass extends FloatingWindow<{ readonly content: JQuery<HTMLDivElement> }> {
+    constructor() {
+        super(
+            {
+                open: "cv_debug_menu_open",
+                left: "cv_debug_menu_left",
+                top: "cv_debug_menu_top",
+                width: "cv_debug_menu_width",
+                height: "cv_debug_menu_height"
             },
-
-            get height() { return height; },
-            set height(h: number) {
-                h = Numeric.clamp(
-                    h,
-                    0,
-                    window.innerHeight - (Number.isNaN(T._position?.top ?? NaN) ? -Infinity : T._position.top)
-                );
-
-                GameConsole.variables.set.builtIn("cv_debug_menu_height", height = h);
-                T._ui.container.height(height);
+            {
+                globalContainer: $("#debug-menu"),
+                container: $("#debug-menu-container"),
+                header: $("#debug-menu-header"),
+                closeButton: $("#debug-menu-close"),
+                content: $("#debug-menu-content")
             }
-        };
-    })();
-
-    private readonly _position = (() => {
-        let left = NaN;
-        let top = NaN;
-
-        const magicalPadding /* that prevents scroll bars from showing up */ = 1;
-        const T = this;
-        const { container } = this._ui;
-
-        return {
-            get left() { return left; },
-            set left(l: number) {
-                l = Numeric.clamp(
-                    l,
-                    0,
-                    window.innerWidth - T._dimensions.width - magicalPadding
-                );
-
-                if (left !== l) {
-                    left = l;
-                    GameConsole.variables.set.builtIn("cv_debug_menu_left", left);
-                    container.css("left", left);
-                }
-            },
-
-            get top() { return top; },
-            set top(t: number) {
-                t = Numeric.clamp(
-                    t,
-                    0,
-                    window.innerHeight - T._dimensions.height - magicalPadding
-                );
-
-                if (top !== t) {
-                    top = t;
-                    GameConsole.variables.set.builtIn("cv_debug_menu_top", top);
-                    container.css("top", top);
-                }
-            }
-        };
-    })();
+        );
+    }
 
     data: Mutable<DebugPacket> = {
         type: PacketType.Debug,
@@ -152,12 +51,8 @@ export class DebugMenuClass {
     };
 
     init(): void {
-        this.isOpen = GameConsole.getBuiltInCVar("cv_debug_menu_open");
-        this._dimensions.width = GameConsole.getBuiltInCVar("cv_debug_menu_width");
-        this._dimensions.height = GameConsole.getBuiltInCVar("cv_debug_menu_height");
-        this._position.left = GameConsole.getBuiltInCVar("cv_debug_menu_left");
-        this._position.top = GameConsole.getBuiltInCVar("cv_debug_menu_top");
-        this._attachListeners();
+        super.init();
+
         this._setupUi();
 
         this.data.zoom = GameConsole.getBuiltInCVar("db_zoom_override");
@@ -217,12 +112,12 @@ export class DebugMenuClass {
 
     private _createSlider(params: {
         label: string
-        sliderCVar: NumberCvars
+        sliderCVar: NumberCVars
         defaultVal: number
         min: number
         max: number
         step: number
-        toggleCvar?: BooleanCvars
+        toggleCvar?: BooleanCVars
         onChange: (value: number, enabled: boolean) => void
         parent?: JQuery
     }): void {
@@ -314,14 +209,14 @@ export class DebugMenuClass {
         });
         container.append(reset);
 
-        (params.parent ?? this._ui.content).append(container);
+        (params.parent ?? this.ui.content).append(container);
 
         params.onChange(params.defaultVal, enabled);
     }
 
     private _createCheckbox(params: {
         label: string
-        cvar: BooleanCvars
+        cvar: BooleanCVars
         defaultVal: boolean
         onChange?: (value: boolean) => void
         parent?: JQuery
@@ -361,7 +256,7 @@ export class DebugMenuClass {
         });
         container.append(label);
 
-        (params.parent ?? this._ui.content).append(container);
+        (params.parent ?? this.ui.content).append(container);
 
         params.onChange?.(value);
     }
@@ -395,7 +290,7 @@ export class DebugMenuClass {
 
         container.append(downBtn);
 
-        this._ui.content.append(container);
+        this.ui.content.append(container);
     }
 
     private _createLootInput(): void {
@@ -454,7 +349,7 @@ export class DebugMenuClass {
             }
         });
 
-        this._ui.content.append(container);
+        this.ui.content.append(container);
     }
 
     private _createDebugHitboxesUi(): void {
@@ -481,9 +376,9 @@ export class DebugMenuClass {
                 .join(" ");
 
             this._createCheckbox({
-                cvar: cvar as BooleanCvars,
+                cvar: cvar as BooleanCVars,
                 label,
-                defaultVal: GameConsole.getBuiltInCVar(cvar as BooleanCvars),
+                defaultVal: GameConsole.getBuiltInCVar(cvar as BooleanCVars),
                 parent: container
             });
         }
@@ -493,104 +388,7 @@ export class DebugMenuClass {
         });
         container.toggle(GameConsole.getBuiltInCVar("db_show_hitboxes"));
 
-        this._ui.content.append(container);
-    }
-
-    private _attachListeners(): void {
-        this._ui.closeButton.on("click", e => {
-            if (e.button !== 0) return;
-
-            this.isOpen = false;
-        });
-
-        // Dragging
-        {
-            let dragging = false;
-            const offset = {
-                x: NaN,
-                y: NaN
-            };
-
-            const mouseUpHandler = (): void => {
-                if (!dragging) return;
-
-                dragging = false;
-
-                window.removeEventListener("mouseup", mouseUpHandler);
-                window.removeEventListener("mousemove", mouseMoveHandler);
-            };
-
-            const mouseMoveHandler = (event: MouseEvent): void => {
-                this._position.left = event.pageX + offset.x;
-                this._position.top = event.pageY + offset.y;
-            };
-
-            this._ui.header.on("mousedown", e => {
-                dragging = true;
-
-                // This does _not_ equal e.offsetX
-                offset.x = parseInt(this._ui.container.css("left")) - e.pageX;
-                offset.y = parseInt(this._ui.container.css("top")) - e.pageY;
-
-                window.addEventListener("mouseup", mouseUpHandler);
-                window.addEventListener("mousemove", mouseMoveHandler);
-            });
-        }
-
-        // Resize
-        {
-            new ResizeObserver(e => {
-                if (!this._isOpen) return;
-
-                const size = e[0]?.borderBoxSize[0];
-                // Shouldn't ever happen
-                if (size === undefined) return;
-
-                // With a left-to-right writing mode, inline is horizontal and block is vertical
-                // This might not work with languages where inline is vertical
-
-                noWidthAdjust = true;
-                this._dimensions.width = size.inlineSize;
-                noWidthAdjust = false;
-
-                noHeightAdjust = true;
-                this._dimensions.height = size.blockSize;
-                noHeightAdjust = false;
-            }).observe(this._ui.container[0]);
-        }
-
-        GameConsole.variables.addChangeListener(
-            "cv_debug_menu_left",
-            val => this._position.left = val
-        );
-
-        GameConsole.variables.addChangeListener(
-            "cv_debug_menu_top",
-            val => this._position.top = val
-        );
-
-        const { container } = this._ui;
-        GameConsole.variables.addChangeListener(
-            "cv_debug_menu_width",
-            val => {
-                if (!noWidthAdjust) {
-                    container.css("width", val);
-                }
-            }
-        );
-
-        GameConsole.variables.addChangeListener(
-            "cv_debug_menu_height",
-            val => {
-                if (!noHeightAdjust) {
-                    container.css("height", val);
-                }
-            }
-        );
-
-        GameConsole.variables.addChangeListener("cv_debug_menu_open", val => this.isOpen = val);
-
-        this.isOpen = this._isOpen;
+        this.ui.content.append(container);
     }
 }
 
