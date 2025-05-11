@@ -11,7 +11,7 @@ import { LAYER_TRANSITION_DELAY, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { getLayerContainer as getLayerContainerIndex, LayerContainer } from "@common/utils/layer";
-import { removeFrom, type Timeout } from "@common/utils/misc";
+import { type Timeout } from "@common/utils/misc";
 
 class CameraManagerClass {
     container = new Container();
