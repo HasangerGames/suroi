@@ -2290,13 +2290,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
 
-## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
 
 ### Invalid Keys
 
 - Key `msg_lost_connection` is not a valid key
 - Key `username_input_placeholder` is not a valid key
-- Key `vaccine_syringe_desc_action` is not a valid key
 - Key `create_team_waiting` is not a valid key
 - Key `developr_vest` is not a valid key
 - Key `destroyer_of_worlds` is not a valid key
@@ -2311,6 +2310,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `firework_rocket` is not a valid key
 - Key `power_cell` is not a valid key
 - Key `bb` is not a valid key
+- Key `seed` is not a valid key
+- Key `needle` is not a valid key
+- Key `plumpkin_ammo` is not a valid key
 - Key `bdg_developr` is not a valid key
 - Key `bdg_dev_managr` is not a valid key
 - Key `bdg_designr` is not a valid key
@@ -2427,6 +2429,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pumpkin_explosion` is not a valid key
 - Key `1st_birthday` is not a valid key
 - Key `algae` is not a valid key
+- Key `ancestral_garb` is not a valid key
 - Key `aquatic` is not a valid key
 - Key `arctic_camo` is not a valid key
 - Key `armadillo` is not a valid key
@@ -2439,8 +2442,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `blue_blood` is not a valid key
 - Key `bubblegum` is not a valid key
 - Key `candy_cane` is not a valid key
+- Key `celestial` is not a valid key
 - Key `coal` is not a valid key
-- Key `composr_swag` is not a valid key
+- Key `sound_designr_swag` is not a valid key
 - Key `deep_sea` is not a valid key
 - Key `deer_season` is not a valid key
 - Key `desert_camo` is not a valid key
@@ -2451,6 +2455,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `flamingo` is not a valid key
 - Key `floral` is not a valid key
 - Key `forest_camo` is not a valid key
+- Key `frosty` is not a valid key
 - Key `full_moon` is not a valid key
 - Key `ghillie_suit` is not a valid key
 - Key `gingerbread` is not a valid key
@@ -2461,6 +2466,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `henrys_little_helper` is not a valid key
 - Key `holiday_tree` is not a valid key
 - Key `lemon` is not a valid key
+- Key `light_choco` is not a valid key
 - Key `lumberjack` is not a valid key
 - Key `mango` is not a valid key
 - Key `nebula` is not a valid key
@@ -2472,6 +2478,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `pot_o_gold` is not a valid key
 - Key `printer` is not a valid key
 - Key `pumpkified` is not a valid key
+- Key `red_tomato` is not a valid key
 - Key `ship_carrier` is not a valid key
 - Key `silver_lining` is not a valid key
 - Key `sky` is not a valid key
@@ -2488,8 +2495,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `the_amateur` is not a valid key
 - Key `the_pro` is not a valid key
 - Key `tiger` is not a valid key
+- Key `timeless` is not a valid key
 - Key `toadstool` is not a valid key
-- Key `red_tomato` is not a valid key
 - Key `twilight_zone` is not a valid key
 - Key `verified` is not a valid key
 - Key `volcanic` is not a valid key
@@ -2514,7 +2521,5 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `tt_desc` is not defined
 - Key `m16a4` is not defined
-- Key `vaccine_syringe_desc` is not defined
 
