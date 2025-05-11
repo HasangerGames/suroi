@@ -2385,7 +2385,7 @@ export async function setUpUI(): Promise<void> {
         wrapperCache.getAndGetDefaultIfAbsent(element, () => $(element))
             .css(
                 "--background",
-                `linear-gradient(to right, #ff7500 0%, #ff7500 ${x}%, #f8f9fa ${x}%, #f8f9fa 100%)`
+                `linear-gradient(to right, var(--thumb-bg) 0%, var(--thumb-bg) ${x}%, var(--track-bg) ${x}%, var(--track-bg) 100%)`
             )
             .siblings(".range-input-value")
             .text(

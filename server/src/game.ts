@@ -296,6 +296,9 @@ export class Game implements GameData {
                 case PacketType.Spectate:
                     player.spectate(packet);
                     break;
+                case PacketType.Debug:
+                    player.processDebugPacket(packet);
+                    break;
             }
         }
     }

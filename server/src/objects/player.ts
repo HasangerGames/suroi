@@ -55,6 +55,7 @@ import { MapIndicator } from "./mapIndicator";
 import { Obstacle } from "./obstacle";
 import { Projectile } from "./projectile";
 import { type SyncedParticle } from "./syncedParticle";
+import type { DebugPacket } from "@common/packets/debugPacket";
 
 export interface PlayerSocketData {
     player?: Player
@@ -522,6 +523,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._scope = scope;
         this.dirty.zoom = true;
     }
+    private _zoomOverride = 0;
 
     readonly socket: Bun.ServerWebSocket<PlayerSocketData> | undefined;
 
@@ -1787,7 +1789,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.ticksSinceLastUpdate = 0;
             this.updateObjects = false;
 
-            const dim = player.effectiveScope.zoomLevel * 2 + 8;
+            const zoom = this._zoomOverride !== 0 ? this._zoomOverride : player.effectiveScope.zoomLevel;
+
+            const dim = zoom * 2 + 8;
             this.screenHitbox = RectangleHitbox.fromRect(dim, dim, player.position);
 
             const newVisibleObjects = game.grid.intersectsHitbox(this.screenHitbox);
@@ -1859,7 +1863,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
 
         if (player.dirty.zoom || forceInclude) {
-            playerData.zoom = player._scope.zoomLevel;
+            playerData.zoom = player._zoomOverride || player._scope.zoomLevel;
         }
 
         if (player.dirty.id || forceInclude) {
@@ -3516,6 +3520,52 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             player: this,
             packet
         });
+    }
+
+    processDebugPacket(data: DebugPacket): void {
+        this.baseSpeed = data.speed;
+
+        this._zoomOverride = data.zoom;
+        this.dirty.zoom = true;
+
+        this.layer = Numeric.clamp(this.layer + data.layerOffset, -2, 2);
+        this.setDirty();
+        this.dirty.layer = true;
+
+        if (data.spawnLootType) {
+            const def = data.spawnLootType;
+            let count = 1;
+            switch (def.defType) {
+                case DefinitionType.HealingItem:
+                case DefinitionType.Ammo:
+                case DefinitionType.Throwable:
+                    count = this.inventory.backpack.maxCapacity[def.idString] ?? 1;
+                    break;
+                case DefinitionType.Gun: {
+                    const { ammoType, ammoSpawnAmount } = def;
+
+                    if (ammoSpawnAmount > 1) {
+                        const halfAmount = ammoSpawnAmount / 2;
+
+                        this.game.addLoot(ammoType, this.position, this.layer, {
+                            count: Math.floor(halfAmount)
+                        });
+                        this.game.addLoot(ammoType, this.position, this.layer, {
+                            count: Math.ceil(halfAmount)
+                        });
+                    } else {
+                        this.game.addLoot(ammoType, this.position, this.layer, {
+                            count: 1
+                        });
+                    }
+                    break;
+                }
+            }
+
+            this.game.addLoot(def, this.position, this.layer, {
+                count
+            });
+        }
     }
 
     executeAction(action: Action): void {

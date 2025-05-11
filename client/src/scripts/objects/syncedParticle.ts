@@ -8,6 +8,7 @@ import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
+import { GameConsole } from "../console/gameConsole";
 
 export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParticle) {
     readonly image = new SuroiSprite();
@@ -107,6 +108,7 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
     override updateDebugGraphics(): void {
         if (!DEBUG_CLIENT) return;
         if (!this.definition.hitbox) return;
+        if (!GameConsole.getBuiltInCVar("db_show_hitboxes_synced_particles")) return;
 
         DebugRenderer.addHitbox(
             this.definition.hitbox.transform(this.position, this.container.scale.x),

@@ -28,6 +28,7 @@ import { UIManager } from "../managers/uiManager";
 import { requestFullscreen, sanitizeHTML, stringify } from "../utils/misc";
 import { GameConsole, type PossibleError, type Stringable } from "./gameConsole";
 import { Casters, ConVar } from "./variables";
+import { DebugMenu } from "../utils/debugMenu";
 
 export type CommandExecutor<ErrorType> = (
     ...args: Array<string | undefined>
@@ -1808,6 +1809,14 @@ export function setUpCommands(): void {
             signatures: [{ args: [], noexcept: false }]
         }
     );
+
+    Command.createCommand("toggle_debug_menu", function(): undefined {
+        DebugMenu.toggle();
+    }, {
+        short: "Toggle debug menu",
+        long: "fseduikfsdf",
+        signatures: [{ args: [], noexcept: false }]
+    });
 
     GameConsole.handleQuery(`
         alias +map_ping "+emote_wheel; +map_ping_wheel" & alias -map_ping "-emote_wheel; -map_ping_wheel";\

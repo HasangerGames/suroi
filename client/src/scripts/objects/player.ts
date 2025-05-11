@@ -1113,6 +1113,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     override updateDebugGraphics(): void {
         if (!DEBUG_CLIENT) return;
+        if (!GameConsole.getBuiltInCVar("db_show_hitboxes_players")) return;
 
         DebugRenderer.addHitbox(this.hitbox, HITBOX_COLORS.player);
         const alpha = this.layer === Game.activePlayer?.layer ? 1 : DIFF_LAYER_HITBOX_OPACITY;

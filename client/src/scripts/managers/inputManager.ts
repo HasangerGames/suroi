@@ -550,7 +550,10 @@ class InputManagerClass {
 
         // If the user is interacting with a text field or something of the sort, inputs should
         // not be honored
-        if (document.activeElement !== document.body) return;
+        // but ignore this if its a debug menu input so you can still move while eg dragging a slider
+        if (document.activeElement !== document.body
+            && !document.activeElement?.classList.contains("debug-menu-input")
+        ) return;
 
         const { type } = event;
 

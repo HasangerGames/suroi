@@ -150,6 +150,15 @@ class MapManagerClass {
         if (DEBUG_CLIENT) {
             GameConsole.variables.addChangeListener("db_show_hitboxes", val => {
                 if (!Game.gameStarted) return;
+                val = val && GameConsole.getBuiltInCVar("db_show_hitboxes_terrain");
+                if (val) {
+                    this.renderMapDebug();
+                }
+                this.debugGraphics.visible = val;
+            });
+            GameConsole.variables.addChangeListener("db_show_hitboxes_terrain", val => {
+                if (!Game.gameStarted) return;
+                val = val && GameConsole.getBuiltInCVar("db_show_hitboxes");
                 if (val) {
                     this.renderMapDebug();
                 }
@@ -270,7 +279,7 @@ class MapManagerClass {
         }
 
         if (DEBUG_CLIENT) {
-            if (GameConsole.getBuiltInCVar("db_show_hitboxes")) {
+            if (GameConsole.getBuiltInCVar("db_show_hitboxes") && GameConsole.getBuiltInCVar("db_show_hitboxes_terrain")) {
                 this.renderMapDebug();
                 this.debugGraphics.visible = true;
             }
