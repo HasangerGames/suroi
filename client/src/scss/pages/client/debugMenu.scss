@@ -11,8 +11,8 @@
         resize: both;
         overflow: hidden;
 
+        min-height: 200px;
         min-width: fit-content;
-        min-height: 300px;
 
         color: white;
         border: 3px solid #888;
@@ -90,11 +90,6 @@
                 margin-right: auto;
                 min-width: 80px;
             }
-
-            input,
-            button {
-                margin-left: 5px;
-            }
         }
 
         input[type="range"] {
@@ -111,8 +106,8 @@
             --track-bg: #{palette.$light_transparent_bg};
 
             @mixin input-thumb {
-                height: 20px;
-                width: 20px;
+                height: 25px;
+                width: 25px;
                 border-radius: 0px;
                 cursor: pointer;
                 border: none;
@@ -122,7 +117,7 @@
             }
 
             @mixin input-track {
-                height: 20px;
+                height: 25px;
                 width: 100%;
                 cursor: pointer;
                 border-radius: 0px;
@@ -155,9 +150,8 @@
 
         input[type="checkbox"] {
             appearance: none;
-            height: 20px;
             padding: 0px;
-            background-color: color.adjust(palette.$light_transparent_bg, $alpha: 0.5);
+            height: 20px;
 
             &:before {
                 width: 20px;
@@ -184,10 +178,6 @@
         input[type="number"] {
             margin-top: 0;
             margin-bottom: 0;
-            background: palette.$light_transparent_bg;
-            border: none;
-            border-radius: 0px;
-            outline: none;
             min-width: 80px;
 
             &:not(:hover) {
@@ -198,24 +188,33 @@
         input[type="text"] {
             appearance: none;
             width: 100%;
-            background-color: palette.$light_transparent_bg;
             border: none;
-
-            &:focus {
-                background-color: color.adjust(palette.$light_transparent_bg, $alpha: 0.6);
-            }
         }
 
         button,
-        input[type="submit"] {
+        input,
+        select {
+            height: 25px;
             background: palette.$light_transparent_bg;
             border: none;
             border-radius: 0px;
             outline: none;
             cursor: pointer;
+            box-shadow: 1px 1px 2px black;
+            margin-left: 5px;
 
             &.valid {
                 background-color: color.adjust(palette.$success, $alpha: -0.1);
+            }
+        }
+
+        select {
+            padding-top: 2px;
+
+            option {
+                -moz-appearance: none;
+                color: palette.$light;
+                background-color: palette.$dark;
             }
         }
 
@@ -225,5 +224,6 @@
             margin: 0;
             padding: 0;
         }
+
     }
 }

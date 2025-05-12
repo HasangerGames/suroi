@@ -1,17 +1,18 @@
 import { GameConstants } from "@common/constants";
-import { Loots } from "@common/definitions/loots";
+import { Armors, ArmorType, type ArmorDefinition } from "@common/definitions/items/armors";
+import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { DebugPacket } from "@common/packets/debugPacket";
 import { PacketType } from "@common/packets/packet";
 import { Numeric } from "@common/utils/math";
-import type { Mutable } from "@common/utils/misc";
+import type { ObjectDefinition } from "@common/utils/objectDefinitions";
 import $ from "jquery";
 import { GameConsole } from "../console/gameConsole";
-import type { BooleanCVars, NumberCVars } from "../console/variables";
+import type { BooleanCVars, CVarTypeMapping, NumberCVars } from "../console/variables";
 import { Game } from "../game";
 import { UIManager } from "../managers/uiManager";
 import { FloatingWindow } from "./floatingWindow";
 
-export class DebugMenuClass extends FloatingWindow<{ readonly content: JQuery<HTMLDivElement> }> {
+export class DebugMenu extends FloatingWindow<{ readonly content: JQuery<HTMLDivElement> }> {
     constructor() {
         super(
             {
@@ -31,23 +32,12 @@ export class DebugMenuClass extends FloatingWindow<{ readonly content: JQuery<HT
         );
     }
 
-    data: Mutable<DebugPacket> = {
-        type: PacketType.Debug,
-        speed: GameConstants.player.baseSpeed,
-        get overrideZoom() {
-            return GameConsole.getBuiltInCVar("db_override_zoom");
-        },
-        set overrideZoom(val: boolean) {
-            GameConsole.setBuiltInCVar("db_override_zoom", val);
-        },
-        get zoom() {
-            return GameConsole.getBuiltInCVar("db_zoom_override");
-        },
-        set zoom(val: number) {
-            GameConsole.setBuiltInCVar("db_zoom_override", val);
-        },
-        spawnLootType: undefined,
-        layerOffset: 0
+    data = {
+        layerOffset: 0,
+        spawnLootType: undefined as undefined | LootDefinition,
+        spawnDummy: false,
+        dummyVest: undefined as ArmorDefinition | undefined,
+        dummyHelmet: undefined as ArmorDefinition | undefined
     };
 
     init(): void {
@@ -55,22 +45,40 @@ export class DebugMenuClass extends FloatingWindow<{ readonly content: JQuery<HT
 
         this._setupUi();
 
-        this.data.zoom = GameConsole.getBuiltInCVar("db_zoom_override");
+        const cvarsToSend: Array<keyof CVarTypeMapping> = [
+            "db_override_zoom",
+            "db_zoom_override",
+            "db_speed_override",
+            "db_no_clip",
+            "db_invulnerable"
+        ];
 
-        GameConsole.variables.addChangeListener("db_override_zoom", () => {
-            this.sendPacket();
-        });
-        GameConsole.variables.addChangeListener("db_zoom_override", () => {
-            this.sendPacket();
-        });
+        for (const cvar of cvarsToSend) {
+            GameConsole.variables.addChangeListener(cvar, () => {
+                this.sendPacket();
+            });
+        }
     }
 
     sendPacket(): void {
-        Game.sendPacket(DebugPacket.create(this.data));
+        Game.sendPacket(DebugPacket.create({
+            type: PacketType.Debug,
+            speed: GameConsole.getBuiltInCVar("db_speed_override"),
+            overrideZoom: GameConsole.getBuiltInCVar("db_override_zoom"),
+            zoom: Numeric.clamp(GameConsole.getBuiltInCVar("db_zoom_override"), 0, 255),
+            noClip: GameConsole.getBuiltInCVar("db_no_clip"),
+            invulnerable: GameConsole.getBuiltInCVar("db_invulnerable"),
+            spawnLootType: this.data.spawnLootType,
+            layerOffset: this.data.layerOffset,
+            spawnDummy: this.data.spawnDummy,
+            dummyVest: this.data.dummyVest,
+            dummyHelmet: this.data.dummyHelmet
+        } satisfies DebugPacket));
 
         // reset so it doesn't send it again next packet
         this.data.spawnLootType = undefined;
         this.data.layerOffset = 0;
+        this.data.spawnDummy = false;
     }
 
     private _setupUi(): void {
@@ -80,11 +88,7 @@ export class DebugMenuClass extends FloatingWindow<{ readonly content: JQuery<HT
             defaultVal: GameConstants.player.baseSpeed,
             min: 0.001,
             max: 0.2,
-            step: 0.001,
-            onChange: value => {
-                this.data.speed = value;
-                this.sendPacket();
-            }
+            step: 0.001
         });
 
         this._createSlider({
@@ -95,17 +99,13 @@ export class DebugMenuClass extends FloatingWindow<{ readonly content: JQuery<HT
             },
             min: 1,
             max: 255,
-            step: 2,
-            toggleCvar: "db_override_zoom",
-            onChange: (value, enabled) => {
-                this.data.zoom = Numeric.clamp(value, 0, 255);
-                this.data.overrideZoom = enabled;
-                this.sendPacket();
-            }
+            step: 1,
+            toggleCvar: "db_override_zoom"
         });
 
         this._createLootInput();
-        this._createLayerButtons();
+        this._createSpawnDummyButtons();
+        this._createHelpersRow();
 
         this._createDebugHitboxesUi();
     }
@@ -118,13 +118,11 @@ export class DebugMenuClass extends FloatingWindow<{ readonly content: JQuery<HT
         max: number
         step: number
         toggleCvar?: BooleanCVars
-        onChange: (value: number, enabled: boolean) => void
         parent?: JQuery
     }): void {
-        let enabled = false;
-        let value = params.defaultVal;
+        let enabled = params.toggleCvar ? GameConsole.getBuiltInCVar(params.toggleCvar) : false;
+        let value = GameConsole.getBuiltInCVar(params.sliderCVar);
         const onChange = (): void => {
-            params.onChange(value, enabled);
             GameConsole.setBuiltInCVar(params.sliderCVar, value);
             if (params.toggleCvar) {
                 GameConsole.setBuiltInCVar(params.toggleCvar, enabled);
@@ -150,6 +148,7 @@ export class DebugMenuClass extends FloatingWindow<{ readonly content: JQuery<HT
                 enabled = toggle.prop("checked") as boolean;
                 onChange();
             });
+            toggle.prop("checked", enabled);
             container.append(toggle);
 
             GameConsole.variables.addChangeListener(params.toggleCvar, value => {
@@ -164,7 +163,7 @@ export class DebugMenuClass extends FloatingWindow<{ readonly content: JQuery<HT
             min: params.min,
             max: params.max,
             step: params.step,
-            value: params.defaultVal,
+            value: value,
             class: "debug-menu-input regular-slider"
         });
         container.append(slider);
@@ -174,7 +173,7 @@ export class DebugMenuClass extends FloatingWindow<{ readonly content: JQuery<HT
             min: params.min,
             max: params.max,
             step: params.step,
-            value: params.defaultVal,
+            value: value,
             class: "debug-menu-input"
         });
         container.append(numberInput);
@@ -210,32 +209,24 @@ export class DebugMenuClass extends FloatingWindow<{ readonly content: JQuery<HT
         container.append(reset);
 
         (params.parent ?? this.ui.content).append(container);
-
-        params.onChange(params.defaultVal, enabled);
     }
 
     private _createCheckbox(params: {
         label: string
         cvar: BooleanCVars
-        defaultVal: boolean
-        onChange?: (value: boolean) => void
         parent?: JQuery
+        dontAddContainer?: boolean
     }): void {
-        let value = params.defaultVal;
+        let value = GameConsole.getBuiltInCVar(params.cvar);
         const onChange = (): void => {
             GameConsole.setBuiltInCVar(params.cvar, value);
-            params.onChange?.(value);
         };
-
-        const container = $("<div/>", {
-            class: "debug-menu-item"
-        });
 
         const toggle = $("<input/>", {
             type: "checkbox",
             id: `debug-menu-${params.cvar}`,
             class: "debug-menu-input regular-checkbox",
-            checked: params.defaultVal
+            checked: value
         });
 
         toggle.on("input", () => {
@@ -244,33 +235,51 @@ export class DebugMenuClass extends FloatingWindow<{ readonly content: JQuery<HT
         });
         GameConsole.variables.addChangeListener(params.cvar, val => {
             value = val;
+            toggle.prop("checked", val);
             onChange();
         });
-
-        container.append(toggle);
 
         const label = $("<label/>", {
             text: params.label,
             for: `debug-menu-${params.cvar}`,
             class: "debug-menu-item-label"
         });
-        container.append(label);
 
-        (params.parent ?? this.ui.content).append(container);
+        if (params.dontAddContainer) {
+            (params.parent ?? this.ui.content).append(toggle);
+            (params.parent ?? this.ui.content).append(label);
+        } else {
+            const container = $("<div/>", {
+                class: "debug-menu-item"
+            });
+            container.append(toggle);
+            container.append(label);
 
-        params.onChange?.(value);
+            (params.parent ?? this.ui.content).append(container);
+        }
     }
 
-    private _createLayerButtons(): void {
+    private _createHelpersRow(): void {
         const container = $("<div/>", {
-            class: "debug-menu-item",
-            css: {
-                "justify-content": "center"
-            }
+            class: "debug-menu-item"
+        });
+
+        this._createCheckbox({
+            label: "No Clip",
+            cvar: "db_no_clip",
+            parent: container,
+            dontAddContainer: true
+        });
+
+        this._createCheckbox({
+            label: "God Mode",
+            cvar: "db_invulnerable",
+            parent: container,
+            dontAddContainer: true
         });
 
         const upBtn = $("<button/>", {
-            text: "▲Layer Up",
+            text: "▲ Layer Up",
             class: "debug-menu-input"
         });
         upBtn.on("click", () => {
@@ -280,14 +289,13 @@ export class DebugMenuClass extends FloatingWindow<{ readonly content: JQuery<HT
         container.append(upBtn);
 
         const downBtn = $("<button/>", {
-            text: "Layer Down▼",
+            text: "Layer Down ▼",
             class: "debug-menu-input"
         });
         downBtn.on("click", () => {
             this.data.layerOffset = -1;
             this.sendPacket();
         });
-
         container.append(downBtn);
 
         this.ui.content.append(container);
@@ -309,7 +317,8 @@ export class DebugMenuClass extends FloatingWindow<{ readonly content: JQuery<HT
 
         const input = $("<input/>", {
             type: "text",
-            list: "debug-menu-loot-list"
+            list: "debug-menu-loot-list",
+            placeholder: "Type a loot ID here..."
         });
 
         form.append(input);
@@ -320,8 +329,7 @@ export class DebugMenuClass extends FloatingWindow<{ readonly content: JQuery<HT
 
         for (const loot of Loots) {
             const option = $("<option/>", {
-                value: loot.idString,
-                innerHTML: loot.name
+                value: loot.idString
             });
             dataList.append(option);
         }
@@ -355,8 +363,7 @@ export class DebugMenuClass extends FloatingWindow<{ readonly content: JQuery<HT
     private _createDebugHitboxesUi(): void {
         this._createCheckbox({
             label: "Show Hitboxes",
-            cvar: "db_show_hitboxes",
-            defaultVal: GameConsole.getBuiltInCVar("db_show_hitboxes")
+            cvar: "db_show_hitboxes"
         });
 
         const container = $("<div/>", {
@@ -378,7 +385,6 @@ export class DebugMenuClass extends FloatingWindow<{ readonly content: JQuery<HT
             this._createCheckbox({
                 cvar: cvar as BooleanCVars,
                 label,
-                defaultVal: GameConsole.getBuiltInCVar(cvar as BooleanCVars),
                 parent: container
             });
         }
@@ -390,6 +396,68 @@ export class DebugMenuClass extends FloatingWindow<{ readonly content: JQuery<HT
 
         this.ui.content.append(container);
     }
-}
 
-export const DebugMenu = new DebugMenuClass();
+    private _createSpawnDummyButtons(): void {
+        const container = $("<div/>", {
+            class: "debug-menu-item"
+        });
+        const label = $("<label/>", {
+            text: "Dummy:",
+            class: "debug-menu-item-label"
+        });
+        container.append(label);
+
+        const createGearSelect = (
+            name: string,
+            definitionList: ObjectDefinition[]
+        ): JQuery => {
+            const select = $("<select/>", {
+                class: "debug-menu-input",
+                css: {
+                    width: "100%"
+                }
+            });
+
+            select.append($("<option/>", { value: "", text: `No ${name}` }));
+
+            for (const item of definitionList) {
+                const option = $("<option/>", {
+                    value: item.idString,
+                    text: item.name
+                });
+                select.append(option);
+            }
+            container.append(select);
+            return select;
+        };
+
+        const vestSelect = createGearSelect(
+            "Vest",
+            Armors.definitions.filter(a => a.armorType === ArmorType.Vest)
+        );
+
+        vestSelect.on("change", () => {
+            this.data.dummyVest = Armors.fromStringSafe(vestSelect.val() as string);
+        });
+
+        const helmetSelect = createGearSelect(
+            "Helmet",
+            Armors.definitions.filter(a => a.armorType === ArmorType.Helmet)
+        );
+        helmetSelect.on("change", () => {
+            this.data.dummyHelmet = Armors.fromStringSafe(helmetSelect.val() as string);
+        });
+
+        const spawnDummyBtn = $("<button/>", {
+            text: "Spawn",
+            class: "debug-menu-input"
+        });
+        spawnDummyBtn.on("click", () => {
+            this.data.spawnDummy = true;
+            this.sendPacket();
+        });
+        container.append(spawnDummyBtn);
+
+        this.ui.content.append(container);
+    }
+}

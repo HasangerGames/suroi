@@ -3,6 +3,7 @@ import { stringify } from "../utils/misc";
 import { GameConsole, type GameSettings, type PossibleError, type Stringable } from "./gameConsole";
 import { GameConstants } from "@common/constants";
 import { isMobile } from "pixi.js";
+import { DEFAULT_SCOPE } from "@common/definitions/items/scopes";
 
 // TODO figure out what flags we're gonna actually use and how we're gonna use them kekw
 //       expect breaking changes to this api (again)
@@ -209,6 +210,8 @@ export const CVarCasters = Object.freeze({
     db_speed_override: Casters.toNumber,
     db_override_zoom: Casters.toBoolean,
     db_zoom_override: Casters.toNumber,
+    db_no_clip: Casters.toBoolean,
+    db_invulnerable: Casters.toBoolean,
 
     mb_controls_enabled: Casters.toBoolean,
     mb_joystick_size: Casters.toNumber,
@@ -343,9 +346,9 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_map_transparency: 0.9,
 
     cv_console_width: window.innerWidth / 2,
-    cv_console_height: window.innerWidth / 2,
+    cv_console_height: window.innerHeight / 2,
     cv_console_left: window.innerWidth / 4,
-    cv_console_top: window.innerWidth / 4,
+    cv_console_top: window.innerHeight / 4,
     cv_console_open: {
         value: false,
         flags: {
@@ -354,9 +357,9 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     },
 
     cv_debug_menu_width: window.innerWidth / 2,
-    cv_debug_menu_height: window.innerWidth / 2,
+    cv_debug_menu_height: window.innerHeight / 2,
     cv_debug_menu_left: window.innerWidth / 4,
-    cv_debug_menu_top: window.innerWidth / 4,
+    cv_debug_menu_top: window.innerHeight / 4,
     cv_debug_menu_open: false,
 
     cv_crosshair_color: "#000000",
@@ -390,7 +393,9 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
 
     db_speed_override: GameConstants.player.baseSpeed,
     db_override_zoom: false,
-    db_zoom_override: 0,
+    db_zoom_override: DEFAULT_SCOPE.zoomLevel,
+    db_no_clip: false,
+    db_invulnerable: false,
 
     mb_switch_joysticks: false,
     mb_controls_enabled: true,

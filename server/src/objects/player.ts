@@ -524,6 +524,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.dirty.zoom = true;
     }
     private _zoomOverride = 0;
+    private _noClip = false;
 
     readonly socket: Bun.ServerWebSocket<PlayerSocketData> | undefined;
 
@@ -571,6 +572,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
      * Used to make players invulnerable for 5 seconds after spawning or until they move
      */
     invulnerable = true;
+    // for debug menu
+    forceInvulnerable = false;
 
     /**
      * Determines if the player can despawn
@@ -1288,7 +1291,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         potential.handleStairInteraction(this);
                         if (this.layer !== oldLayer) this.setDirty();
                         this.activeStair = potential;
-                    } else {
+                    } else if (!this._noClip) {
                         collided = true;
                         this._hitbox.resolveCollision(potential.hitbox);
 
@@ -2559,6 +2562,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     disableInvulnerability(): void {
+        if (this.forceInvulnerable) return;
         if (this.invulnerable) {
             this.invulnerable = false;
             this.setDirty();
@@ -3525,12 +3529,28 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     processDebugPacket(data: DebugPacket): void {
         this.baseSpeed = data.speed;
 
+        const oldZoomOverride = this._zoomOverride;
         this._zoomOverride = data.zoom;
-        this.dirty.zoom = true;
+        if (this._zoomOverride !== oldZoomOverride) {
+            this.dirty.zoom = true;
+            this.updateObjects = true;
+        }
 
+        const oldInvul = this.invulnerable;
+        this.invulnerable = data.invulnerable;
+        this.forceInvulnerable = data.invulnerable;
+        if (this.invulnerable !== oldInvul) {
+            this.setDirty();
+        }
+
+        const oldLayer = this.layer;
         this.layer = Numeric.clamp(this.layer + data.layerOffset, -2, 2);
-        this.setDirty();
-        this.dirty.layer = true;
+        if (this.layer !== oldLayer) {
+            this.setDirty();
+            this.dirty.layer = true;
+        }
+
+        this._noClip = data.noClip;
 
         if (data.spawnLootType) {
             const def = data.spawnLootType;
@@ -3565,6 +3585,30 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.game.addLoot(def, this.position, this.layer, {
                 count
             });
+        }
+
+        if (data.spawnDummy) {
+            const game = this.game;
+            const dummy = new Player(game, undefined, Vec.clone(this.position), this.layer);
+            game.newPlayers.push(dummy);
+            game.grid.addObject(dummy);
+            dummy.setDirty();
+            game.updateObjects = true;
+            dummy.canDespawn = false;
+            dummy.joined = true;
+            dummy.disableInvulnerability();
+
+            dummy.inventory.vest = data.dummyVest;
+            dummy.inventory.helmet = data.dummyHelmet;
+
+            // dont do this for the dummys so the game doesn't start when they spawn
+            // or ends when you kill them
+            // if for some reason you still want that to happen just uncomment this
+            // game.aliveCountDirty = true;
+            // game.livingPlayers.add(player);
+            // game.spectatablePlayers.push(player);
+            // game.connectedPlayers.add(player);
+            // game.updateGameData({ aliveCount: game.aliveCount });
         }
     }
 

@@ -63,6 +63,8 @@ import { getTranslatedString, initTranslation } from "./utils/translations/trans
 import { type TranslationKeys } from "./utils/translations/typings";
 import { Tween, type TweenOptions } from "./utils/tween";
 import { colord } from "colord";
+import type { DebugMenu } from "./utils/debugMenu";
+
 
 interface ObjectClassMapping {
     readonly [ObjectCategory.Player]: typeof Player
@@ -577,6 +579,8 @@ export const Game = new (class Game {
 
     isTeamMode = false;
 
+    debugMenu?: DebugMenu;
+
     _modeName: ModeName | undefined;
     get modeName(): ModeName {
         if (this._modeName === undefined) throw new Error("modeName accessed before initialization");
@@ -671,7 +675,8 @@ export const Game = new (class Game {
         await initTranslation();
         InputManager.init();
         if (DEBUG_CLIENT) {
-            (await import("./utils/debugMenu")).DebugMenu.init();
+            this.debugMenu = new (await import("./utils/debugMenu")).DebugMenu();
+            this.debugMenu.init();
         }
         await setUpUI();
         await fetchServerData();
@@ -1092,6 +1097,9 @@ export const Game = new (class Game {
         ui.spectateKillLeader.addClass("btn-disabled");
 
         if (!UI_DEBUG_MODE) ui.teamContainer.toggle(this.isTeamMode);
+
+        // send the packet to sync our local configs when joining
+        this.debugMenu?.sendPacket();
     }
 
     async endGame(): Promise<void> {
