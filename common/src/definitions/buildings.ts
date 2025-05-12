@@ -3786,7 +3786,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             { idString: "regular_crate", position: Vec.create(-177.87, -135.25) },
             { idString: "regular_crate", position: Vec.create(-196.33, -66.7) },
-            { idString: "regular_crate", position: Vec.create(-196.33, -66.7) },
 
             { idString: "aegis_crate", position: Vec.create(-166.17, -78.36) },
             { idString: "aegis_crate", position: Vec.create(-156.4, -78.36) },
@@ -5534,7 +5533,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "small_table", position: Vec.create(14.99, 11.88), rotation: 0 },
             { idString: "chair", position: Vec.create(10.61, 12.15), rotation: 3 },
             { idString: "gun_case", position: Vec.create(-15.12, 33.96), rotation: 2 },
-            { idString: "aegis_crate", position: Vec.create(14.54, -5.34), rotation: 0 },
+            { idString: "aegis_crate", position: Vec.create(14.54, -5.34) },
             { idString: "control_panel_small", position: Vec.create(15.2, -16.15), rotation: 3 },
             { idString: "control_panel_small", position: Vec.create(-16.24, -16.15), rotation: 1 },
             { idString: "door", position: Vec.create(2.57, -11.24), rotation: 0 },

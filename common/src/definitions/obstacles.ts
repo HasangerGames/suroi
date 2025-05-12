@@ -226,8 +226,6 @@ export const Materials = [
     "ice"
 ] as const;
 
-/* eslint-disable @stylistic/key-spacing, @stylistic/no-multi-spaces */
-
 export const MaterialSounds: Record<string, { hit?: string, destroyed?: string }> = {
     cardboard: { hit: "stone", destroyed: "crate" },
     iron: { hit: "metal_light", destroyed: "appliance" },
@@ -381,8 +379,6 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     truck_container_particle_green: { base: "metal_particle_1", tint: TruckContainerTints.green },
     truck_container_particle_red: { base: "metal_particle_1", tint: TruckContainerTints.red }
 };
-
-/* eslint-enable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 
 const houseWall = (
     lengthNumber: number,
