@@ -483,6 +483,8 @@ export class Inventory {
 
         const item = this.weapons[slot];
 
+        if (item && !force && item.category === ItemType.Throwable && item.cooking) return;
+
         if (item === undefined || item.definition.noDrop) return;
         const definition = item.definition;
 
@@ -611,6 +613,11 @@ export class Inventory {
                 break;
             }
             case ItemType.Throwable: {
+                // const item = this.activeWeapon;
+                // if (item instanceof ThrowableItem && item.definition.idString === definition.idString &&  item.isCooking) {
+                //     item.cancelCook();
+                //     return;
+                // }
                 this.removeThrowable(definition, true);
                 break;
             }
