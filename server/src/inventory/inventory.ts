@@ -483,6 +483,8 @@ export class Inventory {
 
         const item = this.weapons[slot];
 
+        if (item && !force && item.category === ItemType.Throwable && item.cooking) return;
+
         if (item === undefined || item.definition.noDrop) return;
         const definition = item.definition;
 
