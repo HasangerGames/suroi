@@ -3994,6 +3994,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         noCollisions: true,
         noMeleeCollision: true,
+        noHitEffect: true,
         noBulletCollision: true,
         pallet: true
     },
