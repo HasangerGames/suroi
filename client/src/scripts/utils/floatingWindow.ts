@@ -251,8 +251,9 @@ export abstract class FloatingWindow<UiSupplements extends object = object> {
                 dragging = true;
 
                 // This does _not_ equal e.offsetX
-                offset.x = parseInt(this.ui.container.css("left")) - e.clientX;
-                offset.y = parseInt(this.ui.container.css("top")) - e.clientY;
+                const rect = this.ui.container[0].getBoundingClientRect();
+                offset.x = rect.left - e.clientX;
+                offset.y = rect.top - e.clientY;
 
                 window.addEventListener("mouseup", mouseUpHandler);
                 window.addEventListener("mousemove", mouseMoveHandler);
