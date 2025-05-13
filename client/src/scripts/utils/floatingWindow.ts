@@ -24,6 +24,7 @@ class WindowManager {
     protected _setTopChild(window: FloatingWindow, zIndex: number): void {
         this.topChild = [window, zIndex];
         window.ui.globalContainer.css("z-index", zIndex);
+        window.ui.globalContainer.addClass("floating-window-focused");
     }
 
     bringToFront(window: FloatingWindow): void {
@@ -46,6 +47,7 @@ class WindowManager {
             this._setTopChild(window, oldZ);
             oldWin.ui.globalContainer.css("z-index", curZ);
         }
+        oldWin.ui.globalContainer.removeClass("floating-window-focused");
     }
 }
 
@@ -72,6 +74,7 @@ export abstract class FloatingWindow<UiSupplements extends object = object> {
         this._isOpen = true;
         GameConsole.variables.get.builtIn(this.convars.open).setValue(true);
         this.ui.globalContainer.show();
+        FloatingWindow.windowManager.bringToFront(this);
     }
 
     close(): void {

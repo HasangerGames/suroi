@@ -1,229 +1,158 @@
 @use "sass:color";
 @use "../../palette.scss";
 
-#debug-menu {
-    position: relative;
-    z-index: 1000;
+#debug-menu-content {
+    overflow: auto;
+    background-color: color.adjust(palette.$transparent_bg, $alpha: 0.4);
+    height: 100%;
+    width: 100%;
 
-    #debug-menu-container {
-        position: absolute;
+    * {
+        font-family: "JetBrains Mono", monospace;
+        text-shadow: 1px 1px 2px black;
+    }
 
-        resize: both;
-        overflow: hidden;
+    .debug-menu-item {
+        display: flex;
+        margin: 6px;
+        align-items: center;
 
-        min-height: 200px;
-        min-width: fit-content;
-
-        color: white;
-        border: 3px solid #888;
-        border-radius: 7px;
-        box-shadow: 5px 5px 5px 0px #0008;
-
-        #debug-menu-header {
-            color: white;
-            background-color: #606060;
-            position: sticky;
-            left: 0;
-            top: 0;
-            font-size: 1.2em;
-            height: 28px;
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .debug-menu-item-label {
             user-select: none;
-            z-index: 1;
-            border-color: #888;
-            border-style: none none solid none;
-            border-width: 2px;
+            margin-right: auto;
+            min-width: 80px;
+        }
+    }
 
-            span {
-                margin: auto;
-            }
+    input[type="range"] {
+        appearance: none;
+        -webkit-appearance: none;
+        background: transparent;
 
-            #debug-menu-close {
-                color: #BBB;
-                background-color: #555;
-                border-color: #888;
-                border-style: none none solid none;
-                border-width: 1px;
-                cursor: pointer;
-                transition-duration: 200ms;
-                height: 28px;
-                width: 28px;
-                border-radius: 0;
+        border-bottom: none;
+        width: 100%;
+        margin-top: 0;
+        margin-bottom: 0;
 
-                &:hover {
-                    background-color: #d55;
-                    color: #ddd;
-                }
-            }
+        --thumb-bg: #{color.adjust(palette.$light_transparent_bg, $alpha: 0.5)};
+        --track-bg: #{palette.$light_transparent_bg};
 
-            &:hover {
-                cursor: grab;
-            }
+        @mixin input-thumb {
+            height: 25px;
+            width: 25px;
+            border-radius: 0px;
+            cursor: pointer;
+            border: none;
+            background: palette.$blue;
 
-            &:active {
-                cursor: grabbing;
-            }
+            box-shadow: none;
         }
 
-        #debug-menu-content {
-            overflow: auto;
-            background-color: color.adjust(palette.$transparent_bg, $alpha: 0.4);
-            height: 100%;
+        @mixin input-track {
+            height: 25px;
             width: 100%;
-
-            * {
-                font-family: "JetBrains Mono", monospace;
-                text-shadow: 1px 1px 2px black;
-            }
+            cursor: pointer;
+            border-radius: 0px;
+            background: palette.$light_transparent_bg;
         }
 
-        .debug-menu-item {
-            display: flex;
-            margin: 6px;
-            align-items: center;
-
-            .debug-menu-item-label {
-                user-select: none;
-                margin-right: auto;
-                min-width: 80px;
-            }
+        &::-moz-range-thumb {
+            @include input-thumb;
         }
 
-        input[type="range"] {
-            appearance: none;
-            -webkit-appearance: none;
-            background: transparent;
-
-            border-bottom: none;
-            width: 100%;
-            margin-top: 0;
-            margin-bottom: 0;
-
-            --thumb-bg: #{color.adjust(palette.$light_transparent_bg, $alpha: 0.5)};
-            --track-bg: #{palette.$light_transparent_bg};
-
-            @mixin input-thumb {
-                height: 25px;
-                width: 25px;
-                border-radius: 0px;
-                cursor: pointer;
-                border: none;
-                background: palette.$blue;
-
-                box-shadow: none;
-            }
-
-            @mixin input-track {
-                height: 25px;
-                width: 100%;
-                cursor: pointer;
-                border-radius: 0px;
-                background: palette.$light_transparent_bg;
-            }
-
-            &::-moz-range-thumb {
-                @include input-thumb;
-            }
-
-            &::-webkit-slider-thumb {
-                @include input-thumb;
-                margin-top: 0px;
-            }
-
-            &::-moz-range-track {
-                @include input-track;
-            }
-
-            &::-webkit-slider-runnable-track {
-                @include input-track;
-                background: var(--background);
-            }
-
-            &::-moz-range-progress {
-                @include input-track;
-                background: color.adjust(palette.$light_transparent_bg, $alpha: 0.4);
-            }
+        &::-webkit-slider-thumb {
+            @include input-thumb;
+            margin-top: 0px;
         }
 
-        input[type="checkbox"] {
-            appearance: none;
-            padding: 0px;
+        &::-moz-range-track {
+            @include input-track;
+        }
+
+        &::-webkit-slider-runnable-track {
+            @include input-track;
+            background: var(--background);
+        }
+
+        &::-moz-range-progress {
+            @include input-track;
+            background: color.adjust(palette.$light_transparent_bg, $alpha: 0.4);
+        }
+    }
+
+    input[type="checkbox"] {
+        appearance: none;
+        padding: 0px;
+        height: 20px;
+
+        &:before {
+            width: 20px;
             height: 20px;
+            display: inline-block;
+            text-align: center;
+            content: "";
+            text-shadow: none;
+        }
+
+        &:checked {
+            background-color: palette.$blue;
 
             &:before {
-                width: 20px;
-                height: 20px;
-                display: inline-block;
-                text-align: center;
-                content: "";
-                text-shadow: none;
-            }
-
-            &:checked {
-                background-color: palette.$blue;
-
-                &:before {
-                    content: "✔️";
-                }
-            }
-
-            &:hover {
-                cursor: pointer;
+                content: "✔️";
             }
         }
 
-        input[type="number"] {
-            margin-top: 0;
-            margin-bottom: 0;
-            min-width: 80px;
-
-            &:not(:hover) {
-                appearance: textfield;
-            }
-        }
-
-        input[type="text"] {
-            appearance: none;
-            width: 100%;
-            border: none;
-        }
-
-        button,
-        input,
-        select {
-            height: 25px;
-            background: palette.$light_transparent_bg;
-            border: none;
-            border-radius: 0px;
-            outline: none;
+        &:hover {
             cursor: pointer;
-            box-shadow: 1px 1px 2px black;
-            margin-left: 5px;
-
-            &.valid {
-                background-color: color.adjust(palette.$success, $alpha: -0.1);
-            }
         }
+    }
 
-        select {
-            padding-top: 2px;
+    input[type="number"] {
+        margin-top: 0;
+        margin-bottom: 0;
+        min-width: 80px;
 
-            option {
-                -moz-appearance: none;
-                color: palette.$light;
-                background-color: palette.$dark;
-            }
+        &:not(:hover) {
+            appearance: textfield;
         }
+    }
 
-        form {
-            display: flex;
-            width: 100%;
-            margin: 0;
-            padding: 0;
+    input[type="text"] {
+        appearance: none;
+        width: 100%;
+        border: none;
+    }
+
+    button,
+    input,
+    select {
+        height: 25px;
+        background: palette.$light_transparent_bg;
+        border: none;
+        border-radius: 0px;
+        outline: none;
+        cursor: pointer;
+        box-shadow: 1px 1px 2px black;
+        margin-left: 5px;
+
+        &.valid {
+            background-color: color.adjust(palette.$success, $alpha: -0.1);
         }
+    }
 
+    select {
+        padding-top: 2px;
+
+        option {
+            color: palette.$light;
+            background-color: palette.$dark;
+        }
+    }
+
+    form {
+        display: flex;
+        width: 100%;
+        margin: 0;
+        padding: 0;
     }
 }

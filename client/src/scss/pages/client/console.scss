@@ -1,8 +1,4 @@
 #console {
-    // The battle to have a higher z-index than the splash screen
-    position: relative;
-    z-index: 1000;
-
     #console-container {
         position: absolute;
         box-sizing: border-box;
@@ -10,65 +6,10 @@
         grid-template: 28px 1fr 24px / 1fr;
 
         background-color: #666;
-        color: white;
-        border: 3px solid #888;
-        border-radius: 7px;
-        box-shadow: 5px 5px 5px 0px #0008;
-        resize: both;
-        overflow: hidden;
 
         flex-shrink: 1;
         min-width: 300px;
         min-height: 300px;
-
-        #console-header {
-            color: #BBB;
-            background-color: #606060;
-            position: sticky;
-            left: 0;
-            top: 0;
-            font-size: 1.2em;
-            height: 28px;
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-color: #888;
-            border-style: none none solid none;
-            border-width: 2px;
-            user-select: none;
-            z-index: 1;
-
-            span {
-                margin: auto;
-            }
-
-            #console-close {
-                color: #BBB;
-                background-color: #555;
-                border-color: #888;
-                border-style: none none solid none;
-                border-width: 1px;
-                cursor: pointer;
-                transition-duration: 200ms;
-                height: 28px;
-                width: 28px;
-
-                &:hover {
-                    background-color: #d55;
-                    color: #ddd;
-                }
-            }
-
-            &:hover {
-                cursor: grab;
-            }
-
-            &:active {
-                cursor: grabbing;
-            }
-        }
-
 
         #console-out {
             background-color: #505050;
