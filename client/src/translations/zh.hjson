@@ -674,3 +674,5 @@
 "infected_desc": "提升移速和伤害，但是肾上腺素会快速减少并持续掉血，且感染附近玩家"
 "immunity": "免疫"
 "immunity_desc": "15秒内免疫感染"
+"partners": "合作伙伴"
+"username_placeholder": "输入一个昵称"

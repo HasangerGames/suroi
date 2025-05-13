@@ -416,3 +416,5 @@
 "infected_desc": "Increased speed and damage, but health drops and adrenaline decays fast. Infect nearby players."
 "immunity": "Immunity"
 "immunity_desc": "Immune to infection for 15 seconds."
+"partners": "Partners"
+"username_placeholder": "Enter a nickname"

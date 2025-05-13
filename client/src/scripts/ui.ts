@@ -2396,6 +2396,8 @@ export async function setUpUI(): Promise<void> {
             e.preventDefault();
         }
     });
+
+    $("#username-input").attr("placeholder", getTranslatedString("username_placeholder"));
 }
 /*
 ..........:::::::::::::::.::::.......:::---===------:::--===++++*********+++++*++++++***************
