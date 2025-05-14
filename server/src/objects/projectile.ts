@@ -263,7 +263,10 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
             !Vec.equals(this.position, initialLastPosition)
             || !Numeric.equals(this.rotation, lastRotation)
             || !Numeric.equals(this._height, lastHeight)
-        ) this.setPartialDirty();
+        ) {
+            this.game.grid.addObject(this);
+            this.setPartialDirty();
+        }
     }
 
     detonated = false;
