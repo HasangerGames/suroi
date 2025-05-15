@@ -2141,6 +2141,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         { color: 0x736758, border: 0x383127, particle: "river_hut_wall_particle" }
     ),
 
+    // flooded bunker
+    houseWall(24, RectangleHitbox.fromRect(14.1, 2)),
+    houseWall(25, RectangleHitbox.fromRect(16.52, 2)),
+
     // HQ walls (headquarters)
     hqWall(1, RectangleHitbox.fromRect(11.4, 2)),
     hqWall(2, RectangleHitbox.fromRect(21.05, 2)),
@@ -4104,7 +4108,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(3, 3)
         ),
-        rotationMode: RotationMode.Limited,
+        rotationMode: RotationMode.None,
         allowFlyover: FlyoverPref.Never,
         tint: 0xa3917b,
         frames: {
@@ -5026,6 +5030,45 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         rotationMode: RotationMode.Limited
         // zIndex: 9999
+    },
+    {
+        idString: "flooded_bunker_stair",
+        name: "Flooded Bunker Stair",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        invisible: true,
+        isStair: true,
+        activeEdges: {
+            high: 0,
+            low: 2
+        },
+        hitbox: RectangleHitbox.fromRect(7.5, 10.68),
+        frames: {
+            particle: "metal_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        zIndex: ZIndexes.BuildingsFloor
+    },
+    {
+        idString: "flooded_bunker_collider_hack",
+        name: "Flooded Bunker Collider Hack",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        invisible: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(10.68, 0.68, Vec.create(-30.19, -32.02)),
+            RectangleHitbox.fromRect(10.68, 0.68, Vec.create(-9.82, 38.92))
+        ),
+        reflectBullets: true,
+        frames: {
+            particle: "plumpkin_bunker_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        collideWithLayers: Layers.Equal
     },
     {
         idString: "fire_exit_railing",
