@@ -244,6 +244,11 @@ const randomTruckContainerOneSided = {
     truck_container_12: 0.85
 };
 
+const randomTree = {
+    oak_tree: 1,
+    birch_tree: 1
+};
+
 const randomCelebrationWinterTree = {
     oak_tree: 1,
     birch_tree: 1,
@@ -1446,7 +1451,7 @@ const blueHouse = (idString: string, subBuildings: BuildingDefinition["subBuildi
         ]
 });
 
-const shed = (num: number, ceilingTint: number) => ({
+const shed = (num: number, ceilingTint: number): BuildingDefinition => ({
     idString: `shed_${num}`,
     name: "Shed",
     defType: DefinitionType.Building,
@@ -3008,9 +3013,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }]
     },
 
-    // @ts-expect-error shut up shut up shut up
     shed(1, 0x257636),
-    // @ts-expect-error shut up shut up shut up
     shed(2, 0xb96114),
 
     container(1, "white", "closed"),
@@ -6457,10 +6460,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec.create(0, 20)),
         ceilingHitbox: RectangleHitbox.fromRect(10, 15, Vec.create(0, 20)),
         obstacles: [
-            { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(7.5, 9.8) },
-            { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(10, 23) },
-            { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-10, 16) },
-            { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(-5, 37) }
+            { idString: randomTree, position: Vec.create(7.5, 9.8) },
+            { idString: randomTree, position: Vec.create(10, 23) },
+            { idString: randomTree, position: Vec.create(-10, 16) },
+            { idString: randomTree, position: Vec.create(-5, 37) }
         ],
         bulletMask: RectangleHitbox.fromRect(11, 30, Vec.create(0, 30)),
         subBuildings: [
@@ -10065,12 +10068,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(14, 20.5, Vec.create(-9.81, 47.65)),
             RectangleHitbox.fromRect(14, 20.5, Vec.create(-30.2, -40.75)),
+            RectangleHitbox.fromRect(27, 37, Vec.create(-0.8, 0))
         ),
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(2.01, 12.65, Vec.create(-34.94, -38)),
             RectangleHitbox.fromRect(2.01, 12.65, Vec.create(-25.46, -38)),
             RectangleHitbox.fromRect(2.01, 12.65, Vec.create(-5.07, 44.9)),
-            RectangleHitbox.fromRect(2.01, 12.65, Vec.create(-14.55, 44.9)),
+            RectangleHitbox.fromRect(2.01, 12.65, Vec.create(-14.55, 44.9))
         ),
         material: "metal_heavy",
         particle: "plumpkin_bunker_particle",
@@ -10082,7 +10086,25 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         obstacles: [
             { idString: "flooded_bunker_collider_hack", position: Vec.create(0, 0), rotation: 0 },
+
+            // Upper entrance
+            { idString: randomTree, position: Vec.create(-18.85, -38.2) },
+            { idString: randomTree, position: Vec.create(-41.97, -39.29) },
+            { idString: randomTree, position: Vec.create(-29.92, -27.26) },
+            { idString: "bush", position: Vec.create(-35.88, -48.65), rotation: 0 },
+            { idString: "bush", position: Vec.create(-27.44, -47.82), rotation: 0 },
+            { idString: "bush", position: Vec.create(-8.38, -28.77), rotation: 0 },
+            { idString: "bush", position: Vec.create(-55.92, -38.54), rotation: 0 },
             { idString: "flooded_bunker_stair", position: Vec.create(-30.2, -39.26), rotation: 0, layer: -1 },
+
+            // Lower entrance
+            { idString: randomTree, position: Vec.create(-9.82, 32.88) },
+            { idString: randomTree, position: Vec.create(3.62, 43.58) },
+            { idString: randomTree, position: Vec.create(-20.92, 47.64) },
+            { idString: "bush", position: Vec.create(-13.13, 55.88) },
+            { idString: "bush", position: Vec.create(16.63, 37.75) },
+            { idString: "bush", position: Vec.create(-27.11, 35.18) },
+            { idString: "bush", position: Vec.create(-5.24, 55.57) },
             { idString: "flooded_bunker_stair", position: Vec.create(-9.81, 45.95), rotation: 2, layer: -1 }
         ],
         subBuildings: [
