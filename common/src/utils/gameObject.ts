@@ -7,7 +7,7 @@ import { type ObstacleDefinition } from "../definitions/obstacles";
 import { type SyncedParticleDefinition } from "../definitions/syncedParticles";
 import { type ThrowableDefinition } from "../definitions/items/throwables";
 import { type Orientation } from "../typings";
-import { type CircleHitbox } from "./hitbox";
+import { type Hitbox, type CircleHitbox } from "./hitbox";
 import { type AbstractConstructor, type Constructor, type PredicateFor } from "./misc";
 import { type Vector } from "./vector";
 
@@ -48,6 +48,7 @@ export type CommonObjectMapping = {
     }
     [ObjectCategory.Obstacle]: {
         readonly definition: ObstacleDefinition
+        hitbox: Hitbox
     }
     [ObjectCategory.DeathMarker]: object
     [ObjectCategory.Loot]: {
@@ -56,6 +57,7 @@ export type CommonObjectMapping = {
     [ObjectCategory.Building]: {
         readonly definition: BuildingDefinition
         orientation: Orientation
+        hitbox?: Hitbox
     }
     [ObjectCategory.Decal]: {
         readonly definition: DecalDefinition
