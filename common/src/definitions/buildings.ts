@@ -10230,7 +10230,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "gun_case", position: Vec.create(-18.99, -0.25), rotation: 0 },
             { idString: "box", position: Vec.create(-21.05, 12.46) },
             { idString: "barrel", position: Vec.create(-3.2, 11.67) },
-            { idString: "gun_mount_stoner_63", position: Vec.create(-13.07, 13.87), rotation: 2 }, // TODO replace with SVU
+            { idString: "gun_mount_svu", position: Vec.create(-13.07, 13.87), rotation: 2 },
 
             // Living quarters hallway
             { idString: "metal_door", position: Vec.create(-25.4, -14.45), rotation: 1 },
