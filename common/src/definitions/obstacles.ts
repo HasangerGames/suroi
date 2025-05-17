@@ -5033,7 +5033,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         // zIndex: 9999
     },
     {
-        idString: "flooded_bunker_stair",
+        idString: "fulcrum_bunker_stair",
         name: "Flooded Bunker Stair",
         defType: DefinitionType.Obstacle,
         material: "metal_heavy",
@@ -5053,7 +5053,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         zIndex: ZIndexes.BuildingsFloor
     },
     {
-        idString: "flooded_bunker_collider_hack",
+        idString: "fulcrum_bunker_collider_hack",
         name: "Flooded Bunker Collider Hack",
         defType: DefinitionType.Obstacle,
         material: "metal_heavy",

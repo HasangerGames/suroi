@@ -10062,7 +10062,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]
     },
     {
-        idString: "flooded_bunker",
+        idString: "fulcrum_bunker",
         name: "Flooded Bunker",
         defType: DefinitionType.Building,
         spawnHitbox: new GroupHitbox(
@@ -10081,11 +10081,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         reflectBullets: true,
         collideWithLayers: Layers.Adjacent,
         floorImages: [
-            { key: "flooded_bunker_entrance", position: Vec.create(-30.2, -38), rotation: Math.PI },
-            { key: "flooded_bunker_entrance", position: Vec.create(-9.81, 44.9) }
+            { key: "fulcrum_bunker_entrance", position: Vec.create(-30.2, -38), rotation: Math.PI },
+            { key: "fulcrum_bunker_entrance", position: Vec.create(-9.81, 44.9) }
         ],
         obstacles: [
-            { idString: "flooded_bunker_collider_hack", position: Vec.create(0, 0), rotation: 0 },
+            { idString: "fulcrum_bunker_collider_hack", position: Vec.create(0, 0), rotation: 0 },
 
             // Upper entrance
             { idString: randomTree, position: Vec.create(-18.85, -38.2) },
@@ -10095,7 +10095,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "bush", position: Vec.create(-27.44, -47.82), rotation: 0 },
             { idString: "bush", position: Vec.create(-8.38, -28.77), rotation: 0 },
             { idString: "bush", position: Vec.create(-55.92, -38.54), rotation: 0 },
-            { idString: "flooded_bunker_stair", position: Vec.create(-30.2, -39.26), rotation: 0, layer: -1 },
+            { idString: "fulcrum_bunker_stair", position: Vec.create(-30.2, -39.26), rotation: 0, layer: -1 },
 
             // Lower entrance
             { idString: randomTree, position: Vec.create(-9.82, 32.88) },
@@ -10105,15 +10105,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "bush", position: Vec.create(16.63, 37.75) },
             { idString: "bush", position: Vec.create(-27.11, 35.18) },
             { idString: "bush", position: Vec.create(-5.24, 55.57) },
-            { idString: "flooded_bunker_stair", position: Vec.create(-9.81, 45.95), rotation: 2, layer: -1 }
+            { idString: "fulcrum_bunker_stair", position: Vec.create(-9.81, 45.95), rotation: 2, layer: -1 }
         ],
         subBuildings: [
             { idString: "shed_2", position: Vec.create(0, 0) },
-            { idString: "flooded_bunker_main", position: Vec.create(0, 0), layer: -2 }
+            { idString: "fulcrum_bunker_main", position: Vec.create(0, 0), layer: -2 }
         ]
     },
     {
-        idString: "flooded_bunker_main",
+        idString: "fulcrum_bunker_main",
         name: "Flooded Bunker",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(150, 110),
@@ -10172,11 +10172,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         floorImages: [
             {
-                key: "flooded_bunker_floor_1",
+                key: "fulcrum_bunker_floor_1",
                 position: Vec.create(-34.45, 0)
             },
             {
-                key: "flooded_bunker_floor_2",
+                key: "fulcrum_bunker_floor_2",
                 position: Vec.create(34.45, 0)
             }
         ],
@@ -10262,17 +10262,17 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: randomPallet, position: Vec.create(36, 22) },
             { idString: randomPallet, position: Vec.create(-25, 61), orientation: 1 },
             { idString: randomPallet, position: Vec.create(41, -16) },
-            { idString: "flooded_bunker_vault", position: Vec.create(-11.6, 6.3) }
+            { idString: "fulcrum_bunker_vault", position: Vec.create(-11.6, 6.3) }
         ]
     },
     {
-        idString: "flooded_bunker_vault",
+        idString: "fulcrum_bunker_vault",
         name: "Flooded Bunker Vault",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(26.4, 19.97),
         ceilingHitbox: RectangleHitbox.fromRect(26.4, 19.97),
         ceilingImages: [{
-            key: "flooded_bunker_vault_ceiling",
+            key: "fulcrum_bunker_vault_ceiling",
             position: Vec.create(0, 0),
             scale: Vec.create(2, 2)
         }]

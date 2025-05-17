@@ -207,7 +207,7 @@
         selected = hitboxes[0];
     }
 
-    const bgImage = loadImage("/img/game/normal/buildings/flooded_bunker_entrance.svg");
+    const bgImage = loadImage("/img/game/normal/buildings/fulcrum_bunker_entrance.svg");
 </script>
 
 <main>
