@@ -15,7 +15,7 @@
   "devDependencies": {
     "@swc/core": "^1.11.24",
     "@swc/helpers": "^0.5.17",
-    "@types/node": "^22.15.17",
+    "@types/node": "^22.15.18",
     "@types/sanitize-html": "^2.16.0",
     "nodemon": "^3.1.10",
     "regenerator-runtime": "^0.14.1",
@@ -26,6 +26,6 @@
   },
   "dependencies": {
     "croner": "^8.1.2",
-    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.51.0"
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.52.0"
   }
 }
