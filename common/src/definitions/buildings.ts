@@ -5517,7 +5517,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(18.84, 17.4, Vec.create(-0.76, -33.11)),
             RectangleHitbox.fromRect(4.1, 15.7, Vec.create(-11.07, -32.01)),
             RectangleHitbox.fromRect(3.81, 7.72, Vec.create(12.34, -34.62)),
-            RectangleHitbox.fromRect(9.24, 6.57, Vec.create(-16.35, -26.84)),
+            RectangleHitbox.fromRect(9.24, 6.57, Vec.create(-16, -26.84)),
             RectangleHitbox.fromRect(6.35, 5.5, Vec.create(14.84, -31.57)),
             RectangleHitbox.fromRect(3.37, 2.92, Vec.create(-13.83, -36.83)),
             RectangleHitbox.fromRect(9.24, 6.57, Vec.create(15.22, -27.24)),

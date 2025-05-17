@@ -1418,6 +1418,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         variations: 2,
         health: 200,
         reflectBullets: true,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.75
+        },
         frames: {
             particle: "washing_machine_particle"
         },
