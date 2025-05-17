@@ -4173,7 +4173,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         obstacles: [
             { idString: "melee_crate", position: Vec.create(8.39, 22.26) },
             { idString: "gun_case", position: Vec.create(9.12, 13.39), rotation: 3 },
-            { idString: "lamp", position: Vec.create(10.73, 17.07), rotation: 1, variation: 0 },
+            { idString: "lamp", position: Vec.create(10.73, -2), rotation: 1, variation: 0 },
             { idString: "vat", position: Vec.create(8.6, 4.53), rotation: 1, variation: 0 },
             { idString: "vat", position: Vec.create(8.9, -2.76), rotation: 1, variation: 1 },
             { idString: "vat", position: Vec.create(8.6, -10.05), rotation: 1, variation: 0 },
@@ -10319,7 +10319,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "trash_can", position: Vec.create(23.71, -27.38) },
             { idString: "potted_plant", position: Vec.create(44.72, -28.24) },
             { idString: "small_drawer", position: Vec.create(45.2, -35.82), rotation: 3 },
-            { idString: "bed", position: Vec.create(40.71, -45.2), rotation: 3 },
+            { idString: "bed", position: Vec.create(40.71, -45.2), rotation: 3 }
         ],
         subBuildings: [
             { idString: randomPallet, position: Vec.create(36, 22) },

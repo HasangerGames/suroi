@@ -1411,7 +1411,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             || object === this
                             || !(object.isPlayer || object.isObstacle || object.isBuilding || object.isProjectile)
                             || !object.damageable
-                            || (object.isObstacle && (object.definition.isStair))
+                            || (object.isObstacle && (object.definition.isStair || object.definition.noMeleeCollision))
                             || !adjacentOrEquivLayer(object, this.layer)
                             || !object.hitbox?.collidesWith(hitbox)
                         ) continue;
