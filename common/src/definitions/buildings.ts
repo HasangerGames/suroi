@@ -10138,6 +10138,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(14.65, 1.99, Vec.create(-60.3, 27.88)),
             RectangleHitbox.fromRect(1.99, 22.73, Vec.create(2.19, 18.04))
         ),
+        ceilingHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(136.17, 64.86, Vec.create(0.05, 9.38)),
+            RectangleHitbox.fromRect(76.22, 33.26, Vec.create(12.5, -35.12)),
+            RectangleHitbox.fromRect(42.91, 12.98, Vec.create(-46.62, -28.09)),
+            RectangleHitbox.fromRect(9.95, 10.28, Vec.create(-9.71, 46.62)),
+            RectangleHitbox.fromRect(9.95, 10.28, Vec.create(-30.3, -38.88))
+        ),
         material: "metal_heavy",
         particle: "plumpkin_bunker_particle",
         reflectBullets: true,
