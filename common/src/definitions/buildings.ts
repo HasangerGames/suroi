@@ -8108,8 +8108,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "couch_corner", position: Vec.create(-148.05, -41.34), rotation: 0 },
             { idString: "couch_part", position: Vec.create(-141.7, -41.19), rotation: 3 },
             { idString: "couch_end_right", position: Vec.create(-134.71, -40.81), rotation: 0 },
-            { idString: "house_column", position: Vec.create(-129.67, -12.68), rotation: 0 },
-            { idString: "house_column", position: Vec.create(-129.67, 9.58), rotation: 0 },
+            { idString: "house_column", position: Vec.create(-129.67, -12.68) },
+            { idString: "house_column", position: Vec.create(-129.67, 9.58) },
             { idString: "headquarters_wall_2", position: Vec.create(-141.6, -12.63), rotation: 0 },
             { idString: "headquarters_wall_2", position: Vec.create(-141.6, 9.58), rotation: 0 },
             { idString: "cabinet", position: Vec.create(-144.6, -8.7), rotation: 0 },
@@ -8177,8 +8177,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "file_cart", position: Vec.create(-21.24, -6.17), rotation: 3 },
             { idString: "headquarters_wall_4", position: Vec.create(3.21, -19.2), rotation: 0 },
             { idString: "headquarters_wall_4", position: Vec.create(3.21, 3.27), rotation: 0 },
-            { idString: "house_column", position: Vec.create(-6.3, -19.07), rotation: 0 },
-            { idString: "house_column", position: Vec.create(-6.3, 3.22), rotation: 0 },
+            { idString: "house_column", position: Vec.create(-6.3, -19.07) },
+            { idString: "house_column", position: Vec.create(-6.3, 3.22) },
             { idString: "house_wall_15", position: Vec.create(-44.24, -4.36), rotation: 0 },
 
             // northeast hall
@@ -10267,7 +10267,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             // Lower left storage area
             { idString: "metal_door", position: Vec.create(-47.58, 27.93), rotation: 0 },
-            { idString: "flint_crate", position: Vec.create(-61.56, 34.57), rotation: 0 },
+            { idString: "flint_crate", position: Vec.create(-61.56, 34.57) },
             { idString: "box", position: Vec.create(-38.44, 31.91), rotation: 0 },
             { idString: "box", position: Vec.create(-40.55, 37.07), rotation: 0 },
 
