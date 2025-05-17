@@ -887,7 +887,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         ammoSpawnAmount: 90,
         capacity: 30,
         extendedCapacity: 40,
-        reloadTime: 2.75,
+        reloadTime: 3.2,
         fireDelay: 120,
         switchDelay: 400,
         speedMultiplier: 1,
@@ -905,16 +905,18 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         },
         image: { position: Vec.create(90, 1.5) },
         casingParticles: [{
+            frame: "casing_762x54mmR",
             position: Vec.create(4, 0.4)
         }],
-        gasParticles: gasParticlePresets.automatic,
+        noMuzzleFlash: true,
         ballistics: {
-            damage: 16,
+            damage: 17,
             obstacleMultiplier: 1.5,
             speed: 0.3,
             range: 180,
             tracer: {
-                length: 1.4
+                length: 1.4,
+                opacity: 0.15
             }
         }
     },
