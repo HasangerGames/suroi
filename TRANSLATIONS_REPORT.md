@@ -140,8 +140,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
-## 🇧🇷 Português (Brasil) (96% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (95% Complete) - br.hjson
 
 ### Invalid Keys
 
@@ -166,8 +168,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
-## 🇨🇿 Čeština (67% Complete) - cz.hjson
+## 🇨🇿 Čeština (66% Complete) - cz.hjson
 
 ### Invalid Keys
 
@@ -294,8 +298,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
-## 🇩🇪 Deutsch (76% Complete) - de.hjson
+## 🇩🇪 Deutsch (75% Complete) - de.hjson
 
 ### Invalid Keys
 
@@ -389,6 +395,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
 ## 🇬🇧 English (100% Complete) - en.hjson
 
@@ -396,7 +404,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### (No Undefined Keys)
 
-## 🇪🇸 Español (72% Complete) - es.hjson
+## 🇪🇸 Español (71% Complete) - es.hjson
 
 ### Invalid Keys
 
@@ -505,8 +513,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
-## 🇪🇪 eesti (72% Complete) - et.hjson
+## 🇪🇪 eesti (71% Complete) - et.hjson
 
 ### Invalid Keys
 
@@ -616,6 +626,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
 ## 🇫🇮 suomi (70% Complete) - fi.hjson
 
@@ -731,6 +743,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
 ## 🇫🇷 Français (88% Complete) - fr.hjson
 
@@ -782,6 +796,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
 ## 🇬🇷 Ελληνικά (77% Complete) - gr.hjson
 
@@ -873,6 +889,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
 ## 🇭🇰 🇲🇴 廣東話(香港/澳門) (65% Complete) - hk_mo.hjson
 
@@ -1005,8 +1023,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
-## 🇭🇺 Magyar (78% Complete) - hu.hjson
+## 🇭🇺 Magyar (77% Complete) - hu.hjson
 
 ### Invalid Keys
 
@@ -1094,8 +1114,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
-## 🇮🇹 Italiano (64% Complete) - it.hjson
+## 🇮🇹 Italiano (63% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -1241,136 +1263,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
-## 🇯🇵 日本語 (67% Complete) - jp.hjson
-
-### Invalid Keys
-
-- Key `create_team_waiting` is not a valid key
-
-### Undefined Keys
-
-- Key `msg_error_kicked_team` is not defined
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `msg_punishment_warn_agreement` is not defined
-- Key `warning_hw_accel_1` is not defined
-- Key `warning_hw_accel_2` is not defined
-- Key `warning_hw_accel_link` is not defined
-- Key `privacy` is not defined
-- Key `donate` is not defined
-- Key `wiki` is not defined
-- Key `bindings_fullscreen` is not defined
-- Key `recording` is not defined
-- Key `settings_ambience_volume` is not defined
-- Key `settings_ambient_particles` is not defined
-- Key `settings_record_res` is not defined
-- Key `settings_alt_texture_loading` is not defined
-- Key `settings_show_inout` is not defined
-- Key `settings_gyro_angle` is not defined
-- Key `settings_lock_joysticks` is not defined
-- Key `settings_switch_joysticks` is not defined
-- Key `settings_left_joystick_color` is not defined
-- Key `settings_right_joystick_color` is not defined
-- Key `settings_normal_joystick_info` is not defined
-- Key `settings_switched_joystick_info` is not defined
-- Key `settings_haptics` is not defined
-- Key `msg_your_team_eliminated` is not defined
-- Key `msg_the_team_eliminated` is not defined
-- Key `msg_not_enough_space` is not defined
-- Key `msg_item_already_equipped` is not defined
-- Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
-- Key `final_gas_waiting` is not defined
-- Key `final_gas_advancing` is not defined
-- Key `action_vaccine_syringe_use` is not defined
-- Key `interact_speaker` is not defined
-- Key `interact_monument` is not defined
-- Key `loading_fetching_data_failed` is not defined
-- Key `retry` is not defined
-- Key `bindings_explode_c4` is not defined
-- Key `bindings_screen_record` is not defined
-- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
-- Key `kf_suicide_finished_off` is not defined
-- Key `kf_impact_of` is not defined
-- Key `km_finally_ended_yourself` is not defined
-- Key `km_finally_killed` is not defined
-- Key `km_gas_kill_you` is not defined
-- Key `km_gas_down_you` is not defined
-- Key `km_airdrop_kill_you` is not defined
-- Key `km_airdrop_down_you` is not defined
-- Key `km_knocked_you` is not defined
-- Key `km_finished_off_you` is not defined
-- Key `km_killed_you` is not defined
-- Key `km_suicide_down` is not defined
-- Key `km_suicide_finished_off` is not defined
-- Key `tt_desc` is not defined
-- Key `create_team_force_start` is not defined
-- Key `create_team_ready` is not defined
-- Key `create_team_not_ready` is not defined
-- Key `region_oc` is not defined
-- Key `vaccine_syringe` is not defined
-- Key `vaccine_syringe_desc` is not defined
-- Key `second_wind` is not defined
-- Key `second_wind_desc` is not defined
-- Key `flechettes` is not defined
-- Key `flechettes_desc` is not defined
-- Key `sabot_rounds` is not defined
-- Key `sabot_rounds_desc` is not defined
-- Key `extended_mags` is not defined
-- Key `extended_mags_desc` is not defined
-- Key `demo_expert` is not defined
-- Key `demo_expert_desc` is not defined
-- Key `advanced_athletics` is not defined
-- Key `advanced_athletics_desc` is not defined
-- Key `toploaded` is not defined
-- Key `toploaded_desc` is not defined
-- Key `infinite_ammo` is not defined
-- Key `infinite_ammo_desc` is not defined
-- Key `field_medic` is not defined
-- Key `field_medic_desc` is not defined
-- Key `berserker` is not defined
-- Key `berserker_desc` is not defined
-- Key `close_quarters_combat` is not defined
-- Key `close_quarters_combat_desc` is not defined
-- Key `low_profile` is not defined
-- Key `low_profile_desc` is not defined
-- Key `combat_expert` is not defined
-- Key `combat_expert_desc` is not defined
-- Key `precision_recycling` is not defined
-- Key `precision_recycling_desc` is not defined
-- Key `plumpkin_gamble` is not defined
-- Key `plumpkin_gamble_desc` is not defined
-- Key `lycanthropy` is not defined
-- Key `lycanthropy_desc` is not defined
-- Key `bloodthirst` is not defined
-- Key `bloodthirst_desc` is not defined
-- Key `plumpkin_bomb` is not defined
-- Key `plumpkin_bomb_desc` is not defined
-- Key `shrouded` is not defined
-- Key `shrouded_desc` is not defined
-- Key `experimental_treatment` is not defined
-- Key `experimental_treatment_desc` is not defined
-- Key `engorged` is not defined
-- Key `engorged_desc` is not defined
-- Key `baby_plumpkin_pie` is not defined
-- Key `costumed` is not defined
-- Key `costumed_desc` is not defined
-- Key `torn_pockets` is not defined
-- Key `torn_pockets_desc` is not defined
-- Key `claustrophobic` is not defined
-- Key `claustrophobic_desc` is not defined
-- Key `laced_stimulants` is not defined
-- Key `laced_stimulants_desc` is not defined
-- Key `rotten_plumpkin` is not defined
-- Key `rotten_plumpkin_desc` is not defined
-- Key `infected` is not defined
-- Key `infected_desc` is not defined
-- Key `immunity` is not defined
-- Key `immunity_desc` is not defined
-
-## 🇱🇹 Lietuvių (67% Complete) - lt.hjson
+## 🇯🇵 日本語 (66% Complete) - jp.hjson
 
 ### Invalid Keys
 
@@ -1497,8 +1393,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
-## 🇱🇻 Latviešu (67% Complete) - lv.hjson
+## 🇱🇹 Lietuvių (66% Complete) - lt.hjson
 
 ### Invalid Keys
 
@@ -1625,8 +1523,140 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
-## 🇳🇱 Nederlands (99% Complete) - nl.hjson
+## 🇱🇻 Latviešu (66% Complete) - lv.hjson
+
+### Invalid Keys
+
+- Key `create_team_waiting` is not a valid key
+
+### Undefined Keys
+
+- Key `msg_error_kicked_team` is not defined
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `msg_punishment_warn_agreement` is not defined
+- Key `warning_hw_accel_1` is not defined
+- Key `warning_hw_accel_2` is not defined
+- Key `warning_hw_accel_link` is not defined
+- Key `privacy` is not defined
+- Key `donate` is not defined
+- Key `wiki` is not defined
+- Key `bindings_fullscreen` is not defined
+- Key `recording` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `settings_record_res` is not defined
+- Key `settings_alt_texture_loading` is not defined
+- Key `settings_show_inout` is not defined
+- Key `settings_gyro_angle` is not defined
+- Key `settings_lock_joysticks` is not defined
+- Key `settings_switch_joysticks` is not defined
+- Key `settings_left_joystick_color` is not defined
+- Key `settings_right_joystick_color` is not defined
+- Key `settings_normal_joystick_info` is not defined
+- Key `settings_switched_joystick_info` is not defined
+- Key `settings_haptics` is not defined
+- Key `msg_your_team_eliminated` is not defined
+- Key `msg_the_team_eliminated` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `final_gas_waiting` is not defined
+- Key `final_gas_advancing` is not defined
+- Key `action_vaccine_syringe_use` is not defined
+- Key `interact_speaker` is not defined
+- Key `interact_monument` is not defined
+- Key `loading_fetching_data_failed` is not defined
+- Key `retry` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `bindings_screen_record` is not defined
+- Key `bindings_toggle pf_net_graph 0 1 2` is not defined
+- Key `kf_suicide_finished_off` is not defined
+- Key `kf_impact_of` is not defined
+- Key `km_finally_ended_yourself` is not defined
+- Key `km_finally_killed` is not defined
+- Key `km_gas_kill_you` is not defined
+- Key `km_gas_down_you` is not defined
+- Key `km_airdrop_kill_you` is not defined
+- Key `km_airdrop_down_you` is not defined
+- Key `km_knocked_you` is not defined
+- Key `km_finished_off_you` is not defined
+- Key `km_killed_you` is not defined
+- Key `km_suicide_down` is not defined
+- Key `km_suicide_finished_off` is not defined
+- Key `tt_desc` is not defined
+- Key `create_team_force_start` is not defined
+- Key `create_team_ready` is not defined
+- Key `create_team_not_ready` is not defined
+- Key `region_oc` is not defined
+- Key `vaccine_syringe` is not defined
+- Key `vaccine_syringe_desc` is not defined
+- Key `second_wind` is not defined
+- Key `second_wind_desc` is not defined
+- Key `flechettes` is not defined
+- Key `flechettes_desc` is not defined
+- Key `sabot_rounds` is not defined
+- Key `sabot_rounds_desc` is not defined
+- Key `extended_mags` is not defined
+- Key `extended_mags_desc` is not defined
+- Key `demo_expert` is not defined
+- Key `demo_expert_desc` is not defined
+- Key `advanced_athletics` is not defined
+- Key `advanced_athletics_desc` is not defined
+- Key `toploaded` is not defined
+- Key `toploaded_desc` is not defined
+- Key `infinite_ammo` is not defined
+- Key `infinite_ammo_desc` is not defined
+- Key `field_medic` is not defined
+- Key `field_medic_desc` is not defined
+- Key `berserker` is not defined
+- Key `berserker_desc` is not defined
+- Key `close_quarters_combat` is not defined
+- Key `close_quarters_combat_desc` is not defined
+- Key `low_profile` is not defined
+- Key `low_profile_desc` is not defined
+- Key `combat_expert` is not defined
+- Key `combat_expert_desc` is not defined
+- Key `precision_recycling` is not defined
+- Key `precision_recycling_desc` is not defined
+- Key `plumpkin_gamble` is not defined
+- Key `plumpkin_gamble_desc` is not defined
+- Key `lycanthropy` is not defined
+- Key `lycanthropy_desc` is not defined
+- Key `bloodthirst` is not defined
+- Key `bloodthirst_desc` is not defined
+- Key `plumpkin_bomb` is not defined
+- Key `plumpkin_bomb_desc` is not defined
+- Key `shrouded` is not defined
+- Key `shrouded_desc` is not defined
+- Key `experimental_treatment` is not defined
+- Key `experimental_treatment_desc` is not defined
+- Key `engorged` is not defined
+- Key `engorged_desc` is not defined
+- Key `baby_plumpkin_pie` is not defined
+- Key `costumed` is not defined
+- Key `costumed_desc` is not defined
+- Key `torn_pockets` is not defined
+- Key `torn_pockets_desc` is not defined
+- Key `claustrophobic` is not defined
+- Key `claustrophobic_desc` is not defined
+- Key `laced_stimulants` is not defined
+- Key `laced_stimulants_desc` is not defined
+- Key `rotten_plumpkin` is not defined
+- Key `rotten_plumpkin_desc` is not defined
+- Key `infected` is not defined
+- Key `infected_desc` is not defined
+- Key `immunity` is not defined
+- Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
+
+## 🇳🇱 Nederlands (98% Complete) - nl.hjson
 
 ### (No Invalid Keys)
 
@@ -1636,6 +1666,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
 ## 🇵🇱 Polski (70% Complete) - pl.hjson
 
@@ -1751,6 +1783,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
 ## 🎀 Cute Engwish (74% Complete) - qen.hjson
 
@@ -1851,8 +1885,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
-## 🇷🇴 Română (83% Complete) - ro.hjson
+## 🇷🇴 Română (82% Complete) - ro.hjson
 
 ### Invalid Keys
 
@@ -1921,6 +1957,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
 ## 🇷🇺 Русский (98% Complete) - ru.hjson
 
@@ -1936,6 +1974,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `m16a4` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
 ## 🇮🇳 தமிழ் (78% Complete) - ta.hjson
 
@@ -2023,6 +2063,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
 ## 🇹🇷 Turkısh (82% Complete) - tr.hjson
 
@@ -2097,6 +2139,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
 ## 🇹🇼 中文（繁體） (78% Complete) - tw.hjson
 
@@ -2184,6 +2228,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
 ## 🇻🇳 Tiếng Việt (73% Complete) - vi.hjson
 
@@ -2289,6 +2335,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
+- Key `partners` is not defined
+- Key `username_placeholder` is not defined
 
 ## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
 
@@ -2334,88 +2382,110 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bdg_fire` is not a valid key
 - Key `bdg_colon_three` is not a valid key
 - Key `bdg_suroi_general_chat` is not a valid key
-- Key `happy_face` is not a valid key
-- Key `sad_face` is not a valid key
-- Key `thumbs_up` is not a valid key
-- Key `thumbs_down` is not a valid key
-- Key `wave` is not a valid key
-- Key `disappointed_face` is not a valid key
-- Key `sobbing_face` is not a valid key
-- Key `angry_face` is not a valid key
-- Key `heart_face` is not a valid key
-- Key `joyful_face` is not a valid key
-- Key `cool_face` is not a valid key
-- Key `upside_down_face` is not a valid key
-- Key `picasso_face` is not a valid key
-- Key `alien` is not a valid key
-- Key `headshot` is not a valid key
-- Key `dab` is not a valid key
-- Key `devil_face` is not a valid key
-- Key `bandaged_face` is not a valid key
-- Key `cold_face` is not a valid key
-- Key `thinking_face` is not a valid key
-- Key `nervous_face` is not a valid key
-- Key `sweating_face` is not a valid key
-- Key `greedy_face` is not a valid key
-- Key `creepy_clown` is not a valid key
-- Key `lying_face` is not a valid key
-- Key `nerd_face` is not a valid key
-- Key `skull` is not a valid key
-- Key `melting_face` is not a valid key
-- Key `grimacing_face` is not a valid key
-- Key `vomiting_face` is not a valid key
-- Key `screaming_face` is not a valid key
-- Key `pleading_face` is not a valid key
-- Key `sad_smiling_face` is not a valid key
-- Key `triumphant_face` is not a valid key
-- Key `questioning_face` is not a valid key
-- Key `smirking_face` is not a valid key
-- Key `blushing_face` is not a valid key
-- Key `saluting_face` is not a valid key
-- Key `neutral_face` is not a valid key
-- Key `relieved_face` is not a valid key
-- Key `monocle_face` is not a valid key
-- Key `partying_face` is not a valid key
-- Key `shushing_face` is not a valid key
-- Key `zipper_mouth_face` is not a valid key
-- Key `sighing_face` is not a valid key
-- Key `frustrated_face` is not a valid key
-- Key `suroi_logo` is not a valid key
-- Key `aegis_logo` is not a valid key
-- Key `flint_logo` is not a valid key
-- Key `duel` is not a valid key
-- Key `chicken_dinner` is not a valid key
-- Key `trophy` is not a valid key
-- Key `troll_face` is not a valid key
-- Key `clueless` is not a valid key
-- Key `pog` is not a valid key
-- Key `froog` is not a valid key
-- Key `bleh` is not a valid key
-- Key `muller` is not a valid key
-- Key `suroi_general_chat` is not a valid key
-- Key `fire` is not a valid key
-- Key `rip` is not a valid key
-- Key `leosmug` is not a valid key
-- Key `socks` is not a valid key
-- Key `archimedes` is not a valid key
-- Key `awhhmahgawd` is not a valid key
-- Key `boykisser` is not a valid key
-- Key `question_mark` is not a valid key
-- Key `team_=_ban` is not a valid key
-- Key `hack_=_ban` is not a valid key
-- Key `gg` is not a valid key
-- Key `ez` is not a valid key
-- Key `hi5` is not a valid key
-- Key `oof` is not a valid key
-- Key `real` is not a valid key
-- Key `fake` is not a valid key
-- Key `colon_three` is not a valid key
-- Key `monkey` is not a valid key
-- Key `carrot` is not a valid key
-- Key `tomato` is not a valid key
-- Key `egg` is not a valid key
-- Key `penguin` is not a valid key
-- Key `squid` is not a valid key
+- Key `emote_happy_face` is not a valid key
+- Key `emote_sad_face` is not a valid key
+- Key `emote_thumbs_up` is not a valid key
+- Key `emote_thumbs_down` is not a valid key
+- Key `emote_wave` is not a valid key
+- Key `emote_disappointed_face` is not a valid key
+- Key `emote_sobbing_face` is not a valid key
+- Key `emote_angry_face` is not a valid key
+- Key `emote_heart_face` is not a valid key
+- Key `emote_flushed_face` is not a valid key
+- Key `emote_joyful_face` is not a valid key
+- Key `emote_cool_face` is not a valid key
+- Key `emote_upside_down_face` is not a valid key
+- Key `emote_picasso_face` is not a valid key
+- Key `emote_alien` is not a valid key
+- Key `emote_headshot` is not a valid key
+- Key `emote_panned` is not a valid key
+- Key `emote_dab` is not a valid key
+- Key `emote_devil_face` is not a valid key
+- Key `emote_bandaged_face` is not a valid key
+- Key `emote_cold_face` is not a valid key
+- Key `emote_thinking_face` is not a valid key
+- Key `emote_nervous_face` is not a valid key
+- Key `emote_sweating_face` is not a valid key
+- Key `emote_greedy_face` is not a valid key
+- Key `emote_creepy_clown` is not a valid key
+- Key `emote_lying_face` is not a valid key
+- Key `emote_nerd_face` is not a valid key
+- Key `emote_side_eye_face` is not a valid key
+- Key `emote_man_face` is not a valid key
+- Key `emote_satisfied_face` is not a valid key
+- Key `emote_hot_face` is not a valid key
+- Key `emote_blind_walking` is not a valid key
+- Key `emote_melting_face` is not a valid key
+- Key `emote_grimacing_face` is not a valid key
+- Key `emote_vomiting_face` is not a valid key
+- Key `emote_screaming_face` is not a valid key
+- Key `emote_pleading_face` is not a valid key
+- Key `emote_sad_smiling_face` is not a valid key
+- Key `emote_triumphant_face` is not a valid key
+- Key `emote_questioning_face` is not a valid key
+- Key `emote_shrugging_face` is not a valid key
+- Key `emote_facepalm` is not a valid key
+- Key `emote_smirking_face` is not a valid key
+- Key `emote_blushing_face` is not a valid key
+- Key `emote_saluting_face` is not a valid key
+- Key `emote_neutral_face` is not a valid key
+- Key `emote_relieved_face` is not a valid key
+- Key `emote_monocle_face` is not a valid key
+- Key `emote_partying_face` is not a valid key
+- Key `emote_shushing_face` is not a valid key
+- Key `emote_sighing_face` is not a valid key
+- Key `emote_yawning_face` is not a valid key
+- Key `emote_frustrated_face` is not a valid key
+- Key `emote_weary_face` is not a valid key
+- Key `emote_pensive_face` is not a valid key
+- Key `emote_zipper_mouth_face` is not a valid key
+- Key `emote_zombie_face` is not a valid key
+- Key `emote_question_mark` is not a valid key
+- Key `emote_team_=_ban` is not a valid key
+- Key `emote_hack_=_ban` is not a valid key
+- Key `emote_gg` is not a valid key
+- Key `emote_ez` is not a valid key
+- Key `emote_hi5` is not a valid key
+- Key `emote_oof` is not a valid key
+- Key `emote_real` is not a valid key
+- Key `emote_fake` is not a valid key
+- Key `emote_colon_three` is not a valid key
+- Key `emote_lag` is not a valid key
+- Key `emote_troll_face` is not a valid key
+- Key `emote_clueless` is not a valid key
+- Key `emote_pog` is not a valid key
+- Key `emote_froog` is not a valid key
+- Key `emote_bleh` is not a valid key
+- Key `emote_muller` is not a valid key
+- Key `emote_suroi_general_chat` is not a valid key
+- Key `emote_rip` is not a valid key
+- Key `emote_leosmug` is not a valid key
+- Key `emote_socks` is not a valid key
+- Key `emote_archimedes` is not a valid key
+- Key `emote_awhhmahgawd` is not a valid key
+- Key `emote_boykisser` is not a valid key
+- Key `emote_grr` is not a valid key
+- Key `emote_are_you_sure` is not a valid key
+- Key `emote_suroi_logo` is not a valid key
+- Key `emote_aegis_logo` is not a valid key
+- Key `emote_flint_logo` is not a valid key
+- Key `emote_nsd_logo` is not a valid key
+- Key `emote_duel` is not a valid key
+- Key `emote_skull` is not a valid key
+- Key `emote_chicken_dinner` is not a valid key
+- Key `emote_trophy` is not a valid key
+- Key `emote_fire` is not a valid key
+- Key `emote_penguin` is not a valid key
+- Key `emote_squid` is not a valid key
+- Key `emote_eagle` is not a valid key
+- Key `emote_whale` is not a valid key
+- Key `emote_carrot` is not a valid key
+- Key `emote_egg` is not a valid key
+- Key `emote_plumpkin` is not a valid key
+- Key `emote_leek` is not a valid key
+- Key `emote_tomato` is not a valid key
+- Key `emote_logged` is not a valid key
+- Key `emote_sun_and_moon` is not a valid key
 - Key `barrel_explosion` is not a valid key
 - Key `stove_explosion` is not a valid key
 - Key `fireplace_explosion` is not a valid key

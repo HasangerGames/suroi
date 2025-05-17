@@ -1392,6 +1392,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         name: "Lamp",
         defType: DefinitionType.Obstacle,
         material: "glass",
+        variations: 2,
         health: 69,
         indestructible: true,
         scale: {
@@ -1406,6 +1407,28 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         noMeleeCollision: true,
         rotationMode: RotationMode.Limited,
         zIndex: ZIndexes.BuildingsCeiling - 2
+    },
+    {
+        idString: "vat",
+        name: "Vat",
+        defType: DefinitionType.Obstacle,
+        rotationMode: RotationMode.Limited,
+        material: "appliance",
+        noResidue: true,
+        variations: 2,
+        health: 200,
+        reflectBullets: true,
+        frames: {
+            particle: "washing_machine_particle"
+        },
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(7.03, 3.98, Vec.create(0, 1.19)),
+            RectangleHitbox.fromRect(5.61, 2.74, Vec.create(-0.03, -1.27)),
+            RectangleHitbox.fromRect(1, 3.79, Vec.create(-3.03, -0.21)),
+            RectangleHitbox.fromRect(1, 3.79, Vec.create(3.01, -0.21)),
+            new CircleHitbox(0.56, Vec.create(2.69, -2.09)),
+            new CircleHitbox(0.56, Vec.create(-2.63, -2.11))
+        )
     },
     {
         idString: "detector_walls",

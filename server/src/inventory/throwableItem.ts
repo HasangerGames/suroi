@@ -80,7 +80,6 @@ export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwa
         return this._cooking;
     }
 
-
     private _cook(): void {
         if (this._cooking) return;
         this._cooking = true;

@@ -4111,7 +4111,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     },
     {
         idString: "cargo_ship_bottom_floor_vault",
-        name: "Cargo Ship Vault Ceiling",
+        name: "Cargo Ship Vault",
         defType: DefinitionType.Building,
         spawnHitbox: new GroupHitbox(
             RectangleHitbox.fromRect(28.15, 52.25),
@@ -4120,11 +4120,83 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ),
         ceilingHitbox: RectangleHitbox.fromRect(28.15, 52.25),
         ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
+        material: "metal_heavy",
+        particle: "metal_particle",
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1.98, 55, Vec.create(13.11, -0.55)),
+            RectangleHitbox.fromRect(1.98, 55, Vec.create(-13.11, 0.55)),
+            RectangleHitbox.fromRect(15.65, 2.02, Vec.create(4.5, 8.85)),
+            RectangleHitbox.fromRect(15.65, 2.02, Vec.create(-4.5, -14.1)),
+            RectangleHitbox.fromRect(13.99, 2.02, Vec.create(7.15, 27.2)),
+            RectangleHitbox.fromRect(13.99, 2.02, Vec.create(-7.15, -27.2))
+        ),
+        floorImages: [{
+            key: "cargo_ship_vault_floor",
+            position: Vec.create(0, 0)
+        }],
         ceilingImages: [{
             key: "cargo_ship_vault_ceiling",
             position: Vec.create(0, 0),
             scale: Vec.create(2, 2)
-        }]
+        }],
+        obstacles: [
+            { idString: "gun_case", position: Vec.create(-8.84, -20.65), rotation: 1 },
+            { idString: "lamp", position: Vec.create(4.52, 6.59), rotation: 0, variation: 0 },
+            { idString: "melee_crate", position: Vec.create(8.41, 4.07) },
+            { idString: "grenade_crate", position: Vec.create(1.5, 4.07) },
+            { idString: "gun_locker", position: Vec.create(-5.08, -10.13), rotation: 0 },
+            {
+                idString: {
+                    tango_crate: 1,
+                    briefcase: 0.75
+                },
+                position: Vec.create(7.56, 18.02),
+                rotation: 3
+            }
+        ]
+    },
+    {
+        idString: "cargo_ship_bottom_floor_vault_special",
+        name: "Cargo Ship Vault",
+        defType: DefinitionType.Building,
+        spawnHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(28.15, 52.25),
+            RectangleHitbox.fromRect(14, 4, Vec.create(7.1, 26.3)),
+            RectangleHitbox.fromRect(14, 4, Vec.create(-7.1, -26.3))
+        ),
+        ceilingHitbox: RectangleHitbox.fromRect(28.15, 52.25),
+        ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
+        material: "metal_heavy",
+        particle: "metal_particle",
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1.98, 55, Vec.create(13.11, -0.55)),
+            RectangleHitbox.fromRect(1.98, 55, Vec.create(-13.11, 0.55)),
+            RectangleHitbox.fromRect(13.99, 2.02, Vec.create(7.15, 27.2)),
+            RectangleHitbox.fromRect(13.99, 2.02, Vec.create(-7.15, -27.2))
+        ),
+        floorImages: [{
+            key: "cargo_ship_vault_floor_secret",
+            position: Vec.create(0, 0),
+            scale: Vec.create(-1, -1)
+        }],
+        ceilingImages: [{
+            key: "cargo_ship_vault_ceiling",
+            position: Vec.create(0, 0),
+            scale: Vec.create(2, 2)
+        }],
+        obstacles: [
+            { idString: "melee_crate", position: Vec.create(8.39, 22.26) },
+            { idString: "gun_case", position: Vec.create(9.12, 13.39), rotation: 3 },
+            { idString: "lamp", position: Vec.create(10.73, 17.07), rotation: 1, variation: 0 },
+            { idString: "vat", position: Vec.create(8.6, 4.53), rotation: 1, variation: 0 },
+            { idString: "vat", position: Vec.create(8.9, -2.76), rotation: 1, variation: 1 },
+            { idString: "vat", position: Vec.create(8.6, -10.05), rotation: 1, variation: 0 },
+            { idString: "propane_tank", position: Vec.create(9.9, -15.74) },
+            { idString: "vat", position: Vec.create(-8.9, 12.8), rotation: 3, variation: 1 },
+            { idString: "vat", position: Vec.create(-8.6, 5.49), rotation: 3, variation: 0 },
+            { idString: "lamp", position: Vec.create(-10.82, -6.98), rotation: 3, variation: 1 },
+            { idString: "recorder", position: Vec.create(-7.5, -22.73), rotation: 0 } // TODO
+        ]
     },
     {
         idString: "cargo_ship",
@@ -4251,14 +4323,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(16.86, 2.05, Vec.create(24.22, -46.97)),
             RectangleHitbox.fromRect(16.86, 2.05, Vec.create(24.22, -33.71)),
             RectangleHitbox.fromRect(2.04, 15.36, Vec.create(16.47, -40.33)),
-
-            // vault
-            RectangleHitbox.fromRect(13.99, 2.02, Vec.create(39.39, -62.58)),
-            RectangleHitbox.fromRect(1.98, 53.64, Vec.create(45.35, -89.15)),
-            RectangleHitbox.fromRect(1.98, 55, Vec.create(19.15, -90.42)),
-            RectangleHitbox.fromRect(15.65, 2.02, Vec.create(36.84, -75.7)),
-            RectangleHitbox.fromRect(13.99, 2.02, Vec.create(25.12, -116.96)),
-            RectangleHitbox.fromRect(15.65, 2.02, Vec.create(27.68, -98.66)),
 
             new CircleHitbox(5, Vec.create(-50.17, -138.59)),
             new CircleHitbox(7.68, Vec.create(-3.57, -191.99)),
@@ -4495,33 +4559,25 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             { idString: "super_barrel", position: Vec.create(-3.23, 34.68) },
 
-            { idString: "lamp", position: Vec.create(-50.67, 15.54), rotation: 3 },
-            { idString: "lamp", position: Vec.create(-2.16, -152.24), rotation: 2 },
-            { idString: "lamp", position: Vec.create(-2.17, 91.52), rotation: 0 },
-            { idString: "lamp", position: Vec.create(46.65, 118.81), rotation: 1 },
-            { idString: "lamp", position: Vec.create(-50.92, 118.9), rotation: 3 },
-            { idString: "lamp", position: Vec.create(-50.67, -83.62), rotation: 3 },
-
-            // vault
-            { idString: "lamp", position: Vec.create(27.09, -96.53), rotation: 2 },
-            {
-                idString: {
-                    tango_crate: 1,
-                    briefcase: 0.75
-                },
-                position: Vec.create(24.7, -107.96),
-                rotation: 1
-            },
-            { idString: "melee_crate", position: Vec.create(23.67, -93.73) },
-            { idString: "grenade_crate", position: Vec.create(30.51, -93.73) },
-            { idString: "gun_locker", position: Vec.create(37.53, -79.28), rotation: 2 },
-            { idString: "gun_case", position: Vec.create(41.05, -69.07), rotation: 3 }
+            { idString: "lamp", position: Vec.create(-50.67, 15.54), rotation: 3, variation: 0 },
+            { idString: "lamp", position: Vec.create(-2.16, -152.24), rotation: 2, variation: 0 },
+            { idString: "lamp", position: Vec.create(-2.17, 91.52), rotation: 0, variation: 0 },
+            { idString: "lamp", position: Vec.create(46.65, 118.81), rotation: 1, variation: 0 },
+            { idString: "lamp", position: Vec.create(-50.92, 118.9), rotation: 3, variation: 0 },
+            { idString: "lamp", position: Vec.create(-50.67, -83.62), rotation: 3, variation: 0 }
         ],
         subBuildings: [
             { idString: "mutated_forklift", position: Vec.create(-0.47, -76.52), orientation: 3 },
             { idString: randomPortDamagedContainerReversed, position: Vec.create(-101.24, 0.44), orientation: 2 },
 
-            { idString: "cargo_ship_bottom_floor_vault", position: Vec.create(32.38, -89.75) },
+            {
+                idString: {
+                    cargo_ship_bottom_floor_vault: 1,
+                    cargo_ship_bottom_floor_vault_special: 0.1
+                },
+                position: Vec.create(-32.38, 89.75),
+                orientation: 2
+            },
             { idString: "cargo_ship_top_floor_shadow", position: Vec.create(-1.8, -3.2) },
 
             // ----------------------------------
