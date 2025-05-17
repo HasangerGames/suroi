@@ -878,6 +878,49 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         }
     },
     {
+        idString: "svu",
+        name: "SVU-A",
+        defType: DefinitionType.Gun,
+        itemType: ItemType.Gun,
+        tier: Tier.A,
+        ammoType: "762mm",
+        ammoSpawnAmount: 90,
+        capacity: 30,
+        extendedCapacity: 40,
+        reloadTime: 3.2,
+        fireDelay: 120,
+        switchDelay: 400,
+        speedMultiplier: 1,
+        recoilMultiplier: 0.725,
+        recoilDuration: 150,
+        fireMode: FireMode.Auto,
+        shotSpread: 3,
+        moveSpread: 8,
+        length: 8.4,
+        fists: {
+            left: Vec.create(100, -8),
+            right: Vec.create(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: Vec.create(90, 1.5) },
+        casingParticles: [{
+            frame: "casing_762x54mmR",
+            position: Vec.create(4, 0.4)
+        }],
+        noMuzzleFlash: true,
+        ballistics: {
+            damage: 21,
+            obstacleMultiplier: 1.5,
+            speed: 0.3,
+            range: 180,
+            tracer: {
+                length: 1.4,
+                opacity: 0.15
+            }
+        }
+    },
+    {
         idString: "m16a2",
         name: "M16A2",
         defType: DefinitionType.Gun,

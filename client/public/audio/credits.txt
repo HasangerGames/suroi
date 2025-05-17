@@ -59,6 +59,8 @@ Guns:
 
   Vaccinator fire - "Simple Gunshot Reverb Test" from Pixabay: https://pixabay.com/sound-effects/simple-gunshot-reverb-test-101094/
 
+  SVU-A reload & switch - "M14" from Pixabay: https://pixabay.com/sound-effects/m14-168859/
+
   Other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
 
 Melees:

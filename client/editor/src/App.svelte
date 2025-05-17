@@ -6,17 +6,23 @@
         GroupHitbox,
         type HitboxJSON,
         HitboxType,
-        RectangleHitbox
+        RectangleHitbox,
+
+        type ShapeHitbox
+
     } from "../../../common/src/utils/hitbox";
     import { Numeric } from "../../../common/src/utils/math";
     import { Vec } from "../../../common/src/utils/vector";
     import { PIXI_SCALE } from "../../src/scripts/utils/constants";
     import Hitbox from "./lib/hitbox.svelte";
+  import { removeFrom } from "@common/utils/misc";
 
     let hitboxes: HitboxJSON[] = [
         ...new GroupHitbox(
-    RectangleHitbox.fromRect(1, 1)
-).toJSON().hitboxes
+    RectangleHitbox.fromRect(2.01, 12.65, Vec.create(4.74, 0)),
+    RectangleHitbox.fromRect(2.01, 12.65, Vec.create(-4.74, 0)),
+    RectangleHitbox.fromRect(10.68, 0.68, Vec.create(-0.01, -5.98))
+).transform(Vec.create(-9.81, 44.9)).toJSON().hitboxes
     ];
 
     let selected = hitboxes[0];
@@ -181,8 +187,8 @@
     }
     convertHitboxes();
 
-    function createHitbox(hitbox) {
-        hitbox = hitbox.toJSON();
+    function createHitbox(hitbox: ShapeHitbox) {
+        hitbox = hitbox.toJSON() as ShapeHitbox;
         hitboxes.push(hitbox);
         selected = hitbox;
         updateSelected();
@@ -195,7 +201,13 @@
         hitboxes.push(JSON.parse(JSON.stringify(selected)));
     }
 
-    const bgImage = loadImage("/img/game/normal/obstacles/ship_oil_source.svg");
+    function deleteSelected() {
+        removeFrom(hitboxes, selected);
+        hitboxes = hitboxes;
+        selected = hitboxes[0];
+    }
+
+    const bgImage = loadImage("/img/game/normal/buildings/fulcrum_bunker_floor.svg");
 </script>
 
 <main>
@@ -204,6 +216,7 @@
             <button on:click={addRectangle}>Add Rectangle Hitbox</button>
             <button on:click={addCircle}>Add Circle Hitbox</button>
             <button on:click={duplicateSelected}>Duplicate Selected</button>
+            <button on:click={deleteSelected}>Delete Selected</button>
         </div>
         {#if selected.type === HitboxType.Circle}
             <div>
