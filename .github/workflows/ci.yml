@@ -112,7 +112,7 @@ jobs:
           cache-dependency-path: '**/pnpm-lock.yaml'
 
       - name: Install Packages
-        working-directory: ./tests
+        working-directory: .
         run: pnpm install --frozen-lockfile
 
       - name: Lint
