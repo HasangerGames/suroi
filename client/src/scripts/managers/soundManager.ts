@@ -135,7 +135,7 @@ export class GameSound {
 
         if (initial) {
             this.layerMult = layerMult;
-            this._updateMuffledFilter(layerDelta);
+            // this._updateMuffledFilter(layerDelta);
             return;
         }
 
@@ -146,7 +146,7 @@ export class GameSound {
             duration: 500,
             onComplete: () => {
                 this.layerVolumeTween = undefined;
-                this._updateMuffledFilter(layerDelta);
+                // this._updateMuffledFilter(layerDelta);
             }
         });
     }
