@@ -32,12 +32,11 @@ const skin = (name: string, backpackTint?: number, rolesRequired?: string[]): Sk
 export const Skins = new ObjectDefinitions<SkinDefinition>([
     // Dev funny skins
     skin("Hasanger",    0x640000, ["hasanger"]),
-    skin("Error",       0x1fc462, ["error"]),
     skin("Pap",         0x00366b, ["pap"]),
     skin("Zedaes",      0x052105, ["zedaes"]),
 
     // Role skins
-    skin("Developr Swag",      0x007a7f, ["developr", "pap", "error"]),
+    skin("Developr Swag",      0x007a7f, ["developr", "pap"]),
     skin("Designr Swag",       0x67cf00, ["designr", "vip_designr"]),
     skin("Sound Designr Swag", 0x3e8476, ["sound_designr"]),
     ...([
