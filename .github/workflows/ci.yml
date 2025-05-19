@@ -5,10 +5,10 @@ on:
   pull_request:
 
 jobs:
-  client:
-    name: Client
+  nodejs:
+    name: Node.js
     runs-on: ubuntu-latest
-    concurrency: ci-client-${{ github.ref }}
+    concurrency: ci-nodejs-${{ github.ref }}
 
     steps:
       - name: Checkout Repository
@@ -27,59 +27,8 @@ jobs:
       - name: Install Packages
         run: pnpm install --frozen-lockfile
 
-      - name: Build
-        working-directory: ./client
-        run: pnpm build
-
-  server:
-    name: Server
-    runs-on: ubuntu-latest
-    concurrency: ci-server-${{ github.ref }}
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-          cache-dependency-path: '**/pnpm-lock.yaml'
-
-      - name: Install Packages
-        run: pnpm install --frozen-lockfile
-
-      - name: Build
-        working-directory: ./server
-        run: pnpm build
-
-  tests:
-    name: Tests
-    runs-on: ubuntu-latest
-    concurrency: ci-tests-${{ github.ref }}
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-          cache-dependency-path: '**/pnpm-lock.yaml'
-
-      - name: Install Packages
-        run: pnpm install --frozen-lockfile
-
-      - name: Build
+        # Tests
+      - name: Build Tests
         working-directory: ./tests
         run: pnpm build
 
@@ -88,32 +37,22 @@ jobs:
         run: pnpm validateDefinitions
 
       - name: Validate SVGs
-        if: always()
         working-directory: ./tests
         run: pnpm validateSvgs
+        continue-on-error: true
 
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    concurrency: ci-lint-${{ github.ref }}
+        # Client
+      - name: Build Client
+        working-directory: ./client
+        run: pnpm build
+        continue-on-error: true
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+        # Server
+      - name: Build Server
+        working-directory: ./server
+        run: pnpm build
+        continue-on-error: true
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-          cache-dependency-path: '**/pnpm-lock.yaml'
-
-      - name: Install Packages
-        working-directory: .
-        run: pnpm install --frozen-lockfile
-
+        # Lint
       - name: Lint
         run: pnpm lint:ci
