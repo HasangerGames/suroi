@@ -27,6 +27,16 @@ jobs:
       - name: Install Packages
         run: pnpm install --frozen-lockfile
 
+        # Client
+      - name: Build Client
+        working-directory: ./client
+        run: pnpm build
+
+        # Server
+      - name: Build Server
+        working-directory: ./server
+        run: pnpm build
+
         # Tests
       - name: Build Tests
         working-directory: ./tests
@@ -39,20 +49,7 @@ jobs:
       - name: Validate SVGs
         working-directory: ./tests
         run: pnpm validateSvgs
-        continue-on-error: true
+        if: success() || failure()
 
-        # Client
-      - name: Build Client
-        working-directory: ./client
-        run: pnpm build
-        continue-on-error: true
-
-        # Server
-      - name: Build Server
-        working-directory: ./server
-        run: pnpm build
-        continue-on-error: true
-
-        # Lint
       - name: Lint
         run: pnpm lint:ci

@@ -1,6 +1,11 @@
 packages:
-  - 'server/'
-  - 'common/'
-  - 'client/'
-  - 'tests/'
+  - server/
+  - common/
+  - client/
+  - tests/
   - '!**dist/**'
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - '@swc/core'
+  - esbuild
+  - skia-canvas
