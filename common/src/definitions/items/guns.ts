@@ -2761,7 +2761,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         fireMode: FireMode.Auto,
         shotSpread: 0.5,
         moveSpread: 5,
-        length: 6.2,
+        length: 6.7,
         fists: {
             left: Vec.create(40, 0),
             right: Vec.create(40, 0),
@@ -2770,7 +2770,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             animationDuration: 80
         },
         noMuzzleFlash: true,
-        image: { position: Vec.create(64, 1) },
+        image: { position: Vec.create(80, 1) },
         capacity: 100,
         extendedCapacity: 250,
         reloadTime: 1.5,
