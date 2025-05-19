@@ -1,5 +1,5 @@
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
-import Cron from "croner";
+import { Cron } from "croner";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { Config, StaticOrSwitched, Switchable } from "../config";
 import { HttpRequest, HttpResponse } from "uWebSockets.js";
@@ -168,7 +168,7 @@ export class Switcher<T extends Switchable> {
             this._current = rotation[initialIndex % length];
             this._next = rotation[(initialIndex + 1) % length];
 
-            this._cron = Cron(schedule.cron, () => {
+            this._cron = new Cron(schedule.cron, () => {
                 this._current = rotation[++this._index % length];
                 this._next = rotation[(this._index + 1) % length];
                 writeFileSync(filename, this._index.toString());

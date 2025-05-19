@@ -37,9 +37,8 @@
   "license": "GPL-3.0",
   "devDependencies": {
     "@eslint/js": "^9.27.0",
-    "@stylistic/eslint-plugin": "^3.1.0",
-    "@types/eslint__js": "^8.42.3",
-    "@types/node": "^22.15.18",
+    "@stylistic/eslint-plugin": "^4.2.0",
+    "@types/node": "^22.15.19",
     "eslint": "^9.27.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.32.1"

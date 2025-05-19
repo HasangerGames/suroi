@@ -16,12 +16,13 @@ import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/obj
 import { pickRandomInArray, randomPointInsideCircle, randomRotation } from "@common/utils/random";
 import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { Vec, type Vector } from "@common/utils/vector";
-
 import { Bullets, type BulletDefinition } from "@common/definitions/bullets";
 import type { SingleGunNarrowing } from "@common/definitions/items/guns";
 import { PerkData, PerkIds, Perks } from "@common/definitions/items/perks";
 import { ModeName, ModeDefinition, Modes } from "@common/definitions/modes";
 import { ColorStyles, Logger, styleText } from "@common/utils/logging";
+import { removeFrom } from "@common/utils/misc";
+
 import type { WebSocket } from "uWebSockets.js";
 import { Config, MapWithParams } from "./config";
 import { GAME_SPAWN_WINDOW } from "./data/gasStages";
@@ -47,7 +48,6 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getAllLoots, getSpawnableLoots, ItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap } from "./utils/misc";
-import { removeFrom } from "@common/utils/misc";
 
 export class Game implements GameData {
     public readonly id: number;
