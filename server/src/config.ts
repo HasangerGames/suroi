@@ -36,7 +36,6 @@ export const Config = {
         donatr: { password: "donatr" },
 
         hasanger: { password: "hasanger", isDev: true },
-        error: { password: "error", isDev: true },
         pap: { password: "pap", isDev: true },
         zedaes: { password: "zedaes", isDev: true }
     }
