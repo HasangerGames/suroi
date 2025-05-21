@@ -10250,8 +10250,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         },
         obstacles: [
             // TV/living area
-            { idString: "bookshelf", position: Vec.create(-64.7, 0.33), rotation: 1 },
-            { idString: "bookshelf", position: Vec.create(-64.7, 13.15), rotation: 1 },
+            { idString: "bookshelf", position: Vec.create(-64.7, 0.33), rotation: 1, lootSpawnOffset: Vec.create(2, 0) },
+            { idString: "bookshelf", position: Vec.create(-64.7, 13.15), rotation: 1, lootSpawnOffset: Vec.create(2, 0) },
             { idString: "tv", position: Vec.create(-66.33, 6.68), rotation: 2 },
             { idString: "couch", position: Vec.create(-49.47, 6.73), rotation: 2 },
             { idString: "water_cooler", position: Vec.create(-29.77, 2.3), rotation: 3 },
