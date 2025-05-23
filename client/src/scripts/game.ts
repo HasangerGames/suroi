@@ -1007,6 +1007,18 @@ export const Game = new (class Game {
                         hideSecondFloor = true;
                     }
 
+                // tree leaves
+                } else if (isObstacle && object.definition.isTree && object.leavesSprite && !object.dead) {
+                    const {
+                        minDist = 32,
+                        maxDist = 729,
+                        trunkMinAlpha = 0.8,
+                        leavesMinAlpha = 0.35
+                    } = object.definition.tree ?? {};
+                    const dist = Geometry.distanceSquared(object.position, player.position);
+                    object.image.alpha = Numeric.remap(dist, minDist, maxDist, trunkMinAlpha, 1);
+                    object.leavesSprite.alpha = Numeric.remap(dist, minDist, maxDist, leavesMinAlpha, 1);
+
                 // metal detectors
                 } else if (isObstacle && object.definition.detector && object.notOnCoolDown) {
                     for (const player of this.objects.getCategory(ObjectCategory.Player)) {

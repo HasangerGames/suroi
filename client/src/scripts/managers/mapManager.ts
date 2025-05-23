@@ -314,18 +314,39 @@ class MapManagerClass {
             const zIndexOffset = ((mapObject.layer ?? Layer.Ground) + 1) * Z_INDEX_COUNT;
             switch (mapObject.type) {
                 case ObjectCategory.Obstacle: {
-                    const definition = mapObject.definition;
+                    const {
+                        definition,
+                        position,
+                        rotation,
+                        variation,
+                        scale: initialScale
+                    } = mapObject;
+
+                    const scale = (initialScale ?? 1) / PIXI_SCALE;
+                    const zIndex = (definition.zIndex ?? ZIndexes.ObstaclesLayer1) + zIndexOffset;
 
                     let texture = definition.frames?.base ?? definition.idString;
 
-                    if (mapObject.variation !== undefined) texture += `_${mapObject.variation + 1}`;
+                    if (variation !== undefined && !(definition.isTree && !definition.trunkVariations)) {
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        texture += `_${definition.isTree && definition.leavesVariations ? Math.ceil((variation + 1) / definition.trunkVariations!) : variation + 1}`;
+                    }
 
                     const image = new SuroiSprite(texture)
-                        .setVPos(mapObject.position).setRotation(mapObject.rotation)
-                        .setZIndex((definition.zIndex ?? ZIndexes.ObstaclesLayer1) + zIndexOffset);
-
+                        .setVPos(position)
+                        .setRotation(rotation)
+                        .setScale(scale)
+                        .setZIndex(zIndex);
                     if (definition.tint !== undefined) image.setTint(definition.tint);
-                    image.scale.set((mapObject.scale ?? 1) * (1 / PIXI_SCALE));
+
+                    if (definition.isTree && definition.frames?.leaves) {
+                        const leavesSprite = new SuroiSprite(`${definition.frames.leaves}${variation !== undefined ? `_${(definition.leavesVariations ? variation % definition.leavesVariations : variation) + 1}` : ""}`)
+                            .setVPos(position)
+                            .setRotation(rotation)
+                            .setScale(scale)
+                            .setZIndex(zIndex + 0.1);
+                        mapRender.addChild(leavesSprite);
+                    }
 
                     mapRender.addChild(image);
                     break;

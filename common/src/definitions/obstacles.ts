@@ -96,6 +96,7 @@ type CommonObstacleDefinition = ObjectDefinition & {
         readonly base?: string
         readonly particle?: string
         readonly residue?: string
+        readonly leaves?: string
         readonly opened?: string
         readonly activated?: string
         readonly powered?: string
@@ -132,12 +133,28 @@ type CommonObstacleDefinition = ObjectDefinition & {
         readonly falloff?: number
     }
 } & (
+    & TreeMixin
     & DoorMixin
     & StairMixin
     & ActivatableMixin
     & { readonly isWindow?: boolean }
     & { readonly isWall?: boolean }
-    );
+);
+
+type TreeMixin = {
+    readonly isTree: true
+    // trunkVariations * leavesVariations should = total variations
+    readonly trunkVariations?: number
+    readonly leavesVariations?: number
+    readonly tree?: {
+        readonly minDist?: number
+        maxDist?: number
+        readonly trunkMinAlpha?: number
+        readonly leavesMinAlpha?: number
+    }
+} | {
+    readonly isTree?: false
+};
 
 type VariationMixin = {
     readonly variations: Exclude<Variation, 0>
@@ -832,7 +849,14 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: new CircleHitbox(3.5),
         spawnHitbox: new CircleHitbox(8.5),
         rotationMode: RotationMode.Full,
-        variations: 3,
+        isTree: true,
+        variations: 4,
+        trunkVariations: 2,
+        leavesVariations: 2,
+        frames: {
+            base: "oak_tree_trunk",
+            leaves: "oak_tree_leaves"
+        },
         allowFlyover: FlyoverPref.Never,
         zIndex: ZIndexes.ObstaclesLayer4
     },
@@ -841,6 +865,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         name: "Birch Tree",
         defType: DefinitionType.Obstacle,
         material: "tree",
+        isTree: true,
         health: 180,
         scale: {
             spawnMin: 0.9,
@@ -851,6 +876,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         spawnHitbox: new CircleHitbox(8.5),
         rotationMode: RotationMode.Full,
         variations: 2,
+        leavesVariations: 2,
+        frames: {
+            base: "birch_tree_trunk",
+            leaves: "birch_tree_leaves"
+        },
         allowFlyover: FlyoverPref.Never,
         zIndex: ZIndexes.ObstaclesLayer4
     },
@@ -859,6 +889,12 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         name: "Pine Tree",
         defType: DefinitionType.Obstacle,
         material: "tree",
+        isTree: true,
+        tree: {
+            leavesMinAlpha: 0.45
+        },
+        trunkVariations: 1,
+        leavesVariations: 1,
         health: 180,
         scale: {
             spawnMin: 0.9,
@@ -869,7 +905,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         spawnHitbox: new CircleHitbox(8.5),
         rotationMode: RotationMode.Full,
         allowFlyover: FlyoverPref.Never,
-        zIndex: ZIndexes.ObstaclesLayer4
+        zIndex: ZIndexes.ObstaclesLayer4,
+        frames: {
+            base: "pine_tree_trunk",
+            leaves: "pine_tree"
+        }
     },
     {
         idString: "big_oak_tree",
@@ -885,9 +925,19 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         spawnHitbox: new CircleHitbox(8.5),
         rotationMode: RotationMode.Full,
         hitbox: new CircleHitbox(3.5),
+        isTree: true,
+        tree: {
+            minDist: 64,
+            maxDist: 1764,
+            trunkMinAlpha: 0.75,
+            leavesMinAlpha: 0.3
+        },
         variations: 6,
+        trunkVariations: 6,
         zIndex: ZIndexes.ObstaclesLayer4,
         frames: {
+            base: "big_oak_tree_trunk",
+            leaves: "big_oak_tree_leaves",
             particle: "oak_tree_particle",
             residue: "oak_tree_residue"
         }
@@ -906,9 +956,21 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         spawnHitbox: new CircleHitbox(20),
         rotationMode: RotationMode.Full,
         hitbox: new CircleHitbox(5.5),
+        isTree: true,
+        tree: {
+            minDist: 64,
+            maxDist: 1764,
+            trunkMinAlpha: 0.75,
+            leavesMinAlpha: 0.3
+        },
         variations: 3,
+        leavesVariations: 3,
         allowFlyover: FlyoverPref.Never,
-        zIndex: ZIndexes.ObstaclesLayer4
+        zIndex: ZIndexes.ObstaclesLayer4,
+        frames: {
+            base: "maple_tree_trunk",
+            leaves: "maple_tree_leaves"
+        }
     },
     {
         idString: "dormant_oak_tree",
@@ -2042,7 +2104,16 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Full,
         zIndex: ZIndexes.ObstaclesLayer4,
         allowFlyover: FlyoverPref.Never,
-        hasLoot: true
+        hasLoot: true,
+        isTree: true,
+        variations: 4,
+        trunkVariations: 2,
+        leavesVariations: 2,
+        frames: {
+            base: "oak_tree_trunk",
+            leaves: "oak_tree_leaves"
+        },
+        tint: 0x999999
     },
     {
         idString: "box",

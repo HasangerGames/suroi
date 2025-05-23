@@ -57,12 +57,13 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     hitbox!: Hitbox;
     orientation: Orientation = 0;
 
-    mountSpriteInitialized = false;
-    mountSprite: SuroiSprite | undefined;
+    leavesSprite?: SuroiSprite;
 
-    waterOverlaySpriteInitialized = false;
-    waterOverlaySprite: SuroiSprite | undefined;
+    mountSprite?: SuroiSprite;
+
+    waterOverlaySprite?: SuroiSprite;
     waterOverlay = false;
+
     powered = false;
 
     hitSound?: GameSound;
@@ -112,7 +113,14 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 this.container.addChild(this.graphics);
             }
 
-            if (definition.gunMount && !this.mountSpriteInitialized) {
+            if (definition.isTree && definition.frames?.leaves && !this.leavesSprite) {
+                this.leavesSprite = new SuroiSprite()
+                    .setFrame(`${definition.frames.leaves}${this.variation !== undefined ? `_${(definition.leavesVariations ? this.variation % definition.leavesVariations : this.variation) + 1}` : ""}`);
+
+                this.container.addChild(this.leavesSprite);
+            }
+
+            if (definition.gunMount && !this.mountSprite) {
                 this.mountSprite = new SuroiSprite()
                     .setFrame(definition.gunMount.weapon)
                     .setScale(1.15)
@@ -126,7 +134,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 }
 
                 this.container.addChild(this.mountSprite);
-                this.mountSpriteInitialized = true;
             }
 
             if (definition.invisible) this.container.visible = false;
@@ -255,7 +262,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         this.powered = data.powered;
 
         this.waterOverlay = data.waterOverlay;
-        if (this.waterOverlay && !this.waterOverlaySpriteInitialized) {
+        if (this.waterOverlay && !this.waterOverlaySprite) {
             const waterOverlaySpriteType: "circle" | "rect" = definition.hitbox.type === HitboxType.Circle ? "circle" : "rect";
 
             this.waterOverlaySprite = new SuroiSprite(`water_overlay_${waterOverlaySpriteType}`)
@@ -268,8 +275,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             }
 
             this.container.addChild(this.waterOverlaySprite);
-
-            this.waterOverlaySpriteInitialized = true;
         }
 
         if (isNew) {
@@ -337,17 +342,15 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         if (this.dead !== data.dead) {
             this.dead = data.dead;
 
-            if (this.mountSprite !== undefined) {
-                this.mountSprite.setVisible(!this.dead);
-            }
+            const showSprites = !this.dead;
+            this.leavesSprite?.setVisible(showSprites);
+            this.mountSprite?.setVisible(showSprites);
+            this.waterOverlaySprite?.setVisible(showSprites);
+            if (this.graphics) this.graphics.visible = showSprites;
 
-            if (this.waterOverlaySprite !== undefined) {
-                this.waterOverlaySprite.setVisible(false);
-            }
-
-            if ((definition.graphics?.length && this.graphics) || this.graphics) {
-                this.graphics.visible = false;
-            }
+            // image alpha for trees is changed based on distance to the player
+            // this resets it
+            if (this.dead) this.image.alpha = 1;
 
             if (!isNew && !("replaceWith" in definition && definition.replaceWith) && !definition.noDestroyEffect) {
                 const playSound = (name: string): void => {
@@ -436,8 +439,9 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         : definition.frames?.base ?? definition.idString
             : definition.frames?.residue ?? `${definition.idString}_residue`;
 
-        if (this.variation !== undefined && !this.dead) {
-            texture += `_${this.variation + 1}`;
+        if (this.variation !== undefined && !this.dead && !(definition.isTree && !definition.trunkVariations)) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            texture += `_${definition.isTree && definition.leavesVariations ? Math.ceil((this.variation + 1) / definition.trunkVariations!) : this.variation + 1}`;
         }
 
         if (!definition.invisible && !(this.dead && definition.noResidue)) {
@@ -452,6 +456,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
         if (definition.tint !== undefined) {
             this.image.setTint(definition.tint);
+            this.leavesSprite?.setTint(definition.tint);
         }
 
         this.container.rotation = this.rotation;

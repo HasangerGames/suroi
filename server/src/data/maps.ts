@@ -1071,17 +1071,21 @@ const maps = {
     singleObstacle: {
         width: 256,
         height: 256,
-        // spawn: { mode: SpawnMode.Center },
+        spawn: { mode: SpawnMode.Center },
         beachSize: 8,
         oceanSize: 8,
         onGenerate(map, [obstacle]) {
             map.generateObstacle(obstacle, Vec.create(this.width / 2, this.height / 2), { layer: 0, rotation: 0 });
+            // const def = Obstacles.fromString(obstacle);
+            // for (let i = 0; i < (def.variations ?? 1); i++) {
+            //     map.generateObstacle(obstacle, Vec.create(i * 32 + 48, this.height / 2), { layer: 0, rotation: 0, variation: i as Variation });
+            // }
         }
     },
     singleGun: {
         width: 256,
         height: 256,
-        //  spawn: { mode: SpawnMode.Center },
+        spawn: { mode: SpawnMode.Center },
         beachSize: 8,
         oceanSize: 8,
         onGenerate(map, [gun]) {
