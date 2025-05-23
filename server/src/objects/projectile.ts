@@ -264,7 +264,7 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
             || !Numeric.equals(this.rotation, lastRotation)
             || !Numeric.equals(this._height, lastHeight)
         ) {
-            this.game.grid.addObject(this);
+            this.game.grid.updateObject(this);
             this.setPartialDirty();
         }
     }
