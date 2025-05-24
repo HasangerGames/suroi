@@ -121,7 +121,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { table: "melee", weight: 1 }
             ]
         },
-        lighthouse_crate: [{ item: "radio", weight: 1 }],
+        lighthouse_crate: [{ item: "flare", weight: 1 }],
         tango_crate: [
             { item: "tango_51", weight: 60 },
             { item: "tango_51", spawnSeparately: true, count: 2, weight: 30 },
@@ -431,7 +431,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { table: "special_equipment", weight: 0.65 },
                 { table: "special_healing_items", weight: 0.65 },
                 { table: "special_scopes", weight: 0.3 },
-                { item: "radio", weight: 0.1 }
+                { item: "flare", weight: 0.1 }
             ]
         },
         gun_case: {
@@ -501,7 +501,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             [{ item: "frosty", weight: 1 }]
         ],
         campsite_case: [
-            { item: "radio", weight: 1 },
+            { item: "flare", weight: 1 },
             { item: "mp153", weight: 0.75 }
         ],
         confetti_grenade_box: {
@@ -589,7 +589,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "mcx_spear", weight: 0.01 },
             { item: "vepr12", weight: 0.008 },
             { item: "stoner_63", weight: 0.005 },
-            { item: "radio", weight: 0.005 },
+            { item: "flare", weight: 0.005 },
             { item: "mosin_nagant", weight: 0.005 },
             { item: "vector", weight: 0.004 },
             { item: "deagle", weight: 0.004 },
@@ -662,7 +662,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "mcx_spear", weight: 0.05 },
             { item: "vepr12", weight: 0.04 },
             { item: "stoner_63", weight: 0.01 },
-            { item: "radio", weight: 0.01 },
+            { item: "flare", weight: 0.01 },
             { item: "mosin_nagant", weight: 0.01 },
             { item: "vector", weight: 0.008 },
             { item: "deagle", weight: 0.008 },
@@ -748,7 +748,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "stoner_63", weight: 0.9 },
             { item: "model_89", weight: 0.6 },
             { item: "vks", weight: 0.6 },
-            { item: "radio", weight: 0.1 }
+            { item: "flare", weight: 0.1 }
         ],
         gold_airdrop_guns: [
             { item: "m1_garand", weight: 1.1 },
@@ -1086,7 +1086,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "rsh12", weight: 0.001 },
             { item: "m590m", weight: 0.001 },
             { item: "vks", weight: 0.001 },
-            { item: "radio", weight: 0.001 }
+            { item: "flare", weight: 0.001 }
         ],
         special_guns: [
             // 32% chance for one of these
@@ -1119,7 +1119,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "m590m", weight: 0.002 },
             { item: "rsh12", weight: 0.002 },
             { item: "vks", weight: 0.002 },
-            { item: "radio", weight: 0.002 },
+            { item: "flare", weight: 0.002 },
             { item: "m1_garand", weight: 0.002 }
         ],
         airdrop_guns: [
@@ -1131,7 +1131,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "vks", weight: 0.5 },
             { item: "tango_51", weight: 0.5 },
             { item: "m1_garand", weight: 0.2 },
-            { item: "radio", weight: 0.1 }
+            { item: "flare", weight: 0.1 }
         ],
         airdrop_skins: [
             { item: NullString, weight: 1 },
@@ -1170,7 +1170,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             // 10% chance for one of these
             { item: "m590m", weight: 0.033 },
             { item: "vepr12", weight: 0.033 },
-            { item: "radio", weight: 0.033 },
+            { item: "flare", weight: 0.033 },
 
             // 5% chance for one of these
             { item: "rsh12", weight: 0.01 },
@@ -1201,7 +1201,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             // 5% chance for one of these
             { item: "vepr12", weight: 0.0166 },
             { item: "m590m", weight: 0.0166 },
-            { item: "radio", weight: 0.0166 },
+            { item: "flare", weight: 0.0166 },
 
             // 5% chance for one of these
             { item: "l115a1", weight: 0.025 },
@@ -1451,7 +1451,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "rsh12", weight: 0.001 },
             { item: "m590m", weight: 0.001 },
             { item: "vks", weight: 0.001 },
-            { item: "radio", weight: 0.001 }
+            { item: "flare", weight: 0.001 }
         ],
         special_guns: [
             // 32% chance for one of these
@@ -1484,7 +1484,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "m590m", weight: 0.002 },
             { item: "rsh12", weight: 0.002 },
             { item: "vks", weight: 0.002 },
-            { item: "radio", weight: 0.002 },
+            { item: "flare", weight: 0.002 },
             { item: "m1_garand", weight: 0.002 }
         ],
         airdrop_guns: [
@@ -1496,7 +1496,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "vks", weight: 0.5 },
             { item: "tango_51", weight: 0.5 },
             { item: "m1_garand", weight: 0.2 },
-            { item: "radio", weight: 0.1 }
+            { item: "flare", weight: 0.1 }
         ],
         airdrop_skins: [
             { item: NullString, weight: 1 },
@@ -1536,7 +1536,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             // 10% chance for one of these
             { item: "m590m", weight: 0.033 },
             { item: "vepr12", weight: 0.033 },
-            { item: "radio", weight: 0.033 },
+            { item: "flare", weight: 0.033 },
 
             // 5% chance for one of these
             { item: "rsh12", weight: 0.01 },
@@ -1567,7 +1567,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             // 5% chance for one of these
             { item: "vepr12", weight: 0.0166 },
             { item: "m590m", weight: 0.0166 },
-            { item: "radio", weight: 0.0166 },
+            { item: "flare", weight: 0.0166 },
 
             // 5% chance for one of these
             { item: "l115a1", weight: 0.025 },
@@ -1643,7 +1643,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "stoner_63", weight: 0.9 },
             { item: "model_89", weight: 0.6 },
             { item: "vks", weight: 0.6 },
-            { item: "radio", weight: 0.1 }
+            { item: "flare", weight: 0.1 }
         ],
         aegis_golden_case: [{ item: "vaccinator", weight: 1 }],
         rsh_case_single: [{ item: "seedshot", weight: 1 }],

@@ -12,6 +12,7 @@ import { type Game } from "../game";
 import type { ThrowableItem } from "../inventory/throwableItem";
 import { BaseGameObject, DamageParams, GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
+import { randomFloat } from "@common/utils/random";
 
 export interface ProjectileParams {
     readonly position: Vector
@@ -87,7 +88,9 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
 
         this._fuseTime = params.fuseTime ?? this.definition.fuseTime;
 
-        this._angularVelocity = this.definition.physics.initialAngularVelocity;
+        // add +/- 10% variation to angular velocity to prevent every throwable from ending in the same position
+        const vel = this.definition.physics.initialAngularVelocity;
+        this._angularVelocity = vel + randomFloat(vel / -10, vel / 10);
         this._velocityZ = this.definition.physics.initialZVelocity;
     }
 
@@ -266,21 +269,23 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
         ) {
             this.game.grid.updateObject(this);
             this.setPartialDirty();
+        } else if (!this.activated && this.definition.summonAirdrop) {
+            this.activated = true;
+            this.game.summonAirdrop(this.position);
         }
     }
 
     detonated = false;
     private _detonate(): void {
         if (this.detonated) return;
-
         this.detonated = true;
-        const { explosion } = this.definition.detonation;
 
-        const particles
-            = (this.halloweenSkin && this.definition.detonation.spookyParticles)
-                ? this.definition.detonation.spookyParticles
-                : this.definition.detonation.particles;
-
+        const {
+            explosion,
+            particles,
+            spookyParticles,
+            decal
+        } = this.definition.detonation;
         const game = this.game;
 
         if (explosion !== undefined) {
@@ -295,8 +300,13 @@ export class Projectile extends BaseGameObject.derive(ObjectCategory.Projectile)
             );
         }
 
-        if (particles !== undefined) {
-            game.addSyncedParticles(particles, this.position, this.layer);
+        const effectiveParticles = (this.halloweenSkin && spookyParticles) ? spookyParticles : particles;
+        if (effectiveParticles !== undefined) {
+            game.addSyncedParticles(effectiveParticles, this.position, this.layer);
+        }
+
+        if (decal !== undefined) {
+            game.addDecal(decal, this.position, this.rotation, this.layer);
         }
 
         this.game.removeProjectile(this);

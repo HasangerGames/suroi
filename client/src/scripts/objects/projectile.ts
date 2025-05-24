@@ -1,7 +1,7 @@
 import { GameConstants, ObjectCategory, ZIndexes } from "@common/constants";
 import { type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { CircleHitbox } from "@common/utils/hitbox";
-import { Numeric } from "@common/utils/math";
+import { EaseFunctions, Numeric } from "@common/utils/math";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomPointInsideCircle } from "@common/utils/random";
 import { FloorTypes } from "@common/utils/terrain";
@@ -15,6 +15,7 @@ import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, TEAMMATE_COLORS } from "../ut
 import { DebugRenderer } from "../utils/debugRenderer";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
+import type { Tween } from "../utils/tween";
 
 export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
     definition!: ThrowableDefinition;
@@ -23,6 +24,12 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
 
     readonly image = new SuroiSprite();
     hitSound?: GameSound;
+
+    flickerSprite?: SuroiSprite;
+    flickerTween?: Tween<SuroiSprite>;
+    flickerTimeout?: number;
+
+    activeSound?: GameSound;
 
     height!: number;
     halloweenSkin!: boolean;
@@ -40,6 +47,52 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
         this.container.addChild(this.image);
 
         this.updateFromData(data, true);
+
+        const { flicker, activeSound } = this.definition;
+
+        if (flicker) {
+            this.flickerSprite = new SuroiSprite(flicker.image)
+                .setVPos(toPixiCoords(flicker.offset));
+            this.container.addChild(this.flickerSprite);
+
+            this.flickerTween = Game.addTween({
+                target: this.flickerSprite,
+                to: { angle: 20 },
+                duration: 3000,
+                ease: EaseFunctions.sineOut,
+                yoyo: true,
+                infinite: true
+            });
+
+            // Flicker algorithm:
+            // We set a random target lightness between 0.75 and 1
+            // Slowly increase/decrease the lightness in random increments until the target is reached
+            // Once it's reached, pick a new target
+            let lightness = 1;
+            let target = 1;
+            let increasing = false;
+            const flickerFn = (): void => {
+                if (!this.flickerSprite) return;
+
+                if (increasing ? lightness >= target : lightness <= target) {
+                    lightness = target;
+                    target = randomFloat(0.75, 1);
+                    increasing = lightness > target;
+                }
+                lightness += randomFloat(0.01, 0.05) * (increasing ? 1 : -1);
+                this.flickerSprite.tint = [lightness, lightness, lightness];
+                this.flickerTimeout = window.setTimeout(flickerFn, randomFloat(50, 1000));
+            };
+            flickerFn();
+        }
+
+        if (activeSound) {
+            this.activeSound = this.playSound(activeSound, {
+                dynamic: true,
+                loop: true,
+                maxRange: 64
+            });
+        }
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Projectile], isNew = false): void {
@@ -87,6 +140,7 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
         this.height = data.height;
 
         this.hitbox.position = this.position;
+        if (this.activeSound) this.activeSound.position = this.position;
 
         this.container.scale = Numeric.remap(this.height, 0, GameConstants.projectiles.maxHeight, 1, 5);
 
@@ -176,5 +230,9 @@ export class Projectile extends GameObject.derive(ObjectCategory.Projectile) {
 
     override destroy(): void {
         this.image.destroy();
+        this.flickerSprite?.destroy();
+        this.flickerTween?.kill();
+        clearTimeout(this.flickerTimeout);
+        this.activeSound?.stop();
     }
 }

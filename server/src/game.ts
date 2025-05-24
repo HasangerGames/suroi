@@ -48,6 +48,8 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { Cache, getAllLoots, getSpawnableLoots, ItemRegistry } from "./utils/lootHelpers";
 import { cleanUsername, modeFromMap } from "./utils/misc";
+import { DecalDefinition } from "@common/definitions/decals";
+import { Decal } from "./objects/decal";
 
 export class Game implements GameData {
     public readonly id: number;
@@ -1074,6 +1076,12 @@ export class Game implements GameData {
         } else {
             spawnParticles(count);
         }
+    }
+
+    addDecal(def: ReifiableDef<DecalDefinition>, position: Vector, rotation?: number, layer?: Layer | number): Decal {
+        const decal = new Decal(this, def, position, rotation, layer);
+        this.grid.addObject(decal);
+        return decal;
     }
 
     /**

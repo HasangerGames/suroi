@@ -1,4 +1,4 @@
-import { AnimationType, GameConstants } from "@common/constants";
+import { AnimationType, GameConstants, InventoryMessages } from "@common/constants";
 import { PerkIds } from "@common/definitions/items/perks";
 import { type ThrowableDefinition } from "@common/definitions/items/throwables";
 import { Numeric } from "@common/utils/math";
@@ -8,6 +8,7 @@ import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import { CountableInventoryItem } from "./inventoryItem";
 import { Timeout } from "@common/utils/misc";
+import { PickupPacket } from "@common/packets/pickupPacket";
 
 export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwable) {
     count: number;
@@ -46,6 +47,11 @@ export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwa
         }
 
         if (owner.game.pluginManager.emit("inv_item_use", this) !== undefined) {
+            return;
+        }
+
+        if (this.definition.summonAirdrop && owner.isInsideBuilding) {
+            owner.sendPacket(PickupPacket.create({ message: InventoryMessages.CannotUseFlare }));
             return;
         }
 

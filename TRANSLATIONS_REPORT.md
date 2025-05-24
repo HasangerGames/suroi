@@ -38,8 +38,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
@@ -161,6 +160,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_right_joystick_color` is not defined
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
@@ -209,8 +209,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
@@ -326,6 +325,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
 - Key `settings_haptics` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
@@ -429,6 +429,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_right_joystick_color` is not defined
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
@@ -542,6 +543,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_right_joystick_color` is not defined
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
@@ -629,7 +631,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇫🇮 suomi (70% Complete) - fi.hjson
+## 🇫🇮 suomi (69% Complete) - fi.hjson
 
 ### Invalid Keys
 
@@ -659,6 +661,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
@@ -770,6 +773,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_right_joystick_color` is not defined
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
@@ -799,7 +803,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇬🇷 Ελληνικά (77% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (76% Complete) - gr.hjson
 
 ### Invalid Keys
 
@@ -821,6 +825,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_right_joystick_color` is not defined
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
@@ -932,8 +937,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
@@ -1037,6 +1041,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_error_kicked_team` is not defined
 - Key `recording` is not defined
 - Key `settings_alt_texture_loading` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_monument` is not defined
 - Key `kf_suicide_finished_off` is not defined
@@ -1117,7 +1122,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇮🇹 Italiano (63% Complete) - it.hjson
+## 🇮🇹 Italiano (64% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -1170,8 +1175,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
@@ -1304,8 +1308,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
@@ -1434,8 +1437,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
@@ -1564,8 +1566,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
@@ -1662,6 +1663,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `tt_desc` is not defined
 - Key `vaccine_syringe` is not defined
@@ -1669,7 +1671,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇵🇱 Polski (70% Complete) - pl.hjson
+## 🇵🇱 Polski (69% Complete) - pl.hjson
 
 ### Invalid Keys
 
@@ -1699,6 +1701,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_haptics` is not defined
 - Key `msg_your_team_eliminated` is not defined
 - Key `msg_the_team_eliminated` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
@@ -1805,6 +1808,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_right_joystick_color` is not defined
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_explode_c4` is not defined
@@ -1896,6 +1900,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `tt_desc` is not defined
 - Key `vaccine_syringe` is not defined
@@ -1960,7 +1965,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇷🇺 Русский (98% Complete) - ru.hjson
+## 🇷🇺 Русский (97% Complete) - ru.hjson
 
 ### Invalid Keys
 
@@ -1969,6 +1974,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `settings_show_inout` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `tt_desc` is not defined
 - Key `m16a4` is not defined
@@ -1977,7 +1983,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇮🇳 தமிழ் (78% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (77% Complete) - ta.hjson
 
 ### Invalid Keys
 
@@ -1987,6 +1993,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_error_kicked_team` is not defined
 - Key `settings_alt_texture_loading` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_impact_of` is not defined
@@ -2066,7 +2073,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇹🇷 Turkısh (82% Complete) - tr.hjson
+## 🇹🇷 Turkısh (81% Complete) - tr.hjson
 
 ### Invalid Keys
 
@@ -2076,6 +2083,7 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_error_kicked_team` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
@@ -2142,7 +2150,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇹🇼 中文（繁體） (78% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (77% Complete) - tw.hjson
 
 ### Invalid Keys
 
@@ -2152,6 +2160,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_error_kicked_team` is not defined
 - Key `settings_alt_texture_loading` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `kf_suicide_finished_off` is not defined
 - Key `kf_impact_of` is not defined
@@ -2231,7 +2240,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇻🇳 Tiếng Việt (73% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (72% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -2254,6 +2263,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_right_joystick_color` is not defined
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
+- Key `msg_cannot_use_flare` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
@@ -2338,7 +2348,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -2594,5 +2604,6 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
+- Key `msg_cannot_use_flare` is not defined
 - Key `m16a4` is not defined
 

@@ -69,8 +69,7 @@ export const GameConstants = {
     airdrop: {
         fallTime: 8000,
         flyTime: 30000,
-        damage: 300,
-        callerLimit: 3
+        damage: 300
     },
     projectiles: {
         maxHeight: 5,
@@ -280,6 +279,5 @@ export enum InventoryMessages {
     NotEnoughSpace,
     ItemAlreadyEquipped,
     BetterItemEquipped,
-    CannotUseRadio,
-    RadioOverused
+    CannotUseFlare
 }

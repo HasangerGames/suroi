@@ -120,9 +120,7 @@ Vest pickup - "Cloth Flapping On A Clothesline Thickly" from Pixabay: https://pi
 Backpack pickup - "backpack" from Pixabay: https://pixabay.com/sound-effects/backpack-34942/
 
 Airdrops:
-  Radio:
-    "Fire" - "088524_Walkie Talkie" from Pixabay: https://pixabay.com/sound-effects/088524-walkie-talkie-83500/
-    Reload & switch - eiπ
+  Flare - "FLARE_IGNITE_WITH_WATER_SIZZLES_01.wav" from "Fire, Sizzles, and Ignites...Oh my!" by TS Sound: https://sonniss.com/sound-effects/fire-sizzles-ignites-oh-my/ (dead link)
   Ping - "Notification Sound" from Pixabay: https://pixabay.com/sound-effects/notification-sound-7062/
   Plane - "Prop Plane" from Pixabay: https://pixabay.com/sound-effects/prop-plane-14513/
   Fall:

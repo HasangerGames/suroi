@@ -30,8 +30,6 @@
 "msg_not_enough_space": "Недостаточно места"
 "msg_item_already_equipped": "Предмет уже экипирован"
 "msg_better_item_equipped": "Уже экипирован предмет лучше"
-"msg_cannot_use_radio": "Нет связи в здании"
-"msg_radio_overused": "Радио сломалось у вас в руках!"
 "msg_your_team_eliminated": "Ваш отряд был ликвидирован."
 "msg_the_team_eliminated": "Этот отряд уничтожили."
 
@@ -405,8 +403,6 @@
 "g17_scoped": "G17 (с прицелом)"
 "death_ray": "Луч смерти"
 "revitalizer": "Восстановитель"
-
-"radio": "Рация"
 
 "second_wind": "Второе дыхание"
 "second_wind_desc": "Ускорение движения при здоровье ниже 50%."

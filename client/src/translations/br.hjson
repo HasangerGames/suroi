@@ -148,8 +148,6 @@
 "msg_not_enough_space": "Espaço insuficiente!"
 "msg_item_already_equipped": "Item já equipado!"
 "msg_better_item_equipped": "Item melhor equipado!"
-"msg_cannot_use_radio": "Rádio não pode ser usado em edifícios!"
-"msg_radio_overused": "O rádio quebrou devido ao uso excessivo!"
 
 "gas_waiting": "Gás tóxico avança em <time>"
 "gas_advancing": "Gás tóxico avançando! Mova-se para a zona segura"
@@ -332,7 +330,6 @@
 "sickle": "Foice"
 
 "mosin_nagant": "Mosin-Nagant"
-"radio": "Rádio"
 "lewis_gun": "Metralhadora Lewis"
 "hp18": "HP-18"
 "acr": "ACR"

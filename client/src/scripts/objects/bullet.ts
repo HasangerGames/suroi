@@ -63,7 +63,7 @@ export class Bullet extends BaseBullet {
             })];
         }
 
-        if (!tracerStats?.particle) this._image.anchor.set(1, 0.5);
+        this._image.anchor.set(1, 0.5);
 
         const color = new Color(
             tracerStats?.color === -1
@@ -138,29 +138,20 @@ export class Bullet extends BaseBullet {
 
         if (!this.dead && !this._trailReachedMaxLength) {
             this._trailTicks += delta;
-        } else if (this.dead || this.definition.tracer?.particle) {
+        } else if (this.dead) {
             this._trailTicks -= delta;
         }
 
-        const traveledDistance = Geometry.distance(this.initialPosition, this.position);
+        const length = Numeric.min(
+            Numeric.min(
+                this.definition.speed * (this.modifiers?.speed ?? 1) * this._trailTicks,
+                Geometry.distance(this.initialPosition, this.position)
+            ) * PIXI_SCALE,
+            this.maxLength
+        );
+        this._image.width = length;
 
-        if (this.definition.tracer?.particle) {
-            this._image.scale.set(1 + (traveledDistance / this.maxDistance));
-            this._image.alpha = 2 * this.definition.speed * (this.modifiers?.speed ?? 1) * this._trailTicks / this.maxDistance;
-
-            this._trailReachedMaxLength ||= this._image.alpha >= 1;
-        } else {
-            const length = Numeric.min(
-                Numeric.min(
-                    this.definition.speed * (this.modifiers?.speed ?? 1) * this._trailTicks,
-                    traveledDistance
-                ) * PIXI_SCALE,
-                this.maxLength
-            );
-            this._image.width = length;
-
-            this._trailReachedMaxLength ||= length >= this.maxLength;
-        }
+        this._trailReachedMaxLength ||= length >= this.maxLength;
 
         this._image.setVPos(toPixiCoords(this.position));
 

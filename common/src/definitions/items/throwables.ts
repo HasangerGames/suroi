@@ -1,5 +1,6 @@
 import { DefinitionType, ItemType, type InventoryItemDefinition, type ReferenceTo } from "../../utils/objectDefinitions";
 import { Vec, type Vector } from "../../utils/vector";
+import { DecalDefinition } from "../decals";
 import { type ExplosionDefinition } from "../explosions";
 import { SyncedParticleDefinition } from "../syncedParticles";
 import { Tier } from "./guns";
@@ -64,6 +65,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
         readonly explosion?: ReferenceTo<ExplosionDefinition>
         readonly particles?: ReferenceTo<SyncedParticleDefinition>
         readonly spookyParticles?: ReferenceTo<SyncedParticleDefinition>
+        readonly decal?: ReferenceTo<DecalDefinition>
     }
     readonly animation: {
         readonly pinImage?: string
@@ -81,6 +83,14 @@ export type ThrowableDefinition = InventoryItemDefinition & {
         }
     }
     readonly c4?: boolean
+    readonly summonAirdrop?: boolean
+
+    readonly flicker?: {
+        readonly image: string
+        readonly offset: Vector
+    }
+
+    readonly activeSound?: string
 };
 
 export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
@@ -270,6 +280,59 @@ export const Throwables = new InventoryItemDefinitions<ThrowableDefinition>([
                 rightFist: Vec.create(4, 2.15)
             }
         }
+    },
+    {
+        idString: "flare",
+        name: "Flare",
+        defType: DefinitionType.Throwable,
+        itemType: ItemType.Throwable,
+        tier: Tier.S,
+        cookable: false,
+        summonAirdrop: true,
+        fuseTime: 30000,
+        cookTime: 250,
+        throwTime: 150,
+        cookSpeedMultiplier: 0.7,
+        health: 40,
+        speedMultiplier: 1,
+        hitboxRadius: 1,
+        fireDelay: 1000,
+        physics: {
+            maxThrowDistance: 128,
+            initialZVelocity: 4,
+            initialAngularVelocity: 10,
+            initialHeight: 0.5,
+            drag: {
+                air: 0.7,
+                ground: 6,
+                water: 8
+            }
+        },
+        detonation: {
+            decal: "used_flare_decal"
+        },
+        image: {
+            position: Vec.create(60, 43),
+            angle: 60,
+            zIndex: 5
+        },
+        animation: {
+            liveImage: "proj_flare",
+            pinImage: "proj_flare_pin",
+            cook: {
+                leftFist: Vec.create(2.5, 0),
+                rightFist: Vec.create(-0.5, 2.15)
+            },
+            throw: {
+                leftFist: Vec.create(1.9, -1.75),
+                rightFist: Vec.create(4, 2.15)
+            }
+        },
+        flicker: {
+            image: "proj_flare_flicker",
+            offset: Vec.create(0, -1.5)
+        },
+        activeSound: "flare"
     },
     {
         idString: "proj_seed",

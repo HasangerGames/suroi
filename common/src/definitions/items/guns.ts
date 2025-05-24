@@ -2523,58 +2523,6 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
     },
 
     //
-    // Radio
-    //
-    {
-        idString: "radio",
-        name: "Radio",
-        defType: DefinitionType.Gun,
-        itemType: ItemType.Gun,
-        tier: Tier.S,
-        summonAirdrop: true,
-        ammoType: "curadell",
-        ammoSpawnAmount: 1,
-        fireDelay: 500,
-        switchDelay: 250,
-        speedMultiplier: 1,
-        recoilMultiplier: 1,
-        recoilDuration: 0,
-        fireMode: FireMode.Single,
-        shotSpread: 7,
-        moveSpread: 14,
-        bulletOffset: 1.5,
-        length: 4.7,
-        fists: {
-            left: Vec.create(38, -35),
-            right: Vec.create(38, 35),
-            leftZIndex: 4,
-            rightZIndex: 4,
-            animationDuration: 100
-        },
-        image: { position: Vec.create(65, 35) },
-        casingParticles: [{
-            position: Vec.create(3.5, 1),
-            ejectionDelay: 500
-        }],
-        noMuzzleFlash: true,
-        capacity: 1,
-        reloadTime: 1.4,
-        ballistics: {
-            tracer: {
-                image: "radio_wave",
-                opacity: 0.8,
-                particle: true,
-                zIndex: Number.MAX_SAFE_INTEGER - 2
-            },
-            damage: 0,
-            obstacleMultiplier: 1,
-            speed: 0.01,
-            range: 50,
-            noCollision: true
-        }
-    },
-
-    //
     // Fictional weapons
     //
     {

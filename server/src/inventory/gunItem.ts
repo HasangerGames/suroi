@@ -84,12 +84,6 @@ export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
             return;
         }
 
-        if (definition.summonAirdrop && owner.isInsideBuilding) {
-            owner.sendPacket(PickupPacket.create({ message: InventoryMessages.CannotUseRadio }));
-            this._consecutiveShots = 0;
-            return;
-        }
-
         if (this.ammo <= 0) {
             if (!owner.inventory.items.hasItem(definition.ammoType)) {
                 owner.animation = AnimationType.GunClick;
@@ -327,16 +321,6 @@ export class GunItem extends InventoryItemBase.derive(ItemType.Gun) {
         owner.recoil.active = true;
         owner.recoil.time = owner.game.now + definition.recoilDuration;
         owner.recoil.multiplier = definition.recoilMultiplier;
-
-        if (definition.summonAirdrop) {
-            owner.game.summonAirdrop(owner.position);
-
-            if (this._shots >= GameConstants.airdrop.callerLimit) {
-                owner.sendPacket(PickupPacket.create({ message: InventoryMessages.RadioOverused }));
-                this.owner.inventory.destroyWeapon(this.owner.inventory.activeWeaponIndex);
-                return;
-            }
-        }
 
         if (!definition.infiniteAmmo) {
             --this.ammo;
