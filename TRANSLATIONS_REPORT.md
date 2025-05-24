@@ -1270,7 +1270,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇯🇵 日本語 (66% Complete) - jp.hjson
+## 🇯🇵 日本語 (67% Complete) - jp.hjson
 
 ### Invalid Keys
 
@@ -1308,7 +1308,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_flare` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
@@ -1663,7 +1662,6 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `tt_desc` is not defined
 - Key `vaccine_syringe` is not defined
