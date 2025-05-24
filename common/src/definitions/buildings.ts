@@ -10287,6 +10287,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "sandbags", position: Vec.create(59.84, 6.45), rotation: 0 },
             { idString: "control_panel", position: Vec.create(62.34, -16.05), rotation: 3, puzzlePiece: true },
             { idString: "control_panel2", position: Vec.create(62.34, -4.02), rotation: 3 },
+            { idString: "pipe", position: Vec.create(28.89, -7.25), rotation: 1, variation: 0 },
+            { idString: "pipe", position: Vec.create(44.93, -13.75), rotation: 0, variation: 2 },
+            { idString: "pipe", position: Vec.create(56.8, 35.23), rotation: 1, variation: 3 },
+            { idString: "pipe", position: Vec.create(7.86, 29.77), rotation: 0, variation: 3 },
 
             // Vault
             { idString: "metal_door", position: Vec.create(2.04, 2.12), rotation: 3, locked: true },
