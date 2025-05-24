@@ -368,16 +368,16 @@ export const ContainerTints = {
 };
 
 const ContainerWallOutlineTints = {
-    white: 0x191919,
-    red: 0x320d00,
-    green: 0x003404,
-    blue: 0x001e34,
-    yellow: 0x353500,
-    gas_can: 0x2a0c09,
-    military_green: 0x1a2310,
-    military_orange: 0x201e14,
-    military_marine: 0x141f1f,
-    military_lime: 0x25270c
+    white: 0x797979,
+    red: 0x661900,
+    green: 0x006608,
+    blue: 0x003b66,
+    yellow: 0x808000,
+    gas_can: 0x571b14,
+    military_green: 0x161f0d,
+    military_orange: 0x574f33,
+    military_marine: 0x172424,
+    military_lime: 0x3f4214
 };
 
 const ContainerWallTints = {
@@ -774,13 +774,13 @@ const container = (
         ceilingImages: [
             {
                 key: upperCeilingImage,
-                position: Vec.create(variant === "damaged_reversed" ? -0.04 : 0, -6.97),
+                position: Vec.create(0, -6.97),
                 ...(variant === "damaged_reversed" ? { scale: Vec.create(-1, 1) } : {}),
                 tint
             },
             {
                 key: lowerCeilingImage,
-                position: Vec.create(variant === "damaged_reversed" ? 0 : -0.04, 6.97),
+                position: Vec.create(-0.04, 6.97),
                 ...(variant === "damaged_reversed" ? { scale: Vec.create(-1, 1) } : {}),
                 rotation: Math.PI,
                 tint

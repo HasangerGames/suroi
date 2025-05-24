@@ -1200,21 +1200,6 @@ const maps = {
             });
         }
     },
-    containersTest: {
-        width: 512,
-        height: 512,
-        beachSize: 16,
-        oceanSize: 16,
-        spawn: { mode: SpawnMode.Center },
-        onGenerate(map) {
-            for (let i = 1; i <= 25; i++) {
-                map.generateBuilding(`container_${i}`, Vec.create((i * 16) + 48, 256), 0);
-            }
-            for (let i = 1; i <= 12; i++) {
-                map.generateBuilding(`truck_container_${i}`, Vec.create((i * 16) + 48, 300), 0);
-            }
-        }
-    },
     river: {
         width: 1344,
         height: 1344,
