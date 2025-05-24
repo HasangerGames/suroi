@@ -59,12 +59,12 @@ class UIManagerClass {
         items: typeof DEFAULT_INVENTORY
         scope: ScopeDefinition
     } = {
-            activeWeaponIndex: 0,
-            weapons: new Array(GameConstants.player.maxWeapons).fill(undefined),
-            lockedSlots: 0,
-            items: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)) as typeof DEFAULT_INVENTORY,
-            scope: DEFAULT_SCOPE
-        };
+        activeWeaponIndex: 0,
+        weapons: new Array(GameConstants.player.maxWeapons).fill(undefined),
+        lockedSlots: 0,
+        items: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)) as typeof DEFAULT_INVENTORY,
+        scope: DEFAULT_SCOPE
+    };
 
     emotes: ReadonlyArray<EmoteDefinition | undefined> = [];
 

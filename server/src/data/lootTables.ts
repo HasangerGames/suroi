@@ -473,7 +473,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             [
                 { item: NullString, weight: 1 },
                 { item: "50cal", count: 20, weight: 0.3 },
-                { item: "338lap", count: 6, weight: 0.1 },
+                { item: "338lap", count: 6, weight: 0.1 }
             ]
         ],
         rocket_box: [

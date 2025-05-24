@@ -1,7 +1,6 @@
-import { AnimationType, FireMode, GameConstants, InventoryMessages } from "@common/constants";
+import { AnimationType, FireMode } from "@common/constants";
 import { type GunDefinition } from "@common/definitions/items/guns";
 import { PerkData, PerkIds } from "@common/definitions/items/perks";
-import { PickupPacket } from "@common/packets/pickupPacket";
 import { Orientation } from "@common/typings";
 import { type BulletOptions } from "@common/utils/baseBullet";
 import { CircleHitbox, RectangleHitbox } from "@common/utils/hitbox";
