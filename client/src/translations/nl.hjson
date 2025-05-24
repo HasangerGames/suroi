@@ -10,6 +10,8 @@
 "msg_error_joining_team": "Fout opgetreden bij het meedoen aan een team.<br>Het kan zijn dat het niet bestaat of dat het vol is."
 "msg_error_kicked_team": "Je bent uit het team gezet."
 "msg_try_again": "Probeer het opnieuw."
+"username_placeholder": "Voer een bijnaam in"
+"partners": "Partners"
 "msg_punishment_warn": "Je bent gewaarschuwd!"
 "msg_punishment_warn_reason": "Je hebt een waarschuwing ontvangen door de moderators met de reden: <reason>"
 "msg_punishment_temp": "Je bent tijdelijk verbannen!"

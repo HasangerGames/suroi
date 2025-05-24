@@ -168,8 +168,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
 
 ## 🇨🇿 Čeština (66% Complete) - cz.hjson
 
@@ -800,8 +798,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
 
 ## 🇬🇷 Ελληνικά (76% Complete) - gr.hjson
 
@@ -1395,8 +1391,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `infected_desc` is not defined
 - Key `immunity` is not defined
 - Key `immunity_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
 
 ## 🇱🇹 Lietuvių (66% Complete) - lt.hjson
 
@@ -1656,7 +1650,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇳🇱 Nederlands (98% Complete) - nl.hjson
+## 🇳🇱 Nederlands (99% Complete) - nl.hjson
 
 ### (No Invalid Keys)
 
@@ -1666,8 +1660,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
 
 ## 🇵🇱 Polski (69% Complete) - pl.hjson
 
@@ -1890,7 +1882,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇷🇴 Română (82% Complete) - ro.hjson
+## 🇷🇴 Română (99% Complete) - ro.hjson
 
 ### Invalid Keys
 
@@ -1903,67 +1895,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
-- Key `second_wind` is not defined
-- Key `second_wind_desc` is not defined
-- Key `flechettes` is not defined
-- Key `flechettes_desc` is not defined
-- Key `sabot_rounds` is not defined
-- Key `sabot_rounds_desc` is not defined
-- Key `extended_mags` is not defined
-- Key `extended_mags_desc` is not defined
-- Key `demo_expert` is not defined
-- Key `demo_expert_desc` is not defined
-- Key `advanced_athletics` is not defined
-- Key `advanced_athletics_desc` is not defined
-- Key `toploaded` is not defined
-- Key `toploaded_desc` is not defined
-- Key `infinite_ammo` is not defined
-- Key `infinite_ammo_desc` is not defined
-- Key `field_medic` is not defined
-- Key `field_medic_desc` is not defined
-- Key `berserker` is not defined
-- Key `berserker_desc` is not defined
-- Key `close_quarters_combat` is not defined
-- Key `close_quarters_combat_desc` is not defined
-- Key `low_profile` is not defined
-- Key `low_profile_desc` is not defined
-- Key `combat_expert` is not defined
-- Key `combat_expert_desc` is not defined
-- Key `precision_recycling` is not defined
-- Key `precision_recycling_desc` is not defined
-- Key `plumpkin_gamble` is not defined
-- Key `plumpkin_gamble_desc` is not defined
-- Key `lycanthropy` is not defined
-- Key `lycanthropy_desc` is not defined
-- Key `bloodthirst` is not defined
-- Key `bloodthirst_desc` is not defined
-- Key `plumpkin_bomb` is not defined
-- Key `plumpkin_bomb_desc` is not defined
-- Key `shrouded` is not defined
-- Key `shrouded_desc` is not defined
-- Key `experimental_treatment` is not defined
-- Key `experimental_treatment_desc` is not defined
-- Key `engorged` is not defined
-- Key `engorged_desc` is not defined
-- Key `baby_plumpkin_pie` is not defined
-- Key `costumed` is not defined
-- Key `costumed_desc` is not defined
-- Key `torn_pockets` is not defined
-- Key `torn_pockets_desc` is not defined
-- Key `claustrophobic` is not defined
-- Key `claustrophobic_desc` is not defined
-- Key `laced_stimulants` is not defined
-- Key `laced_stimulants_desc` is not defined
-- Key `rotten_plumpkin` is not defined
-- Key `rotten_plumpkin_desc` is not defined
-- Key `infected` is not defined
-- Key `infected_desc` is not defined
-- Key `immunity` is not defined
-- Key `immunity_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
 
-## 🇷🇺 Русский (97% Complete) - ru.hjson
+## 🇷🇺 Русский (98% Complete) - ru.hjson
 
 ### Invalid Keys
 
@@ -1972,14 +1905,11 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `settings_show_inout` is not defined
-- Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `tt_desc` is not defined
 - Key `m16a4` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
-- Key `partners` is not defined
-- Key `username_placeholder` is not defined
 
 ## 🇮🇳 தமிழ் (77% Complete) - ta.hjson
 
@@ -2316,7 +2246,6 @@ This file is a report of all errors and missing keys in the translation files of
 ### Invalid Keys
 
 - Key `msg_lost_connection` is not a valid key
-- Key `username_input_placeholder` is not a valid key
 - Key `create_team_waiting` is not a valid key
 - Key `developr_vest` is not a valid key
 - Key `destroyer_of_worlds` is not a valid key

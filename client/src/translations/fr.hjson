@@ -19,6 +19,8 @@
 "msg_punishment_warn_agreement": "J'ai pris conscience de cet avertissement et ne recommencerai pas."
 "msg_punishment_vpn": "VPN/Proxy détecté!"
 "msg_punishment_vpn_reason": "Pour rendre l'évasion de bans plus difficile, les VPN ou proxys ne sont pas autorisés. Veuillez les désactiver pour pouvoir jouer. Si vous pensez que ce message est dû à une erreur, ou voulez une exemption, veuillez contacter un admin du serveur discord (https://discord.suroi.io), ou envoyez un email à support@suroi.io."
+"username_placeholder": "Entrez votre nom"
+"partners": "Partenaires"
 "play_solo": "Solo"
 "play_duo": "Duos"
 "play_squad": "Squads"

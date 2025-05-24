@@ -8,6 +8,9 @@
 "msg_err_finding": "Ошибка при поиске игры."
 "msg_try_again": "Пожалуйста, попробуйте еще раз."
 
+"username_placeholder": "Введите никнейм"
+"partners": "Сайты-партнëры"
+
 "msg_punishment_warn": "Вы были предупреждены!"
 "msg_punishment_warn_reason": "Вы получили предупреждение по причине: <reason>"
 "msg_punishment_temp": "Вы были временно заблокированы!"
@@ -30,6 +33,7 @@
 "msg_not_enough_space": "Недостаточно места"
 "msg_item_already_equipped": "Предмет уже экипирован"
 "msg_better_item_equipped": "Уже экипирован предмет лучше"
+"msg_cannot_use_flare": "Ракету нельзя использовать в помещениях!"
 "msg_your_team_eliminated": "Ваш отряд был ликвидирован."
 "msg_the_team_eliminated": "Этот отряд уничтожили."
 
