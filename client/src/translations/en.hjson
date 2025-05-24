@@ -347,6 +347,7 @@
 "frag_grenade": "Frag Grenade"
 "smoke_grenade": "Smoke Grenade"
 "confetti_grenade": "Confetti Grenade"
+"flare": "Flare"
 "dual_template": "Dual <gun>"
 "region_dev": "Localhost Server"
 "region_na": "North America"
