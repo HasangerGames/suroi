@@ -79,7 +79,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
 - Key `m16a4` is not defined
-- Key `flare` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -166,7 +165,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
 - Key `tt_desc` is not defined
-- Key `flare` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -237,7 +235,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `flare` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -336,7 +333,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_screen_record` is not defined
 - Key `bindings_toggle pf_net_graph 0 1 2` is not defined
 - Key `tt_desc` is not defined
-- Key `flare` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -456,7 +452,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `flare` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -571,7 +566,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `flare` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -690,7 +684,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `flare` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -802,7 +795,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `flare` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -838,7 +830,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `flare` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -972,7 +963,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `flare` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -1066,7 +1056,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `flare` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
@@ -1129,7 +1118,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇮🇹 Italiano (63% Complete) - it.hjson
+## 🇮🇹 Italiano (64% Complete) - it.hjson
 
 ### Invalid Keys
 
@@ -1214,7 +1203,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
 - Key `m16a4` is not defined
-- Key `flare` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -1470,7 +1458,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `flare` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -1600,7 +1587,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_force_start` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `flare` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -1730,7 +1716,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `flare` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -1794,7 +1779,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🎀 Cute Engwish (73% Complete) - qen.hjson
+## 🎀 Cute Engwish (74% Complete) - qen.hjson
 
 ### Invalid Keys
 
@@ -1834,7 +1819,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `flare` is not defined
 - Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
@@ -1955,7 +1939,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `flare` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
@@ -2033,7 +2016,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `flare` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
@@ -2124,7 +2106,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `tt_desc` is not defined
 - Key `create_team_force_start` is not defined
 - Key `create_team_not_ready` is not defined
-- Key `flare` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
@@ -2198,7 +2179,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `tt_desc` is not defined
-- Key `flare` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
