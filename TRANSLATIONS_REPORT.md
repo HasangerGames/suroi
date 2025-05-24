@@ -2364,7 +2364,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `9mm` is not a valid key
 - Key `50cal` is not a valid key
 - Key `338lap` is not a valid key
-- Key `curadell` is not a valid key
 - Key `firework_rocket` is not a valid key
 - Key `power_cell` is not a valid key
 - Key `bb` is not a valid key

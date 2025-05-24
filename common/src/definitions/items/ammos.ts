@@ -110,21 +110,6 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
         hideUnlessPresent: true
     },
     {
-        idString: "curadell",
-        name: "Curadell",
-        defType: DefinitionType.Ammo,
-        itemType: ItemType.Ammo,
-        maxStackSize: 10,
-        minDropAmount: 1,
-        characteristicColor: {
-            hue: 26,
-            saturation: 100,
-            lightness: 75
-        },
-        defaultCasingFrame: "casing_curadell",
-        hideUnlessPresent: true
-    },
-    {
         idString: "firework_rocket",
         name: "Firework Rocket",
         defType: DefinitionType.Ammo,

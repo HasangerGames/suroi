@@ -474,13 +474,12 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: NullString, weight: 1 },
                 { item: "50cal", count: 20, weight: 0.3 },
                 { item: "338lap", count: 6, weight: 0.1 },
-                { item: "curadell", weight: 0.1 }
             ]
         ],
         rocket_box: [
             { item: "firework_rocket", count: 10, weight: 2 },
             { table: "ammo", weight: 1 },
-            { item: "curadell", weight: 0.02 }
+            { item: "flare", weight: 0.02 }
         ],
         falchion_case: [
             { item: "falchion", weight: 1 }
@@ -986,8 +985,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             [
                 { item: NullString, weight: 1 },
                 { item: "50cal", count: 20, weight: 0.7 },
-                { item: "338lap", count: 6, weight: 0.2 },
-                { item: "curadell", weight: 0.1 }
+                { item: "338lap", count: 6, weight: 0.2 }
             ]
         ],
         loot_tree: [
@@ -1256,8 +1254,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: NullString, weight: 1 },
                 { item: "firework_rocket", count: 3, weight: 0.5 },
                 { item: "50cal", count: 20, weight: 0.7 },
-                { item: "338lap", count: 6, weight: 0.2 },
-                { item: "curadell", weight: 0.1 }
+                { item: "338lap", count: 6, weight: 0.2 }
             ]
         ],
 
@@ -1332,8 +1329,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             [
                 { item: NullString, weight: 1 },
                 { item: "50cal", count: 20, weight: 0.7 },
-                { item: "338lap", count: 6, weight: 0.2 },
-                { item: "curadell", weight: 0.1 }
+                { item: "338lap", count: 6, weight: 0.2 }
             ]
         ],
         loot_tree: [
