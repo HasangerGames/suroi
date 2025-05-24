@@ -2240,7 +2240,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇻🇳 Tiếng Việt (72% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (82% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -2248,44 +2248,9 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `msg_error_kicked_team` is not defined
-- Key `warning_hw_accel_1` is not defined
-- Key `warning_hw_accel_2` is not defined
-- Key `warning_hw_accel_link` is not defined
-- Key `privacy` is not defined
-- Key `bindings_fullscreen` is not defined
-- Key `recording` is not defined
-- Key `settings_record_res` is not defined
-- Key `settings_alt_texture_loading` is not defined
-- Key `settings_lock_joysticks` is not defined
-- Key `settings_switch_joysticks` is not defined
-- Key `settings_left_joystick_color` is not defined
-- Key `settings_right_joystick_color` is not defined
-- Key `settings_normal_joystick_info` is not defined
-- Key `settings_switched_joystick_info` is not defined
 - Key `msg_cannot_use_flare` is not defined
-- Key `final_gas_waiting` is not defined
-- Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
-- Key `interact_monument` is not defined
-- Key `bindings_screen_record` is not defined
-- Key `kf_suicide_finished_off` is not defined
-- Key `kf_impact_of` is not defined
-- Key `km_finally_ended_yourself` is not defined
-- Key `km_finally_killed` is not defined
-- Key `km_gas_kill_you` is not defined
-- Key `km_gas_down_you` is not defined
-- Key `km_airdrop_kill_you` is not defined
-- Key `km_airdrop_down_you` is not defined
-- Key `km_knocked_you` is not defined
-- Key `km_finished_off_you` is not defined
-- Key `km_killed_you` is not defined
-- Key `km_suicide_down` is not defined
-- Key `km_suicide_finished_off` is not defined
 - Key `tt_desc` is not defined
-- Key `create_team_force_start` is not defined
-- Key `create_team_not_ready` is not defined
-- Key `region_oc` is not defined
 - Key `vaccine_syringe` is not defined
 - Key `vaccine_syringe_desc` is not defined
 - Key `second_wind` is not defined
