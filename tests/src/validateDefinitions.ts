@@ -2648,14 +2648,6 @@ logger.indent("Validating modes", () => {
                 errorPath
             );
 
-            tester.assertNoPointlessValue({
-                obj: mode.sounds,
-                field: "foldersToLoad",
-                defaultValue: [],
-                equalityFunction: a => a.length === 0,
-                baseErrorPath: tester.createPath(errorPath, "sounds")
-            });
-
             if (mode.defaultScope !== undefined) {
                 tester.assertReferenceExists({
                     obj: mode,

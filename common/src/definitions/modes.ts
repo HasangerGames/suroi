@@ -10,12 +10,8 @@ export type SpritesheetNames = ModeName | "shared";
 export interface ModeDefinition {
     readonly colors: Record<ColorKeys, string>
     readonly spriteSheets: readonly SpritesheetNames[]
-    readonly sounds: {
-        readonly ambience?: string
-        readonly replaceMenuMusic?: boolean
-        // sound folders that will be preloaded at game start
-        readonly foldersToLoad: readonly string[]
-    }
+    readonly ambience?: string
+    readonly replaceMenuMusic?: boolean
     readonly defaultScope?: ReferenceTo<ScopeDefinition>
     readonly obstacleVariants?: boolean
     readonly darkShaders?: boolean
@@ -45,10 +41,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
-        sounds: {
-            ambience: "wind_ambience",
-            foldersToLoad: ["shared", "normal"]
-        },
+        ambience: "wind_ambience",
         spriteSheets: ["shared", "normal"]
     },
     fall: {
@@ -62,10 +55,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
-        sounds: {
-            foldersToLoad: ["shared", "fall"],
-            ambience: "wind_ambience"
-        },
+        ambience: "wind_ambience",
         defaultScope: "2x_scope",
         particleEffects: {
             frames: ["leaf_particle_1", "leaf_particle_2", "leaf_particle_3"],
@@ -85,10 +75,8 @@ export const Modes: Record<ModeName, ModeDefinition> = {
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
+        ambience: "wind_ambience",
         defaultScope: "2x_scope",
-        sounds: {
-            foldersToLoad: ["shared", "fall"]
-        },
         darkShaders: true,
         spriteSheets: ["shared", "fall", "halloween"],
         specialLogo: true,
@@ -105,9 +93,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
-        sounds: {
-            foldersToLoad: ["shared", "normal", "infection"]
-        },
+        ambience: "wind_ambience",
         spriteSheets: ["shared", "normal", "infection"],
         playButtonImage: "./img/game/shared/perks/infected.svg",
         weaponSwap: true
@@ -123,9 +109,7 @@ export const Modes: Record<ModeName, ModeDefinition> = {
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
-        sounds: {
-            foldersToLoad: ["shared", "normal"]
-        },
+        ambience: "wind_ambience",
         spriteSheets: ["shared", "normal", "birthday"]
     },
     winter: {
@@ -140,11 +124,8 @@ export const Modes: Record<ModeName, ModeDefinition> = {
             void: "hsl(25, 80%, 6%)"
         },
         spriteSheets: ["shared", "normal", "winter"],
-        sounds: {
-            foldersToLoad: ["shared", "normal", "winter"],
-            ambience: "snowstorm_ambience",
-            replaceMenuMusic: true
-        },
+        ambience: "snowstorm_ambience",
+        replaceMenuMusic: true,
         bulletTrailAdjust: "hsl(0, 50%, 80%)",
         particleEffects: {
             frames: "snow_particle",
