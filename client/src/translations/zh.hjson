@@ -34,6 +34,7 @@
 "msg_not_enough_space": "空间不足！"
 "msg_item_already_equipped": "已装备此物品！"
 "msg_better_item_equipped": "已装备更好的物品！"
+"msg_cannot_use_flare": "无法在室内使用信号弹！"
 "msg_your_team_eliminated": "你的队伍被淘汰了。"
 "msg_the_team_eliminated": "队伍被淘汰了。"
 "msg_punishment_warn_agreement": "我承认这次警告，并且不会再犯。"

@@ -151,6 +151,7 @@
 "msg_not_enough_space": "Espaço insuficiente!"
 "msg_item_already_equipped": "Item já equipado!"
 "msg_better_item_equipped": "Item melhor equipado!"
+"msg_cannot_use_flare": "Não é possível usar o sinalizador dentro de edifícios!"
 
 "gas_waiting": "Gás tóxico avança em <time>"
 "gas_advancing": "Gás tóxico avançando! Mova-se para a zona segura"
@@ -374,6 +375,7 @@
 "frag_grenade": "Granada de Fragmentação"
 "smoke_grenade": "Granada de Fumaça"
 "confetti_grenade": "Granada de Confete"
+"flare": "Sinalizador"
 
 "dual_template": "Dual <gun>"
 

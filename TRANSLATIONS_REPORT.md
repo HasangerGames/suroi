@@ -142,7 +142,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇧🇷 Português (Brasil) (95% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (96% Complete) - br.hjson
 
 ### Invalid Keys
 
@@ -160,7 +160,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_right_joystick_color` is not defined
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
-- Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `interact_monument` is not defined
 - Key `bindings_screen_record` is not defined
@@ -1890,7 +1889,6 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `msg_cannot_use_flare` is not defined
 - Key `action_vaccine_syringe_use` is not defined
 - Key `tt_desc` is not defined
 - Key `vaccine_syringe` is not defined
@@ -2241,7 +2239,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇨🇳 中文（简体） (99% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (100% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -2495,6 +2493,5 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### Undefined Keys
 
-- Key `msg_cannot_use_flare` is not defined
 - Key `m16a4` is not defined
 
