@@ -746,7 +746,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `partners` is not defined
 - Key `username_placeholder` is not defined
 
-## 🇫🇷 Français (88% Complete) - fr.hjson
+## 🇫🇷 Français (89% Complete) - fr.hjson
 
 ### Invalid Keys
 
@@ -770,7 +770,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `settings_right_joystick_color` is not defined
 - Key `settings_normal_joystick_info` is not defined
 - Key `settings_switched_joystick_info` is not defined
-- Key `msg_cannot_use_flare` is not defined
 - Key `final_gas_waiting` is not defined
 - Key `final_gas_advancing` is not defined
 - Key `action_vaccine_syringe_use` is not defined
