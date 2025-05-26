@@ -58,6 +58,10 @@ export const Angle = Object.freeze({
     },
     orientationToRotation(orientation: number): number {
         return -this.normalize(orientation * halfπ);
+    },
+    isAngleInside(angle: number, start: number, end: number): boolean {
+        if (start <= end) return angle >= start && angle <= end;
+        else return angle >= start || angle <= end;
     }
 });
 
