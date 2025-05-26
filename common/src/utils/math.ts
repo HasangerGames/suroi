@@ -59,9 +59,19 @@ export const Angle = Object.freeze({
     orientationToRotation(orientation: number): number {
         return -this.normalize(orientation * halfπ);
     },
+    /**
+     * Find if an angle is present between a start and end angle, normalized in radians
+     * @param angle The target angle
+     * @param start The start angle of the range
+     * @param end The end angle of the range
+     * @return Whether or not the target angle is present in the range
+     */
     isAngleInside(angle: number, start: number, end: number): boolean {
-        if (start <= end) return angle >= start && angle <= end;
-        else return angle >= start || angle <= end;
+        const nAngle = this.normalize(angle);
+        const nStart = this.normalize(start);
+        const nEnd = this.normalize(end);
+        if (nStart <= nEnd) return nAngle >= nStart && nAngle <= nEnd;
+        else return nAngle >= nStart || nAngle <= nEnd;
     }
 });
 
