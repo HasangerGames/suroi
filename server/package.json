@@ -15,7 +15,7 @@
   "devDependencies": {
     "@swc/core": "^1.11.29",
     "@swc/helpers": "^0.5.17",
-    "@types/node": "^22.15.21",
+    "@types/node": "^22.15.22",
     "@types/sanitize-html": "^2.16.0",
     "nodemon": "^3.1.10",
     "regenerator-runtime": "^0.14.1",
