@@ -178,13 +178,13 @@ export const Geometry = Object.freeze({
         return (b.x - a.x) ** 2 + (b.y - a.y) ** 2;
     },
     /**
-     * Returns the area of a triangle whose vertices are the three vectors passed in
+     * Returns the area of a parallelogram whose vertices are the three vectors passed in
      * @param a The first vertex
      * @param b The second vertex
      * @param c The third vertex
-     * @returns The area of the triangle formed by the three provided vectors
+     * @returns The area of the parallelogram formed by the three provided vertices
      */
-    signedAreaTri(a: Vector, b: Vector, c: Vector): number {
+    signedArea(a: Vector, b: Vector, c: Vector): number {
         return (a.x - c.x) * (b.y - c.y) - (a.y - c.y) * (b.x - c.x);
     },
     /**
@@ -352,11 +352,11 @@ export const Collision = Object.freeze({
      * @return The intersection position and null if no such intersection exists
      */
     lineIntersectsLine(startA: Vector, endA: Vector, startB: Vector, endB: Vector): Vector | null {
-        const x1 = Geometry.signedAreaTri(startA, endA, endB);
-        const x2 = Geometry.signedAreaTri(startA, endA, startB);
+        const x1 = Geometry.signedArea(startA, endA, endB);
+        const x2 = Geometry.signedArea(startA, endA, startB);
 
         if (x1 !== 0 && x2 !== 0 && x1 * x2 < 0) {
-            const x3 = Geometry.signedAreaTri(startB, endB, startA);
+            const x3 = Geometry.signedArea(startB, endB, startA);
             const x4 = x3 + x2 - x1;
 
             if (x3 * x4 < 0) {
