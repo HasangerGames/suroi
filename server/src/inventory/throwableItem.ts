@@ -126,6 +126,8 @@ export class ThrowableItem extends CountableInventoryItem.derive(ItemType.Throwa
 
         if (!owner.dead) {
             owner.inventory.removeThrowable(this.definition, false, 1);
+            console.log(owner.inventory.items.getItem(this.definition.idString));
+            console.log(owner.inventory.throwableItemMap.get(this.definition.idString));
         }
 
         owner.animation = AnimationType.ThrowableThrow;
