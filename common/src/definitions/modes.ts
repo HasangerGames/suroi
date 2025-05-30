@@ -1,11 +1,26 @@
 import { type ReferenceTo } from "../utils/objectDefinitions";
 import { type ScopeDefinition } from "./items/scopes";
 
-export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "trail" | "gas" | "void";
-
-export type ModeName = "normal" | "fall" | "halloween" | "infection" | "birthday" | "winter";
+export type ModeName =
+    | "normal"
+    | "fall"
+    | "halloween"
+    | "infection"
+    | "hunted"
+    | "birthday"
+    | "winter";
 
 export type SpritesheetNames = ModeName | "shared";
+
+type ColorKeys =
+    | "grass"
+    | "water"
+    | "border"
+    | "beach"
+    | "riverBank"
+    | "trail"
+    | "gas"
+    | "void";
 
 export interface ModeDefinition {
     readonly colors: Record<ColorKeys, string>
@@ -15,7 +30,7 @@ export interface ModeDefinition {
     readonly defaultScope?: ReferenceTo<ScopeDefinition>
     readonly obstacleVariants?: boolean
     readonly darkShaders?: boolean
-    // will be multiplied by the bullet trail color
+    /** will be multiplied by the bullet trail color */
     readonly bulletTrailAdjust?: string
     readonly particleEffects?: {
         readonly frames: string | readonly string[]
@@ -97,6 +112,20 @@ export const Modes: Record<ModeName, ModeDefinition> = {
         spriteSheets: ["shared", "normal", "infection"],
         playButtonImage: "./img/game/shared/perks/infected.svg",
         weaponSwap: true
+    },
+    hunted: {
+        colors: {
+            grass: "hsl(140, 22%, 30%)",
+            water: "hsl(190, 63%, 25%)",
+            border: "hsl(211, 63%, 30%)",
+            beach: "hsl(40, 39%, 44%)",
+            riverBank: "hsl(39, 47%, 25%)",
+            trail: "hsl(35, 50%, 40%)",
+            gas: "hsla(17, 100%, 50%, 0.55)",
+            void: "hsl(25, 80%, 6%)"
+        },
+        ambience: "wind_ambience",
+        spriteSheets: ["shared", "normal", "hunted"]
     },
     birthday: { // copy of normal
         colors: {

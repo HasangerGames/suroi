@@ -912,6 +912,35 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         }
     },
     {
+        idString: "spruce_tree",
+        name: "Spruce Tree",
+        defType: DefinitionType.Obstacle,
+        material: "tree",
+        isTree: true,
+        tree: {
+            leavesMinAlpha: 0.45
+        },
+        trunkVariations: 1,
+        leavesVariations: 1,
+        health: 180,
+        scale: {
+            spawnMin: 0.9,
+            spawnMax: 1.1,
+            destroy: 0.75
+        },
+        hitbox: new CircleHitbox(2.5),
+        spawnHitbox: new CircleHitbox(8.5),
+        rotationMode: RotationMode.Full,
+        allowFlyover: FlyoverPref.Never,
+        zIndex: ZIndexes.ObstaclesLayer4,
+        frames: {
+            base: "spruce_tree_trunk",
+            leaves: "spruce_tree_leaves",
+            particle: "pine_tree_particle",
+            residue: "pine_tree_residue"
+        }
+    },
+    {
         idString: "big_oak_tree",
         name: "Big Oak Tree",
         defType: DefinitionType.Obstacle,
@@ -987,6 +1016,23 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         rotationMode: RotationMode.Full,
         hitbox: new CircleHitbox(2.5),
         variations: 2,
+        allowFlyover: FlyoverPref.Never,
+        zIndex: ZIndexes.ObstaclesLayer4
+    },
+    {
+        idString: "dead_pine_tree",
+        name: "Dead Pine Tree",
+        defType: DefinitionType.Obstacle,
+        material: "tree",
+        health: 120,
+        scale: {
+            spawnMin: 0.9,
+            spawnMax: 1.1,
+            destroy: 0.75
+        },
+        spawnHitbox: new CircleHitbox(8.5),
+        rotationMode: RotationMode.Full,
+        hitbox: new CircleHitbox(2.5),
         allowFlyover: FlyoverPref.Never,
         zIndex: ZIndexes.ObstaclesLayer4
     },

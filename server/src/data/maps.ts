@@ -749,6 +749,120 @@ const maps = {
             { name: "Decayedwood", position: Vec.create(0.5, 0.65) }
         ]
     },
+    hunted: {
+        width: 1632,
+        height: 1632,
+        oceanSize: 128,
+        beachSize: 32,
+        rivers: {
+            minAmount: 2,
+            maxAmount: 3,
+            maxWideAmount: 1,
+            wideChance: 0.35,
+            minWidth: 12,
+            maxWidth: 18,
+            minWideWidth: 25,
+            maxWideWidth: 30,
+            obstacles: {
+                river_rock: 16,
+                lily_pad: 6
+            }
+        },
+        buildings: {
+            large_bridge: 2,
+            small_bridge: Infinity,
+            river_hut_1: 2,
+            river_hut_2: 2,
+            river_hut_3: 2,
+            lighthouse: 1,
+            tugboat_red: 1,
+            tugboat_white: 5,
+            small_bunker: 1,
+            warehouse: 5,
+            buoy: 12
+        },
+        quadBuildingLimit: {
+            port: 1,
+            river_hut_1: 1,
+            river_hut_2: 1,
+            river_hut_3: 1,
+            red_house: 1,
+            red_house_v2: 1,
+            warehouse: 2,
+            green_house: 1,
+            blue_house: 1,
+            mobile_home: 3,
+            porta_potty: 3,
+            construction_site: 1,
+            blue_house_special: 1
+        },
+        obstacles: {
+            oil_tank: 12,
+            pine_tree: 60,
+            spruce_tree: 50,
+            dead_pine_tree: 30,
+            // oak_tree: 10,
+            loot_tree: 1,
+            regular_crate: 160,
+            flint_crate: 5,
+            aegis_crate: 5,
+            grenade_crate: 35,
+            rock: 150,
+            river_chest: 1,
+            bush: 110,
+            blueberry_bush: 30,
+            barrel: 80,
+            viking_chest: 1,
+            super_barrel: 30,
+            melee_crate: 1,
+            gold_rock: 1,
+            loot_barrel: 1,
+            flint_stone: 1
+        },
+        obstacleClumps: [
+            {
+                clumpAmount: 75,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["pine_tree"],
+                    radius: 12
+                }
+            },
+            {
+                clumpAmount: 50,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["spruce_tree"],
+                    radius: 12
+                }
+            },
+            {
+                clumpAmount: 15,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 5,
+                    obstacles: ["dead_pine_tree"],
+                    radius: 12
+                }
+            }
+        ],
+        loots: {
+            ground_loot: 60
+        },
+        places: [
+            { name: "Banana", position: Vec.create(0.23, 0.2) },
+            { name: "Takedown", position: Vec.create(0.23, 0.8) },
+            { name: "Lavlandet", position: Vec.create(0.75, 0.2) },
+            { name: "Noskin Narrows", position: Vec.create(0.72, 0.8) },
+            { name: "Mt. Sanger", position: Vec.create(0.5, 0.35) },
+            { name: "Deepwood", position: Vec.create(0.5, 0.65) }
+        ]
+    },
     winter: {
         width: 1632,
         height: 1632,
