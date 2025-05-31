@@ -36,10 +36,10 @@
   ],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@eslint/js": "^9.27.0",
+    "@eslint/js": "^9.28.0",
     "@stylistic/eslint-plugin": "^4.4.0",
-    "@types/node": "^22.15.22",
-    "eslint": "^9.27.0",
+    "@types/node": "^22.15.29",
+    "eslint": "^9.28.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.33.0"
   },
