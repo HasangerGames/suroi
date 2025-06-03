@@ -1,4 +1,6 @@
+import { RectangleHitbox } from "./hitbox";
 import { Numeric } from "./math";
+import { ObjectDefinition, ReferenceOrNull, ReferenceOrRandom } from "./objectDefinitions";
 import { type Vector } from "./vector";
 
 /**
@@ -110,4 +112,54 @@ export class SeededRandom {
     getInt(min = 0, max = 1): number {
         return Math.round(this.get(min, max));
     }
+}
+
+export function seededRandomRotation(seededRandom: SeededRandom): number {
+    // use radians so -pi to pi
+    return seededRandom.get(-Math.PI, Math.PI);
+}
+
+export function seededPickRandomInArray<T>(items: readonly T[], seededRandom: SeededRandom): T {
+    return items[Math.floor(seededRandom.get(0, items.length))];
+}
+
+export function seededRandomFloat(min: number, max: number, seededRandom: SeededRandom): number {
+    return seededRandom.get(min, max);
+}
+
+export function seededRandomBoolean(seededRandom: SeededRandom): boolean {
+    return seededRandom.get() < 0.5;
+}
+
+export function seededGetRandomIDString<T extends ObjectDefinition>(ref: ReferenceOrRandom<T>, seededRandom: SeededRandom): ReferenceOrNull<T> {
+    if (typeof ref === "string") return ref;
+
+    const items: Array<ReferenceOrNull<T>> = [];
+    const weights: number[] = [];
+    for (const [item, weight] of Object.entries(ref) as ReadonlyArray<readonly [ReferenceOrNull<T>, number]>) {
+        items.push(item);
+        weights.push(weight);
+    }
+    return seededWeightedRandom(items, weights, seededRandom);
+}
+
+export function seededWeightedRandom<T>(items: readonly T[], weights: readonly number[], seededRandom: SeededRandom): T {
+    let pick = seededRandom.get() * weights.reduce((acc, cur) => acc + cur, 0);
+    let i = 0;
+    while ((pick -= weights[i++]) > 0);
+    return items[--i];
+}
+
+export function seededRandomVector(minX: number, maxX: number, minY: number, maxY: number, randomGenerator: SeededRandom): Vector {
+    return {
+        x: randomGenerator.get(minX, maxX),
+        y: randomGenerator.get(minY, maxY)
+    };
+}
+
+export function seededRectangleRandomPoint(rect: RectangleHitbox, randomGenerator: SeededRandom): Vector {
+    return {
+        x: seededRandomFloat(rect.min.x, rect.max.x, randomGenerator),
+        y: seededRandomFloat(rect.min.y, rect.max.y, randomGenerator)
+    };
 }
