@@ -9,7 +9,7 @@ import { equalLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
 import { SDeepMutable } from "@common/utils/misc";
 import { NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
-import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
+import { seededRectangleRandomPoint, SeededRandom, seededPickRandomInArray, seededRandomBoolean, seededRandomFloat, seededRandomRotation, seededRandomVector, seededGetRandomIDString, random } from "@common/utils/random";
 import { River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { MapWithParams } from "./config";
@@ -18,7 +18,33 @@ import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
 import { getLootFromTable } from "./utils/lootHelpers";
-import { CARDINAL_DIRECTIONS, getRandomIDString } from "./utils/misc";
+import { CARDINAL_DIRECTIONS } from "./utils/misc";
+
+/**
+ * Seeded version of `River.getRandomPosition` found in `common/src/utils/terrain.ts`.
+ */
+function seededRiverGetRandomPosition(seededRandom: SeededRandom, river: River, onBank?: boolean, margin = 0): Vector {
+    const t = seededRandom.get();
+    // river width is not consistent so map t to a point indexing the width at that point
+    const pointIdx = Numeric.clamp(Math.floor(t * river.points.length), 0, river.points.length);
+    const waterWidth = river[onBank ? "bankWidths" : "waterWidths"][pointIdx] - margin;
+    const dist = seededRandomFloat(0, waterWidth, seededRandom) * (seededRandomBoolean(seededRandom) ? 1 : -1);
+    // add a random offset that's between river center and river border on either directions
+    const normal = river.getNormal(t);
+    return Vec.add(river.getPosition(t), Vec.scale(normal, dist));
+}
+
+/**
+ * Seeded version of `randomPointInsideCircle` found in `common/src/utils/random.ts`.
+ */
+function seededRandomPointInsideCircle(position: Vector, maxRadius: number, seededRandom: SeededRandom, minRadius?: number): Vector {
+    const angle = seededRandomFloat(0, Math.PI * 2, seededRandom);
+    const length = seededRandomFloat(minRadius ?? 0, maxRadius, seededRandom);
+    return {
+        x: position.x + (Math.cos(angle) * length),
+        y: position.y + (Math.sin(angle) * length)
+    };
+}
 
 export class GameMap {
     readonly game: Game;
@@ -54,29 +80,26 @@ export class GameMap {
 
     private readonly _beachPadding;
 
-    static getRandomRotation<T extends RotationMode>(mode: T): RotationMapping[T] {
+    static getRandomRotation<T extends RotationMode>(mode: T, seededRandom: SeededRandom): RotationMapping[T] {
         switch (mode) {
             case RotationMode.Full:
-                // @ts-expect-error not sure why ts thinks the return type should be 0
-                return randomRotation();
+                return seededRandomRotation(seededRandom) as RotationMapping[T];
             case RotationMode.Limited:
-                // @ts-expect-error see above
-                return random(0, 3);
+                return seededRandom.getInt(0, 3) as RotationMapping[T];
             case RotationMode.Binary:
-                // @ts-expect-error see above
-                return random(0, 1);
+                return seededRandom.getInt(0, 1) as RotationMapping[T];
             case RotationMode.None:
             default:
                 return 0;
         }
     }
 
-    static getRandomBuildingOrientation(mode: NonNullable<BuildingDefinition["rotationMode"]> = RotationMode.Limited): Orientation {
+    static getRandomBuildingOrientation(mode: NonNullable<BuildingDefinition["rotationMode"]> = RotationMode.Limited, seededRandom: SeededRandom): Orientation {
         switch (mode) {
             case RotationMode.Binary:
-                return pickRandomInArray([0, 2]);
+                return seededPickRandomInArray([0, 2], seededRandom);
             default:
-                return GameMap.getRandomRotation(mode);
+                return GameMap.getRandomRotation(mode, seededRandom);
         }
     }
 
@@ -163,17 +186,19 @@ export class GameMap {
             this._generateObstacleClumps(clump);
         }
 
-        Object.entries(mapDef.obstacles ?? {}).forEach(([obstacle, count]) => this._generateObstacles(obstacle, count));
+        Object.entries(mapDef.obstacles ?? {}).forEach(([obstacle, count]) => this._generateObstacles(obstacle, count, new SeededRandom(this.seed + obstacle.charCodeAt(0))));
 
         Object.entries(mapDef.loots ?? {}).forEach(([loot, count]) => this._generateLoots(loot, count));
 
         mapDef.onGenerate?.(this, params);
 
+        const seededRandomConstructor = new SeededRandom(this.seed);
+
         if (mapDef.places) {
             packet.places = mapDef.places.map(({ name, position }) => {
                 const absPosition = Vec.create(
-                    this.width * (position.x + randomFloat(-0.04, 0.04)),
-                    this.height * (position.y + randomFloat(-0.04, 0.04))
+                    this.width * (position.x + seededRandomFloat(-0.04, 0.04, seededRandomConstructor)),
+                    this.height * (position.y + seededRandomFloat(-0.04, 0.04, seededRandomConstructor))
                 );
 
                 return { name, position: absPosition };
@@ -352,6 +377,8 @@ export class GameMap {
     }
 
     private _generateRiverObstacles(riverDef: RiverDefinition, onTrails: boolean): void {
+        const riverObstacleSeededRandom = new SeededRandom(this.seed);
+
         for (const river of this.terrain.rivers) {
             if (onTrails !== river.isTrail) continue;
             for (const obstacle in riverDef.obstacles) {
@@ -364,14 +391,17 @@ export class GameMap {
                 for (let i = 0; i < amount; i++) {
                     const position = this.getRandomPosition(hitbox, {
                         getPosition: () => {
-                            return river.getRandomPosition(
+                            return seededRiverGetRandomPosition(
+                                riverObstacleSeededRandom,
+                                river,
                                 definition.spawnMode === MapObjectSpawnMode.Trail,
                                 hitbox.type === HitboxType.Circle ? hitbox.radius : 0
                             );
                         },
                         spawnMode: definition.spawnMode,
                         ignoreClearings: true,
-                        river
+                        river,
+                        seededRandom: riverObstacleSeededRandom
                     });
 
                     if (position) {
@@ -383,6 +413,8 @@ export class GameMap {
     }
 
     private _generateClearings(clearingDef: MapDefinition["clearings"]): void {
+        const seededRandomClearings = new SeededRandom(this.seed);
+
         if (!clearingDef) return;
 
         const {
@@ -395,8 +427,8 @@ export class GameMap {
         } = clearingDef;
 
         for (let i = 0; i < count; i++) {
-            const width = randomFloat(minWidth, maxWidth);
-            const height = randomFloat(minHeight, maxHeight);
+            const width = seededRandomFloat(minWidth, maxWidth, seededRandomClearings);
+            const height = seededRandomFloat(minHeight, maxHeight, seededRandomClearings);
             let hitbox = RectangleHitbox.fromRect(width, height);
 
             let position;
@@ -419,7 +451,8 @@ export class GameMap {
             for (const obstacle of obstacles) {
                 this._generateObstacles(
                     obstacle.idString,
-                    random(obstacle.min, obstacle.max),
+                    seededRandomClearings.getInt(obstacle.min, obstacle.max),
+                    seededRandomClearings,
                     () => hitbox.randomPoint()
                 );
             }
@@ -428,6 +461,7 @@ export class GameMap {
 
     private _generateBuildings(definition: ReifiableDef<BuildingDefinition>, count: number): void {
         const buildingDef = Buildings.reify(definition);
+        const buildingSeededRandom = new SeededRandom(this.seed + buildingDef.idString.charCodeAt(0));
 
         if (!buildingDef.bridgeHitbox) {
             const {
@@ -447,7 +481,7 @@ export class GameMap {
                 let validPositionFound = false;
 
                 while (!validPositionFound && attempts < 100) {
-                    orientation = GameMap.getRandomBuildingOrientation(rotationMode);
+                    orientation = GameMap.getRandomBuildingOrientation(rotationMode, buildingSeededRandom);
 
                     position = this.getRandomPosition(spawnHitbox, {
                         orientation,
@@ -456,7 +490,8 @@ export class GameMap {
                         orientationConsumer: (newOrientation: Orientation) => {
                             orientation = spawnOrientation ? Numeric.addOrientations(newOrientation, spawnOrientation) : newOrientation;
                         },
-                        maxAttempts: 400
+                        maxAttempts: 400,
+                        seededRandom: buildingSeededRandom
                     });
 
                     if (position === undefined) {
@@ -496,7 +531,7 @@ export class GameMap {
                     this.game.warn(`Failed to place building ${idString} after ${attempts} attempts`);
                 }
 
-                if (position !== undefined) this.generateBuilding(buildingDef, position, orientation);
+                if (position !== undefined) this.generateBuilding(buildingDef, position, buildingSeededRandom, orientation);
 
                 attempts = 0; // Reset attempts counter for the next building
             }
@@ -549,9 +584,9 @@ export class GameMap {
 
                 this.occupiedBridgePositions.push(bestPosition);
                 const finalOrientation: Orientation = bestOrientation === 0
-                    ? randomBoolean() ? 0 : 2
-                    : randomBoolean() ? 1 : 3;
-                this.generateBuilding(buildingDef, bestPosition, finalOrientation);
+                    ? seededRandomBoolean(buildingSeededRandom) ? 0 : 2
+                    : seededRandomBoolean(buildingSeededRandom) ? 1 : 3;
+                this.generateBuilding(buildingDef, bestPosition, buildingSeededRandom, finalOrientation);
                 spawnedCount++;
             };
 
@@ -568,11 +603,12 @@ export class GameMap {
     generateBuilding(
         definition: ReifiableDef<BuildingDefinition>,
         position: Vector,
+        seededRandomBuilding: SeededRandom,
         orientation?: Orientation,
         layer?: number
     ): Building | undefined {
         definition = Buildings.reify(definition);
-        orientation ??= GameMap.getRandomBuildingOrientation(definition.rotationMode);
+        orientation ??= GameMap.getRandomBuildingOrientation(definition.rotationMode, seededRandomBuilding);
         layer ??= 0;
 
         if (
@@ -590,14 +626,14 @@ export class GameMap {
         const building = new Building(this.game, definition, Vec.clone(position), orientation, layer);
 
         for (const obstacleData of definition.obstacles ?? []) {
-            let idString = getRandomIDString<ObstacleDefinition>(obstacleData.idString);
+            let idString = seededGetRandomIDString<ObstacleDefinition>(obstacleData.idString, seededRandomBuilding);
             if (idString === NullString) continue;
             if (obstacleData.outdoors && this.game.mode.obstacleVariants) {
                 idString = `${idString}_${this.game.modeName}`;
             }
 
             const obstacleDef = Obstacles.fromString(idString);
-            let obstacleRotation = obstacleData.rotation ?? GameMap.getRandomRotation(obstacleDef.rotationMode);
+            let obstacleRotation = obstacleData.rotation ?? GameMap.getRandomRotation(obstacleDef.rotationMode, seededRandomBuilding);
 
             if (obstacleDef.rotationMode === RotationMode.Limited) {
                 obstacleRotation = Numeric.addOrientations(orientation, obstacleRotation as Orientation);
@@ -647,7 +683,7 @@ export class GameMap {
         }
 
         for (const subBuilding of definition.subBuildings ?? []) {
-            const idString = getRandomIDString<BuildingDefinition>(subBuilding.idString);
+            const idString = seededGetRandomIDString<BuildingDefinition>(subBuilding.idString, seededRandomBuilding);
 
             if (idString === NullString) continue;
 
@@ -655,6 +691,7 @@ export class GameMap {
             this.generateBuilding(
                 idString,
                 Vec.addAdjust(position, subBuilding.position, finalOrientation),
+                seededRandomBuilding,
                 finalOrientation,
                 layer + (subBuilding.layer ?? 0)
             );
@@ -671,7 +708,7 @@ export class GameMap {
         return building;
     }
 
-    private _generateObstacles(definition: ReifiableDef<ObstacleDefinition>, count: number, getPosition?: () => Vector): void {
+    private _generateObstacles(definition: ReifiableDef<ObstacleDefinition>, count: number, seededRandomObstacle: SeededRandom, getPosition?: () => Vector): void {
         // i don't know why "definition = Obstacles.reify(definition)" doesn't work anymore, but it doesn't
         const def = Obstacles.reify(definition);
 
@@ -680,9 +717,9 @@ export class GameMap {
         const effSpawnHitbox = def.spawnHitbox ?? def.hitbox;
 
         for (let i = 0; i < count; i++) {
-            const scale = randomFloat(spawnMin, spawnMax);
-            const variation = (variations !== undefined ? random(0, variations - 1) : 0) as Variation;
-            const rotation = GameMap.getRandomRotation(rotationMode);
+            const scale = seededRandomFloat(spawnMin, spawnMax, seededRandomObstacle);
+            const variation = (variations !== undefined ? seededRandomObstacle.getInt(0, variations - 1) : 0) as Variation;
+            const rotation = GameMap.getRandomRotation(rotationMode, seededRandomObstacle);
 
             let orientation: Orientation = 0;
 
@@ -695,7 +732,8 @@ export class GameMap {
                 scale,
                 orientation,
                 spawnMode: def.spawnMode,
-                ignoreClearings: this.mapDef.clearings?.allowedObstacles.includes(def.idString)
+                ignoreClearings: this.mapDef.clearings?.allowedObstacles.includes(def.idString),
+                seededRandom: seededRandomObstacle
             });
 
             if (!position) {
@@ -703,7 +741,7 @@ export class GameMap {
                 continue;
             }
 
-            this.generateObstacle(def, position, { layer: Layer.Ground, scale, variation });
+            this.generateObstacle(def, position, { layer: Layer.Ground, scale, variation, rotation });
         }
     }
 
@@ -735,15 +773,17 @@ export class GameMap {
         } = {},
         ignoreHideOnMap?: boolean
     ): Obstacle | undefined {
+        const seededRandomObstacle = new SeededRandom(this.seed);
+
         const def = Obstacles.reify(definition);
         layer ??= 0;
 
-        scale ??= randomFloat(def.scale?.spawnMin ?? 1, def.scale?.spawnMax ?? 1);
+        scale ??= seededRandomFloat(def.scale?.spawnMin ?? 1, def.scale?.spawnMax ?? 1, seededRandomObstacle);
         if (variation === undefined && def.variations !== undefined) {
-            variation = random(0, def.variations - 1) as Variation;
+            variation = seededRandomObstacle.getInt(0, def.variations - 1) as Variation;
         }
 
-        rotation ??= GameMap.getRandomRotation(def.rotationMode);
+        rotation ??= GameMap.getRandomRotation(def.rotationMode, seededRandomObstacle);
 
         if (
             this.game.pluginManager.emit(
@@ -798,11 +838,14 @@ export class GameMap {
 
         const { clump: { obstacles, minAmount, maxAmount, radius, jitter } } = clumpDef;
 
+        const clumpSeededRandom = new SeededRandom(this.seed + firstObstacle.idString.charCodeAt(0));
+
         for (let i = 0; i < clumpAmount; i++) {
             const position = this.getRandomPosition(
                 new CircleHitbox(radius + jitter),
                 {
-                    spawnMode: firstObstacle.spawnMode
+                    spawnMode: firstObstacle.spawnMode,
+                    seededRandom: clumpSeededRandom
                 }
             );
 
@@ -811,15 +854,15 @@ export class GameMap {
                 continue;
             }
 
-            const amountOfObstacles = random(minAmount, maxAmount);
-            const offset = randomRotation();
+            const amountOfObstacles = clumpSeededRandom.getInt(minAmount, maxAmount);
+            const offset = seededRandomRotation(clumpSeededRandom); // random offset for the obstacles
             const step = τ / amountOfObstacles;
 
             for (let j = 0; j < amountOfObstacles; j++) {
                 this.generateObstacle(
-                    pickRandomInArray(obstacles),
+                    seededPickRandomInArray(obstacles, clumpSeededRandom),
                     Vec.add(
-                        randomPointInsideCircle(position, jitter),
+                        seededRandomPointInsideCircle(position, jitter, clumpSeededRandom),
                         Vec.fromPolar(j * step + offset, radius)
                     )
                 );
@@ -828,12 +871,14 @@ export class GameMap {
     }
 
     private _generateLoots(table: string, count: number): void {
+        const lootSeededRandom = new SeededRandom(this.seed + table.charCodeAt(0));
+
         for (let i = 0; i < count; i++) {
             const loot = getLootFromTable(this.game.modeName, table);
 
             const position = this.getRandomPosition(
                 new CircleHitbox(5),
-                { spawnMode: MapObjectSpawnMode.GrassAndSand }
+                { spawnMode: MapObjectSpawnMode.GrassAndSand, seededRandom: lootSeededRandom }
             );
 
             if (!position) {
@@ -869,6 +914,7 @@ export class GameMap {
             orientationConsumer?: (orientation: Orientation) => void
             ignoreClearings?: boolean
             river?: River
+            seededRandom: SeededRandom
         }
     ): Vector | undefined {
         let position: Vector | undefined = Vec.create(0, 0);
@@ -889,27 +935,31 @@ export class GameMap {
         const getPosition = params?.getPosition ?? (() => {
             switch (spawnMode) {
                 case MapObjectSpawnMode.Grass: {
-                    return () => randomVector(
+                    return () => seededRandomVector(
                         this._beachPadding + width,
                         this.width - this._beachPadding - width,
                         this._beachPadding + height,
-                        this.height - this._beachPadding - height
+                        this.height - this._beachPadding - height,
+                        params?.seededRandom ?? new SeededRandom(this.seed)
                     );
                 }
                 case MapObjectSpawnMode.GrassAndSand: {
-                    return () => randomVector(
+                    return () => seededRandomVector(
                         this.oceanSize + width,
                         this.width - this.oceanSize - width,
                         this.oceanSize + height,
-                        this.height - this.oceanSize - height
+                        this.height - this.oceanSize - height,
+                        params?.seededRandom ?? new SeededRandom(this.seed)
                     );
                 }
                 // TODO: evenly distribute objects based on river size
                 case MapObjectSpawnMode.River: {
                     // rivers that aren't trails must have a waterHitbox
                     return () => {
-                        river ??= pickRandomInArray(this.terrain.rivers.filter(({ isTrail }) => !isTrail));
-                        return river.getRandomPosition(
+                        river ??= seededPickRandomInArray(this.terrain.rivers.filter(({ isTrail }) => !isTrail), params?.seededRandom ?? new SeededRandom(this.seed));
+                        return seededRiverGetRandomPosition(
+                            params?.seededRandom ?? new SeededRandom(this.seed),
+                            river,
                             false,
                             initialHitbox.type === HitboxType.Circle ? initialHitbox.radius : 0
                         );
@@ -918,7 +968,7 @@ export class GameMap {
                 case MapObjectSpawnMode.Beach: {
                     return () => {
                         params?.orientationConsumer?.(
-                            orientation = GameMap.getRandomBuildingOrientation(RotationMode.Limited)
+                            orientation = GameMap.getRandomBuildingOrientation(RotationMode.Limited, params?.seededRandom ?? new SeededRandom(this.seed))
                         );
 
                         const beachRect = this.beachHitbox.hitboxes[orientation].clone();
@@ -937,14 +987,16 @@ export class GameMap {
                             }
                         }
 
-                        const point = beachRect.randomPoint();
+                        const point = seededRectangleRandomPoint(beachRect, params?.seededRandom ?? new SeededRandom(this.seed));
                         return params?.spawnOffset ? Vec.addAdjust(point, params.spawnOffset, orientation) : point;
                     };
                 }
                 case MapObjectSpawnMode.Trail: {
                     return () => {
-                        river ??= pickRandomInArray(this.terrain.rivers.filter(({ isTrail }) => isTrail));
-                        return river.getRandomPosition(
+                        river ??= seededPickRandomInArray(this.terrain.rivers.filter(({ isTrail }) => isTrail), params?.seededRandom ?? new SeededRandom(this.seed));
+                        return seededRiverGetRandomPosition(
+                            params?.seededRandom ?? new SeededRandom(this.seed),
+                            river,
                             true,
                             initialHitbox.type === HitboxType.Circle ? initialHitbox.radius : 0
                         );
