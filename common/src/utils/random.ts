@@ -105,7 +105,7 @@ export class SeededRandom {
 
     /**
      * @param [min = 0] min value (included)
-     * @param [max = 1] max value (excluded)
+     * @param [max = 1] max value (included)
      */
     getInt(min = 0, max = 1): number {
         return Math.round(this.get(min, max));
