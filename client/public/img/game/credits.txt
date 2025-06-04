@@ -1,126 +1,298 @@
 Skins:
   Forest Camo body: Image by flatart on Freepik: https://www.freepik.com/free-vector/army-camouflage-vector-seamless-pattern-texture-military-camouflage-repeats-seamless-army-design-vector-background_34294124.htm
-  Loadout & game skins: Asultra, ScaredPenguinXXL, Pirelli, Slapdap, EndermanKing, Arman, Henry Sanger
+  Loadout & game skins: Asultra, ScaredPenguinXXL, Pirelli, Slapdap, EndermanKing, Arman, hasanger
 Loot:
-  Level 1 Vest (Loot Image): Slapdap, modified by Leia
-  Level 2 Vest (Loot Image): Slapdap, modified by Leia
-  Level 3 Vest (Loot Image): Slapdap, modified by Leia
+  Level 1 Vest (Loot Image): Slapdap, modified by Leia, Skullboi249 and hasanger
+  Level 2 Vest (Loot Image): Slapdap, modified by Leia, Skullboi249 and hasanger
+  Level 3 Vest (Loot Image): Slapdap, modified by Leia, Skullboi249 and hasanger
 
-  Level 1 Helmet (Loot Image): Slapdap
-  Level 1 Helmet (World Image): Slapdap, modified by Leia
-  Level 2 Helmet (Loot Image): Slapdap
-  Level 2 Helmet (World Image): Slapdap, modified by Leia
-  Level 3 Helmet (Loot Image): Slapdap
-  Level 3 Helmet (World Image): Slapdap, modified by Leia
+  Level 1 Helmet (Loot Image): Slapdap, modified by Skullboi249 and hasanger
+  Level 1 Helmet (World Image): Slapdap, modified by Leia, Skullboi249 and hasanger
 
-  1x, 2x, 4x, 8x, 16x Scopes: Slapdap
+  Level 2 Helmet (Loot Image): Slapdap, modified by Skullboi249 and hasanger
+  Level 2 Helmet (World Image): Slapdap, modified by Leia, Skullboi249 and hasanger
+
+  Level 3 Helmet (Loot Image): Slapdap, modified by Skullboi249 and hasanger
+  Level 3 Helmet (World Image): Slapdap, modified by Leia, Skullboi249 and hasanger
+
+  1x, 2x, 4x, 8x, 16x Scopes: Winter
 
   Tablets: jchen
   Cola: Asultra
   Medikit: Asultra
 
-Weapons:
-  ACR (Loot Image): ScaredPenguinXXL, suppressor by cobby
-  ACR (World Image): ScaredPenguinXXL, shortened by cobby
+Guns:
+  ACR:
+    Loot Image: Sophie, cobby
+    World Image: Winter
+    Killfeed Image: eiπ
 
-  AK-47 (Loot Image): eiπ
-  AK-47 (World Image): TacomyLoh, shortened by jchen
+  AK-47:
+    Loot Image: eiπ
+    World Image: Winter
+    Killfeed Image: eiπ
 
-  ARX-160 (Loot Image): ScaredPenguinXXL
-  ARX-160 (World Image): ScaredPenguinXXL, shortened by cobby
+  ARX-160:
+    Loot Image: Sophie
+    World Image: Winter
+    Killfeed Image: eiπ
 
-  AUG (Loot Image): jchen
-  AUG (World Image): Slapdap, shortened by jchen
+  AUG:
+    Loot Image: hugh jass
+    World Image: Winter
+    Killfeed Image: eiπ
 
-  Barrett M95 (Loot Image): jchen
-  Barrett M95 (World Image): jchen
+  BLR 556:
+    Loot Image: Winter
+    World Image: Winter
+    Killfeed Image: Winter
 
-  CZ-75A (Loot Image): jchen
-  CZ-75A (World Image): jchen, modified by Astronautical, shortened by jchen
+  CZ-600:
+    Loot Image: jchen
+    World Image: Winter
+    Killfeed Image: eiπ
 
-  Death Ray (Loot Image): eiπ
-  Death Ray (World Image): eiπ
+  CZ-75A:
+    Loot Image: Emeraldneo
+    World Image: Emeraldneo
+    Killfeed Image: eiπ
 
-  Flues (Loot Image): jchen
-  Flues (World Image): ScaredPenguinXXL, shortened by jchen
+  DEagle:
+    Loot Image: eiπ
+    World Image: Emeraldneo, Winter
+    Killfeed Image: eiπ
 
-  G17 (scoped) (Loot Image): eiπ
-  G17 (scoped) (World Image): eiπ
+  DT-11:
+    Loot Image: Winter
+    World Image: Winter
+    Killfeed Image: Winter
 
-  G19 (Loot Image): jchen
-  G19 (World Image): ItzBlover, shortened by jchen
+  Death Ray:
+    Loot Image: eiπ
+    World Image: eiπ
+    Killfeed Image: eiπ
 
-  HP18 (Loot Image): eiπ
-  HP18 (World Image): eiπ, modified by Astronautical shortened by jchen
+  Firework Launcher:
+    Loot Image: Emeraldneo
+    World Image: Emeraldneo
+    Killfeed Image: eiπ
 
-  Lewis Gun (Loot Image): jchen
-  Lewis Gun (World Image): Nugg4ec, modified by jchen, shortened by jchen
+  Flues:
+    Loot Image: jchen
+    World Image: Winter
+    Killfeed Image: eiπ
 
-  M16A4 (Loot Image): eiπ
-  M16A4 (World Image): ItzBlover
+  G17 (scoped):
+    Loot Image: eiπ
+    World Image: eiπ
+    Killfeed Image: eiπ
 
-  M1895 (Loot Image): cobby
-  M1895 (World Image): jchen
+  G19:
+    Loot Image: jchen
+    World Image: Emeraldneo
+    Killfeed Image: eiπ
 
-  M1 Garand (Loot Image): eiπ, modified by jchen & cobby
-  M1 Garand (World Image): cobby,
+  HP-18:
+    Loot Image: eiπ
+    World Image: Winter
+    Killfeed Image: eiπ
 
-  M3K (Loot Image): eiπ
-  M3K (World Image): TacomyLoh, shortened by jchen
+  L115A1:
+    Loot Image: Winter
+    World Image: Winter
+    Killfeed Image: Winter
 
-  MCX Spear (Loot Image): megashark25098
-  MCX Spear (World Image): TODO
+  Lewis Gun:
+    Loot Image: Winter
+    World Image: Winter
+    Killfeed Image: eiπ
 
-  MG36 (Loot Image): bear, Emeraldneo, eiπ
-  MG36 (World Image): cobby
+  M1 Garand:
+    Loot Image: jchen, eiπ, Emeraldneo
+    World Image: Winter
+    Killfeed Image: eiπ
 
-  MG5 (Loot Image): jchen
-  MG5 (World Image): 1092384
+  M16A2:
+    Loot Image: eiπ
+    World Image: Winter
+    Killfeed Image: eiπ
 
-  Micro Uzi (Loot Image): Glek
-  Micro Uzi (World Image): TacomyLoh, modified by Astronautical, shortened by jchen
+  M1895:
+    Loot Image: cobby
+    World Image: Winter
+    Killfeed Image: eiπ
 
-  Mini-14 (Loot Image): vp
-  Mini-14 (World Image): 1092384, shortened by jchen
+  M3K:
+    Loot Image: eiπ
+    World Image: Winter
+    Killfeed Image: eiπ
 
-  Model 37 (Loot Image): eiπ
-  Model 37 (World Image): TacomyLoh, shortened by jchen & cobby
+  M590M:
+    Loot Image: Winter
+    World Image: Winter
+    Killfeed Image: Winter
 
-  Mosin-Nagant (Loot Image): eiπ
-  Mosin-Nagant (World Image): TacomyLoh, shortened by jchen
+  MCX Spear:
+    Loot Image: Sharky
+    World Image: Winter
+    Killfeed Image: eiπ
 
-  MP40 (Loot Image): jchen
-  MP40 (World Image): Yeet120
+  MG36:
+    Loot Image: eiπ
+    World Image: Winter
+    Killfeed Image: eiπ
 
-  Negev (Loot Image): DogEnjoyer, jchen, Yeet120
-  Negev (World Image): cobby
+  MG5:
+    Loot Image: jchen, eiπ
+    World Image: Winter
+    Killfeed Image: eiπ
 
-  Revitalizer (Loot Image): eiπ
-  Revitalizer (World Image): eiπ
+  MP-153:
+    Loot Image: Winter
+    World Image: Winter
+    Killfeed Image: Winter
 
-  SAF-200 (Loot Image): eiπ
-  SAF-200 (World Image): otter hater, shortened by jchen, modified by Astronautical, jchen, & Yeet120
+  MP40:
+    Loot Image: jchen
+    World Image: Winter
+    Killfeed Image: eiπ
 
-  SR-25 (Loot Image): jchen
-  SR-25 (World Image): 1092384, shortened by jchen
+  MP5k:
+    Loot Image: Winter
+    World Image: Emeraldneo, Winter
+    Killfeed Image: Winter
 
-  Stoner 63 (Loot Image): jchen
-  Stoner 63 (World Image): 1092384, shortened by jchen
+  Micro Uzi:
+    Loot Image: Glek
+    World Image: Winter
+    Killfeed Image: eiπ
 
-  Tango 51 (Loot Image): jchen
-  Tango 51 (World Image): ItzBlover, shortened by jchen
+  Mini-14:
+    Loot Image: vp, Emeraldneo, eiπ
+    World Image: Winter
+    Killfeed Image: eiπ
 
-  USAS-12 (Loot Image): eiπ
-  USAS-12 (World Image): cobby
+  Mk-18 Mjölnir:
+    Loot Image: Winter
+    World Image: Winter
+    Killfeed Image: Winter
 
-  VSS (Loot Image): Emeraldneo, null, jchen
-  VSS (World Image): ItzBlover, shortened by jchen
+  Model 37:
+    Loot Image: eiπ, Emeraldneo
+    World Image: Winter
+    Killfeed Image: eiπ
 
-  Vector (Loot Image): TODO
-  Vector (World Image): TODO
+  Model 89:
+    Loot Image: Emeraldneo
+    World Image: Winter
+    Killfeed Image: eiπ
 
-  All killfeed icons: eiπ
+  Mosin-Nagant:
+    Loot Image: eiπ
+    World Image: Winter
+    Killfeed Image: eiπ
 
+  Negev SF:
+    Loot Image: Winter
+    World Image: Winter
+    Killfeed Image: eiπ
+
+  PK-61:
+    Loot Image: Winter
+    World Image: Winter
+    Killfeed Image: Winter
+
+  PP-19 Vityaz:
+    Loot Image: hpig
+    World Image: Winter
+    Killfeed Image: eiπ
+
+  RG Scout:
+    Loot Image: Winter
+    World Image: Winter
+    Killfeed Image: Winter
+
+  RSh-12:
+    Loot Image: Winter
+    World Image: Winter
+    Killfeed Image: Winter
+
+  Revitalizer:
+    Loot Image: eiπ
+    World Image: eiπ
+    Killfeed Image: eiπ
+
+  SAF-200:
+    Loot Image: eiπ
+    World Image: Winter
+    Killfeed Image: eiπ
+
+  SKS:
+    Loot Image: Emeraldneo
+    World Image: Winter
+    Killfeed Image: Winter
+
+  SR-25:
+    Loot Image: jchen
+    World Image: Winter
+    Killfeed Image: eiπ
+
+  SVU-A:
+    Loot Image: Skullboi249, Sam
+    World Image: Skullboi249
+    Killfeed Image: Skullboi249
+
+  Seedshot:
+    Loot Image: Skullboi249
+    World Image: Skullboi249
+    Killfeed Image: Skullboi249
+
+  ShAK-12:
+    Loot Image: Winter
+    World Image: Winter
+    Killfeed Image: Skullboi249
+
+  Stoner 63:
+    Loot Image: jchen
+    World Image: Winter
+    Killfeed Image: eiπ
+
+  Tango 51:
+    Loot Image: Emeraldneo
+    World Image: Winter
+    Killfeed Image: eiπ
+
+  USAS-12:
+    Loot Image: cobby, eiπ
+    World Image: Winter
+    Killfeed Image: eiπ
+
+  VKS Vykhlop:
+    Loot Image: Winter
+    World Image: Winter
+    Killfeed Image: Winter
+
+  VSS Vintorez:
+    Loot Image: Emeraldneo
+    World Image: Winter
+    Killfeed Image: eiπ
+
+  Vaccinator:
+    Loot Image: Skullboi249
+    World Image: Skullboi249
+    Killfeed Image: Skullboi249
+
+  Vector:
+    Loot Image: Yeet120, 1092384
+    World Image: Winter
+    Killfeed Image: eiπ
+
+  Vepr-12:
+    Loot Image: jchen
+    World Image: Winter
+    Killfeed Image: eiπ
+
+Melees:
   Baseball Bat: Radians
   HE-AP Sword: Radians
   K-bar: Radians
@@ -128,36 +300,36 @@ Weapons:
 
 
 Obstacles:
-  Barrel: 123OP, Asultra, Henry Sanger
-  Barrel Residue: Dachselt, Leia, Henry Sanger
+  Barrel: 123OP, Asultra, hasanger
+  Barrel Residue: Dachselt, Leia, hasanger
 
   Bush: Glek
   Bush Particles: Asultra, Radians
-  Bush Residue: Henry Sanger, Asultra, Radians
+  Bush Residue: hasanger, Asultra, Radians
   Blueberry bush: Katloo
 
-  Regular crate: Henry Sanger, 123OP
-  Health crate: Henry Sanger, Radians
+  Regular crate: hasanger, 123OP
+  Health crate: hasanger, Radians
 
   Barrel explosion: Leia
   Barrel explosion particles: Radians
 
-  AEGIS/Flint crates: Henry Sanger, DogEnjoyer, 123OP
+  AEGIS/Flint crates: hasanger, DogEnjoyer, 123OP
 
   Rocks: Leia
   Rock particles: Radians
-  Rock residue: Henry Sanger, Radians
-  Mossy & cracked rocks: Leia, Henry Sanger
+  Rock residue: hasanger, Radians
+  Mossy & cracked rocks: Leia, hasanger
   Gold rock: Katloo
 
   Oak trees: Asultra
   Oak tree particles & residue: Radians
   Pine tree: SquareCube
   Pine tree particles: Radians
-  Pine tree residue: Radians, Henry Sanger
-  Birch tree, particles, & residue: Henry Sanger, Radians
+  Pine tree residue: Radians, hasanger
+  Birch tree, particles, & residue: hasanger, Radians
 
-  Bed, Drawers, Couch, Chair, Table, Fridge, Walls, Door, Window, Ceramic Toilet, Garage, Washing Machine: platonthek, Henry Sanger
+  Bed, Drawers, Couch, Chair, Table, Fridge, Walls, Door, Window, Ceramic Toilet, Garage, Washing Machine: platonthek, hasanger
   Stove: 1092384
   Residues for above obstacles: platonthek
 
@@ -168,15 +340,15 @@ Obstacles:
 Building designs:
   Small House: platonthek
   Refinery: platonthek
-  Port & ships: platonthek
+  Port & ships: platonthek, 1092384
   Warehouse: Leia, 1092384
   Porta potty: Katloo, Slapdap, 1092384
 
 Other:
-  Death Marker & Skull: Henry Sanger
-  Bullet trails: Henry Sanger
+  Death Marker & Skull: hasanger
+  Bullet trails: hasanger
   Emotes: EndermanKing, Slapdap, Tofi38
-  Main Logo: Henry Sanger
+  Main Logo: hasanger
   Small/square logo: Glek
   A.E.G.I.S. Logo: Katloo
   Flint Logo: Katloo
