@@ -159,14 +159,14 @@ export class Switcher<T extends Switchable> {
         if (typeof schedule === "object") {
             const rotation = schedule.rotation;
             const length = rotation.length;
-
             const filename = `${name}.txt`;
-            const initialIndex = existsSync(filename)
+
+            this._index = existsSync(filename)
                 ? parseInt(readFileSync(filename, "utf8"))
                 : 0;
 
-            this._current = rotation[initialIndex % length];
-            this._next = rotation[(initialIndex + 1) % length];
+            this._current = rotation[this._index % length];
+            this._next = rotation[(this._index + 1) % length];
 
             this._cron = new Cron(schedule.cron, () => {
                 this._current = rotation[++this._index % length];
