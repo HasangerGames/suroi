@@ -178,7 +178,7 @@ Guns:
     Killfeed Image: Winter
 
   Model 37:
-    Loot Image: eiπ, Emeraldneo
+    Loot Image: Wampi
     World Image: Winter
     Killfeed Image: eiπ
 
@@ -283,7 +283,7 @@ Guns:
     Killfeed Image: Skullboi249
 
   Vector:
-    Loot Image: Yeet120, 1092384
+    Loot Image: Wampi
     World Image: Winter
     Killfeed Image: eiπ
 
