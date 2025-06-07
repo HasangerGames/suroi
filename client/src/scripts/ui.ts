@@ -123,7 +123,7 @@ export function resetPlayButtons(): void { // TODO Refactor this method to use u
 
     ui.nextModeMsg.toggle(nextMode !== undefined);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    ui.nextModeIcon.css("background-image", `url(${Modes[nextMode!]?.modeLogoImage ?? "./img/game/shared/emotes/suroi_logo.svg"})`);
+    ui.nextModeIcon.css("background-image", `url(${Modes[nextMode!]?.playButtonImage ?? "./img/game/shared/emotes/suroi_logo.svg"})`);
 }
 
 let forceReload = false;
