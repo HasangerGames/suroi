@@ -21,7 +21,7 @@ import { random, randomBoolean, randomFloat, randomPointInsideCircle, randomRota
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
-import { Container, Graphics, ObservablePoint, Text } from "pixi.js";
+import { Container, Graphics, ObservablePoint, Text, type ColorSource } from "pixi.js";
 import { GameConsole } from "../console/gameConsole";
 import { Game } from "../game";
 import { CameraManager } from "../managers/cameraManager";
@@ -639,25 +639,35 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
             this._skin = skinID;
             const skinDef = Loots.fromString<SkinDefinition>(skinID);
-            const tint = skinDef.grassTint ? Game.colors.ghillie : 0xffffff;
+
+            let baseTint: ColorSource;
+            let fistTint: ColorSource;
+            if (skinDef.grassTint) {
+                baseTint = fistTint = Game.colors.ghillie;
+            } else {
+                baseTint = skinDef.baseTint ?? 0xffffff;
+                fistTint = skinDef.fistTint ?? 0xffffff;
+            }
 
             const { body, leftFist, rightFist, leftLeg, rightLeg } = this.images;
+            const baseFrame = skinDef.baseImage ?? `${skinID}_base`;
+            const fistFrame = skinDef.fistImage ?? `${skinID}_fist`;
 
             body
-                .setFrame(`${skinID}_base`)
-                .setTint(tint);
+                .setFrame(baseFrame)
+                .setTint(baseTint);
             leftFist
-                .setFrame(`${skinID}_fist`)
-                .setTint(tint);
+                .setFrame(fistFrame)
+                .setTint(fistTint);
             rightFist
-                .setFrame(`${skinID}_fist`)
-                .setTint(tint);
+                .setFrame(fistFrame)
+                .setTint(fistTint);
             leftLeg
-                ?.setFrame(`${skinID}_fist`)
-                .setTint(tint);
+                ?.setFrame(fistFrame)
+                .setTint(fistTint);
             rightLeg
-                ?.setFrame(`${skinID}_fist`)
-                .setTint(tint);
+                ?.setFrame(fistFrame)
+                .setTint(fistTint);
 
             if (sizeMod !== undefined) {
                 this.sizeMod = this.container.scale = sizeMod;

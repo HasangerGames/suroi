@@ -11,7 +11,7 @@ import { Modes, type ModeName } from "@common/definitions/modes";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type PunishmentMessage } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";
-import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
+import { ItemType, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { sound } from "@pixi/sound";
@@ -599,11 +599,7 @@ export async function setUpUI(): Promise<void> {
                                 <div class="create-team-player-container" data-id="${id}">
                                     ${ready ? '<i class="fa-regular fa-circle-check"></i>' : ""}
                                     ${playerIsLeader || isLeader ? `<i class="fa-solid ${isLeader ? "fa-crown" : "fa-xmark"}"></i>` : ""}
-                                    <div class="skin">
-                                        <div class="skin-base" style="background-image: url('./img/game/shared/skins/${skin}_base.svg')"></div>
-                                        <div class="skin-left-fist" style="background-image: url('./img/game/shared/skins/${skin}_fist.svg')"></div>
-                                        <div class="skin-right-fist" style="background-image: url('./img/game/shared/skins/${skin}_fist.svg')"></div>
-                                    </div>
+                                    ${renderSkin(skin)}
                                     <div class="create-team-player-name-container">
                                         <span class="create-team-player-name"${nameColor ? ` style="color: ${new Color(nameColor).toHex()}"` : ""}>${name}</span>
                                         ${badge ? `<img class="create-team-player-badge" draggable="false" src="./img/game/shared/badges/${badge}.svg" />` : ""}
@@ -1043,15 +1039,25 @@ export async function setUpUI(): Promise<void> {
     const fists = $<HTMLDivElement>("#skin-left-fist, #skin-right-fist");
 
     const updateSplashCustomize = (skinID: string): void => {
-        base.css(
-            "background-image",
-            `url("./img/game/shared/skins/${skinID}_base.svg")`
-        );
+        const skinDef = Skins.fromString(skinID);
+        const baseImage = `url('./img/game/shared/skins/${skinDef.baseImage ?? `${skinDef.idString}_base`}.svg')`;
+        const fistImage = `url('./img/game/shared/skins/${skinDef.fistImage ?? `${skinDef.idString}_fist`}.svg')`;
 
-        fists.css(
-            "background-image",
-            `url("./img/game/shared/skins/${skinID}_fist.svg")`
-        );
+        const hasBaseTint = skinDef.baseTint !== undefined;
+        base.css({
+            "background-image": baseImage,
+            "mask-image": hasBaseTint ? baseImage : "unset",
+            "background-color": hasBaseTint ? new Color(skinDef.baseTint).toHex() : "unset",
+            "background-blend-mode": hasBaseTint ? "multiply" : "unset"
+        });
+
+        const hasFistTint = skinDef.fistTint !== undefined;
+        fists.css({
+            "background-image": fistImage,
+            "mask-image": hasFistTint ? fistImage : "unset",
+            "background-color": hasFistTint ? new Color(skinDef.fistTint).toHex() : "unset",
+            "background-blend-mode": hasFistTint ? "multiply" : "unset"
+        });
     };
 
     const currentSkin = GameConsole.getBuiltInCVar("cv_loadout_skin");
@@ -1068,17 +1074,36 @@ export async function setUpUI(): Promise<void> {
         updateSplashCustomize(idString);
     }
 
-    for (const { idString, hideFromLoadout, rolesRequired } of Skins) {
+    function renderSkin(skin: ReifiableDef<SkinDefinition>): string {
+        const skinDef = Skins.reify(skin);
+        const baseImage = `url('./img/game/shared/skins/${skinDef.baseImage ?? `${skinDef.idString}_base`}.svg')`;
+        const fistImage = `url('./img/game/shared/skins/${skinDef.fistImage ?? `${skinDef.idString}_fist`}.svg')`;
+
+        const getTint = (mask: string, tint?: number): string =>
+            tint !== undefined
+                ? `;mask-image:${mask};background-color:${new Color(tint).toHex()};background-blend-mode:multiply`
+                : "";
+
+        const baseColor = getTint(baseImage, skinDef.baseTint);
+        const fistColor = getTint(fistImage, skinDef.fistTint);
+
+        return `
+        <div class="skin">
+            <div class="skin-base" style="background-image:${baseImage};${baseColor}"></div>
+            <div class="skin-left-fist" style="background-image:${fistImage};${fistColor}"></div>
+            <div class="skin-right-fist" style="background-image:${fistImage};${fistColor}"></div>
+        </div>
+        `;
+    }
+
+    for (const skin of Skins) {
+        const { idString, hideFromLoadout, rolesRequired } = skin;
         if (hideFromLoadout || !(rolesRequired ?? [role]).includes(role)) continue;
 
         // noinspection CssUnknownTarget
         const skinItem = skinUiCache[idString] = $<HTMLDivElement>(
             `<div id="skin-${idString}" class="skins-list-item-container${idString === currentSkin ? " selected" : ""}">
-                <div class="skin">
-                    <div class="skin-base" style="background-image: url('./img/game/shared/skins/${idString}_base.svg')"></div>
-                    <div class="skin-left-fist" style="background-image: url('./img/game/shared/skins/${idString}_fist.svg')"></div>
-                    <div class="skin-right-fist" style="background-image: url('./img/game/shared/skins/${idString}_fist.svg')"></div>
-                </div>
+                ${renderSkin(skin)}
                 <span class="skin-name">${getTranslatedString(idString as TranslationKeys)}</span>
             </div>`
         );
