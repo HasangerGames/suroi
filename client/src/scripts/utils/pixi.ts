@@ -92,35 +92,7 @@ export async function loadTextures(modeName: ModeName, renderer: Renderer, highR
                 ++resolved;
                 console.error(`Atlas ${image} failed to load. Details:`, e);
             }
-        }),
-
-        //
-        // Walls
-        //
-        ...Obstacles.definitions
-            .filter(obj => obj.wall)
-            .map(def => new Promise<void>(resolve => {
-                if (def.wall) {
-                    const { color, borderColor, rounded } = def.wall;
-                    const dimensions = (def.hitbox as RectangleHitbox).clone();
-                    dimensions.scale(PIXI_SCALE);
-                    const { x, y } = dimensions.min;
-                    const [w, h] = [dimensions.max.x - x, dimensions.max.y - y];
-                    const s = WALL_STROKE_WIDTH;
-
-                    const wallTexture = RenderTexture.create({ width: w, height: h, antialias: true });
-                    renderer.render({
-                        target: wallTexture,
-                        container: new Graphics()
-                            .rect(0, 0, w, h)
-                            .fill({ color: borderColor })[rounded ? "roundRect" : "rect"](s, s, w - s * 2, h - s * 2, s)
-                            .fill({ color })
-                    });
-
-                    Assets.cache.set(def.idString, wallTexture);
-                }
-                resolve();
-            }))
+        })
     ]);
 }
 

@@ -12,7 +12,7 @@ import { Graphics } from "pixi.js";
 import { Game } from "../game";
 import { ParticleManager, type Particle, type ParticleEmitter, type ParticleOptions } from "../managers/particleManager";
 import { SoundManager, type GameSound } from "../managers/soundManager";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE, WALL_STROKE_WIDTH } from "../utils/constants";
 import { DebugRenderer } from "../utils/debugRenderer";
 import { drawGroundGraphics, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
@@ -110,6 +110,18 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                     this.graphics.closePath();
                     this.graphics.fill(graphics.color);
                 }
+                this.container.addChild(this.graphics);
+            } else if (definition.wall) {
+                const { color, borderColor, rounded } = definition.wall;
+                const dimensions = (definition.hitbox as RectangleHitbox).clone();
+                dimensions.scale(PIXI_SCALE);
+                const { x, y } = dimensions.min;
+                const [w, h] = [dimensions.max.x - x, dimensions.max.y - y];
+                const s = WALL_STROKE_WIDTH;
+                this.graphics = new Graphics()
+                    .rect(x, y, w, h)
+                    .fill({ color: borderColor })[rounded ? "roundRect" : "rect"](x + s, y + s, w - s * 2, h - s * 2, s)
+                    .fill({ color });
                 this.container.addChild(this.graphics);
             }
 
@@ -446,7 +458,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
         if (!definition.invisible && !(this.dead && definition.noResidue)) {
             this.image.setFrame(texture);
-            if (definition.graphics && !this.dead) this.image.setVisible(false);
+            if ((definition.graphics || definition.wall) && !this.dead) this.image.setVisible(false);
         }
 
         if (this.waterOverlay && this.dead) {
