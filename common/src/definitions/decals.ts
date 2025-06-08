@@ -1,5 +1,6 @@
 import { RotationMode, ZIndexes } from "../constants";
 import { DefinitionType, ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
+import { HealingItems } from "./items/healingItems";
 
 export interface DecalDefinition extends ObjectDefinition {
     readonly defType: DefinitionType.Decal
@@ -10,6 +11,7 @@ export interface DecalDefinition extends ObjectDefinition {
     readonly scale?: number
     readonly rotationMode: RotationMode
     readonly zIndex?: ZIndexes
+    readonly alpha?: number
 }
 
 export const Decals = new ObjectDefinitions<DecalDefinition>([
@@ -49,34 +51,14 @@ export const Decals = new ObjectDefinitions<DecalDefinition>([
         defType: DefinitionType.Decal,
         rotationMode: RotationMode.Full
     },
-    {
-        idString: "gauze_decal",
-        name: "Gauze Decal",
-        defType: DefinitionType.Decal,
-        rotationMode: RotationMode.Full
-    },
-    {
-        idString: "medikit_decal",
-        name: "Medikit Decal",
-        defType: DefinitionType.Decal,
-        rotationMode: RotationMode.Full
-    },
-    {
-        idString: "cola_decal",
-        name: "Cola Decal",
-        defType: DefinitionType.Decal,
-        rotationMode: RotationMode.Full
-    },
-    {
-        idString: "pill_decal",
-        name: "Pill Decal",
-        defType: DefinitionType.Decal,
-        rotationMode: RotationMode.Full
-    },
-    {
-        idString: "vaccine_syringe_decal",
-        name: "Vaccine Syringe Decal",
-        defType: DefinitionType.Decal,
-        rotationMode: RotationMode.Full
-    }
+    ...HealingItems.definitions.map(healingItem => {
+        return {
+            idString: `${healingItem.idString}_decal`,
+            name: `${healingItem.name} Decal`,
+            defType: DefinitionType.Decal,
+            rotationMode: RotationMode.Full,
+            image: healingItem.idString,
+            alpha: 0.75
+        } as DecalDefinition;
+    })
 ]);

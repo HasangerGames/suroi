@@ -29,6 +29,11 @@ export class Decal extends GameObject.derive(ObjectCategory.Decal) {
         const definition = this.definition = data.definition;
 
         this.image.setFrame(definition.image ?? definition.idString);
+
+        if (this.definition.alpha !== undefined) {
+            this.image.setAlpha(this.definition.alpha);
+        }
+
         this.container.addChild(this.image);
         this.container.scale.set(definition.scale ?? 1);
 
