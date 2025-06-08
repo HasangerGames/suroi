@@ -1477,9 +1477,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         defType: DefinitionType.Obstacle,
         rotationMode: RotationMode.Limited,
         material: "appliance",
-        noResidue: true,
         variations: 2,
         health: 200,
+        indestructible: true,
         reflectBullets: true,
         scale: {
             spawnMin: 1,
