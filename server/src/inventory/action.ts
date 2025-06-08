@@ -166,6 +166,8 @@ export class HealingAction extends Action {
                 }
                 break;
         }
+
+        this.player.game.addDecal(this.item.idString+"_decal", this.player._position, undefined, this.player.layer);
         this.player.dirty.items = true;
     }
 }

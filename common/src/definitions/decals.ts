@@ -48,5 +48,35 @@ export const Decals = new ObjectDefinitions<DecalDefinition>([
         name: "Used Flare Decal",
         defType: DefinitionType.Decal,
         rotationMode: RotationMode.Full
+    },
+    {
+        idString: "gauze_decal",
+        name: "Gauze Decal",
+        defType: DefinitionType.Decal,
+        rotationMode: RotationMode.Full
+    },
+    {
+        idString: "medikit_decal",
+        name: "Medikit Decal",
+        defType: DefinitionType.Decal,
+        rotationMode: RotationMode.Full
+    },
+    {
+        idString: "cola_decal",
+        name: "Cola Decal",
+        defType: DefinitionType.Decal,
+        rotationMode: RotationMode.Full
+    },
+    {
+        idString: "pill_decal",
+        name: "Pill Decal",
+        defType: DefinitionType.Decal,
+        rotationMode: RotationMode.Full
+    },
+    {
+        idString: "vaccine_syringe_decal",
+        name: "Vaccine Syringe Decal",
+        defType: DefinitionType.Decal,
+        rotationMode: RotationMode.Full
     }
 ]);
