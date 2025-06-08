@@ -416,7 +416,7 @@ const houseWall = (
     scale: {
         spawnMin: 1,
         spawnMax: 1,
-        destroy: 0.95
+        destroy: 1
     },
     hitbox,
     rotationMode: RotationMode.Limited,
@@ -443,7 +443,7 @@ const hqWall = (lengthNumber: number, hitbox: RectangleHitbox, customHealth = fa
     scale: {
         spawnMin: 1,
         spawnMax: 1,
-        destroy: 0.95
+        destroy: 1
     },
     rotationMode: RotationMode.Limited,
     allowFlyover: FlyoverPref.Never,
@@ -470,7 +470,7 @@ const lodgeWall = (id: string, length: number): RawObstacleDefinition => ({
     scale: {
         spawnMin: 1,
         spawnMax: 1,
-        destroy: 0.95
+        destroy: 1
     },
     hitbox: RectangleHitbox.fromRect(length, 2.06),
     rotationMode: RotationMode.Limited,
@@ -500,7 +500,7 @@ const portMainOfficeWall = (
     scale: {
         spawnMin: 1,
         spawnMax: 1,
-        destroy: 0.95
+        destroy: 1
     },
     hitbox,
     rotationMode: RotationMode.Limited,
@@ -529,7 +529,7 @@ const lighthouseWall = (
     scale: {
         spawnMin: 1,
         spawnMax: 1,
-        destroy: 0.95
+        destroy: 1
     },
     hitbox,
     rotationMode: RotationMode.Limited,
@@ -556,7 +556,7 @@ const innerConcreteWall = (id: number, hitbox: Hitbox): RawObstacleDefinition =>
     scale: {
         spawnMin: 1,
         spawnMax: 1,
-        destroy: 0.95
+        destroy: 1
     },
     rotationMode: RotationMode.Limited,
     allowFlyover: FlyoverPref.Never,
@@ -583,7 +583,7 @@ const mobileHomeWall = (lengthNumber: string, hitbox: RectangleHitbox): RawObsta
     scale: {
         spawnMin: 1,
         spawnMax: 1,
-        destroy: 0.95
+        destroy: 1
     },
     rotationMode: RotationMode.Limited,
     allowFlyover: FlyoverPref.Never,
@@ -612,7 +612,7 @@ const tentWall = (
     scale: {
         spawnMin: 1,
         spawnMax: 1,
-        destroy: 0.95
+        destroy: 1
     },
     rotationMode: RotationMode.Limited,
     allowFlyover: FlyoverPref.Never,
@@ -675,7 +675,7 @@ const bigTentWall = (
     scale: {
         spawnMin: 1,
         spawnMax: 1,
-        destroy: 0.95
+        destroy: 1
     },
     rotationMode: RotationMode.Limited,
     allowFlyover: FlyoverPref.Never,
@@ -2275,7 +2275,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         scale: {
             spawnMin: 1,
             spawnMax: 1,
-            destroy: 0.95
+            destroy: 1
         },
         hitbox: RectangleHitbox.fromRect(17.62, 1.91),
         rotationMode: RotationMode.Limited,
