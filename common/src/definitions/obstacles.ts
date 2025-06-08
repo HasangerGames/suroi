@@ -294,8 +294,8 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     tango_crate_particle: { base: "wood_particle", tint: 0x3f4c39 },
     wall_particle: { base: "wood_particle", tint: 0xafa08c },
     port_office_wall_particle: { base: "wood_particle", tint: 0xb98a46 },
-    flint_stone_particle_1: { base: "stone_particle_1", tint: 0x26272c },
-    flint_stone_particle_2: { base: "stone_particle_2", tint: 0x26272c },
+    flint_lockbox_particle_1: { base: "stone_particle_1", tint: 0x26272c },
+    flint_lockbox_particle_2: { base: "stone_particle_2", tint: 0x26272c },
     gold_rock_particle_1: { base: "stone_particle_1", tint: 0xaa8534 },
     gold_rock_particle_2: { base: "stone_particle_2", tint: 0xd3a440 },
     rock_particle_1: { base: "stone_particle_1", tint: 0x8e8e8e },
@@ -1365,10 +1365,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         winterVariations: 2
     },
     {
-        idString: "flint_stone",
-        name: "Flint Stone",
+        idString: "flint_lockbox",
+        name: "Flint Lockbox",
         defType: DefinitionType.Obstacle,
-        material: "stone",
+        material: "appliance",
         health: 200,
         impenetrable: true,
         hasLoot: true,
@@ -1378,7 +1378,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             destroy: 0.5
         },
         spawnMode: MapObjectSpawnMode.GrassAndSand,
-        hitbox: RectangleHitbox.fromRect(6.1, 6.1),
+        hitbox: RectangleHitbox.fromRect(8.9, 8.9, Vec.create(0, 0.1)),
         rotationMode: RotationMode.None,
         particleVariations: 2,
         winterVariations: 1
@@ -2667,7 +2667,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hasLoot: true,
         lootTable: "trash",
         frames: {
-            particle: "flint_stone_particle"
+            particle: "flint_lockbox_particle"
         },
         particleVariations: 2,
         winterVariations: 1
@@ -4563,7 +4563,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         zIndex: ZIndexes.BuildingsFloor - 1,
         noResidue: true,
         frames: {
-            particle: "flint_stone_particle"
+            particle: "flint_lockbox_particle"
         },
         particleVariations: 2,
         winterVariations: 2
@@ -4592,7 +4592,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         zIndex: ZIndexes.BuildingsFloor - 1,
         noResidue: true,
         frames: {
-            particle: "flint_stone_particle"
+            particle: "flint_lockbox_particle"
         },
         particleVariations: 2
     },

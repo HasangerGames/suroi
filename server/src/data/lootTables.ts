@@ -419,7 +419,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             [{ table: "gold_airdrop_guns", weight: 1 }],
             [{ item: "frag_grenade", count: 3, weight: 1 }]
         ],
-        flint_stone: [
+        flint_lockbox: [
             { table: "gold_airdrop_guns", weight: 1 }
         ],
         christmas_tree: {

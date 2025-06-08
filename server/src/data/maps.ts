@@ -220,7 +220,7 @@ const maps = {
             melee_crate: 1,
             gold_rock: 1,
             loot_barrel: 1,
-            flint_stone: 1
+            flint_lockbox: 1
         },
         obstacleClumps: [
             {
@@ -304,13 +304,13 @@ const maps = {
             maxWidth: 250,
             maxHeight: 200,
             count: 2,
-            allowedObstacles: ["clearing_boulder", "flint_crate", "rock", "vibrant_bush", "river_chest", "lily_pad", "grenade_crate", "oak_leaf_pile", "river_rock", "melee_crate", "flint_stone"],
+            allowedObstacles: ["clearing_boulder", "flint_crate", "rock", "vibrant_bush", "river_chest", "lily_pad", "grenade_crate", "oak_leaf_pile", "river_rock", "melee_crate", "flint_lockbox"],
             obstacles: [
                 { idString: "clearing_boulder", min: 3, max: 6 },
                 { idString: "flint_crate", min: 0, max: 2 },
                 { idString: "grenade_crate", min: 0, max: 2 },
                 { idString: "melee_crate", min: 0, max: 1 },
-                { idString: "flint_stone", min: 0, max: 1 }
+                { idString: "flint_lockbox", min: 0, max: 1 }
             ]
         },
         buildings: {
@@ -388,7 +388,7 @@ const maps = {
             gold_rock: 1,
             loot_tree: 4,
             loot_barrel: 1,
-            flint_stone: 1,
+            flint_lockbox: 1,
             pumpkin: 200,
             large_pumpkin: 5
         },
@@ -484,13 +484,13 @@ const maps = {
             maxWidth: 250,
             maxHeight: 200,
             count: 3,
-            allowedObstacles: ["clearing_boulder", "flint_crate", "rock", "plumpkin", "diseased_plumpkin", "vibrant_bush", "river_chest", "lily_pad", "grenade_crate", "oak_leaf_pile", "river_rock", "melee_crate", "flint_stone"],
+            allowedObstacles: ["clearing_boulder", "flint_crate", "rock", "plumpkin", "diseased_plumpkin", "vibrant_bush", "river_chest", "lily_pad", "grenade_crate", "oak_leaf_pile", "river_rock", "melee_crate", "flint_lockbox"],
             obstacles: [
                 { idString: "clearing_boulder", min: 3, max: 6 },
                 { idString: "flint_crate", min: 0, max: 2 },
                 { idString: "grenade_crate", min: 0, max: 2 },
                 { idString: "melee_crate", min: 0, max: 1 },
-                { idString: "flint_stone", min: 0, max: 1 }
+                { idString: "flint_lockbox", min: 0, max: 1 }
             ]
         },
         buildings: {
@@ -562,7 +562,7 @@ const maps = {
             gold_rock: 1,
             loot_tree: 1,
             loot_barrel: 1,
-            flint_stone: 3,
+            flint_lockbox: 3,
             pumpkin: 300,
             large_pumpkin: 40,
             plumpkin: 5
@@ -703,7 +703,7 @@ const maps = {
             melee_crate: 1,
             gold_rock: 1,
             loot_barrel: 1,
-            flint_stone: 1
+            flint_lockbox: 1
         },
         obstacleClumps: [
             {
@@ -832,7 +832,7 @@ const maps = {
             melee_crate_winter: 1,
             gold_rock: 1,
             loot_barrel: 1,
-            flint_stone_winter: 1
+            flint_lockbox_winter: 1
         },
         obstacleClumps: [
             {
