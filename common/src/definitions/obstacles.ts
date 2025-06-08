@@ -725,6 +725,7 @@ const gunMount = (
     ),
     rotationMode: RotationMode.Limited,
     frames: frames ?? {
+        base: "gun_mount",
         particle: "furniture_particle",
         residue: "gun_mount_residue"
     },
@@ -3868,7 +3869,12 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             RectangleHitbox.fromRect(5.05, 1, Vec.create(0, -1.3)),
             RectangleHitbox.fromRect(0.8, 3, Vec.create(-1.55, 0.35)),
             RectangleHitbox.fromRect(0.8, 3, Vec.create(1.55, 0.35))
-        )
+        ),
+        {
+            base: "gun_mount_melee",
+            particle: "furniture_particle",
+            residue: "gun_mount_residue"
+        }
     ),
     gunMount(
         "dual_rsh12",
