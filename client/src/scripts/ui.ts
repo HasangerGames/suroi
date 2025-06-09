@@ -19,22 +19,22 @@ import $ from "jquery";
 import { Color, isWebGPUSupported } from "pixi.js";
 import { posts } from "virtual:news-posts";
 import type { NewsPost } from "../../vite/plugins/news-posts-plugin";
-import { TRANSLATIONS, getTranslatedString } from "./utils/translations/translations";
-import type { TranslationKeys } from "./utils/translations/typings";
 import { Config, type ServerInfo } from "./config";
-import { Game } from "./game";
-import { body, createDropdown } from "./uiHelpers";
-import { EMOTE_SLOTS, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
-import { Crosshairs, getCrosshair } from "./utils/crosshairs";
-import { html, humanDate, requestFullscreen } from "./utils/misc";
-import { UIManager } from "./managers/uiManager";
 import { GameConsole } from "./console/gameConsole";
+import { defaultClientCVars, type CVarTypeMapping } from "./console/variables";
+import { Game } from "./game";
 import { CameraManager } from "./managers/cameraManager";
 import { InputManager } from "./managers/inputManager";
 import { MapManager } from "./managers/mapManager";
 import { SoundManager } from "./managers/soundManager";
-import { defaultClientCVars, type CVarTypeMapping } from "./console/variables";
-import { spritesheetLoad } from "./utils/pixi";
+import { UIManager } from "./managers/uiManager";
+import { body, createDropdown } from "./uiHelpers";
+import { EMOTE_SLOTS, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
+import { Crosshairs, getCrosshair } from "./utils/crosshairs";
+import { html, humanDate, requestFullscreen } from "./utils/misc";
+import { spritesheetLoadPromise } from "./utils/pixi";
+import { TRANSLATIONS, getTranslatedString } from "./utils/translations/translations";
+import type { TranslationKeys } from "./utils/translations/typings";
 
 /*
     eslint-disable
@@ -430,7 +430,7 @@ export async function setUpUI(): Promise<void> {
         ui.loaderText.text(getTranslatedString("loading_finding_game"));
         // ui.cancelFindingGame.css("display", "");
 
-        await spritesheetLoad();
+        await spritesheetLoadPromise();
 
         type GetGameResponse = { success: true, gameID: number } | { success: false };
         let response: GetGameResponse | undefined;
@@ -1720,7 +1720,6 @@ export async function setUpUI(): Promise<void> {
     // High resolution toggle
     $("#toggle-high-res").parent().parent().toggle(!InputManager.isMobile);
     addCheckboxListener("#toggle-high-res", "cv_high_res_textures");
-    $("#alt-texture-loading-item").toggle("chrome" in window); // this workaround only helps in chromium based browsers
     addCheckboxListener("#toggle-alt-texture-loading", "cv_alt_texture_loading");
     addCheckboxListener("#toggle-cooler-graphics", "cv_cooler_graphics");
 

@@ -1,9 +1,8 @@
 import { type ModeName } from "@common/definitions/modes";
 import { HitboxType, type Hitbox } from "@common/utils/hitbox";
 import { Vec, type Vector } from "@common/utils/vector";
-import { Assets, Graphics, ImageSource, RendererType, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type WebGLRenderer } from "pixi.js";
+import { Assets, Graphics, RendererType, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type WebGLRenderer } from "pixi.js";
 import type { ImageSpritesheetImporter } from "../../../vite/plugins/image-spritesheet-plugin";
-import { GameConsole } from "../console/gameConsole";
 import { UIManager } from "../managers/uiManager";
 import { PIXI_SCALE } from "./constants";
 import { getTranslatedString } from "./translations/translations";
@@ -12,12 +11,12 @@ let spritesheetsLoaded = false;
 
 const spritesheetCallbacks: Array<() => void> = [];
 
-export async function spritesheetLoad(): Promise<void> {
+export async function spritesheetLoadPromise(): Promise<void> {
     if (spritesheetsLoaded) return;
     return new Promise(resolve => spritesheetCallbacks.push(resolve));
 }
 
-export async function loadTextures(modeName: ModeName, renderer: Renderer, highResolution: boolean): Promise<void> {
+export async function loadSpritesheets(modeName: ModeName, renderer: Renderer, highResolution: boolean): Promise<void> {
     // If device doesn't support 4096x4096 textures, force low resolution textures since they are 2048x2048
     if (renderer.type as RendererType === RendererType.WEBGL) {
         const gl = (renderer as WebGLRenderer).gl;
@@ -45,33 +44,7 @@ export async function loadTextures(modeName: ModeName, renderer: Renderer, highR
             console.log(`Loading spritesheet ${location.origin}/${image}`);
 
             try {
-                let sheetTexture: Texture;
-                // Workaround to reduce memory usage in Chromium-based browsers
-                // This actually increases usage in Firefox and has strange effects in WebKit,
-                // so we use the usual loading method for everything else
-                if (GameConsole.getBuiltInCVar("cv_alt_texture_loading")) {
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    const { w: width, h: height } = spritesheet.meta.size!;
-                    const canvas = new OffscreenCanvas(width, height);
-                    const ctx = canvas.getContext("2d");
-                    if (ctx === null) {
-                        throw new Error("Unable to initialize canvas");
-                    }
-
-                    const img: HTMLImageElement = await new Promise(resolve => {
-                        const img = new Image();
-                        img.src = image;
-                        img.onload = () => resolve(img);
-                    });
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    const resource = canvas.transferToImageBitmap();
-                    sheetTexture = new Texture({
-                        source: new ImageSource({ resource, width, height })
-                    });
-                } else {
-                    sheetTexture = await Assets.load<Texture>(image);
-                }
+                const sheetTexture = await Assets.load<Texture>(image);
                 await renderer.prepare.upload(sheetTexture);
                 const textures = await new Spritesheet(sheetTexture, spritesheet).parse();
                 for (const [key, texture] of Object.entries(textures)) {

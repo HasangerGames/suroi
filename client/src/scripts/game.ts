@@ -23,7 +23,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { sound, type Sound } from "@pixi/sound";
 import FontFaceObserver from "fontfaceobserver";
 import $ from "jquery";
-import { Application, Color, Container } from "pixi.js";
+import { Application, Color, Container, loadTextures } from "pixi.js";
 import "pixi.js/prepare";
 import { setUpCommands } from "./console/commands";
 import { GameConsole } from "./console/gameConsole";
@@ -53,7 +53,7 @@ import { autoPickup, fetchServerData, finalizeUI, resetPlayButtons, setUpUI, tea
 import { EMOTE_SLOTS, LAYER_TRANSITION_DELAY, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { DebugRenderer } from "./utils/debugRenderer";
 import { setUpNetGraph } from "./utils/graph/netGraph";
-import { loadTextures, SuroiSprite } from "./utils/pixi";
+import { loadSpritesheets, SuroiSprite } from "./utils/pixi";
 import { getTranslatedString, initTranslation } from "./utils/translations/translations";
 import { type TranslationKeys } from "./utils/translations/typings";
 import { Tween, type TweenOptions } from "./utils/tween";
@@ -214,7 +214,8 @@ export const Game = new (class Game {
             const renderMode = GameConsole.getBuiltInCVar("cv_renderer");
             const renderRes = GameConsole.getBuiltInCVar("cv_renderer_res");
 
-            await this.pixi.init({
+            const pixi = this.pixi;
+            await pixi.init({
                 resizeTo: window,
                 background: this.colors.grass,
                 antialias: InputManager.isMobile
@@ -225,6 +226,7 @@ export const Game = new (class Game {
                 preference: renderMode === "webgpu" ? "webgpu" : "webgl",
                 resolution: renderRes === "auto" ? (window.devicePixelRatio || 1) : parseFloat(renderRes),
                 hello: true,
+                autoStart: false,
                 canvas: document.getElementById("game-canvas") as HTMLCanvasElement,
                 // we only use pixi click events (to spectate players on click)
                 // so other events can be disabled for performance
@@ -236,9 +238,12 @@ export const Game = new (class Game {
                 }
             });
 
-            const pixi = this.pixi;
-            pixi.stop();
-            void loadTextures(
+            // Setting preferCreateImageBitmap to false reduces RAM usage in most browsers
+            if (!GameConsole.getBuiltInCVar("cv_alt_texture_loading") && loadTextures.config) {
+                loadTextures.config.preferCreateImageBitmap = false;
+            }
+
+            void loadSpritesheets(
                 this.modeName,
                 pixi.renderer,
                 InputManager.isMobile
@@ -259,14 +264,7 @@ export const Game = new (class Game {
                 }));
             });
 
-            pixi.ticker.add(() => {
-                this.render();
-
-                if (GameConsole.getBuiltInCVar("pf_show_fps")) {
-                    const fps = Math.round(this.pixi.ticker.FPS);
-                    this.netGraph.fps.addEntry(fps);
-                }
-            });
+            pixi.ticker.add(this.render.bind(this));
 
             pixi.stage.addChild(
                 CameraManager.container,
@@ -713,6 +711,11 @@ export const Game = new (class Game {
         DebugRenderer.graphics.position = CameraManager.container.position;
         DebugRenderer.graphics.scale = CameraManager.container.scale;
         DebugRenderer.render();
+
+        if (GameConsole.getBuiltInCVar("pf_show_fps")) {
+            const fps = Math.round(this.pixi.ticker.FPS);
+            this.netGraph.fps.addEntry(fps);
+        }
     }
 
     private _lastUpdateTime = 0;
