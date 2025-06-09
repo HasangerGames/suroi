@@ -337,19 +337,29 @@ Obstacles:
 
   Pumpkin: RedCoder09
 
-Building designs:
-  Small House: platonthek
+Buildings:
+  Red House: platonthek
+  Green House: platonthek
+  Blue House: platonthek, Emeraldneo
+  Warehouse: platonthek
+  Porta Potty: Katloo, Slapdap, 1092384
+  Mobile Home: platonthek
   Refinery: platonthek
-  Port & ships: platonthek, 1092384
-  Warehouse: Leia, 1092384
-  Porta potty: Katloo, Slapdap, 1092384
+  Armory: platonthek
+  Port & Cargo Ship: Winter, 1092384, platonthek
+  Lighthouse: Skullboi249, platonthek
+  Tugboats: platonthek
+
+  Lodge: platonthek
+  Barn: platonthek
+  Tents: Emeraldneo
+  Breached Dam: Emeraldneo
 
 Other:
   Death Marker & Skull: hasanger
   Bullet trails: hasanger
   Emotes: EndermanKing, Slapdap, Tofi38
   Main Logo: hasanger
-  Small/square logo: Glek
   A.E.G.I.S. Logo: Katloo
   Flint Logo: Katloo
   Tap Icon - "One Finger Tap Gesture Of Outlined Hand Symbol" from OnlineWebFonts: https://www.onlinewebfonts.com/icon/57341
