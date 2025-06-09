@@ -13,9 +13,9 @@
   "keywords": [],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@swc/core": "^1.11.29",
+    "@swc/core": "^1.11.31",
     "@swc/helpers": "^0.5.17",
-    "@types/node": "^22.15.29",
+    "@types/node": "^22.15.30",
     "@types/sanitize-html": "^2.16.0",
     "nodemon": "^3.1.10",
     "regenerator-runtime": "^0.14.1",
