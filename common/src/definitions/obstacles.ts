@@ -284,6 +284,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     crate_particle: { base: "wood_particle", tint: 0x9e7437 },
     memorial_crate_particle: { base: "wood_particle", tint: 0x763800 },
     flint_crate_particle: { base: "wood_particle", tint: 0xda6a0b },
+    nsd_crate_particle: { base: "wood_particle", tint: 0x3d6336 },
     furniture_particle: { base: "wood_particle", tint: 0x785a2e },
     couch_part_particle: { base: "wood_particle", tint: 0x6a330b },
     grenade_crate_particle: { base: "wood_particle", tint: 0x4c4823 },
@@ -337,6 +338,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     metal_auto_door_particle: { base: "metal_particle_1", tint: 0x404040 },
     red_metal_auto_door_particle: { base: "metal_particle_1", tint: 0x401a1a },
     blue_metal_auto_door_particle: { base: "metal_particle_1", tint: 0x1a1a40 },
+    pink_metal_auto_door_particle: { base: "metal_particle_1", tint: 0x9540bf },
     rsh_case_particle: { base: "wood_particle", tint: 0x583928 },
     river_hut_wall_particle: { base: "wood_particle", tint: 0x736758 },
     buoy_particle: { base: "metal_particle_1", tint: 0xa43737 },
@@ -1646,6 +1648,23 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         winterVariations: 6
     },
     {
+        idString: "nsd_crate",
+        name: "NSD Crate",
+        defType: DefinitionType.Obstacle,
+        material: "crate",
+        health: 80,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.5
+        },
+        spawnMode: MapObjectSpawnMode.GrassAndSand,
+        rotationMode: RotationMode.None,
+        hitbox: RectangleHitbox.fromRect(9.2, 9.2),
+        hasLoot: true,
+        hideOnMap: true
+    },
+    {
         idString: "flint_crate",
         name: "Flint Crate",
         defType: DefinitionType.Obstacle,
@@ -2852,6 +2871,29 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             base: "auto_door"
         },
         tint: 0x1a1a40
+    },
+    {
+        idString: "pink_metal_auto_door",
+        name: "Pink Metal Automatic Door",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        doorSound: "metal_auto_door",
+        indestructible: true,
+        reflectBullets: true,
+        health: 100,
+        hitbox: RectangleHitbox.fromRect(10.5, 1.62),
+        rotationMode: RotationMode.Limited,
+        noResidue: true,
+        isDoor: true,
+        hideWhenOpen: true,
+        automatic: true,
+        operationStyle: "slide",
+        slideFactor: 0.9,
+        animationDuration: 400,
+        frames: {
+            base: "auto_door"
+        },
+        tint: 0x9540bf
     },
     {
         idString: "metal_auto_door",
@@ -5719,6 +5761,28 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             particle: "crate_particle",
             residue: "regular_crate_residue"
         }
+    },
+    {
+        idString: "special_table_helmet",
+        name: "Small Table",
+        defType: DefinitionType.Obstacle,
+        material: "wood",
+        health: 100,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.9
+        },
+        hideOnMap: true,
+        hitbox: RectangleHitbox.fromRect(8.3, 12.3),
+        rotationMode: RotationMode.Limited,
+        frames: {
+            particle: "furniture_particle"
+        },
+        zIndex: ZIndexes.ObstaclesLayer3,
+        noCollisions: true,
+        noResidue: true
+        // hasLoot: true - TODO!!
     }
 ] satisfies readonly RawObstacleDefinition[] as readonly RawObstacleDefinition[]).flatMap((def: Mutable<RawObstacleDefinition>) => {
     if (def.variations !== undefined) (def as Mutable<ObstacleDefinition>).variationBits = Math.ceil(Math.log2(def.variations));

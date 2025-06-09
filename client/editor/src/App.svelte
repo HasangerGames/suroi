@@ -19,9 +19,7 @@
 
     let hitboxes: HitboxJSON[] = [
         ...new GroupHitbox(
-    RectangleHitbox.fromRect(2.01, 12.65, Vec.create(4.74, 0)),
-    RectangleHitbox.fromRect(2.01, 12.65, Vec.create(-4.74, 0)),
-    RectangleHitbox.fromRect(10.68, 0.68, Vec.create(-0.01, -5.98))
+    RectangleHitbox.fromRect(10, 10, Vec.create(0, 0)),
 ).transform(Vec.create(-9.81, 44.9)).toJSON().hitboxes
     ];
 
@@ -207,7 +205,7 @@
         selected = hitboxes[0];
     }
 
-    const bgImage = loadImage("/img/game/normal/buildings/fulcrum_bunker_floor.svg");
+    const bgImage = loadImage("/img/game/hunted/buildings/helmet_bunker_noalpha.png");
 </script>
 
 <main>

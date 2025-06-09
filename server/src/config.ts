@@ -7,7 +7,7 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    map: "hunted",
+    map: "singleBuilding:helmet_bunker_main",
 
     spawn: { mode: SpawnMode.Default },
 

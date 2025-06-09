@@ -80,6 +80,16 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { table: "special_equipment", weight: 0.5 }
             ]
         ],
+        nsd_crate: {
+            min: 3,
+            max: 5,
+            loot: [
+                { table: "special_guns", weight: 1 },
+                { table: "special_equipment", weight: 0.75 },
+                { table: "special_healing_items", weight: 0.15 },
+                { table: "special_scopes", weight: 0.3 }
+            ]
+        },
         dumpster: {
             min: 2,
             max: 4,
@@ -1645,5 +1655,6 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         rsh_case_single: [{ item: "seedshot", weight: 1 }],
         rsh_case_dual: [{ item: "seedshot", weight: 1 }]
     },
+    hunted: {}, // TODO
     birthday: {}
 };
