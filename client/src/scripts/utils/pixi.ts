@@ -1,12 +1,11 @@
 import { type ModeName } from "@common/definitions/modes";
-import { Obstacles } from "@common/definitions/obstacles";
-import { HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { HitboxType, type Hitbox } from "@common/utils/hitbox";
 import { Vec, type Vector } from "@common/utils/vector";
-import { Assets, Graphics, ImageSource, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type WebGLRenderer } from "pixi.js";
+import { Assets, Graphics, ImageSource, RendererType, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type WebGLRenderer } from "pixi.js";
 import type { ImageSpritesheetImporter } from "../../../vite/plugins/image-spritesheet-plugin";
 import { GameConsole } from "../console/gameConsole";
 import { UIManager } from "../managers/uiManager";
-import { PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
+import { PIXI_SCALE } from "./constants";
 import { getTranslatedString } from "./translations/translations";
 
 let spritesheetsLoaded = false;
