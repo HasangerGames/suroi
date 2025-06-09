@@ -859,7 +859,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             leaves: "oak_tree_leaves"
         },
         allowFlyover: FlyoverPref.Never,
-        zIndex: ZIndexes.ObstaclesLayer4
+        zIndex: ZIndexes.ObstaclesLayer5
     },
     {
         idString: "birch_tree",
@@ -883,7 +883,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
             leaves: "birch_tree_leaves"
         },
         allowFlyover: FlyoverPref.Never,
-        zIndex: ZIndexes.ObstaclesLayer4
+        zIndex: ZIndexes.ObstaclesLayer5
     },
     {
         idString: "pine_tree",
@@ -906,7 +906,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         spawnHitbox: new CircleHitbox(8.5),
         rotationMode: RotationMode.Full,
         allowFlyover: FlyoverPref.Never,
-        zIndex: ZIndexes.ObstaclesLayer4,
+        zIndex: ZIndexes.ObstaclesLayer5,
         frames: {
             base: "pine_tree_trunk",
             leaves: "pine_tree"
@@ -935,9 +935,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         },
         variations: 6,
         trunkVariations: 6,
-        zIndex: ZIndexes.ObstaclesLayer4,
+        zIndex: ZIndexes.ObstaclesLayer5,
         frames: {
-            base: "big_oak_tree_trunk",
             leaves: "big_oak_tree_leaves",
             particle: "oak_tree_particle",
             residue: "oak_tree_residue"
@@ -967,7 +966,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         variations: 3,
         leavesVariations: 3,
         allowFlyover: FlyoverPref.Never,
-        zIndex: ZIndexes.ObstaclesLayer4,
+        zIndex: ZIndexes.ObstaclesLayer5,
         frames: {
             base: "maple_tree_trunk",
             leaves: "maple_tree_leaves"
@@ -989,7 +988,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: new CircleHitbox(2.5),
         variations: 2,
         allowFlyover: FlyoverPref.Never,
-        zIndex: ZIndexes.ObstaclesLayer4
+        zIndex: ZIndexes.ObstaclesLayer5
     },
     {
         idString: "christmas_tree",
@@ -1005,7 +1004,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: new CircleHitbox(10),
         spawnHitbox: new CircleHitbox(15),
         rotationMode: RotationMode.Full,
-        zIndex: ZIndexes.ObstaclesLayer4,
+        zIndex: ZIndexes.ObstaclesLayer5,
         allowFlyover: FlyoverPref.Never,
         hasLoot: true,
         glow: {
@@ -2103,7 +2102,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: new CircleHitbox(5.5),
         spawnHitbox: new CircleHitbox(15),
         rotationMode: RotationMode.Full,
-        zIndex: ZIndexes.ObstaclesLayer4,
+        zIndex: ZIndexes.ObstaclesLayer5,
         allowFlyover: FlyoverPref.Never,
         hasLoot: true,
         isTree: true,
