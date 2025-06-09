@@ -288,8 +288,8 @@ Guns:
     Killfeed Image: eiπ
 
   Vepr-12:
-    Loot Image: jchen
-    World Image: Winter
+    Loot Image: Wampi
+    World Image: Winter, Skullboi249
     Killfeed Image: eiπ
 
 Melees:
