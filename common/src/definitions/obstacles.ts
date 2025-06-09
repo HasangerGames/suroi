@@ -341,6 +341,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     river_hut_wall_particle: { base: "wood_particle", tint: 0x736758 },
     buoy_particle: { base: "metal_particle_1", tint: 0xa43737 },
     lighthouse_crate_particle: { base: "wood_particle", tint: 0x79512a },
+    loot_tree_particle: { base: "oak_tree_particle", tint: 0x999999 },
 
     red_gift_particle: { base: "toilet_particle", tint: 0x962626 },
     green_gift_particle: { base: "toilet_particle", tint: 0x377130 },
