@@ -35,37 +35,35 @@ export async function loadSpritesheets(modeName: ModeName, renderer: Renderer, h
     let resolved = 0;
     const count = spritesheets.length;
 
-    await Promise.all([
-        ...spritesheets.map(async spritesheet => {
-            // this is defined via vite-spritesheet-plugin, so it is never nullish
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const image = spritesheet.meta.image!;
+    await Promise.all(spritesheets.map(async spritesheet => {
+        // this is defined via vite-spritesheet-plugin, so it is never nullish
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const image = spritesheet.meta.image!;
 
-            console.log(`Loading spritesheet ${location.origin}/${image}`);
+        console.log(`Loading spritesheet ${location.origin}/${image}`);
 
-            try {
-                const sheetTexture = await Assets.load<Texture>(image);
-                await renderer.prepare.upload(sheetTexture);
-                const textures = await new Spritesheet(sheetTexture, spritesheet).parse();
-                for (const [key, texture] of Object.entries(textures)) {
-                    Assets.cache.set(key, texture);
-                }
-
-                const resolvedCount = ++resolved;
-                const progress = `(${resolvedCount} / ${count})`;
-                UIManager.ui.loaderText.text(getTranslatedString("loading_spritesheets", { progress }));
-                console.log(`Atlas ${image} loaded ${progress}`);
-
-                if (resolvedCount === count) {
-                    spritesheetsLoaded = true;
-                    for (const resolve of spritesheetCallbacks) resolve();
-                }
-            } catch (e) {
-                ++resolved;
-                console.error(`Atlas ${image} failed to load. Details:`, e);
+        try {
+            const sheetTexture = await Assets.load<Texture>(image);
+            await renderer.prepare.upload(sheetTexture);
+            const textures = await new Spritesheet(sheetTexture, spritesheet).parse();
+            for (const [key, texture] of Object.entries(textures)) {
+                Assets.cache.set(key, texture);
             }
-        })
-    ]);
+
+            const resolvedCount = ++resolved;
+            const progress = `(${resolvedCount} / ${count})`;
+            UIManager.ui.loaderText.text(getTranslatedString("loading_spritesheets", { progress }));
+            console.log(`Atlas ${image} loaded ${progress}`);
+
+            if (resolvedCount === count) {
+                spritesheetsLoaded = true;
+                for (const resolve of spritesheetCallbacks) resolve();
+            }
+        } catch (e) {
+            ++resolved;
+            console.error(`Atlas ${image} failed to load. Details:`, e);
+        }
+    }));
 }
 
 export class SuroiSprite extends Sprite {
