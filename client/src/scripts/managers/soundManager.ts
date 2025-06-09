@@ -52,7 +52,7 @@ export class GameSound {
 
     instance?: PixiSound.IMediaInstance;
     readonly stereoFilter: PixiSound.filters.StereoFilter;
-    telephoneFilter?: PixiSound.filters.TelephoneFilter;
+    equalizerFilter?: PixiSound.filters.EqualizerFilter;
 
     ended = false;
 
@@ -135,7 +135,7 @@ export class GameSound {
 
         if (initial) {
             this.layerMult = layerMult;
-            // this._updateMuffledFilter(layerDelta);
+            this._updateMuffledFilter(layerDelta);
             return;
         }
 
@@ -146,7 +146,7 @@ export class GameSound {
             duration: 500,
             onComplete: () => {
                 this.layerVolumeTween = undefined;
-                // this._updateMuffledFilter(layerDelta);
+                this._updateMuffledFilter(layerDelta);
             }
         });
     }
@@ -156,8 +156,8 @@ export class GameSound {
 
         if (layerDelta >= 2) {
             // @ts-expect-error pixi sound doesn't have typings for this for some reason
-            this.instance.filters = [this.stereoFilter, this.telephoneFilter ??= new PixiSound.filters.TelephoneFilter()];
-        } else if (this.telephoneFilter) {
+            this.instance.filters = [this.stereoFilter, this.equalizerFilter ??= new PixiSound.filters.EqualizerFilter(0, 0, 0, 0, 0, -8, -10, -14, -14, -14)];
+        } else if (this.equalizerFilter) {
             // @ts-expect-error see above
             this.instance.filters = [this.stereoFilter];
         }

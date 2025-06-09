@@ -104,6 +104,7 @@ export function explosion(definition: ExplosionDefinition, position: Vector, lay
             definition.sound,
             {
                 position,
+                layer,
                 falloff: 0.4
             }
         );
