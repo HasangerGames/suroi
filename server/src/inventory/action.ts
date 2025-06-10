@@ -168,7 +168,7 @@ export class HealingAction extends Action {
                 break;
         }
 
-        this.player.game.addDecal(`${this.item.idString}_decal`, this.player.position, randomRotation(), this.player.layer);
+        this.player.game.addDecal(`${this.item.idString}_residue`, this.player.position, randomRotation(), this.player.layer);
         this.player.dirty.items = true;
     }
 }

@@ -53,12 +53,10 @@ export const Decals = new ObjectDefinitions<DecalDefinition>([
     },
     ...HealingItems.definitions.map(healingItem => {
         return {
-            idString: `${healingItem.idString}_decal`,
-            name: `${healingItem.name} Decal`,
+            idString: `${healingItem.idString}_residue`,
+            name: `${healingItem.name} Residue`,
             defType: DefinitionType.Decal,
-            rotationMode: RotationMode.Full,
-            image: healingItem.idString,
-            alpha: 0.75
+            rotationMode: RotationMode.Full
         } as DecalDefinition;
     })
 ]);
