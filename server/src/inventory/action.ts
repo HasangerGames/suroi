@@ -7,6 +7,7 @@ import { type Timeout } from "@common/utils/misc";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type Player } from "../objects/player";
 import { type GunItem } from "./gunItem";
+import { randomRotation } from "@common/utils/random";
 
 export abstract class Action {
     readonly player: Player;
@@ -166,6 +167,8 @@ export class HealingAction extends Action {
                 }
                 break;
         }
+
+        this.player.game.addDecal(`${this.item.idString}_residue`, this.player.position, randomRotation(), this.player.layer);
         this.player.dirty.items = true;
     }
 }
