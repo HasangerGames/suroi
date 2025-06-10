@@ -10345,8 +10345,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }]
     },
     {
-        idString: "helmet_bunker_vault",
-        name: "Helmet Bunker Vault",
+        idString: "leopard_bunker_vault",
+        name: "Leopard Bunker Vault",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(34.05, 28),
         ceilingHitbox: RectangleHitbox.fromRect(34.05, 28),
@@ -10357,8 +10357,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }]
     },
     {
-        idString: "helmet_bunker_main",
-        name: "Helmet Bunker",
+        idString: "leopard_bunker_main",
+        name: "Leopard Bunker",
         defType: DefinitionType.Building,
         spawnHitbox: RectangleHitbox.fromRect(80, 80),
         ceilingHitbox: new GroupHitbox(
@@ -10386,7 +10386,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         material: "metal_heavy",
         particle: "plumpkin_bunker_particle",
         reflectBullets: true,
-        collideWithLayers: Layers.Adjacent,
+        collideWithLayers: Layers.Equal,
         floors: [
             {
                 type: FloorNames.Stone,
@@ -10406,11 +10406,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         floorImages: [
             {
-                key: "helmet_bunker_floor_2",
+                key: "leopard_bunker_floor_2",
                 position: Vec.create(22.25, 0)
             },
             {
-                key: "helmet_bunker_floor_1",
+                key: "leopard_bunker_floor_1",
                 position: Vec.create(-14.4, 0)
             }
         ],
@@ -10437,9 +10437,51 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "pink_metal_auto_door", position: Vec.create(7.65, 1.55), rotation: 1 }
         ],
         subBuildings: [{
-            idString: "helmet_bunker_vault",
+            idString: "leopard_bunker_vault",
             position: Vec.create(0, 22),
             orientation: 1
         }]
+    },
+    {
+        idString: "leopard_bunker",
+        name: "Leopard Bunker",
+        defType: DefinitionType.Building,
+        material: "metal_heavy",
+        particle: "plumpkin_bunker_particle",
+        collideWithLayers: Layers.Equal,
+        reflectBullets: true,
+        spawnHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(15, 18, Vec.create(-14.65, -29.5)),
+            RectangleHitbox.fromRect(15, 18, Vec.create(-14.35, 29.5))
+        ),
+        ceilingHitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(7.5, 10, Vec.create(-14.65, -29.5)),
+            RectangleHitbox.fromRect(7.5, 10, Vec.create(-14.35, 29.5))
+        ),
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1.66, 12.3, Vec.create(-10, -29.67)),
+            RectangleHitbox.fromRect(1.66, 12.3, Vec.create(-19.25, -29.67)),
+            RectangleHitbox.fromRect(10.86, 1.83, Vec.create(-14.65, -24.25)),
+
+            RectangleHitbox.fromRect(1.66, 12.3, Vec.create(-9.7, 29.67)),
+            RectangleHitbox.fromRect(1.66, 12.3, Vec.create(-18.95, 29.67)),
+            RectangleHitbox.fromRect(10.86, 1.83, Vec.create(-14.35, 24.25))
+        ),
+        floorImages: [
+            { key: "bunker_entrance", position: Vec.create(-14.65, -29.5), rotation: Math.PI },
+            { key: "bunker_entrance", position: Vec.create(-14.35, 29.5) }
+        ],
+        ceilingImages: [
+            { key: "bunker_entrance_ceiling", position: Vec.create(-14.65, -29.5), rotation: Math.PI },
+            { key: "bunker_entrance_ceiling", position: Vec.create(-14.35, 29.5) }
+        ],
+        obstacles: [
+            { idString: "leopard_bunker_collider_hack", position: Vec.create(0, 0), rotation: 0, layer: -1 },
+            { idString: "leopard_bunker_stair", position: Vec.create(-14.2, 29.5), rotation: 2, layer: -1 },
+            { idString: "leopard_bunker_stair", position: Vec.create(-14.5, -29.5), rotation: 0, layer: -1 }
+        ],
+        subBuildings: [
+            { idString: "leopard_bunker_main", position: Vec.create(0, 0), layer: -2 }
+        ]
     }
 ]);

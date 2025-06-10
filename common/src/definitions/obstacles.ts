@@ -1643,6 +1643,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hasLoot: true,
         frames: {
             particle: "crate_particle",
+            base: "bunker_entrance",
             residue: "regular_crate_residue"
         },
         winterVariations: 6
@@ -5240,6 +5241,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         zIndex: ZIndexes.BuildingsFloor
     },
     {
+        idString: "leopard_bunker_stair",
+        name: "Leopard Bunker Stair",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        invisible: true,
+        isStair: true,
+        activeEdges: {
+            high: 0,
+            low: 2
+        },
+        hitbox: RectangleHitbox.fromRect(7.5, 9),
+        frames: {
+            particle: "metal_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        zIndex: ZIndexes.BuildingsFloor
+    },
+    {
         idString: "fulcrum_bunker_collider_hack",
         name: "Flooded Bunker Collider Hack",
         defType: DefinitionType.Obstacle,
@@ -5250,6 +5271,27 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hitbox: new GroupHitbox(
             RectangleHitbox.fromRect(10.68, 0.68, Vec.create(-30.19, -32.02)),
             RectangleHitbox.fromRect(10.68, 0.68, Vec.create(-9.82, 38.92))
+        ),
+        reflectBullets: true,
+        frames: {
+            particle: "plumpkin_bunker_particle"
+        },
+        rotationMode: RotationMode.Limited,
+        collideWithLayers: Layers.Equal
+    },
+    {
+        idString: "leopard_bunker_collider_hack",
+        name: "Leopard Bunker Collider Hack",
+        defType: DefinitionType.Obstacle,
+        material: "metal_heavy",
+        health: 1000,
+        indestructible: true,
+        invisible: true,
+        hitbox: new GroupHitbox(
+            RectangleHitbox.fromRect(1.69, 13.66, Vec.create(-9.67, 28.73)),
+            RectangleHitbox.fromRect(1.69, 13.66, Vec.create(-9.96, -28.75)),
+            RectangleHitbox.fromRect(1.69, 13.66, Vec.create(-18.8, 28.73)),
+            RectangleHitbox.fromRect(1.69, 13.66, Vec.create(-19.12, -28.77))
         ),
         reflectBullets: true,
         frames: {
