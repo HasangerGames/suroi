@@ -359,6 +359,7 @@ Other:
   Death Marker & Skull: hasanger
   Bullet trails: hasanger
   Emotes: EndermanKing, Slapdap, Tofi38
+  Healing item residues: Death Trap Engineer, hasanger
   Main Logo: hasanger
   A.E.G.I.S. Logo: Katloo
   Flint Logo: Katloo
