@@ -1643,7 +1643,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         hasLoot: true,
         frames: {
             particle: "crate_particle",
-            base: "bunker_entrance",
             residue: "regular_crate_residue"
         },
         winterVariations: 6

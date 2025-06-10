@@ -720,32 +720,32 @@ export const GameConsole = new (class GameConsole {
             invalidateAll: () => void
         }
     } = {
-            nodes: [],
-            activeIndex: undefined,
-            cache: (() => {
-                const T = this;
-                let commands: string[] | undefined;
-                let aliases: string[] | undefined;
-                let variables: string[] | undefined;
+        nodes: [],
+        activeIndex: undefined,
+        cache: (() => {
+            const T = this;
+            let commands: string[] | undefined;
+            let aliases: string[] | undefined;
+            let variables: string[] | undefined;
 
-                return {
-                    get commands() { return commands ??= Array.from(T.commands.keys()); },
-                    invalidateCommands() { commands = undefined; },
+            return {
+                get commands() { return commands ??= Array.from(T.commands.keys()); },
+                invalidateCommands() { commands = undefined; },
 
-                    get aliases() { return aliases ??= Array.from(T.aliases.keys()); },
-                    invalidateAliases() { aliases = undefined; },
+                get aliases() { return aliases ??= Array.from(T.aliases.keys()); },
+                invalidateAliases() { aliases = undefined; },
 
-                    get variables() { return variables ??= Object.keys(T.variables.getAll()); },
-                    invalidateVariables() { variables = undefined; },
+                get variables() { return variables ??= Object.keys(T.variables.getAll()); },
+                invalidateVariables() { variables = undefined; },
 
-                    invalidateAll() {
-                        this.invalidateCommands();
-                        this.invalidateAliases();
-                        this.invalidateVariables();
-                    }
-                };
-            })()
-        };
+                invalidateAll() {
+                    this.invalidateCommands();
+                    this.invalidateAliases();
+                    this.invalidateVariables();
+                }
+            };
+        })()
+    };
 
     private _sanitizeRegExp(str: string): string {
         return str.replace(/[[\](){}\\.+\-*!<>$|^?:]/g, r => `\\${r}`);

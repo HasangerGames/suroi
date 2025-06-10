@@ -74,8 +74,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         vest?: ArmorDefinition
         backpack: BackpackDefinition
     } = {
-            backpack: Loots.fromString("bag")
-        };
+        backpack: Loots.fromString("bag")
+    };
 
     distTraveled = 0;
 
