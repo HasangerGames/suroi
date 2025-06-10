@@ -5,7 +5,7 @@
 import { Numeric } from "@common/utils/math";
 import { type DeepPartial, mergeDeep } from "@common/utils/misc";
 import type { Vector } from "@common/utils/vector";
-import { type ColorSource, Container, type FillStyle, Graphics, type StrokeStyle, Text, type TextOptions, type TextStyleOptions } from "pixi.js";
+import { type CanvasTextOptions, type ColorSource, Container, type FillStyle, Graphics, type StrokeStyle, Text, type TextOptions, type TextStyleOptions } from "pixi.js";
 
 export const defaultLabelTextOptions: TextOptions = {
     style: {
@@ -207,7 +207,7 @@ export abstract class BaseGraph<DataType extends readonly any[], Stats extends o
         textOptions: DeepPartial<TextOptions> = {},
         { x: forceX, y: forceY }: Partial<Vector> = {}
     ): this {
-        const text = new Text(mergeDeep({}, defaultLabelTextOptions, textOptions));
+        const text = new Text(mergeDeep({}, defaultLabelTextOptions, textOptions) as CanvasTextOptions);
         this.container.addChild(text);
         this._labels.push({ text, updateText, forceX, forceY });
         return this;
@@ -460,7 +460,7 @@ export class SegmentedBarGraph extends SVSGraph<readonly [number, readonly numbe
                                 dropShadow: undefined
                             }
                         } satisfies DeepPartial<TextOptions>
-                    )
+                    ) as CanvasTextOptions
                 )
             )
         });
