@@ -1431,9 +1431,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const packet = UpdatePacket.create();
 
         const player = this.spectating ?? this;
-        if (this.spectating) {
-            this.layer = this.spectating.layer;
-        }
         const game = this.game;
 
         const fullObjects = new Set<BaseGameObject>();
