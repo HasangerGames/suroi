@@ -16,7 +16,7 @@ import { type PlayerPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { GameOverPacket, TeammateGameOverData } from "@common/packets/gameOverPacket";
-import { type InputData, type NoMobile } from "@common/packets/inputPacket";
+import { type InputData, type NoJoystick } from "@common/packets/inputPacket";
 import { DamageSources, KillPacket } from "@common/packets/killPacket";
 import { MutablePacketDataIn } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
@@ -249,7 +249,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         right: false,
         // mobile
         moving: false,
-        angle: 0
+        angle: 0,
+        magnitude: 255,
+        isJoystick: false
     };
 
     isMobile!: boolean;
@@ -958,8 +960,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         let movement: Vector;
 
         const playerMovement = this.movement;
-        if (this.isMobile && playerMovement.moving) {
-            movement = Vec.fromPolar(playerMovement.angle);
+
+        if (playerMovement.isJoystick && playerMovement.moving) {
+            movement = Vec.fromPolar(playerMovement.angle, playerMovement.magnitude / 255);
         } else {
             let x = +playerMovement.right - +playerMovement.left;
             let y = +playerMovement.down - +playerMovement.up;
@@ -2558,7 +2561,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     processInputs(packet: InputData): void {
         this.movement = {
             ...packet.movement,
-            ...(packet.isMobile ? packet.mobile : { moving: false, angle: 0 })
+            ...(packet.isJoystick ? packet.joystick : { moving: false, angle: 0, magnitude: 255 }),
+            isJoystick: packet.isJoystick
         };
 
         this._pingSeq = packet.pingSeq;
@@ -2572,13 +2576,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         if (this.turning = packet.turning) {
             this.rotation = packet.rotation;
-            if (!this.isMobile) {
-                this.distanceToMouse = (packet as typeof packet & NoMobile).distanceToMouse ?? 0;
+            if (!packet.isJoystick) {
+                this.distanceToMouse = (packet as typeof packet & NoJoystick).distanceToMouse ?? 0;
                 /*
-                    we put ?? cause even though the packet's isMobile should match the server's, it might
+                    we put ?? cause even though the packet's isJoystick should match the server's, it might
                     be possible—whether accidentally or maliciously—that it doesn't; however, the server is
-                    not to honor any change to isMobile. however, the packet will still be announcing itself
-                    as a mobile packet, and will thus lack the distanceToMouse field
+                    not to honor any change to isJoystick. however, the packet will still be announcing itself
+                    as a joystick packet, and will thus lack the distanceToMouse field
                 */
             }
         }
