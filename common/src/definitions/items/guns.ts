@@ -1825,6 +1825,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         itemType: ItemType.Gun,
         ammoSpawnAmount: 16,
         capacity: 8,
+        extendedCapacity: 12,
         reloadTime: 0.45,
         shotsPerReload: 1,
         fireDelay: 400,
