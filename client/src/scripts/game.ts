@@ -95,6 +95,8 @@ type Colors = Record<ColorKeys | "ghillie", Color>;
 export const Game = new (class Game {
     private _socket?: WebSocket;
 
+    socketCloseCallback?: (value: unknown) => void;
+
     readonly objects = new ObjectPool<ObjectMapping>();
     readonly bullets = new Set<Bullet>();
     readonly planes = new Set<Plane>();
@@ -465,6 +467,7 @@ export const Game = new (class Game {
         this._socket.onclose = (e: CloseEvent): void => {
             this.pixi.stop();
             this.connecting = false;
+            this.socketCloseCallback?.(undefined);
             resetPlayButtons();
 
             const reason = e.reason || "Connection lost";
@@ -609,10 +612,10 @@ export const Game = new (class Game {
             ui.loaderText.text("");
 
             SoundManager.stopAll();
+            this._socket?.close();
 
-            ui.splashUi.fadeIn(400, () => {
-                this.gameStarted = false;
-                this._socket?.close();
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            ui.splashUi.fadeIn(400, async() => {
                 this.pixi.stop();
                 void this.music?.play();
 
@@ -631,8 +634,15 @@ export const Game = new (class Game {
                 ScreenRecordManager.reset();
                 UIManager.reset();
 
+                // Wait for the socket to close if it hasn't already
+                if (this._socket?.readyState !== WebSocket.CLOSED) {
+                    await new Promise(resolve => this.socketCloseCallback = resolve);
+                }
+
                 updateDisconnectTime();
                 resetPlayButtons();
+
+                this.gameStarted = false;
 
                 if (teamSocket) ui.createTeamMenu.fadeIn(250, resolve);
                 else resolve();
