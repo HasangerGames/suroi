@@ -1460,7 +1460,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         moveSpread: 7,
         jitterRadius: 0.5,
         bulletCount: 9,
-        length: 8.45,
+        length: 8.5,
         fists: {
             left: Vec.create(95, -3),
             right: Vec.create(40, 0),
@@ -1502,14 +1502,14 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         moveSpread: 14,
         jitterRadius: 1.25,
         bulletCount: 10,
-        length: 7.85,
+        length: 8.15,
         fists: {
-            left: Vec.create(114, -3),
+            left: Vec.create(116, -3),
             right: Vec.create(45, 0),
             rightZIndex: 4,
             animationDuration: 100
         },
-        image: { position: Vec.create(89, 0) },
+        image: { position: Vec.create(89, 0.5) },
         casingParticles: [{
             position: Vec.create(4, 0.6),
             ejectionDelay: 450,
@@ -1786,14 +1786,14 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         fireMode: FireMode.Single,
         shotSpread: 2,
         moveSpread: 5,
-        length: 7.7,
+        length: 8,
         fists: {
-            left: Vec.create(110, -3),
+            left: Vec.create(100, -3),
             right: Vec.create(45, 0),
             rightZIndex: 4,
             animationDuration: 100
         },
-        image: { position: Vec.create(82, 2) },
+        image: { position: Vec.create(82, 0) },
         casingParticles: [{
             position: Vec.create(4.2, 0.6),
             ejectionDelay: 400,
@@ -1842,7 +1842,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             rightZIndex: 4,
             animationDuration: 100
         },
-        image: { position: Vec.create(100, 0) },
+        image: { position: Vec.create(98, 0) },
         casingParticles: [{
             position: Vec.create(4.5, 0.6),
             frame: "casing_12ga_slug"

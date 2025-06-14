@@ -123,14 +123,14 @@ Guns:
     Killfeed Image: eiπ
 
   M3K:
-    Loot Image: eiπ
-    World Image: Winter
+    Loot Image: Wampi
+    World Image: Wampi
     Killfeed Image: eiπ
 
   M590M:
-    Loot Image: Winter
-    World Image: Winter
-    Killfeed Image: Winter
+    Loot Image: Wampi
+    World Image: Wampi
+    Killfeed Image: Wampi
 
   MCX Spear:
     Loot Image: Sharky, artuhr
@@ -148,9 +148,9 @@ Guns:
     Killfeed Image: eiπ
 
   MP-153:
-    Loot Image: Winter
-    World Image: Winter
-    Killfeed Image: Winter
+    Loot Image: Wampi
+    World Image: Wampi
+    Killfeed Image: Wampi
 
   MP5k:
     Loot Image: Winter
@@ -179,8 +179,8 @@ Guns:
 
   Model 37:
     Loot Image: Wampi
-    World Image: Winter
-    Killfeed Image: eiπ
+    World Image: Winter, Skullboi249
+    Killfeed Image: Skullboi249
 
   Model 89:
     Loot Image: Emeraldneo
@@ -263,9 +263,9 @@ Guns:
     Killfeed Image: eiπ
 
   USAS-12:
-    Loot Image: cobby, eiπ
-    World Image: Winter
-    Killfeed Image: eiπ
+    Loot Image: Wampi
+    World Image: Wampi
+    Killfeed Image: Wampi
 
   VKS Vykhlop:
     Loot Image: Winter
@@ -290,7 +290,7 @@ Guns:
   Vepr-12:
     Loot Image: Wampi
     World Image: Winter, Skullboi249
-    Killfeed Image: eiπ
+    Killfeed Image: Skullboi249
 
 Melees:
   Baseball Bat: Radians
