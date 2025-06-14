@@ -23,17 +23,17 @@ Loot:
 
 Guns:
   ACR:
-    Loot Image: Sophie, cobby
+    Loot Image: Sophie, cobby, artuhr
     World Image: Winter
     Killfeed Image: eiπ
 
   AK-47:
-    Loot Image: eiπ
+    Loot Image: eiπ, artuhr
     World Image: Winter
     Killfeed Image: eiπ
 
   ARX-160:
-    Loot Image: Sophie
+    Loot Image: Sophie, artuhr
     World Image: Winter
     Killfeed Image: eiπ
 
@@ -53,7 +53,7 @@ Guns:
     Killfeed Image: eiπ
 
   CZ-75A:
-    Loot Image: Emeraldneo
+    Loot Image: Emeraldneo, artuhr
     World Image: Emeraldneo
     Killfeed Image: eiπ
 
@@ -88,12 +88,12 @@ Guns:
     Killfeed Image: eiπ
 
   G19:
-    Loot Image: jchen
+    Loot Image: jchen, artuhr
     World Image: Emeraldneo
     Killfeed Image: eiπ
 
   HP-18:
-    Loot Image: eiπ
+    Loot Image: eiπ, artuhr
     World Image: Winter
     Killfeed Image: eiπ
 
@@ -108,12 +108,12 @@ Guns:
     Killfeed Image: eiπ
 
   M1 Garand:
-    Loot Image: jchen, eiπ, Emeraldneo
+    Loot Image: jchen, eiπ, Emeraldneo, artuhr
     World Image: Winter
     Killfeed Image: eiπ
 
   M16A2:
-    Loot Image: eiπ
+    Loot Image: eiπ, artuhr
     World Image: Winter
     Killfeed Image: eiπ
 
@@ -133,7 +133,7 @@ Guns:
     Killfeed Image: Winter
 
   MCX Spear:
-    Loot Image: Sharky
+    Loot Image: Sharky, artuhr
     World Image: Winter
     Killfeed Image: eiπ
 
@@ -168,7 +168,7 @@ Guns:
     Killfeed Image: eiπ
 
   Mini-14:
-    Loot Image: vp, Emeraldneo, eiπ
+    Loot Image: vp, Emeraldneo, eiπ, artuhr
     World Image: Winter
     Killfeed Image: eiπ
 
@@ -203,7 +203,7 @@ Guns:
     Killfeed Image: Winter
 
   PP-19 Vityaz:
-    Loot Image: hpig
+    Loot Image: hpig, artuhr
     World Image: Winter
     Killfeed Image: eiπ
 
@@ -213,7 +213,7 @@ Guns:
     Killfeed Image: Winter
 
   RSh-12:
-    Loot Image: Winter
+    Loot Image: Winter, artuhr
     World Image: Winter
     Killfeed Image: Winter
 
@@ -223,7 +223,7 @@ Guns:
     Killfeed Image: eiπ
 
   SAF-200:
-    Loot Image: eiπ
+    Loot Image: eiπ, artuhr
     World Image: Winter
     Killfeed Image: eiπ
 
@@ -233,7 +233,7 @@ Guns:
     Killfeed Image: Winter
 
   SR-25:
-    Loot Image: jchen
+    Loot Image: jchen, artuhr
     World Image: Winter
     Killfeed Image: eiπ
 
@@ -253,7 +253,7 @@ Guns:
     Killfeed Image: Skullboi249
 
   Stoner 63:
-    Loot Image: jchen
+    Loot Image: jchen, artuhr
     World Image: Winter
     Killfeed Image: eiπ
 
@@ -273,7 +273,7 @@ Guns:
     Killfeed Image: Winter
 
   VSS Vintorez:
-    Loot Image: Emeraldneo
+    Loot Image: Emeraldneo, artuhr
     World Image: Winter
     Killfeed Image: eiπ
 
