@@ -451,7 +451,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: "model_37", weight: 1 },
                 { item: "mpx", weight: 1 },
                 { item: "m3k", weight: 0.6 },
-                { item: "flues", weight: 0.6 },
+                { item: "badlander", weight: 0.6 },
                 { item: "m16a2", weight: 0.4 },
                 { item: "cz600", weight: 0.4 },
                 { item: "mcx_spear", weight: 0.1 },
@@ -578,7 +578,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "m3k", weight: 0.3 },
             { item: "m16a2", weight: 0.1 },
             { item: "arx160", weight: 0.1 },
-            { item: "flues", weight: 0.1 },
+            { item: "badlander", weight: 0.1 },
             { item: "lewis_gun", weight: 0.05 },
             { item: "cz600", weight: 0.04 },
             { item: "vss", weight: 0.02 },
@@ -646,7 +646,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "model_37", weight: 1 },
             { item: "m3k", weight: 0.8 },
             { item: "arx160", weight: 0.8 },
-            { item: "flues", weight: 0.8 },
+            { item: "badlander", weight: 0.8 },
             { item: "saf200", weight: 0.75 },
             { item: "cz75a", weight: 0.75 },
             { item: "m16a2", weight: 0.5 },
@@ -777,7 +777,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "arx160", weight: 1 },
             { item: "m16a2", weight: 1 },
             { item: "m3k", weight: 1 },
-            { item: "flues", weight: 0.9 },
+            { item: "badlander", weight: 0.9 },
             { item: "mini14", weight: 0.75 },
             { item: "sr25", weight: 0.75 },
             { item: "vss", weight: 0.75 },
@@ -859,7 +859,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             [
                 { item: "model_37", weight: 0.4 },
                 { item: "m3k", weight: 0.3 },
-                { item: "flues", weight: 0.25 },
+                { item: "badlander", weight: 0.25 },
                 { item: "vepr12", weight: 0.05 }
             ],
             [
@@ -1029,7 +1029,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: "model_37", weight: 0.1083 },
                 { item: "m3k", weight: 0.1083 },
                 { item: "cz600", weight: 0.1083 },
-                { item: "flues", weight: 0.1083 },
+                { item: "badlander", weight: 0.1083 },
                 { item: "dual_m1895", weight: 0.1083 },
                 { item: "blr", weight: 0.1083 },
 
@@ -1065,7 +1065,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             // 16% chance for one of these
             { item: "m3k", weight: 0.032 },
             { item: "cz600", weight: 0.032 },
-            { item: "flues", weight: 0.032 },
+            { item: "badlander", weight: 0.032 },
             { item: "dual_m1895", weight: 0.032 },
             { item: "blr", weight: 0.032 },
 
@@ -1095,7 +1095,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "dual_m1895", weight: 0.074 },
             { item: "m3k", weight: 0.074 },
             { item: "cz600", weight: 0.074 },
-            { item: "flues", weight: 0.074 },
+            { item: "badlander", weight: 0.074 },
             { item: "blr", weight: 0.074 },
 
             // 15% chance for one of these (L unlucky)
@@ -1157,7 +1157,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             // 35% chance for one of these
             { item: "m3k", weight: 0.1166 },
             { item: "cz600", weight: 0.1166 },
-            { item: "flues", weight: 0.1166 },
+            { item: "badlander", weight: 0.1166 },
 
             // 40% chance for one of these
             { item: "mini14", weight: 0.1 },
@@ -1181,7 +1181,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             // 60% chance for one of these
             { item: "m3k", weight: 0.2 },
             { item: "cz600", weight: 0.2 },
-            { item: "flues", weight: 0.2 },
+            { item: "badlander", weight: 0.2 },
 
             // 20% chance for one of these
             { item: "mini14", weight: 0.05 },
@@ -1392,7 +1392,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
                 { item: "model_37", weight: 0.1083 },
                 { item: "m3k", weight: 0.1083 },
                 { item: "cz600", weight: 0.1083 },
-                { item: "flues", weight: 0.1083 },
+                { item: "badlander", weight: 0.1083 },
                 { item: "dual_m1895", weight: 0.1083 },
                 { item: "blr", weight: 0.1083 },
 
@@ -1428,7 +1428,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             // 16% chance for one of these
             { item: "m3k", weight: 0.032 },
             { item: "cz600", weight: 0.032 },
-            { item: "flues", weight: 0.032 },
+            { item: "badlander", weight: 0.032 },
             { item: "dual_m1895", weight: 0.032 },
             { item: "blr", weight: 0.032 },
 
@@ -1458,7 +1458,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "dual_m1895", weight: 0.074 },
             { item: "m3k", weight: 0.074 },
             { item: "cz600", weight: 0.074 },
-            { item: "flues", weight: 0.074 },
+            { item: "badlander", weight: 0.074 },
             { item: "blr", weight: 0.074 },
 
             // 15% chance for one of these (L unlucky)
@@ -1521,7 +1521,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             // 35% chance for one of these
             { item: "m3k", weight: 0.1166 },
             { item: "cz600", weight: 0.1166 },
-            { item: "flues", weight: 0.1166 },
+            { item: "badlander", weight: 0.1166 },
 
             // 40% chance for one of these
             { item: "mini14", weight: 0.1 },
@@ -1545,7 +1545,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             // 60% chance for one of these
             { item: "m3k", weight: 0.2 },
             { item: "cz600", weight: 0.2 },
-            { item: "flues", weight: 0.2 },
+            { item: "badlander", weight: 0.2 },
 
             // 20% chance for one of these
             { item: "mini14", weight: 0.05 },

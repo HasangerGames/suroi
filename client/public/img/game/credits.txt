@@ -42,6 +42,11 @@ Guns:
     World Image: Winter
     Killfeed Image: eiπ
 
+  Badlander:
+    Loot Image: Wampi
+    World Image: Wampi
+    Killfeed Image: Wampi
+
   BLR 556:
     Loot Image: Winter
     World Image: Winter
@@ -75,11 +80,6 @@ Guns:
   Firework Launcher:
     Loot Image: Emeraldneo
     World Image: Emeraldneo
-    Killfeed Image: eiπ
-
-  Flues:
-    Loot Image: jchen
-    World Image: Winter
     Killfeed Image: eiπ
 
   G17 (scoped):

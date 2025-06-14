@@ -1579,8 +1579,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         }
     },
     {
-        idString: "flues",
-        name: "Flues",
+        idString: "badlander",
+        name: "Badlander",
         defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.C,
