@@ -67,11 +67,6 @@ Guns:
     World Image: Emeraldneo, Winter
     Killfeed Image: eiπ
 
-  DT-11:
-    Loot Image: Winter
-    World Image: Winter
-    Killfeed Image: Winter
-
   Death Ray:
     Loot Image: eiπ
     World Image: eiπ
@@ -227,6 +222,11 @@ Guns:
     World Image: Winter
     Killfeed Image: eiπ
 
+  Seedshot:
+    Loot Image: Skullboi249
+    World Image: Skullboi249
+    Killfeed Image: Skullboi249
+
   SKS:
     Loot Image: Emeraldneo
     World Image: Winter
@@ -242,15 +242,15 @@ Guns:
     World Image: Skullboi249
     Killfeed Image: Skullboi249
 
-  Seedshot:
-    Loot Image: Skullboi249
-    World Image: Skullboi249
-    Killfeed Image: Skullboi249
-
   ShAK-12:
     Loot Image: Winter
     World Image: Winter
     Killfeed Image: Skullboi249
+
+  Stevens 555:
+    Loot Image: Wampi
+    World Image: Wampi
+    Killfeed Image: Wampi
 
   Stoner 63:
     Loot Image: jchen, artuhr
