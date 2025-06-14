@@ -1059,7 +1059,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "sks", weight: 0.166 },
 
             // 28% chance for one of these
-            { item: "dt11", weight: 0.14 },
+            { item: "stevens_555", weight: 0.14 },
             { item: "model_37", weight: 0.14 },
 
             // 16% chance for one of these
@@ -1088,7 +1088,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
         special_guns: [
             // 32% chance for one of these
-            { item: "dt11", weight: 0.16 },
+            { item: "stevens_555", weight: 0.16 },
             { item: "model_37", weight: 0.16 },
 
             // 37% chance for one of these
@@ -1422,7 +1422,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
             { item: "sks", weight: 0.166 },
 
             // 28% chance for one of these
-            { item: "dt11", weight: 0.14 },
+            { item: "stevens_555", weight: 0.14 },
             { item: "model_37", weight: 0.14 },
 
             // 16% chance for one of these
@@ -1451,7 +1451,7 @@ export const LootTables: Record<ModeName, Record<string, LootTable>> = {
         ],
         special_guns: [
             // 32% chance for one of these
-            { item: "dt11", weight: 0.16 },
+            { item: "stevens_555", weight: 0.16 },
             { item: "model_37", weight: 0.16 },
 
             // 37% chance for one of these

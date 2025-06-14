@@ -1719,8 +1719,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         }
     },
     {
-        idString: "dt11",
-        name: "DT-11",
+        idString: "stevens_555",
+        name: "Stevens 555",
         defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.C,
@@ -1745,7 +1745,7 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             rightZIndex: 4,
             animationDuration: 100
         },
-        image: { position: Vec.create(80, 0) },
+        image: { position: Vec.create(83, 0) },
         casingParticles: [{
             frame: "casing_12ga_flechette",
             position: Vec.create(4, 0.6),
