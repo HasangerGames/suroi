@@ -671,8 +671,8 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
         }
     },
     {
-        idString: "mp40",
-        name: "MP40",
+        idString: "mpx",
+        name: "MPX",
         defType: DefinitionType.Gun,
         itemType: ItemType.Gun,
         tier: Tier.C,
@@ -696,9 +696,9 @@ export const Guns = new InventoryItemDefinitions<GunDefinition>(([
             rightZIndex: 4,
             animationDuration: 100
         },
-        image: { position: Vec.create(76, 0) },
+        image: { position: Vec.create(75, 1) },
         casingParticles: [{
-            position: Vec.create(4.7, 0.4),
+            position: Vec.create(3.5, 0.4),
             velocity: {
                 y: {
                     min: 5,

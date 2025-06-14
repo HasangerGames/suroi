@@ -152,15 +152,15 @@ Guns:
     World Image: Winter
     Killfeed Image: Winter
 
-  MP40:
-    Loot Image: jchen
-    World Image: Winter
-    Killfeed Image: eiπ
-
   MP5k:
     Loot Image: Winter
     World Image: Emeraldneo, Winter
     Killfeed Image: Winter
+
+  MPX:
+    Loot Image: Wampi
+    World Image: Wampi
+    Killfeed Image: Wampi
 
   Micro Uzi:
     Loot Image: Glek
