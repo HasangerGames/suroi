@@ -2,14 +2,17 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="110"
-   height="110"
-   viewBox="0 0 29.104166 29.104166"
+   width="120.88279"
+   height="51.302719"
+   viewBox="0 0 31.98357 13.573844"
    version="1.1"
    id="svg1"
    xml:space="preserve"
-   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
+   inkscape:version="1.4.2 (1:1.4.2+202505120737+ebf0e940d0)"
    sodipodi:docname="acr.svg"
+   inkscape:export-filename="acr_lootimage.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -24,14 +27,14 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
      showguides="true"
-     inkscape:zoom="5.1877261"
-     inkscape:cx="58.599855"
-     inkscape:cy="55.033746"
-     inkscape:window-width="1696"
-     inkscape:window-height="952"
-     inkscape:window-x="7"
-     inkscape:window-y="51"
-     inkscape:window-maximized="0"
+     inkscape:zoom="0.71891835"
+     inkscape:cx="527.18087"
+     inkscape:cy="294.19196"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
      inkscape:current-layer="layer1" /><defs
      id="defs1"><clipPath
        clipPathUnits="userSpaceOnUse"
@@ -136,9 +139,10 @@
          style="stroke-width:2.14122" /></clipPath></defs><g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1"><g
+     id="layer1"
+     transform="translate(-5.3913623,37.866684)"><g
        id="g25"
-       transform="matrix(0.10327209,-0.05962417,0.05962417,0.10327209,-1.4215999,18.167865)"><path
+       transform="matrix(0.11518505,-0.03086374,0.03086374,0.11518505,4.6270058,-31.739802)"><path
          d="m 227.3305,20.112816 -8.08272,-2.9e-5 c -0.22132,5e-5 -0.4007,0.150159 -0.40078,0.3353 l 9e-5,3.885289 c -8e-5,0.185141 0.17932,0.335201 0.40064,0.33515 l 8.08272,2.9e-5 c 0.22121,1.36e-4 0.40059,-0.149973 0.40067,-0.335114 l 1e-5,-3.885475 c -2e-5,-0.184956 -0.17942,-0.335015 -0.40063,-0.33515 z"
          fill="#463c2f"
          stroke="#3d3429"

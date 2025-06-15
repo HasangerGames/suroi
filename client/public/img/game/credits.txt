@@ -23,7 +23,7 @@ Loot:
 
 Guns:
   ACR:
-    Loot Image: Sophie, cobby, artuhr
+    Loot Image: Sophie, cobby, Skullboi249
     World Image: Winter
     Killfeed Image: eiπ
 
@@ -33,7 +33,7 @@ Guns:
     Killfeed Image: eiπ
 
   ARX-160:
-    Loot Image: Sophie, artuhr
+    Loot Image: Sophie, Skullboi249
     World Image: Winter
     Killfeed Image: eiπ
 
@@ -53,12 +53,12 @@ Guns:
     Killfeed Image: Winter
 
   CZ-600:
-    Loot Image: jchen
+    Loot Image: jchen, Skullboi249
     World Image: Winter
     Killfeed Image: eiπ
 
   CZ-75A:
-    Loot Image: Emeraldneo, artuhr
+    Loot Image: Emeraldneo, Skullboi249
     World Image: Emeraldneo
     Killfeed Image: eiπ
 
@@ -83,12 +83,12 @@ Guns:
     Killfeed Image: eiπ
 
   G19:
-    Loot Image: jchen, artuhr
+    Loot Image: jchen, Skullboi249
     World Image: Emeraldneo
     Killfeed Image: eiπ
 
   HP-18:
-    Loot Image: eiπ, artuhr
+    Loot Image: eiπ, Skullboi249
     World Image: Winter
     Killfeed Image: eiπ
 
@@ -103,7 +103,7 @@ Guns:
     Killfeed Image: eiπ
 
   M1 Garand:
-    Loot Image: jchen, eiπ, Emeraldneo, artuhr
+    Loot Image: jchen, eiπ, Emeraldneo, Skullboi249
     World Image: Winter
     Killfeed Image: eiπ
 
@@ -163,7 +163,7 @@ Guns:
     Killfeed Image: eiπ
 
   Mini-14:
-    Loot Image: vp, Emeraldneo, eiπ, artuhr
+    Loot Image: vp, Emeraldneo, eiπ, Skullboi249
     World Image: Winter
     Killfeed Image: eiπ
 
@@ -178,7 +178,7 @@ Guns:
     Killfeed Image: Skullboi249
 
   Model 89:
-    Loot Image: Emeraldneo
+    Loot Image: Emeraldneo, Skullboi249
     World Image: Winter
     Killfeed Image: eiπ
 
@@ -198,7 +198,7 @@ Guns:
     Killfeed Image: Winter
 
   PP-19 Vityaz:
-    Loot Image: hpig, artuhr
+    Loot Image: hpig, Skullboi249
     World Image: Winter
     Killfeed Image: eiπ
 
@@ -208,7 +208,7 @@ Guns:
     Killfeed Image: Winter
 
   RSh-12:
-    Loot Image: Winter, artuhr
+    Loot Image: Winter, Skullboi249
     World Image: Winter
     Killfeed Image: Winter
 
@@ -228,7 +228,7 @@ Guns:
     Killfeed Image: Skullboi249
 
   SKS:
-    Loot Image: Emeraldneo
+    Loot Image: Emeraldneo, Skullboi249
     World Image: Winter
     Killfeed Image: Winter
 
@@ -253,12 +253,12 @@ Guns:
     Killfeed Image: Wampi
 
   Stoner 63:
-    Loot Image: jchen, artuhr
+    Loot Image: jchen, Skullboi249
     World Image: Winter
     Killfeed Image: eiπ
 
   Tango 51:
-    Loot Image: Emeraldneo
+    Loot Image: Emeraldneo, Skullboi249
     World Image: Winter
     Killfeed Image: eiπ
 

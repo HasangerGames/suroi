@@ -2,14 +2,14 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="110"
-   height="110"
-   viewBox="0 0 29.104165 29.104167"
+   width="110.28121"
+   height="78.213181"
+   viewBox="0 0 29.178569 20.693904"
    version="1.1"
    id="svg1"
    xml:space="preserve"
-   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
-   sodipodi:docname="cz75a.svg"
+   inkscape:version="1.4.2 (1:1.4.2+202505120737+ebf0e940d0)"
+   sodipodi:docname="dual_cz75a.svg"
    inkscape:export-filename="cz75a_Lootimage.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
@@ -26,13 +26,13 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
-     inkscape:zoom="1.058498"
-     inkscape:cx="151.15758"
-     inkscape:cy="10.864451"
-     inkscape:window-width="1712"
-     inkscape:window-height="970"
+     inkscape:zoom="5.9877689"
+     inkscape:cx="52.440234"
+     inkscape:cy="24.132528"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
      inkscape:window-x="0"
-     inkscape:window-y="43"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" /><defs
      id="defs1"><clipPath
@@ -338,9 +338,10 @@
          transform="rotate(29.999999)" /></clipPath></defs><g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1"><g
+     id="layer1"
+     transform="translate(0.07370217,-4.588825)"><g
        id="g1"
-       transform="matrix(0.32335726,-0.1866904,0.1866904,0.32335726,-1.4866353,12.902463)"><g
+       transform="matrix(0.36065816,-0.09663806,0.09663806,0.36065816,-0.86209312,9.6499369)"><g
          id="g69"
          transform="matrix(0.53298757,0,0,0.53298757,-1.2898992,-3.2447502)"><path
            fill-rule="evenodd"
@@ -728,7 +729,7 @@
            id="path55"
            sodipodi:nodetypes="cscccccccccc" /></g></g><g
        id="g2"
-       transform="matrix(0.32335726,-0.1866904,0.1866904,0.32335726,5.2608701,14.710452)"><g
+       transform="matrix(0.36065816,-0.09663806,0.09663806,0.36065816,5.8854123,11.457926)"><g
          id="g69-9"
          transform="matrix(0.53298757,0,0,0.53298757,-1.2898992,-3.2447502)"><path
            fill-rule="evenodd"

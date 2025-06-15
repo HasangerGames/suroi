@@ -2,14 +2,17 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="110"
-   height="110"
-   viewBox="0 0 29.104166 29.104166"
+   width="123.94144"
+   height="54.83091"
+   viewBox="0 0 32.79284 14.507345"
    version="1.1"
    id="svg1"
    xml:space="preserve"
-   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
+   inkscape:version="1.4.2 (1:1.4.2+202505120737+ebf0e940d0)"
    sodipodi:docname="hp18.svg"
+   inkscape:export-filename="hp18_lootimage.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -23,13 +26,13 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
-     inkscape:zoom="0.58707225"
-     inkscape:cx="374.74093"
-     inkscape:cy="181.40868"
-     inkscape:window-width="1712"
-     inkscape:window-height="968"
+     inkscape:zoom="2.9459183"
+     inkscape:cx="82.14756"
+     inkscape:cy="61.950123"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
      inkscape:window-x="0"
-     inkscape:window-y="43"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" /><defs
      id="defs1"><clipPath
@@ -205,9 +208,10 @@
          transform="rotate(30)" /></clipPath></defs><g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1"><g
+     id="layer1"
+     transform="translate(-14.596962,51.500266)"><g
        id="g74"
-       transform="matrix(0.10946271,-0.06319833,0.06319833,0.10946271,-1.659731,19.657351)"><path
+       transform="matrix(0.12208979,-0.03271387,0.03271387,0.12208979,13.666247,-43.762079)"><path
          d="m 103.89018,23.219954 c -0.9207,0.547017 -1.86773,0.990541 -3.17112,1.504061 -1.182725,0.465763 -1.468117,1.877352 -1.371448,2.876235 l 0.243643,-0.137467 c 0.19719,-0.0286 0.36332,-0.04428 0.427325,0.104309 1.0852,2.514739 1.87833,2.689034 3.33784,2.844537 0.0917,0.0098 0.13395,-0.106137 0.0427,-0.152824 -0.27796,-0.142662 -0.40681,-0.251413 -0.5743,-0.502353 -1.76354,-1.041574 -1.98593,-2.376615 -1.82333,-3.378426 0.16147,-0.995254 1.06134,-1.939061 2.88874,-3.158074 z"
          fill="#383633"
          stroke="#363330"

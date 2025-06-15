@@ -87,6 +87,9 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                 this.container.addChild(this.images.skinFistLeft, this.images.skinFistRight);
             } else {
                 this.images.item.setFrame(idString);
+                if (itemType === ItemType.Gun) {
+                    this.images.item.setAngle(-15);
+                }
             }
 
             const { backgroundTexture, scale } = Loot.getBackgroundAndScale(definition);
