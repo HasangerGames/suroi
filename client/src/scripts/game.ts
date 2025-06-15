@@ -612,6 +612,7 @@ export const Game = new (class Game {
             ui.loaderText.text("");
 
             SoundManager.stopAll();
+            this.gameOver = true;
             this._socket?.close();
 
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
