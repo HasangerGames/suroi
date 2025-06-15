@@ -19,9 +19,8 @@ Guns:
 
   ARX-160 - ARX160 Rifle by oneshotofficial: https://gamebanana.com/sounds/57736
 
-  Flues fire - "080902_Shotgun" from Pixabay: https://pixabay.com/sound-effects/080902-shotgun-39753/
-  Flues switch - eiπ
-  Flues reload - eiπ, Katloo
+  Badlander switch - eiπ
+  Badlander reload - eiπ, Katloo
 
   M1895 reload - "Clean Revolver Reload" from Pixabay: https://pixabay.com/sound-effects/clean-revolver-reload-6889/
 

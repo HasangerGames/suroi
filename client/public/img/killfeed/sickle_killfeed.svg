@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   width="35"
-   height="25"
-   viewBox="0 0 27 17"
+   width="25.914047"
+   height="16.000002"
+   viewBox="0 0 19.990837 10.880001"
    fill="none"
    version="1.1"
    id="svg1"
    sodipodi:docname="sickle_killfeed.svg"
+   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -21,14 +22,24 @@
      inkscape:showpageshadow="0"
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#505050" />
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="8.9367055"
+     inkscape:cx="15.777626"
+     inkscape:cy="2.7415024"
+     inkscape:window-width="1472"
+     inkscape:window-height="812"
+     inkscape:window-x="0"
+     inkscape:window-y="37"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1" />
   <path
-     d="m 18.683098,12.264811 4.25,2.821 -3.067,-4.139 5.502,-1.0699995 -7.067,-1.544 c -0.395,1.138 -1.99,1.7879995 -2.937,0.728 l -3.067,4.5949995 4.105,-2.25 -0.756,4.074 z"
+     d="M 13.990151,8.7255352 17.805097,11.257761 15.052053,7.5424532 19.990837,6.5819847 13.647255,5.1960373 C 13.29269,6.2175452 11.860963,6.801007 11.010903,5.8495151 L 8.2578592,9.9741442 11.942648,7.9544672 11.264036,11.611429 Z"
      fill="#d9d9d9"
-     id="path1" />
+     id="path1"
+     style="stroke-width:0.897634" />
   <g
      id="g-1"
-     transform="matrix(-0.113059,-0.60562509,-0.66281801,0.123736,154.04608,126.76556)">
+     transform="matrix(-0.10148564,-0.54362988,-0.59496821,0.11106968,135.49662,111.50534)">
     <g
        id="g1"
        transform="matrix(0.73669631,0.42533181,-0.42533181,0.73669631,180.67219,-32.687075)"
