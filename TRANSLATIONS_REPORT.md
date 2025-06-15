@@ -2275,8 +2275,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `developr_vest` is not a valid key
 - Key `destroyer_of_worlds` is not a valid key
 - Key `deathray` is not a valid key
-- Key `flues` is not a valid key
-- Key `mp40` is not a valid key
 - Key `12g` is not a valid key
 - Key `556mm` is not a valid key
 - Key `762mm` is not a valid key
