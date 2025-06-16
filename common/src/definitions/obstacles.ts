@@ -5589,7 +5589,14 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(([
         defType: DefinitionType.Obstacle,
         material: "metal_heavy",
         health: 1000,
-        hitbox: new CircleHitbox(17, Vec.create(-2, 0)),
+        hitbox: new GroupHitbox(
+            new CircleHitbox(17.07, Vec.create(-2.03, 0)),
+            new CircleHitbox(3.26, Vec.create(-13.43, -11.4)),
+            new CircleHitbox(3.26, Vec.create(-13.43, 11.4)),
+            new CircleHitbox(3.26, Vec.create(9.36, -11.4)),
+            new CircleHitbox(3.26, Vec.create(9.36, 11.4)),
+            RectangleHitbox.fromRect(5.48, 11.65, Vec.create(16.35, 0))
+        ),
         rotationMode: RotationMode.Limited,
         allowFlyover: FlyoverPref.Never,
         explosion: "silo_explosion",
