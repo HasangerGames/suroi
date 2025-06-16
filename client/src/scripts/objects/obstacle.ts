@@ -90,15 +90,20 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     override updateFromData(data: ObjectsNetData[ObjectCategory.Obstacle], isNew = false): void {
         let texture: string | undefined;
 
-        if (data.full) {
-            const full = data.full;
-
+        const full = data.full;
+        if (full) {
             const definition = this.definition = full.definition;
+
             this.position = full.position;
-            this.rotation = full.rotation.rotation;
-            this.orientation = full.rotation.orientation;
+            this.container.position = toPixiCoords(this.position);
+
+            const { rotation, orientation } = full.rotation;
+            this.container.rotation = this.rotation = rotation;
+            this.orientation = orientation;
+
             this.layer = full.layer;
             this.updateLayer();
+
             this.variation = full.variation;
 
             if (definition.graphics?.length && !this.graphics) {
@@ -436,30 +441,36 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
         }
 
-        const pos = toPixiCoords(this.position);
-        this.container.position.copyFrom(pos);
+        if (
+            definition.invisible
+            || (this.dead && definition.noResidue)
+            || (!this.dead && (definition.graphics || definition.wall))
+        ) {
+            this.image.setVisible(false);
+            return;
+        }
 
-        this.image.setVisible(!(this.dead && definition.noResidue));
-
-        texture ??= !this.dead
-            ? ((!this.door?.locked && !this.powered) && this.door?.offset !== 0) && definition.frames?.opened
-                ? definition.frames.opened
-                : (!this.door?.locked && !this.powered) && (definition.requiresPower && definition.frames?.powered)
-                    ? definition.frames?.powered
-                    : this.activated && definition.frames?.activated
-                        ? definition.frames?.activated
-                        : definition.frames?.base ?? definition.idString
-            : definition.frames?.residue ?? `${definition.idString}_residue`;
+        if (!texture) {
+            // TODO opened, powered, and activated states can probably be combined in some way
+            if (this.dead) {
+                texture = definition.frames?.residue ?? `${definition.idString}_residue`;
+            } else if (!this.door?.locked && !this.powered && this.door?.offset !== 0 && definition.frames?.opened) {
+                texture = definition.frames.opened;
+            } else if (!this.door?.locked && !this.powered && definition.requiresPower && definition.frames?.powered) {
+                texture = definition.frames.powered;
+            } else if (this.activated && definition.frames?.activated) {
+                texture = definition.frames?.activated;
+            } else {
+                texture = definition.frames?.base ?? definition.idString;
+            }
+        }
 
         if (this.variation !== undefined && !this.dead && !(definition.isTree && !definition.trunkVariations)) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             texture += `_${definition.isTree && definition.leavesVariations ? Math.ceil((this.variation + 1) / definition.trunkVariations!) : this.variation + 1}`;
         }
 
-        if (!definition.invisible && !(this.dead && definition.noResidue)) {
-            this.image.setFrame(texture);
-            if ((definition.graphics || definition.wall) && !this.dead) this.image.setVisible(false);
-        }
+        this.image.setVisible(true).setFrame(texture);
 
         if (this.waterOverlay && this.dead) {
             this.image.setZIndex(ZIndexes.DeadObstacles);
@@ -470,8 +481,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             this.image.setTint(definition.tint);
             this.leavesSprite?.setTint(definition.tint);
         }
-
-        this.container.rotation = this.rotation;
     }
 
     override updateDebugGraphics(): void {
