@@ -986,24 +986,18 @@ class UIManagerClass {
 
                 if (definition) {
                     const isGun = definition.itemType === ItemType.Gun;
-                    const color = isGun
-                        ? Ammos.fromString(definition.ammoType).characteristicColor
-                        : { hue: 0, saturation: 0, lightness: 0 };
 
-                    container.css(isGun && GameConsole.getBuiltInCVar("cv_weapon_slot_style") === "colored"
-                        ? {
+                    if (isGun) {
+                        const color = Ammos.fromString(definition.ammoType).characteristicColor;
+                        container.css({
                             "outline-color": `hsl(${color.hue}, ${color.saturation}%, ${(color.lightness + 50) / 3}%)`,
                             "background-color": `hsla(${color.hue}, ${color.saturation}%, ${color.lightness / 2}%, 50%)`,
                             "color": `hsla(${color.hue}, ${color.saturation}%, 90%)`
-                        }
-                        : {
-                            "outline-color": "",
-                            "background-color": "",
-                            "color": ""
                         });
+                    }
 
                     itemName.text(
-                        definition.itemType === ItemType.Gun && definition.isDual
+                        isGun && definition.isDual
                             ? getTranslatedString(
                                 "dual_template",
                                 { gun: getTranslatedString(definition.singleVariant as TranslationKeys) }
